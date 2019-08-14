@@ -60,6 +60,15 @@ const LoginButton = styled.button`
   position: relative;
 `;
 
+const GoBackButton = styled.a`
+  ${buttons.button};
+  ${shadows.dropDeep};
+  ${buttons.lightBlue};
+  ${buttons.medium};
+
+  margin-top: 40px;
+`;
+
 const AuthenticationPage = ({
   onLogin,
   loginDisabled,
@@ -78,6 +87,7 @@ const AuthenticationPage = ({
           {renderButtonContent()}
         </LoginButton>
       )}
+      <GoBackButton href="/">Go back to site</GoBackButton>
       {logoUrl ? <NetlifyCreditIcon size="100px" type="netlify-cms" /> : null}
     </StyledAuthenticationPage>
   );

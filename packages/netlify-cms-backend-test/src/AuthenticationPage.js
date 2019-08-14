@@ -34,6 +34,15 @@ const LoginButton = styled.button`
   }
 `;
 
+const GoBackButton = styled.a`
+  ${buttons.button};
+  ${shadows.dropDeep};
+  ${buttons.lightBlue};
+  ${buttons.medium};
+
+  margin-top: 40px;
+`;
+
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
@@ -65,6 +74,7 @@ export default class AuthenticationPage extends React.Component {
         <LoginButton disabled={inProgress} onClick={this.handleLogin}>
           {inProgress ? 'Logging in...' : 'Login'}
         </LoginButton>
+        <GoBackButton href="/">Go back to site</GoBackButton>
       </StyledAuthenticationPage>
     );
   }

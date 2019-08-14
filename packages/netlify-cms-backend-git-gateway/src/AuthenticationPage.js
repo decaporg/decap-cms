@@ -24,6 +24,15 @@ const LoginButton = styled.button`
   margin-left: auto;
 `;
 
+const GoBackButton = styled.a`
+  ${buttons.button};
+  ${shadows.dropDeep};
+  ${buttons.lightBlue};
+  ${buttons.medium};
+
+  margin-top: 40px;
+`;
+
 const AuthForm = styled.form`
   width: 350px;
   margin-top: -80px;
@@ -180,6 +189,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
             <LoginButton disabled={inProgress}>
               {inProgress ? 'Logging in...' : 'Login'}
             </LoginButton>
+            <GoBackButton href="/">Go back to site</GoBackButton>
           </AuthForm>
         )}
       />
