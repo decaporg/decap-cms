@@ -55,7 +55,17 @@ const CardText = styled.p`
 
 class MediaLibraryCard extends React.Component {
   render() {
-    const { isSelected, displayURL, text, onClick, width, margin, isPrivate, type } = this.props;
+    const {
+      isSelected,
+      displayURL,
+      text,
+      onClick,
+      width,
+      margin,
+      isPrivate,
+      type,
+      isViewableImage,
+    } = this.props;
     const url = displayURL.get('url');
     return (
       <Card
@@ -67,7 +77,7 @@ class MediaLibraryCard extends React.Component {
         isPrivate={isPrivate}
       >
         <CardImageWrapper>
-          {url ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}
+          {url && isViewableImage ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}
         </CardImageWrapper>
         <CardText>{text}</CardText>
       </Card>
