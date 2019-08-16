@@ -10983,9 +10983,9 @@ sane@^4.0.3:
     walker "~1.0.5"
 
 sanitize-filename@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/sanitize-filename/-/sanitize-filename-1.6.1.tgz#612da1c96473fa02dccda92dcd5b4ab164a6772a"
-  integrity sha1-YS2hyWRz+gLczaktzVtKsWSmdyo=
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/sanitize-filename/-/sanitize-filename-1.6.2.tgz#01b4fc8809f14e9d22761fe70380fe7f3f902185"
+  integrity sha512-cmTzND7RMxUB+f7gI+4+KAVHWEg0lfXvQJdko+FXDP5bNbGIdx4KMP5pX6lv5jfT9jSf6OBbjyxjFtZQwYA/ig==
   dependencies:
     truncate-utf8-bytes "^1.0.0"
 
