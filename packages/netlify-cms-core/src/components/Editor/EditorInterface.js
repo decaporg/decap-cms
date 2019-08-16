@@ -255,12 +255,14 @@ class EditorInterface extends Component {
               active={previewVisible}
               onClick={this.handleTogglePreview}
               icon="eye"
+              title="Toggle preview"
             />
             <EditorToggle
               enabled={collectionPreviewEnabled && previewVisible}
               active={scrollSyncEnabled}
               onClick={this.handleToggleScrollSync}
               icon="scroll"
+              title="Sync scrolling"
             />
           </ViewControls>
           {collectionPreviewEnabled && this.state.previewVisible ? (
