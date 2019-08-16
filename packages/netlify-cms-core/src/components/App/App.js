@@ -23,6 +23,8 @@ import Workflow from 'Workflow/Workflow';
 import Editor from 'Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
+import { selectEntrySlug } from 'Reducers/collections';
+import { FILES, FOLDER } from 'Constants/collectionTypes';
 
 TopBarProgress.config({
   barColors: {
@@ -158,6 +160,25 @@ class App extends React.Component {
     const defaultPath = `/collections/${collections.first().get('name')}`;
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
+    const getCustomEditRoute = props => {
+      const { folder, filename } = props.match.params;
+      const collections = config.get('collections');
+      let activeCollection = null;
+      collections.forEach(collection => {
+        if (folder === collection.get('folder')) {
+          activeCollection = collection;
+        }
+      });
+      if (activeCollection === null) return <NotFoundPage />;
+      const setTypeOnCollection = collection => {
+        if (collection.has('folder')) return collection.set('type', FOLDER);
+        if (collection.has('files')) return collection.set('type', FILES);
+      };
+      const typeSetCollection = setTypeOnCollection(activeCollection);
+      const slug = selectEntrySlug(typeSetCollection, filename);
+      return <Redirect to={`/collections/${typeSetCollection.get('name')}/entries/${slug}`} />;
+    };
+
     return (
       <>
         <Notifs CustomComponent={Toast} />
@@ -194,6 +215,7 @@ class App extends React.Component {
               path="/search/:searchTerm"
               render={props => <Collection {...props} isSearchResults />}
             />
+            <Route path="/edit/:folder/:filename" render={props => getCustomEditRoute(props)} />
             <Route component={NotFoundPage} />
           </Switch>
           {useMediaLibrary ? <MediaLibrary /> : null}
