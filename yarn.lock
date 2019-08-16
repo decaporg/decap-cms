@@ -11242,6 +11242,11 @@ slate-plain-serializer@^0.5.15:
   dependencies:
     slate-dev-logger "^0.1.43"
 
+slate-plain-serializer@^0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/slate-plain-serializer/-/slate-plain-serializer-0.7.6.tgz#b9d092ddfb3415cc61920e1748caae3afed066f7"
+  integrity sha512-PHCV8RDulthgE5BnySf1PqjG6UEwXYSPjfe++FToeSZRAApd/MHTcMyvQ/m1GdliP/yEWN1X3+TUyO42QlNvRg==
+
 slate-prop-types@^0.4.32:
   version "0.4.67"
   resolved "https://registry.yarnpkg.com/slate-prop-types/-/slate-prop-types-0.4.67.tgz#c6aa74195466546a44fcb85d1c7b15fefe36ce6b"
