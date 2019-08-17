@@ -1,24 +1,103 @@
 updates:
+  - date: '2019-07-11'
+    description: 'Fix default values in list widgets'
+    version: 2.9.6
+  - date: '2019-06-28'
+    description: 'Fix entry loading for GitLab'
+    version: 2.9.5
+  - date: '2019-06-26'
+    description: 'Reference nested fields in relation widget, validate simple lists, bugfixes'
+    version: 2.9.4
+  - date: '2019-06-18'
+    description: 'Fix new entries error for non-GitHub backends'
+    version: 2.9.3
+  - date: '2019-06-14'
+    description: 'Match any char with shortcode/editor component patterns, bugfixes'
+    version: 2.9.2
+  - date: '2019-04-10'
+    description: 'Entry card customization, Bitbucket implicit auth, fix image previews, other bugfixes'
+    version: 2.9.1
+  - date: '2019-03-29'
+    description: 'Add netlify-cms-app package with external deps, fix breaking preview templates'
+    version: 2.9.0
+  - date: '2019-03-22'
+    description: 'Add es module builds, fix large media binary output'
+    version: 2.8.0
+  - date: '2019-03-21'
+    description: 'Standalone UMD builds with externalized dependencies for all extension packages'
+    version: 2.7.0
+  - date: '2019-03-11'
+    description: 'Fix Cloudinary multiselect, preview pane and config fixes, other improvements'
+    version: 2.6.1
+  - date: '2019-03-07'
+    description: 'Add entry recovery after error, fix large media GitHub URL output, other fixes'
+    version: 2.6.0
+  - date: '2019-02-28'
+    description: 'Fix previews of GitHub images'
+    version: 2.5.1
+  - date: '2019-02-26'
+    description: 'Netlify Large Media support, multi-select relation widget, and more'
+    version: 2.5.0
+  - date: '2019-02-12'
+    description: 'Fix empty number widget values, accept explicit fields in slug template'
+    version: 2.4.2
+  - date: 2019-02-09T00:08:11.159Z
+    description: Bugfixes
+    version: 2.4.1
+  - date: 2019-02-08T22:27:39.913Z
+    description: 'Deploy preview links, map widget, and nested field validation'
+    version: 2.4.0
+    url: 'https://www.netlifycms.org/blog/2019/02/netlify-cms-2-4-0'
+  - date: '2019-01-10'
+    description: Fix missing entry labels for file collections
+    version: 2.3.3
+  - date: '2018-12-26'
+    description: 'Bugfixes, list widget variable types in beta'
+    version: 2.3.2
+  - date: '2018-12-11'
+    description: Bugfixes
+    version: 2.3.1
+  - date: '2018-12-04'
+    description: 'Cloudinary support, multi-select in select widget'
+    version: 2.3.0
+  - date: '2018-11-29'
+    description: 'Date display formatting, lots of bugfixes'
+    version: 2.2.1
+  - date: '2018-11-12'
+    description: 'Custom identifier fields, custom logo on auth page, bugfixes'
+    version: 2.2.0
+  - date: 2018-10-09T13:57:04.203Z
+    description: Bugfixes
+    version: 2.1.3
+  - date: 2018-09-17T16:49:32.506Z
+    description: Fix editorial workflow for Git Gateway
+    version: 2.1.2
+  - date: 2018-09-06T16:48:08.594Z
+    description: Provide empty cms.css file to ease 2.x migration
+    version: 2.1.1
+  - date: 2018-09-06T18:48:13.703Z
+    description: "External media library support \U0001F389\U0001F389"
+    version: 2.1.0
   - date: '2018-08-27'
     description: Fix sortable list bugs in the editor
     version: 2.0.11
   - date: '2018-08-24'
-    description: Editor hints, GitLab images and Markdown editor fixes, plus other bugs
+    description: 'Editor hints, GitLab images and Markdown editor fixes, plus other bugs'
     version: 2.0.10
   - date: '2018-08-07'
-    description: Backend, workflow, and relation widget fixes/improvements
+    description: 'Backend, workflow, and relation widget fixes/improvements'
     version: 2.0.9
   - date: '2018-08-01'
     description: Fix workflow publishing
     version: 2.0.8
   - date: '2018-08-01'
-    description: Fix uploads in backends, fix workflow, other bugfixes
+    description: 'Fix uploads in backends, fix workflow, other bugfixes'
     version: 2.0.7
   - date: '2018-07-28'
     description: Fix backends
     version: 2.0.6
   - date: '2018-07-27'
-    description: Fix Git Gateway, other bugfixes
+    description: 'Fix Git Gateway, other bugfixes'
     version: 2.0.5
   - date: '2018-07-26'
     description: Bitbucket support!

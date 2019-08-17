@@ -95,23 +95,6 @@ header {
     @media screen and (max-width: $tablet) {
       position: static;
     }
-
-    /*.nav-link {
-      @media screen and (min-width: 487px) and (max-width: 767px) {
-        margin-top: $micro;
-      }
-    }*/
-
-    /*.utility-input {
-      @media screen and (max-width: 767px) {
-        display: block;
-        height: $small;
-        margin: $tiny 0 0 0;
-      }
-      @media screen and (min-width: 487px) and (max-width: 767px) {
-        margin-top: 32px;
-      }
-    }*/
   }
 
   .nav-container {
@@ -123,7 +106,9 @@ header {
       vertical-align: middle;
       -webkit-vertical-align: middle !important;
       margin-left: $tiny;
-
+      &:first-child {
+        margin-left: 0;
+      }
       &:hover {
         color: $green;
       }
@@ -133,8 +118,12 @@ header {
       display: inline-block;
       margin-left: $small;
       vertical-align: middle;
+      position: relative;
+      top: 2px;
       @media screen and (max-width: $mobile) {
         margin-top: $tiny;
+        top: 0;
+        margin-left: 0;
       }
     }
   }

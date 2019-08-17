@@ -1,17 +1,14 @@
 ---
 title: Uploadcare
-weight: 10
 group: media
+weight: 10
 ---
-
-Uploadcare is a sleek service that allows you to upload files needed without worrying about
-maintaining a growing collection - more of an asset store than a library. Just upload when you need
+Uploadcare is a sleek service that allows you to upload files without worrying about maintaining a growing collection - more of an asset store than a library. Just upload when you need
 to, and the files are hosted on their CDN. They provide image processing controls from simple
 cropping and rotation to filters and face detection, and a lot more. You can check out Uploadcare's
 full feature set on their [website](https://uploadcare.com/).
 
-The Uploadcare media library integration for Netlify CMS allows you to use Uploadcare's media widget
-allows you to use Uploadcare as your media handler within the CMS itself. It's available by default
+The Uploadcare media library integration for Netlify CMS allows you to use Uploadcare as your media handler within the CMS itself. It's available by default
 as of our 2.1.0 release, and works in tandem with the existing file and image widgets, so using it
 only requires creating an Uploadcare account and updating your Netlify CMS configuration.
 
@@ -40,7 +37,7 @@ Your `config.yml` should now include something like this (except with a real API
 media_library:
   name: uploadcare
   config:
-    publickey: demopublickey
+    publicKey: demopublickey
 ```
 
 Once you've finished updating your Netlify CMS configuration, the Uploadcare widget will appear when
@@ -49,13 +46,13 @@ using the image or file widgets.
 ## Configuring the Uploadcare Widget
 
 The Uploadcare widget can be configured with settings that are outlined [in their
-docs](https://uploadcare.com/docs/uploads/widget/config/). The widget itself accepts configration
+docs](https://uploadcare.com/docs/file_uploads/widget/options/). The widget itself accepts configration
 through global variables and data properties on HTML elements, but with Netlify CMS you can pass
 configuration options directly through your `config.yml`.
 
 **Note:** all default values described in Uploadcare's documentation also apply in the Netlify CMS
 integration, except for `previewStep`, which is set to `true`. This was done because the preview
-step provides helpful information like upload status, and proivdes access to image editing controls.
+step provides helpful information like upload status, and provides access to image editing controls.
 This option can be disabled through the configuration options below.
 
 ### Global configuration
@@ -68,7 +65,7 @@ instance of the Uploadcare widget.
 
 Configuration can also be provided for individual fields that use the media library. The structure
 is very similar to the global configuration, except the settings are added to an individual `field`.
-Forexample:
+For example:
 
 ```yaml
   ...
@@ -76,9 +73,8 @@ Forexample:
     name: cover
     label: Cover Image
     widget: image
-    options:
-      media_library:
-        config:
-          multiple: true
-          previewStep: false
+    media_library:
+      config:
+        multiple: true
+        previewStep: false
 ```

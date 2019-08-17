@@ -1,9 +1,10 @@
-import { fromJS, List } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
+import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
-import { currentBackend } from 'src/backend';
+import { currentBackend } from 'coreSrc/backend';
 import { getIntegrationProvider } from 'Integrations';
-import { getAsset, selectIntegration } from 'Reducers';
+import { getAsset, selectIntegration, selectPublishedSlugs } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -29,6 +30,9 @@ export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
+export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
+export const DRAFT_LOCAL_BACKUP_RETRIEVED = 'DRAFT_LOCAL_BACKUP_RETRIEVED';
+export const DRAFT_CREATE_FROM_LOCAL_BACKUP = 'DRAFT_CREATE_FROM_LOCAL_BACKUP';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -208,10 +212,54 @@ export function changeDraftField(field, value, metadata) {
   };
 }
 
-export function changeDraftFieldValidation(field, errors) {
+export function changeDraftFieldValidation(uniquefieldId, errors) {
   return {
     type: DRAFT_VALIDATION_ERRORS,
-    payload: { field, errors },
+    payload: { uniquefieldId, errors },
+  };
+}
+
+export function clearFieldErrors() {
+  return { type: DRAFT_CLEAR_ERRORS };
+}
+
+export function localBackupRetrieved(entry) {
+  return {
+    type: DRAFT_LOCAL_BACKUP_RETRIEVED,
+    payload: { entry },
+  };
+}
+
+export function loadLocalBackup() {
+  return {
+    type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
+  };
+}
+
+export function persistLocalBackup(entry, collection) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    return backend.persistLocalDraftBackup(entry, collection);
+  };
+}
+
+export function retrieveLocalBackup(collection, slug) {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const entry = await backend.getLocalDraftBackup(collection, slug);
+    if (entry) {
+      return dispatch(localBackupRetrieved(entry));
+    }
+  };
+}
+
+export function deleteLocalBackup(collection, slug) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    return backend.deleteLocalDraftBackup(collection, slug);
   };
 }
 
@@ -233,7 +281,10 @@ export function loadEntry(collection, slug) {
         console.error(error);
         dispatch(
           notifSend({
-            message: `Failed to load entry: ${error.message}`,
+            message: {
+              details: error.message,
+              key: 'ui.toast.onFailToLoadEntries',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -300,7 +351,10 @@ export function loadEntries(collection, page = 0) {
       .catch(err => {
         dispatch(
           notifSend({
-            message: `Failed to load entries: ${err}`,
+            message: {
+              details: err,
+              key: 'ui.toast.onFailToLoadEntries',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -348,7 +402,10 @@ export function traverseCollectionCursor(collection, action) {
       console.error(err);
       dispatch(
         notifSend({
-          message: `Failed to persist entry: ${err}`,
+          message: {
+            details: err,
+            key: 'ui.toast.onFailToPersist',
+          },
           kind: 'danger',
           dismissAfter: 8000,
         }),
@@ -360,13 +417,49 @@ export function traverseCollectionCursor(collection, action) {
 
 export function createEmptyDraft(collection) {
   return dispatch => {
-    const dataFields = {};
-    collection.get('fields', List()).forEach(field => {
-      dataFields[field.get('name')] = field.get('default');
-    });
+    const dataFields = createEmptyDraftData(collection.get('fields', List()));
     const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
     dispatch(emptyDraftCreated(newEntry));
   };
+}
+
+export function createEmptyDraftData(fields, withNameKey = true) {
+  return fields.reduce((acc, item) => {
+    const subfields = item.get('field') || item.get('fields');
+    const list = item.get('widget') == 'list';
+    const name = item.get('name');
+    const defaultValue = item.get('default', null);
+    const isEmptyDefaultValue = val => [[{}], {}].some(e => isEqual(val, e));
+
+    if (List.isList(subfields)) {
+      const subDefaultValue = list
+        ? [createEmptyDraftData(subfields)]
+        : createEmptyDraftData(subfields);
+      if (!isEmptyDefaultValue(subDefaultValue)) {
+        acc[name] = subDefaultValue;
+      }
+      return acc;
+    }
+
+    if (Map.isMap(subfields)) {
+      const subDefaultValue = list
+        ? [createEmptyDraftData([subfields], false)]
+        : createEmptyDraftData([subfields]);
+      if (!isEmptyDefaultValue(subDefaultValue)) {
+        acc[name] = subDefaultValue;
+      }
+      return acc;
+    }
+
+    if (defaultValue !== null) {
+      if (!withNameKey) {
+        return defaultValue;
+      }
+      acc[name] = defaultValue;
+    }
+
+    return acc;
+  }, {});
 }
 
 export function persistEntry(collection) {
@@ -374,6 +467,7 @@ export function persistEntry(collection) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
+    const usedSlugs = selectPublishedSlugs(state, collection.get('name'));
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
@@ -384,7 +478,9 @@ export function persistEntry(collection) {
       if (hasPresenceErrors) {
         dispatch(
           notifSend({
-            message: "Oops, you've missed a required field. Please complete before saving.",
+            message: {
+              key: 'ui.toast.missingRequiredField',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -408,11 +504,20 @@ export function persistEntry(collection) {
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(state.config, collection, serializedEntryDraft, assetProxies.toJS())
+      .persistEntry(
+        state.config,
+        collection,
+        serializedEntryDraft,
+        assetProxies.toJS(),
+        state.integrations,
+        usedSlugs,
+      )
       .then(slug => {
         dispatch(
           notifSend({
-            message: 'Entry saved',
+            message: {
+              key: 'ui.toast.entrySaved',
+            },
             kind: 'success',
             dismissAfter: 4000,
           }),
@@ -423,7 +528,10 @@ export function persistEntry(collection) {
         console.error(error);
         dispatch(
           notifSend({
-            message: `Failed to persist entry: ${error}`,
+            message: {
+              details: error,
+              key: 'ui.toast.onFailToPersist',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),
@@ -447,7 +555,10 @@ export function deleteEntry(collection, slug) {
       .catch(error => {
         dispatch(
           notifSend({
-            message: `Failed to delete entry: ${error}`,
+            message: {
+              details: error,
+              key: 'ui.toast.onFailToDelete',
+            },
             kind: 'danger',
             dismissAfter: 8000,
           }),

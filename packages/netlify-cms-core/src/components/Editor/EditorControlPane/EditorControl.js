@@ -1,11 +1,15 @@
+/** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import { translate } from 'react-polyglot';
+import { jsx, ClassNames, Global, css as coreCss } from '@emotion/core';
+import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { colors, colorsRaw, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
+import { clearFieldErrors, loadEntry } from 'Actions/entries';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
 import {
@@ -17,8 +21,13 @@ import {
 import { getAsset } from 'Reducers';
 import Widget from './Widget';
 
-const styles = {
-  label: css`
+/**
+ * This is a necessary bridge as we are still passing classnames to widgets
+ * for styling. Once that changes we can stop storing raw style strings like
+ * this.
+ */
+const styleStrings = {
+  label: `
     color: ${colors.controlLabel};
     background-color: ${colors.textFieldBorder};
     display: inline-block;
@@ -52,15 +61,15 @@ const styles = {
       background-color: #fff;
     }
   `,
-  labelActive: css`
+  labelActive: `
     background-color: ${colors.active};
     color: ${colors.textLight};
   `,
-  labelError: css`
+  labelError: `
     background-color: ${colors.errorText};
     color: ${colorsRaw.white};
   `,
-  widget: css`
+  widget: `
     display: block;
     width: 100%;
     padding: ${lengths.inputPadding};
@@ -82,10 +91,10 @@ const styles = {
       height: 58px;
     }
   `,
-  widgetActive: css`
+  widgetActive: `
     border-color: ${colors.active};
   `,
-  widgetError: css`
+  widgetError: `
     border-color: ${colors.errorText};
   `,
 };
@@ -93,7 +102,7 @@ const styles = {
 const ControlContainer = styled.div`
   margin-top: 16px;
 
-  &:first-child {
+  &:first-of-type {
     margin-top: 36px;
   }
 `;
@@ -114,8 +123,8 @@ export const ControlHint = styled.p`
   margin-bottom: 0;
   padding: 3px 0;
   font-size: 12px;
-  color: ${({ active, error }) =>
-    error ? colors.errorText : active ? colors.active : colors.controlLabel};
+  color: ${props =>
+    props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
   transition: color ${transitions.main};
 `;
 
@@ -138,15 +147,21 @@ class EditorControl extends React.Component {
     removeInsertedMedia: PropTypes.func.isRequired,
     onValidate: PropTypes.func,
     processControlRef: PropTypes.func,
+    controlRef: PropTypes.func,
     query: PropTypes.func.isRequired,
     queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     isFetching: PropTypes.bool,
     clearSearch: PropTypes.func.isRequired,
+    clearFieldErrors: PropTypes.func.isRequired,
+    loadEntry: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   state = {
     activeLabel: false,
   };
+
+  uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
 
   render() {
     const {
@@ -164,82 +179,126 @@ class EditorControl extends React.Component {
       removeInsertedMedia,
       onValidate,
       processControlRef,
+      controlRef,
       query,
       queryHits,
       isFetching,
       clearSearch,
+      clearFieldErrors,
+      loadEntry,
+      t,
     } = this.props;
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
-    const uniqueFieldId = uniqueId();
+    const isFieldOptional = field.get('required') === false;
+    const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
-    const errors = fieldsErrors && fieldsErrors.get(fieldName);
+    const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     return (
-      <ControlContainer>
-        <ControlErrorsList>
-          {errors &&
-            errors.map(
-              error =>
-                error.message &&
-                typeof error.message === 'string' && (
-                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>{error.message}</li>
-                ),
+      <ClassNames>
+        {({ css, cx }) => (
+          <ControlContainer>
+            {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
+            <ControlErrorsList>
+              {errors &&
+                errors.map(
+                  error =>
+                    error.message &&
+                    typeof error.message === 'string' && (
+                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                        {error.message}
+                      </li>
+                    ),
+                )}
+            </ControlErrorsList>
+            <label
+              className={cx(
+                css`
+                  ${styleStrings.label};
+                `,
+                this.state.styleActive &&
+                  css`
+                    ${styleStrings.labelActive};
+                  `,
+                !!errors &&
+                  css`
+                    ${styleStrings.labelError};
+                  `,
+              )}
+              htmlFor={this.uniqueFieldId}
+            >
+              {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
+            </label>
+            <Widget
+              classNameWrapper={cx(
+                css`
+                  ${styleStrings.widget};
+                `,
+                {
+                  [css`
+                    ${styleStrings.widgetActive};
+                  `]: this.state.styleActive,
+                },
+                {
+                  [css`
+                    ${styleStrings.widgetError};
+                  `]: !!errors,
+                },
+              )}
+              classNameWidget={css`
+                ${styleStrings.widget};
+              `}
+              classNameWidgetActive={css`
+                ${styleStrings.widgetActive};
+              `}
+              classNameLabel={css`
+                ${styleStrings.label};
+              `}
+              classNameLabelActive={css`
+                ${styleStrings.labelActive};
+              `}
+              controlComponent={widget.control}
+              field={field}
+              uniqueFieldId={this.uniqueFieldId}
+              value={value}
+              mediaPaths={mediaPaths}
+              metadata={metadata}
+              onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
+              onValidate={onValidate && partial(onValidate, this.uniqueFieldId)}
+              onOpenMediaLibrary={openMediaLibrary}
+              onClearMediaControl={clearMediaControl}
+              onRemoveMediaControl={removeMediaControl}
+              onRemoveInsertedMedia={removeInsertedMedia}
+              onAddAsset={addAsset}
+              getAsset={boundGetAsset}
+              hasActiveStyle={this.state.styleActive}
+              setActiveStyle={() => this.setState({ styleActive: true })}
+              setInactiveStyle={() => this.setState({ styleActive: false })}
+              resolveWidget={resolveWidget}
+              getEditorComponents={getEditorComponents}
+              ref={processControlRef && partial(processControlRef, field)}
+              controlRef={controlRef}
+              editorControl={ConnectedEditorControl}
+              query={query}
+              loadEntry={loadEntry}
+              queryHits={queryHits}
+              clearSearch={clearSearch}
+              clearFieldErrors={clearFieldErrors}
+              isFetching={isFetching}
+              fieldsErrors={fieldsErrors}
+              onValidateObject={onValidateObject}
+              t={t}
+            />
+            {fieldHint && (
+              <ControlHint active={this.state.styleActive} error={!!errors}>
+                {fieldHint}
+              </ControlHint>
             )}
-        </ControlErrorsList>
-        <label
-          className={cx(
-            styles.label,
-            { [styles.labelActive]: this.state.styleActive },
-            { [styles.labelError]: !!errors },
-          )}
-          htmlFor={fieldName + uniqueFieldId}
-        >
-          {field.get('label')}
-        </label>
-        <Widget
-          classNameWrapper={cx(
-            styles.widget,
-            { [styles.widgetActive]: this.state.styleActive },
-            { [styles.widgetError]: !!errors },
-          )}
-          classNameWidget={styles.widget}
-          classNameWidgetActive={styles.widgetActive}
-          classNameLabel={styles.label}
-          classNameLabelActive={styles.labelActive}
-          controlComponent={widget.control}
-          field={field}
-          uniqueFieldId={uniqueFieldId}
-          value={value}
-          mediaPaths={mediaPaths}
-          metadata={metadata}
-          onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
-          onValidate={onValidate && partial(onValidate, fieldName)}
-          onOpenMediaLibrary={openMediaLibrary}
-          onClearMediaControl={clearMediaControl}
-          onRemoveMediaControl={removeMediaControl}
-          onRemoveInsertedMedia={removeInsertedMedia}
-          onAddAsset={addAsset}
-          getAsset={boundGetAsset}
-          hasActiveStyle={this.state.styleActive}
-          setActiveStyle={() => this.setState({ styleActive: true })}
-          setInactiveStyle={() => this.setState({ styleActive: false })}
-          resolveWidget={resolveWidget}
-          getEditorComponents={getEditorComponents}
-          ref={processControlRef && partial(processControlRef, fieldName)}
-          editorControl={ConnectedEditorControl}
-          query={query}
-          queryHits={queryHits}
-          clearSearch={clearSearch}
-          isFetching={isFetching}
-        />
-        {fieldHint && (
-          <ControlHint active={this.state.styleActive} error={!!errors}>
-            {fieldHint}
-          </ControlHint>
+          </ControlContainer>
         )}
-      </ControlContainer>
+      </ClassNames>
     );
   }
 }
@@ -258,7 +317,12 @@ const mapDispatchToProps = {
   removeInsertedMedia,
   addAsset,
   query,
+  loadEntry: (collectionName, slug) => (dispatch, getState) => {
+    const collection = getState().collections.get(collectionName);
+    return loadEntry(collection, slug)(dispatch, getState);
+  },
   clearSearch,
+  clearFieldErrors,
 };
 
 const ConnectedEditorControl = connect(
@@ -266,6 +330,6 @@ const ConnectedEditorControl = connect(
   mapDispatchToProps,
   null,
   { withRef: true },
-)(EditorControl);
+)(translate()(EditorControl));
 
 export default ConnectedEditorControl;

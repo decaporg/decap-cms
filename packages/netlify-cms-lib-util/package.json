@@ -1,9 +1,10 @@
 {
   "name": "netlify-cms-lib-util",
   "description": "Shared utilities for Netlify CMS.",
-  "version": "2.0.5",
+  "version": "2.4.0-beta.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-lib-util.js",
   "license": "MIT",
   "keywords": [
@@ -11,20 +12,16 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
-    "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "localforage": "^1.4.2"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "js-sha256": "^0.9.0",
+    "localforage": "^1.7.3"
   },
   "peerDependencies": {
     "immutable": "^3.7.6",
-    "lodash": "^4.13.1"
+    "lodash": "^4.17.11"
   }
 }

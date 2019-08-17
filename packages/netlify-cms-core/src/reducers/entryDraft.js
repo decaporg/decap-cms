@@ -5,6 +5,9 @@ import {
   DRAFT_DISCARD,
   DRAFT_CHANGE_FIELD,
   DRAFT_VALIDATION_ERRORS,
+  DRAFT_CLEAR_ERRORS,
+  DRAFT_LOCAL_BACKUP_RETRIEVED,
+  DRAFT_CREATE_FROM_LOCAL_BACKUP,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
@@ -50,8 +53,22 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
       });
+    case DRAFT_CREATE_FROM_LOCAL_BACKUP:
+      // Local Backup
+      return state.withMutations(state => {
+        const backupEntry = state.get('localBackup');
+        state.delete('localBackup');
+        state.set('entry', backupEntry);
+        state.setIn(['entry', 'newRecord'], !backupEntry.get('path'));
+        state.set('mediaFiles', List());
+        state.set('fieldsMetaData', Map());
+        state.set('fieldsErrors', Map());
+        state.set('hasChanged', true);
+      });
     case DRAFT_DISCARD:
       return initialState;
+    case DRAFT_LOCAL_BACKUP_RETRIEVED:
+      return state.set('localBackup', fromJS(action.payload.entry));
     case DRAFT_CHANGE_FIELD:
       return state.withMutations(state => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
@@ -61,10 +78,14 @@ const entryDraftReducer = (state = Map(), action) => {
 
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
-        return state.deleteIn(['fieldsErrors', action.payload.field]);
+        return state.deleteIn(['fieldsErrors', action.payload.uniquefieldId]);
       } else {
-        return state.setIn(['fieldsErrors', action.payload.field], action.payload.errors);
+        return state.setIn(['fieldsErrors', action.payload.uniquefieldId], action.payload.errors);
       }
+
+    case DRAFT_CLEAR_ERRORS: {
+      return state.set('fieldsErrors', Map());
+    }
 
     case ENTRY_PERSIST_REQUEST:
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {

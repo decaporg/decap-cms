@@ -4,7 +4,7 @@
  */
 import { once } from 'lodash';
 import { getMediaLibrary } from 'Lib/registry';
-import store from 'Redux';
+import store from 'ReduxStore';
 import { createMediaLibrary, insertMedia } from 'Actions/mediaLibrary';
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {

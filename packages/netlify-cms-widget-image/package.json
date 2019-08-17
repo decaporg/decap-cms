@@ -1,10 +1,11 @@
 {
   "name": "netlify-cms-widget-image",
   "description": "Widget for uploading images in Netlify CMS.",
-  "version": "2.0.5",
+  "version": "2.3.3",
   "homepage": "https://www.netlifycms.org/docs/widgets/#image",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-widget-image.js",
   "license": "MIT",
   "keywords": [
@@ -17,26 +18,17 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
-    "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
-  },
-  "dependencies": {
-    "netlify-cms-widget-file": "^2.0.5"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.6"
-  },
-  "localExternals": [
-    "netlify-cms-widget-file"
-  ]
+    "netlify-cms-ui-default": "^2.6.0",
+    "netlify-cms-widget-file": "^2.4.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
 }

@@ -3,6 +3,199 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.4...netlify-cms-ui-default@2.7.0-beta.0) (2019-07-24)
+
+
+### Features
+
+* **backend-github:** Open Authoring ([#2430](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2430)) ([edf0a3a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/edf0a3a))
+
+
+
+
+
+## [2.6.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.3...netlify-cms-ui-default@2.6.4) (2019-07-24)
+
+
+### Bug Fixes
+
+* **ui:** typos in color vars ([#2444](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2444)) ([d260161](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/d260161))
+
+
+
+
+
+## [2.6.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.3-beta.0...netlify-cms-ui-default@2.6.3) (2019-06-14)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+## [2.6.3-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.2...netlify-cms-ui-default@2.6.3-beta.0) (2019-05-15)
+
+
+### Bug Fixes
+
+* **widget-markdown:** keep markdown widget dropdowns on top ([#2326](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2326)) ([5f807d7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/5f807d7))
+
+
+
+
+
+## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.2-beta.0...netlify-cms-ui-default@2.6.2) (2019-04-10)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+## [2.6.2-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.1...netlify-cms-ui-default@2.6.2-beta.0) (2019-04-05)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.1-beta.1...netlify-cms-ui-default@2.6.1) (2019-03-29)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+## [2.6.1-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.1-beta.0...netlify-cms-ui-default@2.6.1-beta.1) (2019-03-26)
+
+
+### Bug Fixes
+
+* export on netlify-cms and maps on esm ([#2244](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2244)) ([6ffd13b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/6ffd13b))
+
+
+
+
+
+## [2.6.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.0...netlify-cms-ui-default@2.6.1-beta.0) (2019-03-25)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.5.0...netlify-cms-ui-default@2.6.0) (2019-03-22)
+
+
+### Features
+
+* add ES module builds ([#2215](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2215)) ([d142b32](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/d142b32))
+
+
+
+
+
+# [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.5.0-beta.0...netlify-cms-ui-default@2.5.0) (2019-03-22)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+# [2.5.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.4.1-beta.0...netlify-cms-ui-default@2.5.0-beta.0) (2019-03-21)
+
+
+### Features
+
+* provide usable UMD builds for all packages ([#2141](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2141)) ([82cc794](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/82cc794))
+
+
+
+
+
+## [2.4.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.4.1-alpha.0...netlify-cms-ui-default@2.4.1-beta.0) (2019-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-aria-menubutton to v6 ([#2195](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2195)) ([e8d3db1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/e8d3db1))
+
+
+### Features
+
+* upgrade to Emotion 10 ([#2166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2166)) ([ccef446](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/ccef446))
+
+
+
+
+
+## [2.4.1-alpha.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.4.0...netlify-cms-ui-default@2.4.1-alpha.0) (2019-03-14)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.3.0...netlify-cms-ui-default@2.4.0) (2019-02-26)
+
+
+### Features
+
+* **netlify-cms-widget-relation:** use react-select and add support for multiple entries ([#1936](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1936)) ([518f6fb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/518f6fb))
+
+
+
+
+
+# [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.2.0...netlify-cms-ui-default@2.3.0) (2019-02-08)
+
+
+### Features
+
+* **workflow:** add deploy preview links ([#2028](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2028)) ([15d221d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/15d221d))
+
+
+
+
+
+# [2.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.1.1...netlify-cms-ui-default@2.2.0) (2018-12-27)
+
+
+### Features
+
+* **netlify-cms-widget-list:** add variable type definitions to list widget ([#1857](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1857)) ([8ddc168](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/8ddc168))
+
+
+
+
+
+## [2.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.1.0...netlify-cms-ui-default@2.1.1) (2018-11-29)
+
+
+### Bug Fixes
+
+* **a11y:** correct label "for" references to fields ([#1904](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1904)) ([955f94f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/955f94f))
+
+
+
+
+
+# [2.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.0.6...netlify-cms-ui-default@2.1.0) (2018-11-12)
+
+
+### Features
+
+* allow custom logo on auth page ([#1818](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1818)) ([c6ae1e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/c6ae1e8))
+
+
+
+
+
 <a name="2.0.6"></a>
 ## [2.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.0.5...netlify-cms-ui-default@2.0.6) (2018-08-27)
 

@@ -1,17 +1,15 @@
+/** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectGlobal } from 'react-emotion';
+import { jsx, css } from '@emotion/core';
+import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
-import dateTimeStyles from 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
-
-injectGlobal`
-  ${dateTimeStyles}
-`;
 
 export default class DateControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
+    forID: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
@@ -20,7 +18,27 @@ export default class DateControl extends React.Component {
     includeTime: PropTypes.bool,
   };
 
-  format = this.props.field.get('format');
+  getFormats() {
+    const { field, includeTime } = this.props;
+    const format = field.get('format');
+
+    // dateFormat and timeFormat are strictly for modifying
+    // input field with the date/time pickers
+    const dateFormat = field.get('dateFormat');
+    // show time-picker? false hides it, true shows it using default format
+    let timeFormat = field.get('timeFormat');
+    if (typeof timeFormat === 'undefined') {
+      timeFormat = !!includeTime;
+    }
+
+    return {
+      format,
+      dateFormat,
+      timeFormat,
+    };
+  }
+
+  formats = this.getFormats();
 
   componentDidMount() {
     const { value } = this.props;
@@ -30,7 +48,9 @@ export default class DateControl extends React.Component {
      * empty string means the value is intentionally blank.
      */
     if (!value && value !== '') {
-      this.handleChange(new Date());
+      setTimeout(() => {
+        this.handleChange(new Date());
+      }, 0);
     }
   }
 
@@ -40,8 +60,6 @@ export default class DateControl extends React.Component {
     moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
 
   handleChange = datetime => {
-    const { onChange } = this.props;
-
     /**
      * Set the date only if it is valid.
      */
@@ -49,12 +67,15 @@ export default class DateControl extends React.Component {
       return;
     }
 
+    const { onChange } = this.props;
+    const { format } = this.formats;
+
     /**
      * Produce a formatted string only if a format is set in the config.
      * Otherwise produce a date object.
      */
-    if (this.format) {
-      const formattedValue = moment(datetime).format(this.format);
+    if (format) {
+      const formattedValue = moment(datetime).format(format);
       onChange(formattedValue);
     } else {
       const value = moment.isMoment(datetime) ? datetime.toDate() : datetime;
@@ -79,16 +100,24 @@ export default class DateControl extends React.Component {
   };
 
   render() {
-    const { includeTime, value, classNameWrapper, setActiveStyle } = this.props;
+    const { forID, value, classNameWrapper, setActiveStyle } = this.props;
+    const { format, dateFormat, timeFormat } = this.formats;
     return (
-      <DateTime
-        timeFormat={!!includeTime}
-        value={moment(value, this.format)}
-        onChange={this.handleChange}
-        onFocus={setActiveStyle}
-        onBlur={this.onBlur}
-        inputProps={{ className: classNameWrapper }}
-      />
+      <div
+        css={css`
+          ${reactDateTimeStyles};
+        `}
+      >
+        <DateTime
+          dateFormat={dateFormat}
+          timeFormat={timeFormat}
+          value={moment(value, format)}
+          onChange={this.handleChange}
+          onFocus={setActiveStyle}
+          onBlur={this.onBlur}
+          inputProps={{ className: classNameWrapper, id: forID }}
+        />
+      </div>
     );
   }
 }

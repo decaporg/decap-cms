@@ -30,10 +30,12 @@ import iconMedia from './media.svg';
 import iconMediaAlt from './media-alt.svg';
 import iconNetlify from './netlify.svg';
 import iconNetlifyCms from './netlify-cms-logo.svg';
+import iconNewTab from './new-tab.svg';
 import iconPage from './page.svg';
 import iconPages from './pages.svg';
 import iconPagesAlt from './pages-alt.svg';
 import iconQuote from './quote.svg';
+import iconRefresh from './refresh.svg';
 import iconScroll from './scroll.svg';
 import iconSearch from './search.svg';
 import iconSettings from './settings.svg';
@@ -76,10 +78,12 @@ const images = {
   'media-alt': iconMediaAlt,
   netlify: iconNetlify,
   'netlify-cms': iconNetlifyCms,
+  'new-tab': iconNewTab,
   page: iconPage,
   pages: iconPages,
   'pages-alt': iconPagesAlt,
   quote: iconQuote,
+  refresh: iconRefresh,
   scroll: iconScroll,
   search: iconSearch,
   settings: iconSettings,

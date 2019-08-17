@@ -26,7 +26,7 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
   `);
 
   if (allMarkdown.errors) {
-    console.error(allMarkdown.errors);
+    console.error(allMarkdown.errors); // eslint-disable-line no-console
     throw Error(allMarkdown.errors);
   }
 

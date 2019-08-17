@@ -9,6 +9,7 @@ import collections from './collections';
 import search from './search';
 import mediaLibrary from './mediaLibrary';
 import medias, * as fromMedias from './medias';
+import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 
 const reducers = {
@@ -23,6 +24,7 @@ const reducers = {
   entryDraft,
   mediaLibrary,
   medias,
+  deploys,
   globalUI,
 };
 
@@ -37,6 +39,9 @@ export const selectEntry = (state, collection, slug) =>
 export const selectEntries = (state, collection) =>
   fromEntries.selectEntries(state.entries, collection);
 
+export const selectPublishedSlugs = (state, collection) =>
+  fromEntries.selectPublishedSlugs(state.entries, collection);
+
 export const selectSearchedEntries = state => {
   const searchItems = state.search.get('entryIds');
   return (
@@ -47,14 +52,27 @@ export const selectSearchedEntries = state => {
   );
 };
 
+export const selectDeployPreview = (state, collection, slug) =>
+  fromDeploys.selectDeployPreview(state.deploys, collection, slug);
+
 export const selectUnpublishedEntry = (state, collection, slug) =>
   fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);
 
 export const selectUnpublishedEntriesByStatus = (state, status) =>
   fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
 
+export const selectUnpublishedSlugs = (state, collection) =>
+  fromEditorialWorkflow.selectUnpublishedSlugs(state.editorialWorkflow, collection);
+
 export const selectIntegration = (state, collection, hook) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);
 
-export const getAsset = (state, path) =>
-  fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);
+export const getAsset = (state, path) => {
+  /**
+   * If an external media library is in use, just return the path.
+   */
+  if (state.mediaLibrary.get('externalLibrary')) {
+    return path;
+  }
+  return fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);
+};

@@ -1,5 +1,6 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
+import { stripIndent } from 'common-tags';
 import { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
@@ -39,7 +40,7 @@ export default class GitLab {
     return this.authenticate(user);
   }
 
-  authenticate(state) {
+  async authenticate(state) {
     this.token = state.token;
     this.api = new API({
       token: this.token,
@@ -47,15 +48,25 @@ export default class GitLab {
       repo: this.repo,
       api_root: this.api_root,
     });
-    return this.api.user().then(user =>
-      this.api.hasWriteAccess(user).then(isCollab => {
-        // Unauthorized user
-        if (!isCollab)
-          throw new Error('Your GitLab user account does not have access to this repo.');
-        // Authorized user
-        return Object.assign({}, user, { token: state.token });
-      }),
-    );
+    const user = await this.api.user();
+    const isCollab = await this.api.hasWriteAccess(user).catch(error => {
+      error.message = stripIndent`
+        Repo "${this.repo}" not found.
+
+        Please ensure the repo information is spelled correctly.
+
+        If the repo is private, make sure you're logged into a GitLab account with access.
+      `;
+      throw error;
+    });
+
+    // Unauthorized user
+    if (!isCollab) {
+      throw new Error('Your GitLab user account does not have access to this repo.');
+    }
+
+    // Authorized user
+    return { ...user, token: state.token };
   }
 
   logout() {
@@ -132,22 +143,31 @@ export default class GitLab {
   }
 
   getMedia() {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-
     return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
       files.map(({ id, name, path }) => {
-        const getBlobPromise = () =>
-          new Promise((resolve, reject) =>
-            sem.take(() =>
-              this.api
-                .readFile(path, id, { parseText: false })
-                .then(resolve, reject)
-                .finally(() => sem.leave()),
-            ),
-          );
-
-        return { id, name, getBlobPromise, path };
+        return { id, name, path, displayURL: { id, name, path } };
       }),
+    );
+  }
+
+  getMediaDisplayURL(displayURL) {
+    this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
+    const { id, name, path } = displayURL;
+    return new Promise((resolve, reject) =>
+      this._mediaDisplayURLSem.take(() =>
+        this.api
+          .readFile(path, id, { parseText: false })
+          .then(blob => {
+            // svgs are returned with mimetype "text/plain" by gitlab
+            if (blob.type === 'text/plain' && name.match(/\.svg$/i)) {
+              return new window.Blob([blob], { type: 'image/svg+xml' });
+            }
+            return blob;
+          })
+          .then(blob => URL.createObjectURL(blob))
+          .then(resolve, reject)
+          .finally(() => this._mediaDisplayURLSem.leave()),
+      ),
     );
   }
 
@@ -158,8 +178,7 @@ export default class GitLab {
   async persistMedia(mediaFile, options = {}) {
     await this.api.persistFiles([mediaFile], options);
     const { value, path, fileObj } = mediaFile;
-    const getBlobPromise = () => Promise.resolve(fileObj);
-    return { name: value, size: fileObj.size, getBlobPromise, path: trimStart(path, '/') };
+    return { name: value, size: fileObj.size, path: trimStart(path, '/') };
   }
 
   deleteFile(path, commitMessage, options) {

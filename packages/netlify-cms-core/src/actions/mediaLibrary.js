@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { currentBackend } from 'src/backend';
+import { getBlobSHA } from 'netlify-cms-lib-util';
+import { currentBackend } from 'coreSrc/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
@@ -63,8 +64,8 @@ export function openMediaLibrary(payload = {}) {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
-      const { controlID: id, value, config = Map(), forImage } = payload;
-      mediaLibrary.show({ id, value, config: config.toJS(), imagesOnly: forImage });
+      const { controlID: id, value, config = Map(), allowMultiple, forImage } = payload;
+      mediaLibrary.show({ id, value, config: config.toJS(), allowMultiple, imagesOnly: forImage });
     }
     dispatch({ type: MEDIA_LIBRARY_OPEN, payload });
   };
@@ -119,7 +120,11 @@ export function loadMedia(opts = {}) {
           backend
             .getMedia()
             .then(files => dispatch(mediaLoaded(files)))
-            .catch(error => dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed())),
+            .catch(
+              error =>
+                console.error(error) ||
+                dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed()),
+            ),
         ),
       );
     }, delay);
@@ -153,13 +158,20 @@ export function persistMedia(file, opts = {}) {
     dispatch(mediaPersisting());
 
     try {
+      const id = await getBlobSHA(file);
       const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
       if (!integration) {
         const asset = await backend.persistMedia(state.config, assetProxy);
-        return dispatch(mediaPersisted(asset));
+        const displayURL = asset.displayURL || URL.createObjectURL(file);
+        return dispatch(mediaPersisted({ id, displayURL, ...asset }));
       }
-      return dispatch(mediaPersisted(assetProxy.asset, { privateUpload }));
+      return dispatch(
+        mediaPersisted(
+          { id, displayURL: URL.createObjectURL(file), ...assetProxy.asset },
+          { privateUpload },
+        ),
+      );
     } catch (error) {
       console.error(error);
       dispatch(
@@ -221,19 +233,38 @@ export function deleteMedia(file, opts = {}) {
 }
 
 export function loadMediaDisplayURL(file) {
-  return async dispatch => {
-    const { getBlobPromise, id } = file;
-
-    if (id && getBlobPromise) {
-      try {
-        dispatch(mediaDisplayURLRequest(id));
-        const blob = await getBlobPromise();
-        const newURL = window.URL.createObjectURL(blob);
+  return async (dispatch, getState) => {
+    const { displayURL, id, url } = file;
+    const state = getState();
+    const displayURLState = state.mediaLibrary.getIn(['displayURLs', id], Map());
+    if (
+      !id ||
+      // displayURL is used by most backends; url (like urlIsPublicPath) is used exclusively by the
+      // assetStore integration. Only the assetStore uses URLs which can actually be inserted into
+      // an entry - other backends create a domain-relative URL using the public_folder from the
+      // config and the file's name.
+      (!displayURL && !url) ||
+      displayURLState.get('url') ||
+      displayURLState.get('isFetching') ||
+      displayURLState.get('err')
+    ) {
+      return Promise.resolve();
+    }
+    if (typeof url === 'string' || typeof displayURL === 'string') {
+      dispatch(mediaDisplayURLRequest(id));
+      dispatch(mediaDisplayURLSuccess(id, displayURL));
+    }
+    try {
+      const backend = currentBackend(state.config);
+      dispatch(mediaDisplayURLRequest(id));
+      const newURL = await backend.getMediaDisplayURL(displayURL);
+      if (newURL) {
         dispatch(mediaDisplayURLSuccess(id, newURL));
-        return newURL;
-      } catch (err) {
-        dispatch(mediaDisplayURLFailure(id, err));
+      } else {
+        throw new Error('No display URL was returned!');
       }
+    } catch (err) {
+      dispatch(mediaDisplayURLFailure(id, err));
     }
   };
 }
@@ -303,6 +334,7 @@ export function mediaDisplayURLSuccess(key, url) {
 }
 
 export function mediaDisplayURLFailure(key, err) {
+  console.error(err);
   return {
     type: MEDIA_DISPLAY_URL_FAILURE,
     payload: { key, err },

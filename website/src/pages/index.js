@@ -1,10 +1,11 @@
-import React, { Fragment } from 'react';
-import moment from 'moment';
+import React from 'react';
 import { graphql } from 'gatsby';
 
 import Layout from '../components/layout';
 import Markdownify from '../components/markdownify';
 import VideoEmbed from '../components/video-embed';
+import WhatsNew from '../components/whats-new';
+import Release from '../components/release';
 
 import '../css/imports/hero.css';
 import '../css/imports/cta.css';
@@ -12,21 +13,18 @@ import '../css/imports/whatsnew.css';
 import '../css/imports/editors.css';
 import '../css/imports/community.css';
 
-const Features = ({ items }) => (
-  <Fragment>
-    {items.map(item => (
-      <div className="feature" key={item.feature}>
-        {item.imgpath && <img src={require(`../img/${item.imgpath}`)} />}
-        <h3>
-          <Markdownify source={item.feature} />
-        </h3>
-        <p>
-          <Markdownify source={item.description} />
-        </p>
-      </div>
-    ))}
-  </Fragment>
-);
+const Features = ({ items }) =>
+  items.map(item => (
+    <div className="feature" key={item.feature}>
+      {item.imgpath && <img src={require(`../img/${item.imgpath}`)} alt="" />}
+      <h3>
+        <Markdownify source={item.feature} />
+      </h3>
+      <p>
+        <Markdownify source={item.description} />
+      </p>
+    </div>
+  ));
 
 const HomePage = ({ data }) => {
   const landing = data.landing.childDataYaml;
@@ -68,30 +66,18 @@ const HomePage = ({ data }) => {
           </div>
         </section>
 
-        <section className="whatsnew">
-          <div className="contained">
-            <ol>
-              {updates.updates.slice(0, 3).map(node => (
-                <a
-                  href={`https://github.com/netlify/netlify-cms/releases/tag/${node.version}`}
-                  key={node.version}
-                >
-                  <li>
-                    <div className="update-metadata">
-                      <span className="update-version">{node.version}</span>
-                      <span className="update-date">
-                        {moment(node.date).format('MMMM D, YYYY')}
-                      </span>
-                    </div>
-                    <span className="update-description">
-                      <Markdownify source={node.description} />
-                    </span>
-                  </li>
-                </a>
-              ))}
-            </ol>
-          </div>
-        </section>
+        <WhatsNew>
+          {updates.updates.slice(0, 3).map((node, idx) => (
+            <Release
+              key={idx}
+              version={node.version}
+              versionPrevious={updates.updates[idx + 1].version}
+              date={node.date}
+              description={node.description}
+              url={node.url}
+            />
+          ))}
+        </WhatsNew>
 
         <section className="editors">
           <div className="contained">
@@ -142,6 +128,7 @@ export const pageQuery = graphql`
           date
           description
           version
+          url
         }
       }
     }

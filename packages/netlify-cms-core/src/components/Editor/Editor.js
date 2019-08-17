@@ -3,6 +3,8 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Loader } from 'netlify-cms-ui-default';
+import { translate } from 'react-polyglot';
+import { debounce } from 'lodash';
 import history from 'Routing/history';
 import { logoutUser } from 'Actions/auth';
 import {
@@ -15,17 +17,21 @@ import {
   changeDraftFieldValidation,
   persistEntry,
   deleteEntry,
+  persistLocalBackup,
+  loadLocalBackup,
+  retrieveLocalBackup,
+  deleteLocalBackup,
 } from 'Actions/entries';
 import {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
 } from 'Actions/editorialWorkflow';
+import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
-import { selectEntry, selectUnpublishedEntry, getAsset } from 'Reducers';
+import { selectEntry, selectUnpublishedEntry, selectDeployPreview, getAsset } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
-import { status } from 'Constants/publishModes';
-import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 
@@ -55,6 +61,7 @@ class Editor extends React.Component {
     newEntry: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
     hasWorkflow: PropTypes.bool,
+    useForkWorkflow: PropTypes.bool,
     unpublishedEntry: PropTypes.bool,
     isModification: PropTypes.bool,
     collectionEntriesLoaded: PropTypes.bool,
@@ -63,12 +70,15 @@ class Editor extends React.Component {
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
     loadEntries: PropTypes.func.isRequired,
+    deployPreview: ImmutablePropTypes.map,
+    loadDeployPreview: PropTypes.func.isRequired,
     currentStatus: PropTypes.string,
     user: ImmutablePropTypes.map.isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }),
     hasChanged: PropTypes.bool,
+    t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -79,8 +89,12 @@ class Editor extends React.Component {
       loadEntry,
       createEmptyDraft,
       loadEntries,
+      retrieveLocalBackup,
       collectionEntriesLoaded,
+      t,
     } = this.props;
+
+    retrieveLocalBackup(collection, slug);
 
     if (newEntry) {
       createEmptyDraft(collection);
@@ -88,7 +102,7 @@ class Editor extends React.Component {
       loadEntry(collection, slug);
     }
 
-    const leaveMessage = 'Are you sure you want to leave this page?';
+    const leaveMessage = t('editor.editor.onLeavePage');
 
     this.exitBlocker = event => {
       if (this.props.entryDraft.get('hasChanged')) {
@@ -120,6 +134,7 @@ class Editor extends React.Component {
         return leaveMessage;
       }
     };
+
     const unblock = history.block(navigationBlocker);
 
     /**
@@ -136,6 +151,9 @@ class Editor extends React.Component {
       ) {
         return;
       }
+
+      this.deleteBackup();
+
       unblock();
       this.unlisten();
     });
@@ -157,7 +175,21 @@ class Editor extends React.Component {
       this.props.loadEntry(this.props.collection, newSlug);
     }
 
+    if (!prevProps.localBackup && this.props.localBackup) {
+      const confirmLoadBackup = window.confirm(this.props.t('editor.editor.confirmLoadBackup'));
+      if (confirmLoadBackup) {
+        this.props.loadLocalBackup();
+      } else {
+        this.deleteBackup();
+      }
+    }
+
+    if (this.props.hasChanged) {
+      this.createBackup(this.props.entryDraft.get('entry'), this.props.collection);
+    }
+
     if (prevProps.entry === this.props.entry) return;
+
     const { entry, newEntry, fields, collection } = this.props;
 
     if (entry && !entry.get('isFetching') && !entry.get('error')) {
@@ -175,9 +207,14 @@ class Editor extends React.Component {
   }
 
   componentWillUnmount() {
+    this.createBackup.flush();
     this.props.discardDraft();
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
+
+  createBackup = debounce(function(entry, collection) {
+    this.props.persistLocalBackup(entry, collection);
+  }, 2000);
 
   createDraft = (entry, metadata) => {
     if (entry) this.props.createDraftFromEntry(entry, metadata);
@@ -190,14 +227,21 @@ class Editor extends React.Component {
       collection,
       slug,
       currentStatus,
+      t,
     } = this.props;
     if (entryDraft.get('hasChanged')) {
-      window.alert('You have unsaved changes, please save before updating status.');
+      window.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
       return;
     }
     const newStatus = status.get(newStatusName);
     updateUnpublishedEntryStatus(collection.get('name'), slug, currentStatus, newStatus);
   };
+
+  deleteBackup() {
+    const { deleteLocalBackup, collection, slug, newEntry } = this.props;
+    this.createBackup.cancel();
+    deleteLocalBackup(collection, !newEntry && slug);
+  }
 
   handlePersistEntry = async (opts = {}) => {
     const { createNew = false } = opts;
@@ -213,6 +257,8 @@ class Editor extends React.Component {
 
     await persistEntry(collection);
 
+    this.deleteBackup(collection, slug);
+
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
       createEmptyDraft(collection);
@@ -223,44 +269,33 @@ class Editor extends React.Component {
 
   handlePublishEntry = async (opts = {}) => {
     const { createNew = false } = opts;
-    const {
-      publishUnpublishedEntry,
-      entryDraft,
-      collection,
-      slug,
-      currentStatus,
-      loadEntry,
-    } = this.props;
+    const { publishUnpublishedEntry, entryDraft, collection, slug, currentStatus, t } = this.props;
     if (currentStatus !== status.last()) {
-      window.alert('Please update status to "Ready" before publishing.');
+      window.alert(t('editor.editor.onPublishingNotReady'));
       return;
     } else if (entryDraft.get('hasChanged')) {
-      window.alert('You have unsaved changes, please save before publishing.');
+      window.alert(t('editor.editor.onPublishingWithUnsavedChanges'));
       return;
-    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
+    } else if (!window.confirm(t('editor.editor.onPublishing'))) {
       return;
     }
 
     await publishUnpublishedEntry(collection.get('name'), slug);
 
+    this.deleteBackup();
+
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
-    } else {
-      loadEntry(collection, slug);
     }
   };
 
   handleDeleteEntry = () => {
-    const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
+    const { entryDraft, newEntry, collection, deleteEntry, slug, t } = this.props;
     if (entryDraft.get('hasChanged')) {
-      if (
-        !window.confirm(
-          'Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?',
-        )
-      ) {
+      if (!window.confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
         return;
       }
-    } else if (!window.confirm('Are you sure you want to delete this published entry?')) {
+    } else if (!window.confirm(t('editor.editor.onDeletePublishedEntry'))) {
       return;
     }
     if (newEntry) {
@@ -269,6 +304,7 @@ class Editor extends React.Component {
 
     setTimeout(async () => {
       await deleteEntry(collection, slug);
+      this.deleteBackup();
       return navigateToCollection(collection.get('name'));
     }, 0);
   };
@@ -281,22 +317,19 @@ class Editor extends React.Component {
       deleteUnpublishedEntry,
       loadEntry,
       isModification,
+      t,
     } = this.props;
     if (
       entryDraft.get('hasChanged') &&
-      !window.confirm(
-        'This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?',
-      )
+      !window.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))
     ) {
       return;
-    } else if (
-      !window.confirm(
-        'All unpublished changes to this entry will be deleted. Do you still want to delete?',
-      )
-    ) {
+    } else if (!window.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);
+
+    this.deleteBackup();
 
     if (isModification) {
       loadEntry(collection, slug);
@@ -318,12 +351,19 @@ class Editor extends React.Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
+      useForkWorkflow,
       unpublishedEntry,
       newEntry,
       isModification,
       currentStatus,
       logoutUser,
+      deployPreview,
+      loadDeployPreview,
+      slug,
+      t,
     } = this.props;
+
+    const isPublished = !newEntry && !unpublishedEntry;
 
     if (entry && entry.get('error')) {
       return (
@@ -336,7 +376,7 @@ class Editor extends React.Component {
       entryDraft.get('entry') === undefined ||
       (entry && entry.get('isFetching'))
     ) {
-      return <Loader active>Loading entry...</Loader>;
+      return <Loader active>{t('editor.editor.loadingEntry')}</Loader>;
     }
 
     return (
@@ -359,18 +399,21 @@ class Editor extends React.Component {
         hasChanged={hasChanged}
         displayUrl={displayUrl}
         hasWorkflow={hasWorkflow}
+        useForkWorkflow={useForkWorkflow}
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
+        deployPreview={deployPreview}
+        loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
       />
     );
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections, entryDraft, auth, config, entries } = state;
+  const { collections, entryDraft, auth, config, entries, globalUI } = state;
   const slug = ownProps.match.params.slug;
   const collection = collections.get(ownProps.match.params.name);
   const collectionName = collection.get('name');
@@ -382,10 +425,13 @@ function mapStateToProps(state, ownProps) {
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const useForkWorkflow = globalUI.get('useForkWorkflow', false);
   const isModification = entryDraft.getIn(['entry', 'isModification']);
-  const collectionEntriesLoaded = !!entries.getIn(['entities', collectionName]);
+  const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const deployPreview = selectDeployPreview(state, collectionName, slug);
+  const localBackup = entryDraft.get('localBackup');
   return {
     collection,
     collections,
@@ -399,9 +445,12 @@ function mapStateToProps(state, ownProps) {
     hasChanged,
     displayUrl,
     hasWorkflow,
+    useForkWorkflow,
     isModification,
     collectionEntriesLoaded,
     currentStatus,
+    deployPreview,
+    localBackup,
   };
 }
 
@@ -412,6 +461,11 @@ export default connect(
     changeDraftFieldValidation,
     loadEntry,
     loadEntries,
+    loadDeployPreview,
+    loadLocalBackup,
+    retrieveLocalBackup,
+    persistLocalBackup,
+    deleteLocalBackup,
     createDraftFromEntry,
     createEmptyDraft,
     discardDraft,
@@ -422,4 +476,4 @@ export default connect(
     deleteUnpublishedEntry,
     logoutUser,
   },
-)(withWorkflow(Editor));
+)(withWorkflow(translate()(Editor)));

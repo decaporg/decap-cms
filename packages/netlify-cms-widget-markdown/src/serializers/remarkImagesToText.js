@@ -15,8 +15,8 @@ export default function remarkImagesToText() {
         child.children.length === 1 &&
         child.children[0].type === 'image'
       ) {
-        const { alt = '', url = '', title = '' } = child.children[0];
-        const value = `![${alt}](${url}${title ? ' title' : ''})`;
+        const { alt, url, title } = child.children[0];
+        const value = `![${alt || ''}](${url || ''}${title ? ` "${title}"` : ''})`;
         child.children = [{ type: 'text', value }];
       }
       return child;

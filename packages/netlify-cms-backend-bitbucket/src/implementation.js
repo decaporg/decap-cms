@@ -1,5 +1,6 @@
 import semaphore from 'semaphore';
 import { flow, trimStart } from 'lodash';
+import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   filterByPropExtension,
@@ -14,7 +15,7 @@ import API from './API';
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 // Implementation wrapper class
-export default class Bitbucket {
+export default class BitbucketBackend {
   constructor(config, options = {}) {
     this.config = config;
     this.options = {
@@ -61,7 +62,7 @@ export default class Bitbucket {
     return this.authenticate(user);
   }
 
-  authenticate(state) {
+  async authenticate(state) {
     this.token = state.token;
     this.refreshToken = state.refresh_token;
     this.api = new API({
@@ -71,13 +72,25 @@ export default class Bitbucket {
       api_root: this.api_root,
     });
 
-    return this.api.user().then(user =>
-      this.api.hasWriteAccess(user).then(isCollab => {
-        if (!isCollab)
-          throw new Error('Your BitBucker user account does not have access to this repo.');
-        return Object.assign({}, user, { token: state.token, refresh_token: state.refresh_token });
-      }),
-    );
+    const user = await this.api.user();
+    const isCollab = await this.api.hasWriteAccess(user).catch(error => {
+      error.message = stripIndent`
+        Repo "${this.repo}" not found.
+
+        Please ensure the repo information is spelled correctly.
+
+        If the repo is private, make sure you're logged into a Bitbucket account with access.
+      `;
+      throw error;
+    });
+
+    // Unauthorized user
+    if (!isCollab) {
+      throw new Error('Your BitBucket user account does not have access to this repo.');
+    }
+
+    // Autorized user
+    return { ...user, token: state.token, refresh_token: state.refresh_token };
   }
 
   getRefreshedAccessToken() {
@@ -206,22 +219,24 @@ export default class Bitbucket {
   }
 
   getMedia() {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+    return this.api
+      .listAllFiles(this.config.get('media_folder'))
+      .then(files =>
+        files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
+      );
+  }
 
-    return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
-      files.map(({ id, name, path }) => {
-        const getBlobPromise = () =>
-          new Promise((resolve, reject) =>
-            sem.take(() =>
-              this.api
-                .readFile(path, id, { parseText: false })
-                .then(resolve, reject)
-                .finally(() => sem.leave()),
-            ),
-          );
-
-        return { id, name, getBlobPromise, path };
-      }),
+  getMediaDisplayURL(displayURL) {
+    this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
+    const { id, path } = displayURL;
+    return new Promise((resolve, reject) =>
+      this._mediaDisplayURLSem.take(() =>
+        this.api
+          .readFile(path, id, { parseText: false })
+          .then(blob => URL.createObjectURL(blob))
+          .then(resolve, reject)
+          .finally(() => this._mediaDisplayURLSem.leave()),
+      ),
     );
   }
 
@@ -232,8 +247,7 @@ export default class Bitbucket {
   async persistMedia(mediaFile, options = {}) {
     await this.api.persistFiles([mediaFile], options);
     const { value, path, fileObj } = mediaFile;
-    const getBlobPromise = () => Promise.resolve(fileObj);
-    return { name: value, size: fileObj.size, getBlobPromise, path: trimStart(path, '/k') };
+    return { name: value, size: fileObj.size, path: trimStart(path, '/k') };
   }
 
   deleteFile(path, commitMessage, options) {

@@ -1,10 +1,11 @@
 {
   "name": "netlify-cms-backend-test",
   "description": "Development testing backend for Netlify CMS",
-  "version": "2.0.6",
+  "version": "2.2.3",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
+  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-backend-test.js",
   "keywords": [
     "netlify",
@@ -13,27 +14,20 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "watch": "webpack -w",
-    "develop": "npm run watch",
-    "build": "cross-env NODE_ENV=production webpack"
-  },
-  "dependencies": {
-    "uuid": "^3.3.2"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
-    "emotion": "^9.2.6",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "immutable": "^3.8.2",
-    "lodash": "^4.17.10",
-    "netlify-cms-lib-util": "^2.0.0",
-    "netlify-cms-ui-default": "^2.0.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
-    "react-emotion": "^9.2.6",
-    "react-immutable-proptypes": "^2.1.0"
+    "lodash": "^4.17.11",
+    "netlify-cms-lib-util": "^2.3.0",
+    "netlify-cms-ui-default": "^2.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
+    "react-immutable-proptypes": "^2.1.0",
+    "uuid": "^3.3.2"
   }
 }

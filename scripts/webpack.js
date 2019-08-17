@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const { toGlobalName, externals } = require('./externals');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -12,9 +13,15 @@ const rules = () => ({
     use: {
       loader: 'babel-loader',
       options: {
-        configFile: path.resolve(`${__dirname}/../babel.config.js`),
+        rootMode: 'upward',
+        // configFile: path.resolve(`${__dirname}/../babel.config.js`),
       },
     },
+  }),
+  css: () => ({
+    test: /\.css$/,
+    include: [/(ol|redux-notifications|react-datetime)/],
+    use: ['to-string-loader', 'css-loader'],
   }),
   svg: () => ({
     test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
@@ -51,16 +58,55 @@ const stats = () => {
   };
 };
 
-const getConfig = () => ({
+const umdPath = path.resolve(process.cwd(), 'dist');
+const umdDirPath = path.resolve(process.cwd(), 'dist/umd');
+const cjsPath = path.resolve(process.cwd(), 'dist/cjs');
+const targetOutputs = () => {
+  console.log(`Building [${pkg.name}, library: ${toGlobalName(pkg.name)}]`);
+  return {
+    umd: {
+      path: umdPath,
+      filename: `${pkg.name}.js`,
+      library: toGlobalName(pkg.name),
+      libraryTarget: 'umd',
+      libraryExport: toGlobalName(pkg.name),
+      umdNamedDefine: true,
+      globalObject: 'window',
+    },
+    umddir: {
+      path: umdDirPath,
+      filename: `index.js`,
+      library: toGlobalName(pkg.name),
+      libraryTarget: 'umd',
+      libraryExport: toGlobalName(pkg.name),
+      umdNamedDefine: true,
+      globalObject: 'window',
+    },
+    cjs: {
+      path: cjsPath,
+      filename: 'index.js',
+      library: toGlobalName(pkg.name),
+      libraryTarget: 'window',
+    },
+  };
+};
+
+const umdExternals = Object.keys(pkg.peerDependencies || {}).reduce((previous, key) => {
+  if (!externals[key]) throw `Missing external [${key}]`;
+  previous[key] = externals[key] || null;
+  return previous;
+}, {});
+
+/**
+ * Use [getConfig({ target:'umd' }), getConfig({ target:'cjs' })] for
+ *  getting multiple configs and add the new output in targetOutputs if needed.
+ * Default: umd
+ */
+const baseConfig = ({ target = isProduction ? 'umd' : 'umddir' } = {}) => ({
+  context: process.cwd(),
   mode: isProduction ? 'production' : 'development',
   entry: './src/index.js',
-  output: {
-    path: process.cwd(),
-    filename: pkg.main,
-    library: pkg.name,
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
-  },
+  output: targetOutputs()[target],
   module: {
     rules: Object.values(rules()).map(rule => rule()),
   },
@@ -71,15 +117,24 @@ const getConfig = () => ({
   /**
    * Exclude peer dependencies from package bundles.
    */
-  externals: (context, request, cb) => {
-    const localExternals = pkg.localExternals || [];
-    const peerDeps = Object.keys(pkg.peerDependencies || {});
-    const externals = isProduction ? peerDeps : [...localExternals, ...peerDeps];
-    const isPeerDep = dep => new RegExp(`^${dep}($|/)`).test(request);
-    return externals.some(isPeerDep) ? cb(null, request) : cb();
-  },
+  externals:
+    target.substr(0, 3) === 'umd'
+      ? umdExternals
+      : (context, request, cb) => {
+          const externals = Object.keys(pkg.peerDependencies || {});
+          const isPeerDep = dep => new RegExp(`^${dep}($|/)`).test(request);
+          return externals.some(isPeerDep) ? cb(null, request) : cb();
+        },
   stats: stats(),
 });
+
+const getConfig = ({ baseOnly = false } = {}) => {
+  if (baseOnly) {
+    // netlify-cms build
+    return baseConfig({ target: 'umd' });
+  }
+  return [baseConfig({ target: 'umd' })];
+};
 
 module.exports = {
   getConfig,

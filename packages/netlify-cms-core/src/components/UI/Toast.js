@@ -1,16 +1,24 @@
+/** @jsx jsx */
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css, injectGlobal, cx } from 'react-emotion';
+import { jsx, css, Global } from '@emotion/core';
+import { translate } from 'react-polyglot';
 import reduxNotificationsStyles from 'redux-notifications/lib/styles.css';
 import { shadows, colors, lengths } from 'netlify-cms-ui-default';
 
-injectGlobal`
-  ${reduxNotificationsStyles};
+const ReduxNotificationsGlobalStyles = () => (
+  <Global
+    styles={css`
+      ${reduxNotificationsStyles};
 
-  .notif__container {
-    z-index: 10000;
-  }
-`;
+      .notif__container {
+        z-index: 10000;
+        white-space: pre-wrap;
+      }
+    `}
+  />
+);
 
 const styles = {
   toast: css`
@@ -40,11 +48,17 @@ const styles = {
   `,
 };
 
-export const Toast = ({ kind, message }) => (
-  <div className={cx(styles.toast, styles[kind])}>{message}</div>
+const Toast = ({ kind, message, t }) => (
+  <div css={[styles.toast, styles[kind]]}>
+    <ReduxNotificationsGlobalStyles />
+    {t(message.key, { details: message.details })}
+  </div>
 );
 
 Toast.propTypes = {
   kind: PropTypes.oneOf(['info', 'success', 'warning', 'danger']).isRequired,
-  message: PropTypes.string,
+  message: PropTypes.object,
+  t: PropTypes.func.isRequired,
 };
+
+export default translate()(Toast);

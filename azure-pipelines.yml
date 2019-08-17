@@ -1,0 +1,27 @@
+jobs:
+- job: ci
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  strategy:
+    matrix:
+      node_8_x:
+        node_version: 8.x
+      node_10_x:
+        node_version: 10.x
+
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(node_version)
+
+  - script: |
+      apt-get update && apt-get install -y libgconf-2-4
+      node --version
+      npm --version
+      yarn --version
+      yarn
+      yarn bootstrap
+      yarn test:all:ci
+    env:
+      CYPRESS_RECORD_KEY: $(cypressRecordKey)

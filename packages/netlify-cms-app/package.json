@@ -1,0 +1,60 @@
+{
+  "name": "netlify-cms-app",
+  "description": "An extensible, open source, Git-based, React CMS for static sites. Reusable congiuration with React as peer.",
+  "version": "2.9.8-beta.0",
+  "homepage": "https://www.netlifycms.org",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "main": "dist/netlify-cms-app.js",
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "keywords": [
+    "netlify",
+    "cms",
+    "content editing",
+    "static site generators",
+    "jamstack"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "netlify-cms-backend-bitbucket": "^2.4.1",
+    "netlify-cms-backend-git-gateway": "^2.4.5",
+    "netlify-cms-backend-github": "^2.5.0-beta.0",
+    "netlify-cms-backend-gitlab": "^2.3.2",
+    "netlify-cms-backend-test": "^2.2.3",
+    "netlify-cms-core": "^2.13.0-beta.0",
+    "netlify-cms-editor-component-image": "^2.4.2",
+    "netlify-cms-lib-auth": "^2.2.4",
+    "netlify-cms-lib-util": "^2.4.0-beta.0",
+    "netlify-cms-ui-default": "^2.7.0-beta.0",
+    "netlify-cms-widget-boolean": "^2.2.3",
+    "netlify-cms-widget-date": "^2.3.3",
+    "netlify-cms-widget-datetime": "^2.2.3",
+    "netlify-cms-widget-file": "^2.4.3",
+    "netlify-cms-widget-image": "^2.3.3",
+    "netlify-cms-widget-list": "^2.3.4",
+    "netlify-cms-widget-map": "^1.3.3",
+    "netlify-cms-widget-markdown": "^2.5.1",
+    "netlify-cms-widget-number": "^2.3.4",
+    "netlify-cms-widget-object": "^2.2.3",
+    "netlify-cms-widget-relation": "^2.4.1",
+    "netlify-cms-widget-select": "^2.4.3",
+    "netlify-cms-widget-string": "^2.2.3",
+    "netlify-cms-widget-text": "^2.2.3",
+    "prop-types": "^15.7.2",
+    "react-immutable-proptypes": "^2.1.0",
+    "uuid": "^3.3.2"
+  },
+  "peerDependencies": {
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
+  }
+}

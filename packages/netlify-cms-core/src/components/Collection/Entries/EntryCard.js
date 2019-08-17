@@ -1,9 +1,11 @@
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+import { compileStringTemplate, parseDateFromEntry } from 'Lib/stringTemplate';
+import { selectIdentifier } from 'Reducers/collections';
 
 const ListCard = styled.li`
   ${components.card};
@@ -89,9 +91,17 @@ const EntryCard = ({
   viewStyle = VIEW_STYLE_LIST,
 }) => {
   const label = entry.get('label');
-  const title = label || entry.getIn(['data', inferedFields.titleField]);
+  const entryData = entry.get('data');
+  const defaultTitle = label || entryData.get(inferedFields.titleField);
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
-  let image = entry.getIn(['data', inferedFields.imageField]);
+  const summary = collection.get('summary');
+  const date = parseDateFromEntry(entry, collection) || null;
+  const identifier = entryData.get(selectIdentifier(collection));
+  const title = summary
+    ? compileStringTemplate(summary, date, identifier, entryData)
+    : defaultTitle;
+
+  let image = entryData.get(inferedFields.imageField);
   image = resolvePath(image, publicFolder);
   if (image) {
     image = encodeURI(image);

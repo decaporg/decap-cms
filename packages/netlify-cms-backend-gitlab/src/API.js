@@ -119,19 +119,23 @@ export default class API {
       .map(str => str.trim().split(';'))
       .map(([linkStr, keyStr]) => [
         keyStr.match(/rel="(.*?)"/)[1],
-        unsentRequest.fromURL(linkStr.trim().match(/<(.*?)>/)[1]),
+        unsentRequest.fromURL(
+          linkStr
+            .trim()
+            .match(/<(.*?)>/)[1]
+            .replace(/\+/g, '%20'),
+        ),
       ])
       .update(list => Map(list));
     const actions = links
       .keySeq()
-      .flatMap(
-        key =>
-          (key === 'prev' && index > 0) ||
-          (key === 'next' && index < pageCount) ||
-          (key === 'first' && index > 0) ||
-          (key === 'last' && index < pageCount)
-            ? [key]
-            : [],
+      .flatMap(key =>
+        (key === 'prev' && index > 0) ||
+        (key === 'next' && index < pageCount) ||
+        (key === 'first' && index > 0) ||
+        (key === 'last' && index < pageCount)
+          ? [key]
+          : [],
       );
     return Cursor.create({
       actions,

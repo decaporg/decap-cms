@@ -1,6 +1,5 @@
-import { css, injectGlobal } from 'react-emotion';
-
-export { fonts, colorsRaw, colors, lengths, components, buttons, shadows, borders, transitions };
+import React from 'react';
+import { css, Global } from '@emotion/core';
 
 /**
  * Font Stacks
@@ -53,7 +52,7 @@ const colorsRaw = {
 const colors = {
   statusDraftText: colorsRaw.purple,
   statusDraftBackground: colorsRaw.purpleLight,
-  statusReviewText: colorsRaw.Brown,
+  statusReviewText: colorsRaw.brown,
   statusReviewBackground: colorsRaw.yellow,
   statusReadyText: colorsRaw.green,
   statusReadyBackground: colorsRaw.greenLight,
@@ -78,6 +77,8 @@ const colors = {
   errorBackground: colorsRaw.redLight,
   textFieldBorder: '#dfdfe3',
   controlLabel: '#7a8291',
+  checkerboardLight: '#f2f2f2',
+  checkerboardDark: '#e6e6e6',
 };
 
 const lengths = {
@@ -87,7 +88,8 @@ const lengths = {
   richTextEditorMinHeight: '300px',
   borderWidth: '2px',
   topCardWidth: '682px',
-  pageMargin: '84px 18px',
+  pageMargin: '28px 18px',
+  objectWidgetTopBarContainerPadding: '0 14px 14px',
 };
 
 const borders = {
@@ -110,6 +112,31 @@ const shadows = {
   `,
   dropDeep: css`
     box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.25);
+  `,
+  inset: css`
+    box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.3);
+  `,
+};
+
+const gradients = {
+  checkerboard: `
+    linear-gradient(
+      45deg,
+      ${colors.checkerboardDark} 25%,
+      transparent 25%,
+      transparent 75%,
+      ${colors.checkerboardDark} 75%,
+      ${colors.checkerboardDark}
+    )
+  `,
+};
+
+const effects = {
+  checkerboard: css`
+    background-color: ${colors.checkerboardLight};
+    background-size: 16px 16px;
+    background-position: 0 0, 8px 8px;
+    background-image: ${gradients.checkerboard}, ${gradients.checkerboard};
   `,
 };
 
@@ -171,7 +198,7 @@ const buttons = {
 
     &:focus,
     &:hover {
-      color: ${colors.white};
+      color: ${colorsRaw.white};
       background-color: #555a65;
     }
   `,
@@ -264,7 +291,7 @@ const components = {
     margin-top: 8px;
   `,
   objectWidgetTopBarContainer: css`
-    padding: 0 14px 14px;
+    padding: ${lengths.objectWidgetTopBarContainerPadding};
   `,
   dropdownList: css`
     ${shadows.dropDeep};
@@ -297,73 +324,148 @@ const components = {
   `,
 };
 
-injectGlobal`
-  *, *:before, *:after {
-    box-sizing: border-box;
-  }
+const reactSelectStyles = {
+  control: styles => ({
+    ...styles,
+    border: 0,
+    boxShadow: 'none',
+    padding: '9px 0 9px 12px',
+  }),
+  option: (styles, state) => ({
+    ...styles,
+    backgroundColor: state.isSelected
+      ? `${colors.active}`
+      : state.isFocused
+      ? `${colors.activeBackground}`
+      : 'transparent',
+    paddingLeft: '22px',
+  }),
+  menu: styles => ({ ...styles, right: 0, zIndex: 2 }),
+  container: styles => ({ ...styles, padding: '0 !important' }),
+  indicatorSeparator: (styles, state) =>
+    state.hasValue && state.selectProps.isClearable
+      ? { ...styles, backgroundColor: `${colors.textFieldBorder}` }
+      : { display: 'none' },
+  dropdownIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
+  clearIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
+  multiValue: styles => ({
+    ...styles,
+    backgroundColor: colors.background,
+  }),
+  multiValueLabel: styles => ({
+    ...styles,
+    color: colors.textLead,
+    fontWeight: 500,
+  }),
+  multiValueRemove: styles => ({
+    ...styles,
+    color: colors.controlLabel,
+    ':hover': {
+      color: colors.errorText,
+      backgroundColor: colors.errorBackground,
+    },
+  }),
+};
 
-  :focus {
-    outline: -webkit-focus-ring-color auto ${lengths.borderRadius};
-  }
+const GlobalStyles = () => (
+  <Global
+    styles={css`
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
 
-  /**
-   * Don't show outlines if the user is utilizing mouse rather than keyboard.
-   */
-  [data-whatintent="mouse"] *:focus {
-    outline: none;
-  }
+      :focus {
+        outline: -webkit-focus-ring-color auto ${lengths.borderRadius};
+      }
 
+      /**
+       * Don't show outlines if the user is utilizing mouse rather than keyboard.
+       */
+      [data-whatintent='mouse'] *:focus {
+        outline: none;
+      }
 
-  input {
-    border: 0;
-  }
+      input {
+        border: 0;
+      }
 
-  body {
-    font-family: ${fonts.primary};
-    font-weight: normal;
-    background-color: ${colors.background};
-    color: ${colors.text};
-    margin: 0;
-  }
+      body {
+        font-family: ${fonts.primary};
+        font-weight: normal;
+        background-color: ${colors.background};
+        color: ${colors.text};
+        margin: 0;
+      }
 
-  ul, ol {
-    padding-left: 0;
-  }
+      ul,
+      ol {
+        padding-left: 0;
+      }
 
-  h1, h2, h3, h4, h5, h6, p {
-    font-family: ${fonts.primary};
-    color: ${colors.textLead};
-    font-size: 15px;
-    line-height: 1.5;
-    margin-top: 0;
-  }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p {
+        font-family: ${fonts.primary};
+        color: ${colors.textLead};
+        font-size: 15px;
+        line-height: 1.5;
+        margin-top: 0;
+      }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 500;
-  }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-weight: 500;
+      }
 
-  h1 {
-    font-size: 24px;
-    letter-spacing: 0.4px;
-    color: ${colors.textLead};
-  }
+      h1 {
+        font-size: 24px;
+        letter-spacing: 0.4px;
+        color: ${colors.textLead};
+      }
 
-  a,
-  button {
-    font-size: 14px;
-    font-weight: 500;
-  }
+      a,
+      button {
+        font-size: 14px;
+        font-weight: 500;
+      }
 
-  a {
-    color: ${colors.text};
-    text-decoration: none;
-  }
+      a {
+        color: ${colors.text};
+        text-decoration: none;
+      }
 
-  img {
-    max-width: 100%;
-  }
+      img {
+        max-width: 100%;
+      }
 
-  textarea {
-    resize: none;
-  }
-`;
+      textarea {
+        resize: none;
+      }
+    `}
+  />
+);
+
+export {
+  fonts,
+  colorsRaw,
+  colors,
+  lengths,
+  components,
+  buttons,
+  shadows,
+  borders,
+  transitions,
+  effects,
+  reactSelectStyles,
+  GlobalStyles,
+};

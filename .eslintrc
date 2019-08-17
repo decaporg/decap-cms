@@ -12,11 +12,25 @@
   },
   "globals": {
     "NETLIFY_CMS_VERSION": false,
+    "NETLIFY_CMS_APP_VERSION": false,
     "NETLIFY_CMS_CORE_VERSION": false,
     "CMS_ENV": false
   },
   "rules": {
     "no-console": [0],
-    "react/prop-types": [1]
-  }
+    "react/prop-types": [1],
+    "no-duplicate-imports": "error",
+    "emotion/jsx-import": "error",
+    "emotion/no-vanilla": "error",
+    "emotion/import-from-emotion": "error",
+    "emotion/styled-import": "error"
+  },
+  "plugins": [
+    "emotion",
+  ],
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
 }

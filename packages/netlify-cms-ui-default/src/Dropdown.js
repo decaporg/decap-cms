@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'react-emotion';
+import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
 import { buttons, components } from './styles';
 import Icon from './Icon';
@@ -36,7 +37,7 @@ const DropdownList = styled.ul`
   top: 0;
   left: 0;
   min-width: 100%;
-  z-index: 1;
+  z-index: 2;
 
   ${props => css`
     width: ${props.width};

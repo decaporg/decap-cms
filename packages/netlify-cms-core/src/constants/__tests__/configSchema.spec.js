@@ -84,7 +84,7 @@ describe('config', () => {
           media_folder: 'baz',
           collections: [],
         });
-      }).toThrowError("'collections' should NOT have less than 1 items");
+      }).toThrowError("'collections' should NOT have fewer than 1 items");
     });
 
     it('should throw if collections is an array with a single null element in config', () => {

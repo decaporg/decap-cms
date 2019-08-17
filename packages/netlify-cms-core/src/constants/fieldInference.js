@@ -27,6 +27,14 @@ export const INFERABLE_FIELDS = {
     fallbackToFirstField: false,
     showError: false,
   },
+  date: {
+    type: 'datetime',
+    secondaryTypes: ['date'],
+    synonyms: ['date', 'publishDate', 'publish_date'],
+    defaultPreview: value => value,
+    fallbackToFirstField: false,
+    showError: false,
+  },
   description: {
     type: 'string',
     secondaryTypes: ['text', 'markdown'],

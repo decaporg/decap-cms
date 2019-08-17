@@ -1,0 +1,30 @@
+{
+  "name": "netlify-cms-media-library-cloudinary",
+  "description": "Cloudinary integration for Netlify CMS",
+  "version": "1.3.3",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-media-library-cloudinary.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "cloudinary",
+    "image",
+    "images",
+    "media",
+    "assets",
+    "files",
+    "uploads"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "peerDependencies": {
+    "netlify-cms-lib-util": "^2.1.3-beta.0"
+  }
+}

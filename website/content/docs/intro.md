@@ -15,6 +15,19 @@ At its core, Netlify CMS is an open-source React app that acts as a wrapper for 
 * **Flexible content types:** Specify an unlimited number of content types with custom fields.
 * **Fully extensible:** Create custom-styled previews, UI widgets, and editor plugins.
 
+## Netlify CMS vs. Netlify
+
+[Netlify.com](https://www.netlify.com/) is a platform you can use to automatically build, deploy, serve, and manage your frontend sites and web apps. It also provides a variety of other features like form processing, serverless functions, and split testing. Not all Netlify sites use Netlify CMS, and not all sites using Netlify CMS are on Netlify.
+
+The folks at Netlify created Netlify CMS to fill a gap in the static site generation pipeline. There were some great proprietary headless CMS options, but no real contenders that were open source and extensible—that could turn into a community-built ecosystem like WordPress or Drupal. For that reason, Netlify CMS is _made_ to be community-driven, and has never been locked to the Netlify platform (despite the name).
+
+With this in mind, you can:
+
+* Use Netlify CMS without Netlify and deploy your site where you always have, hooking up your own CI, site hosting, CDN, etc.
+* Use Netlify without Netlify CMS and edit your static site in your code editor.
+* Or, use them together and have a fully-working CMS-enabled site with [one click](../start-with-a-template/)!
+
+If you hook up Netlify CMS to your website, you're basically adding a tool for content editors to make commits to your site repository without touching code or learning Git.
 
 ## Find out more
 
@@ -22,4 +35,4 @@ At its core, Netlify CMS is an open-source React app that acts as a wrapper for 
 - [Start with a template](../start-with-a-template/) to make a Netlify CMS-enabled site of your own.
 - Configure your existing site by following a [tutorial](../add-to-your-site/) or checking [configuration options](../configuration-options).
 - Ask questions and share ideas in the Netlify CMS community on [Gitter](https://gitter.im/netlify/netlifycms).
-- Get involved in new developments and become a [contributor](https://docs-starters--netlify-cms-www.netlify.com/docs/contributor-guide/).
+- Get involved in new developments and become a [contributor](../contributor-guide/).

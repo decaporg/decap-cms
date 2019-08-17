@@ -113,16 +113,22 @@ export const selectAllowDeletion = collection =>
 export const selectTemplateName = (collection, slug) =>
   selectors[collection.get('type')].templateName(collection, slug);
 export const selectIdentifier = collection => {
-  const fieldNames = collection.get('fields').map(field => field.get('name'));
-  return IDENTIFIER_FIELDS.find(id => fieldNames.find(name => name.toLowerCase().trim() === id));
-  // There must be a field whose `name` matches one of the IDENTIFIER_FIELDS.
+  const identifier = collection.get('identifier_field');
+  const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
+  const fieldNames = collection.get('fields', []).map(field => field.get('name'));
+  return identifierFields.find(id =>
+    fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()),
+  );
 };
 export const selectInferedField = (collection, fieldName) => {
+  if (fieldName === 'title' && collection.get('identifier_field')) {
+    return selectIdentifier(collection);
+  }
   const inferableField = INFERABLE_FIELDS[fieldName];
   const fields = collection.get('fields');
   let field;
 
-  // If colllection has no fields or fieldName is not defined within inferables list, return null
+  // If collection has no fields or fieldName is not defined within inferables list, return null
   if (!fields || !inferableField) return null;
   // Try to return a field of the specified type with one of the synonyms
   const mainTypeFields = fields

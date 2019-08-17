@@ -1,9 +1,10 @@
 .communitysupport {
   @neat-row;
   background-color: white;
-  padding: $xl 0 $large 0;
+  padding: $large 0 $large 0;
 
   @media screen and (min-width: $desktop) {
+    padding: $xl 0 $large 0;
     h2 {
       text-align: center;
       margin-bottom: $large;

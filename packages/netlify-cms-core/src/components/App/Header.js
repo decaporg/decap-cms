@@ -1,7 +1,10 @@
+/** @jsx jsx */
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css } from 'react-emotion';
+import styled from '@emotion/styled';
+import { jsx, css } from '@emotion/core';
+import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
 import {
   Icon,
@@ -21,19 +24,20 @@ const styles = {
   `,
 };
 
-const AppHeaderContainer = styled.header`
-  z-index: 300;
-`;
-
-const AppHeader = styled.div`
-  ${shadows.dropMain};
-  position: fixed;
-  width: 100%;
-  top: 0;
-  background-color: ${colors.foreground};
-  z-index: 300;
-  height: ${lengths.topBarHeight};
-`;
+const AppHeader = props => (
+  <header
+    css={css`
+      ${shadows.dropMain};
+      position: sticky;
+      width: 100%;
+      top: 0;
+      background-color: ${colors.foreground};
+      z-index: 300;
+      height: ${lengths.topBarHeight};
+    `}
+    {...props}
+  />
+);
 
 const AppHeaderContent = styled.div`
   display: flex;
@@ -99,7 +103,13 @@ const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   }
 `;
 
-export default class Header extends React.Component {
+const AppHeaderNavList = styled.ul`
+  display: flex;
+  margin: 0;
+  list-style: none;
+`;
+
+class Header extends React.Component {
   static propTypes = {
     user: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
@@ -108,6 +118,7 @@ export default class Header extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
+    t: PropTypes.func.isRequired,
   };
 
   handleCreatePostClick = collectionName => {
@@ -125,6 +136,7 @@ export default class Header extends React.Component {
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
+      t,
       showMediaButton,
     } = this.props;
 
@@ -133,57 +145,67 @@ export default class Header extends React.Component {
       .toList();
 
     return (
-      <AppHeaderContainer>
-        <AppHeader>
-          <AppHeaderContent>
-            <nav>
-              <AppHeaderNavLink
-                to="/"
-                activeClassName="header-link-active"
-                isActive={(match, location) => location.pathname.startsWith('/collections/')}
-              >
-                <Icon type="page" />
-                Content
-              </AppHeaderNavLink>
-              {hasWorkflow ? (
-                <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                  <Icon type="workflow" />
-                  Workflow
-                </AppHeaderNavLink>
-              ) : null}
-              {showMediaButton ? (
-                <AppHeaderButton onClick={openMediaLibrary}>
-                  <Icon type="media-alt" />
-                  Media
-                </AppHeaderButton>
-              ) : null}
-            </nav>
-            <AppHeaderActions>
-              {createableCollections.size > 0 && (
-                <Dropdown
-                  renderButton={() => <AppHeaderQuickNewButton>Quick add</AppHeaderQuickNewButton>}
-                  dropdownTopOverlap="30px"
-                  dropdownWidth="160px"
-                  dropdownPosition="left"
+      <AppHeader>
+        <AppHeaderContent>
+          <nav>
+            <AppHeaderNavList>
+              <li>
+                <AppHeaderNavLink
+                  to="/"
+                  activeClassName="header-link-active"
+                  isActive={(match, location) => location.pathname.startsWith('/collections/')}
                 >
-                  {createableCollections.map(collection => (
-                    <DropdownItem
-                      key={collection.get('name')}
-                      label={collection.get('label_singular') || collection.get('label')}
-                      onClick={() => this.handleCreatePostClick(collection.get('name'))}
-                    />
-                  ))}
-                </Dropdown>
+                  <Icon type="page" />
+                  {t('app.header.content')}
+                </AppHeaderNavLink>
+              </li>
+              {hasWorkflow && (
+                <li>
+                  <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
+                    <Icon type="workflow" />
+                    {t('app.header.workflow')}
+                  </AppHeaderNavLink>
+                </li>
               )}
-              <SettingsDropdown
-                displayUrl={displayUrl}
-                imageUrl={user.get('avatar_url')}
-                onLogoutClick={onLogoutClick}
-              />
-            </AppHeaderActions>
-          </AppHeaderContent>
-        </AppHeader>
-      </AppHeaderContainer>
+              {showMediaButton && (
+                <li>
+                  <AppHeaderButton onClick={openMediaLibrary}>
+                    <Icon type="media-alt" />
+                    {t('app.header.media')}
+                  </AppHeaderButton>
+                </li>
+              )}
+            </AppHeaderNavList>
+          </nav>
+          <AppHeaderActions>
+            {createableCollections.size > 0 && (
+              <Dropdown
+                renderButton={() => (
+                  <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
+                )}
+                dropdownTopOverlap="30px"
+                dropdownWidth="160px"
+                dropdownPosition="left"
+              >
+                {createableCollections.map(collection => (
+                  <DropdownItem
+                    key={collection.get('name')}
+                    label={collection.get('label_singular') || collection.get('label')}
+                    onClick={() => this.handleCreatePostClick(collection.get('name'))}
+                  />
+                ))}
+              </Dropdown>
+            )}
+            <SettingsDropdown
+              displayUrl={displayUrl}
+              imageUrl={user.get('avatar_url')}
+              onLogoutClick={onLogoutClick}
+            />
+          </AppHeaderActions>
+        </AppHeaderContent>
+      </AppHeader>
     );
   }
 }
+
+export default translate()(Header);

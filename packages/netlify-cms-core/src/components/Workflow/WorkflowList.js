@@ -1,8 +1,11 @@
+/** @jsx jsx */
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, cx } from 'react-emotion';
+import { jsx, css } from '@emotion/core';
+import styled from '@emotion/styled';
 import moment from 'moment';
+import { translate } from 'react-polyglot';
 import { colors, lengths } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
@@ -14,23 +17,23 @@ const WorkflowListContainer = styled.div`
   grid-template-columns: 33.3% 33.3% 33.3%;
 `;
 
+const WorkflowListContainerForkWorkflow = styled.div`
+  min-height: 60%;
+  display: grid;
+  grid-template-columns: 50% 50% 0%;
+`;
+
 const styles = {
-  column: css`
-    margin: 0 20px;
-    transition: background-color 0.5s ease;
-    border: 2px dashed transparent;
-    border-radius: 4px;
-    position: relative;
-
-    &:first-child {
-      margin-left: 0;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &:not(:first-child):not(:last-child) {
+  columnPosition: idx =>
+    (idx === 0 &&
+      css`
+        margin-left: 0;
+      `) ||
+    (idx === 2 &&
+      css`
+        margin-right: 0;
+      `) ||
+    css`
       &:before,
       &:after {
         content: '';
@@ -49,10 +52,27 @@ const styles = {
       &:after {
         right: -23px;
       }
-    }
+    `,
+  column: css`
+    margin: 0 20px;
+    transition: background-color 0.5s ease;
+    border: 2px dashed transparent;
+    border-radius: 4px;
+    position: relative;
+    height: 100%;
   `,
   columnHovered: css`
     border-color: ${colors.active};
+  `,
+  hiddenColumn: css`
+    display: none;
+  `,
+  hiddenRightBorder: css`
+    &:not(:first-child):not(:last-child) {
+      &:after {
+        display: none;
+      }
+    }
   `,
 };
 
@@ -96,14 +116,14 @@ const ColumnCount = styled.p`
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
 
-const getColumnHeaderText = columnName => {
+const getColumnHeaderText = (columnName, t) => {
   switch (columnName) {
     case 'draft':
-      return 'Drafts';
+      return t('workflow.workflowList.draftHeader');
     case 'pending_review':
-      return 'In Review';
+      return t('workflow.workflowList.inReviewHeader');
     case 'pending_publish':
-      return 'Ready';
+      return t('workflow.workflowList.readyHeader');
   }
 };
 
@@ -113,6 +133,8 @@ class WorkflowList extends React.Component {
     handleChangeStatus: PropTypes.func.isRequired,
     handlePublish: PropTypes.func.isRequired,
     handleDelete: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
+    isForkWorkflow: PropTypes.bool,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -123,30 +145,28 @@ class WorkflowList extends React.Component {
   };
 
   requestDelete = (collection, slug, ownStatus) => {
-    if (window.confirm('Are you sure you want to delete this entry?')) {
+    if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
 
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
-      window.alert(
-        `Only items with a "Ready" status can be published.
-
-Please drag the card to the "Ready" column to enable publishing.`,
-      );
+      window.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
       return;
-    } else if (!window.confirm('Are you sure you want to publish this entry?')) {
+    } else if (!window.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
       return;
     }
     this.props.handlePublish(collection, slug);
   };
 
+  // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
+    const { isForkWorkflow } = this.props;
     if (!entries) return null;
 
     if (!column) {
-      return entries.entrySeq().map(([currColumn, currEntries]) => (
+      return entries.entrySeq().map(([currColumn, currEntries], idx) => (
         <DropTarget
           namespace={DNDNamespace}
           key={currColumn}
@@ -154,12 +174,26 @@ Please drag the card to the "Ready" column to enable publishing.`,
         >
           {(connect, { isHovered }) =>
             connect(
-              <div className={cx(styles.column, { [styles.columnHovered]: isHovered })}>
-                <ColumnHeader name={currColumn}>{getColumnHeaderText(currColumn)}</ColumnHeader>
-                <ColumnCount>
-                  {currEntries.size} {currEntries.size === 1 ? 'entry' : 'entries'}
-                </ColumnCount>
-                {this.renderColumns(currEntries, currColumn)}
+              <div style={{ height: '100%' }}>
+                <div
+                  css={[
+                    styles.column,
+                    styles.columnPosition(idx),
+                    isHovered && styles.columnHovered,
+                    isForkWorkflow && currColumn === 'pending_publish' && styles.hiddenColumn,
+                    isForkWorkflow && currColumn === 'pending_review' && styles.hiddenRightBorder,
+                  ]}
+                >
+                  <ColumnHeader name={currColumn}>
+                    {getColumnHeaderText(currColumn, this.props.t)}
+                  </ColumnHeader>
+                  <ColumnCount>
+                    {this.props.t('workflow.workflowList.currentEntries', {
+                      smart_count: currEntries.size,
+                    })}
+                  </ColumnCount>
+                  {this.renderColumns(currEntries, currColumn)}
+                </div>
               </div>,
             )
           }
@@ -182,7 +216,7 @@ Please drag the card to the "Ready" column to enable publishing.`,
           return (
             <DragSource
               namespace={DNDNamespace}
-              key={slug}
+              key={`${collection}-${slug}`}
               slug={slug}
               collection={collection}
               ownStatus={ownStatus}
@@ -214,8 +248,11 @@ Please drag the card to the "Ready" column to enable publishing.`,
 
   render() {
     const columns = this.renderColumns(this.props.entries);
-    return <WorkflowListContainer>{columns}</WorkflowListContainer>;
+    const ListContainer = this.props.isForkWorkflow
+      ? WorkflowListContainerForkWorkflow
+      : WorkflowListContainer;
+    return <ListContainer>{columns}</ListContainer>;
   }
 }
 
-export default HTML5DragDrop(WorkflowList);
+export default HTML5DragDrop(translate()(WorkflowList));

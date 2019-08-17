@@ -1,7 +1,15 @@
+import constant from 'lodash/constant';
+import filter from 'lodash/fp/filter';
+import map from 'lodash/fp/map';
+import flow from 'lodash/flow';
 import zipObject from 'lodash/zipObject';
 
 export const filterPromises = (arr, filter) =>
-  Promise.all(arr.map(entry => filter(entry))).then(bits => arr.filter(() => bits.shift()));
+  Promise.all(arr.map(entry => Promise.resolve(entry).then(filter))).then(bits =>
+    arr.filter(() => bits.shift()),
+  );
+
+export const filterPromisesWith = filter => arr => filterPromises(arr, filter);
 
 export const resolvePromiseProperties = obj => {
   // Get the keys which represent promises
@@ -18,3 +26,10 @@ export const resolvePromiseProperties = obj => {
 };
 
 export const then = fn => p => Promise.resolve(p).then(fn);
+
+const filterPromiseSymbol = Symbol('filterPromiseSymbol');
+export const onlySuccessfulPromises = flow([
+  then(map(p => p.catch(constant(filterPromiseSymbol)))),
+  then(Promise.all.bind(Promise)),
+  then(filter(maybeValue => maybeValue !== filterPromiseSymbol)),
+]);

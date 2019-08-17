@@ -77,7 +77,7 @@
   h1,
   h2 {
     font-size: 36px;
-    line-height: 48px;
+    line-height: 1.4em;
 
     &.intro-headline {
       padding: 0 $small;
@@ -180,6 +180,18 @@
     @media (min-width: $xlarge) {
       margin-right: -120px !important;
     }
+  }
+
+  figure {
+    margin-left: 0;
+
+    .gatsby-highlight {
+      margin-top: -20px;
+    }
+  }
+
+  figcaption {
+    font-style: italic;
   }
 
   :not(pre) > code {

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled, { css, injectGlobal } from 'react-emotion';
+import { css, Global } from '@emotion/core';
+import styled from '@emotion/styled';
 import SplitPane from 'react-split-pane';
 import { colors, colorsRaw, components, transitions } from 'netlify-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
@@ -12,6 +13,7 @@ import EditorToggle from './EditorToggle';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
+const SPLIT_PANE_POSITION = 'cms.split-pane-position';
 
 const styles = {
   splitPane: css`
@@ -25,33 +27,33 @@ const styles = {
   `,
 };
 
-injectGlobal`
-  /**
-   * React Split Pane
-   */
-  .Resizer.vertical {
-    width: 21px;
-    cursor: col-resize;
-    position: relative;
-    transition: background-color ${transitions.main};
+const ReactSplitPaneGlobalStyles = () => (
+  <Global
+    styles={css`
+      .Resizer.vertical {
+        width: 21px;
+        cursor: col-resize;
+        position: relative;
+        transition: background-color ${transitions.main};
 
-    &:before {
-      content: '';
-      width: 1px;
-      height: 100%;
-      position: relative;
-      left: 10px;
-      background-color: ${colors.textFieldBorder};
-      display: block;
-    }
+        &:before {
+          content: '';
+          width: 1px;
+          height: 100%;
+          position: relative;
+          left: 10px;
+          background-color: ${colors.textFieldBorder};
+          display: block;
+        }
 
-    &:hover,
-    &:active {
-      background-color: ${colorsRaw.GrayLight};
-    }
-  }
-
-`;
+        &:hover,
+        &:active {
+          background-color: ${colorsRaw.GrayLight};
+        }
+      }
+    `}
+  />
+);
 
 const StyledSplitPane = styled(SplitPane)`
   ${styles.splitPane};
@@ -164,11 +166,14 @@ class EditorInterface extends Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
+      useForkWorkflow,
       hasUnpublishedChanges,
       isNewEntry,
       isModification,
       currentStatus,
       onLogoutClick,
+      loadDeployPreview,
+      deployPreview,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -193,9 +198,11 @@ class EditorInterface extends Component {
     const editorWithPreview = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div>
+          <ReactSplitPaneGlobalStyles />
           <StyledSplitPane
             maxSize={-100}
-            defaultSize="50%"
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
           >
@@ -234,11 +241,14 @@ class EditorInterface extends Component {
           displayUrl={displayUrl}
           collection={collection}
           hasWorkflow={hasWorkflow}
+          useForkWorkflow={useForkWorkflow}
           hasUnpublishedChanges={hasUnpublishedChanges}
           isNewEntry={isNewEntry}
           isModification={isModification}
           currentStatus={currentStatus}
           onLogoutClick={onLogoutClick}
+          loadDeployPreview={loadDeployPreview}
+          deployPreview={deployPreview}
         />
         <Editor>
           <ViewControls>
@@ -285,11 +295,14 @@ EditorInterface.propTypes = {
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,
+  useForkWorkflow: PropTypes.bool,
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,
   isModification: PropTypes.bool,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
+  deployPreview: ImmutablePropTypes.map,
+  loadDeployPreview: PropTypes.func.isRequired,
 };
 
 export default EditorInterface;

@@ -1,0 +1,212 @@
+import React from 'react';
+import { fromJS } from 'immutable';
+import { render, fireEvent } from 'react-testing-library';
+import 'react-testing-library/cleanup-after-each';
+import 'jest-dom/extend-expect';
+import { NetlifyCmsWidgetSelect } from '../';
+
+const SelectControl = NetlifyCmsWidgetSelect.controlComponent;
+
+const options = [
+  { value: 'foo', label: 'Foo' },
+  { value: 'bar', label: 'Bar' },
+  { value: 'baz', label: 'Baz' },
+];
+const stringOptions = ['foo', 'bar', 'baz'];
+
+class SelectController extends React.Component {
+  state = {
+    value: this.props.defaultValue,
+  };
+
+  handleOnChange = jest.fn(value => {
+    this.setState({ value });
+  });
+
+  componentDidUpdate() {
+    this.props.onStateChange(this.state);
+  }
+
+  render() {
+    return this.props.children({
+      value: this.state.value,
+      handleOnChange: this.handleOnChange,
+    });
+  }
+}
+
+function setup({ field, defaultValue }) {
+  let renderArgs;
+  const stateChangeSpy = jest.fn();
+  const setActiveSpy = jest.fn();
+  const setInactiveSpy = jest.fn();
+
+  const helpers = render(
+    <SelectController defaultValue={defaultValue} onStateChange={stateChangeSpy}>
+      {({ value, handleOnChange }) => {
+        renderArgs = { value, onChangeSpy: handleOnChange };
+        return (
+          <SelectControl
+            field={field}
+            value={value}
+            onChange={handleOnChange}
+            forID="basic-select"
+            classNameWrapper=""
+            setActiveStyle={setActiveSpy}
+            setInactiveStyle={setInactiveSpy}
+          />
+        );
+      }}
+    </SelectController>,
+  );
+
+  const input = helpers.container.querySelector('input');
+
+  return {
+    ...helpers,
+    ...renderArgs,
+    stateChangeSpy,
+    setActiveSpy,
+    setInactiveSpy,
+    input,
+  };
+}
+
+function clickClearButton(container) {
+  const allSvgs = container.querySelectorAll('svg');
+  const clear = allSvgs[allSvgs.length - 2];
+
+  fireEvent.mouseDown(clear, {
+    button: 0,
+  });
+}
+
+describe('Select widget', () => {
+  it('should call onChange with correct selectedItem', () => {
+    const field = fromJS({ options });
+    const { getByText, input, onChangeSpy } = setup({ field });
+
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.click(getByText('Foo'));
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(options[0].value);
+  });
+
+  it('should call onChange with null when no item is selected', () => {
+    const field = fromJS({ options, required: false });
+    const { input, onChangeSpy } = setup({ field, defaultValue: options[0].value });
+
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: 'Delete' });
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should call onChange with null when selection is cleared', () => {
+    const field = fromJS({ options, required: false });
+    const { onChangeSpy, container } = setup({ field, defaultValue: options[0].value });
+
+    clickClearButton(container);
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should respect default value', () => {
+    const field = fromJS({ options });
+    const { getByText } = setup({ field, defaultValue: options[2].value });
+
+    expect(getByText('Baz')).toBeInTheDocument();
+  });
+
+  it('should respect default value when options are string only', () => {
+    const field = fromJS({ options: stringOptions });
+    const { getByText } = setup({
+      field,
+      defaultValue: stringOptions[2],
+    });
+
+    expect(getByText('baz')).toBeInTheDocument();
+  });
+
+  describe('with multiple', () => {
+    it('should call onChange with correct selectedItem', () => {
+      const field = fromJS({ options, multiple: true });
+      const { getByText, input, onChangeSpy } = setup({ field });
+
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText('Foo'));
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText('Baz'));
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(2);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[0].value]));
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[0].value, options[2].value]));
+    });
+
+    it('should call onChange with correct selectedItem when item is removed', () => {
+      const field = fromJS({ options, multiple: true });
+      const { container, onChangeSpy } = setup({
+        field,
+        defaultValue: fromJS([options[1].value, options[2].value]),
+      });
+
+      fireEvent.click(container.querySelector('svg'), { button: 0 });
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[2].value]));
+    });
+
+    it('should call onChange with empty list when no item is selected', () => {
+      const field = fromJS({ options, multiple: true });
+      const { input, onChangeSpy } = setup({
+        field,
+        defaultValue: fromJS([options[1].value]),
+      });
+
+      fireEvent.focus(input);
+      fireEvent.keyDown(input, { key: 'Delete' });
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([]));
+    });
+
+    it('should call onChange with empty list when selection is cleared', () => {
+      const field = fromJS({ options, multiple: true });
+      const { container, onChangeSpy } = setup({
+        field,
+        defaultValue: fromJS([options[1].value]),
+      });
+
+      clickClearButton(container);
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([]));
+    });
+
+    it('should respect default value', () => {
+      const field = fromJS({ options, multiple: true });
+      const { getByText } = setup({
+        field,
+        defaultValue: fromJS([options[1].value, options[2].value]),
+      });
+
+      expect(getByText('Bar')).toBeInTheDocument();
+      expect(getByText('Baz')).toBeInTheDocument();
+    });
+
+    it('should respect default value when options are string only', () => {
+      const field = fromJS({ options: stringOptions, multiple: true });
+      const { getByText } = setup({
+        field,
+        defaultValue: fromJS([stringOptions[1], stringOptions[2]]),
+      });
+
+      expect(getByText('bar')).toBeInTheDocument();
+      expect(getByText('baz')).toBeInTheDocument();
+    });
+  });
+});

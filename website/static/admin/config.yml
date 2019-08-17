@@ -1,8 +1,9 @@
 backend:
   name: github
   repo: netlify/netlify-cms
-  branch: master
   squash_merges: true
+
+site_url: "https://www.netlifycms.org"
 
 publish_mode: editorial_workflow
 
@@ -14,23 +15,58 @@ collections: # A list of collections the CMS should be able to edit
     label: "Docs" # Used in the UI, ie.: "New Post"
     folder: "website/content/docs" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
+    preview_path: "docs/{{slug}}"
     fields: # The fields each document in this collection have
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Group", name: "group", widget: "string"}
       - {label: "Weight", name: "weight", widget: "number"}
       - {label: "Body", name: "body", widget: "markdown"}
+  - name: "widget_docs" # Used in routes, ie.: /admin/collections/:slug/edit
+    label: "Widget Docs" # Used in the UI, ie.: "New Post"
+    folder: "website/content/docs/widgets" # The path to the folder where the documents are stored
+    preview_path: "docs/widgets/{{title}}"
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - {label: "Name", name: "title"}
+      - {label: "Label", name: "label"}
+      - {label: "Body", name: "body", widget: "markdown"}
   - name: "blog"
     label: "Blog"
     label_singular: "Post"
-    folder: "website/site/content/blog"
+    folder: "website/content/blog"
+    preview_path: "blog/{{year}}/{{month}}/{{title}}"
     create: true
     fields:
       - {label: "Title", name: "title", widget: "string", tagname: "h1"}
       - {label: "Author", name: "author", widget: "string"}
       - {label: "Description (for blog list)", name: "description", widget: "text"}
       - {label: "Meta Description (defaults to Description)", name: "meta_description", widget: "text", required: false}
+      - {label: "Twitter Image", name: "twitter_image", widget: "image"}
       - {label: "Date", name: "date", widget: "date"}
       - {label: "Body", name: "body", widget: "markdown"}
+  - name: community
+    label: Community
+    files:
+      - name: community
+        label: Community
+        file: website/content/pages/community.md
+        preview_path: "community"
+        fields:
+          - {label: Title, name: title}
+          - {label: Headline, name: headline}
+          - {label: Subheading, name: subhead}
+          - label: Sections
+            name: sections
+            widget: list
+            fields:
+              - {name: title, label: Title}
+              - name: channels
+                label: Channels
+                widget: list
+                fields:
+                  - {name: title, label: Title}
+                  - {name: url, label: URL}
+                  - {name: description, label: Description}
   - name: updates
     label: Updates
     files:

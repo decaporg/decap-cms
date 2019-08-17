@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
+import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
 import {
   Dropdown,
@@ -54,12 +55,14 @@ class Workflow extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap,
     isEditorialWorkflow: PropTypes.bool.isRequired,
+    isForkWorkflow: PropTypes.bool,
     isFetching: PropTypes.bool,
     unpublishedEntries: ImmutablePropTypes.map,
     loadUnpublishedEntries: PropTypes.func.isRequired,
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
     deleteUnpublishedEntry: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -72,16 +75,18 @@ class Workflow extends Component {
   render() {
     const {
       isEditorialWorkflow,
+      isForkWorkflow,
       isFetching,
       unpublishedEntries,
       updateUnpublishedEntryStatus,
       publishUnpublishedEntry,
       deleteUnpublishedEntry,
       collections,
+      t,
     } = this.props;
 
     if (!isEditorialWorkflow) return null;
-    if (isFetching) return <Loader active>Loading Editorial Workflow Entries</Loader>;
+    if (isFetching) return <Loader active>{t('workflow.workflow.loading')}</Loader>;
     const reviewCount = unpublishedEntries.get('pending_review').size;
     const readyCount = unpublishedEntries.get('pending_publish').size;
 
@@ -89,12 +94,14 @@ class Workflow extends Component {
       <WorkflowContainer>
         <WorkflowTop>
           <WorkflowTopRow>
-            <WorkflowTopHeading>Editorial Workflow</WorkflowTopHeading>
+            <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
             <Dropdown
               dropdownWidth="160px"
               dropdownPosition="left"
               dropdownTopOverlap="40px"
-              renderButton={() => <StyledDropdownButton>New Post</StyledDropdownButton>}
+              renderButton={() => (
+                <StyledDropdownButton>{t('workflow.workflow.newPost')}</StyledDropdownButton>
+              )}
             >
               {collections
                 .filter(collection => collection.get('create'))
@@ -109,8 +116,10 @@ class Workflow extends Component {
             </Dropdown>
           </WorkflowTopRow>
           <WorkflowTopDescription>
-            {reviewCount} {reviewCount === 1 ? 'entry' : 'entries'} waiting for review, {readyCount}{' '}
-            ready to go live.
+            {t('workflow.workflow.description', {
+              smart_count: reviewCount,
+              readyCount: readyCount,
+            })}
           </WorkflowTopDescription>
         </WorkflowTop>
         <WorkflowList
@@ -118,6 +127,7 @@ class Workflow extends Component {
           handleChangeStatus={updateUnpublishedEntryStatus}
           handlePublish={publishUnpublishedEntry}
           handleDelete={deleteUnpublishedEntry}
+          isForkWorkflow={isForkWorkflow}
         />
       </WorkflowContainer>
     );
@@ -125,9 +135,10 @@ class Workflow extends Component {
 }
 
 function mapStateToProps(state) {
-  const { collections } = state;
-  const isEditorialWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  const returnObj = { collections, isEditorialWorkflow };
+  const { collections, config, globalUI } = state;
+  const isEditorialWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const isForkWorkflow = globalUI.get('useForkWorkflow', false);
+  const returnObj = { collections, isEditorialWorkflow, isForkWorkflow };
 
   if (isEditorialWorkflow) {
     returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);
@@ -153,4 +164,4 @@ export default connect(
     publishUnpublishedEntry,
     deleteUnpublishedEntry,
   },
-)(Workflow);
+)(translate()(Workflow));
