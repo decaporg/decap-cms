@@ -162,21 +162,32 @@ class App extends React.Component {
 
     const getCustomEditRoute = props => {
       const { folder, filename } = props.match.params;
+      let redirect = null;
       const collections = config.get('collections');
-      let activeCollection = null;
-      collections.forEach(collection => {
-        if (folder === collection.get('folder')) {
-          activeCollection = collection;
-        }
-      });
-      if (activeCollection === null) return <NotFoundPage />;
+
       const setTypeOnCollection = collection => {
         if (collection.has('folder')) return collection.set('type', FOLDER);
         if (collection.has('files')) return collection.set('type', FILES);
       };
-      const typeSetCollection = setTypeOnCollection(activeCollection);
-      const slug = selectEntrySlug(typeSetCollection, filename);
-      return <Redirect to={`/collections/${typeSetCollection.get('name')}/entries/${slug}`} />;
+
+      collections.forEach(collection => {
+        const typedCollection = setTypeOnCollection(collection);
+        if (typedCollection.has('files')) {
+          const files = typedCollection.get('files');
+          files.forEach(file => {
+            if (file.get('file').includes(`${folder}/${filename}`)) {
+              redirect = `/collections/${filename}`;
+            }
+          });
+        } else if (typedCollection.has('folder') && folder === typedCollection.get('folder')) {
+          const slug = selectEntrySlug(typedCollection, filename);
+          redirect = `/collections/${typedCollection.get('name')}/entries/${slug}`;
+        }
+      });
+      if (redirect !== null) {
+        return <Redirect to={redirect} />;
+      }
+      return <NotFoundPage />;
     };
 
     return (
