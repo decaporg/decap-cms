@@ -548,10 +548,10 @@ export default class API {
     const contentKey = this.generateContentKey(options.collectionName, entry.slug);
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
-    const branchData = await this.getBranch();
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
       const userPromise = this.user();
+      const branchData = await this.getBranch();
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
       const commitResponse = await this.commit(options.commitMessage, changeTree);
       await this.createBranch(branchName, commitResponse.sha);
@@ -585,6 +585,7 @@ export default class API {
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
+      const branchData = await this.getBranch(branchName);
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
       const commitPromise = this.commit(options.commitMessage, changeTree);
       const metadataPromise = this.retrieveMetadata(contentKey);
