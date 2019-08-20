@@ -108,9 +108,7 @@ class Authenticator {
     const left = screen.width / 2 - conf.width / 2;
     const top = screen.height / 2 - conf.height / 2;
     window.addEventListener('message', this.handshakeCallback(options, cb), false);
-    let url = `${this.base_url}/${this.auth_endpoint}?provider=${
-      options.provider
-    }&site_id=${siteID}`;
+    let url = `${this.base_url}/${this.auth_endpoint}?provider=${options.provider}&site_id=${siteID}`;
     if (options.scope) {
       url += '&scope=' + options.scope;
     }
@@ -151,9 +149,7 @@ class Authenticator {
         }),
       );
     }
-    const url = `${this.base_url}/${
-      this.auth_endpoint
-    }/refresh?provider=${provider}&site_id=${siteID}&refresh_token=${refresh_token}`;
+    const url = `${this.base_url}/${this.auth_endpoint}/refresh?provider=${provider}&site_id=${siteID}&refresh_token=${refresh_token}`;
     const refreshPromise = fetch(url, { method: 'POST', body: '' }).then(res => res.json());
 
     // Return a promise if a callback wasn't provided

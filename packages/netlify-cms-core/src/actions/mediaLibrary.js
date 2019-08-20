@@ -250,25 +250,21 @@ export function loadMediaDisplayURL(file) {
     ) {
       return Promise.resolve();
     }
-    if (typeof url === 'string') {
+    if (typeof url === 'string' || typeof displayURL === 'string') {
       dispatch(mediaDisplayURLRequest(id));
-      return dispatch(mediaDisplayURLSuccess(id, displayURL));
-    }
-    if (typeof displayURL === 'string') {
-      dispatch(mediaDisplayURLRequest(id));
-      return dispatch(mediaDisplayURLSuccess(id, displayURL));
+      dispatch(mediaDisplayURLSuccess(id, displayURL));
     }
     try {
       const backend = currentBackend(state.config);
       dispatch(mediaDisplayURLRequest(id));
       const newURL = await backend.getMediaDisplayURL(displayURL);
       if (newURL) {
-        return dispatch(mediaDisplayURLSuccess(id, newURL));
+        dispatch(mediaDisplayURLSuccess(id, newURL));
       } else {
         throw new Error('No display URL was returned!');
       }
     } catch (err) {
-      return dispatch(mediaDisplayURLFailure(id, err));
+      dispatch(mediaDisplayURLFailure(id, err));
     }
   };
 }

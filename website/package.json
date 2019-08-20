@@ -28,7 +28,7 @@
     "gatsby-transformer-remark": "next",
     "gatsby-transformer-yaml": "next",
     "github-buttons": "git+https://github.com/ntkme/github-buttons.git",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "netlify-cms": "^2.0.11",
     "postcss-at2x": "^2.0.0",
     "postcss-cssnext": "^2.7.0",
@@ -45,9 +45,7 @@
     "smooth-scroll": "^14.2.0"
   },
   "devDependencies": {
-    "babel-plugin-prismjs": "^1.0.2",
-    "eslint": "^3.1.1",
-    "eslint-plugin-import": "^1.11.1"
+    "babel-plugin-prismjs": "^1.0.2"
   },
   "private": true
 }

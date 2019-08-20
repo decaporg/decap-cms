@@ -324,9 +324,7 @@ export default class GitGateway {
         return this.backend.getMediaDisplayURL(original);
       }
       const err = new Error(
-        `getMediaDisplayURL is not implemented by the ${
-          this.backendType
-        } backend, but the backend returned a displayURL which was not a string!`,
+        `getMediaDisplayURL is not implemented by the ${this.backendType} backend, but the backend returned a displayURL which was not a string!`,
       );
       err.displayURL = displayURL;
       return Promise.reject(err);
@@ -413,7 +411,10 @@ export default class GitGateway {
     return this.backend.unpublishedEntries();
   }
   unpublishedEntry(collection, slug) {
-    return this.backend.unpublishedEntry(collection, slug);
+    return (
+      (this.backend.unpublishedEntry && this.backend.unpublishedEntry(collection, slug)) ||
+      Promise.resolve(false)
+    );
   }
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
     return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus);

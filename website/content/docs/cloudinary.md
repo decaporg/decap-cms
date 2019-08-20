@@ -25,6 +25,8 @@ media_library:
     api_key: your_api_key
 ```
 
+**Note:** The user must be logged in to the Cloudinary account connected to the `api_key` used in your Netlify CMS configuration. 
+
 ## Netlify CMS configuration options
 
 The following options are specific to the Netlify CMS integration for Cloudinary:

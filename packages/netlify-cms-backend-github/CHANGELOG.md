@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.4.2...netlify-cms-backend-github@2.5.0-beta.0) (2019-07-24)
+
+
+### Features
+
+* **backend-github:** Open Authoring ([#2430](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2430)) ([edf0a3a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/edf0a3a))
+
+
+
+
+
 ## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.4.2-beta.0...netlify-cms-backend-github@2.4.2) (2019-04-10)
 
 **Note:** Version bump only for package netlify-cms-backend-github

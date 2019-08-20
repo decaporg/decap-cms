@@ -32,7 +32,7 @@ import {
   dateParsers,
 } from 'Lib/stringTemplate';
 
-class LocalStorageAuthStore {
+export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
 
   retrieve() {
@@ -130,7 +130,12 @@ const commitMessageFormatter = (type, config, { slug, path, collection }) => {
 
 const extractSearchFields = searchFields => entry =>
   searchFields.reduce((acc, field) => {
-    const f = entry.data[field];
+    let nestedFields = field.split('.');
+    let f = entry.data;
+    for (let i = 0; i < nestedFields.length; i++) {
+      f = f[nestedFields[i]];
+      if (!f) break;
+    }
     return f ? `${acc} ${f}` : acc;
   }, '');
 
@@ -195,7 +200,7 @@ function createPreviewUrl(baseUrl, collection, slug, slugConfig, entry) {
   return `${basePath}/${previewPath}`;
 }
 
-class Backend {
+export class Backend {
   constructor(implementation, { backendName, authStore = null, config } = {}) {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
@@ -219,10 +224,10 @@ class Backend {
     const stored = this.authStore && this.authStore.retrieve();
     if (stored && stored.backendName === this.backendName) {
       return Promise.resolve(this.implementation.restoreUser(stored)).then(user => {
-        const newUser = { ...user, backendName: this.backendName };
+        this.user = { ...user, backendName: this.backendName };
         // return confirmed/rehydrated user object instead of stored
-        this.authStore.store(newUser);
-        return newUser;
+        this.authStore.store(this.user);
+        return this.user;
       });
     }
     return Promise.resolve(null);
@@ -231,9 +236,9 @@ class Backend {
   updateUserCredentials = updatedCredentials => {
     const storedUser = this.authStore && this.authStore.retrieve();
     if (storedUser && storedUser.backendName === this.backendName) {
-      const newUser = { ...storedUser, ...updatedCredentials };
-      this.authStore.store(newUser);
-      return newUser;
+      this.user = { ...storedUser, ...updatedCredentials };
+      this.authStore.store(this.user);
+      return this.user;
     }
   };
 
@@ -243,16 +248,17 @@ class Backend {
 
   authenticate(credentials) {
     return this.implementation.authenticate(credentials).then(user => {
-      const newUser = { ...user, backendName: this.backendName };
+      this.user = { ...user, backendName: this.backendName };
       if (this.authStore) {
-        this.authStore.store(newUser);
+        this.authStore.store(this.user);
       }
-      return newUser;
+      return this.user;
     });
   }
 
   logout() {
     return Promise.resolve(this.implementation.logout()).then(() => {
+      this.user = null;
       if (this.authStore) {
         this.authStore.logout();
       }
@@ -276,11 +282,8 @@ class Backend {
     const publishedEntry = await this.implementation
       .getEntry(collection, slug, path)
       .then(({ data }) => data)
-      .catch(error => {
-        if (error.status === 404 || error.message.includes(404)) {
-          return Promise.resolve(false);
-        }
-        return Promise.reject(error);
+      .catch(() => {
+        return Promise.resolve(false);
       });
 
     return publishedEntry;
@@ -383,7 +386,7 @@ class Backend {
             }
             return elem;
           }),
-        ];
+        ].filter(Boolean);
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {
           extract: extractSearchFields(uniq(searchFields)),

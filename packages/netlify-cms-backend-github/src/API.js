@@ -1,28 +1,39 @@
 import { Base64 } from 'js-base64';
-import { uniq, initial, last, get, find, hasIn, partial, result } from 'lodash';
+import semaphore from 'semaphore';
+import { find, flow, get, hasIn, initial, last, partial, result, uniq } from 'lodash';
+import { map } from 'lodash/fp';
 import {
-  localForage,
-  filterPromises,
-  resolvePromiseProperties,
   APIError,
   EditorialWorkflowError,
+  filterPromisesWith,
+  localForage,
+  onlySuccessfulPromises,
+  resolvePromiseProperties,
 } from 'netlify-cms-lib-util';
 
 const CMS_BRANCH_PREFIX = 'cms/';
+
+const replace404WithEmptyArray = err => (err && err.status === 404 ? [] : Promise.reject(err));
 
 export default class API {
   constructor(config) {
     this.api_root = config.api_root || 'https://api.github.com';
     this.token = config.token || false;
     this.branch = config.branch || 'master';
+    this.originRepo = config.originRepo;
+    this.useForkWorkflow = config.useForkWorkflow;
     this.repo = config.repo || '';
     this.repoURL = `/repos/${this.repo}`;
+    this.originRepoURL = this.originRepo && `/repos/${this.originRepo}`;
     this.merge_method = config.squash_merges ? 'squash' : 'merge';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
   user() {
-    return this.request('/user');
+    if (!this._userPromise) {
+      this._userPromise = this.request('/user');
+    }
+    return this._userPromise;
   }
 
   hasWriteAccess() {
@@ -94,8 +105,32 @@ export default class API {
       });
   }
 
-  generateBranchName(basename) {
-    return `${CMS_BRANCH_PREFIX}${basename}`;
+  generateContentKey(collectionName, slug) {
+    if (!this.useForkWorkflow) {
+      // this doesn't use the collection, but we need to leave it that way for backwards
+      // compatibility
+      return slug;
+    }
+
+    return `${this.repo}/${collectionName}/${slug}`;
+  }
+
+  generateBranchNameFromCollectionAndSlug(collectionName, slug) {
+    return this.generateContentKey(collectionName, slug).then(contentKey =>
+      this.generateBranchName(contentKey),
+    );
+  }
+
+  generateBranchName(contentKey) {
+    return `${CMS_BRANCH_PREFIX}${contentKey}`;
+  }
+
+  branchNameFromRef(ref) {
+    return ref.substring('refs/heads/'.length - 1);
+  }
+
+  contentKeyFromRef(ref) {
+    return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length - 1);
   }
 
   checkMetadataRef() {
@@ -125,27 +160,39 @@ export default class API {
       });
   }
 
-  storeMetadata(key, data) {
-    return this.checkMetadataRef().then(branchData => {
-      const fileTree = {
-        [`${key}.json`]: {
-          path: `${key}.json`,
-          raw: JSON.stringify(data),
-          file: true,
-        },
-      };
-
-      return this.uploadBlob(fileTree[`${key}.json`])
-        .then(() => this.updateTree(branchData.sha, '/', fileTree))
-        .then(changeTree => this.commit(`Updating “${key}” metadata`, changeTree))
-        .then(response => this.patchRef('meta', '_netlify_cms', response.sha))
-        .then(() => {
+  async storeMetadata(key, data) {
+    // semaphore ensures metadata updates are always ordered, even if
+    // calls to storeMetadata are not. concurrent metadata updates
+    // will result in the metadata branch being unable to update.
+    if (!this._metadataSemaphore) {
+      this._metadataSemaphore = semaphore(1);
+    }
+    return new Promise((resolve, reject) =>
+      this._metadataSemaphore.take(async () => {
+        try {
+          const branchData = await this.checkMetadataRef();
+          const fileTree = {
+            [`${key}.json`]: {
+              path: `${key}.json`,
+              raw: JSON.stringify(data),
+              file: true,
+            },
+          };
+          await this.uploadBlob(fileTree[`${key}.json`]);
+          const changeTree = await this.updateTree(branchData.sha, '/', fileTree);
+          const { sha } = await this.commit(`Updating “${key}” metadata`, changeTree);
+          await this.patchRef('meta', '_netlify_cms', sha);
           localForage.setItem(`gh.meta.${key}`, {
             expires: Date.now() + 300000, // In 5 minutes
             data,
           });
-        });
-    });
+          this._metadataSemaphore.leave();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      }),
+    );
   }
 
   retrieveMetadata(key) {
@@ -158,11 +205,27 @@ export default class API {
         '%c Checking for MetaData files',
         'line-height: 30px;text-align: center;font-weight: bold',
       );
-      return this.request(`${this.repoURL}/contents/${key}.json`, {
+
+      const metadataRequestOptions = {
         params: { ref: 'refs/meta/_netlify_cms' },
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         cache: 'no-store',
-      })
+      };
+
+      if (!this.useForkWorkflow) {
+        return this.request(`${this.repoURL}/contents/${key}.json`, metadataRequestOptions)
+          .then(response => JSON.parse(response))
+          .catch(() =>
+            console.log(
+              '%c %s does not have metadata',
+              'line-height: 30px;text-align: center;font-weight: bold',
+              key,
+            ),
+          );
+      }
+
+      const [user, repo] = key.split('/');
+      return this.request(`/repos/${user}/${repo}/contents/${key}.json`, metadataRequestOptions)
         .then(response => JSON.parse(response))
         .catch(() =>
           console.log(
@@ -174,11 +237,11 @@ export default class API {
     });
   }
 
-  readFile(path, sha, branch = this.branch) {
+  readFile(path, sha, { branch = this.branch, repoURL = this.repoURL } = {}) {
     if (sha) {
       return this.getBlob(sha);
     } else {
-      return this.request(`${this.repoURL}/contents/${path}`, {
+      return this.request(`${repoURL}/contents/${path}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
         params: { ref: branch },
         cache: 'no-store',
@@ -229,10 +292,19 @@ export default class API {
     const metaDataPromise = this.retrieveMetadata(contentKey).then(data =>
       data.objects.entry.path ? data : Promise.reject(null),
     );
+    const repoURL = this.useForkWorkflow
+      ? `/repos/${contentKey
+          .split('/')
+          .slice(0, 2)
+          .join('/')}`
+      : this.repoURL;
     return resolvePromiseProperties({
       metaData: metaDataPromise,
       fileData: metaDataPromise.then(data =>
-        this.readFile(data.objects.entry.path, null, data.branch),
+        this.readFile(data.objects.entry.path, null, {
+          branch: data.branch,
+          repoURL,
+        }),
       ),
       isModification: metaDataPromise.then(data =>
         this.isUnpublishedEntryModification(data.objects.entry.path, this.branch),
@@ -243,7 +315,10 @@ export default class API {
   }
 
   isUnpublishedEntryModification(path, branch) {
-    return this.readFile(path, null, branch)
+    return this.readFile(path, null, {
+      branch,
+      repoURL: this.useForkWorkflow ? this.originRepoURL : this.repoURL,
+    })
       .then(() => true)
       .catch(err => {
         if (err.message && err.message === 'Not Found') {
@@ -253,35 +328,107 @@ export default class API {
       });
   }
 
-  listUnpublishedBranches() {
+  getPRsForBranchName = ({
+    branchName,
+    state,
+    base = this.branch,
+    repoURL = this.repoURL,
+    usernameOfFork,
+  } = {}) => {
+    // Get PRs with a `head` of `branchName`. Note that this is a
+    // substring match, so we need to check that the `head.ref` of
+    // at least one of the returned objects matches `branchName`.
+    // TODO: this is a paginated endpoint
+    return this.request(`${repoURL}/pulls`, {
+      params: {
+        head: usernameOfFork ? `${usernameOfFork}:${branchName}` : branchName,
+        ...(state ? { state } : {}),
+        base,
+      },
+    });
+  };
+
+  branchHasPR = async ({ branchName, ...rest }) => {
+    const prs = await this.getPRsForBranchName({ branchName, ...rest });
+    return prs.some(pr => this.branchNameFromRef(pr.head.ref) === branchName);
+  };
+
+  getUpdatedForkWorkflowMetadata = async (contentKey, { metadata: metadataArg } = {}) => {
+    const metadata = metadataArg || (await this.retrieveMetadata(contentKey)) || {};
+    const { pr: prMetadata, status } = metadata;
+
+    // Set the status to draft if no corresponding PR is recorded
+    if (!prMetadata && status !== 'draft') {
+      const newMetadata = { ...metadata, status: 'draft' };
+      this.storeMetadata(contentKey, newMetadata);
+      return newMetadata;
+    }
+
+    // If no status is recorded, but there is a PR, check if the PR is
+    // closed or not and update the status accordingly.
+    if (prMetadata) {
+      const { number: prNumber } = prMetadata;
+      const originPRInfo = await this.request(`${this.originRepoURL}/pulls/${prNumber}`);
+      const { state: currentState, merged_at: mergedAt } = originPRInfo;
+      if (currentState === 'closed' && mergedAt) {
+        // The PR has been merged; delete the unpublished entry
+        const [, collectionName, slug] = contentKey.split('/');
+        this.deleteUnpublishedEntry(collectionName, slug);
+        return;
+      } else if (currentState === 'closed' && !mergedAt) {
+        if (status !== 'draft') {
+          const newMetadata = { ...metadata, status: 'draft' };
+          await this.storeMetadata(contentKey, newMetadata);
+          return newMetadata;
+        }
+      } else {
+        if (status !== 'pending_review') {
+          // PR is open and has not been merged
+          const newMetadata = { ...metadata, status: 'pending_review' };
+          await this.storeMetadata(contentKey, newMetadata);
+          return newMetadata;
+        }
+      }
+    }
+
+    return metadata;
+  };
+
+  async listUnpublishedBranches() {
     console.log(
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
-    return this.request(`${this.repoURL}/git/refs/heads/cms`)
-      .then(branches =>
-        filterPromises(branches, branch => {
-          const branchName = branch.ref.substring('/refs/heads/'.length - 1);
-
-          // Get PRs with a `head` of `branchName`. Note that this is a
-          // substring match, so we need to check that the `head.ref` of
-          // at least one of the returned objects matches `branchName`.
-          return this.request(`${this.repoURL}/pulls`, {
-            params: {
-              head: branchName,
-              state: 'open',
-              base: this.branch,
-            },
-          }).then(prs => prs.some(pr => pr.head.ref === branchName));
-        }),
-      )
-      .catch(error => {
-        console.log(
-          '%c No Unpublished entries',
-          'line-height: 30px;text-align: center;font-weight: bold',
-        );
-        throw error;
-      });
+    const onlyBranchesWithOpenPRs = filterPromisesWith(({ ref }) =>
+      this.branchHasPR({ branchName: this.branchNameFromRef(ref), state: 'open' }),
+    );
+    const getUpdatedForkWorkflowBranches = flow([
+      map(async branch => {
+        const contentKey = this.contentKeyFromRef(branch.ref);
+        const metadata = await this.getUpdatedForkWorkflowMetadata(contentKey);
+        // filter out removed entries
+        if (!metadata) {
+          return Promise.reject('Unpublished entry was removed');
+        }
+        return branch;
+      }),
+      onlySuccessfulPromises,
+    ]);
+    try {
+      const branches = await this.request(`${this.repoURL}/git/refs/heads/cms`).catch(
+        replace404WithEmptyArray,
+      );
+      const filterFunction = this.useForkWorkflow
+        ? getUpdatedForkWorkflowBranches
+        : onlyBranchesWithOpenPRs;
+      return await filterFunction(branches);
+    } catch (err) {
+      console.log(
+        '%c No Unpublished entries',
+        'line-height: 30px;text-align: center;font-weight: bold',
+      );
+      throw err;
+    }
   }
 
   /**
@@ -289,8 +436,16 @@ export default class API {
    * concept of entry "status". Useful for things like deploy preview links.
    */
   async getStatuses(sha) {
-    const resp = await this.request(`${this.repoURL}/commits/${sha}/status`);
-    return resp.statuses;
+    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    try {
+      const resp = await this.request(`${repoURL}/commits/${sha}/status`);
+      return resp.statuses;
+    } catch (err) {
+      if (err && err.message && err.message === 'Ref not found') {
+        return [];
+      }
+      throw err;
+    }
   }
 
   composeFileTree(files) {
@@ -372,84 +527,71 @@ export default class API {
     });
   }
 
-  editorialWorkflowGit(fileTree, entry, filesList, options) {
-    const contentKey = entry.slug;
+  async editorialWorkflowGit(fileTree, entry, filesList, options) {
+    const contentKey = this.generateContentKey(options.collectionName, entry.slug);
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
+    const branchData = await this.getBranch();
     if (!unpublished) {
-      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch`
-      let prResponse;
-
-      return this.getBranch()
-        .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
-        .then(changeTree => this.commit(options.commitMessage, changeTree))
-        .then(commitResponse => this.createBranch(branchName, commitResponse.sha))
-        .then(() => this.createPR(options.commitMessage, branchName))
-        .then(pr => {
-          prResponse = pr;
-          return this.user();
-        })
-        .then(user => {
-          return this.storeMetadata(contentKey, {
-            type: 'PR',
-            pr: {
-              number: prResponse.number,
-              head: prResponse.head && prResponse.head.sha,
-            },
-            user: user.name || user.login,
-            status: this.initialWorkflowStatus,
-            branch: branchName,
-            collection: options.collectionName,
-            title: options.parsedData && options.parsedData.title,
-            description: options.parsedData && options.parsedData.description,
-            objects: {
-              entry: {
-                path: entry.path,
-                sha: entry.sha,
-              },
-              files: filesList,
-            },
-            timeStamp: new Date().toISOString(),
-          });
-        });
+      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      const userPromise = this.user();
+      const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
+      const commitResponse = await this.commit(options.commitMessage, changeTree);
+      await this.createBranch(branchName, commitResponse.sha);
+      const pr = this.useForkWorkflow
+        ? undefined
+        : await this.createPR(options.commitMessage, branchName);
+      const user = await userPromise;
+      return this.storeMetadata(contentKey, {
+        type: 'PR',
+        pr: pr
+          ? {
+              number: pr.number,
+              head: pr.head && pr.head.sha,
+            }
+          : undefined,
+        user: user.name || user.login,
+        status: this.initialWorkflowStatus,
+        branch: branchName,
+        collection: options.collectionName,
+        commitMessage: options.commitMessage,
+        title: options.parsedData && options.parsedData.title,
+        description: options.parsedData && options.parsedData.description,
+        objects: {
+          entry: {
+            path: entry.path,
+            sha: entry.sha,
+          },
+          files: filesList,
+        },
+        timeStamp: new Date().toISOString(),
+      });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
-      let newHead;
-      return this.getBranch(branchName)
-        .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
-        .then(changeTree => this.commit(options.commitMessage, changeTree))
-        .then(commit => {
-          newHead = commit;
-          return this.retrieveMetadata(contentKey);
-        })
-        .then(metadata => {
-          const { title, description } = options.parsedData || {};
-          const metadataFiles = get(metadata.objects, 'files', []);
-          const files = [...metadataFiles, ...filesList];
-          const pr = { ...metadata.pr, head: newHead.sha };
-          const objects = {
-            entry: { path: entry.path, sha: entry.sha },
-            files: uniq(files),
-          };
-          const updatedMetadata = { ...metadata, pr, title, description, objects };
+      const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
+      const commitPromise = this.commit(options.commitMessage, changeTree);
+      const metadataPromise = this.retrieveMetadata(contentKey);
+      const [commit, metadata] = await Promise.all([commitPromise, metadataPromise]);
+      const { title, description } = options.parsedData || {};
+      const metadataFiles = get(metadata.objects, 'files', []);
+      const files = [...metadataFiles, ...filesList];
+      const pr = metadata.pr ? { ...metadata.pr, head: commit.sha } : undefined;
+      const objects = {
+        entry: { path: entry.path, sha: entry.sha },
+        files: uniq(files),
+      };
+      const updatedMetadata = { ...metadata, pr, title, description, objects };
 
-          /**
-           * If an asset store is in use, assets are always accessible, so we
-           * can just finish the persist operation here.
-           */
-          if (options.hasAssetStore) {
-            return this.storeMetadata(contentKey, updatedMetadata).then(() =>
-              this.patchBranch(branchName, newHead.sha),
-            );
-          }
+      if (options.hasAssetStore) {
+        await this.storeMetadata(contentKey, updatedMetadata);
+        return this.patchBranch(branchName, commit.sha);
+      }
 
-          /**
-           * If no asset store is in use, assets are being stored in the content
-           * repo, which means pull requests opened for editorial workflow
-           * entries must be rebased if assets have been added or removed.
-           */
-          return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, newHead);
-        });
+      if (pr) {
+        return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, commit);
+      }
+
+      return this.storeMetadata(contentKey, updatedMetadata);
     }
   }
 
@@ -568,14 +710,16 @@ export default class API {
    * Get a pull request by PR number.
    */
   getPullRequest(prNumber) {
-    return this.request(`${this.repoURL}/pulls/${prNumber} }`);
+    const repoURL = this.useForkWorkflow ? this.repoURL : this.originRepoURL;
+    return this.request(`${repoURL}/pulls/${prNumber} }`);
   }
 
   /**
    * Get the list of commits for a given pull request.
    */
   getPullRequestCommits(prNumber) {
-    return this.request(`${this.repoURL}/pulls/${prNumber}/commits`);
+    const repoURL = this.useForkWorkflow ? this.repoURL : this.originRepoURL;
+    return this.request(`${repoURL}/pulls/${prNumber}/commits`);
   }
 
   /**
@@ -596,22 +740,61 @@ export default class API {
     throw Error('Editorial workflow branch changed unexpectedly.');
   }
 
-  updateUnpublishedEntryStatus(collection, slug, status) {
-    const contentKey = slug;
-    return this.retrieveMetadata(contentKey)
-      .then(metadata => ({
+  async updateUnpublishedEntryStatus(collectionName, slug, status) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const metadata = await this.retrieveMetadata(contentKey);
+
+    if (!this.useForkWorkflow) {
+      return this.storeMetadata(contentKey, {
         ...metadata,
         status,
-      }))
-      .then(updatedMetadata => this.storeMetadata(contentKey, updatedMetadata));
+      });
+    }
+
+    if (status === 'pending_publish') {
+      throw new Error('Fork workflow entries may not be set to the status "pending_publish".');
+    }
+
+    const { pr: prMetadata } = metadata;
+    if (prMetadata) {
+      const { number: prNumber } = prMetadata;
+      const originPRInfo = await this.request(`${this.originRepoURL}/pulls/${prNumber}`);
+      const { state } = originPRInfo;
+      if (state === 'open' && status === 'draft') {
+        await this.closePR(prMetadata);
+        return this.storeMetadata(contentKey, {
+          ...metadata,
+          status,
+        });
+      }
+
+      if (state === 'closed' && status === 'pending_review') {
+        await this.openPR(prMetadata);
+        return this.storeMetadata(contentKey, {
+          ...metadata,
+          status,
+        });
+      }
+    }
+
+    if (!prMetadata && status === 'pending_review') {
+      const branchName = this.generateBranchName(contentKey);
+      const commitMessage = metadata.commitMessage || 'Automatically generated by Netlify CMS';
+      const { number, head } = await this.createPR(commitMessage, branchName);
+      return this.storeMetadata(contentKey, {
+        ...metadata,
+        pr: { number, head },
+        status,
+      });
+    }
   }
 
-  deleteUnpublishedEntry(collection, slug) {
-    const contentKey = slug;
+  async deleteUnpublishedEntry(collectionName, slug) {
+    const contentKey = this.generateContentKey(collectionName, slug);
     const branchName = this.generateBranchName(contentKey);
     return (
       this.retrieveMetadata(contentKey)
-        .then(metadata => this.closePR(metadata.pr))
+        .then(metadata => (metadata && metadata.pr ? this.closePR(metadata.pr) : Promise.resolve()))
         .then(() => this.deleteBranch(branchName))
         // If the PR doesn't exist, then this has already been deleted -
         // deletion should be idempotent, so we can consider this a
@@ -620,13 +803,14 @@ export default class API {
           if (err.message === 'Reference does not exist') {
             return Promise.resolve();
           }
+          console.error(err);
           return Promise.reject(err);
         })
     );
   }
 
   publishUnpublishedEntry(collection, slug) {
-    const contentKey = slug;
+    const contentKey = this.generateContentKey(collection.get('name'), slug);
     const branchName = this.generateBranchName(contentKey);
     return this.retrieveMetadata(contentKey)
       .then(metadata => this.mergePR(metadata.pr, metadata.objects))
@@ -678,21 +862,36 @@ export default class API {
     return this.deleteRef('heads', branchName);
   }
 
-  createPR(title, head, base = this.branch) {
+  async createPR(title, head, base = this.branch) {
     const body = 'Automatically generated by Netlify CMS';
-    return this.request(`${this.repoURL}/pulls`, {
+    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    const headReference = this.useForkWorkflow ? `${(await this.user()).login}:${head}` : head;
+    return this.request(`${repoURL}/pulls`, {
       method: 'POST',
-      body: JSON.stringify({ title, body, head, base }),
+      body: JSON.stringify({ title, body, head: headReference, base }),
+    });
+  }
+
+  async openPR(pullRequest) {
+    const { number } = pullRequest;
+    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    console.log('%c Re-opening PR', 'line-height: 30px;text-align: center;font-weight: bold');
+    return this.request(`${repoURL}/pulls/${number}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        state: 'open',
+      }),
     });
   }
 
   closePR(pullrequest) {
     const prNumber = pullrequest.number;
+    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
     console.log('%c Deleting PR', 'line-height: 30px;text-align: center;font-weight: bold');
-    return this.request(`${this.repoURL}/pulls/${prNumber}`, {
+    return this.request(`${repoURL}/pulls/${prNumber}`, {
       method: 'PATCH',
       body: JSON.stringify({
-        state: closed,
+        state: 'closed',
       }),
     });
   }
@@ -700,8 +899,9 @@ export default class API {
   mergePR(pullrequest, objects) {
     const headSha = pullrequest.head;
     const prNumber = pullrequest.number;
+    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
     console.log('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
-    return this.request(`${this.repoURL}/pulls/${prNumber}/merge`, {
+    return this.request(`${repoURL}/pulls/${prNumber}/merge`, {
       method: 'PUT',
       body: JSON.stringify({
         commit_message: 'Automatically generated. Merged on Netlify CMS.',

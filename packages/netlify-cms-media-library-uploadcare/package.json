@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-media-library-uploadcare",
   "description": "Uploadcare integration for Netlify CMS",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
@@ -20,7 +20,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
     "uploadcare-widget": "^3.7.0",

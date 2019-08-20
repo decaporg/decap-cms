@@ -16,7 +16,7 @@ import '../css/imports/community.css';
 const Features = ({ items }) =>
   items.map(item => (
     <div className="feature" key={item.feature}>
-      {item.imgpath && <img src={require(`../img/${item.imgpath}`)} />}
+      {item.imgpath && <img src={require(`../img/${item.imgpath}`)} alt="" />}
       <h3>
         <Markdownify source={item.feature} />
       </h3>
