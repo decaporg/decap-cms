@@ -105,7 +105,10 @@ export default class GitHubAuthenticationPage extends React.Component {
       return {
         renderPageContent: ({ LoginButton }) => (
           <ForkApprovalContainer>
-            <p>Forking workflow is enabled: we need to use a fork on your github account.</p>
+            <p>
+              Open Authoring is enabled: we need to use a fork on your github account. (If a fork
+              already exists, we'll use that.)
+            </p>
             <ForkButtonsContainer>
               <LoginButton onClick={approveFork}>Fork the repo</LoginButton>
               <LoginButton onClick={refuseFork}>Don&#39;t fork the repo</LoginButton>
