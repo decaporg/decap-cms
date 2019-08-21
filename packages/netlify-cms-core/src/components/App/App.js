@@ -23,6 +23,7 @@ import Workflow from 'Workflow/Workflow';
 import Editor from 'Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
+import { getPlugins } from 'Lib/registry';
 
 TopBarProgress.config({
   barColors: {
@@ -157,7 +158,7 @@ class App extends React.Component {
 
     const defaultPath = `/collections/${collections.first().get('name')}`;
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
-
+    const plugins = getPlugins();
     return (
       <>
         <Notifs CustomComponent={Toast} />
@@ -194,6 +195,9 @@ class App extends React.Component {
               path="/search/:searchTerm"
               render={props => <Collection {...props} isSearchResults />}
             />
+            {plugins.map(({ component, name }) => (
+              <Route key={name} path={`/plugins/${name}`} component={component} />
+            ))}
             <Route component={NotFoundPage} />
           </Switch>
           {useMediaLibrary ? <MediaLibrary /> : null}

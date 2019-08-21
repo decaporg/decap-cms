@@ -13,6 +13,7 @@ const registry = {
   editorComponents: Map(),
   widgetValueSerializers: {},
   mediaLibraries: [],
+  plugins: [],
 };
 
 export default {
@@ -31,6 +32,8 @@ export default {
   getBackend,
   registerMediaLibrary,
   getMediaLibrary,
+  registerPlugin,
+  getPlugins,
 };
 
 /**
@@ -155,4 +158,18 @@ export function registerMediaLibrary(mediaLibrary, options) {
 
 export function getMediaLibrary(name) {
   return registry.mediaLibraries.find(ml => ml.name === name);
+}
+
+/**
+ * Plugins
+ */
+export function registerPlugin(name, component, options) {
+  if (registry.plugins.find(plugin => name === plugin.name)) {
+    throw new Error(`A header section named ${name} has already been registered.`);
+  }
+  registry.plugins.push({ name, component, label: name, ...options });
+}
+
+export function getPlugins() {
+  return registry.plugins;
 }

@@ -178,6 +178,7 @@
       }
     `;
 
+    CMS.registerPlugin('Custom plugin', () => 'This is a custom plugin !')
     CMS.registerPreviewTemplate("posts", PostPreview);
     CMS.registerPreviewTemplate("general", GeneralPreview);
     CMS.registerPreviewTemplate("authors", AuthorsPreview);

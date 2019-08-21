@@ -10,12 +10,14 @@ import {
   Icon,
   Dropdown,
   DropdownItem,
+  DropdownButton,
   StyledDropdownButton,
   colors,
   lengths,
   shadows,
   buttons,
 } from 'netlify-cms-ui-default';
+import { getPlugins } from 'Lib/registry';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
 const styles = {
@@ -144,6 +146,7 @@ class Header extends React.Component {
       .filter(collection => collection.get('create'))
       .toList();
 
+    const plugins = getPlugins();
     return (
       <AppHeader>
         <AppHeaderContent>
@@ -173,6 +176,27 @@ class Header extends React.Component {
                     <Icon type="media-alt" />
                     {t('app.header.media')}
                   </AppHeaderButton>
+                </li>
+              )}
+              {plugins.length > 0 && (
+                <li>
+                  <Dropdown
+                    renderButton={() => (
+                      <AppHeaderButton as={DropdownButton}>
+                        <Icon type="netlify" />
+                        {t('app.header.plugins')}
+                      </AppHeaderButton>
+                    )}
+                    dropdownTopOverlap="60px"
+                    dropdownWidth="160px"
+                    dropdownPosition="left"
+                  >
+                    {plugins.map(plugin => (
+                      <NavLink key={plugin.name} to={`/plugins/${plugin.name}`}>
+                        <DropdownItem label={plugin.label} />
+                      </NavLink>
+                    ))}
+                  </Dropdown>
                 </li>
               )}
             </AppHeaderNavList>
