@@ -518,6 +518,9 @@ export default class API {
   }
 
   deleteFile(path, message, options = {}) {
+    if (this.useOpenAuthoring) {
+      return Promise.reject('Cannot delete published entries as an Open Authoring user!');
+    }
     const branch = options.branch || this.branch;
     const pathArray = path.split('/');
     const filename = last(pathArray);
