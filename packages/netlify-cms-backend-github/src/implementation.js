@@ -200,7 +200,7 @@ export default class GitHub {
 
   async entriesByFolder(collection, extension) {
     const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
-    const files = await this.api.listFiles(collection.get('folder'));
+    const files = await this.api.listFiles(collection.get('folder'), { repoURL });
     const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
     return this.fetchFiles(filteredFiles, { repoURL });
   }

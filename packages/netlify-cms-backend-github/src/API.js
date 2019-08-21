@@ -269,22 +269,22 @@ export default class API {
             .split('/')
             .slice(0, -1)
             .join('/');
-          return this.listFiles(dir)
+          return this.listFiles(dir, { repoURL, branch })
             .then(files => files.find(file => file.path === path))
-            .then(file => this.getBlob(file.sha));
+            .then(file => this.getBlob(file.sha, { repoURL }));
         }
         throw error;
       });
     }
   }
 
-  getBlob(sha) {
+  getBlob(sha, { repoURL = this.repoURL } = {}) {
     return localForage.getItem(`gh.${sha}`).then(cached => {
       if (cached) {
         return cached;
       }
 
-      return this.request(`${this.repoURL}/git/blobs/${sha}`, {
+      return this.request(`${repoURL}/git/blobs/${sha}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
       }).then(result => {
         localForage.setItem(`gh.${sha}`, result);
@@ -293,9 +293,9 @@ export default class API {
     });
   }
 
-  listFiles(path) {
-    return this.request(`${this.repoURL}/contents/${path.replace(/\/$/, '')}`, {
-      params: { ref: this.branch },
+  listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
+    return this.request(`${repoURL}/contents/${path.replace(/\/$/, '')}`, {
+      params: { ref: branch },
     })
       .then(files => {
         if (!Array.isArray(files)) {
