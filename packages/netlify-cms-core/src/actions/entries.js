@@ -10,6 +10,7 @@ import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import moment from 'moment';
 
 const { notifSend } = notifActions;
 
@@ -426,18 +427,24 @@ export function createEmptyDraft(collection) {
 export function createEmptyDraftData(fields, withNameKey = true) {
   return fields.reduce((acc, item) => {
     const subfields = item.get('field') || item.get('fields');
-    const list = item.get('widget') == 'list';
+    const widget = item.get('widget');
+    const list = widget == 'list';
     const name = item.get('name');
-    const defaultValue = item.get('default', null);
+    const dateTime = ['date', 'datetime'].includes(widget);
+    const dateTimeDefault = (format, datetime = new Date()) =>
+      format ? moment(datetime).format(format) : datetime;
     const isEmptyDefaultValue = val => [[{}], {}].some(e => isEqual(val, e));
+    // For date(time) widget, set the current date as default
+    // value if no default value is provided.
+    const defaultDefaultValue = (dateTime && dateTimeDefault(item.get('format'))) || null;
+    const defaultValue = item.get('default', defaultDefaultValue);
 
     if (List.isList(subfields)) {
       const subDefaultValue = list
         ? [createEmptyDraftData(subfields)]
         : createEmptyDraftData(subfields);
-      if (!isEmptyDefaultValue(subDefaultValue)) {
-        acc[name] = subDefaultValue;
-      }
+
+      !isEmptyDefaultValue(subDefaultValue) && (acc[name] = subDefaultValue);
       return acc;
     }
 
@@ -445,9 +452,8 @@ export function createEmptyDraftData(fields, withNameKey = true) {
       const subDefaultValue = list
         ? [createEmptyDraftData([subfields], false)]
         : createEmptyDraftData([subfields]);
-      if (!isEmptyDefaultValue(subDefaultValue)) {
-        acc[name] = subDefaultValue;
-      }
+
+      !isEmptyDefaultValue(subDefaultValue) && (acc[name] = subDefaultValue);
       return acc;
     }
 

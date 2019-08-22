@@ -40,20 +40,6 @@ export default class DateControl extends React.Component {
 
   formats = this.getFormats();
 
-  componentDidMount() {
-    const { value } = this.props;
-
-    /**
-     * Set the current date as default value if no default value is provided. An
-     * empty string means the value is intentionally blank.
-     */
-    if (!value && value !== '') {
-      setTimeout(() => {
-        this.handleChange(new Date());
-      }, 0);
-    }
-  }
-
   // Date is valid if datetime is a moment or Date object otherwise it's a string.
   // Handle the empty case, if the user wants to empty the field.
   isValidDate = datetime =>
