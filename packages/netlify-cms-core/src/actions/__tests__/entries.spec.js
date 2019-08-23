@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+import moment from 'moment';
 import { createEmptyDraftData } from '../entries';
 
 describe('entries', () => {
@@ -77,6 +78,27 @@ describe('entries', () => {
         },
       ]);
       expect(createEmptyDraftData(fields)).toEqual({});
+    });
+
+    it('should set current date as default value for date widget', () => {
+      const now = new Date();
+      const format = 'YYYY-MM-DD HH:mm';
+      const formattedNow = moment(now).format(format);
+      const fields = fromJS([
+        {
+          name: 'date',
+          widget: 'date',
+        },
+        {
+          name: 'date2',
+          widget: 'date',
+          format,
+        },
+      ]);
+
+      jest.spyOn(global, 'Date').mockImplementation(() => now);
+
+      expect(createEmptyDraftData(fields)).toEqual({ date: now, date2: formattedNow });
     });
   });
 });
