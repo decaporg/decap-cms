@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.8-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.9.8-beta.0...netlify-cms-app@2.9.8-beta.1) (2019-08-24)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
 ## [2.9.8-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.9.7...netlify-cms-app@2.9.8-beta.0) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-app
