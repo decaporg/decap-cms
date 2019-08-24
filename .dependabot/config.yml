@@ -1,0 +1,19 @@
+version: 1
+
+update_configs:
+  - package_manager: javascript
+    directory: /
+    update_schedule: weekly
+    automerged_updates:
+      - match:
+          dependency_type: all
+          update_type: in_range
+    version_requirement_updates: widen_ranges
+  - package_manager: javascript
+    directory: /website
+    update_schedule: weekly
+    automerged_updates:
+      - match:
+          dependency_type: all
+          update_type: in_range
+    version_requirement_updates: widen_ranges
