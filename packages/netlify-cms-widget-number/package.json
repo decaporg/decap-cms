@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-number",
   "description": "Widget for editing numberic values in Netlify CMS.",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "homepage": "https://www.netlifycms.org/docs/widgets/#number",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -18,7 +18,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
     "netlify-cms-ui-default": "^2.6.0",

@@ -36,20 +36,23 @@ class VideoEmbed extends Component {
         frameBorder={0}
         allow="autoplay; encrypted-media"
         allowFullScreen
+        title="video_embed"
       />
     );
 
-    const imgPlaceholder = <img src={screenshotEditor} className="responsive" />;
+    const imgPlaceholder = (
+      <img src={screenshotEditor} className="responsive" alt="editor video screenshot" />
+    );
 
     return (
-      <a className="hero-graphic" onClick={this.toggleVideo}>
+      <div className="hero-graphic" onClick={this.toggleVideo}>
         {toggled ? embedcode : imgPlaceholder}
         {!toggled && (
           <div className="hero-videolink">
             <PlayIcon className="hero-videolink-arrow" />
           </div>
         )}
-      </a>
+      </div>
     );
   }
 }

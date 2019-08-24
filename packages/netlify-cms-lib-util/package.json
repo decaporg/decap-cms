@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-lib-util",
   "description": "Shared utilities for Netlify CMS.",
-  "version": "2.3.2",
+  "version": "2.4.0-beta.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
@@ -14,7 +14,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
     "get-relative-path": "^1.0.2",

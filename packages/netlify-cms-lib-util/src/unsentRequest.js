@@ -13,6 +13,12 @@ const fromURL = wholeURL => {
   return Map({ url, ...(allParamsString ? { params: decodeParams(allParamsString) } : {}) });
 };
 
+const fromFetchArguments = (wholeURL, options) => {
+  return fromURL(wholeURL).merge(
+    (options ? fromJS(options) : Map()).remove('url').remove('params'),
+  );
+};
+
 const encodeParams = params =>
   params
     .entrySeq()
@@ -25,8 +31,8 @@ const toURL = req =>
 const toFetchArguments = req => [
   toURL(req),
   req
-    .delete('url')
-    .delete('params')
+    .remove('url')
+    .remove('params')
     .toJS(),
 ];
 
@@ -85,6 +91,7 @@ const withTimestamp = ensureRequestArg(req => withParams({ ts: new Date().getTim
 export default {
   toURL,
   fromURL,
+  fromFetchArguments,
   performRequest,
   withMethod,
   withDefaultMethod,

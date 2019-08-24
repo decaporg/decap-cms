@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-select",
   "description": "Selectable values widget for Netlify CMS.",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "homepage": "https://www.netlifycms.org/docs/widgets/#select",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -20,7 +20,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
     "immutable": "^3.7.6",

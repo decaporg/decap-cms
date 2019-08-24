@@ -72,7 +72,7 @@ const AuthenticationPage = ({
     <StyledAuthenticationPage>
       {renderPageLogo(logoUrl)}
       {loginErrorMessage ? <p>{loginErrorMessage}</p> : null}
-      {!renderPageContent ? null : renderPageContent()}
+      {!renderPageContent ? null : renderPageContent({ LoginButton })}
       {!renderButtonContent ? null : (
         <LoginButton disabled={loginDisabled} onClick={onLogin}>
           {renderButtonContent()}

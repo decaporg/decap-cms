@@ -166,6 +166,7 @@ class EditorInterface extends Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
+      useOpenAuthoring,
       hasUnpublishedChanges,
       isNewEntry,
       isModification,
@@ -240,6 +241,7 @@ class EditorInterface extends Component {
           displayUrl={displayUrl}
           collection={collection}
           hasWorkflow={hasWorkflow}
+          useOpenAuthoring={useOpenAuthoring}
           hasUnpublishedChanges={hasUnpublishedChanges}
           isNewEntry={isNewEntry}
           isModification={isModification}
@@ -293,6 +295,7 @@ EditorInterface.propTypes = {
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,
+  useOpenAuthoring: PropTypes.bool,
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,
   isModification: PropTypes.bool,

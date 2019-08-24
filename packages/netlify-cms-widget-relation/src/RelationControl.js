@@ -72,7 +72,7 @@ export default class RelationControl extends React.Component {
       if (value) {
         const listValue = List.isList(value) ? value : List([value]);
         listValue.forEach(val => {
-          const hit = hits.find(i => i.data[valueField] === val);
+          const hit = hits.find(i => this.parseNestedFields(i.data, valueField) === val);
           if (hit) {
             onChange(value, {
               [field.get('name')]: {
@@ -113,21 +113,38 @@ export default class RelationControl extends React.Component {
     }
   };
 
+  parseNestedFields = (targetObject, field) => {
+    let nestedField = field.split('.');
+    let f = targetObject;
+    for (let i = 0; i < nestedField.length; i++) {
+      f = f[nestedField[i]];
+      if (!f) break;
+    }
+    if (typeof f === 'object' && f !== null) {
+      return JSON.stringify(f);
+    }
+    return f;
+  };
+
   parseHitOptions = hits => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || field.get('valueField');
 
     return hits.map(hit => {
+      let labelReturn;
+      if (List.isList(displayField)) {
+        labelReturn = displayField
+          .toJS()
+          .map(key => this.parseNestedFields(hit.data, key))
+          .join(' ');
+      } else {
+        labelReturn = this.parseNestedFields(hit.data, displayField);
+      }
       return {
         data: hit.data,
-        value: hit.data[valueField],
-        label: List.isList(displayField)
-          ? displayField
-              .toJS()
-              .map(key => hit.data[key])
-              .join(' ')
-          : hit.data[displayField],
+        value: this.parseNestedFields(hit.data, valueField),
+        label: labelReturn,
       };
     });
   };

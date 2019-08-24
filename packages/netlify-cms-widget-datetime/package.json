@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-datetime",
   "description": "Widget for editing dates and times in Netlify CMS.",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "homepage": "https://www.netlifycms.org/docs/widgets/#datetime",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -20,7 +20,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",

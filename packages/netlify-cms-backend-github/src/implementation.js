@@ -1,3 +1,4 @@
+import React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
@@ -49,7 +50,17 @@ export default class GitHub {
 
     this.api = this.options.API || null;
 
-    this.repo = config.getIn(['backend', 'repo'], '');
+    this.openAuthoringEnabled = config.getIn(['backend', 'open_authoring'], false);
+    if (this.openAuthoringEnabled) {
+      if (!this.options.useWorkflow) {
+        throw new Error(
+          'backend.open_authoring is true but publish_mode is not set to editorial_workflow.',
+        );
+      }
+      this.originRepo = config.getIn(['backend', 'repo'], '');
+    } else {
+      this.repo = config.getIn(['backend', 'repo'], '');
+    }
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
     this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
@@ -57,11 +68,89 @@ export default class GitHub {
   }
 
   authComponent() {
-    return AuthenticationPage;
+    const wrappedAuthenticationPage = props => <AuthenticationPage {...props} backend={this} />;
+    wrappedAuthenticationPage.displayName = 'AuthenticationPage';
+    return wrappedAuthenticationPage;
   }
 
   restoreUser(user) {
-    return this.authenticate(user);
+    return this.openAuthoringEnabled
+      ? this.authenticateWithFork({ userData: user, getPermissionToFork: () => true }).then(() =>
+          this.authenticate(user),
+        )
+      : this.authenticate(user);
+  }
+
+  async pollUntilForkExists({ repo, token }) {
+    const pollDelay = 250; // milliseconds
+    var repoExists = false;
+    while (!repoExists) {
+      repoExists = await fetch(`${this.api_root}/repos/${repo}`, {
+        headers: { Authorization: `token ${token}` },
+      })
+        .then(() => true)
+        .catch(err => (err && err.status === 404 ? false : Promise.reject(err)));
+      // wait between polls
+      if (!repoExists) {
+        await new Promise(resolve => setTimeout(resolve, pollDelay));
+      }
+    }
+    return Promise.resolve();
+  }
+
+  async currentUser({ token }) {
+    if (!this._currentUserPromise) {
+      this._currentUserPromise = fetch(`${this.api_root}/user`, {
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      }).then(res => res.json());
+    }
+    return this._currentUserPromise;
+  }
+
+  async userIsOriginMaintainer({ username: usernameArg, token }) {
+    const username = usernameArg || (await this.currentUser({ token })).login;
+    this._userIsOriginMaintainerPromises = this._userIsOriginMaintainerPromises || {};
+    if (!this._userIsOriginMaintainerPromises[username]) {
+      this._userIsOriginMaintainerPromises[username] = fetch(
+        `${this.api_root}/repos/${this.originRepo}/collaborators/${username}/permission`,
+        {
+          headers: {
+            Authorization: `token ${token}`,
+          },
+        },
+      )
+        .then(res => res.json())
+        .then(({ permission }) => permission === 'admin' || permission === 'write');
+    }
+    return this._userIsOriginMaintainerPromises[username];
+  }
+
+  async authenticateWithFork({ userData, getPermissionToFork }) {
+    if (!this.openAuthoringEnabled) {
+      throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
+    }
+    const { token } = userData;
+
+    // Origin maintainers should be able to use the CMS normally
+    if (await this.userIsOriginMaintainer({ token })) {
+      this.repo = this.originRepo;
+      this.useOpenAuthoring = false;
+      return Promise.resolve();
+    }
+
+    await getPermissionToFork();
+
+    const fork = await fetch(`${this.api_root}/repos/${this.originRepo}/forks`, {
+      method: 'POST',
+      headers: {
+        Authorization: `token ${token}`,
+      },
+    }).then(res => res.json());
+    this.useOpenAuthoring = true;
+    this.repo = fork.full_name;
+    return this.pollUntilForkExists({ repo: fork.full_name, token });
   }
 
   async authenticate(state) {
@@ -70,8 +159,10 @@ export default class GitHub {
       token: this.token,
       branch: this.branch,
       repo: this.repo,
+      originRepo: this.useOpenAuthoring ? this.originRepo : undefined,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
+      useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     const user = await this.api.user();
@@ -95,7 +186,7 @@ export default class GitHub {
     }
 
     // Authorized user
-    return { ...user, token: state.token };
+    return { ...user, token: state.token, useOpenAuthoring: this.useOpenAuthoring };
   }
 
   logout() {
@@ -107,22 +198,23 @@ export default class GitHub {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(collection, extension) {
-    return this.api
-      .listFiles(collection.get('folder'))
-      .then(files => files.filter(file => file.name.endsWith('.' + extension)))
-      .then(this.fetchFiles);
+  async entriesByFolder(collection, extension) {
+    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
+    const files = await this.api.listFiles(collection.get('folder'), { repoURL });
+    const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
+    return this.fetchFiles(filteredFiles, { repoURL });
   }
 
   entriesByFiles(collection) {
+    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
     const files = collection.get('files').map(collectionFile => ({
       path: collectionFile.get('file'),
       label: collectionFile.get('label'),
     }));
-    return this.fetchFiles(files);
+    return this.fetchFiles(files, { repoURL });
   }
 
-  fetchFiles = files => {
+  fetchFiles = (files, { repoURL = `/repos/${this.repo}` } = {}) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
     files.forEach(file => {
@@ -130,7 +222,7 @@ export default class GitHub {
         new Promise(resolve =>
           sem.take(() =>
             this.api
-              .readFile(file.path, file.sha)
+              .readFile(file.path, file.sha, { repoURL })
               .then(data => {
                 resolve({ file, data });
                 sem.leave();
@@ -151,7 +243,8 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    return this.api.readFile(path).then(data => ({
+    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
+    return this.api.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,
     }));
@@ -202,13 +295,14 @@ export default class GitHub {
       .then(branches => {
         const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
         const promises = [];
-        branches.map(branch => {
+        branches.map(({ ref }) => {
           promises.push(
             new Promise(resolve => {
-              const slug = branch.ref.split('refs/heads/cms/').pop();
+              const contentKey = ref.split('refs/heads/cms/').pop();
+              const slug = contentKey.split('/').pop();
               return sem.take(() =>
                 this.api
-                  .readUnpublishedBranchFile(slug)
+                  .readUnpublishedBranchFile(contentKey)
                   .then(data => {
                     if (data === null || data === undefined) {
                       resolve(null);
@@ -239,12 +333,13 @@ export default class GitHub {
         if (error.message === 'Not Found') {
           return Promise.resolve([]);
         }
-        return error;
+        return Promise.reject(error);
       });
   }
 
   unpublishedEntry(collection, slug) {
-    return this.api.readUnpublishedBranchFile(slug).then(data => {
+    const contentKey = this.api.generateContentKey(collection.get('name'), slug);
+    return this.api.readUnpublishedBranchFile(contentKey).then(data => {
       if (!data) return null;
       return {
         slug,
@@ -263,13 +358,15 @@ export default class GitHub {
    * 'pending', and 'failure'.
    */
   async getDeployPreview(collection, slug) {
-    const data = await this.api.retrieveMetadata(slug);
+    const contentKey = this.api.generateContentKey(collection.get('name'), slug);
+    const data = await this.api.retrieveMetadata(contentKey);
 
-    if (!data) {
+    if (!data || !data.pr) {
       return null;
     }
 
-    const statuses = await this.api.getStatuses(data.pr.head);
+    const headSHA = typeof data.pr.head === 'string' ? data.pr.head : data.pr.head.sha;
+    const statuses = await this.api.getStatuses(headSHA);
     const deployStatus = getPreviewStatus(statuses, this.config);
 
     if (deployStatus) {

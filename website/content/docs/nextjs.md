@@ -134,7 +134,7 @@ touch index.html
 touch config.yml
 ```
 
-Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out the [Add Netlify To Your Site](http://localhost:8000/docs/add-to-your-site/) section for more information)
+Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out the [Add Netlify To Your Site](https://www.netlifycms.org/docs/add-to-your-site/) section for more information)
 
 ```html
 <!doctype html>
@@ -223,6 +223,6 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 Great job - you did it! 
 Open your new page via the new Netlify URL, and navigate to ```/static/admin```. If you did everything correct in the previous step, you should now be able to sign up for an account, and log in. 
 
-**Tip:** Signing up with an external provider is the easiest. If you want to sign up by email, you'll have to set up a redirect in your index.js page (which we won't be covering in this guide). For more information, have a look at the [Add To Your Site](http://localhost:8000/docs/add-to-your-site/) section.
+**Tip:** Signing up with an external provider is the easiest. If you want to sign up by email, you'll have to set up a redirect in your index.js page (which we won't be covering in this guide). For more information, have a look at the [Add To Your Site](https://www.netlifycms.org/docs/add-to-your-site) section.
 
 Congratulations - you can finally manage your new list of cats!

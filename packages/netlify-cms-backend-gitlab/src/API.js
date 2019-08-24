@@ -1,6 +1,13 @@
-import { localForage, unsentRequest, then, APIError, Cursor } from 'netlify-cms-lib-util';
+import {
+  localForage,
+  parseLinkHeader,
+  unsentRequest,
+  then,
+  APIError,
+  Cursor,
+} from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
-import { fromJS, List, Map } from 'immutable';
+import { fromJS, Map } from 'immutable';
 import { flow, partial, result } from 'lodash';
 
 export default class API {
@@ -114,20 +121,8 @@ export default class API {
     const pageCount = parseInt(headers.get('X-Total-Pages'), 10) - 1;
     const pageSize = parseInt(headers.get('X-Per-Page'), 10);
     const count = parseInt(headers.get('X-Total'), 10);
-    const linksRaw = headers.get('Link');
-    const links = List(linksRaw.split(','))
-      .map(str => str.trim().split(';'))
-      .map(([linkStr, keyStr]) => [
-        keyStr.match(/rel="(.*?)"/)[1],
-        unsentRequest.fromURL(
-          linkStr
-            .trim()
-            .match(/<(.*?)>/)[1]
-            .replace(/\+/g, '%20'),
-        ),
-      ])
-      .update(list => Map(list));
-    const actions = links
+    const links = parseLinkHeader(headers.get('Link'));
+    const actions = Map(links)
       .keySeq()
       .flatMap(key =>
         (key === 'prev' && index > 0) ||

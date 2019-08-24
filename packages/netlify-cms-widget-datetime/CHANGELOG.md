@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.2.2...netlify-cms-widget-datetime@2.2.3) (2019-07-24)
+
+**Note:** Version bump only for package netlify-cms-widget-datetime
+
+
+
+
+
 ## [2.2.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.2.2-beta.0...netlify-cms-widget-datetime@2.2.2) (2019-04-10)
 
 **Note:** Version bump only for package netlify-cms-widget-datetime

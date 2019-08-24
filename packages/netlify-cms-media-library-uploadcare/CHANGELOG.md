@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.5.2...netlify-cms-media-library-uploadcare@0.5.3) (2019-07-24)
+
+**Note:** Version bump only for package netlify-cms-media-library-uploadcare
+
+
+
+
+
 ## [0.5.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.5.2-beta.0...netlify-cms-media-library-uploadcare@0.5.2) (2019-04-10)
 
 **Note:** Version bump only for package netlify-cms-media-library-uploadcare

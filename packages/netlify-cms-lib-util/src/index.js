@@ -9,9 +9,21 @@ import {
   fileExtensionWithSeparator,
   fileExtension,
 } from './path';
-import { filterPromises, resolvePromiseProperties, then } from './promise';
+import {
+  filterPromises,
+  filterPromisesWith,
+  onlySuccessfulPromises,
+  resolvePromiseProperties,
+  then,
+} from './promise';
 import unsentRequest from './unsentRequest';
-import { filterByPropExtension, parseResponse, responseParser } from './backendUtil';
+import {
+  filterByPropExtension,
+  getPaginatedRequestIterator,
+  parseLinkHeader,
+  parseResponse,
+  responseParser,
+} from './backendUtil';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
 
@@ -28,10 +40,13 @@ export const NetlifyCmsLibUtil = {
   fileExtensionWithSeparator,
   fileExtension,
   filterPromises,
+  filterPromisesWith,
+  onlySuccessfulPromises,
   resolvePromiseProperties,
   then,
   unsentRequest,
   filterByPropExtension,
+  parseLinkHeader,
   parseResponse,
   responseParser,
   loadScript,
@@ -50,10 +65,14 @@ export {
   fileExtensionWithSeparator,
   fileExtension,
   filterPromises,
+  filterPromisesWith,
+  onlySuccessfulPromises,
   resolvePromiseProperties,
   then,
   unsentRequest,
   filterByPropExtension,
+  parseLinkHeader,
+  getPaginatedRequestIterator,
   parseResponse,
   responseParser,
   loadScript,

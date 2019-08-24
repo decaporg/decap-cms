@@ -17,6 +17,12 @@ const WorkflowListContainer = styled.div`
   grid-template-columns: 33.3% 33.3% 33.3%;
 `;
 
+const WorkflowListContainerOpenAuthoring = styled.div`
+  min-height: 60%;
+  display: grid;
+  grid-template-columns: 50% 50% 0%;
+`;
+
 const styles = {
   columnPosition: idx =>
     (idx === 0 &&
@@ -57,6 +63,16 @@ const styles = {
   `,
   columnHovered: css`
     border-color: ${colors.active};
+  `,
+  hiddenColumn: css`
+    display: none;
+  `,
+  hiddenRightBorder: css`
+    &:not(:first-child):not(:last-child) {
+      &:after {
+        display: none;
+      }
+    }
   `,
 };
 
@@ -118,6 +134,7 @@ class WorkflowList extends React.Component {
     handlePublish: PropTypes.func.isRequired,
     handleDelete: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    isOpenAuthoring: PropTypes.bool,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -145,6 +162,7 @@ class WorkflowList extends React.Component {
 
   // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
+    const { isOpenAuthoring } = this.props;
     if (!entries) return null;
 
     if (!column) {
@@ -162,6 +180,8 @@ class WorkflowList extends React.Component {
                     styles.column,
                     styles.columnPosition(idx),
                     isHovered && styles.columnHovered,
+                    isOpenAuthoring && currColumn === 'pending_publish' && styles.hiddenColumn,
+                    isOpenAuthoring && currColumn === 'pending_review' && styles.hiddenRightBorder,
                   ]}
                 >
                   <ColumnHeader name={currColumn}>
@@ -228,7 +248,10 @@ class WorkflowList extends React.Component {
 
   render() {
     const columns = this.renderColumns(this.props.entries);
-    return <WorkflowListContainer>{columns}</WorkflowListContainer>;
+    const ListContainer = this.props.isOpenAuthoring
+      ? WorkflowListContainerOpenAuthoring
+      : WorkflowListContainer;
+    return <ListContainer>{columns}</ListContainer>;
   }
 }
 

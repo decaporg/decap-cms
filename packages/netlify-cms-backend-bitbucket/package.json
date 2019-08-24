@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-bitbucket",
   "description": "Bitbucket backend for Netlify CMS",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
@@ -17,7 +17,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
     "js-base64": "^2.5.1",
