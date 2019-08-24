@@ -107,7 +107,7 @@ export default class GitHubAuthenticationPage extends React.Component {
           <ForkApprovalContainer>
             <p>
               Open Authoring is enabled: we need to use a fork on your github account. (If a fork
-              already exists, we'll use that.)
+              already exists, we&#39;ll use that.)
             </p>
             <ForkButtonsContainer>
               <LoginButton onClick={approveFork}>Fork the repo</LoginButton>
