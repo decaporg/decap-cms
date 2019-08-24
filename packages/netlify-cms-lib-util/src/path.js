@@ -1,3 +1,5 @@
+import getRelativePath from 'get-relative-path';
+
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
 const normalizePath = path => path.replace(/[\\/]+/g, '/');
 
@@ -15,6 +17,37 @@ export function resolvePath(path, basePath) {
 
   // It's a relative path. Prepend a forward slash.
   return normalizePath(`/${path}`);
+}
+
+/**
+ * Take a media filename and resolve it with respect to a
+ * certain collection entry, either as an absolute URL, or
+ * a path relative to the collection entry's folder.
+ *
+ * @param {*} filename the filename of the media item within the media_folder
+ * @param {*} options how the filename should be resolved, see examples below:
+ *
+ * @example Resolving to publicly accessible URL
+ * mediaFilenameToUse('image.jpg', {
+ *   publicFolder: '/static/assets' // set by public_folder
+ * }) // -> "/static/assets/image.jpg"
+ *
+ * @example Resolving URL relatively to a specific collection entry
+ * mediaFilenameToUse('image.jpg', {
+ *   mediaFolder: '/content/media', // set by media_folder
+ *   collectionFolder: 'content/posts'
+ * }) // -> "../media/image.jpg"
+ *
+ */
+export function resolveMediaFilename(filename, options) {
+  if (options.publicFolder) {
+    return resolvePath(filename, options.publicFolder);
+  } else if (options.mediaFolder && options.collectionFolder) {
+    const media = normalizePath(`/${options.mediaFolder}/${filename}`);
+    const collection = normalizePath(`/${options.collectionFolder}/`);
+    return getRelativePath(collection, media);
+  }
+  throw new Error('incorrect usage');
 }
 
 /**

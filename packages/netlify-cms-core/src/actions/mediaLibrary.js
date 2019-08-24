@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { getBlobSHA } from 'netlify-cms-lib-util';
+import { resolveMediaFilename, getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from 'coreSrc/backend';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
@@ -82,8 +82,33 @@ export function closeMediaLibrary() {
   };
 }
 
-export function insertMedia(mediaPath) {
-  return { type: MEDIA_INSERT, payload: { mediaPath } };
+export function insertMedia(media) {
+  return (dispatch, getState) => {
+    let mediaPath;
+    if (media.url) {
+      // media.url is public, and already resolved
+      mediaPath = media.url;
+    } else if (media.name) {
+      // media.name still needs to be resolved to the appropriate URL
+      const state = getState();
+      const config = state.config;
+      if (config.get('media_folder_relative')) {
+        // the path is being resolved relatively
+        // and we need to know the path of the entry to resolve it
+        const mediaFolder = config.get('media_folder');
+        const collection = state.entryDraft.getIn(['entry', 'collection']);
+        const collectionFolder = state.collections.getIn([collection, 'folder']);
+        mediaPath = resolveMediaFilename(media.name, { mediaFolder, collectionFolder });
+      } else {
+        // the path is being resolved to a public URL
+        const publicFolder = config.get('public_folder');
+        mediaPath = resolveMediaFilename(media.name, { publicFolder });
+      }
+    } else {
+      throw new Error('Incorrect usage, expected {url} or {file}');
+    }
+    dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
+  };
 }
 
 export function removeInsertedMedia(controlID) {
