@@ -7,7 +7,7 @@ export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_FAILURE = 'AUTH_FAILURE';
 export const AUTH_REQUEST_DONE = 'AUTH_REQUEST_DONE';
-export const USE_FORK_WORKFLOW = 'USE_FORK_WORKFLOW';
+export const USE_OPEN_AUTHORING = 'USE_OPEN_AUTHORING';
 export const LOGOUT = 'LOGOUT';
 
 export function authenticating() {
@@ -37,9 +37,9 @@ export function doneAuthenticating() {
   };
 }
 
-export function useForkWorkflow() {
+export function useOpenAuthoring() {
   return {
-    type: USE_FORK_WORKFLOW,
+    type: USE_OPEN_AUTHORING,
   };
 }
 
@@ -59,8 +59,8 @@ export function authenticateUser() {
       .currentUser()
       .then(user => {
         if (user) {
-          if (user.useForkWorkflow) {
-            dispatch(useForkWorkflow());
+          if (user.useOpenAuthoring) {
+            dispatch(useOpenAuthoring());
           }
           dispatch(authenticate(user));
         } else {
@@ -83,8 +83,8 @@ export function loginUser(credentials) {
     return backend
       .authenticate(credentials)
       .then(user => {
-        if (user.useForkWorkflow) {
-          dispatch(useForkWorkflow());
+        if (user.useOpenAuthoring) {
+          dispatch(useOpenAuthoring());
         }
         dispatch(authenticate(user));
       })

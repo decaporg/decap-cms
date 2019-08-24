@@ -50,11 +50,11 @@ export default class GitHub {
 
     this.api = this.options.API || null;
 
-    this.forkWorkflowEnabled = config.getIn(['backend', 'fork_workflow'], false);
-    if (this.forkWorkflowEnabled) {
+    this.openAuthoringEnabled = config.getIn(['backend', 'open_authoring'], false);
+    if (this.openAuthoringEnabled) {
       if (!this.options.useWorkflow) {
         throw new Error(
-          'backend.fork_workflow is true but publish_mode is not set to editorial_workflow.',
+          'backend.open_authoring is true but publish_mode is not set to editorial_workflow.',
         );
       }
       this.originRepo = config.getIn(['backend', 'repo'], '');
@@ -74,7 +74,7 @@ export default class GitHub {
   }
 
   restoreUser(user) {
-    return this.forkWorkflowEnabled
+    return this.openAuthoringEnabled
       ? this.authenticateWithFork({ userData: user, getPermissionToFork: () => true }).then(() =>
           this.authenticate(user),
         )
@@ -86,7 +86,7 @@ export default class GitHub {
     var repoExists = false;
     while (!repoExists) {
       repoExists = await fetch(`${this.api_root}/repos/${repo}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `token ${token}` },
       })
         .then(() => true)
         .catch(err => (err && err.status === 404 ? false : Promise.reject(err)));
@@ -102,7 +102,7 @@ export default class GitHub {
     if (!this._currentUserPromise) {
       this._currentUserPromise = fetch(`${this.api_root}/user`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `token ${token}`,
         },
       }).then(res => res.json());
     }
@@ -117,7 +117,7 @@ export default class GitHub {
         `${this.api_root}/repos/${this.originRepo}/collaborators/${username}/permission`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `token ${token}`,
           },
         },
       )
@@ -128,15 +128,15 @@ export default class GitHub {
   }
 
   async authenticateWithFork({ userData, getPermissionToFork }) {
-    if (!this.forkWorkflowEnabled) {
-      throw new Error('Cannot authenticate with fork; forking workflow is turned off.');
+    if (!this.openAuthoringEnabled) {
+      throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
     }
     const { token } = userData;
 
     // Origin maintainers should be able to use the CMS normally
     if (await this.userIsOriginMaintainer({ token })) {
       this.repo = this.originRepo;
-      this.useForkWorkflow = false;
+      this.useOpenAuthoring = false;
       return Promise.resolve();
     }
 
@@ -145,10 +145,10 @@ export default class GitHub {
     const fork = await fetch(`${this.api_root}/repos/${this.originRepo}/forks`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `token ${token}`,
       },
     }).then(res => res.json());
-    this.useForkWorkflow = true;
+    this.useOpenAuthoring = true;
     this.repo = fork.full_name;
     return this.pollUntilForkExists({ repo: fork.full_name, token });
   }
@@ -159,10 +159,10 @@ export default class GitHub {
       token: this.token,
       branch: this.branch,
       repo: this.repo,
-      originRepo: this.useForkWorkflow ? this.originRepo : undefined,
+      originRepo: this.useOpenAuthoring ? this.originRepo : undefined,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
-      useForkWorkflow: this.useForkWorkflow,
+      useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     const user = await this.api.user();
@@ -186,7 +186,7 @@ export default class GitHub {
     }
 
     // Authorized user
-    return { ...user, token: state.token, useForkWorkflow: this.useForkWorkflow };
+    return { ...user, token: state.token, useOpenAuthoring: this.useOpenAuthoring };
   }
 
   logout() {
@@ -199,14 +199,14 @@ export default class GitHub {
   }
 
   async entriesByFolder(collection, extension) {
-    const repoURL = `/repos/${this.useForkWorkflow ? this.originRepo : this.repo}`;
-    const files = await this.api.listFiles(collection.get('folder'));
+    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
+    const files = await this.api.listFiles(collection.get('folder'), { repoURL });
     const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
     return this.fetchFiles(filteredFiles, { repoURL });
   }
 
   entriesByFiles(collection) {
-    const repoURL = `/repos/${this.useForkWorkflow ? this.originRepo : this.repo}`;
+    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
     const files = collection.get('files').map(collectionFile => ({
       path: collectionFile.get('file'),
       label: collectionFile.get('label'),
@@ -243,7 +243,7 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    const repoURL = `/repos/${this.useForkWorkflow ? this.originRepo : this.repo}`;
+    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
     return this.api.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,
@@ -365,7 +365,8 @@ export default class GitHub {
       return null;
     }
 
-    const statuses = await this.api.getStatuses(data.pr.head);
+    const headSHA = typeof data.pr.head === 'string' ? data.pr.head : data.pr.head.sha;
+    const statuses = await this.api.getStatuses(headSHA);
     const deployStatus = getPreviewStatus(statuses, this.config);
 
     if (deployStatus) {

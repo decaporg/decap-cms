@@ -218,7 +218,7 @@ class EditorToolbar extends React.Component {
     displayUrl: PropTypes.string,
     collection: ImmutablePropTypes.map.isRequired,
     hasWorkflow: PropTypes.bool,
-    useForkWorkflow: PropTypes.bool,
+    useOpenAuthoring: PropTypes.bool,
     hasUnpublishedChanges: PropTypes.bool,
     isNewEntry: PropTypes.bool,
     isModification: PropTypes.bool,
@@ -380,7 +380,7 @@ class EditorToolbar extends React.Component {
       onPublishAndNew,
       currentStatus,
       isNewEntry,
-      useForkWorkflow,
+      useOpenAuthoring,
       t,
     } = this.props;
     if (currentStatus) {
@@ -408,7 +408,7 @@ class EditorToolbar extends React.Component {
               onClick={() => onChangeStatus('PENDING_REVIEW')}
               icon={currentStatus === status.get('PENDING_REVIEW') && 'check'}
             />
-            {useForkWorkflow ? (
+            {useOpenAuthoring ? (
               ''
             ) : (
               <StatusDropdownItem
@@ -418,7 +418,7 @@ class EditorToolbar extends React.Component {
               />
             )}
           </ToolbarDropdown>
-          {useForkWorkflow ? (
+          {useOpenAuthoring ? (
             ''
           ) : (
             <ToolbarDropdown

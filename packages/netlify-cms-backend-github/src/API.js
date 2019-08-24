@@ -3,6 +3,7 @@ import semaphore from 'semaphore';
 import { find, flow, get, hasIn, initial, last, partial, result, uniq } from 'lodash';
 import { map } from 'lodash/fp';
 import {
+  getPaginatedRequestIterator,
   APIError,
   EditorialWorkflowError,
   filterPromisesWith,
@@ -11,7 +12,7 @@ import {
   resolvePromiseProperties,
 } from 'netlify-cms-lib-util';
 
-const CMS_BRANCH_PREFIX = 'cms/';
+const CMS_BRANCH_PREFIX = 'cms';
 
 const replace404WithEmptyArray = err => (err && err.status === 404 ? [] : Promise.reject(err));
 
@@ -21,7 +22,7 @@ export default class API {
     this.token = config.token || false;
     this.branch = config.branch || 'master';
     this.originRepo = config.originRepo;
-    this.useForkWorkflow = config.useForkWorkflow;
+    this.useOpenAuthoring = config.useOpenAuthoring;
     this.repo = config.repo || '';
     this.repoURL = `/repos/${this.repo}`;
     this.originRepoURL = this.originRepo && `/repos/${this.originRepo}`;
@@ -83,6 +84,20 @@ export default class API {
     return this.api_root + path;
   }
 
+  parseResponse(response) {
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && contentType.match(/json/)) {
+      return this.parseJsonResponse(response);
+    }
+    const textPromise = response.text().then(text => {
+      if (!response.ok) {
+        return Promise.reject(text);
+      }
+      return text;
+    });
+    return textPromise;
+  }
+
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
@@ -90,23 +105,26 @@ export default class API {
     return fetch(url, { ...options, headers })
       .then(response => {
         responseStatus = response.status;
-        const contentType = response.headers.get('Content-Type');
-        if (contentType && contentType.match(/json/)) {
-          return this.parseJsonResponse(response);
-        }
-        const text = response.text();
-        if (!response.ok) {
-          return Promise.reject(text);
-        }
-        return text;
+        return this.parseResponse(response);
       })
       .catch(error => {
         throw new APIError(error.message, responseStatus, 'GitHub');
       });
   }
 
+  async requestAllPages(url, options = {}) {
+    const processedURL = this.urlFor(url, options);
+    const pagesIterator = getPaginatedRequestIterator(processedURL, options);
+    const pagesToParse = [];
+    for await (const page of pagesIterator) {
+      pagesToParse.push(this.parseResponse(page));
+    }
+    const pages = await Promise.all(pagesToParse);
+    return [].concat(...pages);
+  }
+
   generateContentKey(collectionName, slug) {
-    if (!this.useForkWorkflow) {
+    if (!this.useOpenAuthoring) {
       // this doesn't use the collection, but we need to leave it that way for backwards
       // compatibility
       return slug;
@@ -115,22 +133,16 @@ export default class API {
     return `${this.repo}/${collectionName}/${slug}`;
   }
 
-  generateBranchNameFromCollectionAndSlug(collectionName, slug) {
-    return this.generateContentKey(collectionName, slug).then(contentKey =>
-      this.generateBranchName(contentKey),
-    );
-  }
-
   generateBranchName(contentKey) {
-    return `${CMS_BRANCH_PREFIX}${contentKey}`;
+    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
 
   branchNameFromRef(ref) {
-    return ref.substring('refs/heads/'.length - 1);
+    return ref.substring('refs/heads/'.length);
   }
 
   contentKeyFromRef(ref) {
-    return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length - 1);
+    return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length);
   }
 
   checkMetadataRef() {
@@ -212,28 +224,34 @@ export default class API {
         cache: 'no-store',
       };
 
-      if (!this.useForkWorkflow) {
+      if (!this.useOpenAuthoring) {
         return this.request(`${this.repoURL}/contents/${key}.json`, metadataRequestOptions)
           .then(response => JSON.parse(response))
-          .catch(() =>
-            console.log(
-              '%c %s does not have metadata',
-              'line-height: 30px;text-align: center;font-weight: bold',
-              key,
-            ),
-          );
+          .catch(err => {
+            if (err.message === 'Not Found') {
+              console.log(
+                '%c %s does not have metadata',
+                'line-height: 30px;text-align: center;font-weight: bold',
+                key,
+              );
+            }
+            throw err;
+          });
       }
 
       const [user, repo] = key.split('/');
       return this.request(`/repos/${user}/${repo}/contents/${key}.json`, metadataRequestOptions)
         .then(response => JSON.parse(response))
-        .catch(() =>
-          console.log(
-            '%c %s does not have metadata',
-            'line-height: 30px;text-align: center;font-weight: bold',
-            key,
-          ),
-        );
+        .catch(err => {
+          if (err.message === 'Not Found') {
+            console.log(
+              '%c %s does not have metadata',
+              'line-height: 30px;text-align: center;font-weight: bold',
+              key,
+            );
+          }
+          throw err;
+        });
     });
   }
 
@@ -251,22 +269,22 @@ export default class API {
             .split('/')
             .slice(0, -1)
             .join('/');
-          return this.listFiles(dir)
+          return this.listFiles(dir, { repoURL, branch })
             .then(files => files.find(file => file.path === path))
-            .then(file => this.getBlob(file.sha));
+            .then(file => this.getBlob(file.sha, { repoURL }));
         }
         throw error;
       });
     }
   }
 
-  getBlob(sha) {
+  getBlob(sha, { repoURL = this.repoURL } = {}) {
     return localForage.getItem(`gh.${sha}`).then(cached => {
       if (cached) {
         return cached;
       }
 
-      return this.request(`${this.repoURL}/git/blobs/${sha}`, {
+      return this.request(`${repoURL}/git/blobs/${sha}`, {
         headers: { Accept: 'application/vnd.github.VERSION.raw' },
       }).then(result => {
         localForage.setItem(`gh.${sha}`, result);
@@ -275,9 +293,9 @@ export default class API {
     });
   }
 
-  listFiles(path) {
-    return this.request(`${this.repoURL}/contents/${path.replace(/\/$/, '')}`, {
-      params: { ref: this.branch },
+  listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
+    return this.request(`${repoURL}/contents/${path.replace(/\/$/, '')}`, {
+      params: { ref: branch },
     })
       .then(files => {
         if (!Array.isArray(files)) {
@@ -292,7 +310,7 @@ export default class API {
     const metaDataPromise = this.retrieveMetadata(contentKey).then(data =>
       data.objects.entry.path ? data : Promise.reject(null),
     );
-    const repoURL = this.useForkWorkflow
+    const repoURL = this.useOpenAuthoring
       ? `/repos/${contentKey
           .split('/')
           .slice(0, 2)
@@ -317,7 +335,7 @@ export default class API {
   isUnpublishedEntryModification(path, branch) {
     return this.readFile(path, null, {
       branch,
-      repoURL: this.useForkWorkflow ? this.originRepoURL : this.repoURL,
+      repoURL: this.useOpenAuthoring ? this.originRepoURL : this.repoURL,
     })
       .then(() => true)
       .catch(err => {
@@ -338,8 +356,7 @@ export default class API {
     // Get PRs with a `head` of `branchName`. Note that this is a
     // substring match, so we need to check that the `head.ref` of
     // at least one of the returned objects matches `branchName`.
-    // TODO: this is a paginated endpoint
-    return this.request(`${repoURL}/pulls`, {
+    return this.requestAllPages(`${repoURL}/pulls`, {
       params: {
         head: usernameOfFork ? `${usernameOfFork}:${branchName}` : branchName,
         ...(state ? { state } : {}),
@@ -350,10 +367,10 @@ export default class API {
 
   branchHasPR = async ({ branchName, ...rest }) => {
     const prs = await this.getPRsForBranchName({ branchName, ...rest });
-    return prs.some(pr => this.branchNameFromRef(pr.head.ref) === branchName);
+    return prs.some(pr => pr.head.ref === branchName);
   };
 
-  getUpdatedForkWorkflowMetadata = async (contentKey, { metadata: metadataArg } = {}) => {
+  getUpdatedOpenAuthoringMetadata = async (contentKey, { metadata: metadataArg } = {}) => {
     const metadata = metadataArg || (await this.retrieveMetadata(contentKey)) || {};
     const { pr: prMetadata, status } = metadata;
 
@@ -402,10 +419,10 @@ export default class API {
     const onlyBranchesWithOpenPRs = filterPromisesWith(({ ref }) =>
       this.branchHasPR({ branchName: this.branchNameFromRef(ref), state: 'open' }),
     );
-    const getUpdatedForkWorkflowBranches = flow([
+    const getUpdatedOpenAuthoringBranches = flow([
       map(async branch => {
         const contentKey = this.contentKeyFromRef(branch.ref);
-        const metadata = await this.getUpdatedForkWorkflowMetadata(contentKey);
+        const metadata = await this.getUpdatedOpenAuthoringMetadata(contentKey);
         // filter out removed entries
         if (!metadata) {
           return Promise.reject('Unpublished entry was removed');
@@ -418,8 +435,8 @@ export default class API {
       const branches = await this.request(`${this.repoURL}/git/refs/heads/cms`).catch(
         replace404WithEmptyArray,
       );
-      const filterFunction = this.useForkWorkflow
-        ? getUpdatedForkWorkflowBranches
+      const filterFunction = this.useOpenAuthoring
+        ? getUpdatedOpenAuthoringBranches
         : onlyBranchesWithOpenPRs;
       return await filterFunction(branches);
     } catch (err) {
@@ -436,7 +453,7 @@ export default class API {
    * concept of entry "status". Useful for things like deploy preview links.
    */
   async getStatuses(sha) {
-    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     try {
       const resp = await this.request(`${repoURL}/commits/${sha}/status`);
       return resp.statuses;
@@ -501,6 +518,9 @@ export default class API {
   }
 
   deleteFile(path, message, options = {}) {
+    if (this.useOpenAuthoring) {
+      return Promise.reject('Cannot delete published entries as an Open Authoring user!');
+    }
     const branch = options.branch || this.branch;
     const pathArray = path.split('/');
     const filename = last(pathArray);
@@ -531,14 +551,14 @@ export default class API {
     const contentKey = this.generateContentKey(options.collectionName, entry.slug);
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
-    const branchData = await this.getBranch();
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
       const userPromise = this.user();
+      const branchData = await this.getBranch();
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
       const commitResponse = await this.commit(options.commitMessage, changeTree);
       await this.createBranch(branchName, commitResponse.sha);
-      const pr = this.useForkWorkflow
+      const pr = this.useOpenAuthoring
         ? undefined
         : await this.createPR(options.commitMessage, branchName);
       const user = await userPromise;
@@ -568,6 +588,7 @@ export default class API {
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
+      const branchData = await this.getBranch(branchName);
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
       const commitPromise = this.commit(options.commitMessage, changeTree);
       const metadataPromise = this.retrieveMetadata(contentKey);
@@ -710,7 +731,7 @@ export default class API {
    * Get a pull request by PR number.
    */
   getPullRequest(prNumber) {
-    const repoURL = this.useForkWorkflow ? this.repoURL : this.originRepoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     return this.request(`${repoURL}/pulls/${prNumber} }`);
   }
 
@@ -718,7 +739,7 @@ export default class API {
    * Get the list of commits for a given pull request.
    */
   getPullRequestCommits(prNumber) {
-    const repoURL = this.useForkWorkflow ? this.repoURL : this.originRepoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     return this.request(`${repoURL}/pulls/${prNumber}/commits`);
   }
 
@@ -744,7 +765,7 @@ export default class API {
     const contentKey = this.generateContentKey(collectionName, slug);
     const metadata = await this.retrieveMetadata(contentKey);
 
-    if (!this.useForkWorkflow) {
+    if (!this.useOpenAuthoring) {
       return this.storeMetadata(contentKey, {
         ...metadata,
         status,
@@ -752,7 +773,7 @@ export default class API {
     }
 
     if (status === 'pending_publish') {
-      throw new Error('Fork workflow entries may not be set to the status "pending_publish".');
+      throw new Error('Open Authoring entries may not be set to the status "pending_publish".');
     }
 
     const { pr: prMetadata } = metadata;
@@ -809,8 +830,8 @@ export default class API {
     );
   }
 
-  publishUnpublishedEntry(collection, slug) {
-    const contentKey = this.generateContentKey(collection.get('name'), slug);
+  publishUnpublishedEntry(collectionName, slug) {
+    const contentKey = this.generateContentKey(collectionName, slug);
     const branchName = this.generateBranchName(contentKey);
     return this.retrieveMetadata(contentKey)
       .then(metadata => this.mergePR(metadata.pr, metadata.objects))
@@ -847,7 +868,7 @@ export default class API {
   }
 
   assertCmsBranch(branchName) {
-    return branchName.startsWith(CMS_BRANCH_PREFIX);
+    return branchName.startsWith(`${CMS_BRANCH_PREFIX}/`);
   }
 
   patchBranch(branchName, sha, opts = {}) {
@@ -864,8 +885,8 @@ export default class API {
 
   async createPR(title, head, base = this.branch) {
     const body = 'Automatically generated by Netlify CMS';
-    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
-    const headReference = this.useForkWorkflow ? `${(await this.user()).login}:${head}` : head;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
+    const headReference = this.useOpenAuthoring ? `${(await this.user()).login}:${head}` : head;
     return this.request(`${repoURL}/pulls`, {
       method: 'POST',
       body: JSON.stringify({ title, body, head: headReference, base }),
@@ -874,7 +895,7 @@ export default class API {
 
   async openPR(pullRequest) {
     const { number } = pullRequest;
-    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     console.log('%c Re-opening PR', 'line-height: 30px;text-align: center;font-weight: bold');
     return this.request(`${repoURL}/pulls/${number}`, {
       method: 'PATCH',
@@ -886,7 +907,7 @@ export default class API {
 
   closePR(pullrequest) {
     const prNumber = pullrequest.number;
-    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     console.log('%c Deleting PR', 'line-height: 30px;text-align: center;font-weight: bold');
     return this.request(`${repoURL}/pulls/${prNumber}`, {
       method: 'PATCH',
@@ -899,7 +920,7 @@ export default class API {
   mergePR(pullrequest, objects) {
     const headSha = pullrequest.head;
     const prNumber = pullrequest.number;
-    const repoURL = this.useForkWorkflow ? this.originRepoURL : this.repoURL;
+    const repoURL = this.useOpenAuthoring ? this.originRepoURL : this.repoURL;
     console.log('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
     return this.request(`${repoURL}/pulls/${prNumber}/merge`, {
       method: 'PUT',
