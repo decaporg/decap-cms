@@ -4830,8 +4830,9 @@ getpass@^0.1.1:
     assert-plus "^1.0.0"
 
 "github-buttons@git+https://github.com/ntkme/github-buttons.git":
-  version "0.0.0"
-  resolved "git+https://github.com/ntkme/github-buttons.git#4fd814f425cdeb57c9938151c668c8f7c6f779bc"
+  version "2.2.10"
+  uid b469ffec3291bea47f446f8ca1e958c551a188f2
+  resolved "git+https://github.com/ntkme/github-buttons.git#b469ffec3291bea47f446f8ca1e958c551a188f2"
 
 github-from-package@0.0.0:
   version "0.0.0"
@@ -7990,12 +7991,7 @@ p-try@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
 
-p-try@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
-  integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
-
-p-try@^2.1.0:
+p-try@^2.0.0, p-try@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
