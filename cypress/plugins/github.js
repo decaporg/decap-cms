@@ -32,7 +32,11 @@ function getEnvs() {
 async function prepareTestGitHubRepo() {
   const { owner, repo, token } = getEnvs();
 
-  const testRepoName = `${repo}-${Date.now()}`;
+  // postfix a random string to avoid collisions
+  const postfix = Math.random()
+    .toString(32)
+    .substring(2);
+  const testRepoName = `${repo}-${Date.now()}-${postfix}`;
 
   const client = getGitHubClient(token);
 
@@ -82,22 +86,31 @@ async function getForkUser() {
 async function deleteRepositories({ owner, repo, tempDir }) {
   const { forkOwner, token, forkToken } = getEnvs();
 
+  const errorHandler = e => {
+    if (e.status !== 404) {
+      throw e;
+    }
+  };
+
   console.log('Deleting repository', `${owner}/${repo}`);
-
-  let client = getGitHubClient(token);
-  await client.repos.delete({
-    owner,
-    repo,
-  });
-
   await fs.remove(tempDir);
 
-  client = getGitHubClient(forkToken);
+  let client = getGitHubClient(token);
+  await client.repos
+    .delete({
+      owner,
+      repo,
+    })
+    .catch(errorHandler);
+
   console.log('Deleting forked repository', `${forkOwner}/${repo}`);
-  await client.repos.delete({
-    owner: forkOwner,
-    repo,
-  });
+  client = getGitHubClient(forkToken);
+  await client.repos
+    .delete({
+      owner: forkOwner,
+      repo,
+    })
+    .catch(errorHandler);
 }
 
 async function resetOriginRepo({ owner, repo, tempDir }) {

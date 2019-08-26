@@ -191,7 +191,7 @@ function updateExistingPostAndExit(fromEntry, toEntry) {
   goToWorkflow();
   cy.contains('h2', fromEntry.title)
     .parent()
-    .click();
+    .click({ force: true });
   populateEntry(toEntry);
   exitEditor();
   goToWorkflow();
