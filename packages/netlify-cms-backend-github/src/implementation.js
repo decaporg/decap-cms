@@ -249,7 +249,7 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
+    const repoURL = `/repos/${this.originRepo}`;
     return this.api.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,

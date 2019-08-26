@@ -28,8 +28,12 @@ export const branch = gql`
     }
     id
     name
+    repository {
+      ...RepositoryParts
+    }
   }
   ${object}
+  ${repository}
 `;
 
 export const pullRequest = gql`

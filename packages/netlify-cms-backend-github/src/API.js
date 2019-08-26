@@ -228,34 +228,27 @@ export default class API {
         cache: 'no-store',
       };
 
+      const errorHandler = err => {
+        if (err.message === 'Not Found') {
+          console.log(
+            '%c %s does not have metadata',
+            'line-height: 30px;text-align: center;font-weight: bold',
+            key,
+          );
+        }
+        throw err;
+      };
+
       if (!this.useOpenAuthoring) {
         return this.request(`${this.repoURL}/contents/${key}.json`, metadataRequestOptions)
           .then(response => JSON.parse(response))
-          .catch(err => {
-            if (err.message === 'Not Found') {
-              console.log(
-                '%c %s does not have metadata',
-                'line-height: 30px;text-align: center;font-weight: bold',
-                key,
-              );
-            }
-            throw err;
-          });
+          .catch(errorHandler);
       }
 
       const [user, repo] = key.split('/');
       return this.request(`/repos/${user}/${repo}/contents/${key}.json`, metadataRequestOptions)
         .then(response => JSON.parse(response))
-        .catch(err => {
-          if (err.message === 'Not Found') {
-            console.log(
-              '%c %s does not have metadata',
-              'line-height: 30px;text-align: center;font-weight: bold',
-              key,
-            );
-          }
-          throw err;
-        });
+        .catch(errorHandler);
     });
   }
 
@@ -286,7 +279,7 @@ export default class API {
     }
   }
 
-  retrieveBlob(sha, { repoURL = this.repoURL }) {
+  retrieveBlob(sha, repoURL) {
     return this.request(`${repoURL}/git/blobs/${sha}`, {
       headers: { Accept: 'application/vnd.github.VERSION.raw' },
     });
@@ -298,7 +291,7 @@ export default class API {
         return cached;
       }
 
-      return this.retrieveBlob(sha, { repoURL }).then(result => {
+      return this.retrieveBlob(sha, repoURL).then(result => {
         localForage.setItem(`gh.${sha}`, result);
         return result;
       });
@@ -569,9 +562,6 @@ export default class API {
 
   async createBranchAndPullRequest(branchName, sha, commitMessage) {
     await this.createBranch(branchName, sha);
-    if (this.useOpenAuthoring) {
-      return undefined;
-    }
     return this.createPR(commitMessage, branchName);
   }
 
@@ -581,16 +571,21 @@ export default class API {
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
-      const branchData = await this.getBranch();
       const userPromise = this.user();
       const branchData = await this.getBranch();
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
       const commitResponse = await this.commit(options.commitMessage, changeTree);
-      const pr = await this.createBranchAndPullRequest(
-        branchName,
-        commitResponse.sha,
-        options.commitMessage,
-      );
+
+      let pr;
+      if (this.useOpenAuthoring) {
+        await this.createBranch(branchName, commitResponse.sha);
+      } else {
+        pr = await this.createBranchAndPullRequest(
+          branchName,
+          commitResponse.sha,
+          options.commitMessage,
+        );
+      }
 
       const user = await userPromise;
       return this.storeMetadata(contentKey, {
@@ -641,6 +636,9 @@ export default class API {
 
       if (pr) {
         return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, commit);
+      } else if (this.useOpenAuthoring) {
+        // if a PR hasn't been created yet for the forked repo, just patch the branch
+        await this.patchBranch(branchName, commit.sha, { force: true })
       }
 
       return this.storeMetadata(contentKey, updatedMetadata);

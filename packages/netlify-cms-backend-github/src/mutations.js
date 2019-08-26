@@ -68,6 +68,17 @@ export const createPullRequest = gql`
   ${fragments.pullRequest}
 `;
 
+export const createBranch = gql`
+  mutation createBranch($createRefInput: CreateRefInput!) {
+    createRef(input: $createRefInput) {
+      branch: ref {
+        ...BranchParts
+      }
+    }
+  }
+  ${fragments.branch}
+`;
+
 // createRef only works for branches at the moment
 export const createBranchAndPullRequest = gql`
   mutation createBranchAndPullRequest(
