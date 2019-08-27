@@ -401,12 +401,12 @@ class EditorToolbar extends React.Component {
             <StatusDropdownItem
               label={t('editor.editorToolbar.draft')}
               onClick={() => onChangeStatus('DRAFT')}
-              icon={currentStatus === status.get('DRAFT') && 'check'}
+              icon={currentStatus === status.get('DRAFT') ? 'check' : null}
             />
             <StatusDropdownItem
               label={t('editor.editorToolbar.inReview')}
               onClick={() => onChangeStatus('PENDING_REVIEW')}
-              icon={currentStatus === status.get('PENDING_REVIEW') && 'check'}
+              icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
             />
             {useOpenAuthoring ? (
               ''
@@ -414,7 +414,7 @@ class EditorToolbar extends React.Component {
               <StatusDropdownItem
                 label={t('editor.editorToolbar.ready')}
                 onClick={() => onChangeStatus('PENDING_PUBLISH')}
-                icon={currentStatus === status.get('PENDING_PUBLISH') && 'check'}
+                icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
               />
             )}
           </ToolbarDropdown>
