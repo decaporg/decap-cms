@@ -3,7 +3,7 @@ import semaphore from 'semaphore';
 import { find, flow, get, hasIn, initial, last, partial, result, uniq } from 'lodash';
 import { map } from 'lodash/fp';
 import {
-  getPaginatedRequestIterator,
+  getAllResponses,
   APIError,
   EditorialWorkflowError,
   filterPromisesWith,
@@ -117,13 +117,10 @@ export default class API {
   }
 
   async requestAllPages(url, options = {}) {
+    const headers = this.requestHeaders(options.headers || {});
     const processedURL = this.urlFor(url, options);
-    const pagesIterator = getPaginatedRequestIterator(processedURL, options);
-    const pagesToParse = [];
-    for await (const page of pagesIterator) {
-      pagesToParse.push(this.parseResponse(page));
-    }
-    const pages = await Promise.all(pagesToParse);
+    const allResponses = await getAllResponses(processedURL, { ...options, headers });
+    const pages = await Promise.all(allResponses.map(res => this.parseResponse(res)));
     return [].concat(...pages);
   }
 
@@ -638,7 +635,7 @@ export default class API {
         return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, commit);
       } else if (this.useOpenAuthoring) {
         // if a PR hasn't been created yet for the forked repo, just patch the branch
-        await this.patchBranch(branchName, commit.sha, { force: true })
+        await this.patchBranch(branchName, commit.sha, { force: true });
       }
 
       return this.storeMetadata(contentKey, updatedMetadata);
