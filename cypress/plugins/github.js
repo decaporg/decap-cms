@@ -18,12 +18,12 @@ function getEnvs() {
     GITHUB_REPO_OWNER: owner,
     GITHUB_REPO_NAME: repo,
     GITHUB_REPO_TOKEN: token,
-    GITHUB_FORK_WORKFLOW_OWNER: forkOwner,
-    GITHUB_FORK_WORKFLOW_TOKEN: forkToken,
+    GITHUB_OPEN_AUTHORING_OWNER: forkOwner,
+    GITHUB_OPEN_AUTHORING_TOKEN: forkToken,
   } = process.env;
   if (!owner || !repo || !token || !forkOwner || !forkToken) {
     throw new Error(
-      'Please set GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_REPO_TOKEN, GITHUB_FORK_WORKFLOW_OWNER, GITHUB_FORK_WORKFLOW_TOKEN  environment variables',
+      'Please set GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_REPO_TOKEN, GITHUB_OPEN_AUTHORING_OWNER, GITHUB_OPEN_AUTHORING_TOKEN  environment variables',
     );
   }
   return { owner, repo, token, forkOwner, forkToken };
