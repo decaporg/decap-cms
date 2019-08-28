@@ -612,6 +612,11 @@ export default class API {
         return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, commit);
       }
 
+      // Update unpublished entries which don't have a PR. These are
+      // typically Open Authoring entries that have never been
+      // submitted for review.
+      await this.patchBranch(branchName, commit.sha);
+
       return this.storeMetadata(contentKey, updatedMetadata);
     }
   }
