@@ -83,6 +83,16 @@ describe('Frontmatter', () => {
     });
   });
 
+  it('should parse TOML with 0.5 style dates', () => {
+    expect(
+      FrontmatterInfer.fromFile('+++\ntitle = "TOML"\ndate = 2018-12-24\n+++\nContent'),
+    ).toEqual({
+      title: 'TOML',
+      date: new Date('2018-12-24T00:00:00.000Z'),
+      body: 'Content',
+    });
+  });
+
   it('should parse TOML with +++ delimiters when it is explicitly set as the format without a custom delimiter', () => {
     expect(
       frontmatterTOML('~~~').fromFile(

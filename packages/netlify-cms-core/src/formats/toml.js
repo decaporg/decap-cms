@@ -1,4 +1,4 @@
-import toml from 'toml-j0.4';
+import toml from '@iarna/toml';
 import tomlify from 'tomlify-j0.4';
 import moment from 'moment';
 import AssetProxy from 'ValueObjects/AssetProxy';

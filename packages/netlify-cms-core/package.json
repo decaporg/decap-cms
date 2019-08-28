@@ -59,7 +59,7 @@
     "redux-thunk": "^2.3.0",
     "sanitize-filename": "^1.6.1",
     "semaphore": "^1.0.5",
-    "toml-j0.4": "^1.1.1",
+    "@iarna/toml": "2.2.3",
     "tomlify-j0.4": "^3.0.0-alpha.0",
     "url": "^0.11.0",
     "what-input": "^5.1.4"
