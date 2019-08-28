@@ -17,6 +17,7 @@ import {
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
+import { resolveFieldRef, fieldRefToString } from 'Lib/resolveFieldRef';
 import {
   localForage,
   Cursor,
@@ -81,7 +82,9 @@ function getLabelForFileCollectionEntry(collection, path) {
 function slugFormatter(collection, entryData, slugConfig) {
   const template = collection.get('slug') || '{{slug}}';
 
-  const identifier = entryData.get(selectIdentifier(collection));
+  const identifierField = selectIdentifier(collection);
+  const identifier = resolveFieldRef(entryData, identifierField);
+
   if (!identifier) {
     throw new Error(
       'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
@@ -377,7 +380,7 @@ export class Backend {
 
         // TODO: pass search fields in as an argument
         const searchFields = [
-          selectInferedField(collection, 'title'),
+          fieldRefToString(selectInferedField(collection, 'title')),
           selectInferedField(collection, 'shortTitle'),
           selectInferedField(collection, 'author'),
           ...summaryFields.map(elem => {
@@ -387,6 +390,7 @@ export class Backend {
             return elem;
           }),
         ].filter(Boolean);
+
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {
           extract: extractSearchFields(uniq(searchFields)),
@@ -446,6 +450,7 @@ export class Backend {
   async persistLocalDraftBackup(entry, collection) {
     const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
     const raw = this.entryToRaw(collection, entry);
+
     if (!raw.trim()) {
       return;
     }

@@ -6,6 +6,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
+import { fieldRefToString } from 'Lib/resolveFieldRef';
+
 import { ErrorBoundary } from 'UI';
 import { selectTemplateName, selectInferedField } from 'Reducers/collections';
 import { INFERABLE_FIELDS } from 'Constants/fieldInference';
@@ -46,11 +48,11 @@ export default class PreviewPane extends React.Component {
   inferedFields = {};
 
   inferFields() {
-    const titleField = selectInferedField(this.props.collection, 'title');
+    const titleField = fieldRefToString(selectInferedField(this.props.collection, 'title'));
     const shortTitleField = selectInferedField(this.props.collection, 'shortTitle');
     const authorField = selectInferedField(this.props.collection, 'author');
-
     this.inferedFields = {};
+
     if (titleField) this.inferedFields[titleField] = INFERABLE_FIELDS.title;
     if (shortTitleField) this.inferedFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
     if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
@@ -67,7 +69,13 @@ export default class PreviewPane extends React.Component {
     fields = this.props.fields,
     values = this.props.entry.get('data'),
     fieldsMetaData = this.props.fieldsMetaData,
+    fieldRef = [],
   ) => {
+    // accumulate a path as we traverse the fields so
+    // that we can check whether it matches
+    // an identifier_field path
+    fieldRef.push(name);
+
     // We retrieve the field by name so that this function can also be used in
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
@@ -77,7 +85,7 @@ export default class PreviewPane extends React.Component {
     let metadata = fieldsMetaData && fieldsMetaData.get(field.get('name'), Map());
 
     if (nestedFields) {
-      field = field.set('fields', this.getNestedWidgets(nestedFields, value, metadata));
+      field = field.set('fields', this.getNestedWidgets(nestedFields, value, metadata, fieldRef));
     }
 
     if (singleField) {
@@ -85,8 +93,8 @@ export default class PreviewPane extends React.Component {
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
-    if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
-      value = this.inferedFields[name].defaultPreview(value);
+    if (Object.keys(this.inferedFields).indexOf(fieldRefToString(fieldRef)) !== -1) {
+      value = this.inferedFields[fieldRefToString(fieldRef)].defaultPreview(value);
     } else if (
       value &&
       labelledWidgets.indexOf(field.get('widget')) !== -1 &&
@@ -105,13 +113,15 @@ export default class PreviewPane extends React.Component {
   /**
    * Retrieves widgets for nested fields (children of object/list fields)
    */
-  getNestedWidgets = (fields, values, fieldsMetaData) => {
+  getNestedWidgets = (fields, values, fieldsMetaData, fieldRef) => {
     // Fields nested within a list field will be paired with a List of value Maps.
     if (List.isList(values)) {
-      return values.map(value => this.widgetsForNestedFields(fields, value, fieldsMetaData));
+      return values.map(value =>
+        this.widgetsForNestedFields(fields, value, fieldsMetaData, fieldRef),
+      );
     }
     // Fields nested within an object field will be paired with a single Map of values.
-    return this.widgetsForNestedFields(fields, values, fieldsMetaData);
+    return this.widgetsForNestedFields(fields, values, fieldsMetaData, fieldRef);
   };
 
   getSingleNested = (field, values, fieldsMetaData) => {
@@ -126,8 +136,10 @@ export default class PreviewPane extends React.Component {
   /**
    * Use widgetFor as a mapping function for recursive widget retrieval
    */
-  widgetsForNestedFields = (fields, values, fieldsMetaData) => {
-    return fields.map(field => this.widgetFor(field.get('name'), fields, values, fieldsMetaData));
+  widgetsForNestedFields = (fields, values, fieldsMetaData, fieldRef) => {
+    return fields.map(field =>
+      this.widgetFor(field.get('name'), fields, values, fieldsMetaData, fieldRef),
+    );
   };
 
   /**

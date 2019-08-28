@@ -112,14 +112,40 @@ export const selectAllowDeletion = collection =>
   selectors[collection.get('type')].allowDeletion(collection);
 export const selectTemplateName = (collection, slug) =>
   selectors[collection.get('type')].templateName(collection, slug);
+
 export const selectIdentifier = collection => {
   const identifier = collection.get('identifier_field');
-  const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
+  let identifierFields = IDENTIFIER_FIELDS;
+
+  if (identifier) {
+    const pathParts = identifier.split('.').filter(str => str.length);
+
+    // Traverse collection's fields to
+    // verify that there is a corresponding field
+    // for the identifier_field provided
+    if (pathParts.length > 1) {
+      let current = collection.get('fields', []);
+      let depth = 0;
+      for (let part of pathParts) {
+        const field = current.find(field => field.get('name') === part);
+        if (!field) break;
+        const next = field.get('fields');
+        if (!next) break;
+        current = next;
+        depth++;
+      }
+      return depth === pathParts.length - 1 ? pathParts : null;
+    }
+
+    identifierFields = [identifier, ...IDENTIFIER_FIELDS];
+  }
+
   const fieldNames = collection.get('fields', []).map(field => field.get('name'));
   return identifierFields.find(id =>
     fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()),
   );
 };
+
 export const selectInferedField = (collection, fieldName) => {
   if (fieldName === 'title' && collection.get('identifier_field')) {
     return selectIdentifier(collection);

@@ -5,6 +5,8 @@ import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { compileStringTemplate, parseDateFromEntry } from 'Lib/stringTemplate';
+import { resolveFieldRef } from 'Lib/resolveFieldRef';
+
 import { selectIdentifier } from 'Reducers/collections';
 
 const ListCard = styled.li`
@@ -92,16 +94,17 @@ const EntryCard = ({
 }) => {
   const label = entry.get('label');
   const entryData = entry.get('data');
-  const defaultTitle = label || entryData.get(inferedFields.titleField);
+  const defaultTitle = label || resolveFieldRef(entryData, inferedFields.titleField);
   const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
   const summary = collection.get('summary');
   const date = parseDateFromEntry(entry, collection) || null;
-  const identifier = entryData.get(selectIdentifier(collection));
+  const identifier = resolveFieldRef(entryData, selectIdentifier(collection));
+
   const title = summary
     ? compileStringTemplate(summary, date, identifier, entryData)
     : defaultTitle;
 
-  let image = entryData.get(inferedFields.imageField);
+  let image = resolveFieldRef(entryData, inferedFields.imageField);
   image = resolvePath(image, publicFolder);
   if (image) {
     image = encodeURI(image);

@@ -21,6 +21,11 @@ const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
 const templateVariablePattern = `{{(${templateContentPattern})}}`;
 
+function getFieldValue(data, fieldName) {
+  const fieldPath = fieldName.split('.');
+  return data.getIn(fieldPath, '');
+}
+
 // Allow `fields.` prefix in placeholder to override built in replacements
 // like "slug" and "year" with values from fields of the same name.
 function getExplicitFieldReplacement(key, data) {
@@ -28,7 +33,7 @@ function getExplicitFieldReplacement(key, data) {
     return;
   }
   const fieldName = key.substring(FIELD_PREFIX.length);
-  return data.get(fieldName, '');
+  return getFieldValue(data, fieldName);
 }
 
 export function parseDateFromEntry(entry, collection, fieldName) {
@@ -65,7 +70,7 @@ export function compileStringTemplate(template, date, identifier = '', data = Ma
     } else if (key === 'slug') {
       replacement = identifier;
     } else {
-      replacement = data.get(key, '');
+      replacement = getFieldValue(data, key);
     }
 
     if (processor) {

@@ -190,6 +190,22 @@ collections:
     identifier_field: name
 ```
 
+**Example with a nested field**
+
+```yaml
+collections:
+  - name: "posts"
+    identifier_field: "info.nested"
+    fields:
+      - label: "Info"
+        name: "info"
+        widget: "object"
+        fields:
+          - label: "nested"
+            name: "nested"
+            widget: "string"
+```
+
 ### `extension` and `format`
 
 These settings determine how collection files are parsed and saved. Both are optional—Netlify CMS will attempt to infer your settings based on existing items in the collection. If your collection is empty, or you'd like more control, you can set these fields explicitly.
