@@ -33,7 +33,6 @@ const rules = () => ({
 const plugins = () => {
   return {
     ignoreEsprima: () => new webpack.IgnorePlugin(/^esprima$/, /js-yaml/),
-    ignoreMomentOptionalDeps: () => new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
   };
 };
