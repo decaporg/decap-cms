@@ -23,6 +23,8 @@ import Workflow from 'Workflow/Workflow';
 import Editor from 'Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
+import { selectEntrySlug } from 'Reducers/collections';
+import { FILES, FOLDER } from 'Constants/collectionTypes';
 
 TopBarProgress.config({
   barColors: {
@@ -158,6 +160,36 @@ class App extends React.Component {
     const defaultPath = `/collections/${collections.first().get('name')}`;
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
+    const getCustomEditRoute = props => {
+      const { folder, filename } = props.match.params;
+      let redirect = null;
+      const collections = config.get('collections');
+
+      const setTypeOnCollection = collection => {
+        if (collection.has('folder')) return collection.set('type', FOLDER);
+        if (collection.has('files')) return collection.set('type', FILES);
+      };
+
+      collections.forEach(collection => {
+        const typedCollection = setTypeOnCollection(collection);
+        if (typedCollection.has('files')) {
+          const files = typedCollection.get('files');
+          files.forEach(file => {
+            if (file.get('file').includes(`${folder}/${filename}`)) {
+              redirect = `/collections/${filename}`;
+            }
+          });
+        } else if (typedCollection.has('folder') && folder === typedCollection.get('folder')) {
+          const slug = selectEntrySlug(typedCollection, filename);
+          redirect = `/collections/${typedCollection.get('name')}/entries/${slug}`;
+        }
+      });
+      if (redirect !== null) {
+        return <Redirect to={redirect} />;
+      }
+      return <NotFoundPage />;
+    };
+
     return (
       <>
         <Notifs CustomComponent={Toast} />
@@ -194,6 +226,7 @@ class App extends React.Component {
               path="/search/:searchTerm"
               render={props => <Collection {...props} isSearchResults />}
             />
+            <Route path="/edit/:folder/:filename" render={props => getCustomEditRoute(props)} />
             <Route component={NotFoundPage} />
           </Switch>
           {useMediaLibrary ? <MediaLibrary /> : null}
