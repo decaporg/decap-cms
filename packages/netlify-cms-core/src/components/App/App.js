@@ -194,15 +194,11 @@ class App extends React.Component {
               path="/search/:searchTerm"
               render={props => <Collection {...props} isSearchResults />}
             />
-
-            // Direct route to a specific entry.
-            // File collections: `entryName` is the `name` of the entry from the config.
-            // Folder collections: `entryName` is the filename, sans extension (the slug).
             <Route
               path="/edit/:collectionName/:entryName"
               render={({ match }) => {
                 const { collectionName, entryName } = match.params;
-                return <Redirect to={`/collections/${collectionName}/entries/${entryName}`}/>;
+                return <Redirect to={`/collections/${collectionName}/entries/${entryName}`} />;
               }}
             />
             <Route component={NotFoundPage} />
