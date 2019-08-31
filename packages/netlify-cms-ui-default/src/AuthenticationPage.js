@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Icon from './Icon';
 import { buttons, shadows } from './styles';
+import GoBackButton from './GoBackButton';
 
 const StyledAuthenticationPage = styled.section`
   display: flex;
@@ -60,15 +61,6 @@ const LoginButton = styled.button`
   position: relative;
 `;
 
-const GoBackButton = styled.a`
-  ${buttons.button};
-  ${shadows.dropDeep};
-  ${buttons.lightBlue};
-  ${buttons.medium};
-
-  margin-top: 40px;
-`;
-
 const AuthenticationPage = ({
   onLogin,
   loginDisabled,
@@ -87,7 +79,6 @@ const AuthenticationPage = ({
           {renderButtonContent()}
         </LoginButton>
       )}
-      <GoBackButton href="/">Go back to site</GoBackButton>
       {logoUrl ? <NetlifyCreditIcon size="100px" type="netlify-cms" /> : null}
     </StyledAuthenticationPage>
   );

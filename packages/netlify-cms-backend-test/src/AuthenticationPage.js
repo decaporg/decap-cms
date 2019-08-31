@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
+import { Icon, buttons, shadows, GoBackButton } from 'netlify-cms-ui-default';
 
 const StyledAuthenticationPage = styled.section`
   display: flex;
@@ -34,15 +34,6 @@ const LoginButton = styled.button`
   }
 `;
 
-const GoBackButton = styled.a`
-  ${buttons.button};
-  ${shadows.dropDeep};
-  ${buttons.lightBlue};
-  ${buttons.medium};
-
-  margin-top: 40px;
-`;
-
 export default class AuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
@@ -66,7 +57,7 @@ export default class AuthenticationPage extends React.Component {
   };
 
   render() {
-    const { inProgress } = this.props;
+    const { config, inProgress } = this.props;
 
     return (
       <StyledAuthenticationPage>
@@ -74,7 +65,9 @@ export default class AuthenticationPage extends React.Component {
         <LoginButton disabled={inProgress} onClick={this.handleLogin}>
           {inProgress ? 'Logging in...' : 'Login'}
         </LoginButton>
-        <GoBackButton href="/">Go back to site</GoBackButton>
+        {config.get('site_url') ? (
+          <GoBackButton href={config.get('site_url')}></GoBackButton>
+        ) : null}
       </StyledAuthenticationPage>
     );
   }
