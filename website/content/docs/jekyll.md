@@ -113,7 +113,7 @@ display_name: Jill Smith
 position: Chief Editor
 ```
 
-then update `_layouts/author.html` and `staff.html` accordingly.
+then update `_layouts/author.html`, `_layouts/post.html` and `staff.html` accordingly.
 
 ```html
 <!-- _layouts/author.html -->
@@ -133,6 +133,23 @@ then update `_layouts/author.html` and `staff.html` accordingly.
   </li>
   {% endfor %}
 </ul>
+```
+
+```html
+<!-- _layouts/post.html -->
+--- layout: default ---
+
+<h1>{{ page.title }}</h1>
+
+<p>
+  {{ page.date | date_to_string }}
+  {% assign author = site.authors | where: 'name', page.author | first %}
+  {% if author %}
+    - <a href="{{ author.url }}">{{ author.display_name }}</a>
+  {% endif %}
+</p>
+
+{{ content }}
 ```
 
 ```html
