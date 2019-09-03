@@ -4,6 +4,7 @@ import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
+import GraphQLAPI from './GraphQLAPI';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -59,12 +60,13 @@ export default class GitHub {
       }
       this.originRepo = config.getIn(['backend', 'repo'], '');
     } else {
-      this.repo = config.getIn(['backend', 'repo'], '');
+      this.repo = this.originRepo = config.getIn(['backend', 'repo'], '');
     }
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
     this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
     this.squash_merges = config.getIn(['backend', 'squash_merges']);
+    this.use_graphql = config.getIn(['backend', 'use_graphql']);
   }
 
   authComponent() {
@@ -155,11 +157,12 @@ export default class GitHub {
 
   async authenticate(state) {
     this.token = state.token;
-    this.api = new API({
+    const apiCtor = this.use_graphql ? GraphQLAPI : API;
+    this.api = new apiCtor({
       token: this.token,
       branch: this.branch,
       repo: this.repo,
-      originRepo: this.useOpenAuthoring ? this.originRepo : undefined,
+      originRepo: this.originRepo,
       api_root: this.api_root,
       squash_merges: this.squash_merges,
       useOpenAuthoring: this.useOpenAuthoring,
@@ -191,6 +194,9 @@ export default class GitHub {
 
   logout() {
     this.token = null;
+    if (typeof this.api.reset === 'function') {
+      return this.api.reset();
+    }
     return;
   }
 
@@ -243,7 +249,7 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
+    const repoURL = `/repos/${this.originRepo}`;
     return this.api.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,

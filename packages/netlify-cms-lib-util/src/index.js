@@ -19,7 +19,7 @@ import {
 import unsentRequest from './unsentRequest';
 import {
   filterByPropExtension,
-  getPaginatedRequestIterator,
+  getAllResponses,
   parseLinkHeader,
   parseResponse,
   responseParser,
@@ -72,7 +72,7 @@ export {
   unsentRequest,
   filterByPropExtension,
   parseLinkHeader,
-  getPaginatedRequestIterator,
+  getAllResponses,
   parseResponse,
   responseParser,
   loadScript,

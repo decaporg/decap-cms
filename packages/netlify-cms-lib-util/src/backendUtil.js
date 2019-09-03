@@ -56,22 +56,24 @@ export const parseLinkHeader = flow([
   fromPairs,
 ]);
 
-export const getPaginatedRequestIterator = (url, options = {}, linkHeaderRelName = 'next') => {
-  let req = unsentRequest.fromFetchArguments(url, options);
-  const next = async () => {
-    if (!req) {
-      return { done: true };
-    }
+export const getAllResponses = async (url, options = {}, linkHeaderRelName = 'next') => {
+  const maxResponses = 30;
+  let responseCount = 1;
 
+  let req = unsentRequest.fromFetchArguments(url, options);
+
+  const pageResponses = [];
+
+  while (req && responseCount < maxResponses) {
     const pageResponse = await unsentRequest.performRequest(req);
     const linkHeader = pageResponse.headers.get('Link');
     const nextURL = linkHeader && parseLinkHeader(linkHeader)[linkHeaderRelName];
-    req = nextURL && unsentRequest.fromURL(nextURL);
-    return { value: pageResponse };
-  };
-  return {
-    [Symbol.asyncIterator]: () => ({
-      next,
-    }),
-  };
+
+    const { headers = {} } = options;
+    req = nextURL && unsentRequest.fromFetchArguments(nextURL, { headers });
+    pageResponses.push(pageResponse);
+    responseCount++;
+  }
+
+  return pageResponses;
 };
