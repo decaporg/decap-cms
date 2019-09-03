@@ -1,4 +1,7 @@
 updates:
+  - date: '2019-07-24'
+    description: 'Fix collection view search'
+    version: 2.9.7
   - date: '2019-07-11'
     description: 'Fix default values in list widgets'
     version: 2.9.6

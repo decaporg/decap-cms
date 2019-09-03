@@ -52,6 +52,7 @@ const MediaLibraryCardGrid = ({
           displayURL={displayURLs.get(file.id, file.url ? Map({ url: file.url }) : Map())}
           loadDisplayURL={() => loadDisplayURL(file)}
           type={file.type}
+          isViewableImage={file.isViewableImage}
         />
       ))}
       {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}

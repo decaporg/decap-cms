@@ -50,7 +50,7 @@ export default class GitHubAuthenticationPage extends React.Component {
     });
   };
 
-  loginWithForkWorkflow(data) {
+  loginWithOpenAuthoring(data) {
     const { backend } = this.props;
 
     this.setState({ findingFork: true });
@@ -80,8 +80,8 @@ export default class GitHubAuthenticationPage extends React.Component {
         this.setState({ loginError: err.toString() });
         return;
       }
-      if (this.props.config.getIn(['backend', 'fork_workflow'])) {
-        return this.loginWithForkWorkflow(data).then(() => this.props.onLogin(data));
+      if (this.props.config.getIn(['backend', 'open_authoring'])) {
+        return this.loginWithOpenAuthoring(data).then(() => this.props.onLogin(data));
       }
       this.props.onLogin(data);
     });
@@ -105,7 +105,10 @@ export default class GitHubAuthenticationPage extends React.Component {
       return {
         renderPageContent: ({ LoginButton }) => (
           <ForkApprovalContainer>
-            <p>Forking workflow is enabled: we need to use a fork on your github account.</p>
+            <p>
+              Open Authoring is enabled: we need to use a fork on your github account. (If a fork
+              already exists, we&#39;ll use that.)
+            </p>
             <ForkButtonsContainer>
               <LoginButton onClick={approveFork}>Fork the repo</LoginButton>
               <LoginButton onClick={refuseFork}>Don&#39;t fork the repo</LoginButton>

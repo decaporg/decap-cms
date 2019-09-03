@@ -17,7 +17,7 @@ const WorkflowListContainer = styled.div`
   grid-template-columns: 33.3% 33.3% 33.3%;
 `;
 
-const WorkflowListContainerForkWorkflow = styled.div`
+const WorkflowListContainerOpenAuthoring = styled.div`
   min-height: 60%;
   display: grid;
   grid-template-columns: 50% 50% 0%;
@@ -134,7 +134,7 @@ class WorkflowList extends React.Component {
     handlePublish: PropTypes.func.isRequired,
     handleDelete: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
-    isForkWorkflow: PropTypes.bool,
+    isOpenAuthoring: PropTypes.bool,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -162,7 +162,7 @@ class WorkflowList extends React.Component {
 
   // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
-    const { isForkWorkflow } = this.props;
+    const { isOpenAuthoring } = this.props;
     if (!entries) return null;
 
     if (!column) {
@@ -180,8 +180,8 @@ class WorkflowList extends React.Component {
                     styles.column,
                     styles.columnPosition(idx),
                     isHovered && styles.columnHovered,
-                    isForkWorkflow && currColumn === 'pending_publish' && styles.hiddenColumn,
-                    isForkWorkflow && currColumn === 'pending_review' && styles.hiddenRightBorder,
+                    isOpenAuthoring && currColumn === 'pending_publish' && styles.hiddenColumn,
+                    isOpenAuthoring && currColumn === 'pending_review' && styles.hiddenRightBorder,
                   ]}
                 >
                   <ColumnHeader name={currColumn}>
@@ -248,8 +248,8 @@ class WorkflowList extends React.Component {
 
   render() {
     const columns = this.renderColumns(this.props.entries);
-    const ListContainer = this.props.isForkWorkflow
-      ? WorkflowListContainerForkWorkflow
+    const ListContainer = this.props.isOpenAuthoring
+      ? WorkflowListContainerOpenAuthoring
       : WorkflowListContainer;
     return <ListContainer>{columns}</ListContainer>;
   }

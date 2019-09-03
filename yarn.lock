@@ -981,6 +981,11 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
+"@iarna/toml@2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.3.tgz#f060bf6eaafae4d56a7dac618980838b0696e2ab"
+  integrity sha512-FmuxfCuolpLl0AnQ2NHSzoUKWEJDFl63qXjzdoWBVyFCXzMGm1spBzk7LeHNoVCiWCF7mRVms9e6jEV9+MoPbg==
+
 "@jest/console@^24.7.1":
   version "24.7.1"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.7.1.tgz#32a9e42535a97aedfe037e725bd67e954b459545"
@@ -5695,6 +5700,11 @@ get-port@^3.2.0:
   resolved "https://registry.yarnpkg.com/get-port/-/get-port-3.2.0.tgz#dd7ce7de187c06c8bf353796ac71e099f0980ebc"
   integrity sha1-3Xzn3hh8Bsi/NTeWrHHgmfCYDrw=
 
+get-relative-path@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/get-relative-path/-/get-relative-path-1.0.2.tgz#45c26fc4247f0c8541cec4b57d0de993ec965cda"
+  integrity sha512-dGkopYfmB4sXMTcZslq5SojEYakpdCSj/SVSHLhv7D6RBHzvDtd/3Q8lTEOAhVKxPPeAHu/YYkENbbz3PaH+8w==
+
 get-stdin@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/get-stdin/-/get-stdin-4.0.1.tgz#b968c6b0a04384324902e8bf1a5df32579a450fe"
@@ -7901,6 +7911,11 @@ lodash.ismatch@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.ismatch/-/lodash.ismatch-4.4.0.tgz#756cb5150ca3ba6f11085a78849645f188f85f37"
   integrity sha1-dWy1FQyjum8RCFp4hJZF8Yj4Xzc=
+
+lodash.isplainobject@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
+  integrity sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=
 
 lodash.once@^4.1.1:
   version "4.1.1"
@@ -10469,6 +10484,13 @@ redent@^2.0.0:
     indent-string "^3.0.0"
     strip-indent "^2.0.0"
 
+redux-mock-store@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.5.3.tgz#1f10528949b7ce8056c2532624f7cafa98576c6d"
+  integrity sha512-ryhkkb/4D4CUGpAV2ln1GOY/uh51aczjcRz9k2L2bPx/Xja3c5pSGJJPyR25GNVRXtKIExScdAgFdiXp68GmJA==
+  dependencies:
+    lodash.isplainobject "^4.0.6"
+
 redux-notifications@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/redux-notifications/-/redux-notifications-4.0.1.tgz#66c9f11bb1eb375c633beaaf7378005eab303bfb"
@@ -12187,11 +12209,6 @@ toidentifier@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
-
-toml-j0.4@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/toml-j0.4/-/toml-j0.4-1.1.1.tgz#eb0c70348609a0263bb1d6e4a3dd191dcca60866"
-  integrity sha512-lYK5otg0+cto8YmsWcPEfeiTiC/VU6P6HA6ooaYI9K/KYT24Jg0BrYtRZK1K3cwakSMyh6nttfJL9RmQH0gyCg==
 
 tomlify-j0.4@^3.0.0-alpha.0:
   version "3.0.0"

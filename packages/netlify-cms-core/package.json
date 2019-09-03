@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-core",
   "description": "Netlify CMS core application, see netlify-cms package for the main distribution.",
-  "version": "2.13.0-beta.0",
+  "version": "2.13.0-beta.2",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
@@ -59,7 +59,7 @@
     "redux-thunk": "^2.3.0",
     "sanitize-filename": "^1.6.1",
     "semaphore": "^1.0.5",
-    "toml-j0.4": "^1.1.1",
+    "@iarna/toml": "2.2.3",
     "tomlify-j0.4": "^3.0.0-alpha.0",
     "url": "^0.11.0",
     "what-input": "^5.1.4"
@@ -78,5 +78,8 @@
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"
+  },
+  "devDependencies": {
+    "redux-mock-store": "^1.5.3"
   }
 }

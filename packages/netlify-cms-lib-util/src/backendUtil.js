@@ -1,6 +1,8 @@
-import { get } from 'lodash';
+import { flow, fromPairs, get } from 'lodash';
+import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
 import { fileExtension } from './path';
+import unsentRequest from './unsentRequest';
 
 export const filterByPropExtension = (extension, propName) => arr =>
   arr.filter(el => fileExtension(get(el, propName)) === extension);
@@ -40,3 +42,36 @@ export const parseResponse = async (res, { expectingOk = true, format = 'text' }
 };
 
 export const responseParser = options => res => parseResponse(res, options);
+
+export const parseLinkHeader = flow([
+  linksString => linksString.split(','),
+  map(str => str.trim().split(';')),
+  map(([linkStr, keyStr]) => [
+    keyStr.match(/rel="(.*?)"/)[1],
+    linkStr
+      .trim()
+      .match(/<(.*?)>/)[1]
+      .replace(/\+/g, '%20'),
+  ]),
+  fromPairs,
+]);
+
+export const getPaginatedRequestIterator = (url, options = {}, linkHeaderRelName = 'next') => {
+  let req = unsentRequest.fromFetchArguments(url, options);
+  const next = async () => {
+    if (!req) {
+      return { done: true };
+    }
+
+    const pageResponse = await unsentRequest.performRequest(req);
+    const linkHeader = pageResponse.headers.get('Link');
+    const nextURL = linkHeader && parseLinkHeader(linkHeader)[linkHeaderRelName];
+    req = nextURL && unsentRequest.fromURL(nextURL);
+    return { value: pageResponse };
+  };
+  return {
+    [Symbol.asyncIterator]: () => ({
+      next,
+    }),
+  };
+};
