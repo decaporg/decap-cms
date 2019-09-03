@@ -3,7 +3,12 @@ version: 1
 update_configs:
   - package_manager: javascript
     directory: /
-    update_schedule: weekly
+    update_schedule: live
+    allow_updates:
+      - match:
+          update_type: security
+      - match:
+          dependency_name: netlify-cms*
     automerged_updates:
       - match:
           dependency_type: all
@@ -11,7 +16,12 @@ update_configs:
     version_requirement_updates: widen_ranges
   - package_manager: javascript
     directory: /website
-    update_schedule: weekly
+    update_schedule: live
+    allow_updates:
+      - match:
+          update_type: security
+      - match:
+          dependency_name: netlify-cms*
     automerged_updates:
       - match:
           dependency_type: all

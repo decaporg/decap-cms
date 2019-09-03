@@ -2,7 +2,11 @@
   "extends": [
     "config:base"
   ],
-  "rangeStrategy": "replace",
+  "automerge": true,
+  "major": {
+    "automerge": false,
+  },
+  "rangeStrategy": "update-lockfile",
   "lockFileMaintenance": {
     "enabled": true,
     "extends": "schedule:weekly"
