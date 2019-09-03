@@ -4,7 +4,7 @@ update_configs:
   - package_manager: javascript
     directory: /
     update_schedule: live
-    allow_updates:
+    allowed_updates:
       - match:
           update_type: security
       - match:
@@ -17,7 +17,7 @@ update_configs:
   - package_manager: javascript
     directory: /website
     update_schedule: live
-    allow_updates:
+    allowed_updates:
       - match:
           update_type: security
       - match:
