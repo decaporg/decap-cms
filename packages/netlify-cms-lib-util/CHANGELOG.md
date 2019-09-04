@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.4.0-beta.2...netlify-cms-lib-util@2.4.0-beta.3) (2019-09-04)
+
+
+### Features
+
+* **backend-github:** GitHub GraphQL API support ([#2456](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/2456)) ([ece136c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/ece136c))
+
+
+
+
+
 # [2.4.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.4.0-beta.1...netlify-cms-lib-util@2.4.0-beta.2) (2019-08-24)
 
 **Note:** Version bump only for package netlify-cms-lib-util

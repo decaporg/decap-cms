@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.2...netlify-cms-core@2.13.0-beta.3) (2019-09-04)
+
+
+### Bug Fixes
+
+* **core:** don't pass boolean value to string prop, use null instead ([#2609](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2609)) ([ce95a77](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ce95a77))
+* **core:** don't pass ref to react-polyglot 'translate' function component ([#2607](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2607)) ([5b64e25](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5b64e25))
+* **github-graphql:** use getMediaDisplayURL to load media with auth header ([#2652](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2652)) ([e674e43](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e674e43))
+* **media-library:** no render of non-viewable files ([#2546](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2546)) ([4c5fe6a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/4c5fe6a))
+
+
+### Features
+
+* **routing:** support direct linking to entries ([#2556](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2556)) ([083a336](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/083a336))
+
+
+
+
+
 # [2.13.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.1...netlify-cms-core@2.13.0-beta.2) (2019-08-24)
 
 **Note:** Version bump only for package netlify-cms-core

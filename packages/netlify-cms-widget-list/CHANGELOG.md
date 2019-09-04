@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.5-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.3.4...netlify-cms-widget-list@2.3.5-beta.0) (2019-09-04)
+
+
+### Bug Fixes
+
+* pass List instead of array to onChange ([#2611](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/2611)) ([a801636](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/a801636))
+
+
+
+
+
 ## [2.3.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.3.3...netlify-cms-widget-list@2.3.4) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-widget-list

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.1...netlify-cms-backend-github@2.5.0-beta.2) (2019-09-04)
+
+
+### Bug Fixes
+
+* **github-graphql:** use getMediaDisplayURL to load media with auth header ([#2652](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2652)) ([e674e43](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/e674e43))
+
+
+### Features
+
+* **backend-github:** GitHub GraphQL API support ([#2456](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2456)) ([ece136c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/ece136c))
+
+
+
+
+
 # [2.5.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.0...netlify-cms-backend-github@2.5.0-beta.1) (2019-08-24)
 
 **Note:** Version bump only for package netlify-cms-backend-github
