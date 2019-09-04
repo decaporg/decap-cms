@@ -47,3 +47,24 @@ Users who _do_ have write access to the original repository continue to use the 
 - Users don't need to know about GitHub or create a GitHub account. Instead, they use Netlify Identity accounts that are created on your site and managed by you.
 - The CMS applies users' changes directly to your repo, not to a fork. (If you use the editorial workflow, you can use features like [GitHub's protected branches](https://help.github.com/en/articles/about-protected-branches) or [Netlify's locked deploys](https://www.netlify.com/docs/locked-deploys/) to prevent users from publishing directly to your site from the CMS.)
 - There is no distinction between users with write access to the repo and users without — all editorial workflow entries are visible from within the CMS and can be published with the CMS. (Unpublished Open Authoring entries, on the other hand, are visible only to the author in the CMS UI or publicly as GitHub PRs.)
+
+## Linking to specific entries in the CMS
+Open authoring often includes some sort of "Edit this page" link on the live site. Netlify CMS supports this via the **edit** path:
+
+```
+/#/edit/{collectionName}/{entryName}
+```
+
+For the entry named "general" in the "settings" file collection
+```
+https://www.example.com/path-to-cms/#/edit/settings/general
+```
+
+For blog post "test.md" in the "posts" folder collection
+```
+https://www.example.com/path-to-cms/#/edit/posts/test
+```
+
+- **`collectionName`**: the name of the collection as entered in the CMS config.
+- **`entryName`** _(for [file collections](/docs/collection-types/#file-collections)_: the `name` of the entry from the CMS config.
+- **`entryName`** _(for [folder collections](/docs/collection-types/#folder-collections)_: the filename, sans extension (the slug).
