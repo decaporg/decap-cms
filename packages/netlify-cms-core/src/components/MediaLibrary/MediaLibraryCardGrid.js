@@ -86,6 +86,7 @@ MediaLibraryCardGrid.propTypes = {
   cardMargin: PropTypes.string.isRequired,
   loadDisplayURL: PropTypes.func.isRequired,
   isPrivate: PropTypes.bool,
+  displayURLs: PropTypes.instanceOf(Map).isRequired,
 };
 
 export default MediaLibraryCardGrid;

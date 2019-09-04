@@ -102,14 +102,14 @@ export default class API {
     return textPromise;
   }
 
-  request(path, options = {}) {
+  request(path, options = {}, parseResponse = response => this.parseResponse(response)) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     let responseStatus;
     return fetch(url, { ...options, headers })
       .then(response => {
         responseStatus = response.status;
-        return this.parseResponse(response);
+        return parseResponse(response);
       })
       .catch(error => {
         throw new APIError(error.message, responseStatus, 'GitHub');
