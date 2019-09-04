@@ -7326,11 +7326,9 @@ netlify-cms-editor-component-image@^2.2.0:
   integrity sha512-0RRTXNOo5tzr3kjI3J+Ix8ufGeQ91j1Fhj2syy9l2ND7Uevr5J5oKxUD5cBzQVHwHq1Qc+hciuRoypFqk+NtAQ==
 
 netlify-cms-lib-auth@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/netlify-cms-lib-auth/-/netlify-cms-lib-auth-2.0.5.tgz#2e4bcda2012cd6e4f7d5b8d65f37ae5987a97aea"
-  integrity sha512-KzULUq+EkMM5Z11kDuLY1YfQkfMutCQvaijSpMmE35kvjk990VJMgP5lmSIWnsuFujsn6wJjhhIvWvB8w00fRw==
-  dependencies:
-    uuid "^3.1.0"
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/netlify-cms-lib-auth/-/netlify-cms-lib-auth-2.2.4.tgz#e7a12f510e535fdc22adc0d0bd8a6450e53e9a80"
+  integrity sha512-Y9/Gm+FpAz9t8P4lpeHE5e3+e6+6jSRey5RCcQv42RNXwrV5aODuxpmQ/vBYe9VSBXZUv3C7OJ1Sxsm2fhixXg==
 
 netlify-cms-lib-util@^2.1.1:
   version "2.1.1"
@@ -7990,12 +7988,7 @@ p-try@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
 
-p-try@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
-  integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
-
-p-try@^2.1.0:
+p-try@^2.0.0, p-try@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
