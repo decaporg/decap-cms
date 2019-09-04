@@ -1,5 +1,3 @@
 {
-  "extends": [
-    "github>netlify/renovate-config"
-  ],
+  "extends": ["github>netlify/renovate-config"]
 }
