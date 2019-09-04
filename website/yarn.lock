@@ -7373,12 +7373,11 @@ netlify-cms-widget-datetime@^2.0.7:
     netlify-cms-widget-date "^2.1.0"
 
 netlify-cms-widget-file@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/netlify-cms-widget-file/-/netlify-cms-widget-file-2.2.0.tgz#91b4e3f36f467d2abfc26a6137c3448d8efc19de"
-  integrity sha512-BSpCKEVAL7uLxcaoONfrad65QU6s6czMx0Y73MGMNfGZi2UjUuN4bOn5tt8Ee2VgKZUPHs/cEEdHnPd5PuMqpQ==
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/netlify-cms-widget-file/-/netlify-cms-widget-file-2.4.3.tgz#221bfd0600812b7a202dae7b199605fb5f067168"
+  integrity sha512-Nw5I67qAlkWv/YzXzSgudCuCPmVjKZbJ7dIgt/xTxF2U/4/QhFFcb75nbRCUqzrUpSjDMQXkxhmJFwjcSEKDqg==
   dependencies:
     common-tags "^1.8.0"
-    uuid "^3.3.2"
 
 netlify-cms-widget-image@^2.1.1:
   version "2.1.1"
@@ -7990,12 +7989,7 @@ p-try@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
 
-p-try@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
-  integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
-
-p-try@^2.1.0:
+p-try@^2.0.0, p-try@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
