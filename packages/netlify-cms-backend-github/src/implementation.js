@@ -259,13 +259,32 @@ export default class GitHub {
   getMedia() {
     return this.api.listFiles(this.config.get('media_folder')).then(files =>
       files.map(({ sha, name, size, download_url, path }) => {
-        const url = new URL(download_url);
-        if (url.pathname.match(/.svg$/)) {
-          url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
+        if (download_url) {
+          const url = new URL(download_url);
+          if (url.pathname.match(/.svg$/)) {
+            url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
+          }
+          // if 'displayURL' is a string it will be loaded as is
+          return { id: sha, name, size, displayURL: url.href, path };
+        } else {
+          // if 'displayURL' is not a string it will be loaded using getMediaDisplayURL
+          return { id: sha, name, size, displayURL: { sha }, path };
         }
-        return { id: sha, name, size, displayURL: url.href, path };
       }),
     );
+  }
+
+  async getMediaDisplayURL(displayURL) {
+    const { sha } = displayURL;
+    const blob = await this.api.request(
+      `${this.api.repoURL}/git/blobs/${sha}`,
+      {
+        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+      },
+      response => response.blob(),
+    );
+
+    return URL.createObjectURL(blob);
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {

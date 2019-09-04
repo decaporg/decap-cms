@@ -67,6 +67,7 @@ export const fileEntry = gql`
   fragment FileEntryParts on TreeEntry {
     name
     sha: oid
+    type
     blob: object {
       ... on Blob {
         size: byteSize

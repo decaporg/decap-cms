@@ -170,7 +170,7 @@ export default class GraphQLAPI extends API {
     } else if (!is_binary) {
       return text;
     } else {
-      return super.retrieveBlob(sha);
+      return super.retrieveBlob(sha, repoURL);
     }
   }
 
@@ -194,12 +194,13 @@ export default class GraphQLAPI extends API {
     });
 
     if (data.repository.object) {
-      const files = data.repository.object.entries.map(e => ({
-        ...e,
-        path: `${path}/${e.name}`,
-        download_url: `https://raw.githubusercontent.com/${this.repo}/${this.branch}/${path}/${e.name}`,
-        size: e.blob && e.blob.size,
-      }));
+      const files = data.repository.object.entries
+        .filter(({ type }) => type === 'blob')
+        .map(e => ({
+          ...e,
+          path: `${path}/${e.name}`,
+          size: e.blob && e.blob.size,
+        }));
       return files;
     } else {
       throw new APIError('Not Found', 404, 'GitHub');
@@ -589,15 +590,15 @@ export default class GraphQLAPI extends API {
     let entries = null;
 
     if (commitTree.data.repository.commit.tree) {
-      entries = commitTree.data.repository.commit.tree.entries;
+      ({ entries, sha } = commitTree.data.repository.commit.tree);
     }
 
     if (tree.data.repository.tree.entries) {
-      entries = tree.data.repository.tree.entries;
+      ({ entries, sha } = tree.data.repository.tree);
     }
 
     if (entries) {
-      return { tree: entries.map(e => ({ ...e, mode: TREE_ENTRY_TYPE_TO_MODE[e.type] })) };
+      return { sha, tree: entries.map(e => ({ ...e, mode: TREE_ENTRY_TYPE_TO_MODE[e.type] })) };
     }
 
     return Promise.reject('Could not get tree');

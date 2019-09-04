@@ -100,6 +100,8 @@ MediaLibraryCard.propTypes = {
   margin: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool,
   type: PropTypes.string,
+  isViewableImage: PropTypes.bool.isRequired,
+  loadDisplayURL: PropTypes.func.isRequired,
 };
 
 export default MediaLibraryCard;
