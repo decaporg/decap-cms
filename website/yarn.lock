@@ -6279,7 +6279,7 @@ joi@12.x.x:
     isemail "3.x.x"
     topo "2.x.x"
 
-js-base64@^2.1.9, js-base64@^2.4.8:
+js-base64@^2.1.9, js-base64@^2.4.8, js-base64@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.5.1.tgz#1efa39ef2c5f7980bb1784ade4a8af2de3291121"
   integrity sha512-M7kLczedRMYX4L8Mdh4MzyAMM9O5osx+4FcOQuTvr3A9F2D9S5JXheN0ewNbrvK2UatkTRhL5ejGmGSjNMiZuw==
@@ -7251,11 +7251,11 @@ netlify-cms-backend-github@^2.2.0:
     semaphore "^1.1.0"
 
 netlify-cms-backend-gitlab@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/netlify-cms-backend-gitlab/-/netlify-cms-backend-gitlab-2.1.1.tgz#cbda5fe71829be27d13fb838e64455a52df7cc55"
-  integrity sha512-SLyfVPwFMVec4AIgWUjzJn56loHEHLbLaN8b02d/4Nh1PtPt3u69xkKPr504xvXSJ0Z1SrkwoqIBZgIRZ+GjDw==
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/netlify-cms-backend-gitlab/-/netlify-cms-backend-gitlab-2.3.2.tgz#c0e9c1573923349fa6ce8ec0436326f32bfd888d"
+  integrity sha512-oGGMOqgczk1ya1UhVda1+5WWt57FPJBk5LUiLQtH7Mcl2DNNUNKWqDg/qJsbUdnsbpVymZI9ocGAxXfxQiVxbQ==
   dependencies:
-    js-base64 "^2.4.8"
+    js-base64 "^2.5.1"
     semaphore "^1.1.0"
 
 netlify-cms-backend-test@^2.0.6:
@@ -7990,12 +7990,7 @@ p-try@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
 
-p-try@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
-  integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
-
-p-try@^2.1.0:
+p-try@^2.0.0, p-try@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
