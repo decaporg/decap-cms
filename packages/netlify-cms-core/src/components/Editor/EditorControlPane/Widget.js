@@ -132,8 +132,8 @@ export default class Widget extends Component {
       return { error: false };
     }
 
-    // Convert List input widget value(array) to string for pattern test
-    (Array.isArray(value) || List.isList(value)) && (value = value.join(','));
+    // Convert list input widget value to string for pattern test
+    List.isList(value) && (value = value.join(','));
 
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
