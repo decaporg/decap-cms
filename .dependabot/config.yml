@@ -7,8 +7,6 @@ update_configs:
     allowed_updates:
       - match:
           update_type: security
-      - match:
-          dependency_name: netlify-cms*
     automerged_updates:
       - match:
           dependency_type: all
@@ -20,8 +18,6 @@ update_configs:
     allowed_updates:
       - match:
           update_type: security
-      - match:
-          dependency_name: netlify-cms*
     automerged_updates:
       - match:
           dependency_type: all
