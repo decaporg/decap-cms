@@ -1,15 +1,5 @@
 {
   "extends": [
-    "config:base"
+    "github>netlify/renovate-config"
   ],
-  "automerge": true,
-  "major": {
-    "automerge": false,
-  },
-  "rangeStrategy": "update-lockfile",
-  "lockFileMaintenance": {
-    "enabled": true,
-    "extends": "schedule:weekly"
-  },
-  "ignorePaths": ["website"]
 }
