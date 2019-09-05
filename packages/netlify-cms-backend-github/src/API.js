@@ -638,6 +638,11 @@ export default class API {
         await this.patchBranch(branchName, commit.sha, { force: true });
       }
 
+      // Update unpublished entries which don't have a PR. These are
+      // typically Open Authoring entries that have never been
+      // submitted for review.
+      await this.patchBranch(branchName, commit.sha);
+
       return this.storeMetadata(contentKey, updatedMetadata);
     }
   }
