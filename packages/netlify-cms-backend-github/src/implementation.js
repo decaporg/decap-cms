@@ -276,15 +276,8 @@ export default class GitHub {
 
   async getMediaDisplayURL(displayURL) {
     const { sha } = displayURL;
-    const blob = await this.api.request(
-      `${this.api.repoURL}/git/blobs/${sha}`,
-      {
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
-      },
-      response => response.blob(),
-    );
-
-    return URL.createObjectURL(blob);
+    const mediaURL = await this.api.getMediaDisplayURL(sha);
+    return mediaURL;
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {

@@ -276,10 +276,28 @@ export default class API {
     }
   }
 
-  retrieveBlob(sha, repoURL) {
-    return this.request(`${repoURL}/git/blobs/${sha}`, {
-      headers: { Accept: 'application/vnd.github.VERSION.raw' },
-    });
+  fetchBlob(sha, repoURL) {
+    return this.request(
+      `${repoURL}/git/blobs/${sha}`,
+      {
+        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+      },
+      response => response,
+    );
+  }
+
+  async fetchBlobContent(sha, repoURL) {
+    const response = await this.fetchBlob(sha, repoURL);
+    const text = await response.text();
+
+    return text;
+  }
+
+  async getMediaDisplayURL(sha) {
+    const response = await this.fetchBlob(sha, this.repoURL);
+    const blob = await response.blob();
+
+    return URL.createObjectURL(blob);
   }
 
   getBlob(sha, { repoURL = this.repoURL } = {}) {
@@ -288,7 +306,7 @@ export default class API {
         return cached;
       }
 
-      return this.retrieveBlob(sha, repoURL).then(result => {
+      return this.fetchBlobContent(sha, repoURL).then(result => {
         localForage.setItem(`gh.${sha}`, result);
         return result;
       });
