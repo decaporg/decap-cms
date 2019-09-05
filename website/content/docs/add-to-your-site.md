@@ -23,6 +23,7 @@ A static `admin` folder contains all Netlify CMS files, stored at the root of yo
 | VuePress                           | `/.vuepress/public`   |
 | Elmstatic                          | `/_site`              |
 | 11ty                               | `/site`               |
+| preact-cli                         | `/src/static`         |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md#pull-requests)!)
 
