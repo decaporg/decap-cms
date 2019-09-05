@@ -37,7 +37,7 @@ After clicking one of those buttons, authenticate with GitHub or GitLab and choo
 
 1. The template deploy process sends you an invitation to your new site, sent from `no-reply@netlify.com`.
    ![Sample email subject line: You've been invited to join radiologist-amanda-53841.netlify.com](https://www.netlifycms.org/img/email-subject.png?raw=true)
-2. Click the link to accept the invite, and your site opens, with a prompt to create a password.
+2. Wait for the deployment to complete, then click the link to accept the invite. Your site will open with a prompt to create a password.
    !["Complete your signup" modal on the Kaldi coffee site](https://www.netlifycms.org/img/create-password.png?raw=true)
 3. Enter a password, sign in, and you’ll go to the CMS. (For future visits, you can go straight to `<yoursiteaddress.com>/admin/`.)
 
