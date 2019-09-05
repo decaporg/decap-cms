@@ -176,6 +176,8 @@ class MediaLibrary extends React.Component {
 
     await persistMedia(file, { privateUpload });
 
+    this.setState({ selectedFile: this.props.files[0] });
+
     event.target.value = null;
 
     this.scrollToTop();
