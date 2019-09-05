@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
-import { resolvePath, fileExtension } from 'netlify-cms-lib-util';
+import { fileExtension } from 'netlify-cms-lib-util';
 import {
   loadMedia as loadMediaAction,
   persistMedia as persistMediaAction,
@@ -56,7 +56,6 @@ class MediaLibrary extends React.Component {
     persistMedia: PropTypes.func.isRequired,
     deleteMedia: PropTypes.func.isRequired,
     insertMedia: PropTypes.func.isRequired,
-    publicFolder: PropTypes.string,
     closeMediaLibrary: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
@@ -177,6 +176,8 @@ class MediaLibrary extends React.Component {
 
     await persistMedia(file, { privateUpload });
 
+    this.setState({ selectedFile: this.props.files[0] });
+
     event.target.value = null;
 
     this.scrollToTop();
@@ -189,9 +190,8 @@ class MediaLibrary extends React.Component {
   handleInsert = () => {
     const { selectedFile } = this.state;
     const { name, url, urlIsPublicPath } = selectedFile;
-    const { insertMedia, publicFolder } = this.props;
-    const publicPath = urlIsPublicPath ? url : resolvePath(name, publicFolder);
-    insertMedia(publicPath);
+    const { insertMedia } = this.props;
+    insertMedia(urlIsPublicPath ? { url } : { name });
     this.handleClose();
   };
 

@@ -329,7 +329,7 @@ const ConnectedEditorControl = connect(
   mapStateToProps,
   mapDispatchToProps,
   null,
-  { withRef: true },
+  { withRef: false },
 )(translate()(EditorControl));
 
 export default ConnectedEditorControl;

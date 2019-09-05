@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-gitlab",
   "description": "GitLab backend for Netlify CMS",
-  "version": "2.3.2",
+  "version": "2.3.3-beta.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",

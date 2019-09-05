@@ -61,7 +61,7 @@ class Editor extends React.Component {
     newEntry: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
     hasWorkflow: PropTypes.bool,
-    useForkWorkflow: PropTypes.bool,
+    useOpenAuthoring: PropTypes.bool,
     unpublishedEntry: PropTypes.bool,
     isModification: PropTypes.bool,
     collectionEntriesLoaded: PropTypes.bool,
@@ -351,7 +351,7 @@ class Editor extends React.Component {
       hasChanged,
       displayUrl,
       hasWorkflow,
-      useForkWorkflow,
+      useOpenAuthoring,
       unpublishedEntry,
       newEntry,
       isModification,
@@ -399,7 +399,7 @@ class Editor extends React.Component {
         hasChanged={hasChanged}
         displayUrl={displayUrl}
         hasWorkflow={hasWorkflow}
-        useForkWorkflow={useForkWorkflow}
+        useOpenAuthoring={useOpenAuthoring}
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
@@ -425,7 +425,7 @@ function mapStateToProps(state, ownProps) {
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  const useForkWorkflow = globalUI.get('useForkWorkflow', false);
+  const useOpenAuthoring = globalUI.get('useOpenAuthoring', false);
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
@@ -445,7 +445,7 @@ function mapStateToProps(state, ownProps) {
     hasChanged,
     displayUrl,
     hasWorkflow,
-    useForkWorkflow,
+    useOpenAuthoring,
     isModification,
     collectionEntriesLoaded,
     currentStatus,

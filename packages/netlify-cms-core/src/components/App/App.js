@@ -194,6 +194,13 @@ class App extends React.Component {
               path="/search/:searchTerm"
               render={props => <Collection {...props} isSearchResults />}
             />
+            <Route
+              path="/edit/:collectionName/:entryName"
+              render={({ match }) => {
+                const { collectionName, entryName } = match.params;
+                return <Redirect to={`/collections/${collectionName}/entries/${entryName}`} />;
+              }}
+            />
             <Route component={NotFoundPage} />
           </Switch>
           {useMediaLibrary ? <MediaLibrary /> : null}

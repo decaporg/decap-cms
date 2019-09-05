@@ -147,7 +147,7 @@ export default class ListControl extends React.Component {
 
     const parsedValue = valueToString(listValue);
     this.setState({ value: parsedValue });
-    onChange(listValue.map(val => val.trim()));
+    onChange(List(listValue.map(val => val.trim())));
   };
 
   handleFocus = () => {

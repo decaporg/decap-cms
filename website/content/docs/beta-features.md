@@ -8,6 +8,12 @@ We run new functionality in an open beta format from time to time. That means th
 
 **Use these features at your own risk.**
 
+## Relative Image Paths
+Image paths have always been absolute from a single media library directory defined in the config. As of Netlify CMS 2.9.8-beta.2, relative paths can be used - this especially useful for SSG's like Gatsby, which generally expect relative paths.
+
+### Using relative paths
+To use relative image paths, set `media_folder_relative: true` in the root of your CMS config. That's it!
+
 ## List Widget: Variable Types
 Before this feature, the [list widget](/docs/widgets/#list) allowed a set of fields to be repeated, but every list item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Netlify CMS.
 

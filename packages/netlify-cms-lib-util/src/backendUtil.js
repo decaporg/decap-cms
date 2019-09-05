@@ -1,6 +1,8 @@
-import { get } from 'lodash';
+import { flow, fromPairs, get } from 'lodash';
+import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
 import { fileExtension } from './path';
+import unsentRequest from './unsentRequest';
 
 export const filterByPropExtension = (extension, propName) => arr =>
   arr.filter(el => fileExtension(get(el, propName)) === extension);
@@ -40,3 +42,38 @@ export const parseResponse = async (res, { expectingOk = true, format = 'text' }
 };
 
 export const responseParser = options => res => parseResponse(res, options);
+
+export const parseLinkHeader = flow([
+  linksString => linksString.split(','),
+  map(str => str.trim().split(';')),
+  map(([linkStr, keyStr]) => [
+    keyStr.match(/rel="(.*?)"/)[1],
+    linkStr
+      .trim()
+      .match(/<(.*?)>/)[1]
+      .replace(/\+/g, '%20'),
+  ]),
+  fromPairs,
+]);
+
+export const getAllResponses = async (url, options = {}, linkHeaderRelName = 'next') => {
+  const maxResponses = 30;
+  let responseCount = 1;
+
+  let req = unsentRequest.fromFetchArguments(url, options);
+
+  const pageResponses = [];
+
+  while (req && responseCount < maxResponses) {
+    const pageResponse = await unsentRequest.performRequest(req);
+    const linkHeader = pageResponse.headers.get('Link');
+    const nextURL = linkHeader && parseLinkHeader(linkHeader)[linkHeaderRelName];
+
+    const { headers = {} } = options;
+    req = nextURL && unsentRequest.fromFetchArguments(nextURL, { headers });
+    pageResponses.push(pageResponse);
+    responseCount++;
+  }
+
+  return pageResponses;
+};

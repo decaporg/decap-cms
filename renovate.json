@@ -1,11 +1,3 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "rangeStrategy": "replace",
-  "lockFileMaintenance": {
-    "enabled": true,
-    "extends": "schedule:weekly"
-  },
-  "ignorePaths": ["website"]
+  "extends": ["github>netlify/renovate-config:default"]
 }
