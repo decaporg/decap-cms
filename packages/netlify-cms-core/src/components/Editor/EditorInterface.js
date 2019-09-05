@@ -38,7 +38,7 @@ const ReactSplitPaneGlobalStyles = () => (
 
         &:before {
           content: '';
-          width: 1px;
+          width: 2px;
           height: 100%;
           position: relative;
           left: 10px;
@@ -83,7 +83,6 @@ const EditorContainer = styled.div`
 `;
 
 const Editor = styled.div`
-  max-width: 1600px;
   height: 100%;
   margin: 0 auto;
   position: relative;
