@@ -1,7 +1,9 @@
 ---
 title: date
-label: "Date"
+label: 'Date'
 ---
+
+_**Deprecation notice**: the date widget has been deprecated and will be removed in the next major release. Please use the datetime widget instead._
 
 The date widget translates a date picker input to a date string. For saving date and time together, use the datetime widget.
 
@@ -14,10 +16,10 @@ The date widget translates a date picker input to a date string. For saving date
   - `dateFormat`: optional; boolean or Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/). If `true` use default locale format.
   - `timeFormat`: optional; boolean or Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/). If `true` use default locale format, `false` hides time-picker. Defaults to false.
 - **Example:**
-    ```yaml
-    - label: "Birthdate"
-      name: "birthdate"
-      widget: "date"
-      default: ""
-      format: "MMM Do YY"
-    ```
+  ```yaml
+  - label: 'Birthdate'
+    name: 'birthdate'
+    widget: 'date'
+    default: ''
+    format: 'MMM Do YY'
+  ```

@@ -6,6 +6,19 @@ import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 
+import { once } from 'lodash';
+import { oneLine } from 'common-tags';
+
+const warnDeprecated = once(() =>
+  console.warn(oneLine`
+  Netlify CMS config: the date widget has been deprecated and will
+  be removed in the next major release. Please use the datetime widget instead.
+`),
+);
+
+/**
+ * `date` widget is deprecated in favor of the `datetime` widget
+ */
 export default class DateControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
@@ -41,6 +54,7 @@ export default class DateControl extends React.Component {
   formats = this.getFormats();
 
   componentDidMount() {
+    warnDeprecated();
     const { value } = this.props;
 
     /**
