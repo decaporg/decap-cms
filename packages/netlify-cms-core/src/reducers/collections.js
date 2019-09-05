@@ -89,7 +89,7 @@ const selectors = {
       return false;
     },
     allowDeletion(collection) {
-      return collection.get('delete', true);
+      return collection.get('delete', false);
     },
     templateName(collection, slug) {
       return slug;

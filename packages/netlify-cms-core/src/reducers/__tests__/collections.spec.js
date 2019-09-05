@@ -1,6 +1,7 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { configLoaded } from 'Actions/config';
-import collections from '../collections';
+import collections, { selectAllowDeletion } from '../collections';
+import { FILES, FOLDER } from 'Constants/collectionTypes';
 
 describe('collections', () => {
   it('should handle an empty state', () => {
@@ -29,9 +30,22 @@ describe('collections', () => {
           name: 'posts',
           folder: '_posts',
           fields: [{ name: 'title', widget: 'string' }],
-          type: 'folder_based_collection',
+          type: FOLDER,
         }),
       }),
     );
+  });
+
+  describe('selectAllowDeletions', () => {
+    it('should not allow deletions for file collections', () => {
+      expect(
+        selectAllowDeletion(
+          fromJS({
+            name: 'pages',
+            type: FILES,
+          }),
+        ),
+      ).toBe(false);
+    });
   });
 });
