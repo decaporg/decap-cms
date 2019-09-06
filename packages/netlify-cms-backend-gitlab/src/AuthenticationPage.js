@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { NetlifyAuthenticator, ImplicitAuthenticator } from 'netlify-cms-lib-auth';
-import { AuthenticationPage, Icon, GoBackButton } from 'netlify-cms-ui-default';
+import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
 
 const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
@@ -70,12 +70,10 @@ export default class GitLabAuthenticationPage extends React.Component {
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
         logoUrl={config.get('logo_url')}
+        siteUrl={config.get('site_url')}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="gitlab" /> {inProgress ? 'Logging in...' : 'Login with GitLab'}
-            {config.get('site_url') ? (
-              <GoBackButton href={config.get('site_url')}></GoBackButton>
-            ) : null}
           </React.Fragment>
         )}
       />

@@ -10,7 +10,6 @@ import {
   colors,
   colorsRaw,
   lengths,
-  GoBackButton,
 } from 'netlify-cms-ui-default';
 
 const LoginButton = styled.button`
@@ -158,6 +157,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     return (
       <AuthenticationPage
         logoUrl={config.get('logo_url')}
+        siteUrl={config.get('site_url')}
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>
             {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
@@ -181,9 +181,6 @@ export default class GitGatewayAuthenticationPage extends React.Component {
             <LoginButton disabled={inProgress}>
               {inProgress ? 'Logging in...' : 'Login'}
             </LoginButton>
-            {config.get('site_url') ? (
-              <GoBackButton href={config.get('site_url')}></GoBackButton>
-            ) : null}
           </AuthForm>
         )}
       />
