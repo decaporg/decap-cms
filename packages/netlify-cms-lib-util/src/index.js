@@ -26,6 +26,7 @@ import {
 } from './backendUtil';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
+import { asyncLock } from './asyncLock';
 
 export const NetlifyCmsLibUtil = {
   APIError,
@@ -77,4 +78,5 @@ export {
   responseParser,
   loadScript,
   getBlobSHA,
+  asyncLock,
 };
