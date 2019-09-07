@@ -81,9 +81,6 @@ export default class BitbucketAuthenticationPage extends React.Component {
           <React.Fragment>
             <LoginButtonIcon type="bitbucket" />
             {inProgress ? 'Logging in...' : 'Login with Bitbucket'}
-            {config.get('site_url') ? (
-              <GoBackButton href={config.get('site_url')}></GoBackButton>
-            ) : null}
           </React.Fragment>
         )}
       />
