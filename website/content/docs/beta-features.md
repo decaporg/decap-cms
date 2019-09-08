@@ -8,6 +8,32 @@ We run new functionality in an open beta format from time to time. That means th
 
 **Use these features at your own risk.**
 
+## GitHub GraphQL API
+Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
+
+**Note: not currently compatible with Git Gateway.**
+
+For many queries, GraphQL allows data to be retrieved using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
+
+You can use the GraphQL API for the GitHub backend by setting `backend.use_graphql` to `true` in your CMS config:
+
+```yml
+backend:
+  name: github
+  repo: owner/repo # replace this with your repo info
+  use_graphql: true
+```
+
+Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
+
+## Open Authoring
+
+When using the [GitHub backend](/docs/authentication-backends/#github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
+
+At the same time, any contributors who _do_ have write access to the repository can continue to use Netlify CMS normally.
+
+More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
+
 ## Relative Image Paths
 Image paths have always been absolute from a single media library directory defined in the config. As of Netlify CMS 2.9.8-beta.2, relative paths can be used - this especially useful for SSG's like Gatsby, which generally expect relative paths.
 
@@ -233,11 +259,3 @@ Template tags produce the following output:
 - `{{collection}}`: the name of the collection containing the entry changed
 
 - `{{path}}`: the full path to the file changed
-
-### Open Authoring
-
-When using the [GitHub backend](/docs/authentication-backends/#github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
-
-At the same time, any contributors who _do_ have write access to the repository can continue to use Netlify CMS normally.
-
-More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
