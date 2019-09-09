@@ -147,6 +147,17 @@ Object {
       expect(handleInsert).toHaveBeenCalledWith(expect.any(Array));
     });
 
+    it('calls insert function with array when only one asset is returned and config.multiple is true', async () => {
+      const options = {
+        config: {
+          multiple: true,
+        },
+      };
+      await cloudinary.init({ options, handleInsert });
+      cloudinaryInsertHandler({ assets: [asset] });
+      expect(handleInsert).toHaveBeenCalledWith(expect.any(Array));
+    });
+
     it('calls insert function with secure url', async () => {
       await cloudinary.init({ handleInsert });
       cloudinaryInsertHandler({ assets: [asset] });
