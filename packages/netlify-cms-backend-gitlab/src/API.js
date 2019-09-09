@@ -203,7 +203,10 @@ export default class API {
   traverseCursor = async (cursor, action) => {
     const link = cursor.data.getIn(['links', action]);
     const { entries, cursor: newCursor } = await this.fetchCursorAndEntries(link);
-    return { entries: entries.reverse(), cursor: this.reverseCursor(newCursor) };
+    return {
+      entries: entries.filter(({ type }) => type === 'blob').reverse(),
+      cursor: this.reverseCursor(newCursor),
+    };
   };
 
   listAllFiles = async path => {
