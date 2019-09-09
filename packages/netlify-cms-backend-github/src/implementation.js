@@ -2,6 +2,7 @@ import React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
+import { asyncLock } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 import GraphQLAPI from './GraphQLAPI';
@@ -67,6 +68,21 @@ export default class GitHub {
     this.token = '';
     this.squash_merges = config.getIn(['backend', 'squash_merges']);
     this.use_graphql = config.getIn(['backend', 'use_graphql']);
+    this.lock = asyncLock();
+  }
+
+  async runWithLock(func, message) {
+    try {
+      const acquired = await this.lock.acquire();
+      if (!acquired) {
+        console.warn(message);
+      }
+
+      const result = await func();
+      return result;
+    } finally {
+      this.lock.release();
+    }
   }
 
   authComponent() {
@@ -281,7 +297,11 @@ export default class GitHub {
   }
 
   persistEntry(entry, mediaFiles = [], options = {}) {
-    return this.api.persistFiles(entry, mediaFiles, options);
+    // persistEntry is a transactional operation
+    return this.runWithLock(
+      () => this.api.persistFiles(entry, mediaFiles, options),
+      'Failed to acquire persist entry lock',
+    );
   }
 
   async persistMedia(mediaFile, options = {}) {
@@ -394,13 +414,22 @@ export default class GitHub {
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
-    return this.api.updateUnpublishedEntryStatus(collection, slug, newStatus);
+    // updateUnpublishedEntryStatus is a transactional operation
+    return this.runWithLock(
+      () => this.api.updateUnpublishedEntryStatus(collection, slug, newStatus),
+      'Failed to acquire update entry status lock',
+    );
   }
 
   deleteUnpublishedEntry(collection, slug) {
     return this.api.deleteUnpublishedEntry(collection, slug);
   }
+
   publishUnpublishedEntry(collection, slug) {
-    return this.api.publishUnpublishedEntry(collection, slug);
+    // publishUnpublishedEntry is a transactional operation
+    return this.runWithLock(
+      () => this.api.publishUnpublishedEntry(collection, slug),
+      'Failed to acquire publish entry lock',
+    );
   }
 }
