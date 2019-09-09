@@ -241,3 +241,20 @@ When using the [GitHub backend](/docs/authentication-backends/#github-backend), 
 At the same time, any contributors who _do_ have write access to the repository can continue to use Netlify CMS normally.
 
 More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
+
+
+## Set the locale for datetime and date widget
+
+You can set the locale of the calendar widget (datetime and date).
+
+```yaml
+  - {
+    label: 'Date de publication',
+    name: 'date',
+    widget: 'datetime',
+    dateFormat: 'YYYY-MM-DD',
+    timeFormat: 'HH:mm',
+    format: 'YYYY-MM-DD HH:mm',
+    locale: 'fr-ch' # the locale for the calendar and the associated field.
+  }
+```

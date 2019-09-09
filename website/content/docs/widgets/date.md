@@ -15,6 +15,8 @@ The date widget translates a date picker input to a date string. For saving date
   - `format`: optional; accepts Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/); defaults to raw Date object (if supported by output format)
   - `dateFormat`: optional; boolean or Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/). If `true` use default locale format.
   - `timeFormat`: optional; boolean or Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/). If `true` use default locale format, `false` hides time-picker. Defaults to false.
+  - `locale`: optional (defaults to en); set the locale of the popup calendar. Any valid momentjs locale should work.
+
 - **Example:**
   ```yaml
   - label: 'Birthdate'

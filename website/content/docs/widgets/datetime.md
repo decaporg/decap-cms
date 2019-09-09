@@ -13,6 +13,8 @@ The datetime widget translates a datetime picker to a datetime string. For savin
   - `format`: optional; accepts Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/); defaults to raw Date object (if supported by output format)
   - `dateFormat`: optional; boolean or Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/). If `true` use default locale format.
   - `timeFormat`: optional; boolean or Moment.js [tokens](https://momentjs.com/docs/#/parsing/string-format/). If `true` use default locale format, `false` hides time-picker.
+  - `locale`: optional (defaults to en); set the locale of the popup calendar. Any valid Moment.js locale should work.
+
 - **Example:**
     ```yaml
     - label: "Start time"

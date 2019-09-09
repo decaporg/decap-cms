@@ -26,6 +26,7 @@ collections: # A list of collections the CMS should be able to edit
           dateFormat: 'YYYY-MM-DD',
           timeFormat: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
+          locale: 'fr-ch'
         }
       - label: 'Cover Image'
         name: 'image'

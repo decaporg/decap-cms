@@ -15,6 +15,7 @@ export default class DateTimeControl extends React.Component {
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    locale: PropTypes.string,
   };
 
   getFormats() {
@@ -38,6 +39,15 @@ export default class DateTimeControl extends React.Component {
   }
 
   formats = this.getFormats();
+
+  getLocale() {
+    const { field } = this.props;
+    const locale = field.get('locale');
+    console.log(`locale: ${locale}`);
+    return typeof locale === 'undefined' ? 'en' : locale;
+  }
+
+  locale = this.getLocale();
 
   componentDidMount() {
     const { value } = this.props;
@@ -101,6 +111,7 @@ export default class DateTimeControl extends React.Component {
   render() {
     const { forID, value, classNameWrapper, setActiveStyle } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
+    const locale = this.locale;
     return (
       <div
         css={css`
@@ -115,6 +126,7 @@ export default class DateTimeControl extends React.Component {
           onFocus={setActiveStyle}
           onBlur={this.onBlur}
           inputProps={{ className: classNameWrapper, id: forID }}
+          locale={locale}
         />
       </div>
     );
