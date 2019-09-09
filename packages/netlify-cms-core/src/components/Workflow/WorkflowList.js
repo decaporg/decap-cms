@@ -213,7 +213,6 @@ class WorkflowList extends React.Component {
           const collection = entry.getIn(['metaData', 'collection']);
           const isModification = entry.get('isModification');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
-          const title = entry.getIn(['data', 'title']) || slug;
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -227,7 +226,7 @@ class WorkflowList extends React.Component {
                   <div>
                     <WorkflowCard
                       collectionName={collection}
-                      title={title}
+                      title={entry.get('label') || entry.getIn(['data', 'title'])}
                       authorLastChange={entry.getIn(['metaData', 'user'])}
                       body={entry.getIn(['data', 'body'])}
                       isModification={isModification}

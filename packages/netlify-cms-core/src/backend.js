@@ -7,6 +7,7 @@ import {
   selectListMethod,
   selectEntrySlug,
   selectEntryPath,
+  selectFileEntryLabel,
   selectAllowNewEntries,
   selectAllowDeletion,
   selectFolderEntryExtension,
@@ -71,11 +72,6 @@ function getEntryBackupKey(collectionName, slug) {
   }
   const suffix = slug ? `.${slug}` : '';
   return `${baseKey}.${collectionName}${suffix}`;
-}
-
-function getLabelForFileCollectionEntry(collection, path) {
-  const files = collection.get('files');
-  return files && files.find(f => f.get('file') === path).get('label');
 }
 
 function slugFormatter(collection, entryData, slugConfig) {
@@ -409,7 +405,7 @@ export class Backend {
       return;
     }
     const { raw, path } = backup;
-    const label = getLabelForFileCollectionEntry(collection, path);
+    const label = selectFileEntryLabel(collection, slug);
     return this.entryWithFormat(collection, slug)(
       createEntry(collection.get('name'), slug, path, { raw, label }),
     );
@@ -439,7 +435,7 @@ export class Backend {
 
   getEntry(collection, slug) {
     const path = selectEntryPath(collection, slug);
-    const label = getLabelForFileCollectionEntry(collection, path);
+    const label = selectFileEntryLabel(collection, slug);
     return this.implementation.getEntry(collection, slug, path).then(loadedEntry =>
       this.entryWithFormat(collection, slug)(
         createEntry(collection.get('name'), slug, loadedEntry.file.path, {
@@ -483,15 +479,13 @@ export class Backend {
       .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
       .then(entries =>
         entries.map(loadedEntry => {
-          const entry = createEntry(
-            loadedEntry.metaData.collection,
-            loadedEntry.slug,
-            loadedEntry.file.path,
-            {
-              raw: loadedEntry.data,
-              isModification: loadedEntry.isModification,
-            },
-          );
+          const collectionName = loadedEntry.metaData.collection;
+          const collection = collections.find(c => c.get('name') === collectionName);
+          const entry = createEntry(collectionName, loadedEntry.slug, loadedEntry.file.path, {
+            raw: loadedEntry.data,
+            isModification: loadedEntry.isModification,
+            label: selectFileEntryLabel(collection, loadedEntry.slug),
+          });
           entry.metaData = loadedEntry.metaData;
           return entry;
         }),

@@ -82,6 +82,11 @@ const selectors = {
         .get(0);
       return file && file.get('name');
     },
+    entryLabel(collection, slug) {
+      const path = this.entryPath(collection, slug);
+      const files = collection.get('files');
+      return files && files.find(f => f.get('file') === path).get('label');
+    },
     listMethod() {
       return 'entriesByFiles';
     },
@@ -101,6 +106,8 @@ export const selectFields = (collection, slug) =>
   selectors[collection.get('type')].fields(collection, slug);
 export const selectFolderEntryExtension = collection =>
   selectors[FOLDER].entryExtension(collection);
+export const selectFileEntryLabel = (collection, slug) =>
+  collection.get('files') && selectors[FILES].entryLabel(collection, slug);
 export const selectEntryPath = (collection, slug) =>
   selectors[collection.get('type')].entryPath(collection, slug);
 export const selectEntrySlug = (collection, path) =>

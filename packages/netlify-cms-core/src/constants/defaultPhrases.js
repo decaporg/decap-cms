@@ -156,6 +156,8 @@ export function getPhrases() {
       },
       workflowCard: {
         lastChange: '%{date} by %{author}',
+        lastChangeNoAuthor: '%{date}',
+        lastChangeNoDate: 'by %{author}',
         deleteChanges: 'Delete changes',
         deleteNewEntry: 'Delete new entry',
         publishChanges: 'Publish changes',
