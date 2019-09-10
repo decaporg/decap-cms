@@ -73,24 +73,47 @@ function getFile(url) {
  * Open the standalone dialog. A single instance is created and destroyed for
  * each use.
  */
-function openDialog(files, config, handleInsert) {
-  uploadcare.openDialog(files, config).done(({ promise }) =>
-    promise().then(({ cdnUrl, count }) => {
-      if (config.multiple) {
-        const urls = Array.from({ length: count }, (val, idx) => `${cdnUrl}nth/${idx}/`);
-        handleInsert(urls);
+function openDialog({ files, config, handleInsert, settings = {} }) {
+  if (settings.defaultOperations && !settings.defaultOperations.startsWith('/')) {
+    console.warn(
+      'Uploadcare default operations should start with `/`. Example: `/preview/-/resize/100x100/image.png`',
+    );
+  }
+
+  const buildUrl = fileInfo => {
+    const { cdnUrl, name, isImage } = fileInfo;
+
+    let url =
+      isImage && settings.defaultOperations ? `${cdnUrl}-${settings.defaultOperations}` : cdnUrl;
+    const filenameDefined = !url.endsWith('/');
+
+    if (!filenameDefined && settings.autoFilename) {
+      url = url + name;
+    }
+
+    return url;
+  };
+
+  uploadcare.openDialog(files, config).done(({ promise, files }) => {
+    const isGroup = Boolean(files);
+
+    return promise().then(info => {
+      if (isGroup) {
+        return Promise.all(
+          files().map(promise => promise.then(fileInfo => buildUrl(fileInfo))),
+        ).then(urls => handleInsert(urls));
       } else {
-        handleInsert(cdnUrl);
+        handleInsert(buildUrl(info));
       }
-    }),
-  );
+    });
+  });
 }
 
 /**
  * Initialization function will only run once, returns an API object for Netlify
  * CMS to call methods on.
  */
-async function init({ options = { config: {} }, handleInsert } = {}) {
+async function init({ options = { config: {}, settings: {} }, handleInsert } = {}) {
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
@@ -118,9 +141,21 @@ async function init({ options = { config: {} }, handleInsert } = {}) {
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        return files.then(result => openDialog(result, resolvedConfig, handleInsert));
+        return files.then(result =>
+          openDialog({
+            files: result,
+            config: resolvedConfig,
+            settings: options.settings,
+            handleInsert,
+          }),
+        );
       } else {
-        return openDialog(files, resolvedConfig, handleInsert);
+        return openDialog({
+          files,
+          config: resolvedConfig,
+          settings: options.settings,
+          handleInsert,
+        });
       }
     },
 

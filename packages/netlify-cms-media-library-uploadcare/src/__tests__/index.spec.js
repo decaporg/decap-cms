@@ -51,9 +51,10 @@ describe('uploadcare media library', () => {
     /**
      * Mock to manually call the close dialog registered callback.
      */
-    simulateCloseDialog = result =>
+    simulateCloseDialog = (result, files) =>
       openDialogCallback({
         promise: () => Promise.resolve(result),
+        ...(files ? { files: () => files.map(file => Promise.resolve(file)) } : {}),
       });
 
     /**
@@ -90,7 +91,7 @@ Object {
     });
   });
 
-  describe('configuration', () => {
+  describe('widget configuration', () => {
     const options = {
       config: {
         foo: 'bar',
@@ -179,10 +180,103 @@ Object {
       options.config.multiple = true;
       const { result, cdnUrl } = generateMockUrl({ count: 3, cdnUrl: true });
       const mockDialogCloseResult = { cdnUrl, count: 3 };
+      const mockDialogCloseFiles = result.map((cdnUrl, idx) => ({
+        cdnUrl,
+        isImage: true,
+        name: `test${idx}.png`,
+      }));
       const integration = await uploadcareMediaLibrary.init({ options, handleInsert });
       await integration.show();
-      await simulateCloseDialog(mockDialogCloseResult);
+      await simulateCloseDialog(mockDialogCloseResult, mockDialogCloseFiles);
       expect(handleInsert).toHaveBeenCalledWith(result);
+    });
+  });
+
+  describe('settings', () => {
+    describe('defaultOperations', () => {
+      it('should append specified string to the url', async () => {
+        const options = {
+          config: {
+            publicKey: TEST_PUBLIC_KEY,
+          },
+          settings: {
+            defaultOperations: '/preview/',
+          },
+        };
+        const url = generateMockUrl();
+        const mockResult = { cdnUrl: url, isImage: true };
+        const integration = await uploadcareMediaLibrary.init({
+          options,
+          handleInsert,
+        });
+        await integration.show();
+        await simulateCloseDialog(mockResult);
+        expect(handleInsert).toHaveBeenCalledWith(url + '-/preview/');
+      });
+
+      it('should work along with `autoFilename` setting enabled', async () => {
+        const options = {
+          config: {
+            publicKey: TEST_PUBLIC_KEY,
+          },
+          settings: {
+            autoFilename: true,
+            defaultOperations: '/preview/',
+          },
+        };
+        const url = generateMockUrl();
+        const mockResult = { cdnUrl: url, isImage: true, name: 'test.png' };
+        const integration = await uploadcareMediaLibrary.init({
+          options,
+          handleInsert,
+        });
+        await integration.show();
+        await simulateCloseDialog(mockResult);
+        expect(handleInsert).toHaveBeenCalledWith(url + '-/preview/test.png');
+      });
+
+      it('should overwrite filename with `autoFilename` setting enabled', async () => {
+        const options = {
+          config: {
+            publicKey: TEST_PUBLIC_KEY,
+          },
+          settings: {
+            autoFilename: true,
+            defaultOperations: '/preview/another_name.png',
+          },
+        };
+        const url = generateMockUrl();
+        const mockResult = { cdnUrl: url, isImage: true, name: 'test.png' };
+        const integration = await uploadcareMediaLibrary.init({
+          options,
+          handleInsert,
+        });
+        await integration.show();
+        await simulateCloseDialog(mockResult);
+        expect(handleInsert).toHaveBeenCalledWith(url + '-/preview/another_name.png');
+      });
+    });
+
+    describe('autoFilename', () => {
+      it('should append filename to the url', async () => {
+        const options = {
+          config: {
+            publicKey: TEST_PUBLIC_KEY,
+          },
+          settings: {
+            autoFilename: true,
+          },
+        };
+        const url = generateMockUrl();
+        const mockResult = { cdnUrl: url, isImage: true, name: 'test.png' };
+        const integration = await uploadcareMediaLibrary.init({
+          options,
+          handleInsert,
+        });
+        await integration.show();
+        await simulateCloseDialog(mockResult);
+        expect(handleInsert).toHaveBeenCalledWith(url + 'test.png');
+      });
     });
   });
 
