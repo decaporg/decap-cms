@@ -70,22 +70,14 @@ export default class API extends GithubAPI {
     return Promise.resolve(this.commitAuthor);
   }
 
-  request(path, options = {}) {
+  request(path, options = {}, parseResponse = response => this.parseResponse(response)) {
     const url = this.urlFor(path, options);
     let responseStatus;
     return this.getRequestHeaders(options.headers || {})
       .then(headers => fetch(url, { ...options, headers }))
       .then(response => {
         responseStatus = response.status;
-        const contentType = response.headers.get('Content-Type');
-        if (contentType && contentType.match(/json/)) {
-          return this.parseJsonResponse(response);
-        }
-        const text = response.text();
-        if (!response.ok) {
-          return Promise.reject(text);
-        }
-        return text;
+        return parseResponse(response);
       })
       .catch(error => {
         throw new APIError(error.message || error.msg, responseStatus, 'Git Gateway');

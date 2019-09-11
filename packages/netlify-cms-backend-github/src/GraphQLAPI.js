@@ -186,11 +186,11 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  async listFiles(path) {
-    const { repo_owner: owner, repo_name: name } = this;
+  async listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
+    const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { data } = await this.query({
       query: queries.files,
-      variables: { owner, name, expression: `${this.branch}:${path}` },
+      variables: { owner, name, expression: `${branch}:${path}` },
     });
 
     if (data.repository.object) {
