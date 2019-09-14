@@ -118,6 +118,7 @@ class Header extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
+    isTestRepo: PropTypes.bool,
     t: PropTypes.func.isRequired,
   };
 

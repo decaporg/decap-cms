@@ -85,6 +85,7 @@ const SettingsDropdown = ({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
 
 SettingsDropdown.propTypes = {
   displayUrl: PropTypes.string,
+  isTestRepo: PropTypes.bool,
   imageUrl: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
