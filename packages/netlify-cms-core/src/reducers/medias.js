@@ -24,7 +24,7 @@ export const getAsset = (publicFolder, state, path) => {
 
   let proxy = state.get(path) || memoizedProxies[path];
   if (proxy) {
-    // There is already an AssetProxy in memmory for this path. Use it.
+    // There is already an AssetProxy in memory for this path. Use it.
     return proxy;
   }
 

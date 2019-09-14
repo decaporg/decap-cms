@@ -20,7 +20,7 @@ npm init -y
 # Install required dependencies
 npm install --save react react-dom next
 
-# Intall webpack loader for Markdown
+# Install webpack loader for Markdown
 npm install --save-dev frontmatter-markdown-loader
 
 # Create folder for pages (default for NextJS), and add a index file

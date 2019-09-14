@@ -14,7 +14,7 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 const { notifSend } = notifActions;
 
 /*
- * Contant Declarations
+ * Constant Declarations
  */
 export const ENTRY_REQUEST = 'ENTRY_REQUEST';
 export const ENTRY_SUCCESS = 'ENTRY_SUCCESS';

@@ -89,7 +89,7 @@ export default class BitbucketBackend {
       throw new Error('Your BitBucket user account does not have access to this repo.');
     }
 
-    // Autorized user
+    // Authorized user
     return { ...user, token: state.token, refresh_token: state.refresh_token };
   }
 

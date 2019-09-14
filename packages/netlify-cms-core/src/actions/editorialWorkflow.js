@@ -13,7 +13,7 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 const { notifSend } = notifActions;
 
 /*
- * Contant Declarations
+ * Constant Declarations
  */
 export const UNPUBLISHED_ENTRY_REQUEST = 'UNPUBLISHED_ENTRY_REQUEST';
 export const UNPUBLISHED_ENTRY_SUCCESS = 'UNPUBLISHED_ENTRY_SUCCESS';

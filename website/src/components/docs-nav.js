@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Link from 'gatsby-link';
 
 /**
- * Maually get table of contents since tableOfContents from markdown
+ * Manually get table of contents since tableOfContents from markdown
  * nodes have code added.
  *
  * https://github.com/gatsbyjs/gatsby/issues/5436

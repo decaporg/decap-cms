@@ -3,7 +3,7 @@ import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration } from 'Reducers';
 
 /*
- * Contant Declarations
+ * Constant Declarations
  */
 export const SEARCH_ENTRIES_REQUEST = 'SEARCH_ENTRIES_REQUEST';
 export const SEARCH_ENTRIES_SUCCESS = 'SEARCH_ENTRIES_SUCCESS';

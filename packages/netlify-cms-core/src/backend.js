@@ -557,7 +557,7 @@ export class Backend {
    */
   getDeploy(collection, slug, entry) {
     /**
-     * If `site_url` is undefiend or `show_preview_links` in the config is set to false, do nothing.
+     * If `site_url` is undefined or `show_preview_links` in the config is set to false, do nothing.
      */
 
     const baseUrl = this.config.get('site_url');

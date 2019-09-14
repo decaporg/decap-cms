@@ -69,7 +69,7 @@ describe('sanitizeSlug', () => {
     expect(() => sanitizeSlug('test', Map({ sanitize_replacement: 11232 }))).toThrowError(
       '`options.replacement` must be a string.',
     );
-    // do not test undefined for this variant since a default is set in the cosntructor.
+    // do not test undefined for this variant since a default is set in the constructor.
     //expect(() => sanitizeSlug('test', { sanitize_replacement: undefined })).toThrowError("`options.replacement` must be a string.");
     expect(() => sanitizeSlug('test', Map({ sanitize_replacement: () => {} }))).toThrowError(
       '`options.replacement` must be a string.',
