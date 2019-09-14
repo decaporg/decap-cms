@@ -39,6 +39,13 @@ const AppHeaderSiteLink = styled.a`
   padding: 10px 16px;
 `;
 
+const AppHeaderTestRepoIndicator = styled.a`
+  font-size: 14px;
+  font-weight: 400;
+  color: #7b8290;
+  padding: 10px 16px;
+`;
+
 const Avatar = ({ imageUrl }) =>
   imageUrl ? <AvatarImage src={imageUrl} /> : <AvatarPlaceholderIcon type="user" size="large" />;
 
@@ -46,8 +53,16 @@ Avatar.propTypes = {
   imageUrl: PropTypes.string,
 };
 
-const SettingsDropdown = ({ displayUrl, imageUrl, onLogoutClick, t }) => (
+const SettingsDropdown = ({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }) => (
   <React.Fragment>
+    {isTestRepo && (
+      <AppHeaderTestRepoIndicator
+        href="https://www.netlifycms.org/docs/authentication-backends#test-repo-backend"
+        target="_blank"
+      >
+        Test Backend ↗
+      </AppHeaderTestRepoIndicator>
+    )}
     {displayUrl ? (
       <AppHeaderSiteLink href={displayUrl} target="_blank">
         {stripProtocol(displayUrl)}

@@ -169,6 +169,7 @@ class App extends React.Component {
           openMediaLibrary={openMediaLibrary}
           hasWorkflow={hasWorkflow}
           displayUrl={config.get('display_url')}
+          isTestRepo={config.getIn(['backend', 'name']) === 'test-repo'}
           showMediaButton={showMediaButton}
         />
         <AppMainContainer>
