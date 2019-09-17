@@ -210,7 +210,7 @@ export default class GitHub {
 
   logout() {
     this.token = null;
-    if (typeof this.api.reset === 'function') {
+    if (this.api && typeof this.api.reset === 'function') {
       return this.api.reset();
     }
     return;
@@ -422,7 +422,11 @@ export default class GitHub {
   }
 
   deleteUnpublishedEntry(collection, slug) {
-    return this.api.deleteUnpublishedEntry(collection, slug);
+    // deleteUnpublishedEntry is a transactional operation
+    return this.runWithLock(
+      () => this.api.deleteUnpublishedEntry(collection, slug),
+      'Failed to acquire delete entry lock',
+    );
   }
 
   publishUnpublishedEntry(collection, slug) {

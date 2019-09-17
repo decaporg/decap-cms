@@ -1,27 +1,82 @@
 jobs:
-- job: ci
-  pool:
-    vmImage: 'Ubuntu-16.04'
+  - job: ci
+    timeoutInMinutes: 20
+    pool:
+      vmImage: 'Ubuntu-16.04'
 
-  strategy:
-    matrix:
-      node_8_x:
-        node_version: 8.x
-      node_10_x:
-        node_version: 10.x
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
 
-  steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: $(node_version)
+    strategy:
+      matrix:
+        node_8_x:
+          node_version: 8.x
+        node_10_x:
+          node_version: 10.x
 
-  - script: |
-      apt-get update && apt-get install -y libgconf-2-4
-      node --version
-      npm --version
-      yarn --version
-      yarn
-      yarn bootstrap
-      yarn test:all:ci
-    env:
-      CYPRESS_RECORD_KEY: $(cypressRecordKey)
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+
+      - task: CacheBeta@0
+        inputs:
+          key: version1 | "$(node_version)" | yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+        displayName: Cache Yarn packages
+
+      - script: |
+          apt-get update && apt-get install -y libgconf-2-4
+          node --version
+          npm --version
+          yarn --version
+          yarn
+          yarn bootstrap
+          yarn test:ci
+          yarn build:demo
+
+      - publish: $(System.DefaultWorkingDirectory)/dev-test
+        artifact: DevTestWebSite
+
+  - job: e2e
+    dependsOn: ci
+    condition: succeeded()
+
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+
+    timeoutInMinutes: 10
+    pool:
+      vmImage: 'Ubuntu-16.04'
+
+    strategy:
+      parallel: 5
+
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 10.x
+
+      - task: CacheBeta@0
+        inputs:
+          key: version1 | "10.x" | yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+        displayName: Cache Yarn packages
+
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Dev Test WebSite'
+        inputs:
+          artifact: DevTestWebSite
+          path: $(System.DefaultWorkingDirectory)/dev-test
+
+      - script: |
+          apt-get update && apt-get install -y libgconf-2-4
+          node --version
+          npm --version
+          yarn --version
+          yarn
+          yarn test:e2e:run-ci
+
+        timeoutInMinutes: 8
+        env:
+          CYPRESS_RECORD_KEY: $(cypressRecordKey)

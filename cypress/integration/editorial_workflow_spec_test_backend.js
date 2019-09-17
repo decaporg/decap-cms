@@ -36,7 +36,7 @@ const entry3 = {
 
 describe('Test Backend Editorial Workflow', () => {
   after(() => {
-    cy.task('restoreDefaults');
+    cy.task('teardownBackend', { backend: 'test' });
   });
 
   before(() => {
