@@ -24,7 +24,7 @@ const fieldsConfig = {
 /**
  * The schema had to be wrapped in a function to
  * fix a circular dependency problem for WebPack,
- * where the imports get resolved asyncronously.
+ * where the imports get resolved asynchronously.
  */
 const getConfigSchema = () => ({
   type: 'object',
