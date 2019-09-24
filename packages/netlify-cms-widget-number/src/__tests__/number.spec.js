@@ -120,6 +120,18 @@ describe('Number widget', () => {
     expect(onChangeSpy).toHaveBeenCalledWith(parseInt(testValue, 10));
   });
 
+  it('should parse float numbers as float', () => {
+    const field = fromJS({ ...fieldSettings, valueType: 'float' });
+    const testValue = (Math.random() * (20 - -20 + 1) + -20).toFixed(2);
+    const { input, onChangeSpy } = setup({ field });
+
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: String(testValue) } });
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(parseFloat(testValue));
+  });
+
   it('should allow 0 as a value', () => {
     const field = fromJS(fieldSettings);
     const testValue = 0;
