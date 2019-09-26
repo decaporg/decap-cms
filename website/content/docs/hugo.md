@@ -199,4 +199,4 @@ Create a file `layouts/blog/single.html`, and put the following content in there
 </html>
 ```
 
-You can see we've included all the fields we've specified in our Netlify CMS `config.yml` file. You can access any custom front-matter fields with `.Params.<field-name>`!
+You can see this basic template includes all the fields you've specified in your Netlify CMS `config.yml` file. You can access any custom front-matter fields with `.Params.<field-name>`!
