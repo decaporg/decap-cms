@@ -221,14 +221,14 @@ export default class GitHub {
   }
 
   async entriesByFolder(collection, extension) {
-    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
+    const repoURL = this.useOpenAuthoring ? this.api.originRepoURL : this.api.repoURL;
     const files = await this.api.listFiles(collection.get('folder'), { repoURL });
     const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
     return this.fetchFiles(filteredFiles, { repoURL });
   }
 
   entriesByFiles(collection) {
-    const repoURL = `/repos/${this.useOpenAuthoring ? this.originRepo : this.repo}`;
+    const repoURL = this.useOpenAuthoring ? this.api.originRepoURL : this.api.repoURL;
     const files = collection.get('files').map(collectionFile => ({
       path: collectionFile.get('file'),
       label: collectionFile.get('label'),
@@ -236,7 +236,7 @@ export default class GitHub {
     return this.fetchFiles(files, { repoURL });
   }
 
-  fetchFiles = (files, { repoURL = `/repos/${this.repo}` } = {}) => {
+  fetchFiles = (files, { repoURL = this.api.repoURL } = {}) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
     const promises = [];
     files.forEach(file => {
@@ -265,7 +265,7 @@ export default class GitHub {
 
   // Fetches a single entry.
   getEntry(collection, slug, path) {
-    const repoURL = `/repos/${this.originRepo}`;
+    const repoURL = this.api.originRepoURL;
     return this.api.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,
