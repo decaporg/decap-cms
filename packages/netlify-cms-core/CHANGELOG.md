@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.3...netlify-cms-core@2.13.0-beta.4) (2019-09-26)
+
+
+### Bug Fixes
+
+* **core:** list widget pattern validation ([#2599](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2599)) ([6765bbd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6765bbd))
+* **media-library:** automatically select uploaded image ([#2569](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2569)) ([9f00310](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9f00310))
+* prevent deletion of file collection entries by default ([#2627](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2627)) ([8bdfea4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8bdfea4))
+
+
+
+
+
 # [2.13.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.2...netlify-cms-core@2.13.0-beta.3) (2019-09-04)
 
 

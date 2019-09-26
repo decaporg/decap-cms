@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.2...netlify-cms-backend-github@2.5.0-beta.3) (2019-09-26)
+
+
+### Bug Fixes
+
+* **backend-github:** update Open Authoring branches with no PR ([#2618](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2618)) ([6817033](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/6817033))
+* **git-gateway:** pass api URL instead of constructing it from repo value ([#2631](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2631)) ([922c0f3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/922c0f3))
+* **github-backend:** handle race condition in editorial workflow ([#2658](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2658)) ([97f1f84](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/97f1f84))
+
+
+
+
+
 # [2.5.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.1...netlify-cms-backend-github@2.5.0-beta.2) (2019-09-04)
 
 

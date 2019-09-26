@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.3-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.3.3-beta.0...netlify-cms-backend-gitlab@2.3.3-beta.1) (2019-09-26)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** exclude directories in paginated results ([#2668](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/2668)) ([3903acb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/3903acb))
+
+
+
+
+
 ## [2.3.3-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.3.2...netlify-cms-backend-gitlab@2.3.3-beta.0) (2019-08-24)
 
 **Note:** Version bump only for package netlify-cms-backend-gitlab
