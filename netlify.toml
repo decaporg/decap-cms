@@ -1,0 +1,8 @@
+[build]
+  base = "/"
+  command = "yarn build:demo"
+  publish = "dev-test/"
+
+  [build.environment]
+    YARN_FLAGS = "--no-ignore-optional"
+    YARN_VERSION = "1.7.0"
