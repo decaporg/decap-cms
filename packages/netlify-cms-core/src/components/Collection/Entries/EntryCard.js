@@ -12,6 +12,7 @@ const ListCard = styled.li`
   width: ${lengths.topCardWidth};
   margin-left: 12px;
   margin-bottom: 16px;
+  overflow: hidden;
 `;
 
 const ListCardLink = styled(Link)`
