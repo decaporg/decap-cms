@@ -103,6 +103,13 @@ const plugins = () => {
     return [
       ...defaultPlugins,
       [
+        'emotion',
+        {
+          sourceMap: false,
+          autoLabel: false,
+        },
+      ],
+      [
         'inline-react-svg',
         {
           svgo: {
