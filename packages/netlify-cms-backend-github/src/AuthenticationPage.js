@@ -133,6 +133,7 @@ export default class GitHubAuthenticationPage extends React.Component {
         loginDisabled={inProgress || findingFork || requestingFork}
         loginErrorMessage={loginError}
         logoUrl={config.get('logo_url')}
+        siteUrl={config.get('site_url')}
         {...this.getAuthenticationPageRenderArgs()}
       />
     );
