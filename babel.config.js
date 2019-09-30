@@ -89,7 +89,7 @@ const plugins = () => {
         },
       ],
       [
-        'inline-svg',
+        'inline-react-svg',
         {
           svgo: {
             plugins: [{ removeViewBox: false }],
@@ -103,7 +103,7 @@ const plugins = () => {
     return [
       ...defaultPlugins,
       [
-        'inline-svg',
+        'inline-react-svg',
         {
           svgo: {
             plugins: [{ removeViewBox: false }],
