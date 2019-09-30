@@ -71,7 +71,6 @@ const presets = () => {
 };
 
 const plugins = () => {
-
   if (isESM) {
     return [
       ...defaultPlugins,
