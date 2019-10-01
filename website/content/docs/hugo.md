@@ -149,3 +149,54 @@ Back in your [Netlify dashboard](https://app.netlify.com/):
 Once you've reached this point, you should be able to access the CMS in your browser at `http://localhost:1313/admin`. You'll be prompted to add the URL of your Netlify site. Once you've added that URL, you can log in with an Identity account or with one of the External Providers you enabled in step 3 above. For the sake of this tutorial, you can create a blog post in the CMS, and publish it! Once you `git pull` in your project, the blog post will show up in the project at `content/blog/<slugified-blog-post-title>.md`.
 
 And that's it! From this point on, it's just a matter of following [the Hugo documentation](https://gohugo.io/templates/) for outputting the content from your `content/` directory into templates! For more information on configuring Netlify CMS, feel free to check out the [Netlify CMS configuration options documentation](/docs/configuration-options/).
+
+## Using Netlify CMS content in Hugo
+
+### Creating a list of posts
+
+In your `layouts/index.html` file, you'll create an unordered list element and use a Hugo `range` to output all posts. Inside that range, you can add a list item element with each post title and a link to the post inside it.
+
+**Note:** To learn more about Hugo's `range` function, check out [the Hugo documentation](https://gohugo.io/functions/range).
+
+```html
+<body>
+  <h1>Nice. It's looking good already.</h1>
+  <ul>
+    {{ range (where .Pages "Section" "blog") }}
+    <li>
+      <a href="{{ .Permalink }}">
+        {{ .Title }}
+      </a>
+    </li>
+    {{ end }}
+  </ul>
+</body>
+```
+
+That link won't work just right just yet. You'll need to make a single page layout for blog posts, so Hugo can create a page for the `.Permalink` to link to.
+
+### Creating a single page post layout
+
+Create a file `layouts/blog/single.html`, and put the following content in there:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{ .Title }}</title>
+  </head>
+  <body>
+    <h1>{{ .Title }}</h1>
+    <p class="date">{{ .Date }}</p>
+    <p class="description">{{ .Params.description }}</p>
+    <article class="content">
+      {{ .Content }}
+    </article>
+  </body>
+</html>
+```
+
+You can see this basic template includes all the fields you've specified in your Netlify CMS `config.yml` file. You can access any custom front-matter fields with `.Params.<field-name>`!
