@@ -5,6 +5,7 @@ const { toGlobalName, externals } = require('./externals');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 
 const isProduction = process.env.NODE_ENV === 'production';
+const isTest = process.env.NODE_ENV === 'test';
 
 const rules = () => ({
   js: () => ({
@@ -111,7 +112,7 @@ const baseConfig = ({ target = isProduction ? 'umd' : 'umddir' } = {}) => ({
     rules: Object.values(rules()).map(rule => rule()),
   },
   plugins: Object.values(plugins()).map(plugin => plugin()),
-  devtool: 'source-map',
+  devtool: isTest ? '' : 'source-map',
   target: 'web',
 
   /**

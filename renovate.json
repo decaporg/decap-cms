@@ -1,3 +1,4 @@
 {
-  "extends": ["github>netlify/renovate-config:default"]
+  "extends": ["github>netlify/renovate-config:default"],
+  "ignorePaths": ["website/"]
 }

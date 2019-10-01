@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-beta.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.4.0-beta.3...netlify-cms-lib-util@2.4.0-beta.4) (2019-09-26)
+
+
+### Bug Fixes
+
+* **github-backend:** handle race condition in editorial workflow ([#2658](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/2658)) ([97f1f84](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/97f1f84))
+
+
+
+
+
 # [2.4.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.4.0-beta.2...netlify-cms-lib-util@2.4.0-beta.3) (2019-09-04)
 
 

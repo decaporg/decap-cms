@@ -1,0 +1,9 @@
+[build]
+  base = "/"
+  command = "yarn build:demo"
+  publish = "dev-test/"
+  ignore = "git diff --quiet HEAD^ HEAD -- . ':!website/'"
+
+  [build.environment]
+    YARN_FLAGS = "--no-ignore-optional"
+    YARN_VERSION = "1.7.0"

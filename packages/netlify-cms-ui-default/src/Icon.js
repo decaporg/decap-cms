@@ -51,14 +51,19 @@ const sizes = {
   large: '32px',
 };
 
-const Icon = ({ type, direction, size = 'medium', className }) => (
-  <IconWrapper
-    className={className}
-    dangerouslySetInnerHTML={{ __html: icons[type].image }}
-    size={sizes[size] || size}
-    rotation={getRotation(icons[type].direction, direction)}
-  />
-);
+const Icon = ({ type, direction, size = 'medium', className }) => {
+  const IconSvg = icons[type].image;
+
+  return (
+    <IconWrapper
+      className={className}
+      size={sizes[size] || size}
+      rotation={getRotation(icons[type].direction, direction)}
+    >
+      <IconSvg />
+    </IconWrapper>
+  );
+};
 
 Icon.propTypes = {
   type: PropTypes.string.isRequired,

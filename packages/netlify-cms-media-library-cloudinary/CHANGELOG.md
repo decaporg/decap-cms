@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary/compare/netlify-cms-media-library-cloudinary@1.3.3...netlify-cms-media-library-cloudinary@1.3.4) (2019-09-26)
+
+
+### Bug Fixes
+
+* **media-library-cloudinary:** when 'multiple' is true, always return an array ([#2656](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary/issues/2656)) ([4c32ee4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary/commit/4c32ee4))
+
+
+
+
+
 ## [1.3.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary/compare/netlify-cms-media-library-cloudinary@1.3.2...netlify-cms-media-library-cloudinary@1.3.3) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-media-library-cloudinary
