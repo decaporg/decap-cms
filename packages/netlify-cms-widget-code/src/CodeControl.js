@@ -4,71 +4,37 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
 import styled from '@emotion/styled';
 import { Map } from 'immutable';
-import { find, uniqBy, isEqual, isObject, sortBy } from 'lodash';
+import { find, uniq, uniqBy, isEqual, isObject, sortBy, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 import Resizable from 're-resizable';
-import Select from 'react-select';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
-import isHotkey from 'is-hotkey';
-import { Icon, buttons, colors, lengths, text, shadows } from 'netlify-cms-ui-default';
-import languageSelectStyles from './languageSelectStyles';
+import SettingsPane from './SettingsPane';
+import SettingsButton from './SettingsButton';
+import languageData from '../../data/languages-processed.json';
+
+// TODO: relocate as a utility function
+function getChangedProps(previous, next, keys) {
+  const propNames = keys || uniq(Object.keys(previous), Object.keys(next));
+  const changedProps = propNames.reduce((acc, prop) => {
+    if (previous[prop] !== next[prop]) {
+      acc[prop] = next[prop];
+    }
+    return acc;
+  }, {});
+  if (!isEmpty(changedProps)) {
+    return changedProps;
+  }
+}
+
+const languages = languageData.map(lang => ({
+  label: lang.label,
+  name: lang.identifiers[0],
+  mode: lang.codemirror_mime_type || lang.codemirror_mode,
+}));
 
 const styleString = `
   padding: 0;
-`;
-
-const SettingsButton = styled.button`
-  ${buttons.button};
-  ${buttons.default};
-  ${shadows.drop};
-  display: block;
-  position: absolute;
-  z-index: 100;
-  right: 8px;
-  top: 8px;
-  opacity: 0.8;
-  padding: 2px 4px;
-  line-height: 1;
-  height: auto;
-
-  ${Icon} {
-    position: relative;
-    top: 1px;
-  }
-`;
-
-const SettingsPaneContainer = styled.div`
-  position: absolute;
-  right: 0;
-  width: 200px;
-  z-index: 10;
-  height: 100%;
-  background-color: #fff;
-  overflow-y: scroll;
-  padding: 12px;
-  ${shadows.drop};
-`;
-
-const SettingsPane = styled.div`
-`;
-
-const SettingsFieldLabel = styled.label`
-  ${text.fieldLabel};
-  font-size: 11px;
-  display: block;
-  margin-top: 8px;
-  margin-bottom: 2px;
-`;
-
-const SettingsSectionTitle = styled.h3`
-  font-size: 14px;
-  margin-top: 14px;
-  margin-bottom: 0;
-
-  &:first-of-type {
-    margin-top: 4px;
-  }
 `;
 
 const defaultLang = { name: '', mode: '', label: 'none' };
@@ -89,6 +55,8 @@ function themesToOptions(themes = []) {
   });
   return [{ value: '', label: 'default' }, ...options];
 }
+
+const modes = languages.map(valueToOption);
 
 const settingsPersistKeys = {
   theme: 'cms.codemirror.theme',
@@ -134,35 +102,21 @@ export default class CodeControl extends React.Component {
     });
   }
 
-  getLanguageByName = (name, languages = []) => {
+  componentDidUpdate(prevProps, prevState) {
+    this.updateCodeMirrorProps(prevState);
+  }
+
+  updateCodeMirrorProps(prevState) {
+    const keys = ['lang', 'theme', 'keyMap'];
+    const changedProps = getChangedProps(prevState, this.state, keys);
+    if (changedProps) {
+      this.handleChangeCodeMirrorProps(changedProps);
+    }
+  }
+
+  getLanguageByName = name => {
     return languages.find(lang => lang.name === name);
   };
-
-  getBaseLanguages = () => {
-    const unknownLang = this.state?.unknownLang;
-    return [
-      defaultLang,
-      unknownLang && { name: unknownLang, mode: unknownLang, label: `${unknownLang} (unknown)` },
-    ].filter(v => v);
-  };
-
-  getAllLanguages = () => {
-    const { widget } = this.props;
-    if (widget.languages) {
-      return widget.languages;
-    }
-
-    const mimeModes = CodeMirror?.mimeModes;
-    console.log(mimeModes)
-    if (mimeModes) {
-      const languages = Object.keys(mimeModes).map(mimeType => ({
-        name: mimeType.match(/^.+\/(?:x-)?(.+)$/)[1],
-        mode: mimeType,
-      }));
-      return uniqBy(languages, 'name');
-    }
-    return [];
-  }
 
   getKeyMapOptions = () => {
     return Object
@@ -171,31 +125,12 @@ export default class CodeControl extends React.Component {
       .map(keyMap => ({ value: keyMap, label: keyMap }));
   }
 
-  getLanguages = () => {
-    const baseLanguages = this.getBaseLanguages();
-    const allLanguages = this.getAllLanguages();
-    const fieldLanguages = this.props.field.get('languages');
-    if (!fieldLanguages) {
-      return sortBy(baseLanguages.concat(allLanguages), 'name');
-    }
-    const languages = fieldLanguages.map(lang => {
-      if (Map.isMap(lang)) {
-        return lang;
-      }
-      const langInfo = allLanguages.find(({ name, mode, label }) => {
-        return [name, mode, label].includes(lang);
-      });
-      return langInfo || { name: lang, mode: lang };
-    }).toJS();
-    return sortBy(baseLanguages.concat(languages), 'name');
-  };
-
   // This widget is not fully controlled, it only takes a value through props
   // upon initialization.
   getInitialLang = () => {
     const { value, field } = this.props;
     const lang = (this.valueIsMap() && value && value.get(this.keys.lang)) || field.get('defaultLanguage');
-    const langInfo = this.getLanguageByName(lang, this.getLanguages());
+    const langInfo = this.getLanguageByName(lang)
     if (lang && !langInfo) {
       this.setState({ unknownLang: lang });
     }
@@ -235,7 +170,7 @@ export default class CodeControl extends React.Component {
     return !field.get('output_code_only') || !isEditorComponent;
   }
 
-  handleChangeCodeMirrorProp(value, type) {
+  handleChangeCodeMirrorProps(changedProps) {
     const { onChange } = this.props;
 
     // Changing CodeMirror props requires re-initializing the
@@ -243,22 +178,21 @@ export default class CodeControl extends React.Component {
     // restore the selections and cursor position after the state change.
     const cursor = this.cm.doc.getCursor();
     const selections = this.cm.doc.listSelections();
-    this.setState({
-      [type]: value,
-      codeMirrorKey: uuid(),
-    }, () => {
+    this.setState({ codeMirrorKey: uuid() }, () => {
       this.cm.doc.setCursor(cursor);
       this.cm.doc.setSelections(selections);
     });
 
-    // Only persist the language change if supported - requires the value to be
-    // a map rather than just a code string.
-    if (type === 'lang' && this.valueIsMap()) {
-      onChange(this.toValue('lang', value));
+    for (const key of ['theme', 'keyMap']) {
+      if (changedProps[key]) {
+        localStorage.setItem(settingsPersistKeys[key], changedProps[key]);
+      }
     }
 
-    if (['theme', 'keyMap'].includes(type)) {
-      localStorage.setItem(settingsPersistKeys[type], value);
+    // Only persist the language change if supported - requires the value to be
+    // a map rather than just a code string.
+    if (changedProps.lang && this.valueIsMap()) {
+      onChange(this.toValue('lang', changedProps.lang));
     }
   }
 
@@ -278,18 +212,10 @@ export default class CodeControl extends React.Component {
     this.cm.focus();
   }
 
-  handleSettingsPaneKeyDown = event => {
-    if (isHotkey('esc', event)) {
-      this.hideSettings();
-    }
-  };
-
   render() {
     const { classNameWrapper, forID, widget } = this.props;
     const { lang, settingsVisible, keyMap, codeMirrorKey, theme } = this.state;
-    const languages = this.getLanguages();
-    const modeOptions = languages.map(valueToOption);
-    const langInfo = this.getLanguageByName(lang, languages);
+    const langInfo = this.getLanguageByName(lang);
 
     return (
       <ClassNames>
@@ -314,64 +240,22 @@ export default class CodeControl extends React.Component {
               `,
             )}
           >
-            {!settingsVisible && (
-              <SettingsButton onClick={this.showSettings}>
-                <Icon type="settings" size="small"/>
-              </SettingsButton>
-            )}
+            {!settingsVisible && <SettingsButton onClick={this.showSettings}/>}
             {settingsVisible && (
-              <SettingsPaneContainer onKeyDown={this.handleSettingsPaneKeyDown}>
-                <SettingsPane>
-                  <SettingsButton onClick={this.hideSettings}>
-                    <Icon type="close" size="small"/>
-                  </SettingsButton>
-                  {this.allowLanguageSelection && (
-                    <>
-                      <SettingsSectionTitle>Field Settings</SettingsSectionTitle>
-                      <SettingsFieldLabel htmlFor={`${forID}-select-mode`}>Mode</SettingsFieldLabel>
-                      <Select
-                        inputId={`${forID}-select-mode`}
-                        styles={languageSelectStyles}
-                        value={valueToOption(langInfo || defaultLang)}
-                        options={modeOptions}
-                        onChange={opt => this.handleChangeCodeMirrorProp(opt.value, 'lang')}
-                        menuPlacement="auto"
-                        captureMenuScroll={false}
-                        autoFocus
-                      />
-                    </>
-                  )}
-                  {this.allowLanguageSelection && (
-                    <>
-                      <SettingsSectionTitle>Global Settings</SettingsSectionTitle>
-                      {this.themes && (
-                        <>
-                          <SettingsFieldLabel htmlFor={`${forID}-select-theme`}>Theme</SettingsFieldLabel>
-                          <Select
-                            inputId={`${forID}-select-theme`}
-                            styles={languageSelectStyles}
-                            value={this.themes.find(thm => thm.value === theme)}
-                            options={this.themes}
-                            onChange={opt => this.handleChangeCodeMirrorProp(opt.value, 'theme')}
-                            menuPlacement="auto"
-                            captureMenuScroll={false}
-                          />
-                        </>
-                      )}
-                      <SettingsFieldLabel htmlFor={`${forID}-select-keymap`}>KeyMap</SettingsFieldLabel>
-                      <Select
-                        inputId={`${forID}-select-keymap`}
-                        styles={languageSelectStyles}
-                        value={{ value: keyMap, label: keyMap }}
-                        options={this.getKeyMapOptions()}
-                        onChange={opt => this.handleChangeCodeMirrorProp(opt.value, 'keyMap')}
-                        menuPlacement="auto"
-                        captureMenuScroll={false}
-                      />
-                    </>
-                  )}
-                </SettingsPane>
-              </SettingsPaneContainer>
+              <SettingsPane
+                hideSettings={this.hideSettings}
+                forID={forID}
+                modes={modes}
+                mode={valueToOption(langInfo || defaultLang)}
+                theme={this.themes.find(t => t.value === theme)}
+                themes={this.themes}
+                keyMap={{ value: keyMap, label: keyMap }}
+                keyMaps={this.getKeyMapOptions()}
+                allowLanguageSelection={this.allowLanguageSelection}
+                onChangeLang={newLang => this.setState({ lang: newLang })}
+                onChangeTheme={newTheme => this.setState({ lang: newTheme })}
+                onChangeKeyMap={newKeyMap => this.setState({ lang: newKeyMap })}
+              />
             )}
             <ReactCodeMirror
               key={codeMirrorKey}

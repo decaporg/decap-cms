@@ -185,7 +185,7 @@ const plugins = () => {
     ];
   }
 
-  return defaultPlugins,
+  return defaultPlugins;
 };
 
 module.exports = {

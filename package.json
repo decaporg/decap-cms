@@ -56,8 +56,7 @@
     "publish:graduate:ci": "run-s publish:prepare \"publish:version --conventional-graduate --yes\" build publish:push-git \"publish:from-git --yes\"",
     "publish:graduate:before-manual-version": "run-s publish:prepare publish:graduate:version",
     "publish:graduate:version": "run-s \"publish:version --conventional-graduate\"",
-    "publish:graduate:dry-run": "run-s \"publish:version --conventional-graduate --no-git-tag-version\"",
-    "prog-langs": "node ./scripts/processProgLangData"
+    "publish:graduate:dry-run": "run-s \"publish:version --conventional-graduate --no-git-tag-version\""
   },
   "browserslist": [
     "last 2 Chrome versions",

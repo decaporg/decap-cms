@@ -17,7 +17,7 @@ import 'codemirror/mode/php/php';
 import 'codemirror/mode/powershell/powershell';
 import 'codemirror/mode/pug/pug';
 import 'codemirror/mode/puppet/puppet';
-import 'codemirror/mode/python/phython';
+import 'codemirror/mode/python/python';
 import 'codemirror/mode/r/r';
 import 'codemirror/mode/rst/rst';
 import 'codemirror/mode/ruby/ruby';
