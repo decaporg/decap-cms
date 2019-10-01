@@ -206,14 +206,14 @@ Now in your template, you can access whatever properties you need.
 <script>
 ```
 
-If you have Markdown in your content, you can use the `@nuxt/markdownit` module to render that.
+If you have Markdown in your content, you can use the `@nuxtjs/markdownit` module to render that.
 
-### Rendering Markdown with `@nuxt/markdownit`
+### Rendering Markdown with `@nuxtjs/markdownit`
 
 First, install the Nuxt `markdownit` module.
 
 ```sh
-npm install @nuxt/markdownit
+npm install @nuxtjs/markdownit
 ```
 
 Next, add the module to your `nuxt.config.js` and set its configuration. For this example, you can use `markdownit`'s Vue injection.
