@@ -152,6 +152,10 @@ export default class Widget extends Component {
 
   validateWrappedControl = field => {
     const t = this.props.t;
+    if (typeof this.wrappedControlValid !== 'function') {
+      throw new Error(`The wrappedControlValid is not a function (widget: ${field.get('widget')}).`)
+    }
+
     const response = this.wrappedControlValid();
     if (typeof response === 'boolean') {
       const isValid = response;
