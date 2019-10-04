@@ -156,9 +156,13 @@ export default class Widget extends Component {
     if (typeof response === 'boolean') {
       const isValid = response;
       return { error: !isValid };
-    } else if (response.hasOwnProperty('error')) {
+    } 
+    
+    if (response.hasOwnProperty('error')) {
       return response;
-    } else if (response instanceof Promise) {
+    } 
+    
+    if (response instanceof Promise) {
       response.then(
         () => {
           this.validate({ error: false });
