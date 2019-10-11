@@ -286,14 +286,12 @@ Finally, add the following to the collections array in `config.yml`
       name: "navigation"
       file: "_data/navigation.yml"
       fields:
-        - {
-            label: "Navigation Items",
-            name: "items",
-            widget: "list",
-            fields:
-              - {label: Name, name: name, widget: string}
-              - {label: Link, name: link, widget: string}
-          }
+        - label: "Navigation Items"
+          name: "items"
+          widget: "list"
+          fields:
+            - {label: Name, name: name, widget: string}
+            - {label: Link, name: link, widget: string}
 ```
 
 Now you can add, rename, and rearrange the navigation items on your blog.
