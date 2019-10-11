@@ -79,7 +79,7 @@ For repositories stored on GitLab, the `gitlab` backend allows CMS users to log 
 The GitLab API allows for two types of OAuth2 flows:
 
 * [Web Application Flow](https://docs.gitlab.com/ce/api/oauth2.html#web-application-flow), which works much like the GitHub OAuth flow described above.
-* [Implicit Grant](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant), which operates _without_ the need for an authentication server.
+* [Implicit Grant](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant-flow), which operates _without_ the need for an authentication server.
 
 ### Web Application Flow with Netlify
 
