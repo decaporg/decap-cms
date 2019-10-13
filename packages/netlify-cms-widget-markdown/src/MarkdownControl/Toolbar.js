@@ -58,6 +58,15 @@ const ToolbarToggleLabel = styled.span`
     `};
 `;
 
+const headingOptions = {
+  'heading-one': 'Heading 1',
+  'heading-two': 'Heading 2',
+  'heading-three': 'Heading 3',
+  'heading-four': 'Heading 4',
+  'heading-five': 'Heading 5',
+  'heading-six': 'Heading 6',
+};
+
 export default class Toolbar extends React.Component {
   static propTypes = {
     buttons: ImmutablePropTypes.list,
@@ -135,24 +144,37 @@ export default class Toolbar extends React.Component {
             isHidden={this.isHidden('link')}
             disabled={disabled}
           />
-          <ToolbarButton
-            type="heading-one"
-            label="Header 1"
-            icon="h1"
-            onClick={onBlockClick}
-            isActive={selectionHasBlock}
-            isHidden={this.isHidden('heading-one')}
-            disabled={disabled}
-          />
-          <ToolbarButton
-            type="heading-two"
-            label="Header 2"
-            icon="h2"
-            onClick={onBlockClick}
-            isActive={selectionHasBlock}
-            isHidden={this.isHidden('heading-two')}
-            disabled={disabled}
-          />
+          {!this.isHidden('headings') && (
+            <ToolbarDropdownWrapper>
+              <Dropdown
+                dropdownTopOverlap="36px"
+                renderButton={() => (
+                  <DropdownButton>
+                    <ToolbarButton
+                      type="headings"
+                      label="Headings"
+                      icon="hOptions"
+                      disabled={disabled}
+                      isActive={() =>
+                        Object.keys(headingOptions).some(optionKey => {
+                          return selectionHasBlock(optionKey);
+                        })
+                      }
+                    />
+                  </DropdownButton>
+                )}
+              >
+                {Object.keys(headingOptions).map((optionKey, idx) => (
+                  <DropdownItem
+                    key={idx}
+                    label={headingOptions[optionKey]}
+                    className={selectionHasBlock(optionKey) && 'active'}
+                    onClick={() => onBlockClick(undefined, optionKey)}
+                  />
+                ))}
+              </Dropdown>
+            </ToolbarDropdownWrapper>
+          )}
           <ToolbarButton
             type="quote"
             label="Quote"
