@@ -29,7 +29,7 @@ You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the 
     </div>
     <div style="flex-basis: 25%">
         <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
-          <img style="display: flex" src="/img/middleman.svg"/>
+          <img style="display: flex" src="/img/preact.png"/>
         </div>
         <h4>Preact CLI</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/prateekbh/preact-netlify&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
