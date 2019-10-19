@@ -19,29 +19,25 @@ import {
 } from '../../utils/steps';
 import { workflowStatus, editorStatus } from '../../utils/constants';
 import { entry1, entry2, entry3 } from './entries';
+import * as specUtils from './spec_utils';
 
 export default function({ use_graphql }) {
   let taskResult = { data: {} };
 
-  const backend = 'github';
-
   before(() => {
-    Cypress.config('taskTimeout', 1200000);
-    Cypress.config('defaultCommandTimeout', 60000);
-    cy.task('setupBackend', { backend }).then(data => {
-      taskResult.data = data;
-    });
-
-    cy.task('updateBackendOptions', { backend, options: { use_graphql, open_authoring: false } });
+    specUtils.before(taskResult, { use_graphql, open_authoring: false });
   });
 
   after(() => {
-    cy.task('teardownBackend', { backend, ...taskResult.data });
-    cy.task('restoreDefaults');
+    specUtils.after(taskResult);
+  });
+
+  beforeEach(() => {
+    specUtils.beforeEach(taskResult);
   });
 
   afterEach(() => {
-    cy.task('teardownBackendTest', { backend, ...taskResult.data });
+    specUtils.afterEach(taskResult);
   });
 
   it('successfully loads', () => {

@@ -147,7 +147,7 @@ export default class API {
   }
 
   checkMetadataRef() {
-    return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms?${Date.now()}`, {
+    return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms`, {
       cache: 'no-store',
     })
       .then(response => response.object)
