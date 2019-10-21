@@ -5,6 +5,9 @@ subhead: Get support, give support, and find out what's new through the channels
 sections:
   - title: support
     channels:
+      - title: Netlify CMS Slack
+        description: Live community chat for all things Netlify CMS.
+        url: /slack
       - title: Netlify Community
         description: Ask and answer questions on the Netlify CMS channel of the Netlify community forum.
         url: https://community.netlify.com/c/netlify-platform/netlify-cms
@@ -14,9 +17,6 @@ sections:
       - title: Stack Overflow
         description: Secondary forum. Questions should be tagged `netlify-cms`.
         url: https://stackoverflow.com/questions/tagged/netlify-cms
-      - title: Gitter Chat
-        description: Live community chat for all things Netlify CMS.
-        url: https://gitter.im/netlify/netlifycms
   - title: development
     channels:
     - title: Priorities

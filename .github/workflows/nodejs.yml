@@ -1,6 +1,6 @@
 name: Node CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -27,5 +27,5 @@ jobs:
         yarn test:all:ci
       env:
         CI: true
-        CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_RECORD_KEY}}
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         NODE_OPTIONS: --max-old-space-size=4096
