@@ -32,7 +32,7 @@ You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the 
           <img style="display: flex" src="/img/preact.svg"/>
         </div>
         <h4>Preact CLI</h4>
-        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/prateekbh/preact-netlify&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/preactjs/preact-netlify&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
 </div>
 
