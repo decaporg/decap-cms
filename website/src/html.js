@@ -1,7 +1,4 @@
 import React from 'react';
-// gatsby throws some error when importing just react-sidecar.
-// Maybe because jsx file ext?
-import Gitter from 'react-sidecar/dist-modules/index.js';
 
 class HTML extends React.Component {
   render() {
@@ -27,7 +24,9 @@ class HTML extends React.Component {
           {this.props.preBodyComponents}
           <div key={'body'} id="___gatsby" dangerouslySetInnerHTML={{ __html: this.props.body }} />
           {this.props.postBodyComponents}
-          <Gitter room="netlify/NetlifyCMS" />
+          <a className="chat-button" href="/chat">
+            <img src="/img/slack.svg"/>
+          </a>
           <script src="//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js" />
         </body>
       </html>

@@ -54,4 +54,4 @@ As mentioned previously, we have more amazing providers coming soon! (Looking at
 
 We'll also be finalizing and documenting the media library integration API so developers can build their own integrations for services that aren't on our radar. S3 anybody?
 
-Questions or comments? Reach out [on Gitter](https://gitter.im/netlify/netlifycms).
+Questions or comments? Reach out in our [community chat](https://netlifycms.org/chat).

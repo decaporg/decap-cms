@@ -130,4 +130,4 @@ module.exports = {
 }
 ```
 
-If you run into a problem or need help, [open an issue on GitHub](https://github.com/netlify/netlify-cms/issues/new/choose) or [chat with our community on Gitter](https://gitter.im/netlify/netlifycms)!
+If you run into a problem or need help, [open an issue on GitHub](https://github.com/netlify/netlify-cms/issues/new/choose) or [chat with our community](https://netlifycms.org/chat)!

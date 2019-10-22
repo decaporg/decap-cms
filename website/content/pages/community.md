@@ -7,7 +7,7 @@ sections:
     channels:
       - title: Netlify CMS Slack
         description: Live community chat for all things Netlify CMS.
-        url: /slack
+        url: /chat
       - title: Netlify Community
         description: Ask and answer questions on the Netlify CMS channel of the Netlify community forum.
         url: https://community.netlify.com/c/netlify-platform/netlify-cms

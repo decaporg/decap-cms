@@ -434,7 +434,7 @@ That said, [we’re never done](https://www.dwolla.com/about/core-beliefs/). We�
 - The Netlify CMS interface is simple and easy to learn for content editors
 - Branch deploys and previews are amazing
 - Netlify’s free plans give you the freedom to evaluate the offering before committing
-- There is an active and very helpful [community](https://gitter.im/netlify/NetlifyCMS) for Netlify CMS on Gitter
+- There is an active and very helpful [community chat](https://netlifycms.org/chat) for Netlify CMS
 - Netlify CMS is open source and welcomes contributions
 
 ### Cons

@@ -8,7 +8,7 @@ import Notification from './notification';
 
 import '../css/imports/base.css';
 import '../css/imports/utilities.css';
-import '../css/imports/gitter.css';
+import '../css/imports/chat.css';
 
 const Layout = ({ children }) => {
   return (
