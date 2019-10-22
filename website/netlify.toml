@@ -5,3 +5,7 @@
 
   [build.environment]
     NODE_VERSION = "8"
+
+[[redirects]]
+  from = "/slack"
+  to = "https://join.slack.com/t/netlifycms/shared_invite/enQtODAzMTc3MDI0NDM2LWE1N2NjOTIxMjU4MjYyYTJjYzhmM2ExYWZiMDYzZmZmNWNlYjRkYTk3NGRlYTc3MzBiNWE3ZjQ5NjFkMzAzYjk"
