@@ -16,7 +16,7 @@
   },
   "rules": {
     "no-console": [0],
-    "react/prop-types": [1],
+    "react/prop-types": [0],
     "no-duplicate-imports": "error",
     "emotion/jsx-import": "error",
     "emotion/no-vanilla": "error",
