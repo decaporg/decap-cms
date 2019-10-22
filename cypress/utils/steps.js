@@ -5,6 +5,8 @@ function login(user) {
   if (user) {
     cy.visit('/', {
       onBeforeLoad: () => {
+        // https://github.com/cypress-io/cypress/issues/1208
+        window.indexedDB.deleteDatabase('localforage');
         window.localStorage.setItem('netlify-cms-user', JSON.stringify(user));
       },
     });
@@ -12,6 +14,7 @@ function login(user) {
     cy.visit('/');
     cy.contains('button', 'Login').click();
   }
+  cy.contains('a', 'New Post');
 }
 
 function assertNotification(message) {
@@ -170,11 +173,22 @@ function populateEntry(entry) {
     }
   }
 
-  cy.get('input')
-    .first()
-    .click();
-  cy.contains('button', 'Save').click();
-  assertNotification(notifications.saved);
+  cy.clock().then(clock => {
+    // some input fields are de-bounced thus require advancing the clock
+    if (clock) {
+      // https://github.com/cypress-io/cypress/issues/1273
+      clock.tick(150);
+      clock.tick(150);
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
+    }
+
+    cy.get('input')
+      .first()
+      .click();
+    cy.contains('button', 'Save').click();
+    assertNotification(notifications.saved);
+  });
 }
 
 function createPost(entry) {

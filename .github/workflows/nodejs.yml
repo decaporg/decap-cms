@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -12,20 +11,55 @@ jobs:
         node-version: [8.x, 10.x]
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install, build, and test
-      run: |
-        node --version
-        npm --version
-        yarn --version
-        yarn
-        yarn bootstrap
-        yarn test:all:ci
-      env:
-        CI: true
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        NODE_OPTIONS: --max-old-space-size=4096
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install, unit test and build
+        run: |
+          node --version
+          npm --version
+          yarn --version
+          yarn
+          yarn bootstrap
+          yarn test:ci
+          yarn build:demo
+        env:
+          CI: true
+          NODE_OPTIONS: --max-old-space-size=4096
+      - uses: actions/upload-artifact@master
+        with:
+          name: dev-test-website-node-${{ matrix.node-version }}
+          path: dev-test
+
+  e2e:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        machine: [1, 2, 3, 4, 5]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - uses: actions/download-artifact@master
+        with:
+          name: dev-test-website-node-10.x
+          path: dev-test
+      - name: npm install and e2e test
+        run: |
+          node --version
+          npm --version
+          yarn --version
+          yarn
+          yarn test:e2e:run-ci
+        env:
+          CI: true
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          NODE_OPTIONS: --max-old-space-size=4096
