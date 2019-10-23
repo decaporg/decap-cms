@@ -89,7 +89,7 @@ export default class DateControl extends React.Component {
      * Otherwise produce a date object.
      */
     if (format) {
-      const formattedValue = moment(datetime).format(format);
+      const formattedValue = datetime ? moment(datetime).format(format) : '';
       onChange(formattedValue);
     } else {
       const value = moment.isMoment(datetime) ? datetime.toDate() : datetime;
