@@ -61,25 +61,6 @@ describe('entryDraft reducer', () => {
     });
   });
 
-  describe('DRAFT_CHANGE', () => {
-    it.skip('should update the draft', () => {
-      const newEntry = {
-        ...entry,
-        raw: 'updated',
-      };
-      expect(reducer(initialState, actions.changeDraft(newEntry))).toEqual(
-        fromJS({
-          entry: {
-            ...entry,
-            raw: 'updated',
-          },
-          mediaFiles: [],
-          hasChanged: true,
-        }),
-      );
-    });
-  });
-
   describe('persisting', () => {
     beforeEach(() => {
       initialState = fromJS({
