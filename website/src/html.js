@@ -25,7 +25,7 @@ class HTML extends React.Component {
           <div key={'body'} id="___gatsby" dangerouslySetInnerHTML={{ __html: this.props.body }} />
           {this.props.postBodyComponents}
           <a className="chat-button" href="/chat">
-            <img src="/img/slack.svg"/>
+            <img src="/img/slack.svg" />
           </a>
           <script src="//unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js" />
         </body>
