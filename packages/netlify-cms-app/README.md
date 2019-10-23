@@ -1,9 +1,11 @@
 # Netlify CMS App
+_For a Netlify CMS overview, see the general [Netlify CMS project README](https://github.com/netlify/netlify-cms)._
+
+## Community Chat
+
 <a href="https://netlifycms.org/chat">
   <img alt="Join us on Slack" src="https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png" width="165">
 </a>
-
-_For a Netlify CMS overview, see the general [Netlify CMS project README](https://github.com/netlify/netlify-cms)._
 
 ## Purpose
 This package is similar to the [`netlify-cms`](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms/) package, but is designed for use with extensions. It serves that purpose in the following ways.

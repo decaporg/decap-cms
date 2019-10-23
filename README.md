@@ -1,10 +1,12 @@
 # Netlify CMS
+A CMS for static site generators. Give users a simple way to edit
+and add content to any site built with a static site generator.
+
+## Community Chat
+
 <a href="https://netlifycms.org/chat">
   <img alt="Join us on Slack" src="https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png" width="165">
 </a>
-
-A CMS for static site generators. Give users a simple way to edit
-and add content to any site built with a static site generator.
 
 ## How It Works
 
@@ -27,10 +29,6 @@ The Netlify CMS can be used in two different ways.
 * A Quick and easy install, that requires you to create a single HTML file and a configuration file. All the CMS Javascript and CSS are loaded from a CDN.
   To learn more about this installation method, refer to the [Quick Start Guide](https://www.netlifycms.org/docs/quick-start/)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
-
-# Community
-
-Netlify CMS has a [community chat](https://netlifycms.org/chat) where users and contributors come to share things about the project, as well as give and receive support.
 
 # Contributing
 
