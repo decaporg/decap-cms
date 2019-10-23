@@ -3,6 +3,8 @@
 A CMS for static site generators. Give users a simple way to edit
 and add content to any site built with a static site generator.
 
+## Community Chat
+
 <a href="https://netlifycms.org/chat">
   <img alt="Join us on Slack" src="https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png" width="165"/>
 </a>
