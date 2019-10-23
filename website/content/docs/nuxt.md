@@ -10,7 +10,7 @@ This guide will walk you through how to integrate Netlify CMS with Nuxt.
 
 Follow the instructions on the [Nuxt documentation](https://nuxtjs.org/guide/installation#using-code-create-nuxt-app-code-) for creating a new project, or run:
 
-```sh
+```bash
 npx create-nuxt-app <name-of-your-new-project>
 cd <name-of-your-new-project>
 npm run dev
@@ -41,7 +41,7 @@ In the `static/` directory, create a new directory `admin/`. Inside that directo
 
 For your `static/admin/config.yml` file, you can put in a basic starter config:
 
-```yml
+```yaml
 backend:
   name: git-gateway
   branch: master
@@ -52,6 +52,7 @@ public_folder: /img
 collections:
   - name: 'blog'
     label: 'Blog'
+    format: 'json'
     folder: 'assets/content/blog'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
