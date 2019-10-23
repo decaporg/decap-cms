@@ -41,9 +41,10 @@ jobs:
           name: dev-test-website-node-${{ matrix.node-version }}
           path: dev-test
 
-  e2e:
+  # non forked workflow (has acceess to build secrets)
+  e2e-with-cypress-record:
     needs: build
-
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)
     runs-on: ubuntu-latest
 
     strategy:
@@ -70,4 +71,31 @@ jobs:
         env:
           CI: true
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          NODE_OPTIONS: --max-old-space-size=4096
+  
+  # forked workflow (no acceess to build secrets)
+  e2e-no-cypress-record:
+    needs: build
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - uses: actions/download-artifact@master
+        with:
+          name: dev-test-website-node-10.x
+          path: dev-test
+      - name: npm install and e2e test
+        run: |
+          node --version
+          npm --version
+          yarn --version
+          yarn
+          yarn test:e2e:run
+        env:
+          CI: true
           NODE_OPTIONS: --max-old-space-size=4096
