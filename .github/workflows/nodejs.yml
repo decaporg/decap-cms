@@ -1,6 +1,14 @@
 name: Node CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
