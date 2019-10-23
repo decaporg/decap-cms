@@ -9,11 +9,11 @@ notifications:
       https://www.eventbrite.com/e/netlify-cms-planning-session-bi-weekly-tickets-35794058994
   - loud: true
     message: >-
-      We have a community on Gitter - join now to ask questions and discuss the
+      We have a community chat - join now to ask questions and discuss the
       project with other devs!
     published: false
-    title: Gitter shoutout
-    url: 'https://gitter.im/netlify/netlifycms'
+    title: Chat shoutout
+    url: 'https://netlifycms.org/chat'
   - loud: true
     message: Netlify CMS now supports GitLab!
     published: false

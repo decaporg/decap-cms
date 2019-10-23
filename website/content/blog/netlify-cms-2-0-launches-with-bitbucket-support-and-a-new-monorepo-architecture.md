@@ -27,4 +27,4 @@ The other big change with 2.0 is the migration from a single codebase to a colle
 
 Upcoming feature releases will bring new image handling features and a number of improved APIs, adding even more possibilities to future CMS extensions.
 
-We’re always looking for more ideas and helping hands, so if you want to help build a smarter, safer, and more scalable CMS, we’d love your [contributions](/docs/contributor-guide/). Give us a shout on [Twitter](https://twitter.com/netlifycms) or [Gitter](https://github.com/netlify/netlify-cms/pull/525) if you have questions or ideas.
+We’re always looking for more ideas and helping hands, so if you want to help build a smarter, safer, and more scalable CMS, we’d love your [contributions](/docs/contributor-guide/). Give us a shout on [Twitter](https://twitter.com/netlifycms) or in our [community chat](/chat) if you have questions or ideas.

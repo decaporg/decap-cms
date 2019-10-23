@@ -1,5 +1,5 @@
 # Netlify CMS
-[![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/netlify/netlifycms)
+[![Join us on Slack](https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png)](https://netlifycms.org/chat)
 
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
@@ -28,7 +28,7 @@ The Netlify CMS can be used in two different ways.
 
 # Community
 
-Netlify CMS has a [Gitter community](https://gitter.im/netlify/netlifycms) where members of the community hang out and share things about the project, as well as give and receive support.
+Netlify CMS has a [community chat](https://netlifycms.org/chat) where users and contributors come to share things about the project, as well as give and receive support.
 
 # Contributing
 

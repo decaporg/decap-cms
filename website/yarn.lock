@@ -9496,10 +9496,6 @@ react-side-effect@^1.1.0:
     exenv "^1.2.1"
     shallowequal "^1.0.1"
 
-react-sidecar@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/react-sidecar/-/react-sidecar-0.1.1.tgz#e4970bc95e495f1688d2727f948efc257555884e"
-
 react-sortable-hoc@^0.6.8:
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-0.6.8.tgz#b08562f570d7c41f6e393fca52879d2ebb9118e9"
