@@ -67,7 +67,7 @@ Follow the directions in the docs [to enable Identity and Git Gateway](https://w
 
 ### Blog Collection
 
-We'll start by updating the `blog` collection. Blogging is baked into into Jekyll, and the `_posts/` directory uses [some special conventions](https://jekyllrb.com/docs/posts/) we'll need to keep in mind as we configure Netlify CMS. Copy and paste the following into your `config.yml`.
+We'll start by updating the `blog` collection. Blogging is baked into Jekyll, and the `_posts/` directory uses [some special conventions](https://jekyllrb.com/docs/posts/) we'll need to keep in mind as we configure Netlify CMS. Copy and paste the following into your `config.yml`.
 
 ```yaml
 collections:
