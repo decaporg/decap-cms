@@ -1,5 +1,5 @@
 # Netlify CMS App
-[![Join us on Slack](https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png)](https://netlifycms.org/chat)
+[![Join us on Slack](https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png | width=165)](https://netlifycms.org/chat)
 
 _For a Netlify CMS overview, see the general [Netlify CMS project README](https://github.com/netlify/netlify-cms)._
 

@@ -1,5 +1,5 @@
 # Netlify CMS
-[![Join us on Slack](https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png)](https://netlifycms.org/chat)
+[![Join us on Slack](https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png | width=165)](https://netlifycms.org/chat)
 
 A CMS for static site generators. Give non-technical users a simple way to edit
 and add content to any site built with a static site generator.
