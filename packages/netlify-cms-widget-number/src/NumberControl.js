@@ -8,6 +8,46 @@ const ValidationErrorTypes = {
   CUSTOM: 'CUSTOM',
 };
 
+export function validateMinMax(value, min, max, field, t) {
+  let error;
+
+  switch (true) {
+    case value !== '' && min !== false && max !== false && (value < min || value > max):
+      error = {
+        type: ValidationErrorTypes.RANGE,
+        message: t('editor.editorControlPane.widget.range', {
+          fieldLabel: field.get('label', field.get('name')),
+          minValue: min,
+          maxValue: max,
+        }),
+      };
+      break;
+    case value !== '' && min !== false && value < min:
+      error = {
+        type: ValidationErrorTypes.RANGE,
+        message: t('editor.editorControlPane.widget.min', {
+          fieldLabel: field.get('label', field.get('name')),
+          minValue: min,
+        }),
+      };
+      break;
+    case value !== '' && max !== false && value > max:
+      error = {
+        type: ValidationErrorTypes.RANGE,
+        message: t('editor.editorControlPane.widget.max', {
+          fieldLabel: field.get('label', field.get('name')),
+          maxValue: max,
+        }),
+      };
+      break;
+    default:
+      error = null;
+      break;
+  }
+
+  return error;
+}
+
 export default class NumberControl extends React.Component {
   static propTypes = {
     field: ImmutablePropTypes.map.isRequired,
@@ -45,47 +85,14 @@ export default class NumberControl extends React.Component {
     const hasPattern = !!field.get('pattern', false);
     const min = field.get('min', false);
     const max = field.get('max', false);
-    let error;
 
     // Pattern overrides min/max logic always:
     if (hasPattern) {
       return true;
     }
 
-    switch (true) {
-      case min !== false && max !== false && (value < min || value > max):
-        error = {
-          type: ValidationErrorTypes.RANGE,
-          message: t('editor.editorControlPane.widget.range', {
-            fieldLabel: field.get('label', field.get('name')),
-            minValue: min,
-            maxValue: max,
-          }),
-        };
-        break;
-      case min !== false && value < min:
-        error = {
-          type: ValidationErrorTypes.RANGE,
-          message: t('editor.editorControlPane.widget.min', {
-            fieldLabel: field.get('label', field.get('name')),
-            minValue: min,
-          }),
-        };
-        break;
-      case max !== false && value > max:
-        error = {
-          type: ValidationErrorTypes.RANGE,
-          message: t('editor.editorControlPane.widget.max', {
-            fieldLabel: field.get('label', field.get('name')),
-            maxValue: max,
-          }),
-        };
-        break;
-      default:
-        return true;
-    }
-
-    return { error };
+    const error = validateMinMax(value, min, max, field, t);
+    return error ? { error } : true;
   };
 
   render() {
