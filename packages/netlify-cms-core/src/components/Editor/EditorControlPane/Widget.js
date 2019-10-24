@@ -157,7 +157,7 @@ export default class Widget extends Component {
       throw new Error(oneLine`
         this.wrappedControlValid is not a function. Are you sure widget
         "${field.get('widget')}" is registered?
-      `)
+      `);
     }
 
     const response = this.wrappedControlValid();
