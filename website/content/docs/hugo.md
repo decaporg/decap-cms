@@ -18,7 +18,7 @@ To get started with Hugo, you should first install the command line tool. If you
 brew install hugo
 ```
 
-To test that it's sucessfully installed, you can try this command, to get a list of Hugo's options:
+To test that it's successfully installed, you can try this command, to get a list of Hugo's options:
 
 ```bash
 hugo help
@@ -112,7 +112,7 @@ collections:
 It's now time to commit your changes and push to GitHub. You can run the following commands to initialize a git repository and push the changes so far.
 
 ```bash
-giti init # Initialize a git repository
+git init # Initialize a git repository
 git add . # Add every file
 git commit -m "Initial Commit" # Commit every file with the message 'Initial Commit'
 git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git # Create a new repo on GitHub and add it to this project as a remote repository.
