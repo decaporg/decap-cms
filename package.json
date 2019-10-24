@@ -75,6 +75,8 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
     "@octokit/rest": "^16.28.7",
     "all-contributors-cli": "^6.0.0",
     "babel-core": "^7.0.0-bridge.0",
@@ -103,6 +105,7 @@
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^8.1.0",
     "http-server": "^0.11.1",
+    "husky": "^3.0.9",
     "jest": "^24.5.0",
     "jest-cli": "^24.5.0",
     "jest-dom": "^3.1.3",
@@ -137,5 +140,10 @@
   "dependencies": {
     "emotion": "^10.0.9",
     "lerna": "^3.15.0"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
