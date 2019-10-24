@@ -22,6 +22,7 @@ class EntriesCollection extends React.Component {
     cursor: PropTypes.object.isRequired,
     loadEntries: PropTypes.func.isRequired,
     traverseCollectionCursor: PropTypes.func.isRequired,
+    entriesLoaded: PropTypes.bool,
   };
 
   componentDidMount() {

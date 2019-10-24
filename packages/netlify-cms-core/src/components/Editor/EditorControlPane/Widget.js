@@ -54,6 +54,7 @@ export default class Widget extends Component {
     uniqueFieldId: PropTypes.string.isRequired,
     loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    onValidateObject: PropTypes.func,
   };
 
   shouldComponentUpdate(nextProps) {
