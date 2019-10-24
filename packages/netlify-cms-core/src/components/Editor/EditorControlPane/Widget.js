@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List } from 'immutable';
+import { oneLine } from 'common-tags';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
@@ -153,6 +154,13 @@ export default class Widget extends Component {
 
   validateWrappedControl = field => {
     const t = this.props.t;
+    if (typeof this.wrappedControlValid !== 'function') {
+      throw new Error(oneLine`
+        this.wrappedControlValid is not a function. Are you sure widget
+        "${field.get('widget')}" is registered?
+      `);
+    }
+
     const response = this.wrappedControlValid();
     if (typeof response === 'boolean') {
       const isValid = response;
