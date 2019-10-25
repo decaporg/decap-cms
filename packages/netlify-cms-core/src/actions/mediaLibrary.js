@@ -148,7 +148,14 @@ export function loadMedia(opts = {}) {
             .catch(
               error =>
                 console.error(error) ||
-                dispatch(error.status === 404 ? mediaLoaded() : mediaLoadFailed()),
+                dispatch(() => {
+                  if (error.status === 404) {
+                    console.log('This 404 was expected and handled appropriately.');
+                    return mediaLoaded();
+                  } else {
+                    return mediaLoadFailed();
+                  }
+                }),
             ),
         ),
       );
