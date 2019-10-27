@@ -93,7 +93,7 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "cache-me-outside": "^0.0.4",
     "copy-webpack-plugin": "^5.0.1",
-    "cross-env": "^5.2.0",
+    "cross-env": "^6.0.0",
     "css-loader": "^3.0.0",
     "cypress": "^3.4.1",
     "dom-testing-library": "^4.0.0",
