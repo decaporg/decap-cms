@@ -28,6 +28,8 @@ You can learn more about this feature in [Netlify's image transformation docs](h
 
 In repositories enabled with Netlify Large Media, Netlify CMS will use the image transformation query parameters to load thumbnail-sized images for the media gallery view. This makes images in the media gallery load significantly faster.
 
+**Note:** When using this option all tracked file types have to be imported into Large Media. For example if you track `*.jpg` but still have jpg-files that are not imported into Large Media the backend will throw an error. Check the [netlify docs](https://docs.netlify.com/large-media/setup/#migrate-files-from-git-history) on how to add previously commited files to Large Media.
+
 You can disable the automatic image transformations with the `use_large_media_transforms_in_media_library` configuration setting, nested under `backend` in the CMS `config.yml` file:
 
 ```
