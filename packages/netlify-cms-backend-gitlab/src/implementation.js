@@ -66,7 +66,7 @@ export default class GitLab {
     }
 
     // Authorized user
-    return { ...user, token: state.token };
+    return { ...user, login: user.username, token: state.token };
   }
 
   logout() {

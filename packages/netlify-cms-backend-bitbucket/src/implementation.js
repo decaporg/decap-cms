@@ -72,8 +72,7 @@ export default class BitbucketBackend {
       api_root: this.api_root,
     });
 
-    const user = await this.api.user();
-    const isCollab = await this.api.hasWriteAccess(user).catch(error => {
+    const isCollab = await this.api.hasWriteAccess().catch(error => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
 
@@ -89,8 +88,16 @@ export default class BitbucketBackend {
       throw new Error('Your BitBucket user account does not have access to this repo.');
     }
 
+    const user = await this.api.user();
+
     // Authorized user
-    return { ...user, token: state.token, refresh_token: state.refresh_token };
+    return {
+      ...user,
+      name: user.display_name,
+      login: user.username,
+      token: state.token,
+      refresh_token: state.refresh_token,
+    };
   }
 
   getRefreshedAccessToken() {

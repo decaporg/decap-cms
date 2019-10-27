@@ -240,6 +240,7 @@ backend:
     delete: Delete {{collection}} “{{slug}}”
     uploadMedia: Upload “{{path}}”
     deleteMedia: Delete “{{path}}”
+    openAuthoring: '{{message}}'
 ```
 
 Netlify CMS generates the following commit types:
@@ -251,6 +252,7 @@ Commit type   | When is it triggered?        | Available template tags
 `delete`      | An exising entry is deleted  | `slug`, `path`, `collection`
 `uploadMedia` | A media file is uploaded     | `path`
 `deleteMedia` | A media file is deleted      | `path`
+`openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name`
 
 Template tags produce the following output:
 
@@ -259,3 +261,9 @@ Template tags produce the following output:
 - `{{collection}}`: the name of the collection containing the entry changed
 
 - `{{path}}`: the full path to the file changed
+
+- `{{message}}`: the relevant message based on the current change (e.g. the `create` message when an entry is created)
+
+- `{{author-login}}`: the login/username of the author
+
+- `{{author-name}}`: the full name of the author (might be empty based on the user's profile)

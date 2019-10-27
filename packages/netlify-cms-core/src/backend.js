@@ -1,5 +1,4 @@
 import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq } from 'lodash';
-import { Map } from 'immutable';
 import { stripIndent } from 'common-tags';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
@@ -17,6 +16,7 @@ import {
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
+import { commitMessageFormatter } from 'Lib/backendHelper';
 import {
   localForage,
   Cursor,
@@ -99,34 +99,6 @@ function slugFormatter(collection, entryData, slugConfig) {
 
   return processSlug(template, new Date(), identifier, entryData);
 }
-
-const commitMessageTemplates = Map({
-  create: 'Create {{collection}} “{{slug}}”',
-  update: 'Update {{collection}} “{{slug}}”',
-  delete: 'Delete {{collection}} “{{slug}}”',
-  uploadMedia: 'Upload “{{path}}”',
-  deleteMedia: 'Delete “{{path}}”',
-});
-
-const commitMessageFormatter = (type, config, { slug, path, collection }) => {
-  const templates = commitMessageTemplates.merge(
-    config.getIn(['backend', 'commit_messages'], Map()),
-  );
-  const messageTemplate = templates.get(type);
-  return messageTemplate.replace(/\{\{([^}]+)\}\}/g, (_, variable) => {
-    switch (variable) {
-      case 'slug':
-        return slug;
-      case 'path':
-        return path;
-      case 'collection':
-        return collection.get('label_singular') || collection.get('label');
-      default:
-        console.warn(`Ignoring unknown variable “${variable}” in commit message template.`);
-        return '';
-    }
-  });
-};
 
 const extractSearchFields = searchFields => entry =>
   searchFields.reduce((acc, field) => {
@@ -662,11 +634,19 @@ export class Backend {
       };
     }
 
-    const commitMessage = commitMessageFormatter(newEntry ? 'create' : 'update', config, {
-      collection,
-      slug: entryObj.slug,
-      path: entryObj.path,
-    });
+    const user = await this.currentUser();
+    const commitMessage = commitMessageFormatter(
+      newEntry ? 'create' : 'update',
+      config,
+      {
+        collection,
+        slug: entryObj.slug,
+        path: entryObj.path,
+        authorLogin: user.login,
+        authorName: user.name,
+      },
+      user.useOpenAuthoring,
+    );
 
     const useWorkflow = config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW;
 
@@ -689,26 +669,58 @@ export class Backend {
     return this.implementation.persistEntry(entryObj, MediaFiles, opts).then(() => entryObj.slug);
   }
 
-  persistMedia(config, file) {
+  async persistMedia(config, file) {
+    const user = await this.currentUser();
     const options = {
-      commitMessage: commitMessageFormatter('uploadMedia', config, { path: file.path }),
+      commitMessage: commitMessageFormatter(
+        'uploadMedia',
+        config,
+        {
+          path: file.path,
+          authorLogin: user.login,
+          authorName: user.name,
+        },
+        user.useOpenAuthoring,
+      ),
     };
     return this.implementation.persistMedia(file, options);
   }
 
-  deleteEntry(config, collection, slug) {
+  async deleteEntry(config, collection, slug) {
     const path = selectEntryPath(collection, slug);
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
     }
 
-    const commitMessage = commitMessageFormatter('delete', config, { collection, slug, path });
+    const user = await this.currentUser();
+    const commitMessage = commitMessageFormatter(
+      'delete',
+      config,
+      {
+        collection,
+        slug,
+        path,
+        authorLogin: user.login,
+        authorName: user.name,
+      },
+      user.useOpenAuthoring,
+    );
     return this.implementation.deleteFile(path, commitMessage, { collection, slug });
   }
 
-  deleteMedia(config, path) {
-    const commitMessage = commitMessageFormatter('deleteMedia', config, { path });
+  async deleteMedia(config, path) {
+    const user = await this.currentUser();
+    const commitMessage = commitMessageFormatter(
+      'deleteMedia',
+      config,
+      {
+        path,
+        authorLogin: user.login,
+        authorName: user.name,
+      },
+      user.useOpenAuthoring,
+    );
     return this.implementation.deleteFile(path, commitMessage);
   }
 
