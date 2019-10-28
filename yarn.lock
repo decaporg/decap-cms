@@ -10441,10 +10441,10 @@ react-onclickoutside@^6.5.0:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
   integrity sha512-8ltIY3bC7oGhj2nPAvWOGi+xGFybPNhJM0V1H8hY/whNcXgmDeaeoCMPPd8VatrpTsUWjb/vGzrmu6SrXVty3A==
 
-react-polyglot@^0.4.0:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/react-polyglot/-/react-polyglot-0.4.2.tgz#d28d02efc09ad38f1f8ad888bb21cdf62d1db644"
-  integrity sha512-dZoz2/eE2Uyq/yW7Zb/QiqdeobMJFvCKT2Qdjm+7pf0e6jM6N0Lg15nsow2/P0oRHTtUH3o+QUyF/MXTJBgLcw==
+react-polyglot@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-polyglot/-/react-polyglot-0.6.0.tgz#97b09c30baa409a7171b8e869106f3180c666158"
+  integrity sha512-+/f88+SLj5Fn37Itpv4lmHjKi3+evwWrc0ldvW9ijpHWUc1kW7Wg5HCVWqqB05zzARbZZ9q4EDi4DULRJGVAgw==
   dependencies:
     hoist-non-react-statics "^2.5.0"
     prop-types "^15.5.8"

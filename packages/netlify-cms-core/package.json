@@ -45,7 +45,7 @@
     "react-immutable-proptypes": "^2.1.0",
     "react-is": "16.8.5",
     "react-modal": "^3.8.1",
-    "react-polyglot": "^0.4.0",
+    "react-polyglot": "^0.6.0",
     "react-redux": "^5.1.1",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.8",
