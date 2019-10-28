@@ -45,7 +45,7 @@ export default class API {
       p => p.catch(err => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
     ])(req);
 
-  user = () => this.request('/user');
+  user = () => this.requestJSON('/user');
 
   hasWriteAccess = async () => {
     const response = await this.request(this.repoURL);

@@ -174,6 +174,7 @@ export default class GitGateway {
       if (!(await this.api.hasWriteAccess())) {
         throw new Error("You don't have sufficient permissions to access Netlify CMS");
       }
+      return { name: userData.name, login: userData.email };
     });
   }
   restoreUser() {
