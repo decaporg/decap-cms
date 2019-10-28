@@ -63,12 +63,13 @@ The GitHub backend supports [deploy preview links](../deploy-preview-links). Net
 one that seems to represent a deploy preview. If you need to customize this behavior, you can
 specify which context to look for using `preview_context`:
 
-    ```yaml
-    backend:
-      name: github
-      repo: my/repo
-      preview_context: my-provider/deployment
-    ```
+
+```yaml
+backend:
+  name: github
+  repo: my/repo
+  preview_context: my-provider/deployment
+```
 
 The above configuration would look for the status who's `"context"` is `"my-provider/deployment"`.
 
@@ -165,7 +166,7 @@ You can use the `test-repo` backend to try out Netlify CMS without connecting to
 
 To enable this backend, add the following lines to your Netlify CMS `config.yml` file:
 
-```
+```yaml
 backend:
   name: test-repo
 ```
