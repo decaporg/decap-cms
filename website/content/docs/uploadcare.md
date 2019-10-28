@@ -78,3 +78,25 @@ For example:
         multiple: true
         previewStep: false
 ```
+
+## Integration settings
+
+There are several settings that control the behavior of integration with the widget.
+
+* `autoFilename` (`boolean`) - specify whether to add a filename to the end of the url.
+  Example: `http://ucarecdn.com/:uuid/filename.png`
+* `defaultOperations` (`string`) - specify a string added at the end of the url.
+  This could be useful to apply a set of CDN operations to each image,
+  for example resizing or compression. All the possible operations are listed
+  [here](https://uploadcare.com/docs/api_reference/cdn/).
+
+
+```yaml
+media_library:
+  name: uploadcare
+  config:
+    publicKey: demopublickey
+  settings:
+    autoFilename: true
+    defaultOperations: '/resize/800x600/'
+```
