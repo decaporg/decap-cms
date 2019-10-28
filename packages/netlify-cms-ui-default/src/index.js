@@ -6,6 +6,7 @@ import Toggle, { ToggleContainer, ToggleBackground, ToggleHandle } from './Toggl
 import AuthenticationPage from './AuthenticationPage';
 import WidgetPreviewContainer from './WidgetPreviewContainer';
 import ObjectWidgetTopBar from './ObjectWidgetTopBar';
+import GoBackButton from './GoBackButton';
 import {
   fonts,
   colorsRaw,
@@ -76,4 +77,5 @@ export {
   effects,
   reactSelectStyles,
   GlobalStyles,
+  GoBackButton,
 };

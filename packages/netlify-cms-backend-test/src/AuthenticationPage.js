@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
+import { Icon, buttons, shadows, GoBackButton } from 'netlify-cms-ui-default';
 
 const StyledAuthenticationPage = styled.section`
   display: flex;
@@ -57,7 +57,7 @@ export default class AuthenticationPage extends React.Component {
   };
 
   render() {
-    const { inProgress } = this.props;
+    const { config, inProgress } = this.props;
 
     return (
       <StyledAuthenticationPage>
@@ -65,6 +65,7 @@ export default class AuthenticationPage extends React.Component {
         <LoginButton disabled={inProgress} onClick={this.handleLogin}>
           {inProgress ? 'Logging in...' : 'Login'}
         </LoginButton>
+        {config.get('site_url') && <GoBackButton href={config.get('site_url')}></GoBackButton>}
       </StyledAuthenticationPage>
     );
   }

@@ -157,6 +157,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     return (
       <AuthenticationPage
         logoUrl={config.get('logo_url')}
+        siteUrl={config.get('site_url')}
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>
             {!error ? null : <ErrorMessage>{error}</ErrorMessage>}

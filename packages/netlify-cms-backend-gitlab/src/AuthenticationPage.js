@@ -70,6 +70,7 @@ export default class GitLabAuthenticationPage extends React.Component {
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
         logoUrl={config.get('logo_url')}
+        siteUrl={config.get('site_url')}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="gitlab" /> {inProgress ? 'Logging in...' : 'Login with GitLab'}
