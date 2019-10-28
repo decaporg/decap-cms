@@ -274,25 +274,17 @@ export default class GitHub {
 
   getMedia() {
     return this.api.listFiles(this.config.get('media_folder')).then(files =>
-      files.map(({ sha, name, size, download_url, path }) => {
-        if (download_url) {
-          const url = new URL(download_url);
-          if (url.pathname.match(/.svg$/)) {
-            url.search += (url.search.slice(1) === '' ? '?' : '&') + 'sanitize=true';
-          }
-          // if 'displayURL' is a string it will be loaded as is
-          return { id: sha, name, size, displayURL: url.href, path };
-        } else {
-          // if 'displayURL' is not a string it will be loaded using getMediaDisplayURL
-          return { id: sha, name, size, displayURL: { sha }, path };
-        }
+      files.map(({ sha, name, size, path }) => {
+        // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
+        // for private repositories
+        return { id: sha, name, size, displayURL: { sha, path }, path };
       }),
     );
   }
 
   async getMediaDisplayURL(displayURL) {
-    const { sha } = displayURL;
-    const mediaURL = await this.api.getMediaDisplayURL(sha);
+    const { sha, path } = displayURL;
+    const mediaURL = await this.api.getMediaDisplayURL(sha, path);
     return mediaURL;
   }
 

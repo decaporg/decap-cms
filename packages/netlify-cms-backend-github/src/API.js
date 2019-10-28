@@ -293,9 +293,15 @@ export default class API {
     return text;
   }
 
-  async getMediaDisplayURL(sha) {
+  async getMediaDisplayURL(sha, path) {
     const response = await this.fetchBlob(sha, this.repoURL);
-    const blob = await response.blob();
+    let blob;
+    if (path.match(/.svg$/)) {
+      const svg = await response.text();
+      blob = new Blob([svg], { type: 'image/svg+xml' });
+    } else {
+      blob = await response.blob();
+    }
 
     return URL.createObjectURL(blob);
   }
