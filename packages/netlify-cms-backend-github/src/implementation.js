@@ -145,6 +145,28 @@ export default class GitHub {
     return this._userIsOriginMaintainerPromises[username];
   }
 
+  async forkExists({ token }) {
+    try {
+      const currentUser = await this.currentUser({ token });
+      const repoName = this.originRepo.split('/')[1];
+      const repo = await fetch(`${this.api_root}/repos/${currentUser.login}/${repoName}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      }).then(res => res.json());
+
+      // https://developer.github.com/v3/repos/#get
+      // The parent and source objects are present when the repository is a fork.
+      // parent is the repository this repository was forked from, source is the ultimate source for the network.
+      const forkExists =
+        repo.fork === true && repo.parent && repo.parent.full_name === this.originRepo;
+      return forkExists;
+    } catch {
+      return false;
+    }
+  }
+
   async authenticateWithFork({ userData, getPermissionToFork }) {
     if (!this.openAuthoringEnabled) {
       throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
@@ -158,7 +180,9 @@ export default class GitHub {
       return Promise.resolve();
     }
 
-    await getPermissionToFork();
+    if (!(await this.forkExists({ token }))) {
+      await getPermissionToFork();
+    }
 
     const fork = await fetch(`${this.api_root}/repos/${this.originRepo}/forks`, {
       method: 'POST',
