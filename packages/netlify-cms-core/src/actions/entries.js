@@ -9,7 +9,10 @@ import { selectFields } from 'Reducers/collections';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
+import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import { deleteMedia } from './mediaLibrary';
+import { addAsset } from './media';
 
 const { notifSend } = notifActions;
 
@@ -41,6 +44,9 @@ export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 export const ENTRY_DELETE_REQUEST = 'ENTRY_DELETE_REQUEST';
 export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
 export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
+
+export const ADD_DRAFT_ENTRY_MEDIA_FILE = 'ADD_DRAFT_ENTRY_MEDIA_FILE';
+export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
 
 /*
  * Simple Action Creators (Internal)
@@ -185,16 +191,23 @@ export function emptyDraftCreated(entry) {
 /*
  * Exported simple Action Creators
  */
-export function createDraftFromEntry(entry, metadata) {
+export function createDraftFromEntry(entry, metadata, mediaFiles) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
-    payload: { entry, metadata },
+    payload: { entry, metadata, mediaFiles },
   };
 }
 
 export function discardDraft() {
-  return {
-    type: DRAFT_DISCARD,
+  return (dispatch, getState) => {
+    const state = getState();
+    const mediaDrafts = state.entryDraft.get('mediaFiles').filter(file => file.draft);
+
+    mediaDrafts.forEach(file => {
+      dispatch(deleteMedia(file));
+    });
+
+    dispatch({ type: DRAFT_DISCARD });
   };
 }
 
@@ -223,10 +236,10 @@ export function clearFieldErrors() {
   return { type: DRAFT_CLEAR_ERRORS };
 }
 
-export function localBackupRetrieved(entry) {
+export function localBackupRetrieved(entry, mediaFiles) {
   return {
     type: DRAFT_LOCAL_BACKUP_RETRIEVED,
-    payload: { entry },
+    payload: { entry, mediaFiles },
   };
 }
 
@@ -236,11 +249,23 @@ export function loadLocalBackup() {
   };
 }
 
-export function persistLocalBackup(entry, collection) {
+export function addDraftEntryMediaFile(file) {
+  return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
+}
+
+export function removeDraftEntryMediaFile(file) {
+  return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: file };
+}
+
+export function persistLocalBackup(entry, collection, mediaFiles) {
   return (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    return backend.persistLocalDraftBackup(entry, collection);
+
+    // persist any pending related media files and assets
+    const assets = getMediaAssets(state, mediaFiles);
+
+    return backend.persistLocalDraftBackup(entry, collection, mediaFiles, assets);
   };
 }
 
@@ -248,9 +273,16 @@ export function retrieveLocalBackup(collection, slug) {
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const entry = await backend.getLocalDraftBackup(collection, slug);
+    const { entry, mediaFiles, assets } = await backend.getLocalDraftBackup(collection, slug);
+
     if (entry) {
-      return dispatch(localBackupRetrieved(entry));
+      // load any pending related media files and assets
+      const assetProxies = await Promise.all(
+        assets.map(asset => createAssetProxy(asset.value, asset.fileObj)),
+      );
+      assetProxies.forEach(assetProxy => dispatch(addAsset(assetProxy)));
+
+      return dispatch(localBackupRetrieved(entry, mediaFiles));
     }
   };
 }
@@ -462,6 +494,10 @@ export function createEmptyDraftData(fields, withNameKey = true) {
   }, {});
 }
 
+export function getMediaAssets(state, mediaFiles) {
+  return mediaFiles.map(file => getAsset(state, file.public_path));
+}
+
 export function persistEntry(collection) {
   return (dispatch, getState) => {
     const state = getState();
@@ -491,7 +527,7 @@ export function persistEntry(collection) {
     }
 
     const backend = currentBackend(state.config);
-    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
+    const assetProxies = getMediaAssets(state, entryDraft.get('mediaFiles'));
     const entry = entryDraft.get('entry');
 
     /**

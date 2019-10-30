@@ -59,7 +59,7 @@ export function createAssetProxy(value, fileObj, uploaded = false, privateUpload
         () => new AssetProxy(value, fileObj, false),
       );
   } else if (privateUpload) {
-    throw new Error('The Private Upload option is only avaible for Asset Store Integration');
+    throw new Error('The Private Upload option is only available for Asset Store Integration');
   }
 
   return Promise.resolve(new AssetProxy(value, fileObj, uploaded));

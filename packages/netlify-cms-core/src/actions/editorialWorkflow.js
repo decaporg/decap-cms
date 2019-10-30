@@ -3,11 +3,11 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
-import { getAsset, selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
+import { selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry } from './entries';
+import { loadEntry, getMediaAssets } from './entries';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
@@ -314,7 +314,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
+    const assetProxies = getMediaAssets(state, entryDraft.get('mediaFiles'));
     const entry = entryDraft.get('entry');
 
     /**
