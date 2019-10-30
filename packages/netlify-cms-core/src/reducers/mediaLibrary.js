@@ -143,7 +143,9 @@ const mediaLibrary = (state = Map(defaultState), action) => {
         return state;
       }
       return state.withMutations(map => {
-        const updatedFiles = map.get('files').filter(file => file.key !== key);
+        const updatedFiles = map
+          .get('files')
+          .filter(file => (key ? file.key !== key : file.id !== id));
         map.set('files', updatedFiles);
         map.deleteIn(['displayURLs', id]);
         map.set('isDeleting', false);

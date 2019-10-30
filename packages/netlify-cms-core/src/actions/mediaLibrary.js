@@ -2,10 +2,12 @@ import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { resolveMediaFilename, getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from 'coreSrc/backend';
+import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset } from './media';
+import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from 'Lib/urlHelper';
 
 const { notifSend } = notifActions;
@@ -195,14 +197,34 @@ export function persistMedia(file, opts = {}) {
       const id = await getBlobSHA(file);
       const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
       dispatch(addAsset(assetProxy));
+
+      const entry = state.entryDraft.get('entry');
+      const useWorkflow = state.config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW;
+      const draft = entry && !entry.isEmpty() && useWorkflow;
+
       if (!integration) {
-        const asset = await backend.persistMedia(state.config, assetProxy);
+        const asset = await backend.persistMedia(state.config, assetProxy, draft);
+
+        const assetId = asset.id || id;
         const displayURL = asset.displayURL || URL.createObjectURL(file);
-        return dispatch(mediaPersisted({ id, displayURL, ...asset }));
+
+        dispatch(
+          addDraftEntryMediaFile({ id: assetId, draft, public_path: assetProxy.public_path }),
+        );
+
+        return dispatch(
+          mediaPersisted({
+            ...asset,
+            id: assetId,
+            displayURL,
+            draft,
+          }),
+        );
       }
+
       return dispatch(
         mediaPersisted(
-          { id, displayURL: URL.createObjectURL(file), ...assetProxy.asset },
+          { id, displayURL: URL.createObjectURL(file), ...assetProxy.asset, draft },
           { privateUpload },
         ),
       );
@@ -222,37 +244,18 @@ export function persistMedia(file, opts = {}) {
 
 export function deleteMedia(file, opts = {}) {
   const { privateUpload } = opts;
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
     if (integration) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
       dispatch(mediaDeleting());
-      return provider
-        .delete(file.id)
-        .then(() => {
-          return dispatch(mediaDeleted(file, { privateUpload }));
-        })
-        .catch(error => {
-          console.error(error);
-          dispatch(
-            notifSend({
-              message: `Failed to delete media: ${error.message}`,
-              kind: 'danger',
-              dismissAfter: 8000,
-            }),
-          );
-          return dispatch(mediaDeleteFailed({ privateUpload }));
-        });
-    }
-    dispatch(mediaDeleting());
-    return backend
-      .deleteMedia(state.config, file.path)
-      .then(() => {
-        return dispatch(mediaDeleted(file));
-      })
-      .catch(error => {
+
+      try {
+        await provider.delete(file.id);
+        return dispatch(mediaDeleted(file, { privateUpload }));
+      } catch (error) {
         console.error(error);
         dispatch(
           notifSend({
@@ -261,8 +264,30 @@ export function deleteMedia(file, opts = {}) {
             dismissAfter: 8000,
           }),
         );
-        return dispatch(mediaDeleteFailed());
-      });
+        return dispatch(mediaDeleteFailed({ privateUpload }));
+      }
+    }
+    dispatch(mediaDeleting());
+
+    try {
+      dispatch(removeDraftEntryMediaFile({ id: file.id }));
+
+      if (!file.draft) {
+        await backend.deleteMedia(state.config, file.path);
+      }
+
+      return dispatch(mediaDeleted(file));
+    } catch (error) {
+      console.error(error);
+      dispatch(
+        notifSend({
+          message: `Failed to delete media: ${error.message}`,
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      return dispatch(mediaDeleteFailed());
+    }
   };
 }
 

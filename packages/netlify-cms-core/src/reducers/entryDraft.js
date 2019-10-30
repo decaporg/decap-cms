@@ -12,13 +12,14 @@ import {
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
   ENTRY_DELETE_SUCCESS,
+  ADD_DRAFT_ENTRY_MEDIA_FILE,
+  REMOVE_DRAFT_ENTRY_MEDIA_FILE,
 } from 'Actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
 } from 'Actions/editorialWorkflow';
-import { ADD_ASSET, REMOVE_ASSET } from 'Actions/media';
 
 const initialState = Map({
   entry: Map(),
@@ -35,7 +36,7 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.withMutations(state => {
         state.set('entry', action.payload.entry);
         state.setIn(['entry', 'newRecord'], false);
-        state.set('mediaFiles', List());
+        state.set('mediaFiles', action.payload.mediaFiles || List());
         // An existing entry may already have metadata. If we surfed away and back to its
         // editor page, the metadata will have been fetched already, so we shouldn't
         // clear it as to not break relation lists.
@@ -56,11 +57,12 @@ const entryDraftReducer = (state = Map(), action) => {
     case DRAFT_CREATE_FROM_LOCAL_BACKUP:
       // Local Backup
       return state.withMutations(state => {
-        const backupEntry = state.get('localBackup');
+        const backupDraftEntry = state.get('localBackup');
+        const backupEntry = backupDraftEntry.get('entry');
         state.delete('localBackup');
         state.set('entry', backupEntry);
         state.setIn(['entry', 'newRecord'], !backupEntry.get('path'));
-        state.set('mediaFiles', List());
+        state.set('mediaFiles', backupDraftEntry.get('mediaFiles'));
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', true);
@@ -68,7 +70,7 @@ const entryDraftReducer = (state = Map(), action) => {
     case DRAFT_DISCARD:
       return initialState;
     case DRAFT_LOCAL_BACKUP_RETRIEVED:
-      return state.set('localBackup', fromJS(action.payload.entry));
+      return state.set('localBackup', fromJS(action.payload));
     case DRAFT_CHANGE_FIELD:
       return state.withMutations(state => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
@@ -113,15 +115,20 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('hasChanged', false);
       });
 
-    case ADD_ASSET:
+    case ADD_DRAFT_ENTRY_MEDIA_FILE:
       if (state.has('mediaFiles')) {
-        return state.update('mediaFiles', list => list.push(action.payload.public_path));
+        const { id, public_path, draft } = action.payload;
+        return state.update('mediaFiles', list => list.push({ id, public_path, draft }));
       }
       return state;
 
-    case REMOVE_ASSET:
-      return state.update('mediaFiles', list => list.filterNot(path => path === action.payload));
-
+    case REMOVE_DRAFT_ENTRY_MEDIA_FILE:
+      if (state.has('mediaFiles')) {
+        return state.update('mediaFiles', list =>
+          list.filterNot(file => file.id === action.payload.id),
+        );
+      }
+      return state;
     default:
       return state;
   }
