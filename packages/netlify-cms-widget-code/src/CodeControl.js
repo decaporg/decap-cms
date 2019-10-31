@@ -85,6 +85,7 @@ export default class CodeControl extends React.Component {
   keys = this.getKeys(this.props.field);
 
   state = {
+    isActive: false,
     unknownLang: null,
     lang: '',
     keyMap: localStorage.getItem(settingsPersistKeys['keyMap']) || 'default',
@@ -96,7 +97,7 @@ export default class CodeControl extends React.Component {
   lastKnownValue = this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value;
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState);
+    return !isEqual(this.state, nextState) || (this.props.classNameWrapper !== nextProps.classNameWrapper);
   }
 
   componentDidMount() {
@@ -221,6 +222,17 @@ export default class CodeControl extends React.Component {
     this.cm.focus();
   }
 
+  handleFocus = () => {
+    this.hideSettings();
+    this.props.setActiveStyle();
+    this.setState({ isActive: true });
+  }
+
+  handleBlur = () => {
+    this.props.setInactiveStyle();
+    this.setState({ isActive: false });
+  }
+
   render() {
     const { classNameWrapper, forID, widget } = this.props;
     const { lang, settingsVisible, keyMap, codeMirrorKey, theme } = this.state;
@@ -258,8 +270,8 @@ export default class CodeControl extends React.Component {
                 forID={forID}
                 modes={modes}
                 mode={valueToOption(langInfo || defaultLang)}
-                theme={this.themes.find(t => t.value === theme)}
-                themes={this.themes}
+                theme={themes.find(t => t.value === theme)}
+                themes={themes}
                 keyMap={{ value: keyMap, label: keyMap }}
                 keyMaps={this.getKeyMapOptions()}
                 allowLanguageSelection={this.allowLanguageSelection}
@@ -298,7 +310,8 @@ export default class CodeControl extends React.Component {
               }}
               value={this.lastKnownValue}
               onChange={(editor, data, newValue) => this.handleChange(newValue)}
-              onFocus={this.hideSettings}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
             />
           </Resizable>
         )}
