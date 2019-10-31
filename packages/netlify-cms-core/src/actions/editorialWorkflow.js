@@ -8,6 +8,7 @@ import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry, getMediaAssets } from './entries';
+import { persistMedia } from './mediaLibrary';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
@@ -236,7 +237,13 @@ export function loadUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryLoading(collection, slug));
     backend
       .unpublishedEntry(collection, slug)
-      .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
+      .then(entry => {
+        const mediaFiles = entry.mediaFiles;
+        mediaFiles.forEach(mediaFile => {
+          dispatch(persistMedia(mediaFile.file));
+        });
+        dispatch(unpublishedEntryLoaded(collection, entry));
+      })
       .catch(error => {
         if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
           dispatch(unpublishedEntryRedirected(collection, slug));
