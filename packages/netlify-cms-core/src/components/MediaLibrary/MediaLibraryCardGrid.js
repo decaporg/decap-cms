@@ -32,6 +32,7 @@ const MediaLibraryCardGrid = ({
   onLoadMore,
   isPaginating,
   paginatingMessage,
+  cardDraftText,
   cardWidth,
   cardMargin,
   isPrivate,
@@ -46,6 +47,8 @@ const MediaLibraryCardGrid = ({
           isSelected={isSelectedFile(file)}
           text={file.name}
           onClick={() => onAssetClick(file)}
+          isDraft={file.draft}
+          draftText={cardDraftText}
           width={cardWidth}
           margin={cardMargin}
           isPrivate={isPrivate}
@@ -74,6 +77,7 @@ MediaLibraryCardGrid.propTypes = {
       type: PropTypes.string.isRequired,
       url: PropTypes.string,
       urlIsPublicPath: PropTypes.bool,
+      draft: PropTypes.bool,
     }),
   ).isRequired,
   isSelectedFile: PropTypes.func.isRequired,
@@ -82,6 +86,7 @@ MediaLibraryCardGrid.propTypes = {
   onLoadMore: PropTypes.func.isRequired,
   isPaginating: PropTypes.bool,
   paginatingMessage: PropTypes.string,
+  cardDraftText: PropTypes.string.isRequired,
   cardWidth: PropTypes.string.isRequired,
   cardMargin: PropTypes.string.isRequired,
   loadDisplayURL: PropTypes.func.isRequired,

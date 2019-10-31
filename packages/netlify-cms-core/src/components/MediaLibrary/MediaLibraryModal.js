@@ -170,6 +170,7 @@ const MediaLibraryModal = ({
         onLoadMore={handleLoadMore}
         isPaginating={isPaginating}
         paginatingMessage={t('mediaLibrary.mediaLibraryModal.loading')}
+        cardDraftText={t('mediaLibrary.mediaLibraryCard.draft')}
         cardWidth={cardWidth}
         cardMargin={cardMargin}
         isPrivate={privateUpload}

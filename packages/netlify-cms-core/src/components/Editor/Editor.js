@@ -80,7 +80,7 @@ class Editor extends React.Component {
     hasChanged: PropTypes.bool,
     t: PropTypes.func.isRequired,
     retrieveLocalBackup: PropTypes.func,
-    localBackup: PropTypes.bool,
+    localBackup: ImmutablePropTypes.map,
     loadLocalBackup: PropTypes.func,
     persistLocalBackup: PropTypes.func,
     deleteLocalBackup: PropTypes.func,

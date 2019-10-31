@@ -6,7 +6,7 @@ import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
-import { addAsset } from './media';
+import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from 'Lib/urlHelper';
 
@@ -270,6 +270,7 @@ export function deleteMedia(file, opts = {}) {
     dispatch(mediaDeleting());
 
     try {
+      dispatch(removeAsset(file.public_path));
       dispatch(removeDraftEntryMediaFile({ id: file.id }));
 
       if (!file.draft) {
