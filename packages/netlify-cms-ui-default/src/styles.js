@@ -79,6 +79,8 @@ const colors = {
   controlLabel: '#7a8291',
   checkerboardLight: '#f2f2f2',
   checkerboardDark: '#e6e6e6',
+  mediaDraftText: colorsRaw.red,
+  mediaDraftBackground: colorsRaw.redLight,
 };
 
 const lengths = {
