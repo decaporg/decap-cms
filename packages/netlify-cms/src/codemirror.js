@@ -1,35 +1,3 @@
-// Modes
-import 'codemirror/mode/clike/clike';
-import 'codemirror/mode/css/css';
-import 'codemirror/mode/clike/clike';
-import 'codemirror/mode/dockerfile/dockerfile';
-import 'codemirror/mode/diff/diff';
-import 'codemirror/mode/elm/elm';
-import 'codemirror/mode/go/go';
-import 'codemirror/mode/gfm/gfm';
-import 'codemirror/mode/handlebars/handlebars';
-import 'codemirror/mode/htmlmixed/htmlmixed';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/jinja2/jinja2';
-import 'codemirror/mode/jsx/jsx';
-import 'codemirror/mode/perl/perl';
-import 'codemirror/mode/php/php';
-import 'codemirror/mode/powershell/powershell';
-import 'codemirror/mode/pug/pug';
-import 'codemirror/mode/puppet/puppet';
-import 'codemirror/mode/python/python';
-import 'codemirror/mode/r/r';
-import 'codemirror/mode/rst/rst';
-import 'codemirror/mode/ruby/ruby';
-import 'codemirror/mode/rust/rust';
-import 'codemirror/mode/shell/shell';
-import 'codemirror/mode/sql/sql';
-import 'codemirror/mode/swift/swift';
-import 'codemirror/mode/toml/toml';
-import 'codemirror/mode/yaml/yaml';
-import 'codemirror/mode/xml/xml';
-
-// Keymaps
 import 'codemirror/keymap/vim';
 import 'codemirror/keymap/sublime';
 import 'codemirror/keymap/emacs';
@@ -92,7 +60,7 @@ const defaultConfig = {
 
 CMS.registerWidget([
   NetlifyCmsWidgetCode.Widget({
-    globalStyles: [styles, material],
+    //globalStyles: [styles, material],
     //languages: defaultLanguages,
     themes: ['material'],
     codeMirrorConfig: defaultConfig,

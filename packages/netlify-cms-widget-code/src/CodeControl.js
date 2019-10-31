@@ -9,6 +9,11 @@ import uuid from 'uuid/v4';
 import Resizable from 're-resizable';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
+import 'codemirror/keymap/vim';
+import 'codemirror/keymap/sublime';
+import 'codemirror/keymap/emacs';
+import codeMirrorSyles from 'codemirror/lib/codemirror.css';
+import materialTheme from 'codemirror/theme/material.css';
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
 import languageData from '../../data/languages-processed.json';
@@ -30,7 +35,8 @@ function getChangedProps(previous, next, keys) {
 const languages = languageData.map(lang => ({
   label: lang.label,
   name: lang.identifiers[0],
-  mode: lang.codemirror_mime_type || lang.codemirror_mode,
+  mode: lang.codemirror_mode,
+  mimeType: lang.codemirror_mime_type,
 }));
 
 const styleString = `
@@ -58,10 +64,13 @@ function themesToOptions(themes = []) {
 
 const modes = languages.map(valueToOption);
 
+const themes = ['default', 'material'].map(valueToOption);
+
 const settingsPersistKeys = {
   theme: 'cms.codemirror.theme',
   keyMap: 'cms.codemirror.keymap',
 };
+
 
 export default class CodeControl extends React.Component {
   static propTypes = {
@@ -78,19 +87,13 @@ export default class CodeControl extends React.Component {
   state = {
     unknownLang: null,
     lang: '',
-    keyMap: localStorage.getItem(settingsPersistKeys['keyMap'])
-      || this.props.widget.codeMirrorConfig?.keyMap
-      || 'default',
+    keyMap: localStorage.getItem(settingsPersistKeys['keyMap']) || 'default',
     settingsVisible: false,
     codeMirrorKey: uuid(),
-    theme: localStorage.getItem(settingsPersistKeys['theme'])
-      || this.props.widget.codeMirrorConfig?.theme
-      || '',
+    theme: localStorage.getItem(settingsPersistKeys['theme']) || themes.slice(-1),
   };
 
   lastKnownValue = this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value;
-
-  themes = themesToOptions(this.props.field.get('themes') || this.props.widget.themes);
 
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.state, nextState);
@@ -122,6 +125,7 @@ export default class CodeControl extends React.Component {
     return Object
       .keys(CodeMirror.keyMap)
       .sort()
+      .filter(keyMap => ['emacs', 'vim', 'sublime', 'default'].includes(keyMap))
       .map(keyMap => ({ value: keyMap, label: keyMap }));
   }
 
@@ -170,8 +174,13 @@ export default class CodeControl extends React.Component {
     return !field.get('output_code_only') || !isEditorComponent;
   }
 
-  handleChangeCodeMirrorProps(changedProps) {
+  async handleChangeCodeMirrorProps(changedProps) {
     const { onChange } = this.props;
+
+    if (changedProps.lang) {
+      const { mode } = this.getLanguageByName(changedProps.lang);
+      await import(`codemirror/mode/${mode}/${mode}.js`);
+    }
 
     // Changing CodeMirror props requires re-initializing the
     // detached/uncontrolled React CodeMirror component, so here we save and
@@ -236,7 +245,9 @@ export default class CodeControl extends React.Component {
             className={cx(
               classNameWrapper,
               css`
-                ${styleString}
+                ${codeMirrorSyles};
+                ${materialTheme};
+                ${styleString};
               `,
             )}
           >
@@ -253,8 +264,8 @@ export default class CodeControl extends React.Component {
                 keyMaps={this.getKeyMapOptions()}
                 allowLanguageSelection={this.allowLanguageSelection}
                 onChangeLang={newLang => this.setState({ lang: newLang })}
-                onChangeTheme={newTheme => this.setState({ lang: newTheme })}
-                onChangeKeyMap={newKeyMap => this.setState({ lang: newKeyMap })}
+                onChangeTheme={newTheme => this.setState({ theme: newTheme })}
+                onChangeKeyMap={newKeyMap => this.setState({ keyMap: newKeyMap })}
               />
             )}
             <ReactCodeMirror
@@ -278,7 +289,7 @@ export default class CodeControl extends React.Component {
                   ...(widget.codeMirrorConfig.extraKeys || {}),
                 },
                 theme,
-                mode: langInfo?.mode,
+                mode: langInfo?.mimeType || langInfo?.mode,
                 keyMap,
               }}
               detach={true}
