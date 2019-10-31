@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 import semaphore from 'semaphore';
-import { find, flow, get, hasIn, initial, last, partial, result, uniq } from 'lodash';
+import { find, flow, get, hasIn, initial, last, partial, result } from 'lodash';
 import { map } from 'lodash/fp';
 import {
   getAllResponses,
@@ -304,7 +304,7 @@ export default class API {
     return text;
   }
 
-  async getMediaDisplayURL(sha, path) {
+  async getMediaAsBlob(sha, path) {
     const response = await this.fetchBlob(sha, this.repoURL);
     let blob;
     if (path.match(/.svg$/)) {
@@ -313,6 +313,11 @@ export default class API {
     } else {
       blob = await response.blob();
     }
+    return blob;
+  }
+
+  async getMediaDisplayURL(sha, path) {
+    const blob = await this.getMediaAsBlob(sha, path);
 
     return URL.createObjectURL(blob);
   }
@@ -597,7 +602,7 @@ export default class API {
     return this.createPR(commitMessage, branchName);
   }
 
-  async editorialWorkflowGit(fileTree, entry, filesList, options) {
+  async editorialWorkflowGit(fileTree, entry, mediaFilesList, options) {
     const contentKey = this.generateContentKey(options.collectionName, entry.slug);
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
@@ -640,7 +645,7 @@ export default class API {
             path: entry.path,
             sha: entry.sha,
           },
-          files: filesList,
+          files: mediaFilesList,
         },
         timeStamp: new Date().toISOString(),
       });
@@ -652,12 +657,18 @@ export default class API {
       const metadataPromise = this.retrieveMetadata(contentKey);
       const [commit, metadata] = await Promise.all([commitPromise, metadataPromise]);
       const { title, description } = options.parsedData || {};
+
+      // remove any existing media files
       const metadataFiles = get(metadata.objects, 'files', []);
-      const files = [...metadataFiles, ...filesList];
+      await Promise.all(
+        metadataFiles.map(file =>
+          this.deleteFile(file.path, options.commitMessage, { branch: branchName }),
+        ),
+      );
       const pr = metadata.pr ? { ...metadata.pr, head: commit.sha } : undefined;
       const objects = {
         entry: { path: entry.path, sha: entry.sha },
-        files: uniq(files),
+        files: mediaFilesList,
       };
       const updatedMetadata = { ...metadata, pr, title, description, objects };
 

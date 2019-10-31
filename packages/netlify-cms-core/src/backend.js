@@ -520,6 +520,7 @@ export class Backend {
           isModification: loadedEntry.isModification,
         });
         entry.metaData = loadedEntry.metaData;
+        entry.mediaFiles = loadedEntry.mediaFiles;
         return entry;
       })
       .then(this.entryWithFormat(collection, slug));

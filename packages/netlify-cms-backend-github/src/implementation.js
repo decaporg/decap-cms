@@ -4,6 +4,7 @@ import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
 import { asyncLock } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
+import { get } from 'lodash';
 import API from './API';
 import GraphQLAPI from './GraphQLAPI';
 
@@ -355,6 +356,24 @@ export default class GitHub {
     return this.api.deleteFile(path, commitMessage, options);
   }
 
+  async getMediaFiles(data) {
+    const files = get(data, 'metaData.objects.files', []);
+    const mediaFiles = await Promise.all(
+      files.map(file =>
+        this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
+          const name = file.path.substring(file.path.lastIndexOf('/') + 1);
+          return {
+            ...file,
+            id: file.sha,
+            file: new File([blob], name),
+          };
+        }),
+      ),
+    );
+
+    return mediaFiles;
+  }
+
   unpublishedEntries() {
     return this.api
       .listUnpublishedBranches()
@@ -374,10 +393,9 @@ export default class GitHub {
                       resolve(null);
                       sem.leave();
                     } else {
-                      const path = data.metaData.objects.entry.path;
                       resolve({
                         slug,
-                        file: { path },
+                        file: { path: data.metaData.objects.entry.path },
                         data: data.fileData,
                         metaData: data.metaData,
                         isModification: data.isModification,
@@ -403,18 +421,18 @@ export default class GitHub {
       });
   }
 
-  unpublishedEntry(collection, slug) {
+  async unpublishedEntry(collection, slug) {
     const contentKey = this.api.generateContentKey(collection.get('name'), slug);
-    return this.api.readUnpublishedBranchFile(contentKey).then(data => {
-      if (!data) return null;
-      return {
-        slug,
-        file: { path: data.metaData.objects.entry.path },
-        data: data.fileData,
-        metaData: data.metaData,
-        isModification: data.isModification,
-      };
-    });
+    const data = await this.api.readUnpublishedBranchFile(contentKey);
+    const mediaFiles = await this.getMediaFiles(data);
+    return {
+      slug,
+      file: { path: data.metaData.objects.entry.path },
+      data: data.fileData,
+      metaData: data.metaData,
+      mediaFiles,
+      isModification: data.isModification,
+    };
   }
 
   /**
