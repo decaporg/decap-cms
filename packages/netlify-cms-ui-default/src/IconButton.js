@@ -23,8 +23,14 @@ const ButtonRound = styled.button`
 `;
 
 const IconButton = ({ size, isActive, type, onClick, className, title }) => (
-  <ButtonRound size={size} isActive={isActive} className={className} onClick={onClick} title={title}>
-    <Icon type={type} size={size}/>
+  <ButtonRound
+    size={size}
+    isActive={isActive}
+    className={className}
+    onClick={onClick}
+    title={title}
+  >
+    <Icon type={type} size={size} />
   </ButtonRound>
 );
 

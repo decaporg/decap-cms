@@ -34,9 +34,7 @@ const ForceInsert = ({ defaultType }) => ({
       if (editor.isVoid(lastBlock)) {
         editor.insertBlock(defaultType);
       }
-      return editor
-        .moveToEndOfNode(lastBlock)
-        .focus();
+      return editor.moveToEndOfNode(lastBlock).focus();
     },
   },
 });

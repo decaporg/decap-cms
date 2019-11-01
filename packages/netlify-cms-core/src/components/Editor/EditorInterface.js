@@ -261,20 +261,24 @@ class EditorInterface extends Component {
         />
         <Editor key={draftKey}>
           <ViewControls>
-            {collectionPreviewEnabled && <EditorToggle
-              isActive={previewVisible}
-              onClick={this.handleTogglePreview}
-              size="large"
-              type="eye"
-              title="Toggle preview"
-            />}
-            {collectionPreviewEnabled && previewVisible && <EditorToggle
-              isActive={scrollSyncEnabled}
-              onClick={this.handleToggleScrollSync}
-              size="large"
-              type="scroll"
-              title="Sync scrolling"
-            />}
+            {collectionPreviewEnabled && (
+              <EditorToggle
+                isActive={previewVisible}
+                onClick={this.handleTogglePreview}
+                size="large"
+                type="eye"
+                title="Toggle preview"
+              />
+            )}
+            {collectionPreviewEnabled && previewVisible && (
+              <EditorToggle
+                isActive={scrollSyncEnabled}
+                onClick={this.handleToggleScrollSync}
+                size="large"
+                type="scroll"
+                title="Sync scrolling"
+              />
+            )}
           </ViewControls>
           {collectionPreviewEnabled && this.state.previewVisible ? (
             editorWithPreview

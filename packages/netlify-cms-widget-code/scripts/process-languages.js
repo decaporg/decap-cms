@@ -19,16 +19,14 @@ function transform(data) {
     const { extensions = [], aliases = [], codemirror_mode, codemirror_mime_type } = lang;
     if (codemirror_mode) {
       const dotlessExtensions = extensions.map(ext => ext.slice(1));
-      const identifiers = uniq([
-        label.toLowerCase(),
-        ...aliases,
-        ...dotlessExtensions,
-      ].filter(alias => {
-        if (!alias) {
-          return
-        }
-        return !/[^a-zA-Z]/.test(alias);
-      }));
+      const identifiers = uniq(
+        [label.toLowerCase(), ...aliases, ...dotlessExtensions].filter(alias => {
+          if (!alias) {
+            return;
+          }
+          return !/[^a-zA-Z]/.test(alias);
+        }),
+      );
       acc.push({ label, identifiers, codemirror_mode, codemirror_mime_type });
     }
     return acc;

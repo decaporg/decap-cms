@@ -161,15 +161,19 @@ class EditorControl extends React.Component {
         {({ css, cx }) => (
           <ControlContainer className={className}>
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
-            {errors &&
+            {errors && (
               <ControlErrorsList>
-                {errors.map(error => error.message && typeof error.message === 'string' && (
-                  <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
-                    {error.message}
-                  </li>
-                ))}
+                {errors.map(
+                  error =>
+                    error.message &&
+                    typeof error.message === 'string' && (
+                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                        {error.message}
+                      </li>
+                    ),
+                )}
               </ControlErrorsList>
-            }
+            )}
             <FieldLabel
               isActive={isSelected || this.state.styleActive}
               hasErrors={!!errors}

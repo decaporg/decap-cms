@@ -24,7 +24,7 @@ const StyledSettingsButton = styled.button`
 
 const SettingsButton = ({ showClose, onClick }) => (
   <StyledSettingsButton onClick={onClick}>
-    <Icon type={showClose ? 'close' : 'settings'} size="small"/>
+    <Icon type={showClose ? 'close' : 'settings'} size="small" />
   </StyledSettingsButton>
 );
 

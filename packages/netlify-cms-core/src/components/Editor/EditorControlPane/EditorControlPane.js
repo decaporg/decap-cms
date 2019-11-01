@@ -13,7 +13,6 @@ const ControlPaneContainer = styled.div`
   font-size: 16px;
 `;
 
-
 export default class ControlPane extends React.Component {
   componentValidate = {};
 
@@ -43,10 +42,22 @@ export default class ControlPane extends React.Component {
       .map(({ name, globalStyles }) => {
         if (Array.isArray(globalStyles)) {
           return globalStyles.map((style, idx) => (
-            <Global key={`${name}-${idx}`} styles={css`${style}`}/>
+            <Global
+              key={`${name}-${idx}`}
+              styles={css`
+                ${style}
+              `}
+            />
           ));
         }
-        return <Global key={name} styles={css`${globalStyles}`}/>;
+        return (
+          <Global
+            key={name}
+            styles={css`
+              ${globalStyles}
+            `}
+          />
+        );
       });
   };
 

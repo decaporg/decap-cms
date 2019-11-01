@@ -8,7 +8,7 @@ import { getEditorControl, getEditorComponents } from '../index';
 export default class Shortcode extends React.Component {
   state = {
     field: Map(),
-  }
+  };
 
   componentDidMount() {
     const { node, typeOverload } = this.props;
@@ -34,24 +34,26 @@ export default class Shortcode extends React.Component {
 
     const handleFocus = () => editor.moveToRangeOfNode(node);
 
-    return !field.isEmpty() && (
-      <div onClick={handleFocus} onFocus={handleFocus}>
-        <EditorControl
-          css={css`
-            margin-top: 0;
-            margin-bottom: 16px;
-
-            &:first-of-type {
+    return (
+      !field.isEmpty() && (
+        <div onClick={handleFocus} onFocus={handleFocus}>
+          <EditorControl
+            css={css`
               margin-top: 0;
-            }
-          `}
-          value={value}
-          field={field}
-          onChange={handleChange}
-          isEditorComponent={true}
-          isSelected={editor.isSelected(node)}
-        />
-      </div>
+              margin-bottom: 16px;
+
+              &:first-of-type {
+                margin-top: 0;
+              }
+            `}
+            value={value}
+            field={field}
+            onChange={handleChange}
+            isEditorComponent={true}
+            isSelected={editor.isSelected(node)}
+          />
+        </div>
+      )
     );
   }
 }

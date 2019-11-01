@@ -155,15 +155,18 @@ const TableCell = props => <StyledTd {...props.attributes}>{props.children}</Sty
 const ThematicBreak = props => (
   <StyledHr
     {...props.attributes}
-    css={props.editor.isSelected(props.node) && css`
-      box-shadow: 0 0 0 2px ${colors.active};
-      border-radius: 8px;
-      color: ${colors.active};
-    `}
+    css={
+      props.editor.isSelected(props.node) &&
+      css`
+        box-shadow: 0 0 0 2px ${colors.active};
+        border-radius: 8px;
+        color: ${colors.active};
+      `
+    }
   />
 );
 const Break = props => <br {...props.attributes} />;
-const BulletedList = props => <StyledUl {...props.attributes}>{props.children}</StyledUl>
+const BulletedList = props => <StyledUl {...props.attributes}>{props.children}</StyledUl>;
 const NumberedList = props => (
   <StyledOl {...props.attributes} start={props.node.data.get('start') || 1}>
     {props.children}
@@ -262,7 +265,7 @@ export const renderBlock = ({ classNameWrapper, codeBlockComponent }) => props =
     case 'thematic-break':
       return (
         <VoidBlock {...props}>
-          <ThematicBreak editor={props.editor} node={props.node}/>
+          <ThematicBreak editor={props.editor} node={props.node} />
         </VoidBlock>
       );
     case 'bulleted-list':

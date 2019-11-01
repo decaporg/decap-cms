@@ -33,7 +33,7 @@ const visualEditorStyles = `
 const InsertionPoint = styled.div`
   flex: 1 1 auto;
   cursor: text;
-`
+`;
 
 const createEmptyRawDoc = () => {
   const emptyText = Text.create('');
@@ -165,7 +165,14 @@ export default class Editor extends React.Component {
         </EditorControlBar>
         <ClassNames>
           {({ css, cx }) => (
-            <div className={cx(className, css`${visualEditorStyles}`)}>
+            <div
+              className={cx(
+                className,
+                css`
+                  ${visualEditorStyles}
+                `,
+              )}
+            >
               <Slate
                 className={css`
                   padding: 16px 20px 0;
@@ -180,7 +187,7 @@ export default class Editor extends React.Component {
                 ref={this.processRef}
                 spellCheck
               />
-              <InsertionPoint onClick={this.handleClickBelowDocument}/>
+              <InsertionPoint onClick={this.handleClickBelowDocument} />
             </div>
           )}
         </ClassNames>

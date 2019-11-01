@@ -6,6 +6,7 @@
     "block-no-empty": null,
     "no-duplicate-selectors": null,
     "no-empty-source": null,
+    "no-extra-semicolons": null,
     "selector-type-no-unknown": [true, {
       "ignoreTypes": ["$dummyValue"],
     }],

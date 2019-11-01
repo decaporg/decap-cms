@@ -237,7 +237,6 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
     },
     onKeyDown(event, editor, next) {
       if (isHotkey('backspace', event) && editor.value.selection.isCollapsed) {
-
         // Backspace
         const listOrListItem = editor.getListOrListItem();
         const isListItem = listOrListItem && listOrListItem.type === 'list-item';
@@ -257,9 +256,7 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
           return editor.wrapInList(previousSibling.type);
         }
         return next();
-
       } else if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
-
         // Tab, Shift+Tab
         const isTab = isHotkey('tab', event);
         const isShiftTab = !isTab;
@@ -291,7 +288,6 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
         }
         return next();
       } else if (isHotkey('enter', event)) {
-
         // Enter
         const listOrListItem = editor.getListOrListItem();
         if (!listOrListItem) {

@@ -64,7 +64,7 @@ const SettingsPane = ({
   onChangeKeyMap,
 }) => (
   <SettingsPaneContainer onKeyDown={e => isHotkey('esc', e) && hideSettings()}>
-    <SettingsButton onClick={hideSettings} showClose={true}/>
+    <SettingsButton onClick={hideSettings} showClose={true} />
     {allowLanguageSelection && (
       <>
         <SettingsSectionTitle>Field Settings</SettingsSectionTitle>

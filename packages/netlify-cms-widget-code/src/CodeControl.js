@@ -48,7 +48,7 @@ function valueToOption(val) {
   if (typeof val === 'string') {
     return { value: val, label: val };
   }
-  return { value: val.name, label: val.label || val.name }
+  return { value: val.name, label: val.label || val.name };
 }
 
 const modes = languages.map(valueToOption);
@@ -59,7 +59,6 @@ const settingsPersistKeys = {
   theme: 'cms.codemirror.theme',
   keyMap: 'cms.codemirror.keymap',
 };
-
 
 export default class CodeControl extends React.Component {
   static propTypes = {
@@ -86,7 +85,9 @@ export default class CodeControl extends React.Component {
   lastKnownValue = this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value;
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState) || (this.props.classNameWrapper !== nextProps.classNameWrapper);
+    return (
+      !isEqual(this.state, nextState) || this.props.classNameWrapper !== nextProps.classNameWrapper
+    );
   }
 
   componentDidMount() {
@@ -112,19 +113,19 @@ export default class CodeControl extends React.Component {
   };
 
   getKeyMapOptions = () => {
-    return Object
-      .keys(CodeMirror.keyMap)
+    return Object.keys(CodeMirror.keyMap)
       .sort()
       .filter(keyMap => ['emacs', 'vim', 'sublime', 'default'].includes(keyMap))
       .map(keyMap => ({ value: keyMap, label: keyMap }));
-  }
+  };
 
   // This widget is not fully controlled, it only takes a value through props
   // upon initialization.
   getInitialLang = () => {
     const { value, field } = this.props;
-    const lang = (this.valueIsMap() && value && value.get(this.keys.lang)) || field.get('defaultLanguage');
-    const langInfo = this.getLanguageByName(lang)
+    const lang =
+      (this.valueIsMap() && value && value.get(this.keys.lang)) || field.get('defaultLanguage');
+    const langInfo = this.getLanguageByName(lang);
     if (lang && !langInfo) {
       this.setState({ unknownLang: lang });
     }
@@ -139,7 +140,7 @@ export default class CodeControl extends React.Component {
 
   toValue = this.valueIsMap()
     ? (type, value) => (this.props.value || Map()).set(this.keys[type], value)
-    : (type, value) => (type === 'code') ? value : this.props.value;
+    : (type, value) => (type === 'code' ? value : this.props.value);
 
   // If the value is a map, keys can be customized via config.
   getKeys(field) {
@@ -202,25 +203,25 @@ export default class CodeControl extends React.Component {
 
   showSettings = () => {
     this.setState({ settingsVisible: true });
-  }
+  };
 
   hideSettings = () => {
     if (this.state.settingsVisible) {
       this.setState({ settingsVisible: false });
     }
     this.cm.focus();
-  }
+  };
 
   handleFocus = () => {
     this.hideSettings();
     this.props.setActiveStyle();
     this.setState({ isActive: true });
-  }
+  };
 
   handleBlur = () => {
     this.props.setInactiveStyle();
     this.setState({ isActive: false });
-  }
+  };
 
   render() {
     const { classNameWrapper, forID, widget } = this.props;
@@ -252,7 +253,7 @@ export default class CodeControl extends React.Component {
               `,
             )}
           >
-            {!settingsVisible && <SettingsButton onClick={this.showSettings}/>}
+            {!settingsVisible && <SettingsButton onClick={this.showSettings} />}
             {settingsVisible && (
               <SettingsPane
                 hideSettings={this.hideSettings}
@@ -286,7 +287,7 @@ export default class CodeControl extends React.Component {
                 ...widget.codeMirrorConfig,
                 extraKeys: {
                   'Shift-Tab': 'indentLess',
-                  'Tab': 'indentMore',
+                  Tab: 'indentMore',
                   ...(widget.codeMirrorConfig.extraKeys || {}),
                 },
                 theme,

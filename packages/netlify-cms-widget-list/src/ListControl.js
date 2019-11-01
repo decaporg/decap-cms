@@ -137,8 +137,6 @@ export default class ListControl extends React.Component {
     return true;
   }
 
-
-
   handleChange = e => {
     const { onChange } = this.props;
     const oldValue = this.state.value;
@@ -329,9 +327,7 @@ export default class ListControl extends React.Component {
     const updatedItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
 
     // Reset item to ensure updated state
-    const updatedKeys = keys
-      .set(oldIndex, uuid())
-      .set(newIndex, uuid());
+    const updatedKeys = keys.set(oldIndex, uuid()).set(newIndex, uuid());
     this.setState({ itemsCollapsed: updatedItemsCollapsed, keys: updatedKeys });
   };
 

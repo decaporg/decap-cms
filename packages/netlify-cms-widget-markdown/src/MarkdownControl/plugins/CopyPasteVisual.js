@@ -34,7 +34,7 @@ const CopyPasteVisual = ({ getAsset, resolveWidget }) => {
     onCopy(event, editor, next) {
       handleCopy(event, editor, next);
     },
-    onCut(event, editor, next){
+    onCut(event, editor, next) {
       handleCopy(event, editor, next);
       editor.delete();
     },

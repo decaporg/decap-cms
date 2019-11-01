@@ -95,12 +95,12 @@ export default class Toolbar extends React.Component {
       event.preventDefault();
     }
     this.props.onBlockClick(type);
-  }
+  };
 
   handleMarkClick = (event, type) => {
     event.preventDefault();
     this.props.onMarkClick(type);
-  }
+  };
 
   render() {
     const {

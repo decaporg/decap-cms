@@ -23,11 +23,11 @@ const VoidBlock = ({ editor, attributes, node, children }) => {
   return (
     <div {...attributes} onClick={handleClick}>
       {!editor.canInsertBeforeNode(node) && (
-        <InsertionPoint onClick={() => editor.forceInsertBeforeNode(node)}/>
+        <InsertionPoint onClick={() => editor.forceInsertBeforeNode(node)} />
       )}
       {children}
       {!editor.canInsertAfterNode(node) && (
-        <InsertionPoint onClick={() => editor.forceInsertAfterNode(node)}/>
+        <InsertionPoint onClick={() => editor.forceInsertAfterNode(node)} />
       )}
     </div>
   );
