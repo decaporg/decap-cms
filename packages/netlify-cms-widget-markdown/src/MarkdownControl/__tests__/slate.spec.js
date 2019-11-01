@@ -2,11 +2,11 @@
 
 import h from '../../../test-helpers/h';
 import { Editor } from 'slate';
-import plugins from '../plugins';
+import plugins from '../plugins/visual';
 import schema from '../schema';
 
 function run(input, output, fn) {
-  const editor = new Editor({ plugins, schema: schema() });
+  const editor = new Editor({ plugins: plugins(), schema: schema() });
   const opts = { preserveSelection: true };
   editor.setValue(input);
   fn(editor);
