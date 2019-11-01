@@ -36,31 +36,6 @@ export default class ControlPane extends React.Component {
     });
   };
 
-  renderWidgetGlobalStyles = () => {
-    return getWidgets()
-      .filter(widget => widget.globalStyles)
-      .map(({ name, globalStyles }) => {
-        if (Array.isArray(globalStyles)) {
-          return globalStyles.map((style, idx) => (
-            <Global
-              key={`${name}-${idx}`}
-              styles={css`
-                ${style}
-              `}
-            />
-          ));
-        }
-        return (
-          <Global
-            key={name}
-            styles={css`
-              ${globalStyles}
-            `}
-          />
-        );
-      });
-  };
-
   render() {
     const {
       collection,
@@ -81,26 +56,23 @@ export default class ControlPane extends React.Component {
     }
 
     return (
-      <>
-        {this.renderWidgetGlobalStyles()}
-        <ControlPaneContainer>
-          {fields.map((field, i) =>
-            field.get('widget') === 'hidden' ? null : (
-              <EditorControl
-                key={i}
-                field={field}
-                value={entry.getIn(['data', field.get('name')])}
-                fieldsMetaData={fieldsMetaData}
-                fieldsErrors={fieldsErrors}
-                onChange={onChange}
-                onValidate={onValidate}
-                processControlRef={this.controlRef.bind(this)}
-                controlRef={this.controlRef}
-              />
-            ),
-          )}
-        </ControlPaneContainer>
-      </>
+      <ControlPaneContainer>
+        {fields.map((field, i) =>
+          field.get('widget') === 'hidden' ? null : (
+            <EditorControl
+              key={i}
+              field={field}
+              value={entry.getIn(['data', field.get('name')])}
+              fieldsMetaData={fieldsMetaData}
+              fieldsErrors={fieldsErrors}
+              onChange={onChange}
+              onValidate={onValidate}
+              processControlRef={this.controlRef.bind(this)}
+              controlRef={this.controlRef}
+            />
+          ),
+        )}
+      </ControlPaneContainer>
     );
   }
 }
