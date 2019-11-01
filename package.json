@@ -85,7 +85,7 @@
     "@testing-library/react": "^9.3.2",
     "all-contributors-cli": "^6.0.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^11.0.0-beta.0",
     "babel-jest": "^24.5.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-emotion": "^10.0.9",
@@ -134,7 +134,6 @@
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-config-styled-components": "^0.1.1",
-    "stylelint-processor-styled-components": "^1.5.2",
     "svg-inline-loader": "^0.8.0",
     "to-string-loader": "^1.1.5",
     "unist-util-visit": "^1.4.0",
@@ -142,13 +141,21 @@
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.1"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "husky",
+      "run-node"
+    ]
+  },
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^10.0.9",
     "emotion": "^10.0.9",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-babel": "^5.3.0",
     "lerna": "^3.15.0",
     "monaco-editor-webpack-plugin": "^1.7.0"
   },
