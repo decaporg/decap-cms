@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
-import { getWidgets } from 'Lib/registry';
 import EditorControl from './EditorControl';
 
 const ControlPaneContainer = styled.div`

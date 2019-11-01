@@ -3,14 +3,17 @@ const path = require('path');
 const yaml = require('js-yaml');
 const uniq = require('lodash/uniq');
 
+const rawDataPath = '../data/languages-raw.yml';
+const outputPath = '../data/languages.json';
+
 async function fetchData() {
-  const filePath = path.resolve(__dirname, '../data/languages.yml');
+  const filePath = path.resolve(__dirname, rawDataPath);
   const fileContent = await fs.readFile(filePath);
   return yaml.safeLoad(fileContent);
 }
 
 function outputData(data) {
-  const filePath = path.resolve(__dirname, '../data/languages-processed.json');
+  const filePath = path.resolve(__dirname, outputPath);
   return fs.writeJson(filePath, data);
 }
 

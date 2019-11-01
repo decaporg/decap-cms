@@ -15,7 +15,7 @@ import codeMirrorSyles from 'codemirror/lib/codemirror.css';
 import materialTheme from 'codemirror/theme/material.css';
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
-import languageData from '../../data/languages-processed.json';
+import languageData from '../data/languages.json';
 
 // TODO: relocate as a utility function
 function getChangedProps(previous, next, keys) {
