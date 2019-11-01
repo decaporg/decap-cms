@@ -8,6 +8,7 @@ const initialState = Map({
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
   hasChanged: false,
+  key: '',
 });
 
 const entry = {
@@ -23,7 +24,8 @@ const entry = {
 describe('entryDraft reducer', () => {
   describe('DRAFT_CREATE_FROM_ENTRY', () => {
     it('should create draft from the entry', () => {
-      expect(reducer(initialState, actions.createDraftFromEntry(fromJS(entry)))).toEqual(
+      const state = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+      expect(state).toEqual(
         fromJS({
           entry: {
             ...entry,
@@ -33,6 +35,7 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
+          key: state.get('key'),
         }),
       );
     });
@@ -40,7 +43,8 @@ describe('entryDraft reducer', () => {
 
   describe('DRAFT_CREATE_EMPTY', () => {
     it('should create a new draft ', () => {
-      expect(reducer(initialState, actions.emptyDraftCreated(fromJS(entry)))).toEqual(
+      const state = reducer(initialState, actions.emptyDraftCreated(fromJS(entry)));
+      expect(state).toEqual(
         fromJS({
           entry: {
             ...entry,
@@ -50,6 +54,7 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
+          key: state.get('key'),
         }),
       );
     });
