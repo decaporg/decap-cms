@@ -4,12 +4,11 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { ClassNames } from '@emotion/core';
 import { debounce } from 'lodash';
-import { Document } from 'slate';
 import { Editor as Slate, setEventTransfer } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import isHotkey from 'is-hotkey';
 import { lengths, fonts } from 'netlify-cms-ui-default';
-import { markdownToSlate, markdownToHtml } from '../serializers';
+import { markdownToHtml } from '../serializers';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
 
@@ -43,7 +42,7 @@ export default class RawEditor extends React.Component {
     return !this.state.value.equals(nextState.value);
   }
 
-  handleCopy = (event, editor, next) => {
+  handleCopy = (event, editor) => {
     const { getAsset, resolveWidget } = this.props;
     const markdown = Plain.serialize(editor.value);
     const html = markdownToHtml(markdown, { getAsset, resolveWidget });

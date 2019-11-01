@@ -178,7 +178,6 @@ class EditorInterface extends Component {
       onLogoutClick,
       loadDeployPreview,
       deployPreview,
-      draft,
       draftKey,
     } = this.props;
 

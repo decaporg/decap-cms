@@ -1,6 +1,6 @@
 import isHotkey from 'is-hotkey';
 
-const LineBreak = (options = {}) => ({
+const LineBreak = () => ({
   onKeyDown(event, editor, next) {
     const isShiftEnter = isHotkey('shift+enter', event);
     if (!isShiftEnter) {

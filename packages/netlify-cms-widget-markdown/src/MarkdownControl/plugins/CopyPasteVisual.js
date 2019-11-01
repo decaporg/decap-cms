@@ -5,7 +5,7 @@ import isHotkey from 'is-hotkey';
 import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../../serializers';
 
 const CopyPasteVisual = ({ getAsset, resolveWidget }) => {
-  const handleCopy = (event, editor, next) => {
+  const handleCopy = (event, editor) => {
     const markdown = slateToMarkdown(editor.value.fragment.toJS());
     const html = markdownToHtml(markdown, { getAsset, resolveWidget });
     setEventTransfer(event, 'text', markdown);

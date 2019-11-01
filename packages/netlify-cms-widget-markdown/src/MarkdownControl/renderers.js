@@ -48,7 +48,7 @@ const StyledP = styled.p`
   margin-bottom: ${bottomMargin};
 `;
 
-const StyledBlockquote = styled.blockquote`
+const StyledBlockQuote = styled.blockquote`
   padding-left: 16px;
   border-left: 3px solid ${colors.background};
   margin-left: 0;
@@ -113,8 +113,6 @@ const StyledTd = styled.td`
   padding: 8px;
   text-align: left;
 `;
-
-const StyledTh = StyledTd.withComponent('th');
 
 /**
  * Slate uses React components to render each type of node that it receives.
@@ -221,7 +219,7 @@ export const renderInline = () => props => {
   }
 };
 
-export const renderBlock = ({ classNameWrapper, codeBlockComponent, resolveWidget }) => props => {
+export const renderBlock = ({ classNameWrapper, codeBlockComponent }) => props => {
   switch (props.node.type) {
     case 'paragraph':
       return <Paragraph {...props} />;

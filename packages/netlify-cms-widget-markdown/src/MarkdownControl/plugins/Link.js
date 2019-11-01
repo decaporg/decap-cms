@@ -1,5 +1,3 @@
-import isHotkey from 'is-hotkey';
-
 const Link = ({ type }) => ({
   commands: {
     toggleLink(editor, getUrl) {

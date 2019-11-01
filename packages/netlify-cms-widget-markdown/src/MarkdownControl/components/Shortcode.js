@@ -32,9 +32,6 @@ export default class Shortcode extends React.Component {
       }
     };
 
-    const previousSibling = editor.value.document.getPreviousSibling(node.key);
-    const nextSibling = editor.value.document.getNextSibling(node.key);
-
     const handleFocus = () => editor.moveToRangeOfNode(node);
 
     return !field.isEmpty() && (

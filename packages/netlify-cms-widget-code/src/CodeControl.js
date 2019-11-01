@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
-import styled from '@emotion/styled';
 import { Map } from 'immutable';
-import { find, uniq, uniqBy, isEqual, isObject, sortBy, isEmpty } from 'lodash';
+import { uniq, isEqual, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 import Resizable from 're-resizable';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
@@ -50,16 +49,6 @@ function valueToOption(val) {
     return { value: val, label: val };
   }
   return { value: val.name, label: val.label || val.name }
-}
-
-function themesToOptions(themes = []) {
-  const options = themes.map(theme => {
-    if (isObject(theme)) {
-      return valueToOption(theme);
-    }
-    return { value: theme, label: theme };
-  });
-  return [{ value: '', label: 'default' }, ...options];
 }
 
 const modes = languages.map(valueToOption);

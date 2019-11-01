@@ -3,7 +3,7 @@ import isHotkey from 'is-hotkey';
 /**
  * TODO: highlight a couple list items and hit the quote button. doesn't work.
  */
-const QuoteBlock = ({ type, defaultType }) => ({
+const QuoteBlock = ({ type }) => ({
   commands: {
     /**
      * Quotes can contain other blocks, even other quotes. If a selection contains quotes, they

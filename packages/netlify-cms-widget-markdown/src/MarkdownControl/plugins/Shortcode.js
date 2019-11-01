@@ -1,5 +1,4 @@
 import { Text } from 'slate';
-import isHotkey from 'is-hotkey';
 
 const createShortcodeBlock = shortcodeConfig => {
   // Handle code block component

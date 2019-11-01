@@ -104,8 +104,6 @@ export default class Toolbar extends React.Component {
 
   render() {
     const {
-      onMarkClick,
-      onBlockClick,
       onLinkClick,
       onToggleMode,
       rawMode,
