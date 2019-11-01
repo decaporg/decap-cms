@@ -78,7 +78,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
-    "@commitlint/cli": "^8.2.0",
+    "@commitlint/cli": "^8.3.3",
     "@commitlint/config-conventional": "^8.2.0",
     "@octokit/rest": "^16.28.7",
     "@testing-library/jest-dom": "^4.2.3",
