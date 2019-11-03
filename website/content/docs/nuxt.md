@@ -65,8 +65,7 @@ collections:
       - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
-You can build whatever collections and content modeling you want. The important thing to note is the `
-'json'` value on each collection. This is important for consuming content in Nuxt.
+You can build whatever collections and content modeling you want. The important thing to note is the `format: 'json'` value on each collection. This is important for consuming content in Nuxt.
 
 ### Add the `content/` directory to Nuxt
 
