@@ -8,7 +8,9 @@ import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry, getMediaAssets } from './entries';
-import { persistMedia } from './mediaLibrary';
+import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { addAsset } from './media';
+
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
@@ -231,36 +233,37 @@ function unpublishedEntryDeleteError(collection, slug, transactionID) {
  */
 
 export function loadUnpublishedEntry(collection, slug) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(unpublishedEntryLoading(collection, slug));
-    backend
-      .unpublishedEntry(collection, slug)
-      .then(entry => {
-        const mediaFiles = entry.mediaFiles;
-        mediaFiles.forEach(mediaFile => {
-          dispatch(persistMedia(mediaFile.file));
-        });
-        dispatch(unpublishedEntryLoaded(collection, entry));
-      })
-      .catch(error => {
-        if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
-          dispatch(unpublishedEntryRedirected(collection, slug));
-          dispatch(loadEntry(collection, slug));
-        } else {
-          dispatch(
-            notifSend({
-              message: {
-                key: 'ui.toast.onFailToLoadEntries',
-                details: error,
-              },
-              kind: 'danger',
-              dismissAfter: 8000,
-            }),
-          );
-        }
-      });
+
+    try {
+      const entry = await backend.unpublishedEntry(collection, slug);
+      const mediaFiles = entry.mediaFiles;
+      const assetProxies = await Promise.all(
+        mediaFiles.map(({ file }) => createAssetProxy(file.name, file)),
+      );
+      assetProxies.forEach(assetProxy => dispatch(addAsset(assetProxy)));
+
+      dispatch(unpublishedEntryLoaded(collection, entry));
+    } catch (error) {
+      if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
+        dispatch(unpublishedEntryRedirected(collection, slug));
+        dispatch(loadEntry(collection, slug));
+      } else {
+        dispatch(
+          notifSend({
+            message: {
+              key: 'ui.toast.onFailToLoadEntries',
+              details: error,
+            },
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+      }
+    }
   };
 }
 
