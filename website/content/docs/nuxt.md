@@ -56,7 +56,6 @@ collections:
     folder: 'assets/content/blog'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    format: 'json'
     editor:
       preview: false
     fields:
