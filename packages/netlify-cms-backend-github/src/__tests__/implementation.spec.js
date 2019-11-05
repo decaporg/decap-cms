@@ -73,9 +73,18 @@ describe('github backend implementation', () => {
     });
   });
 
-  describe('persistMedia', () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+  const createObjectURL = jest.fn();
+  global.URL = {
+    createObjectURL,
+  };
 
+  createObjectURL.mockReturnValue('displayURL');
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('persistMedia', () => {
     const persistFiles = jest.fn();
     const mockAPI = {
       persistFiles,
@@ -85,31 +94,6 @@ describe('github backend implementation', () => {
       files.forEach((file, index) => {
         file.sha = index;
       });
-    });
-
-    const createObjectURL = jest.fn();
-    global.URL = {
-      createObjectURL,
-    };
-
-    createObjectURL.mockReturnValue('displayURL');
-
-    const config = {
-      getIn: jest.fn().mockImplementation(array => {
-        if (array[0] === 'backend' && array[1] === 'repo') {
-          return 'owner/repo';
-        }
-        if (array[0] === 'backend' && array[1] === 'open_authoring') {
-          return false;
-        }
-        if (array[0] === 'backend' && array[1] === 'branch') {
-          return 'master';
-        }
-      }),
-    };
-
-    beforeEach(() => {
-      jest.clearAllMocks();
     });
 
     it('should persist media file when not draft', async () => {
@@ -185,6 +169,87 @@ describe('github backend implementation', () => {
       expect(createObjectURL).toHaveBeenCalledTimes(0);
       expect(console.error).toHaveBeenCalledTimes(1);
       expect(console.error).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('getMediaFiles', () => {
+    const getMediaAsBlob = jest.fn();
+    const mockAPI = {
+      getMediaAsBlob,
+    };
+
+    it('should return media files from meta data', async () => {
+      const gitHubImplementation = new GitHubImplementation(config);
+      gitHubImplementation.api = mockAPI;
+
+      const blob = new Blob(['']);
+      getMediaAsBlob.mockResolvedValue(blob);
+
+      const file = new File([blob], name);
+
+      const data = {
+        metaData: {
+          objects: {
+            files: [{ path: 'static/media/image.png', sha: 'image.png' }],
+          },
+        },
+      };
+
+      await expect(gitHubImplementation.getMediaFiles(data)).resolves.toEqual([
+        {
+          id: 'image.png',
+          sha: 'image.png',
+          displayURL: 'displayURL',
+          path: 'static/media/image.png',
+          name: 'image.png',
+          size: file.size,
+          file,
+        },
+      ]);
+    });
+  });
+
+  describe('unpublishedEntry', () => {
+    const generateContentKey = jest.fn();
+    const readUnpublishedBranchFile = jest.fn();
+
+    const mockAPI = {
+      generateContentKey,
+      readUnpublishedBranchFile,
+    };
+
+    it('should return unpublished entry', async () => {
+      const gitHubImplementation = new GitHubImplementation(config);
+      gitHubImplementation.api = mockAPI;
+      gitHubImplementation.getMediaFiles = jest.fn().mockResolvedValue([{ path: 'image.png' }]);
+
+      generateContentKey.mockReturnValue('contentKey');
+
+      const data = {
+        fileData: 'fileData',
+        isModification: true,
+        metaData: { objects: { entry: { path: 'entry-path' } } },
+      };
+      readUnpublishedBranchFile.mockResolvedValue(data);
+
+      const collection = { get: jest.fn().mockReturnValue('posts') };
+      await expect(gitHubImplementation.unpublishedEntry(collection, 'slug')).resolves.toEqual({
+        slug: 'slug',
+        file: { path: 'entry-path' },
+        data: 'fileData',
+        metaData: { objects: { entry: { path: 'entry-path' } } },
+        mediaFiles: [{ path: 'image.png' }],
+        isModification: true,
+      });
+
+      expect(generateContentKey).toHaveBeenCalledTimes(1);
+      expect(generateContentKey).toHaveBeenCalledWith('posts', 'slug');
+
+      expect(readUnpublishedBranchFile).toHaveBeenCalledTimes(1);
+      expect(readUnpublishedBranchFile).toHaveBeenCalledWith('contentKey');
+
+      expect(gitHubImplementation.getMediaFiles).toHaveBeenCalledTimes(1);
+      expect(gitHubImplementation.getMediaFiles).toHaveBeenCalledWith(data);
     });
   });
 });
