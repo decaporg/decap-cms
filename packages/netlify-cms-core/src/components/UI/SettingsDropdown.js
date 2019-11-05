@@ -59,6 +59,7 @@ const SettingsDropdown = ({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
       <AppHeaderTestRepoIndicator
         href="https://www.netlifycms.org/docs/authentication-backends#test-repo-backend"
         target="_blank"
+        rel="noopener noreferrer"
       >
         Test Backend ↗
       </AppHeaderTestRepoIndicator>
