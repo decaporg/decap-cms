@@ -1,6 +1,7 @@
 import { Base64 } from 'js-base64';
 import semaphore from 'semaphore';
-import { find, flow, get, hasIn, initial, last, partial, result } from 'lodash';
+import { find, flow, get, hasIn, initial, last, partial, result, differenceBy } from 'lodash';
+import trimStart from 'lodash/trimStart';
 import { map } from 'lodash/fp';
 import {
   getAllResponses,
@@ -514,14 +515,13 @@ export default class API {
     const fileTree = {};
 
     files.forEach(file => {
-      if (file.uploaded) {
+      if (file.skip) {
         return;
       }
       parts = file.path.split('/').filter(part => part);
       filename = parts.pop();
       subtree = fileTree;
       while ((part = parts.shift())) {
-        // eslint-disable-line no-cond-assign
         subtree[part] = subtree[part] || {};
         subtree = subtree[part];
       }
@@ -532,30 +532,35 @@ export default class API {
     return fileTree;
   }
 
-  persistFiles(entry, mediaFiles, options) {
-    const uploadPromises = [];
+  async persistFiles(entry, mediaFiles, options) {
     const files = entry ? mediaFiles.concat(entry) : mediaFiles;
 
+    // mark files to skip, has to be done here as uploadBlob sets the uploaded flag
     files.forEach(file => {
       if (file.uploaded) {
-        return;
-      }
-      uploadPromises.push(this.uploadBlob(file));
-    });
-
-    const fileTree = this.composeFileTree(files);
-
-    return Promise.all(uploadPromises).then(() => {
-      if (!options.useWorkflow) {
-        return this.getBranch()
-          .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
-          .then(changeTree => this.commit(options.commitMessage, changeTree))
-          .then(response => this.patchBranch(this.branch, response.sha));
+        file.skip = true;
       } else {
-        const mediaFilesList = mediaFiles.map(file => ({ path: file.path, sha: file.sha }));
-        return this.editorialWorkflowGit(fileTree, entry, mediaFilesList, options);
+        file.skip = false;
       }
     });
+
+    const uploadPromises = files.filter(file => !file.skip).map(file => this.uploadBlob(file));
+    await Promise.all(uploadPromises);
+
+    if (!options.useWorkflow) {
+      const fileTree = this.composeFileTree(files);
+
+      return this.getBranch()
+        .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+        .then(changeTree => this.commit(options.commitMessage, changeTree))
+        .then(response => this.patchBranch(this.branch, response.sha));
+    } else {
+      const mediaFilesList = mediaFiles.map(({ sha, path }) => ({
+        path: trimStart(path, '/'),
+        sha,
+      }));
+      return this.editorialWorkflowGit(files, entry, mediaFilesList, options);
+    }
   }
 
   getFileSha(path, branch) {
@@ -602,12 +607,13 @@ export default class API {
     return this.createPR(commitMessage, branchName);
   }
 
-  async editorialWorkflowGit(fileTree, entry, mediaFilesList, options) {
+  async editorialWorkflowGit(files, entry, mediaFilesList, options) {
     const contentKey = this.generateContentKey(options.collectionName, entry.slug);
     const branchName = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      const fileTree = this.composeFileTree(files);
       const userPromise = this.user();
       const branchData = await this.getBranch();
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
@@ -651,20 +657,18 @@ export default class API {
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
+      const metadata = await this.retrieveMetadata(contentKey);
+      // mark media files to remove
+      const metadataMediaFiles = get(metadata, 'objects.files', []);
+      const mediaFilesToRemove = differenceBy(metadataMediaFiles, mediaFilesList, 'path').map(
+        file => ({ ...file, remove: true }),
+      );
+      const fileTree = this.composeFileTree(files.concat(mediaFilesToRemove));
       const branchData = await this.getBranch(branchName);
       const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
-      const commitPromise = this.commit(options.commitMessage, changeTree);
-      const metadataPromise = this.retrieveMetadata(contentKey);
-      const [commit, metadata] = await Promise.all([commitPromise, metadataPromise]);
+      const commit = await this.commit(options.commitMessage, changeTree);
       const { title, description } = options.parsedData || {};
 
-      // remove any existing media files
-      const metadataFiles = get(metadata.objects, 'files', []);
-      await Promise.all(
-        metadataFiles.map(file =>
-          this.deleteFile(file.path, options.commitMessage, { branch: branchName }),
-        ),
-      );
       const pr = metadata.pr ? { ...metadata.pr, head: commit.sha } : undefined;
       const objects = {
         entry: { path: entry.path, sha: entry.sha },
@@ -1084,26 +1088,30 @@ export default class API {
       for (let i = 0, len = tree.tree.length; i < len; i++) {
         obj = tree.tree[i];
         if ((fileOrDir = fileTree[obj.path])) {
-          // eslint-disable-line no-cond-assign
           added[obj.path] = true;
+
           if (fileOrDir.file) {
-            updates.push({ path: obj.path, mode: obj.mode, type: obj.type, sha: fileOrDir.sha });
+            const sha = fileOrDir.remove ? null : fileOrDir.sha;
+            updates.push({ path: obj.path, mode: obj.mode, type: obj.type, sha });
           } else {
             updates.push(this.updateTree(obj.sha, obj.path, fileOrDir));
           }
         }
       }
+
       for (filename in fileTree) {
         fileOrDir = fileTree[filename];
         if (added[filename]) {
           continue;
         }
-        updates.push(
-          fileOrDir.file
-            ? { path: filename, mode: '100644', type: 'blob', sha: fileOrDir.sha }
-            : this.updateTree(null, filename, fileOrDir),
-        );
+
+        if (fileOrDir.file) {
+          updates.push({ path: filename, mode: '100644', type: 'blob', sha: fileOrDir.sha });
+        } else {
+          updates.push(this.updateTree(null, filename, fileOrDir));
+        }
       }
+
       return Promise.all(updates)
         .then(tree => this.createTree(sha, tree))
         .then(response => ({

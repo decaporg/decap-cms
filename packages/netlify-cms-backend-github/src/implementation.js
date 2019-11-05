@@ -325,12 +325,7 @@ export default class GitHub {
   persistEntry(entry, mediaFiles = [], options = {}) {
     // persistEntry is a transactional operation
     return this.runWithLock(
-      () =>
-        this.api.persistFiles(
-          entry,
-          mediaFiles.map(file => ({ ...file, path: trimStart(file.path, '/') })),
-          options,
-        ),
+      () => this.api.persistFiles(entry, mediaFiles, options),
       'Failed to acquire persist entry lock',
     );
   }
@@ -367,10 +362,15 @@ export default class GitHub {
       files.map(file =>
         this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
           const name = file.path.substring(file.path.lastIndexOf('/') + 1);
+          const fileObj = new File([blob], name);
           return {
-            ...file,
             id: file.sha,
-            file: new File([blob], name),
+            sha: file.sha,
+            displayURL: URL.createObjectURL(fileObj),
+            path: file.path,
+            name: name,
+            size: fileObj.size,
+            file: fileObj,
           };
         }),
       ),

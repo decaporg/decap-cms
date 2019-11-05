@@ -1,5 +1,6 @@
 import { Map } from 'immutable';
 import uuid from 'uuid/v4';
+import { differenceBy } from 'lodash';
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
@@ -18,6 +19,7 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
+  ADD_MEDIA_FILES_TO_LIBRARY,
 } from 'Actions/mediaLibrary';
 
 const defaultState = {
@@ -126,6 +128,15 @@ const mediaLibrary = (state = Map(defaultState), action) => {
         map.set('files', updatedFiles);
         map.set('isPersisting', false);
       });
+    }
+    case ADD_MEDIA_FILES_TO_LIBRARY: {
+      const { mediaFiles } = action.payload;
+      let updatedFiles = differenceBy(state.get('files'), mediaFiles, 'path');
+      mediaFiles.forEach(file => {
+        const fileWithKey = { ...file, key: uuid() };
+        updatedFiles = [fileWithKey, ...updatedFiles];
+      });
+      return state.set('files', updatedFiles);
     }
     case MEDIA_PERSIST_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;

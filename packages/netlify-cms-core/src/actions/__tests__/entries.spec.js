@@ -169,7 +169,7 @@ describe('entries', () => {
     it('should retrieve media files with local backup', async () => {
       const { currentBackend } = require('coreSrc/backend');
       const { createAssetProxy } = require('ValueObjects/AssetProxy');
-      const { addAsset } = require('../media');
+      const { addAssets } = require('../media');
 
       const backend = {
         getLocalDraftBackup: jest.fn((...args) => args),
@@ -179,7 +179,7 @@ describe('entries', () => {
 
       currentBackend.mockReturnValue(backend);
       createAssetProxy.mockImplementation((value, fileObj) => ({ value, fileObj }));
-      addAsset.mockImplementation(asset => asset);
+      addAssets.mockImplementation(assets => assets);
       getState.mockReturnValue(state);
 
       const collection = Map({
@@ -197,10 +197,10 @@ describe('entries', () => {
 
       expect(createAssetProxy).toHaveBeenCalledTimes(1);
       expect(createAssetProxy).toHaveBeenCalledWith(assets[0].value, assets[0].fileObj);
-      expect(addAsset).toHaveBeenCalledTimes(1);
-      expect(addAsset).toHaveBeenCalledWith(assets[0]);
+      expect(addAssets).toHaveBeenCalledTimes(1);
+      expect(addAssets).toHaveBeenCalledWith(assets);
       expect(dispatch).toHaveBeenCalledTimes(2);
-      expect(dispatch).toHaveBeenCalledWith(assets[0]);
+      expect(dispatch).toHaveBeenCalledWith(assets);
       expect(dispatch).toHaveBeenCalledWith(localBackupRetrieved(entry, mediaFiles));
     });
   });
