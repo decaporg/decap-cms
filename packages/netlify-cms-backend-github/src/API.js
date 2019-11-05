@@ -24,9 +24,9 @@ export default class API {
     this.useOpenAuthoring = config.useOpenAuthoring;
     this.repo = config.repo || '';
     this.originRepo = config.originRepo || this.repo;
-    this.repoURL = `/repos/${this.repo}`;
+    this.repoURL = this.repo ? `/repos/${this.repo}` : '';
     // when not in 'useOpenAuthoring' mode originRepoURL === repoURL
-    this.originRepoURL = `/repos/${this.originRepo}`;
+    this.originRepoURL = this.originRepo ? `/repos/${this.originRepo}` : '';
     this.merge_method = config.squash_merges ? 'squash' : 'merge';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
