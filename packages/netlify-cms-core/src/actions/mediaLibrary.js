@@ -29,6 +29,7 @@ export const MEDIA_DELETE_FAILURE = 'MEDIA_DELETE_FAILURE';
 export const MEDIA_DISPLAY_URL_REQUEST = 'MEDIA_DISPLAY_URL_REQUEST';
 export const MEDIA_DISPLAY_URL_SUCCESS = 'MEDIA_DISPLAY_URL_SUCCESS';
 export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
+export const ADD_MEDIA_FILES_TO_LIBRARY = 'ADD_MEDIA_FILES_TO_LIBRARY';
 
 export function createMediaLibrary(instance) {
   const api = {
@@ -200,7 +201,12 @@ export function persistMedia(file, opts = {}) {
         const displayURL = asset.displayURL || URL.createObjectURL(file);
 
         dispatch(
-          addDraftEntryMediaFile({ id: assetId, draft, public_path: assetProxy.public_path }),
+          addDraftEntryMediaFile({
+            ...asset,
+            id: assetId,
+            draft,
+            public_path: assetProxy.public_path,
+          }),
         );
 
         return dispatch(
@@ -349,6 +355,13 @@ export function mediaPersisted(asset, opts = {}) {
   return {
     type: MEDIA_PERSIST_SUCCESS,
     payload: { file: asset, privateUpload },
+  };
+}
+
+export function addMediaFilesToLibrary(mediaFiles) {
+  return {
+    type: ADD_MEDIA_FILES_TO_LIBRARY,
+    payload: { mediaFiles },
   };
 }
 

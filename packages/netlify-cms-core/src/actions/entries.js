@@ -12,7 +12,7 @@ import { createEntry } from 'ValueObjects/Entry';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 import { deleteMedia } from './mediaLibrary';
-import { addAsset } from './media';
+import { addAssets } from './media';
 
 const { notifSend } = notifActions;
 
@@ -46,6 +46,7 @@ export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
 export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
 
 export const ADD_DRAFT_ENTRY_MEDIA_FILE = 'ADD_DRAFT_ENTRY_MEDIA_FILE';
+export const ADD_DRAFT_ENTRY_MEDIA_FILES = 'ADD_DRAFT_ENTRY_MEDIA_FILES';
 export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
 
 /*
@@ -253,6 +254,10 @@ export function addDraftEntryMediaFile(file) {
   return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
 
+export function addDraftEntryMediaFiles(files) {
+  return { type: ADD_DRAFT_ENTRY_MEDIA_FILES, payload: files };
+}
+
 export function removeDraftEntryMediaFile(file) {
   return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
@@ -280,7 +285,7 @@ export function retrieveLocalBackup(collection, slug) {
       const assetProxies = await Promise.all(
         assets.map(asset => createAssetProxy(asset.value, asset.fileObj)),
       );
-      assetProxies.forEach(assetProxy => dispatch(addAsset(assetProxy)));
+      dispatch(addAssets(assetProxies));
 
       return dispatch(localBackupRetrieved(entry, mediaFiles));
     }

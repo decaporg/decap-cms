@@ -7,9 +7,10 @@ import { selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry, getMediaAssets } from './entries';
+import { loadEntry, getMediaAssets, addDraftEntryMediaFiles } from './entries';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
-import { addAsset } from './media';
+import { addAssets } from './media';
+import { addMediaFilesToLibrary } from './mediaLibrary';
 
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
@@ -244,7 +245,24 @@ export function loadUnpublishedEntry(collection, slug) {
       const assetProxies = await Promise.all(
         mediaFiles.map(({ file }) => createAssetProxy(file.name, file)),
       );
-      assetProxies.forEach(assetProxy => dispatch(addAsset(assetProxy)));
+      dispatch(addAssets(assetProxies));
+      dispatch(
+        addDraftEntryMediaFiles(
+          assetProxies.map((asset, index) => ({
+            id: mediaFiles[index].id,
+            draft: true,
+            public_path: asset.public_path,
+          })),
+        ),
+      );
+      dispatch(
+        addMediaFilesToLibrary(
+          mediaFiles.map(file => ({
+            ...file,
+            draft: true,
+          })),
+        ),
+      );
 
       dispatch(unpublishedEntryLoaded(collection, entry));
     } catch (error) {
