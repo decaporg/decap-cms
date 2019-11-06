@@ -682,7 +682,7 @@ export default class API {
       }
 
       if (pr) {
-        return this.rebasePullRequest(pr.number, branchName, contentKey, metadata, commit);
+        return this.rebasePullRequest(pr.number, branchName, contentKey, updatedMetadata, commit);
       } else if (this.useOpenAuthoring) {
         // if a PR hasn't been created yet for the forked repo, just patch the branch
         await this.patchBranch(branchName, commit.sha, { force: true });
@@ -707,7 +707,7 @@ export default class API {
        */
       const [baseBranch, commits] = await Promise.all([
         this.getBranch(),
-        this.getPullRequestCommits(prNumber, head),
+        this.getPullRequestCommits(prNumber),
       ]);
 
       /**
