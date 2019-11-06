@@ -196,15 +196,10 @@ export default class API {
       this._metadataSemaphore.take(async () => {
         try {
           const branchData = await this.checkMetadataRef();
-          const fileTree = {
-            [`${key}.json`]: {
-              path: `${key}.json`,
-              raw: JSON.stringify(data),
-              file: true,
-            },
-          };
-          await this.uploadBlob(fileTree[`${key}.json`]);
-          const changeTree = await this.updateTree(branchData.sha, '/', fileTree);
+          const file = { path: `${key}.json`, raw: JSON.stringify(data) };
+
+          await this.uploadBlob(file);
+          const changeTree = await this.updateTree(branchData.sha, [file]);
           const { sha } = await this.commit(`Updating “${key}” metadata`, changeTree);
           await this.patchRef('meta', '_netlify_cms', sha);
           localForage.setItem(`gh.meta.${key}`, {
@@ -507,31 +502,6 @@ export default class API {
     }
   }
 
-  composeFileTree(files) {
-    let filename;
-    let part;
-    let parts;
-    let subtree;
-    const fileTree = {};
-
-    files.forEach(file => {
-      if (file.skip) {
-        return;
-      }
-      parts = file.path.split('/').filter(part => part);
-      filename = parts.pop();
-      subtree = fileTree;
-      while ((part = parts.shift())) {
-        subtree[part] = subtree[part] || {};
-        subtree = subtree[part];
-      }
-      subtree[filename] = file;
-      file.file = true;
-    });
-
-    return fileTree;
-  }
-
   async persistFiles(entry, mediaFiles, options) {
     const files = entry ? mediaFiles.concat(entry) : mediaFiles;
 
@@ -548,10 +518,8 @@ export default class API {
     await Promise.all(uploadPromises);
 
     if (!options.useWorkflow) {
-      const fileTree = this.composeFileTree(files);
-
       return this.getBranch()
-        .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+        .then(branchData => this.updateTree(branchData.commit.sha, files))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(response => this.patchBranch(this.branch, response.sha));
     } else {
@@ -613,10 +581,9 @@ export default class API {
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
-      const fileTree = this.composeFileTree(files);
       const userPromise = this.user();
       const branchData = await this.getBranch();
-      const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
+      const changeTree = await this.updateTree(branchData.commit.sha, files);
       const commitResponse = await this.commit(options.commitMessage, changeTree);
 
       let pr;
@@ -661,11 +628,13 @@ export default class API {
       // mark media files to remove
       const metadataMediaFiles = get(metadata, 'objects.files', []);
       const mediaFilesToRemove = differenceBy(metadataMediaFiles, mediaFilesList, 'path').map(
-        file => ({ ...file, remove: true }),
+        file => ({ ...file, remove: true, skip: false }),
       );
-      const fileTree = this.composeFileTree(files.concat(mediaFilesToRemove));
       const branchData = await this.getBranch(branchName);
-      const changeTree = await this.updateTree(branchData.commit.sha, '/', fileTree);
+      const changeTree = await this.updateTree(
+        branchData.commit.sha,
+        files.concat(mediaFilesToRemove),
+      );
       const commit = await this.commit(options.commitMessage, changeTree);
       const { title, description } = options.parsedData || {};
 
@@ -1015,7 +984,6 @@ export default class API {
 
   forceMergePR(pullrequest, objects) {
     const files = objects.files.concat(objects.entry);
-    const fileTree = this.composeFileTree(files);
     let commitMessage = 'Automatically generated. Merged on Netlify CMS\n\nForce merge of:';
     files.forEach(file => {
       commitMessage += `\n* "${file.path}"`;
@@ -1025,7 +993,7 @@ export default class API {
       'line-height: 30px;text-align: center;font-weight: bold',
     );
     return this.getBranch()
-      .then(branchData => this.updateTree(branchData.commit.sha, '/', fileTree))
+      .then(branchData => this.updateTree(branchData.commit.sha, files))
       .then(changeTree => this.commit(commitMessage, changeTree))
       .then(response => this.patchBranch(this.branch, response.sha));
   }
@@ -1077,51 +1045,17 @@ export default class API {
     );
   }
 
-  updateTree(sha, path, fileTree) {
-    return this.getTree(sha).then(tree => {
-      let obj;
-      let filename;
-      let fileOrDir;
-      const updates = [];
-      const added = {};
+  async updateTree(sha, files) {
+    const tree = files.map(file => ({
+      path: trimStart(file.path, '/'),
+      mode: '100644',
+      type: 'blob',
+      sha: file.remove ? null : file.sha,
+    }));
 
-      for (let i = 0, len = tree.tree.length; i < len; i++) {
-        obj = tree.tree[i];
-        if ((fileOrDir = fileTree[obj.path])) {
-          added[obj.path] = true;
-
-          if (fileOrDir.file) {
-            const sha = fileOrDir.remove ? null : fileOrDir.sha;
-            updates.push({ path: obj.path, mode: obj.mode, type: obj.type, sha });
-          } else {
-            updates.push(this.updateTree(obj.sha, obj.path, fileOrDir));
-          }
-        }
-      }
-
-      for (filename in fileTree) {
-        fileOrDir = fileTree[filename];
-        if (added[filename]) {
-          continue;
-        }
-
-        if (fileOrDir.file) {
-          updates.push({ path: filename, mode: '100644', type: 'blob', sha: fileOrDir.sha });
-        } else {
-          updates.push(this.updateTree(null, filename, fileOrDir));
-        }
-      }
-
-      return Promise.all(updates)
-        .then(tree => this.createTree(sha, tree))
-        .then(response => ({
-          path,
-          mode: '040000',
-          type: 'tree',
-          sha: response.sha,
-          parentSha: sha,
-        }));
-    });
+    const newTree = await this.createTree(sha, tree);
+    newTree.parentSha = sha;
+    return newTree;
   }
 
   createTree(baseSha, tree) {
