@@ -70,8 +70,14 @@ const entryDraftReducer = (state = Map(), action) => {
       });
     case DRAFT_DISCARD:
       return initialState;
-    case DRAFT_LOCAL_BACKUP_RETRIEVED:
-      return state.set('localBackup', fromJS(action.payload));
+    case DRAFT_LOCAL_BACKUP_RETRIEVED: {
+      const { entry, mediaFiles } = action.payload;
+      const newState = new Map({
+        entry: fromJS(entry),
+        mediaFiles: List(mediaFiles),
+      });
+      return state.set('localBackup', newState);
+    }
     case DRAFT_CHANGE_FIELD:
       return state.withMutations(state => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
@@ -119,7 +125,7 @@ const entryDraftReducer = (state = Map(), action) => {
     case ADD_DRAFT_ENTRY_MEDIA_FILE:
       if (state.has('mediaFiles')) {
         return state.update('mediaFiles', list =>
-          list.filterNot(file => file.id === action.id).push({ ...action.payload }),
+          list.filterNot(file => file.id === action.payload.id).push({ ...action.payload }),
         );
       }
       return state;

@@ -276,7 +276,8 @@ export function deleteMedia(file, opts = {}) {
     dispatch(mediaDeleting());
 
     try {
-      dispatch(removeAsset(file.public_path));
+      const assetProxy = await createAssetProxy(file.name, file);
+      dispatch(removeAsset(assetProxy.public_path));
       dispatch(removeDraftEntryMediaFile({ id: file.id }));
 
       if (!file.draft) {

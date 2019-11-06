@@ -1,7 +1,10 @@
-import { resolveBackend } from '../backend';
+import { resolveBackend, Backend } from '../backend';
 import registry from 'Lib/registry';
+import { Map, List } from 'immutable';
 
 jest.mock('Lib/registry');
+jest.mock('netlify-cms-lib-util');
+jest.mock('Formats/formats');
 
 const configWrapper = inputObject => ({
   get: prop => inputObject[prop],
@@ -106,6 +109,273 @@ describe('Backend', () => {
       );
 
       expect(result.length).toBe(1);
+    });
+  });
+
+  describe('getLocalDraftBackup', () => {
+    const { localForage } = require('netlify-cms-lib-util');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should return empty object on no item', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const config = Map({});
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      const collection = Map({
+        name: 'posts',
+      });
+      const slug = 'slug';
+
+      localForage.getItem.mockReturnValue();
+
+      const result = await backend.getLocalDraftBackup(collection, slug);
+
+      expect(result).toEqual({});
+      expect(localForage.getItem).toHaveBeenCalledTimes(1);
+      expect(localForage.getItem).toHaveBeenCalledWith('backup.posts.slug');
+    });
+
+    it('should return empty object on item with empty content', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const config = Map({});
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      const collection = Map({
+        name: 'posts',
+      });
+      const slug = 'slug';
+
+      localForage.getItem.mockReturnValue({ raw: '' });
+
+      const result = await backend.getLocalDraftBackup(collection, slug);
+
+      expect(result).toEqual({});
+      expect(localForage.getItem).toHaveBeenCalledTimes(1);
+      expect(localForage.getItem).toHaveBeenCalledWith('backup.posts.slug');
+    });
+
+    it('should return backup entry, empty media files and assets when only raw property was saved', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const config = Map({});
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      const collection = Map({
+        name: 'posts',
+      });
+      const slug = 'slug';
+
+      localForage.getItem.mockReturnValue({
+        raw: 'content',
+      });
+
+      const result = await backend.getLocalDraftBackup(collection, slug);
+
+      expect(result).toEqual({
+        assets: [],
+        mediaFiles: [],
+        entry: {
+          collection: 'posts',
+          slug: 'slug',
+          path: '',
+          partial: false,
+          raw: 'content',
+          data: {},
+          label: null,
+          metaData: null,
+          isModification: null,
+        },
+      });
+      expect(localForage.getItem).toHaveBeenCalledTimes(1);
+      expect(localForage.getItem).toHaveBeenCalledWith('backup.posts.slug');
+    });
+
+    it('should return backup entry, media files and assets when all were backed up', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const config = Map({});
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      const collection = Map({
+        name: 'posts',
+      });
+      const slug = 'slug';
+
+      localForage.getItem.mockReturnValue({
+        raw: 'content',
+        mediaFiles: [{ id: '1' }],
+        assets: [{ public_path: 'public_path' }],
+      });
+
+      const result = await backend.getLocalDraftBackup(collection, slug);
+
+      expect(result).toEqual({
+        assets: [{ public_path: 'public_path' }],
+        mediaFiles: [{ id: '1' }],
+        entry: {
+          collection: 'posts',
+          slug: 'slug',
+          path: '',
+          partial: false,
+          raw: 'content',
+          data: {},
+          label: null,
+          metaData: null,
+          isModification: null,
+        },
+      });
+      expect(localForage.getItem).toHaveBeenCalledTimes(1);
+      expect(localForage.getItem).toHaveBeenCalledWith('backup.posts.slug');
+    });
+  });
+
+  describe('persistLocalDraftBackup', () => {
+    const { localForage } = require('netlify-cms-lib-util');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should not persist empty entry', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const config = Map({});
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.entryToRaw = jest.fn().mockReturnValue('');
+
+      const collection = Map({
+        name: 'posts',
+      });
+
+      const slug = 'slug';
+
+      const entry = Map({
+        slug,
+      });
+
+      await backend.persistLocalDraftBackup(entry, collection, List(), List());
+
+      expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
+      expect(backend.entryToRaw).toHaveBeenCalledWith(collection, entry);
+      expect(localForage.setItem).toHaveBeenCalledTimes(0);
+    });
+
+    it('should persist non empty entry', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const config = Map({});
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+
+      const collection = Map({
+        name: 'posts',
+      });
+
+      const slug = 'slug';
+
+      const entry = Map({
+        slug,
+        path: 'content/posts/entry.md',
+      });
+
+      const mediaFiles = List([{ id: '1' }]);
+      const assets = List([{ public_path: 'public_path' }]);
+
+      await backend.persistLocalDraftBackup(entry, collection, mediaFiles, assets);
+
+      expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
+      expect(backend.entryToRaw).toHaveBeenCalledWith(collection, entry);
+      expect(localForage.setItem).toHaveBeenCalledTimes(2);
+      expect(localForage.setItem).toHaveBeenCalledWith('backup.posts.slug', {
+        assets: [{ public_path: 'public_path' }],
+        mediaFiles: [{ id: '1' }],
+        path: 'content/posts/entry.md',
+        raw: 'content',
+      });
+      expect(localForage.setItem).toHaveBeenCalledWith('backup', 'content');
+    });
+  });
+
+  describe('persistMedia', () => {
+    it('should persist media', async () => {
+      const persistMediaResult = {};
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistMedia: jest.fn().mockResolvedValue(persistMediaResult),
+      };
+      const config = Map({});
+
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+
+      const file = { path: 'static/media/image.png' };
+
+      const result = await backend.persistMedia(config, file, true);
+      expect(result).toBe(persistMediaResult);
+      expect(implementation.persistMedia).toHaveBeenCalledTimes(1);
+      expect(implementation.persistMedia).toHaveBeenCalledWith(
+        { path: 'static/media/image.png' },
+        { commitMessage: 'Upload “static/media/image.png”', draft: true },
+      );
+    });
+  });
+
+  describe('unpublishedEntry', () => {
+    it('should return unpublished entry', async () => {
+      const unpublishedEntryResult = {
+        file: { path: 'path' },
+        isModification: true,
+        metaData: {},
+        mediaFiles: [{ id: '1' }],
+        data: 'content',
+      };
+      const implementation = {
+        init: jest.fn(() => implementation),
+        unpublishedEntry: jest.fn().mockResolvedValue(unpublishedEntryResult),
+      };
+      const config = Map({});
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      const collection = Map({
+        name: 'posts',
+      });
+
+      const slug = 'slug';
+
+      const result = await backend.unpublishedEntry(collection, slug);
+      expect(result).toEqual({
+        collection: 'draft',
+        slug: '',
+        path: 'path',
+        partial: false,
+        raw: 'content',
+        data: {},
+        label: null,
+        metaData: {},
+        isModification: true,
+        mediaFiles: [{ id: '1' }],
+      });
     });
   });
 });

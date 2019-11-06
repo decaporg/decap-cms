@@ -202,6 +202,7 @@ export function createDraftFromEntry(entry, metadata, mediaFiles) {
 export function discardDraft() {
   return (dispatch, getState) => {
     const state = getState();
+
     const mediaDrafts = state.entryDraft.get('mediaFiles').filter(file => file.draft);
 
     mediaDrafts.forEach(file => {

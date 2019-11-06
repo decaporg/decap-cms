@@ -237,6 +237,7 @@ export function loadUnpublishedEntry(collection, slug) {
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {

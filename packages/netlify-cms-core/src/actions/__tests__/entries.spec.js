@@ -3,10 +3,11 @@ import {
   createEmptyDraftData,
   retrieveLocalBackup,
   persistLocalBackup,
-  localBackupRetrieved,
+  getMediaAssets,
   discardDraft,
-  DRAFT_DISCARD,
 } from '../entries';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
 jest.mock('coreSrc/backend');
 jest.mock('Reducers', () => {
@@ -14,10 +15,12 @@ jest.mock('Reducers', () => {
     getAsset: jest.fn().mockReturnValue({}),
   };
 });
-jest.mock('../mediaLibrary');
 jest.mock('ValueObjects/AssetProxy');
-jest.mock('../media');
 jest.mock('netlify-cms-lib-util');
+jest.mock('../mediaLibrary.js');
+
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
 
 describe('entries', () => {
   describe('createEmptyDraftData', () => {
@@ -98,9 +101,6 @@ describe('entries', () => {
     });
   });
 
-  const dispatch = jest.fn();
-  const getState = jest.fn();
-
   describe('discardDraft', () => {
     beforeEach(() => {
       jest.clearAllMocks();
@@ -108,27 +108,24 @@ describe('entries', () => {
 
     it('should delete media files on discard draft', () => {
       const { deleteMedia } = require('../mediaLibrary');
-
-      deleteMedia.mockImplementation(file => file);
-
       const mediaFiles = [{ draft: false }, { draft: true }];
-      const state = {
-        config: {},
+
+      deleteMedia.mockImplementation(file => ({ type: 'DELETE_MEDIA', payload: file }));
+
+      const store = mockStore({
+        config: Map(),
         entryDraft: Map({
           mediaFiles: List(mediaFiles),
         }),
-      };
+      });
 
-      getState.mockReturnValue(state);
+      store.dispatch(discardDraft());
 
-      discardDraft()(dispatch, getState);
+      const actions = store.getActions();
 
-      expect(deleteMedia).toHaveBeenCalledTimes(1);
-      expect(deleteMedia).toHaveBeenCalledWith(mediaFiles[1]);
-
-      expect(dispatch).toHaveBeenCalledTimes(2);
-      expect(dispatch).toHaveBeenCalledWith(mediaFiles[1]);
-      expect(dispatch).toHaveBeenCalledWith({ type: DRAFT_DISCARD });
+      expect(actions).toHaveLength(2);
+      expect(actions[0]).toEqual({ type: 'DELETE_MEDIA', payload: { draft: true } });
+      expect(actions[1]).toEqual({ type: 'DRAFT_DISCARD' });
     });
   });
 
@@ -138,6 +135,7 @@ describe('entries', () => {
     });
 
     it('should persist local backup with media files', () => {
+      const getState = jest.fn();
       const { currentBackend } = require('coreSrc/backend');
       const { getAsset } = require('Reducers');
 
@@ -155,7 +153,7 @@ describe('entries', () => {
       const collection = Map();
       const mediaFiles = [{ public_path: '/static/media/image.png' }];
 
-      const result = persistLocalBackup(entry, collection, mediaFiles)(dispatch, getState);
+      const result = persistLocalBackup(entry, collection, mediaFiles)(null, getState);
 
       expect(result).toEqual([entry, collection, mediaFiles, ['/static/media/image.png']]);
     });
@@ -166,21 +164,20 @@ describe('entries', () => {
       jest.clearAllMocks();
     });
 
-    it('should retrieve media files with local backup', async () => {
+    it('should retrieve media files with local backup', () => {
       const { currentBackend } = require('coreSrc/backend');
       const { createAssetProxy } = require('ValueObjects/AssetProxy');
-      const { addAssets } = require('../media');
 
       const backend = {
         getLocalDraftBackup: jest.fn((...args) => args),
       };
 
-      const state = { config: {} };
+      const store = mockStore({
+        config: Map(),
+      });
 
       currentBackend.mockReturnValue(backend);
       createAssetProxy.mockImplementation((value, fileObj) => ({ value, fileObj }));
-      addAssets.mockImplementation(assets => assets);
-      getState.mockReturnValue(state);
 
       const collection = Map({
         name: 'collection',
@@ -193,15 +190,43 @@ describe('entries', () => {
 
       backend.getLocalDraftBackup.mockReturnValue({ entry, mediaFiles, assets });
 
-      await retrieveLocalBackup(collection, slug)(dispatch, getState);
+      return store.dispatch(retrieveLocalBackup(collection, slug)).then(() => {
+        const actions = store.getActions();
 
-      expect(createAssetProxy).toHaveBeenCalledTimes(1);
-      expect(createAssetProxy).toHaveBeenCalledWith(assets[0].value, assets[0].fileObj);
-      expect(addAssets).toHaveBeenCalledTimes(1);
-      expect(addAssets).toHaveBeenCalledWith(assets);
-      expect(dispatch).toHaveBeenCalledTimes(2);
-      expect(dispatch).toHaveBeenCalledWith(assets);
-      expect(dispatch).toHaveBeenCalledWith(localBackupRetrieved(entry, mediaFiles));
+        expect(createAssetProxy).toHaveBeenCalledTimes(1);
+        expect(createAssetProxy).toHaveBeenCalledWith(assets[0].value, assets[0].fileObj);
+        expect(actions).toHaveLength(2);
+
+        expect(actions[0]).toEqual({
+          type: 'ADD_ASSETS',
+          payload: [{ value: 'image.png', fileObj: {} }],
+        });
+        expect(actions[1]).toEqual({
+          type: 'DRAFT_LOCAL_BACKUP_RETRIEVED',
+          payload: { entry, mediaFiles },
+        });
+      });
+    });
+  });
+
+  describe('getMediaAssets', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should map mediaFiles to assets', () => {
+      const { getAsset } = require('Reducers');
+      const state = {};
+      const mediaFiles = [{ public_path: 'public_path' }];
+
+      const asset = { name: 'asset1' };
+
+      getAsset.mockReturnValue(asset);
+
+      expect(getMediaAssets(state, mediaFiles)).toEqual([asset]);
+
+      expect(getAsset).toHaveBeenCalledTimes(1);
+      expect(getAsset).toHaveBeenCalledWith(state, 'public_path');
     });
   });
 });
