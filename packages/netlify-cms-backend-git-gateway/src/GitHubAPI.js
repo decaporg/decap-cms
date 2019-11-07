@@ -8,6 +8,7 @@ export default class API extends GithubAPI {
     this.tokenPromise = config.tokenPromise;
     this.commitAuthor = config.commitAuthor;
     this.repoURL = '';
+    this.originRepoURL = '';
   }
 
   hasWriteAccess() {
