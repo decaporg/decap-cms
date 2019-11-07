@@ -10,7 +10,7 @@ const WidgetDoc = ({ visible, label, body, html }) => {
   return (
     <div>
       <h3>{label}</h3>
-      <Markdown source={body || html} escapeHtml={false} />
+      <Markdown html={body || html} />
     </div>
   );
 };

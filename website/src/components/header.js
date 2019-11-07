@@ -3,7 +3,7 @@ import { Link } from 'gatsby';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 
-import GitHubButton from './github-button';
+import GitHubButton from 'react-github-btn';
 import Container from './container';
 import Notifications from './notifications';
 import DocSearch from './docsearch';
@@ -184,7 +184,14 @@ const Header = ({ hasHeroBelow }) => {
                 margin-top: 8px;
               `}
             >
-              <GitHubButton />
+              <GitHubButton
+                href="https://github.com/netlify/netlify-cms"
+                data-icon="octicon-star"
+                data-show-count="true"
+                aria-label="Star netlify/netlify-cms on GitHub"
+              >
+                Star
+              </GitHubButton>
             </MenuItem>
             <MenuItem>
               <NavLink to="/docs/intro/">Docs</NavLink>

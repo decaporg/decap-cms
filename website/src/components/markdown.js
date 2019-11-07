@@ -1,5 +1,4 @@
-import React, { Fragment } from 'react';
-import ReactMarkdown from 'react-markdown';
+import React from 'react';
 import styled from '@emotion/styled';
 
 import theme from '../theme';
@@ -126,12 +125,8 @@ const StyledMarkdown = styled.div`
   }
 `;
 
-const Markdown = props => {
-  return (
-    <StyledMarkdown>
-      <ReactMarkdown renderers={{ root: Fragment }} {...props} />
-    </StyledMarkdown>
-  );
+const Markdown = ({ html }) => {
+  return <StyledMarkdown dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 export default Markdown;

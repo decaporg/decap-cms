@@ -9,14 +9,12 @@ import PageHero from '../components/page-hero';
 import HeroTitle from '../components/hero-title';
 import Lead from '../components/lead';
 import Container from '../components/container';
-import Markdown from '../components/markdown';
 import SectionLabel from '../components/section-label';
-import EventBox from '../components/event-box';
 import Page from '../components/page';
 import Grid from '../components/grid';
+import CommunityChannelsList from '../components/community-channels-list';
 
 import theme from '../theme';
-import { mq } from '../utils';
 
 const CommunityPage = ({ data }) => {
   const { title, headline, subhead, sections } = data.markdownRemark.frontmatter;
@@ -25,52 +23,34 @@ const CommunityPage = ({ data }) => {
     <Layout hasPageHero>
       <Helmet title={title} />
       <PageHero>
-        <Grid cols={2}>
-          <div
-            css={css`
-              margin-bottom: 20px;
-            `}
-          >
-            <HeroTitle>
-              <Markdownify source={headline} />
-            </HeroTitle>
-            <Lead light>
-              <Markdownify source={subhead} />
-            </Lead>
-            <Lead>
-              <Markdownify source={primarycta} />
-            </Lead>
-          </div>
-          <div
-            css={css`
-              ${mq[2]} {
-                position: fixed;
-                left: 55%;
-                top: 250px;
-                max-height: calc(100vh - (104px * 1.5) - 40px);
-                overflow-y: auto;
-              }
-            `}
-          >
-            <EventBox title={upcomingevent.hook} cta={primarycta} />
-          </div>
-        </Grid>
+        <div
+          css={css`
+            margin-bottom: 20px;
+          `}
+        >
+          <HeroTitle>
+            <Markdownify source={headline} />
+          </HeroTitle>
+          <Lead light>
+            <Markdownify source={subhead} />
+          </Lead>
+        </div>
       </PageHero>
 
       <Container>
         <Page>
           <Grid cols={2}>
-            <div>
-              <div
-                css={css`
-                  margin-bottom: ${theme.space[5]};
-                `}
-              >
-                <SectionLabel>How it works</SectionLabel>
-                <Markdown source={howitworks} />
-              </div>
-              <SectionLabel>How to join</SectionLabel>
-              <Markdown source={howtojoin} />
+            <div
+              css={css`
+                margin-bottom: ${theme.space[5]};
+              `}
+            >
+              {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
+                <React.Fragment key={channelIdx}>
+                  <SectionLabel>{sectionTitle}</SectionLabel>
+                  <CommunityChannelsList channels={channels} />
+                </React.Fragment>
+              ))}
             </div>
           </Grid>
         </Page>

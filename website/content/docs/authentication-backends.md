@@ -19,7 +19,6 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
 
 1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the steps to get started.
 2. Add the following lines to your Netlify CMS `config.yml` file:
-
   ```yaml
   backend:
     name: git-gateway
@@ -45,7 +44,6 @@ To enable basic GitHub authentication:
 
 1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your Netlify CMS `config.yml` file:
-
   ```yaml
   backend:
     name: github

@@ -41,7 +41,7 @@ export const DocsTemplate = ({
       <article data-docs-content>
         {editLinkPath && <EditLink path={editLinkPath} />}
         <h1>{title}</h1>
-        <Markdown source={body || html} escapeHtml={false} />
+        <Markdown html={body || html} />
         {showWidgets && <Widgets widgets={widgets} />}
       </article>
     </SidebarLayout>
