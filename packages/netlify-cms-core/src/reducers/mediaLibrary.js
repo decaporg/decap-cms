@@ -132,10 +132,7 @@ const mediaLibrary = (state = Map(defaultState), action) => {
     case ADD_MEDIA_FILES_TO_LIBRARY: {
       const { mediaFiles } = action.payload;
       let updatedFiles = differenceBy(state.get('files'), mediaFiles, 'path');
-      mediaFiles.forEach(file => {
-        const fileWithKey = { ...file, key: uuid() };
-        updatedFiles = [fileWithKey, ...updatedFiles];
-      });
+      updatedFiles = [...mediaFiles.map(file => ({ ...file, key: uuid() })), ...updatedFiles];
       return state.set('files', updatedFiles);
     }
     case MEDIA_PERSIST_FAILURE: {
