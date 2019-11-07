@@ -504,17 +504,7 @@ export default class API {
 
   async persistFiles(entry, mediaFiles, options) {
     const files = entry ? mediaFiles.concat(entry) : mediaFiles;
-
-    // mark files to skip, has to be done here as uploadBlob sets the uploaded flag
-    files.forEach(file => {
-      if (file.uploaded) {
-        file.skip = true;
-      } else {
-        file.skip = false;
-      }
-    });
-
-    const uploadPromises = files.filter(file => !file.skip).map(file => this.uploadBlob(file));
+    const uploadPromises = files.filter(file => !file.uploaded).map(file => this.uploadBlob(file));
     await Promise.all(uploadPromises);
 
     if (!options.useWorkflow) {
@@ -628,7 +618,7 @@ export default class API {
       // mark media files to remove
       const metadataMediaFiles = get(metadata, 'objects.files', []);
       const mediaFilesToRemove = differenceBy(metadataMediaFiles, mediaFilesList, 'path').map(
-        file => ({ ...file, remove: true, skip: false }),
+        file => ({ ...file, remove: true }),
       );
       const branchData = await this.getBranch(branchName);
       const changeTree = await this.updateTree(
