@@ -429,6 +429,9 @@ export default class GitHub {
   async unpublishedEntry(collection, slug) {
     const contentKey = this.api.generateContentKey(collection.get('name'), slug);
     const data = await this.api.readUnpublishedBranchFile(contentKey);
+    if (!data) {
+      return null;
+    }
     const mediaFiles = await this.getMediaFiles(data);
     return {
       slug,
