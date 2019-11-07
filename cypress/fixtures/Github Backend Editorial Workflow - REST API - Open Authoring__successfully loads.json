@@ -3,16 +3,28 @@
     "method": "GET",
     "url": "/user",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:00 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:18 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4627",
       "X-RateLimit-Reset": "1573635105",
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"3044dbddb76593c2226b3192d1604131\"",
+=======
+      "X-RateLimit-Remaining": "4588",
+      "X-RateLimit-Reset": "1573121036",
+      "Cache-Control": "private, max-age=60, s-maxage=60",
+      "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
+      "ETag": "W/\"4880bc2ffd21970e7cfd4dcfdfbd1a52\"",
+>>>>>>> test(e2e): re-record fixtures data
       "Last-Modified": "Tue, 05 Nov 2019 09:55:11 GMT",
       "X-OAuth-Scopes": "delete_repo, repo",
       "X-Accepted-OAuth-Scopes": "",
@@ -25,7 +37,11 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E63:3A596:65920ED:79515A3:5DCBB967",
+=======
+      "X-GitHub-Request-Id": "3034:21F97:7596AF3:8D39EA3:5DC3E02E",
+>>>>>>> test(e2e): re-record fixtures data
       "content-length": "1321",
       "connection": "keep-alive"
     },
@@ -36,13 +52,22 @@
     "method": "GET",
     "url": "/repos/owner/repo/collaborators/owner/permission",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:00 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:19 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4626",
       "X-RateLimit-Reset": "1573635105",
+=======
+      "X-RateLimit-Remaining": "4587",
+      "X-RateLimit-Reset": "1573121036",
+>>>>>>> test(e2e): re-record fixtures data
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"b0c7ca4902ddcfd186497763d8e52620\"",
@@ -57,7 +82,11 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E68:2CFEA:6699730:7A53084:5DCBB968",
+=======
+      "X-GitHub-Request-Id": "3035:1411C:73F7DDA:8B7A055:5DC3E02F",
+>>>>>>> test(e2e): re-record fixtures data
       "content-length": "1071",
       "connection": "keep-alive"
     },
@@ -68,16 +97,28 @@
     "method": "GET",
     "url": "/user?ts=0",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:01 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:20 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4625",
       "X-RateLimit-Reset": "1573635105",
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"3044dbddb76593c2226b3192d1604131\"",
+=======
+      "X-RateLimit-Remaining": "4586",
+      "X-RateLimit-Reset": "1573121036",
+      "Cache-Control": "private, max-age=60, s-maxage=60",
+      "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
+      "ETag": "W/\"4880bc2ffd21970e7cfd4dcfdfbd1a52\"",
+>>>>>>> test(e2e): re-record fixtures data
       "Last-Modified": "Tue, 05 Nov 2019 09:55:11 GMT",
       "X-OAuth-Scopes": "delete_repo, repo",
       "X-Accepted-OAuth-Scopes": "",
@@ -90,7 +131,11 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E6D:3A595:3DED516:4A08C1E:5DCBB968",
+=======
+      "X-GitHub-Request-Id": "3036:1F7A8:105C9EB6:1399F453:5DC3E030",
+>>>>>>> test(e2e): re-record fixtures data
       "content-length": "1321",
       "connection": "keep-alive"
     },
@@ -101,17 +146,30 @@
     "method": "GET",
     "url": "/repos/owner/repo?ts=0",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:02 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:21 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4624",
       "X-RateLimit-Reset": "1573635105",
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"328fefbc290cee5f22bbc82708e27286\"",
       "Last-Modified": "Wed, 13 Nov 2019 08:05:49 GMT",
+=======
+      "X-RateLimit-Remaining": "4585",
+      "X-RateLimit-Reset": "1573121036",
+      "Cache-Control": "private, max-age=60, s-maxage=60",
+      "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
+      "ETag": "W/\"11d3fe1b150c7f6c455918858660669b\"",
+      "Last-Modified": "Thu, 07 Nov 2019 09:12:33 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "X-OAuth-Scopes": "delete_repo, repo",
       "X-Accepted-OAuth-Scopes": "repo",
       "X-GitHub-Media-Type": "github.v3; format=json",
@@ -123,28 +181,51 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E6E:BBF8:6919561:7D5B11F:5DCBB969",
       "content-length": "7296",
       "connection": "keep-alive"
     },
     "response": "{\n  \"id\": 221404909,\n  \"node_id\": \"MDEwOlJlcG9zaXRvcnkyMjE0MDQ5MDk=\",\n  \"name\": \"repo\",\n  \"full_name\": \"owner/repo\",\n  \"private\": false,\n  \"owner\": {\n    \"login\": \"owner\",\n    \"id\": 26760571,\n    \"node_id\": \"MDQ6VXNlcjI2NzYwNTcx\",\n    \"avatar_url\": \"https://avatars1.githubusercontent.com/u/7892489?v=4\",\n    \"gravatar_id\": \"\",\n    \"url\": \"https://api.github.com/users/owner\",\n    \"html_url\": \"https://github.com/owner\",\n    \"followers_url\": \"https://api.github.com/users/owner/followers\",\n    \"following_url\": \"https://api.github.com/users/owner/following{/other_user}\",\n    \"gists_url\": \"https://api.github.com/users/owner/gists{/gist_id}\",\n    \"starred_url\": \"https://api.github.com/users/owner/starred{/owner}{/repo}\",\n    \"subscriptions_url\": \"https://api.github.com/users/owner/subscriptions\",\n    \"organizations_url\": \"https://api.github.com/users/owner/orgs\",\n    \"repos_url\": \"https://api.github.com/users/owner/repos\",\n    \"events_url\": \"https://api.github.com/users/owner/events{/privacy}\",\n    \"received_events_url\": \"https://api.github.com/users/owner/received_events\",\n    \"type\": \"User\",\n    \"site_admin\": false\n  },\n  \"html_url\": \"https://github.com/owner/repo\",\n  \"description\": null,\n  \"fork\": false,\n  \"url\": \"https://api.github.com/repos/owner/repo\",\n  \"forks_url\": \"https://api.github.com/repos/owner/repo/forks\",\n  \"keys_url\": \"https://api.github.com/repos/owner/repo/keys{/key_id}\",\n  \"collaborators_url\": \"https://api.github.com/repos/owner/repo/collaborators{/collaborator}\",\n  \"teams_url\": \"https://api.github.com/repos/owner/repo/teams\",\n  \"hooks_url\": \"https://api.github.com/repos/owner/repo/hooks\",\n  \"issue_events_url\": \"https://api.github.com/repos/owner/repo/issues/events{/number}\",\n  \"events_url\": \"https://api.github.com/repos/owner/repo/events\",\n  \"assignees_url\": \"https://api.github.com/repos/owner/repo/assignees{/user}\",\n  \"branches_url\": \"https://api.github.com/repos/owner/repo/branches{/branch}\",\n  \"tags_url\": \"https://api.github.com/repos/owner/repo/tags\",\n  \"blobs_url\": \"https://api.github.com/repos/owner/repo/git/blobs{/sha}\",\n  \"git_tags_url\": \"https://api.github.com/repos/owner/repo/git/tags{/sha}\",\n  \"git_refs_url\": \"https://api.github.com/repos/owner/repo/git/refs{/sha}\",\n  \"trees_url\": \"https://api.github.com/repos/owner/repo/git/trees{/sha}\",\n  \"statuses_url\": \"https://api.github.com/repos/owner/repo/statuses/{sha}\",\n  \"languages_url\": \"https://api.github.com/repos/owner/repo/languages\",\n  \"stargazers_url\": \"https://api.github.com/repos/owner/repo/stargazers\",\n  \"contributors_url\": \"https://api.github.com/repos/owner/repo/contributors\",\n  \"subscribers_url\": \"https://api.github.com/repos/owner/repo/subscribers\",\n  \"subscription_url\": \"https://api.github.com/repos/owner/repo/subscription\",\n  \"commits_url\": \"https://api.github.com/repos/owner/repo/commits{/sha}\",\n  \"git_commits_url\": \"https://api.github.com/repos/owner/repo/git/commits{/sha}\",\n  \"comments_url\": \"https://api.github.com/repos/owner/repo/comments{/number}\",\n  \"issue_comment_url\": \"https://api.github.com/repos/owner/repo/issues/comments{/number}\",\n  \"contents_url\": \"https://api.github.com/repos/owner/repo/contents/{+path}\",\n  \"compare_url\": \"https://api.github.com/repos/owner/repo/compare/{base}...{head}\",\n  \"merges_url\": \"https://api.github.com/repos/owner/repo/merges\",\n  \"archive_url\": \"https://api.github.com/repos/owner/repo/{archive_format}{/ref}\",\n  \"downloads_url\": \"https://api.github.com/repos/owner/repo/downloads\",\n  \"issues_url\": \"https://api.github.com/repos/owner/repo/issues{/number}\",\n  \"pulls_url\": \"https://api.github.com/repos/owner/repo/pulls{/number}\",\n  \"milestones_url\": \"https://api.github.com/repos/owner/repo/milestones{/number}\",\n  \"notifications_url\": \"https://api.github.com/repos/owner/repo/notifications{?since,all,participating}\",\n  \"labels_url\": \"https://api.github.com/repos/owner/repo/labels{/name}\",\n  \"releases_url\": \"https://api.github.com/repos/owner/repo/releases{/id}\",\n  \"deployments_url\": \"https://api.github.com/repos/owner/repo/deployments\",\n  \"created_at\": \"2019-11-13T08:05:20Z\",\n  \"updated_at\": \"2019-11-13T08:05:49Z\",\n  \"pushed_at\": \"2019-11-13T08:05:45Z\",\n  \"git_url\": \"git://github.com/owner/repo.git\",\n  \"ssh_url\": \"git@github.com:owner/repo.git\",\n  \"clone_url\": \"https://github.com/owner/repo.git\",\n  \"svn_url\": \"https://github.com/owner/repo\",\n  \"homepage\": null,\n  \"size\": 0,\n  \"stargazers_count\": 0,\n  \"watchers_count\": 0,\n  \"language\": \"JavaScript\",\n  \"has_issues\": true,\n  \"has_projects\": true,\n  \"has_downloads\": true,\n  \"has_wiki\": true,\n  \"has_pages\": false,\n  \"forks_count\": 0,\n  \"mirror_url\": null,\n  \"archived\": false,\n  \"disabled\": false,\n  \"open_issues_count\": 0,\n  \"license\": {\n    \"key\": \"mit\",\n    \"name\": \"MIT License\",\n    \"spdx_id\": \"MIT\",\n    \"url\": \"https://api.github.com/licenses/mit\",\n    \"node_id\": \"MDc6TGljZW5zZTEz\"\n  },\n  \"forks\": 0,\n  \"open_issues\": 0,\n  \"watchers\": 0,\n  \"default_branch\": \"master\",\n  \"permissions\": {\n    \"admin\": true,\n    \"push\": true,\n    \"pull\": true\n  },\n  \"allow_squash_merge\": true,\n  \"allow_merge_commit\": true,\n  \"allow_rebase_merge\": true,\n  \"network_count\": 0,\n  \"subscribers_count\": 1\n}\n",
+=======
+      "X-GitHub-Request-Id": "3037:AA0C:10B0E58D:1412864F:5DC3E031",
+      "content-length": "7092",
+      "connection": "keep-alive"
+    },
+    "response": "{\n  \"id\": 220195723,\n  \"node_id\": \"MDEwOlJlcG9zaXRvcnkyMjAxOTU3MjM=\",\n  \"name\": \"repo\",\n  \"full_name\": \"owner/repo\",\n  \"private\": false,\n  \"owner\": {\n    \"login\": \"owner\",\n    \"id\": 26760571,\n    \"node_id\": \"MDQ6VXNlcjI2NzYwNTcx\",\n    \"avatar_url\": \"https://avatars1.githubusercontent.com/u/7892489?v=4\",\n    \"gravatar_id\": \"\",\n    \"url\": \"https://api.github.com/users/owner\",\n    \"html_url\": \"https://github.com/owner\",\n    \"followers_url\": \"https://api.github.com/users/owner/followers\",\n    \"following_url\": \"https://api.github.com/users/owner/following{/other_user}\",\n    \"gists_url\": \"https://api.github.com/users/owner/gists{/gist_id}\",\n    \"starred_url\": \"https://api.github.com/users/owner/starred{/owner}{/repo}\",\n    \"subscriptions_url\": \"https://api.github.com/users/owner/subscriptions\",\n    \"organizations_url\": \"https://api.github.com/users/owner/orgs\",\n    \"repos_url\": \"https://api.github.com/users/owner/repos\",\n    \"events_url\": \"https://api.github.com/users/owner/events{/privacy}\",\n    \"received_events_url\": \"https://api.github.com/users/owner/received_events\",\n    \"type\": \"User\",\n    \"site_admin\": false\n  },\n  \"html_url\": \"https://github.com/owner/repo\",\n  \"description\": null,\n  \"fork\": false,\n  \"url\": \"https://api.github.com/repos/owner/repo\",\n  \"forks_url\": \"https://api.github.com/repos/owner/repo/forks\",\n  \"keys_url\": \"https://api.github.com/repos/owner/repo/keys{/key_id}\",\n  \"collaborators_url\": \"https://api.github.com/repos/owner/repo/collaborators{/collaborator}\",\n  \"teams_url\": \"https://api.github.com/repos/owner/repo/teams\",\n  \"hooks_url\": \"https://api.github.com/repos/owner/repo/hooks\",\n  \"issue_events_url\": \"https://api.github.com/repos/owner/repo/issues/events{/number}\",\n  \"events_url\": \"https://api.github.com/repos/owner/repo/events\",\n  \"assignees_url\": \"https://api.github.com/repos/owner/repo/assignees{/user}\",\n  \"branches_url\": \"https://api.github.com/repos/owner/repo/branches{/branch}\",\n  \"tags_url\": \"https://api.github.com/repos/owner/repo/tags\",\n  \"blobs_url\": \"https://api.github.com/repos/owner/repo/git/blobs{/sha}\",\n  \"git_tags_url\": \"https://api.github.com/repos/owner/repo/git/tags{/sha}\",\n  \"git_refs_url\": \"https://api.github.com/repos/owner/repo/git/refs{/sha}\",\n  \"trees_url\": \"https://api.github.com/repos/owner/repo/git/trees{/sha}\",\n  \"statuses_url\": \"https://api.github.com/repos/owner/repo/statuses/{sha}\",\n  \"languages_url\": \"https://api.github.com/repos/owner/repo/languages\",\n  \"stargazers_url\": \"https://api.github.com/repos/owner/repo/stargazers\",\n  \"contributors_url\": \"https://api.github.com/repos/owner/repo/contributors\",\n  \"subscribers_url\": \"https://api.github.com/repos/owner/repo/subscribers\",\n  \"subscription_url\": \"https://api.github.com/repos/owner/repo/subscription\",\n  \"commits_url\": \"https://api.github.com/repos/owner/repo/commits{/sha}\",\n  \"git_commits_url\": \"https://api.github.com/repos/owner/repo/git/commits{/sha}\",\n  \"comments_url\": \"https://api.github.com/repos/owner/repo/comments{/number}\",\n  \"issue_comment_url\": \"https://api.github.com/repos/owner/repo/issues/comments{/number}\",\n  \"contents_url\": \"https://api.github.com/repos/owner/repo/contents/{+path}\",\n  \"compare_url\": \"https://api.github.com/repos/owner/repo/compare/{base}...{head}\",\n  \"merges_url\": \"https://api.github.com/repos/owner/repo/merges\",\n  \"archive_url\": \"https://api.github.com/repos/owner/repo/{archive_format}{/ref}\",\n  \"downloads_url\": \"https://api.github.com/repos/owner/repo/downloads\",\n  \"issues_url\": \"https://api.github.com/repos/owner/repo/issues{/number}\",\n  \"pulls_url\": \"https://api.github.com/repos/owner/repo/pulls{/number}\",\n  \"milestones_url\": \"https://api.github.com/repos/owner/repo/milestones{/number}\",\n  \"notifications_url\": \"https://api.github.com/repos/owner/repo/notifications{?since,all,participating}\",\n  \"labels_url\": \"https://api.github.com/repos/owner/repo/labels{/name}\",\n  \"releases_url\": \"https://api.github.com/repos/owner/repo/releases{/id}\",\n  \"deployments_url\": \"https://api.github.com/repos/owner/repo/deployments\",\n  \"created_at\": \"2019-11-07T09:12:33Z\",\n  \"updated_at\": \"2019-11-07T09:12:33Z\",\n  \"pushed_at\": \"2019-11-07T09:12:34Z\",\n  \"git_url\": \"git://github.com/owner/repo.git\",\n  \"ssh_url\": \"git@github.com:owner/repo.git\",\n  \"clone_url\": \"https://github.com/owner/repo.git\",\n  \"svn_url\": \"https://github.com/owner/repo\",\n  \"homepage\": null,\n  \"size\": 0,\n  \"stargazers_count\": 0,\n  \"watchers_count\": 0,\n  \"language\": null,\n  \"has_issues\": true,\n  \"has_projects\": true,\n  \"has_downloads\": true,\n  \"has_wiki\": true,\n  \"has_pages\": false,\n  \"forks_count\": 0,\n  \"mirror_url\": null,\n  \"archived\": false,\n  \"disabled\": false,\n  \"open_issues_count\": 0,\n  \"license\": null,\n  \"forks\": 0,\n  \"open_issues\": 0,\n  \"watchers\": 0,\n  \"default_branch\": \"master\",\n  \"permissions\": {\n    \"admin\": true,\n    \"push\": true,\n    \"pull\": true\n  },\n  \"allow_squash_merge\": true,\n  \"allow_merge_commit\": true,\n  \"allow_rebase_merge\": true,\n  \"network_count\": 0,\n  \"subscribers_count\": 1\n}\n",
+>>>>>>> test(e2e): re-record fixtures data
     "status": 200
   },
   {
     "method": "GET",
+<<<<<<< HEAD
     "url": "/repos/owner/repo/git/trees/master:content/posts?ts=0",
     "headers": {
       "Date": "Wed, 13 Nov 2019 08:06:02 GMT",
+=======
+    "url": "/repos/owner/repo/contents/static/media?ts=0&ref=master",
+    "headers": {
+      "Date": "Thu, 07 Nov 2019 09:13:22 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4622",
       "X-RateLimit-Reset": "1573635105",
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"763e1d84f682f0f5ebf505b50b9779c3\"",
       "Last-Modified": "Wed, 13 Nov 2019 08:05:49 GMT",
+=======
+      "X-RateLimit-Remaining": "4583",
+      "X-RateLimit-Reset": "1573121036",
+      "Cache-Control": "private, max-age=60, s-maxage=60",
+      "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
+      "ETag": "W/\"9b14f53f9ae27ef26ec092a587f91141486cad24\"",
+      "Last-Modified": "Thu, 07 Nov 2019 09:12:33 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "X-OAuth-Scopes": "delete_repo, repo",
       "X-Accepted-OAuth-Scopes": "",
       "X-GitHub-Media-Type": "github.v3; format=json",
@@ -156,28 +237,51 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E81:33B0A:8A7C157:A5314DA:5DCBB96A",
       "content-length": "2030",
       "connection": "keep-alive"
     },
     "response": "{\n  \"sha\": \"34892575e216c06e757093f036bd8e057c78a52f\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/trees/34892575e216c06e757093f036bd8e057c78a52f\",\n  \"tree\": [\n    {\n      \"path\": \"2016-01-09---Perfecting-the-Art-of-Perfection.md\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"6d51a38aed7139d2117724b1e307657b6ff2d043\",\n      \"size\": 1707,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/6d51a38aed7139d2117724b1e307657b6ff2d043\"\n    },\n    {\n      \"path\": \"2016-01-12---The-Origins-of-Social-Stationery-Lettering.md\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"d0582dd245a3f408fb3fe2333bf01400007476e9\",\n      \"size\": 2565,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/d0582dd245a3f408fb3fe2333bf01400007476e9\"\n    },\n    {\n      \"path\": \"2016-02-02---A-Brief-History-of-Typography.md\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"0eea554365f002d0f1572af9a58522d335a794d5\",\n      \"size\": 2786,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/0eea554365f002d0f1572af9a58522d335a794d5\"\n    },\n    {\n      \"path\": \"2017-18-08---The-Birth-of-Movable-Type.md\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"44f78c474d04273185a95821426f75affc9b0044\",\n      \"size\": 16071,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/44f78c474d04273185a95821426f75affc9b0044\"\n    },\n    {\n      \"path\": \"2017-19-08---Humane-Typography-in-the-Digital-Age.md\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"a532f0a9445cdf90a19c6812cff89d1674991774\",\n      \"size\": 7465,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/a532f0a9445cdf90a19c6812cff89d1674991774\"\n    }\n  ],\n  \"truncated\": false\n}\n",
+=======
+      "X-GitHub-Request-Id": "3043:FEAC:357298C:409725E:5DC3E032",
+      "content-length": "12292",
+      "connection": "keep-alive"
+    },
+    "response": "[\n  {\n    \"name\": \"42-line-bible.jpg\",\n    \"path\": \"static/media/42-line-bible.jpg\",\n    \"sha\": \"41c8d12f9ca5864beb827c381fbeff935209d5fb\",\n    \"size\": 671242,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/42-line-bible.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/42-line-bible.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/41c8d12f9ca5864beb827c381fbeff935209d5fb\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/42-line-bible.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/42-line-bible.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/41c8d12f9ca5864beb827c381fbeff935209d5fb\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/42-line-bible.jpg\"\n    }\n  },\n  {\n    \"name\": \"gutenberg.jpg\",\n    \"path\": \"static/media/gutenberg.jpg\",\n    \"sha\": \"04315e355873ea5d358d9c371c39a6845c1ae4ae\",\n    \"size\": 155002,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/gutenberg.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/gutenberg.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/04315e355873ea5d358d9c371c39a6845c1ae4ae\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/gutenberg.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/gutenberg.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/04315e355873ea5d358d9c371c39a6845c1ae4ae\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/gutenberg.jpg\"\n    }\n  },\n  {\n    \"name\": \"image-0.jpg\",\n    \"path\": \"static/media/image-0.jpg\",\n    \"sha\": \"b70a1b64fd4fa9635823231a0ba92c6dc9393f16\",\n    \"size\": 660287,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-0.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/image-0.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/b70a1b64fd4fa9635823231a0ba92c6dc9393f16\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/image-0.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-0.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/b70a1b64fd4fa9635823231a0ba92c6dc9393f16\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/image-0.jpg\"\n    }\n  },\n  {\n    \"name\": \"image-1.jpg\",\n    \"path\": \"static/media/image-1.jpg\",\n    \"sha\": \"05eedae372b829c62501ac751b2d42dcc432541b\",\n    \"size\": 392411,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-1.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/image-1.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/05eedae372b829c62501ac751b2d42dcc432541b\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/image-1.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-1.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/05eedae372b829c62501ac751b2d42dcc432541b\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/image-1.jpg\"\n    }\n  },\n  {\n    \"name\": \"image-2.jpg\",\n    \"path\": \"static/media/image-2.jpg\",\n    \"sha\": \"53845ed35faf8939bea242bb85eda7c324b1be0b\",\n    \"size\": 99147,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-2.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/image-2.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/53845ed35faf8939bea242bb85eda7c324b1be0b\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/image-2.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-2.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/53845ed35faf8939bea242bb85eda7c324b1be0b\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/image-2.jpg\"\n    }\n  },\n  {\n    \"name\": \"image-3.jpg\",\n    \"path\": \"static/media/image-3.jpg\",\n    \"sha\": \"8b2339d97069e826fae1f156212e40ae458454e3\",\n    \"size\": 358022,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-3.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/image-3.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/8b2339d97069e826fae1f156212e40ae458454e3\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/image-3.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-3.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/8b2339d97069e826fae1f156212e40ae458454e3\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/image-3.jpg\"\n    }\n  },\n  {\n    \"name\": \"image-4.jpg\",\n    \"path\": \"static/media/image-4.jpg\",\n    \"sha\": \"a8f6f21253a67a4284b5a953b2fe633d44152ecd\",\n    \"size\": 114837,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-4.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/image-4.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/a8f6f21253a67a4284b5a953b2fe633d44152ecd\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/image-4.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/image-4.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/a8f6f21253a67a4284b5a953b2fe633d44152ecd\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/image-4.jpg\"\n    }\n  },\n  {\n    \"name\": \"movable-type.jpg\",\n    \"path\": \"static/media/movable-type.jpg\",\n    \"sha\": \"57b4e925ea00bd8e195cf4418eb6eb2995ea5f10\",\n    \"size\": 559028,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/movable-type.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/movable-type.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/57b4e925ea00bd8e195cf4418eb6eb2995ea5f10\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/movable-type.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/movable-type.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/57b4e925ea00bd8e195cf4418eb6eb2995ea5f10\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/movable-type.jpg\"\n    }\n  },\n  {\n    \"name\": \"printing-press.jpg\",\n    \"path\": \"static/media/printing-press.jpg\",\n    \"sha\": \"d27f56c9437d9becd2f56cc627c9322c2f1f61f6\",\n    \"size\": 279283,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/printing-press.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/printing-press.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/d27f56c9437d9becd2f56cc627c9322c2f1f61f6\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/printing-press.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/printing-press.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/d27f56c9437d9becd2f56cc627c9322c2f1f61f6\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/printing-press.jpg\"\n    }\n  },\n  {\n    \"name\": \"type-through-time.jpg\",\n    \"path\": \"static/media/type-through-time.jpg\",\n    \"sha\": \"3f08366a805c51a60ec5056010f22de4ba08abaa\",\n    \"size\": 117689,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/static/media/type-through-time.jpg?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/static/media/type-through-time.jpg\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/3f08366a805c51a60ec5056010f22de4ba08abaa\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/static/media/type-through-time.jpg\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/static/media/type-through-time.jpg?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/3f08366a805c51a60ec5056010f22de4ba08abaa\",\n      \"html\": \"https://github.com/owner/repo/blob/master/static/media/type-through-time.jpg\"\n    }\n  }\n]\n",
+>>>>>>> test(e2e): re-record fixtures data
     "status": 200
   },
   {
     "method": "GET",
+<<<<<<< HEAD
     "url": "/repos/owner/repo/git/trees/master:static/media?ts=0",
     "headers": {
       "Date": "Wed, 13 Nov 2019 08:06:02 GMT",
+=======
+    "url": "/repos/owner/repo/contents/content/posts?ts=0&ref=master",
+    "headers": {
+      "Date": "Thu, 07 Nov 2019 09:13:22 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4621",
       "X-RateLimit-Reset": "1573635105",
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"0fdf5cd0f3854ddcb55c95a2b0effaaf\"",
       "Last-Modified": "Wed, 13 Nov 2019 08:05:49 GMT",
+=======
+      "X-RateLimit-Remaining": "4582",
+      "X-RateLimit-Reset": "1573121036",
+      "Cache-Control": "private, max-age=60, s-maxage=60",
+      "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
+      "ETag": "W/\"9b14f53f9ae27ef26ec092a587f91141486cad24\"",
+      "Last-Modified": "Thu, 07 Nov 2019 09:12:33 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "X-OAuth-Scopes": "delete_repo, repo",
       "X-Accepted-OAuth-Scopes": "",
       "X-GitHub-Media-Type": "github.v3; format=json",
@@ -189,24 +293,41 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E83:3A596:659251A:7951AB9:5DCBB96A",
       "content-length": "3484",
       "connection": "keep-alive"
     },
     "response": "{\n  \"sha\": \"9b7699b57e1430910db82831dcf6b8a1d1dbdac9\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/trees/9b7699b57e1430910db82831dcf6b8a1d1dbdac9\",\n  \"tree\": [\n    {\n      \"path\": \"42-line-bible.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"41c8d12f9ca5864beb827c381fbeff935209d5fb\",\n      \"size\": 671242,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/41c8d12f9ca5864beb827c381fbeff935209d5fb\"\n    },\n    {\n      \"path\": \"gutenberg.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"04315e355873ea5d358d9c371c39a6845c1ae4ae\",\n      \"size\": 155002,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/04315e355873ea5d358d9c371c39a6845c1ae4ae\"\n    },\n    {\n      \"path\": \"image-0.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"b70a1b64fd4fa9635823231a0ba92c6dc9393f16\",\n      \"size\": 660287,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/b70a1b64fd4fa9635823231a0ba92c6dc9393f16\"\n    },\n    {\n      \"path\": \"image-1.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"05eedae372b829c62501ac751b2d42dcc432541b\",\n      \"size\": 392411,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/05eedae372b829c62501ac751b2d42dcc432541b\"\n    },\n    {\n      \"path\": \"image-2.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"53845ed35faf8939bea242bb85eda7c324b1be0b\",\n      \"size\": 99147,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/53845ed35faf8939bea242bb85eda7c324b1be0b\"\n    },\n    {\n      \"path\": \"image-3.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"8b2339d97069e826fae1f156212e40ae458454e3\",\n      \"size\": 358022,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/8b2339d97069e826fae1f156212e40ae458454e3\"\n    },\n    {\n      \"path\": \"image-4.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"a8f6f21253a67a4284b5a953b2fe633d44152ecd\",\n      \"size\": 114837,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/a8f6f21253a67a4284b5a953b2fe633d44152ecd\"\n    },\n    {\n      \"path\": \"movable-type.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"57b4e925ea00bd8e195cf4418eb6eb2995ea5f10\",\n      \"size\": 559028,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/57b4e925ea00bd8e195cf4418eb6eb2995ea5f10\"\n    },\n    {\n      \"path\": \"printing-press.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"d27f56c9437d9becd2f56cc627c9322c2f1f61f6\",\n      \"size\": 279283,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/d27f56c9437d9becd2f56cc627c9322c2f1f61f6\"\n    },\n    {\n      \"path\": \"type-through-time.jpg\",\n      \"mode\": \"100644\",\n      \"type\": \"blob\",\n      \"sha\": \"3f08366a805c51a60ec5056010f22de4ba08abaa\",\n      \"size\": 117689,\n      \"url\": \"https://api.github.com/repos/owner/repo/git/blobs/3f08366a805c51a60ec5056010f22de4ba08abaa\"\n    }\n  ],\n  \"truncated\": false\n}\n",
+=======
+      "X-GitHub-Request-Id": "303C:1F7A8:105CA145:1399F793:5DC3E032",
+      "content-length": "7387",
+      "connection": "keep-alive"
+    },
+    "response": "[\n  {\n    \"name\": \"2016-01-09---Perfecting-the-Art-of-Perfection.md\",\n    \"path\": \"content/posts/2016-01-09---Perfecting-the-Art-of-Perfection.md\",\n    \"sha\": \"6d51a38aed7139d2117724b1e307657b6ff2d043\",\n    \"size\": 1707,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2016-01-09---Perfecting-the-Art-of-Perfection.md?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/content/posts/2016-01-09---Perfecting-the-Art-of-Perfection.md\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/6d51a38aed7139d2117724b1e307657b6ff2d043\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/content/posts/2016-01-09---Perfecting-the-Art-of-Perfection.md\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2016-01-09---Perfecting-the-Art-of-Perfection.md?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/6d51a38aed7139d2117724b1e307657b6ff2d043\",\n      \"html\": \"https://github.com/owner/repo/blob/master/content/posts/2016-01-09---Perfecting-the-Art-of-Perfection.md\"\n    }\n  },\n  {\n    \"name\": \"2016-01-12---The-Origins-of-Social-Stationery-Lettering.md\",\n    \"path\": \"content/posts/2016-01-12---The-Origins-of-Social-Stationery-Lettering.md\",\n    \"sha\": \"d0582dd245a3f408fb3fe2333bf01400007476e9\",\n    \"size\": 2565,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2016-01-12---The-Origins-of-Social-Stationery-Lettering.md?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/content/posts/2016-01-12---The-Origins-of-Social-Stationery-Lettering.md\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/d0582dd245a3f408fb3fe2333bf01400007476e9\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/content/posts/2016-01-12---The-Origins-of-Social-Stationery-Lettering.md\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2016-01-12---The-Origins-of-Social-Stationery-Lettering.md?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/d0582dd245a3f408fb3fe2333bf01400007476e9\",\n      \"html\": \"https://github.com/owner/repo/blob/master/content/posts/2016-01-12---The-Origins-of-Social-Stationery-Lettering.md\"\n    }\n  },\n  {\n    \"name\": \"2016-02-02---A-Brief-History-of-Typography.md\",\n    \"path\": \"content/posts/2016-02-02---A-Brief-History-of-Typography.md\",\n    \"sha\": \"0eea554365f002d0f1572af9a58522d335a794d5\",\n    \"size\": 2786,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2016-02-02---A-Brief-History-of-Typography.md?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/content/posts/2016-02-02---A-Brief-History-of-Typography.md\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/0eea554365f002d0f1572af9a58522d335a794d5\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/content/posts/2016-02-02---A-Brief-History-of-Typography.md\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2016-02-02---A-Brief-History-of-Typography.md?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/0eea554365f002d0f1572af9a58522d335a794d5\",\n      \"html\": \"https://github.com/owner/repo/blob/master/content/posts/2016-02-02---A-Brief-History-of-Typography.md\"\n    }\n  },\n  {\n    \"name\": \"2017-18-08---The-Birth-of-Movable-Type.md\",\n    \"path\": \"content/posts/2017-18-08---The-Birth-of-Movable-Type.md\",\n    \"sha\": \"44f78c474d04273185a95821426f75affc9b0044\",\n    \"size\": 16071,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2017-18-08---The-Birth-of-Movable-Type.md?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/content/posts/2017-18-08---The-Birth-of-Movable-Type.md\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/44f78c474d04273185a95821426f75affc9b0044\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/content/posts/2017-18-08---The-Birth-of-Movable-Type.md\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2017-18-08---The-Birth-of-Movable-Type.md?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/44f78c474d04273185a95821426f75affc9b0044\",\n      \"html\": \"https://github.com/owner/repo/blob/master/content/posts/2017-18-08---The-Birth-of-Movable-Type.md\"\n    }\n  },\n  {\n    \"name\": \"2017-19-08---Humane-Typography-in-the-Digital-Age.md\",\n    \"path\": \"content/posts/2017-19-08---Humane-Typography-in-the-Digital-Age.md\",\n    \"sha\": \"a532f0a9445cdf90a19c6812cff89d1674991774\",\n    \"size\": 7465,\n    \"url\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2017-19-08---Humane-Typography-in-the-Digital-Age.md?ref=master\",\n    \"html_url\": \"https://github.com/owner/repo/blob/master/content/posts/2017-19-08---Humane-Typography-in-the-Digital-Age.md\",\n    \"git_url\": \"https://api.github.com/repos/owner/repo/git/blobs/a532f0a9445cdf90a19c6812cff89d1674991774\",\n    \"download_url\": \"https://raw.githubusercontent.com/owner/repo/master/content/posts/2017-19-08---Humane-Typography-in-the-Digital-Age.md\",\n    \"type\": \"file\",\n    \"_links\": {\n      \"self\": \"https://api.github.com/repos/owner/repo/contents/content/posts/2017-19-08---Humane-Typography-in-the-Digital-Age.md?ref=master\",\n      \"git\": \"https://api.github.com/repos/owner/repo/git/blobs/a532f0a9445cdf90a19c6812cff89d1674991774\",\n      \"html\": \"https://github.com/owner/repo/blob/master/content/posts/2017-19-08---Humane-Typography-in-the-Digital-Age.md\"\n    }\n  }\n]\n",
+>>>>>>> test(e2e): re-record fixtures data
     "status": 200
   },
   {
     "method": "GET",
     "url": "/repos/owner/repo/git/blobs/6d51a38aed7139d2117724b1e307657b6ff2d043?ts=0",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:03 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:23 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "text/plain; charset=iso-8859-1",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4619",
       "X-RateLimit-Reset": "1573635105",
+=======
+      "X-RateLimit-Remaining": "4580",
+      "X-RateLimit-Reset": "1573121036",
+>>>>>>> test(e2e): re-record fixtures data
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"880e3bac59446485deb0c1abb21f88a7\"",
@@ -221,7 +342,11 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E96:3A597:8E21727:A8F3857:5DCBB96B",
+=======
+      "X-GitHub-Request-Id": "3053:21F9C:1076F373:13CC70FD:5DC3E032",
+>>>>>>> test(e2e): re-record fixtures data
       "content-length": "1707",
       "connection": "keep-alive"
     },
@@ -232,13 +357,22 @@
     "method": "GET",
     "url": "/repos/owner/repo/git/blobs/d0582dd245a3f408fb3fe2333bf01400007476e9?ts=0",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:03 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:23 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "text/plain; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4618",
       "X-RateLimit-Reset": "1573635105",
+=======
+      "X-RateLimit-Remaining": "4579",
+      "X-RateLimit-Reset": "1573121036",
+>>>>>>> test(e2e): re-record fixtures data
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"4bb0ef1407b91842a124b4e17cae8d76\"",
@@ -253,7 +387,11 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E95:2CFE8:3E9BE16:4B1DD3A:5DCBB96B",
+=======
+      "X-GitHub-Request-Id": "3057:21F97:7596EB0:8D3A33F:5DC3E032",
+>>>>>>> test(e2e): re-record fixtures data
       "content-length": "2565",
       "connection": "keep-alive"
     },
@@ -264,13 +402,22 @@
     "method": "GET",
     "url": "/repos/owner/repo/git/blobs/44f78c474d04273185a95821426f75affc9b0044?ts=0",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:03 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:23 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "text/plain; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4617",
       "X-RateLimit-Reset": "1573635105",
+=======
+      "X-RateLimit-Remaining": "4578",
+      "X-RateLimit-Reset": "1573121036",
+>>>>>>> test(e2e): re-record fixtures data
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"64aba4bc04422f7e2591ed3ffdba868b\"",
@@ -285,7 +432,11 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E97:2CFED:903594A:ABAE07D:5DCBB96B",
+=======
+      "X-GitHub-Request-Id": "305A:21F9C:1076F3BF:13CC7153:5DC3E032",
+>>>>>>> test(e2e): re-record fixtures data
       "content-length": "16071",
       "connection": "keep-alive"
     },
@@ -296,16 +447,28 @@
     "method": "GET",
     "url": "/repos/owner/repo/git/blobs/a532f0a9445cdf90a19c6812cff89d1674991774?ts=0",
     "headers": {
+<<<<<<< HEAD
       "Date": "Wed, 13 Nov 2019 08:06:03 GMT",
+=======
+      "Date": "Thu, 07 Nov 2019 09:13:23 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "text/plain; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4616",
       "X-RateLimit-Reset": "1573635105",
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"29a58f48940ff3d2dc5509a5f67ff405\"",
+=======
+      "X-RateLimit-Remaining": "4577",
+      "X-RateLimit-Reset": "1573121036",
+      "Cache-Control": "private, max-age=60, s-maxage=60",
+      "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
+      "ETag": "W/\"344dacc2b3cff4f660ef0b37285bbebc\"",
+>>>>>>> test(e2e): re-record fixtures data
       "X-OAuth-Scopes": "delete_repo, repo",
       "X-Accepted-OAuth-Scopes": "",
       "X-GitHub-Media-Type": "github.v3; param=VERSION.raw",
@@ -317,8 +480,13 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E98:33B08:3ED3198:4AF659B:5DCBB96B",
       "content-length": "7465",
+=======
+      "X-GitHub-Request-Id": "3059:AA0C:10B0E88E:14128A15:5DC3E033",
+      "content-length": "2786",
+>>>>>>> test(e2e): re-record fixtures data
       "connection": "keep-alive"
     },
     "response": "---\ntitle: Humane Typography in the Digital Age\ndate: \"2017-08-19T22:40:32.169Z\"\ntemplate: \"post\"\ndraft: false\ncategory: \"Typography\"\ntags:\n  - \"Design\"\n  - \"Typography\"\n  - \"Web Development\"\ndescription: \"An Essay on Typography by Eric Gill takes the reader back to the year 1930. The year when a conflict between two worlds came to its term. The machines of the industrial world finally took over the handicrafts.\"\ncanonical: ''\n---\n\n- [The first transition](#the-first-transition)\n- [The digital age](#the-digital-age)\n- [Loss of humanity through transitions](#loss-of-humanity-through-transitions)\n- [Chasing perfection](#chasing-perfection)\n\nAn Essay on Typography by Eric Gill takes the reader back to the year 1930. The year when a conflict between two worlds came to its term. The machines of the industrial world finally took over the handicrafts.\n\nThe typography of this industrial age was no longer handcrafted. Mass production and profit became more important. Quantity mattered more than the quality. The books and printed works in general lost a part of its humanity. The typefaces were not produced by craftsmen anymore. It was the machines printing and tying the books together now. The craftsmen had to let go of their craft and became a cog in the process. An extension of the industrial machine.\n\nBut the victory of the industrialism didn’t mean that the craftsmen were completely extinct. The two worlds continued to coexist independently. Each recognising the good in the other — the power of industrialism and the humanity of craftsmanship. This was the second transition that would strip typography of a part of its humanity. We have to go 500 years back in time to meet the first one.\n\n## The first transition\n\nA similar conflict emerged after the invention of the first printing press in Europe. Johannes Gutenberg invented movable type and used it to produce different compositions. His workshop could print up to 240 impressions per hour. Until then, the books were being copied by hand. All the books were handwritten and decorated with hand drawn ornaments and figures. A process of copying a book was long but each book, even a copy, was a work of art.\n\nThe first printed books were, at first, perceived as inferior to the handwritten ones. They were smaller and cheaper to produce. Movable type provided the printers with flexibility that allowed them to print books in languages other than Latin. Gill describes the transition to industrialism as something that people needed and wanted. Something similar happened after the first printed books emerged. People wanted books in a language they understood and they wanted books they could take with them. They were hungry for knowledge and printed books satisfied this hunger.\n\n![42-line-bible.jpg](/media/42-line-bible.jpg)\n\n*The 42–Line Bible, printed by Gutenberg.*\n\nBut, through this transition, the book lost a large part of its humanity. The machine took over most of the process but craftsmanship was still a part of it. The typefaces were cut manually by the first punch cutters. The paper was made by hand. The illustrations and ornaments were still being hand drawn. These were the remains of the craftsmanship that went almost extinct in the times of Eric Gill.\n\n## The digital age\n\nThe first transition took away a large part of humanity from written communication. Industrialisation, the second transition described by Eric Gill, took away most of what was left. But it’s the third transition that stripped it naked. Typefaces are faceless these days. They’re just fonts on our computers. Hardly anyone knows their stories. Hardly anyone cares. Flicking through thousands of typefaces and finding the “right one” is a matter of minutes.\n\n> In the new computer age the proliferation of typefaces and type manipulations represents a new level of visual pollution threatening our culture. Out of thousands of typefaces, all we need are a few basic ones, and trash the rest.\n>\n— Massimo Vignelli\n\nTypography is not about typefaces. It’s not about what looks best, it’s about what feels right. What communicates the message best. Typography, in its essence, is about the message. “Typographical design should perform optically what the speaker creates through voice and gesture of his thoughts.”, as El Lissitzky, a famous Russian typographer, put it.\n\n## Loss of humanity through transitions\n\nEach transition took away a part of humanity from written language. Handwritten books being the most humane form and the digital typefaces being the least. Overuse of Helvetica is a good example. Messages are being told in a typeface just because it’s a safe option. It’s always there. Everyone knows it but yet, nobody knows it. Stop someone on the street and ask him what Helvetica is? Ask a designer the same question. Ask him where it came from, when, why and who designed it. Most of them will fail to answer these questions. Most of them used it in their precious projects but they still don’t spot it in the street.\n\n<figure>\n\t<blockquote>\n\t\t<p>Knowledge of the quality of a typeface is of the greatest importance for the functional, aesthetic and psychological effect.</p>\n\t\t<footer>\n\t\t\t<cite>— Josef Mueller-Brockmann</cite>\n\t\t</footer>\n\t</blockquote>\n</figure>\n\nTypefaces don’t look handmade these days. And that’s all right. They don’t have to. Industrialism took that away from them and we’re fine with it. We’ve traded that part of humanity for a process that produces more books that are easier to read. That can’t be bad. And it isn’t.\n\n> Humane typography will often be comparatively rough and even uncouth; but while a certain uncouthness does not seriously matter in humane works, uncouthness has no excuse whatever in the productions of the machine.\n>\n> — Eric Gill\n\nWe’ve come close to “perfection” in the last five centuries. The letters are crisp and without rough edges. We print our compositions with high–precision printers on a high quality, machine made paper.\n\n![type-through-time.jpg](/media/type-through-time.jpg)\n\n*Type through 5 centuries.*\n\nWe lost a part of ourselves because of this chase after perfection. We forgot about the craftsmanship along the way. And the worst part is that we don’t care. The transition to the digital age made that clear. We choose typefaces like clueless zombies. There’s no meaning in our work. Type sizes, leading, margins… It’s all just a few clicks or lines of code. The message isn’t important anymore. There’s no more “why” behind the “what”.\n\n## Chasing perfection\n\nHuman beings aren’t perfect. Perfection is something that will always elude us. There will always be a small part of humanity in everything we do. No matter how small that part, we should make sure that it transcends the limits of the medium. We have to think about the message first. What typeface should we use and why? Does the typeface match the message and what we want to communicate with it? What will be the leading and why? Will there be more typefaces in our design? On what ground will they be combined? What makes our design unique and why? This is the part of humanity that is left in typography. It might be the last part. Are we really going to give it up?\n\n*Originally published by [Matej Latin](http://matejlatin.co.uk/) on [Medium](https://medium.com/design-notes/humane-typography-in-the-digital-age-9bd5c16199bd?ref=webdesignernews.com#.lygo82z0x).*",
@@ -326,18 +494,32 @@
   },
   {
     "method": "GET",
+<<<<<<< HEAD
     "url": "/repos/owner/repo/git/blobs/0eea554365f002d0f1572af9a58522d335a794d5?ts=0",
     "headers": {
       "Date": "Wed, 13 Nov 2019 08:06:03 GMT",
+=======
+    "url": "/repos/owner/repo/git/blobs/a532f0a9445cdf90a19c6812cff89d1674991774?ts=0",
+    "headers": {
+      "Date": "Thu, 07 Nov 2019 09:13:23 GMT",
+>>>>>>> test(e2e): re-record fixtures data
       "Content-Type": "text/plain; charset=utf-8",
       "Server": "GitHub.com",
       "Status": "200 OK",
       "X-RateLimit-Limit": "5000",
+<<<<<<< HEAD
       "X-RateLimit-Remaining": "4615",
       "X-RateLimit-Reset": "1573635105",
       "Cache-Control": "private, max-age=60, s-maxage=60",
       "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
       "ETag": "W/\"344dacc2b3cff4f660ef0b37285bbebc\"",
+=======
+      "X-RateLimit-Remaining": "4576",
+      "X-RateLimit-Reset": "1573121036",
+      "Cache-Control": "private, max-age=60, s-maxage=60",
+      "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP",
+      "ETag": "W/\"29a58f48940ff3d2dc5509a5f67ff405\"",
+>>>>>>> test(e2e): re-record fixtures data
       "X-OAuth-Scopes": "delete_repo, repo",
       "X-Accepted-OAuth-Scopes": "",
       "X-GitHub-Media-Type": "github.v3; param=VERSION.raw",
@@ -349,11 +531,19 @@
       "X-XSS-Protection": "1; mode=block",
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'",
+<<<<<<< HEAD
       "X-GitHub-Request-Id": "2E99:33B0A:8A7C2BF:A531693:5DCBB96B",
       "content-length": "2786",
       "connection": "keep-alive"
     },
     "response": "---\ntitle: \"A Brief History of Typography\"\ndate: \"2016-02-02T22:40:32.169Z\"\ntemplate: \"post\"\ndraft: false\ncategory: \"Design Inspiration\"\ntags:\n  - \"Linotype\"\n  - \"Monotype\"\n  - \"History of typography\"\n  - \"Helvetica\"\ndescription: \"Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat.\"\ncanonical: ''\n---\n\n**Pellentesque habitant morbi tristique** senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. *Aenean ultricies mi vitae est.* Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. \n\nVestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui.  [Donec non enim](#) in turpis pulvinar facilisis.\n\n![Nulla faucibus vestibulum eros in tempus. Vestibulum tempor imperdiet velit nec dapibus](/media/image-0.jpg)\n\n## Header Level 2\n\n+ Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\n+ Aliquam tincidunt mauris eu risus.\n\nDonec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. \n\n<figure>\n\t<blockquote>\n\t\t<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p>\n\t\t<footer>\n\t\t\t<cite>— Aliquam tincidunt mauris eu risus.</cite>\n\t\t</footer>\n\t</blockquote>\n</figure>\n\n### Header Level 3\n\n+ Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\n+ Aliquam tincidunt mauris eu risus.\n\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.\n\n```css\n#header h1 a {\n  display: block;\n  width: 300px;\n  height: 80px;\n}\n```\n\nVestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.",
+=======
+      "X-GitHub-Request-Id": "305B:1411C:73F80D6:8B7A407:5DC3E033",
+      "content-length": "7465",
+      "connection": "keep-alive"
+    },
+    "response": "---\ntitle: Humane Typography in the Digital Age\ndate: \"2017-08-19T22:40:32.169Z\"\ntemplate: \"post\"\ndraft: false\ncategory: \"Typography\"\ntags:\n  - \"Design\"\n  - \"Typography\"\n  - \"Web Development\"\ndescription: \"An Essay on Typography by Eric Gill takes the reader back to the year 1930. The year when a conflict between two worlds came to its term. The machines of the industrial world finally took over the handicrafts.\"\ncanonical: ''\n---\n\n- [The first transition](#the-first-transition)\n- [The digital age](#the-digital-age)\n- [Loss of humanity through transitions](#loss-of-humanity-through-transitions)\n- [Chasing perfection](#chasing-perfection)\n\nAn Essay on Typography by Eric Gill takes the reader back to the year 1930. The year when a conflict between two worlds came to its term. The machines of the industrial world finally took over the handicrafts.\n\nThe typography of this industrial age was no longer handcrafted. Mass production and profit became more important. Quantity mattered more than the quality. The books and printed works in general lost a part of its humanity. The typefaces were not produced by craftsmen anymore. It was the machines printing and tying the books together now. The craftsmen had to let go of their craft and became a cog in the process. An extension of the industrial machine.\n\nBut the victory of the industrialism didn’t mean that the craftsmen were completely extinct. The two worlds continued to coexist independently. Each recognising the good in the other — the power of industrialism and the humanity of craftsmanship. This was the second transition that would strip typography of a part of its humanity. We have to go 500 years back in time to meet the first one.\n\n## The first transition\n\nA similar conflict emerged after the invention of the first printing press in Europe. Johannes Gutenberg invented movable type and used it to produce different compositions. His workshop could print up to 240 impressions per hour. Until then, the books were being copied by hand. All the books were handwritten and decorated with hand drawn ornaments and figures. A process of copying a book was long but each book, even a copy, was a work of art.\n\nThe first printed books were, at first, perceived as inferior to the handwritten ones. They were smaller and cheaper to produce. Movable type provided the printers with flexibility that allowed them to print books in languages other than Latin. Gill describes the transition to industrialism as something that people needed and wanted. Something similar happened after the first printed books emerged. People wanted books in a language they understood and they wanted books they could take with them. They were hungry for knowledge and printed books satisfied this hunger.\n\n![42-line-bible.jpg](/media/42-line-bible.jpg)\n\n*The 42–Line Bible, printed by Gutenberg.*\n\nBut, through this transition, the book lost a large part of its humanity. The machine took over most of the process but craftsmanship was still a part of it. The typefaces were cut manually by the first punch cutters. The paper was made by hand. The illustrations and ornaments were still being hand drawn. These were the remains of the craftsmanship that went almost extinct in the times of Eric Gill.\n\n## The digital age\n\nThe first transition took away a large part of humanity from written communication. Industrialisation, the second transition described by Eric Gill, took away most of what was left. But it’s the third transition that stripped it naked. Typefaces are faceless these days. They’re just fonts on our computers. Hardly anyone knows their stories. Hardly anyone cares. Flicking through thousands of typefaces and finding the “right one” is a matter of minutes.\n\n> In the new computer age the proliferation of typefaces and type manipulations represents a new level of visual pollution threatening our culture. Out of thousands of typefaces, all we need are a few basic ones, and trash the rest.\n>\n— Massimo Vignelli\n\nTypography is not about typefaces. It’s not about what looks best, it’s about what feels right. What communicates the message best. Typography, in its essence, is about the message. “Typographical design should perform optically what the speaker creates through voice and gesture of his thoughts.”, as El Lissitzky, a famous Russian typographer, put it.\n\n## Loss of humanity through transitions\n\nEach transition took away a part of humanity from written language. Handwritten books being the most humane form and the digital typefaces being the least. Overuse of Helvetica is a good example. Messages are being told in a typeface just because it’s a safe option. It’s always there. Everyone knows it but yet, nobody knows it. Stop someone on the street and ask him what Helvetica is? Ask a designer the same question. Ask him where it came from, when, why and who designed it. Most of them will fail to answer these questions. Most of them used it in their precious projects but they still don’t spot it in the street.\n\n<figure>\n\t<blockquote>\n\t\t<p>Knowledge of the quality of a typeface is of the greatest importance for the functional, aesthetic and psychological effect.</p>\n\t\t<footer>\n\t\t\t<cite>— Josef Mueller-Brockmann</cite>\n\t\t</footer>\n\t</blockquote>\n</figure>\n\nTypefaces don’t look handmade these days. And that’s all right. They don’t have to. Industrialism took that away from them and we’re fine with it. We’ve traded that part of humanity for a process that produces more books that are easier to read. That can’t be bad. And it isn’t.\n\n> Humane typography will often be comparatively rough and even uncouth; but while a certain uncouthness does not seriously matter in humane works, uncouthness has no excuse whatever in the productions of the machine.\n>\n> — Eric Gill\n\nWe’ve come close to “perfection” in the last five centuries. The letters are crisp and without rough edges. We print our compositions with high–precision printers on a high quality, machine made paper.\n\n![type-through-time.jpg](/media/type-through-time.jpg)\n\n*Type through 5 centuries.*\n\nWe lost a part of ourselves because of this chase after perfection. We forgot about the craftsmanship along the way. And the worst part is that we don’t care. The transition to the digital age made that clear. We choose typefaces like clueless zombies. There’s no meaning in our work. Type sizes, leading, margins… It’s all just a few clicks or lines of code. The message isn’t important anymore. There’s no more “why” behind the “what”.\n\n## Chasing perfection\n\nHuman beings aren’t perfect. Perfection is something that will always elude us. There will always be a small part of humanity in everything we do. No matter how small that part, we should make sure that it transcends the limits of the medium. We have to think about the message first. What typeface should we use and why? Does the typeface match the message and what we want to communicate with it? What will be the leading and why? Will there be more typefaces in our design? On what ground will they be combined? What makes our design unique and why? This is the part of humanity that is left in typography. It might be the last part. Are we really going to give it up?\n\n*Originally published by [Matej Latin](http://matejlatin.co.uk/) on [Medium](https://medium.com/design-notes/humane-typography-in-the-digital-age-9bd5c16199bd?ref=webdesignernews.com#.lygo82z0x).*",
+>>>>>>> test(e2e): re-record fixtures data
     "status": 200
   }
 ]
