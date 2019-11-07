@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.7.0-beta.0...netlify-cms-ui-default@2.7.0-beta.1) (2019-11-07)
+
+
+### Bug Fixes
+
+* swap out svg plugin causing node 12 failures ([#2710](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2710)) ([5dc7ee2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/5dc7ee2a9c0e4ad68569fbc8215c3ac589231bc9))
+
+
+### Features
+
+* add go back to site button ([#2538](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2538)) ([f206e7e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/f206e7e5a13fb48ec6b27dce0dbb3a59b61de8f9))
+
+
+
+
+
 # [2.7.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.6.4...netlify-cms-ui-default@2.7.0-beta.0) (2019-07-24)
 
 

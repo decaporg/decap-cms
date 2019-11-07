@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.3...netlify-cms-backend-github@2.5.0-beta.4) (2019-11-07)
+
+
+### Bug Fixes
+
+* **github-backend:** load media URLs via API ([#2817](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2817)) ([eaeaf44](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/eaeaf4483287a1f724ee60ef321ff749f1c20acf))
+* change default open authoring scope, make it configurable ([#2821](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2821)) ([002cdd7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/002cdd77a856bde3672e75dde6d3a2b246e1035f))
+* display UI to fork a repo only when fork doesn't exist ([#2802](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2802)) ([7f90d0e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/7f90d0e065315b9073d21fd733f42f3838ecfe09))
+
+
+### Features
+
+* add go back to site button ([#2538](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2538)) ([f206e7e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/f206e7e5a13fb48ec6b27dce0dbb3a59b61de8f9))
+
+
+
+
+
 # [2.5.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.2...netlify-cms-backend-github@2.5.0-beta.3) (2019-09-26)
 
 

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.4...netlify-cms-core@2.13.0-beta.5) (2019-11-07)
+
+
+### Bug Fixes
+
+* **backend-test-repo:** show notice when test repo is in use ([#2678](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2678)) ([c1c9587](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c1c95874f41bd2b435c39d3dea263c77eaa601eb))
+* **deps:** update dependency react-polyglot to ^0.6.0 ([#2752](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2752)) ([ab5860f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ab5860f58ea15b69e860164986d7e24867d01954))
+* change default open authoring scope, make it configurable ([#2821](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2821)) ([002cdd7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/002cdd77a856bde3672e75dde6d3a2b246e1035f))
+* hide collection item overflow on hover ([#2706](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2706)) ([c54f896](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c54f896e3965e7d737cfca24fda283ab38d07982))
+
+
+### Features
+
+* enable specifying custom open authoring commit message ([#2810](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2810)) ([2841ff9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2841ff9ffe58afcf4dba45514a84a262ad370f1d))
+
+
+
+
+
 # [2.13.0-beta.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.3...netlify-cms-core@2.13.0-beta.4) (2019-09-26)
 
 

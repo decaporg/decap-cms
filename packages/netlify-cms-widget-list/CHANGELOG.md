@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.5-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.3.5-beta.0...netlify-cms-widget-list@2.3.5-beta.1) (2019-11-07)
+
+
+### Bug Fixes
+
+* **widget-list:**  when single field value is object widget ([#2387](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/2387)) ([90748ff](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/90748ff4fe25f47dfc6aabd46cfc02df079bc126))
+
+
+
+
+
 ## [2.3.5-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.3.4...netlify-cms-widget-list@2.3.5-beta.0) (2019-09-04)
 
 

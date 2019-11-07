@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.4.6...netlify-cms-backend-git-gateway@2.5.0) (2019-11-07)
+
+
+### Bug Fixes
+
+* **backend-git-gateway:** omit /repos/ when no repo ([#2846](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/2846)) ([da2dab3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/da2dab305ab7f0655791ef0fb5376e3d5e72897c))
+
+
+### Features
+
+* add go back to site button ([#2538](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/2538)) ([f206e7e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/f206e7e5a13fb48ec6b27dce0dbb3a59b61de8f9))
+* enable specifying custom open authoring commit message ([#2810](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/2810)) ([2841ff9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/2841ff9ffe58afcf4dba45514a84a262ad370f1d))
+
+
+
+
+
 ## [2.4.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.4.5...netlify-cms-backend-git-gateway@2.4.6) (2019-09-26)
 
 

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.3.3-beta.1...netlify-cms-backend-gitlab@2.4.0-beta.0) (2019-11-07)
+
+
+### Features
+
+* add go back to site button ([#2538](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/2538)) ([f206e7e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/f206e7e5a13fb48ec6b27dce0dbb3a59b61de8f9))
+* enable specifying custom open authoring commit message ([#2810](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/2810)) ([2841ff9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/2841ff9ffe58afcf4dba45514a84a262ad370f1d))
+
+
+
+
+
 ## [2.3.3-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.3.3-beta.0...netlify-cms-backend-gitlab@2.3.3-beta.1) (2019-09-26)
 
 

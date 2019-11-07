@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.4...netlify-cms-widget-number@2.3.5) (2019-11-07)
+
+
+### Bug Fixes
+
+* don't enforce min max when number value is empty ([#2792](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/issues/2792)) ([6b11367](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/commit/6b113673130389aba1ee00fd614501668fad7596))
+
+
+
+
+
 ## [2.3.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.3...netlify-cms-widget-number@2.3.4) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-widget-number

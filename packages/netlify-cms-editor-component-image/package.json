@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-editor-component-image",
   "description": "Image component for Netlify CMS editor widget",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",

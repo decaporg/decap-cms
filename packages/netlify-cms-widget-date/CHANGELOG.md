@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.3.4...netlify-cms-widget-date@2.3.5) (2019-11-07)
+
+
+### Bug Fixes
+
+* **widget-date:** allow empty value ([#2705](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/2705)) ([d058697](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/d0586976443c4255ba122fba33bbe045069fc461))
+
+
+
+
+
 ## [2.3.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.3.3...netlify-cms-widget-date@2.3.4) (2019-09-26)
 
 **Note:** Version bump only for package netlify-cms-widget-date
