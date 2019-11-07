@@ -75,12 +75,17 @@ export default class GitHubAuthenticationPage extends React.Component {
     };
     const auth = new NetlifyAuthenticator(cfg);
 
-    auth.authenticate({ provider: 'github', scope: 'repo' }, (err, data) => {
+    const openAuthoring = this.props.config.getIn(['backend', 'open_authoring'], false);
+    const scope = this.props.config.getIn(
+      ['backend', 'auth_scope'],
+      openAuthoring ? 'public_repo' : 'repo',
+    );
+    auth.authenticate({ provider: 'github', scope }, (err, data) => {
       if (err) {
         this.setState({ loginError: err.toString() });
         return;
       }
-      if (this.props.config.getIn(['backend', 'open_authoring'])) {
+      if (openAuthoring) {
         return this.loginWithOpenAuthoring(data).then(() => this.props.onLogin(data));
       }
       this.props.onLogin(data);
