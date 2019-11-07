@@ -196,6 +196,21 @@ describe('mediaLibrary', () => {
       createAssetProxy.mockReturnValue(assetProxy);
 
       return store.dispatch(persistMedia(file)).then(() => {
+        const actions = store.getActions();
+
+        expect(actions).toHaveLength(3);
+        expect(actions[0]).toEqual({ type: 'MEDIA_PERSIST_REQUEST' });
+        expect(actions[1]).toEqual({
+          type: 'ADD_ASSET',
+          payload: { public_path: '/media/name.png' },
+        });
+        expect(actions[2]).toEqual({
+          type: 'MEDIA_PERSIST_SUCCESS',
+          payload: {
+            file: { draft: false, id: 'id', displayURL: 'displayURL' },
+          },
+        });
+
         expect(backend.persistMedia).toHaveBeenCalledTimes(1);
         expect(backend.persistMedia).toHaveBeenCalledWith(
           store.getState().config,

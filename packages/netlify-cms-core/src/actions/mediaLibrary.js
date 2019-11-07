@@ -210,14 +210,16 @@ export function persistMedia(file, opts = {}) {
         const assetId = asset.id || id;
         const displayURL = asset.displayURL || URL.createObjectURL(file);
 
-        dispatch(
-          addDraftEntryMediaFile({
-            ...asset,
-            id: assetId,
-            draft,
-            public_path: assetProxy.public_path,
-          }),
-        );
+        if (draft) {
+          dispatch(
+            addDraftEntryMediaFile({
+              ...asset,
+              id: assetId,
+              draft,
+              public_path: assetProxy.public_path,
+            }),
+          );
+        }
 
         return dispatch(
           mediaPersisted({
