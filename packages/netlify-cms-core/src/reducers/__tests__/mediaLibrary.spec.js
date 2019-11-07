@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { addMediaFilesToLibrary, mediaDeleted } from 'Actions/mediaLibrary';
+import { ADD_MEDIA_FILES_TO_LIBRARY, mediaDeleted } from 'Actions/mediaLibrary';
 import mediaLibrary from '../mediaLibrary';
 
 jest.mock('uuid/v4');
@@ -18,7 +18,10 @@ describe('mediaLibrary', () => {
             { sha: 'sha', path: 'some-other-pas', key: 'key2' },
           ],
         }),
-        addMediaFilesToLibrary([{ sha: 'new', path: 'path' }]),
+        {
+          type: ADD_MEDIA_FILES_TO_LIBRARY,
+          payload: { mediaFiles: [{ sha: 'new', path: 'path' }] },
+        },
       ),
     ).toEqual(
       Map({

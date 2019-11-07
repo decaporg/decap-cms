@@ -11,7 +11,7 @@ import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
-import { deleteMedia } from './mediaLibrary';
+import { deleteMedia, addMediaFilesToLibrary } from './mediaLibrary';
 import { addAssets } from './media';
 
 const { notifSend } = notifActions;
@@ -287,6 +287,12 @@ export function retrieveLocalBackup(collection, slug) {
         assets.map(asset => createAssetProxy(asset.value, asset.fileObj)),
       );
       dispatch(addAssets(assetProxies));
+
+      const filesToAdd = mediaFiles.map(file => ({
+        ...file,
+        draft: true,
+      }));
+      dispatch(addMediaFilesToLibrary(filesToAdd));
 
       return dispatch(localBackupRetrieved(entry, mediaFiles));
     }

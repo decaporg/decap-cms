@@ -1,7 +1,6 @@
 import * as actions from '../editorialWorkflow';
 import { addDraftEntryMediaFiles } from '../entries';
 import { addAssets } from '../media';
-import { addMediaFilesToLibrary } from '../mediaLibrary';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fromJS } from 'immutable';
@@ -40,6 +39,9 @@ describe('editorialWorkflow actions', () => {
         collections: fromJS({
           posts: { name: 'posts' },
         }),
+        mediaLibrary: fromJS({
+          isLoading: false,
+        }),
       });
 
       currentBackend.mockReturnValue(backend);
@@ -62,9 +64,12 @@ describe('editorialWorkflow actions', () => {
         expect(actions[2]).toEqual(
           addDraftEntryMediaFiles([{ id: '1', draft: true, public_path: 'public_path' }]),
         );
-        expect(actions[3]).toEqual(
-          addMediaFilesToLibrary([{ file: { name: 'name' }, id: '1', draft: true }]),
-        );
+        expect(actions[3]).toEqual({
+          type: 'ADD_MEDIA_FILES_TO_LIBRARY',
+          payload: {
+            mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }],
+          },
+        });
         expect(actions[4]).toEqual({
           type: 'UNPUBLISHED_ENTRY_SUCCESS',
           payload: {

@@ -1,10 +1,11 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fromJS, List, Map } from 'immutable';
-import { insertMedia, persistMedia, deleteMedia } from '../mediaLibrary';
+import { insertMedia, persistMedia, deleteMedia, addMediaFilesToLibrary } from '../mediaLibrary';
 
 jest.mock('coreSrc/backend');
 jest.mock('ValueObjects/AssetProxy');
+jest.mock('../waitUntil');
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -302,6 +303,55 @@ describe('mediaLibrary', () => {
 
       return store.dispatch(deleteMedia(file)).then(() => {
         expect(backend.deleteMedia).toHaveBeenCalledTimes(0);
+      });
+    });
+  });
+
+  describe('addMediaFilesToLibrary', () => {
+    it('should not wait if media library is loaded', () => {
+      const store = mockStore({
+        mediaLibrary: Map({
+          isLoading: false,
+        }),
+      });
+
+      const mediaFiles = [{ id: '1' }];
+      store.dispatch(addMediaFilesToLibrary(mediaFiles));
+
+      const actions = store.getActions();
+
+      expect(actions).toHaveLength(1);
+      expect(actions[0]).toEqual({
+        payload: { mediaFiles: [{ id: '1' }] },
+        type: 'ADD_MEDIA_FILES_TO_LIBRARY',
+      });
+    });
+
+    it('should wait if media library is not loaded', () => {
+      const { waitUntil } = require('../waitUntil');
+
+      waitUntil.mockImplementation(payload => ({ type: 'WAIT_UNTIL', ...payload }));
+
+      const store = mockStore({
+        mediaLibrary: Map({}),
+      });
+
+      const mediaFiles = [{ id: '1' }];
+      store.dispatch(addMediaFilesToLibrary(mediaFiles));
+
+      const actions = store.getActions();
+
+      expect(actions).toHaveLength(1);
+      expect(actions[0]).toEqual({
+        type: 'WAIT_UNTIL',
+        predicate: expect.any(Function),
+        run: expect.any(Function),
+      });
+
+      expect(actions[0].predicate({ type: 'MEDIA_LOAD_SUCCESS' })).toBe(true);
+      expect(actions[0].run(store.dispatch)).toEqual({
+        payload: { mediaFiles: [{ id: '1' }] },
+        type: 'ADD_MEDIA_FILES_TO_LIBRARY',
       });
     });
   });

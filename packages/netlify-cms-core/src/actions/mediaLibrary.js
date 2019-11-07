@@ -9,6 +9,7 @@ import { getIntegrationProvider } from 'Integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from 'Lib/urlHelper';
+import { waitUntil } from './waitUntil';
 
 const { notifSend } = notifActions;
 
@@ -369,9 +370,23 @@ export function mediaPersisted(asset, opts = {}) {
 }
 
 export function addMediaFilesToLibrary(mediaFiles) {
-  return {
-    type: ADD_MEDIA_FILES_TO_LIBRARY,
-    payload: { mediaFiles },
+  return (dispatch, getState) => {
+    const state = getState();
+    const action = {
+      type: ADD_MEDIA_FILES_TO_LIBRARY,
+      payload: { mediaFiles },
+    };
+    // add media files to library only after the library finished loading
+    if (state.mediaLibrary.get('isLoading') === false) {
+      dispatch(action);
+    } else {
+      dispatch(
+        waitUntil({
+          predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
+          run: dispatch => dispatch(action),
+        }),
+      );
+    }
   };
 }
 

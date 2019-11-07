@@ -167,6 +167,12 @@ describe('entries', () => {
     it('should retrieve media files with local backup', () => {
       const { currentBackend } = require('coreSrc/backend');
       const { createAssetProxy } = require('ValueObjects/AssetProxy');
+      const { addMediaFilesToLibrary } = require('../mediaLibrary');
+
+      addMediaFilesToLibrary.mockImplementation(mediaFiles => ({
+        type: 'ADD_MEDIA_FILES_TO_LIBRARY',
+        payload: { mediaFiles },
+      }));
 
       const backend = {
         getLocalDraftBackup: jest.fn((...args) => args),
@@ -195,13 +201,17 @@ describe('entries', () => {
 
         expect(createAssetProxy).toHaveBeenCalledTimes(1);
         expect(createAssetProxy).toHaveBeenCalledWith(assets[0].value, assets[0].fileObj);
-        expect(actions).toHaveLength(2);
+        expect(actions).toHaveLength(3);
 
         expect(actions[0]).toEqual({
           type: 'ADD_ASSETS',
           payload: [{ value: 'image.png', fileObj: {} }],
         });
         expect(actions[1]).toEqual({
+          type: 'ADD_MEDIA_FILES_TO_LIBRARY',
+          payload: { mediaFiles: [{ public_path: '/static/media/image.png', draft: true }] },
+        });
+        expect(actions[2]).toEqual({
           type: 'DRAFT_LOCAL_BACKUP_RETRIEVED',
           payload: { entry, mediaFiles },
         });
