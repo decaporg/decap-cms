@@ -19,7 +19,7 @@ const replace404WithEmptyArray = err => {
     console.log('This 404 was expected and handled appropriately.');
     return [];
   } else {
-    Promise.reject(err);
+    return Promise.reject(err);
   }
 };
 
