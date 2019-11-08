@@ -65,7 +65,7 @@ const selectors = {
   [FILES]: {
     fileForEntry(collection, slug) {
       const files = collection.get('files');
-      return files.filter(f => f.get('name') === slug).get(0);
+      return files && files.filter(f => f.get('name') === slug).get(0);
     },
     fields(collection, slug) {
       const file = this.fileForEntry(collection, slug);
@@ -107,7 +107,7 @@ export const selectFields = (collection, slug) =>
 export const selectFolderEntryExtension = collection =>
   selectors[FOLDER].entryExtension(collection);
 export const selectFileEntryLabel = (collection, slug) =>
-  collection.get('files') && selectors[FILES].entryLabel(collection, slug);
+  selectors[FILES].entryLabel(collection, slug);
 export const selectEntryPath = (collection, slug) =>
   selectors[collection.get('type')].entryPath(collection, slug);
 export const selectEntrySlug = (collection, path) =>
