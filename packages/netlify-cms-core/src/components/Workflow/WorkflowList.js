@@ -226,7 +226,7 @@ class WorkflowList extends React.Component {
                   <div>
                     <WorkflowCard
                       collectionName={collection}
-                      title={entry.getIn(['data', 'title'])}
+                      title={entry.get('label') || entry.getIn(['data', 'title'])}
                       authorLastChange={entry.getIn(['metaData', 'user'])}
                       body={entry.getIn(['data', 'body'])}
                       isModification={isModification}
