@@ -113,7 +113,7 @@ const EntryCard = ({
       <ListCard>
         <ListCardLink to={path}>
           {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-          <ListCardTitle>{title}</ListCardTitle>
+          <ListCardTitle dangerouslySetInnerHTML={{ __html: title }} />
         </ListCardLink>
       </ListCard>
     );
@@ -125,7 +125,7 @@ const EntryCard = ({
         <GridCardLink to={path}>
           <CardBody hasImage={image}>
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-            <CardHeading>{title}</CardHeading>
+            <CardHeading dangerouslySetInnerHTML={{ __html: title }} />
           </CardBody>
           {image ? <CardImage url={image} /> : null}
         </GridCardLink>
