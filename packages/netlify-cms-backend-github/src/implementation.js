@@ -107,7 +107,14 @@ export default class GitHub {
         headers: { Authorization: `token ${token}` },
       })
         .then(() => true)
-        .catch(err => (err && err.status === 404 ? false : Promise.reject(err)));
+        .catch(err => {
+          if (err && err.status === 404) {
+            console.log('This 404 was expected and handled appropriately.');
+            return false;
+          } else {
+            return Promise.reject(err);
+          }
+        });
       // wait between polls
       if (!repoExists) {
         await new Promise(resolve => setTimeout(resolve, pollDelay));

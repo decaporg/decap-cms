@@ -14,7 +14,14 @@ import {
 
 const CMS_BRANCH_PREFIX = 'cms';
 
-const replace404WithEmptyArray = err => (err && err.status === 404 ? [] : Promise.reject(err));
+const replace404WithEmptyArray = err => {
+  if (err && err.status === 404) {
+    console.log('This 404 was expected and handled appropriately.');
+    return [];
+  } else {
+    return Promise.reject(err);
+  }
+};
 
 export default class API {
   constructor(config) {

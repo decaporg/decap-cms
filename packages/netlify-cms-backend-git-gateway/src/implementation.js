@@ -256,7 +256,14 @@ export default class GitGateway {
       .readFile('.gitattributes')
       .then(getLargeMediaPatternsFromGitAttributesFile)
       .then(patterns => ({ patterns }))
-      .catch(err => (err.message.includes('404') ? [] : { err }));
+      .catch(err => {
+        if (err.message.includes('404')) {
+          console.log('This 404 was expected and handled appropriately.');
+          return [];
+        } else {
+          return { err };
+        }
+      });
 
     return Promise.all([netlifyLargeMediaEnabledPromise, lfsPatternsPromise]).then(
       ([{ enabled: maybeEnabled }, { patterns, err: patternsErr }]) => {
