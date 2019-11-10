@@ -41,7 +41,7 @@ export default class API extends GithubAPI {
       });
   }
 
-  getRequestHeaders(headers = {}) {
+  requestHeaders(headers = {}) {
     return this.tokenPromise().then(jwtToken => {
       const baseHeader = {
         Authorization: `Bearer ${jwtToken}`,
@@ -53,36 +53,12 @@ export default class API extends GithubAPI {
     });
   }
 
-  urlFor(path, options) {
-    const cacheBuster = new Date().getTime();
-    const params = [`ts=${cacheBuster}`];
-    if (options.params) {
-      for (const key in options.params) {
-        params.push(`${key}=${encodeURIComponent(options.params[key])}`);
-      }
-    }
-    if (params.length) {
-      path += `?${params.join('&')}`;
-    }
-    return this.api_root + path;
+  handleRequestError(error, responseStatus) {
+    throw new APIError(error.message || error.msg, responseStatus, 'Git Gateway');
   }
 
   user() {
     return Promise.resolve(this.commitAuthor);
-  }
-
-  request(path, options = {}, parseResponse = response => this.parseResponse(response)) {
-    const url = this.urlFor(path, options);
-    let responseStatus;
-    return this.getRequestHeaders(options.headers || {})
-      .then(headers => fetch(url, { ...options, headers }))
-      .then(response => {
-        responseStatus = response.status;
-        return parseResponse(response);
-      })
-      .catch(error => {
-        throw new APIError(error.message || error.msg, responseStatus, 'Git Gateway');
-      });
   }
 
   commit(message, changeTree) {

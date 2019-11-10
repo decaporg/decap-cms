@@ -36,4 +36,74 @@ describe('github API', () => {
         .then(() => prBaseBranch),
     ).resolves.toEqual('gh-pages');
   });
+
+  describe('request', () => {
+    beforeEach(() => {
+      const fetch = jest.fn();
+      global.fetch = fetch;
+      global.Date = jest.fn(() => ({ getTime: () => 1000 }));
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('should fetch url with authorization header', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+
+      fetch.mockResolvedValue({
+        text: jest.fn().mockResolvedValue('some response'),
+        ok: true,
+        status: 200,
+        headers: { get: () => '' },
+      });
+      const result = await api.request('/some-path');
+      expect(result).toEqual('some response');
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path?ts=1000', {
+        headers: { Authorization: 'token token', 'Content-Type': 'application/json' },
+      });
+    });
+
+    it('should throw error on not ok response', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+
+      fetch.mockResolvedValue({
+        text: jest.fn().mockResolvedValue({ message: 'some error' }),
+        ok: false,
+        status: 404,
+        headers: { get: () => '' },
+      });
+
+      await expect(api.request('some-path')).rejects.toThrow(
+        expect.objectContaining({
+          message: 'some error',
+          name: 'API_ERROR',
+          status: 404,
+          api: 'GitHub',
+        }),
+      );
+    });
+
+    it('should allow overriding requestHeaders to return a promise ', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+
+      api.requestHeaders = jest
+        .fn()
+        .mockResolvedValue({ Authorization: 'promise-token', 'Content-Type': 'application/json' });
+
+      fetch.mockResolvedValue({
+        text: jest.fn().mockResolvedValue('some response'),
+        ok: true,
+        status: 200,
+        headers: { get: () => '' },
+      });
+      const result = await api.request('/some-path');
+      expect(result).toEqual('some response');
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path?ts=1000', {
+        headers: { Authorization: 'promise-token', 'Content-Type': 'application/json' },
+      });
+    });
+  });
 });

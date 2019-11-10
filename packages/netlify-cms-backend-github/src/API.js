@@ -109,8 +109,13 @@ export default class API {
     return textPromise;
   }
 
-  request(path, options = {}, parseResponse = response => this.parseResponse(response)) {
-    const headers = this.requestHeaders(options.headers || {});
+  handleRequestError(error, responseStatus) {
+    throw new APIError(error.message, responseStatus, 'GitHub');
+  }
+
+  async request(path, options = {}, parseResponse = response => this.parseResponse(response)) {
+    // overriding classes can return a promise from requestHeaders
+    const headers = await this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     let responseStatus;
     return fetch(url, { ...options, headers })
@@ -118,13 +123,12 @@ export default class API {
         responseStatus = response.status;
         return parseResponse(response);
       })
-      .catch(error => {
-        throw new APIError(error.message, responseStatus, 'GitHub');
-      });
+      .catch(error => this.handleRequestError(error, responseStatus));
   }
 
   async requestAllPages(url, options = {}) {
-    const headers = this.requestHeaders(options.headers || {});
+    // overriding classes can return a promise from requestHeaders
+    const headers = await this.requestHeaders(options.headers || {});
     const processedURL = this.urlFor(url, options);
     const allResponses = await getAllResponses(processedURL, { ...options, headers });
     const pages = await Promise.all(allResponses.map(res => this.parseResponse(res)));
