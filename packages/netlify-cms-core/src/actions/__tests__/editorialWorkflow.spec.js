@@ -1,5 +1,6 @@
+import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import * as actions from '../editorialWorkflow';
-import { addDraftEntryMediaFiles } from '../entries';
+import { setDraftEntryMediaFiles } from '../entries';
 import { addAssets } from '../media';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -13,6 +14,21 @@ jest.mock('Reducers', () => {
 });
 jest.mock('ValueObjects/AssetProxy');
 jest.mock('netlify-cms-lib-util');
+jest.mock('uuid/v4', () => {
+  return jest.fn().mockReturnValue('000000000000000000000');
+});
+jest.mock('redux-notifications', () => {
+  const actual = jest.requireActual('redux-notifications');
+  return {
+    ...actual,
+    actions: {
+      notifSend: jest.fn().mockImplementation(payload => ({
+        type: 'NOTIF_SEND',
+        ...payload,
+      })),
+    },
+  };
+});
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -61,7 +77,15 @@ describe('editorialWorkflow actions', () => {
         });
         expect(actions[1]).toEqual(addAssets([assetProxy]));
         expect(actions[2]).toEqual(
-          addDraftEntryMediaFiles([{ id: '1', draft: true, public_path: 'public_path' }]),
+          setDraftEntryMediaFiles([
+            {
+              file: { name: 'name' },
+              name: 'name',
+              id: '1',
+              draft: true,
+              public_path: 'public_path',
+            },
+          ]),
         );
         expect(actions[3]).toEqual({
           type: 'ADD_MEDIA_FILES_TO_LIBRARY',
@@ -75,6 +99,133 @@ describe('editorialWorkflow actions', () => {
             collection: 'posts',
             entry,
           },
+        });
+      });
+    });
+  });
+
+  describe('publishUnpublishedEntry', () => {
+    it('should publish unpublished entry and report success', () => {
+      const { currentBackend } = require('coreSrc/backend');
+
+      const mediaFiles = [{ file: { name: 'name' }, id: '1' }];
+      const entry = { mediaFiles };
+      const backend = {
+        publishUnpublishedEntry: jest.fn().mockResolvedValue(),
+        getEntry: jest.fn().mockResolvedValue(entry),
+      };
+
+      const store = mockStore({
+        config: fromJS({}),
+        entryDraft: fromJS({
+          mediaFiles,
+        }),
+        mediaLibrary: fromJS({
+          isLoading: false,
+        }),
+        collections: fromJS({
+          posts: { name: 'posts' },
+        }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+
+      const slug = 'slug';
+
+      return store.dispatch(actions.publishUnpublishedEntry('posts', slug)).then(() => {
+        const actions = store.getActions();
+        expect(actions).toHaveLength(7);
+        expect(actions[0]).toEqual({
+          type: 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST',
+          payload: {
+            collection: 'posts',
+            slug,
+          },
+          optimist: { type: BEGIN, id: '000000000000000000000' },
+        });
+        expect(actions[1]).toEqual({
+          type: 'NOTIF_SEND',
+          message: { key: 'ui.toast.entryPublished' },
+          kind: 'success',
+          dismissAfter: 4000,
+        });
+        expect(actions[2]).toEqual({
+          type: 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS',
+          payload: {
+            collection: 'posts',
+            slug,
+          },
+          optimist: { type: COMMIT, id: '000000000000000000000' },
+        });
+        expect(actions[3]).toEqual({
+          type: 'ENTRY_REQUEST',
+          payload: {
+            slug,
+            collection: 'posts',
+          },
+        });
+        expect(actions[4]).toEqual({
+          type: 'ADD_MEDIA_FILES_TO_LIBRARY',
+          payload: {
+            mediaFiles: [{ file: { name: 'name' }, id: '1', draft: false }],
+          },
+        });
+        expect(actions[5]).toEqual({
+          type: 'CLEAR_DRAFT_ENTRY_MEDIA_FILES',
+        });
+        expect(actions[6]).toEqual({
+          type: 'ENTRY_SUCCESS',
+          payload: {
+            entry,
+            collection: 'posts',
+          },
+        });
+      });
+    });
+
+    it('should publish unpublished entry and report error', () => {
+      const { currentBackend } = require('coreSrc/backend');
+
+      const error = new Error('failed to publish entry');
+      const backend = {
+        publishUnpublishedEntry: jest.fn().mockRejectedValue(error),
+      };
+
+      const store = mockStore({
+        config: fromJS({}),
+        collections: fromJS({
+          posts: { name: 'posts' },
+        }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+
+      const slug = 'slug';
+
+      return store.dispatch(actions.publishUnpublishedEntry('posts', slug)).then(() => {
+        const actions = store.getActions();
+        expect(actions).toHaveLength(3);
+        expect(actions[0]).toEqual({
+          type: 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST',
+          payload: {
+            collection: 'posts',
+            slug,
+          },
+          optimist: { type: BEGIN, id: '000000000000000000000' },
+        });
+        expect(actions[1]).toEqual({
+          type: 'NOTIF_SEND',
+          message: { key: 'ui.toast.onFailToPublishEntry', details: error },
+          kind: 'danger',
+          dismissAfter: 8000,
+        });
+        expect(actions[2]).toEqual({
+          type: 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE',
+          payload: {
+            collection: 'posts',
+            slug,
+          },
+          optimist: { type: REVERT, id: '000000000000000000000' },
         });
       });
     });

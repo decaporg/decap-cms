@@ -7,7 +7,12 @@ import { selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry, getMediaAssets, addDraftEntryMediaFiles } from './entries';
+import {
+  loadEntry,
+  getMediaAssets,
+  setDraftEntryMediaFiles,
+  clearDraftEntryMediaFiles,
+} from './entries';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
 import { addAssets } from './media';
 import { addMediaFilesToLibrary } from './mediaLibrary';
@@ -248,11 +253,11 @@ export function loadUnpublishedEntry(collection, slug) {
       );
       dispatch(addAssets(assetProxies));
       dispatch(
-        addDraftEntryMediaFiles(
+        setDraftEntryMediaFiles(
           assetProxies.map((asset, index) => ({
-            id: mediaFiles[index].id,
+            ...asset,
+            ...mediaFiles[index],
             draft: true,
-            public_path: asset.public_path,
           })),
         ),
       );
@@ -492,8 +497,13 @@ export function publishUnpublishedEntry(collection, slug) {
             dismissAfter: 4000,
           }),
         );
+
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
         dispatch(loadEntry(collections.get(collection), slug));
+
+        const mediaFiles = state.entryDraft.get('mediaFiles').toJS();
+        dispatch(addMediaFilesToLibrary(mediaFiles.map(file => ({ ...file, draft: false }))));
+        dispatch(clearDraftEntryMediaFiles());
       })
       .catch(error => {
         dispatch(

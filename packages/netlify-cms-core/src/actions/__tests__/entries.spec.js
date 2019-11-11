@@ -5,6 +5,7 @@ import {
   persistLocalBackup,
   getMediaAssets,
   discardDraft,
+  loadLocalBackup,
 } from '../entries';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -201,20 +202,43 @@ describe('entries', () => {
 
         expect(createAssetProxy).toHaveBeenCalledTimes(1);
         expect(createAssetProxy).toHaveBeenCalledWith(assets[0].value, assets[0].fileObj);
-        expect(actions).toHaveLength(3);
+        expect(actions).toHaveLength(2);
 
         expect(actions[0]).toEqual({
           type: 'ADD_ASSETS',
           payload: [{ value: 'image.png', fileObj: {} }],
         });
         expect(actions[1]).toEqual({
-          type: 'ADD_MEDIA_FILES_TO_LIBRARY',
-          payload: { mediaFiles: [{ public_path: '/static/media/image.png', draft: true }] },
-        });
-        expect(actions[2]).toEqual({
           type: 'DRAFT_LOCAL_BACKUP_RETRIEVED',
           payload: { entry, mediaFiles },
         });
+      });
+    });
+  });
+
+  describe('loadLocalBackup', () => {
+    it('should add backup media files to media library', () => {
+      const store = mockStore({
+        config: Map(),
+        entryDraft: Map({
+          mediaFiles: List([{ path: 'static/media.image.png' }]),
+        }),
+        mediaLibrary: Map({
+          isLoading: false,
+        }),
+      });
+
+      store.dispatch(loadLocalBackup());
+
+      const actions = store.getActions();
+
+      expect(actions).toHaveLength(2);
+      expect(actions[0]).toEqual({
+        type: 'DRAFT_CREATE_FROM_LOCAL_BACKUP',
+      });
+      expect(actions[1]).toEqual({
+        type: 'ADD_MEDIA_FILES_TO_LIBRARY',
+        payload: { mediaFiles: [{ path: 'static/media.image.png', draft: true }] },
       });
     });
   });

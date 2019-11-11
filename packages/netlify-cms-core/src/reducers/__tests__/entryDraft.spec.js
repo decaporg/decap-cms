@@ -148,11 +148,11 @@ describe('entryDraft reducer', () => {
     });
   });
 
-  describe('ADD_DRAFT_ENTRY_MEDIA_FILES', () => {
+  describe('SET_DRAFT_ENTRY_MEDIA_FILES', () => {
     it('should overwrite an existing media file', () => {
       const actualState = reducer(
         initialState,
-        actions.addDraftEntryMediaFiles([{ id: '1' }, { id: '2' }]),
+        actions.setDraftEntryMediaFiles([{ id: '1' }, { id: '2' }]),
       );
 
       expect(actualState.toJS()).toEqual({
@@ -169,10 +169,9 @@ describe('entryDraft reducer', () => {
     it('should create draft from local backup', () => {
       const localBackup = Map({ entry: fromJS(entry), mediaFiles: List([{ id: '1' }]) });
 
-      const actualState = reducer(
-        initialState.set('localBackup', localBackup),
-        actions.loadLocalBackup(),
-      );
+      const actualState = reducer(initialState.set('localBackup', localBackup), {
+        type: actions.DRAFT_CREATE_FROM_LOCAL_BACKUP,
+      });
       expect(actualState.toJS()).toEqual({
         entry: {
           ...entry,

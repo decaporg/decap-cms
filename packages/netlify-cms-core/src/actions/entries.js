@@ -46,8 +46,9 @@ export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
 export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
 
 export const ADD_DRAFT_ENTRY_MEDIA_FILE = 'ADD_DRAFT_ENTRY_MEDIA_FILE';
-export const ADD_DRAFT_ENTRY_MEDIA_FILES = 'ADD_DRAFT_ENTRY_MEDIA_FILES';
+export const SET_DRAFT_ENTRY_MEDIA_FILES = 'SET_DRAFT_ENTRY_MEDIA_FILES';
 export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
+export const CLEAR_DRAFT_ENTRY_MEDIA_FILES = 'CLEAR_DRAFT_ENTRY_MEDIA_FILES';
 
 /*
  * Simple Action Creators (Internal)
@@ -246,8 +247,19 @@ export function localBackupRetrieved(entry, mediaFiles) {
 }
 
 export function loadLocalBackup() {
-  return {
-    type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
+  return (dispatch, getState) => {
+    dispatch({
+      type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
+    });
+
+    // only add media files to the library after loading from backup was approved
+    const state = getState();
+    const mediaFiles = state.entryDraft.get('mediaFiles').toJS();
+    const filesToAdd = mediaFiles.map(file => ({
+      ...file,
+      draft: true,
+    }));
+    dispatch(addMediaFilesToLibrary(filesToAdd));
   };
 }
 
@@ -255,12 +267,16 @@ export function addDraftEntryMediaFile(file) {
   return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
 
-export function addDraftEntryMediaFiles(files) {
-  return { type: ADD_DRAFT_ENTRY_MEDIA_FILES, payload: files };
+export function setDraftEntryMediaFiles(files) {
+  return { type: SET_DRAFT_ENTRY_MEDIA_FILES, payload: files };
 }
 
 export function removeDraftEntryMediaFile(file) {
   return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: file };
+}
+
+export function clearDraftEntryMediaFiles() {
+  return { type: CLEAR_DRAFT_ENTRY_MEDIA_FILES };
 }
 
 export function persistLocalBackup(entry, collection, mediaFiles) {
@@ -282,17 +298,11 @@ export function retrieveLocalBackup(collection, slug) {
     const { entry, mediaFiles, assets } = await backend.getLocalDraftBackup(collection, slug);
 
     if (entry) {
-      // load any pending related media files and assets
+      // load assets from backup
       const assetProxies = await Promise.all(
         assets.map(asset => createAssetProxy(asset.value, asset.fileObj)),
       );
       dispatch(addAssets(assetProxies));
-
-      const filesToAdd = mediaFiles.map(file => ({
-        ...file,
-        draft: true,
-      }));
-      dispatch(addMediaFilesToLibrary(filesToAdd));
 
       return dispatch(localBackupRetrieved(entry, mediaFiles));
     }

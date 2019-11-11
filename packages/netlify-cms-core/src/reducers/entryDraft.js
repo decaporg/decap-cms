@@ -13,8 +13,9 @@ import {
   ENTRY_PERSIST_FAILURE,
   ENTRY_DELETE_SUCCESS,
   ADD_DRAFT_ENTRY_MEDIA_FILE,
-  ADD_DRAFT_ENTRY_MEDIA_FILES,
+  SET_DRAFT_ENTRY_MEDIA_FILES,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
+  CLEAR_DRAFT_ENTRY_MEDIA_FILES,
 } from 'Actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
@@ -130,17 +131,8 @@ const entryDraftReducer = (state = Map(), action) => {
       }
       return state;
 
-    case ADD_DRAFT_ENTRY_MEDIA_FILES: {
-      let newState = state;
-      if (!newState.has('mediaFiles')) {
-        newState = newState.set('mediaFiles', List());
-      }
-
-      action.payload.forEach(file => {
-        newState = newState.update('mediaFiles', list => list.push({ ...file }));
-      });
-
-      return newState;
+    case SET_DRAFT_ENTRY_MEDIA_FILES: {
+      return state.set('mediaFiles', List(action.payload));
     }
 
     case REMOVE_DRAFT_ENTRY_MEDIA_FILE:
@@ -150,6 +142,10 @@ const entryDraftReducer = (state = Map(), action) => {
         );
       }
       return state;
+
+    case CLEAR_DRAFT_ENTRY_MEDIA_FILES:
+      return state.set('mediaFiles', List());
+
     default:
       return state;
   }
