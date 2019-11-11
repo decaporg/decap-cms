@@ -8,7 +8,7 @@ const mockStore = configureMockStore(middlewares);
 
 describe('mediaLibrary', () => {
   describe('insertMedia', () => {
-    it('test public URL is returned directly', () => {
+    it('should return url when input is an object with url property', () => {
       const store = mockStore({});
       store.dispatch(insertMedia({ url: '//localhost/foo.png' }));
       expect(store.getActions()[0]).toEqual({
@@ -17,7 +17,7 @@ describe('mediaLibrary', () => {
       });
     });
 
-    it('Test relative path resolution', () => {
+    it('should resolve to relative path when media_folder_relative is true and object with name property is given', () => {
       const store = mockStore({
         config: fromJS({
           media_folder_relative: true,
@@ -41,8 +41,7 @@ describe('mediaLibrary', () => {
       });
     });
 
-    // media_folder_relative will be used even if public_folder is specified
-    it('Test relative path resolution, with public folder specified', () => {
+    it('should resolve to relative path and ignore public_folder when media_folder_relative is true', () => {
       const store = mockStore({
         config: fromJS({
           media_folder_relative: true,
@@ -67,7 +66,7 @@ describe('mediaLibrary', () => {
       });
     });
 
-    it('Test public_folder resolution', () => {
+    it('should not resolve to relative path when media_folder_relative is not true', () => {
       const store = mockStore({
         config: fromJS({
           public_folder: '/static/assets/media',
@@ -80,14 +79,34 @@ describe('mediaLibrary', () => {
       });
     });
 
-    it('Test incorrect usage', () => {
+    it('should return mediaPath as string when string is given', () => {
+      const store = mockStore({});
+      store.dispatch(insertMedia('foo.png'));
+      expect(store.getActions()[0]).toEqual({
+        type: 'MEDIA_INSERT',
+        payload: { mediaPath: 'foo.png' },
+      });
+    });
+
+    it('should return mediaPath as array of strings when array of strings is given', () => {
+      const store = mockStore({});
+      store.dispatch(insertMedia(['foo.png']));
+      expect(store.getActions()[0]).toEqual({
+        type: 'MEDIA_INSERT',
+        payload: { mediaPath: ['foo.png'] },
+      });
+    });
+
+    it('should throw an error when not a object with url or name property, a string or a string array', () => {
       const store = mockStore();
 
+      expect.assertions(1);
       try {
         store.dispatch(insertMedia({ foo: 'foo.png' }));
-        throw new Error('Expected Exception');
       } catch (e) {
-        expect(e.message).toEqual('Incorrect usage, expected {url} or {file}');
+        expect(e.message).toEqual(
+          'Incorrect usage, expected {url}, {file}, string or string array',
+        );
       }
     });
   });

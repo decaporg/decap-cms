@@ -104,8 +104,10 @@ export function insertMedia(media) {
         const publicFolder = config.get('public_folder');
         mediaPath = resolveMediaFilename(media.name, { publicFolder });
       }
+    } else if (Array.isArray(media) || typeof media === 'string') {
+      mediaPath = media;
     } else {
-      throw new Error('Incorrect usage, expected {url} or {file}');
+      throw new Error('Incorrect usage, expected {url}, {file}, string or string array');
     }
     dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
   };
