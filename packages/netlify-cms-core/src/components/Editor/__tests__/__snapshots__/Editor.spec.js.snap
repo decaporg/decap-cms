@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Editor should render editor interface when entry is not fetching 1`] = `
+<DocumentFragment>
+  <mock-editor-interface
+    collection="Map { \\"name\\": \\"posts\\" }"
+    deploypreview="Map {}"
+    entry="Map { \\"slug\\": \\"slug\\" }"
+    fields="List []"
+    isnewentry="true"
+    showdelete="true"
+    user="Map {}"
+  />
+</DocumentFragment>
+`;
+
+exports[`Editor should render loader when entry is fetching 1`] = `
+<DocumentFragment>
+  <mock-loader
+    active="true"
+  >
+    editor.editor.loadingEntry
+  </mock-loader>
+</DocumentFragment>
+`;
+
+exports[`Editor should render loader when entryDraft entry is undefined 1`] = `
+<DocumentFragment>
+  <mock-loader
+    active="true"
+  >
+    editor.editor.loadingEntry
+  </mock-loader>
+</DocumentFragment>
+`;
+
+exports[`Editor should render loader when entryDraft is null 1`] = `
+<DocumentFragment>
+  <mock-loader
+    active="true"
+  >
+    editor.editor.loadingEntry
+  </mock-loader>
+</DocumentFragment>
+`;

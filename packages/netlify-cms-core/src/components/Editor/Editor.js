@@ -41,7 +41,7 @@ const navigateToNewEntry = collectionName => navigateCollection(`${collectionNam
 const navigateToEntry = (collectionName, slug) =>
   navigateCollection(`${collectionName}/entries/${slug}`);
 
-class Editor extends React.Component {
+export class Editor extends React.Component {
   static propTypes = {
     boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
@@ -79,10 +79,10 @@ class Editor extends React.Component {
     }),
     hasChanged: PropTypes.bool,
     t: PropTypes.func.isRequired,
-    retrieveLocalBackup: PropTypes.func,
+    retrieveLocalBackup: PropTypes.func.isRequired,
     localBackup: ImmutablePropTypes.map,
     loadLocalBackup: PropTypes.func,
-    persistLocalBackup: PropTypes.func,
+    persistLocalBackup: PropTypes.func.isRequired,
     deleteLocalBackup: PropTypes.func,
   };
 
