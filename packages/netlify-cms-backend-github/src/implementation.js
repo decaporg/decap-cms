@@ -167,7 +167,9 @@ export default class GitHub {
       // The parent and source objects are present when the repository is a fork.
       // parent is the repository this repository was forked from, source is the ultimate source for the network.
       const forkExists =
-        repo.fork === true && repo.parent && repo.parent.full_name === this.originRepo;
+        repo.fork === true &&
+        repo.parent &&
+        repo.parent.full_name.toLowerCase() === this.originRepo.toLowerCase();
       return forkExists;
     } catch {
       return false;
