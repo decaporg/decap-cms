@@ -24,12 +24,18 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - name: npm install, unit test and build
         run: |
           node --version
           npm --version
           yarn --version
-          yarn
+          yarn --frozen-lockfile
           yarn bootstrap
           yarn test:ci
           yarn build:demo
@@ -57,6 +63,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - uses: actions/download-artifact@master
         with:
           name: dev-test-website-node-10.x
@@ -66,13 +78,13 @@ jobs:
           node --version
           npm --version
           yarn --version
-          yarn
+          yarn --frozen-lockfile
           yarn test:e2e:run-ci
         env:
           CI: true
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
-  
+
   # forked workflow (no acceess to build secrets)
   e2e-no-cypress-record:
     needs: build
@@ -85,6 +97,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - uses: actions/download-artifact@master
         with:
           name: dev-test-website-node-10.x
@@ -94,7 +112,7 @@ jobs:
           node --version
           npm --version
           yarn --version
-          yarn
+          yarn --frozen-lockfile
           yarn test:e2e:run
         env:
           CI: true
