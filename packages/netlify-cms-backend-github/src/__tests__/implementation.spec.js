@@ -20,6 +20,13 @@ describe('github backend implementation', () => {
     }),
   };
 
+  const createObjectURL = jest.fn();
+  global.URL = {
+    createObjectURL,
+  };
+
+  createObjectURL.mockReturnValue('displayURL');
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -71,17 +78,6 @@ describe('github backend implementation', () => {
       expect.assertions(1);
       await expect(gitHubImplementation.forkExists({ token: 'token' })).resolves.toBe(false);
     });
-  });
-
-  const createObjectURL = jest.fn();
-  global.URL = {
-    createObjectURL,
-  };
-
-  createObjectURL.mockReturnValue('displayURL');
-
-  beforeEach(() => {
-    jest.clearAllMocks();
   });
 
   describe('persistMedia', () => {
