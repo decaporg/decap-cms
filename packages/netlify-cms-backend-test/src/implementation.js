@@ -227,7 +227,7 @@ export default class TestBackend {
     const { name, size } = fileObj;
     const objectUrl = attempt(window.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
-    const normalizedAsset = { id: uuid(), name, size, path: url, url };
+    const normalizedAsset = { id: uuid(), name, size, path: mediaFile.path, url };
 
     return normalizedAsset;
   }
