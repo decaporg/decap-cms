@@ -865,12 +865,14 @@ export default class API {
     );
   }
 
-  publishUnpublishedEntry(collectionName, slug) {
+  async publishUnpublishedEntry(collectionName, slug) {
     const contentKey = this.generateContentKey(collectionName, slug);
     const branchName = this.generateBranchName(contentKey);
-    return this.retrieveMetadata(contentKey)
-      .then(metadata => this.mergePR(metadata.pr, metadata.objects))
-      .then(() => this.deleteBranch(branchName));
+    const metadata = await this.retrieveMetadata(contentKey);
+    await this.mergePR(metadata.pr, metadata.objects);
+    await this.deleteBranch(branchName);
+
+    return metadata;
   }
 
   createRef(type, name, sha) {

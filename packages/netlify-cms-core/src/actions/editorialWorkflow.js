@@ -489,7 +489,7 @@ export function publishUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
       .publishUnpublishedEntry(collection, slug)
-      .then(() => {
+      .then(({ mediaFiles }) => {
         dispatch(
           notifSend({
             message: { key: 'ui.toast.entryPublished' },
@@ -501,7 +501,6 @@ export function publishUnpublishedEntry(collection, slug) {
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
         dispatch(loadEntry(collections.get(collection), slug));
 
-        const mediaFiles = state.entryDraft.get('mediaFiles').toJS();
         dispatch(addMediaFilesToLibrary(mediaFiles.map(file => ({ ...file, draft: false }))));
         dispatch(clearDraftEntryMediaFiles());
       })

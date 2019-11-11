@@ -111,15 +111,12 @@ describe('editorialWorkflow actions', () => {
       const mediaFiles = [{ file: { name: 'name' }, id: '1' }];
       const entry = { mediaFiles };
       const backend = {
-        publishUnpublishedEntry: jest.fn().mockResolvedValue(),
+        publishUnpublishedEntry: jest.fn().mockResolvedValue({ mediaFiles }),
         getEntry: jest.fn().mockResolvedValue(entry),
       };
 
       const store = mockStore({
         config: fromJS({}),
-        entryDraft: fromJS({
-          mediaFiles,
-        }),
         mediaLibrary: fromJS({
           isLoading: false,
         }),

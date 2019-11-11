@@ -205,7 +205,7 @@ export default class TestBackend {
     return Promise.resolve();
   }
 
-  publishUnpublishedEntry(collection, slug) {
+  async publishUnpublishedEntry(collection, slug) {
     const unpubStore = window.repoFilesUnpublished;
     const unpubEntryIndex = unpubStore.findIndex(
       e => e.metaData.collection === collection && e.slug === slug,
@@ -213,7 +213,9 @@ export default class TestBackend {
     const unpubEntry = unpubStore[unpubEntryIndex];
     const entry = { raw: unpubEntry.data, slug: unpubEntry.slug, path: unpubEntry.file.path };
     unpubStore.splice(unpubEntryIndex, 1);
-    return this.persistEntry(entry, unpubEntry.mediaFiles);
+
+    await this.persistEntry(entry, unpubEntry.mediaFiles);
+    return { mediaFiles: unpubEntry.mediaFiles };
   }
 
   getMedia() {

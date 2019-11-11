@@ -485,9 +485,10 @@ export default class GitHub {
 
   publishUnpublishedEntry(collection, slug) {
     // publishUnpublishedEntry is a transactional operation
-    return this.runWithLock(
-      () => this.api.publishUnpublishedEntry(collection, slug),
-      'Failed to acquire publish entry lock',
-    );
+    return this.runWithLock(async () => {
+      const metaData = await this.api.publishUnpublishedEntry(collection, slug);
+      const mediaFiles = await this.getMediaFiles({ metaData });
+      return { mediaFiles };
+    }, 'Failed to acquire publish entry lock');
   }
 }
