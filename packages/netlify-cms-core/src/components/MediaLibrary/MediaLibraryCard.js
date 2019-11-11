@@ -27,6 +27,7 @@ const CardImageWrapper = styled.div`
   ${effects.checkerboard};
   ${shadows.inset};
   border-bottom: solid ${lengths.borderWidth} ${colors.textFieldBorder};
+  position: relative;
 `;
 
 const CardImage = styled.img`
@@ -87,8 +88,12 @@ class MediaLibraryCard extends React.Component {
         isPrivate={isPrivate}
       >
         <CardImageWrapper>
-          {isDraft ? <DraftText>{draftText}</DraftText> : null}
-          {url && isViewableImage ? <CardImage src={url} /> : <CardFileIcon>{type}</CardFileIcon>}
+          {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
+          {url && isViewableImage ? (
+            <CardImage src={url} />
+          ) : (
+            <CardFileIcon data-testid="card-file-icon">{type}</CardFileIcon>
+          )}
         </CardImageWrapper>
         <CardText>{text}</CardText>
       </Card>
