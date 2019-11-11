@@ -797,7 +797,7 @@ export default class API {
    * Get the list of commits for a given pull request.
    */
   getPullRequestCommits(prNumber) {
-    return this.request(`${this.originRepoURL}/pulls/${prNumber}/commits`);
+    return this.requestAllPages(`${this.originRepoURL}/pulls/${prNumber}/commits`);
   }
 
   /**
