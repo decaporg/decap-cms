@@ -60,6 +60,14 @@ Removes all of the CMS package `dist` directories.
 yarn clean
 ```
 
+### reset
+
+Runs the `clean` script and removes all the `node_modules` from the CMS packages.
+
+```sh
+yarn reset
+```
+
 ### build
 
 Runs the `clean` script and builds the CMS packages.
