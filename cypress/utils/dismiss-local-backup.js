@@ -1,4 +1,4 @@
-import { getPhrases } from 'Constants/defaultPhrases';
+import { en } from '../../packages/netlify-cms-locales/src';
 
 // Prevents unsaved changes in dev local storage from being used
 Cypress.on('window:confirm', message => {
@@ -6,7 +6,7 @@ Cypress.on('window:confirm', message => {
     editor: {
       editor: { confirmLoadBackup },
     },
-  } = getPhrases();
+  } = en;
 
   switch (message) {
     case confirmLoadBackup:
