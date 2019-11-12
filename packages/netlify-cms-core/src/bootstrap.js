@@ -1,12 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import history from 'Routing/history';
 import store from 'ReduxStore';
 import { mergeConfig } from 'Actions/config';
-import { getPhrases } from 'Constants/defaultPhrases';
+import { getPhrases } from 'Lib/phrases';
+import { selectLocale } from 'Selectors/config';
 import { I18n } from 'react-polyglot';
 import { GlobalStyles } from 'netlify-cms-ui-default';
 import { ErrorBoundary } from 'UI';
@@ -16,6 +17,24 @@ import 'coreSrc/mediaLibrary';
 import 'what-input';
 
 const ROOT_ID = 'nc-root';
+
+const TranslatedApp = ({ locale }) => {
+  return (
+    <I18n locale={locale} messages={getPhrases(locale)}>
+      <ErrorBoundary showBackup>
+        <ConnectedRouter history={history}>
+          <Route component={App} />
+        </ConnectedRouter>
+      </ErrorBoundary>
+    </I18n>
+  );
+};
+
+const mapDispatchToProps = state => {
+  return { locale: selectLocale(state.config) };
+};
+
+const ConnectedTranslatedApp = connect(mapDispatchToProps)(TranslatedApp);
 
 function bootstrap(opts = {}) {
   const { config } = opts;
@@ -63,15 +82,9 @@ function bootstrap(opts = {}) {
   const Root = () => (
     <>
       <GlobalStyles />
-      <I18n locale={'en'} messages={getPhrases()}>
-        <ErrorBoundary showBackup>
-          <Provider store={store}>
-            <ConnectedRouter history={history}>
-              <Route component={App} />
-            </ConnectedRouter>
-          </Provider>
-        </ErrorBoundary>
-      </I18n>
+      <Provider store={store}>
+        <ConnectedTranslatedApp />
+      </Provider>
     </>
   );
 

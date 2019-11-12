@@ -2,6 +2,7 @@ import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
 import './backends';
 import './widgets';
 import './editor-components';
+import './locales';
 
 if (typeof window !== 'undefined') {
   /**

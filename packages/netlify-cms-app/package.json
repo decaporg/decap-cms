@@ -49,6 +49,7 @@
     "netlify-cms-widget-select": "^2.4.3",
     "netlify-cms-widget-string": "^2.2.3",
     "netlify-cms-widget-text": "^2.2.3",
+    "netlify-cms-locales": "^0.0.1",
     "prop-types": "^15.7.2",
     "react-immutable-proptypes": "^2.1.0",
     "uuid": "^3.3.2"

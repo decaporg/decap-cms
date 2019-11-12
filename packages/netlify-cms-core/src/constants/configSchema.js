@@ -42,6 +42,7 @@ const getConfigSchema = () => ({
       },
       required: ['name'],
     },
+    locale: { type: 'string', examples: ['en', 'fr', 'de'] },
     site_url: { type: 'string', examples: ['https://example.com'] },
     display_url: { type: 'string', examples: ['https://example.com'] },
     logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },

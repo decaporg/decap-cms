@@ -13,6 +13,7 @@ const registry = {
   editorComponents: Map(),
   widgetValueSerializers: {},
   mediaLibraries: [],
+  locales: {},
 };
 
 export default {
@@ -31,6 +32,8 @@ export default {
   getBackend,
   registerMediaLibrary,
   getMediaLibrary,
+  registerLocale,
+  getLocale,
 };
 
 /**
@@ -155,4 +158,19 @@ export function registerMediaLibrary(mediaLibrary, options) {
 
 export function getMediaLibrary(name) {
   return registry.mediaLibraries.find(ml => ml.name === name);
+}
+
+/**
+ * Locales
+ */
+export function registerLocale(locale, phrases) {
+  if (!locale || !phrases) {
+    console.error("Locale parameters invalid. example: CMS.registerLocale('locale', phrases)");
+  } else {
+    registry.locales[locale] = phrases;
+  }
+}
+
+export function getLocale(locale) {
+  return registry.locales[locale];
 }
