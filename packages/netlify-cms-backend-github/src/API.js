@@ -331,16 +331,16 @@ export default class API {
   }
 
   listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
-    return this.request(`${repoURL}/contents/${path.replace(/\/$/, '')}`, {
-      params: { ref: branch },
-    })
-      .then(files => {
-        if (!Array.isArray(files)) {
-          throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
-        }
-        return files;
-      })
-      .then(files => files.filter(file => file.type === 'file'));
+    const folderPath = path.replace(/\/$/, '');
+    return this.request(`${repoURL}/git/trees/${branch}:${folderPath}`).then(res =>
+      res.tree
+        .filter(file => file.type === 'blob')
+        .map(file => ({
+          ...file,
+          name: file.path,
+          path: `${folderPath}/${file.path}`,
+        })),
+    );
   }
 
   readUnpublishedBranchFile(contentKey) {
