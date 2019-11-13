@@ -112,6 +112,7 @@ export default class Editor extends React.Component {
   };
 
   handleBlockClick = (event, type) => {
+    event.preventDefault();
     let { value } = this.state;
     const { document: doc } = value;
     const { unwrapList, wrapInList } = EditListConfigured.changes;
