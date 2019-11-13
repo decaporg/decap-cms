@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import AsyncSelect from 'react-select/lib/Async';
+import { Async as AsyncSelect } from 'react-select';
 import { find, isEmpty, last, debounce } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
