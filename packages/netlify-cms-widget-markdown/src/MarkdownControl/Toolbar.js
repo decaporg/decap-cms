@@ -156,6 +156,7 @@ export default class Toolbar extends React.Component {
                       icon="hOptions"
                       disabled={disabled}
                       isActive={() =>
+                        !disabled &&
                         Object.keys(headingOptions).some(optionKey => {
                           return selectionHasBlock(optionKey);
                         })
@@ -164,14 +165,15 @@ export default class Toolbar extends React.Component {
                   </DropdownButton>
                 )}
               >
-                {Object.keys(headingOptions).map((optionKey, idx) => (
-                  <DropdownItem
-                    key={idx}
-                    label={headingOptions[optionKey]}
-                    className={selectionHasBlock(optionKey) && 'active'}
-                    onClick={() => onBlockClick(undefined, optionKey)}
-                  />
-                ))}
+                {!disabled &&
+                  Object.keys(headingOptions).map((optionKey, idx) => (
+                    <DropdownItem
+                      key={idx}
+                      label={headingOptions[optionKey]}
+                      className={selectionHasBlock(optionKey) && 'active'}
+                      onClick={() => onBlockClick(undefined, optionKey)}
+                    />
+                  ))}
               </Dropdown>
             </ToolbarDropdownWrapper>
           )}
