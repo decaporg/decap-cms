@@ -147,6 +147,8 @@ CMS.registerLocale('de', de);
 
 When a translation for the selected locale is missing the English one will be used.
 
+> When importing `netlify-cms` all locales are registered by default (so you only need to update your `config.yml`).
+
 ## Show Preview Links
 
 [Deploy preview links](../deploy-preview-links) can be disabled by setting `show_preview_links` to `false`.
