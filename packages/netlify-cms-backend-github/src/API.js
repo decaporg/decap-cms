@@ -1,7 +1,17 @@
 import { Base64 } from 'js-base64';
 import semaphore from 'semaphore';
-import { find, flow, get, hasIn, initial, last, partial, result, differenceBy } from 'lodash';
-import trimStart from 'lodash/trimStart';
+import {
+  find,
+  flow,
+  get,
+  hasIn,
+  initial,
+  last,
+  partial,
+  result,
+  differenceBy,
+  trimStart,
+} from 'lodash';
 import { map } from 'lodash/fp';
 import {
   getAllResponses,
