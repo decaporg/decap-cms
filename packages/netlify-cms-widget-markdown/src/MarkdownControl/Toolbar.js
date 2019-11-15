@@ -144,7 +144,10 @@ export default class Toolbar extends React.Component {
             isHidden={this.isHidden('link')}
             disabled={disabled}
           />
-          {!this.isHidden('headings') && (
+          {/* Show dropdown if at least one heading is not hidden */}
+          {Object.keys(headingOptions).some(optionKey => {
+            return !this.isHidden(optionKey);
+          }) && (
             <ToolbarDropdownWrapper>
               <Dropdown
                 dropdownTopOverlap="36px"
@@ -166,14 +169,17 @@ export default class Toolbar extends React.Component {
                 )}
               >
                 {!disabled &&
-                  Object.keys(headingOptions).map((optionKey, idx) => (
-                    <DropdownItem
-                      key={idx}
-                      label={headingOptions[optionKey]}
-                      className={selectionHasBlock(optionKey) && 'active'}
-                      onClick={() => onBlockClick(undefined, optionKey)}
-                    />
-                  ))}
+                  Object.keys(headingOptions).map(
+                    (optionKey, idx) =>
+                      !this.isHidden(optionKey) && (
+                        <DropdownItem
+                          key={idx}
+                          label={headingOptions[optionKey]}
+                          className={selectionHasBlock(optionKey) && 'active'}
+                          onClick={() => onBlockClick(undefined, optionKey)}
+                        />
+                      ),
+                  )}
               </Dropdown>
             </ToolbarDropdownWrapper>
           )}
