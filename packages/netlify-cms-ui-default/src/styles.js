@@ -101,19 +101,19 @@ const transitions = {
 };
 
 const shadows = {
-  drop: css`
+  drop: `
     box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
   `,
-  dropMain: css`
+  dropMain: `
     box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1);
   `,
-  dropMiddle: css`
+  dropMiddle: `
     box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.3);
   `,
-  dropDeep: css`
+  dropDeep: `
     box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15), 0 1px 3px 0 rgba(68, 74, 87, 0.25);
   `,
-  inset: css`
+  inset: `
     box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.3);
   `,
 };
