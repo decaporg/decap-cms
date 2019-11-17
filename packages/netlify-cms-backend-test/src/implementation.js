@@ -123,6 +123,15 @@ export default class TestBackend {
     return Promise.resolve(window.repoFilesUnpublished);
   }
 
+  getMediaFiles(entry) {
+    const mediaFiles = entry.mediaFiles.map(file => ({
+      ...file,
+      ...this.mediaFileToAsset(file),
+      file: file.fileObj,
+    }));
+    return mediaFiles;
+  }
+
   unpublishedEntry(collection, slug) {
     const entry = window.repoFilesUnpublished.find(
       e => e.metaData.collection === collection.get('name') && e.slug === slug,
@@ -132,11 +141,7 @@ export default class TestBackend {
         new EditorialWorkflowError('content is not under editorial workflow', true),
       );
     }
-    entry.mediaFiles = entry.mediaFiles.map(file => ({
-      ...file,
-      ...this.mediaFileToAsset(file),
-      file: file.fileObj,
-    }));
+    entry.mediaFiles = this.getMediaFiles(entry);
 
     return Promise.resolve(entry);
   }
@@ -215,7 +220,7 @@ export default class TestBackend {
     unpubStore.splice(unpubEntryIndex, 1);
 
     await this.persistEntry(entry, unpubEntry.mediaFiles);
-    return { mediaFiles: unpubEntry.mediaFiles };
+    return { mediaFiles: this.getMediaFiles(unpubEntry) };
   }
 
   getMedia() {
