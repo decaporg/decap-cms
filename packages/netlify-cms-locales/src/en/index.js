@@ -94,6 +94,9 @@ const en = {
     },
   },
   mediaLibrary: {
+    mediaLibraryCard: {
+      draft: 'Draft',
+    },
     mediaLibrary: {
       onDelete: 'Are you sure you want to delete selected media?',
     },

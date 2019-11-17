@@ -1,5 +1,6 @@
 import { Map } from 'immutable';
 import uuid from 'uuid/v4';
+import { differenceBy } from 'lodash';
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
@@ -18,6 +19,7 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
+  ADD_MEDIA_FILES_TO_LIBRARY,
 } from 'Actions/mediaLibrary';
 
 const defaultState = {
@@ -127,6 +129,12 @@ const mediaLibrary = (state = Map(defaultState), action) => {
         map.set('isPersisting', false);
       });
     }
+    case ADD_MEDIA_FILES_TO_LIBRARY: {
+      const { mediaFiles } = action.payload;
+      let updatedFiles = differenceBy(state.get('files'), mediaFiles, 'path');
+      updatedFiles = [...mediaFiles.map(file => ({ ...file, key: uuid() })), ...updatedFiles];
+      return state.set('files', updatedFiles);
+    }
     case MEDIA_PERSIST_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -143,7 +151,9 @@ const mediaLibrary = (state = Map(defaultState), action) => {
         return state;
       }
       return state.withMutations(map => {
-        const updatedFiles = map.get('files').filter(file => file.key !== key);
+        const updatedFiles = map
+          .get('files')
+          .filter(file => (key ? file.key !== key : file.id !== id));
         map.set('files', updatedFiles);
         map.deleteIn(['displayURLs', id]);
         map.set('isDeleting', false);

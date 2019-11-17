@@ -1,10 +1,17 @@
 import { Map } from 'immutable';
 import { resolvePath } from 'netlify-cms-lib-util';
-import { ADD_ASSET, REMOVE_ASSET } from 'Actions/media';
+import { ADD_ASSETS, ADD_ASSET, REMOVE_ASSET } from 'Actions/media';
 import AssetProxy from 'ValueObjects/AssetProxy';
 
 const medias = (state = Map(), action) => {
   switch (action.type) {
+    case ADD_ASSETS: {
+      let newState = state;
+      action.payload.forEach(asset => {
+        newState = newState.set(asset.public_path, asset);
+      });
+      return newState;
+    }
     case ADD_ASSET:
       return state.set(action.payload.public_path, action.payload);
     case REMOVE_ASSET:

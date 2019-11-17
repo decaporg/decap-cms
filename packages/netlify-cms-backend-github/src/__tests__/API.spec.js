@@ -1,40 +1,85 @@
+import { Base64 } from 'js-base64';
 import API from '../API';
 
+global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+
 describe('github API', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   const mockAPI = (api, responses) => {
-    api.request = (path, options = {}) => {
+    api.request = jest.fn().mockImplementation((path, options = {}) => {
       const normalizedPath = path.indexOf('?') !== -1 ? path.substr(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
       return typeof response === 'function'
         ? Promise.resolve(response(options))
         : Promise.reject(new Error(`No response for path '${normalizedPath}'`));
-    };
+    });
   };
 
-  it('should create PR with correct base branch name when publishing with editorial workflow', () => {
-    let prBaseBranch = null;
-    const api = new API({ branch: 'gh-pages', repo: 'my-repo' });
-    const responses = {
-      '/repos/my-repo/branches/gh-pages': () => ({ commit: { sha: 'def' } }),
-      '/repos/my-repo/git/trees/def': () => ({ tree: [] }),
-      '/repos/my-repo/git/trees': () => ({}),
-      '/repos/my-repo/git/commits': () => ({}),
-      '/repos/my-repo/git/refs': () => ({}),
-      '/repos/my-repo/pulls': pullRequest => {
-        prBaseBranch = JSON.parse(pullRequest.body).base;
-        return { head: { sha: 'cbd' } };
-      },
-      '/user': () => ({}),
-      '/repos/my-repo/git/blobs': () => ({}),
-      '/repos/my-repo/git/refs/meta/_netlify_cms': () => ({ object: {} }),
-    };
-    mockAPI(api, responses);
+  describe('editorialWorkflowGit', () => {
+    it('should create PR with correct base branch name when publishing with editorial workflow', () => {
+      let prBaseBranch = null;
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo' });
+      const responses = {
+        '/repos/my-repo/branches/gh-pages': () => ({ commit: { sha: 'def' } }),
+        '/repos/my-repo/git/trees/def': () => ({ tree: [] }),
+        '/repos/my-repo/git/trees': () => ({}),
+        '/repos/my-repo/git/commits': () => ({}),
+        '/repos/my-repo/git/refs': () => ({}),
+        '/repos/my-repo/pulls': pullRequest => {
+          prBaseBranch = JSON.parse(pullRequest.body).base;
+          return { head: { sha: 'cbd' } };
+        },
+        '/user': () => ({}),
+        '/repos/my-repo/git/blobs': () => ({}),
+        '/repos/my-repo/git/refs/meta/_netlify_cms': () => ({ object: {} }),
+      };
+      mockAPI(api, responses);
 
-    return expect(
-      api
-        .editorialWorkflowGit(null, { slug: 'entry', sha: 'abc' }, null, {})
-        .then(() => prBaseBranch),
-    ).resolves.toEqual('gh-pages');
+      return expect(
+        api
+          .editorialWorkflowGit([], { slug: 'entry', sha: 'abc' }, null, {})
+          .then(() => prBaseBranch),
+      ).resolves.toEqual('gh-pages');
+    });
+  });
+
+  describe('updateTree', () => {
+    it('should create tree with nested paths', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      api.createTree = jest.fn().mockImplementation(() => Promise.resolve({ sha: 'newTreeSha' }));
+
+      const files = [
+        { path: '/static/media/new-image.jpeg', sha: 'new-image.jpeg', remove: true },
+        { path: 'content/posts/new-post.md', sha: 'new-post.md' },
+      ];
+
+      const baseTreeSha = 'baseTreeSha';
+
+      await expect(api.updateTree(baseTreeSha, files)).resolves.toEqual({
+        sha: 'newTreeSha',
+        parentSha: baseTreeSha,
+      });
+
+      expect(api.createTree).toHaveBeenCalledTimes(1);
+      expect(api.createTree).toHaveBeenCalledWith(baseTreeSha, [
+        {
+          path: 'static/media/new-image.jpeg',
+          mode: '100644',
+          type: 'blob',
+          sha: null,
+        },
+        {
+          path: 'content/posts/new-post.md',
+          mode: '100644',
+          type: 'blob',
+          sha: 'new-post.md',
+        },
+      ]);
+    });
   });
 
   describe('request', () => {
@@ -104,6 +149,193 @@ describe('github API', () => {
       expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path?ts=1000', {
         headers: { Authorization: 'promise-token', 'Content-Type': 'application/json' },
       });
+    });
+  });
+
+  describe('getMediaAsBlob', () => {
+    it('should return response blob on non svg file', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const blob = {};
+      const response = { blob: jest.fn().mockResolvedValue(blob) };
+      api.fetchBlob = jest.fn().mockResolvedValue(response);
+
+      await expect(api.getMediaAsBlob('sha', 'static/media/image.png')).resolves.toBe(blob);
+
+      expect(api.fetchBlob).toHaveBeenCalledTimes(1);
+      expect(api.fetchBlob).toHaveBeenCalledWith('sha', '/repos/owner/repo');
+
+      expect(response.blob).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return test blob on non file', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const response = { text: jest.fn().mockResolvedValue('svg') };
+      api.fetchBlob = jest.fn().mockResolvedValue(response);
+
+      await expect(api.getMediaAsBlob('sha', 'static/media/logo.svg')).resolves.toEqual(
+        new Blob(['svg'], { type: 'image/svg+xml' }),
+      );
+
+      expect(api.fetchBlob).toHaveBeenCalledTimes(1);
+      expect(api.fetchBlob).toHaveBeenCalledWith('sha', '/repos/owner/repo');
+
+      expect(response.text).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getMediaDisplayURL', () => {
+    it('should return createObjectURL result', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const blob = {};
+      api.getMediaAsBlob = jest.fn().mockResolvedValue(blob);
+      global.URL.createObjectURL = jest
+        .fn()
+        .mockResolvedValue('blob:http://localhost:8080/blob-id');
+
+      await expect(api.getMediaDisplayURL('sha', 'static/media/image.png')).resolves.toBe(
+        'blob:http://localhost:8080/blob-id',
+      );
+
+      expect(api.getMediaAsBlob).toHaveBeenCalledTimes(1);
+      expect(api.getMediaAsBlob).toHaveBeenCalledWith('sha', 'static/media/image.png');
+
+      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(1);
+      expect(global.URL.createObjectURL).toHaveBeenCalledWith(blob);
+    });
+  });
+
+  describe('persistFiles', () => {
+    it('should update tree, commit and patch branch when useWorkflow is false', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const responses = {
+        // upload the file
+        '/repos/owner/repo/git/blobs': () => ({ sha: 'new-file-sha' }),
+
+        // get the branch
+        '/repos/owner/repo/branches/master': () => ({ commit: { sha: 'root' } }),
+
+        // create new tree
+        '/repos/owner/repo/git/trees': options => {
+          const data = JSON.parse(options.body);
+          return { sha: data.base_tree };
+        },
+
+        // update the commit with the tree
+        '/repos/owner/repo/git/commits': () => ({ sha: 'commit-sha' }),
+
+        // patch the branch
+        '/repos/owner/repo/git/refs/heads/master': () => ({}),
+      };
+      mockAPI(api, responses);
+
+      const entry = {
+        slug: 'entry',
+        sha: 'abc',
+        path: 'content/posts/new-post.md',
+        raw: 'content',
+      };
+      await api.persistFiles(entry, [], { commitMessage: 'commitMessage' });
+
+      expect(api.request).toHaveBeenCalledTimes(5);
+
+      expect(api.request.mock.calls[0]).toEqual([
+        '/repos/owner/repo/git/blobs',
+        {
+          method: 'POST',
+          body: JSON.stringify({ content: Base64.encode(entry.raw), encoding: 'base64' }),
+        },
+      ]);
+
+      expect(api.request.mock.calls[1]).toEqual(['/repos/owner/repo/branches/master']);
+
+      expect(api.request.mock.calls[2]).toEqual([
+        '/repos/owner/repo/git/trees',
+        {
+          body: JSON.stringify({
+            base_tree: 'root',
+            tree: [
+              {
+                path: 'content/posts/new-post.md',
+                mode: '100644',
+                type: 'blob',
+                sha: 'new-file-sha',
+              },
+            ],
+          }),
+          method: 'POST',
+        },
+      ]);
+
+      expect(api.request.mock.calls[3]).toEqual([
+        '/repos/owner/repo/git/commits',
+        {
+          body: JSON.stringify({
+            message: 'commitMessage',
+            tree: 'root',
+            parents: ['root'],
+          }),
+          method: 'POST',
+        },
+      ]);
+
+      expect(api.request.mock.calls[4]).toEqual([
+        '/repos/owner/repo/git/refs/heads/master',
+        {
+          body: JSON.stringify({
+            sha: 'commit-sha',
+            force: false,
+          }),
+          method: 'PATCH',
+        },
+      ]);
+    });
+
+    it('should call editorialWorkflowGit when useWorkflow is true', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      api.uploadBlob = jest.fn();
+      api.editorialWorkflowGit = jest.fn();
+
+      const entry = {
+        slug: 'entry',
+        sha: 'abc',
+        path: 'content/posts/new-post.md',
+        raw: 'content',
+      };
+
+      const mediaFiles = [
+        {
+          path: '/static/media/image-1.png',
+          uploaded: true,
+          sha: 'image-1.png',
+        },
+        {
+          path: '/static/media/image-2.png',
+          sha: 'image-2.png',
+        },
+      ];
+
+      await api.persistFiles(entry, mediaFiles, { useWorkflow: true });
+
+      expect(api.uploadBlob).toHaveBeenCalledTimes(2);
+      expect(api.uploadBlob).toHaveBeenCalledWith(entry);
+      expect(api.uploadBlob).toHaveBeenCalledWith(mediaFiles[1]);
+
+      expect(api.editorialWorkflowGit).toHaveBeenCalledTimes(1);
+
+      expect(api.editorialWorkflowGit).toHaveBeenCalledWith(
+        mediaFiles.concat(entry),
+        entry,
+        [
+          { path: 'static/media/image-1.png', sha: 'image-1.png' },
+          { path: 'static/media/image-2.png', sha: 'image-2.png' },
+        ],
+        { useWorkflow: true },
+      );
     });
   });
 });

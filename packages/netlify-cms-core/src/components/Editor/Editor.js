@@ -41,7 +41,7 @@ const navigateToNewEntry = collectionName => navigateCollection(`${collectionNam
 const navigateToEntry = (collectionName, slug) =>
   navigateCollection(`${collectionName}/entries/${slug}`);
 
-class Editor extends React.Component {
+export class Editor extends React.Component {
   static propTypes = {
     boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
@@ -79,10 +79,10 @@ class Editor extends React.Component {
     }),
     hasChanged: PropTypes.bool,
     t: PropTypes.func.isRequired,
-    retrieveLocalBackup: PropTypes.func,
-    localBackup: PropTypes.bool,
+    retrieveLocalBackup: PropTypes.func.isRequired,
+    localBackup: ImmutablePropTypes.map,
     loadLocalBackup: PropTypes.func,
-    persistLocalBackup: PropTypes.func,
+    persistLocalBackup: PropTypes.func.isRequired,
     deleteLocalBackup: PropTypes.func,
   };
 
@@ -190,7 +190,11 @@ class Editor extends React.Component {
     }
 
     if (this.props.hasChanged) {
-      this.createBackup(this.props.entryDraft.get('entry'), this.props.collection);
+      this.createBackup(
+        this.props.entryDraft.get('entry'),
+        this.props.collection,
+        this.props.entryDraft.get('mediaFiles'),
+      );
     }
 
     if (prevProps.entry === this.props.entry) return;
@@ -205,7 +209,8 @@ class Editor extends React.Component {
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
       const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
-      this.createDraft(deserializedEntry, fieldsMetaData);
+      const mediaFiles = this.props.entryDraft && this.props.entryDraft.get('mediaFiles');
+      this.createDraft(deserializedEntry, fieldsMetaData, mediaFiles);
     } else if (newEntry) {
       prevProps.createEmptyDraft(collection);
     }
@@ -217,12 +222,12 @@ class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createBackup = debounce(function(entry, collection) {
-    this.props.persistLocalBackup(entry, collection);
+  createBackup = debounce(function(entry, collection, mediaFiles) {
+    this.props.persistLocalBackup(entry, collection, mediaFiles);
   }, 2000);
 
-  createDraft = (entry, metadata) => {
-    if (entry) this.props.createDraftFromEntry(entry, metadata);
+  createDraft = (entry, metadata, mediaFiles) => {
+    if (entry) this.props.createDraftFromEntry(entry, metadata, mediaFiles);
   };
 
   handleChangeStatus = newStatusName => {

@@ -4,6 +4,7 @@ import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
 import { asyncLock } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
+import { get } from 'lodash';
 import API from './API';
 import GraphQLAPI from './GraphQLAPI';
 
@@ -331,7 +332,9 @@ export default class GitHub {
 
   async persistMedia(mediaFile, options = {}) {
     try {
-      await this.api.persistFiles(null, [mediaFile], options);
+      if (!options.draft) {
+        await this.api.persistFiles(null, [mediaFile], options);
+      }
 
       const { sha, value, path, fileObj } = mediaFile;
       const displayURL = URL.createObjectURL(fileObj);
@@ -341,6 +344,7 @@ export default class GitHub {
         size: fileObj.size,
         displayURL,
         path: trimStart(path, '/'),
+        draft: options.draft,
       };
     } catch (error) {
       console.error(error);
@@ -350,6 +354,29 @@ export default class GitHub {
 
   deleteFile(path, commitMessage, options) {
     return this.api.deleteFile(path, commitMessage, options);
+  }
+
+  async getMediaFiles(data) {
+    const files = get(data, 'metaData.objects.files', []);
+    const mediaFiles = await Promise.all(
+      files.map(file =>
+        this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
+          const name = file.path.substring(file.path.lastIndexOf('/') + 1);
+          const fileObj = new File([blob], name);
+          return {
+            id: file.sha,
+            sha: file.sha,
+            displayURL: URL.createObjectURL(fileObj),
+            path: file.path,
+            name: name,
+            size: fileObj.size,
+            file: fileObj,
+          };
+        }),
+      ),
+    );
+
+    return mediaFiles;
   }
 
   unpublishedEntries() {
@@ -371,10 +398,9 @@ export default class GitHub {
                       resolve(null);
                       sem.leave();
                     } else {
-                      const path = data.metaData.objects.entry.path;
                       resolve({
                         slug,
-                        file: { path },
+                        file: { path: data.metaData.objects.entry.path },
                         data: data.fileData,
                         metaData: data.metaData,
                         isModification: data.isModification,
@@ -400,18 +426,21 @@ export default class GitHub {
       });
   }
 
-  unpublishedEntry(collection, slug) {
+  async unpublishedEntry(collection, slug) {
     const contentKey = this.api.generateContentKey(collection.get('name'), slug);
-    return this.api.readUnpublishedBranchFile(contentKey).then(data => {
-      if (!data) return null;
-      return {
-        slug,
-        file: { path: data.metaData.objects.entry.path },
-        data: data.fileData,
-        metaData: data.metaData,
-        isModification: data.isModification,
-      };
-    });
+    const data = await this.api.readUnpublishedBranchFile(contentKey);
+    if (!data) {
+      return null;
+    }
+    const mediaFiles = await this.getMediaFiles(data);
+    return {
+      slug,
+      file: { path: data.metaData.objects.entry.path },
+      data: data.fileData,
+      metaData: data.metaData,
+      mediaFiles,
+      isModification: data.isModification,
+    };
   }
 
   /**
@@ -456,9 +485,10 @@ export default class GitHub {
 
   publishUnpublishedEntry(collection, slug) {
     // publishUnpublishedEntry is a transactional operation
-    return this.runWithLock(
-      () => this.api.publishUnpublishedEntry(collection, slug),
-      'Failed to acquire publish entry lock',
-    );
+    return this.runWithLock(async () => {
+      const metaData = await this.api.publishUnpublishedEntry(collection, slug);
+      const mediaFiles = await this.getMediaFiles({ metaData });
+      return { mediaFiles };
+    }, 'Failed to acquire publish entry lock');
   }
 }

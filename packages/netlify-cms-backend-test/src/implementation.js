@@ -123,6 +123,15 @@ export default class TestBackend {
     return Promise.resolve(window.repoFilesUnpublished);
   }
 
+  getMediaFiles(entry) {
+    const mediaFiles = entry.mediaFiles.map(file => ({
+      ...file,
+      ...this.mediaFileToAsset(file),
+      file: file.fileObj,
+    }));
+    return mediaFiles;
+  }
+
   unpublishedEntry(collection, slug) {
     const entry = window.repoFilesUnpublished.find(
       e => e.metaData.collection === collection.get('name') && e.slug === slug,
@@ -132,6 +141,8 @@ export default class TestBackend {
         new EditorialWorkflowError('content is not under editorial workflow', true),
       );
     }
+    entry.mediaFiles = this.getMediaFiles(entry);
+
     return Promise.resolve(entry);
   }
 
@@ -144,14 +155,17 @@ export default class TestBackend {
     return Promise.resolve();
   }
 
-  persistEntry({ path, raw, slug }, mediaFiles, options = {}) {
+  async persistEntry({ path, raw, slug }, mediaFiles, options = {}) {
     if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
+
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {
         const unpubEntry = { ...unpubStore[existingEntryIndex], data: raw };
         unpubEntry.title = options.parsedData && options.parsedData.title;
         unpubEntry.description = options.parsedData && options.parsedData.description;
+        unpubEntry.mediaFiles = mediaFiles;
+
         unpubStore.splice(existingEntryIndex, 1, unpubEntry);
       } else {
         const unpubEntry = {
@@ -166,6 +180,7 @@ export default class TestBackend {
             description: options.parsedData && options.parsedData.description,
           },
           slug,
+          mediaFiles,
         };
         unpubStore.push(unpubEntry);
       }
@@ -182,6 +197,7 @@ export default class TestBackend {
     } else {
       window.repoFiles[folder][fileName].content = raw;
     }
+    await Promise.all(mediaFiles.map(file => this.persistMedia(file)));
     return Promise.resolve();
   }
 
@@ -194,7 +210,7 @@ export default class TestBackend {
     return Promise.resolve();
   }
 
-  publishUnpublishedEntry(collection, slug) {
+  async publishUnpublishedEntry(collection, slug) {
     const unpubStore = window.repoFilesUnpublished;
     const unpubEntryIndex = unpubStore.findIndex(
       e => e.metaData.collection === collection && e.slug === slug,
@@ -202,19 +218,32 @@ export default class TestBackend {
     const unpubEntry = unpubStore[unpubEntryIndex];
     const entry = { raw: unpubEntry.data, slug: unpubEntry.slug, path: unpubEntry.file.path };
     unpubStore.splice(unpubEntryIndex, 1);
-    return this.persistEntry(entry);
+
+    await this.persistEntry(entry, unpubEntry.mediaFiles);
+    return { mediaFiles: this.getMediaFiles(unpubEntry) };
   }
+
   getMedia() {
     return Promise.resolve(this.assets);
   }
 
-  persistMedia({ fileObj }) {
+  mediaFileToAsset(mediaFile) {
+    const { fileObj } = mediaFile;
     const { name, size } = fileObj;
     const objectUrl = attempt(window.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
-    const normalizedAsset = { id: uuid(), name, size, path: url, url };
+    const normalizedAsset = { id: uuid(), name, size, path: mediaFile.path, url };
 
-    this.assets.push(normalizedAsset);
+    return normalizedAsset;
+  }
+
+  persistMedia(mediaFile, options = {}) {
+    const normalizedAsset = this.mediaFileToAsset(mediaFile);
+
+    if (!options.draft) {
+      this.assets.push(normalizedAsset);
+    }
+
     return Promise.resolve(normalizedAsset);
   }
 

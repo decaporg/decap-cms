@@ -3,11 +3,20 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
-import { getAsset, selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
+import { selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry } from './entries';
+import {
+  loadEntry,
+  getMediaAssets,
+  setDraftEntryMediaFiles,
+  clearDraftEntryMediaFiles,
+} from './entries';
+import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { addAssets } from './media';
+import { addMediaFilesToLibrary } from './mediaLibrary';
+
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const { notifSend } = notifActions;
@@ -230,30 +239,55 @@ function unpublishedEntryDeleteError(collection, slug, transactionID) {
  */
 
 export function loadUnpublishedEntry(collection, slug) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+
     dispatch(unpublishedEntryLoading(collection, slug));
-    backend
-      .unpublishedEntry(collection, slug)
-      .then(entry => dispatch(unpublishedEntryLoaded(collection, entry)))
-      .catch(error => {
-        if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
-          dispatch(unpublishedEntryRedirected(collection, slug));
-          dispatch(loadEntry(collection, slug));
-        } else {
-          dispatch(
-            notifSend({
-              message: {
-                key: 'ui.toast.onFailToLoadEntries',
-                details: error,
-              },
-              kind: 'danger',
-              dismissAfter: 8000,
-            }),
-          );
-        }
-      });
+
+    try {
+      const entry = await backend.unpublishedEntry(collection, slug);
+      const mediaFiles = entry.mediaFiles;
+      const assetProxies = await Promise.all(
+        mediaFiles.map(({ file }) => createAssetProxy(file.name, file)),
+      );
+      dispatch(addAssets(assetProxies));
+      dispatch(
+        setDraftEntryMediaFiles(
+          assetProxies.map((asset, index) => ({
+            ...asset,
+            ...mediaFiles[index],
+            draft: true,
+          })),
+        ),
+      );
+      dispatch(
+        addMediaFilesToLibrary(
+          mediaFiles.map(file => ({
+            ...file,
+            draft: true,
+          })),
+        ),
+      );
+
+      dispatch(unpublishedEntryLoaded(collection, entry));
+    } catch (error) {
+      if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
+        dispatch(unpublishedEntryRedirected(collection, slug));
+        dispatch(loadEntry(collection, slug));
+      } else {
+        dispatch(
+          notifSend({
+            message: {
+              key: 'ui.toast.onFailToLoadEntries',
+              details: error,
+            },
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+      }
+    }
   };
 }
 
@@ -314,7 +348,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    const assetProxies = entryDraft.get('mediaFiles').map(path => getAsset(state, path));
+    const assetProxies = getMediaAssets(state, entryDraft.get('mediaFiles'));
     const entry = entryDraft.get('entry');
 
     /**
@@ -455,7 +489,7 @@ export function publishUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
       .publishUnpublishedEntry(collection, slug)
-      .then(() => {
+      .then(({ mediaFiles }) => {
         dispatch(
           notifSend({
             message: { key: 'ui.toast.entryPublished' },
@@ -463,8 +497,12 @@ export function publishUnpublishedEntry(collection, slug) {
             dismissAfter: 4000,
           }),
         );
+
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
         dispatch(loadEntry(collections.get(collection), slug));
+
+        dispatch(addMediaFilesToLibrary(mediaFiles.map(file => ({ ...file, draft: false }))));
+        dispatch(clearDraftEntryMediaFiles());
       })
       .catch(error => {
         dispatch(

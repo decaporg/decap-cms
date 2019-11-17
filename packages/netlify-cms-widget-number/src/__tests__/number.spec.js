@@ -1,8 +1,6 @@
 import React from 'react';
 import { fromJS } from 'immutable';
-import { render, fireEvent } from 'react-testing-library';
-import 'react-testing-library/cleanup-after-each';
-import 'jest-dom/extend-expect';
+import { render, fireEvent } from '@testing-library/react';
 import { NetlifyCmsWidgetNumber } from '../';
 import { validateMinMax } from '../NumberControl';
 

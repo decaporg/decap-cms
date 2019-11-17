@@ -402,22 +402,31 @@ export class Backend {
     const key = getEntryBackupKey(collection.get('name'), slug);
     const backup = await localForage.getItem(key);
     if (!backup || !backup.raw.trim()) {
-      return;
+      return {};
     }
-    const { raw, path } = backup;
+    const { raw, path, mediaFiles = [], assets = [] } = backup;
+
     const label = selectFileEntryLabel(collection, slug);
-    return this.entryWithFormat(collection, slug)(
+    const entry = this.entryWithFormat(collection, slug)(
       createEntry(collection.get('name'), slug, path, { raw, label }),
     );
+
+    return { entry, mediaFiles, assets };
   }
 
-  async persistLocalDraftBackup(entry, collection) {
+  async persistLocalDraftBackup(entry, collection, mediaFiles, assets) {
     const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
     const raw = this.entryToRaw(collection, entry);
     if (!raw.trim()) {
       return;
     }
-    await localForage.setItem(key, { raw, path: entry.get('path') });
+
+    await localForage.setItem(key, {
+      raw,
+      path: entry.get('path'),
+      mediaFiles: mediaFiles.toJS(),
+      assets: assets.toJS(),
+    });
     return localForage.setItem(getEntryBackupKey(), raw);
   }
 
@@ -511,6 +520,7 @@ export class Backend {
           isModification: loadedEntry.isModification,
         });
         entry.metaData = loadedEntry.metaData;
+        entry.mediaFiles = loadedEntry.mediaFiles;
         return entry;
       })
       .then(this.entryWithFormat(collection, slug));
@@ -663,7 +673,7 @@ export class Backend {
     return this.implementation.persistEntry(entryObj, MediaFiles, opts).then(() => entryObj.slug);
   }
 
-  async persistMedia(config, file) {
+  async persistMedia(config, file, draft) {
     const user = await this.currentUser();
     const options = {
       commitMessage: commitMessageFormatter(
@@ -676,6 +686,7 @@ export class Backend {
         },
         user.useOpenAuthoring,
       ),
+      draft,
     };
     return this.implementation.persistMedia(file, options);
   }

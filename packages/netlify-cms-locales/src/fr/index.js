@@ -96,6 +96,9 @@ const fr = {
     },
   },
   mediaLibrary: {
+    mediaLibraryCard: {
+      draft: 'Brouillon',
+    },
     mediaLibrary: {
       onDelete: 'Voulez-vous vraiment supprimer la ressource sélectionné ?',
     },

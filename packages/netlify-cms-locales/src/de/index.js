@@ -98,6 +98,9 @@ const de = {
     },
   },
   mediaLibrary: {
+    mediaLibraryCard: {
+      draft: 'Entwurf',
+    },
     mediaLibrary: {
       onDelete: 'Soll das ausgewählte Medium wirklich gelöscht werden?',
     },

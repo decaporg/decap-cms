@@ -1,9 +1,7 @@
 import React from 'react';
 import { fromJS, Map } from 'immutable';
 import { last } from 'lodash';
-import { render, fireEvent, wait } from 'react-testing-library';
-import 'react-testing-library/cleanup-after-each';
-import 'jest-dom/extend-expect';
+import { render, fireEvent, wait } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
 
 const RelationControl = NetlifyCmsWidgetRelation.controlComponent;
