@@ -388,13 +388,8 @@ export default class GitHub {
         branches.map(({ ref }) => {
           promises.push(
             new Promise(async resolve => {
-              let contentKey = ref.split('refs/heads/cms/').pop();
-              const contentKeyParts = contentKey.split('/');
-              const slug = contentKeyParts.pop();
-              const collection = contentKeyParts.pop();
-              // migrate entry to new meta key and branch
-              !collection && (contentKey = await this.api.migrateUnpublishedEntry(slug));
-
+              const contentKey = this.api.contentKeyFromRef(ref);
+              const slug = contentKey.split('/').pop();
               return sem.take(() =>
                 this.api
                   .readUnpublishedBranchFile(contentKey)

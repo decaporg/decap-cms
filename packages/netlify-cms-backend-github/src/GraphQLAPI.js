@@ -228,7 +228,8 @@ export default class GraphQLAPI extends API {
           branches.push({ ref: `${headRef.prefix}${headRef.name}` });
         });
       });
-      return branches;
+
+      return await Promise.all(branches.map(branch => this.migrateBranch(branch)));
     } else {
       console.log(
         '%c No Unpublished entries',
