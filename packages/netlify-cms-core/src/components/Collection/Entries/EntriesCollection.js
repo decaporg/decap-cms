@@ -83,7 +83,4 @@ const mapDispatchToProps = {
   traverseCollectionCursor: actionTraverseCollectionCursor,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(EntriesCollection);
+export default connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);

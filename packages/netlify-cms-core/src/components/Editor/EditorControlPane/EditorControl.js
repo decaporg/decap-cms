@@ -325,11 +325,8 @@ const mapDispatchToProps = {
   clearFieldErrors,
 };
 
-const ConnectedEditorControl = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  null,
-  { withRef: false },
-)(translate()(EditorControl));
+const ConnectedEditorControl = connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: false,
+})(translate()(EditorControl));
 
 export default ConnectedEditorControl;

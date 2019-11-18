@@ -407,9 +407,10 @@ export class Backend {
     const { raw, path, mediaFiles = [], assets = [] } = backup;
 
     const label = selectFileEntryLabel(collection, slug);
-    const entry = this.entryWithFormat(collection, slug)(
-      createEntry(collection.get('name'), slug, path, { raw, label }),
-    );
+    const entry = this.entryWithFormat(
+      collection,
+      slug,
+    )(createEntry(collection.get('name'), slug, path, { raw, label }));
 
     return { entry, mediaFiles, assets };
   }
@@ -446,7 +447,10 @@ export class Backend {
     const path = selectEntryPath(collection, slug);
     const label = selectFileEntryLabel(collection, slug);
     return this.implementation.getEntry(collection, slug, path).then(loadedEntry =>
-      this.entryWithFormat(collection, slug)(
+      this.entryWithFormat(
+        collection,
+        slug,
+      )(
         createEntry(collection.get('name'), slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
           label,

@@ -237,9 +237,4 @@ const mapDispatchToProps = {
   logoutUser,
 };
 
-export default hot(module)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(translate()(App)),
-);
+export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(translate()(App)));
