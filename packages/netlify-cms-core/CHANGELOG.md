@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.5...netlify-cms-core@2.13.0-beta.6) (2019-11-18)
+
+
+### Bug Fixes
+
+* **media-libs:** accept string or string array for insertMedia action ([#2857](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2857)) ([f5c8ff3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f5c8ff31f121e550f81b2472f2e3f0c8d76aab1b))
+* **workflow:** label file collection entries in Workflow ([#2566](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2566)) ([542a7ac](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/542a7acfe60719f30bbb1ec8da37f6a498194400))
+
+
+### Features
+
+* add translation support ([#2870](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2870)) ([096b067](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/096b067d4542c723630ded631fc9a4ba950732f3)), closes [#2877](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2877)
+* commit media with post ([#2851](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2851)) ([6515dee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6515dee8715d8571ea19484a7dfab7cfd0cc40be))
+
+
+
+
+
 # [2.13.0-beta.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.4...netlify-cms-core@2.13.0-beta.5) (2019-11-07)
 
 

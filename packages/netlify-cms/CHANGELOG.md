@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.9.8-beta.5...netlify-cms@2.10.0-beta.0) (2019-11-18)
+
+
+### Features
+
+* add translation support ([#2870](https://github.com/netlify/netlify-cms/issues/2870)) ([096b067](https://github.com/netlify/netlify-cms/commit/096b067d4542c723630ded631fc9a4ba950732f3)), closes [#2877](https://github.com/netlify/netlify-cms/issues/2877)
+
+
+
+
+
 ## [2.9.8-beta.5](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.9.8-beta.4...netlify-cms@2.9.8-beta.5) (2019-11-07)
 
 **Note:** Version bump only for package netlify-cms

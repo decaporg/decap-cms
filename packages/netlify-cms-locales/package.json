@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-locales",
   "description": "Locales for Netlify CMS.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
@@ -15,7 +15,5 @@
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
-  },
-  "dependencies": {},
-  "peerDependencies": {}
+  }
 }

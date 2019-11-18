@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.7.0-beta.1...netlify-cms-ui-default@2.7.0-beta.2) (2019-11-18)
+
+
+### Bug Fixes
+
+* media assets modal ([#2880](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2880)) ([0df2159](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/0df21598ab2b3ed42c74f922ed4aadd88a64de3b))
+
+
+### Features
+
+* commit media with post ([#2851](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2851)) ([6515dee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/6515dee8715d8571ea19484a7dfab7cfd0cc40be))
+
+
+
+
+
 # [2.7.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.7.0-beta.0...netlify-cms-ui-default@2.7.0-beta.1) (2019-11-07)
 
 

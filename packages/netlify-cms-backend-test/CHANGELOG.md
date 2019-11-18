@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.3.0...netlify-cms-backend-test@2.4.0) (2019-11-18)
+
+
+### Features
+
+* commit media with post ([#2851](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/issues/2851)) ([6515dee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/commit/6515dee8715d8571ea19484a7dfab7cfd0cc40be))
+
+
+
+
+
 # [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.2.3...netlify-cms-backend-test@2.3.0) (2019-11-07)
 
 

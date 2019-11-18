@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.4...netlify-cms-backend-github@2.5.0-beta.5) (2019-11-18)
+
+
+### Bug Fixes
+
+* **backend-github:** editorial workflow commits ([#2867](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2867)) ([86adca3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/86adca3a18f25ab74d1c6702bafab250f005ceec))
+* make forkExists name matching case-insensitive ([#2869](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2869)) ([9978769](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/9978769ece9262265d3efa77357f9e8b46ad9a1e))
+* **backend-github:** loaded entries limit ([#2873](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2873)) ([68a8c8a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/68a8c8a693646ebd33fae791aaaec47b050e0186))
+* **git-gateway:** unpublished entries not loaded for git-gateway(GitHub) ([#2856](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2856)) ([4a2328b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/4a2328b2f10ea678184391e4caf235b41323cd3e))
+
+
+### Features
+
+* commit media with post ([#2851](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2851)) ([6515dee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/6515dee8715d8571ea19484a7dfab7cfd0cc40be))
+
+
+
+
+
 # [2.5.0-beta.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.3...netlify-cms-backend-github@2.5.0-beta.4) (2019-11-07)
 
 
