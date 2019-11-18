@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.5.2...netlify-cms-widget-markdown@2.6.0) (2019-11-18)
+
+
+### Features
+
+* **widget-markdown:** add headings dropdown ([#2879](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/2879)) ([78face3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/78face334f2dc7c99f5805551c052587e54d5753))
+
+
+
+
+
 ## [2.5.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.5.1...netlify-cms-widget-markdown@2.5.2) (2019-11-18)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown
