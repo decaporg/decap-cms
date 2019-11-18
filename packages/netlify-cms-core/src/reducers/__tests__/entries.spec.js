@@ -21,7 +21,10 @@ describe('entries', () => {
   });
 
   it('should handle loaded entries', () => {
-    const entries = [{ slug: 'a', path: '' }, { slug: 'b', title: 'B' }];
+    const entries = [
+      { slug: 'a', path: '' },
+      { slug: 'b', title: 'B' },
+    ];
     expect(
       reducer(initialState, actions.entriesLoaded(Map({ name: 'posts' }), entries, 0)),
     ).toEqual(

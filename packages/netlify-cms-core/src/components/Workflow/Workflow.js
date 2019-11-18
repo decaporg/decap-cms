@@ -156,12 +156,9 @@ function mapStateToProps(state) {
   return returnObj;
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    loadUnpublishedEntries,
-    updateUnpublishedEntryStatus,
-    publishUnpublishedEntry,
-    deleteUnpublishedEntry,
-  },
-)(translate()(Workflow));
+export default connect(mapStateToProps, {
+  loadUnpublishedEntries,
+  updateUnpublishedEntryStatus,
+  publishUnpublishedEntry,
+  deleteUnpublishedEntry,
+})(translate()(Workflow));

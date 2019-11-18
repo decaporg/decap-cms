@@ -627,9 +627,11 @@ export default class API {
       const metadata = await this.retrieveMetadata(contentKey);
       // mark media files to remove
       const metadataMediaFiles = get(metadata, 'objects.files', []);
-      const mediaFilesToRemove = differenceBy(metadataMediaFiles, mediaFilesList, 'path').map(
-        file => ({ ...file, remove: true }),
-      );
+      const mediaFilesToRemove = differenceBy(
+        metadataMediaFiles,
+        mediaFilesList,
+        'path',
+      ).map(file => ({ ...file, remove: true }));
       const branchData = await this.getBranch(branchName);
       const changeTree = await this.updateTree(
         branchData.commit.sha,

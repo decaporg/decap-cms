@@ -57,7 +57,10 @@ describe('entries', () => {
         {
           name: 'images',
           widget: 'list',
-          fields: [{ name: 'title', widget: 'text' }, { name: 'url', widget: 'text' }],
+          fields: [
+            { name: 'title', widget: 'text' },
+            { name: 'url', widget: 'text' },
+          ],
         },
       ]);
       expect(createEmptyDraftData(fields)).toEqual({});
@@ -95,7 +98,10 @@ describe('entries', () => {
         {
           name: 'post',
           widget: 'object',
-          fields: [{ name: 'title', widget: 'text' }, { name: 'url', widget: 'text' }],
+          fields: [
+            { name: 'title', widget: 'text' },
+            { name: 'url', widget: 'text' },
+          ],
         },
       ]);
       expect(createEmptyDraftData(fields)).toEqual({});

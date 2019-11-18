@@ -464,26 +464,23 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    changeDraftField,
-    changeDraftFieldValidation,
-    loadEntry,
-    loadEntries,
-    loadDeployPreview,
-    loadLocalBackup,
-    retrieveLocalBackup,
-    persistLocalBackup,
-    deleteLocalBackup,
-    createDraftFromEntry,
-    createEmptyDraft,
-    discardDraft,
-    persistEntry,
-    deleteEntry,
-    updateUnpublishedEntryStatus,
-    publishUnpublishedEntry,
-    deleteUnpublishedEntry,
-    logoutUser,
-  },
-)(withWorkflow(translate()(Editor)));
+export default connect(mapStateToProps, {
+  changeDraftField,
+  changeDraftFieldValidation,
+  loadEntry,
+  loadEntries,
+  loadDeployPreview,
+  loadLocalBackup,
+  retrieveLocalBackup,
+  persistLocalBackup,
+  deleteLocalBackup,
+  createDraftFromEntry,
+  createEmptyDraft,
+  discardDraft,
+  persistEntry,
+  deleteEntry,
+  updateUnpublishedEntryStatus,
+  publishUnpublishedEntry,
+  deleteUnpublishedEntry,
+  logoutUser,
+})(withWorkflow(translate()(Editor)));

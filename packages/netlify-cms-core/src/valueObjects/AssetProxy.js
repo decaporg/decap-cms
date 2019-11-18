@@ -51,13 +51,11 @@ export function createAssetProxy(value, fileObj, uploaded = false, privateUpload
         currentBackend(state.config).getToken,
         integration,
       );
-    return provider
-      .upload(fileObj, privateUpload)
-      .then(
-        response =>
-          new AssetProxy(response.asset.url.replace(/^(https?):/, ''), null, true, response.asset),
-        () => new AssetProxy(value, fileObj, false),
-      );
+    return provider.upload(fileObj, privateUpload).then(
+      response =>
+        new AssetProxy(response.asset.url.replace(/^(https?):/, ''), null, true, response.asset),
+      () => new AssetProxy(value, fileObj, false),
+    );
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only available for Asset Store Integration');
   }

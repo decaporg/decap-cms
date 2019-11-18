@@ -30,7 +30,8 @@ export default class ImplicitAuthenticator {
       document.location.protocol !== 'https:' &&
       // TODO: Is insecure localhost a bad idea as well? I don't think it is, since you are not actually
       //       sending the token over the internet in this case, assuming the auth URL is secure.
-      (document.location.hostname !== 'localhost' && document.location.hostname !== '127.0.0.1')
+      document.location.hostname !== 'localhost' &&
+      document.location.hostname !== '127.0.0.1'
     ) {
       return cb(new Error('Cannot authenticate over insecure protocol!'));
     }

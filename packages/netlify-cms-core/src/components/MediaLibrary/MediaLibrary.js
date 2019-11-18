@@ -348,7 +348,4 @@ const mapDispatchToProps = {
   closeMediaLibrary: closeMediaLibraryAction,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(translate()(MediaLibrary));
+export default connect(mapStateToProps, mapDispatchToProps)(translate()(MediaLibrary));
