@@ -238,10 +238,9 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  async readUnpublishedBranchFile(collection, slug) {
+  async readUnpublishedBranchFile(contentKey) {
     // retrieveMetadata(contentKey) rejects in case of no metadata
-    const contentKey = this.generateContentKey(collection, slug);
-    const [metaData] = await this.getAllMetaData(slug, contentKey);
+    const metaData = await this.retrieveMetadata(contentKey).catch(() => null);
     if (metaData && metaData.objects && metaData.objects.entry && metaData.objects.entry.path) {
       const { path } = metaData.objects.entry;
       const { repo_owner: headOwner, repo_name: headRepoName } = this;
@@ -428,9 +427,9 @@ export default class GraphQLAPI extends API {
   async deleteUnpublishedEntry(collectionName, slug) {
     try {
       const contentKey = this.generateContentKey(collectionName, slug);
-      const [metadata] = await this.getAllMetaData(slug, contentKey);
-      const branchName = metadata.branch;
+      const branchName = this.generateBranchName(contentKey);
 
+      const metadata = await this.retrieveMetadata(contentKey);
       if (metadata && metadata.pr) {
         const { branch, pullRequest } = await this.getPullRequestAndBranch(
           branchName,

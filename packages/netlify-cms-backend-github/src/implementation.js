@@ -387,14 +387,19 @@ export default class GitHub {
         const promises = [];
         branches.map(({ ref }) => {
           promises.push(
-            new Promise(resolve => {
-              const contentKey = ref.split('refs/heads/cms/').pop();
+            new Promise(async resolve => {
+              let contentKey = ref.split('refs/heads/cms/').pop();
               const contentKeyParts = contentKey.split('/');
               const slug = contentKeyParts.pop();
-              const collection = contentKeyParts.pop();
+              let collection = contentKeyParts.pop();
+              if (!collection) {
+                let collection = await this.api.migrateUnpublishedEntry(slug);
+                contentKey = this.api.generateContentKey(collection, slug);
+              }
+
               return sem.take(() =>
                 this.api
-                  .readUnpublishedBranchFile(collection, slug)
+                  .readUnpublishedBranchFile(contentKey)
                   .then(data => {
                     if (data === null || data === undefined) {
                       resolve(null);
@@ -429,7 +434,8 @@ export default class GitHub {
   }
 
   async unpublishedEntry(collection, slug) {
-    const data = await this.api.readUnpublishedBranchFile(collection.get('name'), slug);
+    const contentKey = this.api.generateContentKey(collection.get('name'), slug);
+    const data = await this.api.readUnpublishedBranchFile(contentKey);
     if (!data) {
       return null;
     }
@@ -452,7 +458,7 @@ export default class GitHub {
    */
   async getDeployPreview(collection, slug) {
     const contentKey = this.api.generateContentKey(collection.get('name'), slug);
-    const [data] = await this.api.getAllMetaData(slug, contentKey);
+    const data = await this.api.retrieveMetadata(contentKey);
 
     if (!data || !data.pr) {
       return null;
