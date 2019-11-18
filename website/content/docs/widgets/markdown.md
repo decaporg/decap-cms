@@ -1,5 +1,5 @@
 ---
-label: "Markdown"
+label: 'Markdown'
 title: markdown
 ---
 
@@ -12,7 +12,7 @@ _Please note:_ If you want to use your markdown editor to fill a markdown file c
 - **Data type:** markdown
 - **Options:**
   - `default`: accepts markdown content
-  - `buttons`: an array of strings representing the formatting buttons to display, all buttons shown by default. Buttons include: `bold`, `italic`, `code`, `link`, `heading-one`, `heading-two`, `quote`, `code-block`, `bulleted-list`, and `numbered-list`.
+  - `buttons`: an array of strings representing the formatting buttons to display, all buttons shown by default. Buttons include: `bold`, `italic`, `code`, `link`, `heading-one`, `heading-two`, `heading-three`, `heading-four`, `heading-five`, `heading-six`, `quote`, `code-block`, `bulleted-list`, and `numbered-list`.
 - **Example:**
 
   ```yaml

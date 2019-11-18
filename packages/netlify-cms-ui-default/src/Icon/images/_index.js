@@ -18,6 +18,7 @@ import iconGitlab from './gitlab.svg';
 import iconGrid from './grid.svg';
 import iconH1 from './h1.svg';
 import iconH2 from './h2.svg';
+import iconHOptions from './h-options.svg';
 import iconHome from './home.svg';
 import iconImage from './image.svg';
 import iconItalic from './italic.svg';
@@ -66,6 +67,7 @@ const images = {
   grid: iconGrid,
   h1: iconH1,
   h2: iconH2,
+  hOptions: iconHOptions,
   home: iconHome,
   image: iconImage,
   italic: iconItalic,

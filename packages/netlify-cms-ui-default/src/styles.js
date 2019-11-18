@@ -312,11 +312,13 @@ const components = {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    white-space: nowrap;
 
     &:last-of-type {
       border-bottom: 0;
     }
 
+    &.active,
     &:hover,
     &:active,
     &:focus {
