@@ -391,11 +391,9 @@ export default class GitHub {
               let contentKey = ref.split('refs/heads/cms/').pop();
               const contentKeyParts = contentKey.split('/');
               const slug = contentKeyParts.pop();
-              let collection = contentKeyParts.pop();
-              if (!collection) {
-                let collection = await this.api.migrateUnpublishedEntry(slug);
-                contentKey = this.api.generateContentKey(collection, slug);
-              }
+              const collection = contentKeyParts.pop();
+              // migrate entry to new meta key and branch
+              !collection && (contentKey = await this.api.migrateUnpublishedEntry(slug));
 
               return sem.take(() =>
                 this.api

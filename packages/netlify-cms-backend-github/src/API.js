@@ -911,7 +911,7 @@ export default class API {
     await this.deleteBranch(data.branch);
     await this.deleteMetadata(slug);
 
-    return data.collection;
+    return newContentKey;
   }
 
   createRef(type, name, sha) {
