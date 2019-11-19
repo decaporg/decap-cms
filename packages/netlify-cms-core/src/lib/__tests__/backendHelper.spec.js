@@ -175,6 +175,32 @@ describe('backendHelper', () => {
         'Ignoring unknown variable “author-email” in open authoring message template.',
       );
     });
+
+    it('should decode slug when content_in_sub_folders is true', () => {
+      expect(
+        commitMessageFormatter('create', config, {
+          slug: encodeURIComponent('2019/slug'),
+          path: 'file-path',
+          collection: Map({
+            label_singular: 'Post',
+            content_in_sub_folders: true,
+          }),
+        }),
+      ).toEqual('Create Post “2019/slug”');
+    });
+
+    it('should not decode slug when content_in_sub_folders is false', () => {
+      expect(
+        commitMessageFormatter('create', config, {
+          slug: encodeURIComponent('2019/slug'),
+          path: 'file-path',
+          collection: Map({
+            label_singular: 'Post',
+            content_in_sub_folders: false,
+          }),
+        }),
+      ).toEqual('Create Post “2019%2Fslug”');
+    });
   });
 
   describe('prepareSlug', () => {

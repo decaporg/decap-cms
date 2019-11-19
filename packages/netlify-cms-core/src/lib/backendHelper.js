@@ -27,8 +27,10 @@ export const commitMessageFormatter = (
 
   const commitMessage = templates.get(type).replace(variableRegex, (_, variable) => {
     switch (variable) {
-      case 'slug':
-        return slug;
+      case 'slug': {
+        const contentInSubFolders = collection.get('content_in_sub_folders', false);
+        return contentInSubFolders ? decodeURIComponent(slug) : slug;
+      }
       case 'path':
         return path;
       case 'collection':
