@@ -14,7 +14,7 @@ import {
   selectInferedField,
 } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
-import { sanitizeSlug } from 'Lib/urlHelper';
+import { sanitizeSlug, sanitizeChar } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
 import { commitMessageFormatter, slugFormatter, prepareSlug } from 'Lib/backendHelper';
 import {
@@ -221,17 +221,15 @@ export class Backend {
 
   async generateUniqueSlug(collection, entryData, slugConfig, usedSlugs) {
     const slug = slugFormatter(collection, entryData, slugConfig);
-    const sanitizeEntrySlug = partialRight(sanitizeSlug, slugConfig);
     let i = 1;
-    let sanitizedSlug = slug;
-    let uniqueSlug = sanitizedSlug;
+    let uniqueSlug = slug;
 
     // Check for duplicate slug in loaded entities store first before repo
     while (
       usedSlugs.includes(uniqueSlug) ||
       (await this.entryExist(collection, selectEntryPath(collection, uniqueSlug), uniqueSlug))
     ) {
-      uniqueSlug = sanitizeEntrySlug(`${sanitizedSlug} ${i++}`);
+      uniqueSlug = `${slug}${sanitizeChar(' ', slugConfig)}${i++}`;
     }
     return uniqueSlug;
   }
