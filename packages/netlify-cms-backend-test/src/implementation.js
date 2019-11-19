@@ -188,15 +188,18 @@ export default class TestBackend {
     }
 
     const newEntry = options.newEntry || false;
-    const folder = path.substring(0, path.lastIndexOf('/'));
-    const fileName = path.substring(path.lastIndexOf('/') + 1);
-    window.repoFiles[folder] = window.repoFiles[folder] || {};
-    window.repoFiles[folder][fileName] = window.repoFiles[folder][fileName] || {};
-    if (newEntry) {
-      window.repoFiles[folder][fileName] = { content: raw };
-    } else {
-      window.repoFiles[folder][fileName].content = raw;
+
+    const segments = path.split('/');
+    const entry = newEntry ? { content: raw } : { ...getFile(path), content: raw };
+
+    let obj = window.repoFiles;
+    while (segments.length > 1) {
+      const segment = segments.shift();
+      obj[segment] = obj[segment] || {};
+      obj = obj[segment];
     }
+    obj[segments.shift()] = entry;
+
     await Promise.all(mediaFiles.map(file => this.persistMedia(file)));
     return Promise.resolve();
   }

@@ -39,7 +39,9 @@ const selectors = {
       return collection.get('fields');
     },
     entryPath(collection, slug) {
-      return `${collection.get('folder').replace(/\/$/, '')}/${slug}.${this.entryExtension(
+      const contentInSubFolders = collection.get('content_in_sub_folders', false);
+      const decodedSlug = contentInSubFolders ? decodeURIComponent(slug) : slug;
+      return `${collection.get('folder').replace(/\/$/, '')}/${decodedSlug}.${this.entryExtension(
         collection,
       )}`;
     },

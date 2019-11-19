@@ -231,5 +231,27 @@ describe('backendHelper', () => {
         ),
       ).toBe('entry-slug');
     });
+
+    it('should replace slashes when content_in_sub_folders is false', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        slugFormatter(
+          Map({ slug: 'sub_dir/{{slug}}', content_in_sub_folders: false }),
+          Map({ title: 'Post Title' }),
+        ),
+      ).toBe('sub_dir-post-title');
+    });
+
+    it('should encode slug when content_in_sub_folders is true', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        slugFormatter(
+          Map({ slug: 'sub_dir/{{slug}}', content_in_sub_folders: true }),
+          Map({ title: 'Post Title' }),
+        ),
+      ).toBe('sub_dir%2Fpost%20title');
+    });
   });
 });

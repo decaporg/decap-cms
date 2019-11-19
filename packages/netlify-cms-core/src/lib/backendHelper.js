@@ -77,6 +77,7 @@ export const prepareSlug = slug => {
 
 export const slugFormatter = (collection, entryData, slugConfig) => {
   const template = collection.get('slug') || '{{slug}}';
+  const contentInSubFolders = collection.get('content_in_sub_folders', false);
 
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
@@ -85,14 +86,19 @@ export const slugFormatter = (collection, entryData, slugConfig) => {
     );
   }
 
-  // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
-  // TODO: only pass slug replacements through sanitizers, static portions of
-  // the slug template should not be sanitized. (breaking change)
-  const processSlug = flow([
-    compileStringTemplate,
-    prepareSlug,
-    partialRight(sanitizeSlug, slugConfig),
-  ]);
+  let processSlug;
+  if (contentInSubFolders) {
+    processSlug = flow([compileStringTemplate, prepareSlug, encodeURIComponent]);
+  } else {
+    // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
+    // TODO: only pass slug replacements through sanitizers, static portions of
+    // the slug template should not be sanitized. (breaking change)
+    processSlug = flow([
+      compileStringTemplate,
+      prepareSlug,
+      partialRight(sanitizeSlug, slugConfig),
+    ]);
+  }
 
   return processSlug(template, new Date(), identifier, entryData);
 };
