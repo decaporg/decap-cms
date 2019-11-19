@@ -18,6 +18,7 @@ import {
   APIError,
   EditorialWorkflowError,
   filterPromisesWith,
+  flowAsync,
   localForage,
   onlySuccessfulPromises,
   resolvePromiseProperties,
@@ -223,13 +224,27 @@ export default class API {
     );
   }
 
-  async deleteMetadata(key) {
-    const branchData = await this.checkMetadataRef();
-    const file = { path: `${key}.json`, sha: null };
+  deleteMetadata(key) {
+    if (!this._metadataSemaphore) {
+      this._metadataSemaphore = semaphore(1);
+    }
+    return new Promise(resolve =>
+      this._metadataSemaphore.take(async () => {
+        try {
+          const branchData = await this.checkMetadataRef();
+          const file = { path: `${key}.json`, sha: null };
 
-    const changeTree = await this.updateTree(branchData.sha, [file]);
-    const { sha } = await this.commit(`Deleting “${key}” metadata`, changeTree);
-    return this.patchRef('meta', '_netlify_cms', sha);
+          const changeTree = await this.updateTree(branchData.sha, [file]);
+          const { sha } = await this.commit(`Deleting “${key}” metadata`, changeTree);
+          await this.patchRef('meta', '_netlify_cms', sha);
+          this._metadataSemaphore.leave();
+          resolve();
+        } catch (err) {
+          this._metadataSemaphore.leave();
+          resolve();
+        }
+      }),
+    );
   }
 
   retrieveMetadata(key) {
@@ -503,9 +518,9 @@ export default class API {
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
-    const onlyBranchesWithOpenPRs = flow([
-      map(async branch => await this.migrateBranch(branch)),
+    const onlyBranchesWithOpenPRs = flowAsync([
       filterPromisesWith(({ ref }) => this.branchHasPR(this.branchNameFromRef(ref))),
+      map(branch => this.migrateBranch(branch)),
       onlySuccessfulPromises,
     ]);
 
