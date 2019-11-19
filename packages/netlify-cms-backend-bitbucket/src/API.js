@@ -109,7 +109,7 @@ export default class API {
   listFiles = async path => {
     const { entries, cursor } = await flow([
       // sort files by filename ascending
-      unsentRequest.withParams({ sort: '-path' }),
+      unsentRequest.withParams({ sort: '-path', max_depth: 10 }),
       this.requestJSON,
       then(this.getEntriesAndCursor),
     ])(`${this.repoURL}/src/${this.branch}/${path}`);
