@@ -41,15 +41,19 @@ const selectors = {
     entryPath(collection, slug) {
       const contentInSubFolders = collection.get('content_in_sub_folders', false);
       const decodedSlug = contentInSubFolders ? decodeURIComponent(slug) : slug;
-      return `${collection.get('folder').replace(/\/$/, '')}/${decodedSlug}.${this.entryExtension(
-        collection,
-      )}`;
+      const folder = collection.get('folder').replace(/\/$/, '');
+      return `${folder}/${decodedSlug}.${this.entryExtension(collection)}`;
     },
     entrySlug(collection, path) {
-      return path
-        .split('/')
+      const folder = collection.get('folder').replace(/\/$/, '');
+      const slug = path
+        .split(folder + '/')
         .pop()
         .replace(new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`), '');
+
+      const contentInSubFolders = collection.get('content_in_sub_folders', false);
+      const encodedSlug = contentInSubFolders ? encodeURIComponent(slug) : slug;
+      return encodedSlug;
     },
     listMethod() {
       return 'entriesByFolder';

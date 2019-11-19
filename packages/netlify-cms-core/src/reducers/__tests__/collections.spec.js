@@ -1,6 +1,6 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { configLoaded } from 'Actions/config';
-import collections, { selectAllowDeletion } from '../collections';
+import collections, { selectAllowDeletion, selectEntryPath, selectEntrySlug } from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
 describe('collections', () => {
@@ -46,6 +46,62 @@ describe('collections', () => {
           }),
         ),
       ).toBe(false);
+    });
+  });
+
+  describe('selectEntryPath', () => {
+    it('should return path when content_in_sub_folders is false', () => {
+      expect(
+        selectEntryPath(
+          fromJS({
+            type: FOLDER,
+            content_in_sub_folders: false,
+            folder: 'posts',
+          }),
+          'slug',
+        ),
+      ).toBe('posts/slug.md');
+    });
+
+    it('should return decoded path when content_in_sub_folders is true', () => {
+      expect(
+        selectEntryPath(
+          fromJS({
+            type: FOLDER,
+            content_in_sub_folders: true,
+            folder: 'posts',
+          }),
+          encodeURIComponent('dir1/dir2/slug'),
+        ),
+      ).toBe('posts/dir1/dir2/slug.md');
+    });
+  });
+
+  describe('selectEntrySlug', () => {
+    it('should return slug when content_in_sub_folders is false', () => {
+      expect(
+        selectEntrySlug(
+          fromJS({
+            type: FOLDER,
+            content_in_sub_folders: false,
+            folder: 'posts',
+          }),
+          'posts/slug.md',
+        ),
+      ).toBe('slug');
+    });
+
+    it('should return decoded path when content_in_sub_folders is true', () => {
+      expect(
+        selectEntrySlug(
+          fromJS({
+            type: FOLDER,
+            content_in_sub_folders: true,
+            folder: 'posts',
+          }),
+          'posts/dir1/dir2/slug.md',
+        ),
+      ).toBe(encodeURIComponent('dir1/dir2/slug'));
     });
   });
 });
