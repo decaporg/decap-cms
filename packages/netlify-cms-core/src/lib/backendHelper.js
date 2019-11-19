@@ -1,4 +1,8 @@
 import { Map } from 'immutable';
+import { flow, partialRight } from 'lodash';
+import { sanitizeSlug } from 'Lib/urlHelper';
+import { compileStringTemplate } from 'Lib/stringTemplate';
+import { selectIdentifier } from 'Reducers/collections';
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -54,4 +58,41 @@ export const commitMessageFormatter = (
   });
 
   return message;
+};
+
+export const prepareSlug = slug => {
+  return (
+    slug
+      .trim()
+      // Convert slug to lower-case
+      .toLocaleLowerCase()
+
+      // Remove single quotes.
+      .replace(/[']/g, '')
+
+      // Replace periods with dashes.
+      .replace(/[.]/g, '-')
+  );
+};
+
+export const slugFormatter = (collection, entryData, slugConfig) => {
+  const template = collection.get('slug') || '{{slug}}';
+
+  const identifier = entryData.get(selectIdentifier(collection));
+  if (!identifier) {
+    throw new Error(
+      'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
+    );
+  }
+
+  // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
+  // TODO: only pass slug replacements through sanitizers, static portions of
+  // the slug template should not be sanitized. (breaking change)
+  const processSlug = flow([
+    compileStringTemplate,
+    prepareSlug,
+    partialRight(sanitizeSlug, slugConfig),
+  ]);
+
+  return processSlug(template, new Date(), identifier, entryData);
 };

@@ -11,13 +11,12 @@ import {
   selectAllowNewEntries,
   selectAllowDeletion,
   selectFolderEntryExtension,
-  selectIdentifier,
   selectInferedField,
 } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
-import { commitMessageFormatter } from 'Lib/backendHelper';
+import { commitMessageFormatter, slugFormatter, prepareSlug } from 'Lib/backendHelper';
 import {
   localForage,
   Cursor,
@@ -50,21 +49,6 @@ export class LocalStorageAuthStore {
   }
 }
 
-function prepareSlug(slug) {
-  return (
-    slug
-      .trim()
-      // Convert slug to lower-case
-      .toLocaleLowerCase()
-
-      // Remove single quotes.
-      .replace(/[']/g, '')
-
-      // Replace periods with dashes.
-      .replace(/[.]/g, '-')
-  );
-}
-
 function getEntryBackupKey(collectionName, slug) {
   const baseKey = 'backup';
   if (!collectionName) {
@@ -72,28 +56,6 @@ function getEntryBackupKey(collectionName, slug) {
   }
   const suffix = slug ? `.${slug}` : '';
   return `${baseKey}.${collectionName}${suffix}`;
-}
-
-function slugFormatter(collection, entryData, slugConfig) {
-  const template = collection.get('slug') || '{{slug}}';
-
-  const identifier = entryData.get(selectIdentifier(collection));
-  if (!identifier) {
-    throw new Error(
-      'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
-    );
-  }
-
-  // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
-  // TODO: only pass slug replacements through sanitizers, static portions of
-  // the slug template should not be sanitized. (breaking change)
-  const processSlug = flow([
-    compileStringTemplate,
-    prepareSlug,
-    partialRight(sanitizeSlug, slugConfig),
-  ]);
-
-  return processSlug(template, new Date(), identifier, entryData);
 }
 
 const extractSearchFields = searchFields => entry =>
