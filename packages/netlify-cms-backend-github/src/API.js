@@ -365,7 +365,9 @@ export default class API {
 
   listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
     const folderPath = path.replace(/\/$/, '');
-    return this.request(`${repoURL}/git/trees/${branch}:${folderPath}`).then(res =>
+    return this.request(`${repoURL}/git/trees/${branch}:${folderPath}`, {
+      params: { recursive: 10 },
+    }).then(res =>
       res.tree
         .filter(file => file.type === 'blob')
         .map(file => ({
