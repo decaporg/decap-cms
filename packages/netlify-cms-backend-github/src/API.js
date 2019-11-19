@@ -12,12 +12,11 @@ import {
   differenceBy,
   trimStart,
 } from 'lodash';
-import { map } from 'lodash/fp';
+import { map, filter } from 'lodash/fp';
 import {
   getAllResponses,
   APIError,
   EditorialWorkflowError,
-  filterPromisesWith,
   flowAsync,
   localForage,
   onlySuccessfulPromises,
@@ -429,11 +428,6 @@ export default class API {
     });
   };
 
-  branchHasPR = async branchName => {
-    const prs = await this.getPRsForBranchName(branchName);
-    return prs.some(pr => pr.head.ref === branchName);
-  };
-
   getUpdatedOpenAuthoringMetadata = async (contentKey, { metadata: metadataArg } = {}) => {
     const metadata = metadataArg || (await this.retrieveMetadata(contentKey)) || {};
     const { pr: prMetadata, status } = metadata;
@@ -518,8 +512,9 @@ export default class API {
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
+    const prs = await this.getPRsForBranchName(CMS_BRANCH_PREFIX);
     const onlyBranchesWithOpenPRs = flowAsync([
-      filterPromisesWith(({ ref }) => this.branchHasPR(this.branchNameFromRef(ref))),
+      filter(({ ref }) => prs.some(pr => pr.head.ref === this.branchNameFromRef(ref))),
       map(branch => this.migrateBranch(branch)),
       onlySuccessfulPromises,
     ]);
