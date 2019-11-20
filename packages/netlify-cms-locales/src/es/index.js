@@ -1,4 +1,4 @@
-const en = {
+const es = {
   app: {
     header: {
       content: 'Contenido',
@@ -180,4 +180,4 @@ const en = {
   },
 };
 
-export default en;
+export default es;
