@@ -4,21 +4,15 @@ set -e
 set -x
 
 # Variables
-# DOCKER_IMAGE_PREFIX="linaroits"
-# DOCKER_IMAGE_NAME="node-netlify-cmd-builder"
-# DOCKER_IMAGE_VERSION="13.1.0-stretch-slim"
-DOCKER_IMAGE="node:13.1.0-stretch-slim"
-# DOCKER_IMAGE_VERSION="$(git rev-parse --short HEAD)"
+DOCKER_SOURCE_IMAGE="node"
+DOCKER_IMAGE_VERSION="13.1.0-stretch-slim"
 HOSTNAME="$(hostname)"
 USER="$(id -u)"
 GROUP="$(id -g)"
 CURRENT_DIR="$(pwd)"
-# DOCKER_WORKDIR="/usr/src/app"
 DOCKER_WORKDIR="${HOME}"
 
 docker run\
- -e YARN_FOLDER="${DOCKER_WORKDIR}"/.yarn\
- -e YARN_CACHE_FOLDER="${DOCKER_WORKDIR}"/.yarn_cache\
  --cap-drop=all\
  --memory=4GB\
  --rm\
@@ -30,5 +24,5 @@ docker run\
  -w "${DOCKER_WORKDIR}"\
  --hostname="${HOSTNAME}"-netlify-builder-13-1-0\
  --name=netlify_builder\
- "${DOCKER_IMAGE}"\
+ "${DOCKER_SOURCE_IMAGE}":"${DOCKER_IMAGE_VERSION}"\
  /bin/bash -c "${DOCKER_WORKDIR}/build_netlify.sh"

@@ -1,5 +1,0 @@
-.git/**
-# .yarn/**
-# .yarn_cache/**
-node_modules/**
-cypress/**
