@@ -28,6 +28,7 @@ export const branch = gql`
     }
     id
     name
+    prefix
     repository {
       ...RepositoryParts
     }

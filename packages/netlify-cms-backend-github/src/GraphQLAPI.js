@@ -517,7 +517,7 @@ export default class GraphQLAPI extends API {
       },
     });
     const { branch } = data.createRef;
-    return branch;
+    return { ...branch, ref: `${branch.prefix}${branch.name}` };
   }
 
   async createBranchAndPullRequest(branchName, sha, title) {
