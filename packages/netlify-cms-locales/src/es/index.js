@@ -36,7 +36,7 @@ const en = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} es obligatorio.',
-        regexPattern: "%{fieldLabel} no coincide con el patrón: %{pattern}.",
+        regexPattern: '%{fieldLabel} no coincide con el patrón: %{pattern}.',
         processing: '%{fieldLabel} está procesando.',
         range: '%{fieldLabel} debe estar entre %{minValue} y %{maxValue}.',
         min: '%{fieldLabel} debe ser por lo menos %{minValue}.',
@@ -45,9 +45,11 @@ const en = {
     },
     editor: {
       onLeavePage: '¿Estás seguro de que quieres dejar esta página?',
-      onUpdatingWithUnsavedChanges: 'Tiene cambios no guardados, por favor, guárdelos antes de actualizar el estado.',
+      onUpdatingWithUnsavedChanges:
+        'Tiene cambios no guardados, por favor, guárdelos antes de actualizar el estado.',
       onPublishingNotReady: 'Por favor, actualice el estado a "Ready" antes de publicar.',
-      onPublishingWithUnsavedChanges: 'Tiene cambios no guardados, por favor guárdelos antes de publicarlos.',
+      onPublishingWithUnsavedChanges:
+        'Tiene cambios no guardados, por favor guárdelos antes de publicarlos.',
       onPublishing: '¿Estás seguro de que quieres publicar esta entrada?',
       onDeleteWithUnsavedChanges:
         '¿Está seguro de que desea eliminar esta entrada publicada, así como los cambios no guardados de la sesión actual?',
@@ -57,7 +59,8 @@ const en = {
       onDeleteUnpublishedChanges:
         'Todos los cambios no publicados en esta entrada serán eliminados. ¿Todavía quieres borrar?',
       loadingEntry: 'Cargando entrada...',
-      confirmLoadBackup: 'Se recuperó una copia de seguridad local para esta entrada, ¿le gustaría utilizarla?',
+      confirmLoadBackup:
+        'Se recuperó una copia de seguridad local para esta entrada, ¿le gustaría utilizarla?',
     },
     editorToolbar: {
       publishing: 'Publicando...',
@@ -119,7 +122,7 @@ const en = {
   ui: {
     errorBoundary: {
       title: 'Error',
-      details: "Se ha producido un error - por favor ",
+      details: 'Se ha producido un error - por favor ',
       reportIt: 'infórmenos de ello.',
       detailsHeading: 'Detalles',
       recoveredEntry: {
@@ -137,7 +140,8 @@ const en = {
       onFailToPersist: 'No se ha podido guardar la entrada: %{details}',
       onFailToDelete: 'No se ha podido borrar la entrada: %{details}',
       onFailToUpdateStatus: 'No se ha podido actualizar el estado: %{details}',
-      missingRequiredField: "Oops, no ha rellenado un campo obligatorio. Por favor, rellenelo antes de guardar.",
+      missingRequiredField:
+        'Oops, no ha rellenado un campo obligatorio. Por favor, rellenelo antes de guardar.',
       entrySaved: 'Entrada guardada',
       entryPublished: 'Entrada publicada',
       onFailToPublishEntry: 'No se ha podido publicar: %{details}',
