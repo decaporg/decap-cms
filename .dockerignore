@@ -1,1 +1,3 @@
 .git/**
+.yarn/**
+.yarn_cache/**
