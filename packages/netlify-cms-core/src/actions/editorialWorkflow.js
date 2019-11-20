@@ -1,4 +1,5 @@
 import uuid from 'uuid/v4';
+import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { serializeValues } from 'Lib/serializeEntryValues';
@@ -294,8 +295,10 @@ export function loadUnpublishedEntry(collection, slug) {
 export function loadUnpublishedEntries(collections) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW) return;
     const backend = currentBackend(state.config);
+    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
+    if (state.config.get('publish_mode') !== EDITORIAL_WORKFLOW || entriesLoaded) return;
+
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
