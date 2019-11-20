@@ -36,7 +36,7 @@ const nl = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} is vereist.',
-        regexPattern: "%{fieldLabel} komt niet overeen met het patroon: %{pattern}.",
+        regexPattern: '%{fieldLabel} komt niet overeen met het patroon: %{pattern}.',
         processing: '%{fieldLabel} wordt verwerkt.',
         range: '%{fieldLabel} moet tussen %{minValue} en %{maxValue} liggen.',
         min: '%{fieldLabel} moet tenminste %{minValue} zijn.',
@@ -45,9 +45,11 @@ const nl = {
     },
     editor: {
       onLeavePage: 'Weet je zeker dat je deze pagina wilt verlaten?',
-      onUpdatingWithUnsavedChanges: 'Er zijn nog niet-opgeslagen wijzigingen. Bewaar ze voordat u de status bijwerkt.',
+      onUpdatingWithUnsavedChanges:
+        'Er zijn nog niet-opgeslagen wijzigingen. Bewaar ze voordat u de status bijwerkt.',
       onPublishingNotReady: 'Stel de status in op "Voltooid" voordat u publiceert.',
-      onPublishingWithUnsavedChanges: 'Er zijn nog niet-opgeslagen wijzigingen. Bewaar deze voordat u publiceert.',
+      onPublishingWithUnsavedChanges:
+        'Er zijn nog niet-opgeslagen wijzigingen. Bewaar deze voordat u publiceert.',
       onPublishing: 'Weet u zeker dat u dit item wil publiceren?',
       onDeleteWithUnsavedChanges:
         'Weet u zeker dat u dit gepubliceerde item en uw niet-opgeslagen wijzigingen uit de huidige sessie wilt verwijderen?',
@@ -118,7 +120,7 @@ const nl = {
   ui: {
     errorBoundary: {
       title: 'Fout',
-      details: "Er is een fout opgetreden - ",
+      details: 'Er is een fout opgetreden - ',
       reportIt: 'maak er alstublieft een melding van.',
       detailsHeading: 'Details',
       recoveredEntry: {
@@ -136,7 +138,7 @@ const nl = {
       onFailToPersist: 'Kan item niet opslaan: %{details}',
       onFailToDelete: 'Kan item niet verwijderen: %{details}',
       onFailToUpdateStatus: 'Kan status niet updaten: %{details}',
-      missingRequiredField: "Oeps, sommige verplichte velden zijn niet ingevuld.",
+      missingRequiredField: 'Oeps, sommige verplichte velden zijn niet ingevuld.',
       entrySaved: 'Item opgeslagen',
       entryPublished: 'Item gepubliceerd',
       onFailToPublishEntry: 'Kan item niet publiceren: %{details}',
