@@ -513,32 +513,38 @@ export default class API {
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
-    const prs = await this.getPRsForBranchName(CMS_BRANCH_PREFIX);
-    const onlyBranchesWithOpenPRs = flowAsync([
-      filter(({ ref }) => prs.some(pr => pr.head.ref === this.branchNameFromRef(ref))),
-      map(branch => this.migrateBranch(branch)),
-      onlySuccessfulPromises,
-    ]);
 
-    const getUpdatedOpenAuthoringBranches = flow([
-      map(async branch => {
-        const contentKey = this.contentKeyFromRef(branch.ref);
-        const metadata = await this.getUpdatedOpenAuthoringMetadata(contentKey);
-        // filter out removed entries
-        if (!metadata) {
-          return Promise.reject('Unpublished entry was removed');
-        }
-        return branch;
-      }),
-      onlySuccessfulPromises,
-    ]);
     try {
       const branches = await this.request(`${this.repoURL}/git/refs/heads/cms`).catch(
         replace404WithEmptyArray,
       );
-      const filterFunction = this.useOpenAuthoring
-        ? getUpdatedOpenAuthoringBranches
-        : onlyBranchesWithOpenPRs;
+
+      let filterFunction;
+      if (this.useOpenAuthoring) {
+        const getUpdatedOpenAuthoringBranches = flow([
+          map(async branch => {
+            const contentKey = this.contentKeyFromRef(branch.ref);
+            const metadata = await this.getUpdatedOpenAuthoringMetadata(contentKey);
+            // filter out removed entries
+            if (!metadata) {
+              return Promise.reject('Unpublished entry was removed');
+            }
+            return branch;
+          }),
+          onlySuccessfulPromises,
+        ]);
+        filterFunction = getUpdatedOpenAuthoringBranches;
+      } else {
+        const prs = await this.getPRsForBranchName(CMS_BRANCH_PREFIX);
+        const onlyBranchesWithOpenPRs = flowAsync([
+          filter(({ ref }) => prs.some(pr => pr.head.ref === this.branchNameFromRef(ref))),
+          map(branch => this.migrateBranch(branch)),
+          onlySuccessfulPromises,
+        ]);
+
+        filterFunction = onlyBranchesWithOpenPRs;
+      }
+
       return await filterFunction(branches);
     } catch (err) {
       console.log(
