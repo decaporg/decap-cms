@@ -681,7 +681,7 @@ export default class API {
           files: mediaFilesList,
         },
         timeStamp: new Date().toISOString(),
-        version: CURRENT_METADATA_VERSION,
+        version: '1',
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
