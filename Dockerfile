@@ -9,9 +9,9 @@ RUN mkdir -p\
   ${HOME}/.yarn_cache
 # Copy Yarn files
 COPY package.json yarn.lock ./
-# COPY . ./
-RUN yarn --global-folder ${YARN_FOLDER} --cache-folder ${YARN_CACHE_FOLDER} &&\
-  yarn bootstrap
+COPY . ./
+# RUN yarn --global-folder ${YARN_FOLDER} --cache-folder ${YARN_CACHE_FOLDER} &&\
+#   yarn bootstrap
 # RUN yarn &&\
 #   lerna init &&\
 #   yarn bootstrap
