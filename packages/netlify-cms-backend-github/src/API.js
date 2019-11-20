@@ -24,6 +24,7 @@ import {
 } from 'netlify-cms-lib-util';
 
 const CMS_BRANCH_PREFIX = 'cms';
+const CURRENT_METADATA_VERSION = '1';
 
 const replace404WithEmptyArray = err => {
   if (err && err.status === 404) {
@@ -673,7 +674,7 @@ export default class API {
           files: mediaFilesList,
         },
         timeStamp: new Date().toISOString(),
-        version: '1',
+        version: CURRENT_METADATA_VERSION,
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
