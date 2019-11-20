@@ -5,5 +5,5 @@
   ignore = "git diff --quiet HEAD^ HEAD -- . ':!website/'"
 
   [build.environment]
-    YARN_FLAGS = "--no-ignore-optional"
-    YARN_VERSION = "1.7.0"
+    YARN_FLAGS = "--frozen-lockfile"
+    YARN_VERSION = "1.19.1"
