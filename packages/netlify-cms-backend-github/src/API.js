@@ -488,7 +488,7 @@ export default class API {
         head: pr.head.sha,
       },
       branch: newBranchName,
-      version: '1',
+      version: CURRENT_METADATA_VERSION,
     });
 
     // remove old data

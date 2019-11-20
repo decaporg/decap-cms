@@ -243,6 +243,12 @@ export function loadUnpublishedEntry(collection, slug) {
   return async (dispatch, getState) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
+    //run possible unpublishedEntries migration
+    if (!entriesLoaded) {
+      const response = await backend.unpublishedEntries(state.collections).catch(() => false);
+      response && dispatch(unpublishedEntriesLoaded(response.entries, response.pagination));
+    }
 
     dispatch(unpublishedEntryLoading(collection, slug));
 
