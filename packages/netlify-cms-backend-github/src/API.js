@@ -488,7 +488,7 @@ export default class API {
         head: pr.head.sha,
       },
       branch: newBranchName,
-      version: CURRENT_METADATA_VERSION,
+      version: '1',
     });
 
     // remove old data
@@ -681,7 +681,7 @@ export default class API {
           files: mediaFilesList,
         },
         timeStamp: new Date().toISOString(),
-        version: '1',
+        version: CURRENT_METADATA_VERSION,
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
