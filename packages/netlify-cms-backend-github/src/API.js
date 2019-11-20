@@ -470,9 +470,11 @@ export default class API {
     return metadata;
   };
 
-  async migrateToVersion1(oldContentKey, metaData) {
-    const newContentKey = this.generateContentKey(metaData.collection, oldContentKey);
-    const newBranchName = this.generateBranchName(newContentKey);
+  async migrateToVersion1(branch, metaData) {
+    // hard code key/branch generation logic to ignore future changes
+    const oldContentKey = branch.ref.substring(`refs/heads/cms/`.length);
+    const newContentKey = `${metaData.collection}/${oldContentKey}`;
+    const newBranchName = `cms/${newContentKey}`;
 
     // create new branch and pull request in new format
     const newBranch = await this.createBranch(newBranchName, metaData.pr.head);
@@ -498,11 +500,10 @@ export default class API {
   }
 
   async migrateBranch(branch) {
-    const contentKey = this.contentKeyFromRef(branch.ref);
-    const metadata = await this.retrieveMetadata(contentKey);
+    const metadata = await this.retrieveMetadata(this.contentKeyFromRef(branch.ref));
     if (!metadata.version) {
       // migrate branch from cms/slug to cms/collection/slug
-      branch = await this.migrateToVersion1(contentKey, metadata);
+      branch = await this.migrateToVersion1(branch, metadata);
     }
 
     return branch;
