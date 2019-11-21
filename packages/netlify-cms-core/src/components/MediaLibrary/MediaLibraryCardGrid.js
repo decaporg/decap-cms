@@ -39,7 +39,7 @@ const MediaLibraryCardGrid = ({
   displayURLs,
   loadDisplayURL,
 }) => (
-  <CardGridContainer innerRef={setScrollContainerRef}>
+  <CardGridContainer ref={setScrollContainerRef}>
     <CardGrid>
       {mediaItems.map(file => (
         <MediaLibraryCard
