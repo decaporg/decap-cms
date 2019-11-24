@@ -25,6 +25,7 @@ import {
 import {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
+  unpublishPublishedEntry,
   deleteUnpublishedEntry,
 } from 'Actions/editorialWorkflow';
 import { loadDeployPreview } from 'Actions/deploys';
@@ -299,6 +300,15 @@ export class Editor extends React.Component {
     }
   };
 
+  handleUnpublishEntry = async () => {
+    const { unpublishPublishedEntry, collection, slug, t } = this.props;
+    if (!window.confirm(t('editor.editor.onUnpublishing'))) return;
+
+    await unpublishPublishedEntry(collection, slug);
+
+    return navigateToCollection(collection.get('name'));
+  };
+
   handleDeleteEntry = () => {
     const { entryDraft, newEntry, collection, deleteEntry, slug, t } = this.props;
     if (entryDraft.get('hasChanged')) {
@@ -404,6 +414,7 @@ export class Editor extends React.Component {
         onDeleteUnpublishedChanges={this.handleDeleteUnpublishedChanges}
         onChangeStatus={this.handleChangeStatus}
         onPublish={this.handlePublishEntry}
+        unPublish={this.handleUnpublishEntry}
         showDelete={this.props.showDelete}
         user={user}
         hasChanged={hasChanged}
@@ -481,6 +492,7 @@ export default connect(mapStateToProps, {
   deleteEntry,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
+  unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
 })(withWorkflow(translate()(Editor)));
