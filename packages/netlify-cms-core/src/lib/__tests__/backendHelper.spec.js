@@ -196,10 +196,13 @@ describe('backendHelper', () => {
   });
 
   describe('slugFormatter', () => {
+    const date = new Date('2020-01-01');
+    jest.spyOn(global, 'Date').mockImplementation(() => date);
+
     const { selectIdentifier } = require('Reducers/collections');
 
     beforeEach(() => {
-      jest.resetAllMocks();
+      jest.clearAllMocks();
     });
 
     it('should format with default pattern', () => {
@@ -209,9 +212,6 @@ describe('backendHelper', () => {
 
     it('should format with date', () => {
       selectIdentifier.mockReturnValueOnce('title');
-      const date = new Date('2020-01-01');
-
-      jest.spyOn(global, 'Date').mockImplementation(() => date);
 
       expect(
         slugFormatter(
@@ -232,26 +232,23 @@ describe('backendHelper', () => {
       ).toBe('entry-slug');
     });
 
-    it('should replace slashes when content_in_sub_folders is false', () => {
+    it('should return slug', () => {
       selectIdentifier.mockReturnValueOnce('title');
 
-      expect(
-        slugFormatter(
-          Map({ slug: 'sub_dir/{{slug}}', content_in_sub_folders: false }),
-          Map({ title: 'Post Title' }),
-        ),
-      ).toBe('sub_dir-post-title');
+      expect(slugFormatter(Map({ slug: '{{slug}}' }), Map({ title: 'Post Title' }))).toBe(
+        'post-title',
+      );
     });
 
-    it('should not replace slashes content_in_sub_folders is true', () => {
+    it('should return slug with path', () => {
       selectIdentifier.mockReturnValueOnce('title');
 
       expect(
         slugFormatter(
-          Map({ slug: 'sub_dir/{{slug}}', content_in_sub_folders: true }),
+          Map({ slug: '{{year}}-{{month}}-{{day}}-{{slug}}', path: 'sub_dir/{{year}}/{{slug}}' }),
           Map({ title: 'Post Title' }),
         ),
-      ).toBe('sub_dir/post-title');
+      ).toBe('sub_dir/2020/2020-01-01-post-title');
     });
   });
 });

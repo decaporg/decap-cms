@@ -402,8 +402,8 @@ describe('Backend', () => {
         ],
         type: FOLDER,
         folder: 'posts',
-        slug: 'sub_dir/{{slug}}',
-        content_in_sub_folders: true,
+        slug: '{{slug}}',
+        path: 'sub_dir/{{slug}}',
       });
 
       const entry = Map({
@@ -437,8 +437,8 @@ describe('Backend', () => {
         ],
         type: FOLDER,
         folder: 'posts',
-        slug: 'sub_dir/{{slug}}',
-        content_in_sub_folders: true,
+        slug: '{{slug}}',
+        path: 'sub_dir/{{slug}}',
       });
 
       const entry = Map({

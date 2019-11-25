@@ -76,8 +76,7 @@ export const prepareSlug = slug => {
 };
 
 export const slugFormatter = (collection, entryData, slugConfig) => {
-  const template = collection.get('slug') || '{{slug}}';
-  const contentInSubFolders = collection.get('content_in_sub_folders', false);
+  const slugTemplate = collection.get('slug') || '{{slug}}';
 
   const identifier = entryData.get(selectIdentifier(collection));
   if (!identifier) {
@@ -92,10 +91,14 @@ export const slugFormatter = (collection, entryData, slugConfig) => {
     partialRight(sanitizeSlug, slugConfig),
   ]);
 
-  if (contentInSubFolders) {
-    const parts = template.split('/');
-    return parts.map(part => processSlug(part, new Date(), identifier, entryData)).join('/');
-  }
+  const date = new Date();
+  const slug = processSlug(slugTemplate, date, identifier, entryData);
 
-  return processSlug(template, new Date(), identifier, entryData);
+  if (!collection.has('path')) {
+    return slug;
+  } else {
+    const pathTemplate = collection.get('path');
+    const parts = pathTemplate.split('/');
+    return parts.map(part => processSlug(part, date, slug, entryData)).join('/');
+  }
 };
