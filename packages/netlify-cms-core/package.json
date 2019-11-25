@@ -43,7 +43,7 @@
     "react-frame-component": "^4.1.0",
     "react-hot-loader": "^4.8.0",
     "react-immutable-proptypes": "^2.1.0",
-    "react-is": "16.11.0",
+    "react-is": "16.12.0",
     "react-modal": "^3.8.1",
     "react-polyglot": "^0.6.0",
     "react-redux": "^5.1.1",
