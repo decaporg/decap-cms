@@ -413,7 +413,7 @@ describe('Backend', () => {
       const backend = new Backend(implementation, { config, backendName: 'github' });
 
       await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
-        encodeURIComponent('sub_dir/some post title'),
+        'sub_dir/some-post-title',
       );
     });
 
@@ -448,7 +448,7 @@ describe('Backend', () => {
       const backend = new Backend(implementation, { config, backendName: 'github' });
 
       await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
-        encodeURIComponent('sub_dir/some post title-1'),
+        'sub_dir/some-post-title-1',
       );
     });
   });

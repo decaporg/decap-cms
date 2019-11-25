@@ -204,11 +204,11 @@ class WorkflowList extends React.Component {
       <div>
         {entries.map(entry => {
           const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
+          const slug = entry.get('slug');
           const editLink = `collections/${entry.getIn([
             'metaData',
             'collection',
-          ])}/entries/${entry.get('slug')}`;
-          const slug = entry.get('slug');
+          ])}/entries/${encodeURIComponent(slug)}`;
           const ownStatus = entry.getIn(['metaData', 'status']);
           const collection = entry.getIn(['metaData', 'collection']);
           const isModification = entry.get('isModification');

@@ -175,32 +175,6 @@ describe('backendHelper', () => {
         'Ignoring unknown variable “author-email” in open authoring message template.',
       );
     });
-
-    it('should decode slug when content_in_sub_folders is true', () => {
-      expect(
-        commitMessageFormatter('create', config, {
-          slug: encodeURIComponent('2019/slug'),
-          path: 'file-path',
-          collection: Map({
-            label_singular: 'Post',
-            content_in_sub_folders: true,
-          }),
-        }),
-      ).toEqual('Create Post “2019/slug”');
-    });
-
-    it('should not decode slug when content_in_sub_folders is false', () => {
-      expect(
-        commitMessageFormatter('create', config, {
-          slug: encodeURIComponent('2019/slug'),
-          path: 'file-path',
-          collection: Map({
-            label_singular: 'Post',
-            content_in_sub_folders: false,
-          }),
-        }),
-      ).toEqual('Create Post “2019%2Fslug”');
-    });
   });
 
   describe('prepareSlug', () => {
@@ -269,7 +243,7 @@ describe('backendHelper', () => {
       ).toBe('sub_dir-post-title');
     });
 
-    it('should encode slug when content_in_sub_folders is true', () => {
+    it('should not replace slashes content_in_sub_folders is true', () => {
       selectIdentifier.mockReturnValueOnce('title');
 
       expect(
@@ -277,7 +251,7 @@ describe('backendHelper', () => {
           Map({ slug: 'sub_dir/{{slug}}', content_in_sub_folders: true }),
           Map({ title: 'Post Title' }),
         ),
-      ).toBe('sub_dir%2Fpost%20title');
+      ).toBe('sub_dir/post-title');
     });
   });
 });

@@ -40,7 +40,7 @@ const navigateCollection = collectionPath => history.push(`/collections/${collec
 const navigateToCollection = collectionName => navigateCollection(collectionName);
 const navigateToNewEntry = collectionName => navigateCollection(`${collectionName}/new`);
 const navigateToEntry = (collectionName, slug) =>
-  navigateCollection(`${collectionName}/entries/${slug}`);
+  navigateCollection(`${collectionName}/entries/${encodeURIComponent(slug)}`);
 
 export class Editor extends React.Component {
   static propTypes = {
@@ -435,7 +435,7 @@ export class Editor extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections, entryDraft, auth, config, entries, globalUI } = state;
-  const slug = ownProps.match.params.slug;
+  const slug = ownProps.match.params.slug && decodeURIComponent(ownProps.match.params.slug);
   const collection = collections.get(ownProps.match.params.name);
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;

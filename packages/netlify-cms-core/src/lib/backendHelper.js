@@ -27,10 +27,8 @@ export const commitMessageFormatter = (
 
   const commitMessage = templates.get(type).replace(variableRegex, (_, variable) => {
     switch (variable) {
-      case 'slug': {
-        const contentInSubFolders = collection.get('content_in_sub_folders', false);
-        return contentInSubFolders ? decodeURIComponent(slug) : slug;
-      }
+      case 'slug':
+        return slug;
       case 'path':
         return path;
       case 'collection':
@@ -88,18 +86,15 @@ export const slugFormatter = (collection, entryData, slugConfig) => {
     );
   }
 
-  let processSlug;
+  const processSlug = flow([
+    compileStringTemplate,
+    prepareSlug,
+    partialRight(sanitizeSlug, slugConfig),
+  ]);
+
   if (contentInSubFolders) {
-    processSlug = flow([compileStringTemplate, prepareSlug, encodeURIComponent]);
-  } else {
-    // Pass entire slug through `prepareSlug` and `sanitizeSlug`.
-    // TODO: only pass slug replacements through sanitizers, static portions of
-    // the slug template should not be sanitized. (breaking change)
-    processSlug = flow([
-      compileStringTemplate,
-      prepareSlug,
-      partialRight(sanitizeSlug, slugConfig),
-    ]);
+    const parts = template.split('/');
+    return parts.map(part => processSlug(part, new Date(), identifier, entryData)).join('/');
   }
 
   return processSlug(template, new Date(), identifier, entryData);

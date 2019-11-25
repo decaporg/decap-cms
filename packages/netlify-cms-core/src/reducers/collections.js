@@ -39,10 +39,8 @@ const selectors = {
       return collection.get('fields');
     },
     entryPath(collection, slug) {
-      const contentInSubFolders = collection.get('content_in_sub_folders', false);
-      const decodedSlug = contentInSubFolders ? decodeURIComponent(slug) : slug;
       const folder = collection.get('folder').replace(/\/$/, '');
-      return `${folder}/${decodedSlug}.${this.entryExtension(collection)}`;
+      return `${folder}/${slug}.${this.entryExtension(collection)}`;
     },
     entrySlug(collection, path) {
       const folder = collection.get('folder').replace(/\/$/, '');
@@ -51,9 +49,7 @@ const selectors = {
         .pop()
         .replace(new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`), '');
 
-      const contentInSubFolders = collection.get('content_in_sub_folders', false);
-      const encodedSlug = contentInSubFolders ? encodeURIComponent(slug) : slug;
-      return encodedSlug;
+      return slug;
     },
     listMethod() {
       return 'entriesByFolder';
