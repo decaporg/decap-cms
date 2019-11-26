@@ -388,7 +388,7 @@ export default class GitHub {
         branches.map(({ ref }) => {
           promises.push(
             new Promise(resolve => {
-              const contentKey = ref.split('refs/heads/cms/').pop();
+              const contentKey = this.api.contentKeyFromRef(ref);
               const slug = contentKey.split('/').pop();
               return sem.take(() =>
                 this.api

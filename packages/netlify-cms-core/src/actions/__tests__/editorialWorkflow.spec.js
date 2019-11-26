@@ -57,6 +57,9 @@ describe('editorialWorkflow actions', () => {
         mediaLibrary: fromJS({
           isLoading: false,
         }),
+        editorialWorkflow: fromJS({
+          pages: { ids: [] },
+        }),
       });
 
       currentBackend.mockReturnValue(backend);

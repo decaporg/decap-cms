@@ -228,7 +228,8 @@ export default class GraphQLAPI extends API {
           branches.push({ ref: `${headRef.prefix}${headRef.name}` });
         });
       });
-      return branches;
+
+      return await Promise.all(branches.map(branch => this.migrateBranch(branch)));
     } else {
       console.log(
         '%c No Unpublished entries',
@@ -516,7 +517,7 @@ export default class GraphQLAPI extends API {
       },
     });
     const { branch } = data.createRef;
-    return branch;
+    return { ...branch, ref: `${branch.prefix}${branch.name}` };
   }
 
   async createBranchAndPullRequest(branchName, sha, title) {

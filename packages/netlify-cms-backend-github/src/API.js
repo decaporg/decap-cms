@@ -12,18 +12,19 @@ import {
   differenceBy,
   trimStart,
 } from 'lodash';
-import { map } from 'lodash/fp';
+import { map, filter } from 'lodash/fp';
 import {
   getAllResponses,
   APIError,
   EditorialWorkflowError,
-  filterPromisesWith,
+  flowAsync,
   localForage,
   onlySuccessfulPromises,
   resolvePromiseProperties,
 } from 'netlify-cms-lib-util';
 
 const CMS_BRANCH_PREFIX = 'cms';
+const CURRENT_METADATA_VERSION = '1';
 
 const replace404WithEmptyArray = err => {
   if (err && err.status === 404) {
@@ -148,9 +149,7 @@ export default class API {
 
   generateContentKey(collectionName, slug) {
     if (!this.useOpenAuthoring) {
-      // this doesn't use the collection, but we need to leave it that way for backwards
-      // compatibility
-      return slug;
+      return `${collectionName}/${slug}`;
     }
 
     return `${this.repo}/${collectionName}/${slug}`;
@@ -220,6 +219,29 @@ export default class API {
           resolve();
         } catch (err) {
           reject(err);
+        }
+      }),
+    );
+  }
+
+  deleteMetadata(key) {
+    if (!this._metadataSemaphore) {
+      this._metadataSemaphore = semaphore(1);
+    }
+    return new Promise(resolve =>
+      this._metadataSemaphore.take(async () => {
+        try {
+          const branchData = await this.checkMetadataRef();
+          const file = { path: `${key}.json`, sha: null };
+
+          const changeTree = await this.updateTree(branchData.sha, [file]);
+          const { sha } = await this.commit(`Deleting “${key}” metadata`, changeTree);
+          await this.patchRef('meta', '_netlify_cms', sha);
+          this._metadataSemaphore.leave();
+          resolve();
+        } catch (err) {
+          this._metadataSemaphore.leave();
+          resolve();
         }
       }),
     );
@@ -394,28 +416,17 @@ export default class API {
       });
   }
 
-  getPRsForBranchName = ({
-    branchName,
-    state,
-    base = this.branch,
-    repoURL = this.repoURL,
-    usernameOfFork,
-  } = {}) => {
+  getPRsForBranchName = branchName => {
     // Get PRs with a `head` of `branchName`. Note that this is a
     // substring match, so we need to check that the `head.ref` of
     // at least one of the returned objects matches `branchName`.
-    return this.requestAllPages(`${repoURL}/pulls`, {
+    return this.requestAllPages(`${this.repoURL}/pulls`, {
       params: {
-        head: usernameOfFork ? `${usernameOfFork}:${branchName}` : branchName,
-        ...(state ? { state } : {}),
-        base,
+        head: branchName,
+        state: 'open',
+        base: this.branch,
       },
     });
-  };
-
-  branchHasPR = async ({ branchName, ...rest }) => {
-    const prs = await this.getPRsForBranchName({ branchName, ...rest });
-    return prs.some(pr => pr.head.ref === branchName);
   };
 
   getUpdatedOpenAuthoringMetadata = async (contentKey, { metadata: metadataArg } = {}) => {
@@ -459,33 +470,82 @@ export default class API {
     return metadata;
   };
 
+  async migrateToVersion1(branch, metaData) {
+    // hard code key/branch generation logic to ignore future changes
+    const oldContentKey = branch.ref.substring(`refs/heads/cms/`.length);
+    const newContentKey = `${metaData.collection}/${oldContentKey}`;
+    const newBranchName = `cms/${newContentKey}`;
+
+    // create new branch and pull request in new format
+    const newBranch = await this.createBranch(newBranchName, metaData.pr.head);
+    const pr = await this.createPR(metaData.commitMessage, newBranchName);
+
+    // store new metadata
+    await this.storeMetadata(newContentKey, {
+      ...metaData,
+      pr: {
+        number: pr.number,
+        head: pr.head.sha,
+      },
+      branch: newBranchName,
+      version: '1',
+    });
+
+    // remove old data
+    await this.closePR(metaData.pr);
+    await this.deleteBranch(metaData.branch);
+    await this.deleteMetadata(oldContentKey);
+
+    return newBranch;
+  }
+
+  async migrateBranch(branch) {
+    const metadata = await this.retrieveMetadata(this.contentKeyFromRef(branch.ref));
+    if (!metadata.version) {
+      // migrate branch from cms/slug to cms/collection/slug
+      branch = await this.migrateToVersion1(branch, metadata);
+    }
+
+    return branch;
+  }
+
   async listUnpublishedBranches() {
     console.log(
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
-    const onlyBranchesWithOpenPRs = filterPromisesWith(({ ref }) =>
-      this.branchHasPR({ branchName: this.branchNameFromRef(ref), state: 'open' }),
-    );
-    const getUpdatedOpenAuthoringBranches = flow([
-      map(async branch => {
-        const contentKey = this.contentKeyFromRef(branch.ref);
-        const metadata = await this.getUpdatedOpenAuthoringMetadata(contentKey);
-        // filter out removed entries
-        if (!metadata) {
-          return Promise.reject('Unpublished entry was removed');
-        }
-        return branch;
-      }),
-      onlySuccessfulPromises,
-    ]);
+
     try {
       const branches = await this.request(`${this.repoURL}/git/refs/heads/cms`).catch(
         replace404WithEmptyArray,
       );
-      const filterFunction = this.useOpenAuthoring
-        ? getUpdatedOpenAuthoringBranches
-        : onlyBranchesWithOpenPRs;
+
+      let filterFunction;
+      if (this.useOpenAuthoring) {
+        const getUpdatedOpenAuthoringBranches = flow([
+          map(async branch => {
+            const contentKey = this.contentKeyFromRef(branch.ref);
+            const metadata = await this.getUpdatedOpenAuthoringMetadata(contentKey);
+            // filter out removed entries
+            if (!metadata) {
+              return Promise.reject('Unpublished entry was removed');
+            }
+            return branch;
+          }),
+          onlySuccessfulPromises,
+        ]);
+        filterFunction = getUpdatedOpenAuthoringBranches;
+      } else {
+        const prs = await this.getPRsForBranchName(CMS_BRANCH_PREFIX);
+        const onlyBranchesWithOpenPRs = flowAsync([
+          filter(({ ref }) => prs.some(pr => pr.head.ref === this.branchNameFromRef(ref))),
+          map(branch => this.migrateBranch(branch)),
+          onlySuccessfulPromises,
+        ]);
+
+        filterFunction = onlyBranchesWithOpenPRs;
+      }
+
       return await filterFunction(branches);
     } catch (err) {
       console.log(
@@ -621,6 +681,7 @@ export default class API {
           files: mediaFilesList,
         },
         timeStamp: new Date().toISOString(),
+        version: CURRENT_METADATA_VERSION,
       });
     } else {
       // Entry is already on editorial review workflow - just update metadata and commit to existing branch
@@ -864,6 +925,7 @@ export default class API {
       this.retrieveMetadata(contentKey)
         .then(metadata => (metadata && metadata.pr ? this.closePR(metadata.pr) : Promise.resolve()))
         .then(() => this.deleteBranch(branchName))
+        .then(() => this.deleteMetadata(contentKey))
         // If the PR doesn't exist, then this has already been deleted -
         // deletion should be idempotent, so we can consider this a
         // success.
@@ -883,6 +945,7 @@ export default class API {
     const metadata = await this.retrieveMetadata(contentKey);
     await this.mergePR(metadata.pr, metadata.objects);
     await this.deleteBranch(branchName);
+    await this.deleteMetadata(contentKey);
 
     return metadata;
   }

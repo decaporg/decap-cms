@@ -14,6 +14,7 @@ import {
   filterPromisesWith,
   onlySuccessfulPromises,
   resolvePromiseProperties,
+  flowAsync,
   then,
 } from './promise';
 import unsentRequest from './unsentRequest';
@@ -44,6 +45,7 @@ export const NetlifyCmsLibUtil = {
   filterPromisesWith,
   onlySuccessfulPromises,
   resolvePromiseProperties,
+  flowAsync,
   then,
   unsentRequest,
   filterByPropExtension,
@@ -69,6 +71,7 @@ export {
   filterPromisesWith,
   onlySuccessfulPromises,
   resolvePromiseProperties,
+  flowAsync,
   then,
   unsentRequest,
   filterByPropExtension,

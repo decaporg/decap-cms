@@ -338,4 +338,93 @@ describe('github API', () => {
       );
     });
   });
+
+  describe('migrateBranch', () => {
+    it('should migrate to version 1 when no version', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
+      api.migrateToVersion1 = jest.fn().mockResolvedValue(newBranch);
+      const metadata = { type: 'PR' };
+      api.retrieveMetadata = jest.fn().mockResolvedValue(metadata);
+
+      const branch = { ref: 'refs/heads/cms/2019-11-11-post-title' };
+      await expect(api.migrateBranch(branch)).resolves.toBe(newBranch);
+
+      expect(api.migrateToVersion1).toHaveBeenCalledTimes(1);
+      expect(api.migrateToVersion1).toHaveBeenCalledWith(branch, metadata);
+
+      expect(api.retrieveMetadata).toHaveBeenCalledTimes(1);
+      expect(api.retrieveMetadata).toHaveBeenCalledWith('2019-11-11-post-title');
+    });
+
+    it('should not migrate to version 1 when version is 1', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      api.migrateToVersion1 = jest.fn();
+      const metadata = { type: 'PR', version: '1' };
+      api.retrieveMetadata = jest.fn().mockResolvedValue(metadata);
+
+      const branch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
+      await expect(api.migrateBranch(branch)).resolves.toBe(branch);
+
+      expect(api.migrateToVersion1).toHaveBeenCalledTimes(0);
+
+      expect(api.retrieveMetadata).toHaveBeenCalledTimes(1);
+      expect(api.retrieveMetadata).toHaveBeenCalledWith('posts/2019-11-11-post-title');
+    });
+  });
+
+  describe('migrateToVersion1', () => {
+    it('should migrate to version 1', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
+      api.createBranch = jest.fn().mockResolvedValue(newBranch);
+
+      const newPr = { number: 2, head: { sha: 'new_head' } };
+      api.createPR = jest.fn().mockResolvedValue(newPr);
+
+      api.storeMetadata = jest.fn();
+      api.closePR = jest.fn();
+      api.deleteBranch = jest.fn();
+      api.deleteMetadata = jest.fn();
+
+      const branch = { ref: 'refs/heads/cms/2019-11-11-post-title' };
+      const metadata = {
+        branch: 'cms/2019-11-11-post-title',
+        type: 'PR',
+        pr: { head: 'old_head' },
+        commitMessage: 'commitMessage',
+        collection: 'posts',
+      };
+
+      await expect(api.migrateToVersion1(branch, metadata)).resolves.toBe(newBranch);
+
+      expect(api.createBranch).toHaveBeenCalledTimes(1);
+      expect(api.createBranch).toHaveBeenCalledWith('cms/posts/2019-11-11-post-title', 'old_head');
+
+      expect(api.createPR).toHaveBeenCalledTimes(1);
+      expect(api.createPR).toHaveBeenCalledWith('commitMessage', 'cms/posts/2019-11-11-post-title');
+
+      expect(api.storeMetadata).toHaveBeenCalledTimes(1);
+      expect(api.storeMetadata).toHaveBeenCalledWith('posts/2019-11-11-post-title', {
+        type: 'PR',
+        pr: { head: 'new_head', number: 2 },
+        commitMessage: 'commitMessage',
+        collection: 'posts',
+        branch: 'cms/posts/2019-11-11-post-title',
+        version: '1',
+      });
+
+      expect(api.closePR).toHaveBeenCalledTimes(1);
+      expect(api.closePR).toHaveBeenCalledWith(metadata.pr);
+
+      expect(api.deleteBranch).toHaveBeenCalledTimes(1);
+      expect(api.deleteBranch).toHaveBeenCalledWith('cms/2019-11-11-post-title');
+
+      expect(api.deleteMetadata).toHaveBeenCalledTimes(1);
+      expect(api.deleteMetadata).toHaveBeenCalledWith('2019-11-11-post-title');
+    });
+  });
 });

@@ -33,3 +33,6 @@ export const onlySuccessfulPromises = flow([
   then(Promise.all.bind(Promise)),
   then(filter(maybeValue => maybeValue !== filterPromiseSymbol)),
 ]);
+
+const wrapFlowAsync = fn => async arg => fn(await arg);
+export const flowAsync = fns => flow(fns.map(fn => wrapFlowAsync(fn)));
