@@ -56,7 +56,7 @@ describe('ConnectedPathPreview', () => {
 
     expect(selectDraftPath).toHaveBeenCalledTimes(0);
 
-    expect(getByTestId('site_path-preview')).toHaveValue('existing-path/index.md');
+    expect(getByTestId('site_path-preview')).toHaveTextContent('existing-path/index.md');
 
     expect(asFragment()).toMatchSnapshot();
   });
@@ -77,7 +77,7 @@ describe('ConnectedPathPreview', () => {
     expect(selectDraftPath).toHaveBeenCalledTimes(1);
     expect(selectDraftPath).toHaveBeenCalledWith({}, props.collection, props.entry);
 
-    expect(getByTestId('site_path-preview')).toHaveValue('preview-path/index.md');
+    expect(getByTestId('site_path-preview')).toHaveTextContent('preview-path/index.md');
 
     expect(asFragment()).toMatchSnapshot();
   });

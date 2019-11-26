@@ -26,7 +26,7 @@ import Widget from './Widget';
  * for styling. Once that changes we can stop storing raw style strings like
  * this.
  */
-export const styleStrings = {
+const styleStrings = {
   label: `
     color: ${colors.controlLabel};
     background-color: ${colors.textFieldBorder};
@@ -99,7 +99,7 @@ export const styleStrings = {
   `,
 };
 
-export const ControlContainer = styled.div`
+const ControlContainer = styled.div`
   margin-top: 16px;
 
   &:first-of-type {
@@ -155,6 +155,7 @@ class EditorControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    pathPreview: PropTypes.element,
   };
 
   state = {
@@ -187,6 +188,7 @@ class EditorControl extends React.Component {
       clearFieldErrors,
       loadEntry,
       t,
+      pathPreview,
     } = this.props;
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
@@ -231,6 +233,7 @@ class EditorControl extends React.Component {
             >
               {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
             </label>
+            {pathPreview}
             <Widget
               classNameWrapper={cx(
                 css`

@@ -4,35 +4,22 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
-import { styleStrings, ControlContainer } from './EditorControl';
-import { colors } from 'netlify-cms-ui-default';
+import { colors, transitions } from 'netlify-cms-ui-default';
 import { selectDraftPath } from 'Selectors/entryDraft';
 
 const PathLabel = styled.label`
-  ${styleStrings.label}
+  color: ${colors.text};
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  border: 0;
+  padding-left: 5px;
+  transition: all ${transitions.main};
+  position: relative;
 `;
 
-const PathInput = styled.input`
-  ${styleStrings.widget}
-  color: ${colors.controlLabel};
-  background-color: ${colors.textFieldBorder};
-`;
-
-export const PathPreview = ({ value, t }) => {
-  return (
-    <ControlContainer>
-      <PathLabel htmlFor="site_path-preview">
-        {t('editor.editorControlPane.pathPreview.label')}
-      </PathLabel>
-      <PathInput
-        value={value}
-        readOnly
-        id="site_path-preview"
-        disabled
-        data-testid="site_path-preview"
-      />
-    </ControlContainer>
-  );
+export const PathPreview = ({ value }) => {
+  return <PathLabel data-testid="site_path-preview">{value}</PathLabel>;
 };
 
 PathPreview.propTypes = {
