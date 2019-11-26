@@ -544,6 +544,7 @@ export function unpublishPublishedEntry(collection, slug) {
       .then(() => {
         dispatch(unpublishedEntryPersisted(collection, entryDraft, transactionID, slug));
         dispatch(entryDeleted(collection, slug));
+        dispatch(loadUnpublishedEntry(collection, slug));
         dispatch(
           notifSend({
             message: { key: 'ui.toast.entryUnpublished' },
