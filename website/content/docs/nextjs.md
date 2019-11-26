@@ -31,8 +31,8 @@ touch pages/index.js
 mkdir content
 touch content/home.md
 
-#Create a folder for static assets
-mkdir static
+# Create a folder for static assets
+mkdir public
 
 ```
 
@@ -62,7 +62,7 @@ cats:
     name: Maru (まる)
   - description: Lil Bub is an American celebrity cat known for her unique appearance.
     name: Lil Bub
-  - description: 'Grumpy cat is an American celebrity cat known for her grumpy appearance. '
+  - description: 'Grumpy cat is an American celebrity cat known for her grumpy appearance.'
     name: Grumpy cat (Tardar Sauce)
 ---
 Welcome to my awesome page about cats of the internet. 
@@ -90,25 +90,31 @@ module.exports = {
 Almost there! The last thing we need to do is to add some content our ```pages/index.js``` file. With a little help of our webpack loader, we can now easilly import Markdown files:
 
 ```js
-import React, { Component } from 'react'
+import Head from "next/head"
+import { Component } from 'react'
 import content from '../content/home.md';
 
 export default class Home extends Component {
   render() {
     let { html , attributes:{ title, cats } } = content;
     return (
-      <article>
+      <>
+        <Head>
+          <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+        </Head>
+        <article>
           <h1>{title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: html }}/>
+          <div dangerouslySetInnerHTML={{ __html: html }} />
           <ul>
-              { cats.map((cat, k) => (
-                  <li key={k}>
-                    <h2>{cat.name}</h2>
-                    <p>{cat.description}</p>
-                  </li>
-              ))}
+            {cats.map((cat, k) => (
+              <li key={k}>
+                <h2>{cat.name}</h2>
+                <p>{cat.description}</p>
+              </li>
+            ))}
           </ul>
-      </article>
+        </article>
+      </>
     )
   }
 }
@@ -122,19 +128,19 @@ npm run dev
 
 ## Adding Netlify CMS
 
-There are many different ways to add Netlify CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Netlify into a subfolder inside the ```/static``` directory (which is just served as static files by Next):
+There are many different ways to add Netlify CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Netlify into a subfolder inside the ```/public``` directory (which is just served as static files by Next):
 
 ```bash
 # Create and navigate into static/admin folder
-mkdir static/admin
-cd static/admin
+mkdir public/admin
+cd public/admin
 
 # Create index.html and config.yml file
 touch index.html
 touch config.yml
 ```
 
-Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out the [Add Netlify To Your Site](https://www.netlifycms.org/docs/add-to-your-site/) section for more information)
+Paste HTML for Netlify CMS into your ``public/admin/index.html`` file (check out the [Add Netlify To Your Site](https://www.netlifycms.org/docs/add-to-your-site/) section for more information)
 
 ```html
 <!doctype html>
@@ -147,19 +153,20 @@ Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out
 </head>
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@2.9.7/dist/netlify-cms.js"></script>
 </body>
 </html>
 ```
 Notice that we also added the identity widget. This allows sign up when the project is hosted at Netlify.
 
-Paste the following configuration into your```static/admin/config.yml``` file:
+Paste the following configuration into your ```public/admin/config.yml``` file:
 
 ```yaml
 backend:
   name: git-gateway
   branch: master
-media_folder: static/img
+media_folder: public/img
+public_folder: img
 collections:
   - name: "pages"
     label: "Pages"
@@ -179,10 +186,10 @@ collections:
             - { label: "Description", name: "description", widget: "text"}
 ```
 
-Awesome! Netlify CMS should now be available at ```localhost:3000/static/admin/index.html```.
+Awesome! Netlify CMS should now be available at ```localhost:3000/admin/index.html```.
 Unfortunately we can't edit our content just yet. First we need to move our code into a git repository, and create a new Netlify site.
 
-**Tip:** If you want to test changes made to your config.yml file locally, swap out "git-gateway" with "test-repo" and navigate to ```localhost:3000/static/admin/index.html``` to view Netlify CMS locally (you can't make changes or read actual content from Git this way, but it's great to verify how things will look).
+**Tip:** If you want to test changes made to your config.yml file locally, swap out "git-gateway" with "test-repo" and navigate to ```localhost:3000/admin/index.html``` to view Netlify CMS locally (you can't make changes or read actual content from Git this way, but it's great to verify how things will look).
 
 ## Publishing to GitHub and Netlify
 
@@ -221,7 +228,7 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 
 ### Celebrate!
 Great job - you did it! 
-Open your new page via the new Netlify URL, and navigate to ```/static/admin```. If you did everything correct in the previous step, you should now be able to sign up for an account, and log in. 
+Open your new page via the new Netlify URL, and navigate to ```/admin```. If you did everything correct in the previous step, you should now be able to sign up for an account, and log in. 
 
 **Tip:** Signing up with an external provider is the easiest. If you want to sign up by email, you'll have to set up a redirect in your index.js page (which we won't be covering in this guide). For more information, have a look at the [Add To Your Site](https://www.netlifycms.org/docs/add-to-your-site) section.
 

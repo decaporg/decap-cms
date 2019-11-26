@@ -15,7 +15,8 @@ A static `admin` folder contains all Netlify CMS files, stored at the root of yo
 | These generators ...               | store static files in |
 | ---------------------------------- | --------------------- |
 | Jekyll, GitBook                    | `/` (project root)    |
-| Hugo, Gatsby, Nuxt, Next, Gridsome, Zola | `/static`             |
+| Hugo, Gatsby, Nuxt, Gridsome, Zola | `/static`             |
+| Next                               | `/public`             |
 | Hexo, Middleman, Jigsaw            | `/source`             |
 | Spike                              | `/views`              |
 | Wyam                               | `/input`              |
