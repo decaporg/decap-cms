@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.6...netlify-cms-core@2.13.0-beta.7) (2019-11-26)
+
+
+### Bug Fixes
+
+* emotion use ref prop ([#2905](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2905)) ([9ddfa48](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9ddfa48512e54c77fc8e9a0f2eba4f0abf7c9029))
+* **backend-github:** prepend collection name ([#2878](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2878)) ([465f463](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/465f4639597f258d5aa2c1b65e9d2c16023ee7ae))
+* **deps:** update dependency react-is to v16.12.0 ([#2912](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2912)) ([695b0e0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/695b0e03805e7e1610787ec5f093499681bd3568))
+
+
+### Features
+
+* workflow unpublished entry ([#2914](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2914)) ([41bb9aa](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/41bb9aac0dd6fd9f8ff157bb0b29c85aa87fe04d))
+
+
+
+
+
 # [2.13.0-beta.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.5...netlify-cms-core@2.13.0-beta.6) (2019-11-18)
 
 

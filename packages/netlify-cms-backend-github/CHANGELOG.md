@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.5...netlify-cms-backend-github@2.5.0-beta.6) (2019-11-26)
+
+
+### Bug Fixes
+
+* **backend-github:** prepend collection name ([#2878](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2878)) ([465f463](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/465f4639597f258d5aa2c1b65e9d2c16023ee7ae))
+
+
+### Features
+
+* workflow unpublished entry ([#2914](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2914)) ([41bb9aa](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/41bb9aac0dd6fd9f8ff157bb0b29c85aa87fe04d))
+
+
+
+
+
 # [2.5.0-beta.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.4...netlify-cms-backend-github@2.5.0-beta.5) (2019-11-18)
 
 
