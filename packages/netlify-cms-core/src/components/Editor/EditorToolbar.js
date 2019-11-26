@@ -141,8 +141,9 @@ const SaveButton = styled(ToolbarButton)`
   ${buttons.lightBlue};
 `;
 
-const UnpublishButton = styled(ToolbarButton)`
-  ${buttons.lightTeal};
+const UnpublishButton = styled(StyledDropdownButton)`
+  background-color: ${colorsRaw.tealLight};
+  color: ${colorsRaw.teal};
 `;
 
 const StatusPublished = styled.div`
@@ -465,11 +466,24 @@ class EditorToolbar extends React.Component {
       return (
         <>
           {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          <UnpublishButton key="save-unpublish" onClick={() => unPublish()}>
-            {isPersisting
-              ? t('editor.editorToolbar.unpublishing')
-              : t('editor.editorToolbar.unpublish')}
-          </UnpublishButton>
+          <ToolbarDropdown
+            dropdownTopOverlap="40px"
+            dropdownWidth="150px"
+            renderButton={() => (
+              <UnpublishButton>
+                {isPersisting
+                  ? t('editor.editorToolbar.unpublishing')
+                  : t('editor.editorToolbar.published')}
+              </UnpublishButton>
+            )}
+          >
+            <DropdownItem
+              label={t('editor.editorToolbar.unpublish')}
+              icon="arrow"
+              iconDirection="right"
+              onClick={unPublish}
+            />
+          </ToolbarDropdown>
         </>
       );
     }
