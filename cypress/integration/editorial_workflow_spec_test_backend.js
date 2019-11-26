@@ -18,6 +18,7 @@ import {
   validateObjectFieldsAndExit,
   validateNestedObjectFieldsAndExit,
   validateListFieldsAndExit,
+  unpublishEntry,
 } from '../utils/steps';
 import { setting1, setting2, workflowStatus, editorStatus } from '../utils/constants';
 
@@ -122,5 +123,16 @@ describe('Test Backend Editorial Workflow', () => {
     exitEditor();
     goToWorkflow();
     assertWorkflowStatus(entry1, workflowStatus.ready);
+  });
+
+  it('can unpublish an existing entry', () => {
+    // first publish an entry
+    login();
+    createPostAndExit(entry1);
+    goToWorkflow();
+    updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+    publishWorkflowEntry(entry1);
+    // then unpublish it
+    unpublishEntry(entry1);
   });
 });
