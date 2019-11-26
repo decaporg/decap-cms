@@ -91,7 +91,7 @@ Almost there! The last thing we need to do is to add some content our ```pages/i
 
 ```js
 import Head from "next/head"
-import React, { Component } from 'react'
+import { Component } from 'react'
 import content from '../content/home.md';
 
 export default class Home extends Component {
