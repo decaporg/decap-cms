@@ -5,6 +5,7 @@ const setting2 = { name: 'Andrew Wommack', description: 'A Gospel Teacher' };
 const notifications = {
   saved: 'Entry saved',
   published: 'Entry published',
+  unpublished: 'Entry unpublished',
   updated: 'Entry status updated',
   deletedUnpublished: 'Unpublished changes deleted',
   error: {

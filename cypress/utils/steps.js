@@ -212,6 +212,23 @@ function updateExistingPostAndExit(fromEntry, toEntry) {
   cy.contains('h2', toEntry.title);
 }
 
+function unpublishEntry(entry) {
+  goToCollections();
+  cy.contains('h2', entry.title)
+    .parent()
+    .click({ force: true });
+  cy.contains('[role="button"]', 'Published').as('publishedButton');
+  cy.get('@publishedButton')
+    .parent()
+    .within(() => {
+      cy.get('@publishedButton').click();
+      cy.contains('[role="menuitem"] span', 'Unpublish').click();
+    });
+  assertNotification(notifications.unpublished);
+  goToWorkflow();
+  assertWorkflowStatus(entry, workflowStatus.ready);
+}
+
 function validateObjectFields({ limit, author }) {
   cy.get('a[href^="#/collections/settings"]').click();
   cy.get('a[href^="#/collections/settings/entries/general"]').click();
@@ -303,4 +320,5 @@ module.exports = {
   validateObjectFieldsAndExit,
   validateNestedObjectFieldsAndExit,
   validateListFieldsAndExit,
+  unpublishEntry,
 };

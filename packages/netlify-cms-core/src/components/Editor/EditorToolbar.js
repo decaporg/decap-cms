@@ -141,6 +141,11 @@ const SaveButton = styled(ToolbarButton)`
   ${buttons.lightBlue};
 `;
 
+const UnpublishButton = styled(StyledDropdownButton)`
+  background-color: ${colorsRaw.tealLight};
+  color: ${colorsRaw.teal};
+`;
+
 const StatusPublished = styled.div`
   ${styles.buttonMargin};
   border: 1px solid ${colors.textFieldBorder};
@@ -212,6 +217,7 @@ class EditorToolbar extends React.Component {
     onDeleteUnpublishedChanges: PropTypes.func.isRequired,
     onChangeStatus: PropTypes.func.isRequired,
     onPublish: PropTypes.func.isRequired,
+    unPublish: PropTypes.func.isRequired,
     onPublishAndNew: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map.isRequired,
     hasChanged: PropTypes.bool,
@@ -377,10 +383,12 @@ class EditorToolbar extends React.Component {
       isPublishing,
       onChangeStatus,
       onPublish,
+      unPublish,
       onPublishAndNew,
       currentStatus,
       isNewEntry,
       useOpenAuthoring,
+      isPersisting,
       t,
     } = this.props;
     if (currentStatus) {
@@ -458,7 +466,24 @@ class EditorToolbar extends React.Component {
       return (
         <>
           {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          <StatusPublished>{t('editor.editorToolbar.published')}</StatusPublished>
+          <ToolbarDropdown
+            dropdownTopOverlap="40px"
+            dropdownWidth="150px"
+            renderButton={() => (
+              <UnpublishButton>
+                {isPersisting
+                  ? t('editor.editorToolbar.unpublishing')
+                  : t('editor.editorToolbar.published')}
+              </UnpublishButton>
+            )}
+          >
+            <DropdownItem
+              label={t('editor.editorToolbar.unpublish')}
+              icon="arrow"
+              iconDirection="right"
+              onClick={unPublish}
+            />
+          </ToolbarDropdown>
         </>
       );
     }

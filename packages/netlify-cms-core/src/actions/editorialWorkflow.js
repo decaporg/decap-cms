@@ -2,14 +2,16 @@ import uuid from 'uuid/v4';
 import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
+import { Map } from 'immutable';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
-import { selectPublishedSlugs, selectUnpublishedSlugs } from 'Reducers';
+import { selectPublishedSlugs, selectUnpublishedSlugs, selectEntry } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
-import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import {
   loadEntry,
+  entryDeleted,
   getMediaAssets,
   setDraftEntryMediaFiles,
   clearDraftEntryMediaFiles,
@@ -522,6 +524,44 @@ export function publishUnpublishedEntry(collection, slug) {
           }),
         );
         dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
+      });
+  };
+}
+
+export function unpublishPublishedEntry(collection, slug) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const transactionID = uuid();
+    const entry = selectEntry(state, collection.get('name'), slug);
+    const entryDraft = Map().set('entry', entry);
+    dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
+    return backend
+      .persistEntry(state.config, collection, entryDraft, [], state.integrations, [], {
+        status: status.get('PENDING_PUBLISH'),
+      })
+      .then(() => backend.deleteEntry(state.config, collection, slug))
+      .then(() => {
+        dispatch(unpublishedEntryPersisted(collection, entryDraft, transactionID, slug));
+        dispatch(entryDeleted(collection, slug));
+        dispatch(loadUnpublishedEntry(collection, slug));
+        dispatch(
+          notifSend({
+            message: { key: 'ui.toast.entryUnpublished' },
+            kind: 'success',
+            dismissAfter: 4000,
+          }),
+        );
+      })
+      .catch(error => {
+        dispatch(
+          notifSend({
+            message: { key: 'ui.toast.onFailToUnpublishEntry', details: error },
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+        dispatch(unpublishedEntryPersistedFail(error, transactionID));
       });
   };
 }

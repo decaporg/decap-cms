@@ -667,7 +667,7 @@ export default class API {
             }
           : undefined,
         user: user.name || user.login,
-        status: this.initialWorkflowStatus,
+        status: options.status || this.initialWorkflowStatus,
         branch: branchName,
         collection: options.collectionName,
         commitMessage: options.commitMessage,
