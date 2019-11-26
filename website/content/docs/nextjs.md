@@ -32,7 +32,7 @@ mkdir content
 touch content/home.md
 
 #Create a folder for static assets
-mkdir static
+mkdir -p public/static
 
 ```
 
@@ -62,7 +62,7 @@ cats:
     name: Maru (まる)
   - description: Lil Bub is an American celebrity cat known for her unique appearance.
     name: Lil Bub
-  - description: 'Grumpy cat is an American celebrity cat known for her grumpy appearance. '
+  - description: 'Grumpy cat is an American celebrity cat known for her grumpy appearance.'
     name: Grumpy cat (Tardar Sauce)
 ---
 Welcome to my awesome page about cats of the internet. 
@@ -128,19 +128,19 @@ npm run dev
 
 ## Adding Netlify CMS
 
-There are many different ways to add Netlify CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Netlify into a subfolder inside the ```/static``` directory (which is just served as static files by Next):
+There are many different ways to add Netlify CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Netlify into a subfolder inside the ```/public/static``` directory (which is just served as static files by Next):
 
 ```bash
 # Create and navigate into static/admin folder
-mkdir static/admin
-cd static/admin
+mkdir public/static/admin
+cd public/static/admin
 
 # Create index.html and config.yml file
 touch index.html
 touch config.yml
 ```
 
-Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out the [Add Netlify To Your Site](https://www.netlifycms.org/docs/add-to-your-site/) section for more information)
+Paste HTML for Netlify CMS into your ``public/static/admin/index.html`` file (check out the [Add Netlify To Your Site](https://www.netlifycms.org/docs/add-to-your-site/) section for more information)
 
 ```html
 <!doctype html>
@@ -159,13 +159,14 @@ Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out
 ```
 Notice that we also added the identity widget. This allows sign up when the project is hosted at Netlify.
 
-Paste the following configuration into your```static/admin/config.yml``` file:
+Paste the following configuration into your ```public/static/admin/config.yml``` file:
 
 ```yaml
 backend:
   name: git-gateway
   branch: master
-media_folder: static/img
+media_folder: public/static/img
+public_folder: static/img
 collections:
   - name: "pages"
     label: "Pages"
