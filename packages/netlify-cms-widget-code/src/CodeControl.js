@@ -53,7 +53,7 @@ function valueToOption(val) {
 
 const modes = languages.map(valueToOption);
 
-const themes = ['default', 'material'].map(valueToOption);
+const themes = ['default', 'material'];
 
 const settingsPersistKeys = {
   theme: 'cms.codemirror.theme',
@@ -79,7 +79,7 @@ export default class CodeControl extends React.Component {
     keyMap: localStorage.getItem(settingsPersistKeys['keyMap']) || 'default',
     settingsVisible: false,
     codeMirrorKey: uuid(),
-    theme: localStorage.getItem(settingsPersistKeys['theme']) || themes.slice(-1),
+    theme: localStorage.getItem(settingsPersistKeys['theme']) || themes[themes.length - 1],
   };
 
   lastKnownValue = this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value;
@@ -260,7 +260,7 @@ export default class CodeControl extends React.Component {
                 forID={forID}
                 modes={modes}
                 mode={valueToOption(langInfo || defaultLang)}
-                theme={themes.find(t => t.value === theme)}
+                theme={themes.find(t => t === theme)}
                 themes={themes}
                 keyMap={{ value: keyMap, label: keyMap }}
                 keyMaps={this.getKeyMapOptions()}

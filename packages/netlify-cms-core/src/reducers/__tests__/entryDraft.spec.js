@@ -2,6 +2,8 @@ import { Map, List, fromJS } from 'immutable';
 import * as actions from 'Actions/entries';
 import reducer from '../entryDraft';
 
+jest.mock('uuid/v4', () => jest.fn(() => '1'));
+
 const initialState = Map({
   entry: Map(),
   mediaFiles: List(),
@@ -35,7 +37,7 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
-          key: state.get('key'),
+          key: '1',
         }),
       );
     });
@@ -54,7 +56,7 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
-          key: state.get('key'),
+          key: '1',
         }),
       );
     });
@@ -132,6 +134,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: false,
+        key: '',
       });
     });
   });
@@ -149,6 +152,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: false,
+        key: '',
       });
     });
   });
@@ -166,6 +170,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: false,
+        key: '',
       });
     });
   });
@@ -186,6 +191,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: true,
+        key: '1',
       });
     });
   });
@@ -206,6 +212,7 @@ describe('entryDraft reducer', () => {
           entry,
           mediaFiles: [{ id: '1' }],
         },
+        key: '',
       });
     });
   });

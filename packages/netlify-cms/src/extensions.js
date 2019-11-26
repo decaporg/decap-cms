@@ -12,4 +12,4 @@ CMS.registerMediaLibrary(cloudinary);
 
 Object.keys(locales).forEach(locale => {
   CMS.registerLocale(locale, locales[locale]);
-})
+});

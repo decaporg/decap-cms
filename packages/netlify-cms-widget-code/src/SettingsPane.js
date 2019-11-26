@@ -87,8 +87,8 @@ const SettingsPane = ({
           <SettingsSelect
             type="theme"
             forID={forID}
-            value={theme}
-            options={themes}
+            value={{ value: theme, label: theme }}
+            options={themes.map(t => ({ value: t, label: t }))}
             onChange={onChangeTheme}
             autoFocus={!allowLanguageSelection}
           />

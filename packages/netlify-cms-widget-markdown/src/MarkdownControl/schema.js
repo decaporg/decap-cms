@@ -55,7 +55,10 @@ const schema = ({ voidCodeBlock } = {}) => ({
      * Block Containers
      */
     {
-      match: [{ object: 'block', type: 'quote' }, { object: 'block', type: 'list-item' }],
+      match: [
+        { object: 'block', type: 'quote' },
+        { object: 'block', type: 'list-item' },
+      ],
       nodes: [
         {
           match: [
