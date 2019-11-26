@@ -26,7 +26,7 @@ import Widget from './Widget';
  * for styling. Once that changes we can stop storing raw style strings like
  * this.
  */
-const styleStrings = {
+export const styleStrings = {
   label: `
     color: ${colors.controlLabel};
     background-color: ${colors.textFieldBorder};
@@ -99,7 +99,7 @@ const styleStrings = {
   `,
 };
 
-const ControlContainer = styled.div`
+export const ControlContainer = styled.div`
   margin-top: 16px;
 
   &:first-of-type {

@@ -34,6 +34,9 @@ const en = {
   },
   editor: {
     editorControlPane: {
+      pathPreview: {
+        label: 'Path',
+      },
       widget: {
         required: '%{fieldLabel} is required.',
         regexPattern: "%{fieldLabel} didn't match the pattern: %{pattern}.",

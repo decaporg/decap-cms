@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import EditorControl from './EditorControl';
+import PathPreview from './PathPreview';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
@@ -55,6 +56,7 @@ export default class ControlPane extends React.Component {
 
     return (
       <ControlPaneContainer>
+        {collection.has('path') && <PathPreview collection={collection} entry={entry} />}
         {fields.map((field, i) =>
           field.get('widget') === 'hidden' ? null : (
             <EditorControl

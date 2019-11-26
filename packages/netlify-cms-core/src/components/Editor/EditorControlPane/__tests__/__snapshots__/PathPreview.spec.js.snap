@@ -1,0 +1,271 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConnectedPathPreview should evaluate preview path when newRecord is true 1`] = `
+<DocumentFragment>
+  .emotion-4 {
+  margin-top: 16px;
+}
+
+.emotion-4:first-of-type {
+  margin-top: 36px;
+}
+
+.emotion-0 {
+  color: #7a8291;
+  background-color: #dfdfe3;
+  display: inline-block;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 0;
+  border-radius: 3px 3px 0 0;
+  padding: 3px 6px 2px;
+  margin: 0;
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease;
+  position: relative;
+}
+
+.emotion-0:before,
+.emotion-0:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -4px;
+  height: 100%;
+  width: 4px;
+  background-color: inherit;
+}
+
+.emotion-0:after {
+  border-bottom-left-radius: 3px;
+  background-color: #fff;
+}
+
+.emotion-2 {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  margin: 0;
+  border: solid 2px #dfdfe3;
+  border-radius: 5px;
+  border-top-left-radius: 0;
+  outline: 0;
+  box-shadow: none;
+  background-color: #fff;
+  color: #444a57;
+  -webkit-transition: border-color .2s ease;
+  transition: border-color .2s ease;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #7a8291;
+  background-color: #dfdfe3;
+}
+
+select.emotion-2 {
+  text-indent: 14px;
+  height: 58px;
+}
+
+<div
+    class="emotion-4 emotion-5"
+  >
+    <label
+      class="emotion-0 emotion-1"
+      for="site_path-preview"
+    >
+      editor.editorControlPane.pathPreview.label
+    </label>
+    <input
+      class="emotion-2 emotion-3"
+      data-testid="site_path-preview"
+      disabled=""
+      id="site_path-preview"
+      readonly=""
+      value="preview-path/index.md"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ConnectedPathPreview should use existing path when newRecord is false 1`] = `
+<DocumentFragment>
+  .emotion-4 {
+  margin-top: 16px;
+}
+
+.emotion-4:first-of-type {
+  margin-top: 36px;
+}
+
+.emotion-0 {
+  color: #7a8291;
+  background-color: #dfdfe3;
+  display: inline-block;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 0;
+  border-radius: 3px 3px 0 0;
+  padding: 3px 6px 2px;
+  margin: 0;
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease;
+  position: relative;
+}
+
+.emotion-0:before,
+.emotion-0:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -4px;
+  height: 100%;
+  width: 4px;
+  background-color: inherit;
+}
+
+.emotion-0:after {
+  border-bottom-left-radius: 3px;
+  background-color: #fff;
+}
+
+.emotion-2 {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  margin: 0;
+  border: solid 2px #dfdfe3;
+  border-radius: 5px;
+  border-top-left-radius: 0;
+  outline: 0;
+  box-shadow: none;
+  background-color: #fff;
+  color: #444a57;
+  -webkit-transition: border-color .2s ease;
+  transition: border-color .2s ease;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #7a8291;
+  background-color: #dfdfe3;
+}
+
+select.emotion-2 {
+  text-indent: 14px;
+  height: 58px;
+}
+
+<div
+    class="emotion-4 emotion-5"
+  >
+    <label
+      class="emotion-0 emotion-1"
+      for="site_path-preview"
+    >
+      editor.editorControlPane.pathPreview.label
+    </label>
+    <input
+      class="emotion-2 emotion-3"
+      data-testid="site_path-preview"
+      disabled=""
+      id="site_path-preview"
+      readonly=""
+      value="existing-path/index.md"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`PathPreview should render successfully and match snapshot 1`] = `
+<DocumentFragment>
+  .emotion-4 {
+  margin-top: 16px;
+}
+
+.emotion-4:first-of-type {
+  margin-top: 36px;
+}
+
+.emotion-0 {
+  color: #7a8291;
+  background-color: #dfdfe3;
+  display: inline-block;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 0;
+  border-radius: 3px 3px 0 0;
+  padding: 3px 6px 2px;
+  margin: 0;
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease;
+  position: relative;
+}
+
+.emotion-0:before,
+.emotion-0:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -4px;
+  height: 100%;
+  width: 4px;
+  background-color: inherit;
+}
+
+.emotion-0:after {
+  border-bottom-left-radius: 3px;
+  background-color: #fff;
+}
+
+.emotion-2 {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  margin: 0;
+  border: solid 2px #dfdfe3;
+  border-radius: 5px;
+  border-top-left-radius: 0;
+  outline: 0;
+  box-shadow: none;
+  background-color: #fff;
+  color: #444a57;
+  -webkit-transition: border-color .2s ease;
+  transition: border-color .2s ease;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #7a8291;
+  background-color: #dfdfe3;
+}
+
+select.emotion-2 {
+  text-indent: 14px;
+  height: 58px;
+}
+
+<div
+    class="emotion-4 emotion-5"
+  >
+    <label
+      class="emotion-0 emotion-1"
+      for="site_path-preview"
+    >
+      editor.editorControlPane.pathPreview.label
+    </label>
+    <input
+      class="emotion-2 emotion-3"
+      data-testid="site_path-preview"
+      disabled=""
+      id="site_path-preview"
+      readonly=""
+      value="posts/2019/index.md"
+    />
+  </div>
+</DocumentFragment>
+`;
