@@ -398,7 +398,7 @@ export default class GitHub {
                       sem.leave();
                     } else {
                       resolve({
-                        slug: contentKey,
+                        slug: this.api.slugFromContentKey(contentKey, data.metaData.collection),
                         file: { path: data.metaData.objects.entry.path },
                         data: data.fileData,
                         metaData: data.metaData,

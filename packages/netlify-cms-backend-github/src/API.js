@@ -167,6 +167,10 @@ export default class API {
     return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length);
   }
 
+  slugFromContentKey(contentKey, collection) {
+    return contentKey.substring(collection.length + 1);
+  }
+
   checkMetadataRef() {
     return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms`, {
       cache: 'no-store',
