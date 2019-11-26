@@ -90,6 +90,7 @@ module.exports = {
 Almost there! The last thing we need to do is to add some content our ```pages/index.js``` file. With a little help of our webpack loader, we can now easilly import Markdown files:
 
 ```js
+import Head from "next/head"
 import React, { Component } from 'react'
 import content from '../content/home.md';
 
@@ -97,18 +98,23 @@ export default class Home extends Component {
   render() {
     let { html , attributes:{ title, cats } } = content;
     return (
-      <article>
+      <>
+        <Head>
+          <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+        </Head>
+        <article>
           <h1>{title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: html }}/>
+          <div dangerouslySetInnerHTML={{ __html: html }} />
           <ul>
-              { cats.map((cat, k) => (
-                  <li key={k}>
-                    <h2>{cat.name}</h2>
-                    <p>{cat.description}</p>
-                  </li>
-              ))}
+            {cats.map((cat, k) => (
+              <li key={k}>
+                <h2>{cat.name}</h2>
+                <p>{cat.description}</p>
+              </li>
+            ))}
           </ul>
-      </article>
+        </article>
+      </>
     )
   }
 }
@@ -147,7 +153,7 @@ Paste HTML for Netlify CMS into your ``static/admin/index.html`` file (check out
 </head>
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@2.9.7/dist/netlify-cms.js"></script>
 </body>
 </html>
 ```
