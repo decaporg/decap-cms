@@ -186,20 +186,21 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  addFiles(allFiles, entries, path) {
-    const files = entries
-      .filter(({ type }) => type === 'blob')
-      .map(e => ({
-        ...e,
-        path: `${path}/${e.name}`,
-        size: e.blob && e.blob.size,
-      }));
-    allFiles.push(...files);
-
-    const trees = entries.filter(({ type }) => type === 'tree');
-    trees.forEach(tree => {
-      this.addFiles(allFiles, tree.object.entries, `${path}/${tree.name}`);
-    });
+  getAllFiles(entries, path) {
+    const reducer = path => (acc, entry) => {
+      if (entry.type === 'blob') {
+        acc.push({
+          ...entry,
+          path: `${path}/${entry.name}`,
+          size: entry.blob && entry.blob.size,
+        });
+      } else if (entry.type === 'tree') {
+        entry.object.entries.reduce(reducer(`${path}/${entry.name}`), acc);
+      }
+      return acc;
+    };
+    const allFiles = entries.reduce(reducer(path), []);
+    return allFiles;
   }
 
   async listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
@@ -210,8 +211,7 @@ export default class GraphQLAPI extends API {
     });
 
     if (data.repository.object) {
-      const allFiles = [];
-      this.addFiles(allFiles, data.repository.object.entries, path);
+      const allFiles = this.getAllFiles(data.repository.object.entries, path);
       return allFiles;
     } else {
       throw new APIError('Not Found', 404, 'GitHub');

@@ -10,7 +10,6 @@ describe('github GraphQL API', () => {
   describe('editorialWorkflowGit', () => {
     it('should should flatten nested tree into a list of files', () => {
       const api = new GraphQLAPI({ branch: 'gh-pages', repo: 'my-repo' });
-      const files = [];
       const entries = [
         {
           name: 'post-1.md',
@@ -42,9 +41,7 @@ describe('github GraphQL API', () => {
       ];
       const path = 'posts';
 
-      api.addFiles(files, entries, path);
-
-      expect(files).toEqual([
+      expect(api.getAllFiles(entries, path)).toEqual([
         {
           name: 'post-1.md',
           sha: 'sha-1',
