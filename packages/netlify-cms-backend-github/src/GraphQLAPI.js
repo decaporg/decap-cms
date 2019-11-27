@@ -187,19 +187,22 @@ export default class GraphQLAPI extends API {
   }
 
   getAllFiles(entries, path) {
-    const reducer = path => (acc, entry) => {
-      if (entry.type === 'blob') {
-        acc.push({
-          ...entry,
-          path: `${path}/${entry.name}`,
-          size: entry.blob && entry.blob.size,
-        });
-      } else if (entry.type === 'tree') {
-        entry.object.entries.reduce(reducer(`${path}/${entry.name}`), acc);
+    const allFiles = entries.reduce((acc, item) => {
+      if (item.type === 'tree') {
+        return [...acc, ...this.getAllFiles(item.object.entries, `${path}/${item.name}`)];
+      } else if (item.type === 'blob') {
+        return [
+          ...acc,
+          {
+            ...item,
+            path: `${path}/${item.name}`,
+            size: item.blob && item.blob.size,
+          },
+        ];
       }
+
       return acc;
-    };
-    const allFiles = entries.reduce(reducer(path), []);
+    }, []);
     return allFiles;
   }
 
