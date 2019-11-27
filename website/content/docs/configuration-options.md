@@ -202,6 +202,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `frontmatter_delimiter`: see detailed description under `format`
 * `slug`: see detailed description below
 * `preview_path`: see detailed description below
+* `preview_path_date_field`: see detailed description below
 * `fields` (required): see detailed description below
 * `editor`: see detailed description below
 * `summary`: see detailed description below
@@ -241,7 +242,9 @@ You may also specify a custom `extension` not included in the list above, as lon
 * `toml-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved only as TOML, followed by unparsed body text. The default delimiter for this option is  `+++`.
 * `json-frontmatter`: same as the `frontmatter` format above, except frontmatter will be both parsed and saved as JSON, followed by unparsed body text. The default delimiter for this option is  `{` `}`.
 
-`frontmatter_delimiter`: if you have an explicit frontmatter format declared, this option allows you to specify a custom delimiter like `~~~`. If you need different beginning and ending delimiters, you can use an array like `["(", ")"]`.
+### `frontmatter_delimiter`
+
+If you have an explicit frontmatter format declared, this option allows you to specify a custom delimiter like `~~~`. If you need different beginning and ending delimiters, you can use an array like `["(", ")"]`.
 
 ### `slug`
 
