@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { selectIdentifier } from 'Reducers/collections';
 import EditorControl from './EditorControl';
-import PathPreview from './PathPreview';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
@@ -69,11 +67,6 @@ export default class ControlPane extends React.Component {
               onValidate={onValidate}
               processControlRef={this.controlRef.bind(this)}
               controlRef={this.controlRef}
-              pathPreview={
-                collection.has('path') && field.get('name') === selectIdentifier(collection) ? (
-                  <PathPreview collection={collection} entry={entry} />
-                ) : null
-              }
             />
           ),
         )}
