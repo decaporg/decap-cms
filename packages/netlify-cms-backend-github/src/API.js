@@ -155,6 +155,14 @@ export default class API {
     return `${this.repo}/${collectionName}/${slug}`;
   }
 
+  slugFromContentKey(contentKey, collectionName) {
+    if (!this.useOpenAuthoring) {
+      return contentKey.substring(collectionName.length + 1);
+    }
+
+    return contentKey.substring(this.repo.length + collectionName.length + 2);
+  }
+
   generateBranchName(contentKey) {
     return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
@@ -165,10 +173,6 @@ export default class API {
 
   contentKeyFromRef(ref) {
     return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length);
-  }
-
-  slugFromContentKey(contentKey, collection) {
-    return contentKey.substring(collection.length + 1);
   }
 
   checkMetadataRef() {
@@ -454,8 +458,9 @@ export default class API {
       const { state: currentState, merged_at: mergedAt } = originPRInfo;
       if (currentState === 'closed' && mergedAt) {
         // The PR has been merged; delete the unpublished entry
-        const [, collectionName, slug] = contentKey.split('/');
-        this.deleteUnpublishedEntry(collectionName, slug);
+        const { collection } = metadata;
+        const slug = this.slugFromContentKey(contentKey, collection);
+        this.deleteUnpublishedEntry(collection, slug);
         return;
       } else if (currentState === 'closed' && !mergedAt) {
         if (status !== 'draft') {
