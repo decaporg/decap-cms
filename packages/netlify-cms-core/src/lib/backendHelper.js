@@ -85,20 +85,21 @@ export const slugFormatter = (collection, entryData, slugConfig) => {
     );
   }
 
-  const processSlug = flow([
-    compileStringTemplate,
+  const processSegment = flow([
+    value => String(value),
     prepareSlug,
     partialRight(sanitizeSlug, slugConfig),
   ]);
 
   const date = new Date();
-  const slug = processSlug(slugTemplate, date, identifier, entryData);
+  const slug = compileStringTemplate(slugTemplate, date, identifier, entryData, processSegment);
 
   if (!collection.has('path')) {
     return slug;
   } else {
     const pathTemplate = collection.get('path');
-    const parts = pathTemplate.split('/');
-    return parts.map(part => processSlug(part, date, slug, entryData)).join('/');
+    return compileStringTemplate(pathTemplate, date, slug, entryData, value =>
+      value === slug ? value : processSegment(value),
+    );
   }
 };

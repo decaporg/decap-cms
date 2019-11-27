@@ -250,5 +250,19 @@ describe('backendHelper', () => {
         ),
       ).toBe('sub_dir/2020/2020-01-01-post-title');
     });
+
+    it('should only sanitize template variables', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        slugFormatter(
+          Map({
+            slug: '{{year}}-{{month}}-{{day}}-{{slug}}.en',
+            path: 'sub_dir/{{year}}/{{slug}}',
+          }),
+          Map({ title: 'Post Title' }),
+        ),
+      ).toBe('sub_dir/2020/2020-01-01-post-title.en');
+    });
   });
 });
