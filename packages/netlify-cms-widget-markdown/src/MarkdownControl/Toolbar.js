@@ -175,7 +175,7 @@ export default class Toolbar extends React.Component {
                         <DropdownItem
                           key={idx}
                           label={headingOptions[optionKey]}
-                          className={selectionHasBlock(optionKey) && 'active'}
+                          className={selectionHasBlock(optionKey) ? 'active' : undefined}
                           onClick={() => onBlockClick(undefined, optionKey)}
                         />
                       ),
