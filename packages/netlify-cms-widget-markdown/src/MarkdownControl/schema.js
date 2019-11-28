@@ -42,6 +42,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
       ],
       normalize: (editor, error) => {
         switch (error.code) {
+          // If no blocks present, insert one.
           case 'child_min_invalid': {
             const node = { object: 'block', type: 'paragraph' };
             editor.insertNodeByKey(error.node.key, 0, node);
@@ -78,6 +79,58 @@ const schema = ({ voidCodeBlock } = {}) => ({
           ],
         },
       ],
+    },
+
+    /**
+     * List Items
+     */
+    {
+      match: [
+        { object: 'block', type: 'list-item' },
+      ],
+      parent: [
+        { type: 'bulleted-list' },
+        { type: 'numbered-list' },
+      ],
+      /*
+      normalize: (editor, error) => {
+        switch (error.code) {
+          // If a list item is wrapped in something other than a list, wrap it
+          // in a list. This is only known to happen when toggling blockquote
+          // with multiple list items selected.
+          case 'parent_type_invalid': {
+            const parent = editor.value.document.getParent(error.node.key)
+            const grandparent = editor.value.document.getParent(parent.key)
+            console.log(editor.value.blocks)
+
+            if (
+              !editor.everyBlock('list-item') ||
+              !editor.areSiblings(editor.value.blocks) ||
+              !['bulleted-list', 'numbered-list'].includes(grandparent.type)
+            ) {
+              return;
+            }
+
+            editor.withoutNormalizing(() => {
+              const entireListSelected = editor.value.blocks.length === parent.nodes.length;
+              editor.setNodeByKey(parent.key, grandparent.type);
+
+              console.log(entireListSelected)
+              console.log(JSON.stringify(editor.value.document.toJS(), null, 2))
+              // Wrap the entire list if all list items are selected
+              if (entireListSelected) {
+                editor.setNodeByKey(grandparent.key, parent.type)
+              } else {
+                editor
+                  .wrapBlockByKey(parent.key, parent.type)
+                  .wrapBlockByKey(grandparent.key, 'list-item');
+              }
+            })
+            return;
+          }
+        }
+      },
+      */
     },
 
     /**
@@ -130,10 +183,12 @@ const schema = ({ voidCodeBlock } = {}) => ({
       ],
       normalize: (editor, error) => {
         switch (error.code) {
+          // If a list has no list items, remove the list
           case 'child_min_invalid':
             editor.removeNodeByKey(error.node.key);
             return;
 
+          // If two bulleted lists are immediately adjacent, join them
           case 'next_sibling_type_invalid':
             if (error.next.type === 'bulleted-list') {
               editor.mergeNodeByKey(error.next.key);
@@ -171,10 +226,12 @@ const schema = ({ voidCodeBlock } = {}) => ({
       ],
       normalize: (editor, error) => {
         switch (error.code) {
+          // If a list has no list items, remove the list
           case 'child_min_invalid':
             editor.removeNodeByKey(error.node.key);
             return;
 
+          // If two numbered lists are immediately adjacent, join them
           case 'next_sibling_type_invalid': {
             if (error.next.type === 'numbered-list') {
               editor.mergeNodeByKey(error.next.key);

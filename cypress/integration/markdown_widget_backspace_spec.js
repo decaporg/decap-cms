@@ -1,12 +1,19 @@
 import '../utils/dismiss-local-backup';
 
 describe('Markdown widget', () => {
+
   before(() => {
+    Cypress.config('defaultCommandTimeout', 4000);
+    cy.task('setupBackend', { backend: 'test' });
     cy.loginAndNewPost();
   });
 
   beforeEach(() => {
     cy.clearMarkdownEditorContent();
+  });
+
+  after(() => {
+    cy.task('teardownBackend', { backend: 'test' });
   });
 
   describe('pressing backspace', () => {

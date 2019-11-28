@@ -6,28 +6,29 @@ import { assertType } from './util';
 
 /**
  * TODO:
- * - make sure nested empty list items (can be read in from markdown) don't cause list handling to break
- * - closing a block in a nested list item via backspace should only close the
- *   immediate block
- * - backspace should close a list item without opening a new list item in the
+ * - ✅ make sure nested empty list items (can be read in from markdown) don't cause list handling to break
+ * - ✅ backspace should close a list item without opening a new list item in the
  *   ancestor list, and next backspace should do the norm, move selection to end
  *   of previous list item
- * - tab pressed inside of nested block within list item, eg. quote, but with
+ * - ✅ tab pressed inside of nested block within list item, eg. quote, but with
  *   the cursor at the very beginning of the block, should indent the parent
  *   list item
- * - other tab handlers (should only be code block) should be registered before
+ * - ✅ other tab handlers (should only be code block) should be registered before
  *   this, as it will attempt to tab expanded selections where the entire
  *   selection shares a common list item ancestor
- * - handle enter when it's pressed in a block child of a list item?
- * - handle expanded enter
+ * - ✅ handle enter when it's pressed in a block child of a list item?
+ * - ✅ handle expanded enter
+ * - ✅ handle list button/tab/enter inside of quote (and eventually table, should be same though)
+ * - ✅ test multiple subsequent lists of same and different types
+ * - ✅ tab multiple list items when selection is expanded
+ * - ✅ tab multiple nested lists and items when selection is expanded
+ * - ✅ empty new list item is parsed as a literal asterisk in markdown until non-empty
+ * - closing a block in a nested list item via backspace should only close the
+ *   immediate block
  * - ideally you'd put list plugin last so others can intercept keyboard actions
  *   for nested types, but a list can be nested in a quote, so how do we ensure
  *   the action only hits the closest of the two (quote or list item)?
- * - handle list button/tab/enter inside of quote (and eventually table, should be same though)
- * - test multiple subsequent lists of same and different types
- * - tab multiple list items when selection is expanded
- * - tab multiple nested lists and items when selection is expanded
- * - empty new list item is parsed as a literal asterisk in markdown until non-empty
+ * - relocating code blocks/editor components really requires dragging, especially nested in lists
  */
 const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
   const LIST_TYPES = [orderedListType, unorderedListType];
@@ -52,7 +53,7 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
         return editor.value.document.getClosest(ancestor.key, node => node.type === 'list-item');
       },
       getListOrListItem(editor, { node, ...opts } = {}) {
-        const listContextNode = editor.getListContextNode(node);
+        const listContextNode = editor.getBlockContainer(node);
         if (!listContextNode) {
           return;
         }
@@ -62,20 +63,6 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
         if (opts.force) {
           return editor.getListOrListItem({ node: listContextNode, ...opts });
         }
-      },
-      getListContextNode(editor, node) {
-        const targetTypes = ['bulleted-list', 'numbered-list', 'list-item', 'quote', 'table-cell'];
-        const { startBlock, selection } = editor.value;
-        const target = node
-          ? editor.value.document.getParent(node.key)
-          : (selection.isCollapsed && startBlock) || editor.getCommonAncestor();
-        if (!target) {
-          return;
-        }
-        if (targetTypes.includes(target.type)) {
-          return target;
-        }
-        return editor.getListContextNode(target);
       },
       isList(editor, node) {
         return node && LIST_TYPES.includes(node.type);
@@ -191,7 +178,7 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
           throw Error(`${type} is not a valid list type, must be one of: ${LIST_TYPES}`);
         }
         const { startBlock } = editor.value;
-        const target = editor.getListContextNode();
+        const target = editor.getBlockContainer();
 
         switch (get(target, 'type')) {
           case 'bulleted-list':
@@ -236,28 +223,34 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
       },
     },
     onKeyDown(event, editor, next) {
+
+      // Handle Backspace
       if (isHotkey('backspace', event) && editor.value.selection.isCollapsed) {
-        // Backspace
+
+        // If beginning block is not of default type, do nothing
+        if (editor.value.startBlock.type !== defaultType) {
+          return next()
+        }
         const listOrListItem = editor.getListOrListItem();
         const isListItem = listOrListItem && listOrListItem.type === 'list-item';
+
+        // If immediate block is a list item, unwrap it
         if (isListItem && editor.value.selection.start.isAtStartOfNode(listOrListItem)) {
           const listItem = listOrListItem;
           const previousSibling = editor.value.document.getPreviousSibling(listItem.key);
+
+          // If this isn't the first item in the list, merge into previous list item
           if (previousSibling && previousSibling.type === 'list-item') {
             return editor.mergeNodeByKey(listItem.key);
           }
           return editor.unwrapListItem(listItem);
         }
 
-        const block = editor.value.startBlock;
-        const previousSibling = editor.value.document.getPreviousSibling(block.key);
-        const isAtStart = editor.value.selection.start.isAtStartOfNode(block);
-        if (block.type === defaultType && isAtStart && editor.isList(previousSibling)) {
-          return editor.wrapInList(previousSibling.type);
-        }
         return next();
-      } else if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
-        // Tab, Shift+Tab
+      }
+
+      // Handle Tab
+      if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
         const isTab = isHotkey('tab', event);
         const isShiftTab = !isTab;
         event.preventDefault();
@@ -287,8 +280,10 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
           }
         }
         return next();
-      } else if (isHotkey('enter', event)) {
-        // Enter
+      }
+
+      // Handle Enter
+      if (isHotkey('enter', event)) {
         const listOrListItem = editor.getListOrListItem();
         if (!listOrListItem) {
           return next();

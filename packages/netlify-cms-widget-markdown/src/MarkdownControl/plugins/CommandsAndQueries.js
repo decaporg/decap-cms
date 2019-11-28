@@ -1,4 +1,4 @@
-import { isArray, tail } from 'lodash';
+import { isArray, tail, castArray } from 'lodash';
 
 const CommandsAndQueries = ({ defaultType }) => ({
   queries: {
@@ -23,11 +23,28 @@ const CommandsAndQueries = ({ defaultType }) => ({
       const { startBlock, endBlock, document: doc } = editor.value;
       return doc.getCommonAncestor(startBlock.key, endBlock.key);
     },
-    getClosestType(editor, key, type) {
-      return editor.value.document.getClosest(key, node => node.type === type);
+    getClosestType(editor, node, type) {
+      const types = castArray(type)
+      return editor.value.document.getClosest(node.key, n => types.includes(n.type));
     },
-    isSelected(editor, node) {
-      return editor.value.document.isInRange(node.key, editor.value.selection);
+    getBlockContainer(editor, node) {
+      const targetTypes = ['bulleted-list', 'numbered-list', 'list-item', 'quote', 'table-cell'];
+      const { startBlock, selection } = editor.value;
+      const target = node
+        ? editor.value.document.getParent(node.key)
+        : (selection.isCollapsed && startBlock) || editor.getCommonAncestor();
+      if (!target) {
+        return;
+      }
+      if (targetTypes.includes(target.type)) {
+        return target;
+      }
+      return editor.getBlockContainer(target);
+    },
+    isSelected(editor, nodes) {
+      return castArray(nodes).every(node => {
+        return editor.value.document.isInRange(node.key, editor.value.selection);
+      })
     },
     isFirstChild(editor, node) {
       return editor.value.document.getParent(node.key).nodes.first().key === node.key;
@@ -93,6 +110,10 @@ const CommandsAndQueries = ({ defaultType }) => ({
           currentDepth += 1;
         }
       });
+    },
+    unwrapNodeFromAncestor(editor, node, ancestor) {
+      const depth = ancestor.getDepth(node.key)
+      editor.unwrapNodeToDepth(node, depth)
     },
   },
 });

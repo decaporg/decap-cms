@@ -54,7 +54,7 @@ function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
     .drag();
   cy.contains('h2', toColumnHeading)
     .parent()
-    .drag();
+    .drop();
   assertNotification(notifications.updated);
 }
 

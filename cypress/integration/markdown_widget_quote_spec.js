@@ -1,13 +1,19 @@
 import '../utils/dismiss-local-backup';
 
 describe('Markdown widget', () => {
-  describe('list', () => {
+  describe('quote block', () => {
     before(() => {
+      Cypress.config('defaultCommandTimeout', 4000);
+      cy.task('setupBackend', { backend: 'test' });
       cy.loginAndNewPost();
     });
 
     beforeEach(() => {
       cy.clearMarkdownEditorContent();
+    });
+
+    after(() => {
+      cy.task('teardownBackend', { backend: 'test' });
     });
 
     describe('toggle quote', () => {
@@ -115,6 +121,68 @@ describe('Markdown widget', () => {
               <p>bar</p>
             </blockquote>
           `);
+      });
+      it('toggles quote block on and off for multiple selected list items', () => {
+        cy.focused()
+          .clickUnorderedListButton()
+          .type('foo')
+          .enter({ times: 2 })
+          .type('bar')
+          .setSelection('foo', 'bar')
+          .clickQuoteButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <blockquote>
+                  <ul>
+                    <li>
+                      <p>foo</p>
+                    </li>
+                    <li>
+                      <p>bar</p>
+                    </li>
+                  </ul>
+                </blockquote>
+              </li>
+            </ul>
+          `)
+          .clickQuoteButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <p>foo</p>
+              </li>
+              <li>
+                <p>bar</p>
+              </li>
+            </ul>
+          `)
+          .setCursorAfter('bar')
+          .enter({ times: 2 })
+          .type('baz')
+          .setSelection('bar', 'baz')
+          .clickQuoteButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <p>foo</p>
+              </li>
+              <li>
+                <blockquote>
+                  <ul>
+                    <li>
+                      <p>bar</p>
+                    </li>
+                    <li>
+                      <p>baz</p>
+                    </li>
+                  </ul>
+                </blockquote>
+              </li>
+            </ul>
+            </blockquote>
+          `)
+          .backspace({ times: 20 });
       });
       it('creates new quote block if parent is not a quote, can deeply nest', () => {
         cy.clickQuoteButton()

@@ -3,11 +3,17 @@ import '../utils/dismiss-local-backup';
 describe('Markdown widget', () => {
   describe('list', () => {
     before(() => {
+      Cypress.config('defaultCommandTimeout', 4000);
+      cy.task('setupBackend', { backend: 'test' });
       cy.loginAndNewPost();
     });
 
     beforeEach(() => {
       cy.clearMarkdownEditorContent();
+    });
+
+    after(() => {
+      cy.task('teardownBackend', { backend: 'test' });
     });
 
     describe('toolbar buttons', () => {
@@ -381,34 +387,6 @@ describe('Markdown widget', () => {
             </ul>
           `)
       });
-
-      it.only('wraps nested structure into list item', () => {
-        cy.clickQuoteButton()
-          .clickUnorderedListButton()
-          .type('foo')
-          .clickHeadingOneButton()
-          .enter({ times: 3 })
-          .clickQuoteButton()
-          .type('bar')
-          .setSelection('foo', 'bar')
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
-            <ul>
-              <li>
-                <blockquote>
-                  <ul>
-                    <li>
-                      <h1>foo</h1>
-                    </li>
-                  </ul>
-                  <blockquote>
-                    <p>bar</p>
-                  </blockquote>
-                </blockquote>
-              </li>
-            </ul>
-          `);
-      });
     });
 
     describe('on Enter', () => {
@@ -521,6 +499,19 @@ describe('Markdown widget', () => {
             <ul>
               <li>
                 <p>foo</p>
+                <p></p>
+              </li>
+            </ul>
+          `);
+      });
+
+      it('does not remove list item if empty with non-default block', () => {
+        cy.clickUnorderedListButton()
+          .clickHeadingOneButton()
+          .backspace()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
                 <p></p>
               </li>
             </ul>

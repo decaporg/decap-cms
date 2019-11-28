@@ -206,14 +206,18 @@ Cypress.Commands.add('drop', { prevSubject: true }, subject => {
 });
 
 Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
-    const instance = cy.get(`button[title="${title}"]`);
-    const fn = chain => chain.click();
-    return runTimes(instance, fn, times).focused();
+  const isHeading = title.startsWith('Heading')
+  if (isHeading) {
+    cy.get('button[title="Headings"]').click();
+  }
+  const instance = isHeading ? cy.contains('div', title) : cy.get(`button[title="${title}"]`);
+  const fn = chain => chain.click();
+  return runTimes(instance, fn, times).focused();
 });
 
 [
-  ['clickHeadingOneButton', 'Header 1'],
-  ['clickHeadingTwoButton', 'Header 2'],
+  ['clickHeadingOneButton', 'Heading 1'],
+  ['clickHeadingTwoButton', 'Heading 2'],
   ['clickOrderedListButton', 'Numbered List'],
   ['clickUnorderedListButton', 'Bulleted List'],
   ['clickCodeButton', 'Code'],

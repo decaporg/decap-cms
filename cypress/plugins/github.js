@@ -30,6 +30,8 @@ const FAKE_FORK_OWNER_USER = {
 };
 
 function getGitHubClient(token) {
+  console.log('CLIENT')
+  console.log(token)
   const client = new Octokit({
     auth: `token ${token}`,
     baseUrl: 'https://api.github.com',
