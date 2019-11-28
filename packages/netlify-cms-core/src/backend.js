@@ -479,7 +479,7 @@ export class Backend {
     return this.implementation
       .unpublishedEntry(collection, slug)
       .then(loadedEntry => {
-        const entry = createEntry('draft', loadedEntry.slug, loadedEntry.file.path, {
+        const entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
           isModification: loadedEntry.isModification,
         });

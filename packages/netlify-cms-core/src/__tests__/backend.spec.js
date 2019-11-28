@@ -366,7 +366,7 @@ describe('Backend', () => {
 
       const result = await backend.unpublishedEntry(collection, slug);
       expect(result).toEqual({
-        collection: 'draft',
+        collection: 'posts',
         slug: '',
         path: 'path',
         partial: false,
