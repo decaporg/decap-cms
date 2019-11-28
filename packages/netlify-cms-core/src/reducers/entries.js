@@ -1,4 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
+import { dirname, join } from 'path';
 import {
   ENTRY_REQUEST,
   ENTRY_SUCCESS,
@@ -110,6 +111,21 @@ export const selectPublishedSlugs = (state, collection) =>
 export const selectEntries = (state, collection) => {
   const slugs = selectPublishedSlugs(state, collection);
   return slugs && slugs.map(slug => selectEntry(state, collection, slug));
+};
+
+export const selectEntryMediaFolders = (state, collection, entryPath) => {
+  let mediaFolder = state.config.get('media_folder');
+  let publicFolder = state.config.get('public_folder');
+
+  const entryDir = dirname(entryPath);
+  if (collection.has('media_folder')) {
+    mediaFolder = join(entryDir, collection.get('media_folder'));
+  }
+  if (collection.has('public_folder')) {
+    publicFolder = join(entryDir, collection.get('public_folder'));
+  }
+
+  return { mediaFolder, publicFolder };
 };
 
 export default entries;

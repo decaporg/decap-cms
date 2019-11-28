@@ -4,17 +4,24 @@ import store from 'ReduxStore';
 import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration } from 'Reducers';
 
-export default function AssetProxy({ value, fileObj, uploaded = false, asset = null }) {
+export default function AssetProxy({
+  value,
+  fileObj,
+  uploaded = false,
+  asset = null,
+  mediaFolder = null,
+  publicFolder = null,
+}) {
   const config = store.getState().config;
+  mediaFolder = mediaFolder || config.get('media_folder');
+  publicFolder = publicFolder || config.get('public_folder');
+
   this.value = value;
   this.fileObj = fileObj;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path =
-    config.get('media_folder') && !uploaded
-      ? resolvePath(value, config.get('media_folder'))
-      : value;
-  this.public_path = !uploaded ? resolvePath(value, config.get('public_folder')) : value;
+  this.path = mediaFolder && !uploaded ? resolvePath(value, mediaFolder) : value;
+  this.public_path = !uploaded ? resolvePath(value, publicFolder) : value;
   this.asset = asset;
 }
 
@@ -40,7 +47,14 @@ AssetProxy.prototype.toBase64 = function() {
   });
 };
 
-export function createAssetProxy({ value, fileObj, uploaded = false, privateUpload = false }) {
+export function createAssetProxy({
+  value,
+  fileObj,
+  uploaded = false,
+  privateUpload = false,
+  mediaFolder = null,
+  publicFolder = null,
+}) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
@@ -65,5 +79,5 @@ export function createAssetProxy({ value, fileObj, uploaded = false, privateUplo
     throw new Error('The Private Upload option is only available for Asset Store Integration');
   }
 
-  return Promise.resolve(new AssetProxy({ value, fileObj, uploaded }));
+  return Promise.resolve(new AssetProxy({ value, fileObj, uploaded, mediaFolder, publicFolder }));
 }
