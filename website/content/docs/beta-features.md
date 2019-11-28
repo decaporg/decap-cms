@@ -9,6 +9,7 @@ We run new functionality in an open beta format from time to time. That means th
 **Use these features at your own risk.**
 
 ## GitHub GraphQL API
+
 Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
 
 **Note: not currently compatible with Git Gateway.**
@@ -35,12 +36,25 @@ At the same time, any contributors who _do_ have write access to the repository 
 More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
 
 ## Relative Image Paths
+
 Image paths have always been absolute from a single media library directory defined in the config. As of Netlify CMS 2.9.8-beta.2, relative paths can be used - this especially useful for SSG's like Gatsby, which generally expect relative paths.
 
 ### Using relative paths
+
 To use relative image paths, set `media_folder_relative: true` in the root of your CMS config. That's it!
 
+## Folder Collections Path
+
+By default the CMS stores folder collection content under the folder specified in the collection setting.
+
+For example configuring `folder: posts` for a collection will save the content under `posts/post-title.md`.
+
+You can now specify a `path` template (similar to the `slug` template) to control the content destination.
+
+This allows saving content in subfolders, e.g. configuring `path: '{{year}}/{{slug}}'` will save the content under `2019/post-title.md`.
+
 ## List Widget: Variable Types
+
 Before this feature, the [list widget](/docs/widgets/#list) allowed a set of fields to be repeated, but every list item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Netlify CMS.
 
 **Note: this feature does not yet support previews, and will not output anything in the preview
@@ -54,7 +68,7 @@ To use variable types in the list widget, update your field configuration as fol
 
 ### Additional list widget options
 
-- `types`: a nested list of object widgets. All widgets must be of type `object`. Every object widget may define different set of fields. 
+- `types`: a nested list of object widgets. All widgets must be of type `object`. Every object widget may define different set of fields.
 - `typeKey`: the name of the field that will be added to every item in list representing the name of the object widget that item belongs to. Ignored if `types` is not defined. Default is `type`.
 
 ### Example Configuration
@@ -119,11 +133,13 @@ sections:
 ```
 
 ## Custom Mount Element
+
 Netlify CMS always creates its own DOM element for mounting the application, which means it always takes over the entire page, and is generally inflexible if you're trying to do something creative, like injecting it into a shared context.
 
 You can now provide your own element for Netlify CMS to mount in by setting the target element's ID as `nc-root`. If Netlify CMS finds an element with this ID during initialization, it will mount within that element instead of creating its own.
 
 ## Manual Initialization
+
 Netlify CMS can now be manually initialized, rather than automatically loading up the moment you import it. The whole point of this at the moment is to inject configuration into Netlify CMS before it loads, bypassing need for an actual Netlify CMS `config.yml`. This is important, for example, when creating tight integrations with static site generators.
 
 Injecting config is technically already possible by setting `window.CMS_CONFIG` before importing/requiring/running Netlify CMS, but most projects are modular and don't want to use globals, plus `window.CMS_CONFIG` is an internal, not technically supported, and provides no validation.
@@ -200,6 +216,7 @@ CMS.registerPreviewTemplate(...);
 ```
 
 ## Raw CSS in `registerPreviewStyle`
+
 `registerPreviewStyle` can now accept a CSS string, in addition to accepting a url. The feature is activated by passing in an object as the second argument, with `raw` set to a truthy value. This is critical for integrating with modern build tooling. Here's an example using webpack:
 
 ```js
@@ -214,6 +231,7 @@ CMS.registerPreviewStyle(styles.toString(), { raw: true })
 ```
 
 ## Squash merge GitHub pull requests
+
 When using the [Editorial Workflow](../configuration-options/#publish-mode) with the `github` or GitHub-connected `git-gateway` backends, Netlify CMS creates a pull request for each unpublished entry. Every time the unpublished entry is changed and saved, a new commit is added to the pull request. When the entry is published, the pull request is merged, and all of those commits are added to your project commit history in a merge commit.
 
 The squash merge option causes all commits to be "squashed" into a single commit when the pull request is merged, and the resulting commit is rebased onto the target branch, avoiding the merge commit altogether.
@@ -226,6 +244,7 @@ backend:
 ```
 
 ## Commit Message Templates
+
 You can customize the templates used by Netlify CMS to generate commit messages by setting the `commit_messages` option under `backend` in your Netlify CMS `config.yml`.
 
 Template tags wrapped in curly braces will be expanded to include information about the file changed by the commit. For example, `{{path}}` will include the full path to the file changed.
