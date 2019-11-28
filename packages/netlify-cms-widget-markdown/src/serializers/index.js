@@ -135,7 +135,8 @@ export const remarkToMarkdown = obj => {
     .use(remarkToMarkdownPlugin, remarkToMarkdownPluginOpts)
     .use(remarkAllowAllText)
     .use(createRemarkShortcodeStringifier({ plugins: getEditorComponents() }))
-    .stringify(processedMdast);
+    .stringify(processedMdast)
+    .replace(/\r?/g, '');
 
   /**
    * Return markdown with trailing whitespace removed.
