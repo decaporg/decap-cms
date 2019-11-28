@@ -14,7 +14,7 @@ function mapStateToProps(state, ownProps) {
     showDelete: !ownProps.newEntry && selectAllowDeletion(collection),
   };
   if (isEditorialWorkflow) {
-    const slug = ownProps.match.params.slug;
+    const slug = ownProps.match.params.slug && decodeURIComponent(ownProps.match.params.slug);
     const unpublishedEntry = selectUnpublishedEntry(state, collection.get('name'), slug);
     if (unpublishedEntry) {
       returnObj.unpublishedEntry = true;

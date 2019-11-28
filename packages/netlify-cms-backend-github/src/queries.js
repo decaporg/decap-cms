@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { oneLine } from 'common-tags';
 import * as fragments from './fragments';
 
 export const repoPermission = gql`
@@ -92,17 +93,47 @@ export const statues = gql`
   ${fragments.object}
 `;
 
+const buildFilesQuery = (depth = 10) => {
+  const PLACE_HOLDER = 'PLACE_HOLDER';
+  let query = oneLine`
+    ...ObjectParts
+    ... on Tree {
+      entries {
+        ...FileEntryParts
+        ${PLACE_HOLDER}
+      }
+    }
+  `;
+
+  for (let i = 0; i < depth - 1; i++) {
+    query = query.replace(
+      PLACE_HOLDER,
+      oneLine`
+        object {
+          ... on Tree {
+            entries {
+              ...FileEntryParts
+              ${PLACE_HOLDER}
+            }
+          }
+        }
+    `,
+    );
+  }
+
+  query = query.replace(PLACE_HOLDER, '');
+
+  return query;
+};
+
+const filesQuery = buildFilesQuery();
+
 export const files = gql`
   query files($owner: String!, $name: String!, $expression: String!) {
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
       object(expression: $expression) {
-        ...ObjectParts
-        ... on Tree {
-          entries {
-            ...FileEntryParts
-          }
-        }
+        ${filesQuery}
       }
     }
   }

@@ -186,6 +186,26 @@ export default class GraphQLAPI extends API {
     }
   }
 
+  getAllFiles(entries, path) {
+    const allFiles = entries.reduce((acc, item) => {
+      if (item.type === 'tree') {
+        return [...acc, ...this.getAllFiles(item.object.entries, `${path}/${item.name}`)];
+      } else if (item.type === 'blob') {
+        return [
+          ...acc,
+          {
+            ...item,
+            path: `${path}/${item.name}`,
+            size: item.blob && item.blob.size,
+          },
+        ];
+      }
+
+      return acc;
+    }, []);
+    return allFiles;
+  }
+
   async listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { data } = await this.query({
@@ -194,14 +214,8 @@ export default class GraphQLAPI extends API {
     });
 
     if (data.repository.object) {
-      const files = data.repository.object.entries
-        .filter(({ type }) => type === 'blob')
-        .map(e => ({
-          ...e,
-          path: `${path}/${e.name}`,
-          size: e.blob && e.blob.size,
-        }));
-      return files;
+      const allFiles = this.getAllFiles(data.repository.object.entries, path);
+      return allFiles;
     } else {
       throw new APIError('Not Found', 404, 'GitHub');
     }

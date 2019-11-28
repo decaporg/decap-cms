@@ -190,7 +190,7 @@ export default class API {
   listFiles = async path => {
     const firstPageCursor = await this.fetchCursor({
       url: `${this.repoURL}/repository/tree`,
-      params: { path, ref: this.branch },
+      params: { path, ref: this.branch, recursive: true },
     });
     const lastPageLink = firstPageCursor.data.getIn(['links', 'last']);
     const { entries, cursor } = await this.fetchCursorAndEntries(lastPageLink);

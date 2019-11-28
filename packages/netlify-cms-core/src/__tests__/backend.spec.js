@@ -1,6 +1,7 @@
 import { resolveBackend, Backend } from '../backend';
 import registry from 'Lib/registry';
-import { Map, List } from 'immutable';
+import { FOLDER } from 'Constants/collectionTypes';
+import { Map, List, fromJS } from 'immutable';
 
 jest.mock('Lib/registry');
 jest.mock('netlify-cms-lib-util');
@@ -376,6 +377,79 @@ describe('Backend', () => {
         isModification: true,
         mediaFiles: [{ id: '1' }],
       });
+    });
+  });
+
+  describe('generateUniqueSlug', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it("should return unique slug when entry doesn't exist", async () => {
+      const config = Map({});
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(() => Promise.resolve()),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [
+          {
+            name: 'title',
+          },
+        ],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: 'sub_dir/{{slug}}',
+      });
+
+      const entry = Map({
+        title: 'some post title',
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
+        'sub_dir/some-post-title',
+      );
+    });
+
+    it('should return unique slug when entry exists', async () => {
+      const config = Map({});
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(),
+      };
+
+      implementation.getEntry.mockResolvedValueOnce({ data: 'data' });
+      implementation.getEntry.mockResolvedValueOnce();
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [
+          {
+            name: 'title',
+          },
+        ],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: 'sub_dir/{{slug}}',
+      });
+
+      const entry = Map({
+        title: 'some post title',
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
+        'sub_dir/some-post-title-1',
+      );
     });
   });
 });

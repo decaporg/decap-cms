@@ -155,6 +155,14 @@ export default class API {
     return `${this.repo}/${collectionName}/${slug}`;
   }
 
+  slugFromContentKey(contentKey, collectionName) {
+    if (!this.useOpenAuthoring) {
+      return contentKey.substring(collectionName.length + 1);
+    }
+
+    return contentKey.substring(this.repo.length + collectionName.length + 2);
+  }
+
   generateBranchName(contentKey) {
     return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
@@ -365,7 +373,9 @@ export default class API {
 
   listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
     const folderPath = path.replace(/\/$/, '');
-    return this.request(`${repoURL}/git/trees/${branch}:${folderPath}`).then(res =>
+    return this.request(`${repoURL}/git/trees/${branch}:${folderPath}`, {
+      params: { recursive: 10 },
+    }).then(res =>
       res.tree
         .filter(file => file.type === 'blob')
         .map(file => ({
@@ -448,8 +458,9 @@ export default class API {
       const { state: currentState, merged_at: mergedAt } = originPRInfo;
       if (currentState === 'closed' && mergedAt) {
         // The PR has been merged; delete the unpublished entry
-        const [, collectionName, slug] = contentKey.split('/');
-        this.deleteUnpublishedEntry(collectionName, slug);
+        const { collection } = metadata;
+        const slug = this.slugFromContentKey(contentKey, collection);
+        this.deleteUnpublishedEntry(collection, slug);
         return;
       } else if (currentState === 'closed' && !mergedAt) {
         if (status !== 'draft') {

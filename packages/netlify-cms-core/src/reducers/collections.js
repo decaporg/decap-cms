@@ -39,15 +39,17 @@ const selectors = {
       return collection.get('fields');
     },
     entryPath(collection, slug) {
-      return `${collection.get('folder').replace(/\/$/, '')}/${slug}.${this.entryExtension(
-        collection,
-      )}`;
+      const folder = collection.get('folder').replace(/\/$/, '');
+      return `${folder}/${slug}.${this.entryExtension(collection)}`;
     },
     entrySlug(collection, path) {
-      return path
-        .split('/')
+      const folder = collection.get('folder').replace(/\/$/, '');
+      const slug = path
+        .split(folder + '/')
         .pop()
         .replace(new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`), '');
+
+      return slug;
     },
     listMethod() {
       return 'entriesByFolder';

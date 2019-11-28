@@ -38,16 +38,10 @@ const uriChars = /[\w\-.~]/i;
 const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
 const validURIChar = char => uriChars.test(char);
 const validIRIChar = char => uriChars.test(char) || ucsChars.test(char);
-// `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeURI(str, { replacement = '', encoding = 'unicode' } = {}) {
-  if (!isString(str)) {
-    throw new Error('The input slug must be a string.');
-  }
-  if (!isString(replacement)) {
-    throw new Error('`options.replacement` must be a string.');
-  }
 
+export function getCharReplacer(encoding, replacement) {
   let validChar;
+
   if (encoding === 'unicode') {
     validChar = validIRIChar;
   } else if (encoding === 'ascii') {
@@ -61,11 +55,29 @@ export function sanitizeURI(str, { replacement = '', encoding = 'unicode' } = {}
     throw new Error('The replacement character(s) (options.replacement) is itself unsafe.');
   }
 
+  return char => (validChar(char) ? char : replacement);
+}
+// `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
+export function sanitizeURI(str, { replacement = '', encoding = 'unicode' } = {}) {
+  if (!isString(str)) {
+    throw new Error('The input slug must be a string.');
+  }
+  if (!isString(replacement)) {
+    throw new Error('`options.replacement` must be a string.');
+  }
+
   // `Array.from` must be used instead of `String.split` because
   //   `split` converts things like emojis into UTF-16 surrogate pairs.
   return Array.from(str)
-    .map(char => (validChar(char) ? char : replacement))
+    .map(getCharReplacer(encoding, replacement))
     .join('');
+}
+
+export function sanitizeChar(char, options = Map()) {
+  const encoding = options.get('encoding', 'unicode');
+  const replacement = options.get('sanitize_replacement', '-');
+
+  return getCharReplacer(encoding, replacement)(char);
 }
 
 export function sanitizeSlug(str, options = Map()) {

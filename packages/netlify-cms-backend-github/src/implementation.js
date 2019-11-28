@@ -389,7 +389,6 @@ export default class GitHub {
           promises.push(
             new Promise(resolve => {
               const contentKey = this.api.contentKeyFromRef(ref);
-              const slug = contentKey.split('/').pop();
               return sem.take(() =>
                 this.api
                   .readUnpublishedBranchFile(contentKey)
@@ -399,7 +398,7 @@ export default class GitHub {
                       sem.leave();
                     } else {
                       resolve({
-                        slug,
+                        slug: this.api.slugFromContentKey(contentKey, data.metaData.collection),
                         file: { path: data.metaData.objects.entry.path },
                         data: data.fileData,
                         metaData: data.metaData,

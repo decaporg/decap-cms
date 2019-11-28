@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { sanitizeURI, sanitizeSlug } from '../urlHelper';
+import { sanitizeURI, sanitizeSlug, sanitizeChar } from '../urlHelper';
 
 describe('sanitizeURI', () => {
   // `sanitizeURI` tests from RFC 3987
@@ -111,5 +111,15 @@ describe('sanitizeSlug', () => {
 
   it('uses alternate replacements', () => {
     expect(sanitizeSlug('test   test   ', Map({ sanitize_replacement: '_' }))).toEqual('test_test');
+  });
+});
+
+describe('sanitizeChar', () => {
+  it('should sanitize whitespace with default replacement', () => {
+    expect(sanitizeChar(' ', Map())).toBe('-');
+  });
+
+  it('should sanitize whitespace with custom replacement', () => {
+    expect(sanitizeChar(' ', Map({ sanitize_replacement: '_' }))).toBe('_');
   });
 });
