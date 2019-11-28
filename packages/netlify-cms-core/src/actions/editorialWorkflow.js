@@ -336,6 +336,10 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
     const unpublishedSlugs = selectUnpublishedSlugs(state, collection.get('name'));
     const publishedSlugs = selectPublishedSlugs(state, collection.get('name'));
     const usedSlugs = publishedSlugs.concat(unpublishedSlugs);
+    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
+
+    //load unpublishedEntries
+    !entriesLoaded && dispatch(loadUnpublishedEntries(state.collections));
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
