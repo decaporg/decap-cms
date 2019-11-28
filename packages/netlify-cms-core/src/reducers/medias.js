@@ -36,6 +36,10 @@ export const getAsset = (publicFolder, state, path) => {
   }
 
   // Create a new AssetProxy (for consistency) and return it.
-  proxy = memoizedProxies[path] = new AssetProxy(resolvePath(path, publicFolder), null, true);
+  proxy = memoizedProxies[path] = new AssetProxy({
+    value: resolvePath(path, publicFolder),
+    fileObj: null,
+    uploaded: true,
+  });
   return proxy;
 };

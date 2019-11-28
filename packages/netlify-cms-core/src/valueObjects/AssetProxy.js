@@ -4,7 +4,7 @@ import store from 'ReduxStore';
 import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration } from 'Reducers';
 
-export default function AssetProxy(value, fileObj, uploaded = false, asset) {
+export default function AssetProxy({ value, fileObj, uploaded = false, asset = null }) {
   const config = store.getState().config;
   this.value = value;
   this.fileObj = fileObj;
@@ -40,7 +40,7 @@ AssetProxy.prototype.toBase64 = function() {
   });
 };
 
-export function createAssetProxy(value, fileObj, uploaded = false, privateUpload = false) {
+export function createAssetProxy({ value, fileObj, uploaded = false, privateUpload = false }) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
@@ -53,12 +53,17 @@ export function createAssetProxy(value, fileObj, uploaded = false, privateUpload
       );
     return provider.upload(fileObj, privateUpload).then(
       response =>
-        new AssetProxy(response.asset.url.replace(/^(https?):/, ''), null, true, response.asset),
-      () => new AssetProxy(value, fileObj, false),
+        new AssetProxy({
+          value: response.asset.url.replace(/^(https?):/, ''),
+          fileObj: null,
+          uploaded: true,
+          asset: response.asset,
+        }),
+      () => new AssetProxy({ value, fileObj, uploaded: false }),
     );
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only available for Asset Store Integration');
   }
 
-  return Promise.resolve(new AssetProxy(value, fileObj, uploaded));
+  return Promise.resolve(new AssetProxy({ value, fileObj, uploaded }));
 }

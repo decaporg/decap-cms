@@ -197,7 +197,12 @@ export function persistMedia(file, opts = {}) {
 
     try {
       const id = await getBlobSHA(file);
-      const assetProxy = await createAssetProxy(fileName, file, false, privateUpload);
+      const assetProxy = await createAssetProxy({
+        value: fileName,
+        fileObj: file,
+        uploaded: false,
+        privateUpload,
+      });
       dispatch(addAsset(assetProxy));
 
       const entry = state.entryDraft.get('entry');
@@ -279,7 +284,10 @@ export function deleteMedia(file, opts = {}) {
     dispatch(mediaDeleting());
 
     try {
-      const assetProxy = await createAssetProxy(file.name, file);
+      const assetProxy = await createAssetProxy({
+        value: file.name,
+        fileObj: file,
+      });
       dispatch(removeAsset(assetProxy.public_path));
       dispatch(removeDraftEntryMediaFile({ id: file.id }));
 

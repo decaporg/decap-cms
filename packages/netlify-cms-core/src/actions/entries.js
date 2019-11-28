@@ -308,7 +308,7 @@ export function retrieveLocalBackup(collection, slug) {
     if (entry) {
       // load assets from backup
       const assetProxies = await Promise.all(
-        assets.map(asset => createAssetProxy(asset.value, asset.fileObj)),
+        assets.map(({ value, fileObj }) => createAssetProxy({ value, fileObj })),
       );
       dispatch(addAssets(assetProxies));
 
