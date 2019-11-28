@@ -21,7 +21,7 @@ npm init -y
 # Install required dependencies
 npm install --save react react-dom next
 
-# Install webpack loader for Markdown
+# Install webpack loader for Markdown (Use version 3+)
 npm install --save-dev frontmatter-markdown-loader
 
 # Create folder for pages (default for NextJS), and add a index file
@@ -80,7 +80,8 @@ module.exports = {
         cfg.module.rules.push(
             {
                 test: /\.md$/,
-                use: 'frontmatter-markdown-loader'
+                use: 'frontmatter-markdown-loader',
+                options: { mode: ['react-component'] }
             }
         )
         return cfg;
@@ -93,11 +94,11 @@ Almost there! The last thing we need to do is to add some content our ```pages/i
 ```js
 import Head from "next/head"
 import { Component } from 'react'
-import content from '../content/home.md';
+import { attributes, react as HomeContent } from '../content/home.md';
 
 export default class Home extends Component {
   render() {
-    let { html , attributes:{ title, cats } } = content;
+    let { title, cats } = attributes;
     return (
       <>
         <Head>
@@ -105,7 +106,7 @@ export default class Home extends Component {
         </Head>
         <article>
           <h1>{title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: html }} />
+          <HomeContent />
           <ul>
             {cats.map((cat, k) => (
               <li key={k}>
