@@ -157,4 +157,48 @@ describe('test backend implementation', () => {
       });
     });
   });
+
+  describe('deleteFile', () => {
+    it('should delete entry by path', async () => {
+      window.repoFiles = {
+        posts: {
+          'some-post.md': {
+            content: 'post content',
+          },
+        },
+      };
+
+      const backend = new TestBackend();
+
+      await backend.deleteFile('posts/some-post.md');
+      expect(window.repoFiles).toEqual({
+        posts: {},
+      });
+    });
+
+    it('should delete entry by nested path', async () => {
+      window.repoFiles = {
+        posts: {
+          dir1: {
+            dir2: {
+              'some-post.md': {
+                content: 'post content',
+              },
+            },
+          },
+        },
+      };
+
+      const backend = new TestBackend();
+
+      await backend.deleteFile('posts/dir1/dir2/some-post.md');
+      expect(window.repoFiles).toEqual({
+        posts: {
+          dir1: {
+            dir2: {},
+          },
+        },
+      });
+    });
+  });
 });

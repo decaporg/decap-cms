@@ -1,4 +1,4 @@
-import { attempt, isError, take } from 'lodash';
+import { attempt, isError, take, unset } from 'lodash';
 import uuid from 'uuid/v4';
 import { EditorialWorkflowError, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
@@ -255,9 +255,7 @@ export default class TestBackend {
     if (assetIndex > -1) {
       this.assets.splice(assetIndex, 1);
     } else {
-      const folder = path.substring(0, path.lastIndexOf('/'));
-      const fileName = path.substring(path.lastIndexOf('/') + 1);
-      delete window.repoFiles[folder][fileName];
+      unset(window.repoFiles, path.split('/'));
     }
 
     return Promise.resolve();
