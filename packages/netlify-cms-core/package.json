@@ -8,8 +8,10 @@
   "main": "dist/netlify-cms-core.js",
   "files": [
     "src/",
-    "dist/"
+    "dist/",
+    "index.d.ts"
   ],
+  "types": "index.d.ts",
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
