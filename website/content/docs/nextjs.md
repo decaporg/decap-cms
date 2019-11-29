@@ -7,6 +7,7 @@ group: guides
 This guide will help you get started using Netlify CMS with NextJS.
 
 ## Creating a new project
+
 Let's repeat some of the basics of setting up a simple NextJS project (check out [nextjs.org/learn](http://nextjs.org/learn) for a more detailed version).
 
 ```bash
@@ -20,7 +21,7 @@ npm init -y
 # Install required dependencies
 npm install --save react react-dom next
 
-# Install webpack loader for Markdown
+# Install webpack loader for Markdown (Use version 3+)
 npm install --save-dev frontmatter-markdown-loader
 
 # Create folder for pages (default for NextJS), and add a index file
@@ -49,7 +50,7 @@ Next, we need to add some modifications to our ``package.json`` file to make it 
 }
 ```
 
-There is a lot of different ways to create and display Markdown content, but to make this as easy as possible we'll be using a webpack-loader that enables us to load markdown files directly in our React components ([frontmatter-markdown-loader](https://www.npmjs.com/package/frontmatter-markdown-loader)). 
+There is a lot of different ways to create and display Markdown content, but to make this as easy as possible we'll be using a webpack-loader that enables us to load markdown files directly in our React components ([frontmatter-markdown-loader](https://www.npmjs.com/package/frontmatter-markdown-loader)).
 
 Add the following content to your ```content/home.md``` file:
 
@@ -65,7 +66,7 @@ cats:
   - description: 'Grumpy cat is an American celebrity cat known for her grumpy appearance.'
     name: Grumpy cat (Tardar Sauce)
 ---
-Welcome to my awesome page about cats of the internet. 
+Welcome to my awesome page about cats of the internet.
 
 This page is built with NextJS, and content is managed in Netlify CMS
 
@@ -79,7 +80,8 @@ module.exports = {
         cfg.module.rules.push(
             {
                 test: /\.md$/,
-                use: 'frontmatter-markdown-loader'
+                use: 'frontmatter-markdown-loader',
+                options: { mode: ['react-component'] }
             }
         )
         return cfg;
@@ -92,11 +94,11 @@ Almost there! The last thing we need to do is to add some content our ```pages/i
 ```js
 import Head from "next/head"
 import { Component } from 'react'
-import content from '../content/home.md';
+import { attributes, react as HomeContent } from '../content/home.md';
 
 export default class Home extends Component {
   render() {
-    let { html , attributes:{ title, cats } } = content;
+    let { title, cats } = attributes;
     return (
       <>
         <Head>
@@ -104,7 +106,7 @@ export default class Home extends Component {
         </Head>
         <article>
           <h1>{title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: html }} />
+          <HomeContent />
           <ul>
             {cats.map((cat, k) => (
               <li key={k}>
@@ -174,14 +176,14 @@ collections:
     - label: "Home"
       name: "home"
       file: "content/home.md"
-      fields: 
+      fields:
         - { label: "Title", name: "title", widget: "string"}
         - { label: "Publish Date", name: "date", widget: "datetime" }
         - { label: "Body", name: "body", widget: "markdown"}
         - label: 'Cats'
           name: "cats"
           widget: list
-          fields: 
+          fields:
             - { label: "Name", name: "name", widget: "string"}
             - { label: "Description", name: "description", widget: "text"}
 ```
@@ -205,8 +207,7 @@ node_modules/
 out/
 ```
 
-
-When your project is under version control, go to Netlify and select "New Site from Git". 
+When your project is under version control, go to Netlify and select "New Site from Git".
 Select GitHub (or whatever service you used in the previous step), and the repository you just pushed to.
 
 Under the final step (Build options, and deploy!), make sure you enter the following:
@@ -215,7 +216,6 @@ Under the final step (Build options, and deploy!), make sure you enter the follo
 |-------|-------|
 | Build command | **npm run export** |
 | Publish directory | **out** |
-
 
 ### Enable Identity and Git Gateway
 
@@ -227,7 +227,8 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 4. Scroll down to **Services > Git Gateway**, and click **Enable Git Gateway**. This authenticates with your Git host and generates an API access token. In this case, we're leaving the **Roles** field blank, which means any logged in user may access the CMS. For information on changing this, check the [Netlify Identity documentation](https://www.netlify.com/docs/identity/).
 
 ### Celebrate!
-Great job - you did it! 
+
+Great job - you did it!
 Open your new page via the new Netlify URL, and navigate to ```/admin```. If you did everything correct in the previous step, you should now be able to sign up for an account, and log in. 
 
 **Tip:** Signing up with an external provider is the easiest. If you want to sign up by email, you'll have to set up a redirect in your index.js page (which we won't be covering in this guide). For more information, have a look at the [Add To Your Site](https://www.netlifycms.org/docs/add-to-your-site) section.
