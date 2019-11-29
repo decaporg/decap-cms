@@ -541,10 +541,12 @@ export function unpublishPublishedEntry(collection, slug) {
     const entryDraft = Map().set('entry', entry);
     dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
     return backend
-      .persistEntry(state.config, collection, entryDraft, [], state.integrations, [], {
-        status: status.get('PENDING_PUBLISH'),
-      })
-      .then(() => backend.deleteEntry(state.config, collection, slug))
+      .deleteEntry(state.config, collection, slug)
+      .then(() =>
+        backend.persistEntry(state.config, collection, entryDraft, [], state.integrations, [], {
+          status: status.get('PENDING_PUBLISH'),
+        }),
+      )
       .then(() => {
         dispatch(unpublishedEntryPersisted(collection, entryDraft, transactionID, slug));
         dispatch(entryDeleted(collection, slug));
