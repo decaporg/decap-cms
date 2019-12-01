@@ -104,8 +104,8 @@ describe('test backend implementation', () => {
 
       const backend = new TestBackend();
 
-      const slug = encodeURIComponent('dir1/dir2/some-post.md');
-      const path = `posts/${decodeURIComponent(slug)}`;
+      const slug = 'dir1/dir2/some-post.md';
+      const path = `posts/${slug}`;
       const entry = { path, raw: 'content', slug };
       await backend.persistEntry(entry, [], { newEntry: true });
 
@@ -138,8 +138,8 @@ describe('test backend implementation', () => {
 
       const backend = new TestBackend();
 
-      const slug = encodeURIComponent('dir1/dir2/some-post.md');
-      const path = `posts/${decodeURIComponent(slug)}`;
+      const slug = 'dir1/dir2/some-post.md';
+      const path = `posts/${slug}`;
       const entry = { path, raw: 'new content', slug };
       await backend.persistEntry(entry, [], { newEntry: false });
 

@@ -190,7 +190,7 @@ class App extends React.Component {
               path="/collections/:name/new"
               render={props => <Editor {...props} newRecord />}
             />
-            <Route path="/collections/:name/entries/:slug" component={Editor} />
+            <Route path="/collections/:name/entries/*" component={Editor} />
             <Route
               path="/search/:searchTerm"
               render={props => <Collection {...props} isSearchResults />}
