@@ -4,25 +4,24 @@ import store from 'ReduxStore';
 import { getIntegrationProvider } from 'Integrations';
 import { selectIntegration } from 'Reducers';
 
-export default function AssetProxy({
-  value,
-  fileObj,
-  uploaded = false,
-  asset = null,
-  mediaFolder = null,
-  publicFolder = null,
-}) {
-  const config = store.getState().config;
-  mediaFolder = mediaFolder || config.get('media_folder');
-  publicFolder = publicFolder || config.get('public_folder');
+export function resolveAssetPath(folder, uploaded, value) {
+  return folder && !uploaded ? resolvePath(value, folder) : value;
+}
 
+export function resolveAssetPublicPath(folder, uploaded, value) {
+  return !uploaded ? resolvePath(value, folder) : value;
+}
+
+export default function AssetProxy({ value, fileObj, uploaded = false, asset = null }) {
+  const config = store.getState().config;
   this.value = value;
   this.fileObj = fileObj;
   this.uploaded = uploaded;
   this.sha = null;
-  this.path = mediaFolder && !uploaded ? resolvePath(value, mediaFolder) : value;
-  this.public_path = !uploaded ? resolvePath(value, publicFolder) : value;
   this.asset = asset;
+
+  this.path = resolveAssetPath(config.get('media_folder'), uploaded, value);
+  this.public_path = resolveAssetPublicPath(config.get('public_folder'), uploaded, value);
 }
 
 AssetProxy.prototype.toString = function() {
@@ -47,14 +46,7 @@ AssetProxy.prototype.toBase64 = function() {
   });
 };
 
-export function createAssetProxy({
-  value,
-  fileObj,
-  uploaded = false,
-  privateUpload = false,
-  mediaFolder = null,
-  publicFolder = null,
-}) {
+export function createAssetProxy({ value, fileObj, uploaded = false, privateUpload = false }) {
   const state = store.getState();
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
@@ -79,5 +71,5 @@ export function createAssetProxy({
     throw new Error('The Private Upload option is only available for Asset Store Integration');
   }
 
-  return Promise.resolve(new AssetProxy({ value, fileObj, uploaded, mediaFolder, publicFolder }));
+  return Promise.resolve(new AssetProxy({ value, fileObj, uploaded }));
 }

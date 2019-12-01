@@ -113,9 +113,9 @@ export const selectEntries = (state, collection) => {
   return slugs && slugs.map(slug => selectEntry(state, collection, slug));
 };
 
-export const selectEntryMediaFolders = (state, collection, entryPath) => {
-  let mediaFolder = state.config.get('media_folder');
-  let publicFolder = state.config.get('public_folder');
+export const selectEntryMediaFolders = (config, collection, entryPath) => {
+  let mediaFolder = config.get('media_folder');
+  let publicFolder = config.get('public_folder');
 
   const entryDir = dirname(entryPath);
   if (collection.has('media_folder')) {

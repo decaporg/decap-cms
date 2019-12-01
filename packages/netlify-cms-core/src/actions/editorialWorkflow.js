@@ -5,12 +5,7 @@ import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { Map } from 'immutable';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
-import {
-  selectPublishedSlugs,
-  selectUnpublishedSlugs,
-  selectEntry,
-  selectEntryMediaFolders,
-} from 'Reducers';
+import { selectPublishedSlugs, selectUnpublishedSlugs, selectEntry } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
@@ -262,12 +257,8 @@ export function loadUnpublishedEntry(collection, slug) {
     try {
       const entry = await backend.unpublishedEntry(collection, slug);
       const mediaFiles = entry.mediaFiles;
-      const { mediaFolder, publicFolder } = selectEntryMediaFolders(state, collection, entry.path);
-
       const assetProxies = await Promise.all(
-        mediaFiles.map(({ file }) =>
-          createAssetProxy({ value: file.name, fileObj: file, mediaFolder, publicFolder }),
-        ),
+        mediaFiles.map(({ file }) => createAssetProxy({ value: file.name, fileObj: file })),
       );
       dispatch(addAssets(assetProxies));
       dispatch(

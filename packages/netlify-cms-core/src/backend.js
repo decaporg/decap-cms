@@ -2,6 +2,7 @@ import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq
 import { stripIndent } from 'common-tags';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
+import { selectEntryMediaFolders } from 'Reducers/entries';
 import { selectIntegration } from 'Reducers/integrations';
 import {
   selectListMethod,
@@ -14,6 +15,7 @@ import {
   selectInferedField,
 } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
+import { resolveAssetPath, resolveAssetPublicPath } from 'ValueObjects/AssetProxy';
 import { sanitizeSlug, sanitizeChar } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
 import { commitMessageFormatter, slugFormatter, prepareSlug } from 'Lib/backendHelper';
@@ -563,7 +565,7 @@ export class Backend {
     config,
     collection,
     entryDraft,
-    MediaFiles,
+    mediaFiles,
     integrations,
     usedSlugs,
     options = {},
@@ -602,6 +604,17 @@ export class Backend {
       };
     }
 
+    // update media files path based on entry path
+    mediaFiles.forEach(file => {
+      const { mediaFolder, publicFolder } = selectEntryMediaFolders(
+        config,
+        collection,
+        entryObj.path,
+      );
+      file.path = resolveAssetPath(mediaFolder, file.uploaded, file.value);
+      file.public_path = resolveAssetPath(publicFolder, file.uploaded, file.value);
+    });
+
     const user = await this.currentUser();
     const commitMessage = commitMessageFormatter(
       newEntry ? 'create' : 'update',
@@ -634,7 +647,7 @@ export class Backend {
       ...updatedOptions,
     };
 
-    return this.implementation.persistEntry(entryObj, MediaFiles, opts).then(() => entryObj.slug);
+    return this.implementation.persistEntry(entryObj, mediaFiles, opts).then(() => entryObj.slug);
   }
 
   async persistMedia(config, file, draft) {

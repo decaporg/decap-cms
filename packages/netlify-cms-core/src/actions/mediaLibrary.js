@@ -4,7 +4,7 @@ import { resolveMediaFilename, getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from 'coreSrc/backend';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import { createAssetProxy } from 'ValueObjects/AssetProxy';
-import { selectIntegration, selectEntryMediaFolders } from 'Reducers';
+import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
@@ -197,23 +197,15 @@ export function persistMedia(file, opts = {}) {
 
     try {
       const id = await getBlobSHA(file);
-
-      const entry = state.entryDraft.get('entry');
-      const { mediaFolder, publicFolder } = selectEntryMediaFolders(
-        state,
-        state.collections.get(entry.get('collection')),
-        entry.get('path'),
-      );
       const assetProxy = await createAssetProxy({
         value: fileName,
         fileObj: file,
         uploaded: false,
         privateUpload,
-        mediaFolder,
-        publicFolder,
       });
       dispatch(addAsset(assetProxy));
 
+      const entry = state.entryDraft.get('entry');
       const useWorkflow = state.config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW;
       const draft = entry && !entry.isEmpty() && useWorkflow;
 

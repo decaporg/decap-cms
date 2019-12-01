@@ -4,12 +4,7 @@ import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
 import { getIntegrationProvider } from 'Integrations';
-import {
-  getAsset,
-  selectIntegration,
-  selectPublishedSlugs,
-  selectEntryMediaFolders,
-} from 'Reducers';
+import { getAsset, selectIntegration, selectPublishedSlugs } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -312,11 +307,8 @@ export function retrieveLocalBackup(collection, slug) {
 
     if (entry) {
       // load assets from backup
-      const { mediaFolder, publicFolder } = selectEntryMediaFolders(state, collection, entry.path);
       const assetProxies = await Promise.all(
-        assets.map(({ value, fileObj }) =>
-          createAssetProxy({ value, fileObj, mediaFolder, publicFolder }),
-        ),
+        assets.map(({ value, fileObj }) => createAssetProxy({ value, fileObj })),
       );
       dispatch(addAssets(assetProxies));
 

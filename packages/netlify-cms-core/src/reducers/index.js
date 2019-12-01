@@ -42,9 +42,6 @@ export const selectEntries = (state, collection) =>
 export const selectPublishedSlugs = (state, collection) =>
   fromEntries.selectPublishedSlugs(state.entries, collection);
 
-export const selectEntryMediaFolders = (state, collection, entryPath) =>
-  fromEntries.selectEntryMediaFolders(state, collection, entryPath);
-
 export const selectSearchedEntries = state => {
   const searchItems = state.search.get('entryIds');
   return (
