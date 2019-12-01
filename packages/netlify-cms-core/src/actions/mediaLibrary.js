@@ -198,6 +198,7 @@ export function persistMedia(file, opts = {}) {
     try {
       const id = await getBlobSHA(file);
       const assetProxy = await createAssetProxy({
+        state,
         value: fileName,
         fileObj: file,
         uploaded: false,
@@ -285,6 +286,7 @@ export function deleteMedia(file, opts = {}) {
 
     try {
       const assetProxy = await createAssetProxy({
+        state,
         value: file.name,
         fileObj: file,
       });

@@ -11,13 +11,12 @@ const moduleNameToPath = libName => `${path.resolve(__dirname, `../node_modules/
 
 const rules = () => ({
   js: () => ({
-    test: /\.js$/,
+    test: /\.(ts|js)x?$/,
     exclude: /node_modules/,
     use: {
       loader: 'babel-loader',
       options: {
         rootMode: 'upward',
-        // configFile: path.resolve(`${__dirname}/../babel.config.js`),
       },
     },
   }),
@@ -114,6 +113,9 @@ const baseConfig = ({ target = isProduction ? 'umd' : 'umddir' } = {}) => ({
   output: targetOutputs()[target],
   module: {
     rules: flatMap(Object.values(rules()), rule => rule()),
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   plugins: Object.values(plugins()).map(plugin => plugin()),
   devtool: isTest ? '' : 'source-map',

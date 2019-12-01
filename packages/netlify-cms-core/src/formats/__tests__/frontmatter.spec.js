@@ -5,8 +5,6 @@ import {
   frontmatterYAML,
 } from '../frontmatter';
 
-jest.mock('../../valueObjects/AssetProxy.js');
-
 describe('Frontmatter', () => {
   it('should parse YAML with --- delimiters', () => {
     expect(

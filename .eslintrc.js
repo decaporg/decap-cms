@@ -28,6 +28,7 @@ module.exports = {
     'emotion/no-vanilla': 'error',
     'emotion/import-from-emotion': 'error',
     'emotion/styled-import': 'error',
+    'require-atomic-updates': [0],
   },
   plugins: ['babel', 'emotion', 'cypress'],
   settings: {
@@ -35,4 +36,31 @@ module.exports = {
       version: 'detect',
     },
   },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      extends: [
+        'eslint:recommended',
+        'plugin:react/recommended',
+        'plugin:cypress/recommended',
+        'plugin:@typescript-eslint/recommended',
+        'prettier/@typescript-eslint',
+        'plugin:import/errors',
+        'plugin:import/warnings',
+        'plugin:import/typescript',
+      ],
+      parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      rules: {
+        '@typescript-eslint/ban-ts-ignore': 0,
+        '@typescript-eslint/no-explicit-any': 0,
+      },
+    },
+  ],
 };

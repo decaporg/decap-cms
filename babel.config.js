@@ -50,6 +50,7 @@ const defaultPlugins = [
             localforage: 'localforage',
             redux: 'redux',
           },
+          extensions: ['.js', '.jsx', '.es', '.es6', '.mjs', '.ts', '.tsx'],
         }
       : {
           root: path.join(__dirname, 'packages/netlify-cms-core/src/components'),
@@ -68,6 +69,7 @@ const defaultPlugins = [
             localforage: 'localforage',
             redux: 'redux',
           },
+          extensions: ['.js', '.jsx', '.es', '.es6', '.mjs', '.ts', '.tsx'],
         },
   ],
 ];
@@ -82,6 +84,7 @@ const presets = () => {
         autoLabel: true,
       },
     ],
+    '@babel/typescript',
   ];
 };
 

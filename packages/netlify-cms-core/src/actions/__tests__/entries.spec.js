@@ -190,7 +190,7 @@ describe('entries', () => {
       });
 
       currentBackend.mockReturnValue(backend);
-      createAssetProxy.mockImplementation((value, fileObj) => ({ value, fileObj }));
+      createAssetProxy.mockImplementation(({ value, fileObj }) => ({ value, fileObj }));
 
       const collection = Map({
         name: 'collection',
@@ -207,7 +207,11 @@ describe('entries', () => {
         const actions = store.getActions();
 
         expect(createAssetProxy).toHaveBeenCalledTimes(1);
-        expect(createAssetProxy).toHaveBeenCalledWith(assets[0].value, assets[0].fileObj);
+        expect(createAssetProxy).toHaveBeenCalledWith({
+          state: store.getState(),
+          value: assets[0].value,
+          fileObj: assets[0].fileObj,
+        });
         expect(actions).toHaveLength(2);
 
         expect(actions[0]).toEqual({
