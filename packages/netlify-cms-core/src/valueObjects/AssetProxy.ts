@@ -14,7 +14,7 @@ export function resolveAssetPublicPath(folder: string, uploaded: boolean, value:
   return !uploaded ? resolvePath(value, folder) : value;
 }
 
-interface Asset {
+interface IntegrationAsset {
   url: string;
 }
 
@@ -23,7 +23,7 @@ interface AssetProxyArgs {
   value: string;
   fileObj: File | null;
   uploaded?: boolean;
-  asset?: Asset | null;
+  asset?: IntegrationAsset | null;
 }
 
 export default class AssetProxy {
@@ -77,7 +77,7 @@ export function createAssetProxy({
   fileObj,
   uploaded = false,
   privateUpload = false,
-}: AssetProxyArgs & { state: any; privateUpload: boolean }): Promise<AssetProxy> {
+}: AssetProxyArgs & { privateUpload: boolean }): Promise<AssetProxy> {
   const integration = selectIntegration(state, null, 'assetStore');
   if (integration && !uploaded) {
     const provider =
@@ -88,7 +88,7 @@ export function createAssetProxy({
         integration,
       );
     return provider.upload(fileObj, privateUpload).then(
-      (response: { asset: Asset }) =>
+      (response: { asset: IntegrationAsset }) =>
         new AssetProxy({
           state,
           value: response.asset.url.replace(/^(https?):/, ''),
