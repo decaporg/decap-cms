@@ -612,7 +612,7 @@ export class Backend {
         entryObj.path,
       );
       file.path = resolveAssetPath(mediaFolder, file.uploaded, file.value);
-      file.public_path = resolveAssetPath(publicFolder, file.uploaded, file.value);
+      file.public_path = resolveAssetPublicPath(publicFolder, file.uploaded, file.value);
     });
 
     const user = await this.currentUser();
