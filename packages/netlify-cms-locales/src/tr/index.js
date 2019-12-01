@@ -36,7 +36,7 @@ const tr = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} zorunlu',
-        regexPattern: "%{fieldLabel} eşleşmeyen kalıp: %{pattern}.",
+        regexPattern: '%{fieldLabel} eşleşmeyen kalıp: %{pattern}.',
         processing: '%{fieldLabel} işleniyor.',
         range: '%{fieldLabel} - %{minValue} ve %{maxValue} arasında olmalı.',
         min: '%{fieldLabel} en az %{minValue} olmalı.',
@@ -45,9 +45,11 @@ const tr = {
     },
     editor: {
       onLeavePage: 'Bu sayfadan ayrılmak istediğinize emin misiniz?',
-      onUpdatingWithUnsavedChanges: 'Kaydedilmemiş değişiklikleriniz var, lütfen durumu güncellemeden önce kaydedin.',
+      onUpdatingWithUnsavedChanges:
+        'Kaydedilmemiş değişiklikleriniz var, lütfen durumu güncellemeden önce kaydedin.',
       onPublishingNotReady: 'Lütfen yayınlamadan önce durumu "Hazır" olarak güncelleyin.',
-      onPublishingWithUnsavedChanges: 'Kaydedilmemiş değişiklikleriniz var, lütfen yayınlamadan önce kaydedin.',
+      onPublishingWithUnsavedChanges:
+        'Kaydedilmemiş değişiklikleriniz var, lütfen yayınlamadan önce kaydedin.',
       onPublishing: 'Bu girdi yayınlamak istediğinize emin misiniz?',
       onUnpublishing: 'Bu girdi yayından kaldırmak istediğinizden emin misiniz?',
       onDeleteWithUnsavedChanges:
@@ -122,7 +124,7 @@ const tr = {
   ui: {
     errorBoundary: {
       title: 'Hata',
-      details: "Bir hata oluştu - lütfen ",
+      details: 'Bir hata oluştu - lütfen ',
       reportIt: 'onu rapor et.',
       detailsHeading: 'Ayrıntılar',
       recoveredEntry: {
@@ -140,7 +142,8 @@ const tr = {
       onFailToPersist: 'Girdi devam ettirilemedi: %{details}',
       onFailToDelete: 'Girdi silinemedi: %{details}',
       onFailToUpdateStatus: 'Durum güncellenemedi: %{details}',
-      missingRequiredField: "Hata! Gerekli bir alanı kaçırdınız. Lütfen kaydetmeden önce tamamlayın.",
+      missingRequiredField:
+        'Hata! Gerekli bir alanı kaçırdınız. Lütfen kaydetmeden önce tamamlayın.',
       entrySaved: 'Girdi kaydedildi',
       entryPublished: 'Girdi yayınlandı',
       entryUnpublished: 'Girdi yayınlanmamış',
