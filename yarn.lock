@@ -7533,9 +7533,9 @@ jest-each@^24.9.0:
     pretty-format "^24.9.0"
 
 jest-emotion@^10.0.9:
-  version "10.0.17"
-  resolved "https://registry.yarnpkg.com/jest-emotion/-/jest-emotion-10.0.17.tgz#e65a881771f522c123d61721d9bb0095dcb6cf40"
-  integrity sha512-Z0SqaeXGr9dshhY5z9ctfPiw2qTw5BRbCsbBWziTtSdiLnqFprj2NuF38lMrpSMFKjNY+q+rioRI5gVyQZrrxA==
+  version "10.0.25"
+  resolved "https://registry.yarnpkg.com/jest-emotion/-/jest-emotion-10.0.25.tgz#9ade7c425bf1753e4014c72b534f4fde740a14d0"
+  integrity sha512-PZQEVUo4EFIN1fHaURzo+PpIzQR2RAZ9E0reQtDBuJsSGjeK03iFhfB+Chus7J8gdHPXptoPINjnXIAOyjKa2w==
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@types/jest" "^23.0.2"
