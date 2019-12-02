@@ -8820,9 +8820,9 @@ mkdirp@*, mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
     minimist "0.0.8"
 
 mockserver-client@^5.6.1:
-  version "5.7.2"
-  resolved "https://registry.yarnpkg.com/mockserver-client/-/mockserver-client-5.7.2.tgz#0f4f4e57f0b71b9cbaca66d89e3f91efad40fd95"
-  integrity sha512-lCgnxMiVfme5GfBXwunb07VHDaq/12MBaafAIDpR6euWKSHDa7CaxhK4ZDb5BfsruX4Qr0dCztuB65v473v/hg==
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/mockserver-client/-/mockserver-client-5.8.0.tgz#359037489d239558cc17007fdb63adff406f7727"
+  integrity sha512-2vQQkC+Ur0yY5d0g9SgaL+Wc0XqSQFXthpAHr2QHV4rwrrFOP1yLm6xVzlWC58tnSNx3oFrmuNjzVg7B7gNuyQ==
   dependencies:
     q "~2.0"
     websocket "^1.0.30"
