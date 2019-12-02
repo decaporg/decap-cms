@@ -7,12 +7,12 @@ function formatDate(date) {
 }
 
 export const dateParsers = {
-  year: date => date.getFullYear(),
-  month: date => formatDate(date.getMonth() + 1),
-  day: date => formatDate(date.getDate()),
-  hour: date => formatDate(date.getHours()),
-  minute: date => formatDate(date.getMinutes()),
-  second: date => formatDate(date.getSeconds()),
+  year: date => date.getUTCFullYear(),
+  month: date => formatDate(date.getUTCMonth() + 1),
+  day: date => formatDate(date.getUTCDate()),
+  hour: date => formatDate(date.getUTCHours()),
+  minute: date => formatDate(date.getUTCMinutes()),
+  second: date => formatDate(date.getUTCSeconds()),
 };
 
 export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
