@@ -136,13 +136,17 @@ describe('mediaLibrary', () => {
       const store = mockStore({
         config: Map({
           publish_mode: 'editorial_workflow',
+          public_folder: '/static/media',
+        }),
+        collections: Map({
+          posts: Map({ name: 'posts' }),
         }),
         integrations: Map(),
         mediaLibrary: Map({
           files: List(),
         }),
         entryDraft: Map({
-          entry: Map({ isPersisting: false }),
+          entry: Map({ isPersisting: false, collection: 'posts' }),
         }),
       });
 
@@ -181,13 +185,18 @@ describe('mediaLibrary', () => {
 
     it('should not persist media as draft when not in editorial workflow', () => {
       const store = mockStore({
-        config: Map({}),
+        config: Map({
+          public_folder: '/static/media',
+        }),
+        collections: Map({
+          posts: Map({ name: 'posts' }),
+        }),
         integrations: Map(),
         mediaLibrary: Map({
           files: List(),
         }),
         entryDraft: Map({
-          entry: Map({ isPersisting: false }),
+          entry: Map({ isPersisting: false, collection: 'posts' }),
         }),
       });
 
@@ -224,6 +233,9 @@ describe('mediaLibrary', () => {
       const store = mockStore({
         config: Map({
           publish_mode: 'editorial_workflow',
+        }),
+        collections: Map({
+          posts: Map({ name: 'posts' }),
         }),
         integrations: Map(),
         mediaLibrary: Map({

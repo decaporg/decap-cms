@@ -82,7 +82,7 @@ export function createAssetProxy({
   integration,
   getIntegrationProvider,
 }: AssetProxyArgs & {
-  privateUpload: boolean;
+  privateUpload?: boolean;
   integration?: {};
   getIntegrationProvider?: () => {
     upload: (fileObj: File | null, privateUpload: boolean) => Promise<{ asset: IntegrationAsset }>;

@@ -11,7 +11,7 @@ import mediaLibrary from './mediaLibrary';
 import medias, * as fromMedias from './medias';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
-import { Statues } from '../constants/publishModes';
+import { Status } from '../constants/publishModes';
 import { State } from '../types/redux';
 
 const reducers = {
@@ -60,7 +60,7 @@ export const selectDeployPreview = (state: State, collection: string, slug: stri
 export const selectUnpublishedEntry = (state: State, collection: string, slug: string) =>
   fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);
 
-export const selectUnpublishedEntriesByStatus = (state: State, status: keyof typeof Statues) =>
+export const selectUnpublishedEntriesByStatus = (state: State, status: Status) =>
   fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
 
 export const selectUnpublishedSlugs = (state: State, collection: string) =>

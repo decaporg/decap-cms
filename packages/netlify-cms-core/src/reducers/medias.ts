@@ -1,10 +1,10 @@
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 import { resolvePath } from 'netlify-cms-lib-util';
 import { ADD_ASSETS, ADD_ASSET, REMOVE_ASSET } from '../actions/media';
 import AssetProxy from '../valueObjects/AssetProxy';
 import { Medias, MediasAction, MediaAsset } from '../types/redux';
 
-const medias = (state: Medias = Map(), action: MediasAction) => {
+const medias = (state: Medias = fromJS({}), action: MediasAction) => {
   switch (action.type) {
     case ADD_ASSETS: {
       const payload = action.payload as MediaAsset[];

@@ -117,11 +117,12 @@ export const selectEntryMediaFolders = (config, collection, entryPath) => {
   let mediaFolder = config.get('media_folder');
   let publicFolder = config.get('public_folder');
 
-  const entryDir = dirname(entryPath);
-  if (collection.has('media_folder')) {
+  if (collection && collection.has('media_folder') && entryPath) {
+    const entryDir = dirname(entryPath);
     mediaFolder = join(entryDir, collection.get('media_folder'));
   }
-  if (collection.has('public_folder')) {
+  if (collection && collection.has('public_folder') && entryPath) {
+    const entryDir = dirname(entryPath);
     publicFolder = join(entryDir, collection.get('public_folder'));
   }
 

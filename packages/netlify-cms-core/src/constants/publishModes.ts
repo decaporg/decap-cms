@@ -18,3 +18,5 @@ export const statusDescriptions = Map({
   [status.get('PENDING_REVIEW')]: 'Waiting for Review',
   [status.get('PENDING_PUBLISH')]: 'Waiting to go live',
 });
+
+export type Status = keyof typeof Statues;

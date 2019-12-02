@@ -150,10 +150,10 @@ describe('entries', () => {
         persistLocalDraftBackup: jest.fn((...args) => args),
       };
 
-      const state = { config: {} };
+      const state = { config: Map({ public_folder: '/static/media' }) };
 
       currentBackend.mockReturnValue(backend);
-      getAsset.mockImplementation((state, path) => path);
+      getAsset.mockImplementation(({ path }) => path);
       getState.mockReturnValue(state);
 
       const entry = Map();
@@ -259,17 +259,17 @@ describe('entries', () => {
 
     it('should map mediaFiles to assets', () => {
       const { getAsset } = require('Reducers');
-      const state = {};
+      const state = { config: Map() };
       const mediaFiles = [{ public_path: 'public_path' }];
 
       const asset = { name: 'asset1' };
 
       getAsset.mockReturnValue(asset);
 
-      expect(getMediaAssets(state, mediaFiles)).toEqual([asset]);
+      expect(getMediaAssets({ state, mediaFiles, collection: Map() })).toEqual([asset]);
 
       expect(getAsset).toHaveBeenCalledTimes(1);
-      expect(getAsset).toHaveBeenCalledWith(state, 'public_path');
+      expect(getAsset).toHaveBeenCalledWith({ state, path: 'public_path' });
     });
   });
 });

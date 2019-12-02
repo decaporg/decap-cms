@@ -2,12 +2,13 @@ import uuid from 'uuid/v4';
 import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
+import { ThunkDispatch } from 'redux-thunk';
 import { Map } from 'immutable';
-import { serializeValues } from 'Lib/serializeEntryValues';
-import { currentBackend } from 'coreSrc/backend';
-import { selectPublishedSlugs, selectUnpublishedSlugs, selectEntry } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
-import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
+import { serializeValues } from '../lib/serializeEntryValues';
+import { currentBackend } from '../backend';
+import { selectPublishedSlugs, selectUnpublishedSlugs, selectEntry } from '../reducers';
+import { selectFields } from '../reducers/collections';
+import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import {
   loadEntry,
@@ -20,8 +21,10 @@ import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { addMediaFilesToLibrary } from './mediaLibrary';
 
-import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { selectEntryMediaFolders } from '../reducers/entries';
+import { Collection, EntryMap, EntryObject, State, Collections } from '../types/redux';
+import { AnyAction } from 'redux';
 
 const { notifSend } = notifActions;
 
@@ -56,7 +59,7 @@ export const UNPUBLISHED_ENTRY_DELETE_FAILURE = 'UNPUBLISHED_ENTRY_DELETE_FAILUR
  * Simple Action Creators (Internal)
  */
 
-function unpublishedEntryLoading(collection, slug) {
+function unpublishedEntryLoading(collection: Collection, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_REQUEST,
     payload: {
@@ -66,7 +69,7 @@ function unpublishedEntryLoading(collection, slug) {
   };
 }
 
-function unpublishedEntryLoaded(collection, entry) {
+function unpublishedEntryLoaded(collection: Collection, entry: EntryObject) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
     payload: {
@@ -76,7 +79,7 @@ function unpublishedEntryLoaded(collection, entry) {
   };
 }
 
-function unpublishedEntryRedirected(collection, slug) {
+function unpublishedEntryRedirected(collection: Collection, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_REDIRECT,
     payload: {
@@ -92,7 +95,7 @@ function unpublishedEntriesLoading() {
   };
 }
 
-function unpublishedEntriesLoaded(entries, pagination) {
+function unpublishedEntriesLoaded(entries: EntryObject[], pagination: number) {
   return {
     type: UNPUBLISHED_ENTRIES_SUCCESS,
     payload: {
@@ -102,7 +105,7 @@ function unpublishedEntriesLoaded(entries, pagination) {
   };
 }
 
-function unpublishedEntriesFailed(error) {
+function unpublishedEntriesFailed(error: Error) {
   return {
     type: UNPUBLISHED_ENTRIES_FAILURE,
     error: 'Failed to load entries',
@@ -110,7 +113,11 @@ function unpublishedEntriesFailed(error) {
   };
 }
 
-function unpublishedEntryPersisting(collection, entry, transactionID) {
+function unpublishedEntryPersisting(
+  collection: Collection,
+  entry: EntryMap,
+  transactionID: string,
+) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
     payload: {
@@ -121,7 +128,12 @@ function unpublishedEntryPersisting(collection, entry, transactionID) {
   };
 }
 
-function unpublishedEntryPersisted(collection, entry, transactionID, slug) {
+function unpublishedEntryPersisted(
+  collection: Collection,
+  entry: EntryMap,
+  transactionID: string,
+  slug: string,
+) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: {
@@ -133,7 +145,7 @@ function unpublishedEntryPersisted(collection, entry, transactionID, slug) {
   };
 }
 
-function unpublishedEntryPersistedFail(error, transactionID) {
+function unpublishedEntryPersistedFail(error: Error, transactionID: string) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_FAILURE,
     payload: { error },
@@ -143,11 +155,11 @@ function unpublishedEntryPersistedFail(error, transactionID) {
 }
 
 function unpublishedEntryStatusChangeRequest(
-  collection,
-  slug,
-  oldStatus,
-  newStatus,
-  transactionID,
+  collection: string,
+  slug: string,
+  oldStatus: Status,
+  newStatus: Status,
+  transactionID: string,
 ) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
@@ -162,11 +174,11 @@ function unpublishedEntryStatusChangeRequest(
 }
 
 function unpublishedEntryStatusChangePersisted(
-  collection,
-  slug,
-  oldStatus,
-  newStatus,
-  transactionID,
+  collection: string,
+  slug: string,
+  oldStatus: Status,
+  newStatus: Status,
+  transactionID: string,
 ) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
@@ -180,7 +192,11 @@ function unpublishedEntryStatusChangePersisted(
   };
 }
 
-function unpublishedEntryStatusChangeError(collection, slug, transactionID) {
+function unpublishedEntryStatusChangeError(
+  collection: string,
+  slug: string,
+  transactionID: string,
+) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE,
     payload: { collection, slug },
@@ -188,7 +204,7 @@ function unpublishedEntryStatusChangeError(collection, slug, transactionID) {
   };
 }
 
-function unpublishedEntryPublishRequest(collection, slug, transactionID) {
+function unpublishedEntryPublishRequest(collection: string, slug: string, transactionID: string) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
     payload: { collection, slug },
@@ -196,7 +212,7 @@ function unpublishedEntryPublishRequest(collection, slug, transactionID) {
   };
 }
 
-function unpublishedEntryPublished(collection, slug, transactionID) {
+function unpublishedEntryPublished(collection: string, slug: string, transactionID: string) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
     payload: { collection, slug },
@@ -204,7 +220,7 @@ function unpublishedEntryPublished(collection, slug, transactionID) {
   };
 }
 
-function unpublishedEntryPublishError(collection, slug, transactionID) {
+function unpublishedEntryPublishError(collection: string, slug: string, transactionID: string) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
     payload: { collection, slug },
@@ -212,7 +228,7 @@ function unpublishedEntryPublishError(collection, slug, transactionID) {
   };
 }
 
-function unpublishedEntryDeleteRequest(collection, slug, transactionID) {
+function unpublishedEntryDeleteRequest(collection: string, slug: string, transactionID: string) {
   // The reducer doesn't handle this action -- it is for `optimist`.
   return {
     type: UNPUBLISHED_ENTRY_DELETE_REQUEST,
@@ -221,7 +237,7 @@ function unpublishedEntryDeleteRequest(collection, slug, transactionID) {
   };
 }
 
-function unpublishedEntryDeleted(collection, slug, transactionID) {
+function unpublishedEntryDeleted(collection: string, slug: string, transactionID: string) {
   return {
     type: UNPUBLISHED_ENTRY_DELETE_SUCCESS,
     payload: { collection, slug },
@@ -229,7 +245,7 @@ function unpublishedEntryDeleted(collection, slug, transactionID) {
   };
 }
 
-function unpublishedEntryDeleteError(collection, slug, transactionID) {
+function unpublishedEntryDeleteError(collection: string, slug: string, transactionID: string) {
   // The reducer doesn't handle this action -- it is for `optimist`.
   return {
     type: UNPUBLISHED_ENTRY_DELETE_FAILURE,
@@ -242,8 +258,8 @@ function unpublishedEntryDeleteError(collection, slug, transactionID) {
  * Exported Thunk Action Creators
  */
 
-export function loadUnpublishedEntry(collection, slug) {
-  return async (dispatch, getState) => {
+export function loadUnpublishedEntry(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
@@ -257,7 +273,7 @@ export function loadUnpublishedEntry(collection, slug) {
 
     try {
       const entry = await backend.unpublishedEntry(collection, slug);
-      const mediaFiles = entry.mediaFiles;
+      const mediaFiles: MediaFile[] = entry.mediaFiles;
       const assetProxies = await Promise.all(
         mediaFiles.map(({ file }) =>
           createAssetProxy({
@@ -307,8 +323,8 @@ export function loadUnpublishedEntry(collection, slug) {
   };
 }
 
-export function loadUnpublishedEntries(collections) {
-  return (dispatch, getState) => {
+export function loadUnpublishedEntries(collections: Collections) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
@@ -317,8 +333,10 @@ export function loadUnpublishedEntries(collections) {
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
-      .catch(error => {
+      .then((response: { entries: EntryObject[]; pagination: number }) =>
+        dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
+      )
+      .catch((error: Error) => {
         dispatch(
           notifSend({
             message: {
@@ -335,8 +353,8 @@ export function loadUnpublishedEntries(collections) {
   };
 }
 
-export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
-  return async (dispatch, getState) => {
+export function persistUnpublishedEntry(collection: Collection, existingUnpublishedEntry: boolean) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
@@ -383,7 +401,7 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
+    const serializedData = serializeValues(entry.get('data'), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 
@@ -429,8 +447,13 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
   };
 }
 
-export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newStatus) {
-  return (dispatch, getState) => {
+export function updateUnpublishedEntryStatus(
+  collection: string,
+  slug: string,
+  oldStatus: Status,
+  newStatus: Status,
+) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (oldStatus === newStatus) return;
     const state = getState();
     const backend = currentBackend(state.config);
@@ -460,7 +483,7 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
           ),
         );
       })
-      .catch(error => {
+      .catch((error: Error) => {
         dispatch(
           notifSend({
             message: {
@@ -476,8 +499,8 @@ export function updateUnpublishedEntryStatus(collection, slug, oldStatus, newSta
   };
 }
 
-export function deleteUnpublishedEntry(collection, slug) {
-  return (dispatch, getState) => {
+export function deleteUnpublishedEntry(collection: string, slug: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
@@ -494,7 +517,7 @@ export function deleteUnpublishedEntry(collection, slug) {
         );
         dispatch(unpublishedEntryDeleted(collection, slug, transactionID));
       })
-      .catch(error => {
+      .catch((error: Error) => {
         dispatch(
           notifSend({
             message: { key: 'ui.toast.onDeleteUnpublishedChanges', details: error },
@@ -507,8 +530,18 @@ export function deleteUnpublishedEntry(collection, slug) {
   };
 }
 
-export function publishUnpublishedEntry(collection, slug) {
-  return (dispatch, getState) => {
+interface MediaFile {
+  id: string;
+  sha: string;
+  displayURL: string;
+  path: string;
+  name: string;
+  size: number;
+  file: File;
+}
+
+export function publishUnpublishedEntry(collection: string, slug: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const collections = state.collections;
     const backend = currentBackend(state.config);
@@ -516,7 +549,7 @@ export function publishUnpublishedEntry(collection, slug) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
       .publishUnpublishedEntry(collection, slug)
-      .then(({ mediaFiles }) => {
+      .then(({ mediaFiles }: { mediaFiles: MediaFile[] }) => {
         dispatch(
           notifSend({
             message: { key: 'ui.toast.entryPublished' },
@@ -531,7 +564,7 @@ export function publishUnpublishedEntry(collection, slug) {
         dispatch(addMediaFilesToLibrary(mediaFiles.map(file => ({ ...file, draft: false }))));
         dispatch(clearDraftEntryMediaFiles());
       })
-      .catch(error => {
+      .catch((error: Error) => {
         dispatch(
           notifSend({
             message: { key: 'ui.toast.onFailToPublishEntry', details: error },
@@ -544,13 +577,13 @@ export function publishUnpublishedEntry(collection, slug) {
   };
 }
 
-export function unpublishPublishedEntry(collection, slug) {
-  return (dispatch, getState) => {
+export function unpublishPublishedEntry(collection: Collection, slug: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     const entry = selectEntry(state, collection.get('name'), slug);
-    const entryDraft = Map().set('entry', entry);
+    const entryDraft = (Map().set('entry', entry) as unknown) as EntryMap;
     dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
     return backend
       .deleteEntry(state.config, collection, slug)
@@ -571,7 +604,7 @@ export function unpublishPublishedEntry(collection, slug) {
           }),
         );
       })
-      .catch(error => {
+      .catch((error: Error) => {
         dispatch(
           notifSend({
             message: { key: 'ui.toast.onFailToUnpublishEntry', details: error },

@@ -18,6 +18,11 @@ interface StaticallyTypedRecord<T> {
     defaultValue?: V,
   ): T[K1][K2][K3];
   toJS(): T;
+  isEmpty(): boolean;
+  some<K extends keyof T>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    predicate: (value: T[K], key: K, iter: this, context?: any) => boolean,
+  ): boolean;
 }
 
 interface StaticallyTypedList<T> {
@@ -27,6 +32,7 @@ interface StaticallyTypedList<T> {
 export type Config = StaticallyTypedRecord<{
   media_folder: string;
   public_folder: string;
+  publish_mode?: string;
 }>;
 
 export type Entries = StaticallyTypedRecord<{}>;
@@ -34,6 +40,21 @@ export type Entries = StaticallyTypedRecord<{}>;
 export type Deploys = StaticallyTypedRecord<{}>;
 
 export type EditorialWorkflow = StaticallyTypedRecord<{}>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type EntryObject = { path: string; slug: string; data: any };
+
+export type EntryMap = StaticallyTypedRecord<EntryObject>;
+
+export type EntryDraft = StaticallyTypedRecord<{
+  entry: EntryMap;
+  mediaFiles: StaticallyTypedList<{}>;
+  fieldsErrors: StaticallyTypedRecord<{ [field: string]: { type: string }[] }>;
+}>;
+
+export type Collection = StaticallyTypedRecord<{ name: string }>;
+
+export type Collections = StaticallyTypedRecord<{ [path: string]: Collection }>;
 
 export type Medias = StaticallyTypedRecord<{ [path: string]: MediaAsset | undefined }>;
 
@@ -55,9 +76,11 @@ export type Search = StaticallyTypedRecord<{ entryIds?: SearchItem[] }>;
 
 export interface State {
   config: Config;
+  collections: Collections;
   deploys: Deploys;
   editorialWorkflow: EditorialWorkflow;
   entries: Entries;
+  entryDraft: EntryDraft;
   integrations: Integrations;
   medias: Medias;
   mediaLibrary: MediaLibrary;
