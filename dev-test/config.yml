@@ -33,6 +33,15 @@ collections: # A list of collections the CMS should be able to edit
         required: false
         tagname: ''
 
+      - label: 'Code'
+        name: 'code'
+        widget: 'code'
+      - name: obj
+        widget: object
+        fields:
+          - label: 'Code'
+            name: 'code'
+            widget: 'code'
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
     meta:
       - { label: 'SEO Description', name: 'description', widget: 'text' }
