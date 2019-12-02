@@ -61,7 +61,7 @@ collections:
 
 ### Setup Backend
 
-Follow the directions in the docs [to enable Identity and Git Gateway](https://www.netlifycms.org/docs/add-to-your-site/#enable-identity-and-git-gateway) then add the [Indentity Widget](https://www.netlifycms.org/docs/add-to-your-site/#add-the-netlify-identity-widget)
+Follow the directions in the docs [to enable Identity and Git Gateway](https://www.netlifycms.org/docs/add-to-your-site/#enable-identity-and-git-gateway) then add the [Identity Widget](https://www.netlifycms.org/docs/add-to-your-site/#add-the-netlify-identity-widget)
 
 ## CMS Configuration
 
