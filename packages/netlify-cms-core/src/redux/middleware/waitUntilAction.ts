@@ -7,12 +7,24 @@
  * action coming through the system. Think of it as a thunk that
  * blocks until the condition is met.
  */
+import { Middleware, MiddlewareAPI, Dispatch, Action, AnyAction } from 'redux';
+import { State } from '../../types/redux';
+
 export const WAIT_UNTIL_ACTION = 'WAIT_UNTIL_ACTION';
 
-export default function waitUntilAction({ dispatch, getState }) {
-  let pending = [];
+interface WaitAction extends Action {
+  type: string;
+  predicate: (action: AnyAction) => boolean;
+  run: (Dispatch: Dispatch, getState: () => State, action: AnyAction) => void;
+}
 
-  function checkPending(action) {
+export const waitUntilAction: Middleware<{}, State, Dispatch> = ({
+  dispatch,
+  getState,
+}: MiddlewareAPI<Dispatch, State>) => {
+  let pending: WaitAction[] = [];
+
+  function checkPending(action: AnyAction): void {
     const readyRequests = [];
     const stillPending = [];
 
@@ -35,13 +47,13 @@ export default function waitUntilAction({ dispatch, getState }) {
     }
   }
 
-  return next => action => {
+  return (next: Dispatch) => (action: AnyAction): null | AnyAction => {
     if (action.type === WAIT_UNTIL_ACTION) {
-      pending.push(action);
+      pending.push(action as WaitAction);
       return null;
     }
     const result = next(action);
     checkPending(action);
     return result;
   };
-}
+};

@@ -32,6 +32,7 @@ import {
 import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, selectDeployPreview, getAsset } from 'Reducers';
+import { selectEntryMediaFolders } from '../../reducers/entries';
 import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
@@ -464,7 +465,9 @@ function mapStateToProps(state, ownProps) {
   const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
-  const boundGetAsset = getAsset.bind(null, state);
+  const boundGetAsset = path =>
+    getAsset({ state, path, ...selectEntryMediaFolders(config, collections, entry.get('path')) });
+
   const user = auth && auth.get('user');
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');

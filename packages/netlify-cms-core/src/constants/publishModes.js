@@ -4,12 +4,14 @@ import { Map, OrderedMap } from 'immutable';
 export const SIMPLE = 'simple';
 export const EDITORIAL_WORKFLOW = 'editorial_workflow';
 
-// Available status
-export const status = OrderedMap({
+export const Statues = {
   DRAFT: 'draft',
   PENDING_REVIEW: 'pending_review',
   PENDING_PUBLISH: 'pending_publish',
-});
+};
+
+// Available status
+export const status = OrderedMap(Statues);
 
 export const statusDescriptions = Map({
   [status.get('DRAFT')]: 'Draft',

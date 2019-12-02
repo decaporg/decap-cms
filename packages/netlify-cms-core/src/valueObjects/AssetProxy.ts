@@ -1,10 +1,4 @@
 import { resolvePath } from 'netlify-cms-lib-util';
-// @ts-ignore
-import { currentBackend } from '../backend';
-// @ts-ignore
-import { getIntegrationProvider } from '../integrations';
-// @ts-ignore
-import { selectIntegration } from '../reducers';
 
 export function resolveAssetPath(folder: string, uploaded: boolean, value: string): string {
   return folder && !uploaded ? resolvePath(value, folder) : value;
@@ -19,11 +13,12 @@ interface IntegrationAsset {
 }
 
 interface AssetProxyArgs {
-  state: any;
   value: string;
   fileObj: File | null;
   uploaded?: boolean;
   asset?: IntegrationAsset | null;
+  mediaFolder: string;
+  publicFolder: string;
 }
 
 export default class AssetProxy {
@@ -35,17 +30,23 @@ export default class AssetProxy {
   path: string;
   public_path: string;
 
-  constructor({ state, value, fileObj, uploaded = false, asset = null }: AssetProxyArgs) {
+  constructor({
+    value,
+    fileObj,
+    mediaFolder,
+    publicFolder,
+    uploaded = false,
+    asset = null,
+  }: AssetProxyArgs) {
     this.value = value;
     this.fileObj = fileObj;
     this.uploaded = uploaded;
     this.sha = null;
     this.asset = asset;
 
-    this.path = resolveAssetPath(state.config.get('media_folder'), uploaded, value);
-
+    this.path = resolveAssetPath(mediaFolder, uploaded, value);
     /* eslint-disable @typescript-eslint/camelcase */
-    this.public_path = resolveAssetPublicPath(state.config.get('public_folder'), uploaded, value);
+    this.public_path = resolveAssetPublicPath(publicFolder, uploaded, value);
   }
 
   toString(): string {
@@ -72,35 +73,38 @@ export default class AssetProxy {
 }
 
 export function createAssetProxy({
-  state,
   value,
   fileObj,
   uploaded = false,
   privateUpload = false,
-}: AssetProxyArgs & { privateUpload: boolean }): Promise<AssetProxy> {
-  const integration = selectIntegration(state, null, 'assetStore');
-  if (integration && !uploaded) {
-    const provider =
-      integration &&
-      getIntegrationProvider(
-        state.integrations,
-        currentBackend(state.config).getToken,
-        integration,
-      );
+  mediaFolder,
+  publicFolder,
+  integration,
+  getIntegrationProvider,
+}: AssetProxyArgs & {
+  privateUpload: boolean;
+  integration?: {};
+  getIntegrationProvider?: () => {
+    upload: (fileObj: File | null, privateUpload: boolean) => Promise<{ asset: IntegrationAsset }>;
+  };
+}): Promise<AssetProxy> {
+  if (integration && !uploaded && getIntegrationProvider) {
+    const provider = getIntegrationProvider();
     return provider.upload(fileObj, privateUpload).then(
-      (response: { asset: IntegrationAsset }) =>
+      response =>
         new AssetProxy({
-          state,
           value: response.asset.url.replace(/^(https?):/, ''),
           fileObj: null,
           uploaded: true,
           asset: response.asset,
+          mediaFolder,
+          publicFolder,
         }),
-      () => new AssetProxy({ state, value, fileObj, uploaded: false }),
+      () => new AssetProxy({ value, fileObj, uploaded: false, mediaFolder, publicFolder }),
     );
   } else if (privateUpload) {
     throw new Error('The Private Upload option is only available for Asset Store Integration');
   }
 
-  return Promise.resolve(new AssetProxy({ state, value, fileObj, uploaded }));
+  return Promise.resolve(new AssetProxy({ value, fileObj, uploaded, mediaFolder, publicFolder }));
 }

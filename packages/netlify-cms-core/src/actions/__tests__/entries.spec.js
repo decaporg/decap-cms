@@ -208,7 +208,6 @@ describe('entries', () => {
 
         expect(createAssetProxy).toHaveBeenCalledTimes(1);
         expect(createAssetProxy).toHaveBeenCalledWith({
-          state: store.getState(),
           value: assets[0].value,
           fileObj: assets[0].fileObj,
         });

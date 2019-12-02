@@ -16,11 +16,12 @@ import {
   setDraftEntryMediaFiles,
   clearDraftEntryMediaFiles,
 } from './entries';
-import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { addMediaFilesToLibrary } from './mediaLibrary';
 
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import { selectEntryMediaFolders } from '../reducers/entries';
 
 const { notifSend } = notifActions;
 
@@ -258,7 +259,13 @@ export function loadUnpublishedEntry(collection, slug) {
       const entry = await backend.unpublishedEntry(collection, slug);
       const mediaFiles = entry.mediaFiles;
       const assetProxies = await Promise.all(
-        mediaFiles.map(({ file }) => createAssetProxy({ state, value: file.name, fileObj: file })),
+        mediaFiles.map(({ file }) =>
+          createAssetProxy({
+            value: file.name,
+            fileObj: file,
+            ...selectEntryMediaFolders(state.config, collection, entry.path),
+          }),
+        ),
       );
       dispatch(addAssets(assetProxies));
       dispatch(
@@ -363,8 +370,13 @@ export function persistUnpublishedEntry(collection, existingUnpublishedEntry) {
 
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    const assetProxies = getMediaAssets(state, entryDraft.get('mediaFiles'));
     const entry = entryDraft.get('entry');
+    const assetProxies = getMediaAssets({
+      state,
+      mediaFiles: entryDraft.get('mediaFiles'),
+      collection,
+      entryPath: entry.get('path'),
+    });
 
     /**
      * Serialize the values of any fields with registered serializers, and

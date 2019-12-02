@@ -3,13 +3,14 @@ import { actions as notifActions } from 'redux-notifications';
 import { resolveMediaFilename, getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from 'coreSrc/backend';
 import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
-import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from 'Reducers';
 import { getIntegrationProvider } from 'Integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from 'Lib/urlHelper';
 import { waitUntil } from './waitUntil';
+import { selectEntryMediaFolders } from '../reducers/entries';
 
 const { notifSend } = notifActions;
 
@@ -197,16 +198,20 @@ export function persistMedia(file, opts = {}) {
 
     try {
       const id = await getBlobSHA(file);
+      const entry = state.entryDraft.get('entry');
+      const collection = state.collections.get(entry.get('collection'));
       const assetProxy = await createAssetProxy({
-        state,
         value: fileName,
         fileObj: file,
         uploaded: false,
         privateUpload,
+        integration,
+        getIntegrationProvider: () =>
+          getIntegrationProvider(state.integrations, backend.getToken, integration),
+        ...selectEntryMediaFolders(state.config, collection, entry.get('path')),
       });
       dispatch(addAsset(assetProxy));
 
-      const entry = state.entryDraft.get('entry');
       const useWorkflow = state.config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW;
       const draft = entry && !entry.isEmpty() && useWorkflow;
 
@@ -286,7 +291,6 @@ export function deleteMedia(file, opts = {}) {
 
     try {
       const assetProxy = await createAssetProxy({
-        state,
         value: file.name,
         fileObj: file,
       });

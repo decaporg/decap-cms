@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
+import { selectEntryMediaFolders } from '../../../reducers/entries';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
 import {
@@ -17,7 +18,7 @@ import {
   clearMediaControl,
   removeMediaControl,
 } from 'Actions/mediaLibrary';
-import { getAsset } from 'Reducers';
+import { getAsset } from '../../../reducers';
 import Widget from './Widget';
 
 /**
@@ -260,12 +261,21 @@ class EditorControl extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  mediaPaths: state.mediaLibrary.get('controlMedia'),
-  boundGetAsset: getAsset.bind(null, state),
-  isFetching: state.search.get('isFetching'),
-  queryHits: state.search.get('queryHits'),
-});
+const mapStateToProps = state => {
+  const config = state.config;
+  const collection = state.collections.get(state.entryDraft.getIn(['entry', 'collection']));
+  const entryPath = state.entryDraft.getIn(['entry', 'path']);
+
+  const boundGetAsset = path =>
+    getAsset({ state, path, ...selectEntryMediaFolders(config, collection, entryPath) });
+
+  return {
+    mediaPaths: state.mediaLibrary.get('controlMedia'),
+    isFetching: state.search.get('isFetching'),
+    queryHits: state.search.get('queryHits'),
+    boundGetAsset,
+  };
+};
 
 const mapDispatchToProps = {
   openMediaLibrary,
@@ -282,8 +292,9 @@ const mapDispatchToProps = {
   clearFieldErrors,
 };
 
-const ConnectedEditorControl = connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: false,
-})(translate()(EditorControl));
+const ConnectedEditorControl = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(translate()(EditorControl));
 
 export default ConnectedEditorControl;

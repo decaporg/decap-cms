@@ -11,6 +11,8 @@ import mediaLibrary from './mediaLibrary';
 import medias, * as fromMedias from './medias';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
+import { Statues } from '../constants/publishModes';
+import { State } from '../types/redux';
 
 const reducers = {
   auth,
@@ -33,16 +35,16 @@ export default reducers;
 /*
  * Selectors
  */
-export const selectEntry = (state, collection, slug) =>
+export const selectEntry = (state: State, collection: string, slug: string) =>
   fromEntries.selectEntry(state.entries, collection, slug);
 
-export const selectEntries = (state, collection) =>
+export const selectEntries = (state: State, collection: string) =>
   fromEntries.selectEntries(state.entries, collection);
 
-export const selectPublishedSlugs = (state, collection) =>
+export const selectPublishedSlugs = (state: State, collection: string) =>
   fromEntries.selectPublishedSlugs(state.entries, collection);
 
-export const selectSearchedEntries = state => {
+export const selectSearchedEntries = (state: State) => {
   const searchItems = state.search.get('entryIds');
   return (
     searchItems &&
@@ -52,27 +54,38 @@ export const selectSearchedEntries = state => {
   );
 };
 
-export const selectDeployPreview = (state, collection, slug) =>
+export const selectDeployPreview = (state: State, collection: string, slug: string) =>
   fromDeploys.selectDeployPreview(state.deploys, collection, slug);
 
-export const selectUnpublishedEntry = (state, collection, slug) =>
+export const selectUnpublishedEntry = (state: State, collection: string, slug: string) =>
   fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);
 
-export const selectUnpublishedEntriesByStatus = (state, status) =>
+export const selectUnpublishedEntriesByStatus = (state: State, status: keyof typeof Statues) =>
   fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
 
-export const selectUnpublishedSlugs = (state, collection) =>
+export const selectUnpublishedSlugs = (state: State, collection: string) =>
   fromEditorialWorkflow.selectUnpublishedSlugs(state.editorialWorkflow, collection);
 
-export const selectIntegration = (state, collection, hook) =>
+export const selectIntegration = (state: State, collection: string | null, hook: string) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);
 
-export const getAsset = (state, path) => {
+export const getAsset = ({
+  state,
+  path,
+  publicFolder,
+  mediaFolder,
+}: fromMedias.GetAssetArgs & { state: State }) => {
   /**
    * If an external media library is in use, just return the path.
    */
   if (state.mediaLibrary.get('externalLibrary')) {
     return path;
   }
-  return fromMedias.getAsset(state.config.get('public_folder'), state.medias, path);
+
+  return fromMedias.getAsset({
+    state: state.medias,
+    path,
+    publicFolder,
+    mediaFolder,
+  });
 };

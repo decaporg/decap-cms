@@ -4,12 +4,13 @@ import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from 'Lib/serializeEntryValues';
 import { currentBackend } from 'coreSrc/backend';
 import { getIntegrationProvider } from 'Integrations';
-import { getAsset, selectIntegration, selectPublishedSlugs } from 'Reducers';
+import { getAsset, selectIntegration, selectPublishedSlugs } from '../reducers';
+import { selectEntryMediaFolders } from '../reducers/entries';
 import { selectFields } from 'Reducers/collections';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
 import { createEntry } from 'ValueObjects/Entry';
-import { createAssetProxy } from 'ValueObjects/AssetProxy';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 import { deleteMedia, addMediaFilesToLibrary } from './mediaLibrary';
 import { addAssets } from './media';
@@ -293,7 +294,7 @@ export function persistLocalBackup(entry, collection, mediaFiles) {
     const backend = currentBackend(state.config);
 
     // persist any pending related media files and assets
-    const assets = getMediaAssets(state, mediaFiles);
+    const assets = getMediaAssets({ state, mediaFiles, collection, entryPath: entry.get('path') });
 
     return backend.persistLocalDraftBackup(entry, collection, mediaFiles, assets);
   };
@@ -308,7 +309,13 @@ export function retrieveLocalBackup(collection, slug) {
     if (entry) {
       // load assets from backup
       const assetProxies = await Promise.all(
-        assets.map(({ value, fileObj }) => createAssetProxy({ state, value, fileObj })),
+        assets.map(({ value, fileObj }) =>
+          createAssetProxy({
+            value,
+            fileObj,
+            ...selectEntryMediaFolders(state.config, collection, entry.path),
+          }),
+        ),
       );
       dispatch(addAssets(assetProxies));
 
@@ -524,8 +531,14 @@ export function createEmptyDraftData(fields, withNameKey = true) {
   }, {});
 }
 
-export function getMediaAssets(state, mediaFiles) {
-  return mediaFiles.map(file => getAsset(state, file.public_path));
+export function getMediaAssets({ state, mediaFiles, collection, entryPath }) {
+  return mediaFiles.map(file =>
+    getAsset({
+      state,
+      path: file.public_path,
+      ...selectEntryMediaFolders(state.config, collection, entryPath),
+    }),
+  );
 }
 
 export function persistEntry(collection) {
@@ -557,8 +570,13 @@ export function persistEntry(collection) {
     }
 
     const backend = currentBackend(state.config);
-    const assetProxies = getMediaAssets(state, entryDraft.get('mediaFiles'));
     const entry = entryDraft.get('entry');
+    const assetProxies = getMediaAssets({
+      state,
+      mediaFiles: entryDraft.get('mediaFiles'),
+      collection,
+      entryPath: entry.get('path'),
+    });
 
     /**
      * Serialize the values of any fields with registered serializers, and
