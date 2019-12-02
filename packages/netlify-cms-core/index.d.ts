@@ -49,94 +49,75 @@ declare module 'netlify-cms-core' {
     | 'toml-frontmatter'
     | 'json-frontmatter';
 
+  export type CmsAuthScope = 'repo' | 'public_repo';
+
+  export type CmsPublishMode = 'simple' | 'editorial_workflow';
+
+  export type CmsSlugEncoding = 'unicode' | 'ascii';
+
   export interface CmsField {
-    label: string;
     name: string;
-    widget: string;
-    pattern?: string[];
-    default?: boolean | string | string[] | number | null;
-    format?: string;
-    dateFormat?: boolean | string;
-    timeFormat?: boolean | string;
-    media_library?: {
-      allow_multiple?: boolean;
-      config?: {
-        multiple?: boolean;
-      };
-    };
-    allow_add?: boolean;
-    field?: CmsField;
-    fields?: CmsField[];
-    decimals?: number;
-    type?: CmsMapWidgetType;
-    buttons?: CmsMarkdownWidgetButton[];
-    valueType?: number;
-    min?: number;
-    max?: number;
-    step?: number;
-    collection?: string;
-    displayFields?: string[];
-    valueField?: string;
-    multiple?: boolean;
-    optionsLength?: number;
-    options?: string[] | {
-      label: string;
-      value: string;
-    }[];
+    label?: string;
+    widget?: string;
+    required?: boolean;
   }
 
   export interface CmsCollectionFile {
-    label: string;
     name: string;
+    label: string;
     file: string;
     fields: CmsField[];
+    label_singular?: string;
+    description?: string;
   }
 
   export interface CmsCollection {
     name: string;
-    fields: CmsField[];
-    label?: string;
+    label: string;
     label_singular?: string;
     description?: string;
-    files?: CmsCollectionFile[];
     folder?: string;
-    create?: boolean;
-    delete?: boolean;
-    filter?: {
-      field: string;
-      value: string;
-    };
+    files?: CmsCollectionFile[];
     identifier_field?: string;
-    extension?: CmsFilesExtension;
-    format?: CmsCollectionFormatType;
-    frontmatter_delimiter?: string[];
+    summary?: string;
     slug?: string;
     preview_path?: string;
     preview_path_date_field?: string;
+    create?: boolean;
     editor?: {
-      preview: boolean;
+      preview?: boolean;
     };
-    summary?: string;
+    format?: CmsCollectionFormatType;
+    extension?: CmsFilesExtension;
+    frontmatter_delimiter?: string[] | string;
+    fields?: CmsField[];
   }
 
-  export interface CmsBackendParam {
+  export interface CmsBackend {
     name: CmsBackendType;
-    accept_roles?: string[];
-    repo?: string;
-    preview_context?: string;
-    auth_type?: string;
-    app_id?: string;
-    api_root?: string;
-    base_url?: string;
-    auth_endpoint?: string;
+    auth_scope?: CmsAuthScope;
+    open_authoring?: boolean;
+  }
+
+  export interface CmsSlug {
+    encoding?: CmsSlugEncoding;
+    clean_accents?: boolean;
   }
 
   export interface CmsConfig {
-    backend?: CmsBackendType | CmsBackendParam;
-    load_config_file?: boolean;
+    backend: CmsBackend;
+    collections: CmsCollection[];
+    locale?: string;
+    site_url?: string;
+    display_url?: string;
+    logo_url?: string;
+    show_preview_links?: boolean;
     media_folder?: string;
     public_folder?: string;
-    collections: CmsCollection[];
+    media_folder_relative?: boolean;
+    media_library?: CmsMediaLibrary;
+    publish_mode?: CmsPublishMode;
+    slug?: CmsSlug;
   }
 
   export interface InitOptions {
@@ -192,17 +173,11 @@ declare module 'netlify-cms-core' {
 
   export type CmsWidgetValueSerializer = any; // TODO: type properly
 
-  export interface CmsMediaLibraryParam {
-    name: string;
-    config?: {
-      publicKey?: string;
-    };
-  }
-
   export type CmsMediaLibraryOptions = any; // TODO: type properly
 
-  export interface CmsMediaLibrary extends CmsMediaLibraryOptions {
-    options: CmsMediaLibraryOptions;
+  export interface CmsMediaLibrary {
+    name: string;
+    config?: CmsMediaLibraryOptions;
   }
 
   export type CmsLocalePhrases = any; // TODO: type properly
@@ -241,7 +216,7 @@ declare module 'netlify-cms-core' {
     registerBackend: (name: string, backendClass: CmsBackendClass) => void;
     registerEditorComponent: (options: EditorComponentOptions) => void;
     registerLocale: (locale: string, phrases: CmsLocalePhrases) => void;
-    registerMediaLibrary: (mediaLibrary: CmsMediaLibraryParam, options?: CmsMediaLibraryOptions) => void;
+    registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
     registerPreviewStyle: (filePath: string, options?: PreviewStyleOptions) => void;
     registerPreviewTemplate: (name: string, component: ComponentType) => void;
     registerWidget: (widget: string | CmsWidgetParam, control: ComponentType, preview?: ComponentType) => void;
