@@ -131,20 +131,16 @@ describe('Markdown widget', () => {
           .setSelection('foo', 'bar')
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
-            <ul>
-              <li>
-                <blockquote>
-                  <ul>
-                    <li>
-                      <p>foo</p>
-                    </li>
-                    <li>
-                      <p>bar</p>
-                    </li>
-                  </ul>
-                </blockquote>
-              </li>
-            </ul>
+            <blockquote>
+              <ul>
+                <li>
+                  <p>foo</p>
+                </li>
+                <li>
+                  <p>bar</p>
+                </li>
+              </ul>
+            </blockquote>
           `)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
@@ -167,22 +163,18 @@ describe('Markdown widget', () => {
               <li>
                 <p>foo</p>
               </li>
-              <li>
-                <blockquote>
-                  <ul>
-                    <li>
-                      <p>bar</p>
-                    </li>
-                    <li>
-                      <p>baz</p>
-                    </li>
-                  </ul>
-                </blockquote>
-              </li>
             </ul>
+            <blockquote>
+              <ul>
+                <li>
+                  <p>bar</p>
+                </li>
+                <li>
+                  <p>baz</p>
+                </li>
+              </ul>
             </blockquote>
           `)
-          .backspace({ times: 20 });
       });
       it('creates new quote block if parent is not a quote, can deeply nest', () => {
         cy.clickQuoteButton()
@@ -219,7 +211,7 @@ describe('Markdown widget', () => {
               <p>bar</p>
             </blockquote>
           `)
-          .backspace({ times: 20 });
+          .backspace({ times: 12 })
       });
     });
 

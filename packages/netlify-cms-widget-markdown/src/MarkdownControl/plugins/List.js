@@ -23,9 +23,9 @@ import { assertType } from './util';
  * - ✅ tab multiple list items when selection is expanded
  * - ✅ tab multiple nested lists and items when selection is expanded
  * - ✅ empty new list item is parsed as a literal asterisk in markdown until non-empty
- * - closing a block in a nested list item via backspace should only close the
+ * - ✅ closing a block in a nested list item via backspace should only close the
  *   immediate block
- * - ideally you'd put list plugin last so others can intercept keyboard actions
+ * - ✅ ideally you'd put list plugin last so others can intercept keyboard actions
  *   for nested types, but a list can be nested in a quote, so how do we ensure
  *   the action only hits the closest of the two (quote or list item)?
  * - relocating code blocks/editor components really requires dragging, especially nested in lists

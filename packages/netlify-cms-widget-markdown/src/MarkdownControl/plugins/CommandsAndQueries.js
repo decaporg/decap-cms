@@ -34,7 +34,7 @@ const CommandsAndQueries = ({ defaultType }) => ({
         ? editor.value.document.getParent(node.key)
         : (selection.isCollapsed && startBlock) || editor.getCommonAncestor();
       if (!target) {
-        return;
+        return editor.value.document;
       }
       if (targetTypes.includes(target.type)) {
         return target;
