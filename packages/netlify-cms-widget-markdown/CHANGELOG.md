@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.6.0...netlify-cms-widget-markdown@2.6.1-beta.0) (2019-12-02)
+
+
+### Bug Fixes
+
+* **widget-markdown:** fix carriage return issue ([#2899](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/2899)) ([1ff9db0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/1ff9db0915e93dab3f1c96459abf929d40398f85))
+
+
+
+
+
 # [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.5.2...netlify-cms-widget-markdown@2.6.0) (2019-11-18)
 
 

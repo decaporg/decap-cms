@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.2.0...netlify-cms-locales@1.3.0-beta.0) (2019-12-02)
+
+
+### Features
+
+* **lang:** add 'tr' locale ([#2936](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/2936)) ([09ca1a7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/09ca1a7f0391b19b6d6065fcde93fc5a855a0f60))
+
+
+
+
+
 # [1.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.1.0...netlify-cms-locales@1.2.0) (2019-11-26)
 
 

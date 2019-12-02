@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.6-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.2.5...netlify-cms-lib-auth@2.2.6-beta.0) (2019-12-02)
+
+
+### Bug Fixes
+
+* pass auth type in authURL to be used in identity widget ([#2920](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/issues/2920)) ([87b4d0f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/commit/87b4d0f7657df83ba25a9d4ab23b878dc3324b86))
+
+
+
+
+
 ## [2.2.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.2.4...netlify-cms-lib-auth@2.2.5) (2019-11-18)
 
 **Note:** Version bump only for package netlify-cms-lib-auth

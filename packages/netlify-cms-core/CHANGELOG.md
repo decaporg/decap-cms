@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.7...netlify-cms-core@2.13.0-beta.8) (2019-12-02)
+
+
+### Bug Fixes
+
+* .d.ts definitions for core and app ([#2929](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2929)) ([7391061](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/7391061b3b8b1971b994f497a6df29b7d5c3da74))
+* keep editor slug path ([#2934](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2934)) ([3c4865f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/3c4865f2a76e6b0f156ab801081251eb620495b2))
+* load unpublished entries ([#2927](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2927)) ([caaa8b6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/caaa8b6db408623fd6001b9a8bad5d4711afbc76))
+* unpublish published entry ([#2931](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2931)) ([45a6ee9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/45a6ee92cc9322c57a3cd996b33c07d26c2d645e))
+* **core:** use UTC date methods for slug formatting ([#2944](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2944)) ([d0b32a7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d0b32a7a0af62c08433f7d3ce0828214714ce28e))
+
+
+### Features
+
+* content in sub folders ([#2897](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2897)) ([afcfe5b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/afcfe5b6d5f32669e9061ec596bd35ad545d61a3))
+
+
+
+
+
 # [2.13.0-beta.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.6...netlify-cms-core@2.13.0-beta.7) (2019-11-26)
 
 

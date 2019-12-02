@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.10.0-beta.2...netlify-cms-app@2.10.0-beta.3) (2019-12-02)
+
+
+### Bug Fixes
+
+* .d.ts definitions for core and app ([#2929](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/2929)) ([7391061](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/7391061b3b8b1971b994f497a6df29b7d5c3da74))
+
+
+
+
+
 # [2.10.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.10.0-beta.1...netlify-cms-app@2.10.0-beta.2) (2019-11-26)
 
 **Note:** Version bump only for package netlify-cms-app
