@@ -36,7 +36,7 @@ const SettingsSectionTitle = styled.h3`
   }
 `;
 
-const SettingsSelect = ({ value, options, onChange, forID, type }) => (
+const SettingsSelect = ({ value, options, onChange, forID, type, autoFocus }) => (
   <Select
     inputId={`${forID}-select-${type}`}
     styles={languageSelectStyles}
@@ -45,7 +45,7 @@ const SettingsSelect = ({ value, options, onChange, forID, type }) => (
     onChange={opt => onChange(opt.value)}
     menuPlacement="auto"
     captureMenuScroll={false}
-    autoFocus
+    autoFocus={autoFocus}
   />
 );
 
