@@ -1,16 +1,20 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { resolveMediaFilename, getBlobSHA } from 'netlify-cms-lib-util';
-import { currentBackend } from 'coreSrc/backend';
-import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+import { currentBackend } from '../backend';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
-import { selectIntegration } from 'Reducers';
-import { getIntegrationProvider } from 'Integrations';
+import { selectIntegration } from '../reducers';
+import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
-import { sanitizeSlug } from 'Lib/urlHelper';
+import { sanitizeSlug } from '../lib/urlHelper';
 import { waitUntil } from './waitUntil';
 import { selectEntryMediaFolders } from '../reducers/entries';
+import { State, MediaFile } from '../types/redux';
+import { AnyAction, Dispatch, Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { MediaLibraryInstance } from '../mediaLibrary';
 
 const { notifSend } = notifActions;
 
@@ -33,7 +37,7 @@ export const MEDIA_DISPLAY_URL_SUCCESS = 'MEDIA_DISPLAY_URL_SUCCESS';
 export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
 export const ADD_MEDIA_FILES_TO_LIBRARY = 'ADD_MEDIA_FILES_TO_LIBRARY';
 
-export function createMediaLibrary(instance) {
+export function createMediaLibrary(instance: MediaLibraryInstance) {
   const api = {
     show: instance.show || (() => {}),
     hide: instance.hide || (() => {}),
@@ -44,8 +48,8 @@ export function createMediaLibrary(instance) {
   return { type: MEDIA_LIBRARY_CREATE, payload: api };
 }
 
-export function clearMediaControl(id) {
-  return (dispatch, getState) => {
+export function clearMediaControl(id: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
@@ -54,8 +58,8 @@ export function clearMediaControl(id) {
   };
 }
 
-export function removeMediaControl(id) {
-  return (dispatch, getState) => {
+export function removeMediaControl(id: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
@@ -64,8 +68,16 @@ export function removeMediaControl(id) {
   };
 }
 
-export function openMediaLibrary(payload = {}) {
-  return (dispatch, getState) => {
+export function openMediaLibrary(
+  payload: {
+    controlID?: string;
+    value?: string;
+    config?: Map<string, unknown>;
+    allowMultiple?: boolean;
+    forImage?: boolean;
+  } = {},
+) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
@@ -77,7 +89,7 @@ export function openMediaLibrary(payload = {}) {
 }
 
 export function closeMediaLibrary() {
-  return (dispatch, getState) => {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
@@ -87,13 +99,17 @@ export function closeMediaLibrary() {
   };
 }
 
-export function insertMedia(media) {
-  return (dispatch, getState) => {
-    let mediaPath;
-    if (media.url) {
+type MediaObject = { url?: string; name?: string };
+
+export function insertMedia(media: MediaObject | string | string[]) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    let mediaPath: string | string[];
+
+    const { name, url } = media as MediaObject;
+    if (url) {
       // media.url is public, and already resolved
-      mediaPath = media.url;
-    } else if (media.name) {
+      mediaPath = url;
+    } else if (name) {
       // media.name still needs to be resolved to the appropriate URL
       const state = getState();
       const config = state.config;
@@ -101,13 +117,14 @@ export function insertMedia(media) {
         // the path is being resolved relatively
         // and we need to know the path of the entry to resolve it
         const mediaFolder = config.get('media_folder');
+
         const collection = state.entryDraft.getIn(['entry', 'collection']);
         const collectionFolder = state.collections.getIn([collection, 'folder']);
-        mediaPath = resolveMediaFilename(media.name, { mediaFolder, collectionFolder });
+        mediaPath = resolveMediaFilename(name, { mediaFolder, collectionFolder });
       } else {
         // the path is being resolved to a public URL
         const publicFolder = config.get('public_folder');
-        mediaPath = resolveMediaFilename(media.name, { publicFolder });
+        mediaPath = resolveMediaFilename(name, { publicFolder });
       }
     } else if (Array.isArray(media) || typeof media === 'string') {
       mediaPath = media;
@@ -118,13 +135,15 @@ export function insertMedia(media) {
   };
 }
 
-export function removeInsertedMedia(controlID) {
+export function removeInsertedMedia(controlID: string) {
   return { type: MEDIA_REMOVE_INSERTED, payload: { controlID } };
 }
 
-export function loadMedia(opts = {}) {
+export function loadMedia(
+  opts: { delay?: number; query?: string; page?: number; privateUpload?: boolean } = {},
+) {
   const { delay = 0, query = '', page = 1, privateUpload } = opts;
-  return async (dispatch, getState) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
@@ -147,32 +166,31 @@ export function loadMedia(opts = {}) {
     }
     dispatch(mediaLoading(page));
     return new Promise(resolve => {
-      setTimeout(() =>
-        resolve(
-          backend
-            .getMedia()
-            .then(files => dispatch(mediaLoaded(files)))
-            .catch(
-              error =>
-                console.error(error) ||
-                dispatch(() => {
-                  if (error.status === 404) {
-                    console.log('This 404 was expected and handled appropriately.');
-                    return mediaLoaded();
-                  } else {
-                    return mediaLoadFailed();
-                  }
-                }),
-            ),
-        ),
+      setTimeout(
+        () =>
+          resolve(
+            backend
+              .getMedia()
+              .then((files: MediaFile[]) => dispatch(mediaLoaded(files)))
+              .catch((error: { status?: number }) => {
+                console.error(error);
+                if (error.status === 404) {
+                  console.log('This 404 was expected and handled appropriately.');
+                  dispatch(mediaLoaded([]));
+                } else {
+                  dispatch(mediaLoadFailed());
+                }
+              }),
+          ),
+        delay,
       );
-    }, delay);
+    });
   };
 }
 
-export function persistMedia(file, opts = {}) {
+export function persistMedia(file: File, opts: MediaOptions = {}) {
   const { privateUpload } = opts;
-  return async (dispatch, getState) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
@@ -212,11 +230,11 @@ export function persistMedia(file, opts = {}) {
       });
       dispatch(addAsset(assetProxy));
 
-      const useWorkflow = state.config.getIn(['publish_mode']) === EDITORIAL_WORKFLOW;
+      const useWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
       const draft = entry && !entry.isEmpty() && useWorkflow;
 
       if (!integration) {
-        const asset = await backend.persistMedia(state.config, assetProxy, draft);
+        const asset: MediaFile = await backend.persistMedia(state.config, assetProxy, draft);
 
         const assetId = asset.id || id;
         const displayURL = asset.displayURL || URL.createObjectURL(file);
@@ -227,6 +245,7 @@ export function persistMedia(file, opts = {}) {
               ...asset,
               id: assetId,
               draft,
+              // eslint-disable-next-line @typescript-eslint/camelcase
               public_path: assetProxy.public_path,
             }),
           );
@@ -244,7 +263,13 @@ export function persistMedia(file, opts = {}) {
 
       return dispatch(
         mediaPersisted(
-          { id, displayURL: URL.createObjectURL(file), ...assetProxy.asset, draft },
+          {
+            name: file.name,
+            id,
+            displayURL: URL.createObjectURL(file),
+            ...assetProxy.asset,
+            draft,
+          },
           { privateUpload },
         ),
       );
@@ -262,9 +287,9 @@ export function persistMedia(file, opts = {}) {
   };
 }
 
-export function deleteMedia(file, opts = {}) {
+export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
   const { privateUpload } = opts;
-  return async (dispatch, getState) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
@@ -290,9 +315,12 @@ export function deleteMedia(file, opts = {}) {
     dispatch(mediaDeleting());
 
     try {
+      const entry = state.entryDraft.get('entry');
+      const collection = state.collections.get(entry.get('collection'));
       const assetProxy = await createAssetProxy({
         value: file.name,
-        fileObj: file,
+        fileObj: null,
+        ...selectEntryMediaFolders(state.config, collection, entry.get('path')),
       });
       dispatch(removeAsset(assetProxy.public_path));
       dispatch(removeDraftEntryMediaFile({ id: file.id }));
@@ -316,11 +344,11 @@ export function deleteMedia(file, opts = {}) {
   };
 }
 
-export function loadMediaDisplayURL(file) {
-  return async (dispatch, getState) => {
+export function loadMediaDisplayURL(file: MediaFile) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const { displayURL, id, url } = file;
     const state = getState();
-    const displayURLState = state.mediaLibrary.getIn(['displayURLs', id], Map());
+    const displayURLState = state.mediaLibrary.getIn(['displayURLs', id], Map<string, string>());
     if (
       !id ||
       // displayURL is used by most backends; url (like urlIsPublicPath) is used exclusively by the
@@ -354,21 +382,25 @@ export function loadMediaDisplayURL(file) {
   };
 }
 
-export function mediaLoading(page) {
+export function mediaLoading(page: number) {
   return {
     type: MEDIA_LOAD_REQUEST,
     payload: { page },
   };
 }
 
-export function mediaLoaded(files, opts = {}) {
+interface MediaOptions {
+  privateUpload?: boolean;
+}
+
+export function mediaLoaded(files: MediaFile[], opts: MediaOptions = {}) {
   return {
     type: MEDIA_LOAD_SUCCESS,
     payload: { files, ...opts },
   };
 }
 
-export function mediaLoadFailed(error, opts = {}) {
+export function mediaLoadFailed(opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return { type: MEDIA_LOAD_FAILURE, payload: { privateUpload } };
 }
@@ -377,7 +409,7 @@ export function mediaPersisting() {
   return { type: MEDIA_PERSIST_REQUEST };
 }
 
-export function mediaPersisted(asset, opts = {}) {
+export function mediaPersisted(asset: MediaFile, opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return {
     type: MEDIA_PERSIST_SUCCESS,
@@ -385,8 +417,8 @@ export function mediaPersisted(asset, opts = {}) {
   };
 }
 
-export function addMediaFilesToLibrary(mediaFiles) {
-  return (dispatch, getState) => {
+export function addMediaFilesToLibrary(mediaFiles: MediaFile[]) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const action = {
       type: ADD_MEDIA_FILES_TO_LIBRARY,
@@ -398,15 +430,15 @@ export function addMediaFilesToLibrary(mediaFiles) {
     } else {
       dispatch(
         waitUntil({
-          predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
-          run: dispatch => dispatch(action),
+          predicate: ({ type }: Action<string>) => type === MEDIA_LOAD_SUCCESS,
+          run: (dispatch: Dispatch) => dispatch(action),
         }),
       );
     }
   };
 }
 
-export function mediaPersistFailed(error, opts = {}) {
+export function mediaPersistFailed(opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return { type: MEDIA_PERSIST_FAILURE, payload: { privateUpload } };
 }
@@ -415,7 +447,7 @@ export function mediaDeleting() {
   return { type: MEDIA_DELETE_REQUEST };
 }
 
-export function mediaDeleted(file, opts = {}) {
+export function mediaDeleted(file: MediaFile, opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return {
     type: MEDIA_DELETE_SUCCESS,
@@ -423,23 +455,23 @@ export function mediaDeleted(file, opts = {}) {
   };
 }
 
-export function mediaDeleteFailed(error, opts = {}) {
+export function mediaDeleteFailed(opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return { type: MEDIA_DELETE_FAILURE, payload: { privateUpload } };
 }
 
-export function mediaDisplayURLRequest(key) {
+export function mediaDisplayURLRequest(key: string) {
   return { type: MEDIA_DISPLAY_URL_REQUEST, payload: { key } };
 }
 
-export function mediaDisplayURLSuccess(key, url) {
+export function mediaDisplayURLSuccess(key: string, url: string) {
   return {
     type: MEDIA_DISPLAY_URL_SUCCESS,
     payload: { key, url },
   };
 }
 
-export function mediaDisplayURLFailure(key, err) {
+export function mediaDisplayURLFailure(key: string, err: Error) {
   console.error(err);
   return {
     type: MEDIA_DISPLAY_URL_FAILURE,

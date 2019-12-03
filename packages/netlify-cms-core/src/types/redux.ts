@@ -1,38 +1,15 @@
 import { Action } from 'redux';
-
-interface StaticallyTypedRecord<T> {
-  get<K extends keyof T>(key: K, defaultValue?: T[K]): T[K];
-  set<K extends keyof T, V extends T[K]>(key: K, value: V): StaticallyTypedRecord<T>;
-  delete<K extends keyof T>(key: K): StaticallyTypedRecord<T>;
-  getIn<K1 extends keyof T, K2 extends keyof T[K1], V extends T[K1][K2]>(
-    keys: [K1, K2],
-    defaultValue?: V,
-  ): T[K1][K2];
-  getIn<
-    K1 extends keyof T,
-    K2 extends keyof T[K1],
-    K3 extends keyof T[K1][K2],
-    V extends T[K1][K2][K3]
-  >(
-    keys: [K1, K2, K3],
-    defaultValue?: V,
-  ): T[K1][K2][K3];
-  toJS(): T;
-  isEmpty(): boolean;
-  some<K extends keyof T>(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    predicate: (value: T[K], key: K, iter: this, context?: any) => boolean,
-  ): boolean;
-}
-
-interface StaticallyTypedList<T> {
-  toJS(): T[];
-}
+import { StaticallyTypedRecord, StaticallyTypedList } from './immutable';
+import { Map } from 'immutable';
 
 export type Config = StaticallyTypedRecord<{
   media_folder: string;
   public_folder: string;
   publish_mode?: string;
+  media_library: StaticallyTypedRecord<{ name: string }> & { name: string };
+  locale?: string;
+  slug?: Map<string, string | boolean>;
+  media_folder_relative?: boolean;
 }>;
 
 export type Entries = StaticallyTypedRecord<{}>;
@@ -42,23 +19,64 @@ export type Deploys = StaticallyTypedRecord<{}>;
 export type EditorialWorkflow = StaticallyTypedRecord<{}>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type EntryObject = { path: string; slug: string; data: any };
+export type EntryObject = {
+  path: string;
+  slug: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+  collection: string;
+};
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
 
 export type EntryDraft = StaticallyTypedRecord<{
-  entry: EntryMap;
+  entry: EntryMap & EntryObject;
   mediaFiles: StaticallyTypedList<{}>;
   fieldsErrors: StaticallyTypedRecord<{ [field: string]: { type: string }[] }>;
 }>;
 
-export type Collection = StaticallyTypedRecord<{ name: string }>;
+type CollectionObject = { name: string; folder: string };
 
-export type Collections = StaticallyTypedRecord<{ [path: string]: Collection }>;
+export type Collection = StaticallyTypedRecord<CollectionObject>;
+
+export type Collections = StaticallyTypedRecord<{ [path: string]: Collection & CollectionObject }>;
 
 export type Medias = StaticallyTypedRecord<{ [path: string]: MediaAsset | undefined }>;
 
-export type MediaLibrary = StaticallyTypedRecord<{ externalLibrary?: string }>;
+interface MediaLibraryInstance {
+  show: (args: {
+    id?: string;
+    value?: string;
+    config: StaticallyTypedRecord<{}>;
+    allowMultiple?: boolean;
+    imagesOnly?: boolean;
+  }) => void;
+  hide: () => void;
+  onClearControl: (args: { id: string }) => void;
+  onRemoveControl: (args: { id: string }) => void;
+  enableStandalone: () => boolean;
+}
+
+export interface MediaFile {
+  name: string;
+  id: string;
+  size?: number;
+  displayURL?: { sha: string; path: string } | string;
+  path?: string;
+  draft?: boolean;
+  url?: string;
+}
+
+interface DisplayURLsObject {
+  [id: string]: Map<string, string>;
+}
+
+export type MediaLibrary = StaticallyTypedRecord<{
+  externalLibrary?: MediaLibraryInstance;
+  files: MediaFile[];
+  displayURLs: StaticallyTypedRecord<DisplayURLsObject> & DisplayURLsObject;
+  isLoading: boolean;
+}>;
 
 export type Hook = string | boolean;
 

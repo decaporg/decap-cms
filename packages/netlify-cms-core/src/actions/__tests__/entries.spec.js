@@ -18,7 +18,7 @@ jest.mock('Reducers', () => {
 });
 jest.mock('ValueObjects/AssetProxy');
 jest.mock('netlify-cms-lib-util');
-jest.mock('../mediaLibrary.js');
+jest.mock('../mediaLibrary');
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

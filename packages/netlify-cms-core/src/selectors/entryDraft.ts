@@ -1,7 +1,8 @@
-import { slugFormatter } from 'Lib/backendHelper';
-import { selectEntryPath } from 'Reducers/collections';
+import { slugFormatter } from '../lib/backendHelper';
+import { selectEntryPath } from '../reducers/collections';
+import { State, Collection, EntryMap } from '../types/redux';
 
-export const selectDraftPath = (state, collection, entry) => {
+export const selectDraftPath = (state: State, collection: Collection, entry: EntryMap) => {
   const config = state.config;
 
   try {

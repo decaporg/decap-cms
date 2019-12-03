@@ -16,7 +16,7 @@ interface AssetProxyArgs {
   value: string;
   fileObj: File | null;
   uploaded?: boolean;
-  asset?: IntegrationAsset | null;
+  asset?: IntegrationAsset;
   mediaFolder: string;
   publicFolder: string;
 }
@@ -26,7 +26,7 @@ export default class AssetProxy {
   fileObj: File | null;
   uploaded: boolean;
   sha: null;
-  asset: unknown;
+  asset: IntegrationAsset | undefined;
   path: string;
   public_path: string;
 
@@ -36,7 +36,7 @@ export default class AssetProxy {
     mediaFolder,
     publicFolder,
     uploaded = false,
-    asset = null,
+    asset = undefined,
   }: AssetProxyArgs) {
     this.value = value;
     this.fileObj = fileObj;

@@ -51,7 +51,13 @@
           "jsx": true
         }
       },
-      "rules": { "@typescript-eslint/explicit-function-return-type": 0 }
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": 0,
+        "@typescript-eslint/no-use-before-define": [
+          "error",
+          { "functions": false, "classes": true, "variables": true }
+        ]
+      }
     }
   ]
 }

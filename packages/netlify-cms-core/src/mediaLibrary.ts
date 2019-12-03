@@ -3,13 +3,30 @@
  * registered via `registerMediaLibrary`.
  */
 import { once } from 'lodash';
-import { getMediaLibrary } from 'Lib/registry';
-import store from 'ReduxStore';
-import { createMediaLibrary, insertMedia } from 'Actions/mediaLibrary';
+import { getMediaLibrary } from './lib/registry';
+import store from './redux';
+import { createMediaLibrary, insertMedia } from './actions/mediaLibrary';
+
+type MediaLibraryOptions = {};
+
+interface MediaLibrary {
+  init: (args: {
+    options: MediaLibraryOptions;
+    handleInsert: (url: string) => void;
+  }) => MediaLibraryInstance;
+}
+
+export interface MediaLibraryInstance {
+  show?: () => void;
+  hide?: () => void;
+  onClearControl?: (args: { id: string }) => void;
+  onRemoveControl?: (args: { id: string }) => void;
+  enableStandalone?: () => boolean;
+}
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
-  const lib = getMediaLibrary(name);
-  const handleInsert = url => store.dispatch(insertMedia(url));
+  const lib = (getMediaLibrary(name) as unknown) as MediaLibrary;
+  const handleInsert = (url: string) => store.dispatch(insertMedia(url));
   const instance = await lib.init({ options, handleInsert });
   store.dispatch(createMediaLibrary(instance));
 });

@@ -4,25 +4,25 @@ import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
 import { Map } from 'immutable';
 
-function getUrl(urlString, direct) {
+function getUrl(urlString: string, direct: boolean) {
   return `${direct ? '/#' : ''}${urlString}`;
 }
 
-export function getCollectionUrl(collectionName, direct) {
+export function getCollectionUrl(collectionName: string, direct: boolean) {
   return getUrl(`/collections/${collectionName}`, direct);
 }
 
-export function getNewEntryUrl(collectionName, direct) {
+export function getNewEntryUrl(collectionName: string, direct: boolean) {
   return getUrl(`/collections/${collectionName}/new`, direct);
 }
 
-export function addParams(urlString, params) {
+export function addParams(urlString: string, params: {}) {
   const parsedUrl = url.parse(urlString, true);
   parsedUrl.query = { ...parsedUrl.query, ...params };
   return url.format(parsedUrl);
 }
 
-export function stripProtocol(urlString) {
+export function stripProtocol(urlString: string) {
   const protocolEndIndex = urlString.indexOf('//');
   return protocolEndIndex > -1 ? urlString.slice(protocolEndIndex + 2) : urlString;
 }
@@ -36,11 +36,11 @@ export function stripProtocol(urlString) {
  */
 const uriChars = /[\w\-.~]/i;
 const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
-const validURIChar = char => uriChars.test(char);
-const validIRIChar = char => uriChars.test(char) || ucsChars.test(char);
+const validURIChar = (char: string) => uriChars.test(char);
+const validIRIChar = (char: string) => uriChars.test(char) || ucsChars.test(char);
 
-export function getCharReplacer(encoding, replacement) {
-  let validChar;
+export function getCharReplacer(encoding: string, replacement: string) {
+  let validChar: (char: string) => boolean;
 
   if (encoding === 'unicode') {
     validChar = validIRIChar;
@@ -55,10 +55,10 @@ export function getCharReplacer(encoding, replacement) {
     throw new Error('The replacement character(s) (options.replacement) is itself unsafe.');
   }
 
-  return char => (validChar(char) ? char : replacement);
+  return (char: string) => (validChar(char) ? char : replacement);
 }
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeURI(str, { replacement = '', encoding = 'unicode' } = {}) {
+export function sanitizeURI(str: string, { replacement = '', encoding = 'unicode' } = {}) {
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
@@ -73,17 +73,17 @@ export function sanitizeURI(str, { replacement = '', encoding = 'unicode' } = {}
     .join('');
 }
 
-export function sanitizeChar(char, options = Map()) {
+export function sanitizeChar(char: string, options = Map<string, string>()) {
   const encoding = options.get('encoding', 'unicode');
   const replacement = options.get('sanitize_replacement', '-');
 
   return getCharReplacer(encoding, replacement)(char);
 }
 
-export function sanitizeSlug(str, options = Map()) {
-  const encoding = options.get('encoding', 'unicode');
-  const stripDiacritics = options.get('clean_accents', false);
-  const replacement = options.get('sanitize_replacement', '-');
+export function sanitizeSlug(str: string, options = Map<string, string | boolean>()) {
+  const encoding = options.get('encoding', 'unicode') as string;
+  const stripDiacritics = options.get('clean_accents', false) as boolean;
+  const replacement = options.get('sanitize_replacement', '-') as string;
 
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
@@ -97,13 +97,13 @@ export function sanitizeSlug(str, options = Map()) {
 
   // Remove any doubled or leading/trailing replacement characters (that were added in the sanitizers).
   const doubleReplacement = new RegExp(`(?:${escapeRegExp(replacement)})+`, 'g');
-  const trailingReplacment = new RegExp(`${escapeRegExp(replacement)}$`);
-  const leadingReplacment = new RegExp(`^${escapeRegExp(replacement)}`);
+  const trailingReplacement = new RegExp(`${escapeRegExp(replacement)}$`);
+  const leadingReplacement = new RegExp(`^${escapeRegExp(replacement)}`);
 
-  const normalizedSlug = sanitizedSlug
+  const normalizedSlug: string = sanitizedSlug
     .replace(doubleReplacement, replacement)
-    .replace(leadingReplacment, '')
-    .replace(trailingReplacment, '');
+    .replace(leadingReplacement, '')
+    .replace(trailingReplacement, '');
 
   return normalizedSlug;
 }
