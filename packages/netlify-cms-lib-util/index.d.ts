@@ -6,4 +6,13 @@ declare module 'netlify-cms-lib-util' {
     options: { publicFolder?: string; mediaFolder?: string; collectionFolder?: string },
   ) => string;
   export const getBlobSHA: (blob: Blob) => string;
+
+  export const Cursor: {
+    create: (args: unknown) => Cursor;
+    updateStore: (args: unknown) => void;
+    actions: Set;
+    data: Map;
+    meta: Map;
+    store: Map;
+  };
 }

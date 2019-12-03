@@ -1,19 +1,30 @@
-import { fromJS, List, Map } from 'immutable';
+import { fromJS, List, Map, Set } from 'immutable';
 import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
-import { serializeValues } from 'Lib/serializeEntryValues';
-import { currentBackend } from 'coreSrc/backend';
-import { getIntegrationProvider } from 'Integrations';
+import { serializeValues } from '../lib/serializeEntryValues';
+import { currentBackend } from '../backend';
+import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectEntryMediaFolders } from '../reducers/entries';
-import { selectFields } from 'Reducers/collections';
-import { selectCollectionEntriesCursor } from 'Reducers/cursors';
+import { selectFields } from '../reducers/collections';
+import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
-import { createEntry } from 'ValueObjects/Entry';
-import { createAssetProxy } from '../valueObjects/AssetProxy';
-import ValidationErrorTypes from 'Constants/validationErrorTypes';
+import { createEntry } from '../valueObjects/Entry';
+import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
+import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { deleteMedia, addMediaFilesToLibrary } from './mediaLibrary';
 import { addAssets } from './media';
+import {
+  Collection,
+  EntryObject,
+  EntryMap,
+  MediaFile,
+  State,
+  EntryFields,
+  EntryField,
+} from '../types/redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
 
 const { notifSend } = notifActions;
 
@@ -31,7 +42,6 @@ export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
-export const DRAFT_CHANGE = 'DRAFT_CHANGE';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
 export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
@@ -56,7 +66,7 @@ export const CLEAR_DRAFT_ENTRY_MEDIA_FILES = 'CLEAR_DRAFT_ENTRY_MEDIA_FILES';
  * Simple Action Creators (Internal)
  * We still need to export them for tests
  */
-export function entryLoading(collection, slug) {
+export function entryLoading(collection: Collection, slug: string) {
   return {
     type: ENTRY_REQUEST,
     payload: {
@@ -66,7 +76,7 @@ export function entryLoading(collection, slug) {
   };
 }
 
-export function entryLoaded(collection, entry) {
+export function entryLoaded(collection: Collection, entry: EntryObject) {
   return {
     type: ENTRY_SUCCESS,
     payload: {
@@ -76,7 +86,7 @@ export function entryLoaded(collection, entry) {
   };
 }
 
-export function entryLoadError(error, collection, slug) {
+export function entryLoadError(error: Error, collection: Collection, slug: string) {
   return {
     type: ENTRY_FAILURE,
     payload: {
@@ -87,7 +97,7 @@ export function entryLoadError(error, collection, slug) {
   };
 }
 
-export function entriesLoading(collection) {
+export function entriesLoading(collection: Collection) {
   return {
     type: ENTRIES_REQUEST,
     payload: {
@@ -96,7 +106,13 @@ export function entriesLoading(collection) {
   };
 }
 
-export function entriesLoaded(collection, entries, pagination, cursor, append = true) {
+export function entriesLoaded(
+  collection: Collection,
+  entries: EntryObject[],
+  pagination: number | null,
+  cursor: typeof Cursor,
+  append = true,
+) {
   return {
     type: ENTRIES_SUCCESS,
     payload: {
@@ -109,7 +125,7 @@ export function entriesLoaded(collection, entries, pagination, cursor, append = 
   };
 }
 
-export function entriesFailed(collection, error) {
+export function entriesFailed(collection: Collection, error: Error) {
   return {
     type: ENTRIES_FAILURE,
     error: 'Failed to load entries',
@@ -118,7 +134,7 @@ export function entriesFailed(collection, error) {
   };
 }
 
-export function entryPersisting(collection, entry) {
+export function entryPersisting(collection: Collection, entry: EntryMap) {
   return {
     type: ENTRY_PERSIST_REQUEST,
     payload: {
@@ -128,7 +144,7 @@ export function entryPersisting(collection, entry) {
   };
 }
 
-export function entryPersisted(collection, entry, slug) {
+export function entryPersisted(collection: Collection, entry: EntryMap, slug: string) {
   return {
     type: ENTRY_PERSIST_SUCCESS,
     payload: {
@@ -143,7 +159,7 @@ export function entryPersisted(collection, entry, slug) {
   };
 }
 
-export function entryPersistFail(collection, entry, error) {
+export function entryPersistFail(collection: Collection, entry: EntryMap, error: Error) {
   return {
     type: ENTRY_PERSIST_FAILURE,
     error: 'Failed to persist entry',
@@ -155,7 +171,7 @@ export function entryPersistFail(collection, entry, error) {
   };
 }
 
-export function entryDeleting(collection, slug) {
+export function entryDeleting(collection: Collection, slug: string) {
   return {
     type: ENTRY_DELETE_REQUEST,
     payload: {
@@ -165,7 +181,7 @@ export function entryDeleting(collection, slug) {
   };
 }
 
-export function entryDeleted(collection, slug) {
+export function entryDeleted(collection: Collection, slug: string) {
   return {
     type: ENTRY_DELETE_SUCCESS,
     payload: {
@@ -175,7 +191,7 @@ export function entryDeleted(collection, slug) {
   };
 }
 
-export function entryDeleteFail(collection, slug, error) {
+export function entryDeleteFail(collection: Collection, slug: string, error: Error) {
   return {
     type: ENTRY_DELETE_FAILURE,
     payload: {
@@ -186,7 +202,7 @@ export function entryDeleteFail(collection, slug, error) {
   };
 }
 
-export function emptyDraftCreated(entry) {
+export function emptyDraftCreated(entry: EntryObject) {
   return {
     type: DRAFT_CREATE_EMPTY,
     payload: entry,
@@ -195,7 +211,11 @@ export function emptyDraftCreated(entry) {
 /*
  * Exported simple Action Creators
  */
-export function createDraftFromEntry(entry, metadata, mediaFiles) {
+export function createDraftFromEntry(
+  entry: EntryMap,
+  metadata?: Map<string, unknown>,
+  mediaFiles?: List<MediaFile>,
+) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
     payload: { entry, metadata, mediaFiles },
@@ -210,34 +230,30 @@ export function createDraftDuplicateFromEntry(entry) {
 }
 
 export function discardDraft() {
-  return (dispatch, getState) => {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
 
-    const mediaDrafts = state.entryDraft.get('mediaFiles').filter(file => file.draft);
+    const mediaDrafts = state.entryDraft.get('mediaFiles').filter(file => !!file?.draft);
 
     mediaDrafts.forEach(file => {
-      dispatch(deleteMedia(file));
+      dispatch(deleteMedia(file as MediaFile));
     });
 
     dispatch({ type: DRAFT_DISCARD });
   };
 }
 
-export function changeDraft(entry) {
-  return {
-    type: DRAFT_CHANGE,
-    payload: entry,
-  };
-}
-
-export function changeDraftField(field, value, metadata) {
+export function changeDraftField(field: string, value: string, metadata: Record<string, unknown>) {
   return {
     type: DRAFT_CHANGE_FIELD,
     payload: { field, value, metadata },
   };
 }
 
-export function changeDraftFieldValidation(uniquefieldId, errors) {
+export function changeDraftFieldValidation(
+  uniquefieldId: string,
+  errors: { type: string; message: string }[],
+) {
   return {
     type: DRAFT_VALIDATION_ERRORS,
     payload: { uniquefieldId, errors },
@@ -248,7 +264,7 @@ export function clearFieldErrors() {
   return { type: DRAFT_CLEAR_ERRORS };
 }
 
-export function localBackupRetrieved(entry, mediaFiles) {
+export function localBackupRetrieved(entry: EntryObject, mediaFiles: MediaFile[]) {
   return {
     type: DRAFT_LOCAL_BACKUP_RETRIEVED,
     payload: { entry, mediaFiles },
@@ -256,14 +272,14 @@ export function localBackupRetrieved(entry, mediaFiles) {
 }
 
 export function loadLocalBackup() {
-  return (dispatch, getState) => {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     dispatch({
       type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
     });
 
     // only add media files to the library after loading from backup was approved
     const state = getState();
-    const mediaFiles = state.entryDraft.get('mediaFiles').toJS();
+    const mediaFiles: MediaFile[] = state.entryDraft.get('mediaFiles').toJS();
     const filesToAdd = mediaFiles.map(file => ({
       ...file,
       draft: true,
@@ -272,24 +288,28 @@ export function loadLocalBackup() {
   };
 }
 
-export function addDraftEntryMediaFile(file) {
+export function addDraftEntryMediaFile(file: MediaFile) {
   return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
 
-export function setDraftEntryMediaFiles(files) {
+export function setDraftEntryMediaFiles(files: MediaFile[]) {
   return { type: SET_DRAFT_ENTRY_MEDIA_FILES, payload: files };
 }
 
-export function removeDraftEntryMediaFile(file) {
-  return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: file };
+export function removeDraftEntryMediaFile({ id }: { id: string }) {
+  return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: { id } };
 }
 
 export function clearDraftEntryMediaFiles() {
   return { type: CLEAR_DRAFT_ENTRY_MEDIA_FILES };
 }
 
-export function persistLocalBackup(entry, collection, mediaFiles) {
-  return (dispatch, getState) => {
+export function persistLocalBackup(
+  entry: EntryMap,
+  collection: Collection,
+  mediaFiles: List<MediaFile>,
+) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
 
@@ -300,16 +320,16 @@ export function persistLocalBackup(entry, collection, mediaFiles) {
   };
 }
 
-export function retrieveLocalBackup(collection, slug) {
-  return async (dispatch, getState) => {
+export function retrieveLocalBackup(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const { entry, mediaFiles, assets } = await backend.getLocalDraftBackup(collection, slug);
 
     if (entry) {
       // load assets from backup
-      const assetProxies = await Promise.all(
-        assets.map(({ value, fileObj }) =>
+      const assetProxies: AssetProxy[] = await Promise.all(
+        assets.map(({ value, fileObj }: { value: string; fileObj: File }) =>
           createAssetProxy({
             value,
             fileObj,
@@ -324,8 +344,8 @@ export function retrieveLocalBackup(collection, slug) {
   };
 }
 
-export function deleteLocalBackup(collection, slug) {
-  return (dispatch, getState) => {
+export function deleteLocalBackup(collection: Collection, slug: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     return backend.deleteLocalDraftBackup(collection, slug);
@@ -336,17 +356,17 @@ export function deleteLocalBackup(collection, slug) {
  * Exported Thunk Action Creators
  */
 
-export function loadEntry(collection, slug) {
-  return (dispatch, getState) => {
+export function loadEntry(collection: Collection, slug: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     dispatch(entryLoading(collection, slug));
     return backend
       .getEntry(collection, slug)
-      .then(loadedEntry => {
+      .then((loadedEntry: EntryObject) => {
         return dispatch(entryLoaded(collection, loadedEntry));
       })
-      .catch(error => {
+      .catch((error: Error) => {
         console.error(error);
         dispatch(
           notifSend({
@@ -367,13 +387,18 @@ const appendActions = fromJS({
   ['append_next']: { action: 'next', append: true },
 });
 
-const addAppendActionsToCursor = cursor =>
-  Cursor.create(cursor).updateStore('actions', actions =>
-    actions.union(appendActions.filter(v => actions.has(v.get('action'))).keySeq()),
-  );
+const addAppendActionsToCursor = (cursor: typeof Cursor) => {
+  return Cursor.create(cursor).updateStore('actions', (actions: Set<string>) => {
+    return actions.union(
+      appendActions
+        .filter((v: Map<string, string | boolean>) => actions.has(v.get('action') as string))
+        .keySeq(),
+    );
+  });
+};
 
-export function loadEntries(collection, page = 0) {
-  return (dispatch, getState) => {
+export function loadEntries(collection: Collection, page = 0) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (collection.get('isFetching')) {
       return;
     }
@@ -387,7 +412,7 @@ export function loadEntries(collection, page = 0) {
     dispatch(entriesLoading(collection));
     provider
       .listEntries(collection, page)
-      .then(response => ({
+      .then((response: { cursor: typeof Cursor }) => ({
         ...response,
 
         // The only existing backend using the pagination system is the
@@ -404,7 +429,7 @@ export function loadEntries(collection, page = 0) {
             })
           : Cursor.create(response.cursor),
       }))
-      .then(response =>
+      .then((response: { cursor: typeof Cursor; pagination: number; entries: EntryObject[] }) =>
         dispatch(
           entriesLoaded(
             collection,
@@ -417,7 +442,7 @@ export function loadEntries(collection, page = 0) {
           ),
         ),
       )
-      .catch(err => {
+      .catch((err: Error) => {
         dispatch(
           notifSend({
             message: {
@@ -433,17 +458,24 @@ export function loadEntries(collection, page = 0) {
   };
 }
 
-function traverseCursor(backend, cursor, action) {
+function traverseCursor(
+  backend: {
+    traverseCursor: (...args: unknown[]) => { entries: EntryObject[]; cursor: typeof Cursor };
+  },
+  cursor: typeof Cursor,
+  action: string,
+) {
   if (!cursor.actions.has(action)) {
     throw new Error(`The current cursor does not support the pagination action "${action}".`);
   }
   return backend.traverseCursor(cursor, action);
 }
 
-export function traverseCollectionCursor(collection, action) {
-  return async (dispatch, getState) => {
+export function traverseCollectionCursor(collection: Collection, action: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
-    if (state.entries.getIn(['pages', `${collection.get('name')}`, 'isFetching'])) {
+    const collectionName = collection.get('name');
+    if (state.entries.getIn(['pages', `${collectionName}`, 'isFetching'])) {
       return;
     }
     const backend = currentBackend(state.config);
@@ -484,65 +516,84 @@ export function traverseCollectionCursor(collection, action) {
   };
 }
 
-export function createEmptyDraft(collection) {
-  return dispatch => {
+export function createEmptyDraft(collection: Collection) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
     const dataFields = createEmptyDraftData(collection.get('fields', List()));
     const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
     dispatch(emptyDraftCreated(newEntry));
   };
 }
 
-export function createEmptyDraftData(fields, withNameKey = true) {
-  return fields.reduce((acc, item) => {
-    const subfields = item.get('field') || item.get('fields');
-    const list = item.get('widget') == 'list';
-    const name = item.get('name');
-    const defaultValue = item.get('default', null);
-    const isEmptyDefaultValue = val => [[{}], {}].some(e => isEqual(val, e));
-
-    if (List.isList(subfields)) {
-      const subDefaultValue = list
-        ? [createEmptyDraftData(subfields)]
-        : createEmptyDraftData(subfields);
-      if (!isEmptyDefaultValue(subDefaultValue)) {
-        acc[name] = subDefaultValue;
-      }
-      return acc;
-    }
-
-    if (Map.isMap(subfields)) {
-      const subDefaultValue = list
-        ? [createEmptyDraftData([subfields], false)]
-        : createEmptyDraftData([subfields]);
-      if (!isEmptyDefaultValue(subDefaultValue)) {
-        acc[name] = subDefaultValue;
-      }
-      return acc;
-    }
-
-    if (defaultValue !== null) {
-      if (!withNameKey) {
-        return defaultValue;
-      }
-      acc[name] = defaultValue;
-    }
-
-    return acc;
-  }, {});
+interface DraftEntryData {
+  [name: string]: string | null | DraftEntryData | DraftEntryData[] | (string | DraftEntryData)[];
 }
 
-export function getMediaAssets({ state, mediaFiles, collection, entryPath }) {
+export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
+  return fields.reduce(
+    (reduction: DraftEntryData | string | undefined, value: EntryField | undefined) => {
+      const acc = reduction as DraftEntryData;
+      const item = value as EntryField;
+      const subfields = item.get('field') || item.get('fields');
+      const list = item.get('widget') == 'list';
+      const name = item.get('name');
+      const defaultValue = item.get('default', null);
+      const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some(e => isEqual(val, e));
+
+      if (List.isList(subfields)) {
+        const subDefaultValue = list
+          ? [createEmptyDraftData(subfields as EntryFields)]
+          : createEmptyDraftData(subfields as EntryFields);
+        if (!isEmptyDefaultValue(subDefaultValue)) {
+          acc[name] = subDefaultValue;
+        }
+        return acc;
+      }
+
+      if (Map.isMap(subfields)) {
+        const subDefaultValue = list
+          ? [createEmptyDraftData(List([subfields as EntryField]), false)]
+          : createEmptyDraftData(List([subfields as EntryField]));
+        if (!isEmptyDefaultValue(subDefaultValue)) {
+          acc[name] = subDefaultValue;
+        }
+        return acc;
+      }
+
+      if (defaultValue !== null) {
+        if (!withNameKey) {
+          return defaultValue;
+        }
+        acc[name] = defaultValue;
+      }
+
+      return acc;
+    },
+    {} as DraftEntryData,
+  );
+}
+
+export function getMediaAssets({
+  state,
+  mediaFiles,
+  collection,
+  entryPath,
+}: {
+  state: State;
+  mediaFiles: List<MediaFile>;
+  collection: Collection;
+  entryPath: string;
+}) {
   return mediaFiles.map(file =>
     getAsset({
       state,
-      path: file.public_path,
+      path: (file as MediaFile).public_path,
       ...selectEntryMediaFolders(state.config, collection, entryPath),
     }),
   );
 }
 
-export function persistEntry(collection) {
-  return (dispatch, getState) => {
+export function persistEntry(collection: Collection) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
@@ -596,7 +647,7 @@ export function persistEntry(collection) {
         state.integrations,
         usedSlugs,
       )
-      .then(slug => {
+      .then((slug: string) => {
         dispatch(
           notifSend({
             message: {
@@ -608,7 +659,7 @@ export function persistEntry(collection) {
         );
         dispatch(entryPersisted(collection, serializedEntry, slug));
       })
-      .catch(error => {
+      .catch((error: Error) => {
         console.error(error);
         dispatch(
           notifSend({
@@ -625,8 +676,8 @@ export function persistEntry(collection) {
   };
 }
 
-export function deleteEntry(collection, slug) {
-  return (dispatch, getState) => {
+export function deleteEntry(collection: Collection, slug: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
 
@@ -636,7 +687,7 @@ export function deleteEntry(collection, slug) {
       .then(() => {
         return dispatch(entryDeleted(collection, slug));
       })
-      .catch(error => {
+      .catch((error: Error) => {
         dispatch(
           notifSend({
             message: {

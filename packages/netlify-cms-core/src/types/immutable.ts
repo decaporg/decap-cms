@@ -22,7 +22,3 @@ export interface StaticallyTypedRecord<T> {
     predicate: (value: T[K], key: K, iter: this, context?: any) => boolean,
   ): boolean;
 }
-
-export interface StaticallyTypedList<T> {
-  toJS(): T[];
-}

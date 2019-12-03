@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import { StaticallyTypedRecord, StaticallyTypedList } from './immutable';
-import { Map } from 'immutable';
+import { StaticallyTypedRecord } from './immutable';
+import { Map, List } from 'immutable';
 
 export type Config = StaticallyTypedRecord<{
   media_folder: string;
@@ -12,7 +12,11 @@ export type Config = StaticallyTypedRecord<{
   media_folder_relative?: boolean;
 }>;
 
-export type Entries = StaticallyTypedRecord<{}>;
+type PagesObject = { [id: string]: { isFetching: boolean } };
+
+type Pages = StaticallyTypedRecord<PagesObject>;
+
+export type Entries = StaticallyTypedRecord<{ pages: Pages & PagesObject }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;
 
@@ -29,13 +33,25 @@ export type EntryObject = {
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
 
+export type FieldsErrors = StaticallyTypedRecord<{ [field: string]: { type: string }[] }>;
+
 export type EntryDraft = StaticallyTypedRecord<{
   entry: EntryMap & EntryObject;
-  mediaFiles: StaticallyTypedList<{}>;
-  fieldsErrors: StaticallyTypedRecord<{ [field: string]: { type: string }[] }>;
+  mediaFiles: List<MediaFile>;
+  fieldsErrors: FieldsErrors;
 }>;
 
-type CollectionObject = { name: string; folder: string };
+export type EntryField = StaticallyTypedRecord<{
+  field?: EntryField;
+  fields?: List<EntryField>;
+  widget: string;
+  name: string;
+  default: string | null;
+}>;
+
+export type EntryFields = List<EntryField>;
+
+type CollectionObject = { name: string; folder: string; fields: EntryFields; isFetching: boolean };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
 
@@ -65,6 +81,7 @@ export interface MediaFile {
   path?: string;
   draft?: boolean;
   url?: string;
+  public_path?: string;
 }
 
 interface DisplayURLsObject {
@@ -92,8 +109,11 @@ interface SearchItem {
 
 export type Search = StaticallyTypedRecord<{ entryIds?: SearchItem[] }>;
 
+export type Cursors = StaticallyTypedRecord<{}>;
+
 export interface State {
   config: Config;
+  cursors: Cursors;
   collections: Collections;
   deploys: Deploys;
   editorialWorkflow: EditorialWorkflow;
@@ -125,7 +145,7 @@ export interface Integration {
 
 export interface IntegrationsAction extends Action<string> {
   payload: StaticallyTypedRecord<{
-    integrations: StaticallyTypedList<Integration>;
+    integrations: List<Integration>;
     collections: StaticallyTypedRecord<{ name: string }>[];
   }>;
 }

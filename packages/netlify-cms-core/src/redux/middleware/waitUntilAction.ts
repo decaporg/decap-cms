@@ -7,15 +7,18 @@
  * action coming through the system. Think of it as a thunk that
  * blocks until the condition is met.
  */
-import { Middleware, MiddlewareAPI, Dispatch, Action, AnyAction } from 'redux';
+import { Middleware, MiddlewareAPI, Dispatch, AnyAction } from 'redux';
 import { State } from '../../types/redux';
 
 export const WAIT_UNTIL_ACTION = 'WAIT_UNTIL_ACTION';
 
-interface WaitAction extends Action {
-  type: string;
+export interface WaitActionArgs {
   predicate: (action: AnyAction) => boolean;
   run: (Dispatch: Dispatch, getState: () => State, action: AnyAction) => void;
+}
+
+interface WaitAction extends WaitActionArgs {
+  type: typeof WAIT_UNTIL_ACTION;
 }
 
 export const waitUntilAction: Middleware<{}, State, Dispatch> = ({

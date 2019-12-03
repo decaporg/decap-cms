@@ -33,7 +33,7 @@ const memoizedProxies: Record<string, AssetProxy | undefined> = {};
 
 export interface GetAssetArgs {
   state: Medias;
-  path: string;
+  path?: string;
   publicFolder: string;
   mediaFolder: string;
 }

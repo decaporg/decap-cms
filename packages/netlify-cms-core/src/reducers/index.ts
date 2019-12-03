@@ -74,7 +74,12 @@ export const getAsset = ({
   path,
   publicFolder,
   mediaFolder,
-}: fromMedias.GetAssetArgs & { state: State }) => {
+}: {
+  state: State;
+  path?: string;
+  publicFolder: string;
+  mediaFolder: string;
+}) => {
   /**
    * If an external media library is in use, just return the path.
    */
