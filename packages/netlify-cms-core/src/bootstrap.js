@@ -7,7 +7,7 @@ import history from 'Routing/history';
 import store from 'ReduxStore';
 import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Lib/phrases';
-import { selectLocale } from 'Selectors/config';
+import { selectLocale } from 'Reducers/config';
 import { I18n } from 'react-polyglot';
 import { GlobalStyles } from 'netlify-cms-ui-default';
 import { ErrorBoundary } from 'UI';

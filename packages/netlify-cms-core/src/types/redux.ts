@@ -113,6 +113,10 @@ export interface MediasAction extends Action<string> {
   payload: string | MediaAsset | MediaAsset[];
 }
 
+export interface ConfigAction extends Action<string> {
+  payload: Map<string, boolean>;
+}
+
 export interface Integration {
   hooks: string[];
   collections?: string | string[];

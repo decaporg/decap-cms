@@ -1,21 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { Map } from 'immutable';
 
-  export type CmsBackendType
-    = 'git-gateway'
-    | 'github'
-    | 'gitlab'
-    | 'bitbucket'
-    | 'test-repo';
+  export type CmsBackendType = 'git-gateway' | 'github' | 'gitlab' | 'bitbucket' | 'test-repo';
 
-  export type CmsMapWidgetType
-    = 'Point'
-    | 'LineString'
-    | 'Polygon';
+  export type CmsMapWidgetType = 'Point' | 'LineString' | 'Polygon';
 
-  export type CmsMarkdownWidgetButton
-    = 'bold'
+  export type CmsMarkdownWidgetButton =
+    | 'bold'
     | 'italic'
     | 'code'
     | 'link'
@@ -30,17 +23,10 @@ declare module 'netlify-cms-core' {
     | 'bulleted-list'
     | 'numbered-list';
 
-  export type CmsFilesExtension
-    = 'yml'
-    | 'yaml'
-    | 'toml'
-    | 'json'
-    | 'md'
-    | 'markdown'
-    | 'html';
+  export type CmsFilesExtension = 'yml' | 'yaml' | 'toml' | 'json' | 'md' | 'markdown' | 'html';
 
-  export type CmsCollectionFormatType
-    = 'yml'
+  export type CmsCollectionFormatType =
+    | 'yml'
     | 'yaml'
     | 'toml'
     | 'json'
@@ -219,8 +205,15 @@ declare module 'netlify-cms-core' {
     registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
     registerPreviewStyle: (filePath: string, options?: PreviewStyleOptions) => void;
     registerPreviewTemplate: (name: string, component: ComponentType) => void;
-    registerWidget: (widget: string | CmsWidgetParam, control: ComponentType, preview?: ComponentType) => void;
-    registerWidgetValueSerializer: (widgetName: string, serializer: CmsWidgetValueSerializer) => void;
+    registerWidget: (
+      widget: string | CmsWidgetParam,
+      control: ComponentType,
+      preview?: ComponentType,
+    ) => void;
+    registerWidgetValueSerializer: (
+      widgetName: string,
+      serializer: CmsWidgetValueSerializer,
+    ) => void;
     resolveWidget: (name: string) => CmsWidget | undefined;
   }
 

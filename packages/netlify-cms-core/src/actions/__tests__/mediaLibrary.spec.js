@@ -271,6 +271,7 @@ describe('mediaLibrary', () => {
         config: Map({
           publish_mode: 'editorial_workflow',
         }),
+        collections: Map(),
         integrations: Map(),
         mediaLibrary: Map({
           files: List(),
@@ -315,6 +316,7 @@ describe('mediaLibrary', () => {
         config: Map({
           publish_mode: 'editorial_workflow',
         }),
+        collections: Map(),
         integrations: Map(),
         mediaLibrary: Map({
           files: List(),

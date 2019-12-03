@@ -1,7 +1,8 @@
 import { Map } from 'immutable';
-import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from 'Actions/config';
+import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from '../actions/config';
+import { Config, ConfigAction } from '../types/redux';
 
-const config = (state = Map({ isFetching: true }), action) => {
+const config = (state = Map({ isFetching: true }), action: ConfigAction) => {
   switch (action.type) {
     case CONFIG_MERGE:
       return state.mergeDeep(action.payload);
@@ -20,5 +21,7 @@ const config = (state = Map({ isFetching: true }), action) => {
       return state;
   }
 };
+
+export const selectLocale = (state: Config) => state.get('locale', 'en') as string;
 
 export default config;
