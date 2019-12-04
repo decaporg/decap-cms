@@ -1,16 +1,16 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { resolveMediaFilename, getBlobSHA } from 'netlify-cms-lib-util';
+import { getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from '../backend';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
-import { createAssetProxy } from '../valueObjects/AssetProxy';
+import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
+import { selectMediaFilePath } from '../reducers/entries';
 import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
 import { waitUntil } from './waitUntil';
-import { selectEntryMediaFolders } from '../reducers/entries';
 import { State, MediaFile } from '../types/redux';
 import { AnyAction, Dispatch, Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -99,40 +99,8 @@ export function closeMediaLibrary() {
   };
 }
 
-type MediaObject = { url?: string; name?: string };
-
-export function insertMedia(media: MediaObject | string | string[]) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    let mediaPath: string | string[];
-
-    const { name, url } = media as MediaObject;
-    if (url) {
-      // media.url is public, and already resolved
-      mediaPath = url;
-    } else if (name) {
-      // media.name still needs to be resolved to the appropriate URL
-      const state = getState();
-      const config = state.config;
-      if (config.get('media_folder_relative')) {
-        // the path is being resolved relatively
-        // and we need to know the path of the entry to resolve it
-        const mediaFolder = config.get('media_folder');
-
-        const collection = state.entryDraft.getIn(['entry', 'collection']);
-        const collectionFolder = state.collections.getIn([collection, 'folder']);
-        mediaPath = resolveMediaFilename(name, { mediaFolder, collectionFolder });
-      } else {
-        // the path is being resolved to a public URL
-        const publicFolder = config.get('public_folder');
-        mediaPath = resolveMediaFilename(name, { publicFolder });
-      }
-    } else if (Array.isArray(media) || typeof media === 'string') {
-      mediaPath = media;
-    } else {
-      throw new Error('Incorrect usage, expected {url}, {file}, string or string array');
-    }
-    dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
-  };
+export function insertMedia(mediaPath: string | string[]) {
+  return { type: MEDIA_INSERT, payload: { mediaPath } };
 }
 
 export function removeInsertedMedia(controlID: string) {
@@ -188,6 +156,29 @@ export function loadMedia(
   };
 }
 
+function createMediaFileFromAsset({
+  id,
+  file,
+  assetProxy,
+  draft,
+}: {
+  id: string;
+  file: File;
+  assetProxy: AssetProxy;
+  draft: boolean;
+}): MediaFile {
+  const mediaFile = {
+    id,
+    name: file.name,
+    displayURL: assetProxy.url,
+    draft,
+    size: file.size,
+    url: assetProxy.url,
+    path: assetProxy.path,
+  };
+  return mediaFile;
+}
+
 export function persistMedia(file: File, opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -197,6 +188,10 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const files = state.mediaLibrary.get('files');
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
+
+    const entry = state.entryDraft.get('entry');
+    const useWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
+    const draft = entry && !entry.isEmpty() && useWorkflow;
 
     /**
      * Check for existing files of the same name before persisting. If no asset
@@ -216,63 +211,50 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
 
     try {
       const id = await getBlobSHA(file);
-      const entry = state.entryDraft.get('entry');
-      const collection = state.collections.get(entry.get('collection'));
-      const assetProxy = await createAssetProxy({
-        value: fileName,
-        fileObj: file,
-        uploaded: false,
-        privateUpload,
-        integration,
-        getIntegrationProvider: () =>
-          getIntegrationProvider(state.integrations, backend.getToken, integration),
-        ...selectEntryMediaFolders(state.config, collection, entry.get('path')),
-      });
-      dispatch(addAsset(assetProxy));
-
-      const useWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
-      const draft = entry && !entry.isEmpty() && useWorkflow;
-
-      if (!integration) {
-        const asset: MediaFile = await backend.persistMedia(state.config, assetProxy, draft);
-
-        const assetId = asset.id || id;
-        const displayURL = asset.displayURL || URL.createObjectURL(file);
-
-        if (draft) {
-          dispatch(
-            addDraftEntryMediaFile({
-              ...asset,
-              id: assetId,
-              draft,
-              // eslint-disable-next-line @typescript-eslint/camelcase
-              public_path: assetProxy.public_path,
-            }),
+      let assetProxy: AssetProxy;
+      if (integration) {
+        try {
+          const provider = getIntegrationProvider(
+            state.integrations,
+            backend.getToken,
+            integration,
           );
+          const response = await provider.upload(file, privateUpload);
+          assetProxy = createAssetProxy({
+            url: response.asset.url,
+            path: response.asset.url,
+          });
+        } catch (error) {
+          assetProxy = createAssetProxy({
+            file,
+            path: file.name,
+          });
         }
-
-        return dispatch(
-          mediaPersisted({
-            ...asset,
-            id: assetId,
-            displayURL,
-            draft,
-          }),
-        );
+      } else if (privateUpload) {
+        throw new Error('The Private Upload option is only available for Asset Store Integration');
+      } else {
+        const entryPath = entry && entry.get('path');
+        const collection = entry && state.collections.get(entry.get('collection'));
+        const path = selectMediaFilePath(state.config, collection, entryPath, file.name);
+        assetProxy = createAssetProxy({
+          file,
+          path,
+        });
       }
 
-      return dispatch(
-        mediaPersisted(
-          {
-            name: file.name,
-            id,
-            displayURL: URL.createObjectURL(file),
-            ...assetProxy.asset,
-            draft,
-          },
-          { privateUpload },
-        ),
-      );
+      dispatch(addAsset(assetProxy));
+
+      let mediaFile: MediaFile;
+      if (integration) {
+        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft });
+      } else if (draft) {
+        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft });
+        dispatch(addDraftEntryMediaFile(mediaFile));
+      } else {
+        mediaFile = await backend.persistMedia(state.config, assetProxy);
+      }
+
+      return dispatch(mediaPersisted(mediaFile, { privateUpload }));
     } catch (error) {
       console.error(error);
       dispatch(
@@ -315,14 +297,7 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
     dispatch(mediaDeleting());
 
     try {
-      const entry = state.entryDraft.get('entry');
-      const collection = state.collections.get(entry.get('collection'));
-      const assetProxy = await createAssetProxy({
-        value: file.name,
-        fileObj: null,
-        ...selectEntryMediaFolders(state.config, collection, entry.get('path')),
-      });
-      dispatch(removeAsset(assetProxy.public_path));
+      dispatch(removeAsset(file.url as string));
       dispatch(removeDraftEntryMediaFile({ id: file.id }));
 
       if (!file.draft) {
@@ -346,16 +321,12 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
 
 export function loadMediaDisplayURL(file: MediaFile) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const { displayURL, id, url } = file;
+    const { displayURL, id } = file;
     const state = getState();
     const displayURLState = state.mediaLibrary.getIn(['displayURLs', id], Map<string, string>());
     if (
       !id ||
-      // displayURL is used by most backends; url (like urlIsPublicPath) is used exclusively by the
-      // assetStore integration. Only the assetStore uses URLs which can actually be inserted into
-      // an entry - other backends create a domain-relative URL using the public_folder from the
-      // config and the file's name.
-      (!displayURL && !url) ||
+      !displayURL ||
       displayURLState.get('url') ||
       displayURLState.get('isFetching') ||
       displayURLState.get('err')

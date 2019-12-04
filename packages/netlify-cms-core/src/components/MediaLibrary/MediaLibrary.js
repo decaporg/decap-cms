@@ -14,7 +14,7 @@ import {
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
-import MediaLibraryModal from './MediaLibraryModal';
+import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
  * Extensions used to determine which files to show when the media library is
@@ -22,17 +22,6 @@ import MediaLibraryModal from './MediaLibraryModal';
  */
 const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
-
-const fileShape = {
-  displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  id: PropTypes.string.isRequired,
-  key: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  queryOrder: PropTypes.number,
-  size: PropTypes.number,
-  url: PropTypes.string,
-  urlIsPublicPath: PropTypes.bool,
-};
 
 class MediaLibrary extends React.Component {
   static propTypes = {
@@ -118,7 +107,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, displayURL, draft }) => {
+      files.map(({ key, name, id, size, queryOrder, displayURL, draft }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -127,8 +116,6 @@ class MediaLibrary extends React.Component {
           type: ext.toUpperCase(),
           size,
           queryOrder,
-          url,
-          urlIsPublicPath,
           displayURL,
           draft,
           isImage: IMAGE_EXTENSIONS.includes(ext),
@@ -190,9 +177,9 @@ class MediaLibrary extends React.Component {
    */
   handleInsert = () => {
     const { selectedFile } = this.state;
-    const { name, url, urlIsPublicPath } = selectedFile;
+    const { path } = selectedFile;
     const { insertMedia } = this.props;
-    insertMedia(urlIsPublicPath ? { url } : { name });
+    insertMedia(path);
     this.handleClose();
   };
 

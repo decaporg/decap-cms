@@ -22,7 +22,6 @@ import { addAssets } from './media';
 import { addMediaFilesToLibrary } from './mediaLibrary';
 
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { selectEntryMediaFolders } from '../reducers/entries';
 import { Collection, EntryMap, EntryObject, State, Collections } from '../types/redux';
 import { AnyAction } from 'redux';
 
@@ -275,11 +274,10 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       const entry = await backend.unpublishedEntry(collection, slug);
       const mediaFiles: MediaFile[] = entry.mediaFiles;
       const assetProxies = await Promise.all(
-        mediaFiles.map(({ file }) =>
+        mediaFiles.map(({ file, path }) =>
           createAssetProxy({
-            value: file.name,
-            fileObj: file,
-            ...selectEntryMediaFolders(state.config, collection, entry.path),
+            path,
+            file,
           }),
         ),
       );
@@ -392,8 +390,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const assetProxies = getMediaAssets({
       state,
       mediaFiles: entryDraft.get('mediaFiles'),
-      collection,
-      entryPath: entry.get('path'),
+      dispatch,
     });
 
     /**

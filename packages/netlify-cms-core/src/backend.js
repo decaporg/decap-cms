@@ -2,7 +2,8 @@ import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq
 import { stripIndent } from 'common-tags';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
-import { selectEntryMediaFolders } from 'Reducers/entries';
+import { selectMediaFilePath } from 'Reducers/entries';
+import { basename } from 'path';
 import { selectIntegration } from 'Reducers/integrations';
 import {
   selectListMethod,
@@ -15,7 +16,6 @@ import {
   selectInferedField,
 } from 'Reducers/collections';
 import { createEntry } from 'ValueObjects/Entry';
-import { resolveAssetPath, resolveAssetPublicPath } from 'ValueObjects/AssetProxy';
 import { sanitizeSlug, sanitizeChar } from 'Lib/urlHelper';
 import { getBackend } from 'Lib/registry';
 import { commitMessageFormatter, slugFormatter, prepareSlug } from 'Lib/backendHelper';
@@ -366,7 +366,7 @@ export class Backend {
     if (!backup || !backup.raw.trim()) {
       return {};
     }
-    const { raw, path, mediaFiles = [], assets = [] } = backup;
+    const { raw, path, mediaFiles = [] } = backup;
 
     const label = selectFileEntryLabel(collection, slug);
     const entry = this.entryWithFormat(
@@ -374,10 +374,10 @@ export class Backend {
       slug,
     )(createEntry(collection.get('name'), slug, path, { raw, label }));
 
-    return { entry, mediaFiles, assets };
+    return { entry, mediaFiles };
   }
 
-  async persistLocalDraftBackup(entry, collection, mediaFiles, assets) {
+  async persistLocalDraftBackup(entry, collection, mediaFiles) {
     const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
     const raw = this.entryToRaw(collection, entry);
     if (!raw.trim()) {
@@ -388,7 +388,6 @@ export class Backend {
       raw,
       path: entry.get('path'),
       mediaFiles: mediaFiles.toJS(),
-      assets: assets.toJS(),
     });
     return localForage.setItem(getEntryBackupKey(), raw);
   }
@@ -565,7 +564,7 @@ export class Backend {
     config,
     collection,
     entryDraft,
-    mediaFiles,
+    assetProxies,
     integrations,
     usedSlugs,
     options = {},
@@ -605,14 +604,8 @@ export class Backend {
     }
 
     // update media files path based on entry path
-    mediaFiles.forEach(file => {
-      const { mediaFolder, publicFolder } = selectEntryMediaFolders(
-        config,
-        collection,
-        entryObj.path,
-      );
-      file.path = resolveAssetPath(mediaFolder, file.uploaded, file.value);
-      file.public_path = resolveAssetPublicPath(publicFolder, file.uploaded, file.value);
+    assetProxies.forEach(asset => {
+      asset.path = selectMediaFilePath(config, collection, entryObj.path, basename(asset.path));
     });
 
     const user = await this.currentUser();
@@ -647,10 +640,10 @@ export class Backend {
       ...updatedOptions,
     };
 
-    return this.implementation.persistEntry(entryObj, mediaFiles, opts).then(() => entryObj.slug);
+    return this.implementation.persistEntry(entryObj, assetProxies, opts).then(() => entryObj.slug);
   }
 
-  async persistMedia(config, file, draft) {
+  async persistMedia(config, file) {
     const user = await this.currentUser();
     const options = {
       commitMessage: commitMessageFormatter(
@@ -663,7 +656,6 @@ export class Backend {
         },
         user.useOpenAuthoring,
       ),
-      draft,
     };
     return this.implementation.persistMedia(file, options);
   }

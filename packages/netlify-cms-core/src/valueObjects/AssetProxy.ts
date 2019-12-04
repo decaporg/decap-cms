@@ -1,110 +1,40 @@
-import { resolvePath } from 'netlify-cms-lib-util';
-
-export function resolveAssetPath(folder: string, uploaded: boolean, value: string): string {
-  return folder && !uploaded ? resolvePath(value, folder) : value;
-}
-
-export function resolveAssetPublicPath(folder: string, uploaded: boolean, value: string): string {
-  return !uploaded ? resolvePath(value, folder) : value;
-}
-
-interface IntegrationAsset {
-  url: string;
-}
-
 interface AssetProxyArgs {
-  value: string;
-  fileObj: File | null;
-  uploaded?: boolean;
-  asset?: IntegrationAsset;
-  mediaFolder: string;
-  publicFolder: string;
+  path: string;
+  url?: string;
+  file?: File;
 }
 
 export default class AssetProxy {
-  value: string;
-  fileObj: File | null;
-  uploaded: boolean;
-  sha: null;
-  asset: IntegrationAsset | undefined;
+  url: string;
+  fileObj?: File;
   path: string;
-  public_path: string;
 
-  constructor({
-    value,
-    fileObj,
-    mediaFolder,
-    publicFolder,
-    uploaded = false,
-    asset = undefined,
-  }: AssetProxyArgs) {
-    this.value = value;
-    this.fileObj = fileObj;
-    this.uploaded = uploaded;
-    this.sha = null;
-    this.asset = asset;
-
-    this.path = resolveAssetPath(mediaFolder, uploaded, value);
-    /* eslint-disable @typescript-eslint/camelcase */
-    this.public_path = resolveAssetPublicPath(publicFolder, uploaded, value);
+  constructor({ url, file, path }: AssetProxyArgs) {
+    this.url = url ? url : window.URL.createObjectURL(file);
+    this.fileObj = file;
+    this.path = path;
   }
 
   toString(): string {
-    // Use the deployed image path if we do not have a locally cached copy.
-    if (this.uploaded && !this.fileObj) return this.public_path;
-    try {
-      return window.URL.createObjectURL(this.fileObj);
-    } catch (error) {
-      return '';
-    }
+    return this.url;
   }
 
-  toBase64(): Promise<string> {
-    return new Promise(resolve => {
+  async toBase64(): Promise<string> {
+    const blob = await fetch(this.url).then(response => response.blob());
+    const result = await new Promise<string>(resolve => {
       const fr = new FileReader();
       fr.onload = (readerEvt): void => {
         const binaryString = readerEvt.target?.result || '';
 
         resolve(binaryString.toString().split('base64,')[1]);
       };
-      fr.readAsDataURL(this.fileObj as Blob);
+      fr.readAsDataURL(blob);
     });
+
+    return result;
   }
 }
 
-export function createAssetProxy({
-  value,
-  fileObj,
-  uploaded = false,
-  privateUpload = false,
-  mediaFolder,
-  publicFolder,
-  integration,
-  getIntegrationProvider,
-}: AssetProxyArgs & {
-  privateUpload?: boolean;
-  integration?: {};
-  getIntegrationProvider?: () => {
-    upload: (fileObj: File | null, privateUpload: boolean) => Promise<{ asset: IntegrationAsset }>;
-  };
-}): Promise<AssetProxy> {
-  if (integration && !uploaded && getIntegrationProvider) {
-    const provider = getIntegrationProvider();
-    return provider.upload(fileObj, privateUpload).then(
-      response =>
-        new AssetProxy({
-          value: response.asset.url.replace(/^(https?):/, ''),
-          fileObj: null,
-          uploaded: true,
-          asset: response.asset,
-          mediaFolder,
-          publicFolder,
-        }),
-      () => new AssetProxy({ value, fileObj, uploaded: false, mediaFolder, publicFolder }),
-    );
-  } else if (privateUpload) {
-    throw new Error('The Private Upload option is only available for Asset Store Integration');
-  }
-
-  return Promise.resolve(new AssetProxy({ value, fileObj, uploaded, mediaFolder, publicFolder }));
+export function createAssetProxy({ url, file, path }: AssetProxyArgs): AssetProxy {
+  return new AssetProxy({ url, file, path });
 }

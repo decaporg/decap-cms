@@ -13,6 +13,7 @@ import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import { Status } from '../constants/publishModes';
 import { State } from '../types/redux';
+import { Dispatch } from 'redux';
 
 const reducers = {
   auth,
@@ -71,14 +72,12 @@ export const selectIntegration = (state: State, collection: string | null, hook:
 
 export const getAsset = ({
   state,
+  dispatch,
   path,
-  publicFolder,
-  mediaFolder,
 }: {
   state: State;
-  path?: string;
-  publicFolder: string;
-  mediaFolder: string;
+  dispatch: Dispatch;
+  path: string;
 }) => {
   /**
    * If an external media library is in use, just return the path.
@@ -89,8 +88,7 @@ export const getAsset = ({
 
   return fromMedias.getAsset({
     state: state.medias,
+    dispatch,
     path,
-    publicFolder,
-    mediaFolder,
   });
 };

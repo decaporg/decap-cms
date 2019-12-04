@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
-import { selectEntryMediaFolders } from '../../../reducers/entries';
 import { addAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
 import {
@@ -262,18 +261,10 @@ class EditorControl extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const config = state.config;
-  const collection = state.collections.get(state.entryDraft.getIn(['entry', 'collection']));
-  const entryPath = state.entryDraft.getIn(['entry', 'path']);
-
-  const boundGetAsset = path =>
-    getAsset({ state, path, ...selectEntryMediaFolders(config, collection, entryPath) });
-
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
     isFetching: state.search.get('isFetching'),
     queryHits: state.search.get('queryHits'),
-    boundGetAsset,
   };
 };
 
@@ -290,6 +281,9 @@ const mapDispatchToProps = {
   },
   clearSearch,
   clearFieldErrors,
+  boundGetAsset: path => (dispatch, getState) => {
+    return getAsset({ state: getState(), dispatch, path });
+  },
 };
 
 const ConnectedEditorControl = connect(

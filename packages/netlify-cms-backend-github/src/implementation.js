@@ -332,10 +332,7 @@ export default class GitHub {
 
   async persistMedia(mediaFile, options = {}) {
     try {
-      if (!options.draft) {
-        await this.api.persistFiles(null, [mediaFile], options);
-      }
-
+      await this.api.persistFiles(null, [mediaFile], options);
       const { sha, value, path, fileObj } = mediaFile;
       const displayURL = URL.createObjectURL(fileObj);
       return {

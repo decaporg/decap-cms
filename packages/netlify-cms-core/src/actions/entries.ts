@@ -5,7 +5,6 @@ import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { getAsset, selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectEntryMediaFolders } from '../reducers/entries';
 import { selectFields } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -24,7 +23,7 @@ import {
   EntryField,
 } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 
 const { notifSend } = notifActions;
 
@@ -313,10 +312,7 @@ export function persistLocalBackup(
     const state = getState();
     const backend = currentBackend(state.config);
 
-    // persist any pending related media files and assets
-    const assets = getMediaAssets({ state, mediaFiles, collection, entryPath: entry.get('path') });
-
-    return backend.persistLocalDraftBackup(entry, collection, mediaFiles, assets);
+    return backend.persistLocalDraftBackup(entry, collection, mediaFiles);
   };
 }
 
@@ -324,18 +320,18 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const { entry, mediaFiles, assets } = await backend.getLocalDraftBackup(collection, slug);
+    const {
+      entry,
+      mediaFiles,
+    }: { entry: EntryObject; mediaFiles: MediaFile[] } = await backend.getLocalDraftBackup(
+      collection,
+      slug,
+    );
 
     if (entry) {
       // load assets from backup
-      const assetProxies: AssetProxy[] = await Promise.all(
-        assets.map(({ value, fileObj }: { value: string; fileObj: File }) =>
-          createAssetProxy({
-            value,
-            fileObj,
-            ...selectEntryMediaFolders(state.config, collection, entry.path),
-          }),
-        ),
+      const assetProxies: AssetProxy[] = mediaFiles.map(file =>
+        createAssetProxy({ url: file.url, path: file.path }),
       );
       dispatch(addAssets(assetProxies));
 
@@ -575,19 +571,17 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
 export function getMediaAssets({
   state,
   mediaFiles,
-  collection,
-  entryPath,
+  dispatch,
 }: {
   state: State;
   mediaFiles: List<MediaFile>;
-  collection: Collection;
-  entryPath: string;
+  dispatch: Dispatch;
 }) {
   return mediaFiles.map(file =>
     getAsset({
       state,
-      path: (file as MediaFile).public_path,
-      ...selectEntryMediaFolders(state.config, collection, entryPath),
+      path: (file as MediaFile).path,
+      dispatch,
     }),
   );
 }
@@ -625,8 +619,7 @@ export function persistEntry(collection: Collection) {
     const assetProxies = getMediaAssets({
       state,
       mediaFiles: entryDraft.get('mediaFiles'),
-      collection,
-      entryPath: entry.get('path'),
+      dispatch,
     });
 
     /**
