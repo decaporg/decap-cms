@@ -5,3 +5,4 @@ export { default as es } from './es';
 export { default as uk } from './uk';
 export { default as nl } from './nl';
 export { default as tr } from './tr';
+export { default as pl } from './pl';
