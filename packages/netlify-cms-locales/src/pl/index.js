@@ -36,7 +36,7 @@ const pl = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} jest wymagane.',
-        regexPattern: "%{fieldLabel} nie pasuje do formatu: %{pattern}.",
+        regexPattern: '%{fieldLabel} nie pasuje do formatu: %{pattern}.',
         processing: '%{fieldLabel} jest przetwarzane.',
         range: '%{fieldLabel} musi być pomiędzy %{minValue} a %{maxValue}.',
         min: '%{fieldLabel} musi być co najmniej %{minValue}.',
@@ -45,7 +45,8 @@ const pl = {
     },
     editor: {
       onLeavePage: 'Czy na pewno chcesz opuścić tę stronę?',
-      onUpdatingWithUnsavedChanges: 'Masz niezapisane zmiany, proszę zapisz je przed aktualizacją statusu.',
+      onUpdatingWithUnsavedChanges:
+        'Masz niezapisane zmiany, proszę zapisz je przed aktualizacją statusu.',
       onPublishingNotReady: 'Proszę zaktualizować status do "Gotowe" przed publikacją.',
       onPublishingWithUnsavedChanges: 'Masz niezapisane zmiany, proszę zapisz je przed publikacją.',
       onPublishing: 'Czy na pewno chcesz opublikować tę pozycję?',
@@ -122,7 +123,7 @@ const pl = {
   ui: {
     errorBoundary: {
       title: 'Błąd',
-      details: "Wystąpił błąd - proszę ",
+      details: 'Wystąpił błąd - proszę ',
       reportIt: 'zgłoś to.',
       detailsHeading: 'Szczegóły',
       recoveredEntry: {
@@ -140,7 +141,7 @@ const pl = {
       onFailToPersist: 'Nie udało się zapisać pozycji: %{details}',
       onFailToDelete: 'Nie udało się usunąć pozycji: %{details}',
       onFailToUpdateStatus: 'Nie udało się zaktualizować statusu: %{details}',
-      missingRequiredField: "Ups, przegapiłeś wymagane pole. Proszę uzupełnij przed zapisaniem.",
+      missingRequiredField: 'Ups, przegapiłeś wymagane pole. Proszę uzupełnij przed zapisaniem.',
       entrySaved: 'Pozycja zapisana',
       entryPublished: 'Pozycja opublikowana',
       entryUnpublished: 'Cofnięto publikację pozycji',
@@ -176,7 +177,8 @@ const pl = {
       draftHeader: 'Wersje robocze',
       inReviewHeader: 'W recenzji',
       readyHeader: 'Gotowe do publikacji',
-      currentEntries: '%{smart_count} pozycja |||| %{smart_count} pozycje |||| %{smart_count} pozycji',
+      currentEntries:
+        '%{smart_count} pozycja |||| %{smart_count} pozycje |||| %{smart_count} pozycji',
     },
   },
 };
