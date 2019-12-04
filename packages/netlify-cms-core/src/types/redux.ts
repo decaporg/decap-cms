@@ -89,11 +89,13 @@ interface MediaLibraryInstance {
   enableStandalone: () => boolean;
 }
 
+export type DisplayURL = { sha: string; path: string } | string;
+
 export interface MediaFile {
   name: string;
   id: string;
   size?: number;
-  displayURL?: { sha: string; path: string } | string;
+  displayURL?: DisplayURL;
   path: string;
   draft?: boolean;
   url?: string;

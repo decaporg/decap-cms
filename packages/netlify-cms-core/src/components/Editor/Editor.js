@@ -520,7 +520,7 @@ const mapDispatchToProps = {
   deleteUnpublishedEntry,
   logoutUser,
   boundGetAsset: path => (dispatch, getState) => {
-    return getAsset({ state: getState(), dispatch, path });
+    return getAsset({ dispatch, getState, path });
   },
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const image = {
   label: 'Image',
@@ -12,9 +12,21 @@ const image = {
   toBlock: ({ alt, image, title }) =>
     `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
   // eslint-disable-next-line react/display-name
-  toPreview: ({ alt, image, title }, getAsset) => (
-    <img src={getAsset(image) || ''} alt={alt || ''} title={title || ''} />
-  ),
+  toPreview: ({ alt, image, title }, getAsset) => {
+    const [src, setSrc] = useState();
+
+    useEffect(() => {
+      let subscribed = true;
+
+      getAsset(image).then(url => subscribed && setSrc(url));
+
+      return () => {
+        subscribed = false;
+      };
+    }, []);
+
+    return <img src={src || ''} alt={alt || ''} title={title || ''} />;
+  },
   pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
   fields: [
     {

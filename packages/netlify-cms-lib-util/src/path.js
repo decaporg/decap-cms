@@ -3,12 +3,16 @@ import getRelativePath from 'get-relative-path';
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
 const normalizePath = path => path.replace(/[\\/]+/g, '/');
 
+export function isAbsolutePath(path) {
+  return absolutePath.test(path);
+}
+
 export function resolvePath(path, basePath) {
   // No path provided, skip
   if (!path) return null;
 
   // It's an absolute path.
-  if (absolutePath.test(path)) return path;
+  if (isAbsolutePath(path)) return path;
 
   if (path.indexOf('/') === -1) {
     // It's a single file name, no directories. Prepend public folder

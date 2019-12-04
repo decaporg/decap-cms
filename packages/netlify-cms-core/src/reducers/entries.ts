@@ -137,7 +137,7 @@ const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 
 export const selectMediaFilePath = (
   config: Config,
-  collection: Collection,
+  collection: Collection | null,
   entryPath: string,
   mediaFileName: string,
 ) => {

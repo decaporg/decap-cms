@@ -387,8 +387,8 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     const entry = entryDraft.get('entry');
-    const assetProxies = getMediaAssets({
-      state,
+    const assetProxies = await getMediaAssets({
+      getState,
       mediaFiles: entryDraft.get('mediaFiles'),
       dispatch,
     });

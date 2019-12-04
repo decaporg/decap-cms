@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -22,7 +22,21 @@ const ImageWrapper = styled.div`
   ${shadows.inset};
 `;
 
-const Image = styled.img`
+const Image = styled(({ getAsset, value }) => {
+  const [src, setSrc] = useState();
+
+  useEffect(() => {
+    let subscribed = true;
+
+    getAsset(value).then(url => subscribed && setSrc(url));
+
+    return () => {
+      subscribed = false;
+    };
+  }, []);
+
+  return <img src={src || ''} role="presentation" />;
+})`
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -210,7 +224,7 @@ export default function withFileControl({ forImage } = {}) {
           <MultiImageWrapper>
             {value.map(val => (
               <ImageWrapper key={val}>
-                <Image src={getAsset(val)} />
+                <Image getAsset={getAsset} value={value} />
               </ImageWrapper>
             ))}
           </MultiImageWrapper>
@@ -218,7 +232,7 @@ export default function withFileControl({ forImage } = {}) {
       }
       return (
         <ImageWrapper>
-          <Image src={getAsset(value)} />
+          <Image getAsset={getAsset} value={value} />
         </ImageWrapper>
       );
     };

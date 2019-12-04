@@ -12,7 +12,7 @@ import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
 import { waitUntil } from './waitUntil';
 import { State, MediaFile } from '../types/redux';
-import { AnyAction, Dispatch, Action } from 'redux';
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MediaLibraryInstance } from '../mediaLibrary';
 
@@ -401,8 +401,8 @@ export function addMediaFilesToLibrary(mediaFiles: MediaFile[]) {
     } else {
       dispatch(
         waitUntil({
-          predicate: ({ type }: Action<string>) => type === MEDIA_LOAD_SUCCESS,
-          run: (dispatch: Dispatch) => dispatch(action),
+          predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
+          run: dispatch => dispatch(action),
         }),
       );
     }

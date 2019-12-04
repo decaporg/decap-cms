@@ -311,14 +311,14 @@ export default class GitHub {
       files.map(({ sha, name, size, path }) => {
         // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
         // for private repositories
-        return { id: sha, name, size, displayURL: { sha, path }, path };
+        return { id: sha, name, size, displayURL: { id: sha, path }, path };
       }),
     );
   }
 
   async getMediaDisplayURL(displayURL) {
-    const { sha, path } = displayURL;
-    const mediaURL = await this.api.getMediaDisplayURL(sha, path);
+    const { id, path } = displayURL;
+    const mediaURL = await this.api.getMediaDisplayURL(id, path);
     return mediaURL;
   }
 

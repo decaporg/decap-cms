@@ -569,17 +569,17 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
 }
 
 export function getMediaAssets({
-  state,
+  getState,
   mediaFiles,
   dispatch,
 }: {
-  state: State;
+  getState: () => State;
   mediaFiles: List<MediaFile>;
   dispatch: Dispatch;
 }) {
   return mediaFiles.map(file =>
     getAsset({
-      state,
+      getState,
       path: (file as MediaFile).path,
       dispatch,
     }),
@@ -587,7 +587,7 @@ export function getMediaAssets({
 }
 
 export function persistEntry(collection: Collection) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
@@ -616,8 +616,8 @@ export function persistEntry(collection: Collection) {
 
     const backend = currentBackend(state.config);
     const entry = entryDraft.get('entry');
-    const assetProxies = getMediaAssets({
-      state,
+    const assetProxies = await getMediaAssets({
+      getState,
       mediaFiles: entryDraft.get('mediaFiles'),
       dispatch,
     });

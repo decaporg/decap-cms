@@ -14,7 +14,7 @@ export const WAIT_UNTIL_ACTION = 'WAIT_UNTIL_ACTION';
 
 export interface WaitActionArgs {
   predicate: (action: AnyAction) => boolean;
-  run: (Dispatch: Dispatch, getState: () => State, action: AnyAction) => void;
+  run: (dispatch: Dispatch, getState: () => State, action: AnyAction) => void;
 }
 
 interface WaitAction extends WaitActionArgs {

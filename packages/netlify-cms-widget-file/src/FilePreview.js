@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
-const FileLink = styled(({ value, getAsset }) => (
-  <a href={getAsset(value)} rel="noopener noreferrer" target="_blank">
-    {value}
-  </a>
-))`
+const FileLink = styled(({ value, getAsset }) => {
+  const [href, setHref] = useState();
+
+  useEffect(() => {
+    let subscribed = true;
+
+    getAsset(value).then(url => subscribed && setHref(url));
+
+    return () => {
+      subscribed = false;
+    };
+  }, []);
+
+  return (
+    <a href={href} rel="noopener noreferrer" target="_blank">
+      {value}
+    </a>
+  );
+})`
   display: block;
 `;
 

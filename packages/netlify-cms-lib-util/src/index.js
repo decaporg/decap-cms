@@ -3,6 +3,7 @@ import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from './Cursor';
 import EditorialWorkflowError, { EDITORIAL_WORKFLOW_ERROR } from './EditorialWorkflowError';
 import localForage from './localForage';
 import {
+  isAbsolutePath,
   resolvePath,
   resolveMediaFilename,
   basename,
@@ -82,4 +83,5 @@ export {
   loadScript,
   getBlobSHA,
   asyncLock,
+  isAbsolutePath,
 };
