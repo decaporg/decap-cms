@@ -156,7 +156,10 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  async fetchBlobContent(sha, repoURL) {
+  async fetchBlobContent(sha, repoURL, parseText) {
+    if (!parseText) {
+      return super.fetchBlobContent(sha, repoURL);
+    }
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { is_null, is_binary, text } = await this.retrieveBlobObject(
       owner,
