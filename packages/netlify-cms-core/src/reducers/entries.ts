@@ -138,7 +138,7 @@ const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 export const selectMediaFilePath = (
   config: Config,
   collection: Collection | null,
-  entryPath: string,
+  entryPath: string | null,
   mediaFileName: string,
 ) => {
   let mediaFolder = config.get('media_folder');
@@ -149,6 +149,19 @@ export const selectMediaFilePath = (
     } else {
       mediaFolder = join(collection.get('folder'), DRAFT_MEDIA_FILES);
     }
+  }
+
+  return join(mediaFolder, mediaFileName);
+};
+
+export const selectMediaFilePublicPath = (
+  config: Config,
+  collection: Collection | null,
+  mediaFileName: string,
+) => {
+  let mediaFolder = config.get('public_folder');
+  if (collection && collection.has('media_folder')) {
+    mediaFolder = collection.get('media_folder') as string;
   }
 
   return join(mediaFolder, mediaFileName);

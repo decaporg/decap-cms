@@ -391,6 +391,8 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
       getState,
       mediaFiles: entryDraft.get('mediaFiles'),
       dispatch,
+      collection,
+      entryPath: entry.get('path'),
     });
 
     /**
@@ -406,18 +408,16 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const persistAction = existingUnpublishedEntry
       ? backend.persistUnpublishedEntry
       : backend.persistEntry;
-    const persistCallArgs = [
-      backend,
-      state.config,
-      collection,
-      serializedEntryDraft,
-      assetProxies.toJS(),
-      state.integrations,
-      usedSlugs,
-    ];
 
     try {
-      const newSlug = await persistAction.call(...persistCallArgs);
+      const newSlug = await persistAction.call(backend, {
+        config: state.config,
+        collection,
+        entryDraft: serializedEntryDraft,
+        assetProxies,
+        integrations: state.integrations,
+        usedSlugs,
+      });
       dispatch(
         notifSend({
           message: {

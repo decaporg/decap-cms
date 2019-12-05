@@ -519,9 +519,25 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
-  boundGetAsset: path => (dispatch, getState) => {
-    return getAsset({ dispatch, getState, path });
+  boundGetAsset: (collection, entryPath) => path => (dispatch, getState) => {
+    return getAsset({ dispatch, getState, collection, entryPath, path });
   },
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    boundGetAsset: dispatchProps.boundGetAsset(
+      stateProps.collection,
+      stateProps.entry?.get('path'),
+    ),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(withWorkflow(translate()(Editor)));

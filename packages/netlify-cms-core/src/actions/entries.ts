@@ -572,17 +572,19 @@ export function getMediaAssets({
   getState,
   mediaFiles,
   dispatch,
+  collection,
+  entryPath,
 }: {
   getState: () => State;
   mediaFiles: List<MediaFile>;
+  collection: Collection;
+  entryPath: string;
   dispatch: Dispatch;
 }) {
-  return mediaFiles.map(file =>
-    getAsset({
-      getState,
-      path: (file as MediaFile).path,
-      dispatch,
-    }),
+  return Promise.all(
+    mediaFiles
+      .toArray()
+      .map(file => getAsset({ getState, dispatch, collection, entryPath, path: file.path })),
   );
 }
 
@@ -620,6 +622,8 @@ export function persistEntry(collection: Collection) {
       getState,
       mediaFiles: entryDraft.get('mediaFiles'),
       dispatch,
+      collection,
+      entryPath: entry.get('path'),
     });
 
     /**
@@ -632,14 +636,14 @@ export function persistEntry(collection: Collection) {
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
-      .persistEntry(
-        state.config,
+      .persistEntry({
+        config: state.config,
         collection,
-        serializedEntryDraft,
-        assetProxies.toJS(),
-        state.integrations,
+        entryDraft: serializedEntryDraft,
+        assetProxies,
+        integrations: state.integrations,
         usedSlugs,
-      )
+      })
       .then((slug: string) => {
         dispatch(
           notifSend({

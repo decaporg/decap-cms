@@ -3,7 +3,7 @@ import { basename } from 'path';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
 import { ADD_ASSETS, ADD_ASSET, REMOVE_ASSET, addAsset } from '../actions/media';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
-import { Medias, MediasAction, State, MediaFile, DisplayURLState } from '../types/redux';
+import { Medias, MediasAction, State, DisplayURLState, Collection } from '../types/redux';
 import { AnyAction } from 'redux';
 import { selectMediaFilePath } from './entries';
 import {
@@ -44,10 +44,18 @@ export default medias;
 export interface GetAssetArgs {
   getState: () => State;
   dispatch: ThunkDispatch<State, {}, AnyAction>;
+  collection: Collection;
+  entryPath: string;
   path: string;
 }
 
-export const getAsset = async ({ getState, dispatch, path }: GetAssetArgs) => {
+export const getAsset = async ({
+  getState,
+  dispatch,
+  collection,
+  entryPath,
+  path,
+}: GetAssetArgs) => {
   // No path provided, skip
   if (!path) return null;
 
@@ -62,49 +70,65 @@ export const getAsset = async ({ getState, dispatch, path }: GetAssetArgs) => {
     asset = createAssetProxy({ path, url: path });
   } else {
     // load asset url from backend based on the public path
-    const resolvedPath = selectMediaFilePath(getState().config, null, '', basename(path));
-    // wait until media library is loaded
-    let file: MediaFile;
-    if (getState().mediaLibrary.get('isLoading') === false) {
-      file = selectMediaFileByPath(getState().mediaLibrary, resolvedPath);
-    } else {
-      file = await new Promise(resolve => {
-        dispatch(
-          waitUntil({
-            predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
-            run: () => resolve(selectMediaFileByPath(getState().mediaLibrary, resolvedPath)),
-          }),
-        );
-      });
-    }
-
-    const displayURLState: DisplayURLState = selectMediaDisplayURL(
-      getState().mediaLibrary,
-      file.id,
+    const resolvedPath = selectMediaFilePath(
+      getState().config,
+      collection,
+      entryPath,
+      basename(path),
     );
 
-    if (displayURLState.get('url')) {
-      // url was already loaded
-      asset = createAssetProxy({ path, url: displayURLState.get('url') });
-    } else if (displayURLState.get('err')) {
-      // url loading had an error
-      asset = createAssetProxy({ path, url: '' });
-    } else {
-      if (!displayURLState.get('isFetching')) {
-        // load display url
-        dispatch(loadMediaDisplayURL(file));
+    // check if this is a draft entry media file
+    let file = getState()
+      .entryDraft.get('mediaFiles')
+      .find(file => file?.path === resolvedPath);
+
+    if (!file) {
+      // wait until media library is loaded
+      if (getState().mediaLibrary.get('isLoading') === false) {
+        file = selectMediaFileByPath(getState().mediaLibrary, resolvedPath);
+      } else {
+        file = await new Promise(resolve => {
+          dispatch(
+            waitUntil({
+              predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
+              run: () => resolve(selectMediaFileByPath(getState().mediaLibrary, resolvedPath)),
+            }),
+          );
+        });
       }
-      const url: string = await new Promise(resolve => {
-        dispatch(
-          waitUntil({
-            predicate: ({ type, payload }) =>
-              (type === MEDIA_DISPLAY_URL_SUCCESS || type === MEDIA_DISPLAY_URL_FAILURE) &&
-              payload.key === file.id,
-            run: (_dispatch, _getState, action) => resolve(action.payload.url),
-          }),
-        );
-      });
-      asset = createAssetProxy({ path, url });
+    }
+
+    if (file) {
+      const displayURLState: DisplayURLState = selectMediaDisplayURL(
+        getState().mediaLibrary,
+        file.id,
+      );
+
+      if (displayURLState.get('url')) {
+        // url was already loaded
+        asset = createAssetProxy({ path, url: displayURLState.get('url') });
+      } else if (displayURLState.get('err')) {
+        // url loading had an error
+        asset = createAssetProxy({ path, url: resolvedPath });
+      } else {
+        if (!displayURLState.get('isFetching')) {
+          // load display url
+          dispatch(loadMediaDisplayURL(file));
+        }
+        const url: string = await new Promise(resolve => {
+          dispatch(
+            waitUntil({
+              predicate: ({ type, payload }) =>
+                (type === MEDIA_DISPLAY_URL_SUCCESS || type === MEDIA_DISPLAY_URL_FAILURE) &&
+                payload.key === file.id,
+              run: (_dispatch, _getState, action) => resolve(action.payload.url),
+            }),
+          );
+        });
+        asset = createAssetProxy({ path, url });
+      }
+    } else {
+      asset = createAssetProxy({ path, url: resolvedPath });
     }
   }
 

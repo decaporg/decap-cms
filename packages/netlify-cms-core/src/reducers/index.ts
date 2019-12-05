@@ -13,8 +13,6 @@ import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import { Status } from '../constants/publishModes';
 import { State } from '../types/redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 
 const reducers = {
   auth,
@@ -74,12 +72,10 @@ export const selectIntegration = (state: State, collection: string | null, hook:
 export const getAsset = async ({
   getState,
   dispatch,
+  collection,
+  entryPath,
   path,
-}: {
-  getState: () => State;
-  dispatch: ThunkDispatch<State, {}, AnyAction>;
-  path: string;
-}) => {
+}: fromMedias.GetAssetArgs) => {
   /**
    * If an external media library is in use, just return the path.
    */
@@ -90,6 +86,8 @@ export const getAsset = async ({
   return fromMedias.getAsset({
     getState,
     dispatch,
+    collection,
+    entryPath,
     path,
   });
 };

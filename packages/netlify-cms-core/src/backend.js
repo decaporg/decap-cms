@@ -1,8 +1,18 @@
-import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq } from 'lodash';
+import {
+  attempt,
+  flatten,
+  isError,
+  trimStart,
+  trimEnd,
+  flow,
+  partialRight,
+  uniq,
+  escapeRegExp,
+} from 'lodash';
 import { stripIndent } from 'common-tags';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
-import { selectMediaFilePath } from 'Reducers/entries';
+import { selectMediaFilePath, selectMediaFilePublicPath } from './reducers/entries';
 import { basename } from 'path';
 import { selectIntegration } from 'Reducers/integrations';
 import {
@@ -560,15 +570,15 @@ export class Backend {
     };
   }
 
-  async persistEntry(
+  async persistEntry({
     config,
     collection,
     entryDraft,
     assetProxies,
     integrations,
     usedSlugs,
-    options = {},
-  ) {
+    unpublished = false,
+  }) {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
@@ -588,11 +598,21 @@ export class Backend {
         usedSlugs,
       );
       const path = selectEntryPath(collection, slug);
+
       entryObj = {
         path,
         slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
+
+      assetProxies.map(asset => {
+        // update media files path based on entry path
+        const oldPath = asset.path;
+        const newPath = selectMediaFilePath(config, collection, path, basename(oldPath));
+        const publicPath = selectMediaFilePublicPath(config, collection, basename(oldPath));
+        asset.path = newPath;
+        entryObj.raw = entryObj.raw.replace(new RegExp(escapeRegExp(oldPath), 'g'), publicPath);
+      });
     } else {
       const path = entryDraft.getIn(['entry', 'path']);
       const slug = entryDraft.getIn(['entry', 'slug']);
@@ -602,11 +622,6 @@ export class Backend {
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
     }
-
-    // update media files path based on entry path
-    assetProxies.forEach(asset => {
-      asset.path = selectMediaFilePath(config, collection, entryObj.path, basename(asset.path));
-    });
 
     const user = await this.currentUser();
     const commitMessage = commitMessageFormatter(
@@ -630,7 +645,7 @@ export class Backend {
      * Determine whether an asset store integration is in use.
      */
     const hasAssetStore = integrations && !!selectIntegration(integrations, null, 'assetStore');
-    const updatedOptions = { ...options, hasAssetStore };
+    const updatedOptions = { unpublished, hasAssetStore };
     const opts = {
       newEntry,
       parsedData,
@@ -698,8 +713,8 @@ export class Backend {
     return this.implementation.deleteFile(path, commitMessage);
   }
 
-  persistUnpublishedEntry(...args) {
-    return this.persistEntry(...args, { unpublished: true });
+  persistUnpublishedEntry(args) {
+    return this.persistEntry({ ...args, unpublished: true });
   }
 
   updateUnpublishedEntryStatus(collection, slug, newStatus) {
