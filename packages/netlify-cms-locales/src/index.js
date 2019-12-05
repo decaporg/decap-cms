@@ -6,3 +6,4 @@ export { default as uk } from './uk';
 export { default as nl } from './nl';
 export { default as tr } from './tr';
 export { default as pl } from './pl';
+export { default as ru } from './ru';
