@@ -198,4 +198,9 @@ export function selectMediaFileByPath(state, path) {
   return file;
 }
 
+export function selectMediaDisplayURL(state, id) {
+  const displayUrlState = state.getIn(['displayURLs', id], Map());
+  return displayUrlState;
+}
+
 export default mediaLibrary;

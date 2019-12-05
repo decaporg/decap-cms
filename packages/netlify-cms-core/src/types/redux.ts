@@ -101,8 +101,14 @@ export interface MediaFile {
   url?: string;
 }
 
+export type DisplayURLState = StaticallyTypedRecord<{
+  isFetching: boolean;
+  url?: string;
+  err?: Error;
+}>;
+
 interface DisplayURLsObject {
-  [id: string]: Map<string, string>;
+  [id: string]: DisplayURLState;
 }
 
 export type MediaLibrary = StaticallyTypedRecord<{

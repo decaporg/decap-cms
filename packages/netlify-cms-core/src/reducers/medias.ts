@@ -3,7 +3,7 @@ import { basename } from 'path';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
 import { ADD_ASSETS, ADD_ASSET, REMOVE_ASSET, addAsset } from '../actions/media';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
-import { Medias, MediasAction, State, MediaFile } from '../types/redux';
+import { Medias, MediasAction, State, MediaFile, DisplayURLState } from '../types/redux';
 import { AnyAction } from 'redux';
 import { selectMediaFilePath } from './entries';
 import {
@@ -12,7 +12,7 @@ import {
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
 } from '../actions/mediaLibrary';
-import { selectMediaFileByPath } from './mediaLibrary';
+import { selectMediaFileByPath, selectMediaDisplayURL } from './mediaLibrary';
 import { ThunkDispatch } from 'redux-thunk';
 import { waitUntil } from '../actions/waitUntil';
 
@@ -78,20 +78,34 @@ export const getAsset = async ({ getState, dispatch, path }: GetAssetArgs) => {
       });
     }
 
-    // load display url
-    dispatch(loadMediaDisplayURL(file));
-    const url: string = await new Promise(resolve => {
-      dispatch(
-        waitUntil({
-          predicate: ({ type, payload }) =>
-            (type === MEDIA_DISPLAY_URL_SUCCESS || type === MEDIA_DISPLAY_URL_FAILURE) &&
-            payload.key === file.id,
-          run: (_dispatch, _getState, action) => resolve(action.payload.url),
-        }),
-      );
-    });
+    const displayURLState: DisplayURLState = selectMediaDisplayURL(
+      getState().mediaLibrary,
+      file.id,
+    );
 
-    asset = createAssetProxy({ path, url });
+    if (displayURLState.get('url')) {
+      // url was already loaded
+      asset = createAssetProxy({ path, url: displayURLState.get('url') });
+    } else if (displayURLState.get('err')) {
+      // url loading had an error
+      asset = createAssetProxy({ path, url: '' });
+    } else {
+      if (!displayURLState.get('isFetching')) {
+        // load display url
+        dispatch(loadMediaDisplayURL(file));
+      }
+      const url: string = await new Promise(resolve => {
+        dispatch(
+          waitUntil({
+            predicate: ({ type, payload }) =>
+              (type === MEDIA_DISPLAY_URL_SUCCESS || type === MEDIA_DISPLAY_URL_FAILURE) &&
+              payload.key === file.id,
+            run: (_dispatch, _getState, action) => resolve(action.payload.url),
+          }),
+        );
+      });
+      asset = createAssetProxy({ path, url });
+    }
   }
 
   dispatch(addAsset(asset));

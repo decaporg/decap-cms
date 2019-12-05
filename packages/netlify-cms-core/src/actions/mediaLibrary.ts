@@ -6,12 +6,13 @@ import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
 import { selectMediaFilePath } from '../reducers/entries';
+import { selectMediaDisplayURL } from '../reducers/mediaLibrary';
 import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
 import { waitUntil } from './waitUntil';
-import { State, MediaFile } from '../types/redux';
+import { State, MediaFile, DisplayURLState } from '../types/redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MediaLibraryInstance } from '../mediaLibrary';
@@ -323,7 +324,7 @@ export function loadMediaDisplayURL(file: MediaFile) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const { displayURL, id } = file;
     const state = getState();
-    const displayURLState = state.mediaLibrary.getIn(['displayURLs', id], Map<string, string>());
+    const displayURLState: DisplayURLState = selectMediaDisplayURL(state.mediaLibrary, id);
     if (
       !id ||
       !displayURL ||
