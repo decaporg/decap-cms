@@ -7,8 +7,8 @@ import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
 import collections from './collections';
 import search from './search';
+import medias from './medias';
 import mediaLibrary from './mediaLibrary';
-import medias, * as fromMedias from './medias';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import { Status } from '../constants/publishModes';
@@ -24,8 +24,8 @@ const reducers = {
   cursors,
   editorialWorkflow,
   entryDraft,
-  mediaLibrary,
   medias,
+  mediaLibrary,
   deploys,
   globalUI,
 };
@@ -68,26 +68,3 @@ export const selectUnpublishedSlugs = (state: State, collection: string) =>
 
 export const selectIntegration = (state: State, collection: string | null, hook: string) =>
   fromIntegrations.selectIntegration(state.integrations, collection, hook);
-
-export const getAsset = async ({
-  getState,
-  dispatch,
-  collection,
-  entryPath,
-  path,
-}: fromMedias.GetAssetArgs) => {
-  /**
-   * If an external media library is in use, just return the path.
-   */
-  if (getState().mediaLibrary.get('externalLibrary')) {
-    return path;
-  }
-
-  return fromMedias.getAsset({
-    getState,
-    dispatch,
-    collection,
-    entryPath,
-    path,
-  });
-};

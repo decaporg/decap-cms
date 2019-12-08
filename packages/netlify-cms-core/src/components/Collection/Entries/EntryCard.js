@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+import { connect } from 'react-redux';
+import { getAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
-import { resolvePath } from 'netlify-cms-lib-util';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { compileStringTemplate, parseDateFromEntry } from 'Lib/stringTemplate';
 import { selectIdentifier } from 'Reducers/collections';
+
+const useGetAssetEffect = ({ getAsset, image, setUrl }) => {
+  useEffect(() => {
+    let subscribed = true;
+
+    getAsset(image).then(asset => subscribed && setUrl(asset.toString()));
+
+    return () => {
+      subscribed = false;
+    };
+  }, [getAsset, image]);
+};
 
 const ListCard = styled.li`
   ${components.card};
@@ -83,13 +96,21 @@ const CardImage = styled.div`
   height: 150px;
 `;
 
+const ImageWrapper = ({ getAsset, image }) => {
+  const [url, setUrl] = useState();
+
+  useGetAssetEffect({ getAsset, image, setUrl });
+
+  return <CardImage url={url} />;
+};
+
 const EntryCard = ({
   collection,
   entry,
   inferedFields,
-  publicFolder,
   collectionLabel,
   viewStyle = VIEW_STYLE_LIST,
+  boundGetAsset,
 }) => {
   const label = entry.get('label');
   const entryData = entry.get('data');
@@ -103,7 +124,6 @@ const EntryCard = ({
     : defaultTitle;
 
   let image = entryData.get(inferedFields.imageField);
-  image = resolvePath(image, publicFolder);
   if (image) {
     image = encodeURI(image);
   }
@@ -127,11 +147,28 @@ const EntryCard = ({
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>{title}</CardHeading>
           </CardBody>
-          {image ? <CardImage url={image} /> : null}
+          {image ? <ImageWrapper getAsset={boundGetAsset} image={image} /> : null}
         </GridCardLink>
       </GridCard>
     );
   }
 };
 
-export default EntryCard;
+const mapDispatchToProps = {
+  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
+    return getAsset({ collection, entryPath, path })(dispatch, getState);
+  },
+};
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    boundGetAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry.get('path')),
+  };
+};
+
+const ConnectedEntryCard = connect(null, mapDispatchToProps, mergeProps)(EntryCard);
+
+export default ConnectedEntryCard;

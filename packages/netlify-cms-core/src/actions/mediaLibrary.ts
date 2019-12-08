@@ -5,7 +5,7 @@ import { currentBackend } from '../backend';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
-import { selectMediaFilePath } from '../reducers/entries';
+import { selectMediaFilePath, selectMediaFilePublicPath } from '../reducers/entries';
 import { selectMediaDisplayURL } from '../reducers/mediaLibrary';
 import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
@@ -101,7 +101,18 @@ export function closeMediaLibrary() {
 }
 
 export function insertMedia(mediaPath: string | string[]) {
-  return { type: MEDIA_INSERT, payload: { mediaPath } };
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const config = state.config;
+    const collectionName = state.entryDraft.getIn(['entry', 'collection']);
+    const collection = state.collections.get(collectionName);
+    if (Array.isArray(mediaPath)) {
+      mediaPath = mediaPath.map(path => selectMediaFilePublicPath(config, collection, path));
+    } else {
+      mediaPath = selectMediaFilePublicPath(config, collection, mediaPath as string);
+    }
+    dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
+  };
 }
 
 export function removeInsertedMedia(controlID: string) {
@@ -234,8 +245,8 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else if (privateUpload) {
         throw new Error('The Private Upload option is only available for Asset Store Integration');
       } else {
-        const entryPath = entry && entry.get('path');
-        const collection = entry && state.collections.get(entry.get('collection'));
+        const entryPath = entry?.get('path');
+        const collection = state.collections.get(entry?.get('collection'));
         const path = selectMediaFilePath(state.config, collection, entryPath, file.name);
         assetProxy = createAssetProxy({
           file,
@@ -318,6 +329,12 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
       return dispatch(mediaDeleteFailed());
     }
   };
+}
+
+export async function getMediaFile(state: State, path: string) {
+  const backend = currentBackend(state.config);
+  const file: MediaFile = await backend.getMediaFile(path);
+  return file;
 }
 
 export function loadMediaDisplayURL(file: MediaFile) {

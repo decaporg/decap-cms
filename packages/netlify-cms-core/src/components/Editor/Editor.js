@@ -31,7 +31,8 @@ import {
 } from 'Actions/editorialWorkflow';
 import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
-import { selectEntry, selectUnpublishedEntry, selectDeployPreview, getAsset } from 'Reducers';
+import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from 'Reducers';
+import { getAsset } from 'Actions/media';
 import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
@@ -519,8 +520,8 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
-  boundGetAsset: (collection, entryPath) => path => (dispatch, getState) => {
-    return getAsset({ dispatch, getState, collection, entryPath, path });
+  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
+    return getAsset({ collection, entryPath, path })(dispatch, getState);
   },
 };
 
@@ -531,7 +532,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     boundGetAsset: dispatchProps.boundGetAsset(
       stateProps.collection,
-      stateProps.entry?.get('path'),
+      stateProps.entryDraft.getIn(['entry', 'path']),
     ),
   };
 };

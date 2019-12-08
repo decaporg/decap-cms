@@ -107,12 +107,13 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, queryOrder, displayURL, draft }) => {
+      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
           id,
           name,
+          path,
           type: ext.toUpperCase(),
           size,
           queryOrder,
@@ -302,10 +303,7 @@ class MediaLibrary extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { config, mediaLibrary } = state;
-  const configProps = {
-    publicFolder: config.get('public_folder'),
-  };
+  const { mediaLibrary } = state;
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
@@ -323,7 +321,7 @@ const mapStateToProps = state => {
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
   };
-  return { ...configProps, ...mediaLibraryProps };
+  return { ...mediaLibraryProps };
 };
 
 const mapDispatchToProps = {

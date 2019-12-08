@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
+const useGetAssetEffect = ({ getAsset, image, setSrc }) => {
+  useEffect(() => {
+    let subscribed = true;
+
+    getAsset(image).then(url => subscribed && setSrc(url));
+
+    return () => {
+      subscribed = false;
+    };
+  }, [getAsset, image]);
+};
+
 const image = {
   label: 'Image',
   id: 'image',
@@ -15,15 +27,7 @@ const image = {
   toPreview: ({ alt, image, title }, getAsset) => {
     const [src, setSrc] = useState();
 
-    useEffect(() => {
-      let subscribed = true;
-
-      getAsset(image).then(url => subscribed && setSrc(url));
-
-      return () => {
-        subscribed = false;
-      };
-    }, []);
+    useGetAssetEffect({ getAsset, image, setSrc });
 
     return <img src={src || ''} alt={alt || ''} title={title || ''} />;
   },

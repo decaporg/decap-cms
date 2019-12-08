@@ -194,7 +194,7 @@ const mediaLibrary = (state = Map(defaultState), action) => {
 };
 
 export function selectMediaFileByPath(state, path) {
-  const file = state.get('files').find(file => file.path === path);
+  const file = state.get('files')?.find(file => file.path === path);
   return file;
 }
 

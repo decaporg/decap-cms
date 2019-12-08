@@ -1,17 +1,6 @@
 import { Base64 } from 'js-base64';
 import semaphore, { Semaphore } from 'semaphore';
-import {
-  find,
-  flow,
-  get,
-  hasIn,
-  initial,
-  last,
-  partial,
-  result,
-  differenceBy,
-  trimStart,
-} from 'lodash';
+import { find, flow, get, initial, last, partial, result, differenceBy, trimStart } from 'lodash';
 import { map, filter } from 'lodash/fp';
 import {
   getAllResponses,
@@ -105,6 +94,10 @@ interface Branch {
   ref: string;
 }
 
+interface GitHubFile {
+  sha: string;
+}
+
 interface GitHubUser {
   name?: string;
   login: string;
@@ -112,6 +105,19 @@ interface GitHubUser {
 
 interface GitHubRepo {
   permissions: { push: boolean };
+}
+
+interface BlobArgs {
+  sha: string;
+  repoURL: string;
+  parseText: boolean;
+}
+
+interface ContentArgs {
+  path: string;
+  branch: string;
+  repoURL: string;
+  parseText: boolean;
 }
 
 type Param = string | number | undefined;
@@ -428,38 +434,34 @@ export default class API {
     });
   }
 
-  retrieveContent(path: string, branch: string, repoURL: string) {
+  retrieveContent({ path, branch, repoURL, parseText }: ContentArgs) {
     return this.request(`${repoURL}/contents/${path}`, {
-      headers: { Accept: 'application/vnd.github.VERSION.raw' },
       params: { ref: branch },
       cache: 'no-store',
-    }).catch(error => {
-      if (hasIn(error, 'message.errors') && find(error.message.errors, { code: 'too_large' })) {
-        const dir = path
-          .split('/')
-          .slice(0, -1)
-          .join('/');
-        return this.listFiles(dir, { repoURL, branch })
-          .then(files => files.find((file: File) => file.path === path))
-          .then((file: File) => this.getBlob(file.sha, { repoURL }));
-      }
-      throw error;
-    });
+    }).then((file: GitHubFile) => this.getBlob({ sha: file.sha, repoURL, parseText }));
   }
 
-  readFile(
-    path: string,
-    sha: string | null,
-    { branch = this.branch, repoURL = this.repoURL } = {},
-  ) {
+  readFile({
+    path,
+    sha,
+    branch = this.branch,
+    repoURL = this.repoURL,
+    parseText = true,
+  }: {
+    path: string;
+    sha: string | null;
+    branch?: string;
+    repoURL?: string;
+    parseText?: boolean;
+  }) {
     if (sha) {
-      return this.getBlob(sha);
+      return this.getBlob({ sha, repoURL, parseText });
     } else {
-      return this.retrieveContent(path, branch, repoURL);
+      return this.retrieveContent({ path, branch, repoURL, parseText });
     }
   }
 
-  async fetchBlobContent(sha: string, repoURL: string, parseText: boolean) {
+  async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
     const parser = parseText
       ? (responseParser({ format: 'text' }) as ResponseParser<string>)
       : (responseParser({ format: 'blob' }) as ResponseParser<Blob>);
@@ -475,13 +477,13 @@ export default class API {
     return result;
   }
 
-  async getMediaAsBlob(sha: string, path: string) {
+  async getMediaAsBlob(sha: string | null, path: string) {
     let blob: Blob;
     if (path.match(/.svg$/)) {
-      const text = (await this.getBlob(sha, { parseText: true })) as string;
+      const text = (await this.readFile({ sha, path, parseText: true })) as string;
       blob = new Blob([text], { type: 'image/svg+xml' });
     } else {
-      blob = (await this.getBlob(sha, { parseText: false })) as Blob;
+      blob = (await this.readFile({ sha, path, parseText: false })) as Blob;
     }
     return blob;
   }
@@ -492,14 +494,14 @@ export default class API {
     return URL.createObjectURL(blob);
   }
 
-  getBlob(sha: string, { repoURL = this.repoURL, parseText = true } = {}) {
+  getBlob({ sha, repoURL = this.repoURL, parseText = true }: BlobArgs) {
     const key = parseText ? `gh.${sha}` : `gh.${sha}.blob`;
     return localForage.getItem<string | Blob>(key).then(cached => {
       if (cached) {
         return cached;
       }
 
-      return this.fetchBlobContent(sha, repoURL, parseText).then(result => {
+      return this.fetchBlobContent({ sha, repoURL, parseText }).then(result => {
         localForage.setItem(key, result);
         return result;
       });
@@ -534,7 +536,9 @@ export default class API {
     return resolvePromiseProperties({
       metaData: metaDataPromise,
       fileData: metaDataPromise.then(data =>
-        this.readFile(data.objects.entry.path, null, {
+        this.readFile({
+          path: data.objects.entry.path,
+          sha: null,
           branch: data.branch,
           repoURL,
         }),
@@ -548,7 +552,9 @@ export default class API {
   }
 
   isUnpublishedEntryModification(path: string, branch: string) {
-    return this.readFile(path, null, {
+    return this.readFile({
+      path,
+      sha: null,
       branch,
       repoURL: this.originRepoURL,
     })

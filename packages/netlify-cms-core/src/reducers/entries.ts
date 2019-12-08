@@ -24,6 +24,7 @@ import {
   EntryDeletePayload,
   EntriesRequestPayload,
 } from '../types/redux';
+import { isAbsolutePath, basename } from 'netlify-cms-lib-util/src';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -139,10 +140,16 @@ export const selectMediaFilePath = (
   config: Config,
   collection: Collection | null,
   entryPath: string | null,
-  mediaFileName: string,
+  mediaPath: string,
 ) => {
+  if (isAbsolutePath(mediaPath)) {
+    return mediaPath;
+  }
+
   let mediaFolder = config.get('media_folder');
-  if (collection && collection.has('media_folder')) {
+
+  // we use the collection media folder only it this is a non relative path
+  if (!mediaPath.startsWith('/') && collection && collection.has('media_folder')) {
     if (entryPath) {
       const entryDir = dirname(entryPath);
       mediaFolder = join(entryDir, collection.get('media_folder') as string);
@@ -151,20 +158,24 @@ export const selectMediaFilePath = (
     }
   }
 
-  return join(mediaFolder, mediaFileName);
+  return join(mediaFolder, basename(mediaPath));
 };
 
 export const selectMediaFilePublicPath = (
   config: Config,
   collection: Collection | null,
-  mediaFileName: string,
+  mediaPath: string,
 ) => {
+  if (isAbsolutePath(mediaPath)) {
+    return mediaPath;
+  }
+
   let mediaFolder = config.get('public_folder');
   if (collection && collection.has('media_folder')) {
     mediaFolder = collection.get('media_folder') as string;
   }
 
-  return join(mediaFolder, mediaFileName);
+  return join(mediaFolder, basename(mediaPath));
 };
 
 export default entries;

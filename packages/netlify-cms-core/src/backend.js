@@ -1,19 +1,8 @@
-import {
-  attempt,
-  flatten,
-  isError,
-  trimStart,
-  trimEnd,
-  flow,
-  partialRight,
-  uniq,
-  escapeRegExp,
-} from 'lodash';
+import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq } from 'lodash';
 import { stripIndent } from 'common-tags';
 import fuzzy from 'fuzzy';
 import { resolveFormat } from 'Formats/formats';
-import { selectMediaFilePath, selectMediaFilePublicPath } from './reducers/entries';
-import { basename } from 'path';
+import { selectMediaFilePath } from './reducers/entries';
 import { selectIntegration } from 'Reducers/integrations';
 import {
   selectListMethod,
@@ -434,6 +423,10 @@ export class Backend {
     return this.implementation.getMedia();
   }
 
+  getMediaFile(path) {
+    return this.implementation.getMediaFile(path);
+  }
+
   getMediaDisplayURL(displayURL) {
     if (this.implementation.getMediaDisplayURL) {
       return this.implementation.getMediaDisplayURL(displayURL);
@@ -608,10 +601,8 @@ export class Backend {
       assetProxies.map(asset => {
         // update media files path based on entry path
         const oldPath = asset.path;
-        const newPath = selectMediaFilePath(config, collection, path, basename(oldPath));
-        const publicPath = selectMediaFilePublicPath(config, collection, basename(oldPath));
+        const newPath = selectMediaFilePath(config, collection, path, oldPath);
         asset.path = newPath;
-        entryObj.raw = entryObj.raw.replace(new RegExp(escapeRegExp(oldPath), 'g'), publicPath);
       });
     } else {
       const path = entryDraft.getIn(['entry', 'path']);

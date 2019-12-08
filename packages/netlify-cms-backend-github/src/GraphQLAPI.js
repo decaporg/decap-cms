@@ -140,7 +140,7 @@ export default class GraphQLAPI extends API {
     return { owner, name };
   }
 
-  async retrieveContent(path, branch, repoURL) {
+  async retrieveContent({ path, branch, repoURL, parseText }) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { is_null, is_binary, text } = await this.retrieveBlobObject(
       owner,
@@ -152,7 +152,7 @@ export default class GraphQLAPI extends API {
     } else if (!is_binary) {
       return text;
     } else {
-      return super.retrieveContent(path, branch, repoURL);
+      return super.retrieveContent({ path, branch, repoURL, parseText });
     }
   }
 

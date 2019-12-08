@@ -2,14 +2,7 @@ import APIError from './APIError';
 import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from './Cursor';
 import EditorialWorkflowError, { EDITORIAL_WORKFLOW_ERROR } from './EditorialWorkflowError';
 import localForage from './localForage';
-import {
-  isAbsolutePath,
-  resolvePath,
-  resolveMediaFilename,
-  basename,
-  fileExtensionWithSeparator,
-  fileExtension,
-} from './path';
+import { isAbsolutePath, basename, fileExtensionWithSeparator, fileExtension } from './path';
 import {
   filterPromises,
   filterPromisesWith,
@@ -37,8 +30,6 @@ export const NetlifyCmsLibUtil = {
   EditorialWorkflowError,
   EDITORIAL_WORKFLOW_ERROR,
   localForage,
-  resolvePath,
-  resolveMediaFilename,
   basename,
   fileExtensionWithSeparator,
   fileExtension,
@@ -63,8 +54,6 @@ export {
   EditorialWorkflowError,
   EDITORIAL_WORKFLOW_ERROR,
   localForage,
-  resolvePath,
-  resolveMediaFilename,
   basename,
   fileExtensionWithSeparator,
   fileExtension,

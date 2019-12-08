@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -7,6 +7,7 @@ import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-default';
+import { useGetAssetEffect } from './FilePreview';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -25,15 +26,7 @@ const ImageWrapper = styled.div`
 const Image = styled(({ getAsset, value }) => {
   const [src, setSrc] = useState();
 
-  useEffect(() => {
-    let subscribed = true;
-
-    getAsset(value).then(url => subscribed && setSrc(url));
-
-    return () => {
-      subscribed = false;
-    };
-  }, []);
+  useGetAssetEffect({ getAsset, value, setCallback: setSrc });
 
   return <img src={src || ''} role="presentation" />;
 })`

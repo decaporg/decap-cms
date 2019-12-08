@@ -4,7 +4,7 @@ import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
-import { getAsset, selectIntegration, selectPublishedSlugs } from '../reducers';
+import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -12,7 +12,7 @@ import { createEntry } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { deleteMedia, addMediaFilesToLibrary } from './mediaLibrary';
-import { addAssets } from './media';
+import { addAssets, getAsset } from './media';
 import {
   Collection,
   EntryObject,
@@ -584,7 +584,7 @@ export function getMediaAssets({
   return Promise.all(
     mediaFiles
       .toArray()
-      .map(file => getAsset({ getState, dispatch, collection, entryPath, path: file.path })),
+      .map(file => getAsset({ collection, entryPath, path: file.path })(dispatch, getState)),
   );
 }
 

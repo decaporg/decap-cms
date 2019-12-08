@@ -43,6 +43,7 @@ export default class ControlPane extends React.Component {
       fieldsErrors,
       onChange,
       onValidate,
+      getAsset,
     } = this.props;
 
     if (!collection || !fields) {
@@ -67,6 +68,9 @@ export default class ControlPane extends React.Component {
               onValidate={onValidate}
               processControlRef={this.controlRef.bind(this)}
               controlRef={this.controlRef}
+              collection={collection}
+              entry={entry}
+              getAsset={getAsset}
             />
           ),
         )}
@@ -83,4 +87,5 @@ ControlPane.propTypes = {
   fieldsErrors: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
 };

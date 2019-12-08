@@ -4,18 +4,22 @@ import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
-const FileLink = styled(({ value, getAsset }) => {
-  const [href, setHref] = useState();
-
+export const useGetAssetEffect = ({ getAsset, value, setCallback }) => {
   useEffect(() => {
     let subscribed = true;
 
-    getAsset(value).then(url => subscribed && setHref(url));
+    getAsset(value).then(url => subscribed && setCallback(url));
 
     return () => {
       subscribed = false;
     };
-  }, []);
+  }, [getAsset, value]);
+};
+
+const FileLink = styled(({ value, getAsset }) => {
+  const [href, setHref] = useState();
+
+  useGetAssetEffect({ getAsset, value, setCallback: setHref });
 
   return (
     <a href={href} rel="noopener noreferrer" target="_blank">

@@ -19,7 +19,6 @@ class EntriesSearch extends React.Component {
     collections: ImmutablePropTypes.seq,
     entries: ImmutablePropTypes.list,
     page: PropTypes.number,
-    publicFolder: PropTypes.string,
   };
 
   componentDidMount() {
@@ -53,14 +52,13 @@ class EntriesSearch extends React.Component {
   };
 
   render() {
-    const { collections, entries, publicFolder, isFetching } = this.props;
+    const { collections, entries, isFetching } = this.props;
     return (
       <Entries
         cursor={this.getCursor()}
         handleCursorActions={this.handleCursorActions}
         collections={collections}
         entries={entries}
-        publicFolder={publicFolder}
         isFetching={isFetching}
       />
     );
@@ -73,9 +71,8 @@ function mapStateToProps(state, ownProps) {
   const isFetching = state.search.get('isFetching');
   const page = state.search.get('page');
   const entries = selectSearchedEntries(state);
-  const publicFolder = state.config.get('public_folder');
 
-  return { isFetching, page, collections, entries, publicFolder, searchTerm };
+  return { isFetching, page, collections, entries, searchTerm };
 }
 
 const mapDispatchToProps = {

@@ -8,7 +8,6 @@ import EntryListing from './EntryListing';
 const Entries = ({
   collections,
   entries,
-  publicFolder,
   isFetching,
   viewStyle,
   cursor,
@@ -26,7 +25,6 @@ const Entries = ({
       <EntryListing
         collections={collections}
         entries={entries}
-        publicFolder={publicFolder}
         viewStyle={viewStyle}
         cursor={cursor}
         handleCursorActions={handleCursorActions}
@@ -44,7 +42,6 @@ const Entries = ({
 Entries.propTypes = {
   collections: ImmutablePropTypes.map.isRequired,
   entries: ImmutablePropTypes.list,
-  publicFolder: PropTypes.string.isRequired,
   page: PropTypes.number,
   isFetching: PropTypes.bool,
   viewStyle: PropTypes.string,
