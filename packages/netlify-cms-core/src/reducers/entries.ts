@@ -136,6 +136,25 @@ export const selectEntries = (state: Entries, collection: string) => {
 
 const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 
+export const selectMediaFolder = (
+  config: Config,
+  collection: Collection | null,
+  entryPath: string | null,
+) => {
+  let mediaFolder = config.get('media_folder');
+
+  if (collection && collection.has('media_folder')) {
+    if (entryPath) {
+      const entryDir = dirname(entryPath);
+      mediaFolder = join(entryDir, collection.get('media_folder') as string);
+    } else {
+      mediaFolder = join(collection.get('folder') as string, DRAFT_MEDIA_FILES);
+    }
+  }
+
+  return mediaFolder;
+};
+
 export const selectMediaFilePath = (
   config: Config,
   collection: Collection | null,
@@ -146,16 +165,12 @@ export const selectMediaFilePath = (
     return mediaPath;
   }
 
-  let mediaFolder = config.get('media_folder');
-
-  // we use the collection media folder only it this is a non relative path
-  if (!mediaPath.startsWith('/') && collection && collection.has('media_folder')) {
-    if (entryPath) {
-      const entryDir = dirname(entryPath);
-      mediaFolder = join(entryDir, collection.get('media_folder') as string);
-    } else {
-      mediaFolder = join(collection.get('folder'), DRAFT_MEDIA_FILES);
-    }
+  let mediaFolder;
+  if (mediaPath.startsWith('/')) {
+    // absolute media paths are not bound to a collection
+    mediaFolder = selectMediaFolder(config, null, null);
+  } else {
+    mediaFolder = selectMediaFolder(config, collection, entryPath);
   }
 
   return join(mediaFolder, basename(mediaPath));
@@ -171,6 +186,7 @@ export const selectMediaFilePublicPath = (
   }
 
   let mediaFolder = config.get('public_folder');
+
   if (collection && collection.has('media_folder')) {
     mediaFolder = collection.get('media_folder') as string;
   }

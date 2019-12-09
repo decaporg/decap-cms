@@ -209,8 +209,8 @@ export default class GitGateway {
     return this.backend.getEntry(collection, slug, path);
   }
 
-  getMedia() {
-    return Promise.all([this.backend.getMedia(), this.getLargeMediaClient()]).then(
+  getMedia(mediaFolder) {
+    return Promise.all([this.backend.getMedia(mediaFolder), this.getLargeMediaClient()]).then(
       async ([mediaFiles, largeMediaClient]) => {
         if (!largeMediaClient.enabled) {
           return mediaFiles.map(({ displayURL, ...rest }) => ({

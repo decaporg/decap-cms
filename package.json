@@ -87,6 +87,7 @@
     "@octokit/rest": "^16.28.7",
     "@testing-library/jest-dom": "^4.2.3",
     "@testing-library/react": "^9.3.2",
+    "@types/common-tags": "^1.8.0",
     "@types/jest": "^24.0.23",
     "@types/lodash": "^4.14.149",
     "@types/uuid": "^3.4.6",

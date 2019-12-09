@@ -86,7 +86,7 @@ const unpublishedEntries = (state = Map(), action) => {
       // Update Optimistically
       return state.deleteIn([
         'entities',
-        `${action.payload.collection}.${action.payload.entry.get('slug')}`,
+        `${action.payload.collection}.${action.payload.slug}`,
         'isPersisting',
       ]);
 

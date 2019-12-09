@@ -142,8 +142,8 @@ export default class GitLab {
     }));
   }
 
-  getMedia() {
-    return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
+  getMedia(mediaFolder = this.config.get('media_folder')) {
+    return this.api.listAllFiles(mediaFolder).then(files =>
       files.map(({ id, name, path }) => {
         return { id, name, path, displayURL: { id, name, path } };
       }),

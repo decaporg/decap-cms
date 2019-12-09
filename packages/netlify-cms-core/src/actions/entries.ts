@@ -2,25 +2,24 @@ import { fromJS, List, Map, Set } from 'immutable';
 import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
-import { currentBackend } from '../backend';
+import { currentBackend, Backend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor } from 'netlify-cms-lib-util';
-import { createEntry } from '../valueObjects/Entry';
+import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { deleteMedia, addMediaFilesToLibrary } from './mediaLibrary';
 import { addAssets, getAsset } from './media';
 import {
   Collection,
-  EntryObject,
   EntryMap,
   MediaFile,
   State,
   EntryFields,
   EntryField,
+  MediaFileMap,
 } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, Dispatch } from 'redux';
@@ -57,9 +56,7 @@ export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
 export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
 
 export const ADD_DRAFT_ENTRY_MEDIA_FILE = 'ADD_DRAFT_ENTRY_MEDIA_FILE';
-export const SET_DRAFT_ENTRY_MEDIA_FILES = 'SET_DRAFT_ENTRY_MEDIA_FILES';
 export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
-export const CLEAR_DRAFT_ENTRY_MEDIA_FILES = 'CLEAR_DRAFT_ENTRY_MEDIA_FILES';
 
 /*
  * Simple Action Creators (Internal)
@@ -75,7 +72,7 @@ export function entryLoading(collection: Collection, slug: string) {
   };
 }
 
-export function entryLoaded(collection: Collection, entry: EntryObject) {
+export function entryLoaded(collection: Collection, entry: EntryValue) {
   return {
     type: ENTRY_SUCCESS,
     payload: {
@@ -107,7 +104,7 @@ export function entriesLoading(collection: Collection) {
 
 export function entriesLoaded(
   collection: Collection,
-  entries: EntryObject[],
+  entries: EntryValue[],
   pagination: number | null,
   cursor: typeof Cursor,
   append = true,
@@ -201,7 +198,7 @@ export function entryDeleteFail(collection: Collection, slug: string, error: Err
   };
 }
 
-export function emptyDraftCreated(entry: EntryObject) {
+export function emptyDraftCreated(entry: EntryValue) {
   return {
     type: DRAFT_CREATE_EMPTY,
     payload: entry,
@@ -229,17 +226,7 @@ export function createDraftDuplicateFromEntry(entry) {
 }
 
 export function discardDraft() {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const state = getState();
-
-    const mediaDrafts = state.entryDraft.get('mediaFiles').filter(file => !!file?.draft);
-
-    mediaDrafts.forEach(file => {
-      dispatch(deleteMedia(file as MediaFile));
-    });
-
-    dispatch({ type: DRAFT_DISCARD });
-  };
+  return { type: DRAFT_DISCARD };
 }
 
 export function changeDraftField(field: string, value: string, metadata: Record<string, unknown>) {
@@ -263,27 +250,16 @@ export function clearFieldErrors() {
   return { type: DRAFT_CLEAR_ERRORS };
 }
 
-export function localBackupRetrieved(entry: EntryObject, mediaFiles: MediaFile[]) {
+export function localBackupRetrieved(entry: EntryValue) {
   return {
     type: DRAFT_LOCAL_BACKUP_RETRIEVED,
-    payload: { entry, mediaFiles },
+    payload: { entry },
   };
 }
 
 export function loadLocalBackup() {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    dispatch({
-      type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
-    });
-
-    // only add media files to the library after loading from backup was approved
-    const state = getState();
-    const mediaFiles: MediaFile[] = state.entryDraft.get('mediaFiles').toJS();
-    const filesToAdd = mediaFiles.map(file => ({
-      ...file,
-      draft: true,
-    }));
-    dispatch(addMediaFilesToLibrary(filesToAdd));
+  return {
+    type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
   };
 }
 
@@ -291,28 +267,16 @@ export function addDraftEntryMediaFile(file: MediaFile) {
   return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
 
-export function setDraftEntryMediaFiles(files: MediaFile[]) {
-  return { type: SET_DRAFT_ENTRY_MEDIA_FILES, payload: files };
-}
-
 export function removeDraftEntryMediaFile({ id }: { id: string }) {
   return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: { id } };
 }
 
-export function clearDraftEntryMediaFiles() {
-  return { type: CLEAR_DRAFT_ENTRY_MEDIA_FILES };
-}
-
-export function persistLocalBackup(
-  entry: EntryMap,
-  collection: Collection,
-  mediaFiles: List<MediaFile>,
-) {
+export function persistLocalBackup(entry: EntryMap, collection: Collection) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
 
-    return backend.persistLocalDraftBackup(entry, collection, mediaFiles);
+    return backend.persistLocalDraftBackup(entry, collection);
   };
 }
 
@@ -320,22 +284,17 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const {
-      entry,
-      mediaFiles,
-    }: { entry: EntryObject; mediaFiles: MediaFile[] } = await backend.getLocalDraftBackup(
-      collection,
-      slug,
-    );
+    const { entry } = await backend.getLocalDraftBackup(collection, slug);
 
     if (entry) {
       // load assets from backup
+      const mediaFiles = entry.mediaFiles || [];
       const assetProxies: AssetProxy[] = mediaFiles.map(file =>
         createAssetProxy({ url: file.url, path: file.path }),
       );
       dispatch(addAssets(assetProxies));
 
-      return dispatch(localBackupRetrieved(entry, mediaFiles));
+      return dispatch(localBackupRetrieved(entry));
     }
   };
 }
@@ -358,8 +317,8 @@ export function loadEntry(collection: Collection, slug: string) {
     const backend = currentBackend(state.config);
     dispatch(entryLoading(collection, slug));
     return backend
-      .getEntry(collection, slug)
-      .then((loadedEntry: EntryObject) => {
+      .getEntry(state.config, collection, slug)
+      .then((loadedEntry: EntryValue) => {
         return dispatch(entryLoaded(collection, loadedEntry));
       })
       .catch((error: Error) => {
@@ -425,7 +384,7 @@ export function loadEntries(collection: Collection, page = 0) {
             })
           : Cursor.create(response.cursor),
       }))
-      .then((response: { cursor: typeof Cursor; pagination: number; entries: EntryObject[] }) =>
+      .then((response: { cursor: typeof Cursor; pagination: number; entries: EntryValue[] }) =>
         dispatch(
           entriesLoaded(
             collection,
@@ -454,13 +413,7 @@ export function loadEntries(collection: Collection, page = 0) {
   };
 }
 
-function traverseCursor(
-  backend: {
-    traverseCursor: (...args: unknown[]) => { entries: EntryObject[]; cursor: typeof Cursor };
-  },
-  cursor: typeof Cursor,
-  action: string,
-) {
+function traverseCursor(backend: Backend, cursor: typeof Cursor, action: string) {
   if (!cursor.actions.has(action)) {
     throw new Error(`The current cursor does not support the pagination action "${action}".`);
   }
@@ -576,15 +529,17 @@ export function getMediaAssets({
   entryPath,
 }: {
   getState: () => State;
-  mediaFiles: List<MediaFile>;
+  mediaFiles: List<MediaFileMap>;
   collection: Collection;
   entryPath: string;
   dispatch: Dispatch;
 }) {
   return Promise.all(
     mediaFiles
-      .toArray()
-      .map(file => getAsset({ collection, entryPath, path: file.path })(dispatch, getState)),
+      .toJS()
+      .map((file: MediaFile) =>
+        getAsset({ collection, entryPath, path: file.path })(dispatch, getState),
+      ),
   );
 }
 
@@ -618,13 +573,13 @@ export function persistEntry(collection: Collection) {
 
     const backend = currentBackend(state.config);
     const entry = entryDraft.get('entry');
-    const assetProxies = await getMediaAssets({
+    const assetProxies = (await getMediaAssets({
       getState,
-      mediaFiles: entryDraft.get('mediaFiles'),
+      mediaFiles: entry.get('mediaFiles'),
       dispatch,
       collection,
       entryPath: entry.get('path'),
-    });
+    })) as AssetProxy[];
 
     /**
      * Serialize the values of any fields with registered serializers, and

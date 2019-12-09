@@ -18,8 +18,7 @@ export interface StaticallyTypedRecord<T> {
   ): T[K1][K2][K3];
   toJS(): T;
   isEmpty(): boolean;
-  some<K extends keyof T>(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    predicate: (value: T[K], key: K, iter: this, context?: any) => boolean,
-  ): boolean;
+  some<K extends keyof T>(predicate: (value: T[K], key: K, iter: this) => boolean): boolean;
+  mapKeys<K extends keyof T, V>(mapFunc: (key: K, value: StaticallyTypedRecord<T>) => V): V[];
+  find<K extends keyof T>(findFunc: (value: T[K]) => boolean): T[K];
 }

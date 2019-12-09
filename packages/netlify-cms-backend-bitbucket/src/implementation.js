@@ -225,9 +225,9 @@ export default class BitbucketBackend {
     }));
   }
 
-  getMedia() {
+  getMedia(mediaFolder = this.config.get('media_folder')) {
     return this.api
-      .listAllFiles(this.config.get('media_folder'))
+      .listAllFiles(mediaFolder)
       .then(files =>
         files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
       );

@@ -14,6 +14,7 @@ import {
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
+import { selectMediaFiles } from 'Reducers/mediaLibrary';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
@@ -307,7 +308,7 @@ const mapStateToProps = state => {
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
-    files: mediaLibrary.get('files'),
+    files: selectMediaFiles(state),
     displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
     dynamicSearchActive: mediaLibrary.get('dynamicSearchActive'),

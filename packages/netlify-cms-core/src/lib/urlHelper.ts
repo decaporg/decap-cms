@@ -2,7 +2,7 @@ import url from 'url';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
-import { Map } from 'immutable';
+import { SlugConfig } from '../types/redux';
 
 function getUrl(urlString: string, direct: boolean) {
   return `${direct ? '/#' : ''}${urlString}`;
@@ -73,17 +73,17 @@ export function sanitizeURI(str: string, { replacement = '', encoding = 'unicode
     .join('');
 }
 
-export function sanitizeChar(char: string, options = Map<string, string>()) {
-  const encoding = options.get('encoding', 'unicode');
-  const replacement = options.get('sanitize_replacement', '-');
+export function sanitizeChar(char: string, options: SlugConfig) {
+  const encoding = options.get('encoding');
+  const replacement = options.get('sanitize_replacement');
 
   return getCharReplacer(encoding, replacement)(char);
 }
 
-export function sanitizeSlug(str: string, options = Map<string, string | boolean>()) {
-  const encoding = options.get('encoding', 'unicode') as string;
-  const stripDiacritics = options.get('clean_accents', false) as boolean;
-  const replacement = options.get('sanitize_replacement', '-') as string;
+export function sanitizeSlug(str: string, options: SlugConfig) {
+  const encoding = options.get('encoding');
+  const stripDiacritics = options.get('clean_accents');
+  const replacement = options.get('sanitize_replacement');
 
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');

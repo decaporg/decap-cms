@@ -1,18 +1,20 @@
 import moment from 'moment';
-import { selectInferedField } from 'Reducers/collections';
+import { Map } from 'immutable';
+import { selectInferedField } from '../reducers/collections';
+import { EntryMap, Collection } from '../types/redux';
 
 // prepends a Zero if the date has only 1 digit
-function formatDate(date) {
+function formatDate(date: number) {
   return `0${date}`.slice(-2);
 }
 
-export const dateParsers = {
-  year: date => date.getUTCFullYear(),
-  month: date => formatDate(date.getUTCMonth() + 1),
-  day: date => formatDate(date.getUTCDate()),
-  hour: date => formatDate(date.getUTCHours()),
-  minute: date => formatDate(date.getUTCMinutes()),
-  second: date => formatDate(date.getUTCSeconds()),
+export const dateParsers: Record<string, (date: Date) => string> = {
+  year: (date: Date) => `${date.getUTCFullYear()}`,
+  month: (date: Date) => formatDate(date.getUTCMonth() + 1),
+  day: (date: Date) => formatDate(date.getUTCDate()),
+  hour: (date: Date) => formatDate(date.getUTCHours()),
+  minute: (date: Date) => formatDate(date.getUTCMinutes()),
+  second: (date: Date) => formatDate(date.getUTCSeconds()),
 };
 
 export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
@@ -23,7 +25,7 @@ const templateVariablePattern = `{{(${templateContentPattern})}}`;
 
 // Allow `fields.` prefix in placeholder to override built in replacements
 // like "slug" and "year" with values from fields of the same name.
-function getExplicitFieldReplacement(key, data) {
+function getExplicitFieldReplacement(key: string, data: Map<string, string>) {
   if (!key.startsWith(FIELD_PREFIX)) {
     return;
   }
@@ -31,7 +33,11 @@ function getExplicitFieldReplacement(key, data) {
   return data.get(fieldName, '');
 }
 
-export function parseDateFromEntry(entry, collection, fieldName) {
+export function parseDateFromEntry(
+  entry: EntryMap,
+  collection: Collection,
+  fieldName: string | undefined,
+) {
   const dateFieldName = fieldName || selectInferedField(collection, 'date');
   if (!dateFieldName) {
     return;
@@ -44,14 +50,20 @@ export function parseDateFromEntry(entry, collection, fieldName) {
   }
 }
 
-export function compileStringTemplate(template, date, identifier = '', data = Map(), processor) {
+export function compileStringTemplate(
+  template: string,
+  date: Date | undefined,
+  identifier = '',
+  data = Map<string, string>(),
+  processor: (value: string) => string,
+) {
   let missingRequiredDate;
 
   // Turn off date processing (support for replacements like `{{year}}`), by passing in
   // `null` as the date arg.
   const useDate = date !== null;
 
-  const slug = template.replace(RegExp(templateVariablePattern, 'g'), (_, key) => {
+  const slug = template.replace(RegExp(templateVariablePattern, 'g'), (_, key: string) => {
     let replacement;
     const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
 
@@ -61,7 +73,7 @@ export function compileStringTemplate(template, date, identifier = '', data = Ma
       missingRequiredDate = true;
       return '';
     } else if (dateParsers[key]) {
-      replacement = dateParsers[key](date);
+      replacement = dateParsers[key](date as Date);
     } else if (key === 'slug') {
       replacement = identifier;
     } else {
@@ -84,9 +96,12 @@ export function compileStringTemplate(template, date, identifier = '', data = Ma
   }
 }
 
-export function extractTemplateVars(template) {
+export function extractTemplateVars(template: string) {
   const regexp = RegExp(templateVariablePattern, 'g');
   const contentRegexp = RegExp(templateContentPattern, 'g');
   const matches = template.match(regexp) || [];
-  return matches.map(elem => elem.match(contentRegexp)[0]);
+  return matches.map(elem => {
+    const match = elem.match(contentRegexp);
+    return match ? match[0] : '';
+  });
 }

@@ -75,35 +75,26 @@ export function getAsset({ collection, entryPath, path }: GetAssetArgs) {
     } else {
       // load asset url from backend based on the media folder
 
-      // check if this is a draft entry media file
-      let file: MediaFile | null = state.entryDraft
-        .get('mediaFiles')
-        ?.find(file => file?.path === resolvedPath);
-
-      if (!file) {
-        // wait until media library is loaded
-        if (state.mediaLibrary.get('isLoading') === false) {
-          file = selectMediaFileByPath(state.mediaLibrary, resolvedPath);
-        } else {
-          file = await waitUntilWithTimeout(
-            new Promise(resolve => {
-              dispatch(
-                waitUntil({
-                  predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
-                  run: (_dispatch: Dispatch, getState: () => State) =>
-                    resolve(selectMediaFileByPath(getState().mediaLibrary, resolvedPath)),
-                }),
-              );
-            }),
-          );
-        }
+      let file: MediaFile | null;
+      // wait until media library is loaded
+      if (state.mediaLibrary.get('isLoading') === false) {
+        file = selectMediaFileByPath(state, resolvedPath);
+      } else {
+        file = await waitUntilWithTimeout(
+          new Promise(resolve => {
+            dispatch(
+              waitUntil({
+                predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
+                run: (_dispatch: Dispatch, getState: () => State) =>
+                  resolve(selectMediaFileByPath(getState(), resolvedPath)),
+              }),
+            );
+          }),
+        );
       }
 
       if (file) {
-        const displayURLState: DisplayURLState = selectMediaDisplayURL(
-          getState().mediaLibrary,
-          file.id,
-        );
+        const displayURLState: DisplayURLState = selectMediaDisplayURL(getState(), file.id);
 
         if (displayURLState.get('url')) {
           // url was already loaded
@@ -134,8 +125,8 @@ export function getAsset({ collection, entryPath, path }: GetAssetArgs) {
           asset = createAssetProxy({ path: resolvedPath, url: url || '' });
         }
       } else {
-        file = await getMediaFile(state, resolvedPath);
-        asset = createAssetProxy({ path: resolvedPath, url: file.url });
+        const { url } = await getMediaFile(state, resolvedPath);
+        asset = createAssetProxy({ path: resolvedPath, url });
       }
     }
 

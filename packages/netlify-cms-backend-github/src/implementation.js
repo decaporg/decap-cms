@@ -2,7 +2,7 @@ import React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
-import { asyncLock, basename } from 'netlify-cms-lib-util';
+import { asyncLock, basename, APIError } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
 import API from './API';
@@ -256,7 +256,13 @@ export default class GitHub {
 
   async entriesByFolder(collection, extension) {
     const repoURL = this.useOpenAuthoring ? this.api.originRepoURL : this.api.repoURL;
-    const files = await this.api.listFiles(collection.get('folder'), { repoURL });
+    const files = await this.api.listFiles(collection.get('folder'), { repoURL }).catch(error => {
+      // this can happen when the folder doesn't exist
+      if (error instanceof APIError && error.message === 'Not Found' && error.status === 404) {
+        return [];
+      }
+      throw error;
+    });
     const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
     return this.fetchFiles(filteredFiles, { repoURL });
   }
@@ -306,8 +312,8 @@ export default class GitHub {
     }));
   }
 
-  getMedia() {
-    return this.api.listFiles(this.config.get('media_folder')).then(files =>
+  getMedia(mediaFolder = this.config.get('media_folder')) {
+    return this.api.listFiles(mediaFolder).then(files =>
       files.map(({ sha, name, size, path }) => {
         // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
         // for private repositories

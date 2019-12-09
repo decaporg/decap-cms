@@ -3,14 +3,29 @@ import { StaticallyTypedRecord } from './immutable';
 import { Map, List } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
 
+export type SlugConfig = StaticallyTypedRecord<{
+  encoding: string;
+  clean_accents: boolean;
+  sanitize_replacement: string;
+}>;
+
+type BackendObject = {
+  name: string;
+};
+
+type Backend = StaticallyTypedRecord<Backend> & BackendObject;
+
 export type Config = StaticallyTypedRecord<{
+  backend: Backend;
   media_folder: string;
   public_folder: string;
   publish_mode?: string;
   media_library: StaticallyTypedRecord<{ name: string }> & { name: string };
   locale?: string;
-  slug?: Map<string, string | boolean>;
+  slug: SlugConfig;
   media_folder_relative?: boolean;
+  site_url?: string;
+  show_preview_links?: boolean;
 }>;
 
 type PagesObject = {
@@ -39,15 +54,18 @@ export type EntryObject = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   collection: string;
+  mediaFiles: List<MediaFileMap>;
+  newRecord: boolean;
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
 
+export type Entry = EntryMap & EntryObject;
+
 export type FieldsErrors = StaticallyTypedRecord<{ [field: string]: { type: string }[] }>;
 
 export type EntryDraft = StaticallyTypedRecord<{
-  entry: EntryMap & EntryObject;
-  mediaFiles: List<MediaFile>;
+  entry: Entry;
   fieldsErrors: FieldsErrors;
 }>;
 
@@ -61,12 +79,38 @@ export type EntryField = StaticallyTypedRecord<{
 
 export type EntryFields = List<EntryField>;
 
+export type FilterRule = StaticallyTypedRecord<{
+  value: string;
+  field: string;
+}>;
+
+export type CollectionFile = StaticallyTypedRecord<{
+  file: string;
+  name: string;
+  fields: EntryFields;
+  label: string;
+}>;
+
+export type CollectionFiles = List<CollectionFile>;
+
 type CollectionObject = {
   name: string;
-  folder: string;
+  folder?: string;
+  files?: CollectionFiles;
   fields: EntryFields;
   isFetching: boolean;
   media_folder?: string;
+  preview_path?: string;
+  preview_path_date_field?: string;
+  summary?: string;
+  filter?: FilterRule;
+  type: 'file_based_collection' | 'folder_based_collection';
+  extension?: string;
+  format?: string;
+  create?: boolean;
+  delete?: boolean;
+  identifier_field?: string;
+  path?: string;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
@@ -89,7 +133,7 @@ interface MediaLibraryInstance {
   enableStandalone: () => boolean;
 }
 
-export type DisplayURL = { sha: string; path: string } | string;
+export type DisplayURL = { id: string; path: string } | string;
 
 export interface MediaFile {
   name: string;
@@ -100,6 +144,8 @@ export interface MediaFile {
   draft?: boolean;
   url?: string;
 }
+
+export type MediaFileMap = StaticallyTypedRecord<MediaFile>;
 
 export type DisplayURLState = StaticallyTypedRecord<{
   isFetching: boolean;
@@ -210,4 +256,8 @@ export interface EntriesAction extends Action<string> {
   meta: {
     collection: string;
   };
+}
+
+export interface CollectionsAction extends Action<string> {
+  payload?: StaticallyTypedRecord<{ collections: List<Collection> }>;
 }

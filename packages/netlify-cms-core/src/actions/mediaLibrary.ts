@@ -6,12 +6,11 @@ import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
 import { selectMediaFilePath, selectMediaFilePublicPath } from '../reducers/entries';
-import { selectMediaDisplayURL } from '../reducers/mediaLibrary';
+import { selectMediaDisplayURL, selectMediaFiles } from '../reducers/mediaLibrary';
 import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
-import { waitUntil } from './waitUntil';
 import { State, MediaFile, DisplayURLState } from '../types/redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -36,7 +35,6 @@ export const MEDIA_DELETE_FAILURE = 'MEDIA_DELETE_FAILURE';
 export const MEDIA_DISPLAY_URL_REQUEST = 'MEDIA_DISPLAY_URL_REQUEST';
 export const MEDIA_DISPLAY_URL_SUCCESS = 'MEDIA_DISPLAY_URL_SUCCESS';
 export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
-export const ADD_MEDIA_FILES_TO_LIBRARY = 'ADD_MEDIA_FILES_TO_LIBRARY';
 
 export function createMediaLibrary(instance: MediaLibraryInstance) {
   const api = {
@@ -197,7 +195,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
-    const files = state.mediaLibrary.get('files');
+    const files: MediaFile[] = selectMediaFiles(state);
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
@@ -219,7 +217,9 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       }
     }
 
-    dispatch(mediaPersisting());
+    if (!draft) {
+      dispatch(mediaPersisting());
+    }
 
     try {
       const id = await getBlobSHA(file);
@@ -261,7 +261,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
         mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft });
       } else if (draft) {
         mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft });
-        dispatch(addDraftEntryMediaFile(mediaFile));
+        return dispatch(addDraftEntryMediaFile(mediaFile));
       } else {
         mediaFile = await backend.persistMedia(state.config, assetProxy);
       }
@@ -306,15 +306,17 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
         return dispatch(mediaDeleteFailed({ privateUpload }));
       }
     }
-    dispatch(mediaDeleting());
 
     try {
       dispatch(removeAsset(file.url as string));
-      dispatch(removeDraftEntryMediaFile({ id: file.id }));
 
-      if (!file.draft) {
-        await backend.deleteMedia(state.config, file.path);
+      if (file.draft) {
+        return dispatch(removeDraftEntryMediaFile({ id: file.id }));
+      } else {
+        dispatch(mediaDeleting());
       }
+
+      await backend.deleteMedia(state.config, file.path);
 
       return dispatch(mediaDeleted(file));
     } catch (error) {
@@ -333,15 +335,19 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
 
 export async function getMediaFile(state: State, path: string) {
   const backend = currentBackend(state.config);
-  const file: MediaFile = await backend.getMediaFile(path);
-  return file;
+  try {
+    const { url } = await backend.getMediaFile(path);
+    return { url };
+  } catch (e) {
+    return { url: path };
+  }
 }
 
 export function loadMediaDisplayURL(file: MediaFile) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const { displayURL, id } = file;
     const state = getState();
-    const displayURLState: DisplayURLState = selectMediaDisplayURL(state.mediaLibrary, id);
+    const displayURLState: DisplayURLState = selectMediaDisplayURL(state, id);
     if (
       !id ||
       !displayURL ||
@@ -403,27 +409,6 @@ export function mediaPersisted(asset: MediaFile, opts: MediaOptions = {}) {
   return {
     type: MEDIA_PERSIST_SUCCESS,
     payload: { file: asset, privateUpload },
-  };
-}
-
-export function addMediaFilesToLibrary(mediaFiles: MediaFile[]) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const state = getState();
-    const action = {
-      type: ADD_MEDIA_FILES_TO_LIBRARY,
-      payload: { mediaFiles },
-    };
-    // add media files to library only after the library finished loading
-    if (state.mediaLibrary.get('isLoading') === false) {
-      dispatch(action);
-    } else {
-      dispatch(
-        waitUntil({
-          predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS,
-          run: dispatch => dispatch(action),
-        }),
-      );
-    }
   };
 }
 

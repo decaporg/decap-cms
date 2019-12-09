@@ -3,27 +3,21 @@ import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { ThunkDispatch } from 'redux-thunk';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend } from '../backend';
 import { selectPublishedSlugs, selectUnpublishedSlugs, selectEntry } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import {
-  loadEntry,
-  entryDeleted,
-  getMediaAssets,
-  setDraftEntryMediaFiles,
-  clearDraftEntryMediaFiles,
-} from './entries';
-import { createAssetProxy } from '../valueObjects/AssetProxy';
+import { loadEntry, entryDeleted, getMediaAssets } from './entries';
+import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
-import { addMediaFilesToLibrary } from './mediaLibrary';
 
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { Collection, EntryMap, EntryObject, State, Collections } from '../types/redux';
+import { Collection, EntryMap, State, Collections, EntryDraft } from '../types/redux';
 import { AnyAction } from 'redux';
+import { EntryValue } from '../valueObjects/Entry';
 
 const { notifSend } = notifActions;
 
@@ -68,7 +62,7 @@ function unpublishedEntryLoading(collection: Collection, slug: string) {
   };
 }
 
-function unpublishedEntryLoaded(collection: Collection, entry: EntryObject) {
+function unpublishedEntryLoaded(collection: Collection, entry: EntryValue) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
     payload: {
@@ -94,7 +88,7 @@ function unpublishedEntriesLoading() {
   };
 }
 
-function unpublishedEntriesLoaded(entries: EntryObject[], pagination: number) {
+function unpublishedEntriesLoaded(entries: EntryValue[], pagination: number) {
   return {
     type: UNPUBLISHED_ENTRIES_SUCCESS,
     payload: {
@@ -127,17 +121,11 @@ function unpublishedEntryPersisting(
   };
 }
 
-function unpublishedEntryPersisted(
-  collection: Collection,
-  entry: EntryMap,
-  transactionID: string,
-  slug: string,
-) {
+function unpublishedEntryPersisted(collection: Collection, transactionID: string, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: {
       collection: collection.get('name'),
-      entry,
       slug,
     },
     optimist: { type: COMMIT, id: transactionID },
@@ -264,15 +252,18 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
     //run possible unpublishedEntries migration
     if (!entriesLoaded) {
-      const response = await backend.unpublishedEntries(state.collections).catch(() => false);
-      response && dispatch(unpublishedEntriesLoaded(response.entries, response.pagination));
+      try {
+        const { entries, pagination } = await backend.unpublishedEntries(state.collections);
+        dispatch(unpublishedEntriesLoaded(entries, pagination));
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
     }
 
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {
-      const entry = await backend.unpublishedEntry(collection, slug);
-      const mediaFiles: MediaFile[] = entry.mediaFiles;
+      const entry = (await backend.unpublishedEntry(collection, slug)) as EntryValue;
+      const mediaFiles = entry.mediaFiles;
       const assetProxies = await Promise.all(
         mediaFiles.map(({ file, path }) =>
           createAssetProxy({
@@ -282,23 +273,8 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
         ),
       );
       dispatch(addAssets(assetProxies));
-      dispatch(
-        setDraftEntryMediaFiles(
-          assetProxies.map((asset, index) => ({
-            ...asset,
-            ...mediaFiles[index],
-            draft: true,
-          })),
-        ),
-      );
-      dispatch(
-        addMediaFilesToLibrary(
-          mediaFiles.map(file => ({
-            ...file,
-            draft: true,
-          })),
-        ),
-      );
+
+      entry.mediaFiles = mediaFiles.map(file => ({ ...file, draft: true }));
 
       dispatch(unpublishedEntryLoaded(collection, entry));
     } catch (error) {
@@ -331,9 +307,7 @@ export function loadUnpublishedEntries(collections: Collections) {
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then((response: { entries: EntryObject[]; pagination: number }) =>
-        dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)),
-      )
+      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
       .catch((error: Error) => {
         dispatch(
           notifSend({
@@ -358,7 +332,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const fieldsErrors = entryDraft.get('fieldsErrors');
     const unpublishedSlugs = selectUnpublishedSlugs(state, collection.get('name'));
     const publishedSlugs = selectPublishedSlugs(state, collection.get('name'));
-    const usedSlugs = publishedSlugs.concat(unpublishedSlugs);
+    const usedSlugs = publishedSlugs.concat(unpublishedSlugs) as List<string>;
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
 
     //load unpublishedEntries
@@ -387,13 +361,13 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     const entry = entryDraft.get('entry');
-    const assetProxies = await getMediaAssets({
+    const assetProxies = (await getMediaAssets({
       getState,
-      mediaFiles: entryDraft.get('mediaFiles'),
+      mediaFiles: entry.get('mediaFiles'),
       dispatch,
       collection,
       entryPath: entry.get('path'),
-    });
+    })) as AssetProxy[];
 
     /**
      * Serialize the values of any fields with registered serializers, and
@@ -427,7 +401,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
           dismissAfter: 4000,
         }),
       );
-      dispatch(unpublishedEntryPersisted(collection, serializedEntry, transactionID, newSlug));
+      dispatch(unpublishedEntryPersisted(collection, transactionID, newSlug));
     } catch (error) {
       dispatch(
         notifSend({
@@ -546,7 +520,7 @@ export function publishUnpublishedEntry(collection: string, slug: string) {
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
       .publishUnpublishedEntry(collection, slug)
-      .then(({ mediaFiles }: { mediaFiles: MediaFile[] }) => {
+      .then(() => {
         dispatch(
           notifSend({
             message: { key: 'ui.toast.entryPublished' },
@@ -557,9 +531,6 @@ export function publishUnpublishedEntry(collection: string, slug: string) {
 
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
         dispatch(loadEntry(collections.get(collection), slug));
-
-        dispatch(addMediaFilesToLibrary(mediaFiles.map(file => ({ ...file, draft: false }))));
-        dispatch(clearDraftEntryMediaFiles());
       })
       .catch((error: Error) => {
         dispatch(
@@ -580,17 +551,23 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     const entry = selectEntry(state, collection.get('name'), slug);
-    const entryDraft = (Map().set('entry', entry) as unknown) as EntryMap;
+    const entryDraft = (Map().set('entry', entry) as unknown) as EntryDraft;
     dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
     return backend
       .deleteEntry(state.config, collection, slug)
       .then(() =>
-        backend.persistEntry(state.config, collection, entryDraft, [], state.integrations, [], {
+        backend.persistEntry({
+          config: state.config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          integrations: state.integrations,
+          usedSlugs: List(),
           status: status.get('PENDING_PUBLISH'),
         }),
       )
       .then(() => {
-        dispatch(unpublishedEntryPersisted(collection, entryDraft, transactionID, slug));
+        dispatch(unpublishedEntryPersisted(collection, transactionID, slug));
         dispatch(entryDeleted(collection, slug));
         dispatch(loadUnpublishedEntry(collection, slug));
         dispatch(

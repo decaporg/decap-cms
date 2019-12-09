@@ -6,14 +6,22 @@ declare module 'netlify-cms-lib-util' {
 
   export const getBlobSHA: (blob: Blob) => string;
 
-  export const Cursor: {
+  export interface CursorType {
     create: (args: unknown) => Cursor;
     updateStore: (args: unknown) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    unwrapData: () => [Map<string, any>, CursorType];
     actions: Set;
     data: Map;
     meta: Map;
     store: Map;
-  };
+  }
+
+  export const Cursor: CursorType;
+
+  export const CURSOR_COMPATIBILITY_SYMBOL = Symbol(
+    'cursor key for compatibility with old backends',
+  );
 
   export class APIError extends Error {
     status: number;
@@ -22,6 +30,8 @@ declare module 'netlify-cms-lib-util' {
 
   export class EditorialWorkflowError extends Error {
     constructor(message?: string, notUnderEditorialWorkflow: boolean);
+
+    notUnderEditorialWorkflow: boolean;
   }
 
   export const getAllResponses: (url: string, options: RequestInit) => Promise<Response[]>;
@@ -30,6 +40,7 @@ declare module 'netlify-cms-lib-util' {
   export const localForage: {
     setItem: <T>(key: string, item: T) => Promise<T>;
     getItem: <T>(key: string) => Promise<T | null>;
+    removeItem: (key: string) => Promise<void>;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

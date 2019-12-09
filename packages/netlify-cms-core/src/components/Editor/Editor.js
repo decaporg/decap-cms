@@ -194,11 +194,7 @@ export class Editor extends React.Component {
     }
 
     if (this.props.hasChanged) {
-      this.createBackup(
-        this.props.entryDraft.get('entry'),
-        this.props.collection,
-        this.props.entryDraft.get('mediaFiles'),
-      );
+      this.createBackup(this.props.entryDraft.get('entry'), this.props.collection);
     }
 
     if (prevProps.entry === this.props.entry) return;
@@ -213,7 +209,7 @@ export class Editor extends React.Component {
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
       const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
-      const mediaFiles = this.props.entryDraft && this.props.entryDraft.get('mediaFiles');
+      const mediaFiles = entry.get('mediaFiles');
       this.createDraft(deserializedEntry, fieldsMetaData, mediaFiles);
     } else if (newEntry) {
       prevProps.createEmptyDraft(collection);
@@ -226,8 +222,8 @@ export class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createBackup = debounce(function(entry, collection, mediaFiles) {
-    this.props.persistLocalBackup(entry, collection, mediaFiles);
+  createBackup = debounce(function(entry, collection) {
+    this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
   createDraft = (entry, metadata, mediaFiles) => {
