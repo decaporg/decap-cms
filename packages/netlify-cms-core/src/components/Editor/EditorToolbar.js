@@ -212,6 +212,7 @@ class EditorToolbar extends React.Component {
     isDeleting: PropTypes.bool,
     onPersist: PropTypes.func.isRequired,
     onPersistAndNew: PropTypes.func.isRequired,
+    onPersistAndDuplicate: PropTypes.func.isRequired,
     showDelete: PropTypes.bool.isRequired,
     onDelete: PropTypes.func.isRequired,
     onDeleteUnpublishedChanges: PropTypes.func.isRequired,
@@ -219,6 +220,7 @@ class EditorToolbar extends React.Component {
     onPublish: PropTypes.func.isRequired,
     unPublish: PropTypes.func.isRequired,
     onPublishAndNew: PropTypes.func.isRequired,
+    onPublishAndDuplicate: PropTypes.func.isRequired,
     user: ImmutablePropTypes.map.isRequired,
     hasChanged: PropTypes.bool,
     displayUrl: PropTypes.string,
@@ -293,6 +295,7 @@ class EditorToolbar extends React.Component {
       collection,
       onPersist,
       onPersistAndNew,
+      onPersistAndDuplicate,
       isPersisting,
       hasChanged,
       isNewEntry,
@@ -320,17 +323,24 @@ class EditorToolbar extends React.Component {
           )}
         >
           <DropdownItem
-            label="Publish now"
+            label={t('editor.editorToolbar.publishNow')}
             icon="arrow"
             iconDirection="right"
             onClick={onPersist}
           />
           {collection.get('create') ? (
-            <DropdownItem
-              label={t('editor.editorToolbar.publishAndCreateNew')}
-              icon="add"
-              onClick={onPersistAndNew}
-            />
+            <>
+              <DropdownItem
+                label={t('editor.editorToolbar.publishAndCreateNew')}
+                icon="add"
+                onClick={onPersistAndNew}
+              />
+              <DropdownItem
+                label={t('editor.editorToolbar.publishAndDuplicate')}
+                icon="add"
+                onClick={onPersistAndDuplicate}
+              />
+            </>
           ) : null}
         </ToolbarDropdown>
       </div>
@@ -385,6 +395,7 @@ class EditorToolbar extends React.Component {
       onPublish,
       unPublish,
       onPublishAndNew,
+      onPublishAndDuplicate,
       currentStatus,
       isNewEntry,
       useOpenAuthoring,
@@ -447,11 +458,18 @@ class EditorToolbar extends React.Component {
                 onClick={onPublish}
               />
               {collection.get('create') ? (
-                <DropdownItem
-                  label={t('editor.editorToolbar.publishAndCreateNew')}
-                  icon="add"
-                  onClick={onPublishAndNew}
-                />
+                <>
+                  <DropdownItem
+                    label={t('editor.editorToolbar.publishAndCreateNew')}
+                    icon="add"
+                    onClick={onPublishAndNew}
+                  />
+                  <DropdownItem
+                    label={t('editor.editorToolbar.publishAndDuplicate')}
+                    icon="add"
+                    onClick={onPublishAndDuplicate}
+                  />
+                </>
               ) : null}
             </ToolbarDropdown>
           )}

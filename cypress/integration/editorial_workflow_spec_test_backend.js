@@ -19,6 +19,7 @@ import {
   validateNestedObjectFieldsAndExit,
   validateListFieldsAndExit,
   unpublishEntry,
+  publishAndDuplicateEntry,
 } from '../utils/steps';
 import { setting1, setting2, workflowStatus, editorStatus } from '../utils/constants';
 
@@ -134,5 +135,12 @@ describe('Test Backend Editorial Workflow', () => {
     publishWorkflowEntry(entry1);
     // then unpublish it
     unpublishEntry(entry1);
+  });
+
+  it('can publish and duplicate existing entry', () => {
+    login();
+    createPost(entry1);
+    updateWorkflowStatusInEditor(editorStatus.ready);
+    publishAndDuplicateEntry(entry1);
   });
 });

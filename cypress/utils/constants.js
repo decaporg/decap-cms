@@ -2,6 +2,11 @@ const workflowStatus = { draft: 'Drafts', review: 'In Review', ready: 'Ready' };
 const editorStatus = { draft: 'Draft', review: 'In review', ready: 'Ready' };
 const setting1 = { limit: 10, author: 'John Doe' };
 const setting2 = { name: 'Andrew Wommack', description: 'A Gospel Teacher' };
+const publishTypes = {
+  publishNow: 'Publish now',
+  publishNew: 'Publish and new',
+  publishDuplicate: 'Publish and duplicate',
+};
 const notifications = {
   saved: 'Entry saved',
   published: 'Entry published',
@@ -25,4 +30,5 @@ module.exports = {
   setting1,
   setting2,
   notifications,
+  publishTypes,
 };

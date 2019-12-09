@@ -67,6 +67,7 @@ const en = {
       unpublish: 'Unpublish',
       unpublishing: 'Unpublishing...',
       publishAndCreateNew: 'Publish and create new',
+      publishAndDuplicate: 'Publish and duplicate',
       deleteUnpublishedChanges: 'Delete unpublished changes',
       deleteUnpublishedEntry: 'Delete unpublished entry',
       deletePublishedEntry: 'Delete published entry',

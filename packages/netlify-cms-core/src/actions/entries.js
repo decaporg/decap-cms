@@ -36,6 +36,7 @@ export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
 export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
 export const DRAFT_LOCAL_BACKUP_RETRIEVED = 'DRAFT_LOCAL_BACKUP_RETRIEVED';
 export const DRAFT_CREATE_FROM_LOCAL_BACKUP = 'DRAFT_CREATE_FROM_LOCAL_BACKUP';
+export const DRAFT_CREATE_DUPLICATE_FROM_ENTRY = 'DRAFT_CREATE_DUPLICATE_FROM_ENTRY';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -197,6 +198,13 @@ export function createDraftFromEntry(entry, metadata, mediaFiles) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
     payload: { entry, metadata, mediaFiles },
+  };
+}
+
+export function createDraftDuplicateFromEntry(entry) {
+  return {
+    type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
+    payload: createEntry(entry.get('collection'), '', '', { data: entry.get('data') }),
   };
 }
 
