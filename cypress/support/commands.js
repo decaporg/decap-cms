@@ -215,6 +215,12 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
   return runTimes(instance, fn, times).focused();
 });
 
+Cypress.Commands.add('insertEditorComponent', title => {
+  cy.get('button[title="Add Component"]').click()
+  cy.contains('div', title).click().focused();
+});
+
+
 [
   ['clickHeadingOneButton', 'Heading 1'],
   ['clickHeadingTwoButton', 'Heading 2'],
@@ -228,6 +234,15 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
     return cy.clickToolbarButton(toolbarButtonName, opts);
   });
 });
+
+[
+  ['insertCodeBlock', 'Code Block'],
+].forEach(([commandName, componentTitle]) => {
+  Cypress.Commands.add(commandName, () => {
+    return cy.insertEditorComponent(componentTitle);
+  });
+});
+
 
 Cypress.Commands.add('getMarkdownEditor', () => {
   return cy.get('[data-slate-editor]');

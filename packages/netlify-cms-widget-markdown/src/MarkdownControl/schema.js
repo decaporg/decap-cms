@@ -1,3 +1,5 @@
+import { Inline, Text } from 'slate'
+
 const codeBlock = {
   match: [{ object: 'block', type: 'code-block' }],
   nodes: [
@@ -5,6 +7,18 @@ const codeBlock = {
       match: [{ object: 'text' }],
     },
   ],
+  normalize: (editor, error) => {
+    switch (error.code) {
+      // Replace break nodes with newlines
+      case 'child_object_invalid': {
+        const { child } = error
+        if (Inline.isInline(child) && child.type === 'break') {
+          editor.replaceNodeByKey(child.key, Text.create({ text: '\n' }))
+          return;
+        }
+      }
+    }
+  },
 };
 
 const codeBlockOverride = {

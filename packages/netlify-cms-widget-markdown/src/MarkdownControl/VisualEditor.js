@@ -52,18 +52,11 @@ export default class Editor extends React.Component {
   constructor(props) {
     super(props);
     const editorComponents = props.getEditorComponents();
-    this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
+    this.shortcodeComponents = editorComponents.filter(({ type }) => (type === 'shortcode'));
     this.codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
-    this.editorComponents =
-      this.codeBlockComponent || editorComponents.has('code-block')
+    this.editorComponents = this.codeBlockComponent || editorComponents.has('code-block')
         ? editorComponents
-        : editorComponents.set(
-            'code-block',
-            Map({
-              label: 'Code Block',
-              type: 'code-block',
-            }),
-          );
+        : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' })
     this.renderBlock = renderBlock({
       classNameWrapper: props.className,
       resolveWidget: props.resolveWidget,

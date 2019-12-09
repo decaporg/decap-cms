@@ -113,6 +113,7 @@ class EditorControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    isEditorComponent: PropTypes.bool,
   };
 
   state = {
@@ -146,6 +147,7 @@ class EditorControl extends React.Component {
       loadEntry,
       className,
       isSelected,
+      isEditorComponent,
       t,
     } = this.props;
     const widgetName = field.get('widget');
@@ -240,6 +242,7 @@ class EditorControl extends React.Component {
               isFetching={isFetching}
               fieldsErrors={fieldsErrors}
               onValidateObject={onValidateObject}
+              isEditorComponent={isEditorComponent}
               t={t}
             />
             {fieldHint && (

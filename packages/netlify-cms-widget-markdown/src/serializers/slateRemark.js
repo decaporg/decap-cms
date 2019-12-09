@@ -393,11 +393,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
        */
       case 'code-block': {
         const { lang, code, ...data } = get(node, 'data', {});
-        const value = voidCodeBlock
-          ? code
-          : flatMap(node.nodes, child => {
-              return flatMap(child.leaves, 'text');
-            }).join('');
+        const value = voidCodeBlock ? code : children[0]?.value;
         return u(typeMap[node.type], { lang, data }, value || '');
       }
 
