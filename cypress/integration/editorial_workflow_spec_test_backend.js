@@ -19,9 +19,10 @@ import {
   validateNestedObjectFieldsAndExit,
   validateListFieldsAndExit,
   unpublishEntry,
-  publishAndDuplicateEntry,
+  publishEntryInEditor,
+  duplicateEntry,
 } from '../utils/steps';
-import { setting1, setting2, workflowStatus, editorStatus } from '../utils/constants';
+import { setting1, setting2, workflowStatus, editorStatus, publishTypes } from '../utils/constants';
 
 const entry1 = {
   title: 'first title',
@@ -137,10 +138,11 @@ describe('Test Backend Editorial Workflow', () => {
     unpublishEntry(entry1);
   });
 
-  it('can publish and duplicate existing entry', () => {
+  it('can duplicate an existing entry', () => {
     login();
     createPost(entry1);
     updateWorkflowStatusInEditor(editorStatus.ready);
-    publishAndDuplicateEntry(entry1);
+    publishEntryInEditor(publishTypes.publishNow);
+    duplicateEntry(entry1);
   });
 });

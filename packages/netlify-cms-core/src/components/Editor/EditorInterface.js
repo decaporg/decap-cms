@@ -123,15 +123,15 @@ class EditorInterface extends Component {
   };
 
   handleOnPersist = (opts = {}) => {
-    const { createNew = false, duplicate = false } = opts;
+    const { createNew = false } = opts;
     this.controlPaneRef.validate();
-    this.props.onPersist({ createNew, duplicate });
+    this.props.onPersist({ createNew });
   };
 
   handleOnPublish = (opts = {}) => {
-    const { createNew = false, duplicate = false } = opts;
+    const { createNew = false } = opts;
     this.controlPaneRef.validate();
-    this.props.onPublish({ createNew, duplicate });
+    this.props.onPublish({ createNew });
   };
 
   handleTogglePreview = () => {
@@ -161,6 +161,7 @@ class EditorInterface extends Component {
       onChangeStatus,
       onPublish,
       unPublish,
+      onDuplicate,
       onValidate,
       user,
       hasChanged,
@@ -230,15 +231,14 @@ class EditorInterface extends Component {
           isDeleting={entry.get('isDeleting')}
           onPersist={this.handleOnPersist}
           onPersistAndNew={() => this.handleOnPersist({ createNew: true })}
-          onPersistAndDuplicate={() => this.handleOnPersist({ createNew: true, duplicate: true })}
           onDelete={onDelete}
           onDeleteUnpublishedChanges={onDeleteUnpublishedChanges}
           onChangeStatus={onChangeStatus}
           showDelete={showDelete}
           onPublish={onPublish}
           unPublish={unPublish}
+          onDuplicate={onDuplicate}
           onPublishAndNew={() => this.handleOnPublish({ createNew: true })}
-          onPublishAndDuplicate={() => this.handleOnPublish({ createNew: true, duplicate: true })}
           user={user}
           hasChanged={hasChanged}
           displayUrl={displayUrl}
@@ -296,6 +296,7 @@ EditorInterface.propTypes = {
   onDeleteUnpublishedChanges: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   unPublish: PropTypes.func.isRequired,
+  onDuplicate: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
   user: ImmutablePropTypes.map.isRequired,
   hasChanged: PropTypes.bool,

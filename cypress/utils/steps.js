@@ -232,8 +232,8 @@ function unpublishEntry(entry) {
   assertWorkflowStatus(entry, workflowStatus.ready);
 }
 
-function publishAndDuplicateEntry(entry) {
-  publishEntryInEditor(publishTypes.publishDuplicate);
+function duplicateEntry(entry) {
+  selectDropdownItem('Published', 'Duplicate');
   cy.url().should('contain', '/#/collections/posts/new');
   cy.contains('button', 'Save').click();
   updateWorkflowStatusInEditor(editorStatus.ready);
@@ -337,5 +337,6 @@ module.exports = {
   validateNestedObjectFieldsAndExit,
   validateListFieldsAndExit,
   unpublishEntry,
-  publishAndDuplicateEntry,
+  publishEntryInEditor,
+  duplicateEntry,
 };
