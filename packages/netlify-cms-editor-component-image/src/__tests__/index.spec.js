@@ -1,6 +1,8 @@
+import React from 'react';
+import { act } from 'react-dom/test-utils';
+import { render } from '@testing-library/react';
 import component from '../index';
 
-const getAsset = path => path;
 const image = '/image';
 const alt = 'alt';
 const title = 'title';
@@ -32,10 +34,18 @@ describe('editor component image', () => {
     );
   });
 
-  it('should generate valid react props', () => {
-    expect(component.toPreview({ image, alt, title }, getAsset)).toMatchObject({
-      props: { src: image, alt, title },
+  it('should match snapshot with props', async () => {
+    const props = { image, alt, title };
+
+    const getAsset = path => Promise.resolve(path);
+
+    const Preview = () => component.toPreview(props, getAsset);
+    let asFragment;
+
+    await act(async () => {
+      asFragment = render(<Preview />).asFragment;
     });
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('should match markdown with no properties defined', () => {

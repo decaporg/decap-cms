@@ -81,13 +81,13 @@ export function sanitizeChar(char: string, options: SlugConfig) {
 }
 
 export function sanitizeSlug(str: string, options: SlugConfig) {
-  const encoding = options.get('encoding');
-  const stripDiacritics = options.get('clean_accents');
-  const replacement = options.get('sanitize_replacement');
-
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
+
+  const encoding = options.get('encoding');
+  const stripDiacritics = options.get('clean_accents');
+  const replacement = options.get('sanitize_replacement');
 
   const sanitizedSlug = flow([
     ...(stripDiacritics ? [diacritics.remove] : []),

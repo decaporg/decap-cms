@@ -309,11 +309,11 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
 
     try {
       if (file.draft) {
-        dispatch(removeAsset(file.url as string));
+        dispatch(removeAsset(file.path));
         dispatch(removeDraftEntryMediaFile({ id: file.id }));
       } else {
         dispatch(mediaDeleting());
-        dispatch(removeAsset(file.url as string));
+        dispatch(removeAsset(file.path));
 
         await backend.deleteMedia(state.config, file.path);
 
@@ -405,11 +405,11 @@ export function mediaPersisting() {
   return { type: MEDIA_PERSIST_REQUEST };
 }
 
-export function mediaPersisted(asset: MediaFile, opts: MediaOptions = {}) {
+export function mediaPersisted(file: MediaFile, opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return {
     type: MEDIA_PERSIST_SUCCESS,
-    payload: { file: asset, privateUpload },
+    payload: { file, privateUpload },
   };
 }
 

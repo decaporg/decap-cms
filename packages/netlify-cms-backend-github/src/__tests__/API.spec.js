@@ -157,31 +157,34 @@ describe('github API', () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
       const blob = {};
-      const response = { blob: jest.fn().mockResolvedValue(blob) };
-      api.fetchBlob = jest.fn().mockResolvedValue(response);
+      api.readFile = jest.fn().mockResolvedValue(blob);
 
       await expect(api.getMediaAsBlob('sha', 'static/media/image.png')).resolves.toBe(blob);
 
-      expect(api.fetchBlob).toHaveBeenCalledTimes(1);
-      expect(api.fetchBlob).toHaveBeenCalledWith('sha', '/repos/owner/repo');
-
-      expect(response.blob).toHaveBeenCalledTimes(1);
+      expect(api.readFile).toHaveBeenCalledTimes(1);
+      expect(api.readFile).toHaveBeenCalledWith({
+        parseText: false,
+        path: 'static/media/image.png',
+        sha: 'sha',
+      });
     });
 
-    it('should return test blob on non file', async () => {
+    it('should return text blob on svg file', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
-      const response = { text: jest.fn().mockResolvedValue('svg') };
-      api.fetchBlob = jest.fn().mockResolvedValue(response);
+      const text = 'svg';
+      api.readFile = jest.fn().mockResolvedValue(text);
 
       await expect(api.getMediaAsBlob('sha', 'static/media/logo.svg')).resolves.toEqual(
-        new Blob(['svg'], { type: 'image/svg+xml' }),
+        new Blob([text], { type: 'image/svg+xml' }),
       );
 
-      expect(api.fetchBlob).toHaveBeenCalledTimes(1);
-      expect(api.fetchBlob).toHaveBeenCalledWith('sha', '/repos/owner/repo');
-
-      expect(response.text).toHaveBeenCalledTimes(1);
+      expect(api.readFile).toHaveBeenCalledTimes(1);
+      expect(api.readFile).toHaveBeenCalledWith({
+        parseText: true,
+        path: 'static/media/logo.svg',
+        sha: 'sha',
+      });
     });
   });
 

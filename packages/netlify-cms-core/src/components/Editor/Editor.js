@@ -209,8 +209,7 @@ export class Editor extends React.Component {
       const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
       const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
-      const mediaFiles = entry.get('mediaFiles');
-      this.createDraft(deserializedEntry, fieldsMetaData, mediaFiles);
+      this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
       prevProps.createEmptyDraft(collection);
     }
@@ -226,8 +225,8 @@ export class Editor extends React.Component {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
-  createDraft = (entry, metadata, mediaFiles) => {
-    if (entry) this.props.createDraftFromEntry(entry, metadata, mediaFiles);
+  createDraft = (entry, metadata) => {
+    if (entry) this.props.createDraftFromEntry(entry, metadata);
   };
 
   handleChangeStatus = newStatusName => {

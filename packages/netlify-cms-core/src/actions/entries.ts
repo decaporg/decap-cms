@@ -208,14 +208,10 @@ export function emptyDraftCreated(entry: EntryValue) {
 /*
  * Exported simple Action Creators
  */
-export function createDraftFromEntry(
-  entry: EntryMap,
-  metadata?: Map<string, unknown>,
-  mediaFiles?: List<MediaFile>,
-) {
+export function createDraftFromEntry(entry: EntryMap, metadata?: Map<string, unknown>) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
-    payload: { entry, metadata, mediaFiles },
+    payload: { entry, metadata },
   };
 }
 
@@ -318,7 +314,7 @@ export function loadEntry(collection: Collection, slug: string) {
     const backend = currentBackend(state.config);
     dispatch(entryLoading(collection, slug));
     return backend
-      .getEntry(state.config, collection, slug)
+      .getEntry(state, collection, slug)
       .then((loadedEntry: EntryValue) => {
         return dispatch(entryLoaded(collection, loadedEntry));
       })

@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`editor component image should match snapshot with props 1`] = `
+<DocumentFragment>
+  <img
+    alt="alt"
+    src="/image"
+    title="title"
+  />
+</DocumentFragment>
+`;

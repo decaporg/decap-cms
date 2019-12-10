@@ -185,13 +185,13 @@ export const selectMediaFilePublicPath = (
     return mediaPath;
   }
 
-  let mediaFolder = config.get('public_folder');
+  let publicFolder = config.get('public_folder');
 
   if (collection && collection.has('media_folder')) {
-    mediaFolder = collection.get('media_folder') as string;
+    publicFolder = collection.get('media_folder') as string;
   }
 
-  return join(mediaFolder, basename(mediaPath));
+  return join(publicFolder, basename(mediaPath));
 };
 
 export default entries;

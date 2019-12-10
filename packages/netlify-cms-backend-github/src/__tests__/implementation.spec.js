@@ -92,7 +92,7 @@ describe('github backend implementation', () => {
       });
     });
 
-    it('should persist media file when not draft', async () => {
+    it('should persist media file', async () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.api = mockAPI;
 
@@ -114,33 +114,6 @@ describe('github backend implementation', () => {
 
       expect(persistFiles).toHaveBeenCalledTimes(1);
       expect(persistFiles).toHaveBeenCalledWith(null, [mediaFile], {});
-      expect(createObjectURL).toHaveBeenCalledTimes(1);
-      expect(createObjectURL).toHaveBeenCalledWith(mediaFile.fileObj);
-    });
-
-    it('should not persist media file when draft', async () => {
-      const gitHubImplementation = new GitHubImplementation(config);
-      gitHubImplementation.api = mockAPI;
-
-      createObjectURL.mockReturnValue('displayURL');
-
-      const mediaFile = {
-        value: 'image.png',
-        fileObj: { size: 100 },
-        path: '/media/image.png',
-      };
-
-      expect.assertions(4);
-      await expect(gitHubImplementation.persistMedia(mediaFile, { draft: true })).resolves.toEqual({
-        id: undefined,
-        name: 'image.png',
-        size: 100,
-        displayURL: 'displayURL',
-        path: 'media/image.png',
-        draft: true,
-      });
-
-      expect(persistFiles).toHaveBeenCalledTimes(0);
       expect(createObjectURL).toHaveBeenCalledTimes(1);
       expect(createObjectURL).toHaveBeenCalledWith(mediaFile.fileObj);
     });
@@ -168,7 +141,7 @@ describe('github backend implementation', () => {
     });
   });
 
-  describe('getMediaFiles', () => {
+  describe('getEntryMediaFiles', () => {
     const getMediaAsBlob = jest.fn();
     const mockAPI = {
       getMediaAsBlob,
@@ -191,7 +164,7 @@ describe('github backend implementation', () => {
         },
       };
 
-      await expect(gitHubImplementation.getMediaFiles(data)).resolves.toEqual([
+      await expect(gitHubImplementation.getEntryMediaFiles(data)).resolves.toEqual([
         {
           id: 'image.png',
           sha: 'image.png',
@@ -217,7 +190,9 @@ describe('github backend implementation', () => {
     it('should return unpublished entry', async () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.api = mockAPI;
-      gitHubImplementation.getMediaFiles = jest.fn().mockResolvedValue([{ path: 'image.png' }]);
+      gitHubImplementation.getEntryMediaFiles = jest
+        .fn()
+        .mockResolvedValue([{ path: 'image.png' }]);
 
       generateContentKey.mockReturnValue('contentKey');
 
@@ -244,8 +219,8 @@ describe('github backend implementation', () => {
       expect(readUnpublishedBranchFile).toHaveBeenCalledTimes(1);
       expect(readUnpublishedBranchFile).toHaveBeenCalledWith('contentKey');
 
-      expect(gitHubImplementation.getMediaFiles).toHaveBeenCalledTimes(1);
-      expect(gitHubImplementation.getMediaFiles).toHaveBeenCalledWith(data);
+      expect(gitHubImplementation.getEntryMediaFiles).toHaveBeenCalledTimes(1);
+      expect(gitHubImplementation.getEntryMediaFiles).toHaveBeenCalledWith(data);
     });
   });
 });

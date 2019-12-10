@@ -42,6 +42,12 @@ describe('sanitizeURI', () => {
   });
 });
 
+const slugConfig = {
+  encoding: 'unicode',
+  clean_accents: false,
+  sanitize_replacement: '-',
+};
+
 describe('sanitizeSlug', () => {
   it('throws an error for non-strings', () => {
     expect(() => sanitizeSlug({})).toThrowError('The input slug must be a string.');
@@ -77,49 +83,56 @@ describe('sanitizeSlug', () => {
   });
 
   it('should keep valid URI chars (letters digits _ - . ~)', () => {
-    expect(sanitizeSlug('This, that-one_or.the~other 123!')).toEqual(
+    expect(sanitizeSlug('This, that-one_or.the~other 123!', Map(slugConfig))).toEqual(
       'This-that-one_or.the~other-123',
     );
   });
 
   it('should remove accents with `clean_accents` set', () => {
-    expect(sanitizeSlug('ěščřžý', Map({ clean_accents: true }))).toEqual('escrzy');
+    expect(sanitizeSlug('ěščřžý', Map({ ...slugConfig, clean_accents: true }))).toEqual('escrzy');
   });
 
   it('should remove non-latin chars in "ascii" mode', () => {
-    expect(sanitizeSlug('ěščřžý日本語のタイトル', Map({ encoding: 'ascii' }))).toEqual('');
+    expect(
+      sanitizeSlug('ěščřžý日本語のタイトル', Map({ ...slugConfig, encoding: 'ascii' })),
+    ).toEqual('');
   });
 
   it('should clean accents and strip non-latin chars in "ascii" mode with `clean_accents` set', () => {
     expect(
-      sanitizeSlug('ěščřžý日本語のタイトル', Map({ encoding: 'ascii', clean_accents: true })),
+      sanitizeSlug(
+        'ěščřžý日本語のタイトル',
+        Map({ ...slugConfig, encoding: 'ascii', clean_accents: true }),
+      ),
     ).toEqual('escrzy');
   });
 
   it('removes double replacements', () => {
-    expect(sanitizeSlug('test--test')).toEqual('test-test');
-    expect(sanitizeSlug('test   test')).toEqual('test-test');
+    expect(sanitizeSlug('test--test', Map(slugConfig))).toEqual('test-test');
+    expect(sanitizeSlug('test   test', Map(slugConfig))).toEqual('test-test');
   });
 
   it('removes trailing replacements', () => {
-    expect(sanitizeSlug('test   test   ')).toEqual('test-test');
+    expect(sanitizeSlug('test   test   ', Map(slugConfig))).toEqual('test-test');
   });
 
   it('removes leading replacements', () => {
-    expect(sanitizeSlug('"test"    test')).toEqual('test-test');
+    expect(sanitizeSlug('"test"    test', Map(slugConfig))).toEqual('test-test');
   });
 
   it('uses alternate replacements', () => {
-    expect(sanitizeSlug('test   test   ', Map({ sanitize_replacement: '_' }))).toEqual('test_test');
+    expect(
+      sanitizeSlug('test   test   ', Map({ ...slugConfig, sanitize_replacement: '_' })),
+    ).toEqual('test_test');
   });
 });
 
 describe('sanitizeChar', () => {
   it('should sanitize whitespace with default replacement', () => {
-    expect(sanitizeChar(' ', Map())).toBe('-');
+    expect(sanitizeChar(' ', Map(slugConfig))).toBe('-');
   });
 
   it('should sanitize whitespace with custom replacement', () => {
-    expect(sanitizeChar(' ', Map({ sanitize_replacement: '_' }))).toBe('_');
+    expect(sanitizeChar(' ', Map({ ...slugConfig, sanitize_replacement: '_' }))).toBe('_');
   });
 });

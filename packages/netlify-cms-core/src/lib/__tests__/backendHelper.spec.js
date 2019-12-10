@@ -195,6 +195,12 @@ describe('backendHelper', () => {
     });
   });
 
+  const slugConfig = Map({
+    encoding: 'unicode',
+    clean_accents: false,
+    sanitize_replacement: '-',
+  });
+
   describe('slugFormatter', () => {
     const date = new Date('2020-01-01');
     jest.spyOn(global, 'Date').mockImplementation(() => date);
@@ -207,7 +213,7 @@ describe('backendHelper', () => {
 
     it('should format with default pattern', () => {
       selectIdentifier.mockReturnValueOnce('title');
-      expect(slugFormatter(Map(), Map({ title: 'Post Title' }))).toBe('post-title');
+      expect(slugFormatter(Map(), Map({ title: 'Post Title' }), slugConfig)).toBe('post-title');
     });
 
     it('should format with date', () => {
@@ -217,6 +223,7 @@ describe('backendHelper', () => {
         slugFormatter(
           Map({ slug: '{{year}}-{{month}}-{{day}}_{{slug}}' }),
           Map({ title: 'Post Title' }),
+          slugConfig,
         ),
       ).toBe('2020-01-01_post-title');
     });
@@ -228,6 +235,7 @@ describe('backendHelper', () => {
         slugFormatter(
           Map({ slug: '{{fields.slug}}' }),
           Map({ title: 'Post Title', slug: 'entry-slug' }),
+          slugConfig,
         ),
       ).toBe('entry-slug');
     });
@@ -235,9 +243,9 @@ describe('backendHelper', () => {
     it('should return slug', () => {
       selectIdentifier.mockReturnValueOnce('title');
 
-      expect(slugFormatter(Map({ slug: '{{slug}}' }), Map({ title: 'Post Title' }))).toBe(
-        'post-title',
-      );
+      expect(
+        slugFormatter(Map({ slug: '{{slug}}' }), Map({ title: 'Post Title' }), slugConfig),
+      ).toBe('post-title');
     });
 
     it('should return slug with path', () => {
@@ -247,6 +255,7 @@ describe('backendHelper', () => {
         slugFormatter(
           Map({ slug: '{{year}}-{{month}}-{{day}}-{{slug}}', path: 'sub_dir/{{year}}/{{slug}}' }),
           Map({ title: 'Post Title' }),
+          slugConfig,
         ),
       ).toBe('sub_dir/2020/2020-01-01-post-title');
     });
@@ -261,6 +270,7 @@ describe('backendHelper', () => {
             path: 'sub_dir/{{year}}/{{slug}}',
           }),
           Map({ title: 'Post Title' }),
+          slugConfig,
         ),
       ).toBe('sub_dir/2020/2020-01-01-post-title.en');
     });

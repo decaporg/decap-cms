@@ -45,8 +45,10 @@ import {
   Integrations,
   EntryDraft,
   CollectionFile,
+  State,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
+import { selectEditingWorkflowDraft } from './reducers/editorialWorkflow';
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -370,7 +372,6 @@ export class Backend {
   }
 
   async generateUniqueSlug(
-    config: Config,
     collection: Collection,
     entryData: EntryMap,
     slugConfig: SlugConfig,
@@ -596,13 +597,17 @@ export class Backend {
     return localForage.removeItem(getEntryBackupKey());
   }
 
-  async getEntry(config: Config, collection: Collection, slug: string) {
+  async getEntry(state: State, collection: Collection, slug: string) {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
 
+    const workflowDraft = selectEditingWorkflowDraft(state);
+
     const [loadedEntry, mediaFiles] = await Promise.all([
       this.implementation.getEntry(collection, slug, path),
-      this.implementation.getMedia(selectMediaFolder(config, collection, path)),
+      workflowDraft
+        ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
+        : Promise.resolve([]),
     ]);
 
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
@@ -791,7 +796,6 @@ export class Backend {
         throw new Error('Not allowed to create new entries in this collection');
       }
       const slug = await this.generateUniqueSlug(
-        config,
         collection,
         entryDraft.getIn(['entry', 'data']),
         config.get('slug'),
