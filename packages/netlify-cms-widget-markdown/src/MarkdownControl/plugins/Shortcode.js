@@ -1,9 +1,9 @@
-import { Text } from 'slate';
+import { Text, Block } from 'slate';
 
 const createShortcodeBlock = shortcodeConfig => {
   // Handle code block component
   if (shortcodeConfig.type === 'code-block') {
-    return { type: shortcodeConfig.type };
+    return Block.create({ type: shortcodeConfig.type });
   }
 
   const nodes = [Text.create('')];
@@ -16,8 +16,7 @@ const createShortcodeBlock = shortcodeConfig => {
     .map(field => field.get('default'));
 
   // Create new shortcode block with default values set.
-  return {
-    object: 'block',
+  return Block.create({
     type: 'shortcode',
     data: {
       shortcode: shortcodeConfig.id,
@@ -25,7 +24,7 @@ const createShortcodeBlock = shortcodeConfig => {
       shortcodeData: defaultValues,
     },
     nodes,
-  };
+  });
 };
 
 const Shortcode = ({ defaultType }) => ({
@@ -35,7 +34,7 @@ const Shortcode = ({ defaultType }) => ({
       const { focusBlock } = editor.value;
 
       if (focusBlock.text === '' && focusBlock.type === defaultType) {
-        editor.setNodeByKey(focusBlock.key, block);
+        editor.replaceNodeByKey(focusBlock.key, block);
       } else {
         editor.insertBlock(block);
       }

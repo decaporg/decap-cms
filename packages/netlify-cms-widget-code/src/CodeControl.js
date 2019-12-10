@@ -11,7 +11,7 @@ import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
 import 'codemirror/keymap/sublime';
 import 'codemirror/keymap/emacs';
-import codeMirrorSyles from 'codemirror/lib/codemirror.css';
+import codeMirrorStyles from 'codemirror/lib/codemirror.css';
 import materialTheme from 'codemirror/theme/material.css';
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
@@ -80,9 +80,9 @@ export default class CodeControl extends React.Component {
     settingsVisible: false,
     codeMirrorKey: uuid(),
     theme: localStorage.getItem(settingsPersistKeys['theme']) || themes[themes.length - 1],
+    lastKnownValue: this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value,
   };
 
-  lastKnownValue = this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value;
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
@@ -201,7 +201,7 @@ export default class CodeControl extends React.Component {
   }
 
   handleChange(newValue) {
-    this.lastKnownValue = newValue;
+    this.setState({ lastKnownValue: newValue });
     this.props.onChange(this.toValue('code', newValue));
   }
 
@@ -229,7 +229,7 @@ export default class CodeControl extends React.Component {
 
   render() {
     const { classNameWrapper, forID, widget } = this.props;
-    const { lang, settingsVisible, keyMap, codeMirrorKey, theme } = this.state;
+    const { lang, settingsVisible, keyMap, codeMirrorKey, theme, lastKnownValue } = this.state;
     const langInfo = this.getLanguageByName(lang);
 
     return (
@@ -251,7 +251,7 @@ export default class CodeControl extends React.Component {
             className={cx(
               classNameWrapper,
               css`
-                ${codeMirrorSyles};
+                ${codeMirrorStyles};
                 ${materialTheme};
                 ${styleString};
               `,
@@ -302,7 +302,7 @@ export default class CodeControl extends React.Component {
               editorDidMount={cm => {
                 this.cm = cm;
               }}
-              value={this.lastKnownValue}
+              value={lastKnownValue}
               onChange={(editor, data, newValue) => this.handleChange(newValue)}
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
