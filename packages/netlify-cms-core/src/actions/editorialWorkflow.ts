@@ -11,11 +11,11 @@ import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry, entryDeleted, getMediaAssets } from './entries';
-import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { Collection, EntryMap, State, Collections, EntryDraft } from '../types/redux';
+import { Collection, EntryMap, State, Collections, EntryDraft, MediaFile } from '../types/redux';
 import { AnyAction } from 'redux';
 import { EntryValue } from '../valueObjects/Entry';
 
@@ -62,7 +62,10 @@ function unpublishedEntryLoading(collection: Collection, slug: string) {
   };
 }
 
-function unpublishedEntryLoaded(collection: Collection, entry: EntryValue) {
+function unpublishedEntryLoaded(
+  collection: Collection,
+  entry: EntryValue & { mediaFiles: MediaFile[] },
+) {
   return {
     type: UNPUBLISHED_ENTRY_SUCCESS,
     payload: {
@@ -263,9 +266,8 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
 
     try {
       const entry = (await backend.unpublishedEntry(collection, slug)) as EntryValue;
-      const mediaFiles = entry.mediaFiles;
       const assetProxies = await Promise.all(
-        mediaFiles.map(({ file, path }) =>
+        entry.mediaFiles.map(({ file, path }) =>
           createAssetProxy({
             path,
             file,
@@ -274,9 +276,13 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       );
       dispatch(addAssets(assetProxies));
 
-      entry.mediaFiles = mediaFiles.map(file => ({ ...file, draft: true }));
+      let mediaFiles: MediaFile[] = entry.mediaFiles.map(file => ({ ...file, draft: true }));
+      if (!collection.has('media_folder')) {
+        const libraryFiles = getState().mediaLibrary.get('files') || [];
+        mediaFiles = mediaFiles.concat(libraryFiles);
+      }
 
-      dispatch(unpublishedEntryLoaded(collection, entry));
+      dispatch(unpublishedEntryLoaded(collection, { ...entry, mediaFiles }));
     } catch (error) {
       if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
         dispatch(unpublishedEntryRedirected(collection, slug));
@@ -361,13 +367,13 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     const entry = entryDraft.get('entry');
-    const assetProxies = (await getMediaAssets({
+    const assetProxies = await getMediaAssets({
       getState,
       mediaFiles: entry.get('mediaFiles'),
       dispatch,
       collection,
       entryPath: entry.get('path'),
-    })) as AssetProxy[];
+    });
 
     /**
      * Serialize the values of any fields with registered serializers, and
@@ -499,16 +505,6 @@ export function deleteUnpublishedEntry(collection: string, slug: string) {
         dispatch(unpublishedEntryDeleteError(collection, slug, transactionID));
       });
   };
-}
-
-interface MediaFile {
-  id: string;
-  sha: string;
-  displayURL: string;
-  path: string;
-  name: string;
-  size: number;
-  file: File;
 }
 
 export function publishUnpublishedEntry(collection: string, slug: string) {

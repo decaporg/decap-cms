@@ -347,7 +347,7 @@ export class Backend {
 
   getToken = () => this.implementation.getToken();
 
-  async entryExist(config: Config, collection: Collection, path: string, slug: string) {
+  async entryExist(collection: Collection, path: string, slug: string) {
     const unpublishedEntry =
       this.implementation.unpublishedEntry &&
       (await this.implementation.unpublishedEntry(collection, slug).catch(error => {
@@ -384,7 +384,6 @@ export class Backend {
     while (
       usedSlugs.includes(uniqueSlug) ||
       (await this.entryExist(
-        config,
         collection,
         selectEntryPath(collection, uniqueSlug) as string,
         uniqueSlug,
@@ -603,10 +602,7 @@ export class Backend {
 
     const [loadedEntry, mediaFiles] = await Promise.all([
       this.implementation.getEntry(collection, slug, path),
-      // load entry media files only if the collection has a media folder
-      collection.has('media_folder')
-        ? this.implementation.getMedia(selectMediaFolder(config, collection, path))
-        : Promise.resolve([]),
+      this.implementation.getMedia(selectMediaFolder(config, collection, path)),
     ]);
 
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {

@@ -23,6 +23,7 @@ import {
 } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, Dispatch } from 'redux';
+import { waitForMediaLibraryToLoad } from './mediaLibrary';
 
 const { notifSend } = notifActions;
 
@@ -290,7 +291,7 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
       // load assets from backup
       const mediaFiles = entry.mediaFiles || [];
       const assetProxies: AssetProxy[] = mediaFiles.map(file =>
-        createAssetProxy({ url: file.url, path: file.path }),
+        createAssetProxy({ path: file.path, file: file.file, url: file.url }),
       );
       dispatch(addAssets(assetProxies));
 
@@ -466,9 +467,16 @@ export function traverseCollectionCursor(collection: Collection, action: string)
 }
 
 export function createEmptyDraft(collection: Collection) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const dataFields = createEmptyDraftData(collection.get('fields', List()));
-    const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields });
+
+    let mediaFiles = [] as MediaFile[];
+    if (!collection.has('media_folder')) {
+      await waitForMediaLibraryToLoad(dispatch, getState());
+      mediaFiles = getState().mediaLibrary.get('files');
+    }
+
+    const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields, mediaFiles });
     dispatch(emptyDraftCreated(newEntry));
   };
 }
@@ -521,7 +529,7 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
   );
 }
 
-export function getMediaAssets({
+export async function getMediaAssets({
   getState,
   mediaFiles,
   dispatch,
@@ -534,13 +542,14 @@ export function getMediaAssets({
   entryPath: string;
   dispatch: Dispatch;
 }) {
-  return Promise.all(
-    mediaFiles
-      .toJS()
-      .map((file: MediaFile) =>
-        getAsset({ collection, entryPath, path: file.path })(dispatch, getState),
-      ),
+  const filesArray = mediaFiles.toJS() as MediaFile[];
+  const assets = await Promise.all(
+    filesArray
+      .filter(file => file.draft)
+      .map(file => getAsset({ collection, entryPath, path: file.path })(dispatch, getState)),
   );
+
+  return assets;
 }
 
 export function persistEntry(collection: Collection) {
@@ -573,13 +582,13 @@ export function persistEntry(collection: Collection) {
 
     const backend = currentBackend(state.config);
     const entry = entryDraft.get('entry');
-    const assetProxies = (await getMediaAssets({
+    const assetProxies = await getMediaAssets({
       getState,
       mediaFiles: entry.get('mediaFiles'),
       dispatch,
       collection,
       entryPath: entry.get('path'),
-    })) as AssetProxy[];
+    });
 
     /**
      * Serialize the values of any fields with registered serializers, and

@@ -2,7 +2,6 @@ import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import { getBlobSHA } from 'netlify-cms-lib-util';
 import { currentBackend } from '../backend';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
 import { selectMediaFilePath, selectMediaFilePublicPath } from '../reducers/entries';
@@ -15,6 +14,8 @@ import { State, MediaFile, DisplayURLState } from '../types/redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MediaLibraryInstance } from '../mediaLibrary';
+import { selectEditingWorkflowDraft } from '../reducers/editorialWorkflow';
+import { waitUntilWithTimeout } from './waitUntil';
 
 const { notifSend } = notifActions;
 
@@ -199,9 +200,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
-    const entry = state.entryDraft.get('entry');
-    const useWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
-    const draft = entry && !entry.isEmpty() && useWorkflow;
+    const draft = selectEditingWorkflowDraft(state);
 
     /**
      * Check for existing files of the same name before persisting. If no asset
@@ -245,6 +244,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else if (privateUpload) {
         throw new Error('The Private Upload option is only available for Asset Store Integration');
       } else {
+        const entry = state.entryDraft.get('entry');
         const entryPath = entry?.get('path');
         const collection = state.collections.get(entry?.get('collection'));
         const path = selectMediaFilePath(state.config, collection, entryPath, file.name);
@@ -308,17 +308,18 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
     }
 
     try {
-      dispatch(removeAsset(file.url as string));
-
       if (file.draft) {
-        return dispatch(removeDraftEntryMediaFile({ id: file.id }));
+        dispatch(removeAsset(file.url as string));
+        dispatch(removeDraftEntryMediaFile({ id: file.id }));
       } else {
         dispatch(mediaDeleting());
+        dispatch(removeAsset(file.url as string));
+
+        await backend.deleteMedia(state.config, file.path);
+
+        dispatch(mediaDeleted(file));
+        dispatch(removeDraftEntryMediaFile({ id: file.id }));
       }
-
-      await backend.deleteMedia(state.config, file.path);
-
-      return dispatch(mediaDeleted(file));
     } catch (error) {
       console.error(error);
       dispatch(
@@ -451,4 +452,48 @@ export function mediaDisplayURLFailure(key: string, err: Error) {
     type: MEDIA_DISPLAY_URL_FAILURE,
     payload: { key, err },
   };
+}
+
+export async function waitForMediaLibraryToLoad(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  state: State,
+) {
+  if (state.mediaLibrary.get('isLoading') !== false) {
+    await waitUntilWithTimeout(dispatch, resolve => ({
+      predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS || type === MEDIA_LOAD_FAILURE,
+      run: resolve,
+    }));
+  }
+}
+
+export async function getMediaDisplayURL(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  state: State,
+  file: MediaFile,
+) {
+  const displayURLState: DisplayURLState = selectMediaDisplayURL(state, file.id);
+
+  let url: string | null | undefined;
+  if (displayURLState.get('url')) {
+    // url was already loaded
+    url = displayURLState.get('url');
+  } else if (displayURLState.get('err')) {
+    // url loading had an error
+    url = null;
+  } else {
+    if (!displayURLState.get('isFetching')) {
+      // load display url
+      dispatch(loadMediaDisplayURL(file));
+    }
+
+    const key = file.id;
+    url = await waitUntilWithTimeout<string>(dispatch, resolve => ({
+      predicate: ({ type, payload }) =>
+        (type === MEDIA_DISPLAY_URL_SUCCESS || type === MEDIA_DISPLAY_URL_FAILURE) &&
+        payload.key === key,
+      run: (_dispatch, _getState, action) => resolve(action.payload.url),
+    }));
+  }
+
+  return url;
 }

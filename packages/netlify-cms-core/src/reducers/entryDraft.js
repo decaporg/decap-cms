@@ -133,23 +133,29 @@ const entryDraftReducer = (state = Map(), action) => {
       });
 
     case ADD_DRAFT_ENTRY_MEDIA_FILE: {
-      const mediaFiles = state.getIn(['entry', 'mediaFiles']);
+      return state.withMutations(state => {
+        const mediaFiles = state.getIn(['entry', 'mediaFiles']);
 
-      return state.setIn(
-        ['entry', 'mediaFiles'],
-        mediaFiles
-          .filterNot(file => file.get('id') === action.payload.id)
-          .push(fromJS(action.payload)),
-      );
+        state.setIn(
+          ['entry', 'mediaFiles'],
+          mediaFiles
+            .filterNot(file => file.get('id') === action.payload.id)
+            .insert(0, fromJS(action.payload)),
+        );
+        state.set('hasChanged', true);
+      });
     }
 
     case REMOVE_DRAFT_ENTRY_MEDIA_FILE: {
-      const mediaFiles = state.getIn(['entry', 'mediaFiles']);
+      return state.withMutations(state => {
+        const mediaFiles = state.getIn(['entry', 'mediaFiles']);
 
-      return state.setIn(
-        ['entry', 'mediaFiles'],
-        mediaFiles.filterNot(file => file.get('id') === action.payload.id),
-      );
+        state.setIn(
+          ['entry', 'mediaFiles'],
+          mediaFiles.filterNot(file => file.get('id') === action.payload.id),
+        );
+        state.set('hasChanged', true);
+      });
     }
 
     default:

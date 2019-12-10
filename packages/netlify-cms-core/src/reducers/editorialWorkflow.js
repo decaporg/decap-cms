@@ -150,4 +150,11 @@ export const selectUnpublishedSlugs = (state, collection) => {
     .valueSeq();
 };
 
+export const selectEditingWorkflowDraft = state => {
+  const entry = state.entryDraft.get('entry');
+  const useWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const workflowDraft = entry && !entry.isEmpty() && useWorkflow;
+  return workflowDraft;
+};
+
 export default unpublishedEntries;

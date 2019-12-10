@@ -19,6 +19,7 @@ import {
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
 } from 'Actions/mediaLibrary';
+import { selectEditingWorkflowDraft } from 'Reducers/editorialWorkflow';
 
 const defaultState = {
   isVisible: false,
@@ -186,21 +187,17 @@ const mediaLibrary = (state = Map(defaultState), action) => {
 };
 
 export function selectMediaFiles(state) {
-  const { mediaLibrary, entryDraft, collections } = state;
-  const collectionName = entryDraft.getIn(['entry', 'collection']);
-  const collection = collections.get(collectionName);
-  const entryMediaFiles = entryDraft
-    .getIn(['entry', 'mediaFiles'], List())
-    .toJS()
-    .map(file => ({ key: file.id, ...file }));
+  const { mediaLibrary, entryDraft } = state;
+  const workflowDraft = selectEditingWorkflowDraft(state);
 
   let files;
-  if (collection && collection.has('media_folder')) {
-    // only display entry media
-    files = entryMediaFiles;
+  if (workflowDraft) {
+    files = entryDraft
+      .getIn(['entry', 'mediaFiles'], List())
+      .toJS()
+      .map(file => ({ key: file.id, ...file }));
   } else {
-    // display all media
-    files = entryMediaFiles.concat(mediaLibrary.get('files') || []);
+    files = mediaLibrary.get('files') || [];
   }
 
   return files;
