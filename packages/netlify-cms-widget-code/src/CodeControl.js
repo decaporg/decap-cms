@@ -195,7 +195,6 @@ export default class CodeControl extends React.Component {
     // Only persist the language change if supported - requires the value to be
     // a map rather than just a code string.
     if (changedProps.lang && this.valueIsMap()) {
-      console.log(lang)
       onChange(this.toValue('lang', changedProps.lang));
     }
   }

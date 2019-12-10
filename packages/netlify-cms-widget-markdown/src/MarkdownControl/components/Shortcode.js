@@ -22,7 +22,6 @@ export default class Shortcode extends React.Component {
     const { editor, node, dataKey = 'shortcodeData' } = this.props;
     const { field } = this.state;
     const EditorControl = getEditorControl();
-    console.log(node.key)
     const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
 
     const handleChange = (fieldName, value) => {
