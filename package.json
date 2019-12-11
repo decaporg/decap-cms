@@ -111,7 +111,7 @@
     "copy-webpack-plugin": "^5.0.1",
     "cross-env": "^6.0.0",
     "css-loader": "^3.0.0",
-    "cypress": "^3.4.1",
+    "cypress": "^3.7.0",
     "cypress-jest-adapter": "^0.0.3",
     "cypress-plugin-tab": "^1.0.0",
     "dom-testing-library": "^4.0.0",

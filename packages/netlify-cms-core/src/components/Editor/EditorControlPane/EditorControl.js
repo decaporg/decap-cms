@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
-import { addAsset } from 'Actions/media';
+import { addAsset, getAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
 import {
   openMediaLibrary,
@@ -129,7 +129,7 @@ class EditorControl extends React.Component {
       fieldsMetaData,
       fieldsErrors,
       mediaPaths,
-      getAsset,
+      boundGetAsset,
       onChange,
       openMediaLibrary,
       clearMediaControl,
@@ -226,7 +226,7 @@ class EditorControl extends React.Component {
               onRemoveMediaControl={removeMediaControl}
               onRemoveInsertedMedia={removeInsertedMedia}
               onAddAsset={addAsset}
-              getAsset={getAsset}
+              getAsset={boundGetAsset}
               hasActiveStyle={isSelected || this.state.styleActive}
               setActiveStyle={() => this.setState({ styleActive: true })}
               setInactiveStyle={() => this.setState({ styleActive: false })}
@@ -235,14 +235,7 @@ class EditorControl extends React.Component {
               getEditorComponents={getEditorComponents}
               ref={processControlRef && partial(processControlRef, field)}
               controlRef={controlRef}
-              editorControl={props => (
-                <ConnectedEditorControl
-                  collection={this.props.collection}
-                  entry={this.props.entry}
-                  getAsset={this.props.getAsset}
-                  {...props}
-                />
-              )}
+              editorControl={ConnectedEditorControl}
               query={query}
               loadEntry={loadEntry}
               queryHits={queryHits}
@@ -268,10 +261,16 @@ class EditorControl extends React.Component {
 }
 
 const mapStateToProps = state => {
+  const { collections, entryDraft } = state;
+  const entryPath = entryDraft.getIn(['entry', 'path']);
+  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
     isFetching: state.search.get('isFetching'),
     queryHits: state.search.get('queryHits'),
+    collection,
+    entryPath,
   };
 };
 
@@ -288,17 +287,24 @@ const mapDispatchToProps = {
   },
   clearSearch,
   clearFieldErrors,
+  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
+    return getAsset({ collection, entryPath, path })(dispatch, getState);
+  },
+};
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entryPath),
+  };
 };
 
 const ConnectedEditorControl = connect(
   mapStateToProps,
   mapDispatchToProps,
+  mergeProps,
 )(translate()(EditorControl));
-
-ConnectedEditorControl.propTypes = {
-  collection: ImmutablePropTypes.map.isRequired,
-  entry: ImmutablePropTypes.map.isRequired,
-  getAsset: PropTypes.func.isRequired,
-};
 
 export default ConnectedEditorControl;
