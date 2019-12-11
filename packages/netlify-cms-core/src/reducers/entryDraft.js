@@ -8,6 +8,7 @@ import {
   DRAFT_CLEAR_ERRORS,
   DRAFT_LOCAL_BACKUP_RETRIEVED,
   DRAFT_CREATE_FROM_LOCAL_BACKUP,
+  DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
@@ -65,6 +66,16 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('entry', backupEntry);
         state.setIn(['entry', 'newRecord'], !backupEntry.get('path'));
         state.set('mediaFiles', backupDraftEntry.get('mediaFiles'));
+        state.set('fieldsMetaData', Map());
+        state.set('fieldsErrors', Map());
+        state.set('hasChanged', true);
+      });
+    case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
+      // Duplicate Entry
+      return state.withMutations(state => {
+        state.set('entry', fromJS(action.payload));
+        state.setIn(['entry', 'newRecord'], true);
+        state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', true);

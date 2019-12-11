@@ -26,6 +26,7 @@ describe('Editor', () => {
     changeDraftFieldValidation: jest.fn(),
     collection: fromJS({ name: 'posts' }),
     createDraftFromEntry: jest.fn(),
+    createDraftDuplicateFromEntry: jest.fn(),
     createEmptyDraft: jest.fn(),
     discardDraft: jest.fn(),
     entry: fromJS({}),

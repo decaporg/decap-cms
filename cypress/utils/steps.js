@@ -1,4 +1,4 @@
-const { notifications, workflowStatus } = require('./constants');
+const { notifications, workflowStatus, editorStatus, publishTypes } = require('./constants');
 
 function login(user) {
   cy.viewport(1200, 1200);
@@ -147,14 +147,23 @@ function assertWorkflowStatus({ title }, status) {
 }
 
 function updateWorkflowStatusInEditor(newStatus) {
-  cy.contains('[role="button"]', 'Set status').as('setStatusButton');
-  cy.get('@setStatusButton')
+  selectDropdownItem('Set status', newStatus);
+  assertNotification(notifications.updated);
+}
+
+function publishEntryInEditor(publishType) {
+  selectDropdownItem('Publish', publishType);
+  assertNotification(notifications.published);
+}
+
+function selectDropdownItem(label, item){
+  cy.contains('[role="button"]', label).as('dropDownButton');
+  cy.get('@dropDownButton')
     .parent()
     .within(() => {
-      cy.get('@setStatusButton').click();
-      cy.contains('[role="menuitem"] span', newStatus).click();
+      cy.get('@dropDownButton').click();
+      cy.contains('[role="menuitem"] span', item).click();
     });
-  assertNotification(notifications.updated);
 }
 
 function populateEntry(entry) {
@@ -217,16 +226,23 @@ function unpublishEntry(entry) {
   cy.contains('h2', entry.title)
     .parent()
     .click({ force: true });
-  cy.contains('[role="button"]', 'Published').as('publishedButton');
-  cy.get('@publishedButton')
-    .parent()
-    .within(() => {
-      cy.get('@publishedButton').click();
-      cy.contains('[role="menuitem"] span', 'Unpublish').click();
-    });
+  selectDropdownItem('Published', 'Unpublish');
   assertNotification(notifications.unpublished);
   goToWorkflow();
   assertWorkflowStatus(entry, workflowStatus.ready);
+}
+
+function duplicateEntry(entry) {
+  selectDropdownItem('Published', 'Duplicate');
+  cy.url().should('contain', '/#/collections/posts/new');
+  cy.contains('button', 'Save').click();
+  updateWorkflowStatusInEditor(editorStatus.ready);
+  publishEntryInEditor(publishTypes.publishNow);
+  exitEditor();
+  cy.get('a h2').should(($h2s) => {
+    expect($h2s.eq(0)).to.contain(entry.title);
+    expect($h2s.eq(1)).to.contain(entry.title);
+  });
 }
 
 function validateObjectFields({ limit, author }) {
@@ -321,4 +337,6 @@ module.exports = {
   validateNestedObjectFieldsAndExit,
   validateListFieldsAndExit,
   unpublishEntry,
+  publishEntryInEditor,
+  duplicateEntry,
 };

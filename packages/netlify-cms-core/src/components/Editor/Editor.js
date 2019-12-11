@@ -11,6 +11,7 @@ import {
   loadEntry,
   loadEntries,
   createDraftFromEntry,
+  createDraftDuplicateFromEntry,
   createEmptyDraft,
   discardDraft,
   changeDraftField,
@@ -49,6 +50,7 @@ export class Editor extends React.Component {
     changeDraftFieldValidation: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
     createDraftFromEntry: PropTypes.func.isRequired,
+    createDraftDuplicateFromEntry: PropTypes.func.isRequired,
     createEmptyDraft: PropTypes.func.isRequired,
     discardDraft: PropTypes.func.isRequired,
     entry: ImmutablePropTypes.map,
@@ -255,7 +257,7 @@ export class Editor extends React.Component {
   }
 
   handlePersistEntry = async (opts = {}) => {
-    const { createNew = false } = opts;
+    const { createNew = false, duplicate = false } = opts;
     const {
       persistEntry,
       collection,
@@ -263,7 +265,8 @@ export class Editor extends React.Component {
       hasWorkflow,
       loadEntry,
       slug,
-      createEmptyDraft,
+      createDraftDuplicateFromEntry,
+      entryDraft,
     } = this.props;
 
     await persistEntry(collection);
@@ -272,15 +275,23 @@ export class Editor extends React.Component {
 
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
-      createEmptyDraft(collection);
+      duplicate && createDraftDuplicateFromEntry(entryDraft.get('entry'));
     } else if (slug && hasWorkflow && !currentStatus) {
       loadEntry(collection, slug);
     }
   };
 
   handlePublishEntry = async (opts = {}) => {
-    const { createNew = false } = opts;
-    const { publishUnpublishedEntry, entryDraft, collection, slug, currentStatus, t } = this.props;
+    const { createNew = false, duplicate = false } = opts;
+    const {
+      publishUnpublishedEntry,
+      createDraftDuplicateFromEntry,
+      entryDraft,
+      collection,
+      slug,
+      currentStatus,
+      t,
+    } = this.props;
     if (currentStatus !== status.last()) {
       window.alert(t('editor.editor.onPublishingNotReady'));
       return;
@@ -298,6 +309,8 @@ export class Editor extends React.Component {
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
     }
+
+    duplicate && createDraftDuplicateFromEntry(entryDraft.get('entry'));
   };
 
   handleUnpublishEntry = async () => {
@@ -307,6 +320,13 @@ export class Editor extends React.Component {
     await unpublishPublishedEntry(collection, slug);
 
     return navigateToCollection(collection.get('name'));
+  };
+
+  handleDuplicateEntry = async () => {
+    const { createDraftDuplicateFromEntry, collection, entryDraft } = this.props;
+
+    await navigateToNewEntry(collection.get('name'));
+    createDraftDuplicateFromEntry(entryDraft.get('entry'));
   };
 
   handleDeleteEntry = () => {
@@ -415,6 +435,7 @@ export class Editor extends React.Component {
         onChangeStatus={this.handleChangeStatus}
         onPublish={this.handlePublishEntry}
         unPublish={this.handleUnpublishEntry}
+        onDuplicate={this.handleDuplicateEntry}
         showDelete={this.props.showDelete}
         user={user}
         hasChanged={hasChanged}
@@ -486,6 +507,7 @@ export default connect(mapStateToProps, {
   persistLocalBackup,
   deleteLocalBackup,
   createDraftFromEntry,
+  createDraftDuplicateFromEntry,
   createEmptyDraft,
   discardDraft,
   persistEntry,
