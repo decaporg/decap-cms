@@ -118,7 +118,7 @@ class Workflow extends Component {
           <WorkflowTopDescription>
             {t('workflow.workflow.description', {
               smart_count: reviewCount,
-              readyCount: readyCount,
+              readyCount,
             })}
           </WorkflowTopDescription>
         </WorkflowTop>

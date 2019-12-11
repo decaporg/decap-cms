@@ -22,7 +22,8 @@
     "emotion/no-vanilla": "error",
     "emotion/import-from-emotion": "error",
     "emotion/styled-import": "error",
-    "require-atomic-updates": [0]
+    "require-atomic-updates": [0],
+    "object-shorthand": ["error", "always"]
   },
   "plugins": ["emotion", "cypress"],
   "settings": {
