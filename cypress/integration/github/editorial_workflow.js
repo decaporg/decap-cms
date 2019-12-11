@@ -74,7 +74,7 @@ export default function({ use_graphql }) {
     updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
   });
 
-  it.only('can change status on and publish multiple entries', () => {
+  it('can change status on and publish multiple entries', () => {
     login(taskResult.data.user);
     createPostAndExit(entry1);
     createPostAndExit(entry2);
