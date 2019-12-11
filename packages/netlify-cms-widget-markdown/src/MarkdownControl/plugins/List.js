@@ -4,32 +4,6 @@ import { Range, Block } from 'slate';
 import isHotkey from 'is-hotkey';
 import { assertType } from './util';
 
-/**
- * TODO:
- * - ✅ make sure nested empty list items (can be read in from markdown) don't cause list handling to break
- * - ✅ backspace should close a list item without opening a new list item in the
- *   ancestor list, and next backspace should do the norm, move selection to end
- *   of previous list item
- * - ✅ tab pressed inside of nested block within list item, eg. quote, but with
- *   the cursor at the very beginning of the block, should indent the parent
- *   list item
- * - ✅ other tab handlers (should only be code block) should be registered before
- *   this, as it will attempt to tab expanded selections where the entire
- *   selection shares a common list item ancestor
- * - ✅ handle enter when it's pressed in a block child of a list item?
- * - ✅ handle expanded enter
- * - ✅ handle list button/tab/enter inside of quote (and eventually table, should be same though)
- * - ✅ test multiple subsequent lists of same and different types
- * - ✅ tab multiple list items when selection is expanded
- * - ✅ tab multiple nested lists and items when selection is expanded
- * - ✅ empty new list item is parsed as a literal asterisk in markdown until non-empty
- * - ✅ closing a block in a nested list item via backspace should only close the
- *   immediate block
- * - ✅ ideally you'd put list plugin last so others can intercept keyboard actions
- *   for nested types, but a list can be nested in a quote, so how do we ensure
- *   the action only hits the closest of the two (quote or list item)?
- * - relocating code blocks/editor components really requires dragging, especially nested in lists
- */
 const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
   const LIST_TYPES = [orderedListType, unorderedListType];
 
