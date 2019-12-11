@@ -34,15 +34,22 @@ export default class MarkdownControl extends React.Component {
     super(props);
     editorControl = props.editorControl;
     _getEditorComponents = props.getEditorComponents;
-    this.state = { mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual' };
+    this.state = {
+      mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual',
+      pendingFocus: false,
+    };
   }
 
   handleMode = mode => {
-    this.setState({ mode });
+    this.setState({ mode, pendingFocus: true });
     localStorage.setItem(MODE_STORAGE_KEY, mode);
   };
 
   processRef = ref => (this.ref = ref);
+
+  setFocusReceived = () => {
+    this.setState({ pendingFocus: false })
+  };
 
   render() {
     const {
@@ -56,7 +63,7 @@ export default class MarkdownControl extends React.Component {
       resolveWidget,
     } = this.props;
 
-    const { mode } = this.state;
+    const { mode, pendingFocus } = this.state;
     const visualEditor = (
       <div className="cms-editor-visual" ref={this.processRef}>
         <VisualEditor
@@ -69,6 +76,7 @@ export default class MarkdownControl extends React.Component {
           field={field}
           getEditorComponents={getEditorComponents}
           resolveWidget={resolveWidget}
+          pendingFocus={pendingFocus && this.setFocusReceived}
         />
       </div>
     );
@@ -82,6 +90,7 @@ export default class MarkdownControl extends React.Component {
           className={classNameWrapper}
           value={value}
           field={field}
+          pendingFocus={pendingFocus && this.setFocusReceived}
         />
       </div>
     );

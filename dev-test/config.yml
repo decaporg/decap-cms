@@ -32,7 +32,7 @@ collections: # A list of collections the CMS should be able to edit
         widget: 'image'
         required: false
         tagname: ''
-      - { label: Code, name: code, widget: code }
+
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
     meta:
       - { label: 'SEO Description', name: 'description', widget: 'text' }

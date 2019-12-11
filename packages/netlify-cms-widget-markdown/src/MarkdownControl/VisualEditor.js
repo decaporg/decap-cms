@@ -86,6 +86,13 @@ export default class Editor extends React.Component {
     return !this.state.value.equals(nextState.value);
   }
 
+  componentDidMount() {
+    if (this.props.pendingFocus) {
+      this.editor.focus();
+      this.props.pendingFocus();
+    }
+  }
+
   handleMarkClick = type => {
     this.editor.toggleMark(type).focus();
   };

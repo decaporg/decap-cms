@@ -42,6 +42,13 @@ export default class RawEditor extends React.Component {
     return !this.state.value.equals(nextState.value);
   }
 
+  componentDidMount() {
+    if (this.props.pendingFocus) {
+      this.editor.focus();
+      this.props.pendingFocus();
+    }
+  }
+
   handleCopy = (event, editor) => {
     const { getAsset, resolveWidget } = this.props;
     const markdown = Plain.serialize(editor.value);
@@ -67,7 +74,6 @@ export default class RawEditor extends React.Component {
   };
 
   handleChange = editor => {
-    console.log('change');
     if (!this.state.value.document.equals(editor.value.document)) {
       this.handleDocumentChange(editor);
     }
@@ -89,8 +95,11 @@ export default class RawEditor extends React.Component {
     this.props.onMode('visual');
   };
 
+  processRef = ref => {
+    this.editor = ref;
+  };
+
   render() {
-    console.log('render');
     const { className, field } = this.props;
     return (
       <RawEditorContainer>
@@ -116,6 +125,7 @@ export default class RawEditor extends React.Component {
               onPaste={this.handlePaste}
               onCut={this.handleCut}
               onCopy={this.handleCopy}
+              ref={this.processRef}
             />
           )}
         </ClassNames>
