@@ -200,7 +200,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
-    const draft = selectEditingWorkflowDraft(state);
+    const editingDraft = selectEditingWorkflowDraft(state);
 
     /**
      * Check for existing files of the same name before persisting. If no asset
@@ -216,12 +216,11 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       }
     }
 
-    if (!draft) {
+    if (integration || !editingDraft) {
       dispatch(mediaPersisting());
     }
 
     try {
-      const id = await getBlobSHA(file);
       let assetProxy: AssetProxy;
       if (integration) {
         try {
@@ -258,9 +257,12 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
 
       let mediaFile: MediaFile;
       if (integration) {
-        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft });
-      } else if (draft) {
-        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft });
+        const id = await getBlobSHA(file);
+        // integration assets are persisted immediately, thus draft is false
+        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft: false });
+      } else if (editingDraft) {
+        const id = await getBlobSHA(file);
+        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft: editingDraft });
         return dispatch(addDraftEntryMediaFile(mediaFile));
       } else {
         mediaFile = await backend.persistMedia(state.config, assetProxy);
@@ -312,13 +314,17 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
         dispatch(removeAsset(file.path));
         dispatch(removeDraftEntryMediaFile({ id: file.id }));
       } else {
+        const editingDraft = selectEditingWorkflowDraft(state);
+
         dispatch(mediaDeleting());
         dispatch(removeAsset(file.path));
 
         await backend.deleteMedia(state.config, file.path);
 
         dispatch(mediaDeleted(file));
-        dispatch(removeDraftEntryMediaFile({ id: file.id }));
+        if (editingDraft) {
+          dispatch(removeDraftEntryMediaFile({ id: file.id }));
+        }
       }
     } catch (error) {
       console.error(error);
@@ -461,7 +467,7 @@ export async function waitForMediaLibraryToLoad(
   if (state.mediaLibrary.get('isLoading') !== false) {
     await waitUntilWithTimeout(dispatch, resolve => ({
       predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS || type === MEDIA_LOAD_FAILURE,
-      run: resolve,
+      run: () => resolve(),
     }));
   }
 }

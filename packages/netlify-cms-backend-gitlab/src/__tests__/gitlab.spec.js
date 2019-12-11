@@ -382,7 +382,7 @@ describe('gitlab backend', () => {
       interceptCollection(backend, collectionContentConfig);
 
       const entry = await backend.getEntry(
-        { config: fromJS({}), entryDraft: fromJS({}) },
+        { config: fromJS({}), integrations: fromJS([]), entryDraft: fromJS({}) },
         fromJS(collectionContentConfig),
         slug,
       );

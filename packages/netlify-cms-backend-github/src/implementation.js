@@ -284,7 +284,7 @@ export default class GitHub {
         new Promise(resolve =>
           sem.take(() =>
             this.api
-              .readFile({ path: file.path, sha: file.sha, repoURL })
+              .readFile(file.path, file.sha, { repoURL })
               .then(data => {
                 resolve({ file, data });
                 sem.leave();
@@ -306,7 +306,7 @@ export default class GitHub {
   // Fetches a single entry.
   getEntry(collection, slug, path) {
     const repoURL = this.api.originRepoURL;
-    return this.api.readFile({ path, sha: null, repoURL }).then(data => ({
+    return this.api.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,
     }));
@@ -331,8 +331,8 @@ export default class GitHub {
 
     return {
       displayURL: url,
-      path: path,
-      name: name,
+      path,
+      name,
       size: fileObj.size,
       file: fileObj,
       url,
@@ -356,15 +356,14 @@ export default class GitHub {
   async persistMedia(mediaFile, options = {}) {
     try {
       await this.api.persistFiles(null, [mediaFile], options);
-      const { sha, value, path, fileObj } = mediaFile;
+      const { sha, path, fileObj } = mediaFile;
       const displayURL = URL.createObjectURL(fileObj);
       return {
         id: sha,
-        name: value,
+        name: fileObj.name,
         size: fileObj.size,
         displayURL,
         path: trimStart(path, '/'),
-        draft: options.draft,
       };
     } catch (error) {
       console.error(error);
@@ -376,25 +375,24 @@ export default class GitHub {
     return this.api.deleteFile(path, commitMessage, options);
   }
 
-  async getEntryMediaFiles(data) {
-    const files = get(data, 'metaData.objects.files', []);
-    const mediaFiles = await Promise.all(
-      files.map(file =>
-        this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
-          const name = file.path.substring(file.path.lastIndexOf('/') + 1);
-          const fileObj = new File([blob], name);
-          return {
-            id: file.sha,
-            sha: file.sha,
-            displayURL: URL.createObjectURL(fileObj),
-            path: file.path,
-            name: name,
-            size: fileObj.size,
-            file: fileObj,
-          };
-        }),
-      ),
-    );
+  async loadMediaFile(file) {
+    return this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
+      const name = basename(file.path);
+      const fileObj = new File([blob], name);
+      return {
+        id: file.sha,
+        sha: file.sha,
+        displayURL: URL.createObjectURL(fileObj),
+        path: file.path,
+        name,
+        size: fileObj.size,
+        file: fileObj,
+      };
+    });
+  }
+
+  async loadEntryMediaFiles(files) {
+    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(file)));
 
     return mediaFiles;
   }
@@ -445,13 +443,18 @@ export default class GitHub {
       });
   }
 
-  async unpublishedEntry(collection, slug) {
+  async unpublishedEntry(
+    collection,
+    slug,
+    { loadEntryMediaFiles = files => this.loadEntryMediaFiles(files) } = {},
+  ) {
     const contentKey = this.api.generateContentKey(collection.get('name'), slug);
     const data = await this.api.readUnpublishedBranchFile(contentKey);
     if (!data) {
       return null;
     }
-    const mediaFiles = await this.getEntryMediaFiles(data);
+    const files = get(data, 'metaData.objects.files', []);
+    const mediaFiles = await loadEntryMediaFiles(files);
     return {
       slug,
       file: { path: data.metaData.objects.entry.path },
@@ -504,10 +507,9 @@ export default class GitHub {
 
   publishUnpublishedEntry(collection, slug) {
     // publishUnpublishedEntry is a transactional operation
-    return this.runWithLock(async () => {
-      const metaData = await this.api.publishUnpublishedEntry(collection, slug);
-      const mediaFiles = await this.getEntryMediaFiles({ metaData });
-      return { mediaFiles };
-    }, 'Failed to acquire publish entry lock');
+    return this.runWithLock(
+      () => this.api.publishUnpublishedEntry(collection, slug),
+      'Failed to acquire publish entry lock',
+    );
   }
 }

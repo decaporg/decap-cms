@@ -20,6 +20,7 @@ import {
   MEDIA_DISPLAY_URL_FAILURE,
 } from 'Actions/mediaLibrary';
 import { selectEditingWorkflowDraft } from 'Reducers/editorialWorkflow';
+import { selectIntegration } from 'Reducers';
 
 const defaultState = {
   isVisible: false,
@@ -189,9 +190,10 @@ const mediaLibrary = (state = Map(defaultState), action) => {
 export function selectMediaFiles(state) {
   const { mediaLibrary, entryDraft } = state;
   const workflowDraft = selectEditingWorkflowDraft(state);
+  const integration = selectIntegration(state, null, 'assetStore');
 
   let files;
-  if (workflowDraft) {
+  if (workflowDraft && !integration) {
     files = entryDraft
       .getIn(['entry', 'mediaFiles'], List())
       .toJS()

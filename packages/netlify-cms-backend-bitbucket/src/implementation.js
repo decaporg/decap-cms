@@ -7,6 +7,8 @@ import {
   resolvePromiseProperties,
   then,
   unsentRequest,
+  basename,
+  getBlobSHA,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -233,13 +235,16 @@ export default class BitbucketBackend {
       );
   }
 
+  getMediaAsBlob(path, id) {
+    return this.api.readFile(path, id, { parseText: false });
+  }
+
   getMediaDisplayURL(displayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
     const { id, path } = displayURL;
     return new Promise((resolve, reject) =>
       this._mediaDisplayURLSem.take(() =>
-        this.api
-          .readFile(path, id, { parseText: false })
+        this.getMediaAsBlob(path, id)
           .then(blob => URL.createObjectURL(blob))
           .then(resolve, reject)
           .finally(() => this._mediaDisplayURLSem.leave()),
@@ -247,14 +252,45 @@ export default class BitbucketBackend {
     );
   }
 
+  async getMediaFile(path) {
+    const name = basename(path);
+    const blob = await this.getMediaAsBlob(path, null);
+    const fileObj = new File([blob], name);
+    const url = URL.createObjectURL(fileObj);
+
+    return {
+      displayURL: url,
+      path,
+      name,
+      size: fileObj.size,
+      file: fileObj,
+      url,
+    };
+  }
+
   persistEntry(entry, mediaFiles, options = {}) {
     return this.api.persistFiles([entry], options);
   }
 
   async persistMedia(mediaFile, options = {}) {
-    await this.api.persistFiles([mediaFile], options);
-    const { value, path, fileObj } = mediaFile;
-    return { name: value, size: fileObj.size, path: trimStart(path, '/k') };
+    const { fileObj } = mediaFile;
+
+    const [sha] = await Promise.all([
+      getBlobSHA(fileObj),
+      this.api.persistFiles([mediaFile], options),
+    ]);
+
+    const url = URL.createObjectURL(fileObj);
+
+    return {
+      displayURL: url,
+      path: trimStart(mediaFile.path, '/k'),
+      name: fileObj.name,
+      size: fileObj.size,
+      id: sha,
+      file: fileObj,
+      url,
+    };
   }
 
   deleteFile(path, commitMessage, options) {

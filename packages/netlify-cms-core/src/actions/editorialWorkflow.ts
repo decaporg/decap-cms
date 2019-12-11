@@ -267,9 +267,10 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     try {
       const entry = (await backend.unpublishedEntry(collection, slug)) as EntryValue;
       const assetProxies = await Promise.all(
-        entry.mediaFiles.map(({ file, path }) =>
+        entry.mediaFiles.map(({ url, file, path }) =>
           createAssetProxy({
             path,
+            url,
             file,
           }),
         ),

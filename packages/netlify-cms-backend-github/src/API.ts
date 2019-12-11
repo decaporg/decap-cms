@@ -36,7 +36,6 @@ interface File {
   type: 'blob' | 'tree';
   sha: string;
   path: string;
-  uploaded?: boolean;
   remove?: boolean;
   raw?: string;
 }
@@ -441,19 +440,19 @@ export default class API {
     }).then((file: GitHubFile) => this.getBlob({ sha: file.sha, repoURL, parseText }));
   }
 
-  readFile({
-    path,
-    sha,
-    branch = this.branch,
-    repoURL = this.repoURL,
-    parseText = true,
-  }: {
-    path: string;
-    sha: string | null;
-    branch?: string;
-    repoURL?: string;
-    parseText?: boolean;
-  }) {
+  readFile(
+    path: string,
+    sha: string | null,
+    {
+      branch = this.branch,
+      repoURL = this.repoURL,
+      parseText = true,
+    }: {
+      branch?: string;
+      repoURL?: string;
+      parseText?: boolean;
+    } = {},
+  ) {
     if (sha) {
       return this.getBlob({ sha, repoURL, parseText });
     } else {
@@ -480,10 +479,10 @@ export default class API {
   async getMediaAsBlob(sha: string | null, path: string) {
     let blob: Blob;
     if (path.match(/.svg$/)) {
-      const text = (await this.readFile({ sha, path, parseText: true })) as string;
+      const text = (await this.readFile(path, sha, { parseText: true })) as string;
       blob = new Blob([text], { type: 'image/svg+xml' });
     } else {
-      blob = (await this.readFile({ sha, path, parseText: false })) as Blob;
+      blob = (await this.readFile(path, sha, { parseText: false })) as Blob;
     }
     return blob;
   }
@@ -536,9 +535,7 @@ export default class API {
     return resolvePromiseProperties({
       metaData: metaDataPromise,
       fileData: metaDataPromise.then(data =>
-        this.readFile({
-          path: data.objects.entry.path,
-          sha: null,
+        this.readFile(data.objects.entry.path, null, {
           branch: data.branch,
           repoURL,
         }),
@@ -552,9 +549,7 @@ export default class API {
   }
 
   isUnpublishedEntryModification(path: string, branch: string) {
-    return this.readFile({
-      path,
-      sha: null,
+    return this.readFile(path, null, {
       branch,
       repoURL: this.originRepoURL,
     })
@@ -729,7 +724,7 @@ export default class API {
 
   async persistFiles(entry: Entry, mediaFiles: File[], options: PersistOptions) {
     const files = entry ? mediaFiles.concat(entry) : mediaFiles;
-    const uploadPromises = files.filter(file => !file.uploaded).map(file => this.uploadBlob(file));
+    const uploadPromises = files.map(file => this.uploadBlob(file));
     await Promise.all(uploadPromises);
 
     if (!options.useWorkflow) {
@@ -1268,7 +1263,7 @@ export default class API {
     return Promise.resolve(Base64.encode(str));
   }
 
-  uploadBlob(item: { raw?: string; sha?: string; uploaded?: boolean }) {
+  uploadBlob(item: { raw?: string; sha?: string }) {
     const content = result(item, 'toBase64', partial(this.toBase64, item.raw as string));
 
     return content.then(contentBase64 =>
@@ -1280,7 +1275,6 @@ export default class API {
         }),
       }).then(response => {
         item.sha = response.sha;
-        item.uploaded = true;
         return item;
       }),
     );

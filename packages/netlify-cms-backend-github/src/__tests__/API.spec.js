@@ -136,9 +136,10 @@ describe('github API', () => {
     it('should allow overriding requestHeaders to return a promise ', async () => {
       const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
 
-      api.requestHeaders = jest
-        .fn()
-        .mockResolvedValue({ Authorization: 'promise-token', 'Content-Type': 'application/json' });
+      api.requestHeaders = jest.fn().mockResolvedValue({
+        Authorization: 'promise-token',
+        'Content-Type': 'application/json; charset=utf-8',
+      });
 
       fetch.mockResolvedValue({
         text: jest.fn().mockResolvedValue('some response'),
@@ -150,7 +151,10 @@ describe('github API', () => {
       expect(result).toEqual('some response');
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path?ts=1000', {
-        headers: { Authorization: 'promise-token', 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: 'promise-token',
+          'Content-Type': 'application/json; charset=utf-8',
+        },
       });
     });
   });
@@ -165,10 +169,8 @@ describe('github API', () => {
       await expect(api.getMediaAsBlob('sha', 'static/media/image.png')).resolves.toBe(blob);
 
       expect(api.readFile).toHaveBeenCalledTimes(1);
-      expect(api.readFile).toHaveBeenCalledWith({
+      expect(api.readFile).toHaveBeenCalledWith('static/media/image.png', 'sha', {
         parseText: false,
-        path: 'static/media/image.png',
-        sha: 'sha',
       });
     });
 
@@ -183,10 +185,8 @@ describe('github API', () => {
       );
 
       expect(api.readFile).toHaveBeenCalledTimes(1);
-      expect(api.readFile).toHaveBeenCalledWith({
+      expect(api.readFile).toHaveBeenCalledWith('static/media/logo.svg', 'sha', {
         parseText: true,
-        path: 'static/media/logo.svg',
-        sha: 'sha',
       });
     });
   });
@@ -316,7 +316,6 @@ describe('github API', () => {
       const mediaFiles = [
         {
           path: '/static/media/image-1.png',
-          uploaded: true,
           sha: 'image-1.png',
         },
         {
@@ -327,8 +326,9 @@ describe('github API', () => {
 
       await api.persistFiles(entry, mediaFiles, { useWorkflow: true });
 
-      expect(api.uploadBlob).toHaveBeenCalledTimes(2);
+      expect(api.uploadBlob).toHaveBeenCalledTimes(3);
       expect(api.uploadBlob).toHaveBeenCalledWith(entry);
+      expect(api.uploadBlob).toHaveBeenCalledWith(mediaFiles[0]);
       expect(api.uploadBlob).toHaveBeenCalledWith(mediaFiles[1]);
 
       expect(api.editorialWorkflowGit).toHaveBeenCalledTimes(1);

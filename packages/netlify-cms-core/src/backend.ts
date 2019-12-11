@@ -602,10 +602,11 @@ export class Backend {
     const label = selectFileEntryLabel(collection, slug);
 
     const workflowDraft = selectEditingWorkflowDraft(state);
+    const integration = selectIntegration(state.integrations, null, 'assetStore');
 
     const [loadedEntry, mediaFiles] = await Promise.all([
       this.implementation.getEntry(collection, slug, path),
-      workflowDraft
+      workflowDraft && !integration
         ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
         : Promise.resolve([]),
     ]);
