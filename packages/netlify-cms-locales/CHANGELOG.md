@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.3.0-beta.0...netlify-cms-locales@1.3.0-beta.1) (2019-12-11)
+
+
+### Features
+
+* duplicate entry ([#2956](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/2956)) ([d180bff](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/d180bffb44432a82f2b4e5a08df5693b30268fee))
+* **lang:** add 'ru' locale (netlify[#2951](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/2951)) ([#2952](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/2952)) ([237a5b1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/237a5b1aa65098f9c5b3768a306633a01fa25534))
+
+
+
+
+
 # [1.3.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.2.0...netlify-cms-locales@1.3.0-beta.0) (2019-12-02)
 
 

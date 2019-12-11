@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0-beta.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.7.0-beta.3...netlify-cms-ui-default@2.7.0-beta.4) (2019-12-11)
+
+
+### Features
+
+* duplicate entry ([#2956](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2956)) ([d180bff](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/d180bffb44432a82f2b4e5a08df5693b30268fee))
+
+
+
+
+
 # [2.7.0-beta.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.7.0-beta.2...netlify-cms-ui-default@2.7.0-beta.3) (2019-11-18)
 
 

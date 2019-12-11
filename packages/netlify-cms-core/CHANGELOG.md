@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.8...netlify-cms-core@2.13.0-beta.9) (2019-12-11)
+
+
+### Features
+
+* duplicate entry ([#2956](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2956)) ([d180bff](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d180bffb44432a82f2b4e5a08df5693b30268fee))
+
+
+
+
+
 # [2.13.0-beta.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.7...netlify-cms-core@2.13.0-beta.8) (2019-12-02)
 
 
