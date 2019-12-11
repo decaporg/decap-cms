@@ -202,7 +202,7 @@ export default class API {
 
   requestHeaders(headers = {}) {
     const baseHeader: Record<string, string> = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       ...headers,
     };
 

@@ -352,7 +352,7 @@ const transformRecordedData = (expectation, toSanitize) => {
       bodyObject.content = Buffer.from(sanitizeString(decodedBody, toSanitize)).toString('base64');
       body = JSON.stringify(bodyObject);
     } else {
-      body = httpRequest.body.string;
+      body = sanitizeString(httpRequest.body.string, toSanitize);
     }
   }
 

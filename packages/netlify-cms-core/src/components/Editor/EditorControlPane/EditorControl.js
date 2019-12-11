@@ -97,7 +97,7 @@ class EditorControl extends React.Component {
     fieldsMetaData: ImmutablePropTypes.map,
     fieldsErrors: ImmutablePropTypes.map,
     mediaPaths: ImmutablePropTypes.map.isRequired,
-    getAsset: PropTypes.func.isRequired,
+    boundGetAsset: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     openMediaLibrary: PropTypes.func.isRequired,
     addAsset: PropTypes.func.isRequired,

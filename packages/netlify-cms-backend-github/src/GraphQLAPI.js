@@ -43,6 +43,7 @@ export default class GraphQLAPI extends API {
     const authLink = setContext((_, { headers }) => {
       return {
         headers: {
+          'Content-Type': 'application/json; charset=utf-8',
           ...headers,
           authorization: this.token ? `token ${this.token}` : '',
         },

@@ -106,7 +106,10 @@ describe('github API', () => {
       expect(result).toEqual('some response');
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path?ts=1000', {
-        headers: { Authorization: 'token token', 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: 'token token',
+          'Content-Type': 'application/json; charset=utf-8',
+        },
       });
     });
 
