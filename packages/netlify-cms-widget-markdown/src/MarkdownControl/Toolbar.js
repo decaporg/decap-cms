@@ -223,6 +223,7 @@ export default class Toolbar extends React.Component {
           <ToolbarDropdownWrapper>
             <Dropdown
               dropdownTopOverlap="36px"
+              dropdownWidth="110px"
               renderButton={() => (
                 <DropdownButton>
                   <ToolbarButton

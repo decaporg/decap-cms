@@ -91,8 +91,15 @@ export default class CodeControl extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.isEditorComponent) {
+    const { isEditorComponent, metadata = {} } = this.props;
+    if (isEditorComponent) {
       this.cm.focus();
+    }
+    if (metadata.cursor) {
+      this.cm.doc.setCursor(cursor);
+    }
+    if (metadata.selections) {
+      this.cm.doc.setSelections(selections);
     }
     this.setState({
       lang: this.getInitialLang() || '',
@@ -200,8 +207,10 @@ export default class CodeControl extends React.Component {
   }
 
   handleChange(newValue) {
+    const cursor = this.cm.doc.getCursor();
+    const selections = this.cm.doc.listSelections();
     this.setState({ lastKnownValue: newValue });
-    this.props.onChange(this.toValue('code', newValue));
+    this.props.onChange(this.toValue('code', newValue), { cursor, selections });
   }
 
   showSettings = () => {
