@@ -1,3 +1,5 @@
+import 'moment/locale/fr';
+
 const fr = {
   app: {
     header: {

@@ -1,3 +1,5 @@
+import 'moment/locale/de';
+
 const de = {
   app: {
     header: {

@@ -1,3 +1,5 @@
+import 'moment/locale/uk';
+
 const uk = {
   app: {
     header: {

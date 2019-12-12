@@ -1,3 +1,5 @@
+import 'moment/locale/es';
+
 const es = {
   app: {
     header: {

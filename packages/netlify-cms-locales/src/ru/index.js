@@ -1,3 +1,5 @@
+import 'moment/locale/ru';
+
 const ru = {
   app: {
     header: {

@@ -149,6 +149,7 @@ class EditorControl extends React.Component {
       isEditorComponent,
       isNewEditorComponent,
       t,
+      locale,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -246,6 +247,7 @@ class EditorControl extends React.Component {
               isEditorComponent={isEditorComponent}
               isNewEditorComponent={isNewEditorComponent}
               t={t}
+              locale={locale}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={!!errors}>

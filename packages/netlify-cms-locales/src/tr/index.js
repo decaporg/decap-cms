@@ -1,3 +1,5 @@
+import 'moment/locale/tr';
+
 const tr = {
   app: {
     header: {

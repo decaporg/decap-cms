@@ -10,6 +10,9 @@
   "keywords": [
     "netlify-cms"
   ],
+  "dependencies": {
+    "moment": "^2.24.0"
+  },
   "sideEffects": false,
   "scripts": {
     "develop": "yarn build:esm --watch",

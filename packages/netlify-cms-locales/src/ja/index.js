@@ -1,3 +1,5 @@
+import 'moment/locale/ja';
+
 const ja = {
   app: {
     header: {

@@ -59,6 +59,7 @@ export default class Widget extends Component {
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -254,6 +255,7 @@ export default class Widget extends Component {
       isEditorComponent,
       isNewEditorComponent,
       t,
+      locale,
     } = this.props;
     return React.createElement(controlComponent, {
       field,
@@ -294,6 +296,7 @@ export default class Widget extends Component {
       fieldsErrors,
       controlRef,
       t,
+      locale,
     });
   }
 }

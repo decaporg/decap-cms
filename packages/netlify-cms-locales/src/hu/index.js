@@ -1,3 +1,5 @@
+import 'moment/locale/hu';
+
 const hu = {
   app: {
     header: {

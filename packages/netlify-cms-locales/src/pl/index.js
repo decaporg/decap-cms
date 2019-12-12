@@ -1,3 +1,5 @@
+import 'moment/locale/pl';
+
 const pl = {
   app: {
     header: {
