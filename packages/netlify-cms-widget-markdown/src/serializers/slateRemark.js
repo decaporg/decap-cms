@@ -101,7 +101,16 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
   function getNodeMarks(node) {
     switch (node.type) {
       case 'link': {
-        const childMarks = map(node.nodes, getNodeMarks);
+        // Code marks can't always be condensed together. If all text in a link
+        // is wrapped in a mark, this function returns that mark and the node
+        // ends up nested inside of that mark. Code marks sometimes can't do
+        // that, like when they wrap all of the text content of a link. Here we
+        // remove code marks before processing so that they stay put.
+        const nodesWithoutCode = node.nodes.map(n => ({
+          ...n,
+          marks: n.marks ? n.marks.filter(({ type }) => type !== 'code') : marks,
+        }))
+        const childMarks = map(nodesWithoutCode, getNodeMarks);
         return intersection(...childMarks);
       }
 
@@ -252,75 +261,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     return convertedNodes;
   }
 
-  /**
-   * Includes inline nodes as leaves in adjacent text nodes where appropriate, so
-   * that mark node combining logic can apply to both text and inline nodes. This
-   * is necessary because Slate doesn't allow inline nodes to have marks while
-   * inline nodes in MDAST may be nested within mark nodes. Treating them as if
-   * they were text is a bit of a necessary hack.
-   */
-
-  /**
-   * Slate treats inline code decoration as a standard mark, but MDAST does
-   * not allow inline code nodes to contain children, only a single text
-   * value. An MDAST inline code node can be nested within mark nodes such
-   * as "emphasis" and "strong", but it cannot contain them.
-   *
-   * Because of this, if a "code" mark (translated to MDAST "inlineCode") is
-   * in the markTypes array, we make the base text node an "inlineCode" type
-   * instead of a standard text node.
-   */
-
-  /**
-   * Converts a Slate Raw text node to an MDAST text node.
-   *
-   * A Slate text node will have a text property containing a string of text,
-   * and may contain an array of marks, such as "bold" or "italic". MDAST
-   * instead expresses such marks in a nested structure, with individual nodes
-   * for each mark type nested until the deepest mark node, which will contain
-   * the text node.
-   *
-   * To convert a Slate text node's marks to MDAST, we recursively wrap the text
-   * node with an MDAST node for each mark. For example, this Slate text node:
-   *
-   * {
-   *   object: 'text',
-   *   text: 'test',
-   *   marks: ['bold', 'italic'],
-   * }
-   *
-   * ...would be converted to this MDAST nested structure:
-   *
-   * {
-   *   type: 'strong',
-   *   children: [{
-   *     type: 'emphasis',
-   *     children: [{
-   *       type: 'text',
-   *       value: 'test',
-   *     }],
-   *   }],
-   * }
-   */
-
-  /**
-   * Slate's AST doesn't group adjacent text nodes with the same marks - a
-   * change in marks from letter to letter, even if some are in common, results
-   * in a separate leaf. For example, given "**a_b_**", transformation to and
-   * from Slate's AST will result in "**a****_b_**".
-   *
-   * MDAST treats styling entities as distinct nodes that contain children, so a
-   * "strong" node can contain a plain text node with a sibling "emphasis" node,
-   * which contains more text. This reducer serves to create an optimized nested
-   * MDAST without the typical redundancies that Slate's AST would produce if
-   * transformed as-is. The reducer can be called recursively to produce nested
-   * structures.
-   */
-
-  /**
-   * Convert a single Slate Raw node to an MDAST node. Uses the unist-builder `u`
-   * function to create MDAST nodes.
-   */
   function convertBlockNode(node, children) {
     switch (node.type) {
       /**

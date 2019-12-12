@@ -123,6 +123,24 @@ describe('slate', () => {
     );
   });
 
+  describe('links', () => {
+    it('should handle inline code in link content', () => {
+      // prettier-ignore
+      const slateAst = (
+        <document>
+          <paragraph>
+            <link url="link">
+              <code>foo</code>
+            </link>
+          </paragraph>
+        </document>
+      );
+      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(
+        `"[\`foo\`](link)"`
+      );
+    });
+  });
+
   describe('code marks', () => {
     it('can contain other marks', () => {
       // prettier-ignore

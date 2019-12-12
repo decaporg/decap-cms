@@ -85,9 +85,7 @@ export default class RawEditor extends React.Component {
    * text (which is Markdown) and pass that up as the new value.
    */
   handleDocumentChange = debounce(editor => {
-    console.log('document change');
     const value = Plain.serialize(editor.value);
-    console.log('serialized');
     this.props.onChange(value);
   }, 150);
 

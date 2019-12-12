@@ -179,8 +179,10 @@ export default class CodeControl extends React.Component {
     const { onChange } = this.props;
 
     if (changedProps.lang) {
-      const { mode } = this.getLanguageByName(changedProps.lang);
-      await import(`codemirror/mode/${mode}/${mode}.js`);
+      const { mode } = this.getLanguageByName(changedProps.lang) || {};
+      if (mode) {
+        await import(`codemirror/mode/${mode}/${mode}.js`);
+      }
     }
 
     // Changing CodeMirror props requires re-initializing the
