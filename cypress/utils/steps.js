@@ -47,6 +47,18 @@ function goToCollections() {
   cy.contains('a', 'Content').click();
 }
 
+function goToMediaLibrary() {
+  cy.contains('button', 'Media').click();
+}
+
+function goToEntry(entry) {
+  goToCollections();
+  cy.get('a h2')
+    .first()
+    .contains(entry.title)
+    .click();
+}
+
 function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
   cy.contains('h2', fromColumnHeading)
     .parent()
@@ -150,7 +162,7 @@ function publishEntryInEditor(publishType) {
   assertNotification(notifications.published);
 }
 
-function selectDropdownItem(label, item){
+function selectDropdownItem(label, item) {
   cy.contains('[role="button"]', label).as('dropDownButton');
   cy.get('@dropDownButton')
     .parent()
@@ -194,8 +206,12 @@ function populateEntry(entry) {
   });
 }
 
-function createPost(entry) {
+function newPost() {
   cy.contains('a', 'New Post').click();
+}
+
+function createPost(entry) {
+  newPost();
   populateEntry(entry);
 }
 
@@ -233,7 +249,7 @@ function duplicateEntry(entry) {
   updateWorkflowStatusInEditor(editorStatus.ready);
   publishEntryInEditor(publishTypes.publishNow);
   exitEditor();
-  cy.get('a h2').should(($h2s) => {
+  cy.get('a h2').should($h2s => {
     expect($h2s.eq(0)).to.contain(entry.title);
     expect($h2s.eq(1)).to.contain(entry.title);
   });
@@ -317,6 +333,7 @@ module.exports = {
   exitEditor,
   goToWorkflow,
   goToCollections,
+  goToMediaLibrary,
   updateWorkflowStatus,
   publishWorkflowEntry,
   deleteWorkflowEntry,
@@ -333,4 +350,7 @@ module.exports = {
   unpublishEntry,
   publishEntryInEditor,
   duplicateEntry,
+  newPost,
+  populateEntry,
+  goToEntry,
 };

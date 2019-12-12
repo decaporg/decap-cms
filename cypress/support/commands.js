@@ -28,6 +28,14 @@ import rehype from 'rehype';
 import visit from 'unist-util-visit';
 import { oneLineTrim } from 'common-tags';
 import { escapeRegExp } from '../utils/regexp';
+import 'cypress-file-upload';
+import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
+
+addMatchImageSnapshotCommand({
+  failureThreshold: 0.03,
+  failureThresholdType: 'percent',
+  capture: 'viewport',
+});
 
 const matchRoute = (route, fetchArgs) => {
   const url = fetchArgs[0];
@@ -91,7 +99,8 @@ Cypress.Commands.add('stubFetch', ({ fixture }) => {
 });
 
 function runTimes(cyInstance, fn, count = 1) {
-  let chain = cyInstance, i = count;
+  let chain = cyInstance,
+    i = count;
   while (i) {
     i -= 1;
     chain = fn(chain);
@@ -108,7 +117,7 @@ function runTimes(cyInstance, fn, count = 1) {
   ['left', 'leftArrow'],
   ['right', 'rightArrow'],
 ].forEach(key => {
-  const [ cmd, keyName ] = typeof key === 'object' ? key : [key, key];
+  const [cmd, keyName] = typeof key === 'object' ? key : [key, key];
   Cypress.Commands.add(cmd, { prevSubject: true }, (subject, { shift, times = 1 } = {}) => {
     const fn = chain => chain.type(`${shift ? '{shift}' : ''}{${keyName}}`);
     return runTimes(cy.wrap(subject), fn, times);
@@ -125,7 +134,7 @@ Cypress.Commands.add('selection', { prevSubject: true }, (subject, fn) => {
   cy.wrap(subject)
     .trigger('mousedown')
     .then(fn)
-    .trigger('mouseup')
+    .trigger('mouseup');
 
   cy.document().trigger('selectionchange');
   return cy.wrap(subject);
@@ -138,36 +147,36 @@ Cypress.Commands.add('print', { prevSubject: 'optional' }, (subject, str) => {
 });
 
 Cypress.Commands.add('setSelection', { prevSubject: true }, (subject, query, endQuery) => {
-  return cy.wrap(subject)
-    .selection($el => {
-      if (typeof query === 'string') {
-        const anchorNode = getTextNode($el[0], query);
-        const focusNode = endQuery ? getTextNode($el[0], endQuery) : anchorNode;
-        const anchorOffset = anchorNode.wholeText.indexOf(query);
-        const focusOffset = endQuery ?
-          focusNode.wholeText.indexOf(endQuery) + endQuery.length :
-          anchorOffset + query.length;
-        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
-      } else if (typeof query === 'object') {
-        const el = $el[0];
-        const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
-        const anchorOffset = query.anchorOffset || 0;
-        const focusNode = query.focusQuery ? getTextNode(el.querySelector(query.focusQuery)) : anchorNode;
-        const focusOffset = query.focusOffset || 0;
-        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
-      }
-    });
+  return cy.wrap(subject).selection($el => {
+    if (typeof query === 'string') {
+      const anchorNode = getTextNode($el[0], query);
+      const focusNode = endQuery ? getTextNode($el[0], endQuery) : anchorNode;
+      const anchorOffset = anchorNode.wholeText.indexOf(query);
+      const focusOffset = endQuery
+        ? focusNode.wholeText.indexOf(endQuery) + endQuery.length
+        : anchorOffset + query.length;
+      setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+    } else if (typeof query === 'object') {
+      const el = $el[0];
+      const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
+      const anchorOffset = query.anchorOffset || 0;
+      const focusNode = query.focusQuery
+        ? getTextNode(el.querySelector(query.focusQuery))
+        : anchorNode;
+      const focusOffset = query.focusOffset || 0;
+      setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+    }
+  });
 });
 
 Cypress.Commands.add('setCursor', { prevSubject: true }, (subject, query, atStart) => {
-  return cy.wrap(subject)
-    .selection($el => {
-      const node = getTextNode($el[0], query);
-      const offset = node.wholeText.indexOf(query) + (atStart ? 0 : query.length);
-      const document = node.ownerDocument;
-      document.getSelection().removeAllRanges();
-      document.getSelection().collapse(node, offset);
-    });
+  return cy.wrap(subject).selection($el => {
+    const node = getTextNode($el[0], query);
+    const offset = node.wholeText.indexOf(query) + (atStart ? 0 : query.length);
+    const document = node.ownerDocument;
+    document.getSelection().removeAllRanges();
+    document.getSelection().collapse(node, offset);
+  });
 });
 
 Cypress.Commands.add('setCursorBefore', { prevSubject: true }, (subject, query) => {
@@ -190,23 +199,21 @@ Cypress.Commands.add('loginAndNewPost', () => {
 });
 
 Cypress.Commands.add('drag', { prevSubject: true }, subject => {
-  return cy.wrap(subject)
-    .trigger('dragstart', {
-      dataTransfer: {},
-      force: true,
-    });
+  return cy.wrap(subject).trigger('dragstart', {
+    dataTransfer: {},
+    force: true,
+  });
 });
 
 Cypress.Commands.add('drop', { prevSubject: true }, subject => {
-  return cy.wrap(subject)
-    .trigger('drop', {
-      dataTransfer: {},
-      force: true,
-    });
+  return cy.wrap(subject).trigger('drop', {
+    dataTransfer: {},
+    force: true,
+  });
 });
 
 Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
-  const isHeading = title.startsWith('Heading')
+  const isHeading = title.startsWith('Heading');
   if (isHeading) {
     cy.get('button[title="Headings"]').click();
   }
@@ -216,10 +223,11 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
 });
 
 Cypress.Commands.add('insertEditorComponent', title => {
-  cy.get('button[title="Add Component"]').click()
-  cy.contains('div', title).click().focused();
+  cy.get('button[title="Add Component"]').click();
+  cy.contains('div', title)
+    .click()
+    .focused();
 });
-
 
 [
   ['clickHeadingOneButton', 'Heading 1'],
@@ -241,36 +249,33 @@ Cypress.Commands.add('clickModeToggle', () => {
     .focused();
 });
 
-[
-  ['insertCodeBlock', 'Code Block'],
-].forEach(([commandName, componentTitle]) => {
+[['insertCodeBlock', 'Code Block']].forEach(([commandName, componentTitle]) => {
   Cypress.Commands.add(commandName, () => {
     return cy.insertEditorComponent(componentTitle);
   });
 });
-
 
 Cypress.Commands.add('getMarkdownEditor', () => {
   return cy.get('[data-slate-editor]');
 });
 
 Cypress.Commands.add('confirmMarkdownEditorContent', expectedDomString => {
-  return cy.getMarkdownEditor()
-    .should(([element]) => {
-      // Slate makes the following representations:
-      // - blank line: 2 BOM's + <br>
-      // - blank element (placed inside empty elements): 1 BOM + <br>
-      // We replace to represent a blank line as a single <br>, and remove the
-      // contents of elements that are actually empty.
-      const actualDomString = toPlainTree(element.innerHTML)
-        .replace(/\uFEFF\uFEFF<br>/g, '<br>')
-        .replace(/\uFEFF<br>/g, '');
-      expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
-    });
+  return cy.getMarkdownEditor().should(([element]) => {
+    // Slate makes the following representations:
+    // - blank line: 2 BOM's + <br>
+    // - blank element (placed inside empty elements): 1 BOM + <br>
+    // We replace to represent a blank line as a single <br>, and remove the
+    // contents of elements that are actually empty.
+    const actualDomString = toPlainTree(element.innerHTML)
+      .replace(/\uFEFF\uFEFF<br>/g, '<br>')
+      .replace(/\uFEFF<br>/g, '');
+    expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
+  });
 });
 
 Cypress.Commands.add('clearMarkdownEditorContent', () => {
-  return cy.getMarkdownEditor()
+  return cy
+    .getMarkdownEditor()
     .selectAll()
     .backspace({ times: 2 });
 });
@@ -279,8 +284,7 @@ function toPlainTree(domString) {
   return rehype()
     .use(removeSlateArtifacts)
     .data('settings', { fragment: true })
-    .processSync(domString)
-    .contents;
+    .processSync(domString).contents;
 }
 
 function getActualBlockChildren(node) {
@@ -304,18 +308,17 @@ function removeSlateArtifacts() {
         node.children = node.children.flatMap(getActualBlockChildren);
       }
     });
-  }
+  };
 }
 
-function getTextNode(el, match){
+function getTextNode(el, match) {
   const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
   if (!match) {
     return walk.nextNode();
   }
 
-  const nodes = [];
   let node;
-  while(node = walk.nextNode()) {
+  while ((node = walk.nextNode())) {
     if (node.wholeText.includes(match)) {
       return node;
     }

@@ -13,6 +13,7 @@ import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import { loadEntry, entryDeleted, getMediaAssets } from './entries';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
+import { loadMedia } from './mediaLibrary';
 
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { Collection, EntryMap, State, Collections, EntryDraft, MediaFile } from '../types/redux';
@@ -518,6 +519,8 @@ export function publishUnpublishedEntry(collection: string, slug: string) {
     return backend
       .publishUnpublishedEntry(collection, slug)
       .then(() => {
+        // re-load media after entry was published
+        dispatch(loadMedia());
         dispatch(
           notifSend({
             message: { key: 'ui.toast.entryPublished' },

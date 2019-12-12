@@ -11,10 +11,12 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 require('dotenv').config();
+const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
+
 const { setupGitHub, teardownGitHub, setupGitHubTest, teardownGitHubTest } = require('./github');
 const { copyBackendFiles } = require('../utils/config');
 
-module.exports = async on => {
+module.exports = async (on, config) => {
   // `on` is used to hook into various events Cypress emits
   on('task', {
     async setupBackend({ backend, options }) {
@@ -78,4 +80,6 @@ module.exports = async on => {
       return args;
     }
   });
+
+  addMatchImageSnapshotPlugin(on, config);
 };
