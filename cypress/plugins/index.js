@@ -66,16 +66,25 @@ module.exports = async (on, config) => {
     },
   });
 
-  // to allows usage of a mock proxy
   on('before:browser:launch', (browser = {}, args) => {
     if (browser.name === 'chrome') {
+      // to allows usage of a mock proxy
       args.push('--ignore-certificate-errors');
 
       return args;
     }
 
     if (browser.name === 'electron') {
+      // to allows usage of a mock proxy
       args['ignore-certificate-errors'] = true;
+      // https://github.com/cypress-io/cypress/issues/2102
+      if (browser.isHeaded) {
+        args['width'] = 1200;
+        args['height'] = 1200;
+      } else {
+        args['width'] = 1200;
+        args['height'] = 1178;
+      }
 
       return args;
     }

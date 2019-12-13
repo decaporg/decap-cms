@@ -10,6 +10,7 @@ import {
   updateWorkflowStatus,
   publishWorkflowEntry,
   goToEntry,
+  goToCollections,
 } from '../../utils/steps';
 import { workflowStatus } from '../../utils/constants';
 
@@ -45,8 +46,7 @@ function chooseAnImage() {
 }
 
 function matchImageSnapshot() {
-  // TODO: revisit once // https://github.com/cypress-io/cypress/issues/2102 is fixed
-  // cy.matchImageSnapshot();
+  cy.matchImageSnapshot();
 }
 
 function newPostAndUploadImage() {
@@ -75,6 +75,20 @@ function publishPostWithImage(entry) {
 
 function closeMediaLibrary() {
   cy.get('button[class*="CloseButton"]').click();
+}
+
+function switchToGridView() {
+  cy.get('div[class*="ViewControls"]').within(() => {
+    cy.get('button')
+      .last()
+      .click();
+  });
+}
+
+function assertGridEntryImage(entry) {
+  cy.contains('li', entry.title).within(() => {
+    cy.get('div[class*="CardImage"]').should('be.visible');
+  });
 }
 
 export default function({ backend, entries }) {
@@ -130,6 +144,15 @@ export default function({ backend, entries }) {
     cy.clock().tick();
     goToMediaLibrary();
     assertImagesInLibrary();
+    matchImageSnapshot();
+  });
+
+  it('should show published entry image in grid view', () => {
+    publishPostWithImage(entries[0]);
+    goToCollections();
+    switchToGridView();
+    assertGridEntryImage(entries[0]);
+
     matchImageSnapshot();
   });
 }
