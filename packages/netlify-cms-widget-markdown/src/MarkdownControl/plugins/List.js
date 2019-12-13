@@ -197,13 +197,11 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
       },
     },
     onKeyDown(event, editor, next) {
-
       // Handle Backspace
       if (isHotkey('backspace', event) && editor.value.selection.isCollapsed) {
-
         // If beginning block is not of default type, do nothing
         if (editor.value.startBlock.type !== defaultType) {
-          return next()
+          return next();
         }
         const listOrListItem = editor.getListOrListItem();
         const isListItem = listOrListItem && listOrListItem.type === 'list-item';

@@ -24,7 +24,7 @@ const CommandsAndQueries = ({ defaultType }) => ({
       return doc.getCommonAncestor(startBlock.key, endBlock.key);
     },
     getClosestType(editor, node, type) {
-      const types = castArray(type)
+      const types = castArray(type);
       return editor.value.document.getClosest(node.key, n => types.includes(n.type));
     },
     getBlockContainer(editor, node) {
@@ -44,7 +44,7 @@ const CommandsAndQueries = ({ defaultType }) => ({
     isSelected(editor, nodes) {
       return castArray(nodes).every(node => {
         return editor.value.document.isInRange(node.key, editor.value.selection);
-      })
+      });
     },
     isFirstChild(editor, node) {
       return editor.value.document.getParent(node.key).nodes.first().key === node.key;
@@ -112,8 +112,8 @@ const CommandsAndQueries = ({ defaultType }) => ({
       });
     },
     unwrapNodeFromAncestor(editor, node, ancestor) {
-      const depth = ancestor.getDepth(node.key)
-      editor.unwrapNodeToDepth(node, depth)
+      const depth = ancestor.getDepth(node.key);
+      editor.unwrapNodeToDepth(node, depth);
     },
   },
 });

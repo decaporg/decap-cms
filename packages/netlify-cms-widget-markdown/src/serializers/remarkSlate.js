@@ -132,8 +132,8 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       case 'link': {
         const nodes = map(childNode.children, child => processMarkChild(child, marks));
         const result = convertNode(childNode, nodes?.flat());
-        console.log('slate link', result)
-        return result
+        console.log('slate link', result);
+        return result;
       }
 
       /**

@@ -135,9 +135,7 @@ describe('slate', () => {
           </paragraph>
         </document>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(
-        `"[\`foo\`](link)"`
-      );
+      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"[\`foo\`](link)"`);
     });
   });
 

@@ -1,4 +1,4 @@
-import { Inline, Text } from 'slate'
+import { Inline, Text } from 'slate';
 
 const codeBlock = {
   match: [{ object: 'block', type: 'code-block' }],
@@ -11,9 +11,9 @@ const codeBlock = {
     switch (error.code) {
       // Replace break nodes with newlines
       case 'child_object_invalid': {
-        const { child } = error
+        const { child } = error;
         if (Inline.isInline(child) && child.type === 'break') {
-          editor.replaceNodeByKey(child.key, Text.create({ text: '\n' }))
+          editor.replaceNodeByKey(child.key, Text.create({ text: '\n' }));
           return;
         }
       }
@@ -99,13 +99,8 @@ const schema = ({ voidCodeBlock } = {}) => ({
      * List Items
      */
     {
-      match: [
-        { object: 'block', type: 'list-item' },
-      ],
-      parent: [
-        { type: 'bulleted-list' },
-        { type: 'numbered-list' },
-      ],
+      match: [{ object: 'block', type: 'list-item' }],
+      parent: [{ type: 'bulleted-list' }, { type: 'numbered-list' }],
       /*
       normalize: (editor, error) => {
         switch (error.code) {

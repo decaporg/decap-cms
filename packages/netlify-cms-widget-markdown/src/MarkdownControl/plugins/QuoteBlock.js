@@ -13,31 +13,32 @@ const QuoteBlock = ({ type }) => ({
      * blocks into a quote. Make sure text is wrapped into paragraphs.
      */
     toggleQuoteBlock(editor) {
-      const blockContainer = editor.getBlockContainer()
+      const blockContainer = editor.getBlockContainer();
       if (['bulleted-list', 'numbered-list'].includes(blockContainer.type)) {
-        const { nodes } = blockContainer
-        const allItemsSelected = editor.isSelected([nodes.first(), nodes.last()])
+        const { nodes } = blockContainer;
+        const allItemsSelected = editor.isSelected([nodes.first(), nodes.last()]);
         if (allItemsSelected) {
-          const nextContainer = editor.getBlockContainer(blockContainer)
+          const nextContainer = editor.getBlockContainer(blockContainer);
           if (nextContainer?.type === type) {
-            editor.unwrapNodeFromAncestor(blockContainer, nextContainer)
+            editor.unwrapNodeFromAncestor(blockContainer, nextContainer);
           } else {
-            editor.wrapBlockByKey(blockContainer.key, type)
+            editor.wrapBlockByKey(blockContainer.key, type);
           }
         } else {
           const blockContainerParent = editor.value.document.getParent(blockContainer.key);
-          const blockContainerOffset = editor.getOffset(blockContainer);
           editor.withoutNormalizing(() => {
             const selectedListItems = nodes.filter(node => editor.isSelected(node));
-            const newList = Block.create(blockContainer.type)
-            editor.unwrapNodeByKey(selectedListItems.first())
-            const offset = editor.getOffset(selectedListItems.first())
+            const newList = Block.create(blockContainer.type);
+            editor.unwrapNodeByKey(selectedListItems.first());
+            const offset = editor.getOffset(selectedListItems.first());
             editor.insertNodeByKey(blockContainerParent.key, offset + 1, newList);
-            selectedListItems.forEach(({ key }, idx) => editor.moveNodeByKey(key, newList.key, idx))
+            selectedListItems.forEach(({ key }, idx) =>
+              editor.moveNodeByKey(key, newList.key, idx),
+            );
             editor.wrapBlockByKey(newList.key, type);
-          })
+          });
         }
-        return
+        return;
       }
 
       const blocks = editor.value.blocks;

@@ -48,7 +48,7 @@ export default class MarkdownControl extends React.Component {
   processRef = ref => (this.ref = ref);
 
   setFocusReceived = () => {
-    this.setState({ pendingFocus: false })
+    this.setState({ pendingFocus: false });
   };
 
   render() {

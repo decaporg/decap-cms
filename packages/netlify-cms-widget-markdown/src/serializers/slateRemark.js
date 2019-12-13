@@ -1,4 +1,4 @@
-import { get, without, flatMap, last, map, intersection, omit } from 'lodash';
+import { get, without, last, map, intersection, omit } from 'lodash';
 import u from 'unist-builder';
 import mdastToString from 'mdast-util-to-string';
 
@@ -108,8 +108,8 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         // remove code marks before processing so that they stay put.
         const nodesWithoutCode = node.nodes.map(n => ({
           ...n,
-          marks: n.marks ? n.marks.filter(({ type }) => type !== 'code') : marks,
-        }))
+          marks: n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks,
+        }));
         const childMarks = map(nodesWithoutCode, getNodeMarks);
         return intersection(...childMarks);
       }

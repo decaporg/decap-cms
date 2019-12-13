@@ -26,7 +26,7 @@ export default class Shortcode extends React.Component {
 
     const handleChange = (fieldName, value, metadata) => {
       const dataValue = dataKey === false ? value : node.data.set('shortcodeData', value);
-      editor.setNodeByKey(node.key, { data: value || Map(), metadata });
+      editor.setNodeByKey(node.key, { data: dataValue || Map(), metadata });
     };
 
     const handleFocus = () => editor.moveToRangeOfNode(node);

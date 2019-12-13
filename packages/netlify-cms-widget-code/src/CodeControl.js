@@ -5,7 +5,6 @@ import { ClassNames } from '@emotion/core';
 import { Map } from 'immutable';
 import { uniq, isEqual, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
-import Resizable from 're-resizable';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
@@ -90,9 +89,7 @@ export default class CodeControl extends React.Component {
     codeMirrorKey: uuid(),
     theme: localStorage.getItem(settingsPersistKeys['theme']) || themes[themes.length - 1],
     lastKnownValue: this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value,
-    loadedModes: [''],
   };
-
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
@@ -101,19 +98,6 @@ export default class CodeControl extends React.Component {
   }
 
   componentDidMount() {
-    const { isNewEditorComponent, metadata = {} } = this.props;
-
-    if (this.state.isActive) {
-      if (isNewEditorComponent) {
-        this.cm.focus();
-      }
-      if (metadata.cursor) {
-        this.cm.doc.setCursor(cursor);
-      }
-      if (metadata.selections) {
-        this.cm.doc.setSelections(selections);
-      }
-    }
     this.setState({
       lang: this.getInitialLang() || '',
     });
@@ -254,20 +238,11 @@ export default class CodeControl extends React.Component {
   };
 
   setActive = () => this.setState({ isActive: true });
-  setInactive = () => this.setState({ isActive: false});
+  setInactive = () => this.setState({ isActive: false });
 
   render() {
     const { classNameWrapper, forID, widget, isNewEditorComponent } = this.props;
-    const {
-      lang,
-      isActive,
-      settingsVisible,
-      keyMap,
-      codeMirrorKey,
-      theme,
-      lastKnownValue,
-      loadedModes,
-    } = this.state;
+    const { lang, settingsVisible, keyMap, codeMirrorKey, theme, lastKnownValue } = this.state;
     const langInfo = this.getLanguageByName(lang);
     const mode = langInfo?.mimeType || langInfo?.mode;
 

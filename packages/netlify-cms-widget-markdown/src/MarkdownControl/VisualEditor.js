@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import styled from '@emotion/styled';
 import { css as coreCss, ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce } from 'lodash';
@@ -52,11 +52,12 @@ export default class Editor extends React.Component {
   constructor(props) {
     super(props);
     const editorComponents = props.getEditorComponents();
-    this.shortcodeComponents = editorComponents.filter(({ type }) => (type === 'shortcode'));
+    this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
     this.codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
-    this.editorComponents = this.codeBlockComponent || editorComponents.has('code-block')
+    this.editorComponents =
+      this.codeBlockComponent || editorComponents.has('code-block')
         ? editorComponents
-        : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' })
+        : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
     this.renderBlock = renderBlock({
       classNameWrapper: props.className,
       resolveWidget: props.resolveWidget,

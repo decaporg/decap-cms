@@ -245,7 +245,7 @@ class EditorControl extends React.Component {
               fieldsErrors={fieldsErrors}
               onValidateObject={onValidateObject}
               isEditorComponent={isEditorComponent}
-              isNewEditorComponent={isEditorComponent}
+              isNewEditorComponent={isNewEditorComponent}
               t={t}
             />
             {fieldHint && (
