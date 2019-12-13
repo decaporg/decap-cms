@@ -40,6 +40,11 @@ const languages = languageData.map(lang => ({
 
 const styleString = `
   padding: 0;
+
+  .CodeMirror {
+    height: auto;
+    min-height: 300px;
+  }
 `;
 
 const defaultLang = { name: '', mode: '', label: 'none' };
@@ -81,6 +86,7 @@ export default class CodeControl extends React.Component {
     codeMirrorKey: uuid(),
     theme: localStorage.getItem(settingsPersistKeys['theme']) || themes[themes.length - 1],
     lastKnownValue: this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value,
+    loadedModes: [''],
   };
 
 
@@ -91,15 +97,18 @@ export default class CodeControl extends React.Component {
   }
 
   componentDidMount() {
-    const { isEditorComponent, metadata = {} } = this.props;
-    if (isEditorComponent) {
-      this.cm.focus();
-    }
-    if (metadata.cursor) {
-      this.cm.doc.setCursor(cursor);
-    }
-    if (metadata.selections) {
-      this.cm.doc.setSelections(selections);
+    const { isNewEditorComponent, metadata = {} } = this.props;
+
+    if (this.state.isActive) {
+      if (isNewEditorComponent) {
+        this.cm.focus();
+      }
+      if (metadata.cursor) {
+        this.cm.doc.setCursor(cursor);
+      }
+      if (metadata.selections) {
+        this.cm.doc.setSelections(selections);
+      }
     }
     this.setState({
       lang: this.getInitialLang() || '',
@@ -182,18 +191,21 @@ export default class CodeControl extends React.Component {
       const { mode } = this.getLanguageByName(changedProps.lang) || {};
       if (mode) {
         await import(`codemirror/mode/${mode}/${mode}.js`);
+        this.setState({ loadedModes: uniq([...this.state.loadedModes, mode]) });
       }
     }
 
     // Changing CodeMirror props requires re-initializing the
     // detached/uncontrolled React CodeMirror component, so here we save and
     // restore the selections and cursor position after the state change.
-    const cursor = this.cm.doc.getCursor();
-    const selections = this.cm.doc.listSelections();
-    this.setState({ codeMirrorKey: uuid() }, () => {
-      this.cm.doc.setCursor(cursor);
-      this.cm.doc.setSelections(selections);
-    });
+    if (this.cm) {
+      const cursor = this.cm.doc.getCursor();
+      const selections = this.cm.doc.listSelections();
+      this.setState({ codeMirrorKey: uuid() }, () => {
+        this.cm.doc.setCursor(cursor);
+        this.cm.doc.setSelections(selections);
+      });
+    }
 
     for (const key of ['theme', 'keyMap']) {
       if (changedProps[key]) {
@@ -229,35 +241,36 @@ export default class CodeControl extends React.Component {
   handleFocus = () => {
     this.hideSettings();
     this.props.setActiveStyle();
-    this.setState({ isActive: true });
+    this.setActive();
   };
 
   handleBlur = () => {
+    this.setInactive();
     this.props.setInactiveStyle();
-    this.setState({ isActive: false });
   };
+
+  setActive = () => this.setState({ isActive: true });
+  setInactive = () => this.setState({ isActive: false});
 
   render() {
     const { classNameWrapper, forID, widget } = this.props;
-    const { lang, settingsVisible, keyMap, codeMirrorKey, theme, lastKnownValue } = this.state;
+    const {
+      lang,
+      isActive,
+      settingsVisible,
+      keyMap,
+      codeMirrorKey,
+      theme,
+      lastKnownValue,
+      loadedModes,
+    } = this.state;
     const langInfo = this.getLanguageByName(lang);
+    const mode = langInfo?.mimeType || langInfo?.mode;
 
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <Resizable
-            defaultSize={{ height: 300 }}
-            minHeight={130}
-            enable={{
-              top: false,
-              right: false,
-              bottom: true,
-              left: false,
-              topRight: false,
-              bottomRight: false,
-              bottomLeft: false,
-              topLeft: false,
-            }}
+          <div
             className={cx(
               classNameWrapper,
               css`
@@ -305,8 +318,9 @@ export default class CodeControl extends React.Component {
                   ...(widget.codeMirrorConfig.extraKeys || {}),
                 },
                 theme,
-                mode: langInfo?.mimeType || langInfo?.mode,
+                mode,
                 keyMap,
+                viewportMargin: Infinity,
               }}
               detach={true}
               editorDidMount={cm => {
@@ -317,7 +331,7 @@ export default class CodeControl extends React.Component {
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
             />
-          </Resizable>
+          </div>
         )}
       </ClassNames>
     );

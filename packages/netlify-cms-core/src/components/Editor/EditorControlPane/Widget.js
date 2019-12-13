@@ -58,6 +58,7 @@ export default class Widget extends Component {
     t: PropTypes.func.isRequired,
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
+    isNewEditorComponent: PropTypes.bool,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -251,6 +252,7 @@ export default class Widget extends Component {
       fieldsErrors,
       controlRef,
       isEditorComponent,
+      isNewEditorComponent,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -288,6 +290,7 @@ export default class Widget extends Component {
       isFetching,
       loadEntry,
       isEditorComponent,
+      isNewEditorComponent,
       fieldsErrors,
       controlRef,
       t,
