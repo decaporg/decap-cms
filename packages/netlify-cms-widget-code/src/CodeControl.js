@@ -39,15 +39,6 @@ const languages = languageData.map(lang => ({
 
 const styleString = `
   padding: 0;
-
-  .CodeMirror {
-    height: auto;
-    min-height: 300px;
-  }
-
-  .CodeMirror-scroll {
-    min-height: 300px;
-  }
 `;
 
 const defaultLang = { name: '', mode: '', label: 'none' };
@@ -179,7 +170,6 @@ export default class CodeControl extends React.Component {
       const { mode } = this.getLanguageByName(changedProps.lang) || {};
       if (mode) {
         await import(`codemirror/mode/${mode}/${mode}.js`);
-        this.setState({ loadedModes: uniq([...this.state.loadedModes, mode]) });
       }
     }
 
@@ -282,14 +272,18 @@ export default class CodeControl extends React.Component {
               className={css`
                 height: 100%;
 
-                & > .CodeMirror {
-                  height: 100%;
+                .CodeMirror {
+                  height: auto;
                   cursor: text;
+                  min-height: 300px;
+                }
+
+                .CodeMirror-scroll {
+                  min-height: 300px;
                 }
               `}
               options={{
                 lineNumbers: true,
-                autofocus: isNewEditorComponent,
                 ...widget.codeMirrorConfig,
                 extraKeys: {
                   'Shift-Tab': 'indentLess',
@@ -304,6 +298,9 @@ export default class CodeControl extends React.Component {
               detach={true}
               editorDidMount={cm => {
                 this.cm = cm;
+                if (isNewEditorComponent) {
+                  this.handleFocus();
+                }
               }}
               value={lastKnownValue}
               onChange={(editor, data, newValue) => this.handleChange(newValue)}

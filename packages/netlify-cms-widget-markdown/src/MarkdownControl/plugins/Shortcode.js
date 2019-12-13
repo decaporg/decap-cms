@@ -3,7 +3,7 @@ import { Text, Block } from 'slate';
 const createShortcodeBlock = shortcodeConfig => {
   // Handle code block component
   if (shortcodeConfig.type === 'code-block') {
-    return Block.create({ type: shortcodeConfig.type });
+    return Block.create({ type: shortcodeConfig.type, data: { shortcodeNew: true } });
   }
 
   const nodes = [Text.create('')];

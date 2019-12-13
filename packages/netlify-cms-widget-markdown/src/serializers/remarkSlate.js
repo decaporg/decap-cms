@@ -36,7 +36,6 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
   return transformNode;
 
   function transformNode(node) {
-    //console.log(JSON.stringify(node, null, 2));
     /**
      * Call `transformNode` recursively on child nodes.
      *
@@ -53,7 +52,6 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
      * Run individual nodes through the conversion factory.
      */
     const output = convertNode(node, children || undefined);
-    //console.log(JSON.stringify(output, null, 2));
     return output;
   }
 
@@ -132,7 +130,6 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       case 'link': {
         const nodes = map(childNode.children, child => processMarkChild(child, marks));
         const result = convertNode(childNode, nodes?.flat());
-        console.log('slate link', result);
         return result;
       }
 

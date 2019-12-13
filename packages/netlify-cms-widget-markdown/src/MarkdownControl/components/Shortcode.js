@@ -47,7 +47,7 @@ export default class Shortcode extends React.Component {
             field={field}
             onChange={handleChange}
             isEditorComponent={true}
-            isNewEditorComponent={node.data.shorcodeNew}
+            isNewEditorComponent={node.data.get('shortcodeNew')}
             isSelected={editor.isSelected(node)}
           />
         </div>
