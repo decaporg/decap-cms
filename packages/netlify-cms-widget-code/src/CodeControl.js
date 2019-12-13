@@ -45,6 +45,10 @@ const styleString = `
     height: auto;
     min-height: 300px;
   }
+
+  .CodeMirror-scroll {
+    min-height: 300px;
+  }
 `;
 
 const defaultLang = { name: '', mode: '', label: 'none' };
@@ -253,7 +257,7 @@ export default class CodeControl extends React.Component {
   setInactive = () => this.setState({ isActive: false});
 
   render() {
-    const { classNameWrapper, forID, widget } = this.props;
+    const { classNameWrapper, forID, widget, isNewEditorComponent } = this.props;
     const {
       lang,
       isActive,
@@ -310,7 +314,7 @@ export default class CodeControl extends React.Component {
               `}
               options={{
                 lineNumbers: true,
-                autofocus: true,
+                autofocus: isNewEditorComponent,
                 ...widget.codeMirrorConfig,
                 extraKeys: {
                   'Shift-Tab': 'indentLess',
