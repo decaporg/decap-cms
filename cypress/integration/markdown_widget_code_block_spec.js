@@ -16,7 +16,7 @@ describe('Markdown widget', () => {
     cy.task('teardownBackend', { backend: 'test' });
   });
   describe('code block', () => {
-    it('does things', () => {
+    it('outputs code', () => {
       cy.insertCodeBlock()
         .type('foo')
         .enter()
@@ -108,11 +108,8 @@ function codeBlock(content) {
                       </div>
                     </div>
                   </div>
-                </div><span>
-                  <div></div>
-                </span>
+                </div>
               </div>
-              <div></div>
             </div>
           </div>
           <div></div>
@@ -120,69 +117,4 @@ function codeBlock(content) {
       </div>
     </div>
   `;
-  `
-    <div>
-      <div><span><span><span><span></span><span>﻿</span></span></span></span></div>
-      <div>
-        <div>
-          <div></div>
-          <div>
-            <div><label>Code Block</label>
-              <div><button><span><svg>
-                      <path></path>
-                    </svg></span></button>
-                <div>
-                  <div>
-                    <div><textarea></textarea></div>
-                    <div>
-                      <div></div>
-                    </div>
-                    <div>
-                      <div></div>
-                    </div>
-                    <div></div>
-                    <div></div>
-                    <div>
-                      <div>
-                        <div>
-                          <div>
-                            <div>
-                              <div>
-                                <pre><span>xxxxxxxxxx</span></pre>
-                              </div>
-                              <div></div>
-                              <div></div>
-                              <div>
-                                <div> </div>
-                              </div>
-                              <div>
-                                <div>
-                                  <div>
-                                    <div>2</div>
-                                  </div>
-                                  <pre><span>bar</span></pre>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div></div>
-                      <div>
-                        <div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div><span>
-                  <div></div>
-                </span>
-              </div>
-              <div></div>
-            </div>
-          </div>
-          <div></div>
-        </div>
-      </div>
-    </div>
-  `
 }
