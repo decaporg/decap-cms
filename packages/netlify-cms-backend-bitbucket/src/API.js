@@ -55,6 +55,15 @@ export default class API {
     return response.ok;
   };
 
+  branchCommitSha = async () => {
+    if (this.branchSha) return this.branchSha;
+
+    ({
+      target: { hash: this.branchSha },
+    } = await this.requestJSON(`${this.repoURL}/refs/branches/${this.branch}`));
+    return this.branchSha;
+  };
+
   isFile = ({ type }) => type === 'commit_file';
   processFile = file => ({
     ...file,
@@ -70,14 +79,15 @@ export default class API {
   });
   processFiles = files => files.filter(this.isFile).map(this.processFile);
 
-  readFile = async (path, sha, { ref = this.branch, parseText = true } = {}) => {
+  readFile = async (path, sha, { parseText = true } = {}) => {
     const cacheKey = parseText ? `bb.${sha}` : `bb.${sha}.blob`;
     const cachedFile = sha ? await localForage.getItem(cacheKey) : null;
     if (cachedFile) {
       return cachedFile;
     }
+    const node = await this.branchCommitSha();
     const result = await this.request({
-      url: `${this.repoURL}/src/${ref}/${path}`,
+      url: `${this.repoURL}/src/${node}/${path}`,
       cache: 'no-store',
     }).then(parseText ? responseParser({ format: 'text' }) : responseParser({ format: 'blob' }));
     if (sha) {
@@ -107,12 +117,13 @@ export default class API {
   };
 
   listFiles = async path => {
+    const node = await this.branchCommitSha();
     const { entries, cursor } = await flow([
       // sort files by filename ascending
       unsentRequest.withParams({ sort: '-path', max_depth: 10 }),
       this.requestJSON,
       then(this.getEntriesAndCursor),
-    ])(`${this.repoURL}/src/${this.branch}/${path}`);
+    ])(`${this.repoURL}/src/${node}/${path}`);
     return { entries: this.processFiles(entries), cursor };
   };
 

@@ -932,22 +932,10 @@ export default class API {
   async deleteUnpublishedEntry(collectionName, slug) {
     const contentKey = this.generateContentKey(collectionName, slug);
     const branchName = this.generateBranchName(contentKey);
-    return (
-      this.retrieveMetadata(contentKey)
-        .then(metadata => (metadata && metadata.pr ? this.closePR(metadata.pr) : Promise.resolve()))
-        .then(() => this.deleteBranch(branchName))
-        .then(() => this.deleteMetadata(contentKey))
-        // If the PR doesn't exist, then this has already been deleted -
-        // deletion should be idempotent, so we can consider this a
-        // success.
-        .catch(err => {
-          if (err.message === 'Reference does not exist') {
-            return Promise.resolve();
-          }
-          console.error(err);
-          return Promise.reject(err);
-        })
-    );
+    return this.retrieveMetadata(contentKey)
+      .then(metadata => (metadata && metadata.pr ? this.closePR(metadata.pr) : Promise.resolve()))
+      .then(() => this.deleteBranch(branchName))
+      .then(() => this.deleteMetadata(contentKey));
   }
 
   async publishUnpublishedEntry(collectionName, slug) {
@@ -1003,7 +991,16 @@ export default class API {
   }
 
   deleteBranch(branchName) {
-    return this.deleteRef('heads', branchName);
+    return this.deleteRef('heads', branchName).catch(err => {
+      // If the branch doesn't exist, then it has already been deleted -
+      // deletion should be idempotent, so we can consider this a
+      // success.
+      if (err.message === 'Reference does not exist') {
+        return Promise.resolve();
+      }
+      console.error(err);
+      return Promise.reject(err);
+    });
   }
 
   async createPR(title, head) {
