@@ -36,7 +36,7 @@ const hu = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} kötelező mező.',
-        regexPattern: "%{fieldLabel} nem egyezik a %{pattern} mintával.",
+        regexPattern: '%{fieldLabel} nem egyezik a %{pattern} mintával.',
         processing: '%{fieldLabel} feldolgozás alatt.',
         range: '%{fieldLabel}, %{minValue} és %{maxValue} értékek között kell legyen.',
         min: '%{fieldLabel} legalább %{minValue} kell legyen vagy több.',
@@ -45,9 +45,11 @@ const hu = {
     },
     editor: {
       onLeavePage: 'Biztos hogy el akarod hagyni az oldalt?',
-      onUpdatingWithUnsavedChanges: 'Mentettlen változtatások vannak, kérjük, mentse az állapot frissítése előtt.',
+      onUpdatingWithUnsavedChanges:
+        'Mentettlen változtatások vannak, kérjük, mentse az állapot frissítése előtt.',
       onPublishingNotReady: 'Változtasd az állapotot "Kész"-re publikálás előtt.',
-      onPublishingWithUnsavedChanges: 'Mentetlen változtatások vannak, kérjük, mentsen a publikálás előtt.',
+      onPublishingWithUnsavedChanges:
+        'Mentetlen változtatások vannak, kérjük, mentsen a publikálás előtt.',
       onPublishing: 'Publikálod ezt a bejegyzést?',
       onUnpublishing: 'Publikálás visszavonása erre a bejegyzésre?',
       onDeleteWithUnsavedChanges:
@@ -58,7 +60,8 @@ const hu = {
       onDeleteUnpublishedChanges:
         'A bejegyzés összes, nem közzétett módosítása törlődik. Még mindig törli?',
       loadingEntry: 'Bejegyzés betöltése...',
-      confirmLoadBackup: 'Helyi biztonsági másolat került helyre ehhez a bejegyzéshez, szeretné használni?',
+      confirmLoadBackup:
+        'Helyi biztonsági másolat került helyre ehhez a bejegyzéshez, szeretné használni?',
     },
     editorToolbar: {
       publishing: 'Publikálás...',
@@ -124,7 +127,7 @@ const hu = {
   ui: {
     errorBoundary: {
       title: 'Hiba',
-      details: "Hiba történt - kérjük ",
+      details: 'Hiba történt - kérjük ',
       reportIt: 'jelentse.',
       detailsHeading: 'Részletek',
       recoveredEntry: {
@@ -142,7 +145,7 @@ const hu = {
       onFailToPersist: 'Bejegyzés megtartása sikertelen: %{details}',
       onFailToDelete: 'A bejegyzés törlése sikertelen: %{details}',
       onFailToUpdateStatus: 'Az állapot frissítése nem sikerült: %{details}',
-      missingRequiredField: "Hoppá, kihagytál egy kötelező mezőt. Mentés előtt töltsd ki.",
+      missingRequiredField: 'Hoppá, kihagytál egy kötelező mezőt. Mentés előtt töltsd ki.',
       entrySaved: 'Bejegyzés elmentve',
       entryPublished: 'Bejegyzés publikálva',
       entryUnpublished: 'Bejegyzés publikálása visszavonva',
