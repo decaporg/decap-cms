@@ -8,3 +8,4 @@ export { default as tr } from './tr';
 export { default as pl } from './pl';
 export { default as ru } from './ru';
 export { default as ja } from './ja';
+export { default as hu } from './hu';
