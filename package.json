@@ -80,7 +80,6 @@
     "@babel/preset-react": "^7.0.0",
     "@commitlint/cli": "^8.3.3",
     "@commitlint/config-conventional": "^8.2.0",
-    "@cypress/snapshot": "^2.1.3",
     "@octokit/rest": "^16.28.7",
     "@testing-library/jest-dom": "^4.2.3",
     "@testing-library/react": "^9.3.2",
