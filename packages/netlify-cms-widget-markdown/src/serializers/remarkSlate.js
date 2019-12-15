@@ -1,4 +1,4 @@
-import { isEmpty, isArray, flatMap, map } from 'lodash';
+import { isEmpty, isArray, flatMap, map, flatten } from 'lodash';
 
 /**
  * Map of MDAST node types to Slate node types.
@@ -129,7 +129,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
 
       case 'link': {
         const nodes = map(childNode.children, child => processMarkChild(child, marks));
-        const result = convertNode(childNode, nodes?.flat());
+        const result = convertNode(childNode, flatten(nodes));
         return result;
       }
 
