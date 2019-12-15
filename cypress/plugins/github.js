@@ -138,7 +138,7 @@ async function deleteRepositories({ owner, repo, tempDir }) {
 }
 
 async function resetOriginRepo({ owner, repo, tempDir }) {
-  console.log('Resetting origin repo:', `${owner}/repo`);
+  console.log('Resetting origin repo:', `${owner}/${repo}`);
   const { token } = getEnvs();
   const client = getGitHubClient(token);
 
@@ -155,6 +155,7 @@ async function resetOriginRepo({ owner, repo, tempDir }) {
         owner,
         repo,
         pull_number,
+        state: 'closed',
       }),
     ),
   );
@@ -176,7 +177,7 @@ async function resetOriginRepo({ owner, repo, tempDir }) {
   console.log('Resetting master');
   const git = simpleGit(tempDir).env({ ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
   await git.push(['--force', 'origin', 'master']);
-  console.log('Done resetting origin repo:', `${owner}/repo`);
+  console.log('Done resetting origin repo:', `${owner}/${repo}`);
 }
 
 async function resetForkedRepo({ repo }) {
@@ -199,7 +200,7 @@ async function resetForkedRepo({ repo }) {
         }),
       ),
     );
-    console.log('Done resetting forked repo:', `${forkOwner}/repo`);
+    console.log('Done resetting forked repo:', `${forkOwner}/${repo}`);
   }
 }
 
@@ -306,14 +307,25 @@ const sanitizeString = (
   return replaced;
 };
 
+const HEADERS_TO_IGNORE = [
+  'Date',
+  'X-RateLimit-Remaining',
+  'X-RateLimit-Reset',
+  'ETag',
+  'Last-Modified',
+  'X-GitHub-Request-Id',
+];
+
 const transformRecordedData = (expectation, toSanitize) => {
   const { httpRequest, httpResponse } = expectation;
 
   const responseHeaders = {};
 
-  Object.keys(httpResponse.headers).forEach(key => {
-    responseHeaders[key] = httpResponse.headers[key][0];
-  });
+  Object.keys(httpResponse.headers)
+    .filter(key => !HEADERS_TO_IGNORE.includes(key))
+    .forEach(key => {
+      responseHeaders[key] = httpResponse.headers[key][0];
+    });
 
   let responseBody = null;
   if (httpResponse.body && httpResponse.body.string) {
@@ -348,8 +360,10 @@ const transformRecordedData = (expectation, toSanitize) => {
     const bodyObject = JSON.parse(httpRequest.body.string);
     if (bodyObject.encoding === 'base64') {
       // sanitize encoded data
-      const decodedBody = Buffer.from(bodyObject.content, 'base64').toString();
-      bodyObject.content = Buffer.from(sanitizeString(decodedBody, toSanitize)).toString('base64');
+      const decodedBody = Buffer.from(bodyObject.content, 'base64').toString('binary');
+      const sanitizedContent = sanitizeString(decodedBody, toSanitize);
+      const sanitizedEncodedContent = Buffer.from(sanitizedContent, 'binary').toString('base64');
+      bodyObject.content = sanitizedEncodedContent;
       body = JSON.stringify(bodyObject);
     } else {
       body = sanitizeString(httpRequest.body.string, toSanitize);

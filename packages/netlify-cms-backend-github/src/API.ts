@@ -10,7 +10,6 @@ import {
   localForage,
   onlySuccessfulPromises,
   resolvePromiseProperties,
-  responseParser,
   ResponseParser,
 } from 'netlify-cms-lib-util';
 
@@ -405,7 +404,7 @@ export default class API {
 
       const metadataRequestOptions = {
         params: { ref: 'refs/meta/_netlify_cms' },
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
+        headers: { Accept: 'application/vnd.github.v3.raw' },
         cache: 'no-store' as RequestCache,
       };
 
@@ -461,19 +460,22 @@ export default class API {
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
-    const parser = parseText
-      ? (responseParser({ format: 'text' }) as ResponseParser<string>)
-      : (responseParser({ format: 'blob' }) as ResponseParser<Blob>);
+    const result = await this.request(`${repoURL}/git/blobs/${sha}`);
 
-    const result: string | Blob = await this.request(
-      `${repoURL}/git/blobs/${sha}`,
-      {
-        headers: { Accept: 'application/vnd.github.VERSION.raw' },
-      },
-      parser,
-    );
-
-    return result;
+    if (parseText) {
+      // treat content as a utf-8 string
+      const content = Base64.decode(result.content);
+      return content;
+    } else {
+      // treat content as binary and convert to blob
+      const content = Base64.atob(result.content);
+      const byteArray = new Uint8Array(content.length);
+      for (let i = 0; i < content.length; i++) {
+        byteArray[i] = content.charCodeAt(i);
+      }
+      const blob = new Blob([byteArray]);
+      return blob;
+    }
   }
 
   async getMediaAsBlob(sha: string | null, path: string) {
@@ -507,19 +509,21 @@ export default class API {
     });
   }
 
-  listFiles(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
+  async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
     const folderPath = path.replace(/\/$/, '');
     return this.request(`${repoURL}/git/trees/${branch}:${folderPath}`, {
       params: { recursive: 10 },
-    }).then(res =>
-      res.tree
-        .filter((file: File) => file.type === 'blob')
-        .map((file: File) => ({
-          ...file,
-          name: file.path,
-          path: `${folderPath}/${file.path}`,
-        })),
-    );
+    })
+      .then(res =>
+        res.tree
+          .filter((file: File) => file.type === 'blob')
+          .map((file: File) => ({
+            ...file,
+            name: file.path,
+            path: `${folderPath}/${file.path}`,
+          })),
+      )
+      .catch(replace404WithEmptyArray); // handle non existent folders
   }
 
   readUnpublishedBranchFile(contentKey: string) {

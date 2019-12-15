@@ -22,10 +22,10 @@ collections:
       - label: Title
         name: title
         widget: string
-      - label: Draft
-        name: draft
-        widget: boolean
-        default: true
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
+        required: false
       - label: Publish Date
         name: date
         widget: datetime

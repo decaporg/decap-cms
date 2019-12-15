@@ -26,6 +26,8 @@ function uploadMediaFile() {
     });
   });
 
+  cy.contains('span', 'Uploading...').should('not.exist');
+
   assertImagesInLibrary();
 }
 
@@ -45,6 +47,10 @@ function chooseAnImage() {
   cy.contains('button', 'Choose an image').click();
 }
 
+function waitForEntryToLoad() {
+  cy.contains('div', 'Loading entry...').should('not.exist');
+}
+
 function matchImageSnapshot() {
   cy.matchImageSnapshot();
 }
@@ -59,14 +65,11 @@ function newPostWithImage(entry) {
   newPostAndUploadImage();
   chooseSelectedMediaFile();
   populateEntry(entry);
+  waitForEntryToLoad();
 }
 
 function publishPostWithImage(entry) {
-  newPost();
-  chooseAnImage();
-  uploadMediaFile();
-  chooseSelectedMediaFile();
-  populateEntry(entry);
+  newPostWithImage(entry);
   exitEditor();
   goToWorkflow();
   updateWorkflowStatus(entry, workflowStatus.draft, workflowStatus.ready);
@@ -91,18 +94,9 @@ function assertGridEntryImage(entry) {
   });
 }
 
-export default function({ backend, entries }) {
-  after(() => {
-    cy.task('teardownBackend', { backend });
-  });
-
-  before(() => {
-    Cypress.config('defaultCommandTimeout', 4000);
-    cy.task('setupBackend', { backend });
-  });
-
+export default function({ entries, getUser }) {
   beforeEach(() => {
-    login();
+    login(getUser && getUser());
   });
 
   it('can upload image from global media library', () => {
@@ -128,6 +122,7 @@ export default function({ backend, entries }) {
   it('can publish entry with image', () => {
     publishPostWithImage(entries[0]);
     goToEntry(entries[0]);
+    waitForEntryToLoad();
     matchImageSnapshot();
   });
 
