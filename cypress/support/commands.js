@@ -32,9 +32,9 @@ import 'cypress-file-upload';
 import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
 
 addMatchImageSnapshotCommand({
-  failureThreshold: 0.03,
+  failureThreshold: 0.01,
   failureThresholdType: 'percent',
-  customDiffConfig: { threshold: 0.1 },
+  customDiffConfig: { threshold: 0.01 },
   capture: 'viewport',
 });
 
@@ -66,26 +66,39 @@ const stubFetch = (win, routes) => {
       const route = routes.splice(routeIndex, 1)[0];
       console.log(`matched ${args[0]} to ${route.url} ${route.method} ${route.status}`);
 
-      const response = {
+      let blob;
+      if (route.response && route.response.encoding === 'base64') {
+        const buffer = Buffer.from(route.response.content, 'base64');
+        blob = new Blob([buffer]);
+      } else {
+        blob = new Blob([route.response || '']);
+      }
+      const fetchResponse = {
         status: route.status,
         headers: new Headers(route.headers),
+        blob: () => Promise.resolve(blob),
         text: () => Promise.resolve(route.response),
         json: () => Promise.resolve(JSON.parse(route.response)),
         ok: route.status >= 200 && route.status <= 299,
       };
-      return Promise.resolve(response);
-    } else if (args[0].includes('api.github.com')) {
+      return Promise.resolve(fetchResponse);
+    } else if (
+      args[0].includes('api.github.com') ||
+      args[0].includes('netlify.com') ||
+      args[0].includes('s3.amazonaws.com')
+    ) {
       console.warn(
-        `No route match for github api request. Fetch args: ${JSON.stringify(args)}. Returning 404`,
+        `No route match for api request. Fetch args: ${JSON.stringify(args)}. Returning 404`,
       );
-      const response = {
+      const fetchResponse = {
         status: 404,
         headers: new Headers(),
+        blob: () => Promise.resolve(new Blob(['{}'])),
         text: () => Promise.resolve('{}'),
         json: () => Promise.resolve({}),
         ok: false,
       };
-      return Promise.resolve(response);
+      return Promise.resolve(fetchResponse);
     } else {
       console.log(`No route match for fetch args: ${JSON.stringify(args)}`);
       return fetch(...args);

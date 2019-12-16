@@ -247,6 +247,9 @@ export default class GitGateway {
             displayURL: { original: displayURL },
           }));
         }
+        if (mediaFiles.length === 0) {
+          return [];
+        }
         const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs(mediaFiles);
         return mediaFiles.map(({ id, displayURL, path, ...rest }) => {
           return {

@@ -8,8 +8,20 @@ function login(user) {
         // https://github.com/cypress-io/cypress/issues/1208
         window.indexedDB.deleteDatabase('localforage');
         window.localStorage.setItem('netlify-cms-user', JSON.stringify(user));
+        if (user.netlifySiteURL) {
+          window.localStorage.setItem('netlifySiteURL', user.netlifySiteURL);
+        }
       },
     });
+    if (user.netlifySiteURL && user.email && user.password) {
+      cy.get('input[name="email"]')
+        .clear()
+        .type(user.email);
+      cy.get('input[name="password"]')
+        .clear()
+        .type(user.password);
+      cy.contains('button', 'Login').click();
+    }
   } else {
     cy.visit('/');
     cy.contains('button', 'Login').click();

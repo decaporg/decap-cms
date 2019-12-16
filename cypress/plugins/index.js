@@ -14,6 +14,12 @@ require('dotenv').config();
 const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
 
 const { setupGitHub, teardownGitHub, setupGitHubTest, teardownGitHubTest } = require('./github');
+const {
+  setupGitGateway,
+  teardownGitGateway,
+  setupGitGatewayTest,
+  teardownGitGatewayTest,
+} = require('./gitGateway');
 const { copyBackendFiles } = require('../utils/config');
 
 module.exports = async (on, config) => {
@@ -24,8 +30,13 @@ module.exports = async (on, config) => {
       await copyBackendFiles(backend);
 
       let result = null;
-      if (backend === 'github') {
-        result = await setupGitHub(options);
+      switch (backend) {
+        case 'github':
+          result = await setupGitHub(options);
+          break;
+        case 'git-gateway':
+          result = await setupGitGateway(options);
+          break;
       }
 
       return result;
@@ -34,8 +45,13 @@ module.exports = async (on, config) => {
       const { backend } = taskData;
       console.log('Tearing down backend', backend);
 
-      if (backend === 'github') {
-        await teardownGitHub(taskData);
+      switch (backend) {
+        case 'github':
+          await teardownGitHub(taskData);
+          break;
+        case 'git-gateway':
+          await teardownGitGateway(taskData);
+          break;
       }
 
       console.log('Restoring defaults');
@@ -47,8 +63,13 @@ module.exports = async (on, config) => {
       const { backend, testName } = taskData;
       console.log(`Setting up single test '${testName}' for backend`, backend);
 
-      if (backend === 'github') {
-        await setupGitHubTest(taskData);
+      switch (backend) {
+        case 'github':
+          await setupGitHubTest(taskData);
+          break;
+        case 'git-gateway':
+          await setupGitGatewayTest(taskData);
+          break;
       }
 
       return null;
@@ -58,8 +79,13 @@ module.exports = async (on, config) => {
 
       console.log(`Tearing down single test '${testName}' for backend`, backend);
 
-      if (backend === 'github') {
-        await teardownGitHubTest(taskData);
+      switch (backend) {
+        case 'github':
+          await teardownGitHubTest(taskData);
+          break;
+        case 'git-gateway':
+          await teardownGitGatewayTest(taskData);
+          break;
       }
 
       return null;
