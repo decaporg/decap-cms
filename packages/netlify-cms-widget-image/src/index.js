@@ -5,6 +5,7 @@ const controlComponent = NetlifyCmsWidgetFile.withFileControl({ forImage: true }
 const Widget = (opts = {}) => ({
   name: 'image',
   controlComponent,
+  previewComponent,
   ...opts,
 });
 

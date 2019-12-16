@@ -1,8 +1,7 @@
 import createReactClass from 'create-react-class';
 import React from 'react';
 import { NetlifyCmsApp as CMS } from 'netlify-cms-app/dist/esm';
-import './media-libraries';
-import './locales';
+import './extensions';
 
 /**
  * Load Netlify CMS automatically if `window.CMS_MANUAL_INIT` is set.

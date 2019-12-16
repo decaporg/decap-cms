@@ -2,12 +2,15 @@ import { Map, List, fromJS } from 'immutable';
 import * as actions from 'Actions/entries';
 import reducer from '../entryDraft';
 
+jest.mock('uuid/v4', () => jest.fn(() => '1'));
+
 const initialState = Map({
   entry: Map(),
   mediaFiles: List(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
   hasChanged: false,
+  key: '',
 });
 
 const entry = {
@@ -23,7 +26,8 @@ const entry = {
 describe('entryDraft reducer', () => {
   describe('DRAFT_CREATE_FROM_ENTRY', () => {
     it('should create draft from the entry', () => {
-      expect(reducer(initialState, actions.createDraftFromEntry(fromJS(entry)))).toEqual(
+      const state = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+      expect(state).toEqual(
         fromJS({
           entry: {
             ...entry,
@@ -33,6 +37,7 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
+          key: '1',
         }),
       );
     });
@@ -40,7 +45,8 @@ describe('entryDraft reducer', () => {
 
   describe('DRAFT_CREATE_EMPTY', () => {
     it('should create a new draft ', () => {
-      expect(reducer(initialState, actions.emptyDraftCreated(fromJS(entry)))).toEqual(
+      const state = reducer(initialState, actions.emptyDraftCreated(fromJS(entry)));
+      expect(state).toEqual(
         fromJS({
           entry: {
             ...entry,
@@ -50,6 +56,7 @@ describe('entryDraft reducer', () => {
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
+          key: '1',
         }),
       );
     });
@@ -127,6 +134,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: false,
+        key: '',
       });
     });
   });
@@ -144,6 +152,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: false,
+        key: '',
       });
     });
   });
@@ -161,6 +170,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: false,
+        key: '',
       });
     });
   });
@@ -181,6 +191,7 @@ describe('entryDraft reducer', () => {
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: true,
+        key: '1',
       });
     });
   });
@@ -201,6 +212,7 @@ describe('entryDraft reducer', () => {
           entry,
           mediaFiles: [{ id: '1' }],
         },
+        key: '',
       });
     });
   });

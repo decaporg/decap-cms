@@ -30,7 +30,7 @@ const ToolbarButton = ({ type, label, icon, onClick, isActive, isHidden, disable
 
   return (
     <StyledToolbarButton
-      isActive={isActive && type && isActive(type)}
+      isActive={isActive}
       onClick={e => onClick && onClick(e, type)}
       title={label}
       disabled={disabled}
@@ -45,7 +45,7 @@ ToolbarButton.propTypes = {
   label: PropTypes.string.isRequired,
   icon: PropTypes.string,
   onClick: PropTypes.func,
-  isActive: PropTypes.func,
+  isActive: PropTypes.bool,
   isHidden: PropTypes.bool,
   disabled: PropTypes.bool,
 };

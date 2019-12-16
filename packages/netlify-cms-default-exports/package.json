@@ -5,7 +5,7 @@
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
-  "main": "dist/netlify-cms-editor-component-image.js",
+  "main": "dist/netlify-cms-default-exports.js",
   "license": "MIT",
   "keywords": [
     "netlify",

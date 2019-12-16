@@ -19,6 +19,10 @@ const defaultPlugins = [
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-object-rest-spread',
   '@babel/plugin-proposal-export-default-from',
+  '@babel/plugin-proposal-nullish-coalescing-operator',
+  '@babel/plugin-proposal-optional-chaining',
+  '@babel/plugin-syntax-dynamic-import',
+  'babel-plugin-inline-json-import',
   [
     'module-resolver',
     isESM
@@ -69,20 +73,22 @@ const defaultPlugins = [
 ];
 
 const presets = () => {
-  return ['@babel/preset-react', '@babel/preset-env'];
+  return [
+    '@babel/preset-react',
+    '@babel/preset-env',
+    [
+      '@emotion/babel-preset-css-prop',
+      {
+        autoLabel: true,
+      },
+    ],
+  ];
 };
 
 const plugins = () => {
   if (isESM) {
     return [
       ...defaultPlugins,
-      [
-        'emotion',
-        {
-          sourceMap: true,
-          autoLabel: true,
-        },
-      ],
       [
         'transform-define',
         {
@@ -105,13 +111,6 @@ const plugins = () => {
     return [
       ...defaultPlugins,
       [
-        'emotion',
-        {
-          sourceMap: false,
-          autoLabel: false,
-        },
-      ],
-      [
         'inline-react-svg',
         {
           svgo: {
@@ -123,29 +122,10 @@ const plugins = () => {
   }
 
   if (!isProduction) {
-    return [
-      ...defaultPlugins,
-      [
-        'emotion',
-        {
-          sourceMap: true,
-          autoLabel: true,
-        },
-      ],
-      'react-hot-loader/babel',
-    ];
+    return [...defaultPlugins, 'react-hot-loader/babel'];
   }
 
-  return [
-    ...defaultPlugins,
-    [
-      'emotion',
-      {
-        sourceMap: true,
-        autoLabel: true,
-      },
-    ],
-  ];
+  return defaultPlugins;
 };
 
 module.exports = {

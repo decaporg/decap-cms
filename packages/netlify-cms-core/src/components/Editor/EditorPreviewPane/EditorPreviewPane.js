@@ -26,6 +26,7 @@ export default class PreviewPane extends React.Component {
     const { getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
     const key = idx ? field.get('name') + '_' + idx : field.get('name');
+    const valueIsInMap = value && !widget.allowMapValue && Map.isMap(value);
 
     /**
      * Use an HOC to provide conditional updates for all previews.
@@ -36,7 +37,7 @@ export default class PreviewPane extends React.Component {
         key={key}
         field={field}
         getAsset={getAsset}
-        value={value && Map.isMap(value) ? value.get(field.get('name')) : value}
+        value={valueIsInMap ? value.get(field.get('name')) : value}
         entry={entry}
         fieldsMetaData={metadata}
       />

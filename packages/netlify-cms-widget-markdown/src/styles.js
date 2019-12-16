@@ -5,7 +5,7 @@ export const editorStyleVars = {
 };
 
 export const EditorControlBar = styled.div`
-  z-index: 1;
+  z-index: 200;
   position: sticky;
   top: 0;
   margin-bottom: ${editorStyleVars.stickyDistanceBottom};

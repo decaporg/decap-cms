@@ -1,3 +1,4 @@
+import React from 'react';
 import { map, has } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import u from 'unist-builder';
@@ -8,7 +9,7 @@ import u from 'unist-builder';
  * conversion by replacing the shortcode text with stringified HTML for
  * previewing the shortcode output.
  */
-export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
+export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWidget }) {
   return transform;
 
   function transform(root) {
@@ -37,7 +38,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
      * an HTML string or a React component. If a React component is returned,
      * render it to an HTML string.
      */
-    const value = plugin.toPreview(shortcodeData, getAsset);
+    const value = getPreview(plugin, shortcodeData);
     const valueHtml = typeof value === 'string' ? value : renderToString(value);
 
     /**
@@ -46,5 +47,21 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset }) {
     const textNode = u('html', valueHtml);
     const children = [textNode];
     return { ...node, children };
+  }
+
+  /**
+   * Retrieve the shortcode preview component.
+   */
+  function getPreview(plugin, shortcodeData) {
+    const { toPreview, widget } = plugin;
+    if (toPreview) {
+      return toPreview(shortcodeData, getAsset);
+    }
+    const preview = resolveWidget(widget);
+    return React.createElement(preview.preview, {
+      value: shortcodeData,
+      field: plugin,
+      getAsset,
+    });
   }
 }

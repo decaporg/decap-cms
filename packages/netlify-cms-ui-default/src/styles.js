@@ -120,6 +120,15 @@ const shadows = {
   `,
 };
 
+const text = {
+  fieldLabel: css`
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: ${colors.controlLabel};
+  `,
+};
+
 const gradients = {
   checkerboard: `
     linear-gradient(
@@ -465,6 +474,7 @@ export {
   lengths,
   components,
   buttons,
+  text,
   shadows,
   borders,
   transitions,

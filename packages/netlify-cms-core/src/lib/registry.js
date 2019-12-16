@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import produce from 'immer';
 import { oneLine } from 'common-tags';
 import EditorComponent from 'ValueObjects/EditorComponent';
 
@@ -23,6 +24,7 @@ export default {
   getPreviewTemplate,
   registerWidget,
   getWidget,
+  getWidgets,
   resolveWidget,
   registerEditorComponent,
   getEditorComponents,
@@ -81,10 +83,12 @@ export function registerWidget(name, control, preview) {
       name: widgetName,
       controlComponent: control,
       previewComponent: preview,
+      allowMapValue,
       globalStyles,
+      ...options
     } = name;
     if (registry.widgets[widgetName]) {
-      console.error(oneLine`
+      console.warn(oneLine`
         Multiple widgets registered with name "${widgetName}". Only the last widget registered with
         this name will be used.
       `);
@@ -92,13 +96,18 @@ export function registerWidget(name, control, preview) {
     if (!control) {
       throw Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
     }
-    registry.widgets[widgetName] = { control, preview, globalStyles };
+    registry.widgets[widgetName] = { control, preview, globalStyles, allowMapValue, ...options };
   } else {
     console.error('`registerWidget` failed, called with incorrect arguments.');
   }
 }
 export function getWidget(name) {
   return registry.widgets[name];
+}
+export function getWidgets() {
+  return produce(Object.entries(registry.widgets), draft => {
+    return draft.map(([key, value]) => ({ name: key, ...value }));
+  });
 }
 export function resolveWidget(name) {
   return getWidget(name || 'string') || getWidget('unknown');
@@ -109,7 +118,19 @@ export function resolveWidget(name) {
  */
 export function registerEditorComponent(component) {
   const plugin = EditorComponent(component);
-  registry.editorComponents = registry.editorComponents.set(plugin.get('id'), plugin);
+  if (plugin.type === 'code-block') {
+    const codeBlock = registry.editorComponents.find(c => c.type === 'code-block');
+
+    if (codeBlock) {
+      console.warn(oneLine`
+        Only one editor component of type "code-block" may be registered. Previously registered code
+        block component(s) will be overwritten.
+      `);
+      registry.editorComponents = registry.editorComponents.delete(codeBlock.id);
+    }
+  }
+
+  registry.editorComponents = registry.editorComponents.set(plugin.id, plugin);
 }
 export function getEditorComponents() {
   return registry.editorComponents;

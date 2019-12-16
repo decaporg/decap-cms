@@ -44,6 +44,7 @@ export default class Widget extends Component {
     onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,
+    widget: PropTypes.object.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
     isFetching: PropTypes.bool,
     controlRef: PropTypes.func,
@@ -56,6 +57,8 @@ export default class Widget extends Component {
     loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     onValidateObject: PropTypes.func,
+    isEditorComponent: PropTypes.bool,
+    isNewEditorComponent: PropTypes.bool,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -238,6 +241,7 @@ export default class Widget extends Component {
       editorControl,
       uniqueFieldId,
       resolveWidget,
+      widget,
       getEditorComponents,
       query,
       queryHits,
@@ -247,6 +251,8 @@ export default class Widget extends Component {
       loadEntry,
       fieldsErrors,
       controlRef,
+      isEditorComponent,
+      isNewEditorComponent,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -275,6 +281,7 @@ export default class Widget extends Component {
       hasActiveStyle,
       editorControl,
       resolveWidget,
+      widget,
       getEditorComponents,
       query,
       queryHits,
@@ -282,6 +289,8 @@ export default class Widget extends Component {
       clearFieldErrors,
       isFetching,
       loadEntry,
+      isEditorComponent,
+      isNewEditorComponent,
       fieldsErrors,
       controlRef,
       t,

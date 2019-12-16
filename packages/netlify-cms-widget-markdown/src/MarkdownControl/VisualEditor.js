@@ -1,23 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { fromJS } from 'immutable';
 import styled from '@emotion/styled';
-import { ClassNames } from '@emotion/core';
-import { get, isEmpty, debounce, uniq } from 'lodash';
-import { List } from 'immutable';
+import { css as coreCss, ClassNames } from '@emotion/core';
+import { get, isEmpty, debounce } from 'lodash';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
-import { slateToMarkdown, markdownToSlate, htmlToSlate } from '../serializers';
+import { lengths, fonts } from 'netlify-cms-ui-default';
+import { editorStyleVars, EditorControlBar } from '../styles';
+import { slateToMarkdown, markdownToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
-import { renderNode, renderMark } from './renderers';
-import { validateNode } from './validators';
-import plugins, { EditListConfigured } from './plugins';
-import onKeyDown from './keys';
-import visualEditorStyles from './visualEditorStyles';
-import { EditorControlBar } from '../styles';
+import { renderBlock, renderInline, renderMark } from './renderers';
+import plugins from './plugins/visual';
+import schema from './schema';
 
-const VisualEditorContainer = styled.div`
+const visualEditorStyles = `
   position: relative;
+  overflow: hidden;
+  overflow-x: auto;
+  font-family: ${fonts.primary};
+  min-height: ${lengths.richTextEditorMinHeight};
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
+  margin-top: -${editorStyleVars.stickyDistanceBottom};
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+const InsertionPoint = styled.div`
+  flex: 1 1 auto;
+  cursor: text;
 `;
 
 const createEmptyRawDoc = () => {
@@ -26,14 +41,37 @@ const createEmptyRawDoc = () => {
   return { nodes: [emptyBlock] };
 };
 
-const createSlateValue = rawValue => {
-  const rawDoc = rawValue && markdownToSlate(rawValue);
+const createSlateValue = (rawValue, { voidCodeBlock }) => {
+  const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock });
   const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
   const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
 };
 
 export default class Editor extends React.Component {
+  constructor(props) {
+    super(props);
+    const editorComponents = props.getEditorComponents();
+    this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
+    this.codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
+    this.editorComponents =
+      this.codeBlockComponent || editorComponents.has('code-block')
+        ? editorComponents
+        : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
+    this.renderBlock = renderBlock({
+      classNameWrapper: props.className,
+      resolveWidget: props.resolveWidget,
+      codeBlockComponent: this.codeBlockComponent,
+    });
+    this.renderInline = renderInline();
+    this.renderMark = renderMark();
+    this.schema = schema({ voidCodeBlock: !!this.codeBlockComponent });
+    this.plugins = plugins({ getAsset: props.getAsset, resolveWidget: props.resolveWidget });
+    this.state = {
+      value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
+    };
+  }
+
   static propTypes = {
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -45,249 +83,116 @@ export default class Editor extends React.Component {
     getEditorComponents: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: createSlateValue(props.value),
-      lastRawValue: props.value,
-    };
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
-    const forcePropsValue = this.shouldForcePropsValue(
-      this.props.value,
-      this.state.lastRawValue,
-      nextProps.value,
-      nextState.lastRawValue,
-    );
-    return !this.state.value.equals(nextState.value) || forcePropsValue;
+    return !this.state.value.equals(nextState.value);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const forcePropsValue = this.shouldForcePropsValue(
-      prevProps.value,
-      prevState.lastRawValue,
-      this.props.value,
-      this.state.lastRawValue,
-    );
-
-    if (forcePropsValue) {
-      this.setState({
-        value: createSlateValue(this.props.value),
-        lastRawValue: this.props.value,
-      });
+  componentDidMount() {
+    if (this.props.pendingFocus) {
+      this.editor.focus();
+      this.props.pendingFocus();
     }
   }
 
-  // If the old props/state values and new state value are all the same, and
-  // the new props value does not match the others, the new props value
-  // originated from outside of this widget and should be used.
-  shouldForcePropsValue(oldPropsValue, oldStateValue, newPropsValue, newStateValue) {
-    return (
-      uniq([oldPropsValue, oldStateValue, newStateValue]).length === 1 &&
-      oldPropsValue !== newPropsValue
-    );
-  }
-
-  handlePaste = (e, data, change) => {
-    if (data.type !== 'html' || data.isShift) {
-      return;
-    }
-    const ast = htmlToSlate(data.html);
-    const doc = Document.fromJSON(ast);
-    return change.insertFragment(doc);
+  handleMarkClick = type => {
+    this.editor.toggleMark(type).focus();
   };
 
-  selectionHasMark = type => this.state.value.activeMarks.some(mark => mark.type === type);
-  selectionHasBlock = type => this.state.value.blocks.some(node => node.type === type);
-
-  handleMarkClick = (event, type) => {
-    event.preventDefault();
-    const resolvedChange = this.state.value
-      .change()
-      .focus()
-      .toggleMark(type);
-    this.ref.onChange(resolvedChange);
-    this.setState({ value: resolvedChange.value });
+  handleBlockClick = type => {
+    this.editor.toggleBlock(type).focus();
   };
 
-  handleBlockClick = (event, type) => {
-    if (event) {
-      event.preventDefault();
-    }
-    let { value } = this.state;
-    const { document: doc } = value;
-    const { unwrapList, wrapInList } = EditListConfigured.changes;
-    let change = value.change();
-
-    // Handle everything except list buttons.
-    if (!['bulleted-list', 'numbered-list'].includes(type)) {
-      const isActive = this.selectionHasBlock(type);
-      change = change.setBlocks(isActive ? 'paragraph' : type);
-    }
-
-    // Handle the extra wrapping required for list buttons.
-    else {
-      const isSameListType = value.blocks.some(block => {
-        return !!doc.getClosest(block.key, parent => parent.type === type);
-      });
-      const isInList = EditListConfigured.utils.isSelectionInList(value);
-
-      if (isInList && isSameListType) {
-        change = change.call(unwrapList, type);
-      } else if (isInList) {
-        const currentListType = type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list';
-        change = change.call(unwrapList, currentListType).call(wrapInList, type);
-      } else {
-        change = change.call(wrapInList, type);
-      }
-    }
-
-    const resolvedChange = change.focus();
-    this.ref.onChange(resolvedChange);
-    this.setState({ value: resolvedChange.value });
+  handleLinkClick = () => {
+    this.editor.toggleLink(() => window.prompt('Enter the URL of the link'));
   };
 
-  hasLinks = () => {
-    return this.state.value.inlines.some(inline => inline.type === 'link');
-  };
+  hasMark = type => this.editor && this.editor.hasMark(type);
+  hasInline = type => this.editor && this.editor.hasInline(type);
+  hasBlock = type => this.editor && this.editor.hasBlock(type);
 
-  handleLink = () => {
-    let change = this.state.value.change();
-
-    // If the current selection contains links, clicking the "link" button
-    // should simply unlink them.
-    if (this.hasLinks()) {
-      change = change.unwrapInline('link');
-    } else {
-      const url = window.prompt('Enter the URL of the link');
-
-      // If nothing is entered in the URL prompt, do nothing.
-      if (!url) return;
-
-      // If no text is selected, use the entered URL as text.
-      if (change.value.isCollapsed) {
-        change = change.insertText(url).extend(0 - url.length);
-      }
-
-      change = change.wrapInline({ type: 'link', data: { url } }).collapseToEnd();
-    }
-
-    this.ref.onChange(change);
-    this.setState({ value: change.value });
-  };
-
-  handlePluginAdd = pluginId => {
-    const { getEditorComponents } = this.props;
-    const { value } = this.state;
-    const nodes = [Text.create('')];
-
-    /**
-     * Get default values for plugin fields.
-     */
-    const pluginFields = getEditorComponents().getIn([pluginId, 'fields'], List());
-    const defaultValues = pluginFields
-      .toMap()
-      .mapKeys((_, field) => field.get('name'))
-      .filter(field => field.has('default'))
-      .map(field => field.get('default'));
-
-    /**
-     * Create new shortcode block with default values set.
-     */
-    const block = {
-      object: 'block',
-      type: 'shortcode',
-      data: {
-        shortcode: pluginId,
-        shortcodeNew: true,
-        shortcodeData: defaultValues,
-      },
-      isVoid: true,
-      nodes,
-    };
-
-    let change = value.change();
-    const { focusBlock } = change.value;
-
-    if (focusBlock.text === '' && focusBlock.type === 'paragraph') {
-      change = change.setNodeByKey(focusBlock.key, block);
-    } else {
-      change = change.insertBlock(block);
-    }
-
-    change = change.focus();
-
-    this.ref.onChange(change);
-    this.setState({ value: change.value });
-  };
-
-  handleToggle = () => {
+  handleToggleMode = () => {
     this.props.onMode('raw');
   };
 
-  handleDocumentChange = debounce(change => {
+  handleInsertShortcode = pluginConfig => {
+    this.editor.insertShortcode(pluginConfig);
+  };
+
+  handleClickBelowDocument = () => {
+    this.editor.moveToEndOfDocument();
+  };
+
+  handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
-    const raw = change.value.document.toJSON();
-    const markdown = slateToMarkdown(raw);
-    this.setState({ lastRawValue: markdown }, () => onChange(markdown));
+    const raw = editor.value.document.toJS();
+    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
+    onChange(markdown);
   }, 150);
 
-  handleChange = change => {
-    if (!this.state.value.document.equals(change.value.document)) {
-      this.handleDocumentChange(change);
+  handleChange = editor => {
+    if (!this.state.value.document.equals(editor.value.document)) {
+      this.handleDocumentChange(editor);
     }
-    this.setState({ value: change.value });
+    this.setState({ value: editor.value });
   };
 
   processRef = ref => {
-    this.ref = ref;
+    this.editor = ref;
   };
 
   render() {
-    const { onAddAsset, getAsset, className, field, getEditorComponents } = this.props;
-
+    const { onAddAsset, getAsset, className, field } = this.props;
     return (
-      <VisualEditorContainer>
+      <div
+        css={coreCss`
+          position: relative;
+        `}
+      >
         <EditorControlBar>
           <Toolbar
             onMarkClick={this.handleMarkClick}
             onBlockClick={this.handleBlockClick}
-            onLinkClick={this.handleLink}
-            selectionHasMark={this.selectionHasMark}
-            selectionHasBlock={this.selectionHasBlock}
-            selectionHasLink={this.hasLinks}
-            onToggleMode={this.handleToggle}
-            plugins={getEditorComponents()}
-            onSubmit={this.handlePluginAdd}
+            onLinkClick={this.handleLinkClick}
+            onToggleMode={this.handleToggleMode}
+            plugins={this.editorComponents}
+            onSubmit={this.handleInsertShortcode}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
             buttons={field.get('buttons')}
+            hasMark={this.hasMark}
+            hasInline={this.hasInline}
+            hasBlock={this.hasBlock}
           />
         </EditorControlBar>
         <ClassNames>
           {({ css, cx }) => (
-            <Slate
+            <div
               className={cx(
                 className,
                 css`
                   ${visualEditorStyles}
                 `,
               )}
-              value={this.state.value}
-              renderNode={renderNode}
-              renderMark={renderMark}
-              validateNode={validateNode}
-              plugins={plugins}
-              onChange={this.handleChange}
-              onKeyDown={onKeyDown}
-              onPaste={this.handlePaste}
-              ref={this.processRef}
-              spellCheck
-            />
+            >
+              <Slate
+                className={css`
+                  padding: 16px 20px 0;
+                `}
+                value={this.state.value}
+                renderBlock={this.renderBlock}
+                renderInline={this.renderInline}
+                renderMark={this.renderMark}
+                schema={this.schema}
+                plugins={this.plugins}
+                onChange={this.handleChange}
+                ref={this.processRef}
+                spellCheck
+              />
+              <InsertionPoint onClick={this.handleClickBelowDocument} />
+            </div>
           )}
         </ClassNames>
-      </VisualEditorContainer>
+      </div>
     );
   }
 }

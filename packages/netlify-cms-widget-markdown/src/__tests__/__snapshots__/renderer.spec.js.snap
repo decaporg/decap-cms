@@ -55,7 +55,7 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
   dangerouslySetInnerHTML={
     Object {
       "__html": "<h1>H1</h1>
-<p>Text with <strong>bold</strong> &#x26; <em>em</em> elements</p>
+<p>Text with <strong>bold</strong> &amp; <em>em</em> elements</p>
 <h2>H2</h2>
 <ul>
 <li>ul item 1</li>
@@ -70,9 +70,9 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
 <h4>H4</h4>
 <p><a href=\\"http://google.com\\">link title</a></p>
 <h5>H5</h5>
-<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" alt=\\"alt text\\"></p>
+<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" alt=\\"alt text\\" /></p>
 <h6>H6</h6>
-<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\"></p>",
+<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" /></p>",
     }
   }
 />
@@ -203,39 +203,6 @@ exports[`Markdown Preview renderer Markdown rendering Links should render links 
   dangerouslySetInnerHTML={
     Object {
       "__html": "<p>I get 10 times more traffic from <a href=\\"http://google.com/\\" title=\\"Google\\">Google</a> than from <a href=\\"http://search.yahoo.com/\\" title=\\"Yahoo Search\\">Yahoo</a> or <a href=\\"http://search.msn.com/\\" title=\\"MSN Search\\">MSN</a>.</p>",
-    }
-  }
-/>
-`;
-
-exports[`Markdown Preview renderer Markdown rendering Lists should render lists 1`] = `
-.emotion-0 {
-  margin: 15px 2px;
-}
-
-<div
-  className="emotion-0 emotion-1"
-  dangerouslySetInnerHTML={
-    Object {
-      "__html": "<ol>
-<li>ol item 1</li>
-<li>
-<p>ol item 2</p>
-<ul>
-<li>Sublist 1</li>
-<li>Sublist 2</li>
-<li>
-<p>Sublist 3</p>
-<ol>
-<li>Sub-Sublist 1</li>
-<li>Sub-Sublist 2</li>
-<li>Sub-Sublist 3</li>
-</ol>
-</li>
-</ul>
-</li>
-<li>ol item 3</li>
-</ol>",
     }
   }
 />

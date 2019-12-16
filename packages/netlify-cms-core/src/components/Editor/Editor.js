@@ -399,6 +399,7 @@ export class Editor extends React.Component {
       logoutUser,
       deployPreview,
       loadDeployPreview,
+      draftKey,
       slug,
       t,
     } = this.props;
@@ -421,6 +422,7 @@ export class Editor extends React.Component {
 
     return (
       <EditorInterface
+        draftKey={draftKey}
         entry={entryDraft.get('entry')}
         getAsset={boundGetAsset}
         collection={collection}
@@ -474,6 +476,7 @@ function mapStateToProps(state, ownProps) {
   const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
+  const draftKey = entryDraft.get('key');
   return {
     collection,
     collections,
@@ -493,6 +496,7 @@ function mapStateToProps(state, ownProps) {
     currentStatus,
     deployPreview,
     localBackup,
+    draftKey,
   };
 }
 

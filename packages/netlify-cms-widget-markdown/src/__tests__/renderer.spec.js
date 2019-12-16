@@ -74,18 +74,43 @@ Text with **bold** & _em_ elements
           renderer
             .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
             .toJSON(),
-        ).toMatchSnapshot();
+        ).toMatchInlineSnapshot(`
+.emotion-0 {
+  margin: 15px 2px;
+}
+
+<div
+  className="emotion-0 emotion-1"
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": "<ol>
+<li>ol item 1</li>
+<li>ol item 2<ul>
+<li>Sublist 1</li>
+<li>Sublist 2</li>
+<li>Sublist 3<ol>
+<li>Sub-Sublist 1</li>
+<li>Sub-Sublist 2</li>
+<li>Sub-Sublist 3</li>
+</ol></li>
+</ul></li>
+<li>ol item 3</li>
+</ol>",
+    }
+  }
+/>
+`);
       });
     });
 
     describe('Links', () => {
       it('should render links', () => {
         const value = `
-I get 10 times more traffic from [Google] [1] than from [Yahoo] [2] or [MSN] [3].
+I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
 
-  [1]: http://google.com/        "Google"
-  [2]: http://search.yahoo.com/  "Yahoo Search"
-  [3]: http://search.msn.com/    "MSN Search"
+  [Google]: http://google.com/        "Google"
+  [Yahoo]: http://search.yahoo.com/  "Yahoo Search"
+  [MSN]: http://search.msn.com/    "MSN Search"
 `;
         expect(
           renderer
