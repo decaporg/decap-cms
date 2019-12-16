@@ -2053,10 +2053,28 @@
     once "^1.4.0"
     universal-user-agent "^4.0.0"
 
-"@octokit/rest@^16.28.4", "@octokit/rest@^16.28.7":
+"@octokit/rest@^16.28.4":
   version "16.35.0"
   resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-16.35.0.tgz#7ccc1f802f407d5b8eb21768c6deca44e7b4c0d8"
   integrity sha512-9ShFqYWo0CLoGYhA1FdtdykJuMzS/9H6vSbbQWDX4pWr4p9v+15MsH/wpd/3fIU+tSxylaNO48+PIHqOkBRx3w==
+  dependencies:
+    "@octokit/request" "^5.2.0"
+    "@octokit/request-error" "^1.0.2"
+    atob-lite "^2.0.0"
+    before-after-hook "^2.0.0"
+    btoa-lite "^1.0.0"
+    deprecation "^2.0.0"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
+    lodash.uniq "^4.5.0"
+    octokit-pagination-methods "^1.1.0"
+    once "^1.4.0"
+    universal-user-agent "^4.0.0"
+
+"@octokit/rest@^16.28.7":
+  version "16.35.2"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-16.35.2.tgz#0098c9e2a895d4afb0fa6578479283553543143c"
+  integrity sha512-iijaNZpn9hBpUdh8YdXqNiWazmq4R1vCUsmxpBB0kCQ0asHZpCx+HNs22eiHuwYKRhO31ZSAGBJLi0c+3XHaKQ==
   dependencies:
     "@octokit/request" "^5.2.0"
     "@octokit/request-error" "^1.0.2"
@@ -2209,10 +2227,15 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
-"@types/node@*", "@types/node@>= 8", "@types/node@>=6", "@types/node@^12.0.2":
+"@types/node@*", "@types/node@>=6", "@types/node@^12.0.2":
   version "12.12.15"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.15.tgz#8dfb6ce22fedd469128137640a3aa8f17415422f"
   integrity sha512-Pv+vWicyFd07Hw/SmNnTUguqrHgDfMtjabvD9sQyxeqbpCEg8CmViLBaVPHtNsoBgZECrRf5/pgV6FJIBrGSjw==
+
+"@types/node@>= 8":
+  version "12.12.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.17.tgz#191b71e7f4c325ee0fb23bc4a996477d92b8c39b"
+  integrity sha512-Is+l3mcHvs47sKy+afn2O1rV4ldZFU7W8101cNlOd+MRbjM4Onida8jSZnJdTe/0Pcf25g9BNIUsuugmE6puHA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
