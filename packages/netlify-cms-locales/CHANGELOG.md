@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0-beta.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.3.0-beta.1...netlify-cms-locales@1.3.0-beta.2) (2019-12-16)
+
+
+### Features
+
+* **lang:** add 'hu' locale ([#2965](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/2965)) ([30f73c6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/30f73c6ec8298f37d4b456d6b5b97930902309bf))
+* **locales:** add ja locale ([#2960](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/2960)) ([10a735d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/10a735de2fefd37eced720e898b1ebbfa880499b))
+
+
+
+
+
 # [1.3.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.3.0-beta.0...netlify-cms-locales@1.3.0-beta.1) (2019-12-11)
 
 

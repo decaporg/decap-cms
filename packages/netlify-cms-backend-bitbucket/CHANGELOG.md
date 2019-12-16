@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.6.0-beta.0...netlify-cms-backend-bitbucket@2.6.0-beta.1) (2019-12-16)
+
+
+### Bug Fixes
+
+* **bitbucket:** branchname containing slash ([#2963](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/2963)) ([afea448](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/afea44895b9ef7379f5a8726a60fb4d371c76ebf))
+
+
+
+
+
 # [2.6.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.5.0...netlify-cms-backend-bitbucket@2.6.0-beta.0) (2019-12-02)
 
 

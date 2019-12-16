@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.3.5...netlify-cms-widget-date@2.4.0) (2019-12-16)
+
+
+### Features
+
+* Code Widget + Markdown Widget Internal Overhaul ([#2828](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/2828)) ([18c579d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/18c579d0e9f0ff71ed8c52f5c66f2309259af054))
+
+
+
+
+
 ## [2.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.3.4...netlify-cms-widget-date@2.3.5) (2019-11-07)
 
 

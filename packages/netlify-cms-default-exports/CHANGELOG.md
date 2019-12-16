@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.2.3...netlify-cms-default-exports@2.3.0) (2019-12-16)
+
+
+### Features
+
+* Code Widget + Markdown Widget Internal Overhaul ([#2828](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/issues/2828)) ([18c579d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/commit/18c579d0e9f0ff71ed8c52f5c66f2309259af054))
+
+
+
+
+
 ## [2.2.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.2.2...netlify-cms-default-exports@2.2.3) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-default-exports

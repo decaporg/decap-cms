@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0-beta.5](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.0-beta.4...netlify-cms@2.10.0-beta.5) (2019-12-16)
+
+
+### Features
+
+* Code Widget + Markdown Widget Internal Overhaul ([#2828](https://github.com/netlify/netlify-cms/issues/2828)) ([18c579d](https://github.com/netlify/netlify-cms/commit/18c579d0e9f0ff71ed8c52f5c66f2309259af054))
+
+
+
+
+
 # [2.10.0-beta.4](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.0-beta.3...netlify-cms@2.10.0-beta.4) (2019-12-11)
 
 **Note:** Version bump only for package netlify-cms

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.3.3...netlify-cms-widget-image@2.4.0) (2019-12-16)
+
+
+### Features
+
+* Code Widget + Markdown Widget Internal Overhaul ([#2828](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/issues/2828)) ([18c579d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/commit/18c579d0e9f0ff71ed8c52f5c66f2309259af054))
+
+
+
+
+
 ## [2.3.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.3.2...netlify-cms-widget-image@2.3.3) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-widget-image

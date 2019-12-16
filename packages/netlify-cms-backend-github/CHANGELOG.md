@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-beta.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.7...netlify-cms-backend-github@2.5.0-beta.8) (2019-12-16)
+
+
+### Bug Fixes
+
+* don't fail on deleting non existent branch ([1e77d4b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/1e77d4b7688de795ab1b01c6ce2483a0383bbfb6))
+
+
+
+
+
 # [2.5.0-beta.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0-beta.6...netlify-cms-backend-github@2.5.0-beta.7) (2019-12-02)
 
 
