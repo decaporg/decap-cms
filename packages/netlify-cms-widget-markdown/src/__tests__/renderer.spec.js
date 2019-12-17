@@ -38,7 +38,13 @@ Text with **bold** & _em_ elements
 `;
         expect(
           renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+            .create(
+              <MarkdownPreview
+                value={markdownToHtml(value)}
+                getAsset={jest.fn()}
+                resolveWidget={jest.fn()}
+              />,
+            )
             .toJSON(),
         ).toMatchSnapshot();
       });
@@ -50,7 +56,13 @@ Text with **bold** & _em_ elements
           const value = padStart(' Title', heading + 7, '#');
           expect(
             renderer
-              .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+              .create(
+                <MarkdownPreview
+                  value={markdownToHtml(value)}
+                  getAsset={jest.fn()}
+                  resolveWidget={jest.fn()}
+                />,
+              )
               .toJSON(),
           ).toMatchSnapshot();
         });
@@ -72,7 +84,13 @@ Text with **bold** & _em_ elements
 `;
         expect(
           renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+            .create(
+              <MarkdownPreview
+                value={markdownToHtml(value)}
+                getAsset={jest.fn()}
+                resolveWidget={jest.fn()}
+              />,
+            )
             .toJSON(),
         ).toMatchInlineSnapshot(`
 .emotion-0 {
@@ -114,7 +132,13 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
 `;
         expect(
           renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+            .create(
+              <MarkdownPreview
+                value={markdownToHtml(value)}
+                getAsset={jest.fn()}
+                resolveWidget={jest.fn()}
+              />,
+            )
             .toJSON(),
         ).toMatchSnapshot();
       });
@@ -125,7 +149,13 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         const value = 'Use the `printf()` function.';
         expect(
           renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+            .create(
+              <MarkdownPreview
+                value={markdownToHtml(value)}
+                getAsset={jest.fn()}
+                resolveWidget={jest.fn()}
+              />,
+            )
             .toJSON(),
         ).toMatchSnapshot();
       });
@@ -134,7 +164,13 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         const value = '``There is a literal backtick (`) here.``';
         expect(
           renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+            .create(
+              <MarkdownPreview
+                value={markdownToHtml(value)}
+                getAsset={jest.fn()}
+                resolveWidget={jest.fn()}
+              />,
+            )
             .toJSON(),
         ).toMatchSnapshot();
       });
@@ -159,7 +195,13 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
 `;
         expect(
           renderer
-            .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+            .create(
+              <MarkdownPreview
+                value={markdownToHtml(value)}
+                getAsset={jest.fn()}
+                resolveWidget={jest.fn()}
+              />,
+            )
             .toJSON(),
         ).toMatchSnapshot();
       });
@@ -171,7 +213,13 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       const value = '<p>Paragraph with <em>inline</em> element</p>';
       expect(
         renderer
-          .create(<MarkdownPreview value={markdownToHtml(value)} getAsset={jest.fn()} />)
+          .create(
+            <MarkdownPreview
+              value={markdownToHtml(value)}
+              getAsset={jest.fn()}
+              resolveWidget={jest.fn()}
+            />,
+          )
           .toJSON(),
       ).toMatchSnapshot();
     });

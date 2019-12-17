@@ -9,11 +9,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 jest.mock('coreSrc/backend');
-jest.mock('Reducers', () => {
-  return {
-    getAsset: jest.fn().mockReturnValue({}),
-  };
-});
 jest.mock('../media', () => {
   const media = jest.requireActual('../media');
   return {
