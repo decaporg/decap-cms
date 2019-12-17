@@ -109,7 +109,7 @@ module.exports = async (on, config) => {
         args['height'] = 1200;
       } else {
         args['width'] = 1200;
-        args['height'] = 1178;
+        args['height'] = process.platform === 'darwin' ? 1178 : 1200;
       }
 
       return args;
