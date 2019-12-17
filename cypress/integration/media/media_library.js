@@ -39,6 +39,12 @@ function assertNoImagesInLibrary() {
   cy.get('img[class*="CardImage"]').should('not.exist');
 }
 
+function deleteImage() {
+  cy.get('img[class*="CardImage"]').click();
+  cy.contains('button', 'Delete selected').click();
+  assertNoImagesInLibrary();
+}
+
 function chooseSelectedMediaFile() {
   cy.contains('button', 'Choose selected').click();
 }
@@ -102,6 +108,16 @@ export default function({ entries, getUser }) {
   it('can upload image from global media library', () => {
     goToMediaLibrary();
     uploadMediaFile();
+    matchImageSnapshot();
+    closeMediaLibrary();
+  });
+
+  it('can delete image from global media library', () => {
+    goToMediaLibrary();
+    uploadMediaFile();
+    closeMediaLibrary();
+    goToMediaLibrary();
+    deleteImage();
     matchImageSnapshot();
     closeMediaLibrary();
   });
