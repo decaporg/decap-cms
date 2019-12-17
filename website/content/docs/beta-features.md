@@ -35,14 +35,6 @@ At the same time, any contributors who _do_ have write access to the repository 
 
 More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
 
-## Relative Image Paths
-
-Image paths have always been absolute from a single media library directory defined in the config. As of Netlify CMS 2.9.8-beta.2, relative paths can be used - this especially useful for SSG's like Gatsby, which generally expect relative paths.
-
-### Using relative paths
-
-To use relative image paths, set `media_folder_relative: true` in the root of your CMS config. That's it!
-
 ## Folder Collections Path
 
 By default the CMS stores folder collection content under the folder specified in the collection setting.
@@ -52,6 +44,60 @@ For example configuring `folder: posts` for a collection will save the content u
 You can now specify a `path` template (similar to the `slug` template) to control the content destination.
 
 This allows saving content in subfolders, e.g. configuring `path: '{{year}}/{{slug}}'` will save the content under `2019/post-title.md`.
+
+## Folder Collections Media Folder
+
+By default the CMS stores media files for all collections under a global `media_folder` directory as specified in the configuration.
+
+When using the global `media_folder` directory any entry field that points to a media file will use the absolute path to the published file as designated by the `public_folder` configuration.
+
+For example configuring:
+
+```yaml
+media_folder: static/media
+public_folder: /media
+```
+
+And saving an entry with an image named `image.png` will result in the image being saved under `static/media/image.png` and relevant entry fields populated with the value of `/media/image.png`.
+
+Some static site generators (e.g. Gatsby) work best when using relative image paths.
+
+This can now be achieved using a per collection `media_folder` configuration which specifies a relative media folder for the collection.
+
+For example, the following configuration will result in media files being saved in the same directory as the entry and the image field being populated with the relative path to the image.
+
+```yaml
+media_folder: static/media
+public_folder: /media
+collections:
+  - name: posts
+    label: Posts
+    label_singular: 'Post'
+    folder: content/posts
+    path: '{{slug}}/index'
+    media_folder: ''
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
+```
+
+More specifically, saving a entry with a title of `example post` with an image named `image.png` will result in a directory structure of:
+
+```
+content
+  posts
+    example-post
+      index.md
+      image.png
+```
+
+And for the image field being populated with a value of `image.png`.
+
+**Note: When specifying a `path` on a folder collection `media_folder` defaults to an empty string.**
 
 ## List Widget: Variable Types
 
