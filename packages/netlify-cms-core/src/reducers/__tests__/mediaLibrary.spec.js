@@ -1,8 +1,14 @@
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import { mediaDeleted } from 'Actions/mediaLibrary';
-import mediaLibrary from '../mediaLibrary';
+import mediaLibrary, {
+  selectMediaFiles,
+  selectMediaFileByPath,
+  selectMediaDisplayURL,
+} from '../mediaLibrary';
 
 jest.mock('uuid/v4');
+jest.mock('Reducers/editorialWorkflow');
+jest.mock('Reducers');
 
 describe('mediaLibrary', () => {
   it('should remove media file by key', () => {
@@ -35,5 +41,61 @@ describe('mediaLibrary', () => {
         files: [{ id: 'id2' }],
       }),
     );
+  });
+
+  it('should select draft media files when editing a workflow draft', () => {
+    const { selectEditingWorkflowDraft } = require('Reducers/editorialWorkflow');
+
+    selectEditingWorkflowDraft.mockReturnValue(true);
+
+    const state = {
+      entryDraft: fromJS({ entry: { mediaFiles: [{ id: 1 }] } }),
+    };
+
+    expect(selectMediaFiles(state)).toEqual([{ key: 1, id: 1 }]);
+  });
+
+  it('should select global media files when not editing a workflow draft', () => {
+    const { selectEditingWorkflowDraft } = require('Reducers/editorialWorkflow');
+
+    selectEditingWorkflowDraft.mockReturnValue(false);
+
+    const state = {
+      mediaLibrary: Map({ files: [{ id: 1 }] }),
+    };
+
+    expect(selectMediaFiles(state)).toEqual([{ id: 1 }]);
+  });
+
+  it('should select global media files when not using asset store integration', () => {
+    const { selectIntegration } = require('Reducers');
+
+    selectIntegration.mockReturnValue({});
+
+    const state = {
+      mediaLibrary: Map({ files: [{ id: 1 }] }),
+    };
+
+    expect(selectMediaFiles(state)).toEqual([{ id: 1 }]);
+  });
+
+  it('should return media file by path', () => {
+    const { selectEditingWorkflowDraft } = require('Reducers/editorialWorkflow');
+
+    selectEditingWorkflowDraft.mockReturnValue(false);
+
+    const state = {
+      mediaLibrary: Map({ files: [{ id: 1, path: 'path' }] }),
+    };
+
+    expect(selectMediaFileByPath(state, 'path')).toEqual({ id: 1, path: 'path' });
+  });
+
+  it('should return media display URL state', () => {
+    const state = {
+      mediaLibrary: fromJS({ displayURLs: { id: { url: 'url' } } }),
+    };
+
+    expect(selectMediaDisplayURL(state, 'id')).toEqual(Map({ url: 'url' }));
   });
 });

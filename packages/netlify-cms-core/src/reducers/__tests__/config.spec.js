@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 import { configLoaded, configLoading, configFailed } from 'Actions/config';
-import config from 'Reducers/config';
+import config, { selectLocale } from 'Reducers/config';
 
 describe('config', () => {
   it('should handle an empty state', () => {
@@ -21,5 +21,9 @@ describe('config', () => {
     expect(config(Map(), configFailed(new Error('Config could not be loaded')))).toEqual(
       Map({ error: 'Error: Config could not be loaded' }),
     );
+  });
+
+  it('should default to "en" locale', () => {
+    expect(selectLocale(Map())).toEqual('en');
   });
 });
