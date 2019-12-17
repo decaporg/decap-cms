@@ -146,7 +146,7 @@ describe('entries', () => {
 
     it('should retrieve media files with local backup', () => {
       const { currentBackend } = require('coreSrc/backend');
-      const { createAssetProxy } = require('../../ValueObjects/AssetProxy');
+      const { createAssetProxy } = require('../../valueObjects/AssetProxy');
 
       const backend = {
         getLocalDraftBackup: jest.fn((...args) => args),
