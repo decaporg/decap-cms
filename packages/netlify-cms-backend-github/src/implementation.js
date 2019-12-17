@@ -2,7 +2,7 @@ import React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
-import { asyncLock, basename, APIError } from 'netlify-cms-lib-util';
+import { asyncLock, basename } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
 import API from './API';

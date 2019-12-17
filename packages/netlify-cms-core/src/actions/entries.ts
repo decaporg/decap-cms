@@ -215,7 +215,7 @@ export function createDraftFromEntry(entry: EntryMap, metadata?: Map<string, unk
   };
 }
 
-export function createDraftDuplicateFromEntry(entry) {
+export function createDraftDuplicateFromEntry(entry: EntryMap) {
   return {
     type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
     payload: createEntry(entry.get('collection'), '', '', { data: entry.get('data') }),

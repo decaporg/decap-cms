@@ -39,11 +39,11 @@ export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
 
 export function createMediaLibrary(instance: MediaLibraryInstance) {
   const api = {
-    show: instance.show || (() => {}),
-    hide: instance.hide || (() => {}),
-    onClearControl: instance.onClearControl || (() => {}),
-    onRemoveControl: instance.onRemoveControl || (() => {}),
-    enableStandalone: instance.enableStandalone || (() => {}),
+    show: instance.show || (() => undefined),
+    hide: instance.hide || (() => undefined),
+    onClearControl: instance.onClearControl || (() => undefined),
+    onRemoveControl: instance.onRemoveControl || (() => undefined),
+    enableStandalone: instance.enableStandalone || (() => undefined),
   };
   return { type: MEDIA_LIBRARY_CREATE, payload: api };
 }

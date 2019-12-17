@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
-import { useGetAssetEffect } from 'netlify-cms-widget-file';
+import NetlifyCmsWidgetFile from 'netlify-cms-widget-file';
 
 const StyledImage = styled(({ getAsset, value }) => {
   const [src, setSrc] = useState();
 
-  useGetAssetEffect({ getAsset, value, setCallback: setSrc });
+  NetlifyCmsWidgetFile.useGetAssetEffect({ getAsset, value, setCallback: setSrc });
 
   return <img src={src || ''} role="presentation" />;
 })`

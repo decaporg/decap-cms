@@ -28,15 +28,6 @@ import rehype from 'rehype';
 import visit from 'unist-util-visit';
 import { oneLineTrim } from 'common-tags';
 import { escapeRegExp } from '../utils/regexp';
-import 'cypress-file-upload';
-import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
-
-addMatchImageSnapshotCommand({
-  failureThreshold: 0.01,
-  failureThresholdType: 'percent',
-  customDiffConfig: { threshold: 0.01 },
-  capture: 'viewport',
-});
 
 const matchRoute = (route, fetchArgs) => {
   const url = fetchArgs[0];

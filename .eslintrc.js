@@ -29,6 +29,7 @@ module.exports = {
     'emotion/import-from-emotion': 'error',
     'emotion/styled-import': 'error',
     'require-atomic-updates': [0],
+    'object-shorthand': ['error', 'always'],
   },
   plugins: ['babel', 'emotion', 'cypress'],
   settings: {
@@ -57,7 +58,14 @@ module.exports = {
           jsx: true,
         },
       },
-      rules: { '@typescript-eslint/explicit-function-return-type': 0 },
+      rules: {
+        'require-atomic-updates': [0],
+        '@typescript-eslint/explicit-function-return-type': 0,
+        '@typescript-eslint/no-use-before-define': [
+          'error',
+          { functions: false, classes: true, variables: true },
+        ],
+      },
     },
   ],
 };

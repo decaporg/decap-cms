@@ -104,14 +104,11 @@ async function createUser(netlifyApiToken, siteUrl, email, password) {
     body: JSON.stringify({ email, password }),
   });
 
-  let result;
   if (response.ok) {
     console.log('User created successfully');
   } else {
     throw new Error('Failed to create user');
   }
-
-  return result;
 }
 
 const netlifySiteURL = 'https://fake-site-url.netlify.com/';
