@@ -1134,7 +1134,13 @@ export default class API {
   }
 
   getBranch(branch = this.branch) {
-    return this.request(`${this.repoURL}/branches/${encodeURIComponent(branch)}`);
+    let repoURL = this.repoURL;
+    // when using open authoring with the default branch we should always
+    // get the updated origin branch
+    if (this.useOpenAuthoring && branch === this.branch) {
+      repoURL = this.originRepoURL;
+    }
+    return this.request(`${repoURL}/branches/${encodeURIComponent(branch)}`);
   }
 
   createBranch(branchName: string, sha: string) {

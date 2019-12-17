@@ -295,7 +295,13 @@ export default class GraphQLAPI extends API {
   }
 
   getBranchQuery(branch) {
-    const { repo_owner: owner, repo_name: name } = this;
+    let { repo_owner: owner, repo_name: name } = this;
+
+    // when using open authoring with the default branch we should always
+    // get the updated origin branch
+    if (this.useOpenAuthoring && branch === this.branch) {
+      ({ origin_repo_owner: owner, origin_repo_name: name } = this);
+    }
 
     return {
       query: queries.branch,

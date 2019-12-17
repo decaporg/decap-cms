@@ -497,7 +497,7 @@
     "status": 201
   },
   {
-    "body": "{\"operationName\":\"branch\",\"variables\":{\"owner\":\"forkOwner\",\"name\":\"repo\",\"qualifiedName\":\"refs/heads/master\"},\"query\":\"query branch($owner: String!, $name: String!, $qualifiedName: String!) {\\n  repository(owner: $owner, name: $name) {\\n    ...RepositoryParts\\n    branch: ref(qualifiedName: $qualifiedName) {\\n      ...BranchParts\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\\nfragment RepositoryParts on Repository {\\n  id\\n  __typename\\n}\\n\\nfragment BranchParts on Ref {\\n  commit: target {\\n    ...ObjectParts\\n    __typename\\n  }\\n  id\\n  name\\n  prefix\\n  repository {\\n    ...RepositoryParts\\n    __typename\\n  }\\n  __typename\\n}\\n\\nfragment ObjectParts on GitObject {\\n  id\\n  sha: oid\\n  __typename\\n}\\n\"}",
+    "body": "{\"operationName\":\"branch\",\"variables\":{\"owner\":\"owner\",\"name\":\"repo\",\"qualifiedName\":\"refs/heads/master\"},\"query\":\"query branch($owner: String!, $name: String!, $qualifiedName: String!) {\\n  repository(owner: $owner, name: $name) {\\n    ...RepositoryParts\\n    branch: ref(qualifiedName: $qualifiedName) {\\n      ...BranchParts\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\\nfragment RepositoryParts on Repository {\\n  id\\n  __typename\\n}\\n\\nfragment BranchParts on Ref {\\n  commit: target {\\n    ...ObjectParts\\n    __typename\\n  }\\n  id\\n  name\\n  prefix\\n  repository {\\n    ...RepositoryParts\\n    __typename\\n  }\\n  __typename\\n}\\n\\nfragment ObjectParts on GitObject {\\n  id\\n  sha: oid\\n  __typename\\n}\\n\"}",
     "method": "POST",
     "url": "/graphql",
     "headers": {

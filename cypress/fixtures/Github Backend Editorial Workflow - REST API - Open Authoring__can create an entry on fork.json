@@ -460,7 +460,7 @@
   },
   {
     "method": "GET",
-    "url": "/repos/forkOwner/repo/branches/master?ts=300",
+    "url": "/repos/owner/repo/branches/master?ts=300",
     "headers": {
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",

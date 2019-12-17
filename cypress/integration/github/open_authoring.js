@@ -64,7 +64,7 @@ export default function({ use_graphql }) {
   });
 
   it('can update a draft entry on fork', () => {
-    login(taskResult.data.user);
+    login(taskResult.data.forkUser);
     createPostAndExit(entry1);
     updateExistingPostAndExit(entry1, entry2);
   });
