@@ -47,7 +47,7 @@ jobs:
           name: dev-test-website-node-${{ matrix.node-version }}
           path: dev-test
 
-  # non forked workflow (has acceess to build secrets)
+  # non forked workflow (has access to build secrets)
   e2e-with-cypress-record:
     needs: build
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)
