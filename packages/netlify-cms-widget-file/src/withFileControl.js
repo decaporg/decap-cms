@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -6,8 +6,15 @@ import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
-import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-default';
-import { useGetAssetEffect } from './FilePreview';
+import {
+  lengths,
+  components,
+  buttons,
+  borders,
+  effects,
+  shadows,
+  Asset,
+} from 'netlify-cms-ui-default';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -23,17 +30,15 @@ const ImageWrapper = styled.div`
   ${shadows.inset};
 `;
 
-const Image = styled(({ getAsset, value }) => {
-  const [src, setSrc] = useState();
-
-  useGetAssetEffect({ getAsset, value, setCallback: setSrc });
-
-  return <img src={src || ''} role="presentation" />;
-})`
+const Image = styled(({ value: src }) => <img src={src || ''} role="presentation" />)`
   width: 100%;
   height: 100%;
   object-fit: contain;
 `;
+
+const ImageAsset = ({ getAsset, value }) => {
+  return <Asset path={value} getAsset={getAsset} component={Image} />;
+};
 
 const MultiImageWrapper = styled.div`
   display: flex;
@@ -217,7 +222,7 @@ export default function withFileControl({ forImage } = {}) {
           <MultiImageWrapper>
             {value.map(val => (
               <ImageWrapper key={val}>
-                <Image getAsset={getAsset} value={value} />
+                <ImageAsset getAsset={getAsset} value={value} />
               </ImageWrapper>
             ))}
           </MultiImageWrapper>
@@ -225,7 +230,7 @@ export default function withFileControl({ forImage } = {}) {
       }
       return (
         <ImageWrapper>
-          <Image getAsset={getAsset} value={value} />
+          <ImageAsset getAsset={getAsset} value={value} />
         </ImageWrapper>
       );
     };

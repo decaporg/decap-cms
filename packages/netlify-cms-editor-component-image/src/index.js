@@ -1,16 +1,4 @@
-import React, { useState, useEffect } from 'react';
-
-const useGetAssetEffect = ({ getAsset, image, setSrc }) => {
-  useEffect(() => {
-    let subscribed = true;
-
-    getAsset(image).then(url => subscribed && setSrc(url));
-
-    return () => {
-      subscribed = false;
-    };
-  }, [getAsset, image]);
-};
+import React from 'react';
 
 const image = {
   label: 'Image',
@@ -24,11 +12,8 @@ const image = {
   toBlock: ({ alt, image, title }) =>
     `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
   // eslint-disable-next-line react/display-name
-  toPreview: ({ alt, image, title }, getAsset) => {
-    const [src, setSrc] = useState();
-
-    useGetAssetEffect({ getAsset, image, setSrc });
-
+  toPreview: async ({ alt, image, title }, getAsset) => {
+    const src = await getAsset(image);
     return <img src={src || ''} alt={alt || ''} title={title || ''} />;
   },
   pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,

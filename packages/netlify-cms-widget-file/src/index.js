@@ -1,5 +1,5 @@
 import withFileControl from './withFileControl';
-import previewComponent, { useGetAssetEffect } from './FilePreview';
+import previewComponent from './FilePreview';
 
 const controlComponent = withFileControl();
 const Widget = (opts = {}) => ({
@@ -9,11 +9,5 @@ const Widget = (opts = {}) => ({
   ...opts,
 });
 
-export const NetlifyCmsWidgetFile = {
-  Widget,
-  controlComponent,
-  previewComponent,
-  withFileControl,
-  useGetAssetEffect,
-};
+export const NetlifyCmsWidgetFile = { Widget, controlComponent, previewComponent, withFileControl };
 export default NetlifyCmsWidgetFile;
