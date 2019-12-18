@@ -156,6 +156,17 @@ describe('entries', () => {
         ),
       ).toBe('posts/DRAFT_MEDIA_FILES/image.png');
     });
+
+    it('should handle relative media_folder', () => {
+      expect(
+        selectMediaFilePath(
+          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
+          'posts/title/index.md',
+          'image.png',
+        ),
+      ).toBe('static/media/image.png');
+    });
   });
 
   describe('selectMediaFilePublicPath', () => {
@@ -189,6 +200,16 @@ describe('entries', () => {
           'image.png',
         ),
       ).toBe('image.png');
+    });
+
+    it('should handle relative media_folder', () => {
+      expect(
+        selectMediaFilePublicPath(
+          Map({ public_folder: '/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
+          'image.png',
+        ),
+      ).toBe('../../static/media/image.png');
     });
   });
 });
