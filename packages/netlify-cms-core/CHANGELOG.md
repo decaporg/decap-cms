@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.10...netlify-cms-core@2.13.0) (2019-12-18)
+
+
+### Bug Fixes
+
+* don't show progress when loading preview status ([#2974](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2974)) ([af61245](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/af6124536013e95b417501ef17f1144baffada72))
+
+
+
+
+
 # [2.13.0-beta.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.9...netlify-cms-core@2.13.0-beta.10) (2019-12-16)
 
 
