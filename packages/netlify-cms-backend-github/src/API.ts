@@ -857,7 +857,9 @@ export default class API {
         mediaFilesList,
         'path',
       ).map(file => ({ ...file, remove: true, type: 'blob' }));
-      const branchData = await this.getBranch(branchName);
+      // open authoring branches are created on the forked repo
+      const repoURL = this.useOpenAuthoring ? this.repoURL : this.originRepoURL;
+      const branchData = await this.getBranch(branchName, repoURL);
       const changeTree = await this.updateTree(
         branchData.commit.sha,
         files.concat(mediaFilesToRemove),
@@ -1133,13 +1135,7 @@ export default class API {
     });
   }
 
-  getBranch(branch = this.branch) {
-    let repoURL = this.repoURL;
-    // when using open authoring with the default branch we should always
-    // get the updated origin branch
-    if (this.useOpenAuthoring && branch === this.branch) {
-      repoURL = this.originRepoURL;
-    }
+  getBranch(branch = this.branch, repoURL = this.originRepoURL) {
     return this.request(`${repoURL}/branches/${encodeURIComponent(branch)}`);
   }
 

@@ -294,15 +294,7 @@ export default class GraphQLAPI extends API {
     return `refs/heads/${branch}`;
   }
 
-  getBranchQuery(branch) {
-    let { repo_owner: owner, repo_name: name } = this;
-
-    // when using open authoring with the default branch we should always
-    // get the updated origin branch
-    if (this.useOpenAuthoring && branch === this.branch) {
-      ({ origin_repo_owner: owner, origin_repo_name: name } = this);
-    }
-
+  getBranchQuery(branch, owner, name) {
     return {
       query: queries.branch,
       variables: {
@@ -313,11 +305,12 @@ export default class GraphQLAPI extends API {
     };
   }
 
-  async getBranch(branch = this.branch) {
+  async getBranch(branch = this.branch, repoURL = this.originRepoURL) {
+    const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     // don't cache base branch to always get the latest data
     const fetchPolicy = branch === this.branch ? NO_CACHE : CACHE_FIRST;
     const { data } = await this.query({
-      ...this.getBranchQuery(branch),
+      ...this.getBranchQuery(branch, owner, name),
       fetchPolicy,
     });
     return data.repository.branch;
@@ -330,7 +323,7 @@ export default class GraphQLAPI extends API {
 
     const force = opts.force || false;
 
-    const branch = await this.getBranch(name);
+    const branch = await this.getBranch(name, this.repoURL);
     const { data } = await this.mutate({
       mutation: mutations.updateBranch,
       variables: {
@@ -341,7 +334,7 @@ export default class GraphQLAPI extends API {
   }
 
   async deleteBranch(branchName) {
-    const branch = await this.getBranch(branchName);
+    const branch = await this.getBranch(branchName, this.repoURL);
     const { data } = await this.mutate({
       mutation: mutations.deleteBranch,
       variables: {
@@ -520,7 +513,9 @@ export default class GraphQLAPI extends API {
   }
 
   async createBranch(branchName, sha) {
-    const repository = await this.getRepository(this.repo_owner, this.repo_name);
+    const owner = this.repo_owner;
+    const name = this.repo_name;
+    const repository = await this.getRepository(owner, name);
     const { data } = await this.mutate({
       mutation: mutations.createBranch,
       variables: {
@@ -535,7 +530,7 @@ export default class GraphQLAPI extends API {
         const branchData = { repository: { ...branch.repository, branch } };
 
         store.writeQuery({
-          ...this.getBranchQuery(branchName),
+          ...this.getBranchQuery(branchName, owner, name),
           data: branchData,
         });
       },
