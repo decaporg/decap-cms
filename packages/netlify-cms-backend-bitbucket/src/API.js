@@ -56,12 +56,10 @@ export default class API {
   };
 
   branchCommitSha = async () => {
-    if (this.branchSha) return this.branchSha;
-
-    ({
-      target: { hash: this.branchSha },
-    } = await this.requestJSON(`${this.repoURL}/refs/branches/${this.branch}`));
-    return this.branchSha;
+    const {
+      target: { hash: branchSha },
+    } = await this.requestJSON(`${this.repoURL}/refs/branches/${this.branch}`);
+    return branchSha;
   };
 
   isFile = ({ type }) => type === 'commit_file';
