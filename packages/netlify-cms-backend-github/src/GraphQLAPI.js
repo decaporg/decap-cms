@@ -43,6 +43,7 @@ export default class GraphQLAPI extends API {
     const authLink = setContext((_, { headers }) => {
       return {
         headers: {
+          'Content-Type': 'application/json; charset=utf-8',
           ...headers,
           authorization: this.token ? `token ${this.token}` : '',
         },
@@ -140,7 +141,7 @@ export default class GraphQLAPI extends API {
     return { owner, name };
   }
 
-  async retrieveContent(path, branch, repoURL) {
+  async retrieveContent({ path, branch, repoURL, parseText }) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { is_null, is_binary, text } = await this.retrieveBlobObject(
       owner,
@@ -152,11 +153,14 @@ export default class GraphQLAPI extends API {
     } else if (!is_binary) {
       return text;
     } else {
-      return super.retrieveContent(path, branch, repoURL);
+      return super.retrieveContent({ path, branch, repoURL, parseText });
     }
   }
 
-  async fetchBlobContent(sha, repoURL) {
+  async fetchBlobContent(sha, repoURL, parseText) {
+    if (!parseText) {
+      return super.fetchBlobContent(sha, repoURL);
+    }
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { is_null, is_binary, text } = await this.retrieveBlobObject(
       owner,

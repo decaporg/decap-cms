@@ -17,7 +17,6 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "get-relative-path": "^1.0.2",
     "js-sha256": "^0.9.0",
     "localforage": "^1.7.3"
   },

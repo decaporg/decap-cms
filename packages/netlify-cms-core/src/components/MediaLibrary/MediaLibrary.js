@@ -14,7 +14,8 @@ import {
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
-import MediaLibraryModal from './MediaLibraryModal';
+import { selectMediaFiles } from 'Reducers/mediaLibrary';
+import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
  * Extensions used to determine which files to show when the media library is
@@ -22,17 +23,6 @@ import MediaLibraryModal from './MediaLibraryModal';
  */
 const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
-
-const fileShape = {
-  displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  id: PropTypes.string.isRequired,
-  key: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  queryOrder: PropTypes.number,
-  size: PropTypes.number,
-  url: PropTypes.string,
-  urlIsPublicPath: PropTypes.bool,
-};
 
 class MediaLibrary extends React.Component {
   static propTypes = {
@@ -118,17 +108,16 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, queryOrder, url, urlIsPublicPath, displayURL, draft }) => {
+      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
           id,
           name,
+          path,
           type: ext.toUpperCase(),
           size,
           queryOrder,
-          url,
-          urlIsPublicPath,
           displayURL,
           draft,
           isImage: IMAGE_EXTENSIONS.includes(ext),
@@ -167,9 +156,9 @@ class MediaLibrary extends React.Component {
      * get the file for upload, and retain the synthetic event for access after
      * the asynchronous persist operation.
      */
+    event.persist();
     event.stopPropagation();
     event.preventDefault();
-    event.persist();
     const { persistMedia, privateUpload } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
@@ -190,9 +179,9 @@ class MediaLibrary extends React.Component {
    */
   handleInsert = () => {
     const { selectedFile } = this.state;
-    const { name, url, urlIsPublicPath } = selectedFile;
+    const { path } = selectedFile;
     const { insertMedia } = this.props;
-    insertMedia(urlIsPublicPath ? { url } : { name });
+    insertMedia(path);
     this.handleClose();
   };
 
@@ -315,14 +304,11 @@ class MediaLibrary extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { config, mediaLibrary } = state;
-  const configProps = {
-    publicFolder: config.get('public_folder'),
-  };
+  const { mediaLibrary } = state;
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
-    files: mediaLibrary.get('files'),
+    files: selectMediaFiles(state),
     displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
     dynamicSearchActive: mediaLibrary.get('dynamicSearchActive'),
@@ -336,7 +322,7 @@ const mapStateToProps = state => {
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
   };
-  return { ...configProps, ...mediaLibraryProps };
+  return { ...mediaLibraryProps };
 };
 
 const mapDispatchToProps = {

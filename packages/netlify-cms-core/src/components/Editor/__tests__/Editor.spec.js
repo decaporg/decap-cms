@@ -193,7 +193,7 @@ describe('Editor', () => {
     const { rerender } = render(
       <Editor
         {...props}
-        entryDraft={fromJS({ entry: { slug: 'slug' } })}
+        entryDraft={fromJS({ entry: {} })}
         entry={fromJS({ isFetching: false })}
       />,
     );
@@ -202,7 +202,7 @@ describe('Editor', () => {
     rerender(
       <Editor
         {...props}
-        entryDraft={fromJS({ entry: { slug: 'slug' }, mediaFiles: [{ id: '1' }] })}
+        entryDraft={fromJS({ entry: { mediaFiles: [{ id: '1' }] } })}
         entry={fromJS({ isFetching: false })}
         hasChanged={true}
       />,
@@ -210,9 +210,8 @@ describe('Editor', () => {
 
     expect(props.persistLocalBackup).toHaveBeenCalledTimes(1);
     expect(props.persistLocalBackup).toHaveBeenCalledWith(
-      fromJS({ slug: 'slug' }),
+      fromJS({ mediaFiles: [{ id: '1' }] }),
       props.collection,
-      fromJS([{ id: '1' }]),
     );
   });
 
@@ -220,8 +219,8 @@ describe('Editor', () => {
     const { rerender } = render(
       <Editor
         {...props}
-        entryDraft={fromJS({ entry: { slug: 'slug' } })}
-        entry={fromJS({ isFetching: false })}
+        entryDraft={fromJS({ entry: {} })}
+        entry={fromJS({ isFetching: false, mediaFiles: [] })}
       />,
     );
 
@@ -230,19 +229,17 @@ describe('Editor', () => {
       <Editor
         {...props}
         entryDraft={fromJS({
-          entry: { slug: 'slug' },
-          mediaFiles: [{ id: '1' }],
+          entry: {},
           fieldsMetaData: {},
         })}
-        entry={fromJS({ isFetching: false })}
+        entry={fromJS({ isFetching: false, mediaFiles: [{ id: '1' }] })}
       />,
     );
 
     expect(props.createDraftFromEntry).toHaveBeenCalledTimes(1);
     expect(props.createDraftFromEntry).toHaveBeenCalledWith(
-      fromJS({ isFetching: false, data: {} }),
+      fromJS({ isFetching: false, data: {}, mediaFiles: [{ id: '1' }] }),
       fromJS({}),
-      fromJS([{ id: '1' }]),
     );
   });
 });

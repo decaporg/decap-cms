@@ -10,7 +10,7 @@ const truthy = () => ({ error: false });
 const isEmpty = value =>
   value === null ||
   value === undefined ||
-  (value.hasOwnProperty('length') && value.length === 0) ||
+  (Object.prototype.hasOwnProperty.call(value, 'length') && value.length === 0) ||
   (value.constructor === Object && Object.keys(value).length === 0) ||
   (List.isList(value) && value.size === 0);
 
@@ -168,7 +168,7 @@ export default class Widget extends Component {
     if (typeof response === 'boolean') {
       const isValid = response;
       return { error: !isValid };
-    } else if (response.hasOwnProperty('error')) {
+    } else if (Object.prototype.hasOwnProperty.call(response, 'error')) {
       return response;
     } else if (response instanceof Promise) {
       response.then(

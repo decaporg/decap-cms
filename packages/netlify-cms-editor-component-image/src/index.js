@@ -12,9 +12,10 @@ const image = {
   toBlock: ({ alt, image, title }) =>
     `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
   // eslint-disable-next-line react/display-name
-  toPreview: ({ alt, image, title }, getAsset) => (
-    <img src={getAsset(image) || ''} alt={alt || ''} title={title || ''} />
-  ),
+  toPreview: async ({ alt, image, title }, getAsset) => {
+    const src = await getAsset(image);
+    return <img src={src || ''} alt={alt || ''} title={title || ''} />;
+  },
   pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
   fields: [
     {

@@ -2,22 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
-import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
+import { WidgetPreviewContainer, Asset } from 'netlify-cms-ui-default';
 
-const StyledImage = styled(({ getAsset, value }) => (
-  <img src={getAsset(value)} role="presentation" />
-))`
+const StyledImage = styled(({ value: src }) => <img src={src || ''} role="presentation" />)`
   display: block;
   max-width: 100%;
   height: auto;
 `;
 
+const StyledImageAsset = ({ getAsset, value }) => {
+  return <Asset path={value} getAsset={getAsset} component={StyledImage} />;
+};
+
 const ImagePreviewContent = props => {
   const { value, getAsset } = props;
   if (Array.isArray(value) || List.isList(value)) {
-    return value.map(val => <StyledImage key={val} value={val} getAsset={getAsset} />);
+    return value.map(val => <StyledImageAsset key={val} value={val} getAsset={getAsset} />);
   }
-  return <StyledImage {...props} />;
+  return <StyledImageAsset {...props} />;
 };
 
 const ImagePreview = props => {

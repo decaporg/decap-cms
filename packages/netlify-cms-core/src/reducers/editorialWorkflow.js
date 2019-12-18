@@ -86,7 +86,7 @@ const unpublishedEntries = (state = Map(), action) => {
       // Update Optimistically
       return state.deleteIn([
         'entities',
-        `${action.payload.collection}.${action.payload.entry.get('slug')}`,
+        `${action.payload.collection}.${action.payload.slug}`,
         'isPersisting',
       ]);
 
@@ -148,6 +148,13 @@ export const selectUnpublishedSlugs = (state, collection) => {
     .filter((v, k) => startsWith(k, `${collection}.`))
     .map(entry => entry.get('slug'))
     .valueSeq();
+};
+
+export const selectEditingWorkflowDraft = state => {
+  const entry = state.entryDraft.get('entry');
+  const useWorkflow = state.config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const workflowDraft = entry && !entry.isEmpty() && useWorkflow;
+  return workflowDraft;
 };
 
 export default unpublishedEntries;

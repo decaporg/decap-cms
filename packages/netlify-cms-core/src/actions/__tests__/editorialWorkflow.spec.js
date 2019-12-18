@@ -1,18 +1,12 @@
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import * as actions from '../editorialWorkflow';
-import { setDraftEntryMediaFiles } from '../entries';
 import { addAssets } from '../media';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fromJS } from 'immutable';
 
 jest.mock('coreSrc/backend');
-jest.mock('Reducers', () => {
-  return {
-    getAsset: jest.fn().mockReturnValue({}),
-  };
-});
-jest.mock('ValueObjects/AssetProxy');
+jest.mock('../../valueObjects/AssetProxy');
 jest.mock('netlify-cms-lib-util');
 jest.mock('uuid/v4', () => {
   return jest.fn().mockReturnValue('000000000000000000000');
@@ -43,7 +37,7 @@ describe('editorialWorkflow actions', () => {
       const { currentBackend } = require('coreSrc/backend');
       const { createAssetProxy } = require('ValueObjects/AssetProxy');
 
-      const assetProxy = { name: 'name', public_path: 'public_path' };
+      const assetProxy = { name: 'name', path: 'path' };
       const entry = { mediaFiles: [{ file: { name: 'name' }, id: '1' }] };
       const backend = {
         unpublishedEntry: jest.fn().mockResolvedValue(entry),
@@ -70,7 +64,7 @@ describe('editorialWorkflow actions', () => {
 
       return store.dispatch(actions.loadUnpublishedEntry(collection, slug)).then(() => {
         const actions = store.getActions();
-        expect(actions).toHaveLength(5);
+        expect(actions).toHaveLength(3);
         expect(actions[0]).toEqual({
           type: 'UNPUBLISHED_ENTRY_REQUEST',
           payload: {
@@ -79,28 +73,11 @@ describe('editorialWorkflow actions', () => {
           },
         });
         expect(actions[1]).toEqual(addAssets([assetProxy]));
-        expect(actions[2]).toEqual(
-          setDraftEntryMediaFiles([
-            {
-              file: { name: 'name' },
-              name: 'name',
-              id: '1',
-              draft: true,
-              public_path: 'public_path',
-            },
-          ]),
-        );
-        expect(actions[3]).toEqual({
-          type: 'ADD_MEDIA_FILES_TO_LIBRARY',
-          payload: {
-            mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }],
-          },
-        });
-        expect(actions[4]).toEqual({
+        expect(actions[2]).toEqual({
           type: 'UNPUBLISHED_ENTRY_SUCCESS',
           payload: {
             collection: 'posts',
-            entry,
+            entry: { ...entry, mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }] },
           },
         });
       });
@@ -111,15 +88,15 @@ describe('editorialWorkflow actions', () => {
     it('should publish unpublished entry and report success', () => {
       const { currentBackend } = require('coreSrc/backend');
 
-      const mediaFiles = [{ file: { name: 'name' }, id: '1' }];
-      const entry = { mediaFiles };
+      const entry = {};
       const backend = {
-        publishUnpublishedEntry: jest.fn().mockResolvedValue({ mediaFiles }),
+        publishUnpublishedEntry: jest.fn().mockResolvedValue(),
         getEntry: jest.fn().mockResolvedValue(entry),
       };
 
       const store = mockStore({
         config: fromJS({}),
+        integrations: fromJS([]),
         mediaLibrary: fromJS({
           isLoading: false,
         }),
@@ -134,7 +111,8 @@ describe('editorialWorkflow actions', () => {
 
       return store.dispatch(actions.publishUnpublishedEntry('posts', slug)).then(() => {
         const actions = store.getActions();
-        expect(actions).toHaveLength(7);
+        expect(actions).toHaveLength(6);
+
         expect(actions[0]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST',
           payload: {
@@ -144,12 +122,18 @@ describe('editorialWorkflow actions', () => {
           optimist: { type: BEGIN, id: '000000000000000000000' },
         });
         expect(actions[1]).toEqual({
+          type: 'MEDIA_LOAD_REQUEST',
+          payload: {
+            page: 1,
+          },
+        });
+        expect(actions[2]).toEqual({
           type: 'NOTIF_SEND',
           message: { key: 'ui.toast.entryPublished' },
           kind: 'success',
           dismissAfter: 4000,
         });
-        expect(actions[2]).toEqual({
+        expect(actions[3]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS',
           payload: {
             collection: 'posts',
@@ -157,23 +141,14 @@ describe('editorialWorkflow actions', () => {
           },
           optimist: { type: COMMIT, id: '000000000000000000000' },
         });
-        expect(actions[3]).toEqual({
+        expect(actions[4]).toEqual({
           type: 'ENTRY_REQUEST',
           payload: {
             slug,
             collection: 'posts',
           },
         });
-        expect(actions[4]).toEqual({
-          type: 'ADD_MEDIA_FILES_TO_LIBRARY',
-          payload: {
-            mediaFiles: [{ file: { name: 'name' }, id: '1', draft: false }],
-          },
-        });
         expect(actions[5]).toEqual({
-          type: 'CLEAR_DRAFT_ENTRY_MEDIA_FILES',
-        });
-        expect(actions[6]).toEqual({
           type: 'ENTRY_SUCCESS',
           payload: {
             entry,

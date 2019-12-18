@@ -6,10 +6,7 @@ import { Map, List, fromJS } from 'immutable';
 jest.mock('Lib/registry');
 jest.mock('netlify-cms-lib-util');
 jest.mock('Formats/formats');
-
-const configWrapper = inputObject => ({
-  get: prop => inputObject[prop],
-});
+jest.mock('../lib/urlHelper');
 
 describe('Backend', () => {
   describe('filterEntries', () => {
@@ -19,9 +16,13 @@ describe('Backend', () => {
       registry.getBackend.mockReturnValue({
         init: jest.fn(),
       });
-      backend = resolveBackend({
-        getIn: jest.fn().mockReturnValue('git-gateway'),
-      });
+      backend = resolveBackend(
+        Map({
+          backend: Map({
+            name: 'git-gateway',
+          }),
+        }),
+      );
     });
 
     it('filters string values', () => {
@@ -40,7 +41,7 @@ describe('Backend', () => {
             },
           ],
         },
-        configWrapper({ field: 'testField', value: 'testValue' }),
+        Map({ field: 'testField', value: 'testValue' }),
       );
 
       expect(result.length).toBe(1);
@@ -62,7 +63,7 @@ describe('Backend', () => {
             },
           ],
         },
-        configWrapper({ field: 'testField', value: 42 }),
+        Map({ field: 'testField', value: 42 }),
       );
 
       expect(result.length).toBe(1);
@@ -84,7 +85,7 @@ describe('Backend', () => {
             },
           ],
         },
-        configWrapper({ field: 'testField', value: false }),
+        Map({ field: 'testField', value: false }),
       );
 
       expect(result.length).toBe(1);
@@ -106,7 +107,7 @@ describe('Backend', () => {
             },
           ],
         },
-        configWrapper({ field: 'testField', value: 'testValue' }),
+        Map({ field: 'testField', value: 'testValue' }),
       );
 
       expect(result.length).toBe(1);
@@ -184,9 +185,8 @@ describe('Backend', () => {
       const result = await backend.getLocalDraftBackup(collection, slug);
 
       expect(result).toEqual({
-        assets: [],
-        mediaFiles: [],
         entry: {
+          mediaFiles: [],
           collection: 'posts',
           slug: 'slug',
           path: '',
@@ -218,15 +218,13 @@ describe('Backend', () => {
       localForage.getItem.mockReturnValue({
         raw: 'content',
         mediaFiles: [{ id: '1' }],
-        assets: [{ public_path: 'public_path' }],
       });
 
       const result = await backend.getLocalDraftBackup(collection, slug);
 
       expect(result).toEqual({
-        assets: [{ public_path: 'public_path' }],
-        mediaFiles: [{ id: '1' }],
         entry: {
+          mediaFiles: [{ id: '1' }],
           collection: 'posts',
           slug: 'slug',
           path: '',
@@ -270,7 +268,7 @@ describe('Backend', () => {
         slug,
       });
 
-      await backend.persistLocalDraftBackup(entry, collection, List(), List());
+      await backend.persistLocalDraftBackup(entry, collection);
 
       expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
       expect(backend.entryToRaw).toHaveBeenCalledWith(collection, entry);
@@ -296,18 +294,15 @@ describe('Backend', () => {
       const entry = Map({
         slug,
         path: 'content/posts/entry.md',
+        mediaFiles: List([{ id: '1' }]),
       });
 
-      const mediaFiles = List([{ id: '1' }]);
-      const assets = List([{ public_path: 'public_path' }]);
-
-      await backend.persistLocalDraftBackup(entry, collection, mediaFiles, assets);
+      await backend.persistLocalDraftBackup(entry, collection);
 
       expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
       expect(backend.entryToRaw).toHaveBeenCalledWith(collection, entry);
       expect(localForage.setItem).toHaveBeenCalledTimes(2);
       expect(localForage.setItem).toHaveBeenCalledWith('backup.posts.slug', {
-        assets: [{ public_path: 'public_path' }],
         mediaFiles: [{ id: '1' }],
         path: 'content/posts/entry.md',
         raw: 'content',
@@ -331,12 +326,12 @@ describe('Backend', () => {
 
       const file = { path: 'static/media/image.png' };
 
-      const result = await backend.persistMedia(config, file, true);
+      const result = await backend.persistMedia(config, file);
       expect(result).toBe(persistMediaResult);
       expect(implementation.persistMedia).toHaveBeenCalledTimes(1);
       expect(implementation.persistMedia).toHaveBeenCalledWith(
         { path: 'static/media/image.png' },
-        { commitMessage: 'Upload “static/media/image.png”', draft: true },
+        { commitMessage: 'Upload “static/media/image.png”' },
       );
     });
   });
@@ -366,7 +361,7 @@ describe('Backend', () => {
 
       const result = await backend.unpublishedEntry(collection, slug);
       expect(result).toEqual({
-        collection: 'draft',
+        collection: 'posts',
         slug: '',
         path: 'path',
         partial: false,
@@ -386,6 +381,9 @@ describe('Backend', () => {
     });
 
     it("should return unique slug when entry doesn't exist", async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
       const config = Map({});
 
       const implementation = {
@@ -418,6 +416,10 @@ describe('Backend', () => {
     });
 
     it('should return unique slug when entry exists', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
       const config = Map({});
 
       const implementation = {

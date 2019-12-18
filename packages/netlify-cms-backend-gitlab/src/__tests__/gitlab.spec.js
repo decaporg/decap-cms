@@ -380,7 +380,12 @@ describe('gitlab backend', () => {
 
       interceptFiles(backend, entryTree.path);
       interceptCollection(backend, collectionContentConfig);
-      const entry = await backend.getEntry(fromJS(collectionContentConfig), slug);
+
+      const entry = await backend.getEntry(
+        { config: fromJS({}), integrations: fromJS([]), entryDraft: fromJS({}) },
+        fromJS(collectionContentConfig),
+        slug,
+      );
 
       expect(entry).toEqual(expect.objectContaining({ path: entryTree.path }));
     });

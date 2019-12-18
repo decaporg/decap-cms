@@ -1,6 +1,11 @@
 import { attempt, isError, take, unset } from 'lodash';
 import uuid from 'uuid/v4';
-import { EditorialWorkflowError, Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import {
+  EditorialWorkflowError,
+  Cursor,
+  CURSOR_COMPATIBILITY_SYMBOL,
+  basename,
+} from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 
 window.repoFiles = window.repoFiles || {};
@@ -230,22 +235,37 @@ export default class TestBackend {
     return Promise.resolve(this.assets);
   }
 
+  async getMediaFile(path) {
+    const asset = this.assets.find(asset => asset.path === path);
+
+    const name = basename(path);
+    const blob = await fetch(asset.url).then(res => res.blob());
+    const fileObj = new File([blob], name);
+
+    return {
+      displayURL: asset.url,
+      path,
+      name,
+      size: fileObj.size,
+      file: fileObj,
+      url: asset.url,
+    };
+  }
+
   mediaFileToAsset(mediaFile) {
     const { fileObj } = mediaFile;
     const { name, size } = fileObj;
     const objectUrl = attempt(window.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
-    const normalizedAsset = { id: uuid(), name, size, path: mediaFile.path, url };
+    const normalizedAsset = { id: uuid(), name, size, path: mediaFile.path, url, displayURL: url };
 
     return normalizedAsset;
   }
 
-  persistMedia(mediaFile, options = {}) {
+  persistMedia(mediaFile) {
     const normalizedAsset = this.mediaFileToAsset(mediaFile);
 
-    if (!options.draft) {
-      this.assets.push(normalizedAsset);
-    }
+    this.assets.push(normalizedAsset);
 
     return Promise.resolve(normalizedAsset);
   }

@@ -30,7 +30,10 @@ describe('github API', () => {
       expect(fetch).toHaveBeenCalledWith(
         'https://site.netlify.com/.netlify/git/github/some-path?ts=1000',
         {
-          headers: { Authorization: 'Bearer token', 'Content-Type': 'application/json' },
+          headers: {
+            Authorization: 'Bearer token',
+            'Content-Type': 'application/json; charset=utf-8',
+          },
         },
       );
     });

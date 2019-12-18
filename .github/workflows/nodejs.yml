@@ -47,7 +47,7 @@ jobs:
           name: dev-test-website-node-${{ matrix.node-version }}
           path: dev-test
 
-  # non forked workflow (has acceess to build secrets)
+  # non forked workflow (has access to build secrets)
   e2e-with-cypress-record:
     needs: build
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)
@@ -55,7 +55,7 @@ jobs:
 
     strategy:
       matrix:
-        machine: [1, 2, 3, 4, 5]
+        machine: [1, 2, 3, 4, 5, 6, 7, 8]
 
     steps:
       - uses: actions/checkout@v1
@@ -85,7 +85,7 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
 
-  # forked workflow (no acceess to build secrets)
+  # forked workflow (no access to build secrets)
   e2e-no-cypress-record:
     needs: build
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true

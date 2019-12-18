@@ -40,6 +40,7 @@ export default class PreviewPane extends React.Component {
         value={valueIsInMap ? value.get(field.get('name')) : value}
         entry={entry}
         fieldsMetaData={metadata}
+        resolveWidget={resolveWidget}
       />
     );
   };

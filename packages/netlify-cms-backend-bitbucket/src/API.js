@@ -150,7 +150,7 @@ export default class API {
     return this.processFiles(entries);
   };
 
-  uploadBlob = async (item, { commitMessage, branch = this.branch } = {}) => {
+  uploadBlob = (item, { commitMessage, branch = this.branch } = {}) => {
     const contentBlob = get(item, 'fileObj', new Blob([item.raw]));
     const formData = new FormData();
     // Third param is filename header, in case path is `message`, `branch`, etc.
@@ -168,16 +168,12 @@ export default class API {
       unsentRequest.withMethod('POST'),
       unsentRequest.withBody(formData),
       this.request,
-      then(() => ({ ...item, uploaded: true })),
+      then(() => ({ ...item })),
     ])(`${this.repoURL}/src`);
   };
 
   persistFiles = (files, { commitMessage }) =>
-    Promise.all(
-      files
-        .filter(({ uploaded }) => !uploaded)
-        .map(file => this.uploadBlob(file, { commitMessage })),
-    );
+    Promise.all(files.map(file => this.uploadBlob(file, { commitMessage })));
 
   deleteFile = (path, message, { branch = this.branch } = {}) => {
     const body = new FormData();

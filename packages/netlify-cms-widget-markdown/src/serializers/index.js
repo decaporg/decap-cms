@@ -148,13 +148,13 @@ export const remarkToMarkdown = obj => {
 /**
  * Convert Markdown to HTML.
  */
-export const markdownToHtml = (markdown, { getAsset, resolveWidget } = {}) => {
+export const markdownToHtml = async (markdown, { getAsset, resolveWidget } = {}) => {
   const mdast = markdownToRemark(markdown);
 
-  const hast = unified()
+  const hast = await unified()
     .use(remarkToRehypeShortcodes, { plugins: getEditorComponents(), getAsset, resolveWidget })
     .use(remarkToRehype, { allowDangerousHTML: true })
-    .runSync(mdast);
+    .run(mdast);
 
   const html = unified()
     .use(rehypeToHtml, {

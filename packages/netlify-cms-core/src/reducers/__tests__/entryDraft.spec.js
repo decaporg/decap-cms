@@ -1,4 +1,4 @@
-import { Map, List, fromJS } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import * as actions from 'Actions/entries';
 import reducer from '../entryDraft';
 
@@ -6,7 +6,6 @@ jest.mock('uuid/v4', () => jest.fn(() => '1'));
 
 const initialState = Map({
   entry: Map(),
-  mediaFiles: List(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
   hasChanged: false,
@@ -33,7 +32,6 @@ describe('entryDraft reducer', () => {
             ...entry,
             newRecord: false,
           },
-          mediaFiles: [],
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
@@ -52,7 +50,6 @@ describe('entryDraft reducer', () => {
             ...entry,
             newRecord: true,
           },
-          mediaFiles: [],
           fieldsMetaData: Map(),
           fieldsErrors: Map(),
           hasChanged: false,
@@ -124,16 +121,15 @@ describe('entryDraft reducer', () => {
   describe('REMOVE_DRAFT_ENTRY_MEDIA_FILE', () => {
     it('should remove a media file', () => {
       const actualState = reducer(
-        initialState.set('mediaFiles', List([{ id: '1' }, { id: '2' }])),
+        initialState.setIn(['entry', 'mediaFiles'], fromJS([{ id: '1' }, { id: '2' }])),
         actions.removeDraftEntryMediaFile({ id: '1' }),
       );
 
       expect(actualState.toJS()).toEqual({
-        entry: {},
-        mediaFiles: [{ id: '2' }],
+        entry: { mediaFiles: [{ id: '2' }] },
         fieldsMetaData: {},
         fieldsErrors: {},
-        hasChanged: false,
+        hasChanged: true,
         key: '',
       });
     });
@@ -142,34 +138,15 @@ describe('entryDraft reducer', () => {
   describe('ADD_DRAFT_ENTRY_MEDIA_FILE', () => {
     it('should overwrite an existing media file', () => {
       const actualState = reducer(
-        initialState.set('mediaFiles', List([{ id: '1', name: 'old' }])),
+        initialState.setIn(['entry', 'mediaFiles'], fromJS([{ id: '1', name: 'old' }])),
         actions.addDraftEntryMediaFile({ id: '1', name: 'new' }),
       );
 
       expect(actualState.toJS()).toEqual({
-        entry: {},
-        mediaFiles: [{ id: '1', name: 'new' }],
+        entry: { mediaFiles: [{ id: '1', name: 'new' }] },
         fieldsMetaData: {},
         fieldsErrors: {},
-        hasChanged: false,
-        key: '',
-      });
-    });
-  });
-
-  describe('SET_DRAFT_ENTRY_MEDIA_FILES', () => {
-    it('should overwrite an existing media file', () => {
-      const actualState = reducer(
-        initialState,
-        actions.setDraftEntryMediaFiles([{ id: '1' }, { id: '2' }]),
-      );
-
-      expect(actualState.toJS()).toEqual({
-        entry: {},
-        mediaFiles: [{ id: '1' }, { id: '2' }],
-        fieldsMetaData: {},
-        fieldsErrors: {},
-        hasChanged: false,
+        hasChanged: true,
         key: '',
       });
     });
@@ -177,7 +154,7 @@ describe('entryDraft reducer', () => {
 
   describe('DRAFT_CREATE_FROM_LOCAL_BACKUP', () => {
     it('should create draft from local backup', () => {
-      const localBackup = Map({ entry: fromJS(entry), mediaFiles: List([{ id: '1' }]) });
+      const localBackup = Map({ entry: fromJS({ ...entry, mediaFiles: [{ id: '1' }] }) });
 
       const actualState = reducer(initialState.set('localBackup', localBackup), {
         type: actions.DRAFT_CREATE_FROM_LOCAL_BACKUP,
@@ -185,9 +162,9 @@ describe('entryDraft reducer', () => {
       expect(actualState.toJS()).toEqual({
         entry: {
           ...entry,
+          mediaFiles: [{ id: '1' }],
           newRecord: false,
         },
-        mediaFiles: [{ id: '1' }],
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: true,
@@ -200,17 +177,18 @@ describe('entryDraft reducer', () => {
     it('should set local backup', () => {
       const mediaFiles = [{ id: '1' }];
 
-      const actualState = reducer(initialState, actions.localBackupRetrieved(entry, mediaFiles));
+      const actualState = reducer(
+        initialState,
+        actions.localBackupRetrieved({ ...entry, mediaFiles }),
+      );
 
       expect(actualState.toJS()).toEqual({
         entry: {},
-        mediaFiles: [],
         fieldsMetaData: {},
         fieldsErrors: {},
         hasChanged: false,
         localBackup: {
-          entry,
-          mediaFiles: [{ id: '1' }],
+          entry: { ...entry, mediaFiles: [{ id: '1' }] },
         },
         key: '',
       });

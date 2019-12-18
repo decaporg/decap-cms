@@ -12,15 +12,15 @@ import u from 'unist-builder';
 export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWidget }) {
   return transform;
 
-  function transform(root) {
-    const transformedChildren = map(root.children, processShortcodes);
+  async function transform(root) {
+    const transformedChildren = await Promise.all(map(root.children, processShortcodes));
     return { ...root, children: transformedChildren };
   }
 
   /**
    * Mapping function to transform nodes that contain shortcodes.
    */
-  function processShortcodes(node) {
+  async function processShortcodes(node) {
     /**
      * If the node doesn't contain shortcode data, return the original node.
      */
@@ -38,7 +38,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
      * an HTML string or a React component. If a React component is returned,
      * render it to an HTML string.
      */
-    const value = getPreview(plugin, shortcodeData);
+    const value = await getPreview(plugin, shortcodeData);
     const valueHtml = typeof value === 'string' ? value : renderToString(value);
 
     /**
@@ -52,7 +52,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
   /**
    * Retrieve the shortcode preview component.
    */
-  function getPreview(plugin, shortcodeData) {
+  async function getPreview(plugin, shortcodeData) {
     const { toPreview, widget } = plugin;
     if (toPreview) {
       return toPreview(shortcodeData, getAsset);

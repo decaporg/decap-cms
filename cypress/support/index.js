@@ -12,11 +12,16 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
-require('cypress-plugin-tab');
-
-// Import commands.js using ES2015 syntax:
-import './commands';
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+import 'cypress-plugin-tab';
+import 'cypress-file-upload';
 import 'cypress-jest-adapter';
+import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
+
+addMatchImageSnapshotCommand({
+  failureThreshold: 0.01,
+  failureThresholdType: 'percent',
+  customDiffConfig: { threshold: 0.05 },
+  capture: 'viewport',
+});
+
+import './commands';

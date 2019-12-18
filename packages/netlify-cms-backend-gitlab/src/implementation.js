@@ -1,7 +1,7 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
-import { CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { CURSOR_COMPATIBILITY_SYMBOL, basename } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
@@ -142,12 +142,22 @@ export default class GitLab {
     }));
   }
 
-  getMedia() {
-    return this.api.listAllFiles(this.config.get('media_folder')).then(files =>
+  getMedia(mediaFolder = this.config.get('media_folder')) {
+    return this.api.listAllFiles(mediaFolder).then(files =>
       files.map(({ id, name, path }) => {
         return { id, name, path, displayURL: { id, name, path } };
       }),
     );
+  }
+
+  async getMediaAsBlob(path, id, name) {
+    let blob = await this.api.readFile(path, id, { parseText: false });
+    // svgs are returned with mimetype "text/plain" by gitlab
+    if (blob.type === 'text/plain' && name.match(/\.svg$/i)) {
+      blob = new window.Blob([blob], { type: 'image/svg+xml' });
+    }
+
+    return blob;
   }
 
   getMediaDisplayURL(displayURL) {
@@ -155,15 +165,7 @@ export default class GitLab {
     const { id, name, path } = displayURL;
     return new Promise((resolve, reject) =>
       this._mediaDisplayURLSem.take(() =>
-        this.api
-          .readFile(path, id, { parseText: false })
-          .then(blob => {
-            // svgs are returned with mimetype "text/plain" by gitlab
-            if (blob.type === 'text/plain' && name.match(/\.svg$/i)) {
-              return new window.Blob([blob], { type: 'image/svg+xml' });
-            }
-            return blob;
-          })
+        this.getMediaAsBlob(path, id, name)
           .then(blob => URL.createObjectURL(blob))
           .then(resolve, reject)
           .finally(() => this._mediaDisplayURLSem.leave()),
@@ -171,14 +173,40 @@ export default class GitLab {
     );
   }
 
+  async getMediaFile(path) {
+    const name = basename(path);
+    const blob = await this.getMediaAsBlob(path, null, name);
+    const fileObj = new File([blob], name);
+    const url = URL.createObjectURL(fileObj);
+
+    return {
+      displayURL: url,
+      path,
+      name,
+      size: fileObj.size,
+      file: fileObj,
+      url,
+    };
+  }
+
   async persistEntry(entry, mediaFiles, options = {}) {
     return this.api.persistFiles([entry], options);
   }
 
   async persistMedia(mediaFile, options = {}) {
-    await this.api.persistFiles([mediaFile], options);
-    const { value, path, fileObj } = mediaFile;
-    return { name: value, size: fileObj.size, path: trimStart(path, '/') };
+    const [{ sha }] = await this.api.persistFiles([mediaFile], options);
+    const { path, fileObj } = mediaFile;
+    const url = URL.createObjectURL(fileObj);
+
+    return {
+      displayURL: url,
+      path: trimStart(path, '/'),
+      name: fileObj.name,
+      size: fileObj.size,
+      file: fileObj,
+      url,
+      id: sha,
+    };
   }
 
   deleteFile(path, commitMessage, options) {

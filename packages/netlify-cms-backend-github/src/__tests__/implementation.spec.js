@@ -92,13 +92,12 @@ describe('github backend implementation', () => {
       });
     });
 
-    it('should persist media file when not draft', async () => {
+    it('should persist media file', async () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.api = mockAPI;
 
       const mediaFile = {
-        value: 'image.png',
-        fileObj: { size: 100 },
+        fileObj: { size: 100, name: 'image.png' },
         path: '/media/image.png',
       };
 
@@ -109,38 +108,10 @@ describe('github backend implementation', () => {
         size: 100,
         displayURL: 'displayURL',
         path: 'media/image.png',
-        draft: undefined,
       });
 
       expect(persistFiles).toHaveBeenCalledTimes(1);
       expect(persistFiles).toHaveBeenCalledWith(null, [mediaFile], {});
-      expect(createObjectURL).toHaveBeenCalledTimes(1);
-      expect(createObjectURL).toHaveBeenCalledWith(mediaFile.fileObj);
-    });
-
-    it('should not persist media file when draft', async () => {
-      const gitHubImplementation = new GitHubImplementation(config);
-      gitHubImplementation.api = mockAPI;
-
-      createObjectURL.mockReturnValue('displayURL');
-
-      const mediaFile = {
-        value: 'image.png',
-        fileObj: { size: 100 },
-        path: '/media/image.png',
-      };
-
-      expect.assertions(4);
-      await expect(gitHubImplementation.persistMedia(mediaFile, { draft: true })).resolves.toEqual({
-        id: undefined,
-        name: 'image.png',
-        size: 100,
-        displayURL: 'displayURL',
-        path: 'media/image.png',
-        draft: true,
-      });
-
-      expect(persistFiles).toHaveBeenCalledTimes(0);
       expect(createObjectURL).toHaveBeenCalledTimes(1);
       expect(createObjectURL).toHaveBeenCalledWith(mediaFile.fileObj);
     });
@@ -168,7 +139,7 @@ describe('github backend implementation', () => {
     });
   });
 
-  describe('getMediaFiles', () => {
+  describe('loadEntryMediaFiles', () => {
     const getMediaAsBlob = jest.fn();
     const mockAPI = {
       getMediaAsBlob,
@@ -183,15 +154,11 @@ describe('github backend implementation', () => {
 
       const file = new File([blob], name);
 
-      const data = {
-        metaData: {
-          objects: {
-            files: [{ path: 'static/media/image.png', sha: 'image.png' }],
-          },
-        },
-      };
-
-      await expect(gitHubImplementation.getMediaFiles(data)).resolves.toEqual([
+      await expect(
+        gitHubImplementation.loadEntryMediaFiles([
+          { path: 'static/media/image.png', sha: 'image.png' },
+        ]),
+      ).resolves.toEqual([
         {
           id: 'image.png',
           sha: 'image.png',
@@ -217,14 +184,16 @@ describe('github backend implementation', () => {
     it('should return unpublished entry', async () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.api = mockAPI;
-      gitHubImplementation.getMediaFiles = jest.fn().mockResolvedValue([{ path: 'image.png' }]);
+      gitHubImplementation.loadEntryMediaFiles = jest
+        .fn()
+        .mockResolvedValue([{ path: 'image.png', sha: 'sha' }]);
 
       generateContentKey.mockReturnValue('contentKey');
 
       const data = {
         fileData: 'fileData',
         isModification: true,
-        metaData: { objects: { entry: { path: 'entry-path' } } },
+        metaData: { objects: { entry: { path: 'entry-path' }, files: [{ path: 'image.png' }] } },
       };
       readUnpublishedBranchFile.mockResolvedValue(data);
 
@@ -233,8 +202,8 @@ describe('github backend implementation', () => {
         slug: 'slug',
         file: { path: 'entry-path' },
         data: 'fileData',
-        metaData: { objects: { entry: { path: 'entry-path' } } },
-        mediaFiles: [{ path: 'image.png' }],
+        metaData: { objects: { entry: { path: 'entry-path' }, files: [{ path: 'image.png' }] } },
+        mediaFiles: [{ path: 'image.png', sha: 'sha' }],
         isModification: true,
       });
 
@@ -244,8 +213,10 @@ describe('github backend implementation', () => {
       expect(readUnpublishedBranchFile).toHaveBeenCalledTimes(1);
       expect(readUnpublishedBranchFile).toHaveBeenCalledWith('contentKey');
 
-      expect(gitHubImplementation.getMediaFiles).toHaveBeenCalledTimes(1);
-      expect(gitHubImplementation.getMediaFiles).toHaveBeenCalledWith(data);
+      expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledTimes(1);
+      expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledWith(
+        data.metaData.objects.files,
+      );
     });
   });
 });

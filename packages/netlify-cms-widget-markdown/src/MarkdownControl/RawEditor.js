@@ -49,17 +49,18 @@ export default class RawEditor extends React.Component {
     }
   }
 
-  handleCopy = (event, editor) => {
+  handleCopy = async (event, editor) => {
+    event.persist();
     const { getAsset, resolveWidget } = this.props;
     const markdown = Plain.serialize(editor.value);
-    const html = markdownToHtml(markdown, { getAsset, resolveWidget });
+    const html = await markdownToHtml(markdown, { getAsset, resolveWidget });
     setEventTransfer(event, 'text', markdown);
     setEventTransfer(event, 'html', html);
     event.preventDefault();
   };
 
-  handleCut = (event, editor, next) => {
-    this.handleCopy(event, editor, next);
+  handleCut = async (event, editor, next) => {
+    await this.handleCopy(event, editor, next);
     editor.delete();
   };
 

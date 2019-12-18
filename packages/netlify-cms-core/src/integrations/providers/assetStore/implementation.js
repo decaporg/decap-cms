@@ -78,7 +78,7 @@ export default class AssetStore {
     };
     const response = await this.request(url, { headers });
     const files = response.map(({ id, name, size, url }) => {
-      return { id, name, size, url, urlIsPublicPath: true };
+      return { id, name, size, displayURL: url, url };
     });
     return files;
   }
@@ -133,10 +133,11 @@ export default class AssetStore {
         await this.confirmRequest(id);
       }
 
-      const asset = { id, name, size, url, urlIsPublicPath: true };
-      return { success: true, url, asset };
+      const asset = { id, name, size, displayURL: url, url };
+      return { success: true, asset };
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 }

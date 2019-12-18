@@ -1,6 +1,5 @@
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import uuid from 'uuid/v4';
-import { differenceBy } from 'lodash';
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
@@ -19,8 +18,9 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
-  ADD_MEDIA_FILES_TO_LIBRARY,
 } from 'Actions/mediaLibrary';
+import { selectEditingWorkflowDraft } from 'Reducers/editorialWorkflow';
+import { selectIntegration } from 'Reducers';
 
 const defaultState = {
   isVisible: false,
@@ -129,12 +129,6 @@ const mediaLibrary = (state = Map(defaultState), action) => {
         map.set('isPersisting', false);
       });
     }
-    case ADD_MEDIA_FILES_TO_LIBRARY: {
-      const { mediaFiles } = action.payload;
-      let updatedFiles = differenceBy(state.get('files'), mediaFiles, 'path');
-      updatedFiles = [...mediaFiles.map(file => ({ ...file, key: uuid() })), ...updatedFiles];
-      return state.set('files', updatedFiles);
-    }
     case MEDIA_PERSIST_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -192,5 +186,34 @@ const mediaLibrary = (state = Map(defaultState), action) => {
       return state;
   }
 };
+
+export function selectMediaFiles(state) {
+  const { mediaLibrary, entryDraft } = state;
+  const workflowDraft = selectEditingWorkflowDraft(state);
+  const integration = selectIntegration(state, null, 'assetStore');
+
+  let files;
+  if (workflowDraft && !integration) {
+    files = entryDraft
+      .getIn(['entry', 'mediaFiles'], List())
+      .toJS()
+      .map(file => ({ key: file.id, ...file }));
+  } else {
+    files = mediaLibrary.get('files') || [];
+  }
+
+  return files;
+}
+
+export function selectMediaFileByPath(state, path) {
+  const files = selectMediaFiles(state);
+  const file = files.find(file => file.path === path);
+  return file;
+}
+
+export function selectMediaDisplayURL(state, id) {
+  const displayUrlState = state.mediaLibrary.getIn(['displayURLs', id], Map());
+  return displayUrlState;
+}
 
 export default mediaLibrary;

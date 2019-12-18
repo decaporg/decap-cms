@@ -2,7 +2,7 @@ import React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
-import { asyncLock } from 'netlify-cms-lib-util';
+import { asyncLock, basename } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
 import API from './API';
@@ -306,19 +306,36 @@ export default class GitHub {
     }));
   }
 
-  getMedia() {
-    return this.api.listFiles(this.config.get('media_folder')).then(files =>
+  getMedia(mediaFolder = this.config.get('media_folder')) {
+    return this.api.listFiles(mediaFolder).then(files =>
       files.map(({ sha, name, size, path }) => {
         // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
         // for private repositories
-        return { id: sha, name, size, displayURL: { sha, path }, path };
+        return { id: sha, name, size, displayURL: { id: sha, path }, path };
       }),
     );
   }
 
+  async getMediaFile(path) {
+    const blob = await this.api.getMediaAsBlob(null, path);
+
+    const name = basename(path);
+    const fileObj = new File([blob], name);
+    const url = URL.createObjectURL(fileObj);
+
+    return {
+      displayURL: url,
+      path,
+      name,
+      size: fileObj.size,
+      file: fileObj,
+      url,
+    };
+  }
+
   async getMediaDisplayURL(displayURL) {
-    const { sha, path } = displayURL;
-    const mediaURL = await this.api.getMediaDisplayURL(sha, path);
+    const { id, path } = displayURL;
+    const mediaURL = await this.api.getMediaDisplayURL(id, path);
     return mediaURL;
   }
 
@@ -332,19 +349,15 @@ export default class GitHub {
 
   async persistMedia(mediaFile, options = {}) {
     try {
-      if (!options.draft) {
-        await this.api.persistFiles(null, [mediaFile], options);
-      }
-
-      const { sha, value, path, fileObj } = mediaFile;
+      await this.api.persistFiles(null, [mediaFile], options);
+      const { sha, path, fileObj } = mediaFile;
       const displayURL = URL.createObjectURL(fileObj);
       return {
         id: sha,
-        name: value,
+        name: fileObj.name,
         size: fileObj.size,
         displayURL,
         path: trimStart(path, '/'),
-        draft: options.draft,
       };
     } catch (error) {
       console.error(error);
@@ -356,25 +369,24 @@ export default class GitHub {
     return this.api.deleteFile(path, commitMessage, options);
   }
 
-  async getMediaFiles(data) {
-    const files = get(data, 'metaData.objects.files', []);
-    const mediaFiles = await Promise.all(
-      files.map(file =>
-        this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
-          const name = file.path.substring(file.path.lastIndexOf('/') + 1);
-          const fileObj = new File([blob], name);
-          return {
-            id: file.sha,
-            sha: file.sha,
-            displayURL: URL.createObjectURL(fileObj),
-            path: file.path,
-            name: name,
-            size: fileObj.size,
-            file: fileObj,
-          };
-        }),
-      ),
-    );
+  async loadMediaFile(file) {
+    return this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
+      const name = basename(file.path);
+      const fileObj = new File([blob], name);
+      return {
+        id: file.sha,
+        sha: file.sha,
+        displayURL: URL.createObjectURL(fileObj),
+        path: file.path,
+        name,
+        size: fileObj.size,
+        file: fileObj,
+      };
+    });
+  }
+
+  async loadEntryMediaFiles(files) {
+    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(file)));
 
     return mediaFiles;
   }
@@ -425,13 +437,18 @@ export default class GitHub {
       });
   }
 
-  async unpublishedEntry(collection, slug) {
+  async unpublishedEntry(
+    collection,
+    slug,
+    { loadEntryMediaFiles = files => this.loadEntryMediaFiles(files) } = {},
+  ) {
     const contentKey = this.api.generateContentKey(collection.get('name'), slug);
     const data = await this.api.readUnpublishedBranchFile(contentKey);
     if (!data) {
       return null;
     }
-    const mediaFiles = await this.getMediaFiles(data);
+    const files = get(data, 'metaData.objects.files', []);
+    const mediaFiles = await loadEntryMediaFiles(files);
     return {
       slug,
       file: { path: data.metaData.objects.entry.path },
@@ -484,10 +501,9 @@ export default class GitHub {
 
   publishUnpublishedEntry(collection, slug) {
     // publishUnpublishedEntry is a transactional operation
-    return this.runWithLock(async () => {
-      const metaData = await this.api.publishUnpublishedEntry(collection, slug);
-      const mediaFiles = await this.getMediaFiles({ metaData });
-      return { mediaFiles };
-    }, 'Failed to acquire publish entry lock');
+    return this.runWithLock(
+      () => this.api.publishUnpublishedEntry(collection, slug),
+      'Failed to acquire publish entry lock',
+    );
   }
 }

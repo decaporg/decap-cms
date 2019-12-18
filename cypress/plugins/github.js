@@ -53,6 +53,11 @@ function getEnvs() {
   return { owner, repo, token, forkOwner, forkToken };
 }
 
+function getGitClient(repoDir) {
+  const git = simpleGit(repoDir).env({ ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
+  return git;
+}
+
 async function prepareTestGitHubRepo() {
   const { owner, repo, token } = getEnvs();
 
@@ -71,13 +76,13 @@ async function prepareTestGitHubRepo() {
 
   const tempDir = path.join('.temp', testRepoName);
   await fs.remove(tempDir);
-  let git = simpleGit().env({ ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
+  let git = getGitClient();
 
   const repoUrl = `git@github.com:${owner}/${repo}.git`;
 
   console.log('Cloning repository', repoUrl);
   await git.clone(repoUrl, tempDir);
-  git = simpleGit(tempDir).env({ ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
+  git = getGitClient(tempDir);
 
   console.log('Pushing to new repository', testRepoName);
 
@@ -138,7 +143,7 @@ async function deleteRepositories({ owner, repo, tempDir }) {
 }
 
 async function resetOriginRepo({ owner, repo, tempDir }) {
-  console.log('Resetting origin repo:', `${owner}/repo`);
+  console.log('Resetting origin repo:', `${owner}/${repo}`);
   const { token } = getEnvs();
   const client = getGitHubClient(token);
 
@@ -155,6 +160,7 @@ async function resetOriginRepo({ owner, repo, tempDir }) {
         owner,
         repo,
         pull_number,
+        state: 'closed',
       }),
     ),
   );
@@ -174,9 +180,9 @@ async function resetOriginRepo({ owner, repo, tempDir }) {
   );
 
   console.log('Resetting master');
-  const git = simpleGit(tempDir).env({ ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
+  const git = getGitClient(tempDir);
   await git.push(['--force', 'origin', 'master']);
-  console.log('Done resetting origin repo:', `${owner}/repo`);
+  console.log('Done resetting origin repo:', `${owner}/${repo}`);
 }
 
 async function resetForkedRepo({ repo }) {
@@ -199,7 +205,7 @@ async function resetForkedRepo({ repo }) {
         }),
       ),
     );
-    console.log('Done resetting forked repo:', `${forkOwner}/repo`);
+    console.log('Done resetting forked repo:', `${forkOwner}/${repo}`);
   }
 }
 
@@ -306,18 +312,41 @@ const sanitizeString = (
   return replaced;
 };
 
+const HEADERS_TO_IGNORE = [
+  'Date',
+  'X-RateLimit-Remaining',
+  'X-RateLimit-Reset',
+  'ETag',
+  'Last-Modified',
+  'X-GitHub-Request-Id',
+  'X-NF-Request-ID',
+];
+
 const transformRecordedData = (expectation, toSanitize) => {
   const { httpRequest, httpResponse } = expectation;
 
   const responseHeaders = {};
 
-  Object.keys(httpResponse.headers).forEach(key => {
-    responseHeaders[key] = httpResponse.headers[key][0];
-  });
+  Object.keys(httpResponse.headers)
+    .filter(key => !HEADERS_TO_IGNORE.includes(key))
+    .forEach(key => {
+      responseHeaders[key] = httpResponse.headers[key][0];
+    });
 
   let responseBody = null;
   if (httpResponse.body && httpResponse.body.string) {
     responseBody = httpResponse.body.string;
+  } else if (
+    httpResponse.body &&
+    httpResponse.body.type === 'BINARY' &&
+    httpResponse.body.base64Bytes
+  ) {
+    responseBody = {
+      encoding: 'base64',
+      content: httpResponse.body.base64Bytes,
+    };
+  } else if (httpResponse.body) {
+    console.log('Unsupported response body:', JSON.stringify(httpResponse.body));
   }
 
   // replace recorded user with fake one
@@ -345,13 +374,19 @@ const transformRecordedData = (expectation, toSanitize) => {
 
   let body;
   if (httpRequest.body && httpRequest.body.string) {
-    const bodyObject = JSON.parse(httpRequest.body.string);
-    if (bodyObject.encoding === 'base64') {
-      // sanitize encoded data
-      const decodedBody = Buffer.from(bodyObject.content, 'base64').toString();
-      bodyObject.content = Buffer.from(sanitizeString(decodedBody, toSanitize)).toString('base64');
-      body = JSON.stringify(bodyObject);
-    } else {
+    try {
+      const bodyObject = JSON.parse(httpRequest.body.string);
+      if (bodyObject.encoding === 'base64') {
+        // sanitize encoded data
+        const decodedBody = Buffer.from(bodyObject.content, 'base64').toString('binary');
+        const sanitizedContent = sanitizeString(decodedBody, toSanitize);
+        const sanitizedEncodedContent = Buffer.from(sanitizedContent, 'binary').toString('base64');
+        bodyObject.content = sanitizedEncodedContent;
+        body = JSON.stringify(bodyObject);
+      } else {
+        body = httpRequest.body.string;
+      }
+    } catch (e) {
       body = httpRequest.body.string;
     }
   }
@@ -368,7 +403,11 @@ const transformRecordedData = (expectation, toSanitize) => {
   return cypressRouteOptions;
 };
 
-async function teardownGitHubTest(taskData) {
+const defaultOptions = {
+  transformRecordedData,
+};
+
+async function teardownGitHubTest(taskData, { transformRecordedData } = defaultOptions) {
   if (process.env.RECORD_FIXTURES) {
     await resetRepositories(taskData);
 
@@ -409,6 +448,8 @@ async function teardownGitHubTest(taskData) {
 }
 
 module.exports = {
+  transformRecordedData,
+  getGitClient,
   setupGitHub,
   teardownGitHub,
   setupGitHubTest,

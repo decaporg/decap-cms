@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
-import { addAsset } from 'Actions/media';
+import { addAsset, getAsset } from 'Actions/media';
 import { query, clearSearch } from 'Actions/search';
 import {
   openMediaLibrary,
@@ -17,7 +17,6 @@ import {
   clearMediaControl,
   removeMediaControl,
 } from 'Actions/mediaLibrary';
-import { getAsset } from 'Reducers';
 import Widget from './Widget';
 
 /**
@@ -152,6 +151,7 @@ class EditorControl extends React.Component {
       isNewEditorComponent,
       t,
     } = this.props;
+
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
     const fieldName = field.get('name');
@@ -260,12 +260,19 @@ class EditorControl extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  mediaPaths: state.mediaLibrary.get('controlMedia'),
-  boundGetAsset: getAsset.bind(null, state),
-  isFetching: state.search.get('isFetching'),
-  queryHits: state.search.get('queryHits'),
-});
+const mapStateToProps = state => {
+  const { collections, entryDraft } = state;
+  const entryPath = entryDraft.getIn(['entry', 'path']);
+  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+
+  return {
+    mediaPaths: state.mediaLibrary.get('controlMedia'),
+    isFetching: state.search.get('isFetching'),
+    queryHits: state.search.get('queryHits'),
+    collection,
+    entryPath,
+  };
+};
 
 const mapDispatchToProps = {
   openMediaLibrary,
@@ -280,10 +287,24 @@ const mapDispatchToProps = {
   },
   clearSearch,
   clearFieldErrors,
+  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
+    return getAsset({ collection, entryPath, path })(dispatch, getState);
+  },
 };
 
-const ConnectedEditorControl = connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: false,
-})(translate()(EditorControl));
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entryPath),
+  };
+};
+
+const ConnectedEditorControl = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(translate()(EditorControl));
 
 export default ConnectedEditorControl;

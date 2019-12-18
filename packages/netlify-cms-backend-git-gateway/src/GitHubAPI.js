@@ -45,7 +45,7 @@ export default class API extends GithubAPI {
     return this.tokenPromise().then(jwtToken => {
       const baseHeader = {
         Authorization: `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
         ...headers,
       };
 

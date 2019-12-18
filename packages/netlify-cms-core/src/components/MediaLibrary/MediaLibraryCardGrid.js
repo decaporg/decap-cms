@@ -75,8 +75,6 @@ MediaLibraryCardGrid.propTypes = {
       key: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired,
-      url: PropTypes.string,
-      urlIsPublicPath: PropTypes.bool,
       draft: PropTypes.bool,
     }),
   ).isRequired,

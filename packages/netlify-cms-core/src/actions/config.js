@@ -41,12 +41,29 @@ export function applyDefaults(config) {
         map.set('public_folder', defaultPublicFolder);
       }
 
+      // default values for the slug config
+      if (!map.getIn(['slug', 'encoding'])) {
+        map.setIn(['slug', 'encoding'], 'unicode');
+      }
+
+      if (!map.getIn(['slug', 'clean_accents'])) {
+        map.setIn(['slug', 'clean_accents'], false);
+      }
+
+      if (!map.getIn(['slug', 'sanitize_replacement'])) {
+        map.setIn(['slug', 'sanitize_replacement'], '-');
+      }
+
       // Strip leading slash from collection folders and files
       map.set(
         'collections',
         map.get('collections').map(collection => {
           const folder = collection.get('folder');
           if (folder) {
+            if (collection.has('path') && !collection.has('media_folder')) {
+              // default value for media folder when using the path config
+              collection = collection.set('media_folder', '');
+            }
             return collection.set('folder', trimStart(folder, '/'));
           }
 

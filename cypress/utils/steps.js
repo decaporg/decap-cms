@@ -8,8 +8,20 @@ function login(user) {
         // https://github.com/cypress-io/cypress/issues/1208
         window.indexedDB.deleteDatabase('localforage');
         window.localStorage.setItem('netlify-cms-user', JSON.stringify(user));
+        if (user.netlifySiteURL) {
+          window.localStorage.setItem('netlifySiteURL', user.netlifySiteURL);
+        }
       },
     });
+    if (user.netlifySiteURL && user.email && user.password) {
+      cy.get('input[name="email"]')
+        .clear()
+        .type(user.email);
+      cy.get('input[name="password"]')
+        .clear()
+        .type(user.password);
+      cy.contains('button', 'Login').click();
+    }
   } else {
     cy.visit('/');
     cy.contains('button', 'Login').click();
@@ -45,6 +57,18 @@ function goToWorkflow() {
 
 function goToCollections() {
   cy.contains('a', 'Content').click();
+}
+
+function goToMediaLibrary() {
+  cy.contains('button', 'Media').click();
+}
+
+function goToEntry(entry) {
+  goToCollections();
+  cy.get('a h2')
+    .first()
+    .contains(entry.title)
+    .click();
 }
 
 function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
@@ -150,7 +174,7 @@ function publishEntryInEditor(publishType) {
   assertNotification(notifications.published);
 }
 
-function selectDropdownItem(label, item){
+function selectDropdownItem(label, item) {
   cy.contains('[role="button"]', label).as('dropDownButton');
   cy.get('@dropDownButton')
     .parent()
@@ -194,8 +218,12 @@ function populateEntry(entry) {
   });
 }
 
-function createPost(entry) {
+function newPost() {
   cy.contains('a', 'New Post').click();
+}
+
+function createPost(entry) {
+  newPost();
   populateEntry(entry);
 }
 
@@ -233,7 +261,7 @@ function duplicateEntry(entry) {
   updateWorkflowStatusInEditor(editorStatus.ready);
   publishEntryInEditor(publishTypes.publishNow);
   exitEditor();
-  cy.get('a h2').should(($h2s) => {
+  cy.get('a h2').should($h2s => {
     expect($h2s.eq(0)).to.contain(entry.title);
     expect($h2s.eq(1)).to.contain(entry.title);
   });
@@ -317,6 +345,7 @@ module.exports = {
   exitEditor,
   goToWorkflow,
   goToCollections,
+  goToMediaLibrary,
   updateWorkflowStatus,
   publishWorkflowEntry,
   deleteWorkflowEntry,
@@ -333,4 +362,7 @@ module.exports = {
   unpublishEntry,
   publishEntryInEditor,
   duplicateEntry,
+  newPost,
+  populateEntry,
+  goToEntry,
 };

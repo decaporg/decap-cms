@@ -10,7 +10,7 @@ describe('config', () => {
         public_folder: '/path/to/media',
         collections: [],
       });
-      expect(applyDefaults(config)).toEqual(config.set('publish_mode', 'simple'));
+      expect(applyDefaults(config).get('publish_mode')).toEqual('simple');
     });
 
     it('should set publish_mode from config', () => {
@@ -21,7 +21,7 @@ describe('config', () => {
         public_folder: '/path/to/media',
         collections: [],
       });
-      expect(applyDefaults(config)).toEqual(config);
+      expect(applyDefaults(config).get('publish_mode')).toEqual('complex');
     });
 
     it('should set public_folder based on media_folder if not set', () => {
@@ -32,16 +32,8 @@ describe('config', () => {
             media_folder: 'path/to/media',
             collections: [],
           }),
-        ),
-      ).toEqual(
-        fromJS({
-          foo: 'bar',
-          publish_mode: 'simple',
-          media_folder: 'path/to/media',
-          public_folder: '/path/to/media',
-          collections: [],
-        }),
-      );
+        ).get('public_folder'),
+      ).toEqual('/path/to/media');
     });
 
     it('should not overwrite public_folder if set', () => {
@@ -53,16 +45,8 @@ describe('config', () => {
             public_folder: '/publib/path',
             collections: [],
           }),
-        ),
-      ).toEqual(
-        fromJS({
-          foo: 'bar',
-          publish_mode: 'simple',
-          media_folder: 'path/to/media',
-          public_folder: '/publib/path',
-          collections: [],
-        }),
-      );
+        ).get('public_folder'),
+      ).toEqual('/publib/path');
     });
 
     it('should strip leading slashes from collection folder', () => {
@@ -71,14 +55,8 @@ describe('config', () => {
           fromJS({
             collections: [{ folder: '/foo' }],
           }),
-        ),
-      ).toEqual(
-        fromJS({
-          publish_mode: 'simple',
-          public_folder: '/',
-          collections: [{ folder: 'foo' }],
-        }),
-      );
+        ).get('collections'),
+      ).toEqual(fromJS([{ folder: 'foo' }]));
     });
 
     it('should strip leading slashes from collection files', () => {
@@ -87,14 +65,41 @@ describe('config', () => {
           fromJS({
             collections: [{ files: [{ file: '/foo' }] }],
           }),
-        ),
-      ).toEqual(
-        fromJS({
-          publish_mode: 'simple',
-          public_folder: '/',
-          collections: [{ files: [{ file: 'foo' }] }],
-        }),
+        ).get('collections'),
+      ).toEqual(fromJS([{ files: [{ file: 'foo' }] }]));
+    });
+
+    it('should set default slug config', () => {
+      expect(applyDefaults(fromJS({ collections: [] })).get('slug')).toEqual(
+        fromJS({ encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' }),
       );
+    });
+
+    it('should not override slug encoding', () => {
+      expect(
+        applyDefaults(fromJS({ collections: [], slug: { encoding: 'ascii' } })).getIn([
+          'slug',
+          'encoding',
+        ]),
+      ).toEqual('ascii');
+    });
+
+    it('should not override slug clean_accents', () => {
+      expect(
+        applyDefaults(fromJS({ collections: [], slug: { clean_accents: true } })).getIn([
+          'slug',
+          'clean_accents',
+        ]),
+      ).toEqual(true);
+    });
+
+    it('should not override slug sanitize_replacement', () => {
+      expect(
+        applyDefaults(fromJS({ collections: [], slug: { sanitize_replacement: '_' } })).getIn([
+          'slug',
+          'sanitize_replacement',
+        ]),
+      ).toEqual('_');
     });
   });
 });
