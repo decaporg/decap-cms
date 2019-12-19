@@ -397,7 +397,6 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         collection,
         entryDraft: serializedEntryDraft,
         assetProxies,
-        integrations: state.integrations,
         usedSlugs,
       });
       dispatch(
@@ -561,7 +560,6 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
           collection,
           entryDraft,
           assetProxies: [],
-          integrations: state.integrations,
           usedSlugs: List(),
           status: status.get('PENDING_PUBLISH'),
         }),
