@@ -601,7 +601,6 @@ export function persistEntry(collection: Collection) {
         collection,
         entryDraft: serializedEntryDraft,
         assetProxies,
-        integrations: state.integrations,
         usedSlugs,
       })
       .then((slug: string) => {

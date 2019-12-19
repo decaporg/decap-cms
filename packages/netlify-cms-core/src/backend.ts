@@ -42,7 +42,6 @@ import {
   FilterRule,
   Collections,
   MediaFile,
-  Integrations,
   EntryDraft,
   CollectionFile,
   State,
@@ -208,7 +207,6 @@ interface Implementation {
       collectionName: string;
       useWorkflow: boolean;
       unpublished: boolean;
-      hasAssetStore: boolean;
       status?: string;
     },
   ) => Promise<void>;
@@ -267,7 +265,6 @@ interface PersistArgs {
   collection: Collection;
   entryDraft: EntryDraft;
   assetProxies: AssetProxy[];
-  integrations: Integrations;
   usedSlugs: List<string>;
   unpublished?: boolean;
   status?: string;
@@ -774,7 +771,6 @@ export class Backend {
     collection,
     entryDraft,
     assetProxies,
-    integrations,
     usedSlugs,
     unpublished = false,
     status,
@@ -844,11 +840,7 @@ export class Backend {
 
     const collectionName = collection.get('name');
 
-    /**
-     * Determine whether an asset store integration is in use.
-     */
-    const hasAssetStore = integrations && !!selectIntegration(integrations, null, 'assetStore');
-    const updatedOptions = { unpublished, hasAssetStore, status };
+    const updatedOptions = { unpublished, status };
     const opts = {
       newEntry,
       parsedData,

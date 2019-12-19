@@ -139,7 +139,6 @@ type PersistOptions = {
   unpublished: boolean;
   parsedData?: { title: string; description: string };
   status: string;
-  hasAssetStore: boolean;
 };
 
 type MediaFile = {
