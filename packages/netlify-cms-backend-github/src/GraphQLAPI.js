@@ -15,12 +15,6 @@ import * as mutations from './mutations';
 const NO_CACHE = 'no-cache';
 const CACHE_FIRST = 'cache-first';
 
-const TREE_ENTRY_TYPE_TO_MODE = {
-  blob: '100644',
-  tree: '040000',
-  commit: '160000',
-};
-
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
 });
@@ -305,13 +299,17 @@ export default class GraphQLAPI extends API {
     };
   }
 
-  async getBranch(branch = this.branch, repoURL = this.originRepoURL) {
-    const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
-    // don't cache base branch to always get the latest data
-    const fetchPolicy = branch === this.branch ? NO_CACHE : CACHE_FIRST;
+  async getDefaultBranch() {
     const { data } = await this.query({
-      ...this.getBranchQuery(branch, owner, name),
-      fetchPolicy,
+      ...this.getBranchQuery(this.branch, this.origin_repo_owner, this.origin_repo_name),
+    });
+    return data.repository.branch;
+  }
+
+  async getBranch(branch) {
+    const { data } = await this.query({
+      ...this.getBranchQuery(branch, this.repo_owner, this.repo_name),
+      fetchPolicy: CACHE_FIRST,
     });
     return data.repository.branch;
   }
@@ -323,7 +321,7 @@ export default class GraphQLAPI extends API {
 
     const force = opts.force || false;
 
-    const branch = await this.getBranch(name, this.repoURL);
+    const branch = await this.getBranch(name);
     const { data } = await this.mutate({
       mutation: mutations.updateBranch,
       variables: {
@@ -334,7 +332,7 @@ export default class GraphQLAPI extends API {
   }
 
   async deleteBranch(branchName) {
-    const branch = await this.getBranch(branchName, this.repoURL);
+    const branch = await this.getBranch(branchName);
     const { data } = await this.mutate({
       mutation: mutations.deleteBranch,
       variables: {
@@ -540,7 +538,9 @@ export default class GraphQLAPI extends API {
   }
 
   async createBranchAndPullRequest(branchName, sha, title) {
-    const repository = await this.getRepository(this.origin_repo_owner, this.origin_repo_name);
+    const owner = this.origin_repo_owner;
+    const name = this.origin_repo_name;
+    const repository = await this.getRepository(owner, name);
     const { data } = await this.mutate({
       mutation: mutations.createBranchAndPullRequest,
       variables: {
@@ -567,7 +567,7 @@ export default class GraphQLAPI extends API {
         };
 
         store.writeQuery({
-          ...this.getBranchQuery(branchName),
+          ...this.getBranchQuery(branchName, owner, name),
           data: branchData,
         });
 
@@ -579,49 +579,6 @@ export default class GraphQLAPI extends API {
     });
     const { pullRequest } = data.createPullRequest;
     return { ...pullRequest, head: { sha: pullRequest.headRefOid } };
-  }
-
-  async getTree(sha) {
-    if (!sha) {
-      return Promise.resolve({ tree: [] });
-    }
-
-    const { repo_owner: owner, repo_name: name } = this;
-    const variables = {
-      owner,
-      name,
-      sha,
-    };
-
-    // sha can be either for a commit or a tree
-    const [commitTree, tree] = await Promise.all([
-      this.client.query({
-        query: queries.commitTree,
-        variables,
-        fetchPolicy: CACHE_FIRST,
-      }),
-      this.client.query({
-        query: queries.tree,
-        variables,
-        fetchPolicy: CACHE_FIRST,
-      }),
-    ]);
-
-    let entries = null;
-
-    if (commitTree.data.repository.commit.tree) {
-      ({ entries, sha } = commitTree.data.repository.commit.tree);
-    }
-
-    if (tree.data.repository.tree.entries) {
-      ({ entries, sha } = tree.data.repository.tree);
-    }
-
-    if (entries) {
-      return { sha, tree: entries.map(e => ({ ...e, mode: TREE_ENTRY_TYPE_TO_MODE[e.type] })) };
-    }
-
-    return Promise.reject('Could not get tree');
   }
 
   async getPullRequestCommits(number) {
