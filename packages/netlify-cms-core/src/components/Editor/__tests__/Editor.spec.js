@@ -59,7 +59,7 @@ describe('Editor', () => {
   it('should render loader when entryDraft is null', () => {
     // suppress prop type error
     jest.spyOn(console, 'error').mockImplementation(() => {});
-    const { asFragment } = render(<Editor {...props} entryDraft={null} />);
+    const { asFragment } = render(<Editor {...props} entryDraft={null} locale="en" />);
     expect(asFragment()).toMatchSnapshot();
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
