@@ -13,8 +13,10 @@ const SettingsPaneContainer = styled.div`
   z-index: 10;
   height: 100%;
   background-color: #fff;
+  overflow: hidden;
   overflow-y: scroll;
   padding: 12px;
+  border-radius: 0 3px 3px 0;
   ${shadows.drop};
 `;
 
