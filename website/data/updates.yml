@@ -1,4 +1,10 @@
 updates:
+  - date: '2019-12-19'
+    description: 'Fix select and relation widgets not showing dropdown'
+    version: 2.10.1
+  - date: '2019-12-18'
+    description: 'Open Authoring, content bundles, code editor, and lots of bugfixes'
+    version: 2.10.0
   - date: '2019-07-24'
     description: 'Fix collection view search'
     version: 2.9.7
