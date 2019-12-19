@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-app",
   "description": "An extensible, open source, Git-based, React CMS for static sites. Reusable congiuration with React as peer.",
-  "version": "2.11.0-beta.0",
+  "version": "2.11.0-beta.1",
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -36,7 +36,7 @@
     "netlify-cms-backend-github": "^2.6.0-beta.0",
     "netlify-cms-backend-gitlab": "^2.5.0-beta.0",
     "netlify-cms-backend-test": "^2.7.0-beta.0",
-    "netlify-cms-core": "^2.14.0-beta.0",
+    "netlify-cms-core": "^2.14.0-beta.1",
     "netlify-cms-editor-component-image": "^2.5.0-beta.0",
     "netlify-cms-lib-auth": "^2.2.6",
     "netlify-cms-lib-util": "^2.5.0-beta.0",

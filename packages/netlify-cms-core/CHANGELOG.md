@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.14.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.14.0-beta.0...netlify-cms-core@2.14.0-beta.1) (2019-12-19)
+
+
+### Bug Fixes
+
+* select widget dropdown options ([#2981](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2981)) ([9173d8c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9173d8c97e27a3742a25c36cc7cb11202c861385))
+
+
+
+
+
 # [2.14.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0...netlify-cms-core@2.14.0-beta.0) (2019-12-18)
 
 
