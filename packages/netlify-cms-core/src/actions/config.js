@@ -1,9 +1,10 @@
 import yaml from 'js-yaml';
 import { Map, fromJS } from 'immutable';
-import { trimStart, get } from 'lodash';
+import { trimStart, get, cloneDeep, omit } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
+import { selectIdentifier } from 'Reducers/collections';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -54,6 +55,7 @@ export function applyDefaults(config) {
         map.setIn(['slug', 'sanitize_replacement'], '-');
       }
 
+      const langs = map.get('languages');
       // Strip leading slash from collection folders and files
       map.set(
         'collections',
@@ -64,6 +66,18 @@ export function applyDefaults(config) {
               // default value for media folder when using the path config
               collection = collection.set('media_folder', '');
             }
+
+            const fields = collection.get('fields');
+            if (langs && fields) {
+              // add languague fields
+              collection = collection.set(
+                'fields',
+                fromJS(
+                  addLanguageFields(fields.toJS(), langs.toJS(), selectIdentifier(collection)),
+                ),
+              );
+            }
+
             return collection.set('folder', trimStart(folder, '/'));
           }
 
@@ -79,6 +93,22 @@ export function applyDefaults(config) {
         }),
       );
     });
+}
+
+export function addLanguageFields(fields, langs, identifier) {
+  return fields.reduce((acc, item) => {
+    const name = item.name;
+    // exclude identifier and body fields
+    if (item.translate && name !== identifier && name !== 'body') {
+      const langFields = langs.map(lang => {
+        return { ...omit(cloneDeep(item), 'translate'), label: lang.toUpperCase(), name: lang };
+      });
+      const newField = { ...omit(item, 'translate'), widget: 'object', fields: langFields };
+      return [...acc, newField];
+    }
+
+    return [...acc, item];
+  }, []);
 }
 
 function mergePreloadedConfig(preloadedConfig, loadedConfig) {
