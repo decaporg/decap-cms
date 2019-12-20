@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 import semaphore, { Semaphore } from 'semaphore';
-import { find, flow, get, initial, last, partial, result, differenceBy, trimStart } from 'lodash';
+import { flow, get, initial, last, partial, result, differenceBy, trimStart } from 'lodash';
 import { map, filter } from 'lodash/fp';
 import {
   getAllResponses,
@@ -12,6 +12,22 @@ import {
   resolvePromiseProperties,
   ResponseParser,
 } from 'netlify-cms-lib-util';
+import {
+  UsersGetAuthenticatedResponse as GitHubUser,
+  ReposGetResponse as GitHubRepo,
+  ReposGetContentsResponseItem as GitHubFile,
+  ReposGetBranchResponse as GitHubBranch,
+  GitGetBlobResponse as GitHubBlob,
+  GitCreateTreeResponse as GitHubTree,
+  GitCreateTreeParamsTree,
+  GitCreateCommitResponse as GitHubCommit,
+  ReposCompareCommitsResponseCommitsItem as GitHubCompareCommit,
+  ReposCompareCommitsResponseFilesItem,
+  ReposCompareCommitsResponse as GitHubCompareResponse,
+  ReposCompareCommitsResponseBaseCommit as GitHubCompareBaseCommit,
+  GitCreateCommitResponseAuthor as GitHubAuthor,
+  GitCreateCommitResponseCommitter as GitHubCommiter,
+} from '@octokit/rest';
 
 const CMS_BRANCH_PREFIX = 'cms';
 const CURRENT_METADATA_VERSION = '1';
@@ -35,7 +51,6 @@ interface File {
   type: 'blob' | 'tree';
   sha: string;
   path: string;
-  remove?: boolean;
   raw?: string;
 }
 
@@ -43,12 +58,15 @@ interface Entry extends File {
   slug: string;
 }
 
-interface TreeEntry {
-  type: 'blob' | 'tree';
-  sha: string | null;
-  path: string;
-  mode: string;
-}
+type Override<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U;
+
+type TreeEntry = Override<GitCreateTreeParamsTree, { sha: string | null }>;
+
+type GitHubCompareCommits = GitHubCompareCommit[];
+
+type GitHubCompareFile = ReposCompareCommitsResponseFilesItem & { previous_filename?: string };
+
+type GitHubCompareFiles = GitHubCompareFile[];
 
 interface CommitFields {
   parents: { sha: string }[];
@@ -57,10 +75,6 @@ interface CommitFields {
   author: string;
   committer: string;
   tree: { sha: string };
-}
-
-interface Commit extends CommitFields {
-  commit?: CommitFields;
 }
 
 interface PR {
@@ -90,19 +104,6 @@ interface Metadata {
 
 interface Branch {
   ref: string;
-}
-
-interface GitHubFile {
-  sha: string;
-}
-
-interface GitHubUser {
-  name?: string;
-  login: string;
-}
-
-interface GitHubRepo {
-  permissions: { push: boolean };
 }
 
 interface BlobArgs {
@@ -138,7 +139,6 @@ type PersistOptions = {
   unpublished: boolean;
   parsedData?: { title: string; description: string };
   status: string;
-  hasAssetStore: boolean;
 };
 
 type MediaFile = {
@@ -460,7 +460,7 @@ export default class API {
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
-    const result = await this.request(`${repoURL}/git/blobs/${sha}`);
+    const result: GitHubBlob = await this.request(`${repoURL}/git/blobs/${sha}`);
 
     if (parseText) {
       // treat content as a utf-8 string
@@ -510,20 +510,20 @@ export default class API {
   }
 
   async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
-    const folderPath = path.replace(/\/$/, '');
-    return this.request(`${repoURL}/git/trees/${branch}:${folderPath}`, {
+    const folder = trimStart(path, '/');
+    return this.request(`${repoURL}/git/trees/${branch}:${folder}`, {
       params: { recursive: 10 },
     })
-      .then(res =>
+      .then((res: GitHubTree) =>
         res.tree
-          .filter((file: File) => file.type === 'blob')
-          .map((file: File) => ({
+          .filter(file => file.type === 'blob')
+          .map(file => ({
             ...file,
             name: file.path,
-            path: `${folderPath}/${file.path}`,
+            path: `${folder}/${file.path}`,
           })),
       )
-      .catch(replace404WithEmptyArray); // handle non existent folders
+      .catch(replace404WithEmptyArray);
   }
 
   readUnpublishedBranchFile(contentKey: string) {
@@ -732,7 +732,7 @@ export default class API {
     await Promise.all(uploadPromises);
 
     if (!options.useWorkflow) {
-      return this.getBranch()
+      return this.getDefaultBranch()
         .then(branchData => this.updateTree(branchData.commit.sha, files))
         .then(changeTree => this.commit(options.commitMessage, changeTree))
         .then(response => this.patchBranch(this.branch, response.sha));
@@ -806,7 +806,7 @@ export default class API {
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
       const userPromise = this.user();
-      const branchData = await this.getBranch();
+      const branchData = await this.getDefaultBranch();
       const changeTree = await this.updateTree(branchData.commit.sha, files);
       const commitResponse = await this.commit(options.commitMessage, changeTree);
 
@@ -852,16 +852,16 @@ export default class API {
       const metadata = await this.retrieveMetadata(contentKey);
       // mark media files to remove
       const metadataMediaFiles: MediaFile[] = get(metadata, 'objects.files', []);
-      const mediaFilesToRemove: File[] = differenceBy(
+      const mediaFilesToRemove: { path: string; sha: string | null }[] = differenceBy(
         metadataMediaFiles,
         mediaFilesList,
         'path',
-      ).map(file => ({ ...file, remove: true, type: 'blob' }));
-      const branchData = await this.getBranch(branchName);
-      const changeTree = await this.updateTree(
-        branchData.commit.sha,
-        files.concat(mediaFilesToRemove),
-      );
+      ).map(file => ({ ...file, type: 'blob', sha: null }));
+
+      // rebase the branch before applying new changes
+      const rebasedHead = await this.rebaseBranch(branchName);
+      const treeFiles = mediaFilesToRemove.concat(files);
+      const changeTree = await this.updateTree(rebasedHead.sha, treeFiles);
       const commit = await this.commit(options.commitMessage, changeTree);
       const { title, description } = options.parsedData || {};
 
@@ -870,66 +870,99 @@ export default class API {
         entry: { path: entry.path, sha: entry.sha },
         files: mediaFilesList,
       };
+
       const updatedMetadata = { ...metadata, pr, title, description, objects };
 
-      if (options.hasAssetStore) {
-        await this.storeMetadata(contentKey, updatedMetadata);
-        return this.patchBranch(branchName, commit.sha);
-      }
-
-      if (pr) {
-        return this.rebasePullRequest(pr.number, branchName, contentKey, updatedMetadata, commit);
-      } else if (this.useOpenAuthoring) {
-        // if a PR hasn't been created yet for the forked repo, just patch the branch
-        await this.patchBranch(branchName, commit.sha, { force: true });
-      }
-
-      return this.storeMetadata(contentKey, updatedMetadata);
+      await this.storeMetadata(contentKey, updatedMetadata);
+      return this.patchBranch(branchName, commit.sha, { force: true });
     }
   }
 
-  /**
-   * Rebase a pull request onto the latest HEAD of it's target base branch
-   * (should generally be the configured backend branch). Only rebases changes
-   * in the entry file.
-   */
-  async rebasePullRequest(
-    prNumber: number,
+  async compareBranchToDefault(
     branchName: string,
-    contentKey: string,
-    metadata: Metadata,
-    head: Commit,
-  ) {
-    const { path } = metadata.objects.entry;
+  ): Promise<{ baseCommit: GitHubCompareBaseCommit; commits: GitHubCompareCommits }> {
+    const headReference = await this.getHeadReference(branchName);
+    const { base_commit: baseCommit, commits }: GitHubCompareResponse = await this.request(
+      `${this.originRepoURL}/compare/${this.branch}...${headReference}`,
+    );
+    return { baseCommit, commits };
+  }
 
+  async getCommitsDiff(baseSha: string, headSha: string): Promise<GitHubCompareFiles> {
+    const { files }: GitHubCompareResponse = await this.request(
+      `${this.repoURL}/compare/${baseSha}...${headSha}`,
+    );
+    return files;
+  }
+
+  async rebaseSingleCommit(baseCommit: GitHubCompareCommit, commit: GitHubCompareCommit) {
+    // first get the diff between the commits
+    const files = await this.getCommitsDiff(commit.parents[0].sha, commit.sha);
+    const treeFiles = files.reduce((arr, file) => {
+      if (file.status === 'removed') {
+        // delete the file
+        arr.push({ sha: null, path: file.filename });
+      } else if (file.status === 'renamed') {
+        // delete the previous file
+        arr.push({ sha: null, path: file.previous_filename as string });
+        // add the renamed file
+        arr.push({ sha: file.sha, path: file.filename });
+      } else {
+        // add the  file
+        arr.push({ sha: file.sha, path: file.filename });
+      }
+      return arr;
+    }, [] as { sha: string | null; path: string }[]);
+
+    // create a tree with baseCommit as the base with the diff applied
+    const tree = await this.updateTree(baseCommit.sha, treeFiles);
+    const { message, author, committer } = commit.commit;
+
+    // create a new commit from the updated tree
+    return (this.createCommit(
+      message,
+      tree.sha,
+      [baseCommit.sha],
+      author,
+      committer,
+    ) as unknown) as GitHubCompareCommit;
+  }
+
+  /**
+   * Rebase an array of commits one-by-one, starting from a given base SHA
+   */
+  async rebaseCommits(baseCommit: GitHubCompareCommit, commits: GitHubCompareCommits) {
+    /**
+     * If the parent of the first commit already matches the target base,
+     * return commits as is.
+     */
+    if (commits.length === 0 || commits[0].parents[0].sha === baseCommit.sha) {
+      const head = last(commits) as GitHubCompareCommit;
+      return head;
+    } else {
+      /**
+       * Re-create each commit over the new base, applying each to the previous,
+       * changing only the parent SHA and tree for each, but retaining all other
+       * info, such as the author/committer data.
+       */
+      const newHeadPromise = commits.reduce((lastCommitPromise, commit) => {
+        return lastCommitPromise.then(newParent => {
+          const parent = newParent;
+          const commitToRebase = commit;
+          return this.rebaseSingleCommit(parent, commitToRebase);
+        });
+      }, Promise.resolve(baseCommit));
+      return newHeadPromise;
+    }
+  }
+
+  async rebaseBranch(branchName: string) {
     try {
-      /**
-       * Get the published branch and create new commits over it. If the pull
-       * request is up to date, no rebase will occur.
-       */
-      const [baseBranch, commits] = await Promise.all([
-        this.getBranch(),
-        this.getPullRequestCommits(prNumber),
-      ]);
-
-      /**
-       * Sometimes the list of commits for a pull request isn't updated
-       * immediately after the PR branch is patched. There's also the possibility
-       * that the branch has changed unexpectedly. We account for both by adding
-       * the head if it's missing, or else throwing an error if the PR head is
-       * neither the head we expect nor its parent.
-       */
-      const finalCommits = this.assertHead(commits, head);
-      const rebasedHead = await this.rebaseSingleBlobCommits(baseBranch.commit, finalCommits, path);
-
-      /**
-       * Update metadata, then force update the pull request branch head.
-       */
-      const pr = { ...(metadata.pr as PR), head: rebasedHead.sha };
-      const timeStamp = new Date().toISOString();
-      const updatedMetadata = { ...metadata, pr, timeStamp };
-      await this.storeMetadata(contentKey, updatedMetadata);
-      return this.patchBranch(branchName, rebasedHead.sha, { force: true });
+      // Get the diff between the default branch the published branch
+      const { baseCommit, commits } = await this.compareBranchToDefault(branchName);
+      // Rebase the branch based on the diff
+      const rebasedHead = await this.rebaseCommits(baseCommit, commits);
+      return rebasedHead;
     } catch (error) {
       console.error(error);
       throw error;
@@ -937,110 +970,10 @@ export default class API {
   }
 
   /**
-   * Rebase an array of commits one-by-one, starting from a given base SHA. Can
-   * accept an array of commits as received from the GitHub API. All commits are
-   * expected to change the same, single blob.
-   */
-  rebaseSingleBlobCommits(baseCommit: Commit, commits: Commit[], pathToBlob: string) {
-    /**
-     * If the parent of the first commit already matches the target base,
-     * return commits as is.
-     */
-    if (commits.length === 0 || commits[0].parents[0].sha === baseCommit.sha) {
-      return Promise.resolve(last(commits) as Commit);
-    }
-
-    /**
-     * Re-create each commit over the new base, applying each to the previous,
-     * changing only the parent SHA and tree for each, but retaining all other
-     * info, such as the author/committer data.
-     */
-    const newHeadPromise = commits.reduce((lastCommitPromise, commit) => {
-      return lastCommitPromise.then(newParent => {
-        /**
-         * Normalize commit data to ensure it's not nested in `commit.commit`.
-         */
-        const parent = this.normalizeCommit(newParent);
-        const commitToRebase = this.normalizeCommit(commit);
-
-        return this.rebaseSingleBlobCommit(parent, commitToRebase, pathToBlob);
-      });
-    }, Promise.resolve(baseCommit));
-
-    /**
-     * Return a promise that resolves when all commits have been created.
-     */
-    return newHeadPromise;
-  }
-
-  /**
-   * Rebase a commit that changes a single blob. Also handles updating the tree.
-   */
-  rebaseSingleBlobCommit(
-    baseCommit: Commit,
-    commit: { message: string; author: string; committer: string; tree: { sha: string } },
-    pathToBlob: string,
-  ) {
-    /**
-     * Retain original commit metadata.
-     */
-    const { message, author, committer } = commit;
-
-    /**
-     * Set the base commit as the parent.
-     */
-    const parent = [baseCommit.sha];
-
-    /**
-     * Get the blob data by path.
-     */
-    return (
-      this.getBlobInTree(commit.tree.sha, pathToBlob)
-
-        /**
-         * Create a new tree consisting of the base tree and the single updated
-         * blob. Use the full path to indicate nesting, GitHub will take care of
-         * subtree creation.
-         */
-        .then(blob => this.createTree(baseCommit.tree.sha, [{ ...blob, path: pathToBlob }]))
-
-        /**
-         * Create a new commit with the updated tree and original commit metadata.
-         */
-        .then(tree => this.createCommit(message, tree.sha, parent, author, committer))
-    );
-  }
-
-  /**
    * Get a pull request by PR number.
    */
   getPullRequest(prNumber: number) {
     return this.request(`${this.originRepoURL}/pulls/${prNumber} }`);
-  }
-
-  /**
-   * Get the list of commits for a given pull request.
-   */
-  getPullRequestCommits(prNumber: number) {
-    return this.requestAllPages(`${this.originRepoURL}/pulls/${prNumber}/commits`);
-  }
-
-  /**
-   * Returns `commits` with `headToAssert` appended if it's the child of the
-   * last commit in `commits`. Returns `commits` unaltered if `headToAssert` is
-   * already the last commit in `commits`. Otherwise throws an error.
-   */
-  assertHead(commits: Commit[], headToAssert: Commit) {
-    const headIsMissing = headToAssert.parents[0].sha === last(commits)?.sha;
-    const headIsNotMissing = headToAssert.sha === last(commits)?.sha;
-
-    if (headIsMissing) {
-      return commits.concat(headToAssert);
-    } else if (headIsNotMissing) {
-      return commits;
-    }
-
-    throw Error('Editorial workflow branch changed unexpectedly.');
   }
 
   async updateUnpublishedEntryStatus(collectionName: string, slug: string, status: string) {
@@ -1133,8 +1066,8 @@ export default class API {
     });
   }
 
-  getBranch(branch = this.branch) {
-    return this.request(`${this.repoURL}/branches/${encodeURIComponent(branch)}`);
+  getDefaultBranch(): Promise<GitHubBranch> {
+    return this.request(`${this.originRepoURL}/branches/${encodeURIComponent(this.branch)}`);
   }
 
   createBranch(branchName: string, sha: string) {
@@ -1166,8 +1099,13 @@ export default class API {
     });
   }
 
-  async createPR(title: string, head: string) {
+  async getHeadReference(head: string) {
     const headReference = this.useOpenAuthoring ? `${(await this.user()).login}:${head}` : head;
+    return headReference;
+  }
+
+  async createPR(title: string, head: string) {
+    const headReference = await this.getHeadReference(head);
     return this.request(`${this.originRepoURL}/pulls`, {
       method: 'POST',
       body: JSON.stringify({
@@ -1232,35 +1170,10 @@ export default class API {
       '%c Automatic merge not possible - Forcing merge.',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
-    return this.getBranch()
+    return this.getDefaultBranch()
       .then(branchData => this.updateTree(branchData.commit.sha, files))
       .then(changeTree => this.commit(commitMessage, changeTree))
       .then(response => this.patchBranch(this.branch, response.sha));
-  }
-
-  getTree(sha: string | null) {
-    if (sha) {
-      return this.request(`${this.repoURL}/git/trees/${sha}`);
-    }
-    return Promise.resolve({ tree: [] });
-  }
-
-  /**
-   * Get a blob from a tree. Requests individual subtrees recursively if blob is
-   * nested within one or more directories.
-   */
-  getBlobInTree(treeSha: string, pathToBlob: string) {
-    const pathSegments = pathToBlob.split('/').filter(val => val);
-    const directories = pathSegments.slice(0, -1);
-    const filename = pathSegments.slice(-1)[0];
-    const baseTree = this.getTree(treeSha);
-    const subTreePromise = directories.reduce((treePromise, segment) => {
-      return treePromise.then(tree => {
-        const subTreeSha = find(tree.tree, { path: segment }).sha;
-        return this.getTree(subTreeSha);
-      });
-    }, baseTree);
-    return subTreePromise.then(subTree => find(subTree.tree, { path: filename }));
   }
 
   toBase64(str: string) {
@@ -1284,38 +1197,24 @@ export default class API {
     );
   }
 
-  async updateTree(sha: string, files: { path: string; sha: string | null; remove?: boolean }[]) {
+  async updateTree(baseSha: string, files: { path: string; sha: string | null }[]) {
     const tree: TreeEntry[] = files.map(file => ({
       path: trimStart(file.path, '/'),
       mode: '100644',
       type: 'blob',
-      sha: file.remove ? null : file.sha,
+      sha: file.sha,
     }));
 
-    const newTree = await this.createTree(sha, tree);
-    newTree.parentSha = sha;
-    return newTree;
+    const newTree = await this.createTree(baseSha, tree);
+    return { ...newTree, parentSha: baseSha };
   }
 
-  createTree(baseSha: string, tree: TreeEntry[]) {
+  createTree(baseSha: string, tree: TreeEntry[]): Promise<GitHubTree> {
     return this.request(`${this.repoURL}/git/trees`, {
       method: 'POST',
       // eslint-disable-next-line @typescript-eslint/camelcase
       body: JSON.stringify({ base_tree: baseSha, tree }),
     });
-  }
-
-  /**
-   * Some GitHub API calls return commit data in a nested `commit` property,
-   * with the SHA outside of the nested property, while others return a
-   * flatter object with no nested `commit` property. This normalizes a commit
-   * to resemble the latter.
-   */
-  normalizeCommit(commit: Commit) {
-    if (commit.commit) {
-      return { ...commit.commit, sha: commit.sha };
-    }
-    return commit;
   }
 
   commit(message: string, changeTree: { parentSha?: string; sha: string }) {
@@ -1327,9 +1226,9 @@ export default class API {
     message: string,
     treeSha: string,
     parents: string[],
-    author?: string,
-    committer?: string,
-  ) {
+    author?: GitHubAuthor,
+    committer?: GitHubCommiter,
+  ): Promise<GitHubCommit> {
     return this.request(`${this.repoURL}/git/commits`, {
       method: 'POST',
       body: JSON.stringify({ message, tree: treeSha, parents, author, committer }),

@@ -12,7 +12,7 @@ export default class API extends GithubAPI {
   }
 
   hasWriteAccess() {
-    return this.getBranch()
+    return this.getDefaultBranch()
       .then(() => true)
       .catch(error => {
         if (error.status === 401) {

@@ -53,7 +53,7 @@ describe('github API', () => {
       api.createTree = jest.fn().mockImplementation(() => Promise.resolve({ sha: 'newTreeSha' }));
 
       const files = [
-        { path: '/static/media/new-image.jpeg', sha: 'new-image.jpeg', remove: true },
+        { path: '/static/media/new-image.jpeg', sha: null },
         { path: 'content/posts/new-post.md', sha: 'new-post.md' },
       ];
 
@@ -431,6 +431,62 @@ describe('github API', () => {
 
       expect(api.deleteMetadata).toHaveBeenCalledTimes(1);
       expect(api.deleteMetadata).toHaveBeenCalledWith('2019-11-11-post-title');
+    });
+  });
+
+  describe('rebaseSingleCommit', () => {
+    it('should create updated tree and commit', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      api.getCommitsDiff = jest.fn().mockResolvedValueOnce([
+        { filename: 'removed.md', status: 'removed', sha: 'removed_sha' },
+        {
+          filename: 'renamed.md',
+          status: 'renamed',
+          previous_filename: 'previous_filename.md',
+          sha: 'renamed_sha',
+        },
+        { filename: 'added.md', status: 'added', sha: 'added_sha' },
+      ]);
+
+      const newTree = { sha: 'new_tree_sha' };
+      api.updateTree = jest.fn().mockResolvedValueOnce(newTree);
+
+      const newCommit = { sha: 'newCommit' };
+      api.createCommit = jest.fn().mockResolvedValueOnce(newCommit);
+
+      const baseCommit = { sha: 'base_commit_sha' };
+      const commit = {
+        sha: 'sha',
+        parents: [{ sha: 'parent_sha' }],
+        commit: {
+          message: 'message',
+          author: { name: 'author' },
+          committer: { name: 'committer' },
+        },
+      };
+
+      await expect(api.rebaseSingleCommit(baseCommit, commit)).resolves.toBe(newCommit);
+
+      expect(api.getCommitsDiff).toHaveBeenCalledTimes(1);
+      expect(api.getCommitsDiff).toHaveBeenCalledWith('parent_sha', 'sha');
+
+      expect(api.updateTree).toHaveBeenCalledTimes(1);
+      expect(api.updateTree).toHaveBeenCalledWith('base_commit_sha', [
+        { path: 'removed.md', sha: null },
+        { path: 'previous_filename.md', sha: null },
+        { path: 'renamed.md', sha: 'renamed_sha' },
+        { path: 'added.md', sha: 'added_sha' },
+      ]);
+
+      expect(api.createCommit).toHaveBeenCalledTimes(1);
+      expect(api.createCommit).toHaveBeenCalledWith(
+        'message',
+        newTree.sha,
+        [baseCommit.sha],
+        { name: 'author' },
+        { name: 'committer' },
+      );
     });
   });
 });
