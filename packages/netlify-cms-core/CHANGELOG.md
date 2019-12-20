@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0...netlify-cms-core@2.13.1) (2019-12-20)
+
+
+### Bug Fixes
+
+* select widget dropdown options ([#2981](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2981)) ([8980f17](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8980f17a07554513c98a4c2938592d0fde227174))
+
+
+
+
+
 # [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.13.0-beta.10...netlify-cms-core@2.13.0) (2019-12-18)
 
 
