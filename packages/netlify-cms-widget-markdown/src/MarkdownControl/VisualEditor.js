@@ -28,6 +28,7 @@ const visualEditorStyles = `
   padding: 0;
   display: flex;
   flex-direction: column;
+  z-index: 100;
 `;
 
 const InsertionPoint = styled.div`
