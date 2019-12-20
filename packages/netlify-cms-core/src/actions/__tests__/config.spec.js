@@ -101,5 +101,33 @@ describe('config', () => {
         ]),
       ).toEqual('_');
     });
+
+    it('should add langauge fields', () => {
+      const inputFields = [
+        { label: 'Title', name: 'title', widget: 'string', translate: true },
+        { label: 'Slug', name: 'slug', widget: 'string' },
+      ];
+      const outputFields = [
+        {
+          label: 'Title',
+          name: 'title',
+          widget: 'object',
+          fields: [
+            { label: 'EN', name: 'en', widget: 'string' },
+            { label: 'FR', name: 'fr', widget: 'string' },
+          ],
+        },
+        { label: 'Slug', name: 'slug', widget: 'string' },
+      ];
+
+      expect(
+        applyDefaults(
+          fromJS({
+            languages: ['en', 'fr'],
+            collections: [{ folder: '_posts', fields: inputFields }],
+          }),
+        ).get('collections'),
+      ).toEqual(fromJS([{ folder: '_posts', fields: outputFields }]));
+    });
   });
 });
