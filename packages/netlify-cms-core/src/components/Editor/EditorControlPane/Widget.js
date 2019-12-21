@@ -97,7 +97,11 @@ export default class Widget extends Component {
   };
 
   validate = (skipWrapped = false) => {
-    const { field, value } = this.props;
+    let value = this.props.value;
+    // Convert list input widget value to string for validation test
+    List.isList(value) && (value = value.join(','));
+
+    const field = this.props.field;
     const errors = [];
     const validations = [this.validatePresence, this.validatePattern];
     validations.forEach(func => {
@@ -136,9 +140,6 @@ export default class Widget extends Component {
     if (isEmpty(value)) {
       return { error: false };
     }
-
-    // Convert list input widget value to string for pattern test
-    List.isList(value) && (value = value.join(','));
 
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
@@ -271,6 +272,7 @@ export default class Widget extends Component {
       getAsset,
       forID: uniqueFieldId,
       ref: this.processInnerControlRef,
+      validate: this.validate,
       classNameWrapper,
       classNameWidget,
       classNameWidgetActive,
