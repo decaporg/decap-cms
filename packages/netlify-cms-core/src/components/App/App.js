@@ -49,6 +49,23 @@ const ErrorCodeBlock = styled.pre`
   line-height: 1.5;
 `;
 
+const getDefaultPath = collections => {
+  return `/collections/${collections.first().get('name')}`;
+};
+
+const RouteInCollection = ({ collections, render, ...props }) => {
+  const defaultPath = getDefaultPath(collections);
+  return (
+    <Route
+      {...props}
+      render={routeProps => {
+        const collectionExists = collections.get(routeProps.match.params.name);
+        return collectionExists ? render(routeProps) : <Redirect to={defaultPath} />;
+      }}
+    />
+  );
+};
+
 class App extends React.Component {
   static propTypes = {
     auth: ImmutablePropTypes.map,
@@ -155,7 +172,7 @@ class App extends React.Component {
       return this.authenticating(t);
     }
 
-    const defaultPath = `/collections/${collections.first().get('name')}`;
+    const defaultPath = getDefaultPath(collections);
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
@@ -178,25 +195,29 @@ class App extends React.Component {
             <Redirect exact from="/" to={defaultPath} />
             <Redirect exact from="/search/" to={defaultPath} />
             {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-            <Route
+            <RouteInCollection
               exact
+              collections={collections}
               path="/collections/:name"
-              render={props => {
-                const collectionExists = collections.get(props.match.params.name);
-                return collectionExists ? <Collection {...props} /> : <Redirect to={defaultPath} />;
-              }}
+              render={props => <Collection {...props} />}
             />
-            <Route
+            <RouteInCollection
               path="/collections/:name/new"
+              collections={collections}
               render={props => <Editor {...props} newRecord />}
             />
-            <Route path="/collections/:name/entries/*" component={Editor} />
+            <RouteInCollection
+              path="/collections/:name/entries/*"
+              collections={collections}
+              render={props => <Editor {...props} />}
+            />
             <Route
               path="/search/:searchTerm"
               render={props => <Collection {...props} isSearchResults />}
             />
-            <Route
+            <RouteInCollection
               path="/edit/:collectionName/:entryName"
+              collections={collections}
               render={({ match }) => {
                 const { collectionName, entryName } = match.params;
                 return <Redirect to={`/collections/${collectionName}/entries/${entryName}`} />;
