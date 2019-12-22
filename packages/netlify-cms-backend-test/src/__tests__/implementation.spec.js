@@ -1,4 +1,4 @@
-import TestBackend from '../implementation';
+import TestBackend, { getFolderEntries } from '../implementation';
 
 describe('test backend implementation', () => {
   beforeEach(() => {
@@ -199,6 +199,59 @@ describe('test backend implementation', () => {
           },
         },
       });
+    });
+  });
+
+  describe('getFolderEntries', () => {
+    it('should get files by depth', () => {
+      const tree = {
+        pages: {
+          'root-page.md': {
+            content: 'root page content',
+          },
+          dir1: {
+            'nested-page-1.md': {
+              content: 'nested page 1 content',
+            },
+            dir2: {
+              'nested-page-2.md': {
+                content: 'nested page 2 content',
+              },
+            },
+          },
+        },
+      };
+
+      expect(getFolderEntries(tree, 'pages', 'md', 1)).toEqual([
+        {
+          file: { path: 'pages/root-page.md' },
+          data: 'root page content',
+        },
+      ]);
+      expect(getFolderEntries(tree, 'pages', 'md', 2)).toEqual([
+        {
+          file: { path: 'pages/dir1/nested-page-1.md' },
+          data: 'nested page 1 content',
+        },
+        {
+          file: { path: 'pages/root-page.md' },
+          data: 'root page content',
+        },
+      ]);
+      expect(getFolderEntries(tree, 'pages', 'md', 3)).toEqual([
+        {
+          file: { path: 'pages/dir1/dir2/nested-page-2.md' },
+          data: 'nested page 2 content',
+        },
+        {
+          file: { path: 'pages/dir1/nested-page-1.md' },
+          data: 'nested page 1 content',
+        },
+        {
+          file: { path: 'pages/root-page.md' },
+          data: 'root page content',
+        },
+      ]);
     });
   });
 });

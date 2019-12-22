@@ -114,11 +114,11 @@ export default class API {
     };
   };
 
-  listFiles = async path => {
+  listFiles = async (path, depth) => {
     const node = await this.branchCommitSha();
     const { entries, cursor } = await flow([
       // sort files by filename ascending
-      unsentRequest.withParams({ sort: '-path', max_depth: 10 }),
+      unsentRequest.withParams({ sort: '-path', max_depth: depth }),
       this.requestJSON,
       then(this.getEntriesAndCursor),
     ])(`${this.repoURL}/src/${node}/${path}`);
@@ -135,8 +135,8 @@ export default class API {
       })),
     ])(cursor.data.getIn(['links', action]));
 
-  listAllFiles = async path => {
-    const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(path);
+  listAllFiles = async (path, depth) => {
+    const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(path, depth);
     const entries = [...initialEntries];
     let currentCursor = initialCursor;
     while (currentCursor && currentCursor.actions.has('next')) {

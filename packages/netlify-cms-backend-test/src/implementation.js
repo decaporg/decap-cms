@@ -5,6 +5,7 @@ import {
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
+  getCollectionDepth,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 
@@ -35,14 +36,25 @@ const getCursor = (collection, extension, entries, index) => {
   });
 };
 
-const getFolderEntries = (folder, extension) => {
-  return Object.keys(window.repoFiles[folder] || {})
-    .filter(path => path.endsWith(`.${extension}`))
-    .map(path => ({
-      file: { path: `${folder}/${path}` },
-      data: window.repoFiles[folder][path].content,
-    }))
-    .reverse();
+export const getFolderEntries = (tree, folder, extension, depth, files = [], path = folder) => {
+  if (depth <= 0) {
+    return files;
+  }
+
+  Object.keys(tree[folder] || {}).forEach(key => {
+    if (key.endsWith(`.${extension}`)) {
+      const file = tree[folder][key];
+      files.unshift({
+        file: { path: `${path}/${key}` },
+        data: file.content,
+      });
+    } else {
+      const subTree = tree[folder];
+      return getFolderEntries(subTree, key, extension, depth - 1, files, `${path}/${key}`);
+    }
+  });
+
+  return files;
 };
 
 export default class TestBackend {
@@ -89,7 +101,13 @@ export default class TestBackend {
       }
     })();
     // TODO: stop assuming cursors are for collections
-    const allEntries = getFolderEntries(collection.get('folder'), extension);
+    const depth = getCollectionDepth(collection);
+    const allEntries = getFolderEntries(
+      window.repoFiles,
+      collection.get('folder'),
+      extension,
+      depth,
+    );
     const entries = allEntries.slice(newIndex * pageSize, newIndex * pageSize + pageSize);
     const newCursor = getCursor(collection, extension, allEntries, newIndex);
     return Promise.resolve({ entries, cursor: newCursor });
@@ -97,7 +115,8 @@ export default class TestBackend {
 
   entriesByFolder(collection, extension) {
     const folder = collection.get('folder');
-    const entries = folder ? getFolderEntries(folder, extension) : [];
+    const depth = getCollectionDepth(collection);
+    const entries = folder ? getFolderEntries(window.repoFiles, folder, extension, depth) : [];
     const cursor = getCursor(collection, extension, entries, 0);
     const ret = take(entries, pageSize);
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;

@@ -187,7 +187,8 @@ export default class GraphQLAPI extends API {
   getAllFiles(entries, path) {
     const allFiles = entries.reduce((acc, item) => {
       if (item.type === 'tree') {
-        return [...acc, ...this.getAllFiles(item.object.entries, `${path}/${item.name}`)];
+        const entries = item.object?.entries || [];
+        return [...acc, ...this.getAllFiles(entries, `${path}/${item.name}`)];
       } else if (item.type === 'blob') {
         return [
           ...acc,
@@ -204,10 +205,10 @@ export default class GraphQLAPI extends API {
     return allFiles;
   }
 
-  async listFiles(path, { repoURL = this.repoURL, branch = this.branch } = {}) {
+  async listFiles(path, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { data } = await this.query({
-      query: queries.files,
+      query: queries.files(depth),
       variables: { owner, name, expression: `${branch}:${path}` },
     });
 

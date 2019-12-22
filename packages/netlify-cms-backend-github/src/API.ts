@@ -11,6 +11,7 @@ import {
   onlySuccessfulPromises,
   resolvePromiseProperties,
   ResponseParser,
+  basename,
 } from 'netlify-cms-lib-util';
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
@@ -509,17 +510,20 @@ export default class API {
     });
   }
 
-  async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
+  async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
     const folder = trimStart(path, '/');
     return this.request(`${repoURL}/git/trees/${branch}:${folder}`, {
-      params: { recursive: 10 },
+      // GitHub API supports recursive=1 for getting the entire recursive tree
+      // or omitting it to get the non-recursive tree
+      params: depth > 1 ? { recursive: 1 } : {},
     })
       .then((res: GitHubTree) =>
         res.tree
-          .filter(file => file.type === 'blob')
+          // filter only files and up to the required depth
+          .filter(file => file.type === 'blob' && file.path.split('/').length <= depth)
           .map(file => ({
             ...file,
-            name: file.path,
+            name: basename(file.path),
             path: `${folder}/${file.path}`,
           })),
       )

@@ -9,6 +9,7 @@ import {
   unsentRequest,
   basename,
   getBlobSHA,
+  getCollectionDepth,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -165,7 +166,10 @@ export default class BitbucketBackend {
   };
 
   entriesByFolder(collection, extension) {
-    const listPromise = this.api.listFiles(collection.get('folder'));
+    const listPromise = this.api.listFiles(
+      collection.get('folder'),
+      getCollectionDepth(collection),
+    );
     return resolvePromiseProperties({
       files: listPromise
         .then(({ entries }) => entries)
@@ -180,7 +184,7 @@ export default class BitbucketBackend {
 
   allEntriesByFolder(collection, extension) {
     return this.api
-      .listAllFiles(collection.get('folder'))
+      .listAllFiles(collection.get('folder'), getCollectionDepth(collection))
       .then(filterByPropExtension(extension, 'path'))
       .then(this.fetchFiles);
   }

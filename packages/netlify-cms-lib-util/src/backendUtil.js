@@ -77,3 +77,8 @@ export const getAllResponses = async (url, options = {}, linkHeaderRelName = 'ne
 
   return pageResponses;
 };
+
+export const getCollectionDepth = collection => {
+  const depth = collection.get('path', '').split('/').length;
+  return depth;
+};
