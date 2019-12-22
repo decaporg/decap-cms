@@ -18,6 +18,7 @@ import {
   parseLinkHeader,
   parseResponse,
   responseParser,
+  getCollectionDepth,
 } from './backendUtil';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
@@ -46,6 +47,7 @@ export const NetlifyCmsLibUtil = {
   responseParser,
   loadScript,
   getBlobSHA,
+  getCollectionDepth,
 };
 export {
   APIError,
@@ -73,4 +75,5 @@ export {
   getBlobSHA,
   asyncLock,
   isAbsolutePath,
+  getCollectionDepth,
 };

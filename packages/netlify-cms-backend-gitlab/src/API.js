@@ -187,10 +187,10 @@ export default class API {
   // while the CMS defaults to sorting by filename _ascending_, at
   // least in the current GitHub backend). This should eventually be
   // refactored.
-  listFiles = async path => {
+  listFiles = async (path, recursive = false) => {
     const firstPageCursor = await this.fetchCursor({
       url: `${this.repoURL}/repository/tree`,
-      params: { path, ref: this.branch, recursive: true },
+      params: { path, ref: this.branch, recursive },
     });
     const lastPageLink = firstPageCursor.data.getIn(['links', 'last']);
     const { entries, cursor } = await this.fetchCursorAndEntries(lastPageLink);
@@ -209,12 +209,12 @@ export default class API {
     };
   };
 
-  listAllFiles = async path => {
+  listAllFiles = async (path, recursive = false) => {
     const entries = [];
     let { cursor, entries: initialEntries } = await this.fetchCursorAndEntries({
       url: `${this.repoURL}/repository/tree`,
       // Get the maximum number of entries per page
-      params: { path, ref: this.branch, per_page: 100 },
+      params: { path, ref: this.branch, per_page: 100, recursive },
     });
     entries.push(...initialEntries);
     while (cursor && cursor.actions.has('next')) {

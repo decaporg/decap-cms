@@ -2,7 +2,7 @@ import React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
-import { asyncLock, basename } from 'netlify-cms-lib-util';
+import { asyncLock, basename, getCollectionDepth } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
 import API from './API';
@@ -256,7 +256,10 @@ export default class GitHub {
 
   async entriesByFolder(collection, extension) {
     const repoURL = this.useOpenAuthoring ? this.api.originRepoURL : this.api.repoURL;
-    const files = await this.api.listFiles(collection.get('folder'), { repoURL });
+    const files = await this.api.listFiles(collection.get('folder'), {
+      repoURL,
+      depth: getCollectionDepth(collection),
+    });
     const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
     return this.fetchFiles(filteredFiles, { repoURL });
   }

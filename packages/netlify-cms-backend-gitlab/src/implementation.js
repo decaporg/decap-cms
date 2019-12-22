@@ -1,7 +1,8 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
+import { trim } from 'lodash';
 import { stripIndent } from 'common-tags';
-import { CURSOR_COMPATIBILITY_SYMBOL, basename } from 'netlify-cms-lib-util';
+import { CURSOR_COMPATIBILITY_SYMBOL, basename, getCollectionDepth } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
@@ -78,9 +79,17 @@ export default class GitLab {
     return Promise.resolve(this.token);
   }
 
+  filterFile(folder, file, extension, depth) {
+    // gitlab paths include the root folder
+    const fileFolder = trim(file.path.split(folder)[1] || '/', '/');
+    return file.name.endsWith('.' + extension) && fileFolder.split('/').length <= depth;
+  }
+
   entriesByFolder(collection, extension) {
-    return this.api.listFiles(collection.get('folder')).then(({ files, cursor }) =>
-      this.fetchFiles(files.filter(file => file.name.endsWith('.' + extension))).then(
+    const depth = getCollectionDepth(collection);
+    const folder = collection.get('folder');
+    return this.api.listFiles(folder, depth > 1).then(({ files, cursor }) =>
+      this.fetchFiles(files.filter(file => this.filterFile(folder, file, extension, depth))).then(
         fetchedFiles => {
           const returnedFiles = fetchedFiles;
           returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
@@ -91,9 +100,13 @@ export default class GitLab {
   }
 
   allEntriesByFolder(collection, extension) {
+    const depth = getCollectionDepth(collection);
+    const folder = collection.get('folder');
     return this.api
-      .listAllFiles(collection.get('folder'))
-      .then(files => this.fetchFiles(files.filter(file => file.name.endsWith('.' + extension))));
+      .listAllFiles(folder, depth > 1)
+      .then(files =>
+        this.fetchFiles(files.filter(file => this.filterFile(folder, file, extension, depth))),
+      );
   }
 
   entriesByFiles(collection) {

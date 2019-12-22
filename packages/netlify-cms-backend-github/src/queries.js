@@ -93,7 +93,7 @@ export const statues = gql`
   ${fragments.object}
 `;
 
-const buildFilesQuery = (depth = 10) => {
+const buildFilesQuery = (depth = 1) => {
   const PLACE_HOLDER = 'PLACE_HOLDER';
   let query = oneLine`
     ...ObjectParts
@@ -126,14 +126,12 @@ const buildFilesQuery = (depth = 10) => {
   return query;
 };
 
-const filesQuery = buildFilesQuery();
-
-export const files = gql`
+export const files = depth => gql`
   query files($owner: String!, $name: String!, $expression: String!) {
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
       object(expression: $expression) {
-        ${filesQuery}
+        ${buildFilesQuery(depth)}
       }
     }
   }

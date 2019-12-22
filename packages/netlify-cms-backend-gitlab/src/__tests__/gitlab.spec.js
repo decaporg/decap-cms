@@ -484,6 +484,34 @@ describe('gitlab backend', () => {
     });
   });
 
+  describe('filterFile', () => {
+    it('should return true for nested file with matching depth', () => {
+      backend = resolveBackend(defaultConfig);
+
+      expect(
+        backend.implementation.filterFile(
+          'content/posts',
+          { name: 'index.md', path: 'content/posts/dir1/dir2/index.md' },
+          'md',
+          3,
+        ),
+      ).toBe(true);
+    });
+
+    it('should return false for nested file with non matching depth', () => {
+      backend = resolveBackend(defaultConfig);
+
+      expect(
+        backend.implementation.filterFile(
+          'content/posts',
+          { name: 'index.md', path: 'content/posts/dir1/dir2/index.md' },
+          'md',
+          2,
+        ),
+      ).toBe(false);
+    });
+  });
+
   afterEach(() => {
     nock.cleanAll();
     authStore.logout();

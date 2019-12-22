@@ -489,4 +489,87 @@ describe('github API', () => {
       );
     });
   });
+
+  describe('listFiles', () => {
+    it('should get files by depth', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const tree = [
+        {
+          path: 'post.md',
+          type: 'blob',
+        },
+        {
+          path: 'dir1',
+          type: 'tree',
+        },
+        {
+          path: 'dir1/nested-post.md',
+          type: 'blob',
+        },
+        {
+          path: 'dir1/dir2',
+          type: 'tree',
+        },
+        {
+          path: 'dir1/dir2/nested-post.md',
+          type: 'blob',
+        },
+      ];
+      api.request = jest.fn().mockResolvedValue({ tree });
+
+      await expect(api.listFiles('posts', { depth: 1 })).resolves.toEqual([
+        {
+          path: 'posts/post.md',
+          type: 'blob',
+          name: 'post.md',
+        },
+      ]);
+      expect(api.request).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:posts', {
+        params: {},
+      });
+
+      jest.clearAllMocks();
+      await expect(api.listFiles('posts', { depth: 2 })).resolves.toEqual([
+        {
+          path: 'posts/post.md',
+          type: 'blob',
+          name: 'post.md',
+        },
+        {
+          path: 'posts/dir1/nested-post.md',
+          type: 'blob',
+          name: 'nested-post.md',
+        },
+      ]);
+      expect(api.request).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:posts', {
+        params: { recursive: 1 },
+      });
+
+      jest.clearAllMocks();
+      await expect(api.listFiles('posts', { depth: 3 })).resolves.toEqual([
+        {
+          path: 'posts/post.md',
+          type: 'blob',
+          name: 'post.md',
+        },
+        {
+          path: 'posts/dir1/nested-post.md',
+          type: 'blob',
+          name: 'nested-post.md',
+        },
+        {
+          path: 'posts/dir1/dir2/nested-post.md',
+          type: 'blob',
+          name: 'nested-post.md',
+        },
+      ]);
+      expect(api.request).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:posts', {
+        params: { recursive: 1 },
+      });
+    });
+  });
 });
