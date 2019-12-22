@@ -80,7 +80,7 @@ export default class GitLab {
   }
 
   filterFile(folder, file, extension, depth) {
-    // gitlab paths includes the root folder
+    // gitlab paths include the root folder
     const fileFolder = trim(file.path.split(folder)[1] || '/', '/');
     return file.name.endsWith('.' + extension) && fileFolder.split('/').length <= depth;
   }
