@@ -53,7 +53,7 @@
   },
   {
     "method": "GET",
-    "url": "/repos/owner/repo/git/trees/master:content/posts?ts=0&recursive=10",
+    "url": "/repos/owner/repo/git/trees/master:content/posts?ts=0",
     "headers": {
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
@@ -79,7 +79,7 @@
   },
   {
     "method": "GET",
-    "url": "/repos/owner/repo/git/trees/master:static/media?ts=0&recursive=10",
+    "url": "/repos/owner/repo/git/trees/master:static/media?ts=0",
     "headers": {
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
@@ -1169,7 +1169,7 @@
   },
   {
     "method": "GET",
-    "url": "/repos/owner/repo/git/trees/master:static/media?ts=300&recursive=10",
+    "url": "/repos/owner/repo/git/trees/master:static/media?ts=300",
     "headers": {
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",

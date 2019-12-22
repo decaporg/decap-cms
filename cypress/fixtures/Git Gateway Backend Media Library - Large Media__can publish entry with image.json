@@ -124,7 +124,7 @@
   },
   {
     "method": "GET",
-    "url": "/.netlify/git/github/git/trees/master:static/media?ts=0&recursive=10",
+    "url": "/.netlify/git/github/git/trees/master:static/media?ts=0",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Origin": "http://localhost:8080",
@@ -156,7 +156,7 @@
   },
   {
     "method": "GET",
-    "url": "/.netlify/git/github/git/trees/master:content/posts?ts=0&recursive=10",
+    "url": "/.netlify/git/github/git/trees/master:content/posts?ts=0",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Origin": "http://localhost:8080",
@@ -1752,7 +1752,7 @@
   },
   {
     "method": "GET",
-    "url": "/.netlify/git/github/git/trees/master:static/media?ts=300&recursive=10",
+    "url": "/.netlify/git/github/git/trees/master:static/media?ts=300",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Origin": "http://localhost:8080",
@@ -1886,7 +1886,7 @@
   },
   {
     "method": "GET",
-    "url": "/.netlify/git/github/git/trees/master:static/media?ts=300&recursive=10",
+    "url": "/.netlify/git/github/git/trees/master:static/media?ts=300",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Origin": "http://localhost:8080",
