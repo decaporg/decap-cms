@@ -379,6 +379,13 @@ const reactSelectStyles = {
   }),
 };
 
+const mediaQueries = {
+  xsmall: '480px',
+  small: '768px',
+  medium: '1024px',
+  large: '1440px',
+};
+
 const GlobalStyles = () => (
   <Global
     styles={css`
@@ -480,5 +487,6 @@ export {
   transitions,
   effects,
   reactSelectStyles,
+  mediaQueries,
   GlobalStyles,
 };
