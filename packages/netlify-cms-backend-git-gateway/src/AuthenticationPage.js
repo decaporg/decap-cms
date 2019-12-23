@@ -60,6 +60,9 @@ if (window.netlifyIdentity) {
   window.netlifyIdentity.on('logout', () => {
     component && component.handleIdentityLogout();
   });
+  window.netlifyIdentity.on('error', err => {
+    component && component.handleIdentityError(err);
+  });
 }
 
 export default class GitGatewayAuthenticationPage extends React.Component {
@@ -88,6 +91,15 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     window.netlifyIdentity.open();
   };
 
+  handleIdentityError = err => {
+    if (err?.message?.match(/^Failed to load settings from.+\.netlify\/identity$/)) {
+      window.netlifyIdentity.close();
+      this.setState({
+        errors: { identity: this.props.t('auth.errors.identitySettings') },
+      });
+    }
+  };
+
   handleIdentity = () => {
     const user = window.netlifyIdentity.currentUser();
     if (user) {
@@ -102,6 +114,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     inProgress: PropTypes.bool.isRequired,
     error: PropTypes.node,
     config: ImmutablePropTypes.map,
+    t: PropTypes.func.isRequired,
   };
 
   state = { email: '', password: '', errors: {} };
@@ -114,12 +127,13 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     e.preventDefault();
 
     const { email, password } = this.state;
+    const { t } = this.props;
     const errors = {};
     if (!email) {
-      errors.email = 'Make sure to enter your email.';
+      errors.email = t('auth.errors.email');
     }
     if (!password) {
-      errors.password = 'Please enter your password.';
+      errors.password = t('auth.errors.password');
     }
 
     if (Object.keys(errors).length > 0) {
@@ -142,16 +156,34 @@ export default class GitGatewayAuthenticationPage extends React.Component {
 
   render() {
     const { errors } = this.state;
-    const { error, inProgress, config } = this.props;
+    const { error, inProgress, config, t } = this.props;
 
     if (window.netlifyIdentity) {
-      return (
-        <AuthenticationPage
-          logoUrl={config.get('logo_url')}
-          onLogin={this.handleIdentity}
-          renderButtonContent={() => 'Login with Netlify Identity'}
-        />
-      );
+      if (errors.identity) {
+        return (
+          <AuthenticationPage
+            logoUrl={config.get('logo_url')}
+            onLogin={this.handleIdentity}
+            renderPageContent={() => (
+              <a
+                href="https://docs.netlify.com/visitor-access/git-gateway/#setup-and-settings"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {errors.identity}
+              </a>
+            )}
+          />
+        );
+      } else {
+        return (
+          <AuthenticationPage
+            logoUrl={config.get('logo_url')}
+            onLogin={this.handleIdentity}
+            renderButtonContent={() => t('auth.loginWithNetlifyIdentity')}
+          />
+        );
+      }
     }
 
     return (
@@ -179,7 +211,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
               onChange={partial(this.handleChange, 'password')}
             />
             <LoginButton disabled={inProgress}>
-              {inProgress ? 'Logging in...' : 'Login'}
+              {inProgress ? t('auth.loggingIn') : t('auth.login')}
             </LoginButton>
           </AuthForm>
         )}

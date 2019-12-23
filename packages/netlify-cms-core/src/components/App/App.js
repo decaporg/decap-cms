@@ -132,6 +132,7 @@ class App extends React.Component {
           authEndpoint: this.props.config.getIn(['backend', 'auth_endpoint']),
           config: this.props.config,
           clearHash: () => history.replace('/'),
+          t,
         })}
       </div>
     );
