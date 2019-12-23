@@ -4826,9 +4826,9 @@ cypress-jest-adapter@^0.1.1:
     jquery "^3.4.0"
 
 cypress-plugin-tab@^1.0.0:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/cypress-plugin-tab/-/cypress-plugin-tab-1.0.3.tgz#8a64a4c189c5d180dc0a97175097c0cc937c1213"
-  integrity sha512-uiadGT+IzoGxKCqYxQXyc5OhHkv4JAT5LWwNTs8R6pBJkBUUC/uZR2ys4jqhqX6mD/ZucAt5p+U9KMr8Ae4fQA==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/cypress-plugin-tab/-/cypress-plugin-tab-1.0.5.tgz#a40714148104004bb05ed62b1bf46bb544f8eb4a"
+  integrity sha512-QtTJcifOVwwbeMP3hsOzQOKf3EqKsLyjtg9ZAGlYDntrCRXrsQhe4ZQGIthRMRLKpnP6/tTk6G0gJ2sZUfRliQ==
   dependencies:
     ally.js "^1.4.1"
 
