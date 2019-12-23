@@ -108,7 +108,7 @@
     "babel-plugin-transform-define": "1.3.2",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
-    "cache-me-outside": "^0.0.4",
+    "cache-me-outside": "^0.0.10",
     "copy-webpack-plugin": "^5.0.1",
     "cross-env": "^6.0.0",
     "css-loader": "^3.0.0",
