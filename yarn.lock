@@ -3798,10 +3798,10 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-cache-me-outside@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/cache-me-outside/-/cache-me-outside-0.0.4.tgz#03d4297f13a99a37eefa428dc0455ec22991cb2c"
-  integrity sha512-hjggfalk0/ZvWgljSP/94elx9YmBUPaeWKvbMMBP1FTc1miYeKPvzS5bW8Bh8OBG7KAzVmNP4zwAtfmPBV+CJw==
+cache-me-outside@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/cache-me-outside/-/cache-me-outside-0.0.10.tgz#8dc3345fb36f40e268cebb74474e9814e1ff2286"
+  integrity sha512-AN9fsDdzpH5qoQqpHs9qYV7dR6KJ2fYbrwWsq62gj0Xlo8eKUFU4Ood/WDJVns5cpfxFbqMKH6UZd+aLRsQELA==
   dependencies:
     is-invalid-path "^1.0.2"
     rimraf "^2.6.2"
