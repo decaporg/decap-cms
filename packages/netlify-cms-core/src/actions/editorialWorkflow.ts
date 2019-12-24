@@ -529,7 +529,7 @@ export function publishUnpublishedEntry(collection: string, slug: string) {
         );
 
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
-        dispatch(loadEntry(collections.get(collection), slug));
+        return dispatch(loadEntry(collections.get(collection), slug));
       })
       .catch((error: Error) => {
         dispatch(
