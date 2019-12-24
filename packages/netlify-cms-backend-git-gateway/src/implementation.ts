@@ -2,7 +2,20 @@ import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { fromPairs, get, pick, intersection, unzip } from 'lodash';
 import ini from 'ini';
-import { APIError, getBlobSHA, unsentRequest, basename } from 'netlify-cms-lib-util';
+import {
+  APIError,
+  getBlobSHA,
+  unsentRequest,
+  basename,
+  Map,
+  ApiRequest,
+  AssetProxy,
+  PersistOptions,
+  Entry,
+  CursorType,
+  Implementation,
+  DisplayURL,
+} from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
@@ -14,9 +27,17 @@ import {
   createPointerFile,
   getLargeMediaPatternsFromGitAttributesFile,
   getClient,
+  Client,
+  PointerFile,
 } from './netlify-lfs-client';
 
-const localHosts = {
+declare global {
+  interface Window {
+    netlifyIdentity?: { gotrue: GoTrue; logout: () => void };
+  }
+}
+
+const localHosts: Record<string, boolean> = {
   localhost: true,
   '127.0.0.1': true,
   '0.0.0.0': true,
@@ -27,9 +48,9 @@ const defaults = {
   largeMedia: '/.netlify/large-media',
 };
 
-function getEndpoint(endpoint, netlifySiteURL) {
+function getEndpoint(endpoint: string, netlifySiteURL: string | null) {
   if (
-    localHosts[document.location.host.split(':').shift()] &&
+    localHosts[document.location.host.split(':').shift() as string] &&
     netlifySiteURL &&
     endpoint.match(/^\/\.netlify\//)
   ) {
@@ -46,16 +67,47 @@ function getEndpoint(endpoint, netlifySiteURL) {
   return endpoint;
 }
 
-export default class GitGateway {
-  constructor(config, options = {}) {
+interface NetlifyUser {
+  jwt: () => Promise<string>;
+  email: string;
+  user_metadata: { full_name: string; avatar_url: string };
+}
+
+interface GetMediaDisplayURLArgs {
+  path: string;
+  original: { id: string; path: string } | string;
+  largeMedia: PointerFile;
+}
+
+export default class GitGateway implements Implementation {
+  config: Map;
+  api?: GitHubAPI | GitLabAPI | BitBucketAPI;
+  branch: string;
+  squashMerges: string;
+  gatewayUrl: string;
+  netlifyLargeMediaURL: string;
+  backendType: string | null;
+  authClient: GoTrue;
+  backend: GitHubBackend | GitLabBackend | BitbucketBackend | null;
+  acceptRoles?: string[];
+  tokenPromise?: () => Promise<string>;
+  _largeMediaClientPromise?: Promise<Client>;
+
+  options: {
+    proxied: boolean;
+    API: GitHubAPI | GitLabAPI | BitBucketAPI | null;
+    initialWorkflowStatus: string;
+  };
+  constructor(config: Map, options = {}) {
     this.options = {
       proxied: true,
       API: null,
+      initialWorkflowStatus: '',
       ...options,
     };
     this.config = config;
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
-    this.squash_merges = config.getIn(['backend', 'squash_merges']);
+    this.squashMerges = config.getIn(['backend', 'squash_merges']);
 
     const netlifySiteURL = localStorage.getItem('netlifySiteURL');
     const APIUrl = getEndpoint(
@@ -87,22 +139,26 @@ export default class GitGateway {
     this.backend = null;
   }
 
-  requestFunction = req =>
-    this.tokenPromise()
-      .then(token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req))
+  requestFunction = (req: ApiRequest) =>
+    this.tokenPromise!()
+      .then(
+        token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req) as ApiRequest,
+      )
       .then(unsentRequest.performRequest);
 
-  authenticate(user) {
+  authenticate(user: NetlifyUser) {
     this.tokenPromise = user.jwt.bind(user);
-    return this.tokenPromise().then(async token => {
+    return this.tokenPromise!().then(async token => {
       if (!this.backendType) {
-        const { github_enabled, gitlab_enabled, bitbucket_enabled, roles } = await fetch(
-          `${this.gatewayUrl}/settings`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        ).then(async res => {
-          const contentType = res.headers.get('Content-Type');
+        const {
+          github_enabled: githubEnabled,
+          gitlab_enabled: gitlabEnabled,
+          bitbucket_enabled: bitbucketEnabled,
+          roles,
+        } = await fetch(`${this.gatewayUrl}/settings`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }).then(async res => {
+          const contentType = res.headers.get('Content-Type') || '';
           if (!contentType.includes('application/json') && !contentType.includes('text/json')) {
             throw new APIError(
               `Your Git Gateway backend is not returning valid settings. Please make sure it is enabled.`,
@@ -124,11 +180,11 @@ export default class GitGateway {
           return body;
         });
         this.acceptRoles = roles;
-        if (github_enabled) {
+        if (githubEnabled) {
           this.backendType = 'github';
-        } else if (gitlab_enabled) {
+        } else if (gitlabEnabled) {
           this.backendType = 'gitlab';
-        } else if (bitbucket_enabled) {
+        } else if (bitbucketEnabled) {
           this.backendType = 'bitbucket';
         }
       }
@@ -142,17 +198,18 @@ export default class GitGateway {
       }
 
       const userData = {
-        name: user.user_metadata.full_name || user.email.split('@').shift(),
+        name: user.user_metadata.full_name || user.email.split('@').shift()!,
         email: user.email,
+        // eslint-disable-next-line @typescript-eslint/camelcase
         avatar_url: user.user_metadata.avatar_url,
         metadata: user.user_metadata,
       };
       const apiConfig = {
-        api_root: `${this.gatewayUrl}/${this.backendType}`,
+        apiRoot: `${this.gatewayUrl}/${this.backendType}`,
         branch: this.branch,
-        tokenPromise: this.tokenPromise,
+        tokenPromise: this.tokenPromise!,
         commitAuthor: pick(userData, ['name', 'email']),
-        squash_merges: this.squash_merges,
+        squashMerges: this.squashMerges,
         initialWorkflowStatus: this.options.initialWorkflowStatus,
       };
 
@@ -171,7 +228,7 @@ export default class GitGateway {
         this.backend = new BitbucketBackend(this.config, { ...this.options, API: this.api });
       }
 
-      if (!(await this.api.hasWriteAccess())) {
+      if (!(await this.api!.hasWriteAccess())) {
         throw new Error("You don't have sufficient permissions to access Netlify CMS");
       }
       return { name: userData.name, login: userData.email };
@@ -185,6 +242,7 @@ export default class GitGateway {
   authComponent() {
     return AuthenticationPage;
   }
+
   logout() {
     if (window.netlifyIdentity) {
       return window.netlifyIdentity.logout();
@@ -193,26 +251,27 @@ export default class GitGateway {
     return user && user.logout();
   }
   getToken() {
-    return this.tokenPromise();
+    return this.tokenPromise!();
   }
 
-  entriesByFolder(collection, extension) {
-    return this.backend.entriesByFolder(collection, extension);
+  entriesByFolder(collection: Map, extension: string) {
+    return this.backend!.entriesByFolder(collection, extension);
   }
-  entriesByFiles(collection) {
-    return this.backend.entriesByFiles(collection);
+  entriesByFiles(collection: Map) {
+    return this.backend!.entriesByFiles(collection);
   }
-  fetchFiles(files) {
-    return this.backend.fetchFiles(files);
+  fetchFiles(files: { path: string; sha: string | null }[]) {
+    return this.backend!.fetchFiles(files);
   }
-  getEntry(collection, slug, path) {
-    return this.backend.getEntry(collection, slug, path);
+  getEntry(collection: Map, slug: string, path: string) {
+    return this.backend!.getEntry(collection, slug, path);
   }
 
-  async loadEntryMediaFiles(files) {
+  async loadEntryMediaFiles(files: { sha: string; path: string }[]) {
     const client = await this.getLargeMediaClient();
+    const backend = this.backend as GitHubBackend;
     if (!client.enabled) {
-      return this.backend.loadEntryMediaFiles(files);
+      return backend.loadEntryMediaFiles(files);
     }
 
     const mediaFiles = await Promise.all(
@@ -222,15 +281,16 @@ export default class GitGateway {
           const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ ...file, id }]);
           const url = await client.getDownloadURL(largeMediaDisplayURLs[id]);
           return {
-            ...file,
             id,
             name: basename(path),
             path,
             url,
             displayURL: url,
+            file: new File([], name),
+            size: 0,
           };
         } else {
-          return this.backend.loadMediaFile(file);
+          return backend.loadMediaFile(file);
         }
       }),
     );
@@ -238,8 +298,8 @@ export default class GitGateway {
     return mediaFiles;
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
-    return Promise.all([this.backend.getMedia(mediaFolder), this.getLargeMediaClient()]).then(
+  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+    return Promise.all([this.backend!.getMedia(mediaFolder), this.getLargeMediaClient()]).then(
       async ([mediaFiles, largeMediaClient]) => {
         if (!largeMediaClient.enabled) {
           return mediaFiles.map(({ displayURL, ...rest }) => ({
@@ -277,23 +337,21 @@ export default class GitGateway {
     return this._largeMediaClientPromise;
   }
   _getLargeMediaClient() {
-    const netlifyLargeMediaEnabledPromise = this.api
-      .readFile('.lfsconfig')
-      .then(ini.decode)
+    const netlifyLargeMediaEnabledPromise = this.api!.readFile('.lfsconfig')
+      .then(config => ini.decode<{ lfs: { url: string } }>(config as string))
       .then(({ lfs: { url } }) => new URL(url))
       .then(lfsURL => ({ enabled: lfsURL.hostname.endsWith('netlify.com') }))
-      .catch(err => ({ enabled: false, err }));
+      .catch((err: Error) => ({ enabled: false, err }));
 
-    const lfsPatternsPromise = this.api
-      .readFile('.gitattributes')
-      .then(getLargeMediaPatternsFromGitAttributesFile)
-      .then(patterns => ({ patterns }))
-      .catch(err => {
+    const lfsPatternsPromise = this.api!.readFile('.gitattributes')
+      .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
+      .then((patterns: string[]) => ({ err: null, patterns }))
+      .catch((err: Error) => {
         if (err.message.includes('404')) {
           console.log('This 404 was expected and handled appropriately.');
-          return [];
+          return { err: null, patterns: [] as string[] };
         } else {
-          return { err };
+          return { err, patterns: [] as string[] };
         }
       });
 
@@ -316,19 +374,27 @@ export default class GitGateway {
             ['backend', 'use_large_media_transforms_in_media_library'],
             true,
           )
-            ? { nf_resize: 'fit', w: 560, h: 320 }
+            ? // eslint-disable-next-line @typescript-eslint/camelcase
+              { nf_resize: 'fit', w: 560, h: 320 }
             : false,
         });
       },
     );
   }
-  async getLargeMediaDisplayURLs(mediaFiles) {
+  async getLargeMediaDisplayURLs(mediaFiles: { path: string; id?: string }[]) {
     const client = await this.getLargeMediaClient();
     const largeMediaItems = mediaFiles
       .filter(({ path }) => client.matchPath(path))
       .map(({ id, path }) => ({ path, sha: id }));
-    return this.backend
-      .fetchFiles(largeMediaItems)
+
+    const filesPromise = this.backend!.fetchFiles(largeMediaItems) as Promise<
+      {
+        file: { sha: string };
+        data: string;
+      }[]
+    >;
+
+    return filesPromise
       .then(items =>
         items.map(({ file: { sha }, data }) => {
           const parsedPointerFile = parsePointerFile(data);
@@ -343,7 +409,10 @@ export default class GitGateway {
       )
       .then(unzip)
       .then(([idMaps, files]) =>
-        Promise.all([idMaps, client.getResourceDownloadURLArgs(files).then(fromPairs)]),
+        Promise.all([
+          idMaps as { pointerId: string; resourceId: string }[],
+          client.getResourceDownloadURLArgs(files as PointerFile[]).then(r => fromPairs(r)),
+        ]),
       )
       .then(([idMaps, resourceMap]) =>
         idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
@@ -351,8 +420,12 @@ export default class GitGateway {
       .then(fromPairs);
   }
 
-  getMediaDisplayURL(displayURL) {
-    const { path, original, largeMedia: largeMediaDisplayURL } = displayURL;
+  getMediaDisplayURL(displayURL: DisplayURL) {
+    const {
+      path,
+      original,
+      largeMedia: largeMediaDisplayURL,
+    } = (displayURL as unknown) as GetMediaDisplayURLArgs;
     return this.getLargeMediaClient().then(client => {
       if (client.enabled && client.matchPath(path)) {
         return client.getDownloadURL(largeMediaDisplayURL);
@@ -360,18 +433,20 @@ export default class GitGateway {
       if (typeof original === 'string') {
         return original;
       }
-      if (this.backend.getMediaDisplayURL) {
-        return this.backend.getMediaDisplayURL(original);
+      if (this.backend!.getMediaDisplayURL) {
+        return this.backend!.getMediaDisplayURL(original);
       }
       const err = new Error(
         `getMediaDisplayURL is not implemented by the ${this.backendType} backend, but the backend returned a displayURL which was not a string!`,
-      );
+      ) as Error & {
+        displayURL: DisplayURL;
+      };
       err.displayURL = displayURL;
       return Promise.reject(err);
     });
   }
 
-  async getMediaFile(path) {
+  async getMediaFile(path: string) {
     const client = await this.getLargeMediaClient();
     if (client.enabled && client.matchPath(path)) {
       const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ path }]);
@@ -383,10 +458,10 @@ export default class GitGateway {
         displayURL: url,
       };
     }
-    return this.backend.getMediaFile(path);
+    return this.backend!.getMediaFile(path);
   }
 
-  async getPointerFileForMediaFileObj(fileObj) {
+  async getPointerFileForMediaFileObj(fileObj: File) {
     const client = await this.getLargeMediaClient();
     const { name, size } = fileObj;
     const sha = await getBlobSHA(fileObj);
@@ -403,10 +478,10 @@ export default class GitGateway {
     };
   }
 
-  async persistEntry(entry, mediaFiles, options) {
+  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
     const client = await this.getLargeMediaClient();
     if (!client.enabled) {
-      return this.backend.persistEntry(entry, mediaFiles, options);
+      return this.backend!.persistEntry(entry, mediaFiles, options);
     }
 
     const largeMediaFilteredMediaFiles = await Promise.all(
@@ -417,7 +492,7 @@ export default class GitGateway {
           return mediaFile;
         }
 
-        const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj);
+        const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj as File);
         return {
           ...mediaFile,
           fileObj: pointerFileDetails.file,
@@ -428,62 +503,68 @@ export default class GitGateway {
       }),
     );
 
-    return this.backend.persistEntry(entry, largeMediaFilteredMediaFiles, options);
+    return this.backend!.persistEntry(entry, largeMediaFilteredMediaFiles, options);
   }
 
-  async persistMedia(mediaFile, options) {
-    const { fileObj, path, value } = mediaFile;
+  async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
+    const { fileObj, path } = mediaFile;
     const displayURL = URL.createObjectURL(fileObj);
     const client = await this.getLargeMediaClient();
     const fixedPath = path.startsWith('/') ? path.slice(1) : path;
     if (!client.enabled || !client.matchPath(fixedPath)) {
-      return this.backend.persistMedia(mediaFile, options);
+      return this.backend!.persistMedia(mediaFile, options);
     }
 
-    const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj);
+    const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj as File);
     const persistMediaArgument = {
       fileObj: pointerFileDetails.file,
       size: pointerFileDetails.blob.size,
       path,
       sha: pointerFileDetails.sha,
       raw: pointerFileDetails.raw,
-      value,
     };
     return {
-      ...(await this.backend.persistMedia(persistMediaArgument, options)),
+      ...(await this.backend!.persistMedia(persistMediaArgument, options)),
       displayURL,
     };
   }
-  deleteFile(path, commitMessage, options) {
-    return this.backend.deleteFile(path, commitMessage, options);
+  deleteFile(path: string, commitMessage: string) {
+    return this.backend!.deleteFile(path, commitMessage);
   }
-  getDeployPreview(collection, slug) {
-    if (this.backend.getDeployPreview) {
-      return this.backend.getDeployPreview(collection, slug);
+  async getDeployPreview(collection: string, slug: string) {
+    const backend = this.backend as GitHubBackend;
+    if (backend.getDeployPreview) {
+      return (this.backend as GitHubBackend).getDeployPreview(collection, slug);
     }
+    return null;
   }
   unpublishedEntries() {
-    return this.backend.unpublishedEntries();
+    return (this.backend as GitHubBackend).unpublishedEntries();
   }
-  unpublishedEntry(collection, slug) {
-    if (!this.backend.unpublishedEntry) {
+  unpublishedEntry(collection: Map, slug: string) {
+    const backend = this.backend as GitHubBackend;
+    if (!backend.unpublishedEntry) {
       return Promise.resolve(false);
     }
 
-    return this.backend.unpublishedEntry(collection, slug, {
+    return backend.unpublishedEntry(collection, slug, {
       loadEntryMediaFiles: files => this.loadEntryMediaFiles(files),
     });
   }
-  updateUnpublishedEntryStatus(collection, slug, newStatus) {
-    return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus);
+  updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    return (this.backend as GitHubBackend).updateUnpublishedEntryStatus(
+      collection,
+      slug,
+      newStatus,
+    );
   }
-  deleteUnpublishedEntry(collection, slug) {
-    return this.backend.deleteUnpublishedEntry(collection, slug);
+  deleteUnpublishedEntry(collection: string, slug: string) {
+    return (this.backend as GitHubBackend).deleteUnpublishedEntry(collection, slug);
   }
-  publishUnpublishedEntry(collection, slug) {
-    return this.backend.publishUnpublishedEntry(collection, slug);
+  publishUnpublishedEntry(collection: string, slug: string) {
+    return (this.backend as GitHubBackend).publishUnpublishedEntry(collection, slug);
   }
-  traverseCursor(cursor, action) {
-    return this.backend.traverseCursor(cursor, action);
+  traverseCursor(cursor: CursorType, action: string) {
+    return (this.backend as GitLabBackend | BitbucketBackend).traverseCursor!(cursor, action);
   }
 }

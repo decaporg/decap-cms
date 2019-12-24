@@ -10,7 +10,13 @@
     "strict": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "baseUrl": "./",
+    "paths": {
+      "netlify-cms-backend-github": ["packages/netlify-cms-backend-github/src"],
+      "netlify-cms-backend-gitlab": ["packages/netlify-cms-backend-gitlab/src"],
+      "netlify-cms-backend-bitbucket": ["packages/netlify-cms-backend-bitbucket/src"]
+    }
   },
   "include": ["**/src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]

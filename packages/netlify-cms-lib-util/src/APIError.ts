@@ -1,7 +1,12 @@
 export const API_ERROR = 'API_ERROR';
 
 export default class APIError extends Error {
-  constructor(message, status, api, meta = {}) {
+  message: string;
+  status: string;
+  api: string;
+  meta: {};
+
+  constructor(message: string, status: string, api: string, meta = {}) {
     super(message);
     this.message = message;
     this.status = status;

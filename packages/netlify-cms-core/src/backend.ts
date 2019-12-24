@@ -24,6 +24,8 @@ import {
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   EditorialWorkflowError,
+  Implementation as BackendImplementation,
+  DisplayURL,
 } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from './constants/publishModes';
 import {
@@ -38,7 +40,6 @@ import {
   EntryMap,
   Config,
   SlugConfig,
-  DisplayURL,
   FilterRule,
   Collections,
   MediaFile,
@@ -153,12 +154,6 @@ function createPreviewUrl(
   return `${basePath}/${previewPath}`;
 }
 
-interface ImplementationInitOptions {
-  useWorkflow: boolean;
-  updateUserCredentials: (credentials: Credentials) => void;
-  initialWorkflowStatus: string;
-}
-
 interface ImplementationEntry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
@@ -167,62 +162,6 @@ interface ImplementationEntry {
   isModification?: boolean;
   slug: string;
   mediaFiles: MediaFile[];
-}
-
-interface Implementation {
-  authComponent: () => void;
-  restoreUser: (user: User) => Promise<User>;
-  init: (config: Config, options: ImplementationInitOptions) => Implementation;
-  authenticate: (credentials: Credentials) => Promise<User>;
-  logout: () => Promise<void>;
-  getToken: () => Promise<string>;
-  unpublishedEntry?: (collection: Collection, slug: string) => Promise<ImplementationEntry>;
-  getEntry: (collection: Collection, slug: string, path: string) => Promise<ImplementationEntry>;
-  allEntriesByFolder?: (
-    collection: Collection,
-    extension: string,
-  ) => Promise<ImplementationEntry[]>;
-  traverseCursor: (
-    cursor: typeof Cursor,
-    action: unknown,
-  ) => Promise<{ entries: ImplementationEntry[]; cursor: typeof Cursor }>;
-  entriesByFolder: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
-  entriesByFiles: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
-  unpublishedEntries: () => Promise<ImplementationEntry[]>;
-  getMediaDisplayURL?: (displayURL: DisplayURL) => Promise<string>;
-  getMedia: (folder?: string) => Promise<MediaFile[]>;
-  getMediaFile: (path: string) => Promise<MediaFile>;
-  getDeployPreview: (
-    collection: Collection,
-    slug: string,
-  ) => Promise<{ url: string; status: string }>;
-
-  persistEntry: (
-    obj: { path: string; slug: string; raw: string },
-    assetProxies: AssetProxy[],
-    opts: {
-      newEntry: boolean;
-      parsedData: { title: string; description: string };
-      commitMessage: string;
-      collectionName: string;
-      useWorkflow: boolean;
-      unpublished: boolean;
-      status?: string;
-    },
-  ) => Promise<void>;
-  persistMedia: (file: AssetProxy, opts: { commitMessage: string }) => Promise<MediaFile>;
-  deleteFile: (
-    path: string,
-    commitMessage: string,
-    opts?: { collection: Collection; slug: string },
-  ) => Promise<void>;
-  updateUnpublishedEntryStatus: (
-    collection: string,
-    slug: string,
-    newStatus: string,
-  ) => Promise<void>;
-  publishUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
-  deleteUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
 }
 
 type Credentials = {};
@@ -270,6 +209,16 @@ interface PersistArgs {
   status?: string;
 }
 
+interface ImplementationInitOptions {
+  useWorkflow: boolean;
+  updateUserCredentials: (credentials: Credentials) => void;
+  initialWorkflowStatus: string;
+}
+
+type Implementation = BackendImplementation & {
+  init: (config: Config, options: ImplementationInitOptions) => Implementation;
+};
+
 export class Backend {
   implementation: Implementation;
   backendName: string;
@@ -300,12 +249,12 @@ export class Backend {
     if (this.user) {
       return this.user;
     }
-    const stored = this.authStore?.retrieve();
+    const stored = this.authStore!.retrieve();
     if (stored && stored.backendName === this.backendName) {
       return Promise.resolve(this.implementation.restoreUser(stored)).then(user => {
         this.user = { ...user, backendName: this.backendName };
         // return confirmed/rehydrated user object instead of stored
-        this.authStore?.store(this.user);
+        this.authStore!.store(this.user as User);
         return this.user;
       });
     }
@@ -313,10 +262,10 @@ export class Backend {
   }
 
   updateUserCredentials = (updatedCredentials: Credentials) => {
-    const storedUser = this.authStore?.retrieve();
+    const storedUser = this.authStore!.retrieve();
     if (storedUser && storedUser.backendName === this.backendName) {
       this.user = { ...storedUser, ...updatedCredentials };
-      this.authStore?.store(this.user as User);
+      this.authStore!.store(this.user as User);
       return this.user;
     }
   };
@@ -517,15 +466,15 @@ export class Backend {
     const [data, unwrappedCursor] = cursor.unwrapData();
     // TODO: stop assuming all cursors are for collections
     const collection: Collection = data.get('collection');
-    return this.implementation
-      .traverseCursor(unwrappedCursor, action)
-      .then(async ({ entries, cursor: newCursor }) => ({
+    return this.implementation!.traverseCursor!(unwrappedCursor, action).then(
+      async ({ entries, cursor: newCursor }) => ({
         entries: this.processEntries(entries, collection),
         cursor: Cursor.create(newCursor).wrapData({
           cursorType: 'collectionEntries',
           collection,
         }),
-      }));
+      }),
+    );
   }
 
   async getLocalDraftBackup(collection: Collection, slug: string) {
@@ -567,7 +516,7 @@ export class Backend {
         .map(async (file: MediaFile) => {
           // make sure to serialize the file
           if (file.url?.startsWith('blob:')) {
-            const blob = await fetch(file.url).then(res => res.blob());
+            const blob = await fetch(file.url as string).then(res => res.blob());
             return { ...file, file: new File([blob], file.name) };
           }
           return file;
@@ -649,8 +598,7 @@ export class Backend {
   }
 
   unpublishedEntries(collections: Collections) {
-    return this.implementation
-      .unpublishedEntries()
+    return this.implementation.unpublishedEntries!()
       .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
       .then(entries =>
         entries.map(loadedEntry => {
@@ -678,8 +626,7 @@ export class Backend {
   }
 
   unpublishedEntry(collection: Collection, slug: string) {
-    return this.implementation
-      .unpublishedEntry?.(collection, slug)
+    return this.implementation!.unpublishedEntry!(collection, slug)
       .then(loadedEntry => {
         const entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
@@ -741,7 +688,7 @@ export class Backend {
       count = 0;
     while (!deployPreview && count < maxAttempts) {
       count++;
-      deployPreview = await this.implementation.getDeployPreview(collection, slug);
+      deployPreview = await this.implementation.getDeployPreview(collection.get('name'), slug);
       if (!deployPreview) {
         await new Promise(resolve => setTimeout(() => resolve(), interval));
       }
@@ -892,7 +839,7 @@ export class Backend {
       },
       user.useOpenAuthoring,
     );
-    return this.implementation.deleteFile(path, commitMessage, { collection, slug });
+    return this.implementation.deleteFile(path, commitMessage);
   }
 
   async deleteMedia(config: Config, path: string) {
@@ -917,15 +864,15 @@ export class Backend {
   }
 
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    return this.implementation.updateUnpublishedEntryStatus(collection, slug, newStatus);
+    return this.implementation.updateUnpublishedEntryStatus!(collection, slug, newStatus);
   }
 
   publishUnpublishedEntry(collection: string, slug: string) {
-    return this.implementation.publishUnpublishedEntry(collection, slug);
+    return this.implementation.publishUnpublishedEntry!(collection, slug);
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {
-    return this.implementation.deleteUnpublishedEntry(collection, slug);
+    return this.implementation.deleteUnpublishedEntry!(collection, slug);
   }
 
   entryToRaw(collection: Collection, entry: EntryMap): string {
@@ -939,13 +886,13 @@ export class Backend {
     if (fields) {
       return collection
         .get('fields')
-        .map(f => f?.get('name'))
+        .map(f => f!.get('name'))
         .toArray();
     }
 
     const files = collection.get('files');
     const file = (files || List<CollectionFile>())
-      .filter(f => f?.get('name') === entry.get('slug'))
+      .filter(f => f!.get('name') === entry.get('slug'))
       .get(0);
 
     if (file == null) {
@@ -953,7 +900,7 @@ export class Backend {
     }
     return file
       .get('fields')
-      .map(f => f?.get('name'))
+      .map(f => f!.get('name'))
       .toArray();
   }
 

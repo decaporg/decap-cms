@@ -1,10 +1,20 @@
 import { API as GithubAPI } from 'netlify-cms-backend-github';
+import { Config as GitHubConfig, FetchError } from 'netlify-cms-backend-github/src/API';
 import { APIError } from 'netlify-cms-lib-util';
 
+type Config = GitHubConfig & {
+  apiRoot: string;
+  tokenPromise: () => Promise<string>;
+  commitAuthor: { name: string };
+};
+
 export default class API extends GithubAPI {
-  constructor(config) {
+  tokenPromise: () => Promise<string>;
+  commitAuthor: { name: string };
+
+  constructor(config: Config) {
     super(config);
-    this.api_root = config.api_root;
+    this.apiRoot = config.apiRoot;
     this.tokenPromise = config.tokenPromise;
     this.commitAuthor = config.commitAuthor;
     this.repoURL = '';
@@ -14,7 +24,7 @@ export default class API extends GithubAPI {
   hasWriteAccess() {
     return this.getDefaultBranch()
       .then(() => true)
-      .catch(error => {
+      .catch((error: FetchError) => {
         if (error.status === 401) {
           if (error.message === 'Bad credentials') {
             throw new APIError(
@@ -53,16 +63,21 @@ export default class API extends GithubAPI {
     });
   }
 
-  handleRequestError(error, responseStatus) {
+  handleRequestError(error: FetchError & { msg: string }, responseStatus: number) {
     throw new APIError(error.message || error.msg, responseStatus, 'Git Gateway');
   }
 
   user() {
-    return Promise.resolve(this.commitAuthor);
+    return Promise.resolve({ login: '', ...this.commitAuthor });
   }
 
-  commit(message, changeTree) {
-    const commitParams = {
+  commit(message: string, changeTree: { parentSha?: string; sha: string }) {
+    const commitParams: {
+      message: string;
+      tree: string;
+      parents: string[];
+      author?: { name: string; date: string };
+    } = {
       message,
       tree: changeTree.sha,
       parents: changeTree.parentSha ? [changeTree.parentSha] : [],

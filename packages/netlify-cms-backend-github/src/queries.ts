@@ -126,7 +126,7 @@ const buildFilesQuery = (depth = 1) => {
   return query;
 };
 
-export const files = depth => gql`
+export const files = (depth: number) => gql`
   query files($owner: String!, $name: String!, $expression: String!) {
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
@@ -261,32 +261,6 @@ export const tree = gql`
   ${fragments.repository}
   ${fragments.object}
   ${fragments.treeEntry}
-`;
-
-export const pullRequestCommits = gql`
-  query pullRequestCommits($owner: String!, $name: String!, $number: Int!) {
-    repository(owner: $owner, name: $name) {
-      ...RepositoryParts
-      pullRequest(number: $number) {
-        id
-        commits(last: 100) {
-          nodes {
-            id
-            commit {
-              ...ObjectParts
-              parents(last: 100) {
-                nodes {
-                  ...ObjectParts
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  ${fragments.repository}
-  ${fragments.object}
 `;
 
 export const fileSha = gql`

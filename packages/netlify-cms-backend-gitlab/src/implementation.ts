@@ -1,15 +1,40 @@
 import trimStart from 'lodash/trimStart';
-import semaphore from 'semaphore';
+import semaphore, { Semaphore } from 'semaphore';
 import { trim } from 'lodash';
 import { stripIndent } from 'common-tags';
-import { CURSOR_COMPATIBILITY_SYMBOL, basename, getCollectionDepth } from 'netlify-cms-lib-util';
+import {
+  CURSOR_COMPATIBILITY_SYMBOL,
+  basename,
+  getCollectionDepth,
+  Map,
+  Entry,
+  AssetProxy,
+  PersistOptions,
+  CursorType,
+  Implementation,
+  DisplayURL,
+} from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
-export default class GitLab {
-  constructor(config, options = {}) {
+export default class GitLab implements Implementation {
+  config: Map;
+  api: API | null;
+  options: {
+    proxied: boolean;
+    API: API | null;
+    useWorkflow?: boolean;
+  };
+  repo: string;
+  branch: string;
+  apiRoot: string;
+  token: string | null;
+
+  _mediaDisplayURLSem?: Semaphore;
+
+  constructor(config: Map, options = {}) {
     this.config = config;
     this.options = {
       proxied: false,
@@ -29,7 +54,7 @@ export default class GitLab {
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master');
-    this.api_root = config.getIn(['backend', 'api_root'], 'https://gitlab.com/api/v4');
+    this.apiRoot = config.getIn(['backend', 'api_root'], 'https://gitlab.com/api/v4');
     this.token = '';
   }
 
@@ -37,20 +62,20 @@ export default class GitLab {
     return AuthenticationPage;
   }
 
-  restoreUser(user) {
+  restoreUser(user: { token: string }) {
     return this.authenticate(user);
   }
 
-  async authenticate(state) {
+  async authenticate(state: { token: string }) {
     this.token = state.token;
     this.api = new API({
       token: this.token,
       branch: this.branch,
       repo: this.repo,
-      api_root: this.api_root,
+      apiRoot: this.apiRoot,
     });
     const user = await this.api.user();
-    const isCollab = await this.api.hasWriteAccess(user).catch(error => {
+    const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
 
@@ -70,7 +95,7 @@ export default class GitLab {
     return { ...user, login: user.username, token: state.token };
   }
 
-  logout() {
+  async logout() {
     this.token = null;
     return;
   }
@@ -79,19 +104,26 @@ export default class GitLab {
     return Promise.resolve(this.token);
   }
 
-  filterFile(folder, file, extension, depth) {
+  filterFile(
+    folder: string,
+    file: { path: string; name: string },
+    extension: string,
+    depth: number,
+  ) {
     // gitlab paths include the root folder
     const fileFolder = trim(file.path.split(folder)[1] || '/', '/');
     return file.name.endsWith('.' + extension) && fileFolder.split('/').length <= depth;
   }
 
-  entriesByFolder(collection, extension) {
+  entriesByFolder(collection: Map, extension: string) {
     const depth = getCollectionDepth(collection);
-    const folder = collection.get('folder');
-    return this.api.listFiles(folder, depth > 1).then(({ files, cursor }) =>
+    const folder = collection.get<string>('folder');
+    return this.api!.listFiles(folder, depth > 1).then(({ files, cursor }) =>
       this.fetchFiles(files.filter(file => this.filterFile(folder, file, extension, depth))).then(
         fetchedFiles => {
           const returnedFiles = fetchedFiles;
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
           returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
           return returnedFiles;
         },
@@ -99,20 +131,18 @@ export default class GitLab {
     );
   }
 
-  allEntriesByFolder(collection, extension) {
+  allEntriesByFolder(collection: Map, extension: string) {
     const depth = getCollectionDepth(collection);
-    const folder = collection.get('folder');
-    return this.api
-      .listAllFiles(folder, depth > 1)
-      .then(files =>
-        this.fetchFiles(files.filter(file => this.filterFile(folder, file, extension, depth))),
-      );
+    const folder = collection.get<string>('folder');
+    return this.api!.listAllFiles(folder, depth > 1).then(files =>
+      this.fetchFiles(files.filter(file => this.filterFile(folder, file, extension, depth))),
+    );
   }
 
-  entriesByFiles(collection) {
-    const files = collection.get('files').map(collectionFile => ({
-      path: collectionFile.get('file'),
-      label: collectionFile.get('label'),
+  entriesByFiles(collection: Map) {
+    const files = collection.get<Map[]>('files').map(collectionFile => ({
+      path: collectionFile.get<string>('file'),
+      label: collectionFile.get<string>('label'),
     }));
     return this.fetchFiles(files).then(fetchedFiles => {
       const returnedFiles = fetchedFiles;
@@ -120,15 +150,16 @@ export default class GitLab {
     });
   }
 
-  fetchFiles = files => {
+  fetchFiles = (files: { path: string; id?: string }[]) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [];
+    const promises = [] as Promise<
+      { file: { path: string; id?: string }; data: string | Blob; error?: Error } | { error: Error }
+    >[];
     files.forEach(file => {
       promises.push(
         new Promise(resolve =>
           sem.take(() =>
-            this.api
-              .readFile(file.path, file.id)
+            this.api!.readFile(file.path, file.id)
               .then(data => {
                 resolve({ file, data });
                 sem.leave();
@@ -148,47 +179,47 @@ export default class GitLab {
   };
 
   // Fetches a single entry.
-  getEntry(collection, slug, path) {
-    return this.api.readFile(path).then(data => ({
+  getEntry(collection: Map, slug: string, path: string) {
+    return this.api!.readFile(path).then(data => ({
       file: { path },
       data,
     }));
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
-    return this.api.listAllFiles(mediaFolder).then(files =>
+  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+    return this.api!.listAllFiles(mediaFolder).then(files =>
       files.map(({ id, name, path }) => {
         return { id, name, path, displayURL: { id, name, path } };
       }),
     );
   }
 
-  async getMediaAsBlob(path, id, name) {
-    let blob = await this.api.readFile(path, id, { parseText: false });
+  async getMediaAsBlob(path: string, id: string | null) {
+    let blob = (await this.api!.readFile(path, id, { parseText: false })) as Blob;
     // svgs are returned with mimetype "text/plain" by gitlab
-    if (blob.type === 'text/plain' && name.match(/\.svg$/i)) {
+    if (blob.type === 'text/plain' && path.match(/\.svg$/i)) {
       blob = new window.Blob([blob], { type: 'image/svg+xml' });
     }
 
     return blob;
   }
 
-  getMediaDisplayURL(displayURL) {
+  getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const { id, name, path } = displayURL;
-    return new Promise((resolve, reject) =>
-      this._mediaDisplayURLSem.take(() =>
-        this.getMediaAsBlob(path, id, name)
+    const { id, path } = displayURL;
+    return new Promise<string>((resolve, reject) =>
+      this._mediaDisplayURLSem!.take(() =>
+        this.getMediaAsBlob(path, id)
           .then(blob => URL.createObjectURL(blob))
           .then(resolve, reject)
-          .finally(() => this._mediaDisplayURLSem.leave()),
+          .finally(() => this._mediaDisplayURLSem!.leave()),
       ),
     );
   }
 
-  async getMediaFile(path) {
+  async getMediaFile(path: string) {
     const name = basename(path);
-    const blob = await this.getMediaAsBlob(path, null, name);
+    const blob = await this.getMediaAsBlob(path, null);
     const fileObj = new File([blob], name);
     const url = URL.createObjectURL(fileObj);
 
@@ -202,36 +233,40 @@ export default class GitLab {
     };
   }
 
-  async persistEntry(entry, mediaFiles, options = {}) {
-    return this.api.persistFiles([entry], options);
+  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+    await this.api!.persistFiles([entry], options);
   }
 
-  async persistMedia(mediaFile, options = {}) {
-    const [{ sha }] = await this.api.persistFiles([mediaFile], options);
+  async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
+    const [{ sha }] = await this.api!.persistFiles([mediaFile], options);
     const { path, fileObj } = mediaFile;
     const url = URL.createObjectURL(fileObj);
 
     return {
       displayURL: url,
       path: trimStart(path, '/'),
-      name: fileObj.name,
-      size: fileObj.size,
+      name: fileObj!.name,
+      size: fileObj!.size,
       file: fileObj,
       url,
       id: sha,
     };
   }
 
-  deleteFile(path, commitMessage, options) {
-    return this.api.deleteFile(path, commitMessage, options);
+  deleteFile(path: string, commitMessage: string) {
+    return this.api!.deleteFile(path, commitMessage);
   }
 
-  traverseCursor(cursor, action) {
-    return this.api.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => ({
-      entries: await Promise.all(
-        entries.map(file => this.api.readFile(file.path, file.id).then(data => ({ file, data }))),
-      ),
-      cursor: newCursor,
-    }));
+  traverseCursor(cursor: CursorType, action: string) {
+    return this.api!.traverseCursor(cursor, action).then(
+      async ({ entries, cursor: newCursor }) => ({
+        entries: await Promise.all(
+          entries.map(file =>
+            this.api!.readFile(file.path, file.id).then(data => ({ file, data })),
+          ),
+        ),
+        cursor: newCursor,
+      }),
+    );
   }
 }

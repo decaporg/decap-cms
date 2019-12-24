@@ -48,7 +48,6 @@ describe('github GraphQL API', () => {
           type: 'blob',
           size: 1,
           path: 'posts/post-1.md',
-          blob: { size: 1 },
         },
         {
           name: 'post-2.md',
@@ -56,7 +55,6 @@ describe('github GraphQL API', () => {
           type: 'blob',
           size: 2,
           path: 'posts/post-2.md',
-          blob: { size: 2 },
         },
         {
           name: 'nested-post.md',
@@ -64,7 +62,6 @@ describe('github GraphQL API', () => {
           type: 'blob',
           size: 3,
           path: 'posts/2019/nested-post.md',
-          blob: { size: 3 },
         },
       ]);
     });

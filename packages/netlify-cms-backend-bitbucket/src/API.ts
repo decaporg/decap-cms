@@ -7,11 +7,43 @@ import {
   basename,
   Cursor,
   APIError,
+  ApiRequest,
+  CursorType,
+  AssetProxy,
+  Entry,
+  PersistOptions,
 } from 'netlify-cms-lib-util';
 
+interface Config {
+  apiRoot?: string;
+  token?: string;
+  branch?: string;
+  repo?: string;
+  requestFunction?: (req: ApiRequest) => Promise<Response>;
+  hasWriteAccess?: () => Promise<boolean>;
+}
+
+interface CommitAuthor {
+  name: string;
+  email: string;
+}
+
+interface BitBucketFile {
+  type: string;
+  path: string;
+  commit?: { hash: string };
+}
+
 export default class API {
-  constructor(config) {
-    this.api_root = config.api_root || 'https://api.bitbucket.org/2.0';
+  apiRoot: string;
+  branch: string;
+  repo: string;
+  requestFunction: (req: ApiRequest) => Promise<Response>;
+  repoURL: string;
+  commitAuthor?: CommitAuthor;
+
+  constructor(config: Config) {
+    this.apiRoot = config.apiRoot || 'https://api.bitbucket.org/2.0';
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.requestFunction = config.requestFunction || unsentRequest.performRequest;
@@ -20,29 +52,29 @@ export default class API {
     this.repoURL = this.repo ? `/repositories/${this.repo}` : '';
   }
 
-  buildRequest = req =>
-    flow([unsentRequest.withRoot(this.api_root), unsentRequest.withTimestamp])(req);
+  buildRequest = (req: ApiRequest) =>
+    flow([unsentRequest.withRoot(this.apiRoot), unsentRequest.withTimestamp])(req);
 
-  request = req =>
+  request = (req: ApiRequest): Promise<Response> =>
     flow([
       this.buildRequest,
       this.requestFunction,
-      p => p.catch(err => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
+      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
     ])(req);
 
-  requestJSON = req =>
+  requestJSON = (req: ApiRequest) =>
     flow([
       unsentRequest.withDefaultHeaders({ 'Content-Type': 'application/json' }),
       this.request,
       then(responseParser({ format: 'json' })),
-      p => p.catch(err => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
+      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
     ])(req);
-  requestText = req =>
+  requestText = (req: ApiRequest) =>
     flow([
       unsentRequest.withDefaultHeaders({ 'Content-Type': 'text/plain' }),
       this.request,
       then(responseParser({ format: 'text' })),
-      p => p.catch(err => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
+      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
     ])(req);
 
   user = () => this.requestJSON('/user');
@@ -62,9 +94,10 @@ export default class API {
     return branchSha;
   };
 
-  isFile = ({ type }) => type === 'commit_file';
-  processFile = file => ({
-    ...file,
+  isFile = ({ type }: BitBucketFile) => type === 'commit_file';
+  processFile = (file: BitBucketFile) => ({
+    type: file.type,
+    path: file.path,
     name: basename(file.path),
 
     // BitBucket does not return file SHAs, but it does give us the
@@ -75,11 +108,15 @@ export default class API {
     // doesn't.)
     ...(file.commit && file.commit.hash ? { id: `${file.commit.hash}/${file.path}` } : {}),
   });
-  processFiles = files => files.filter(this.isFile).map(this.processFile);
+  processFiles = (files: BitBucketFile[]) => files.filter(this.isFile).map(this.processFile);
 
-  readFile = async (path, sha, { parseText = true } = {}) => {
+  readFile = async (
+    path: string,
+    sha?: string | null,
+    { parseText = true } = {},
+  ): Promise<string | Blob> => {
     const cacheKey = parseText ? `bb.${sha}` : `bb.${sha}.blob`;
-    const cachedFile = sha ? await localForage.getItem(cacheKey) : null;
+    const cachedFile = sha ? await localForage.getItem<string | Blob>(cacheKey) : null;
     if (cachedFile) {
       return cachedFile;
     }
@@ -91,10 +128,17 @@ export default class API {
     if (sha) {
       localForage.setItem(cacheKey, result);
     }
-    return result;
+    return result as Blob | string;
   };
 
-  getEntriesAndCursor = jsonResponse => {
+  getEntriesAndCursor = (jsonResponse: {
+    size: number;
+    page: number;
+    pagelen: number;
+    next: string;
+    previous: string;
+    values: {}[];
+  }) => {
     const {
       size: count,
       page: index,
@@ -114,10 +158,11 @@ export default class API {
     };
   };
 
-  listFiles = async (path, depth = 1) => {
+  listFiles = async (path: string, depth = 1) => {
     const node = await this.branchCommitSha();
     const { entries, cursor } = await flow([
       // sort files by filename ascending
+      // eslint-disable-next-line @typescript-eslint/camelcase
       unsentRequest.withParams({ sort: '-path', max_depth: depth }),
       this.requestJSON,
       then(this.getEntriesAndCursor),
@@ -125,7 +170,13 @@ export default class API {
     return { entries: this.processFiles(entries), cursor };
   };
 
-  traverseCursor = async (cursor, action) =>
+  traverseCursor = async (
+    cursor: CursorType,
+    action: string,
+  ): Promise<{
+    cursor: CursorType;
+    entries: { path: string; name: string; type: string; id?: string }[];
+  }> =>
     flow([
       this.requestJSON,
       then(this.getEntriesAndCursor),
@@ -135,7 +186,7 @@ export default class API {
       })),
     ])(cursor.data.getIn(['links', action]));
 
-  listAllFiles = async (path, depth = 1) => {
+  listAllFiles = async (path: string, depth = 1) => {
     const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(path, depth);
     const entries = [...initialEntries];
     let currentCursor = initialCursor;
@@ -150,12 +201,15 @@ export default class API {
     return this.processFiles(entries);
   };
 
-  uploadBlob = (item, { commitMessage, branch = this.branch } = {}) => {
-    const contentBlob = get(item, 'fileObj', new Blob([item.raw]));
+  uploadBlob = (
+    item: Entry | AssetProxy,
+    { commitMessage = '' }: PersistOptions,
+  ): Promise<{ path: string }> => {
+    const contentBlob = get(item, 'fileObj', new Blob([(item as Entry).raw]));
     const formData = new FormData();
     // Third param is filename header, in case path is `message`, `branch`, etc.
     formData.append(item.path, contentBlob, basename(item.path));
-    formData.append('branch', branch);
+    formData.append('branch', this.branch);
     if (commitMessage) {
       formData.append('message', commitMessage);
     }
@@ -172,13 +226,13 @@ export default class API {
     ])(`${this.repoURL}/src`);
   };
 
-  persistFiles = (files, { commitMessage }) =>
+  persistFiles = (files: (Entry | AssetProxy)[], { commitMessage }: PersistOptions) =>
     Promise.all(files.map(file => this.uploadBlob(file, { commitMessage })));
 
-  deleteFile = (path, message, { branch = this.branch } = {}) => {
+  deleteFile = (path: string, message: string) => {
     const body = new FormData();
     body.append('files', path);
-    body.append('branch', branch);
+    body.append('branch', this.branch);
     if (message) {
       body.append('message', message);
     }

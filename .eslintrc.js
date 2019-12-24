@@ -60,6 +60,8 @@ module.exports = {
       },
       rules: {
         'require-atomic-updates': [0],
+        'import/no-unresolved': [0],
+        '@typescript-eslint/no-non-null-assertion': [0],
         '@typescript-eslint/explicit-function-return-type': 0,
         '@typescript-eslint/no-use-before-define': [
           'error',

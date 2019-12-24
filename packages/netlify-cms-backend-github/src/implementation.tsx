@@ -1,11 +1,24 @@
-import React from 'react';
+import * as React from 'react';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
-import { asyncLock, basename, getCollectionDepth } from 'netlify-cms-lib-util';
+import {
+  asyncLock,
+  basename,
+  getCollectionDepth,
+  AsyncLock,
+  Implementation,
+  AssetProxy,
+  Map,
+  PersistOptions,
+} from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
-import API from './API';
+import {
+  UsersGetAuthenticatedResponse as GitHubUser,
+  ReposListStatusesForRefResponseItem as GitHubCommitStatus,
+} from '@octokit/rest';
+import API, { Entry, UnpublishedBranchResult, Metadata } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -20,7 +33,7 @@ const PREVIEW_CONTEXT_KEYWORDS = ['deploy'];
  * deploy preview. Checks for an exact match against `previewContext` if given,
  * otherwise checks for inclusion of a value from `PREVIEW_CONTEXT_KEYWORDS`.
  */
-function isPreviewContext(context, previewContext) {
+function isPreviewContext(context: string, previewContext: string) {
   if (previewContext) {
     return context === previewContext;
   }
@@ -31,19 +44,43 @@ function isPreviewContext(context, previewContext) {
  * Retrieve a deploy preview URL from an array of statuses. By default, a
  * matching status is inferred via `isPreviewContext`.
  */
-function getPreviewStatus(statuses, config) {
-  const previewContext = config.getIn(['backend', 'preview_context']);
+function getPreviewStatus(statuses: GitHubCommitStatus[], config: Map) {
+  const previewContext = config.getIn<string>(['backend', 'preview_context']);
   return statuses.find(({ context }) => {
     return isPreviewContext(context, previewContext);
   });
 }
 
-export default class GitHub {
-  constructor(config, options = {}) {
+export default class GitHub implements Implementation {
+  lock: AsyncLock;
+  api: API | null;
+  config: Map;
+  options: {
+    proxied: boolean;
+    API: API | null;
+    useWorkflow?: boolean;
+    initialWorkflowStatus: string;
+  };
+  originRepo: string;
+  repo?: string;
+  openAuthoringEnabled: boolean;
+  useOpenAuthoring?: boolean;
+  branch: string;
+  apiRoot: string;
+  token: string | null;
+  squashMerges: string;
+  useGraphql: boolean;
+  _currentUserPromise?: Promise<GitHubUser>;
+  _userIsOriginMaintainerPromises?: {
+    [key: string]: Promise<boolean>;
+  };
+
+  constructor(config: Map, options = {}) {
     this.config = config;
     this.options = {
       proxied: false,
       API: null,
+      initialWorkflowStatus: '',
       ...options,
     };
 
@@ -65,14 +102,14 @@ export default class GitHub {
       this.repo = this.originRepo = config.getIn(['backend', 'repo'], '');
     }
     this.branch = config.getIn(['backend', 'branch'], 'master').trim();
-    this.api_root = config.getIn(['backend', 'api_root'], 'https://api.github.com');
+    this.apiRoot = config.getIn(['backend', 'api_root'], 'https://api.github.com');
     this.token = '';
-    this.squash_merges = config.getIn(['backend', 'squash_merges']);
-    this.use_graphql = config.getIn(['backend', 'use_graphql']);
+    this.squashMerges = config.getIn(['backend', 'squash_merges']);
+    this.useGraphql = config.getIn(['backend', 'use_graphql']);
     this.lock = asyncLock();
   }
 
-  async runWithLock(func, message) {
+  async runWithLock(func: Function, message: string) {
     try {
       const acquired = await this.lock.acquire();
       if (!acquired) {
@@ -87,12 +124,14 @@ export default class GitHub {
   }
 
   authComponent() {
-    const wrappedAuthenticationPage = props => <AuthenticationPage {...props} backend={this} />;
+    const wrappedAuthenticationPage = (props: Record<string, unknown>) => (
+      <AuthenticationPage {...props} backend={this} />
+    );
     wrappedAuthenticationPage.displayName = 'AuthenticationPage';
     return wrappedAuthenticationPage;
   }
 
-  restoreUser(user) {
+  restoreUser(user: { token: string }) {
     return this.openAuthoringEnabled
       ? this.authenticateWithFork({ userData: user, getPermissionToFork: () => true }).then(() =>
           this.authenticate(user),
@@ -100,11 +139,11 @@ export default class GitHub {
       : this.authenticate(user);
   }
 
-  async pollUntilForkExists({ repo, token }) {
+  async pollUntilForkExists({ repo, token }: { repo: string; token: string }) {
     const pollDelay = 250; // milliseconds
-    var repoExists = false;
+    let repoExists = false;
     while (!repoExists) {
-      repoExists = await fetch(`${this.api_root}/repos/${repo}`, {
+      repoExists = await fetch(`${this.apiRoot}/repos/${repo}`, {
         headers: { Authorization: `token ${token}` },
       })
         .then(() => true)
@@ -124,9 +163,9 @@ export default class GitHub {
     return Promise.resolve();
   }
 
-  async currentUser({ token }) {
+  async currentUser({ token }: { token: string }) {
     if (!this._currentUserPromise) {
-      this._currentUserPromise = fetch(`${this.api_root}/user`, {
+      this._currentUserPromise = fetch(`${this.apiRoot}/user`, {
         headers: {
           Authorization: `token ${token}`,
         },
@@ -135,12 +174,18 @@ export default class GitHub {
     return this._currentUserPromise;
   }
 
-  async userIsOriginMaintainer({ username: usernameArg, token }) {
+  async userIsOriginMaintainer({
+    username: usernameArg,
+    token,
+  }: {
+    username?: string;
+    token: string;
+  }) {
     const username = usernameArg || (await this.currentUser({ token })).login;
     this._userIsOriginMaintainerPromises = this._userIsOriginMaintainerPromises || {};
     if (!this._userIsOriginMaintainerPromises[username]) {
       this._userIsOriginMaintainerPromises[username] = fetch(
-        `${this.api_root}/repos/${this.originRepo}/collaborators/${username}/permission`,
+        `${this.apiRoot}/repos/${this.originRepo}/collaborators/${username}/permission`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -153,11 +198,11 @@ export default class GitHub {
     return this._userIsOriginMaintainerPromises[username];
   }
 
-  async forkExists({ token }) {
+  async forkExists({ token }: { token: string }) {
     try {
       const currentUser = await this.currentUser({ token });
       const repoName = this.originRepo.split('/')[1];
-      const repo = await fetch(`${this.api_root}/repos/${currentUser.login}/${repoName}`, {
+      const repo = await fetch(`${this.apiRoot}/repos/${currentUser.login}/${repoName}`, {
         method: 'GET',
         headers: {
           Authorization: `token ${token}`,
@@ -177,7 +222,13 @@ export default class GitHub {
     }
   }
 
-  async authenticateWithFork({ userData, getPermissionToFork }) {
+  async authenticateWithFork({
+    userData,
+    getPermissionToFork,
+  }: {
+    userData: { token: string };
+    getPermissionToFork: () => Promise<boolean> | boolean;
+  }) {
     if (!this.openAuthoringEnabled) {
       throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
     }
@@ -194,7 +245,7 @@ export default class GitHub {
       await getPermissionToFork();
     }
 
-    const fork = await fetch(`${this.api_root}/repos/${this.originRepo}/forks`, {
+    const fork = await fetch(`${this.apiRoot}/repos/${this.originRepo}/forks`, {
       method: 'POST',
       headers: {
         Authorization: `token ${token}`,
@@ -205,21 +256,21 @@ export default class GitHub {
     return this.pollUntilForkExists({ repo: fork.full_name, token });
   }
 
-  async authenticate(state) {
+  async authenticate(state: { token: string }) {
     this.token = state.token;
-    const apiCtor = this.use_graphql ? GraphQLAPI : API;
+    const apiCtor = this.useGraphql ? GraphQLAPI : API;
     this.api = new apiCtor({
       token: this.token,
       branch: this.branch,
       repo: this.repo,
       originRepo: this.originRepo,
-      api_root: this.api_root,
-      squash_merges: this.squash_merges,
+      apiRoot: this.apiRoot,
+      squashMerges: this.squashMerges,
       useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
-    const user = await this.api.user();
-    const isCollab = await this.api.hasWriteAccess().catch(error => {
+    const user = await this.api!.user();
+    const isCollab = await this.api!.hasWriteAccess().catch(error => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
 
@@ -244,19 +295,18 @@ export default class GitHub {
 
   logout() {
     this.token = null;
-    if (this.api && typeof this.api.reset === 'function') {
+    if (this.api && this.api.reset && typeof this.api.reset === 'function') {
       return this.api.reset();
     }
-    return;
   }
 
   getToken() {
     return Promise.resolve(this.token);
   }
 
-  async entriesByFolder(collection, extension) {
-    const repoURL = this.useOpenAuthoring ? this.api.originRepoURL : this.api.repoURL;
-    const files = await this.api.listFiles(collection.get('folder'), {
+  async entriesByFolder(collection: Map, extension: string) {
+    const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
+    const files = await this.api!.listFiles(collection.get('folder'), {
       repoURL,
       depth: getCollectionDepth(collection),
     });
@@ -264,24 +314,30 @@ export default class GitHub {
     return this.fetchFiles(filteredFiles, { repoURL });
   }
 
-  entriesByFiles(collection) {
-    const repoURL = this.useOpenAuthoring ? this.api.originRepoURL : this.api.repoURL;
-    const files = collection.get('files').map(collectionFile => ({
-      path: collectionFile.get('file'),
-      label: collectionFile.get('label'),
+  entriesByFiles(collection: Map) {
+    const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
+    const files = collection.get<Map[]>('files').map(collectionFile => ({
+      path: collectionFile.get<string>('file'),
+      label: collectionFile.get<string>('label'),
+      sha: null,
     }));
     return this.fetchFiles(files, { repoURL });
   }
 
-  fetchFiles = (files, { repoURL = this.api.repoURL } = {}) => {
+  fetchFiles = (
+    files: { path: string; sha?: string | null }[],
+    { repoURL = this.api!.repoURL } = {},
+  ) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [];
+    const promises = [] as Promise<
+      | { file: { path: string; sha?: string | null }; data: string | Blob; error?: boolean }
+      | { error: boolean }
+    >[];
     files.forEach(file => {
       promises.push(
         new Promise(resolve =>
           sem.take(() =>
-            this.api
-              .readFile(file.path, file.sha, { repoURL })
+            this.api!.readFile(file.path, file.sha, { repoURL })
               .then(data => {
                 resolve({ file, data });
                 sem.leave();
@@ -301,16 +357,16 @@ export default class GitHub {
   };
 
   // Fetches a single entry.
-  getEntry(collection, slug, path) {
-    const repoURL = this.api.originRepoURL;
-    return this.api.readFile(path, null, { repoURL }).then(data => ({
+  getEntry(collection: Map, slug: string, path: string) {
+    const repoURL = this.api!.originRepoURL;
+    return this.api!.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
       data,
     }));
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
-    return this.api.listFiles(mediaFolder).then(files =>
+  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+    return this.api!.listFiles(mediaFolder).then(files =>
       files.map(({ sha, name, size, path }) => {
         // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
         // for private repositories
@@ -319,8 +375,8 @@ export default class GitHub {
     );
   }
 
-  async getMediaFile(path) {
-    const blob = await this.api.getMediaAsBlob(null, path);
+  async getMediaFile(path: string) {
+    const blob = await this.api!.getMediaAsBlob(null, path);
 
     const name = basename(path);
     const fileObj = new File([blob], name);
@@ -336,29 +392,29 @@ export default class GitHub {
     };
   }
 
-  async getMediaDisplayURL(displayURL) {
+  async getMediaDisplayURL(displayURL: { id: string; path: string }) {
     const { id, path } = displayURL;
-    const mediaURL = await this.api.getMediaDisplayURL(id, path);
+    const mediaURL = await this.api!.getMediaDisplayURL(id, path);
     return mediaURL;
   }
 
-  persistEntry(entry, mediaFiles = [], options = {}) {
+  persistEntry(entry: Entry, mediaFiles: AssetProxy[] = [], options: PersistOptions) {
     // persistEntry is a transactional operation
     return this.runWithLock(
-      () => this.api.persistFiles(entry, mediaFiles, options),
+      () => this.api!.persistFiles(entry, mediaFiles, options),
       'Failed to acquire persist entry lock',
     );
   }
 
-  async persistMedia(mediaFile, options = {}) {
+  async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
     try {
-      await this.api.persistFiles(null, [mediaFile], options);
-      const { sha, path, fileObj } = mediaFile;
+      await this.api!.persistFiles(null, [mediaFile], options);
+      const { sha, path, fileObj } = mediaFile as AssetProxy & { sha: string };
       const displayURL = URL.createObjectURL(fileObj);
       return {
         id: sha,
-        name: fileObj.name,
-        size: fileObj.size,
+        name: fileObj!.name,
+        size: fileObj!.size,
         displayURL,
         path: trimStart(path, '/'),
       };
@@ -368,17 +424,16 @@ export default class GitHub {
     }
   }
 
-  deleteFile(path, commitMessage, options) {
-    return this.api.deleteFile(path, commitMessage, options);
+  deleteFile(path: string, commitMessage: string) {
+    return this.api!.deleteFile(path, commitMessage);
   }
 
-  async loadMediaFile(file) {
-    return this.api.getMediaAsBlob(file.sha, file.path).then(blob => {
+  async loadMediaFile(file: { sha: string; path: string }) {
+    return this.api!.getMediaAsBlob(file.sha, file.path).then(blob => {
       const name = basename(file.path);
       const fileObj = new File([blob], name);
       return {
         id: file.sha,
-        sha: file.sha,
         displayURL: URL.createObjectURL(fileObj),
         path: file.path,
         name,
@@ -388,32 +443,36 @@ export default class GitHub {
     });
   }
 
-  async loadEntryMediaFiles(files) {
+  async loadEntryMediaFiles(files: { sha: string; path: string }[]) {
     const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(file)));
 
     return mediaFiles;
   }
 
   unpublishedEntries() {
-    return this.api
-      .listUnpublishedBranches()
+    return this.api!.listUnpublishedBranches()
       .then(branches => {
         const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-        const promises = [];
+        const promises = [] as Promise<null | {
+          slug: string;
+          file: { path: string };
+          data: string | Blob;
+          metaData: Metadata;
+          isModification: boolean;
+        }>[];
         branches.map(({ ref }) => {
           promises.push(
             new Promise(resolve => {
-              const contentKey = this.api.contentKeyFromRef(ref);
+              const contentKey = this.api!.contentKeyFromRef(ref);
               return sem.take(() =>
-                this.api
-                  .readUnpublishedBranchFile(contentKey)
-                  .then(data => {
+                this.api!.readUnpublishedBranchFile(contentKey)
+                  .then((data: UnpublishedBranchResult) => {
                     if (data === null || data === undefined) {
                       resolve(null);
                       sem.leave();
                     } else {
                       resolve({
-                        slug: this.api.slugFromContentKey(contentKey, data.metaData.collection),
+                        slug: this.api!.slugFromContentKey(contentKey, data.metaData.collection),
                         file: { path: data.metaData.objects.entry.path },
                         data: data.fileData,
                         metaData: data.metaData,
@@ -441,12 +500,12 @@ export default class GitHub {
   }
 
   async unpublishedEntry(
-    collection,
-    slug,
-    { loadEntryMediaFiles = files => this.loadEntryMediaFiles(files) } = {},
+    collection: Map,
+    slug: string,
+    { loadEntryMediaFiles = (files: []) => this.loadEntryMediaFiles(files) } = {},
   ) {
-    const contentKey = this.api.generateContentKey(collection.get('name'), slug);
-    const data = await this.api.readUnpublishedBranchFile(contentKey);
+    const contentKey = this.api!.generateContentKey(collection.get('name'), slug);
+    const data = await this.api!.readUnpublishedBranchFile(contentKey);
     if (!data) {
       return null;
     }
@@ -468,44 +527,46 @@ export default class GitHub {
    * status, as well as the status state, which should be one of 'success',
    * 'pending', and 'failure'.
    */
-  async getDeployPreview(collection, slug) {
-    const contentKey = this.api.generateContentKey(collection.get('name'), slug);
-    const data = await this.api.retrieveMetadata(contentKey);
+  async getDeployPreview(collectionName: string, slug: string) {
+    const contentKey = this.api!.generateContentKey(collectionName, slug);
+    const data = await this.api!.retrieveMetadata(contentKey);
 
     if (!data || !data.pr) {
       return null;
     }
 
     const headSHA = typeof data.pr.head === 'string' ? data.pr.head : data.pr.head.sha;
-    const statuses = await this.api.getStatuses(headSHA);
+    const statuses = await this.api!.getStatuses(headSHA);
     const deployStatus = getPreviewStatus(statuses, this.config);
 
     if (deployStatus) {
-      const { target_url, state } = deployStatus;
-      return { url: target_url, status: state };
+      const { target_url: url, state } = deployStatus;
+      return { url, status: state };
+    } else {
+      return null;
     }
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus) {
+  updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     // updateUnpublishedEntryStatus is a transactional operation
     return this.runWithLock(
-      () => this.api.updateUnpublishedEntryStatus(collection, slug, newStatus),
+      () => this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus),
       'Failed to acquire update entry status lock',
     );
   }
 
-  deleteUnpublishedEntry(collection, slug) {
+  deleteUnpublishedEntry(collection: string, slug: string) {
     // deleteUnpublishedEntry is a transactional operation
     return this.runWithLock(
-      () => this.api.deleteUnpublishedEntry(collection, slug),
+      () => this.api!.deleteUnpublishedEntry(collection, slug),
       'Failed to acquire delete entry lock',
     );
   }
 
-  publishUnpublishedEntry(collection, slug) {
+  publishUnpublishedEntry(collection: string, slug: string) {
     // publishUnpublishedEntry is a transactional operation
     return this.runWithLock(
-      () => this.api.publishUnpublishedEntry(collection, slug),
+      () => this.api!.publishUnpublishedEntry(collection, slug),
       'Failed to acquire publish entry lock',
     );
   }

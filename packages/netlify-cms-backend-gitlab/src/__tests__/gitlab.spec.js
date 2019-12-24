@@ -175,7 +175,7 @@ describe('gitlab backend', () => {
   }
 
   function mockApi(backend) {
-    return nock(backend.implementation.api_root);
+    return nock(backend.implementation.apiRoot);
   }
 
   function interceptAuth(backend, { userResponse, projectResponse } = {}) {
@@ -206,7 +206,7 @@ describe('gitlab backend', () => {
   function createHeaders(backend, { basePath, path, page, perPage, pageCount, totalCount }) {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
-    const url = `${backend.implementation.api_root}${basePath}`;
+    const url = `${backend.implementation.apiRoot}${basePath}`;
     const link = linkPage =>
       `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
 

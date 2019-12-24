@@ -1,16 +1,18 @@
-import { ApolloClient } from 'apollo-client';
+import { ApolloClient, QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
 import {
   InMemoryCache,
   defaultDataIdFromObject,
   IntrospectionFragmentMatcher,
+  NormalizedCacheObject,
 } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util';
 import introspectionQueryResultData from './fragmentTypes';
-import API from './API';
+import API, { Config, ContentArgs, BlobArgs, PR } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
+import { GraphQLError } from 'graphql';
 
 const NO_CACHE = 'no-cache';
 const CACHE_FIRST = 'cache-first';
@@ -19,16 +21,44 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
 });
 
+interface TreeEntry {
+  object?: {
+    entries: TreeEntry[];
+  };
+  type: 'blob' | 'tree';
+  name: string;
+  sha: string;
+  blob?: {
+    size: number;
+  };
+}
+
+interface TreeFile {
+  path: string;
+  sha: string;
+  size: number;
+  type: string;
+  name: string;
+}
+
+type Error = GraphQLError & { type: string };
+
 export default class GraphQLAPI extends API {
-  constructor(config) {
+  repoOwner: string;
+  repoName: string;
+  originRepoOwner: string;
+  originRepoName: string;
+  client: ApolloClient<NormalizedCacheObject>;
+
+  constructor(config: Config) {
     super(config);
 
     const [repoParts, originRepoParts] = [this.repo.split('/'), this.originRepo.split('/')];
-    this.repo_owner = repoParts[0];
-    this.repo_name = repoParts[1];
+    this.repoOwner = repoParts[0];
+    this.repoName = repoParts[1];
 
-    this.origin_repo_owner = originRepoParts[0];
-    this.origin_repo_name = originRepoParts[1];
+    this.originRepoOwner = originRepoParts[0];
+    this.originRepoName = originRepoParts[1];
 
     this.client = this.getApolloClient();
   }
@@ -43,7 +73,7 @@ export default class GraphQLAPI extends API {
         },
       };
     });
-    const httpLink = createHttpLink({ uri: `${this.api_root}/graphql` });
+    const httpLink = createHttpLink({ uri: `${this.apiRoot}/graphql` });
     return new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache({ fragmentMatcher }),
@@ -64,7 +94,7 @@ export default class GraphQLAPI extends API {
     return this.client.resetStore();
   }
 
-  async getRepository(owner, name) {
+  async getRepository(owner: string, name: string) {
     const { data } = await this.query({
       query: queries.repository,
       variables: { owner, name },
@@ -73,20 +103,20 @@ export default class GraphQLAPI extends API {
     return data.repository;
   }
 
-  query(options = {}) {
+  query(options: QueryOptions<OperationVariables>) {
     return this.client.query(options).catch(error => {
       throw new APIError(error.message, 500, 'GitHub');
     });
   }
 
-  mutate(options = {}) {
+  mutate(options: MutationOptions<OperationVariables>) {
     return this.client.mutate(options).catch(error => {
       throw new APIError(error.message, 500, 'GitHub');
     });
   }
 
   async hasWriteAccess() {
-    const { repo_owner: owner, repo_name: name } = this;
+    const { repoOwner: owner, repoName: name } = this;
     try {
       const { data } = await this.query({
         query: queries.repoPermission,
@@ -110,7 +140,7 @@ export default class GraphQLAPI extends API {
     return data.viewer;
   }
 
-  async retrieveBlobObject(owner, name, expression, options = {}) {
+  async retrieveBlobObject(owner: string, name: string, expression: string, options = {}) {
     const { data } = await this.query({
       query: queries.blob,
       variables: { owner, name, expression },
@@ -118,62 +148,62 @@ export default class GraphQLAPI extends API {
     });
     // https://developer.github.com/v4/object/blob/
     if (data.repository.object) {
-      const { is_binary, text } = data.repository.object;
-      return { is_null: false, is_binary, text };
+      const { is_binary: isBinary, text } = data.repository.object;
+      return { isNull: false, isBinary, text };
     } else {
-      return { is_null: true };
+      return { isNull: true };
     }
   }
 
-  getOwnerAndNameFromRepoUrl(repoURL) {
-    let { repo_owner: owner, repo_name: name } = this;
+  getOwnerAndNameFromRepoUrl(repoURL: string) {
+    let { repoOwner: owner, repoName: name } = this;
 
     if (repoURL === this.originRepoURL) {
-      ({ origin_repo_owner: owner, origin_repo_name: name } = this);
+      ({ originRepoOwner: owner, originRepoName: name } = this);
     }
 
     return { owner, name };
   }
 
-  async retrieveContent({ path, branch, repoURL, parseText }) {
+  async retrieveContent({ path, branch, repoURL, parseText }: ContentArgs) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
-    const { is_null, is_binary, text } = await this.retrieveBlobObject(
+    const { isNull, isBinary, text } = await this.retrieveBlobObject(
       owner,
       name,
       `${branch}:${path}`,
     );
-    if (is_null) {
+    if (isNull) {
       throw new APIError('Not Found', 404, 'GitHub');
-    } else if (!is_binary) {
+    } else if (!isBinary) {
       return text;
     } else {
       return super.retrieveContent({ path, branch, repoURL, parseText });
     }
   }
 
-  async fetchBlobContent(sha, repoURL, parseText) {
+  async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
     if (!parseText) {
-      return super.fetchBlobContent(sha, repoURL);
+      return super.fetchBlobContent({ sha, repoURL, parseText });
     }
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
-    const { is_null, is_binary, text } = await this.retrieveBlobObject(
+    const { isNull, isBinary, text } = await this.retrieveBlobObject(
       owner,
       name,
       sha,
       { fetchPolicy: CACHE_FIRST }, // blob sha is derived from file content
     );
 
-    if (is_null) {
+    if (isNull) {
       throw new APIError('Not Found', 404, 'GitHub');
-    } else if (!is_binary) {
+    } else if (!isBinary) {
       return text;
     } else {
-      return super.fetchBlobContent(sha, repoURL);
+      return super.fetchBlobContent({ sha, repoURL, parseText });
     }
   }
 
-  async getStatuses(sha) {
-    const { origin_repo_owner: owner, origin_repo_name: name } = this;
+  async getStatuses(sha: string) {
+    const { originRepoOwner: owner, originRepoName: name } = this;
     const { data } = await this.query({ query: queries.statues, variables: { owner, name, sha } });
     if (data.repository.object) {
       const { status } = data.repository.object;
@@ -184,8 +214,8 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  getAllFiles(entries, path) {
-    const allFiles = entries.reduce((acc, item) => {
+  getAllFiles(entries: TreeEntry[], path: string) {
+    const allFiles: TreeFile[] = entries.reduce((acc, item) => {
       if (item.type === 'tree') {
         const entries = item.object?.entries || [];
         return [...acc, ...this.getAllFiles(entries, `${path}/${item.name}`)];
@@ -193,19 +223,21 @@ export default class GraphQLAPI extends API {
         return [
           ...acc,
           {
-            ...item,
+            name: item.name,
+            type: item.type,
+            sha: item.sha,
             path: `${path}/${item.name}`,
-            size: item.blob && item.blob.size,
+            size: item.blob ? item.blob.size : 0,
           },
         ];
       }
 
       return acc;
-    }, []);
+    }, [] as TreeFile[]);
     return allFiles;
   }
 
-  async listFiles(path, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
+  async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { data } = await this.query({
       query: queries.files(depth),
@@ -228,14 +260,18 @@ export default class GraphQLAPI extends API {
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
-    const { repo_owner: owner, repo_name: name } = this;
+    const { repoOwner: owner, repoName: name } = this;
     const { data } = await this.query({
       query: queries.unpublishedPrBranches,
       variables: { owner, name },
     });
-    const { nodes } = data.repository.refs;
+    const { nodes } = data.repository.refs as {
+      nodes: {
+        associatedPullRequests: { nodes: { headRef: { prefix: string; name: string } }[] };
+      }[];
+    };
     if (nodes.length > 0) {
-      const branches = [];
+      const branches = [] as { ref: string }[];
       nodes.forEach(({ associatedPullRequests }) => {
         associatedPullRequests.nodes.forEach(({ headRef }) => {
           branches.push({ ref: `${headRef.prefix}${headRef.name}` });
@@ -252,13 +288,13 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  async readUnpublishedBranchFile(contentKey) {
+  async readUnpublishedBranchFile(contentKey: string) {
     // retrieveMetadata(contentKey) rejects in case of no metadata
     const metaData = await this.retrieveMetadata(contentKey).catch(() => null);
     if (metaData && metaData.objects && metaData.objects.entry && metaData.objects.entry.path) {
       const { path } = metaData.objects.entry;
-      const { repo_owner: headOwner, repo_name: headRepoName } = this;
-      const { origin_repo_owner: baseOwner, origin_repo_name: baseRepoName } = this;
+      const { repoOwner: headOwner, repoName: headRepoName } = this;
+      const { originRepoOwner: baseOwner, originRepoName: baseRepoName } = this;
 
       const { data } = await this.query({
         query: queries.unpublishedBranchFile,
@@ -285,11 +321,11 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  getBranchQualifiedName(branch) {
+  getBranchQualifiedName(branch: string) {
     return `refs/heads/${branch}`;
   }
 
-  getBranchQuery(branch, owner, name) {
+  getBranchQuery(branch: string, owner: string, name: string) {
     return {
       query: queries.branch,
       variables: {
@@ -302,20 +338,20 @@ export default class GraphQLAPI extends API {
 
   async getDefaultBranch() {
     const { data } = await this.query({
-      ...this.getBranchQuery(this.branch, this.origin_repo_owner, this.origin_repo_name),
+      ...this.getBranchQuery(this.branch, this.originRepoOwner, this.originRepoName),
     });
     return data.repository.branch;
   }
 
-  async getBranch(branch) {
+  async getBranch(branch: string) {
     const { data } = await this.query({
-      ...this.getBranchQuery(branch, this.repo_owner, this.repo_name),
+      ...this.getBranchQuery(branch, this.repoOwner, this.repoName),
       fetchPolicy: CACHE_FIRST,
     });
     return data.repository.branch;
   }
 
-  async patchRef(type, name, sha, opts = {}) {
+  async patchRef(type: string, name: string, sha: string, opts: { force?: boolean } = {}) {
     if (type !== 'heads') {
       return super.patchRef(type, name, sha, opts);
     }
@@ -329,24 +365,25 @@ export default class GraphQLAPI extends API {
         input: { oid: sha, refId: branch.id, force },
       },
     });
-    return data.updateRef.branch;
+    return data!.updateRef.branch;
   }
 
-  async deleteBranch(branchName) {
+  async deleteBranch(branchName: string) {
     const branch = await this.getBranch(branchName);
     const { data } = await this.mutate({
       mutation: mutations.deleteBranch,
       variables: {
         deleteRefInput: { refId: branch.id },
       },
-      update: store => store.data.delete(defaultDataIdFromObject(branch)),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      update: (store: any) => store.data.delete(defaultDataIdFromObject(branch)),
     });
 
-    return data.deleteRef;
+    return data!.deleteRef;
   }
 
-  getPullRequestQuery(number) {
-    const { origin_repo_owner: owner, origin_repo_name: name } = this;
+  getPullRequestQuery(number: number) {
+    const { originRepoOwner: owner, originRepoName: name } = this;
 
     return {
       query: queries.pullRequest,
@@ -354,7 +391,7 @@ export default class GraphQLAPI extends API {
     };
   }
 
-  async getPullRequest(number) {
+  async getPullRequest(number: number) {
     const { data } = await this.query({
       ...this.getPullRequestQuery(number),
       fetchPolicy: CACHE_FIRST,
@@ -370,24 +407,24 @@ export default class GraphQLAPI extends API {
     };
   }
 
-  getPullRequestAndBranchQuery(branch, number) {
-    const { repo_owner: owner, repo_name: name } = this;
-    const { origin_repo_owner: origin_owner, origin_repo_name: origin_name } = this;
+  getPullRequestAndBranchQuery(branch: string, number: number) {
+    const { repoOwner: owner, repoName: name } = this;
+    const { originRepoOwner, originRepoName } = this;
 
     return {
       query: queries.pullRequestAndBranch,
       variables: {
         owner,
         name,
-        origin_owner,
-        origin_name,
+        originRepoOwner,
+        originRepoName,
         number,
         qualifiedName: this.getBranchQualifiedName(branch),
       },
     };
   }
 
-  async getPullRequestAndBranch(branch, number) {
+  async getPullRequestAndBranch(branch: string, number: number) {
     const { data } = await this.query({
       ...this.getPullRequestAndBranchQuery(branch, number),
       fetchPolicy: CACHE_FIRST,
@@ -397,7 +434,7 @@ export default class GraphQLAPI extends API {
     return { branch: repository.branch, pullRequest: origin.pullRequest };
   }
 
-  async openPR({ number }) {
+  async openPR({ number }: PR) {
     const pullRequest = await this.getPullRequest(number);
 
     const { data } = await this.mutate({
@@ -406,7 +443,7 @@ export default class GraphQLAPI extends API {
         reopenPullRequestInput: { pullRequestId: pullRequest.id },
       },
       update: (store, { data: mutationResult }) => {
-        const { pullRequest } = mutationResult.reopenPullRequest;
+        const { pullRequest } = mutationResult!.reopenPullRequest;
         const pullRequestData = { repository: { ...pullRequest.repository, pullRequest } };
 
         store.writeQuery({
@@ -416,10 +453,10 @@ export default class GraphQLAPI extends API {
       },
     });
 
-    return data.closePullRequest;
+    return data!.closePullRequest;
   }
 
-  async closePR({ number }) {
+  async closePR({ number }: PR) {
     const pullRequest = await this.getPullRequest(number);
 
     const { data } = await this.mutate({
@@ -428,7 +465,7 @@ export default class GraphQLAPI extends API {
         closePullRequestInput: { pullRequestId: pullRequest.id },
       },
       update: (store, { data: mutationResult }) => {
-        const { pullRequest } = mutationResult.closePullRequest;
+        const { pullRequest } = mutationResult!.closePullRequest;
         const pullRequestData = { repository: { ...pullRequest.repository, pullRequest } };
 
         store.writeQuery({
@@ -438,10 +475,10 @@ export default class GraphQLAPI extends API {
       },
     });
 
-    return data.closePullRequest;
+    return data!.closePullRequest;
   }
 
-  async deleteUnpublishedEntry(collectionName, slug) {
+  async deleteUnpublishedEntry(collectionName: string, slug: string) {
     try {
       const contentKey = this.generateContentKey(collectionName, slug);
       const branchName = this.generateBranchName(contentKey);
@@ -459,20 +496,21 @@ export default class GraphQLAPI extends API {
             deleteRefInput: { refId: branch.id },
             closePullRequestInput: { pullRequestId: pullRequest.id },
           },
-          update: store => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          update: (store: any) => {
             store.data.delete(defaultDataIdFromObject(branch));
             store.data.delete(defaultDataIdFromObject(pullRequest));
           },
         });
 
-        return data.closePullRequest;
+        return data!.closePullRequest;
       } else {
         return await this.deleteBranch(branchName);
       }
     } catch (e) {
       const { graphQLErrors } = e;
       if (graphQLErrors && graphQLErrors.length > 0) {
-        const branchNotFound = graphQLErrors.some(e => e.type === 'NOT_FOUND');
+        const branchNotFound = graphQLErrors.some((e: Error) => e.type === 'NOT_FOUND');
         if (branchNotFound) {
           return;
         }
@@ -481,9 +519,9 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  async createPR(title, head) {
+  async createPR(title: string, head: string) {
     const [repository, headReference] = await Promise.all([
-      this.getRepository(this.origin_repo_owner, this.origin_repo_name),
+      this.getRepository(this.originRepoOwner, this.originRepoName),
       this.useOpenAuthoring ? `${(await this.user()).login}:${head}` : head,
     ]);
     const { data } = await this.mutate({
@@ -498,7 +536,7 @@ export default class GraphQLAPI extends API {
         },
       },
       update: (store, { data: mutationResult }) => {
-        const { pullRequest } = mutationResult.createPullRequest;
+        const { pullRequest } = mutationResult!.createPullRequest;
         const pullRequestData = { repository: { ...pullRequest.repository, pullRequest } };
 
         store.writeQuery({
@@ -507,13 +545,13 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-    const { pullRequest } = data.createPullRequest;
+    const { pullRequest } = data!.createPullRequest;
     return { ...pullRequest, head: { sha: pullRequest.headRefOid } };
   }
 
-  async createBranch(branchName, sha) {
-    const owner = this.repo_owner;
-    const name = this.repo_name;
+  async createBranch(branchName: string, sha: string) {
+    const owner = this.repoOwner;
+    const name = this.repoName;
     const repository = await this.getRepository(owner, name);
     const { data } = await this.mutate({
       mutation: mutations.createBranch,
@@ -525,7 +563,7 @@ export default class GraphQLAPI extends API {
         },
       },
       update: (store, { data: mutationResult }) => {
-        const { branch } = mutationResult.createRef;
+        const { branch } = mutationResult!.createRef;
         const branchData = { repository: { ...branch.repository, branch } };
 
         store.writeQuery({
@@ -534,13 +572,13 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-    const { branch } = data.createRef;
+    const { branch } = data!.createRef;
     return { ...branch, ref: `${branch.prefix}${branch.name}` };
   }
 
-  async createBranchAndPullRequest(branchName, sha, title) {
-    const owner = this.origin_repo_owner;
-    const name = this.origin_repo_name;
+  async createBranchAndPullRequest(branchName: string, sha: string, title: string) {
+    const owner = this.originRepoOwner;
+    const name = this.originRepoName;
     const repository = await this.getRepository(owner, name);
     const { data } = await this.mutate({
       mutation: mutations.createBranchAndPullRequest,
@@ -559,8 +597,8 @@ export default class GraphQLAPI extends API {
         },
       },
       update: (store, { data: mutationResult }) => {
-        const { branch } = mutationResult.createRef;
-        const { pullRequest } = mutationResult.createPullRequest;
+        const { branch } = mutationResult!.createRef;
+        const { pullRequest } = mutationResult!.createPullRequest;
         const branchData = { repository: { ...branch.repository, branch } };
         const pullRequestData = {
           repository: { ...pullRequest.repository, branch },
@@ -578,24 +616,12 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-    const { pullRequest } = data.createPullRequest;
+    const { pullRequest } = data!.createPullRequest;
     return { ...pullRequest, head: { sha: pullRequest.headRefOid } };
   }
 
-  async getPullRequestCommits(number) {
-    const { origin_repo_owner: owner, origin_repo_name: name } = this;
-    const { data } = await this.query({
-      query: queries.pullRequestCommits,
-      variables: { owner, name, number },
-    });
-    const { nodes } = data.repository.pullRequest.commits;
-    const commits = nodes.map(n => ({ ...n.commit, parents: n.commit.parents.nodes }));
-
-    return commits;
-  }
-
-  async getFileSha(path, branch) {
-    const { repo_owner: owner, repo_name: name } = this;
+  async getFileSha(path: string, branch: string) {
+    const { repoOwner: owner, repoName: name } = this;
     const { data } = await this.query({
       query: queries.fileSha,
       variables: { owner, name, expression: `${branch}:${path}` },

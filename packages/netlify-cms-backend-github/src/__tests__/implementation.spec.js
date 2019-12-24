@@ -1,24 +1,16 @@
+import { fromJS } from 'immutable';
 import GitHubImplementation from '../implementation';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
 describe('github backend implementation', () => {
-  const config = {
-    getIn: jest.fn().mockImplementation(array => {
-      if (array[0] === 'backend' && array[1] === 'repo') {
-        return 'owner/repo';
-      }
-      if (array[0] === 'backend' && array[1] === 'open_authoring') {
-        return false;
-      }
-      if (array[0] === 'backend' && array[1] === 'branch') {
-        return 'master';
-      }
-      if (array[0] === 'backend' && array[1] === 'api_root') {
-        return 'https://api.github.com';
-      }
-    }),
-  };
+  const config = fromJS({
+    backend: {
+      repo: 'owner/repo',
+      open_authoring: false,
+      api_root: 'https://api.github.com',
+    },
+  });
 
   const createObjectURL = jest.fn();
   global.URL = {
@@ -102,7 +94,7 @@ describe('github backend implementation', () => {
       };
 
       expect.assertions(5);
-      await expect(gitHubImplementation.persistMedia(mediaFile)).resolves.toEqual({
+      await expect(gitHubImplementation.persistMedia(mediaFile, {})).resolves.toEqual({
         id: 0,
         name: 'image.png',
         size: 100,
@@ -161,7 +153,6 @@ describe('github backend implementation', () => {
       ).resolves.toEqual([
         {
           id: 'image.png',
-          sha: 'image.png',
           displayURL: 'displayURL',
           path: 'static/media/image.png',
           name: 'image.png',

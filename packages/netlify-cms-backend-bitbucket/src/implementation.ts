@@ -1,4 +1,4 @@
-import semaphore from 'semaphore';
+import semaphore, { Semaphore } from 'semaphore';
 import { flow, trimStart } from 'lodash';
 import { stripIndent } from 'common-tags';
 import {
@@ -10,16 +10,45 @@ import {
   basename,
   getBlobSHA,
   getCollectionDepth,
+  Entry,
+  Map,
+  ApiRequest,
+  CursorType,
+  AssetProxy,
+  PersistOptions,
+  DisplayURL,
+  Implementation,
 } from 'netlify-cms-lib-util';
-import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
+import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 // Implementation wrapper class
-export default class BitbucketBackend {
-  constructor(config, options = {}) {
+export default class BitbucketBackend implements Implementation {
+  config: Map;
+  api: API | null;
+  updateUserCredentials: (args: { token: string; refresh_token: string }) => Promise<null>;
+  options: {
+    proxied: boolean;
+    API: API | null;
+    updateUserCredentials: (args: { token: string; refresh_token: string }) => Promise<null>;
+    useWorkflow?: boolean;
+  };
+  repo: string;
+  branch: string;
+  apiRoot: string;
+  baseUrl: string;
+  siteId: string;
+  token: string | null;
+  refreshToken?: string;
+  refreshedTokenPromise?: Promise<string>;
+  authenticator?: NetlifyAuthenticator;
+  auth?: unknown;
+  _mediaDisplayURLSem?: Semaphore;
+
+  constructor(config: Map, options = {}) {
     this.config = config;
     this.options = {
       proxied: false,
@@ -42,9 +71,9 @@ export default class BitbucketBackend {
 
     this.repo = config.getIn(['backend', 'repo'], '');
     this.branch = config.getIn(['backend', 'branch'], 'master');
-    this.api_root = config.getIn(['backend', 'api_root'], 'https://api.bitbucket.org/2.0');
-    this.base_url = config.get('base_url');
-    this.site_id = config.get('site_id');
+    this.apiRoot = config.getIn(['backend', 'api_root'], 'https://api.bitbucket.org/2.0');
+    this.baseUrl = config.get('base_url');
+    this.siteId = config.get('site_id');
     this.token = '';
   }
 
@@ -52,7 +81,7 @@ export default class BitbucketBackend {
     return AuthenticationPage;
   }
 
-  setUser(user) {
+  setUser(user: { token: string }) {
     this.token = user.token;
     this.api = new API({
       requestFunction: this.apiRequestFunction,
@@ -61,18 +90,18 @@ export default class BitbucketBackend {
     });
   }
 
-  restoreUser(user) {
+  restoreUser(user: { token: string; refresh_token: string }) {
     return this.authenticate(user);
   }
 
-  async authenticate(state) {
+  async authenticate(state: { token: string; refresh_token: string }) {
     this.token = state.token;
     this.refreshToken = state.refresh_token;
     this.api = new API({
       requestFunction: this.apiRequestFunction,
       branch: this.branch,
       repo: this.repo,
-      api_root: this.api_root,
+      apiRoot: this.apiRoot,
     });
 
     const isCollab = await this.api.hasWriteAccess().catch(error => {
@@ -99,6 +128,7 @@ export default class BitbucketBackend {
       name: user.display_name,
       login: user.username,
       token: state.token,
+      // eslint-disable-next-line @typescript-eslint/camelcase
       refresh_token: state.refresh_token,
     };
   }
@@ -111,18 +141,23 @@ export default class BitbucketBackend {
     // instantiating a new Authenticator on each refresh isn't ideal,
     if (!this.auth) {
       const cfg = {
-        base_url: this.base_url,
-        site_id: this.site_id,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        base_url: this.baseUrl,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        site_id: this.siteId,
       };
       this.authenticator = new NetlifyAuthenticator(cfg);
     }
 
-    this.refreshedTokenPromise = this.authenticator
-      .refresh({ provider: 'bitbucket', refresh_token: this.refreshToken })
+    this.refreshedTokenPromise = this.authenticator! // eslint-disable-next-line @typescript-eslint/camelcase
+      .refresh({ provider: 'bitbucket', refresh_token: this.refreshToken as string })
+      // eslint-disable-next-line @typescript-eslint/camelcase
       .then(({ token, refresh_token }) => {
         this.token = token;
+        // eslint-disable-next-line @typescript-eslint/camelcase
         this.refreshToken = refresh_token;
         this.refreshedTokenPromise = undefined;
+        // eslint-disable-next-line @typescript-eslint/camelcase
         this.updateUserCredentials({ token, refresh_token });
         return token;
       });
@@ -143,10 +178,15 @@ export default class BitbucketBackend {
     return Promise.resolve(this.token);
   }
 
-  apiRequestFunction = async req => {
-    const token = this.refreshedTokenPromise ? await this.refreshedTokenPromise : this.token;
+  apiRequestFunction = async (req: ApiRequest) => {
+    const token = (this.refreshedTokenPromise
+      ? await this.refreshedTokenPromise
+      : this.token) as string;
+
     return flow([
-      unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }),
+      unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }) as (
+        req: ApiRequest,
+      ) => ApiRequest,
       unsentRequest.performRequest,
       then(async res => {
         if (res.status === 401) {
@@ -154,9 +194,11 @@ export default class BitbucketBackend {
           if (json && json.type === 'error' && /^access token expired/i.test(json.error.message)) {
             const newToken = await this.getRefreshedAccessToken();
             const reqWithNewToken = unsentRequest.withHeaders(
-              { Authorization: `Bearer ${newToken}` },
+              {
+                Authorization: `Bearer ${newToken}`,
+              },
               req,
-            );
+            ) as ApiRequest;
             return unsentRequest.performRequest(reqWithNewToken);
           }
         }
@@ -165,49 +207,59 @@ export default class BitbucketBackend {
     ])(req);
   };
 
-  entriesByFolder(collection, extension) {
-    const listPromise = this.api.listFiles(
+  entriesByFolder(collection: Map, extension: string) {
+    const listPromise = this.api!.listFiles(
       collection.get('folder'),
       getCollectionDepth(collection),
     );
-    return resolvePromiseProperties({
+    return resolvePromiseProperties<
+      { files: Promise<{}[]>; cursor: Promise<CursorType> },
+      { files: []; cursor: CursorType }
+    >({
       files: listPromise
         .then(({ entries }) => entries)
         .then(filterByPropExtension(extension, 'path'))
         .then(this.fetchFiles),
       cursor: listPromise.then(({ cursor }) => cursor),
     }).then(({ files, cursor }) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
       return files;
     });
   }
 
-  allEntriesByFolder(collection, extension) {
-    return this.api
-      .listAllFiles(collection.get('folder'), getCollectionDepth(collection))
+  allEntriesByFolder(collection: Map, extension: string) {
+    return this.api!.listAllFiles(collection.get('folder'), getCollectionDepth(collection))
       .then(filterByPropExtension(extension, 'path'))
       .then(this.fetchFiles);
   }
 
-  entriesByFiles(collection) {
-    const files = collection.get('files').map(collectionFile => ({
-      path: collectionFile.get('file'),
-      label: collectionFile.get('label'),
+  entriesByFiles(collection: Map) {
+    const files = collection.get<Map[]>('files').map(collectionFile => ({
+      path: collectionFile.get<string>('file'),
+      label: collectionFile.get<string>('label'),
     }));
     return this.fetchFiles(files);
   }
 
-  fetchFiles = files => {
+  fetchFiles = (files: { path: string; id?: string }[]) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [];
+    const promises = [] as Promise<
+      | {
+          file: { path: string; id?: string };
+          data: string;
+          error?: boolean;
+        }
+      | { error: boolean }
+    >[];
     files.forEach(file => {
       promises.push(
         new Promise(resolve =>
           sem.take(() =>
-            this.api
-              .readFile(file.path, file.id)
+            this.api!.readFile(file.path, file.id)
               .then(data => {
-                resolve({ file, data });
+                resolve({ file, data: data as string });
                 sem.leave();
               })
               .catch((error = true) => {
@@ -224,39 +276,37 @@ export default class BitbucketBackend {
     );
   };
 
-  getEntry(collection, slug, path) {
-    return this.api.readFile(path).then(data => ({
+  getEntry(collection: Map, slug: string, path: string) {
+    return this.api!.readFile(path).then(data => ({
       file: { path },
       data,
     }));
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
-    return this.api
-      .listAllFiles(mediaFolder)
-      .then(files =>
-        files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
-      );
+  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+    return this.api!.listAllFiles(mediaFolder).then(files =>
+      files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
+    );
   }
 
-  getMediaAsBlob(path, id) {
-    return this.api.readFile(path, id, { parseText: false });
+  getMediaAsBlob(path: string, id: string | null) {
+    return this.api!.readFile(path, id, { parseText: false });
   }
 
-  getMediaDisplayURL(displayURL) {
+  getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
     const { id, path } = displayURL;
-    return new Promise((resolve, reject) =>
-      this._mediaDisplayURLSem.take(() =>
+    return new Promise<string>((resolve, reject) =>
+      this._mediaDisplayURLSem!.take(() =>
         this.getMediaAsBlob(path, id)
           .then(blob => URL.createObjectURL(blob))
           .then(resolve, reject)
-          .finally(() => this._mediaDisplayURLSem.leave()),
+          .finally(() => this._mediaDisplayURLSem!.leave()),
       ),
     );
   }
 
-  async getMediaFile(path) {
+  async getMediaFile(path: string) {
     const name = basename(path);
     const blob = await this.getMediaAsBlob(path, null);
     const fileObj = new File([blob], name);
@@ -272,16 +322,16 @@ export default class BitbucketBackend {
     };
   }
 
-  persistEntry(entry, mediaFiles, options = {}) {
-    return this.api.persistFiles([entry], options);
+  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+    await this.api!.persistFiles([entry], options);
   }
 
-  async persistMedia(mediaFile, options = {}) {
-    const { fileObj } = mediaFile;
+  async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
+    const fileObj = mediaFile.fileObj as File;
 
     const [sha] = await Promise.all([
       getBlobSHA(fileObj),
-      this.api.persistFiles([mediaFile], options),
+      this.api!.persistFiles([mediaFile], options),
     ]);
 
     const url = URL.createObjectURL(fileObj);
@@ -289,24 +339,28 @@ export default class BitbucketBackend {
     return {
       displayURL: url,
       path: trimStart(mediaFile.path, '/k'),
-      name: fileObj.name,
-      size: fileObj.size,
+      name: fileObj!.name,
+      size: fileObj!.size,
       id: sha,
       file: fileObj,
       url,
     };
   }
 
-  deleteFile(path, commitMessage, options) {
-    return this.api.deleteFile(path, commitMessage, options);
+  deleteFile(path: string, commitMessage: string) {
+    return this.api!.deleteFile(path, commitMessage);
   }
 
-  traverseCursor(cursor, action) {
-    return this.api.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => ({
-      entries: await Promise.all(
-        entries.map(file => this.api.readFile(file.path, file.id).then(data => ({ file, data }))),
-      ),
-      cursor: newCursor,
-    }));
+  traverseCursor(cursor: CursorType, action: string) {
+    return this.api!.traverseCursor(cursor, action).then(
+      async ({ entries, cursor: newCursor }) => ({
+        entries: await Promise.all(
+          entries.map(file =>
+            this.api!.readFile(file.path, file.id).then(data => ({ file, data })),
+          ),
+        ),
+        cursor: newCursor,
+      }),
+    );
   }
 }
