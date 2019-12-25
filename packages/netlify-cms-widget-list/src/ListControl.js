@@ -79,6 +79,7 @@ export default class ListControl extends React.Component {
     onChange: PropTypes.func.isRequired,
     onChangeObject: PropTypes.func.isRequired,
     onValidateObject: PropTypes.func.isRequired,
+    validate: PropTypes.func.isRequired,
     value: ImmutablePropTypes.list,
     field: PropTypes.object,
     forID: PropTypes.string,
@@ -230,9 +231,13 @@ export default class ListControl extends React.Component {
   };
 
   validate = () => {
-    this.validations.forEach(validateListItem => {
-      validateListItem();
-    });
+    if (this.getValueType()) {
+      this.validations.forEach(validateListItem => {
+        validateListItem();
+      });
+    } else {
+      this.props.validate();
+    }
   };
 
   /**
