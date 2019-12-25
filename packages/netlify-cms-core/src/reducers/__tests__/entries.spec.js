@@ -5,7 +5,6 @@ import reducer, {
   selectMediaFilePath,
   selectMediaFilePublicPath,
 } from '../entries';
-import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 
 const initialState = OrderedMap({
   posts: Map({ name: 'posts' }),
@@ -73,33 +72,26 @@ describe('entries', () => {
   });
 
   describe('selectMediaFolder', () => {
-    it('should return global media folder when not in editorial workflow', () => {
-      expect(selectMediaFolder(Map({ media_folder: 'static/media' }))).toEqual('static/media');
-    });
-
-    it("should return global media folder when in editorial workflow and collection doesn't specify media_folder", () => {
+    it("should return global media folder when collection doesn't specify media_folder", () => {
       expect(
-        selectMediaFolder(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
-          Map({ name: 'posts' }),
-        ),
+        selectMediaFolder(Map({ media_folder: 'static/media' }), Map({ name: 'posts' })),
       ).toEqual('static/media');
     });
 
-    it('should return draft media folder when in editorial workflow, collection specifies media_folder and entry path is null', () => {
+    it('should return draft media folder when collection specifies media_folder and entry path is null', () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           null,
         ),
       ).toEqual('posts/DRAFT_MEDIA_FILES');
     });
 
-    it('should return relative media folder when in editorial workflow, collection specifies media_folder and entry path is not null', () => {
+    it('should return relative media folder when collection specifies media_folder and entry path is not null', () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           'posts/title/index.md',
         ),
@@ -109,7 +101,7 @@ describe('entries', () => {
     it('should resolve relative media folder', () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '../' }),
           'posts/title/index.md',
         ),
@@ -126,19 +118,14 @@ describe('entries', () => {
 
     it('should resolve path from global media folder when absolute path', () => {
       expect(
-        selectMediaFilePath(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
-          null,
-          null,
-          '/media/image.png',
-        ),
+        selectMediaFilePath(Map({ media_folder: 'static/media' }), null, null, '/media/image.png'),
       ).toBe('static/media/image.png');
     });
 
     it('should resolve path from global media folder when relative path for collection with no media folder', () => {
       expect(
         selectMediaFilePath(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts' }),
           null,
           'image.png',
@@ -149,7 +136,7 @@ describe('entries', () => {
     it('should resolve path from collection media folder when relative path for collection with media folder', () => {
       expect(
         selectMediaFilePath(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           null,
           'image.png',
@@ -160,7 +147,7 @@ describe('entries', () => {
     it('should handle relative media_folder', () => {
       expect(
         selectMediaFilePath(
-          Map({ media_folder: 'static/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
           'posts/title/index.md',
           'image.png',
@@ -176,26 +163,16 @@ describe('entries', () => {
       );
     });
 
-    it('should resolve path from public folder when not in editorial workflow', () => {
+    it('should resolve path from public folder for collection with no media folder', () => {
       expect(
         selectMediaFilePublicPath(Map({ public_folder: '/media' }), null, '/media/image.png'),
       ).toBe('/media/image.png');
     });
 
-    it('should resolve path from public folder when in editorial workflow for collection with no public folder', () => {
+    it('should resolve path from collection media folder for collection with public folder', () => {
       expect(
         selectMediaFilePublicPath(
-          Map({ public_folder: '/media', publish_mode: EDITORIAL_WORKFLOW }),
-          Map({ name: 'posts', folder: 'posts' }),
-          'image.png',
-        ),
-      ).toBe('/media/image.png');
-    });
-
-    it('should resolve path from collection media folder when in editorial workflow for collection with public folder', () => {
-      expect(
-        selectMediaFilePublicPath(
-          Map({ public_folder: '/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ public_folder: '/media' }),
           Map({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
         ),
@@ -205,7 +182,7 @@ describe('entries', () => {
     it('should handle relative public_folder', () => {
       expect(
         selectMediaFilePublicPath(
-          Map({ public_folder: '/media', publish_mode: EDITORIAL_WORKFLOW }),
+          Map({ public_folder: '/media' }),
           Map({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
         ),

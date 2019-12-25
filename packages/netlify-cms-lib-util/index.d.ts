@@ -1,4 +1,6 @@
 declare module 'netlify-cms-lib-util' {
+  import { List } from 'immutable';
+
   export const isAbsolutePath: (path: string) => boolean;
   export const basename: (path: string, extension?: string) => string;
 
@@ -14,13 +16,41 @@ declare module 'netlify-cms-lib-util' {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export const then: (fn: (...args: any[]) => T) => (p: Promise<T>) => T;
 
+  export type DisplayURLObject = { id: string; path: string };
+
+  export type DisplayURL =
+    | DisplayURLObject
+    | string
+    | { original: DisplayURL; path?: string; largeMedia?: string };
+
+  export interface ImplementationMediaFile {
+    name: string;
+    id: string;
+    size?: number;
+    displayURL?: DisplayURL;
+    path: string;
+    draft?: boolean;
+    url?: string;
+    file?: File;
+  }
+
+  export interface ImplementationEntry {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: string;
+    file: { path: string; label?: string; sha?: string | null };
+    slug?: string;
+    mediaFiles?: ImplementationMediaFile[];
+    metaData?: { collection: string };
+    isModification?: boolean;
+  }
+
   export type ApiRequest =
     | {
         url: string;
         params?: Record<string, string | boolean | number>;
         method?: 'POST';
         headers?: Record<string, string>;
-        body?: string;
+        body?: string | FormData;
         cache?: 'no-store';
       }
     | string;
@@ -58,6 +88,25 @@ declare module 'netlify-cms-lib-util' {
   export const CURSOR_COMPATIBILITY_SYMBOL = Symbol(
     'cursor key for compatibility with old backends',
   );
+
+  type CollectionFileFields = {
+    file: string;
+    label: string;
+  };
+
+  type CollectionFile = {
+    get<K extends keyof CollectionFileFields>(key: K): CollectionFileFields[K];
+  };
+
+  type CollectionFields = {
+    name: string;
+    folder?: string;
+    files?: List<CollectionFile>;
+  };
+
+  type Collection = {
+    get<K extends keyof CollectionFields>(key: K): CollectionFields[K];
+  };
 
   export class APIError extends Error {
     status: number;
@@ -103,8 +152,6 @@ declare module 'netlify-cms-lib-util' {
 
   export type Entry = { path: string; slug: string; raw: string };
 
-  export type DisplayURL = { id: string; path: string };
-
   export type PersistOptions = {
     newEntry?: boolean;
     parsedData?: { title: string; description: string };
@@ -124,8 +171,33 @@ declare module 'netlify-cms-lib-util' {
     authenticate: (credentials: Credentials) => Promise<User>;
     logout: () => Promise<void> | void | null;
     getToken: () => Promise<string | null>;
-    unpublishedEntry?: (collection: Collection, slug: string) => Promise<ImplementationEntry>;
+
     getEntry: (collection: Collection, slug: string, path: string) => Promise<ImplementationEntry>;
+    entriesByFolder: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
+    entriesByFiles: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
+
+    getMediaDisplayURL?: (displayURL: DisplayURL) => Promise<string>;
+    getMedia: (folder?: string) => Promise<ImplementationMediaFile[]>;
+    getMediaFile: (path: string) => Promise<ImplementationMediaFile>;
+
+    persistEntry: (obj: Entry, assetProxies: AssetProxy[], opts: PersistOptions) => Promise<void>;
+    persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
+    deleteFile: (path: string, commitMessage: string) => Promise<void>;
+
+    unpublishedEntries: () => Promise<ImplementationEntry[]>;
+    unpublishedEntry: (collection: Collection, slug: string) => Promise<ImplementationEntry>;
+    updateUnpublishedEntryStatus: (
+      collection: string,
+      slug: string,
+      newStatus: string,
+    ) => Promise<void>;
+    publishUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
+    deleteUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
+    getDeployPreview: (
+      collectionName: string,
+      slug: string,
+    ) => Promise<{ url: string; status: string } | null>;
+
     allEntriesByFolder?: (
       collection: Collection,
       extension: string,
@@ -134,26 +206,5 @@ declare module 'netlify-cms-lib-util' {
       cursor: CursorType,
       action: string,
     ) => Promise<{ entries: ImplementationEntry[]; cursor: CursorType }>;
-    entriesByFolder: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
-    entriesByFiles: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
-    unpublishedEntries?: () => Promise<ImplementationEntry[]>;
-    getMediaDisplayURL?: (displayURL: DisplayURL) => Promise<string>;
-    getMedia: (folder?: string) => Promise<MediaFile[]>;
-    getMediaFile: (path: string) => Promise<MediaFile>;
-    getDeployPreview?: (
-      collectionName: string,
-      slug: string,
-    ) => Promise<{ url: string; status: string } | null>;
-
-    persistEntry: (obj: Entry, assetProxies: AssetProxy[], opts: PersistOptions) => Promise<void>;
-    persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<MediaFile>;
-    deleteFile: (path: string, commitMessage: string) => Promise<void>;
-    updateUnpublishedEntryStatus?: (
-      collection: string,
-      slug: string,
-      newStatus: string,
-    ) => Promise<void>;
-    publishUnpublishedEntry?: (collection: string, slug: string) => Promise<void>;
-    deleteUnpublishedEntry?: (collection: string, slug: string) => Promise<void>;
   }
 }

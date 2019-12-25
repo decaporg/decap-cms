@@ -15,6 +15,7 @@ import {
   CursorType,
   Implementation,
   DisplayURL,
+  Collection,
 } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
@@ -254,16 +255,16 @@ export default class GitGateway implements Implementation {
     return this.tokenPromise!();
   }
 
-  entriesByFolder(collection: Map, extension: string) {
+  entriesByFolder(collection: Collection, extension: string) {
     return this.backend!.entriesByFolder(collection, extension);
   }
-  entriesByFiles(collection: Map) {
+  entriesByFiles(collection: Collection) {
     return this.backend!.entriesByFiles(collection);
   }
   fetchFiles(files: { path: string; sha: string | null }[]) {
     return this.backend!.fetchFiles(files);
   }
-  getEntry(collection: Map, slug: string, path: string) {
+  getEntry(collection: Collection, slug: string, path: string) {
     return this.backend!.getEntry(collection, slug, path);
   }
 
@@ -387,12 +388,7 @@ export default class GitGateway implements Implementation {
       .filter(({ path }) => client.matchPath(path))
       .map(({ id, path }) => ({ path, sha: id }));
 
-    const filesPromise = this.backend!.fetchFiles(largeMediaItems) as Promise<
-      {
-        file: { sha: string };
-        data: string;
-      }[]
-    >;
+    const filesPromise = this.backend!.fetchFiles(largeMediaItems);
 
     return filesPromise
       .then(items =>
@@ -452,6 +448,7 @@ export default class GitGateway implements Implementation {
       const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ path }]);
       const url = await client.getDownloadURL(Object.values(largeMediaDisplayURLs)[0]);
       return {
+        id: url,
         name: basename(path),
         path,
         url,
@@ -532,37 +529,24 @@ export default class GitGateway implements Implementation {
     return this.backend!.deleteFile(path, commitMessage);
   }
   async getDeployPreview(collection: string, slug: string) {
-    const backend = this.backend as GitHubBackend;
-    if (backend.getDeployPreview) {
-      return (this.backend as GitHubBackend).getDeployPreview(collection, slug);
-    }
-    return null;
+    return this.backend!.getDeployPreview(collection, slug);
   }
   unpublishedEntries() {
-    return (this.backend as GitHubBackend).unpublishedEntries();
+    return this.backend!.unpublishedEntries();
   }
-  unpublishedEntry(collection: Map, slug: string) {
-    const backend = this.backend as GitHubBackend;
-    if (!backend.unpublishedEntry) {
-      return Promise.resolve(false);
-    }
-
-    return backend.unpublishedEntry(collection, slug, {
+  unpublishedEntry(collection: Collection, slug: string) {
+    return this.backend!.unpublishedEntry(collection, slug, {
       loadEntryMediaFiles: files => this.loadEntryMediaFiles(files),
     });
   }
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    return (this.backend as GitHubBackend).updateUnpublishedEntryStatus(
-      collection,
-      slug,
-      newStatus,
-    );
+    return this.backend!.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
   deleteUnpublishedEntry(collection: string, slug: string) {
-    return (this.backend as GitHubBackend).deleteUnpublishedEntry(collection, slug);
+    return this.backend!.deleteUnpublishedEntry(collection, slug);
   }
   publishUnpublishedEntry(collection: string, slug: string) {
-    return (this.backend as GitHubBackend).publishUnpublishedEntry(collection, slug);
+    return this.backend!.publishUnpublishedEntry(collection, slug);
   }
   traverseCursor(cursor: CursorType, action: string) {
     return (this.backend as GitLabBackend | BitbucketBackend).traverseCursor!(cursor, action);

@@ -2,6 +2,7 @@ import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
 import { Map, List } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
+import { ImplementationMediaFile } from 'netlify-cms-lib-util';
 
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
@@ -36,7 +37,7 @@ type Pages = StaticallyTypedRecord<PagesObject>;
 
 type EntitiesObject = { [key: string]: EntryMap };
 
-type Entities = StaticallyTypedRecord<EntitiesObject>;
+export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
@@ -45,7 +46,10 @@ export type Entries = StaticallyTypedRecord<{
 
 export type Deploys = StaticallyTypedRecord<{}>;
 
-export type EditorialWorkflow = StaticallyTypedRecord<{}>;
+export type EditorialWorkflow = StaticallyTypedRecord<{
+  pages: Pages & PagesObject;
+  entities: Entities & EntitiesObject;
+}>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EntryObject = {
@@ -56,6 +60,7 @@ export type EntryObject = {
   collection: string;
   mediaFiles: List<MediaFileMap>;
   newRecord: boolean;
+  metaData: { status: string };
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
@@ -120,7 +125,7 @@ export type Collections = StaticallyTypedRecord<{ [path: string]: Collection & C
 
 export type Medias = StaticallyTypedRecord<{ [path: string]: AssetProxy | undefined }>;
 
-interface MediaLibraryInstance {
+export interface MediaLibraryInstance {
   show: (args: {
     id?: string;
     value?: string;
@@ -136,23 +141,17 @@ interface MediaLibraryInstance {
 
 export type DisplayURL = { id: string; path: string } | string;
 
-export interface MediaFile {
-  name: string;
-  id: string;
-  size?: number;
-  displayURL?: DisplayURL;
-  path: string;
-  draft?: boolean;
-  url?: string;
-}
+export type MediaFile = ImplementationMediaFile & { key?: string };
 
 export type MediaFileMap = StaticallyTypedRecord<MediaFile>;
 
-export type DisplayURLState = StaticallyTypedRecord<{
+type DisplayURLStateObject = {
   isFetching: boolean;
   url?: string;
   err?: Error;
-}>;
+};
+
+export type DisplayURLState = StaticallyTypedRecord<DisplayURLStateObject>;
 
 interface DisplayURLsObject {
   [id: string]: DisplayURLState;
@@ -261,4 +260,43 @@ export interface EntriesAction extends Action<string> {
 
 export interface CollectionsAction extends Action<string> {
   payload?: StaticallyTypedRecord<{ collections: List<Collection> }>;
+}
+
+export interface EditorialWorkflowAction extends Action<string> {
+  payload?: StaticallyTypedRecord<{ publish_mode: string }> & {
+    collection: string;
+    entry: { slug: string };
+  } & {
+    collection: string;
+    slug: string;
+  } & {
+    pages: [];
+    entries: { collection: string; slug: string }[];
+  } & {
+    collection: string;
+    entry: StaticallyTypedRecord<{ slug: string }>;
+  } & {
+    collection: string;
+    slug: string;
+    newStatus: string;
+  };
+}
+
+export interface MediaLibraryAction extends Action<string> {
+  payload: MediaLibraryInstance & {
+    controlID: string;
+    forImage: boolean;
+    privateUpload: boolean;
+  } & { mediaPath: string | string[] } & { page: number } & {
+    files: MediaFile[];
+    page: number;
+    canPaginate: boolean;
+    dynamicSearch: boolean;
+    dynamicSearchQuery: boolean;
+  } & {
+    file: MediaFile;
+    privateUpload: boolean;
+  } & {
+    file: { id: string; key: string; privateUpload: boolean };
+  } & { key: string } & { url: string } & { err: Error };
 }

@@ -18,11 +18,28 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
-} from 'Actions/mediaLibrary';
-import { selectEditingWorkflowDraft } from 'Reducers/editorialWorkflow';
-import { selectIntegration } from 'Reducers';
+} from '../actions/mediaLibrary';
+import { selectEditingDraft } from './entries';
+import { selectIntegration } from './';
+import {
+  State,
+  MediaLibraryAction,
+  MediaLibraryInstance,
+  MediaFile,
+  MediaFileMap,
+  DisplayURLState,
+} from '../types/redux';
 
-const defaultState = {
+const defaultState: {
+  isVisible: boolean;
+  showMediaButton: boolean;
+  controlMedia: Map<string, string>;
+  displayURLs: Map<string, string>;
+  externalLibrary?: MediaLibraryInstance;
+  controlID?: string;
+  page?: number;
+  files?: MediaFile[];
+} = {
   isVisible: false,
   showMediaButton: true,
   controlMedia: Map(),
@@ -30,7 +47,7 @@ const defaultState = {
   config: Map(),
 };
 
-const mediaLibrary = (state = Map(defaultState), action) => {
+const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => {
   switch (action.type) {
     case MEDIA_LIBRARY_CREATE:
       return state.withMutations(map => {
@@ -104,7 +121,7 @@ const mediaLibrary = (state = Map(defaultState), action) => {
         map.set('dynamicSearchQuery', dynamicSearchQuery);
         map.set('dynamicSearchActive', !!dynamicSearchQuery);
         if (page && page > 1) {
-          const updatedFiles = map.get('files').concat(filesWithKeys);
+          const updatedFiles = (map.get('files') as MediaFile[]).concat(filesWithKeys);
           map.set('files', updatedFiles);
         } else {
           map.set('files', filesWithKeys);
@@ -128,7 +145,8 @@ const mediaLibrary = (state = Map(defaultState), action) => {
       }
       return state.withMutations(map => {
         const fileWithKey = { ...file, key: uuid() };
-        const updatedFiles = [fileWithKey, ...map.get('files')];
+        const files = map.get('files') as MediaFile[];
+        const updatedFiles = [fileWithKey, ...files];
         map.set('files', updatedFiles);
         map.set('isPersisting', false);
       });
@@ -149,9 +167,8 @@ const mediaLibrary = (state = Map(defaultState), action) => {
         return state;
       }
       return state.withMutations(map => {
-        const updatedFiles = map
-          .get('files')
-          .filter(file => (key ? file.key !== key : file.id !== id));
+        const files = map.get('files') as MediaFile[];
+        const updatedFiles = files.filter(file => (key ? file.key !== key : file.id !== id));
         map.set('files', updatedFiles);
         map.deleteIn(['displayURLs', id]);
         map.set('isDeleting', false);
@@ -191,17 +208,17 @@ const mediaLibrary = (state = Map(defaultState), action) => {
   }
 };
 
-export function selectMediaFiles(state) {
+export function selectMediaFiles(state: State) {
   const { mediaLibrary, entryDraft } = state;
-  const workflowDraft = selectEditingWorkflowDraft(state);
+  const editingDraft = selectEditingDraft(state.entryDraft);
   const integration = selectIntegration(state, null, 'assetStore');
 
   let files;
-  if (workflowDraft && !integration) {
-    files = entryDraft
-      .getIn(['entry', 'mediaFiles'], List())
-      .toJS()
-      .map(file => ({ key: file.id, ...file }));
+  if (editingDraft && !integration) {
+    const entryFiles = entryDraft
+      .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
+      .toJS() as MediaFile[];
+    files = entryFiles.map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
   }
@@ -209,14 +226,17 @@ export function selectMediaFiles(state) {
   return files;
 }
 
-export function selectMediaFileByPath(state, path) {
+export function selectMediaFileByPath(state: State, path: string) {
   const files = selectMediaFiles(state);
   const file = files.find(file => file.path === path);
   return file;
 }
 
-export function selectMediaDisplayURL(state, id) {
-  const displayUrlState = state.mediaLibrary.getIn(['displayURLs', id], Map());
+export function selectMediaDisplayURL(state: State, id: string) {
+  const displayUrlState = state.mediaLibrary.getIn(
+    ['displayURLs', id],
+    (Map() as unknown) as DisplayURLState,
+  );
   return displayUrlState;
 }
 

@@ -65,13 +65,13 @@ export interface Entry extends LibEntry {
 
 type UnpublishedBranchInput = {
   metaData: Promise<Metadata>;
-  fileData: Promise<string | Blob>;
+  fileData: Promise<string>;
   isModification: Promise<boolean>;
 };
 
 export type UnpublishedBranchResult = {
   metaData: Metadata;
-  fileData: string | Blob;
+  fileData: string;
   isModification: boolean;
 };
 
@@ -545,11 +545,12 @@ export default class API {
       : this.repoURL;
     return resolvePromiseProperties<UnpublishedBranchInput, UnpublishedBranchResult>({
       metaData: metaDataPromise,
-      fileData: metaDataPromise.then(data =>
-        this.readFile(data.objects.entry.path, null, {
-          branch: data.branch,
-          repoURL,
-        }),
+      fileData: metaDataPromise.then(
+        data =>
+          this.readFile(data.objects.entry.path, null, {
+            branch: data.branch,
+            repoURL,
+          }) as Promise<string>,
       ),
       isModification: metaDataPromise.then(data =>
         this.isUnpublishedEntryModification(data.objects.entry.path, this.branch),

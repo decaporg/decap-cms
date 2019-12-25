@@ -3,7 +3,7 @@ import { List } from 'immutable';
 import { stripIndent } from 'common-tags';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
-import { selectMediaFilePath, selectMediaFolder } from './reducers/entries';
+import { selectMediaFilePath, selectMediaFolder, selectEditingDraft } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
   selectListMethod,
@@ -26,6 +26,8 @@ import {
   EditorialWorkflowError,
   Implementation as BackendImplementation,
   DisplayURL,
+  ImplementationEntry,
+  ImplementationMediaFile,
 } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from './constants/publishModes';
 import {
@@ -42,13 +44,12 @@ import {
   SlugConfig,
   FilterRule,
   Collections,
-  MediaFile,
   EntryDraft,
   CollectionFile,
   State,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
-import { selectEditingWorkflowDraft } from './reducers/editorialWorkflow';
+import { selectMediaFiles } from './reducers/mediaLibrary';
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -154,16 +155,6 @@ function createPreviewUrl(
   return `${basePath}/${previewPath}`;
 }
 
-interface ImplementationEntry {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
-  file: { path: string; label: string };
-  metaData: { collection: string };
-  isModification?: boolean;
-  slug: string;
-  mediaFiles: MediaFile[];
-}
-
 type Credentials = {};
 
 interface User {
@@ -185,18 +176,10 @@ interface BackendOptions {
   config?: Config;
 }
 
-interface BackupMediaFile extends MediaFile {
-  file?: File;
-}
-
-export interface ImplementationMediaFile extends MediaFile {
-  file?: File;
-}
-
 interface BackupEntry {
   raw: string;
   path: string;
-  mediaFiles: BackupMediaFile[];
+  mediaFiles: ImplementationMediaFile[];
 }
 
 interface PersistArgs {
@@ -509,11 +492,11 @@ export class Backend {
       return;
     }
 
-    const mediaFiles = await Promise.all<BackupMediaFile>(
+    const mediaFiles = await Promise.all<ImplementationMediaFile>(
       entry
         .get('mediaFiles')
         .toJS()
-        .map(async (file: MediaFile) => {
+        .map(async (file: ImplementationMediaFile) => {
           // make sure to serialize the file
           if (file.url?.startsWith('blob:')) {
             const blob = await fetch(file.url as string).then(res => res.blob());
@@ -547,14 +530,14 @@ export class Backend {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
 
-    const workflowDraft = selectEditingWorkflowDraft(state);
+    const editingDraft = selectEditingDraft(state.entryDraft);
     const integration = selectIntegration(state.integrations, null, 'assetStore');
 
     const [loadedEntry, mediaFiles] = await Promise.all([
       this.implementation.getEntry(collection, slug, path),
-      workflowDraft && !integration
+      editingDraft && !integration
         ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
-        : Promise.resolve([]),
+        : Promise.resolve(selectMediaFiles(state)),
     ]);
 
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
@@ -599,15 +582,14 @@ export class Backend {
 
   unpublishedEntries(collections: Collections) {
     return this.implementation.unpublishedEntries!()
-      .then(loadedEntries => loadedEntries.filter(entry => entry !== null))
       .then(entries =>
         entries.map(loadedEntry => {
-          const collectionName = loadedEntry.metaData.collection;
+          const collectionName = loadedEntry.metaData!.collection;
           const collection = collections.find(c => c.get('name') === collectionName);
           const entry = createEntry(collectionName, loadedEntry.slug, loadedEntry.file.path, {
             raw: loadedEntry.data,
             isModification: loadedEntry.isModification,
-            label: selectFileEntryLabel(collection, loadedEntry.slug),
+            label: selectFileEntryLabel(collection, loadedEntry.slug!),
           });
           entry.metaData = loadedEntry.metaData;
           return entry;

@@ -11,6 +11,10 @@ import {
   AssetProxy,
   Map,
   PersistOptions,
+  ImplementationEntry,
+  DisplayURL,
+  DisplayURLObject,
+  Collection,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
@@ -18,8 +22,9 @@ import {
   UsersGetAuthenticatedResponse as GitHubUser,
   ReposListStatusesForRefResponseItem as GitHubCommitStatus,
 } from '@octokit/rest';
-import API, { Entry, UnpublishedBranchResult, Metadata } from './API';
+import API, { Entry, UnpublishedBranchResult } from './API';
 import GraphQLAPI from './GraphQLAPI';
+import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -304,9 +309,9 @@ export default class GitHub implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  async entriesByFolder(collection: Map, extension: string) {
+  async entriesByFolder(collection: Collection, extension: string) {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
-    const files = await this.api!.listFiles(collection.get('folder'), {
+    const files = await this.api!.listFiles(collection.get('folder') as string, {
       repoURL,
       depth: getCollectionDepth(collection),
     });
@@ -314,13 +319,16 @@ export default class GitHub implements Implementation {
     return this.fetchFiles(filteredFiles, { repoURL });
   }
 
-  entriesByFiles(collection: Map) {
+  entriesByFiles(collection: Collection) {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
-    const files = collection.get<Map[]>('files').map(collectionFile => ({
-      path: collectionFile.get<string>('file'),
-      label: collectionFile.get<string>('label'),
-      sha: null,
-    }));
+    const files = collection
+      .get('files')!
+      .map(collectionFile => ({
+        path: collectionFile!.get('file'),
+        label: collectionFile!.get('label'),
+        sha: null,
+      }))
+      .toArray();
     return this.fetchFiles(files, { repoURL });
   }
 
@@ -329,17 +337,14 @@ export default class GitHub implements Implementation {
     { repoURL = this.api!.repoURL } = {},
   ) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [] as Promise<
-      | { file: { path: string; sha?: string | null }; data: string | Blob; error?: boolean }
-      | { error: boolean }
-    >[];
+    const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
     files.forEach(file => {
       promises.push(
         new Promise(resolve =>
           sem.take(() =>
             this.api!.readFile(file.path, file.sha, { repoURL })
               .then(data => {
-                resolve({ file, data });
+                resolve({ file, data: data as string, error: false });
                 sem.leave();
               })
               .catch((err = true) => {
@@ -352,16 +357,16 @@ export default class GitHub implements Implementation {
       );
     });
     return Promise.all(promises).then(loadedEntries =>
-      loadedEntries.filter(loadedEntry => !loadedEntry.error),
-    );
+      loadedEntries.filter(loadedEntry => !((loadedEntry as unknown) as { error: boolean }).error),
+    ) as Promise<ImplementationEntry[]>;
   };
 
   // Fetches a single entry.
-  getEntry(collection: Map, slug: string, path: string) {
+  getEntry(collection: Collection, slug: string, path: string) {
     const repoURL = this.api!.originRepoURL;
     return this.api!.readFile(path, null, { repoURL }).then(data => ({
       file: { path },
-      data,
+      data: data as string,
     }));
   }
 
@@ -381,8 +386,10 @@ export default class GitHub implements Implementation {
     const name = basename(path);
     const fileObj = new File([blob], name);
     const url = URL.createObjectURL(fileObj);
+    const id = await getBlobSHA(blob);
 
     return {
+      id,
       displayURL: url,
       path,
       name,
@@ -392,8 +399,8 @@ export default class GitHub implements Implementation {
     };
   }
 
-  async getMediaDisplayURL(displayURL: { id: string; path: string }) {
-    const { id, path } = displayURL;
+  async getMediaDisplayURL(displayURL: DisplayURL) {
+    const { id, path } = displayURL as DisplayURLObject;
     const mediaURL = await this.api!.getMediaDisplayURL(id, path);
     return mediaURL;
   }
@@ -453,13 +460,7 @@ export default class GitHub implements Implementation {
     return this.api!.listUnpublishedBranches()
       .then(branches => {
         const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-        const promises = [] as Promise<null | {
-          slug: string;
-          file: { path: string };
-          data: string | Blob;
-          metaData: Metadata;
-          isModification: boolean;
-        }>[];
+        const promises = [] as Promise<null | ImplementationEntry>[];
         branches.map(({ ref }) => {
           promises.push(
             new Promise(resolve => {
@@ -489,32 +490,31 @@ export default class GitHub implements Implementation {
             }),
           );
         });
-        return Promise.all(promises);
+        return Promise.all(promises).then(entries =>
+          entries.filter(entry => entry !== null),
+        ) as Promise<ImplementationEntry[]>;
       })
       .catch(error => {
         if (error.message === 'Not Found') {
-          return Promise.resolve([]);
+          return Promise.resolve([] as ImplementationEntry[]);
         }
         return Promise.reject(error);
       });
   }
 
   async unpublishedEntry(
-    collection: Map,
+    collection: Collection,
     slug: string,
     { loadEntryMediaFiles = (files: []) => this.loadEntryMediaFiles(files) } = {},
   ) {
     const contentKey = this.api!.generateContentKey(collection.get('name'), slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    if (!data) {
-      return null;
-    }
     const files = get(data, 'metaData.objects.files', []);
     const mediaFiles = await loadEntryMediaFiles(files);
     return {
       slug,
       file: { path: data.metaData.objects.entry.path },
-      data: data.fileData,
+      data: data.fileData as string,
       metaData: data.metaData,
       mediaFiles,
       isModification: data.isModification,

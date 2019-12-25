@@ -6,6 +6,7 @@ import { once } from 'lodash';
 import { getMediaLibrary } from './lib/registry';
 import store from './redux';
 import { createMediaLibrary, insertMedia } from './actions/mediaLibrary';
+import { MediaLibraryInstance } from './types/redux';
 
 type MediaLibraryOptions = {};
 
@@ -14,14 +15,6 @@ interface MediaLibrary {
     options: MediaLibraryOptions;
     handleInsert: (url: string) => void;
   }) => MediaLibraryInstance;
-}
-
-export interface MediaLibraryInstance {
-  show?: () => void;
-  hide?: () => void;
-  onClearControl?: (args: { id: string }) => void;
-  onRemoveControl?: (args: { id: string }) => void;
-  enableStandalone?: () => boolean;
 }
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {

@@ -1,6 +1,5 @@
 jest.mock('netlify-cms-core/src/backend');
 import { fromJS } from 'immutable';
-import { partial } from 'lodash';
 import { oneLine, stripIndent } from 'common-tags';
 import nock from 'nock';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -286,16 +285,6 @@ describe('gitlab backend', () => {
     });
   }
 
-  it('throws if configuration requires editorial workflow', () => {
-    const resolveBackendWithWorkflow = partial(resolveBackend, {
-      ...defaultConfig,
-      publish_mode: 'editorial_workflow',
-    });
-    expect(resolveBackendWithWorkflow).toThrowErrorMatchingInlineSnapshot(
-      `"The GitLab backend does not support the Editorial Workflow."`,
-    );
-  });
-
   it('throws if configuration does not include repo', () => {
     expect(resolveBackend).toThrowErrorMatchingInlineSnapshot(
       `"The GitLab backend needs a \\"repo\\" in the backend configuration."`,
@@ -382,7 +371,12 @@ describe('gitlab backend', () => {
       interceptCollection(backend, collectionContentConfig);
 
       const entry = await backend.getEntry(
-        { config: fromJS({}), integrations: fromJS([]), entryDraft: fromJS({}) },
+        {
+          config: fromJS({}),
+          integrations: fromJS([]),
+          entryDraft: fromJS({}),
+          mediaLibrary: fromJS({}),
+        },
         fromJS(collectionContentConfig),
         slug,
       );

@@ -7,7 +7,7 @@ import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import { Cursor } from 'netlify-cms-lib-util';
+import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
@@ -23,7 +23,7 @@ import {
 } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, Dispatch } from 'redux';
-import { waitForMediaLibraryToLoad } from './mediaLibrary';
+import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 
 const { notifSend } = notifActions;
@@ -261,7 +261,7 @@ export function loadLocalBackup() {
   };
 }
 
-export function addDraftEntryMediaFile(file: MediaFile) {
+export function addDraftEntryMediaFile(file: ImplementationMediaFile) {
   return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
 
@@ -625,6 +625,10 @@ export function persistEntry(collection: Collection) {
             dismissAfter: 4000,
           }),
         );
+        // re-load media library if entry had media files
+        if (assetProxies.length > 0) {
+          dispatch(loadMedia());
+        }
         dispatch(entryPersisted(collection, serializedEntry, slug));
       })
       .catch((error: Error) => {

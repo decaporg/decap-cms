@@ -7,7 +7,7 @@ import mediaLibrary, {
 } from '../mediaLibrary';
 
 jest.mock('uuid/v4');
-jest.mock('Reducers/editorialWorkflow');
+jest.mock('Reducers/entries');
 jest.mock('Reducers');
 
 describe('mediaLibrary', () => {
@@ -43,10 +43,10 @@ describe('mediaLibrary', () => {
     );
   });
 
-  it('should select draft media files when editing a workflow draft', () => {
-    const { selectEditingWorkflowDraft } = require('Reducers/editorialWorkflow');
+  it('should select draft media files when editing a draft', () => {
+    const { selectEditingDraft } = require('Reducers/entries');
 
-    selectEditingWorkflowDraft.mockReturnValue(true);
+    selectEditingDraft.mockReturnValue(true);
 
     const state = {
       entryDraft: fromJS({ entry: { mediaFiles: [{ id: 1 }] } }),
@@ -55,10 +55,10 @@ describe('mediaLibrary', () => {
     expect(selectMediaFiles(state)).toEqual([{ key: 1, id: 1 }]);
   });
 
-  it('should select global media files when not editing a workflow draft', () => {
-    const { selectEditingWorkflowDraft } = require('Reducers/editorialWorkflow');
+  it('should select global media files when not editing a draft', () => {
+    const { selectEditingDraft } = require('Reducers/entries');
 
-    selectEditingWorkflowDraft.mockReturnValue(false);
+    selectEditingDraft.mockReturnValue(false);
 
     const state = {
       mediaLibrary: Map({ files: [{ id: 1 }] }),
@@ -80,9 +80,9 @@ describe('mediaLibrary', () => {
   });
 
   it('should return media file by path', () => {
-    const { selectEditingWorkflowDraft } = require('Reducers/editorialWorkflow');
+    const { selectEditingDraft } = require('Reducers/entries');
 
-    selectEditingWorkflowDraft.mockReturnValue(false);
+    selectEditingDraft.mockReturnValue(false);
 
     const state = {
       mediaLibrary: Map({ files: [{ id: 1, path: 'path' }] }),

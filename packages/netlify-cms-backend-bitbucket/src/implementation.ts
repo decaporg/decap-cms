@@ -18,6 +18,10 @@ import {
   PersistOptions,
   DisplayURL,
   Implementation,
+  ImplementationEntry,
+  DisplayURLObject,
+  EditorialWorkflowError,
+  Collection,
 } from 'netlify-cms-lib-util';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -207,9 +211,9 @@ export default class BitbucketBackend implements Implementation {
     ])(req);
   };
 
-  entriesByFolder(collection: Map, extension: string) {
+  entriesByFolder(collection: Collection, extension: string) {
     const listPromise = this.api!.listFiles(
-      collection.get('folder'),
+      collection.get('folder') as string,
       getCollectionDepth(collection),
     );
     return resolvePromiseProperties<
@@ -229,30 +233,29 @@ export default class BitbucketBackend implements Implementation {
     });
   }
 
-  allEntriesByFolder(collection: Map, extension: string) {
-    return this.api!.listAllFiles(collection.get('folder'), getCollectionDepth(collection))
+  allEntriesByFolder(collection: Collection, extension: string) {
+    return this.api!.listAllFiles(
+      collection.get('folder') as string,
+      getCollectionDepth(collection),
+    )
       .then(filterByPropExtension(extension, 'path'))
       .then(this.fetchFiles);
   }
 
-  entriesByFiles(collection: Map) {
-    const files = collection.get<Map[]>('files').map(collectionFile => ({
-      path: collectionFile.get<string>('file'),
-      label: collectionFile.get<string>('label'),
-    }));
+  entriesByFiles(collection: Collection) {
+    const files = collection
+      .get('files')!
+      .map(collectionFile => ({
+        path: collectionFile!.get('file'),
+        label: collectionFile!.get('label'),
+      }))
+      .toArray();
     return this.fetchFiles(files);
   }
 
   fetchFiles = (files: { path: string; id?: string }[]) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [] as Promise<
-      | {
-          file: { path: string; id?: string };
-          data: string;
-          error?: boolean;
-        }
-      | { error: boolean }
-    >[];
+    const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
     files.forEach(file => {
       promises.push(
         new Promise(resolve =>
@@ -272,14 +275,14 @@ export default class BitbucketBackend implements Implementation {
       );
     });
     return Promise.all(promises).then(loadedEntries =>
-      loadedEntries.filter(loadedEntry => !loadedEntry.error),
-    );
+      loadedEntries.filter(loadedEntry => !((loadedEntry as unknown) as { error: boolean }).error),
+    ) as Promise<ImplementationEntry[]>;
   };
 
-  getEntry(collection: Map, slug: string, path: string) {
+  getEntry(collection: Collection, slug: string, path: string) {
     return this.api!.readFile(path).then(data => ({
       file: { path },
-      data,
+      data: data as string,
     }));
   }
 
@@ -295,7 +298,7 @@ export default class BitbucketBackend implements Implementation {
 
   getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const { id, path } = displayURL;
+    const { id, path } = displayURL as DisplayURLObject;
     return new Promise<string>((resolve, reject) =>
       this._mediaDisplayURLSem!.take(() =>
         this.getMediaAsBlob(path, id)
@@ -311,8 +314,10 @@ export default class BitbucketBackend implements Implementation {
     const blob = await this.getMediaAsBlob(path, null);
     const fileObj = new File([blob], name);
     const url = URL.createObjectURL(fileObj);
+    const id = await getBlobSHA(fileObj);
 
     return {
+      id,
       displayURL: url,
       path,
       name,
@@ -323,13 +328,13 @@ export default class BitbucketBackend implements Implementation {
   }
 
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
-    await this.api!.persistFiles([entry], options);
+    await this.api!.persistFiles([entry, ...mediaFiles], options);
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
     const fileObj = mediaFile.fileObj as File;
 
-    const [sha] = await Promise.all([
+    const [id] = await Promise.all([
       getBlobSHA(fileObj),
       this.api!.persistFiles([mediaFile], options),
     ]);
@@ -341,7 +346,7 @@ export default class BitbucketBackend implements Implementation {
       path: trimStart(mediaFile.path, '/k'),
       name: fileObj!.name,
       size: fileObj!.size,
-      id: sha,
+      id,
       file: fileObj,
       url,
     };
@@ -356,11 +361,38 @@ export default class BitbucketBackend implements Implementation {
       async ({ entries, cursor: newCursor }) => ({
         entries: await Promise.all(
           entries.map(file =>
-            this.api!.readFile(file.path, file.id).then(data => ({ file, data })),
+            this.api!.readFile(file.path, file.id).then(data => ({ file, data: data as string })),
           ),
         ),
         cursor: newCursor,
       }),
     );
+  }
+
+  async unpublishedEntries() {
+    return [];
+  }
+
+  async unpublishedEntry(collection: Collection, slug: string) {
+    if (collection) {
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+    }
+    return { data: '', file: { path: '' } };
+  }
+
+  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    return;
+  }
+
+  async publishUnpublishedEntry(collection: string, slug: string) {
+    return;
+  }
+
+  async deleteUnpublishedEntry(collection: string, slug: string) {
+    return;
+  }
+
+  async getDeployPreview(collectionName: string, slug: string) {
+    return null;
   }
 }

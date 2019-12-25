@@ -29,6 +29,7 @@ interface CommitAuthor {
 }
 
 interface BitBucketFile {
+  id: string;
   type: string;
   path: string;
   commit?: { hash: string };
@@ -96,6 +97,7 @@ export default class API {
 
   isFile = ({ type }: BitBucketFile) => type === 'commit_file';
   processFile = (file: BitBucketFile) => ({
+    id: file.id,
     type: file.type,
     path: file.path,
     name: basename(file.path),
@@ -175,7 +177,7 @@ export default class API {
     action: string,
   ): Promise<{
     cursor: CursorType;
-    entries: { path: string; name: string; type: string; id?: string }[];
+    entries: { path: string; name: string; type: string; id: string }[];
   }> =>
     flow([
       this.requestJSON,
@@ -201,15 +203,14 @@ export default class API {
     return this.processFiles(entries);
   };
 
-  uploadBlob = (
-    item: Entry | AssetProxy,
-    { commitMessage = '' }: PersistOptions,
-  ): Promise<{ path: string }> => {
-    const contentBlob = get(item, 'fileObj', new Blob([(item as Entry).raw]));
+  async persistFiles(files: (Entry | AssetProxy)[], { commitMessage }: PersistOptions) {
     const formData = new FormData();
-    // Third param is filename header, in case path is `message`, `branch`, etc.
-    formData.append(item.path, contentBlob, basename(item.path));
-    formData.append('branch', this.branch);
+    files.forEach(file => {
+      const contentBlob = get(file, 'fileObj', new Blob([(file as Entry).raw]));
+      // Third param is filename header, in case path is `message`, `branch`, etc.
+      formData.append(file.path, contentBlob, basename(file.path));
+      formData.append('branch', this.branch);
+    });
     if (commitMessage) {
       formData.append('message', commitMessage);
     }
@@ -218,16 +219,16 @@ export default class API {
       formData.append('author', `${name} <${email}>`);
     }
 
-    return flow([
-      unsentRequest.withMethod('POST'),
-      unsentRequest.withBody(formData),
-      this.request,
-      then(() => ({ ...item })),
-    ])(`${this.repoURL}/src`);
-  };
+    const response = await this.request({
+      url: `${this.repoURL}/src`,
+      method: 'POST',
+      body: formData,
+    });
 
-  persistFiles = (files: (Entry | AssetProxy)[], { commitMessage }: PersistOptions) =>
-    Promise.all(files.map(file => this.uploadBlob(file, { commitMessage })));
+    console.log(JSON.stringify(response, null, 2));
+
+    return files;
+  }
 
   deleteFile = (path: string, message: string) => {
     const body = new FormData();

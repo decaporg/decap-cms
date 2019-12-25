@@ -33,10 +33,10 @@ interface CommitsParams {
   author_name?: string;
   author_email?: string;
   actions?: {
-    action: 'update' | 'create';
+    action: string;
     file_path: string;
     content: string;
-    encoding: 'base64';
+    encoding: string;
   }[];
 }
 
@@ -286,44 +286,48 @@ export default class API {
 
   toBase64 = (str: string) => Promise.resolve(Base64.encode(str));
   fromBase64 = (str: string) => Base64.decode(str);
-  uploadAndCommit = async (
-    item: Entry | AssetProxy,
-    { commitMessage = '', updateFile = false, branch = this.branch, author = this.commitAuthor },
-  ) => {
-    const content = await result(item, 'toBase64', partial(this.toBase64, (item as Entry).raw));
+
+  async uploadAndCommit(files: (Entry | AssetProxy)[], { commitMessage = '', updateFile = false }) {
     const action = updateFile ? 'update' : 'create';
+    const actions = await Promise.all(
+      files.map(item =>
+        result(item, 'toBase64', partial(this.toBase64, (item as Entry).raw)).then(content => ({
+          action,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          file_path: trimStart(item.path, '/'),
+          content,
+          encoding: 'base64',
+        })),
+      ),
+    );
 
     const commitParams: CommitsParams = {
-      branch,
+      branch: this.branch,
       // eslint-disable-next-line @typescript-eslint/camelcase
       commit_message: commitMessage,
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      actions: [{ action, file_path: trimStart(item.path, '/'), content, encoding: 'base64' }],
+      actions,
     };
-    if (author) {
-      const { name, email } = author;
+    if (this.commitAuthor) {
+      const { name, email } = this.commitAuthor;
       // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_name = name;
       // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_email = email;
     }
 
-    const response = await this.requestJSON({
+    await this.requestJSON({
       url: `${this.repoURL}/repository/commits`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(commitParams),
     });
 
-    return { ...item, sha: response.id };
-  };
+    return files;
+  }
 
-  persistFiles = (files: (Entry | AssetProxy)[], { commitMessage, newEntry }: PersistOptions) =>
-    Promise.all(
-      files.map(file =>
-        this.uploadAndCommit(file, { commitMessage, updateFile: newEntry === false }),
-      ),
-    );
+  persistFiles(files: (Entry | AssetProxy)[], { commitMessage, newEntry }: PersistOptions) {
+    return this.uploadAndCommit(files, { commitMessage, updateFile: newEntry === false });
+  }
 
   deleteFile = (path: string, commitMessage: string) => {
     const branch = this.branch;
