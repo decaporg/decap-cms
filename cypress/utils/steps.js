@@ -184,22 +184,7 @@ function selectDropdownItem(label, item) {
     });
 }
 
-function populateEntry(entry) {
-  const keys = Object.keys(entry);
-  for (let key of keys) {
-    const value = entry[key];
-    if (key === 'body') {
-      cy.getMarkdownEditor()
-        .click()
-        .clear()
-        .type(value);
-    } else {
-      cy.get(`[id^="${key}-field"]`)
-        .clear()
-        .type(value);
-    }
-  }
-
+function flushClockAndSave() {
   cy.clock().then(clock => {
     // some input fields are de-bounced thus require advancing the clock
     if (clock) {
@@ -216,6 +201,25 @@ function populateEntry(entry) {
     cy.contains('button', 'Save').click();
     assertNotification(notifications.saved);
   });
+}
+
+function populateEntry(entry) {
+  const keys = Object.keys(entry);
+  for (let key of keys) {
+    const value = entry[key];
+    if (key === 'body') {
+      cy.getMarkdownEditor()
+        .click()
+        .clear()
+        .type(value);
+    } else {
+      cy.get(`[id^="${key}-field"]`)
+        .clear()
+        .type(value);
+    }
+  }
+
+  flushClockAndSave();
 }
 
 function newPost() {
@@ -257,7 +261,7 @@ function unpublishEntry(entry) {
 function duplicateEntry(entry) {
   selectDropdownItem('Published', 'Duplicate');
   cy.url().should('contain', '/#/collections/posts/new');
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   updateWorkflowStatusInEditor(editorStatus.ready);
   publishEntryInEditor(publishTypes.publishNow);
   exitEditor();
