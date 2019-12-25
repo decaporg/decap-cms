@@ -318,10 +318,10 @@ export class Editor extends React.Component {
     return navigateToCollection(collection.get('name'));
   };
 
-  handleDuplicateEntry = async () => {
+  handleDuplicateEntry = () => {
     const { createDraftDuplicateFromEntry, collection, entryDraft } = this.props;
 
-    await navigateToNewEntry(collection.get('name'));
+    navigateToNewEntry(collection.get('name'));
     createDraftDuplicateFromEntry(entryDraft.get('entry'));
   };
 

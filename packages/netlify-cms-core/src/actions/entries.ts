@@ -24,6 +24,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, Dispatch } from 'redux';
 import { waitForMediaLibraryToLoad } from './mediaLibrary';
+import { waitUntil } from './waitUntil';
 
 const { notifSend } = notifActions;
 
@@ -215,7 +216,7 @@ export function createDraftFromEntry(entry: EntryMap, metadata?: Map<string, unk
   };
 }
 
-export function createDraftDuplicateFromEntry(entry: EntryMap) {
+export function draftDuplicateEntry(entry: EntryMap) {
   return {
     type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
     payload: createEntry(entry.get('collection'), '', '', { data: entry.get('data') }),
@@ -274,6 +275,17 @@ export function persistLocalBackup(entry: EntryMap, collection: Collection) {
     const backend = currentBackend(state.config);
 
     return backend.persistLocalDraftBackup(entry, collection);
+  };
+}
+
+export function createDraftDuplicateFromEntry(entry: EntryMap) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
+    dispatch(
+      waitUntil({
+        predicate: ({ type }) => type === DRAFT_CREATE_EMPTY,
+        run: () => dispatch(draftDuplicateEntry(entry)),
+      }),
+    );
   };
 }
 
