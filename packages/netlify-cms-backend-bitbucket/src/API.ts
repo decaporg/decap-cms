@@ -219,13 +219,11 @@ export default class API {
       formData.append('author', `${name} <${email}>`);
     }
 
-    const response = await this.request({
+    await this.request({
       url: `${this.repoURL}/src`,
       method: 'POST',
       body: formData,
     });
-
-    console.log(JSON.stringify(response, null, 2));
 
     return files;
   }
