@@ -143,7 +143,7 @@ export default class API {
   readFile = async (
     path: string,
     sha?: string | null,
-    { ref = this.branch, parseText = true } = {},
+    { parseText = true } = {},
   ): Promise<string | Blob> => {
     const cacheKey = parseText ? `gl.${sha}` : `gl.${sha}.blob`;
     const cachedFile = sha ? await localForage.getItem<string | Blob>(cacheKey) : null;
@@ -152,7 +152,7 @@ export default class API {
     }
     const result = await this.request({
       url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`,
-      params: { ref },
+      params: { ref: this.branch },
       cache: 'no-store',
     }).then(parseText ? this.responseToText : this.responseToBlob);
     if (sha) {

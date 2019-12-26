@@ -132,9 +132,9 @@ describe('github backend implementation', () => {
   });
 
   describe('loadEntryMediaFiles', () => {
-    const getMediaAsBlob = jest.fn();
+    const readFile = jest.fn();
     const mockAPI = {
-      getMediaAsBlob,
+      readFile,
     };
 
     it('should return media files from meta data', async () => {
@@ -142,7 +142,7 @@ describe('github backend implementation', () => {
       gitHubImplementation.api = mockAPI;
 
       const blob = new Blob(['']);
-      getMediaAsBlob.mockResolvedValue(blob);
+      readFile.mockResolvedValue(blob);
 
       const file = new File([blob], name);
 
@@ -191,7 +191,7 @@ describe('github backend implementation', () => {
       const collection = { get: jest.fn().mockReturnValue('posts') };
       await expect(gitHubImplementation.unpublishedEntry(collection, 'slug')).resolves.toEqual({
         slug: 'slug',
-        file: { path: 'entry-path' },
+        file: { path: 'entry-path', id: null },
         data: 'fileData',
         metaData: { objects: { entry: { path: 'entry-path' }, files: [{ path: 'image.png' }] } },
         mediaFiles: [{ path: 'image.png', sha: 'sha' }],

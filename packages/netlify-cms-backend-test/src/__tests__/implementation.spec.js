@@ -17,8 +17,8 @@ describe('test backend implementation', () => {
 
       const backend = new TestBackend();
 
-      await expect(backend.getEntry(null, null, 'posts/some-post.md')).resolves.toEqual({
-        file: { path: 'posts/some-post.md' },
+      await expect(backend.getEntry('posts/some-post.md')).resolves.toEqual({
+        file: { path: 'posts/some-post.md', id: null },
         data: 'post content',
       });
     });
@@ -38,8 +38,8 @@ describe('test backend implementation', () => {
 
       const backend = new TestBackend();
 
-      await expect(backend.getEntry(null, null, 'posts/dir1/dir2/some-post.md')).resolves.toEqual({
-        file: { path: 'posts/dir1/dir2/some-post.md' },
+      await expect(backend.getEntry('posts/dir1/dir2/some-post.md')).resolves.toEqual({
+        file: { path: 'posts/dir1/dir2/some-post.md', id: null },
         data: 'post content',
       });
     });
@@ -224,31 +224,31 @@ describe('test backend implementation', () => {
 
       expect(getFolderEntries(tree, 'pages', 'md', 1)).toEqual([
         {
-          file: { path: 'pages/root-page.md' },
+          file: { path: 'pages/root-page.md', id: null },
           data: 'root page content',
         },
       ]);
       expect(getFolderEntries(tree, 'pages', 'md', 2)).toEqual([
         {
-          file: { path: 'pages/dir1/nested-page-1.md' },
+          file: { path: 'pages/dir1/nested-page-1.md', id: null },
           data: 'nested page 1 content',
         },
         {
-          file: { path: 'pages/root-page.md' },
+          file: { path: 'pages/root-page.md', id: null },
           data: 'root page content',
         },
       ]);
       expect(getFolderEntries(tree, 'pages', 'md', 3)).toEqual([
         {
-          file: { path: 'pages/dir1/dir2/nested-page-2.md' },
+          file: { path: 'pages/dir1/dir2/nested-page-2.md', id: null },
           data: 'nested page 2 content',
         },
         {
-          file: { path: 'pages/dir1/nested-page-1.md' },
+          file: { path: 'pages/dir1/nested-page-1.md', id: null },
           data: 'nested page 1 content',
         },
         {
-          file: { path: 'pages/root-page.md' },
+          file: { path: 'pages/root-page.md', id: null },
           data: 'root page content',
         },
       ]);

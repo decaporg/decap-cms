@@ -392,7 +392,11 @@ export default class GitGateway implements Implementation {
           .map(({ id, path }) => ({ path, id })),
       );
 
-    const filesPromise = entriesByFiles(listFiles, this.api!.readFile, 'Git-Gateway');
+    const filesPromise = entriesByFiles(
+      listFiles,
+      this.api!.readFile.bind(this.api!),
+      'Git-Gateway',
+    );
 
     return filesPromise
       .then(items =>

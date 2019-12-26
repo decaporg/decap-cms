@@ -1,6 +1,5 @@
-import { parseLinkHeader, getAllResponses, getCollectionDepth } from '../backendUtil';
+import { parseLinkHeader, getAllResponses, getPathDepth } from '../backendUtil';
 import { oneLine } from 'common-tags';
-import { Map } from 'immutable';
 import nock from 'nock';
 
 describe('parseLinkHeader', () => {
@@ -71,12 +70,12 @@ describe('getAllResponses', () => {
   });
 });
 
-describe('getCollectionDepth', () => {
-  it('should return 1 for collection with no path', () => {
-    expect(getCollectionDepth(Map({}))).toBe(1);
+describe('getPathDepth', () => {
+  it('should return 1 for empty string', () => {
+    expect(getPathDepth('')).toBe(1);
   });
 
-  it('should return 2 for collection with path of one nested folder', () => {
-    expect(getCollectionDepth(Map({ path: '{{year}}/{{slug}}' }))).toBe(2);
+  it('should return 2 for path of one nested folder', () => {
+    expect(getPathDepth('{{year}}/{{slug}}')).toBe(2);
   });
 });

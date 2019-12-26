@@ -131,7 +131,7 @@ export default class GitLab implements Implementation {
         return files.filter(file => this.filterFile(folder, file, extension, depth));
       });
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile, 'GitLab');
+    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'GitLab');
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
@@ -147,7 +147,7 @@ export default class GitLab implements Implementation {
         files.filter(file => this.filterFile(folder, file, extension, depth)),
       );
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile, 'GitLab');
+    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'GitLab');
     return files;
   }
 
@@ -164,7 +164,7 @@ export default class GitLab implements Implementation {
           .toArray(),
       );
 
-    const files = await entriesByFiles(listFiles, this.api!.readFile, 'GitLab');
+    const files = await entriesByFiles(listFiles, this.api!.readFile.bind(this.api!), 'GitLab');
     return files;
   }
 
@@ -186,12 +186,16 @@ export default class GitLab implements Implementation {
 
   getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    return getMediaDisplayURL(displayURL, this.api!.readFile, this._mediaDisplayURLSem);
+    return getMediaDisplayURL(
+      displayURL,
+      this.api!.readFile.bind(this.api!),
+      this._mediaDisplayURLSem,
+    );
   }
 
   async getMediaFile(path: string) {
     const name = basename(path);
-    const blob = await getMediaAsBlob(path, null, this.api!.readFile);
+    const blob = await getMediaAsBlob(path, null, this.api!.readFile.bind(this.api!));
     const fileObj = new File([blob], name);
     const url = URL.createObjectURL(fileObj);
     const id = await getBlobSHA(blob);

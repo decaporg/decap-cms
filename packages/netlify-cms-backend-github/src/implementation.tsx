@@ -371,7 +371,7 @@ export default class GitHub implements Implementation {
   }
 
   async getMediaFile(path: string) {
-    const blob = await getMediaAsBlob(path, null, this.api!.readFile);
+    const blob = await getMediaAsBlob(path, null, this.api!.readFile.bind(this.api!));
 
     const name = basename(path);
     const fileObj = new File([blob], name);
@@ -391,7 +391,11 @@ export default class GitHub implements Implementation {
 
   getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    return getMediaDisplayURL(displayURL, this.api!.readFile, this._mediaDisplayURLSem);
+    return getMediaDisplayURL(
+      displayURL,
+      this.api!.readFile.bind(this.api!),
+      this._mediaDisplayURLSem,
+    );
   }
 
   persistEntry(entry: Entry, mediaFiles: AssetProxy[] = [], options: PersistOptions) {
@@ -425,7 +429,7 @@ export default class GitHub implements Implementation {
   }
 
   loadMediaFile(file: { sha: string; path: string }) {
-    return getMediaAsBlob(file.path, file.sha, this.api!.readFile).then(blob => {
+    return getMediaAsBlob(file.path, file.sha, this.api!.readFile.bind(this.api!)).then(blob => {
       const name = basename(file.path);
       const fileObj = new File([blob], name);
       return {

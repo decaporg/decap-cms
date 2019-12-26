@@ -337,7 +337,15 @@ export default class TestBackend implements Implementation {
     const { name, size } = fileObj;
     const objectUrl = attempt(window.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
-    const normalizedAsset = { id: uuid(), name, size, path: assetProxy.path, url, displayURL: url };
+    const normalizedAsset = {
+      id: uuid(),
+      name,
+      size,
+      path: assetProxy.path,
+      url,
+      displayURL: url,
+      fileObj,
+    };
 
     return normalizedAsset;
   }

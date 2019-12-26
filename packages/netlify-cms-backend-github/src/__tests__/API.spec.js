@@ -159,60 +159,6 @@ describe('github API', () => {
     });
   });
 
-  describe('getMediaAsBlob', () => {
-    it('should return response blob on non svg file', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/repo' });
-
-      const blob = {};
-      api.readFile = jest.fn().mockResolvedValue(blob);
-
-      await expect(api.getMediaAsBlob('sha', 'static/media/image.png')).resolves.toBe(blob);
-
-      expect(api.readFile).toHaveBeenCalledTimes(1);
-      expect(api.readFile).toHaveBeenCalledWith('static/media/image.png', 'sha', {
-        parseText: false,
-      });
-    });
-
-    it('should return text blob on svg file', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/repo' });
-
-      const text = 'svg';
-      api.readFile = jest.fn().mockResolvedValue(text);
-
-      await expect(api.getMediaAsBlob('sha', 'static/media/logo.svg')).resolves.toEqual(
-        new Blob([text], { type: 'image/svg+xml' }),
-      );
-
-      expect(api.readFile).toHaveBeenCalledTimes(1);
-      expect(api.readFile).toHaveBeenCalledWith('static/media/logo.svg', 'sha', {
-        parseText: true,
-      });
-    });
-  });
-
-  describe('getMediaDisplayURL', () => {
-    it('should return createObjectURL result', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/repo' });
-
-      const blob = {};
-      api.getMediaAsBlob = jest.fn().mockResolvedValue(blob);
-      global.URL.createObjectURL = jest
-        .fn()
-        .mockResolvedValue('blob:http://localhost:8080/blob-id');
-
-      await expect(api.getMediaDisplayURL('sha', 'static/media/image.png')).resolves.toBe(
-        'blob:http://localhost:8080/blob-id',
-      );
-
-      expect(api.getMediaAsBlob).toHaveBeenCalledTimes(1);
-      expect(api.getMediaAsBlob).toHaveBeenCalledWith('sha', 'static/media/image.png');
-
-      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(1);
-      expect(global.URL.createObjectURL).toHaveBeenCalledWith(blob);
-    });
-  });
-
   describe('persistFiles', () => {
     it('should update tree, commit and patch branch when useWorkflow is false', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });

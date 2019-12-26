@@ -226,7 +226,7 @@ export default class BitbucketBackend implements Implementation {
         return filterByPropExtension(extension, 'path')(entries);
       });
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile, 'BitBucket');
+    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'BitBucket');
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
@@ -241,7 +241,7 @@ export default class BitbucketBackend implements Implementation {
         getPathDepth(collection.get('path', '') as string),
       ).then(filterByPropExtension(extension, 'path'));
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile, 'BitBucket');
+    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'BitBucket');
     return files;
   }
 
@@ -258,7 +258,7 @@ export default class BitbucketBackend implements Implementation {
           .toArray(),
       );
 
-    const files = await entriesByFiles(listFiles, this.api!.readFile, 'BitBucket');
+    const files = await entriesByFiles(listFiles, this.api!.readFile.bind(this.api!), 'BitBucket');
     return files;
   }
 
@@ -277,12 +277,16 @@ export default class BitbucketBackend implements Implementation {
 
   getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    return getMediaDisplayURL(displayURL, this.api!.readFile, this._mediaDisplayURLSem);
+    return getMediaDisplayURL(
+      displayURL,
+      this.api!.readFile.bind(this.api!),
+      this._mediaDisplayURLSem,
+    );
   }
 
   async getMediaFile(path: string) {
     const name = basename(path);
-    const blob = await getMediaAsBlob(path, null, this.api!.readFile);
+    const blob = await getMediaAsBlob(path, null, this.api!.readFile.bind(this.api!));
     const fileObj = new File([blob], name);
     const url = URL.createObjectURL(fileObj);
     const id = await getBlobSHA(fileObj);

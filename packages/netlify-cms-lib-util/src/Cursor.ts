@@ -96,11 +96,11 @@ export default class Cursor {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore(...args: any[]) {
-    return new Cursor(this.store!.update(args));
+    return new Cursor(this.store!.update(...args));
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateInStore(...args: any[]) {
-    return new Cursor(this.store!.updateIn(args));
+    return new Cursor(this.store!.updateIn(...args));
   }
 
   hasAction(action: string) {
