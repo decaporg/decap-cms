@@ -5,19 +5,23 @@ import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
-  getCollectionDepth,
-  Map,
+  getPathDepth,
   Entry,
   AssetProxy,
   PersistOptions,
-  CursorType,
+  Cursor,
   Implementation,
   DisplayURL,
-  ImplementationEntry,
-  DisplayURLObject,
   EditorialWorkflowError,
   Collection,
+  entriesByFolder,
+  entriesByFiles,
+  getMediaDisplayURL,
+  getMediaAsBlob,
+  User,
+  Credentials,
 } from 'netlify-cms-lib-util';
+import { Map } from 'immutable';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
@@ -25,7 +29,7 @@ import { getBlobSHA } from 'netlify-cms-lib-util/src';
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitLab implements Implementation {
-  config: Map;
+  config: Map<string, string>;
   api: API | null;
   options: {
     proxied: boolean;
@@ -39,7 +43,7 @@ export default class GitLab implements Implementation {
 
   _mediaDisplayURLSem?: Semaphore;
 
-  constructor(config: Map, options = {}) {
+  constructor(config: Map<string, string>, options = {}) {
     this.config = config;
     this.options = {
       proxied: false,
@@ -63,12 +67,12 @@ export default class GitLab implements Implementation {
     return AuthenticationPage;
   }
 
-  restoreUser(user: { token: string }) {
+  restoreUser(user: User) {
     return this.authenticate(user);
   }
 
-  async authenticate(state: { token: string }) {
-    this.token = state.token;
+  async authenticate(state: Credentials) {
+    this.token = state.token as string;
     this.api = new API({
       token: this.token,
       branch: this.branch,
@@ -93,7 +97,7 @@ export default class GitLab implements Implementation {
     }
 
     // Authorized user
-    return { ...user, login: user.username, token: state.token };
+    return { ...user, login: user.username, token: state.token as string };
   }
 
   async logout() {
@@ -116,80 +120,63 @@ export default class GitLab implements Implementation {
     return file.name.endsWith('.' + extension) && fileFolder.split('/').length <= depth;
   }
 
-  entriesByFolder(collection: Collection, extension: string) {
-    const depth = getCollectionDepth(collection);
+  async entriesByFolder(collection: Collection, extension: string) {
+    let cursor: Cursor;
+    const depth = getPathDepth(collection.get('path', '') as string);
     const folder = collection.get('folder') as string;
-    return this.api!.listFiles(folder, depth > 1).then(({ files, cursor }) =>
-      this.fetchFiles(files.filter(file => this.filterFile(folder, file, extension, depth))).then(
-        fetchedFiles => {
-          const returnedFiles = fetchedFiles;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-          // @ts-ignore
-          returnedFiles[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
-          return returnedFiles;
-        },
-      ),
-    );
+
+    const listFiles = () =>
+      this.api!.listFiles(folder, depth > 1).then(({ files, cursor: c }) => {
+        cursor = c;
+        return files.filter(file => this.filterFile(folder, file, extension, depth));
+      });
+
+    const files = await entriesByFolder(listFiles, this.api!.readFile, 'GitLab');
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+    return files;
   }
 
-  allEntriesByFolder(collection: Collection, extension: string) {
-    const depth = getCollectionDepth(collection);
+  async allEntriesByFolder(collection: Collection, extension: string) {
+    const depth = getPathDepth(collection.get('path', '') as string);
     const folder = collection.get('folder') as string;
-    return this.api!.listAllFiles(folder, depth > 1).then(files =>
-      this.fetchFiles(files.filter(file => this.filterFile(folder, file, extension, depth))),
-    );
-  }
 
-  entriesByFiles(collection: Collection) {
-    const files = collection
-      .get('files')!
-      .map(collectionFile => ({
-        path: collectionFile!.get('file'),
-        label: collectionFile!.get('label'),
-      }))
-      .toArray();
-
-    return this.fetchFiles(files).then(fetchedFiles => {
-      const returnedFiles = fetchedFiles;
-      return returnedFiles;
-    });
-  }
-
-  fetchFiles = (files: { path: string; id?: string }[]) => {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [] as Promise<ImplementationEntry | { error: Error }>[];
-    files.forEach(file => {
-      promises.push(
-        new Promise(resolve =>
-          sem.take(() =>
-            this.api!.readFile(file.path, file.id)
-              .then(data => {
-                resolve({ file, data: data as string });
-                sem.leave();
-              })
-              .catch((error = true) => {
-                sem.leave();
-                console.error(`failed to load file from GitLab: ${file.path}`);
-                resolve({ error });
-              }),
-          ),
-        ),
+    const listFiles = () =>
+      this.api!.listAllFiles(folder, depth > 1).then(files =>
+        files.filter(file => this.filterFile(folder, file, extension, depth)),
       );
-    });
-    return Promise.all(promises).then(loadedEntries =>
-      loadedEntries.filter(loadedEntry => !((loadedEntry as unknown) as { error: boolean }).error),
-    ) as Promise<ImplementationEntry[]>;
-  };
+
+    const files = await entriesByFolder(listFiles, this.api!.readFile, 'GitLab');
+    return files;
+  }
+
+  async entriesByFiles(collection: Collection) {
+    const listFiles = () =>
+      Promise.resolve(
+        collection
+          .get('files')!
+          .map(collectionFile => ({
+            path: collectionFile!.get('file'),
+            label: collectionFile!.get('label'),
+            id: null,
+          }))
+          .toArray(),
+      );
+
+    const files = await entriesByFiles(listFiles, this.api!.readFile, 'GitLab');
+    return files;
+  }
 
   // Fetches a single entry.
   getEntry(path: string) {
     return this.api!.readFile(path).then(data => ({
-      file: { path },
+      file: { path, id: null },
       data: data as string,
     }));
   }
 
-  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+  getMedia(mediaFolder = this.config.get('media_folder')) {
     return this.api!.listAllFiles(mediaFolder).then(files =>
       files.map(({ id, name, path }) => {
         return { id, name, path, displayURL: { id, name, path } };
@@ -197,32 +184,14 @@ export default class GitLab implements Implementation {
     );
   }
 
-  async getMediaAsBlob(path: string, id: string | null) {
-    let blob = (await this.api!.readFile(path, id, { parseText: false })) as Blob;
-    // svgs are returned with mimetype "text/plain" by gitlab
-    if (blob.type === 'text/plain' && path.match(/\.svg$/i)) {
-      blob = new window.Blob([blob], { type: 'image/svg+xml' });
-    }
-
-    return blob;
-  }
-
   getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const { id, path } = displayURL as DisplayURLObject;
-    return new Promise<string>((resolve, reject) =>
-      this._mediaDisplayURLSem!.take(() =>
-        this.getMediaAsBlob(path, id)
-          .then(blob => URL.createObjectURL(blob))
-          .then(resolve, reject)
-          .finally(() => this._mediaDisplayURLSem!.leave()),
-      ),
-    );
+    return getMediaDisplayURL(displayURL, this.api!.readFile, this._mediaDisplayURLSem);
   }
 
   async getMediaFile(path: string) {
     const name = basename(path);
-    const blob = await this.getMediaAsBlob(path, null);
+    const blob = await getMediaAsBlob(path, null, this.api!.readFile);
     const fileObj = new File([blob], name);
     const url = URL.createObjectURL(fileObj);
     const id = await getBlobSHA(blob);
@@ -268,7 +237,7 @@ export default class GitLab implements Implementation {
     return this.api!.deleteFile(path, commitMessage);
   }
 
-  traverseCursor(cursor: CursorType, action: string) {
+  traverseCursor(cursor: Cursor, action: string) {
     return this.api!.traverseCursor(cursor, action).then(
       async ({ entries, cursor: newCursor }) => ({
         entries: await Promise.all(
@@ -289,7 +258,7 @@ export default class GitLab implements Implementation {
     if (collection) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
-    return { data: '', file: { path: '' } };
+    return { data: '', file: { path: '', id: null } };
   }
 
   async updateUnpublishedEntryStatus(_collection: string, _slug: string, _newStatus: string) {

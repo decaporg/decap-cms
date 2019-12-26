@@ -1,29 +1,34 @@
 import * as React from 'react';
+import semaphore, { Semaphore } from 'semaphore';
 import trimStart from 'lodash/trimStart';
-import semaphore from 'semaphore';
 import { stripIndent } from 'common-tags';
 import {
   asyncLock,
   basename,
-  getCollectionDepth,
+  getPathDepth,
   AsyncLock,
   Implementation,
   AssetProxy,
-  Map,
   PersistOptions,
-  ImplementationEntry,
   DisplayURL,
-  DisplayURLObject,
   Collection,
   getBlobSHA,
+  entriesByFolder,
+  entriesByFiles,
+  unpublishedEntries,
+  User,
+  getMediaDisplayURL,
+  getMediaAsBlob,
+  Credentials,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
+import { Map } from 'immutable';
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
   ReposListStatusesForRefResponseItem as GitHubCommitStatus,
 } from '@octokit/rest';
-import API, { Entry, UnpublishedBranchResult } from './API';
+import API, { Entry } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -49,8 +54,8 @@ function isPreviewContext(context: string, previewContext: string) {
  * Retrieve a deploy preview URL from an array of statuses. By default, a
  * matching status is inferred via `isPreviewContext`.
  */
-function getPreviewStatus(statuses: GitHubCommitStatus[], config: Map) {
-  const previewContext = config.getIn<string>(['backend', 'preview_context']);
+function getPreviewStatus(statuses: GitHubCommitStatus[], config: Map<string, string>) {
+  const previewContext = config.getIn(['backend', 'preview_context']);
   return statuses.find(({ context }) => {
     return isPreviewContext(context, previewContext);
   });
@@ -59,7 +64,7 @@ function getPreviewStatus(statuses: GitHubCommitStatus[], config: Map) {
 export default class GitHub implements Implementation {
   lock: AsyncLock;
   api: API | null;
-  config: Map;
+  config: Map<string, string>;
   options: {
     proxied: boolean;
     API: API | null;
@@ -79,8 +84,9 @@ export default class GitHub implements Implementation {
   _userIsOriginMaintainerPromises?: {
     [key: string]: Promise<boolean>;
   };
+  _mediaDisplayURLSem?: Semaphore;
 
-  constructor(config: Map, options = {}) {
+  constructor(config: Map<string, string>, options = {}) {
     this.config = config;
     this.options = {
       proxied: false,
@@ -136,7 +142,7 @@ export default class GitHub implements Implementation {
     return wrappedAuthenticationPage;
   }
 
-  restoreUser(user: { token: string }) {
+  restoreUser(user: User) {
     return this.openAuthoringEnabled
       ? this.authenticateWithFork({ userData: user, getPermissionToFork: () => true }).then(() =>
           this.authenticate(user),
@@ -231,13 +237,13 @@ export default class GitHub implements Implementation {
     userData,
     getPermissionToFork,
   }: {
-    userData: { token: string };
+    userData: User;
     getPermissionToFork: () => Promise<boolean> | boolean;
   }) {
     if (!this.openAuthoringEnabled) {
       throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
     }
-    const { token } = userData;
+    const token = userData.token as string;
 
     // Origin maintainers should be able to use the CMS normally
     if (await this.userIsOriginMaintainer({ token })) {
@@ -261,8 +267,8 @@ export default class GitHub implements Implementation {
     return this.pollUntilForkExists({ repo: fork.full_name, token });
   }
 
-  async authenticate(state: { token: string }) {
-    this.token = state.token;
+  async authenticate(state: Credentials) {
+    this.token = state.token as string;
     const apiCtor = this.useGraphql ? GraphQLAPI : API;
     this.api = new apiCtor({
       token: this.token,
@@ -295,7 +301,7 @@ export default class GitHub implements Implementation {
     }
 
     // Authorized user
-    return { ...user, token: state.token, useOpenAuthoring: this.useOpenAuthoring };
+    return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };
   }
 
   logout() {
@@ -311,77 +317,61 @@ export default class GitHub implements Implementation {
 
   async entriesByFolder(collection: Collection, extension: string) {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
-    const files = await this.api!.listFiles(collection.get('folder') as string, {
-      repoURL,
-      depth: getCollectionDepth(collection),
-    });
-    const filteredFiles = files.filter(file => file.name.endsWith('.' + extension));
-    return this.fetchFiles(filteredFiles, { repoURL });
+
+    const listFiles = () =>
+      this.api!.listFiles(collection.get('folder') as string, {
+        repoURL,
+        depth: getPathDepth(collection.get('path', '') as string),
+      }).then(files => files.filter(file => file.name.endsWith('.' + extension)));
+
+    const readFile = (path: string, id: string | null) =>
+      this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+
+    return entriesByFolder(listFiles, readFile, 'GitHub');
   }
 
   entriesByFiles(collection: Collection) {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
-    const files = collection
-      .get('files')!
-      .map(collectionFile => ({
-        path: collectionFile!.get('file'),
-        label: collectionFile!.get('label'),
-        sha: null,
-      }))
-      .toArray();
-    return this.fetchFiles(files, { repoURL });
-  }
 
-  fetchFiles = (
-    files: { path: string; sha?: string | null }[],
-    { repoURL = this.api!.repoURL } = {},
-  ) => {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
-    files.forEach(file => {
-      promises.push(
-        new Promise(resolve =>
-          sem.take(() =>
-            this.api!.readFile(file.path, file.sha, { repoURL })
-              .then(data => {
-                resolve({ file, data: data as string, error: false });
-                sem.leave();
-              })
-              .catch((err = true) => {
-                sem.leave();
-                console.error(`failed to load file from GitHub: ${file.path}`);
-                resolve({ error: err });
-              }),
-          ),
-        ),
+    const listFiles = () =>
+      Promise.resolve(
+        collection
+          .get('files')!
+          .map(collectionFile => ({
+            path: collectionFile!.get('file'),
+            label: collectionFile!.get('label'),
+            id: null,
+          }))
+          .toArray(),
       );
-    });
-    return Promise.all(promises).then(loadedEntries =>
-      loadedEntries.filter(loadedEntry => !((loadedEntry as unknown) as { error: boolean }).error),
-    ) as Promise<ImplementationEntry[]>;
-  };
+
+    const readFile = (path: string, id: string | null) =>
+      this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+
+    return entriesByFiles(listFiles, readFile, 'GitHub');
+  }
 
   // Fetches a single entry.
   getEntry(path: string) {
     const repoURL = this.api!.originRepoURL;
     return this.api!.readFile(path, null, { repoURL }).then(data => ({
-      file: { path },
+      file: { path, id: null },
       data: data as string,
     }));
   }
 
-  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+  getMedia(mediaFolder = this.config.get('media_folder')) {
     return this.api!.listFiles(mediaFolder).then(files =>
-      files.map(({ sha, name, size, path }) => {
+      files.map(({ id, name, size, path }) => {
         // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
         // for private repositories
-        return { id: sha, name, size, displayURL: { id: sha, path }, path };
+        return { id, name, size, displayURL: { id, path }, path };
       }),
     );
   }
 
   async getMediaFile(path: string) {
-    const blob = await this.api!.getMediaAsBlob(null, path);
+    const blob = await getMediaAsBlob(path, null, this.api!.readFile);
 
     const name = basename(path);
     const fileObj = new File([blob], name);
@@ -399,10 +389,9 @@ export default class GitHub implements Implementation {
     };
   }
 
-  async getMediaDisplayURL(displayURL: DisplayURL) {
-    const { id, path } = displayURL as DisplayURLObject;
-    const mediaURL = await this.api!.getMediaDisplayURL(id, path);
-    return mediaURL;
+  getMediaDisplayURL(displayURL: DisplayURL) {
+    this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
+    return getMediaDisplayURL(displayURL, this.api!.readFile, this._mediaDisplayURLSem);
   }
 
   persistEntry(entry: Entry, mediaFiles: AssetProxy[] = [], options: PersistOptions) {
@@ -435,8 +424,8 @@ export default class GitHub implements Implementation {
     return this.api!.deleteFile(path, commitMessage);
   }
 
-  async loadMediaFile(file: { sha: string; path: string }) {
-    return this.api!.getMediaAsBlob(file.sha, file.path).then(blob => {
+  loadMediaFile(file: { sha: string; path: string }) {
+    return getMediaAsBlob(file.path, file.sha, this.api!.readFile).then(blob => {
       const name = basename(file.path);
       const fileObj = new File([blob], name);
       return {
@@ -457,49 +446,15 @@ export default class GitHub implements Implementation {
   }
 
   unpublishedEntries() {
-    return this.api!.listUnpublishedBranches()
-      .then(branches => {
-        const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-        const promises = [] as Promise<null | ImplementationEntry>[];
-        branches.map(({ ref }) => {
-          promises.push(
-            new Promise(resolve => {
-              const contentKey = this.api!.contentKeyFromRef(ref);
-              return sem.take(() =>
-                this.api!.readUnpublishedBranchFile(contentKey)
-                  .then((data: UnpublishedBranchResult) => {
-                    if (data === null || data === undefined) {
-                      resolve(null);
-                      sem.leave();
-                    } else {
-                      resolve({
-                        slug: this.api!.slugFromContentKey(contentKey, data.metaData.collection),
-                        file: { path: data.metaData.objects.entry.path },
-                        data: data.fileData,
-                        metaData: data.metaData,
-                        isModification: data.isModification,
-                      });
-                      sem.leave();
-                    }
-                  })
-                  .catch(() => {
-                    sem.leave();
-                    resolve(null);
-                  }),
-              );
-            }),
-          );
-        });
-        return Promise.all(promises).then(entries =>
-          entries.filter(entry => entry !== null),
-        ) as Promise<ImplementationEntry[]>;
-      })
-      .catch(error => {
-        if (error.message === 'Not Found') {
-          return Promise.resolve([] as ImplementationEntry[]);
-        }
-        return Promise.reject(error);
-      });
+    const listEntriesKeys = () =>
+      this.api!.listUnpublishedBranches().then(branches =>
+        branches.map(({ ref }) => this.api!.contentKeyFromRef(ref)),
+      );
+
+    const readUnpublishedBranchFile = (contentKey: string) =>
+      this.api!.readUnpublishedBranchFile(contentKey);
+
+    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, 'GitHub');
   }
 
   async unpublishedEntry(
@@ -513,7 +468,7 @@ export default class GitHub implements Implementation {
     const mediaFiles = await loadEntryMediaFiles(files);
     return {
       slug,
-      file: { path: data.metaData.objects.entry.path },
+      file: { path: data.metaData.objects.entry.path, id: null },
       data: data.fileData as string,
       metaData: data.metaData,
       mediaFiles,

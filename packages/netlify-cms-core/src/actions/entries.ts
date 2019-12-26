@@ -108,7 +108,7 @@ export function entriesLoaded(
   collection: Collection,
   entries: EntryValue[],
   pagination: number | null,
-  cursor: typeof Cursor,
+  cursor: Cursor,
   append = true,
 ) {
   return {
@@ -351,7 +351,7 @@ const appendActions = fromJS({
   ['append_next']: { action: 'next', append: true },
 });
 
-const addAppendActionsToCursor = (cursor: typeof Cursor) => {
+const addAppendActionsToCursor = (cursor: Cursor) => {
   return Cursor.create(cursor).updateStore('actions', (actions: Set<string>) => {
     return actions.union(
       appendActions
@@ -393,11 +393,11 @@ export function loadEntries(collection: Collection, page = 0) {
             })
           : Cursor.create(response.cursor),
       }))
-      .then((response: { cursor: typeof Cursor; pagination: number; entries: EntryValue[] }) =>
+      .then((response: { cursor: Cursor; pagination: number; entries: EntryValue[] }) =>
         dispatch(
           entriesLoaded(
             collection,
-            response.cursor.meta.get('usingOldPaginationAPI')
+            response.cursor.meta!.get('usingOldPaginationAPI')
               ? response.entries.reverse()
               : response.entries,
             response.pagination,
@@ -422,8 +422,8 @@ export function loadEntries(collection: Collection, page = 0) {
   };
 }
 
-function traverseCursor(backend: Backend, cursor: typeof Cursor, action: string) {
-  if (!cursor.actions.has(action)) {
+function traverseCursor(backend: Backend, cursor: Cursor, action: string) {
+  if (!cursor.actions!.has(action)) {
     throw new Error(`The current cursor does not support the pagination action "${action}".`);
   }
   return backend.traverseCursor(cursor, action);
@@ -445,8 +445,8 @@ export function traverseCollectionCursor(collection: Collection, action: string)
 
     // Handle cursors representing pages in the old, integer-based
     // pagination API
-    if (cursor.meta.get('usingOldPaginationAPI', false)) {
-      return dispatch(loadEntries(collection, cursor.data.get('nextPage')));
+    if (cursor.meta!.get('usingOldPaginationAPI', false)) {
+      return dispatch(loadEntries(collection, cursor.data!.get('nextPage') as number));
     }
 
     try {

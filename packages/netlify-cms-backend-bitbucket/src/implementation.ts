@@ -4,25 +4,28 @@ import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   filterByPropExtension,
-  resolvePromiseProperties,
   then,
   unsentRequest,
   basename,
   getBlobSHA,
-  getCollectionDepth,
+  getPathDepth,
   Entry,
-  Map,
   ApiRequest,
-  CursorType,
+  Cursor,
   AssetProxy,
   PersistOptions,
   DisplayURL,
   Implementation,
-  ImplementationEntry,
-  DisplayURLObject,
   EditorialWorkflowError,
+  entriesByFolder,
+  entriesByFiles,
+  User,
   Collection,
+  Credentials,
+  getMediaDisplayURL,
+  getMediaAsBlob,
 } from 'netlify-cms-lib-util';
+import { Map } from 'immutable';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
@@ -31,7 +34,7 @@ const MAX_CONCURRENT_DOWNLOADS = 10;
 
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
-  config: Map;
+  config: Map<string, string>;
   api: API | null;
   updateUserCredentials: (args: { token: string; refresh_token: string }) => Promise<null>;
   options: {
@@ -52,7 +55,7 @@ export default class BitbucketBackend implements Implementation {
   auth?: unknown;
   _mediaDisplayURLSem?: Semaphore;
 
-  constructor(config: Map, options = {}) {
+  constructor(config: Map<string, string>, options = {}) {
     this.config = config;
     this.options = {
       proxied: false,
@@ -94,12 +97,12 @@ export default class BitbucketBackend implements Implementation {
     });
   }
 
-  restoreUser(user: { token: string; refresh_token: string }) {
+  restoreUser(user: User) {
     return this.authenticate(user);
   }
 
-  async authenticate(state: { token: string; refresh_token: string }) {
-    this.token = state.token;
+  async authenticate(state: Credentials) {
+    this.token = state.token as string;
     this.refreshToken = state.refresh_token;
     this.api = new API({
       requestFunction: this.apiRequestFunction,
@@ -192,7 +195,7 @@ export default class BitbucketBackend implements Implementation {
         req: ApiRequest,
       ) => ApiRequest,
       unsentRequest.performRequest,
-      then(async res => {
+      then(async (res: Response) => {
         if (res.status === 401) {
           const json = await res.json().catch(() => null);
           if (json && json.type === 'error' && /^access token expired/i.test(json.error.message)) {
@@ -211,107 +214,75 @@ export default class BitbucketBackend implements Implementation {
     ])(req);
   };
 
-  entriesByFolder(collection: Collection, extension: string) {
-    const listPromise = this.api!.listFiles(
-      collection.get('folder') as string,
-      getCollectionDepth(collection),
-    );
-    return resolvePromiseProperties<
-      { files: Promise<{}[]>; cursor: Promise<CursorType> },
-      { files: []; cursor: CursorType }
-    >({
-      files: listPromise
-        .then(({ entries }) => entries)
-        .then(filterByPropExtension(extension, 'path'))
-        .then(this.fetchFiles),
-      cursor: listPromise.then(({ cursor }) => cursor),
-    }).then(({ files, cursor }) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
-      return files;
-    });
+  async entriesByFolder(collection: Collection, extension: string) {
+    let cursor: Cursor;
+
+    const listFiles = () =>
+      this.api!.listFiles(
+        collection.get('folder') as string,
+        getPathDepth(collection.get('path', '') as string),
+      ).then(({ entries, cursor: c }) => {
+        cursor = c;
+        return filterByPropExtension(extension, 'path')(entries);
+      });
+
+    const files = await entriesByFolder(listFiles, this.api!.readFile, 'BitBucket');
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+    return files;
   }
 
-  allEntriesByFolder(collection: Collection, extension: string) {
-    return this.api!.listAllFiles(
-      collection.get('folder') as string,
-      getCollectionDepth(collection),
-    )
-      .then(filterByPropExtension(extension, 'path'))
-      .then(this.fetchFiles);
+  async allEntriesByFolder(collection: Collection, extension: string) {
+    const listFiles = () =>
+      this.api!.listAllFiles(
+        collection.get('folder') as string,
+        getPathDepth(collection.get('path', '') as string),
+      ).then(filterByPropExtension(extension, 'path'));
+
+    const files = await entriesByFolder(listFiles, this.api!.readFile, 'BitBucket');
+    return files;
   }
 
-  entriesByFiles(collection: Collection) {
-    const files = collection
-      .get('files')!
-      .map(collectionFile => ({
-        path: collectionFile!.get('file'),
-        label: collectionFile!.get('label'),
-      }))
-      .toArray();
-    return this.fetchFiles(files);
-  }
-
-  fetchFiles = (files: { path: string; id?: string }[]) => {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
-    files.forEach(file => {
-      promises.push(
-        new Promise(resolve =>
-          sem.take(() =>
-            this.api!.readFile(file.path, file.id)
-              .then(data => {
-                resolve({ file, data: data as string });
-                sem.leave();
-              })
-              .catch((error = true) => {
-                sem.leave();
-                console.error(`failed to load file from BitBucket: ${file.path}`);
-                resolve({ error });
-              }),
-          ),
-        ),
+  async entriesByFiles(collection: Collection) {
+    const listFiles = () =>
+      Promise.resolve(
+        collection
+          .get('files')!
+          .map(collectionFile => ({
+            path: collectionFile!.get('file'),
+            label: collectionFile!.get('label'),
+            id: null,
+          }))
+          .toArray(),
       );
-    });
-    return Promise.all(promises).then(loadedEntries =>
-      loadedEntries.filter(loadedEntry => !((loadedEntry as unknown) as { error: boolean }).error),
-    ) as Promise<ImplementationEntry[]>;
-  };
+
+    const files = await entriesByFiles(listFiles, this.api!.readFile, 'BitBucket');
+    return files;
+  }
 
   getEntry(path: string) {
     return this.api!.readFile(path).then(data => ({
-      file: { path },
+      file: { path, id: null },
       data: data as string,
     }));
   }
 
-  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+  getMedia(mediaFolder = this.config.get('media_folder')) {
     return this.api!.listAllFiles(mediaFolder).then(files =>
       files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
     );
   }
 
-  getMediaAsBlob(path: string, id: string | null) {
-    return this.api!.readFile(path, id, { parseText: false });
-  }
-
   getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const { id, path } = displayURL as DisplayURLObject;
-    return new Promise<string>((resolve, reject) =>
-      this._mediaDisplayURLSem!.take(() =>
-        this.getMediaAsBlob(path, id)
-          .then(blob => URL.createObjectURL(blob))
-          .then(resolve, reject)
-          .finally(() => this._mediaDisplayURLSem!.leave()),
-      ),
-    );
+    return getMediaDisplayURL(displayURL, this.api!.readFile, this._mediaDisplayURLSem);
   }
 
   async getMediaFile(path: string) {
     const name = basename(path);
-    const blob = await this.getMediaAsBlob(path, null);
+    const blob = await getMediaAsBlob(path, null, this.api!.readFile);
     const fileObj = new File([blob], name);
     const url = URL.createObjectURL(fileObj);
     const id = await getBlobSHA(fileObj);
@@ -356,7 +327,7 @@ export default class BitbucketBackend implements Implementation {
     return this.api!.deleteFile(path, commitMessage);
   }
 
-  traverseCursor(cursor: CursorType, action: string) {
+  traverseCursor(cursor: Cursor, action: string) {
     return this.api!.traverseCursor(cursor, action).then(
       async ({ entries, cursor: newCursor }) => ({
         entries: await Promise.all(
@@ -377,7 +348,7 @@ export default class BitbucketBackend implements Implementation {
     if (collection) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
-    return { data: '', file: { path: '' } };
+    return { data: '', file: { path: '', id: null } };
   }
 
   async updateUnpublishedEntryStatus(_collection: string, _slug: string, _newStatus: string) {

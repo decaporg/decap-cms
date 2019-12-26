@@ -35,7 +35,7 @@ interface TreeEntry {
 
 interface TreeFile {
   path: string;
-  sha: string;
+  id: string;
   size: number;
   type: string;
   name: string;
@@ -225,7 +225,7 @@ export default class GraphQLAPI extends API {
           {
             name: item.name,
             type: item.type,
-            sha: item.sha,
+            id: item.sha,
             path: `${path}/${item.name}`,
             size: item.blob ? item.blob.size : 0,
           },
@@ -314,6 +314,7 @@ export default class GraphQLAPI extends API {
         metaData,
         fileData: data.head.object.text,
         isModification: !!data.base.object,
+        slug: this.slugFromContentKey(contentKey, metaData.collection),
       };
       return result;
     } else {

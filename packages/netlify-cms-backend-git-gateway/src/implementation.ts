@@ -7,16 +7,19 @@ import {
   getBlobSHA,
   unsentRequest,
   basename,
-  Map,
   ApiRequest,
   AssetProxy,
   PersistOptions,
   Entry,
-  CursorType,
+  Cursor,
   Implementation,
   DisplayURL,
   Collection,
+  User,
+  Credentials,
+  entriesByFiles,
 } from 'netlify-cms-lib-util';
+import { Map } from 'immutable';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
@@ -68,7 +71,7 @@ function getEndpoint(endpoint: string, netlifySiteURL: string | null) {
   return endpoint;
 }
 
-interface NetlifyUser {
+interface NetlifyUser extends Credentials {
   jwt: () => Promise<string>;
   email: string;
   user_metadata: { full_name: string; avatar_url: string };
@@ -81,7 +84,7 @@ interface GetMediaDisplayURLArgs {
 }
 
 export default class GitGateway implements Implementation {
-  config: Map;
+  config: Map<string, string>;
   api?: GitHubAPI | GitLabAPI | BitBucketAPI;
   branch: string;
   squashMerges: string;
@@ -99,7 +102,7 @@ export default class GitGateway implements Implementation {
     API: GitHubAPI | GitLabAPI | BitBucketAPI | null;
     initialWorkflowStatus: string;
   };
-  constructor(config: Map, options = {}) {
+  constructor(config: Map<string, string>, options = {}) {
     this.options = {
       proxied: true,
       API: null,
@@ -147,7 +150,8 @@ export default class GitGateway implements Implementation {
       )
       .then(unsentRequest.performRequest);
 
-  authenticate(user: NetlifyUser) {
+  authenticate(credentials: Credentials) {
+    const user = credentials as NetlifyUser;
     this.tokenPromise = user.jwt.bind(user);
     return this.tokenPromise!().then(async token => {
       if (!this.backendType) {
@@ -232,13 +236,13 @@ export default class GitGateway implements Implementation {
       if (!(await this.api!.hasWriteAccess())) {
         throw new Error("You don't have sufficient permissions to access Netlify CMS");
       }
-      return { name: userData.name, login: userData.email };
+      return { name: userData.name, login: userData.email } as User;
     });
   }
   restoreUser() {
     const user = this.authClient && this.authClient.currentUser();
     if (!user) return Promise.reject();
-    return this.authenticate(user);
+    return this.authenticate(user as Credentials);
   }
   authComponent() {
     return AuthenticationPage;
@@ -260,9 +264,6 @@ export default class GitGateway implements Implementation {
   }
   entriesByFiles(collection: Collection) {
     return this.backend!.entriesByFiles(collection);
-  }
-  fetchFiles(files: { path: string; sha: string | null }[]) {
-    return this.backend!.fetchFiles(files);
   }
   getEntry(path: string) {
     return this.backend!.getEntry(path);
@@ -299,7 +300,7 @@ export default class GitGateway implements Implementation {
     return mediaFiles;
   }
 
-  getMedia(mediaFolder = this.config.get<string>('media_folder')) {
+  getMedia(mediaFolder = this.config.get('media_folder')) {
     return Promise.all([this.backend!.getMedia(mediaFolder), this.getLargeMediaClient()]).then(
       async ([mediaFiles, largeMediaClient]) => {
         if (!largeMediaClient.enabled) {
@@ -382,21 +383,24 @@ export default class GitGateway implements Implementation {
       },
     );
   }
-  async getLargeMediaDisplayURLs(mediaFiles: { path: string; id?: string }[]) {
+  async getLargeMediaDisplayURLs(mediaFiles: { path: string; id: string | null }[]) {
     const client = await this.getLargeMediaClient();
-    const largeMediaItems = mediaFiles
-      .filter(({ path }) => client.matchPath(path))
-      .map(({ id, path }) => ({ path, sha: id }));
+    const listFiles = () =>
+      Promise.resolve(
+        mediaFiles
+          .filter(({ path }) => client.matchPath(path))
+          .map(({ id, path }) => ({ path, id })),
+      );
 
-    const filesPromise = this.backend!.fetchFiles(largeMediaItems);
+    const filesPromise = entriesByFiles(listFiles, this.api!.readFile, 'Git-Gateway');
 
     return filesPromise
       .then(items =>
-        items.map(({ file: { sha }, data }) => {
+        items.map(({ file: { id }, data }) => {
           const parsedPointerFile = parsePointerFile(data);
           return [
             {
-              pointerId: sha,
+              pointerId: id,
               resourceId: parsedPointerFile.sha,
             },
             parsedPointerFile,
@@ -445,7 +449,7 @@ export default class GitGateway implements Implementation {
   async getMediaFile(path: string) {
     const client = await this.getLargeMediaClient();
     if (client.enabled && client.matchPath(path)) {
-      const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ path }]);
+      const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ path, id: null }]);
       const url = await client.getDownloadURL(Object.values(largeMediaDisplayURLs)[0]);
       return {
         id: url,
@@ -548,7 +552,7 @@ export default class GitGateway implements Implementation {
   publishUnpublishedEntry(collection: string, slug: string) {
     return this.backend!.publishUnpublishedEntry(collection, slug);
   }
-  traverseCursor(cursor: CursorType, action: string) {
+  traverseCursor(cursor: Cursor, action: string) {
     return (this.backend as GitLabBackend | BitbucketBackend).traverseCursor!(cursor, action);
   }
 }

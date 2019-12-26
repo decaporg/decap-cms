@@ -1,7 +1,7 @@
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
-const normalizePath = path => path.replace(/[\\/]+/g, '/');
+const normalizePath = (path: string) => path.replace(/[\\/]+/g, '/');
 
-export function isAbsolutePath(path) {
+export function isAbsolutePath(path: string) {
   return absolutePath.test(path);
 }
 
@@ -16,7 +16,7 @@ export function isAbsolutePath(path) {
  *   // returns
  *   'quux'
  */
-export function basename(p, ext = '') {
+export function basename(p: string, ext = '') {
   // Special case: Normalize will modify this to '.'
   if (p === '') {
     return p;
@@ -50,13 +50,13 @@ export function basename(p, ext = '') {
  *   // returns
  *   '.html'
  */
-export function fileExtensionWithSeparator(p) {
+export function fileExtensionWithSeparator(p: string) {
   p = normalizePath(p);
   const sections = p.split('/');
-  p = sections.pop();
+  p = sections.pop() as string;
   // Special case: foo/file.ext/ should return '.ext'
   if (p === '' && sections.length > 0) {
-    p = sections.pop();
+    p = sections.pop() as string;
   }
   if (p === '..') {
     return '';
@@ -77,7 +77,7 @@ export function fileExtensionWithSeparator(p) {
  *   // returns
  *   'html'
  */
-export function fileExtension(p) {
+export function fileExtension(p: string) {
   const ext = fileExtensionWithSeparator(p);
   return ext === '' ? ext : ext.substr(1);
 }

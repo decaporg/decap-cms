@@ -9,7 +9,6 @@ import {
   flowAsync,
   localForage,
   onlySuccessfulPromises,
-  resolvePromiseProperties,
   basename,
   AssetProxy,
   Entry as LibEntry,
@@ -62,18 +61,6 @@ interface TreeFile {
 export interface Entry extends LibEntry {
   sha?: string;
 }
-
-type UnpublishedBranchInput = {
-  metaData: Promise<Metadata>;
-  fileData: Promise<string>;
-  isModification: Promise<boolean>;
-};
-
-export type UnpublishedBranchResult = {
-  metaData: Metadata;
-  fileData: string;
-  isModification: boolean;
-};
 
 type Override<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U;
 
@@ -477,23 +464,6 @@ export default class API {
     }
   }
 
-  async getMediaAsBlob(sha: string | null, path: string) {
-    let blob: Blob;
-    if (path.match(/.svg$/)) {
-      const text = (await this.readFile(path, sha, { parseText: true })) as string;
-      blob = new Blob([text], { type: 'image/svg+xml' });
-    } else {
-      blob = (await this.readFile(path, sha, { parseText: false })) as Blob;
-    }
-    return blob;
-  }
-
-  async getMediaDisplayURL(sha: string, path: string) {
-    const blob = await this.getMediaAsBlob(sha, path);
-
-    return URL.createObjectURL(blob);
-  }
-
   getBlob({ sha, repoURL = this.repoURL, parseText = true }: BlobArgs) {
     const key = parseText ? `gh.${sha}` : `gh.${sha}.blob`;
     return localForage.getItem<string | Blob>(key).then(cached => {
@@ -511,7 +481,7 @@ export default class API {
   async listFiles(
     path: string,
     { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {},
-  ): Promise<{ type: string; sha: string; name: string; path: string; size: number }[]> {
+  ): Promise<{ type: string; id: string; name: string; path: string; size: number }[]> {
     const folder = trim(path, '/');
     return this.request(`${repoURL}/git/trees/${branch}:${folder}`, {
       // GitHub API supports recursive=1 for getting the entire recursive tree
@@ -524,7 +494,7 @@ export default class API {
           .filter(file => file.type === 'blob' && file.path.split('/').length <= depth)
           .map(file => ({
             type: file.type,
-            sha: file.sha,
+            id: file.sha,
             name: basename(file.path),
             path: `${folder}/${file.path}`,
             size: file.size,
@@ -533,31 +503,35 @@ export default class API {
       .catch(replace404WithEmptyArray);
   }
 
-  readUnpublishedBranchFile(contentKey: string) {
-    const metaDataPromise = this.retrieveMetadata(contentKey).then(data =>
-      data.objects.entry.path ? data : Promise.reject(null),
-    );
-    const repoURL = this.useOpenAuthoring
-      ? `/repos/${contentKey
-          .split('/')
-          .slice(0, 2)
-          .join('/')}`
-      : this.repoURL;
-    return resolvePromiseProperties<UnpublishedBranchInput, UnpublishedBranchResult>({
-      metaData: metaDataPromise,
-      fileData: metaDataPromise.then(
-        data =>
-          this.readFile(data.objects.entry.path, null, {
-            branch: data.branch,
-            repoURL,
-          }) as Promise<string>,
-      ),
-      isModification: metaDataPromise.then(data =>
-        this.isUnpublishedEntryModification(data.objects.entry.path, this.branch),
-      ),
-    }).catch(() => {
+  async readUnpublishedBranchFile(contentKey: string) {
+    try {
+      const metaData = await this.retrieveMetadata(contentKey).then(data =>
+        data.objects.entry.path ? data : Promise.reject(null),
+      );
+      const repoURL = this.useOpenAuthoring
+        ? `/repos/${contentKey
+            .split('/')
+            .slice(0, 2)
+            .join('/')}`
+        : this.repoURL;
+
+      const [fileData, isModification] = await Promise.all([
+        this.readFile(metaData.objects.entry.path, null, {
+          branch: metaData.branch,
+          repoURL,
+        }) as Promise<string>,
+        this.isUnpublishedEntryModification(metaData.objects.entry.path, this.branch),
+      ]);
+
+      return {
+        metaData,
+        fileData,
+        isModification,
+        slug: this.slugFromContentKey(contentKey, metaData.collection),
+      };
+    } catch (e) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
-    });
+    }
   }
 
   isUnpublishedEntryModification(path: string, branch: string) {

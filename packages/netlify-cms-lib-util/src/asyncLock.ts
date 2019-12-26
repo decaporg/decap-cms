@@ -1,10 +1,12 @@
 import semaphore from 'semaphore';
 
-export const asyncLock = () => {
+export type AsyncLock = { release: () => void; acquire: () => Promise<boolean> };
+
+export const asyncLock = (): AsyncLock => {
   let lock = semaphore(1);
 
   const acquire = (timeout = 15000) => {
-    const promise = new Promise(resolve => {
+    const promise = new Promise<boolean>(resolve => {
       // this makes sure a caller doesn't gets stuck forever awaiting on the lock
       const timeoutId = setTimeout(() => {
         // we reset the lock in that case to allow future consumers to use it without being blocked

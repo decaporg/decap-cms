@@ -8,7 +8,6 @@ import {
   Cursor,
   APIError,
   ApiRequest,
-  CursorType,
   AssetProxy,
   Entry,
   PersistOptions,
@@ -70,6 +69,7 @@ export default class API {
       then(responseParser({ format: 'json' })),
       p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
     ])(req);
+
   requestText = (req: ApiRequest) =>
     flow([
       unsentRequest.withDefaultHeaders({ 'Content-Type': 'text/plain' }),
@@ -169,30 +169,34 @@ export default class API {
       this.requestJSON,
       then(this.getEntriesAndCursor),
     ])(`${this.repoURL}/src/${node}/${path}`);
-    return { entries: this.processFiles(entries), cursor };
+
+    return { entries: this.processFiles(entries), cursor: cursor as Cursor };
   };
 
   traverseCursor = async (
-    cursor: CursorType,
+    cursor: Cursor,
     action: string,
   ): Promise<{
-    cursor: CursorType;
+    cursor: Cursor;
     entries: { path: string; name: string; type: string; id: string }[];
   }> =>
     flow([
       this.requestJSON,
       then(this.getEntriesAndCursor),
-      then(({ cursor: newCursor, entries }) => ({
+      then<
+        { cursor: Cursor; entries: BitBucketFile[] },
+        { cursor: Cursor; entries: BitBucketFile[] }
+      >(({ cursor: newCursor, entries }) => ({
         cursor: newCursor,
         entries: this.processFiles(entries),
       })),
-    ])(cursor.data.getIn(['links', action]));
+    ])(cursor.data!.getIn(['links', action]));
 
   listAllFiles = async (path: string, depth = 1) => {
     const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(path, depth);
     const entries = [...initialEntries];
     let currentCursor = initialCursor;
-    while (currentCursor && currentCursor.actions.has('next')) {
+    while (currentCursor && currentCursor.actions!.has('next')) {
       const { cursor: newCursor, entries: newEntries } = await this.traverseCursor(
         currentCursor,
         'next',

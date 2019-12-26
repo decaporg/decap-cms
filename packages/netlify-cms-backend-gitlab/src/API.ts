@@ -5,15 +5,15 @@ import {
   then,
   APIError,
   Cursor,
-  CursorType,
   ApiRequest,
   Entry,
   AssetProxy,
   PersistOptions,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
-import { fromJS, Map } from 'immutable';
+import { fromJS, Map, Set } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
+import { CursorStore } from 'netlify-cms-lib-util/src/Cursor';
 
 export interface Config {
   apiRoot?: string;
@@ -192,20 +192,19 @@ export default class API {
   // request
   fetchCursor = (req: ApiRequest) =>
     flow([unsentRequest.withMethod('HEAD'), this.request, then(this.getCursor)])(req);
+
   fetchCursorAndEntries = (
     req: ApiRequest,
   ): Promise<{
     entries: { id: string; type: string; path: string; name: string }[];
-    cursor: CursorType;
+    cursor: Cursor;
   }> =>
     flow([
       unsentRequest.withMethod('GET'),
       this.request,
       p => Promise.all([p.then(this.getCursor), p.then(this.responseToJSON)]),
-      then(([cursor, entries]) => ({ cursor, entries })),
+      then(([cursor, entries]: [Cursor, {}[]]) => ({ cursor, entries })),
     ])(req);
-  fetchRelativeCursor = async (cursor: CursorType, action: string) =>
-    this.fetchCursor(cursor.data.links[action]);
 
   reversableActions = Map({
     first: 'last',
@@ -214,26 +213,26 @@ export default class API {
     prev: 'next',
   });
 
-  reverseCursor = (cursor: CursorType) => {
-    const pageCount = cursor.meta.get('pageCount', 0);
-    const currentIndex = cursor.meta.get('index', 0);
+  reverseCursor = (cursor: Cursor) => {
+    const pageCount = cursor.meta!.get('pageCount', 0) as number;
+    const currentIndex = cursor.meta!.get('index', 0) as number;
     const newIndex = pageCount - currentIndex;
 
-    const links = cursor.data.get('links', Map());
-    const reversedLinks = links.mapEntries(([k, v]: [string, string]) => [
-      this.reversableActions.get(k) || k,
-      v,
-    ]);
+    const links = cursor.data!.get('links', Map()) as Map<string, string>;
+    const reversedLinks = links.mapEntries(tuple => {
+      const [k, v] = tuple as string[];
+      return [this.reversableActions.get(k) || k, v];
+    });
 
-    const reversedActions = cursor.actions.map(
-      (action: string) => this.reversableActions.get(action) || action,
+    const reversedActions = cursor.actions!.map(
+      action => this.reversableActions.get(action as string) || (action as string),
     );
 
-    return cursor.updateStore((store: typeof Cursor.store) =>
-      store
+    return cursor.updateStore((store: CursorStore) =>
+      store!
         .setIn(['meta', 'index'], newIndex)
         .setIn(['data', 'links'], reversedLinks)
-        .set('actions', reversedActions),
+        .set('actions', (reversedActions as unknown) as Set<string>),
     );
   };
 
@@ -256,8 +255,8 @@ export default class API {
     };
   };
 
-  traverseCursor = async (cursor: CursorType, action: string) => {
-    const link = cursor.data.getIn(['links', action]);
+  traverseCursor = async (cursor: Cursor, action: string) => {
+    const link = cursor.data!.getIn(['links', action]);
     const { entries, cursor: newCursor } = await this.fetchCursorAndEntries(link);
     return {
       entries: entries.filter(({ type }) => type === 'blob').reverse(),
@@ -275,8 +274,8 @@ export default class API {
       params: { path, ref: this.branch, per_page: 100, recursive },
     });
     entries.push(...initialEntries);
-    while (cursor && cursor.actions.has('next')) {
-      const link = cursor.data.getIn(['links', 'next']);
+    while (cursor && cursor.actions!.has('next')) {
+      const link = cursor.data!.getIn(['links', 'next']);
       const { cursor: newCursor, entries: newEntries } = await this.fetchCursorAndEntries(link);
       entries.push(...newEntries);
       cursor = newCursor;

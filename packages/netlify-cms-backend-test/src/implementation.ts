@@ -5,17 +5,17 @@ import {
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
-  getCollectionDepth,
+  getPathDepth,
   Implementation,
-  Map,
   Collection,
-  CursorType,
   Entry,
   ImplementationEntry,
   AssetProxy,
   PersistOptions,
   ImplementationMediaFile,
+  User,
 } from 'netlify-cms-lib-util';
+import { Map } from 'immutable';
 import AuthenticationPage from './AuthenticationPage';
 
 type RepoFile = { file?: { path: string }; content: string };
@@ -76,7 +76,7 @@ export const getFolderEntries = (
     if (key.endsWith(`.${extension}`)) {
       const file = (tree[folder] as RepoTree)[key] as RepoFile;
       files.unshift({
-        file: { path: `${path}/${key}` },
+        file: { path: `${path}/${key}`, id: null },
         data: file.content,
       });
     } else {
@@ -89,11 +89,11 @@ export const getFolderEntries = (
 };
 
 export default class TestBackend implements Implementation {
-  config: Map;
+  config: Map<string, string>;
   assets: ImplementationMediaFile[];
   options: { initialWorkflowStatus?: string };
 
-  constructor(config: Map, options = {}) {
+  constructor(config: Map<string, string>, options = {}) {
     this.config = config;
     this.assets = [];
     this.options = options;
@@ -108,7 +108,7 @@ export default class TestBackend implements Implementation {
   }
 
   authenticate() {
-    return Promise.resolve();
+    return (Promise.resolve() as unknown) as Promise<User>;
   }
 
   logout() {
@@ -119,14 +119,19 @@ export default class TestBackend implements Implementation {
     return Promise.resolve('');
   }
 
-  traverseCursor(cursor: CursorType, action: string) {
-    const { collection, extension, index, pageCount } = cursor.data.toObject();
+  traverseCursor(cursor: Cursor, action: string) {
+    const { collection, extension, index, pageCount } = cursor.data!.toObject() as {
+      collection: Collection;
+      extension: string;
+      index: number;
+      pageCount: number;
+    };
     const newIndex = (() => {
       if (action === 'next') {
-        return index + 1;
+        return (index as number) + 1;
       }
       if (action === 'prev') {
-        return index - 1;
+        return (index as number) - 1;
       }
       if (action === 'first') {
         return 0;
@@ -134,12 +139,13 @@ export default class TestBackend implements Implementation {
       if (action === 'last') {
         return pageCount;
       }
+      return 0;
     })();
     // TODO: stop assuming cursors are for collections
-    const depth = getCollectionDepth(collection);
+    const depth = getPathDepth(collection.get('path', '') as string);
     const allEntries = getFolderEntries(
       window.repoFiles,
-      collection.get('folder'),
+      collection.get('folder') as string,
       extension,
       depth,
     );
@@ -150,7 +156,7 @@ export default class TestBackend implements Implementation {
 
   entriesByFolder(collection: Collection, extension: string) {
     const folder = collection.get('folder');
-    const depth = getCollectionDepth(collection);
+    const depth = getPathDepth(collection.get('path', '') as string);
     const entries = folder ? getFolderEntries(window.repoFiles, folder, extension, depth) : [];
     const cursor = getCursor(collection, extension, entries, 0);
     const ret = take(entries, pageSize);
@@ -166,6 +172,7 @@ export default class TestBackend implements Implementation {
       .map(collectionFile => ({
         path: collectionFile!.get('file'),
         label: collectionFile!.get('label'),
+        id: null,
       }))
       .toArray();
 
@@ -179,7 +186,7 @@ export default class TestBackend implements Implementation {
 
   getEntry(path: string) {
     return Promise.resolve({
-      file: { path },
+      file: { path, id: null },
       data: getFile(path).content,
     });
   }
@@ -244,6 +251,7 @@ export default class TestBackend implements Implementation {
           data: raw,
           file: {
             path,
+            id: null,
           },
           metaData: {
             collection: options.collectionName as string,

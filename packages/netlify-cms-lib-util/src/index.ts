@@ -3,14 +3,7 @@ import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from './Cursor';
 import EditorialWorkflowError, { EDITORIAL_WORKFLOW_ERROR } from './EditorialWorkflowError';
 import localForage from './localForage';
 import { isAbsolutePath, basename, fileExtensionWithSeparator, fileExtension } from './path';
-import {
-  filterPromises,
-  filterPromisesWith,
-  onlySuccessfulPromises,
-  resolvePromiseProperties,
-  flowAsync,
-  then,
-} from './promise';
+import { onlySuccessfulPromises, flowAsync, then } from './promise';
 import unsentRequest from './unsentRequest';
 import {
   filterByPropExtension,
@@ -18,11 +11,52 @@ import {
   parseLinkHeader,
   parseResponse,
   responseParser,
-  getCollectionDepth,
+  getPathDepth,
 } from './backendUtil';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
-import { asyncLock } from './asyncLock';
+import { asyncLock, AsyncLock as AL } from './asyncLock';
+import {
+  Implementation as I,
+  ImplementationEntry as IE,
+  ImplementationMediaFile as IMF,
+  DisplayURLObject as DUO,
+  DisplayURL as DU,
+  Credentials as Cred,
+  User as U,
+  Entry as E,
+  PersistOptions as PO,
+  AssetProxy as AP,
+  Collection as Col,
+  entriesByFiles,
+  entriesByFolder,
+  unpublishedEntries,
+  getMediaDisplayURL,
+  getMediaAsBlob,
+} from './implementation';
+
+export type AsyncLock = AL;
+export type Implementation = I;
+export type ImplementationEntry = IE;
+export type ImplementationMediaFile = IMF;
+export type DisplayURL = DU;
+export type DisplayURLObject = DUO;
+export type Credentials = Cred;
+export type User = U;
+export type Entry = E;
+export type PersistOptions = PO;
+export type AssetProxy = AP;
+export type Collection = Col;
+export type ApiRequest =
+  | {
+      url: string;
+      params?: Record<string, string | boolean | number>;
+      method?: 'POST';
+      headers?: Record<string, string>;
+      body?: string | FormData;
+      cache?: 'no-store';
+    }
+  | string;
 
 export const NetlifyCmsLibUtil = {
   APIError,
@@ -34,10 +68,7 @@ export const NetlifyCmsLibUtil = {
   basename,
   fileExtensionWithSeparator,
   fileExtension,
-  filterPromises,
-  filterPromisesWith,
   onlySuccessfulPromises,
-  resolvePromiseProperties,
   flowAsync,
   then,
   unsentRequest,
@@ -47,7 +78,12 @@ export const NetlifyCmsLibUtil = {
   responseParser,
   loadScript,
   getBlobSHA,
-  getCollectionDepth,
+  getPathDepth,
+  entriesByFiles,
+  entriesByFolder,
+  unpublishedEntries,
+  getMediaDisplayURL,
+  getMediaAsBlob,
 };
 export {
   APIError,
@@ -59,10 +95,7 @@ export {
   basename,
   fileExtensionWithSeparator,
   fileExtension,
-  filterPromises,
-  filterPromisesWith,
   onlySuccessfulPromises,
-  resolvePromiseProperties,
   flowAsync,
   then,
   unsentRequest,
@@ -75,5 +108,10 @@ export {
   getBlobSHA,
   asyncLock,
   isAbsolutePath,
-  getCollectionDepth,
+  getPathDepth,
+  entriesByFiles,
+  entriesByFolder,
+  unpublishedEntries,
+  getMediaDisplayURL,
+  getMediaAsBlob,
 };

@@ -4,10 +4,14 @@ import { fromJS } from 'immutable';
 import { fileExtension } from './path';
 import unsentRequest from './unsentRequest';
 
-export const filterByPropExtension = (extension, propName) => arr =>
-  arr.filter(el => fileExtension(get(el, propName)) === extension);
+type Formatter = (res: Response) => Promise<string | Blob | unknown>;
 
-const catchFormatErrors = (format, formatter) => res => {
+export const filterByPropExtension = (extension: string, propName: string) => <T>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  arr: T[],
+) => arr.filter(el => fileExtension(get(el, propName)) === extension);
+
+const catchFormatErrors = (format: string, formatter: Formatter) => (res: Response) => {
   try {
     return formatter(res);
   } catch (err) {
@@ -18,18 +22,24 @@ const catchFormatErrors = (format, formatter) => res => {
 };
 
 const responseFormatters = fromJS({
-  json: async res => {
-    const contentType = res.headers.get('Content-Type');
+  json: async (res: Response) => {
+    const contentType = res.headers.get('Content-Type') || '';
     if (!contentType.startsWith('application/json') && !contentType.startsWith('text/json')) {
       throw new Error(`${contentType} is not a valid JSON Content-Type`);
     }
     return res.json();
   },
-  text: async res => res.text(),
-  blob: async res => res.blob(),
-}).mapEntries(([format, formatter]) => [format, catchFormatErrors(format, formatter)]);
+  text: async (res: Response) => res.text(),
+  blob: async (res: Response) => res.blob(),
+}).mapEntries(([format, formatter]: [string, Formatter]) => [
+  format,
+  catchFormatErrors(format, formatter),
+]);
 
-export const parseResponse = async (res, { expectingOk = true, format = 'text' } = {}) => {
+export const parseResponse = async (
+  res: Response,
+  { expectingOk = true, format = 'text' } = {},
+) => {
   if (expectingOk && !res.ok) {
     throw new Error(`Expected an ok response, but received an error status: ${res.status}.`);
   }
@@ -38,14 +48,16 @@ export const parseResponse = async (res, { expectingOk = true, format = 'text' }
     throw new Error(`${format} is not a supported response format.`);
   }
   const body = await formatter(res);
-  return body;
+  return body as Promise<string | Blob | {}>;
 };
 
-export const responseParser = options => res => parseResponse(res, options);
+export const responseParser = (options: { expectingOk?: boolean; format?: string }) => (
+  res: Response,
+) => parseResponse(res, options);
 
 export const parseLinkHeader = flow([
   linksString => linksString.split(','),
-  map(str => str.trim().split(';')),
+  map((str: string) => str.trim().split(';')),
   map(([linkStr, keyStr]) => [
     keyStr.match(/rel="(.*?)"/)[1],
     linkStr
@@ -56,7 +68,11 @@ export const parseLinkHeader = flow([
   fromPairs,
 ]);
 
-export const getAllResponses = async (url, options = {}, linkHeaderRelName = 'next') => {
+export const getAllResponses = async (
+  url: string,
+  options: { headers?: {} } = {},
+  linkHeaderRelName = 'next',
+) => {
   const maxResponses = 30;
   let responseCount = 1;
 
@@ -78,7 +94,7 @@ export const getAllResponses = async (url, options = {}, linkHeaderRelName = 'ne
   return pageResponses;
 };
 
-export const getCollectionDepth = collection => {
-  const depth = collection.get('path', '').split('/').length;
+export const getPathDepth = (path: string) => {
+  const depth = path.split('/').length;
   return depth;
 };
