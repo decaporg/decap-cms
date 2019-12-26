@@ -3,7 +3,7 @@ import { List } from 'immutable';
 import { stripIndent } from 'common-tags';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
-import { selectMediaFilePath, selectMediaFolder, selectEditingDraft } from './reducers/entries';
+import { selectMediaFilePath, selectMediaFolder } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
   selectListMethod,
@@ -530,12 +530,11 @@ export class Backend {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
 
-    const editingDraft = selectEditingDraft(state.entryDraft);
     const integration = selectIntegration(state.integrations, null, 'assetStore');
 
     const [loadedEntry, mediaFiles] = await Promise.all([
       this.implementation.getEntry(collection, slug, path),
-      editingDraft && !integration
+      collection.has('media_folder') && !integration
         ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
         : Promise.resolve(selectMediaFiles(state)),
     ]);
