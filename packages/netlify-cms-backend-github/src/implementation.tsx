@@ -15,6 +15,7 @@ import {
   DisplayURL,
   DisplayURLObject,
   Collection,
+  getBlobSHA,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { get } from 'lodash';
@@ -24,7 +25,6 @@ import {
 } from '@octokit/rest';
 import API, { Entry, UnpublishedBranchResult } from './API';
 import GraphQLAPI from './GraphQLAPI';
-import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
