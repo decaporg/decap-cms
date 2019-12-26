@@ -1,5 +1,5 @@
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
-import { Collection, State, MediaFile } from '../types/redux';
+import { Collection, State } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { isAbsolutePath } from 'netlify-cms-lib-util';

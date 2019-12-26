@@ -264,8 +264,8 @@ export default class GitGateway implements Implementation {
   fetchFiles(files: { path: string; sha: string | null }[]) {
     return this.backend!.fetchFiles(files);
   }
-  getEntry(collection: Collection, slug: string, path: string) {
-    return this.backend!.getEntry(collection, slug, path);
+  getEntry(path: string) {
+    return this.backend!.getEntry(path);
   }
 
   async loadEntryMediaFiles(files: { sha: string; path: string }[]) {

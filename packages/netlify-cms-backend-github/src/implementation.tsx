@@ -362,7 +362,7 @@ export default class GitHub implements Implementation {
   };
 
   // Fetches a single entry.
-  getEntry(collection: Collection, slug: string, path: string) {
+  getEntry(path: string) {
     const repoURL = this.api!.originRepoURL;
     return this.api!.readFile(path, null, { repoURL }).then(data => ({
       file: { path },

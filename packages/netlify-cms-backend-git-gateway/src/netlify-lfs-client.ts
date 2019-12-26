@@ -82,7 +82,7 @@ export const getLargeMediaPatternsFromGitAttributesFile = flow([
   parseGitAttributesFileToPatternAttributePairs,
   filter(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ([pattern, attributes]) =>
+    ([_pattern, attributes]) =>
       attributes.filter === 'lfs' && attributes.diff === 'lfs' && attributes.merge === 'lfs',
   ),
   map(([pattern]) => pattern),
@@ -140,7 +140,7 @@ const getDownloadURL = (
       return Promise.resolve('');
     });
 
-const getResourceDownloadURLArgs = (clientConfig: ClientConfig, objects: PointerFile[]) => {
+const getResourceDownloadURLArgs = (_clientConfig: ClientConfig, objects: PointerFile[]) => {
   const result = objects.map(({ sha }) => [sha, { sha }]) as [string, { sha: string }][];
   return Promise.resolve(result);
 };

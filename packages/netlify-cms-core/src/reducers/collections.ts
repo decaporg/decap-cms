@@ -111,7 +111,7 @@ const selectors = {
     allowDeletion(collection: Collection) {
       return collection.get('delete', false);
     },
-    templateName(collection: Collection, slug: string) {
+    templateName(_collection: Collection, slug: string) {
       return slug;
     },
   },

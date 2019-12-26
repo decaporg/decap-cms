@@ -172,7 +172,7 @@ declare module 'netlify-cms-lib-util' {
     logout: () => Promise<void> | void | null;
     getToken: () => Promise<string | null>;
 
-    getEntry: (collection: Collection, slug: string, path: string) => Promise<ImplementationEntry>;
+    getEntry: (path: string) => Promise<ImplementationEntry>;
     entriesByFolder: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
     entriesByFiles: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
 

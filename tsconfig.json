@@ -11,6 +11,8 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "allowJs": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "baseUrl": "./",
     "paths": {
       "netlify-cms-backend-github": ["packages/netlify-cms-backend-github/src"],

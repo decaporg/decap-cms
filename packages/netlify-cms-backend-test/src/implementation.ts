@@ -177,7 +177,7 @@ export default class TestBackend implements Implementation {
     );
   }
 
-  getEntry(collection: Collection, slug: string, path: string) {
+  getEntry(path: string) {
     return Promise.resolve({
       file: { path },
       data: getFile(path).content,

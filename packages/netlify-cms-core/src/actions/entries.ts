@@ -270,7 +270,7 @@ export function removeDraftEntryMediaFile({ id }: { id: string }) {
 }
 
 export function persistLocalBackup(entry: EntryMap, collection: Collection) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
 
@@ -309,7 +309,7 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
 }
 
 export function deleteLocalBackup(collection: Collection, slug: string) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     return backend.deleteLocalDraftBackup(collection, slug);

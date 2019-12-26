@@ -155,7 +155,7 @@ export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: str
   if (!state.get('entities')) return null;
   const entities = state.get('entities') as Entities;
   return entities
-    .filter((v, k) => startsWith(k as string, `${collection}.`))
+    .filter((_v, k) => startsWith(k as string, `${collection}.`))
     .map(entry => entry.get('slug'))
     .valueSeq();
 };

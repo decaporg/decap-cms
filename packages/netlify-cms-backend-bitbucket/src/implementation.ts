@@ -279,7 +279,7 @@ export default class BitbucketBackend implements Implementation {
     ) as Promise<ImplementationEntry[]>;
   };
 
-  getEntry(collection: Collection, slug: string, path: string) {
+  getEntry(path: string) {
     return this.api!.readFile(path).then(data => ({
       file: { path },
       data: data as string,
@@ -373,26 +373,26 @@ export default class BitbucketBackend implements Implementation {
     return [];
   }
 
-  async unpublishedEntry(collection: Collection, slug: string) {
+  async unpublishedEntry(collection: Collection, _slug: string) {
     if (collection) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
     return { data: '', file: { path: '' } };
   }
 
-  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+  async updateUnpublishedEntryStatus(_collection: string, _slug: string, _newStatus: string) {
     return;
   }
 
-  async publishUnpublishedEntry(collection: string, slug: string) {
+  async publishUnpublishedEntry(_collection: string, _slug: string) {
     return;
   }
 
-  async deleteUnpublishedEntry(collection: string, slug: string) {
+  async deleteUnpublishedEntry(_collection: string, _slug: string) {
     return;
   }
 
-  async getDeployPreview(collectionName: string, slug: string) {
+  async getDeployPreview(_collection: string, _slug: string) {
     return null;
   }
 }

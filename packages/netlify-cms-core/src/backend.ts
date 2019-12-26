@@ -291,7 +291,7 @@ export class Backend {
     if (unpublishedEntry) return unpublishedEntry;
 
     const publishedEntry = await this.implementation
-      .getEntry(collection, slug, path)
+      .getEntry(path)
       .then(({ data }) => data)
       .catch(() => {
         return Promise.resolve(false);
@@ -533,7 +533,7 @@ export class Backend {
     const integration = selectIntegration(state.integrations, null, 'assetStore');
 
     const [loadedEntry, mediaFiles] = await Promise.all([
-      this.implementation.getEntry(collection, slug, path),
+      this.implementation.getEntry(path),
       collection.has('media_folder') && !integration
         ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
         : Promise.resolve(selectMediaFiles(state)),
