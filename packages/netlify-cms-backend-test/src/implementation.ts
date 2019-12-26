@@ -6,24 +6,48 @@ import {
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
   getCollectionDepth,
+  Implementation,
+  Map,
+  Collection,
+  CursorType,
+  Entry,
+  ImplementationEntry,
+  AssetProxy,
+  PersistOptions,
+  ImplementationMediaFile,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
+
+type RepoFile = { file?: { path: string }; content: string };
+type RepoTree = { [key: string]: RepoFile | RepoTree };
+
+declare global {
+  interface Window {
+    repoFiles: RepoTree;
+    repoFilesUnpublished: ImplementationEntry[];
+  }
+}
 
 window.repoFiles = window.repoFiles || {};
 window.repoFilesUnpublished = window.repoFilesUnpublished || [];
 
-function getFile(path) {
+function getFile(path: string) {
   const segments = path.split('/');
-  let obj = window.repoFiles;
+  let obj: RepoTree = window.repoFiles;
   while (obj && segments.length) {
-    obj = obj[segments.shift()];
+    obj = obj[segments.shift() as string] as RepoTree;
   }
-  return obj || {};
+  return ((obj as unknown) as RepoFile) || {};
 }
 
 const pageSize = 10;
 
-const getCursor = (collection, extension, entries, index) => {
+const getCursor = (
+  collection: Collection,
+  extension: string,
+  entries: ImplementationEntry[],
+  index: number,
+) => {
   const count = entries.length;
   const pageCount = Math.floor(count / pageSize);
   return Cursor.create({
@@ -36,20 +60,27 @@ const getCursor = (collection, extension, entries, index) => {
   });
 };
 
-export const getFolderEntries = (tree, folder, extension, depth, files = [], path = folder) => {
+export const getFolderEntries = (
+  tree: RepoTree,
+  folder: string,
+  extension: string,
+  depth: number,
+  files = [] as ImplementationEntry[],
+  path = folder,
+) => {
   if (depth <= 0) {
     return files;
   }
 
   Object.keys(tree[folder] || {}).forEach(key => {
     if (key.endsWith(`.${extension}`)) {
-      const file = tree[folder][key];
+      const file = (tree[folder] as RepoTree)[key] as RepoFile;
       files.unshift({
         file: { path: `${path}/${key}` },
         data: file.content,
       });
     } else {
-      const subTree = tree[folder];
+      const subTree = tree[folder] as RepoTree;
       return getFolderEntries(subTree, key, extension, depth - 1, files, `${path}/${key}`);
     }
   });
@@ -57,8 +88,12 @@ export const getFolderEntries = (tree, folder, extension, depth, files = [], pat
   return files;
 };
 
-export default class TestBackend {
-  constructor(config, options = {}) {
+export default class TestBackend implements Implementation {
+  config: Map;
+  assets: ImplementationMediaFile[];
+  options: { initialWorkflowStatus?: string };
+
+  constructor(config: Map, options = {}) {
     this.config = config;
     this.assets = [];
     this.options = options;
@@ -68,8 +103,8 @@ export default class TestBackend {
     return AuthenticationPage;
   }
 
-  restoreUser(user) {
-    return this.authenticate(user);
+  restoreUser() {
+    return this.authenticate();
   }
 
   authenticate() {
@@ -84,7 +119,7 @@ export default class TestBackend {
     return Promise.resolve('');
   }
 
-  traverseCursor(cursor, action) {
+  traverseCursor(cursor: CursorType, action: string) {
     const { collection, extension, index, pageCount } = cursor.data.toObject();
     const newIndex = (() => {
       if (action === 'next') {
@@ -113,21 +148,27 @@ export default class TestBackend {
     return Promise.resolve({ entries, cursor: newCursor });
   }
 
-  entriesByFolder(collection, extension) {
+  entriesByFolder(collection: Collection, extension: string) {
     const folder = collection.get('folder');
     const depth = getCollectionDepth(collection);
     const entries = folder ? getFolderEntries(window.repoFiles, folder, extension, depth) : [];
     const cursor = getCursor(collection, extension, entries, 0);
     const ret = take(entries, pageSize);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return Promise.resolve(ret);
   }
 
-  entriesByFiles(collection) {
-    const files = collection.get('files').map(collectionFile => ({
-      path: collectionFile.get('file'),
-      label: collectionFile.get('label'),
-    }));
+  entriesByFiles(collection: Collection) {
+    const files = collection
+      .get('files')!
+      .map(collectionFile => ({
+        path: collectionFile!.get('file'),
+        label: collectionFile!.get('label'),
+      }))
+      .toArray();
+
     return Promise.all(
       files.map(file => ({
         file,
@@ -136,7 +177,7 @@ export default class TestBackend {
     );
   }
 
-  getEntry(collection, slug, path) {
+  getEntry(collection: Collection, slug: string, path: string) {
     return Promise.resolve({
       file: { path },
       data: getFile(path).content,
@@ -147,18 +188,18 @@ export default class TestBackend {
     return Promise.resolve(window.repoFilesUnpublished);
   }
 
-  getMediaFiles(entry) {
-    const mediaFiles = entry.mediaFiles.map(file => ({
+  getMediaFiles(entry: ImplementationEntry) {
+    const mediaFiles = entry.mediaFiles!.map(file => ({
       ...file,
-      ...this.mediaFileToAsset(file),
-      file: file.fileObj,
+      ...this.normalizeAsset(file),
+      file: file.file as File,
     }));
     return mediaFiles;
   }
 
-  unpublishedEntry(collection, slug) {
+  unpublishedEntry(collection: Collection, slug: string) {
     const entry = window.repoFilesUnpublished.find(
-      e => e.metaData.collection === collection.get('name') && e.slug === slug,
+      e => e.metaData!.collection === collection.get('name') && e.slug === slug,
     );
     if (!entry) {
       return Promise.reject(
@@ -170,25 +211,32 @@ export default class TestBackend {
     return Promise.resolve(entry);
   }
 
-  deleteUnpublishedEntry(collection, slug) {
+  deleteUnpublishedEntry(collection: string, slug: string) {
     const unpubStore = window.repoFilesUnpublished;
     const existingEntryIndex = unpubStore.findIndex(
-      e => e.metaData.collection === collection && e.slug === slug,
+      e => e.metaData!.collection === collection && e.slug === slug,
     );
     unpubStore.splice(existingEntryIndex, 1);
     return Promise.resolve();
   }
 
-  async persistEntry({ path, raw, slug }, mediaFiles, options = {}) {
+  async persistEntry(
+    { path, raw, slug }: Entry,
+    assetProxies: AssetProxy[],
+    options: PersistOptions,
+  ) {
     if (options.useWorkflow) {
       const unpubStore = window.repoFilesUnpublished;
 
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {
-        const unpubEntry = { ...unpubStore[existingEntryIndex], data: raw };
-        unpubEntry.title = options.parsedData && options.parsedData.title;
-        unpubEntry.description = options.parsedData && options.parsedData.description;
-        unpubEntry.mediaFiles = mediaFiles;
+        const unpubEntry = {
+          ...unpubStore[existingEntryIndex],
+          data: raw,
+          title: options.parsedData && options.parsedData.title,
+          description: options.parsedData && options.parsedData.description,
+          mediaFiles: assetProxies.map(this.normalizeAsset),
+        };
 
         unpubStore.splice(existingEntryIndex, 1, unpubEntry);
       } else {
@@ -198,13 +246,13 @@ export default class TestBackend {
             path,
           },
           metaData: {
-            collection: options.collectionName,
-            status: options.status || this.options.initialWorkflowStatus,
+            collection: options.collectionName as string,
+            status: (options.status || this.options.initialWorkflowStatus) as string,
             title: options.parsedData && options.parsedData.title,
             description: options.parsedData && options.parsedData.description,
           },
           slug,
-          mediaFiles,
+          mediaFiles: assetProxies.map(this.normalizeAsset),
         };
         unpubStore.push(unpubEntry);
       }
@@ -218,78 +266,83 @@ export default class TestBackend {
 
     let obj = window.repoFiles;
     while (segments.length > 1) {
-      const segment = segments.shift();
+      const segment = segments.shift() as string;
       obj[segment] = obj[segment] || {};
-      obj = obj[segment];
+      obj = obj[segment] as RepoTree;
     }
-    obj[segments.shift()] = entry;
+    (obj[segments.shift() as string] as RepoFile) = entry;
 
-    await Promise.all(mediaFiles.map(file => this.persistMedia(file)));
+    await Promise.all(assetProxies.map(file => this.persistMedia(file)));
     return Promise.resolve();
   }
 
-  updateUnpublishedEntryStatus(collection, slug, newStatus) {
+  updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     const unpubStore = window.repoFilesUnpublished;
     const entryIndex = unpubStore.findIndex(
-      e => e.metaData.collection === collection && e.slug === slug,
+      e => e.metaData!.collection === collection && e.slug === slug,
     );
-    unpubStore[entryIndex].metaData.status = newStatus;
+    unpubStore[entryIndex]!.metaData!.status = newStatus;
     return Promise.resolve();
   }
 
-  async publishUnpublishedEntry(collection, slug) {
+  async publishUnpublishedEntry(collection: string, slug: string) {
     const unpubStore = window.repoFilesUnpublished;
     const unpubEntryIndex = unpubStore.findIndex(
-      e => e.metaData.collection === collection && e.slug === slug,
+      e => e.metaData!.collection === collection && e.slug === slug,
     );
     const unpubEntry = unpubStore[unpubEntryIndex];
-    const entry = { raw: unpubEntry.data, slug: unpubEntry.slug, path: unpubEntry.file.path };
+    const entry = {
+      raw: unpubEntry.data,
+      slug: unpubEntry.slug as string,
+      path: unpubEntry.file.path,
+    };
     unpubStore.splice(unpubEntryIndex, 1);
 
-    await this.persistEntry(entry, unpubEntry.mediaFiles);
-    return { mediaFiles: this.getMediaFiles(unpubEntry) };
+    await this.persistEntry(entry, unpubEntry.mediaFiles!, { commitMessage: '' });
   }
 
   getMedia() {
     return Promise.resolve(this.assets);
   }
 
-  async getMediaFile(path) {
-    const asset = this.assets.find(asset => asset.path === path);
+  async getMediaFile(path: string) {
+    const asset = this.assets.find(asset => asset.path === path) as ImplementationMediaFile;
 
+    const url = asset.url as string;
     const name = basename(path);
-    const blob = await fetch(asset.url).then(res => res.blob());
+    const blob = await fetch(url).then(res => res.blob());
     const fileObj = new File([blob], name);
 
     return {
-      displayURL: asset.url,
+      id: url,
+      displayURL: url,
       path,
       name,
       size: fileObj.size,
       file: fileObj,
-      url: asset.url,
+      url,
     };
   }
 
-  mediaFileToAsset(mediaFile) {
-    const { fileObj } = mediaFile;
+  normalizeAsset(assetProxy: AssetProxy) {
+    const fileObj = assetProxy.fileObj as File;
     const { name, size } = fileObj;
     const objectUrl = attempt(window.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
-    const normalizedAsset = { id: uuid(), name, size, path: mediaFile.path, url, displayURL: url };
+    const normalizedAsset = { id: uuid(), name, size, path: assetProxy.path, url, displayURL: url };
 
     return normalizedAsset;
   }
 
-  persistMedia(mediaFile) {
-    const normalizedAsset = this.mediaFileToAsset(mediaFile);
+  persistMedia(assetProxy: AssetProxy) {
+    const normalizedAsset = this.normalizeAsset(assetProxy);
 
     this.assets.push(normalizedAsset);
 
     return Promise.resolve(normalizedAsset);
   }
 
-  deleteFile(path) {
+  deleteFile(path: string) {
     const assetIndex = this.assets.findIndex(asset => asset.path === path);
     if (assetIndex > -1) {
       this.assets.splice(assetIndex, 1);
@@ -298,5 +351,9 @@ export default class TestBackend {
     }
 
     return Promise.resolve();
+  }
+
+  async getDeployPreview() {
+    return null;
   }
 }

@@ -40,7 +40,7 @@ declare module 'netlify-cms-lib-util' {
     file: { path: string; label?: string; sha?: string | null };
     slug?: string;
     mediaFiles?: ImplementationMediaFile[];
-    metaData?: { collection: string };
+    metaData?: { collection: string; status: string };
     isModification?: boolean;
   }
 
