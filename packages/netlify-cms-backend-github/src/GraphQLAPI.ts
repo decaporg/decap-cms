@@ -7,7 +7,13 @@ import {
 } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
-import { APIError, EditorialWorkflowError, readFile, localForage } from 'netlify-cms-lib-util';
+import {
+  APIError,
+  EditorialWorkflowError,
+  readFile,
+  localForage,
+  DEFAULT_PR_BODY,
+} from 'netlify-cms-lib-util';
 import introspectionQueryResultData from './fragmentTypes';
 import API, { Config, BlobArgs, PR } from './API';
 import * as queries from './queries';
@@ -535,7 +541,7 @@ export default class GraphQLAPI extends API {
       variables: {
         createPullRequestInput: {
           baseRefName: this.branch,
-          body: API.DEFAULT_PR_BODY,
+          body: DEFAULT_PR_BODY,
           title,
           headRefName: headReference,
           repositoryId: repository.id,
@@ -596,7 +602,7 @@ export default class GraphQLAPI extends API {
         },
         createPullRequestInput: {
           baseRefName: this.branch,
-          body: API.DEFAULT_PR_BODY,
+          body: DEFAULT_PR_BODY,
           title,
           headRefName: branchName,
           repositoryId: repository.id,

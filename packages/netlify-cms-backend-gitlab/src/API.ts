@@ -10,6 +10,13 @@ import {
   AssetProxy,
   PersistOptions,
   readFile,
+  CMS_BRANCH_PREFIX,
+  generateContentKey,
+  isCMSLabel,
+  EditorialWorkflowError,
+  labelToStatus,
+  statusToLabel,
+  DEFAULT_PR_BODY,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { fromJS, Map, Set } from 'immutable';
@@ -42,6 +49,29 @@ interface CommitsParams {
     encoding: string;
   }[];
 }
+
+type GitLabMergeRequest = {
+  id: number;
+  iid: number;
+  title: string;
+  description: string;
+  state: string;
+  merged_by: {
+    name: string;
+    username: string;
+  };
+  merged_at: string;
+  created_at: string;
+  updated_at: string;
+  target_branch: string;
+  source_branch: string;
+  author: {
+    name: string;
+    username: string;
+  };
+  labels: string[];
+  sha: string;
+};
 
 type Formatter = (res: Response) => unknown;
 
@@ -155,12 +185,12 @@ export default class API {
   readFile = async (
     path: string,
     sha?: string | null,
-    { parseText = true } = {},
+    { parseText = true, branch = this.branch } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
       const content = await this.request({
         url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`,
-        params: { ref: this.branch },
+        params: { ref: branch },
         cache: 'no-store',
       }).then<Blob | string>(parseText ? this.responseToText : this.responseToBlob);
       return content;
@@ -295,7 +325,10 @@ export default class API {
   toBase64 = (str: string) => Promise.resolve(Base64.encode(str));
   fromBase64 = (str: string) => Base64.decode(str);
 
-  async uploadAndCommit(files: (Entry | AssetProxy)[], { commitMessage = '', updateFile = false }) {
+  async uploadAndCommit(
+    files: (Entry | AssetProxy)[],
+    { commitMessage = '', updateFile = false, branch = this.branch, newBranch = false },
+  ) {
     const action = updateFile ? 'update' : 'create';
     const actions = await Promise.all(
       files.map(item =>
@@ -310,10 +343,12 @@ export default class API {
     );
 
     const commitParams: CommitsParams = {
-      branch: this.branch,
+      branch,
       // eslint-disable-next-line @typescript-eslint/camelcase
       commit_message: commitMessage,
       actions,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      ...(newBranch ? { start_branch: this.branch } : {}),
     };
     if (this.commitAuthor) {
       const { name, email } = this.commitAuthor;
@@ -323,18 +358,24 @@ export default class API {
       commitParams.author_email = email;
     }
 
-    await this.requestJSON({
+    return this.requestJSON({
       url: `${this.repoURL}/repository/commits`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(commitParams),
     });
-
-    return files;
   }
 
-  persistFiles(files: (Entry | AssetProxy)[], { commitMessage, newEntry }: PersistOptions) {
-    return this.uploadAndCommit(files, { commitMessage, updateFile: newEntry === false });
+  persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
+    const files = entry ? [entry, ...mediaFiles] : mediaFiles;
+    if (options.useWorkflow) {
+      return this.editorialWorkflowGit(files, entry as Entry, mediaFiles, options);
+    } else {
+      return this.uploadAndCommit(files, {
+        commitMessage: options.commitMessage,
+        updateFile: options.newEntry === false,
+      });
+    }
   }
 
   deleteFile = (path: string, commitMessage: string) => {
@@ -356,71 +397,149 @@ export default class API {
     ])(`${this.repoURL}/repository/files/${encodeURIComponent(path)}`);
   };
 
+  generateContentKey(collectionName: string, slug: string) {
+    return generateContentKey(collectionName, slug);
+  }
+
+  contentKeyFromBranch(branch: string) {
+    return branch.substring(`${CMS_BRANCH_PREFIX}/`.length);
+  }
+
+  branchFromContentKey(contentKey: string) {
+    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
+  }
+
+  async getMergeRequests(sourceBranch?: string) {
+    const mergeRequests: GitLabMergeRequest[] = await this.requestJSON({
+      url: `${this.repoURL}/merge_requests`,
+      params: {
+        state: 'opened',
+        labels: 'Any',
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        target_branch: this.branch,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        ...(sourceBranch ? { source_branch: sourceBranch } : {}),
+      },
+    });
+
+    return mergeRequests.filter(
+      mr => mr.source_branch.startsWith(CMS_BRANCH_PREFIX) && mr.labels.some(isCMSLabel),
+    );
+  }
+
   async listUnpublishedBranches() {
     console.log(
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
-    // Get branches with a `name` matching `CMS_BRANCH_PREFIX`.
-    // Note that this is a substring match, so we need to check that the `branch.name` was generated by us.
-    return this.requestJSON({
-      url: `${this.repoURL}/repository/branches`,
-      params: { search: CMS_BRANCH_PREFIX },
-    })
-      .then(branches =>
-        branches.filter(branch => this.assertBranchName(branch.name) && !branch.merged),
-      )
-      .then(branches =>
-        filterPromises(branches, branch =>
-          // Get MRs with a `source_branch` of `branch.name`.
-          // Note that this is *probably* a substring match, so we need to check that
-          // the `source_branch` of at least one of the returned objects matches `branch.name`.
-          this.requestJSON({
-            url: `${this.repoURL}/merge_requests`,
-            params: {
-              state: 'opened',
-              source_branch: branch.name,
-              target_branch: this.branch,
-            },
-          }).then(mrs => mrs.some(mr => mr.source_branch === branch.name)),
-        ),
-      )
+
+    const mergeRequests = await this.getMergeRequests();
+    const branches = mergeRequests.map(mr => mr.source_branch);
+
+    return branches;
+  }
+
+  isUnpublishedEntryModification(path: string) {
+    return this.readFile(path, null, { branch: this.branch })
+      .then(() => true)
       .catch(error => {
-        console.log(
-          '%c No Unpublished entries',
-          'line-height: 30px;text-align: center;font-weight: bold',
-        );
+        if (error instanceof APIError && error.status === 404) {
+          return false;
+        }
         throw error;
       });
   }
 
-  async readUnpublishedBranchFile(contentKey: string) {
-    try {
-      const metaData = await this.retrieveMetadata(contentKey).then(data =>
-        data.objects.entry.path ? data : Promise.reject(null),
-      );
-      const repoURL = this.useOpenAuthoring
-        ? `/repos/${contentKey
-            .split('/')
-            .slice(0, 2)
-            .join('/')}`
-        : this.repoURL;
-
-      const [fileData, isModification] = await Promise.all([
-        this.readFile(metaData.objects.entry.path, null, {
-          branch: metaData.branch,
-          repoURL,
-        }) as Promise<string>,
-        this.isUnpublishedEntryModification(metaData.objects.entry.path, this.branch),
-      ]);
-
-      return {
-        metaData,
-        fileData,
-        isModification,
-        slug: this.slugFromContentKey(contentKey, metaData.collection),
-      };
-    } catch (e) {
+  async getBranchMergeRequest(branch: string) {
+    const mergeRequests = await this.getMergeRequests(branch);
+    if (mergeRequests.length <= 0) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
+
+    return mergeRequests[0];
+  }
+
+  async retrieveMetadata(contentKey: string) {
+    const [collection, slug] = contentKey.split('/');
+    const branch = this.branchFromContentKey(contentKey);
+    const path = '';
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    const label = mergeRequest.labels.find(isCMSLabel) as string;
+    const status = labelToStatus(label);
+
+    return { branch, collection, slug, path, status };
+  }
+
+  async readUnpublishedBranchFile(contentKey: string) {
+    const { branch, collection, slug, path, status } = await this.retrieveMetadata(contentKey);
+
+    const [fileData, isModification] = await Promise.all([
+      this.readFile(path, null, { branch }) as Promise<string>,
+      this.isUnpublishedEntryModification(path),
+    ]);
+
+    return {
+      slug,
+      metaData: { collection, objects: { entry: { path } }, status },
+      fileData,
+      isModification,
+    };
+  }
+
+  async editorialWorkflowGit(
+    files: (Entry | AssetProxy)[],
+    entry: Entry,
+    _mediaFilesList: AssetProxy[],
+    options: PersistOptions,
+  ) {
+    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
+    const branchName = this.branchFromContentKey(contentKey);
+    const unpublished = options.unpublished || false;
+    if (!unpublished) {
+      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
+      await this.uploadAndCommit(files, {
+        commitMessage: options.commitMessage,
+        branch: branchName,
+        updateFile: false,
+        newBranch: true,
+      });
+      await this.requestJSON({
+        method: 'POST',
+        url: `${this.repoURL}/merge_requests`,
+        params: {
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          source_branch: branchName,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          target_branch: this.branch,
+          title: options.commitMessage,
+          description: DEFAULT_PR_BODY,
+          labels: statusToLabel(options.status || this.initialWorkflowStatus),
+        },
+      });
+    } else {
+      await this.uploadAndCommit(files, {
+        commitMessage: options.commitMessage,
+        branch: branchName,
+        updateFile: true,
+      });
+    }
+  }
+
+  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+
+    const labels = [
+      ...mergeRequest.labels.filter(label => !isCMSLabel(label)),
+      statusToLabel(newStatus),
+    ];
+    await this.requestJSON({
+      method: 'PUT',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
+      params: {
+        labels: labels.join(','),
+      },
+    });
+  }
 }

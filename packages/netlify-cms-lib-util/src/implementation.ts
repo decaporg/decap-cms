@@ -141,7 +141,7 @@ export type ImplementationFile = {
   path: string;
 };
 
-export type Metadata = {
+type Metadata = {
   objects: { entry: { path: string } };
   collection: string;
   status: string;

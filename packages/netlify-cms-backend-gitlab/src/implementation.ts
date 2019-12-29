@@ -11,7 +11,6 @@ import {
   Cursor,
   Implementation,
   DisplayURL,
-  EditorialWorkflowError,
   entriesByFolder,
   entriesByFiles,
   getMediaDisplayURL,
@@ -203,7 +202,7 @@ export default class GitLab implements Implementation {
   }
 
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
-    await this.api!.persistFiles([entry, ...mediaFiles], options);
+    await this.api!.persistFiles(entry, mediaFiles, options);
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
@@ -211,7 +210,7 @@ export default class GitLab implements Implementation {
 
     const [id] = await Promise.all([
       getBlobSHA(fileObj),
-      this.api!.persistFiles([mediaFile], options),
+      this.api!.persistFiles(null, [mediaFile], options),
     ]);
 
     const { path } = mediaFile;
@@ -248,24 +247,30 @@ export default class GitLab implements Implementation {
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(({ ref }) => this.api!.contentKeyFromRef(ref)),
+        branches.map(branch => this.api!.contentKeyFromBranch(branch)),
       );
 
     const readUnpublishedBranchFile = (contentKey: string) =>
       this.api!.readUnpublishedBranchFile(contentKey);
 
-    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, 'GitHub');
+    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, 'GitLab');
   }
 
-  async unpublishedEntry(collection: string, _slug: string) {
-    if (collection) {
-      throw new EditorialWorkflowError('content is not under editorial workflow', true);
-    }
-    return { data: '', file: { path: '', id: null } };
+  async unpublishedEntry(collection: string, slug: string) {
+    const contentKey = this.api!.generateContentKey(collection, slug);
+    const data = await this.api!.readUnpublishedBranchFile(contentKey);
+    return {
+      slug,
+      file: { path: data.metaData.objects.entry.path, id: null },
+      data: data.fileData as string,
+      metaData: data.metaData,
+      mediaFiles: [],
+      isModification: data.isModification,
+    };
   }
 
-  async updateUnpublishedEntryStatus(_collection: string, _slug: string, _newStatus: string) {
-    return;
+  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    return this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
   async publishUnpublishedEntry(_collection: string, _slug: string) {

@@ -35,7 +35,15 @@ import {
   getMediaAsBlob,
   Config as C,
 } from './implementation';
-import { readFile } from './API';
+import {
+  readFile,
+  CMS_BRANCH_PREFIX,
+  generateContentKey,
+  isCMSLabel,
+  labelToStatus,
+  statusToLabel,
+  DEFAULT_PR_BODY,
+} from './API';
 
 export type AsyncLock = AL;
 export type Implementation = I;
@@ -53,7 +61,7 @@ export type ApiRequest =
   | {
       url: string;
       params?: Record<string, string | boolean | number>;
-      method?: 'POST';
+      method?: 'POST' | 'PUT';
       headers?: Record<string, string>;
       body?: string | FormData;
       cache?: 'no-store';
@@ -88,6 +96,12 @@ export const NetlifyCmsLibUtil = {
   getMediaDisplayURL,
   getMediaAsBlob,
   readFile,
+  CMS_BRANCH_PREFIX,
+  generateContentKey,
+  isCMSLabel,
+  labelToStatus,
+  statusToLabel,
+  DEFAULT_PR_BODY,
 };
 export {
   APIError,
@@ -119,4 +133,10 @@ export {
   getMediaDisplayURL,
   getMediaAsBlob,
   readFile,
+  CMS_BRANCH_PREFIX,
+  generateContentKey,
+  isCMSLabel,
+  labelToStatus,
+  statusToLabel,
+  DEFAULT_PR_BODY,
 };
