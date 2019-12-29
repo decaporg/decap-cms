@@ -9,7 +9,7 @@ import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util';
 import introspectionQueryResultData from './fragmentTypes';
-import API, { Config, ContentArgs, BlobArgs, PR } from './API';
+import API, { Config, BlobArgs, PR } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
 import { GraphQLError } from 'graphql';
@@ -163,22 +163,6 @@ export default class GraphQLAPI extends API {
     }
 
     return { owner, name };
-  }
-
-  async retrieveContent({ path, branch, repoURL, parseText }: ContentArgs) {
-    const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
-    const { isNull, isBinary, text } = await this.retrieveBlobObject(
-      owner,
-      name,
-      `${branch}:${path}`,
-    );
-    if (isNull) {
-      throw new APIError('Not Found', 404, 'GitHub');
-    } else if (!isBinary) {
-      return text;
-    } else {
-      return super.retrieveContent({ path, branch, repoURL, parseText });
-    }
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {

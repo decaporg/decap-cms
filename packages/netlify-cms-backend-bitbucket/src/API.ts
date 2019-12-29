@@ -11,6 +11,7 @@ import {
   AssetProxy,
   Entry,
   PersistOptions,
+  readFile,
 } from 'netlify-cms-lib-util';
 
 interface Config {
@@ -117,20 +118,18 @@ export default class API {
     sha?: string | null,
     { parseText = true } = {},
   ): Promise<string | Blob> => {
-    const cacheKey = parseText ? `bb.${sha}` : `bb.${sha}.blob`;
-    const cachedFile = sha ? await localForage.getItem<string | Blob>(cacheKey) : null;
-    if (cachedFile) {
-      return cachedFile;
-    }
-    const node = await this.branchCommitSha();
-    const result = await this.request({
-      url: `${this.repoURL}/src/${node}/${path}`,
-      cache: 'no-store',
-    }).then(parseText ? responseParser({ format: 'text' }) : responseParser({ format: 'blob' }));
-    if (sha) {
-      localForage.setItem(cacheKey, result);
-    }
-    return result as Blob | string;
+    const fetchContent = async () => {
+      const node = await this.branchCommitSha();
+      const content = await this.request({
+        url: `${this.repoURL}/src/${node}/${path}`,
+        cache: 'no-store',
+      }).then<string | Blob>(
+        parseText ? responseParser({ format: 'text' }) : responseParser({ format: 'blob' }),
+      );
+      return content;
+    };
+    const content = await readFile(sha, fetchContent, localForage, parseText);
+    return content;
   };
 
   getEntriesAndCursor = (jsonResponse: {

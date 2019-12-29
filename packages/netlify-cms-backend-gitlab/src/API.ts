@@ -9,6 +9,7 @@ import {
   Entry,
   AssetProxy,
   PersistOptions,
+  readFile,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { fromJS, Map, Set } from 'immutable';
@@ -120,8 +121,13 @@ export default class API {
   };
 
   responseToJSON = (res: Response) => this.parseResponse(res, { expectingFormat: 'json' });
-  responseToBlob = (res: Response) => this.parseResponse(res, { expectingFormat: 'blob' });
-  responseToText = (res: Response) => this.parseResponse(res, { expectingFormat: 'text' });
+
+  responseToBlob = (res: Response) =>
+    this.parseResponse(res, { expectingFormat: 'blob' }) as Promise<Blob>;
+
+  responseToText = (res: Response) =>
+    this.parseResponse(res, { expectingFormat: 'text' }) as Promise<string>;
+
   requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON);
   requestText = (req: ApiRequest) => this.request(req).then(this.responseToText);
 
@@ -145,20 +151,17 @@ export default class API {
     sha?: string | null,
     { parseText = true } = {},
   ): Promise<string | Blob> => {
-    const cacheKey = parseText ? `gl.${sha}` : `gl.${sha}.blob`;
-    const cachedFile = sha ? await localForage.getItem<string | Blob>(cacheKey) : null;
-    if (cachedFile) {
-      return cachedFile;
-    }
-    const result = await this.request({
-      url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`,
-      params: { ref: this.branch },
-      cache: 'no-store',
-    }).then(parseText ? this.responseToText : this.responseToBlob);
-    if (sha) {
-      localForage.setItem(cacheKey, result);
-    }
-    return result;
+    const fetchContent = async () => {
+      const content = await this.request({
+        url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`,
+        params: { ref: this.branch },
+        cache: 'no-store',
+      }).then<Blob | string>(parseText ? this.responseToText : this.responseToBlob);
+      return content;
+    };
+
+    const content = await readFile(sha, fetchContent, localForage, parseText);
+    return content;
   };
 
   getCursorFromHeaders = (headers: Headers) => {

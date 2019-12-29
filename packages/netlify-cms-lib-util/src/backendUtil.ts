@@ -48,7 +48,7 @@ export const parseResponse = async (
     throw new Error(`${format} is not a supported response format.`);
   }
   const body = await formatter(res);
-  return body as Promise<string | Blob | {}>;
+  return body as Promise<string | Blob>;
 };
 
 export const responseParser = (options: { expectingOk?: boolean; format?: string }) => (

@@ -13,6 +13,7 @@ import {
   AssetProxy,
   Entry as LibEntry,
   PersistOptions,
+  readFile,
 } from 'netlify-cms-lib-util';
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
@@ -103,13 +104,6 @@ export interface Branch {
 
 export interface BlobArgs {
   sha: string;
-  repoURL: string;
-  parseText: boolean;
-}
-
-export interface ContentArgs {
-  path: string;
-  branch: string;
   repoURL: string;
   parseText: boolean;
 }
@@ -418,14 +412,7 @@ export default class API {
     });
   }
 
-  retrieveContent({ path, branch, repoURL, parseText }: ContentArgs) {
-    return this.request(`${repoURL}/contents/${path}`, {
-      params: { ref: branch },
-      cache: 'no-store',
-    }).then((file: GitHubFile) => this.getBlob({ sha: file.sha, repoURL, parseText }));
-  }
-
-  readFile(
+  async readFile(
     path: string,
     sha?: string | null,
     {
@@ -438,11 +425,16 @@ export default class API {
       parseText?: boolean;
     } = {},
   ) {
-    if (sha) {
-      return this.getBlob({ sha, repoURL, parseText });
-    } else {
-      return this.retrieveContent({ path, branch, repoURL, parseText });
+    if (!sha) {
+      const file: GitHubFile = await this.request(`${repoURL}/contents/${path}`, {
+        params: { ref: branch },
+        cache: 'no-store',
+      });
+      sha = file.sha;
     }
+    const fetchContent = () => this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
+    const content = await readFile(sha, fetchContent, localForage, parseText);
+    return content;
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
@@ -462,20 +454,6 @@ export default class API {
       const blob = new Blob([byteArray]);
       return blob;
     }
-  }
-
-  getBlob({ sha, repoURL = this.repoURL, parseText = true }: BlobArgs) {
-    const key = parseText ? `gh.${sha}` : `gh.${sha}.blob`;
-    return localForage.getItem<string | Blob>(key).then(cached => {
-      if (cached) {
-        return cached;
-      }
-
-      return this.fetchBlobContent({ sha, repoURL, parseText }).then(result => {
-        localForage.setItem(key, result);
-        return result;
-      });
-    });
   }
 
   async listFiles(

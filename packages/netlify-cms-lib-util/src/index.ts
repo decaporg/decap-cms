@@ -34,6 +34,7 @@ import {
   getMediaDisplayURL,
   getMediaAsBlob,
 } from './implementation';
+import { readFile } from './API';
 
 export type AsyncLock = AL;
 export type Implementation = I;
@@ -84,6 +85,7 @@ export const NetlifyCmsLibUtil = {
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,
+  readFile,
 };
 export {
   APIError,
@@ -114,4 +116,5 @@ export {
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,
+  readFile,
 };
