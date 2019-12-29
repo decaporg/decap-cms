@@ -14,12 +14,12 @@ import {
   Cursor,
   Implementation,
   DisplayURL,
-  Collection,
   User,
   Credentials,
   entriesByFiles,
+  Config,
+  ImplementationFile,
 } from 'netlify-cms-lib-util';
-import { Map } from 'immutable';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
@@ -84,10 +84,12 @@ interface GetMediaDisplayURLArgs {
 }
 
 export default class GitGateway implements Implementation {
-  config: Map<string, string>;
+  config: Config;
   api?: GitHubAPI | GitLabAPI | BitBucketAPI;
   branch: string;
-  squashMerges: string;
+  squashMerges: boolean;
+  mediaFolder: string;
+  transformImages: boolean;
   gatewayUrl: string;
   netlifyLargeMediaURL: string;
   backendType: string | null;
@@ -102,7 +104,7 @@ export default class GitGateway implements Implementation {
     API: GitHubAPI | GitLabAPI | BitBucketAPI | null;
     initialWorkflowStatus: string;
   };
-  constructor(config: Map<string, string>, options = {}) {
+  constructor(config: Config, options = {}) {
     this.options = {
       proxied: true,
       API: null,
@@ -110,20 +112,16 @@ export default class GitGateway implements Implementation {
       ...options,
     };
     this.config = config;
-    this.branch = config.getIn(['backend', 'branch'], 'master').trim();
-    this.squashMerges = config.getIn(['backend', 'squash_merges']);
+    this.branch = config.backend.branch?.trim() || 'master';
+    this.squashMerges = config.backend.squash_merges || false;
+    this.mediaFolder = config.media_folder;
+    this.transformImages = config.backend.use_large_media_transforms_in_media_library || true;
 
     const netlifySiteURL = localStorage.getItem('netlifySiteURL');
-    const APIUrl = getEndpoint(
-      config.getIn(['backend', 'identity_url'], defaults.identity),
-      netlifySiteURL,
-    );
-    this.gatewayUrl = getEndpoint(
-      config.getIn(['backend', 'gateway_url'], defaults.gateway),
-      netlifySiteURL,
-    );
+    const APIUrl = getEndpoint(config.backend.identity_url || defaults.identity, netlifySiteURL);
+    this.gatewayUrl = getEndpoint(config.backend.gateway_url || defaults.gateway, netlifySiteURL);
     this.netlifyLargeMediaURL = getEndpoint(
-      config.getIn(['backend', 'large_media_url'], defaults.largeMedia),
+      config.backend.large_media_url || defaults.largeMedia,
       netlifySiteURL,
     );
     const backendTypeRegex = /\/(github|gitlab|bitbucket)\/?$/;
@@ -259,11 +257,11 @@ export default class GitGateway implements Implementation {
     return this.tokenPromise!();
   }
 
-  entriesByFolder(collection: Collection, extension: string) {
-    return this.backend!.entriesByFolder(collection, extension);
+  entriesByFolder(folder: string, extension: string, depth: number) {
+    return this.backend!.entriesByFolder(folder, extension, depth);
   }
-  entriesByFiles(collection: Collection) {
-    return this.backend!.entriesByFiles(collection);
+  entriesByFiles(files: ImplementationFile[]) {
+    return this.backend!.entriesByFiles(files);
   }
   getEntry(path: string) {
     return this.backend!.getEntry(path);
@@ -300,7 +298,7 @@ export default class GitGateway implements Implementation {
     return mediaFiles;
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
+  getMedia(mediaFolder = this.mediaFolder) {
     return Promise.all([this.backend!.getMedia(mediaFolder), this.getLargeMediaClient()]).then(
       async ([mediaFiles, largeMediaClient]) => {
         if (!largeMediaClient.enabled) {
@@ -372,10 +370,7 @@ export default class GitGateway implements Implementation {
           rootURL: this.netlifyLargeMediaURL,
           makeAuthorizedRequest: this.requestFunction,
           patterns,
-          transformImages: this.config.getIn(
-            ['backend', 'use_large_media_transforms_in_media_library'],
-            true,
-          )
+          transformImages: this.transformImages
             ? // eslint-disable-next-line @typescript-eslint/camelcase
               { nf_resize: 'fit', w: 560, h: 320 }
             : false,
@@ -385,15 +380,8 @@ export default class GitGateway implements Implementation {
   }
   async getLargeMediaDisplayURLs(mediaFiles: { path: string; id: string | null }[]) {
     const client = await this.getLargeMediaClient();
-    const listFiles = () =>
-      Promise.resolve(
-        mediaFiles
-          .filter(({ path }) => client.matchPath(path))
-          .map(({ id, path }) => ({ path, id })),
-      );
-
     const filesPromise = entriesByFiles(
-      listFiles,
+      mediaFiles,
       this.api!.readFile.bind(this.api!),
       'Git-Gateway',
     );
@@ -542,7 +530,7 @@ export default class GitGateway implements Implementation {
   unpublishedEntries() {
     return this.backend!.unpublishedEntries();
   }
-  unpublishedEntry(collection: Collection, slug: string) {
+  unpublishedEntry(collection: string, slug: string) {
     return this.backend!.unpublishedEntry(collection, slug, {
       loadEntryMediaFiles: files => this.loadEntryMediaFiles(files),
     });

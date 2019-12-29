@@ -5,13 +5,11 @@ import { stripIndent } from 'common-tags';
 import {
   asyncLock,
   basename,
-  getPathDepth,
   AsyncLock,
   Implementation,
   AssetProxy,
   PersistOptions,
   DisplayURL,
-  Collection,
   getBlobSHA,
   entriesByFolder,
   entriesByFiles,
@@ -20,15 +18,16 @@ import {
   getMediaDisplayURL,
   getMediaAsBlob,
   Credentials,
+  filterByPropExtension,
+  Config,
+  ImplementationFile,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
-import { get } from 'lodash';
-import { Map } from 'immutable';
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
   ReposListStatusesForRefResponseItem as GitHubCommitStatus,
 } from '@octokit/rest';
-import API, { Entry } from './API';
+import API, { Entry, MediaFile } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -54,8 +53,7 @@ function isPreviewContext(context: string, previewContext: string) {
  * Retrieve a deploy preview URL from an array of statuses. By default, a
  * matching status is inferred via `isPreviewContext`.
  */
-function getPreviewStatus(statuses: GitHubCommitStatus[], config: Map<string, string>) {
-  const previewContext = config.getIn(['backend', 'preview_context']);
+function getPreviewStatus(statuses: GitHubCommitStatus[], previewContext: string) {
   return statuses.find(({ context }) => {
     return isPreviewContext(context, previewContext);
   });
@@ -64,7 +62,6 @@ function getPreviewStatus(statuses: GitHubCommitStatus[], config: Map<string, st
 export default class GitHub implements Implementation {
   lock: AsyncLock;
   api: API | null;
-  config: Map<string, string>;
   options: {
     proxied: boolean;
     API: API | null;
@@ -77,8 +74,10 @@ export default class GitHub implements Implementation {
   useOpenAuthoring?: boolean;
   branch: string;
   apiRoot: string;
+  mediaFolder: string;
+  previewContext: string;
   token: string | null;
-  squashMerges: string;
+  squashMerges: boolean;
   useGraphql: boolean;
   _currentUserPromise?: Promise<GitHubUser>;
   _userIsOriginMaintainerPromises?: {
@@ -86,8 +85,7 @@ export default class GitHub implements Implementation {
   };
   _mediaDisplayURLSem?: Semaphore;
 
-  constructor(config: Map<string, string>, options = {}) {
-    this.config = config;
+  constructor(config: Config, options = {}) {
     this.options = {
       proxied: false,
       API: null,
@@ -95,28 +93,33 @@ export default class GitHub implements Implementation {
       ...options,
     };
 
-    if (!this.options.proxied && config.getIn(['backend', 'repo']) == null) {
+    if (
+      !this.options.proxied &&
+      (config.backend.repo === null || config.backend.repo === undefined)
+    ) {
       throw new Error('The GitHub backend needs a "repo" in the backend configuration.');
     }
 
     this.api = this.options.API || null;
 
-    this.openAuthoringEnabled = config.getIn(['backend', 'open_authoring'], false);
+    this.openAuthoringEnabled = config.backend.open_authoring || false;
     if (this.openAuthoringEnabled) {
       if (!this.options.useWorkflow) {
         throw new Error(
           'backend.open_authoring is true but publish_mode is not set to editorial_workflow.',
         );
       }
-      this.originRepo = config.getIn(['backend', 'repo'], '');
+      this.originRepo = config.backend.repo || '';
     } else {
-      this.repo = this.originRepo = config.getIn(['backend', 'repo'], '');
+      this.repo = this.originRepo = config.backend.repo || '';
     }
-    this.branch = config.getIn(['backend', 'branch'], 'master').trim();
-    this.apiRoot = config.getIn(['backend', 'api_root'], 'https://api.github.com');
+    this.branch = config.backend.branch?.trim() || 'master';
+    this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
-    this.squashMerges = config.getIn(['backend', 'squash_merges']);
-    this.useGraphql = config.getIn(['backend', 'use_graphql']);
+    this.squashMerges = config.backend.squash_merges || false;
+    this.useGraphql = config.backend.use_graphql || false;
+    this.mediaFolder = config.media_folder;
+    this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
   }
 
@@ -315,40 +318,28 @@ export default class GitHub implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  async entriesByFolder(collection: Collection, extension: string) {
+  async entriesByFolder(folder: string, extension: string, depth: number) {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
 
     const listFiles = () =>
-      this.api!.listFiles(collection.get('folder') as string, {
+      this.api!.listFiles(folder, {
         repoURL,
-        depth: getPathDepth(collection.get('path', '') as string),
-      }).then(files => files.filter(file => file.name.endsWith('.' + extension)));
+        depth,
+      }).then(filterByPropExtension(extension, 'path'));
 
-    const readFile = (path: string, id: string | null) =>
+    const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }) as Promise<string>;
 
     return entriesByFolder(listFiles, readFile, 'GitHub');
   }
 
-  entriesByFiles(collection: Collection) {
+  entriesByFiles(files: ImplementationFile[]) {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
 
-    const listFiles = () =>
-      Promise.resolve(
-        collection
-          .get('files')!
-          .map(collectionFile => ({
-            path: collectionFile!.get('file'),
-            label: collectionFile!.get('label'),
-            id: null,
-          }))
-          .toArray(),
-      );
-
-    const readFile = (path: string, id: string | null) =>
+    const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }) as Promise<string>;
 
-    return entriesByFiles(listFiles, readFile, 'GitHub');
+    return entriesByFiles(files, readFile, 'GitHub');
   }
 
   // Fetches a single entry.
@@ -360,7 +351,7 @@ export default class GitHub implements Implementation {
     }));
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
+  getMedia(mediaFolder = this.mediaFolder) {
     return this.api!.listFiles(mediaFolder).then(files =>
       files.map(({ id, name, size, path }) => {
         // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
@@ -462,13 +453,13 @@ export default class GitHub implements Implementation {
   }
 
   async unpublishedEntry(
-    collection: Collection,
+    collection: string,
     slug: string,
-    { loadEntryMediaFiles = (files: []) => this.loadEntryMediaFiles(files) } = {},
+    { loadEntryMediaFiles = (files: MediaFile[]) => this.loadEntryMediaFiles(files) } = {},
   ) {
-    const contentKey = this.api!.generateContentKey(collection.get('name'), slug);
+    const contentKey = this.api!.generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const files = get(data, 'metaData.objects.files', []);
+    const files = data.metaData.objects.files || ([] as MediaFile[]);
     const mediaFiles = await loadEntryMediaFiles(files);
     return {
       slug,
@@ -496,7 +487,7 @@ export default class GitHub implements Implementation {
 
     const headSHA = typeof data.pr.head === 'string' ? data.pr.head : data.pr.head.sha;
     const statuses = await this.api!.getStatuses(headSHA);
-    const deployStatus = getPreviewStatus(statuses, this.config);
+    const deployStatus = getPreviewStatus(statuses, this.previewContext);
 
     if (deployStatus) {
       const { target_url: url, state } = deployStatus;

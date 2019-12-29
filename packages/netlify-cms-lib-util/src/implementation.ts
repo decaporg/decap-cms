@@ -1,5 +1,4 @@
 import semaphore, { Semaphore } from 'semaphore';
-import { List } from 'immutable';
 import Cursor from './Cursor';
 
 export type DisplayURLObject = { id: string; path: string };
@@ -23,7 +22,7 @@ export interface ImplementationMediaFile {
 export interface ImplementationEntry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: string;
-  file: { path: string; label?: string; id: string | null };
+  file: { path: string; label?: string; id?: string | null };
   slug?: string;
   mediaFiles?: ImplementationMediaFile[];
   metaData?: { collection: string; status: string };
@@ -66,27 +65,23 @@ export type User = Credentials & {
   useOpenAuthoring?: boolean;
 };
 
-type CollectionFileFields = {
-  file: string;
-  label: string;
-};
-
-type CollectionFile = {
-  get<K extends keyof CollectionFileFields>(key: K): CollectionFileFields[K];
-};
-
-type CollectionFields = {
-  name: string;
-  folder?: string;
-  files?: List<CollectionFile>;
-  path?: string;
-};
-
-export type Collection = {
-  get<K extends keyof CollectionFields>(
-    key: K,
-    defaultValue?: CollectionFields[K],
-  ): CollectionFields[K];
+export type Config = {
+  backend: {
+    repo?: string | null;
+    open_authoring?: boolean;
+    branch?: string;
+    api_root?: string;
+    squash_merges?: boolean;
+    use_graphql?: boolean;
+    preview_context?: string;
+    identity_url?: string;
+    gateway_url?: string;
+    large_media_url?: string;
+    use_large_media_transforms_in_media_library?: boolean;
+  };
+  media_folder: string;
+  base_url?: string;
+  site_id?: string;
 };
 
 export interface Implementation {
@@ -98,8 +93,12 @@ export interface Implementation {
   getToken: () => Promise<string | null>;
 
   getEntry: (path: string) => Promise<ImplementationEntry>;
-  entriesByFolder: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
-  entriesByFiles: (collection: Collection, extension: string) => Promise<ImplementationEntry[]>;
+  entriesByFolder: (
+    folder: string,
+    extension: string,
+    depth: number,
+  ) => Promise<ImplementationEntry[]>;
+  entriesByFiles: (files: ImplementationFile[]) => Promise<ImplementationEntry[]>;
 
   getMediaDisplayURL?: (displayURL: DisplayURL) => Promise<string>;
   getMedia: (folder?: string) => Promise<ImplementationMediaFile[]>;
@@ -110,7 +109,7 @@ export interface Implementation {
   deleteFile: (path: string, commitMessage: string) => Promise<void>;
 
   unpublishedEntries: () => Promise<ImplementationEntry[]>;
-  unpublishedEntry: (collection: Collection, slug: string) => Promise<ImplementationEntry>;
+  unpublishedEntry: (collection: string, slug: string) => Promise<ImplementationEntry>;
   updateUnpublishedEntryStatus: (
     collection: string,
     slug: string,
@@ -124,8 +123,9 @@ export interface Implementation {
   ) => Promise<{ url: string; status: string } | null>;
 
   allEntriesByFolder?: (
-    collection: Collection,
+    folder: string,
     extension: string,
+    depth: number,
   ) => Promise<ImplementationEntry[]>;
   traverseCursor?: (
     cursor: Cursor,
@@ -135,8 +135,9 @@ export interface Implementation {
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
-type ImplementationFile = {
-  id: string | null;
+export type ImplementationFile = {
+  id?: string | null | undefined;
+  label?: string;
   path: string;
 };
 
@@ -148,7 +149,7 @@ export type Metadata = {
 
 type ReadFile = (
   path: string,
-  id: string | null,
+  id: string | null | undefined,
   options: { parseText: boolean },
 ) => Promise<string | Blob>;
 type ReadUnpublishedFile = (
@@ -232,11 +233,10 @@ export const entriesByFolder = async (
 };
 
 export const entriesByFiles = async (
-  listFiles: () => Promise<ImplementationFile[]>,
+  files: ImplementationFile[],
   readFile: ReadFile,
   apiName: string,
 ) => {
-  const files = await listFiles();
   return fetchFiles(files, readFile, apiName);
 };
 

@@ -5,7 +5,6 @@ import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
-  getPathDepth,
   Entry,
   AssetProxy,
   PersistOptions,
@@ -13,15 +12,16 @@ import {
   Implementation,
   DisplayURL,
   EditorialWorkflowError,
-  Collection,
   entriesByFolder,
   entriesByFiles,
   getMediaDisplayURL,
   getMediaAsBlob,
   User,
   Credentials,
+  Config,
+  ImplementationFile,
+  unpublishedEntries,
 } from 'netlify-cms-lib-util';
-import { Map } from 'immutable';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
@@ -29,38 +29,45 @@ import { getBlobSHA } from 'netlify-cms-lib-util/src';
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitLab implements Implementation {
-  config: Map<string, string>;
   api: API | null;
   options: {
     proxied: boolean;
     API: API | null;
     useWorkflow?: boolean;
+    initialWorkflowStatus: string;
   };
   repo: string;
   branch: string;
   apiRoot: string;
   token: string | null;
+  squashMerges: boolean;
+  mediaFolder: string;
 
   _mediaDisplayURLSem?: Semaphore;
 
-  constructor(config: Map<string, string>, options = {}) {
-    this.config = config;
+  constructor(config: Config, options = {}) {
     this.options = {
       proxied: false,
       API: null,
+      initialWorkflowStatus: '',
       ...options,
     };
 
-    if (!this.options.proxied && config.getIn(['backend', 'repo']) == null) {
+    if (
+      !this.options.proxied &&
+      (config.backend.repo === null || config.backend.repo === undefined)
+    ) {
       throw new Error('The GitLab backend needs a "repo" in the backend configuration.');
     }
 
     this.api = this.options.API || null;
 
-    this.repo = config.getIn(['backend', 'repo'], '');
-    this.branch = config.getIn(['backend', 'branch'], 'master');
-    this.apiRoot = config.getIn(['backend', 'api_root'], 'https://gitlab.com/api/v4');
+    this.repo = config.backend.repo || '';
+    this.branch = config.backend.branch || 'master';
+    this.apiRoot = config.backend.api_root || 'https://gitlab.com/api/v4';
     this.token = '';
+    this.squashMerges = config.backend.squash_merges || false;
+    this.mediaFolder = config.media_folder;
   }
 
   authComponent() {
@@ -78,6 +85,8 @@ export default class GitLab implements Implementation {
       branch: this.branch,
       repo: this.repo,
       apiRoot: this.apiRoot,
+      squashMerges: this.squashMerges,
+      initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     const user = await this.api.user();
     const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
@@ -120,10 +129,8 @@ export default class GitLab implements Implementation {
     return file.name.endsWith('.' + extension) && fileFolder.split('/').length <= depth;
   }
 
-  async entriesByFolder(collection: Collection, extension: string) {
+  async entriesByFolder(folder: string, extension: string, depth: number) {
     let cursor: Cursor;
-    const depth = getPathDepth(collection.get('path', '') as string);
-    const folder = collection.get('folder') as string;
 
     const listFiles = () =>
       this.api!.listFiles(folder, depth > 1).then(({ files, cursor: c }) => {
@@ -138,10 +145,7 @@ export default class GitLab implements Implementation {
     return files;
   }
 
-  async allEntriesByFolder(collection: Collection, extension: string) {
-    const depth = getPathDepth(collection.get('path', '') as string);
-    const folder = collection.get('folder') as string;
-
+  async allEntriesByFolder(folder: string, extension: string, depth: number) {
     const listFiles = () =>
       this.api!.listAllFiles(folder, depth > 1).then(files =>
         files.filter(file => this.filterFile(folder, file, extension, depth)),
@@ -151,21 +155,8 @@ export default class GitLab implements Implementation {
     return files;
   }
 
-  async entriesByFiles(collection: Collection) {
-    const listFiles = () =>
-      Promise.resolve(
-        collection
-          .get('files')!
-          .map(collectionFile => ({
-            path: collectionFile!.get('file'),
-            label: collectionFile!.get('label'),
-            id: null,
-          }))
-          .toArray(),
-      );
-
-    const files = await entriesByFiles(listFiles, this.api!.readFile.bind(this.api!), 'GitLab');
-    return files;
+  entriesByFiles(files: ImplementationFile[]) {
+    return entriesByFiles(files, this.api!.readFile.bind(this.api!), 'GitLab');
   }
 
   // Fetches a single entry.
@@ -176,7 +167,7 @@ export default class GitLab implements Implementation {
     }));
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
+  getMedia(mediaFolder = this.mediaFolder) {
     return this.api!.listAllFiles(mediaFolder).then(files =>
       files.map(({ id, name, path }) => {
         return { id, name, path, displayURL: { id, name, path } };
@@ -255,10 +246,18 @@ export default class GitLab implements Implementation {
   }
 
   async unpublishedEntries() {
-    return [];
+    const listEntriesKeys = () =>
+      this.api!.listUnpublishedBranches().then(branches =>
+        branches.map(({ ref }) => this.api!.contentKeyFromRef(ref)),
+      );
+
+    const readUnpublishedBranchFile = (contentKey: string) =>
+      this.api!.readUnpublishedBranchFile(contentKey);
+
+    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, 'GitHub');
   }
 
-  async unpublishedEntry(collection: Collection, _slug: string) {
+  async unpublishedEntry(collection: string, _slug: string) {
     if (collection) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }

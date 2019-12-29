@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { NetlifyAuthenticator, ImplicitAuthenticator } from 'netlify-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
@@ -16,22 +15,25 @@ export default class BitbucketAuthenticationPage extends React.Component {
     base_url: PropTypes.string,
     siteId: PropTypes.string,
     authEndpoint: PropTypes.string,
-    config: ImmutablePropTypes.map,
+    config: PropTypes.object.isRequired,
     clearHash: PropTypes.func,
   };
 
   state = {};
 
   componentDidMount() {
-    const authType = this.props.config.getIn(['backend', 'auth_type']);
+    const {
+      auth_type: authType = '',
+      base_url = 'https://bitbucket.org',
+      auth_endpoint = 'site/oauth2/authorize',
+      app_id = '',
+    } = this.props.config.backend;
+
     if (authType === 'implicit') {
       this.auth = new ImplicitAuthenticator({
-        base_url: this.props.config.getIn(['backend', 'base_url'], 'https://bitbucket.org'),
-        auth_endpoint: this.props.config.getIn(
-          ['backend', 'auth_endpoint'],
-          'site/oauth2/authorize',
-        ),
-        app_id: this.props.config.getIn(['backend', 'app_id']),
+        base_url,
+        auth_endpoint,
+        app_id,
         clearHash: this.props.clearHash,
       });
       // Complete implicit authentication if we were redirected back to from the provider.
@@ -75,8 +77,8 @@ export default class BitbucketAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
-        logoUrl={config.get('logo_url')}
-        siteUrl={config.get('site_url')}
+        logoUrl={config.logo_url}
+        siteUrl={config.site_url}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="bitbucket" />

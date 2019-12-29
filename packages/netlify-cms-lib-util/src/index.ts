@@ -20,6 +20,7 @@ import {
   Implementation as I,
   ImplementationEntry as IE,
   ImplementationMediaFile as IMF,
+  ImplementationFile as IF,
   DisplayURLObject as DUO,
   DisplayURL as DU,
   Credentials as Cred,
@@ -27,12 +28,12 @@ import {
   Entry as E,
   PersistOptions as PO,
   AssetProxy as AP,
-  Collection as Col,
   entriesByFiles,
   entriesByFolder,
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,
+  Config as C,
 } from './implementation';
 import { readFile } from './API';
 
@@ -40,6 +41,7 @@ export type AsyncLock = AL;
 export type Implementation = I;
 export type ImplementationEntry = IE;
 export type ImplementationMediaFile = IMF;
+export type ImplementationFile = IF;
 export type DisplayURL = DU;
 export type DisplayURLObject = DUO;
 export type Credentials = Cred;
@@ -47,7 +49,6 @@ export type User = U;
 export type Entry = E;
 export type PersistOptions = PO;
 export type AssetProxy = AP;
-export type Collection = Col;
 export type ApiRequest =
   | {
       url: string;
@@ -58,6 +59,7 @@ export type ApiRequest =
       cache?: 'no-store';
     }
   | string;
+export type Config = C;
 
 export const NetlifyCmsLibUtil = {
   APIError,

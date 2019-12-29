@@ -7,7 +7,7 @@ import {
 } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
-import { APIError, EditorialWorkflowError } from 'netlify-cms-lib-util';
+import { APIError, EditorialWorkflowError, readFile, localForage } from 'netlify-cms-lib-util';
 import introspectionQueryResultData from './fragmentTypes';
 import API, { Config, BlobArgs, PR } from './API';
 import * as queries from './queries';
@@ -163,6 +163,27 @@ export default class GraphQLAPI extends API {
     }
 
     return { owner, name };
+  }
+
+  async readFile(
+    path: string,
+    sha?: string | null,
+    {
+      branch = this.branch,
+      repoURL = this.repoURL,
+      parseText = true,
+    }: {
+      branch?: string;
+      repoURL?: string;
+      parseText?: boolean;
+    } = {},
+  ) {
+    if (!sha) {
+      sha = await this.getFileSha(path, { repoURL, branch });
+    }
+    const fetchContent = () => this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
+    const content = await readFile(sha, fetchContent, localForage, parseText);
+    return content;
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
@@ -605,8 +626,8 @@ export default class GraphQLAPI extends API {
     return { ...pullRequest, head: { sha: pullRequest.headRefOid } };
   }
 
-  async getFileSha(path: string, branch: string) {
-    const { repoOwner: owner, repoName: name } = this;
+  async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
+    const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const { data } = await this.query({
       query: queries.fileSha,
       variables: { owner, name, expression: `${branch}:${path}` },

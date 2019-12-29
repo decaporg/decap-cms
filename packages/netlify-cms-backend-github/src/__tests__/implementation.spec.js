@@ -1,16 +1,15 @@
-import { fromJS } from 'immutable';
 import GitHubImplementation from '../implementation';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
 describe('github backend implementation', () => {
-  const config = fromJS({
+  const config = {
     backend: {
       repo: 'owner/repo',
       open_authoring: false,
       api_root: 'https://api.github.com',
     },
-  });
+  };
 
   const createObjectURL = jest.fn();
   global.URL = {
@@ -188,7 +187,7 @@ describe('github backend implementation', () => {
       };
       readUnpublishedBranchFile.mockResolvedValue(data);
 
-      const collection = { get: jest.fn().mockReturnValue('posts') };
+      const collection = 'posts';
       await expect(gitHubImplementation.unpublishedEntry(collection, 'slug')).resolves.toEqual({
         slug: 'slug',
         file: { path: 'entry-path', id: null },

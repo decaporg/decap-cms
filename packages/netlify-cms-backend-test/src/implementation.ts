@@ -5,17 +5,16 @@ import {
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
-  getPathDepth,
   Implementation,
-  Collection,
   Entry,
   ImplementationEntry,
   AssetProxy,
   PersistOptions,
   ImplementationMediaFile,
   User,
+  Config,
+  ImplementationFile,
 } from 'netlify-cms-lib-util';
-import { Map } from 'immutable';
 import AuthenticationPage from './AuthenticationPage';
 
 type RepoFile = { file?: { path: string }; content: string };
@@ -43,10 +42,11 @@ function getFile(path: string) {
 const pageSize = 10;
 
 const getCursor = (
-  collection: Collection,
+  folder: string,
   extension: string,
   entries: ImplementationEntry[],
   index: number,
+  depth: number,
 ) => {
   const count = entries.length;
   const pageCount = Math.floor(count / pageSize);
@@ -56,7 +56,7 @@ const getCursor = (
       ...(index > 0 ? ['prev', 'first'] : []),
     ],
     meta: { index, count, pageSize, pageCount },
-    data: { collection, extension, index, pageCount },
+    data: { folder, extension, index, pageCount, depth },
   });
 };
 
@@ -89,12 +89,10 @@ export const getFolderEntries = (
 };
 
 export default class TestBackend implements Implementation {
-  config: Map<string, string>;
   assets: ImplementationMediaFile[];
   options: { initialWorkflowStatus?: string };
 
-  constructor(config: Map<string, string>, options = {}) {
-    this.config = config;
+  constructor(_config: Config, options = {}) {
     this.assets = [];
     this.options = options;
   }
@@ -120,11 +118,12 @@ export default class TestBackend implements Implementation {
   }
 
   traverseCursor(cursor: Cursor, action: string) {
-    const { collection, extension, index, pageCount } = cursor.data!.toObject() as {
-      collection: Collection;
+    const { folder, extension, index, pageCount, depth } = cursor.data!.toObject() as {
+      folder: string;
       extension: string;
       index: number;
       pageCount: number;
+      depth: number;
     };
     const newIndex = (() => {
       if (action === 'next') {
@@ -142,23 +141,15 @@ export default class TestBackend implements Implementation {
       return 0;
     })();
     // TODO: stop assuming cursors are for collections
-    const depth = getPathDepth(collection.get('path', '') as string);
-    const allEntries = getFolderEntries(
-      window.repoFiles,
-      collection.get('folder') as string,
-      extension,
-      depth,
-    );
+    const allEntries = getFolderEntries(window.repoFiles, folder, extension, depth);
     const entries = allEntries.slice(newIndex * pageSize, newIndex * pageSize + pageSize);
-    const newCursor = getCursor(collection, extension, allEntries, newIndex);
+    const newCursor = getCursor(folder, extension, allEntries, newIndex, depth);
     return Promise.resolve({ entries, cursor: newCursor });
   }
 
-  entriesByFolder(collection: Collection, extension: string) {
-    const folder = collection.get('folder');
-    const depth = getPathDepth(collection.get('path', '') as string);
+  entriesByFolder(folder: string, extension: string, depth: number) {
     const entries = folder ? getFolderEntries(window.repoFiles, folder, extension, depth) : [];
-    const cursor = getCursor(collection, extension, entries, 0);
+    const cursor = getCursor(folder, extension, entries, 0, depth);
     const ret = take(entries, pageSize);
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
@@ -166,16 +157,7 @@ export default class TestBackend implements Implementation {
     return Promise.resolve(ret);
   }
 
-  entriesByFiles(collection: Collection) {
-    const files = collection
-      .get('files')!
-      .map(collectionFile => ({
-        path: collectionFile!.get('file'),
-        label: collectionFile!.get('label'),
-        id: null,
-      }))
-      .toArray();
-
+  entriesByFiles(files: ImplementationFile[]) {
     return Promise.all(
       files.map(file => ({
         file,
@@ -204,9 +186,9 @@ export default class TestBackend implements Implementation {
     return mediaFiles;
   }
 
-  unpublishedEntry(collection: Collection, slug: string) {
+  unpublishedEntry(collection: string, slug: string) {
     const entry = window.repoFilesUnpublished.find(
-      e => e.metaData!.collection === collection.get('name') && e.slug === slug,
+      e => e.metaData!.collection === collection && e.slug === slug,
     );
     if (!entry) {
       return Promise.reject(

@@ -130,7 +130,7 @@ class App extends React.Component {
           siteId: this.props.config.getIn(['backend', 'site_domain']),
           base_url: this.props.config.getIn(['backend', 'base_url'], null),
           authEndpoint: this.props.config.getIn(['backend', 'auth_endpoint']),
-          config: this.props.config,
+          config: this.props.config.toJS(),
           clearHash: () => history.replace('/'),
           t,
         })}

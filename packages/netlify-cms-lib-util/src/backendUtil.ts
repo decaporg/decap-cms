@@ -6,10 +6,8 @@ import unsentRequest from './unsentRequest';
 
 type Formatter = (res: Response) => Promise<string | Blob | unknown>;
 
-export const filterByPropExtension = (extension: string, propName: string) => <T>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  arr: T[],
-) => arr.filter(el => fileExtension(get(el, propName)) === extension);
+export const filterByPropExtension = (extension: string, propName: string) => <T>(arr: T[]) =>
+  arr.filter(el => fileExtension(get(el, propName)) === extension);
 
 const catchFormatErrors = (format: string, formatter: Formatter) => (res: Response) => {
   try {

@@ -12,6 +12,17 @@ export type SlugConfig = StaticallyTypedRecord<{
 
 type BackendObject = {
   name: string;
+  repo?: string | null;
+  open_authoring?: boolean;
+  branch?: string;
+  api_root?: string;
+  squash_merges?: boolean;
+  use_graphql?: boolean;
+  preview_context?: string;
+  identity_url?: string;
+  gateway_url?: string;
+  large_media_url?: string;
+  use_large_media_transforms_in_media_library?: boolean;
 };
 
 type Backend = StaticallyTypedRecord<Backend> & BackendObject;
@@ -25,6 +36,8 @@ export type Config = StaticallyTypedRecord<{
   locale?: string;
   slug: SlugConfig;
   media_folder_relative?: boolean;
+  base_url?: string;
+  site_id?: string;
   site_url?: string;
   show_preview_links?: boolean;
 }>;

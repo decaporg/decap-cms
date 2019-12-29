@@ -8,7 +8,6 @@ import {
   unsentRequest,
   basename,
   getBlobSHA,
-  getPathDepth,
   Entry,
   ApiRequest,
   Cursor,
@@ -20,12 +19,12 @@ import {
   entriesByFolder,
   entriesByFiles,
   User,
-  Collection,
   Credentials,
   getMediaDisplayURL,
   getMediaAsBlob,
+  Config,
+  ImplementationFile,
 } from 'netlify-cms-lib-util';
-import { Map } from 'immutable';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
 import API from './API';
@@ -34,7 +33,6 @@ const MAX_CONCURRENT_DOWNLOADS = 10;
 
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
-  config: Map<string, string>;
   api: API | null;
   updateUserCredentials: (args: { token: string; refresh_token: string }) => Promise<null>;
   options: {
@@ -49,14 +47,14 @@ export default class BitbucketBackend implements Implementation {
   baseUrl: string;
   siteId: string;
   token: string | null;
+  mediaFolder: string;
   refreshToken?: string;
   refreshedTokenPromise?: Promise<string>;
   authenticator?: NetlifyAuthenticator;
   auth?: unknown;
   _mediaDisplayURLSem?: Semaphore;
 
-  constructor(config: Map<string, string>, options = {}) {
-    this.config = config;
+  constructor(config: Config, options = {}) {
     this.options = {
       proxied: false,
       API: null,
@@ -64,11 +62,10 @@ export default class BitbucketBackend implements Implementation {
       ...options,
     };
 
-    if (this.options.useWorkflow) {
-      throw new Error('The BitBucket backend does not support the Editorial Workflow.');
-    }
-
-    if (!this.options.proxied && !config.getIn(['backend', 'repo'], false)) {
+    if (
+      !this.options.proxied &&
+      (config.backend.repo === null || config.backend.repo === undefined)
+    ) {
       throw new Error('The BitBucket backend needs a "repo" in the backend configuration.');
     }
 
@@ -76,12 +73,13 @@ export default class BitbucketBackend implements Implementation {
 
     this.updateUserCredentials = this.options.updateUserCredentials;
 
-    this.repo = config.getIn(['backend', 'repo'], '');
-    this.branch = config.getIn(['backend', 'branch'], 'master');
-    this.apiRoot = config.getIn(['backend', 'api_root'], 'https://api.bitbucket.org/2.0');
-    this.baseUrl = config.get('base_url');
-    this.siteId = config.get('site_id');
+    this.repo = config.backend.repo || '';
+    this.branch = config.backend.branch || 'master';
+    this.apiRoot = config.backend.api_root || 'https://api.bitbucket.org/2.0';
+    this.baseUrl = config.base_url || '';
+    this.siteId = config.site_id || '';
     this.token = '';
+    this.mediaFolder = config.media_folder;
   }
 
   authComponent() {
@@ -214,14 +212,11 @@ export default class BitbucketBackend implements Implementation {
     ])(req);
   };
 
-  async entriesByFolder(collection: Collection, extension: string) {
+  async entriesByFolder(folder: string, extension: string, depth: number) {
     let cursor: Cursor;
 
     const listFiles = () =>
-      this.api!.listFiles(
-        collection.get('folder') as string,
-        getPathDepth(collection.get('path', '') as string),
-      ).then(({ entries, cursor: c }) => {
+      this.api!.listFiles(folder, depth).then(({ entries, cursor: c }) => {
         cursor = c;
         return filterByPropExtension(extension, 'path')(entries);
       });
@@ -234,32 +229,16 @@ export default class BitbucketBackend implements Implementation {
     return files;
   }
 
-  async allEntriesByFolder(collection: Collection, extension: string) {
+  async allEntriesByFolder(folder: string, extension: string, depth: number) {
     const listFiles = () =>
-      this.api!.listAllFiles(
-        collection.get('folder') as string,
-        getPathDepth(collection.get('path', '') as string),
-      ).then(filterByPropExtension(extension, 'path'));
+      this.api!.listAllFiles(folder, depth).then(filterByPropExtension(extension, 'path'));
 
     const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'BitBucket');
     return files;
   }
 
-  async entriesByFiles(collection: Collection) {
-    const listFiles = () =>
-      Promise.resolve(
-        collection
-          .get('files')!
-          .map(collectionFile => ({
-            path: collectionFile!.get('file'),
-            label: collectionFile!.get('label'),
-            id: null,
-          }))
-          .toArray(),
-      );
-
-    const files = await entriesByFiles(listFiles, this.api!.readFile.bind(this.api!), 'BitBucket');
-    return files;
+  async entriesByFiles(files: ImplementationFile[]) {
+    return entriesByFiles(files, this.api!.readFile.bind(this.api!), 'BitBucket');
   }
 
   getEntry(path: string) {
@@ -269,7 +248,7 @@ export default class BitbucketBackend implements Implementation {
     }));
   }
 
-  getMedia(mediaFolder = this.config.get('media_folder')) {
+  getMedia(mediaFolder = this.mediaFolder) {
     return this.api!.listAllFiles(mediaFolder).then(files =>
       files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
     );
@@ -348,7 +327,7 @@ export default class BitbucketBackend implements Implementation {
     return [];
   }
 
-  async unpublishedEntry(collection: Collection, _slug: string) {
+  async unpublishedEntry(collection: string, _slug: string) {
     if (collection) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }

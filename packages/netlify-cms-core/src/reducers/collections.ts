@@ -36,11 +36,6 @@ const collections = (state = null, action: CollectionsAction) => {
   }
 };
 
-enum ListMethod {
-  ENTRIES_BY_FOLDER = 'entriesByFolder',
-  ENTRIES_BY_FILES = 'entriesByFiles',
-}
-
 const selectors = {
   [FOLDER]: {
     entryExtension(collection: Collection) {
@@ -64,9 +59,6 @@ const selectors = {
         ?.replace(new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`), '');
 
       return slug;
-    },
-    listMethod() {
-      return ListMethod.ENTRIES_BY_FOLDER;
     },
     allowNewEntries(collection: Collection) {
       return collection.get('create');
@@ -102,9 +94,6 @@ const selectors = {
       const files = collection.get('files');
       return files && files.find(f => f?.get('file') === path).get('label');
     },
-    listMethod() {
-      return ListMethod.ENTRIES_BY_FILES;
-    },
     allowNewEntries() {
       return false;
     },
@@ -127,8 +116,6 @@ export const selectEntryPath = (collection: Collection, slug: string) =>
   selectors[collection.get('type')].entryPath(collection, slug);
 export const selectEntrySlug = (collection: Collection, path: string) =>
   selectors[collection.get('type')].entrySlug(collection, path);
-export const selectListMethod = (collection: Collection) =>
-  selectors[collection.get('type')].listMethod();
 export const selectAllowNewEntries = (collection: Collection) =>
   selectors[collection.get('type')].allowNewEntries(collection);
 export const selectAllowDeletion = (collection: Collection) =>

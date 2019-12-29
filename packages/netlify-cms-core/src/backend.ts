@@ -6,7 +6,6 @@ import { resolveFormat } from './formats/formats';
 import { selectMediaFilePath, selectMediaFolder } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
-  selectListMethod,
   selectEntrySlug,
   selectEntryPath,
   selectFileEntryLabel,
@@ -30,6 +29,8 @@ import {
   ImplementationMediaFile,
   Credentials,
   User,
+  getPathDepth,
+  Config as ImplementationConfig,
 } from 'netlify-cms-lib-util';
 import { EDITORIAL_WORKFLOW, status } from './constants/publishModes';
 import {
@@ -52,6 +53,7 @@ import {
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { selectMediaFiles } from './reducers/mediaLibrary';
+import { FOLDER, FILES } from './constants/collectionTypes';
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -192,7 +194,7 @@ interface ImplementationInitOptions {
 }
 
 type Implementation = BackendImplementation & {
-  init: (config: Config, options: ImplementationInitOptions) => Implementation;
+  init: (config: ImplementationConfig, options: ImplementationInitOptions) => Implementation;
 };
 
 export class Backend {
@@ -209,7 +211,7 @@ export class Backend {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
     this.config = config as Config;
-    this.implementation = implementation.init(this.config, {
+    this.implementation = implementation.init(this.config.toJS(), {
       useWorkflow: this.config.get('publish_mode') === EDITORIAL_WORKFLOW,
       updateUserCredentials: this.updateUserCredentials,
       initialWorkflowStatus: status.first(),
@@ -274,7 +276,7 @@ export class Backend {
   async entryExist(collection: Collection, path: string, slug: string) {
     const unpublishedEntry =
       this.implementation.unpublishedEntry &&
-      (await this.implementation.unpublishedEntry(collection, slug).catch(error => {
+      (await this.implementation.unpublishedEntry(collection.get('name'), slug).catch(error => {
         if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
           return Promise.resolve(false);
         }
@@ -336,24 +338,42 @@ export class Backend {
   }
 
   listEntries(collection: Collection) {
-    const listMethod = this.implementation[selectListMethod(collection)];
     const extension = selectFolderEntryExtension(collection);
-    return listMethod
-      .call(this.implementation, collection, extension)
-      .then((loadedEntries: ImplementationEntry[]) => ({
-        entries: this.processEntries(loadedEntries, collection),
-        /*
+    let listMethod: () => Promise<ImplementationEntry[]>;
+    const collectionType = collection.get('type');
+    if (collectionType === FOLDER) {
+      listMethod = () =>
+        this.implementation.entriesByFolder(
+          collection.get('folder') as string,
+          extension,
+          getPathDepth(collection.get('path', '') as string),
+        );
+    } else if (collectionType === FILES) {
+      const files = collection
+        .get('files')!
+        .map(collectionFile => ({
+          path: collectionFile!.get('file'),
+          label: collectionFile!.get('label'),
+        }))
+        .toArray();
+      listMethod = () => this.implementation.entriesByFiles(files);
+    } else {
+      throw new Error(`Unknown collection type: ${collectionType}`);
+    }
+    return listMethod().then((loadedEntries: ImplementationEntry[]) => ({
+      entries: this.processEntries(loadedEntries, collection),
+      /*
           Wrap cursors so we can tell which collection the cursor is
           from. This is done to prevent traverseCursor from requiring a
           `collection` argument.
         */
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        cursor: Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
-          cursorType: 'collectionEntries',
-          collection,
-        }),
-      }));
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      cursor: Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
+        cursorType: 'collectionEntries',
+        collection,
+      }),
+    }));
   }
 
   // The same as listEntries, except that if a cursor with the "next"
@@ -365,7 +385,11 @@ export class Backend {
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const extension = selectFolderEntryExtension(collection);
       return this.implementation
-        .allEntriesByFolder(collection, extension)
+        .allEntriesByFolder(
+          collection.get('folder') as string,
+          extension,
+          getPathDepth(collection.get('path', '') as string),
+        )
         .then(entries => this.processEntries(entries, collection));
     }
 
@@ -600,7 +624,7 @@ export class Backend {
   }
 
   unpublishedEntry(collection: Collection, slug: string) {
-    return this.implementation!.unpublishedEntry!(collection, slug)
+    return this.implementation!.unpublishedEntry!(collection.get('name') as string, slug)
       .then(loadedEntry => {
         const entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
@@ -897,10 +921,11 @@ export function resolveBackend(config: Config) {
 
   const authStore = new LocalStorageAuthStore();
 
-  if (!getBackend(name)) {
+  const backend = getBackend(name);
+  if (!backend) {
     throw new Error(`Backend not found: ${name}`);
   } else {
-    return new Backend(getBackend(name), { backendName: name, authStore, config });
+    return new Backend(backend, { backendName: name, authStore, config });
   }
 }
 

@@ -18,7 +18,6 @@ import {
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
   ReposGetResponse as GitHubRepo,
-  ReposGetContentsResponseItem as GitHubFile,
   ReposGetBranchResponse as GitHubBranch,
   GitGetBlobResponse as GitHubBlob,
   GitCreateTreeResponse as GitHubTree,
@@ -48,7 +47,7 @@ export interface Config {
   useOpenAuthoring?: boolean;
   repo?: string;
   originRepo?: string;
-  squashMerges: string;
+  squashMerges: boolean;
   initialWorkflowStatus: string;
 }
 
@@ -121,7 +120,7 @@ const replace404WithEmptyArray = (err: FetchError) => {
   }
 };
 
-type MediaFile = {
+export type MediaFile = {
   sha: string;
   path: string;
 };
@@ -426,11 +425,7 @@ export default class API {
     } = {},
   ) {
     if (!sha) {
-      const file: GitHubFile = await this.request(`${repoURL}/contents/${path}`, {
-        params: { ref: branch },
-        cache: 'no-store',
-      });
-      sha = file.sha;
+      sha = await this.getFileSha(path, { repoURL, branch });
     }
     const fetchContent = () => this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
     const content = await readFile(sha, fetchContent, localForage, parseText);
@@ -716,7 +711,7 @@ export default class API {
     }
   }
 
-  getFileSha(path: string, branch: string) {
+  getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
     /**
      * We need to request the tree first to get the SHA. We use extended SHA-1
      * syntax (<rev>:<path>) to get a blob from a tree without having to recurse
@@ -727,7 +722,7 @@ export default class API {
     const filename = last(pathArray);
     const directory = initial(pathArray).join('/');
     const fileDataPath = encodeURIComponent(directory);
-    const fileDataURL = `${this.repoURL}/git/trees/${branch}:${fileDataPath}`;
+    const fileDataURL = `${repoURL}/git/trees/${branch}:${fileDataPath}`;
 
     return this.request(fileDataURL, { cache: 'no-store' }).then((resp: GitHubTree) => {
       const { sha } = resp.tree.find(file => file.path === filename) as GitHubTreeItem;
@@ -742,7 +737,7 @@ export default class API {
 
     const branch = this.branch;
 
-    return this.getFileSha(path, branch).then(sha => {
+    return this.getFileSha(path, { branch }).then(sha => {
       const params: { sha: string; message: string; branch: string; author?: { date: string } } = {
         sha,
         message,
