@@ -58,7 +58,7 @@ function waitForEntryToLoad() {
 }
 
 function matchImageSnapshot() {
-  // cy.matchImageSnapshot();
+  cy.matchImageSnapshot();
 }
 
 function newPostAndUploadImage() {

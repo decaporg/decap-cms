@@ -4839,7 +4839,7 @@ cypress-plugin-tab@^1.0.0:
   dependencies:
     ally.js "^1.4.1"
 
-cypress@^3.8.0:
+cypress@^3.8.1:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-3.8.2.tgz#58fa96e1e7dae712403b0f4e8af1efe35442ff7a"
   integrity sha512-aTs0u3+dfEuLe0Ct0FVO5jD1ULqxbuqWUZwzBm0rxdLgLxIAOI/A9f/WkgY5Cfy1TEXe8pKC6Wal0ZpnkdGRSw==
@@ -6429,7 +6429,6 @@ fsevents@^1.2.7:
   dependencies:
     bindings "^1.5.0"
     nan "^2.12.1"
-    node-pre-gyp "*"
 
 function-bind@^1.1.1:
   version "1.1.1"

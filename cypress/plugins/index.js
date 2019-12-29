@@ -96,20 +96,11 @@ module.exports = async (on, config) => {
     if (browser.name === 'chrome') {
       // to allows usage of a mock proxy
       args.push('--ignore-certificate-errors');
-
-      return args;
-    }
-
-    if (browser.name === 'electron') {
-      // to allows usage of a mock proxy
-      args['ignore-certificate-errors'] = true;
-      // https://github.com/cypress-io/cypress/issues/2102
+      args.push('-–disable-gpu');
       if (browser.isHeaded) {
-        args['width'] = 1200;
-        args['height'] = 1200;
+        args.push('--window-size=1200,1200');
       } else {
-        args['width'] = 1200;
-        args['height'] = process.platform === 'darwin' ? 1178 : 1200;
+        args.push('--window-size=1200,1077');
       }
 
       return args;
