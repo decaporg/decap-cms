@@ -43,6 +43,9 @@ import {
   labelToStatus,
   statusToLabel,
   DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
+  isPreviewContext,
+  getPreviewStatus,
 } from './API';
 
 export type AsyncLock = AL;
@@ -61,7 +64,7 @@ export type ApiRequest =
   | {
       url: string;
       params?: Record<string, string | boolean | number>;
-      method?: 'POST' | 'PUT';
+      method?: 'POST' | 'PUT' | 'DELETE';
       headers?: Record<string, string>;
       body?: string | FormData;
       cache?: 'no-store';
@@ -102,6 +105,9 @@ export const NetlifyCmsLibUtil = {
   labelToStatus,
   statusToLabel,
   DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
+  isPreviewContext,
+  getPreviewStatus,
 };
 export {
   APIError,
@@ -139,4 +145,7 @@ export {
   labelToStatus,
   statusToLabel,
   DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
+  isPreviewContext,
+  getPreviewStatus,
 };

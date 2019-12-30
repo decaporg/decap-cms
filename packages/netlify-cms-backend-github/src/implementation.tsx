@@ -21,6 +21,7 @@ import {
   filterByPropExtension,
   Config,
   ImplementationFile,
+  getPreviewStatus,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import {
@@ -31,33 +32,6 @@ import API, { Entry, MediaFile } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
-
-/**
- * Keywords for inferring a status that will provide a deploy preview URL.
- */
-const PREVIEW_CONTEXT_KEYWORDS = ['deploy'];
-
-/**
- * Check a given status context string to determine if it provides a link to a
- * deploy preview. Checks for an exact match against `previewContext` if given,
- * otherwise checks for inclusion of a value from `PREVIEW_CONTEXT_KEYWORDS`.
- */
-function isPreviewContext(context: string, previewContext: string) {
-  if (previewContext) {
-    return context === previewContext;
-  }
-  return PREVIEW_CONTEXT_KEYWORDS.some(keyword => context.includes(keyword));
-}
-
-/**
- * Retrieve a deploy preview URL from an array of statuses. By default, a
- * matching status is inferred via `isPreviewContext`.
- */
-function getPreviewStatus(statuses: GitHubCommitStatus[], previewContext: string) {
-  return statuses.find(({ context }) => {
-    return isPreviewContext(context, previewContext);
-  });
-}
 
 export default class GitHub implements Implementation {
   lock: AsyncLock;

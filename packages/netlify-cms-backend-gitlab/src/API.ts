@@ -17,11 +17,14 @@ import {
   labelToStatus,
   statusToLabel,
   DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { fromJS, Map, Set } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
 import { CursorStore } from 'netlify-cms-lib-util/src/Cursor';
+
+export const API_NAME = 'GitLab';
 
 export interface Config {
   apiRoot?: string;
@@ -49,6 +52,30 @@ interface CommitsParams {
     encoding: string;
   }[];
 }
+
+type GitLabCommitDiff = {
+  diff: string;
+  new_path: string;
+  old_path: string;
+};
+
+type GitLabCommitStatus = {
+  status: 'pending' | 'running' | 'success' | 'failed' | 'canceled';
+  name: string;
+  author: {
+    username: string;
+    name: string;
+  };
+  description: null;
+  sha: string;
+  ref: string;
+  target_url: string;
+};
+
+type GitLabMergeRebase = {
+  rebase_in_progress: boolean;
+  merge_error: string;
+};
 
 type GitLabMergeRequest = {
   id: number;
@@ -110,7 +137,7 @@ export default class API {
     flow([
       this.buildRequest,
       unsentRequest.performRequest,
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'GitLab'))),
+      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, API_NAME))),
     ])(req);
 
   catchFormatErrors = (format: string, formatter: Formatter) => (res: Response) => {
@@ -147,11 +174,11 @@ export default class API {
       }
       body = await formatter(res);
     } catch (err) {
-      throw new APIError(err.message, res.status, 'GitLab');
+      throw new APIError(err.message, res.status, API_NAME);
     }
     if (expectingOk && !res.ok) {
       const isJSON = expectingFormat === 'json';
-      throw new APIError(isJSON && body.message ? body.message : body, res.status, 'GitLab');
+      throw new APIError(isJSON && body.message ? body.message : body, res.status, API_NAME);
     }
     return body;
   };
@@ -369,7 +396,7 @@ export default class API {
   persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = entry ? [entry, ...mediaFiles] : mediaFiles;
     if (options.useWorkflow) {
-      return this.editorialWorkflowGit(files, entry as Entry, mediaFiles, options);
+      return this.editorialWorkflowGit(files, entry as Entry, options);
     } else {
       return this.uploadAndCommit(files, {
         commitMessage: options.commitMessage,
@@ -459,11 +486,20 @@ export default class API {
     return mergeRequests[0];
   }
 
+  async getCommitDiff(sha: string) {
+    const result: GitLabCommitDiff[] = await this.requestJSON({
+      url: `${this.repoURL}/repository/commits/${sha}/diff`,
+    });
+
+    return result;
+  }
+
   async retrieveMetadata(contentKey: string) {
     const [collection, slug] = contentKey.split('/');
     const branch = this.branchFromContentKey(contentKey);
-    const path = '';
     const mergeRequest = await this.getBranchMergeRequest(branch);
+    const diff = await this.getCommitDiff(mergeRequest.sha);
+    const path = diff.find(d => d.old_path.includes(slug))?.old_path as string;
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
 
@@ -486,20 +522,44 @@ export default class API {
     };
   }
 
-  async editorialWorkflowGit(
-    files: (Entry | AssetProxy)[],
-    entry: Entry,
-    _mediaFilesList: AssetProxy[],
-    options: PersistOptions,
-  ) {
+  async rebaseMergeRequest(mergeRequest: GitLabMergeRequest) {
+    let rebase: GitLabMergeRebase = await this.requestJSON({
+      method: 'PUT',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/rebase`,
+    });
+
+    let i = 1;
+    while (rebase.rebase_in_progress) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      rebase = await this.requestJSON({
+        url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
+        params: {
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          include_rebase_in_progress: true,
+        },
+      });
+      if (!rebase.rebase_in_progress || i > 10) {
+        break;
+      }
+      i++;
+    }
+
+    if (rebase.rebase_in_progress) {
+      throw new APIError('Timed out rebasing merge request', null, API_NAME);
+    } else if (rebase.merge_error) {
+      throw new APIError(`Rebase error: ${rebase.merge_error}`, null, API_NAME);
+    }
+  }
+
+  async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
     const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
-    const branchName = this.branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
       await this.uploadAndCommit(files, {
         commitMessage: options.commitMessage,
-        branch: branchName,
+        branch,
         updateFile: false,
         newBranch: true,
       });
@@ -508,18 +568,23 @@ export default class API {
         url: `${this.repoURL}/merge_requests`,
         params: {
           // eslint-disable-next-line @typescript-eslint/camelcase
-          source_branch: branchName,
+          source_branch: branch,
           // eslint-disable-next-line @typescript-eslint/camelcase
           target_branch: this.branch,
           title: options.commitMessage,
           description: DEFAULT_PR_BODY,
           labels: statusToLabel(options.status || this.initialWorkflowStatus),
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          remove_source_branch: true,
+          squash: this.squashMerges,
         },
       });
     } else {
+      const mergeRequest = await this.getBranchMergeRequest(branch);
+      await this.rebaseMergeRequest(mergeRequest);
       await this.uploadAndCommit(files, {
         commitMessage: options.commitMessage,
-        branch: branchName,
+        branch,
         updateFile: true,
       });
     }
@@ -541,5 +606,56 @@ export default class API {
         labels: labels.join(','),
       },
     });
+  }
+
+  async publishUnpublishedEntry(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+
+    await this.requestJSON({
+      method: 'PUT',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/merge`,
+      params: {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        merge_commit_message: MERGE_COMMIT_MESSAGE,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        squash_commit_message: MERGE_COMMIT_MESSAGE,
+        squash: this.squashMerges,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        should_remove_source_branch: true,
+      },
+    });
+  }
+
+  async deleteUnpublishedEntry(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    await this.requestJSON({
+      method: 'PUT',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
+      params: {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        state_event: 'close',
+      },
+    });
+    await this.request({
+      method: 'DELETE',
+      url: `${this.repoURL}/repository/branches/${encodeURIComponent(branch)}`,
+    });
+  }
+
+  async getStatuses(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    const statuses: GitLabCommitStatus[] = await this.requestJSON({
+      url: `${this.repoURL}/repository/commits/${mergeRequest.sha}/statuses`,
+      params: {
+        ref: branch,
+      },
+    });
+    return statuses;
   }
 }

@@ -17,6 +17,7 @@ import {
   CMS_BRANCH_PREFIX,
   generateContentKey,
   DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
 } from 'netlify-cms-lib-util';
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
@@ -1113,7 +1114,7 @@ export default class API {
       method: 'PUT',
       body: JSON.stringify({
         // eslint-disable-next-line @typescript-eslint/camelcase
-        commit_message: 'Automatically generated. Merged on Netlify CMS.',
+        commit_message: MERGE_COMMIT_MESSAGE,
         sha: headSha,
         // eslint-disable-next-line @typescript-eslint/camelcase
         merge_method: this.mergeMethod,

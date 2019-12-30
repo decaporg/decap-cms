@@ -20,9 +20,10 @@ import {
   Config,
   ImplementationFile,
   unpublishedEntries,
+  getPreviewStatus,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
-import API from './API';
+import API, { API_NAME } from './API';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -41,6 +42,7 @@ export default class GitLab implements Implementation {
   token: string | null;
   squashMerges: boolean;
   mediaFolder: string;
+  previewContext: string;
 
   _mediaDisplayURLSem?: Semaphore;
 
@@ -67,6 +69,7 @@ export default class GitLab implements Implementation {
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
     this.mediaFolder = config.media_folder;
+    this.previewContext = config.backend.preview_context || '';
   }
 
   authComponent() {
@@ -137,7 +140,7 @@ export default class GitLab implements Implementation {
         return files.filter(file => this.filterFile(folder, file, extension, depth));
       });
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'GitLab');
+    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), API_NAME);
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
@@ -150,12 +153,12 @@ export default class GitLab implements Implementation {
         files.filter(file => this.filterFile(folder, file, extension, depth)),
       );
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'GitLab');
+    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), API_NAME);
     return files;
   }
 
   entriesByFiles(files: ImplementationFile[]) {
-    return entriesByFiles(files, this.api!.readFile.bind(this.api!), 'GitLab');
+    return entriesByFiles(files, this.api!.readFile.bind(this.api!), API_NAME);
   }
 
   // Fetches a single entry.
@@ -202,7 +205,7 @@ export default class GitLab implements Implementation {
   }
 
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
-    await this.api!.persistFiles(entry, mediaFiles, options);
+    return this.api!.persistFiles(entry, mediaFiles, options);
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
@@ -253,7 +256,7 @@ export default class GitLab implements Implementation {
     const readUnpublishedBranchFile = (contentKey: string) =>
       this.api!.readUnpublishedBranchFile(contentKey);
 
-    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, 'GitLab');
+    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, API_NAME);
   }
 
   async unpublishedEntry(collection: string, slug: string) {
@@ -273,15 +276,36 @@ export default class GitLab implements Implementation {
     return this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus);
   }
 
-  async publishUnpublishedEntry(_collection: string, _slug: string) {
-    return;
+  async publishUnpublishedEntry(collection: string, slug: string) {
+    return this.api!.publishUnpublishedEntry(collection, slug);
   }
 
-  async deleteUnpublishedEntry(_collection: string, _slug: string) {
-    return;
+  async deleteUnpublishedEntry(collection: string, slug: string) {
+    return this.api!.deleteUnpublishedEntry(collection, slug);
   }
 
-  async getDeployPreview(_collection: string, _slug: string) {
-    return null;
+  async getDeployPreview(collection: string, slug: string) {
+    try {
+      const statuses = await this.api!.getStatuses(collection, slug);
+      const deployStatus = getPreviewStatus(
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        statuses.map(({ name, status, target_url }) => ({
+          context: name,
+          state: status,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          target_url,
+        })),
+        this.previewContext,
+      );
+
+      if (deployStatus) {
+        const { target_url: url, state } = deployStatus;
+        return { url, status: state };
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
   }
 }
