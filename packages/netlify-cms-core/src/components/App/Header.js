@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
@@ -14,6 +14,8 @@ import {
   lengths,
   shadows,
   buttons,
+  mediaQueriesNoUnits,
+  FloatingActionButton,
 } from 'netlify-cms-ui-default';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
@@ -108,106 +110,127 @@ const AppHeaderNavList = styled.ul`
   list-style: none;
 `;
 
-class Header extends React.Component {
-  static propTypes = {
-    user: ImmutablePropTypes.map.isRequired,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
-    onCreateEntryClick: PropTypes.func.isRequired,
-    onLogoutClick: PropTypes.func.isRequired,
-    openMediaLibrary: PropTypes.func.isRequired,
-    hasWorkflow: PropTypes.bool.isRequired,
-    displayUrl: PropTypes.string,
-    isTestRepo: PropTypes.bool,
-    t: PropTypes.func.isRequired,
+const Header = ({
+  user,
+  collections,
+  onLogoutClick,
+  openMediaLibrary,
+  onCreateEntryClick,
+  hasWorkflow,
+  displayUrl,
+  isTestRepo,
+  showMediaButton,
+  t,
+}) => {
+  const isClient = typeof window === 'object';
+  const [isMobile, setisMobile] = useState(false);
+
+  const handleResize = () => {
+    if (window.innerWidth < mediaQueriesNoUnits.medium) {
+      setisMobile(true);
+    } else {
+      setisMobile(false);
+    }
   };
 
-  handleCreatePostClick = collectionName => {
-    const { onCreateEntryClick } = this.props;
+  useEffect(() => {
+    if (isClient) {
+      console.info(window.innerWidth, mediaQueriesNoUnits.medium);
+      if (window.innerWidth < mediaQueriesNoUnits.medium) {
+        setisMobile(true);
+      }
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.info(`isMobile: ${isMobile}`);
+  }, [isMobile]);
+
+  const handleCreatePostClick = collectionName => {
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
     }
   };
 
-  render() {
-    const {
-      user,
-      collections,
-      onLogoutClick,
-      openMediaLibrary,
-      hasWorkflow,
-      displayUrl,
-      isTestRepo,
-      t,
-      showMediaButton,
-    } = this.props;
+  const createableCollections = collections.filter(collection => collection.get('create')).toList();
 
-    const createableCollections = collections
-      .filter(collection => collection.get('create'))
-      .toList();
-
-    return (
-      <AppHeader>
-        <AppHeaderContent>
-          <nav>
-            <AppHeaderNavList>
+  return (
+    <AppHeader>
+      <AppHeaderContent>
+        <nav>
+          <AppHeaderNavList>
+            <li>
+              <AppHeaderNavLink
+                to="/"
+                activeClassName="header-link-active"
+                isActive={(match, location) => location.pathname.startsWith('/collections/')}
+              >
+                <Icon type="page" />
+                {t('app.header.content')}
+              </AppHeaderNavLink>
+            </li>
+            {hasWorkflow && (
               <li>
-                <AppHeaderNavLink
-                  to="/"
-                  activeClassName="header-link-active"
-                  isActive={(match, location) => location.pathname.startsWith('/collections/')}
-                >
-                  <Icon type="page" />
-                  {t('app.header.content')}
+                <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
+                  <Icon type="workflow" />
+                  {t('app.header.workflow')}
                 </AppHeaderNavLink>
               </li>
-              {hasWorkflow && (
-                <li>
-                  <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                    <Icon type="workflow" />
-                    {t('app.header.workflow')}
-                  </AppHeaderNavLink>
-                </li>
-              )}
-              {showMediaButton && (
-                <li>
-                  <AppHeaderButton onClick={openMediaLibrary}>
-                    <Icon type="media-alt" />
-                    {t('app.header.media')}
-                  </AppHeaderButton>
-                </li>
-              )}
-            </AppHeaderNavList>
-          </nav>
-          <AppHeaderActions>
-            {createableCollections.size > 0 && (
-              <Dropdown
-                renderButton={() => (
-                  <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
-                )}
-                dropdownTopOverlap="30px"
-                dropdownWidth="160px"
-                dropdownPosition="left"
-              >
-                {createableCollections.map(collection => (
-                  <DropdownItem
-                    key={collection.get('name')}
-                    label={collection.get('label_singular') || collection.get('label')}
-                    onClick={() => this.handleCreatePostClick(collection.get('name'))}
-                  />
-                ))}
-              </Dropdown>
             )}
-            <SettingsDropdown
-              displayUrl={displayUrl}
-              isTestRepo={isTestRepo}
-              imageUrl={user.get('avatar_url')}
-              onLogoutClick={onLogoutClick}
-            />
-          </AppHeaderActions>
-        </AppHeaderContent>
-      </AppHeader>
-    );
-  }
-}
+            {showMediaButton && (
+              <li>
+                <AppHeaderButton onClick={openMediaLibrary}>
+                  <Icon type="media-alt" />
+                  {t('app.header.media')}
+                </AppHeaderButton>
+              </li>
+            )}
+          </AppHeaderNavList>
+        </nav>
+        <AppHeaderActions>
+          {createableCollections.size > 0 && !isMobile && (
+            <Dropdown
+              renderButton={() => (
+                <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
+              )}
+              dropdownTopOverlap="30px"
+              dropdownWidth="160px"
+              dropdownPosition="left"
+            >
+              {createableCollections.map(collection => (
+                <DropdownItem
+                  key={collection.get('name')}
+                  label={collection.get('label_singular') || collection.get('label')}
+                  onClick={() => handleCreatePostClick(collection.get('name'))}
+                />
+              ))}
+            </Dropdown>
+          )}
+          <SettingsDropdown
+            displayUrl={displayUrl}
+            isTestRepo={isTestRepo}
+            imageUrl={user.get('avatar_url')}
+            onLogoutClick={onLogoutClick}
+          />
+          {isMobile && <FloatingActionButton />}
+        </AppHeaderActions>
+      </AppHeaderContent>
+    </AppHeader>
+  );
+};
+
+Header.propTypes = {
+  user: ImmutablePropTypes.map.isRequired,
+  collections: ImmutablePropTypes.orderedMap.isRequired,
+  onCreateEntryClick: PropTypes.func.isRequired,
+  onLogoutClick: PropTypes.func.isRequired,
+  openMediaLibrary: PropTypes.func.isRequired,
+  hasWorkflow: PropTypes.bool.isRequired,
+  displayUrl: PropTypes.string,
+  isTestRepo: PropTypes.bool,
+  t: PropTypes.func.isRequired,
+};
 
 export default translate()(Header);
