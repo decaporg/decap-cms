@@ -24,10 +24,7 @@ import {
   getPreviewStatus,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
-import {
-  UsersGetAuthenticatedResponse as GitHubUser,
-  ReposListStatusesForRefResponseItem as GitHubCommitStatus,
-} from '@octokit/rest';
+import { UsersGetAuthenticatedResponse as GitHubUser } from '@octokit/rest';
 import API, { Entry, MediaFile } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
