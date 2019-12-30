@@ -379,11 +379,18 @@ const reactSelectStyles = {
   }),
 };
 
+const mediaQueriesNoUnits = {
+  xsmall: 480,
+  small: 768,
+  medium: 1024,
+  large: 1440,
+};
+
 const mediaQueries = {
-  xsmall: '480px',
-  small: '768px',
-  medium: '1024px',
-  large: '1440px',
+  xsmall: `${mediaQueriesNoUnits.xsmall}px`,
+  small: `${mediaQueriesNoUnits.small}px`,
+  medium: `${mediaQueriesNoUnits.medium}px`,
+  large: `${mediaQueriesNoUnits.large}px`,
 };
 
 const GlobalStyles = () => (
@@ -488,5 +495,6 @@ export {
   effects,
   reactSelectStyles,
   mediaQueries,
+  mediaQueriesNoUnits,
   GlobalStyles,
 };
