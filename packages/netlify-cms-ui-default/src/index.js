@@ -9,6 +9,7 @@ import AuthenticationPage from './AuthenticationPage';
 import WidgetPreviewContainer from './WidgetPreviewContainer';
 import ObjectWidgetTopBar from './ObjectWidgetTopBar';
 import GoBackButton from './GoBackButton';
+import FloatingActionButton from './FloatingActionButton';
 import Asset from './Asset';
 import {
   fonts,
@@ -23,6 +24,8 @@ import {
   transitions,
   effects,
   reactSelectStyles,
+  mediaQueries,
+  mediaQueriesNoUnits,
   GlobalStyles,
 } from './styles';
 
@@ -55,8 +58,11 @@ export const NetlifyCmsUiDefault = {
   transitions,
   effects,
   reactSelectStyles,
+  mediaQueries,
+  mediaQueriesNoUnits,
   GlobalStyles,
   Asset,
+  FloatingActionButton,
 };
 export {
   Dropdown,
@@ -89,5 +95,8 @@ export {
   reactSelectStyles,
   GlobalStyles,
   GoBackButton,
+  mediaQueries,
+  mediaQueriesNoUnits,
   Asset,
+  FloatingActionButton,
 };
