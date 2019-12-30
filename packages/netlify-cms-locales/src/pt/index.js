@@ -36,7 +36,7 @@ const pt = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} é requerido(a).',
-        regexPattern: "%{fieldLabel} não corresponde com o padrão: %{pattern}.",
+        regexPattern: '%{fieldLabel} não corresponde com o padrão: %{pattern}.',
         processing: '%{fieldLabel} está processando.',
         range: '%{fieldLabel} deve estar entre %{minValue} e %{maxValue}.',
         min: '%{fieldLabel} deve ser, no mínimo, %{minValue}.',
@@ -45,9 +45,11 @@ const pt = {
     },
     editor: {
       onLeavePage: 'Tem certeza que deseja sair dessa página?',
-      onUpdatingWithUnsavedChanges: 'Há mudanças não salvas. Por favor, salve-as antes de atualizar o status.',
+      onUpdatingWithUnsavedChanges:
+        'Há mudanças não salvas. Por favor, salve-as antes de atualizar o status.',
       onPublishingNotReady: 'Por favor, altere o status para "Pronto" antes de publicar.',
-      onPublishingWithUnsavedChanges: 'Há mudanças não salvas. Por favor, salve-as antes de publicar.',
+      onPublishingWithUnsavedChanges:
+        'Há mudanças não salvas. Por favor, salve-as antes de publicar.',
       onPublishing: 'Tem certeza que deseja publicar essa entrada?',
       onUnpublishing: 'Tem certeza que deseja cancelar a publicação dessa entrada?',
       onDeleteWithUnsavedChanges:
@@ -124,7 +126,7 @@ const pt = {
   ui: {
     errorBoundary: {
       title: 'Erro',
-      details: "Ocorreu um erro - por favor ",
+      details: 'Ocorreu um erro - por favor ',
       reportIt: 'rekate-o.',
       detailsHeading: 'Detalhes',
       recoveredEntry: {
@@ -142,7 +144,8 @@ const pt = {
       onFailToPersist: 'Falha ao persistir na entrada: %{details}',
       onFailToDelete: 'Falha ao excluir a entrada: %{details}',
       onFailToUpdateStatus: 'Falha ao atualizar status: %{details}',
-      missingRequiredField: "Ops, você perdeu um campo obrigatório. Por favor, preencha antes de salvar.",
+      missingRequiredField:
+        'Ops, você perdeu um campo obrigatório. Por favor, preencha antes de salvar.',
       entrySaved: 'Entrada salva',
       entryPublished: 'Entrada publicada',
       entryUnpublished: 'Entrada despublicada',
