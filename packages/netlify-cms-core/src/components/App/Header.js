@@ -16,6 +16,7 @@ import {
   buttons,
   mediaQueriesNoUnits,
   FloatingActionButton,
+  FabItem,
 } from 'netlify-cms-ui-default';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
@@ -124,6 +125,7 @@ const Header = ({
 }) => {
   const isClient = typeof window === 'object';
   const [isMobile, setisMobile] = useState(false);
+  const [showFabItems, setShowFabItems] = useState(false);
 
   const handleResize = () => {
     if (window.innerWidth < mediaQueriesNoUnits.medium) {
@@ -134,8 +136,23 @@ const Header = ({
   };
 
   useEffect(() => {
+    if (showFabItems) {
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('fab-active');
+    } else {
+      document.body.style.overflow = 'auto';
+      document.body.classList.remove('fab-active');
+    }
+  }, [showFabItems]);
+
+  useEffect(() => {
+    if (!isMobile && showFabItems) {
+      setShowFabItems(false);
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
     if (isClient) {
-      console.info(window.innerWidth, mediaQueriesNoUnits.medium);
       if (window.innerWidth < mediaQueriesNoUnits.medium) {
         setisMobile(true);
       }
@@ -144,12 +161,9 @@ const Header = ({
     }
   }, []);
 
-  useEffect(() => {
-    console.info(`isMobile: ${isMobile}`);
-  }, [isMobile]);
-
   const handleCreatePostClick = collectionName => {
     if (onCreateEntryClick) {
+      setShowFabItems(false);
       onCreateEntryClick(collectionName);
     }
   };
@@ -214,7 +228,20 @@ const Header = ({
             imageUrl={user.get('avatar_url')}
             onLogoutClick={onLogoutClick}
           />
-          {isMobile && <FloatingActionButton />}
+          {isMobile && (
+            <FloatingActionButton
+              onClick={() => setShowFabItems(!showFabItems)}
+              menuOpen={showFabItems}
+            >
+              {createableCollections.map(collection => (
+                <FabItem
+                  key={collection.get('name')}
+                  label={collection.get('label_singular') || collection.get('label')}
+                  action={() => handleCreatePostClick(collection.get('name'))}
+                />
+              ))}
+            </FloatingActionButton>
+          )}
         </AppHeaderActions>
       </AppHeaderContent>
     </AppHeader>

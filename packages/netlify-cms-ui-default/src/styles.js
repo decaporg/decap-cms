@@ -423,6 +423,18 @@ const GlobalStyles = () => (
         background-color: ${colors.background};
         color: ${colors.text};
         margin: 0;
+        &.fab-active {
+          &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 300;
+          }
+        }
       }
 
       ul,

@@ -9,7 +9,7 @@ import AuthenticationPage from './AuthenticationPage';
 import WidgetPreviewContainer from './WidgetPreviewContainer';
 import ObjectWidgetTopBar from './ObjectWidgetTopBar';
 import GoBackButton from './GoBackButton';
-import FloatingActionButton from './FloatingActionButton';
+import FloatingActionButton, { FabItem } from './FloatingActionButton';
 import Asset from './Asset';
 import {
   fonts,
@@ -63,6 +63,7 @@ export const NetlifyCmsUiDefault = {
   GlobalStyles,
   Asset,
   FloatingActionButton,
+  FabItem,
 };
 export {
   Dropdown,
@@ -99,4 +100,5 @@ export {
   mediaQueriesNoUnits,
   Asset,
   FloatingActionButton,
+  FabItem,
 };
