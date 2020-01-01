@@ -15,6 +15,7 @@ const ActionButtonWrapper = styled.div`
   right: 20px;
   z-index: 500;
 `;
+
 const FloatingButton = styled.button`
   display: flex;
   align-items: center;
