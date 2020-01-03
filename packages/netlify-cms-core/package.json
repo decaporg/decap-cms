@@ -40,6 +40,7 @@
     "node-polyglot": "^2.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
+    "react-beautiful-dnd": "^12.2.0",
     "react-dnd": "^7.3.2",
     "react-dnd-html5-backend": "^7.2.0",
     "react-dom": "^16.8.4",

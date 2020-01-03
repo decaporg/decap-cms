@@ -7,7 +7,7 @@ import moment from 'moment';
 import { translate } from 'react-polyglot';
 import { colors, lengths } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
-import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import WorkflowCard from './WorkflowCard';
 
 const WorkflowListContainer = styled.div`
@@ -112,9 +112,6 @@ const ColumnCount = styled.p`
   margin-bottom: 6px;
 `;
 
-// This is a namespace so that we can only drop these elements on a DropTarget with the same
-const DNDNamespace = 'cms-workflow';
-
 const getColumnHeaderText = (columnName, t) => {
   switch (columnName) {
     case 'draft':
@@ -136,11 +133,15 @@ class WorkflowList extends React.Component {
     isOpenAuthoring: PropTypes.bool,
   };
 
-  handleChangeStatus = (newStatus, dragProps) => {
-    const slug = dragProps.slug;
-    const collection = dragProps.collection;
-    const oldStatus = dragProps.ownStatus;
-    this.props.handleChangeStatus(collection, slug, oldStatus, newStatus);
+  handleChangeStatus = (result) => {
+    const { source, destination, draggableId } = result;
+    const [collection, ...slug] = draggableId.split('/');
+    this.props.handleChangeStatus(
+      collection,
+      slug.join('/'),
+      source.droppableId,
+      destination.droppableId,
+    );
   };
 
   requestDelete = (collection, slug, ownStatus) => {
@@ -166,42 +167,37 @@ class WorkflowList extends React.Component {
 
     if (!column) {
       return entries.entrySeq().map(([currColumn, currEntries], idx) => (
-        <DropTarget
-          namespace={DNDNamespace}
-          key={currColumn}
-          onDrop={this.handleChangeStatus.bind(this, currColumn)}
-        >
-          {(connect, { isHovered }) =>
-            connect(
-              <div style={{ height: '100%' }}>
-                <div
-                  css={[
-                    styles.column,
-                    styles.columnPosition(idx),
-                    isHovered && styles.columnHovered,
-                    isOpenAuthoring && currColumn === 'pending_publish' && styles.hiddenColumn,
-                    isOpenAuthoring && currColumn === 'pending_review' && styles.hiddenRightBorder,
-                  ]}
-                >
-                  <ColumnHeader name={currColumn}>
-                    {getColumnHeaderText(currColumn, this.props.t)}
-                  </ColumnHeader>
-                  <ColumnCount>
-                    {this.props.t('workflow.workflowList.currentEntries', {
-                      smart_count: currEntries.size,
-                    })}
-                  </ColumnCount>
-                  {this.renderColumns(currEntries, currColumn)}
-                </div>
-              </div>,
-            )
-          }
-        </DropTarget>
+        <Droppable droppableId={currColumn} key={currColumn}>
+          {(provided, snapshot) => (
+            <div ref={provided.innerRef} style={{ height: '100%' }}>
+              <div
+                css={[
+                  styles.column,
+                  styles.columnPosition(idx),
+                  snapshot.isDraggingOver && styles.columnHovered,
+                  isOpenAuthoring && currColumn === 'pending_publish' && styles.hiddenColumn,
+                  isOpenAuthoring && currColumn === 'pending_review' && styles.hiddenRightBorder,
+                ]}
+              >
+                <ColumnHeader name={currColumn}>
+                  {getColumnHeaderText(currColumn, this.props.t)}
+                </ColumnHeader>
+                <ColumnCount>
+                  {this.props.t('workflow.workflowList.currentEntries', {
+                    smart_count: currEntries.size,
+                  })}
+                </ColumnCount>
+                {this.renderColumns(currEntries, currColumn)}
+              </div>
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       ));
     }
     return (
       <div>
-        {entries.map(entry => {
+        {entries.map((entry, idx) => {
           const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
           const slug = entry.get('slug');
           const editLink = `collections/${entry.getIn(['metaData', 'collection'])}/entries/${slug}`;
@@ -210,32 +206,32 @@ class WorkflowList extends React.Component {
           const isModification = entry.get('isModification');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
           return (
-            <DragSource
-              namespace={DNDNamespace}
+            <Draggable
+              draggableId={`${collection}/${slug}`}
+              index={idx}
               key={`${collection}-${slug}`}
-              slug={slug}
-              collection={collection}
-              ownStatus={ownStatus}
             >
-              {connect =>
-                connect(
-                  <div>
-                    <WorkflowCard
-                      collectionName={collection}
-                      title={entry.get('label') || entry.getIn(['data', 'title'])}
-                      authorLastChange={entry.getIn(['metaData', 'user'])}
-                      body={entry.getIn(['data', 'body'])}
-                      isModification={isModification}
-                      editLink={editLink}
-                      timestamp={timestamp}
-                      onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
-                      canPublish={canPublish}
-                      onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
-                    />
-                  </div>,
-                )
-              }
-            </DragSource>
+              {provided => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                >
+                  <WorkflowCard
+                    collectionName={collection}
+                    title={entry.get('label') || entry.getIn(['data', 'title'])}
+                    authorLastChange={entry.getIn(['metaData', 'user'])}
+                    body={entry.getIn(['data', 'body'])}
+                    isModification={isModification}
+                    editLink={editLink}
+                    timestamp={timestamp}
+                    onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
+                    canPublish={canPublish}
+                    onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
+                  />
+                </div>
+              )}
+            </Draggable>
           );
         })}
       </div>
@@ -247,8 +243,12 @@ class WorkflowList extends React.Component {
     const ListContainer = this.props.isOpenAuthoring
       ? WorkflowListContainerOpenAuthoring
       : WorkflowListContainer;
-    return <ListContainer>{columns}</ListContainer>;
+    return (
+      <DragDropContext onDragEnd={this.handleChangeStatus}>
+        <ListContainer>{columns}</ListContainer>
+      </DragDropContext>
+    );
   }
 }
 
-export default HTML5DragDrop(translate()(WorkflowList));
+export default translate()(WorkflowList);
