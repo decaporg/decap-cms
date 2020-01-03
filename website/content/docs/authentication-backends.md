@@ -23,12 +23,7 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
     ```yaml
     backend:
       name: git-gateway
-      accept_roles: #optional - accepts all users if left out
-        - admin
-        - editor
     ```
-
-3. Optionally, you can assign roles to users in your Netlify dashboard, and then limit which roles can access the CMS by defining the `accept_roles` field as shown in the example above. Otherwise `accept_roles` can be left out, and all Netlify Identity users on your site have access.
 
 ### Reconnect after Changing Repository Permissions
 
@@ -193,7 +188,6 @@ Netlify CMS backends allow some additional fields for certain use cases. A full 
 | Field           | Default                                                        | Description                                                                                                                                          |
 | --------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `repo`          | none                                                           | **Required** for `github`, `gitlab`, and `bitbucket` backends; ignored by `git-gateway`. Follows the pattern `[org-or-username]/[repo-name]`.                                    |
-| `accept_roles`  | none                                                           | `git-gateway` only. Limits CMS access to your defined array of user roles. Omitting this field gives access to all registered users.                 |
 | `branch`        | `master`                                                       | The branch where published content is stored. All CMS commits and PRs are made to this branch.                                                       |
 | `api_root`      | `https://api.github.com` (GitHub), `https://gitlab.com/api/v4` (GitLab), or `https://api.bitbucket.org/2.0` (Bitbucket)  | The API endpoint. Only necessary in certain cases, like with GitHub Enterprise or self-hosted GitLab.                                                                      |
 | `site_domain`   | `location.hostname` (or `cms.netlify.com` when on `localhost`) | Sets the `site_id` query param sent to the API endpoint. Non-Netlify auth setups will often need to set this for local development to work properly. |
