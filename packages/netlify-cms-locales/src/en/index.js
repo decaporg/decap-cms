@@ -115,6 +115,7 @@ const en = {
     },
     mediaLibrary: {
       onDelete: 'Are you sure you want to delete selected media?',
+      fileTooLarge: 'File too large.\nConfigured to not allow files greater than %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Loading...',

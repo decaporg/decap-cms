@@ -40,6 +40,7 @@ class MediaLibrary extends React.Component {
     hasNextPage: PropTypes.bool,
     isPaginating: PropTypes.bool,
     privateUpload: PropTypes.bool,
+    config: ImmutablePropTypes.map,
     loadMedia: PropTypes.func.isRequired,
     dynamicSearchQuery: PropTypes.string,
     page: PropTypes.number,
@@ -159,18 +160,27 @@ class MediaLibrary extends React.Component {
     event.persist();
     event.stopPropagation();
     event.preventDefault();
-    const { persistMedia, privateUpload } = this.props;
+    const { persistMedia, privateUpload, config, t } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
+    const maxFileSize = config.get('max_file_size');
 
-    await persistMedia(file, { privateUpload });
+    if (maxFileSize && file.size > maxFileSize) {
+      window.alert(
+        t('mediaLibrary.mediaLibrary.fileTooLarge', {
+          size: Math.floor(maxFileSize / 1000),
+        }),
+      );
+    } else {
+      await persistMedia(file, { privateUpload });
 
-    this.setState({ selectedFile: this.props.files[0] });
+      this.setState({ selectedFile: this.props.files[0] });
+
+      this.scrollToTop();
+    }
 
     event.target.value = null;
-
-    this.scrollToTop();
   };
 
   /**
@@ -318,6 +328,7 @@ const mapStateToProps = state => {
     isPersisting: mediaLibrary.get('isPersisting'),
     isDeleting: mediaLibrary.get('isDeleting'),
     privateUpload: mediaLibrary.get('privateUpload'),
+    config: mediaLibrary.get('config'),
     page: mediaLibrary.get('page'),
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
