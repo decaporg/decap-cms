@@ -14,7 +14,6 @@ const styleStrings = {
   `,
   objectWidgetTopBarContainer: `
     padding: ${lengths.objectWidgetTopBarContainerPadding};
-    overflow: hidden;
   `,
 };
 
