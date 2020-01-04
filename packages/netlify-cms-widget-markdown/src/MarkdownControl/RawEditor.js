@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { ClassNames } from '@emotion/core';
 import { debounce } from 'lodash';
+import { Value } from 'slate';
 import { Editor as Slate, setEventTransfer } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import isHotkey from 'is-hotkey';
@@ -52,7 +53,7 @@ export default class RawEditor extends React.Component {
   handleCopy = async (event, editor) => {
     event.persist();
     const { getAsset, resolveWidget } = this.props;
-    const markdown = Plain.serialize(editor.value);
+    const markdown = Plain.serialize(Value.create({ document: editor.value.fragment }));
     const html = await markdownToHtml(markdown, { getAsset, resolveWidget });
     setEventTransfer(event, 'text', markdown);
     setEventTransfer(event, 'html', html);
