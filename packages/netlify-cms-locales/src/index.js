@@ -9,3 +9,4 @@ export { default as pl } from './pl';
 export { default as ru } from './ru';
 export { default as ja } from './ja';
 export { default as hu } from './hu';
+export { default as pt } from './pt';
