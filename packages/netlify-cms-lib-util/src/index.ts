@@ -34,6 +34,7 @@ import {
   getMediaDisplayURL,
   getMediaAsBlob,
   Config as C,
+  UnpublishedEntryMediaFile as UEMF,
 } from './implementation';
 import {
   readFile,
@@ -58,13 +59,14 @@ export type DisplayURLObject = DUO;
 export type Credentials = Cred;
 export type User = U;
 export type Entry = E;
+export type UnpublishedEntryMediaFile = UEMF;
 export type PersistOptions = PO;
 export type AssetProxy = AP;
 export type ApiRequest =
   | {
       url: string;
       params?: Record<string, string | boolean | number>;
-      method?: 'POST' | 'PUT' | 'DELETE';
+      method?: 'POST' | 'PUT' | 'DELETE' | 'HEAD';
       headers?: Record<string, string>;
       body?: string | FormData;
       cache?: 'no-store';

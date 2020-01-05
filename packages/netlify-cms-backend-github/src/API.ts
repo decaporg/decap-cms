@@ -123,7 +123,7 @@ const replace404WithEmptyArray = (err: FetchError) => {
   }
 };
 
-export type MediaFile = {
+type MediaFile = {
   sha: string;
   path: string;
 };

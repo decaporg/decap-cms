@@ -40,6 +40,19 @@ export interface CommitAuthor {
   email: string;
 }
 
+enum CommitAction {
+  CREATE = 'create',
+  DELETE = 'delete',
+  MOVE = 'move',
+  UPDATE = 'update',
+}
+
+type CommitItem = {
+  base64Content?: string;
+  path: string;
+  action: CommitAction;
+};
+
 interface CommitsParams {
   commit_message: string;
   branch: string;
@@ -48,8 +61,8 @@ interface CommitsParams {
   actions?: {
     action: string;
     file_path: string;
-    content: string;
-    encoding: string;
+    content?: string;
+    encoding?: string;
   }[];
 }
 
@@ -133,7 +146,7 @@ export default class API {
       unsentRequest.withTimestamp,
     ])(req);
 
-  request = async (req: ApiRequest) =>
+  request = async (req: ApiRequest): Promise<Response> =>
     flow([
       this.buildRequest,
       unsentRequest.performRequest,
@@ -352,22 +365,16 @@ export default class API {
   toBase64 = (str: string) => Promise.resolve(Base64.encode(str));
   fromBase64 = (str: string) => Base64.decode(str);
 
-  async uploadAndCommit(
-    files: (Entry | AssetProxy)[],
-    { commitMessage = '', updateFile = false, branch = this.branch, newBranch = false },
+  uploadAndCommit(
+    items: CommitItem[],
+    { commitMessage = '', branch = this.branch, newBranch = false },
   ) {
-    const action = updateFile ? 'update' : 'create';
-    const actions = await Promise.all(
-      files.map(item =>
-        result(item, 'toBase64', partial(this.toBase64, (item as Entry).raw)).then(content => ({
-          action,
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          file_path: trimStart(item.path, '/'),
-          content,
-          encoding: 'base64',
-        })),
-      ),
-    );
+    const actions = items.map(item => ({
+      action: item.action,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      file_path: item.path,
+      ...(item.base64Content ? { content: item.base64Content, encoding: 'base64' } : {}),
+    }));
 
     const commitParams: CommitsParams = {
       branch,
@@ -393,14 +400,31 @@ export default class API {
     });
   }
 
-  persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
+  async getCommitItems(files: (Entry | AssetProxy)[], branch: string) {
+    const items = await Promise.all(
+      files.map(async file => {
+        const [base64Content, fileExists] = await Promise.all([
+          result(file, 'toBase64', partial(this.toBase64, (file as Entry).raw)),
+          this.isFileExists(file.path, branch),
+        ]);
+        return {
+          action: fileExists ? CommitAction.UPDATE : CommitAction.CREATE,
+          base64Content,
+          path: trimStart(file.path, '/'),
+        };
+      }),
+    );
+    return items as CommitItem[];
+  }
+
+  async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = entry ? [entry, ...mediaFiles] : mediaFiles;
     if (options.useWorkflow) {
       return this.editorialWorkflowGit(files, entry as Entry, options);
     } else {
-      return this.uploadAndCommit(files, {
+      const items = await this.getCommitItems(files, this.branch);
+      return this.uploadAndCommit(items, {
         commitMessage: options.commitMessage,
-        updateFile: options.newEntry === false,
       });
     }
   }
@@ -466,8 +490,13 @@ export default class API {
     return branches;
   }
 
-  isUnpublishedEntryModification(path: string) {
-    return this.readFile(path, null, { branch: this.branch })
+  async isFileExists(path: string, branch: string) {
+    const fileExists = await this.requestText({
+      method: 'HEAD',
+      url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}`,
+      params: { ref: branch },
+      cache: 'no-store',
+    })
       .then(() => true)
       .catch(error => {
         if (error instanceof APIError && error.status === 404) {
@@ -475,6 +504,8 @@ export default class API {
         }
         throw error;
       });
+
+    return fileExists;
   }
 
   async getBranchMergeRequest(branch: string) {
@@ -486,37 +517,46 @@ export default class API {
     return mergeRequests[0];
   }
 
-  async getCommitDiff(sha: string) {
-    const result: GitLabCommitDiff[] = await this.requestJSON({
-      url: `${this.repoURL}/repository/commits/${sha}/diff`,
+  async getDifferences(to: string) {
+    const result: { diffs: GitLabCommitDiff[] } = await this.requestJSON({
+      url: `${this.repoURL}/repository/compare`,
+      params: {
+        from: this.branch,
+        to,
+      },
     });
 
-    return result;
+    return result.diffs;
   }
 
   async retrieveMetadata(contentKey: string) {
     const [collection, slug] = contentKey.split('/');
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
-    const diff = await this.getCommitDiff(mergeRequest.sha);
+    const diff = await this.getDifferences(mergeRequest.sha);
     const path = diff.find(d => d.old_path.includes(slug))?.old_path as string;
+    // TODO: get real file id
+    const mediaFiles = await Promise.all(
+      diff.filter(d => d.old_path !== path).map(d => ({ path: d.new_path, id: null })),
+    );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
-
-    return { branch, collection, slug, path, status };
+    return { branch, collection, slug, path, status, mediaFiles };
   }
 
   async readUnpublishedBranchFile(contentKey: string) {
-    const { branch, collection, slug, path, status } = await this.retrieveMetadata(contentKey);
+    const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
+      contentKey,
+    );
 
     const [fileData, isModification] = await Promise.all([
       this.readFile(path, null, { branch }) as Promise<string>,
-      this.isUnpublishedEntryModification(path),
+      this.isFileExists(path, this.branch),
     ]);
 
     return {
       slug,
-      metaData: { collection, objects: { entry: { path } }, status },
+      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
       fileData,
       isModification,
     };
@@ -551,43 +591,71 @@ export default class API {
     }
   }
 
+  async createMergeRequest(branch: string, commitMessage: string, status: string) {
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/merge_requests`,
+      params: {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        source_branch: branch,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        target_branch: this.branch,
+        title: commitMessage,
+        description: DEFAULT_PR_BODY,
+        labels: statusToLabel(status),
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        remove_source_branch: true,
+        squash: this.squashMerges,
+      },
+    });
+  }
+
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
     const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
     const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
-      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
-      await this.uploadAndCommit(files, {
+      const items = await this.getCommitItems(files, this.branch);
+      await this.uploadAndCommit(items, {
         commitMessage: options.commitMessage,
         branch,
-        updateFile: false,
         newBranch: true,
       });
-      await this.requestJSON({
-        method: 'POST',
-        url: `${this.repoURL}/merge_requests`,
-        params: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          source_branch: branch,
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          target_branch: this.branch,
-          title: options.commitMessage,
-          description: DEFAULT_PR_BODY,
-          labels: statusToLabel(options.status || this.initialWorkflowStatus),
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          remove_source_branch: true,
-          squash: this.squashMerges,
-        },
-      });
+      await this.createMergeRequest(
+        branch,
+        options.commitMessage,
+        options.status || this.initialWorkflowStatus,
+      );
     } else {
       const mergeRequest = await this.getBranchMergeRequest(branch);
       await this.rebaseMergeRequest(mergeRequest);
-      await this.uploadAndCommit(files, {
+      const [items, diffs] = await Promise.all([
+        this.getCommitItems(files, branch),
+        this.getDifferences(branch),
+      ]);
+
+      // mark files for deletion
+      for (const diff of diffs) {
+        if (!items.some(item => item.path === diff.new_path)) {
+          items.push({ action: CommitAction.DELETE, path: diff.new_path });
+        }
+      }
+
+      await this.uploadAndCommit(items, {
         commitMessage: options.commitMessage,
         branch,
-        updateFile: true,
       });
     }
+  }
+
+  async updateMergeRequestLabels(mergeRequest: GitLabMergeRequest, labels: string[]) {
+    await this.requestJSON({
+      method: 'PUT',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
+      params: {
+        labels: labels.join(','),
+      },
+    });
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
@@ -599,20 +667,10 @@ export default class API {
       ...mergeRequest.labels.filter(label => !isCMSLabel(label)),
       statusToLabel(newStatus),
     ];
-    await this.requestJSON({
-      method: 'PUT',
-      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
-      params: {
-        labels: labels.join(','),
-      },
-    });
+    await this.updateMergeRequestLabels(mergeRequest, labels);
   }
 
-  async publishUnpublishedEntry(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchMergeRequest(branch);
-
+  async mergeMergeRequest(mergeRequest: GitLabMergeRequest) {
     await this.requestJSON({
       method: 'PUT',
       url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/merge`,
@@ -628,10 +686,14 @@ export default class API {
     });
   }
 
-  async deleteUnpublishedEntry(collectionName: string, slug: string) {
+  async publishUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
+    await this.mergeMergeRequest(mergeRequest);
+  }
+
+  async closeMergeRequest(mergeRequest: GitLabMergeRequest) {
     await this.requestJSON({
       method: 'PUT',
       url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
@@ -640,10 +702,21 @@ export default class API {
         state_event: 'close',
       },
     });
+  }
+
+  async deleteBranch(branch: string) {
     await this.request({
       method: 'DELETE',
       url: `${this.repoURL}/repository/branches/${encodeURIComponent(branch)}`,
     });
+  }
+
+  async deleteUnpublishedEntry(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    await this.closeMergeRequest(mergeRequest);
+    await this.deleteBranch(branch);
   }
 
   async getStatuses(collectionName: string, slug: string) {

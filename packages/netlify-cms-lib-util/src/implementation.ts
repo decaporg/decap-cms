@@ -19,6 +19,11 @@ export interface ImplementationMediaFile {
   file?: File;
 }
 
+export interface UnpublishedEntryMediaFile {
+  id: string;
+  path: string;
+}
+
 export interface ImplementationEntry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: string;

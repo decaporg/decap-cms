@@ -22,10 +22,11 @@ import {
   Config,
   ImplementationFile,
   getPreviewStatus,
+  UnpublishedEntryMediaFile,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { UsersGetAuthenticatedResponse as GitHubUser } from '@octokit/rest';
-import API, { Entry, MediaFile } from './API';
+import API, { Entry } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -390,12 +391,18 @@ export default class GitHub implements Implementation {
     return this.api!.deleteFile(path, commitMessage);
   }
 
-  loadMediaFile(file: { sha: string; path: string }) {
-    return getMediaAsBlob(file.path, file.sha, this.api!.readFile.bind(this.api!)).then(blob => {
+  loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
+    const readFile = (
+      path: string,
+      id: string | null | undefined,
+      { parseText }: { parseText: boolean },
+    ) => this.api!.readFile(path, id, { branch, parseText });
+
+    return getMediaAsBlob(file.path, file.id, readFile).then(blob => {
       const name = basename(file.path);
       const fileObj = new File([blob], name);
       return {
-        id: file.sha,
+        id: file.id,
         displayURL: URL.createObjectURL(fileObj),
         path: file.path,
         name,
@@ -405,8 +412,8 @@ export default class GitHub implements Implementation {
     });
   }
 
-  async loadEntryMediaFiles(files: { sha: string; path: string }[]) {
-    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(file)));
+  async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
+    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(branch, file)));
 
     return mediaFiles;
   }
@@ -426,12 +433,18 @@ export default class GitHub implements Implementation {
   async unpublishedEntry(
     collection: string,
     slug: string,
-    { loadEntryMediaFiles = (files: MediaFile[]) => this.loadEntryMediaFiles(files) } = {},
+    {
+      loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
+        this.loadEntryMediaFiles(branch, files),
+    } = {},
   ) {
     const contentKey = this.api!.generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const files = data.metaData.objects.files || ([] as MediaFile[]);
-    const mediaFiles = await loadEntryMediaFiles(files);
+    const files = data.metaData.objects.files || [];
+    const mediaFiles = await loadEntryMediaFiles(
+      data.metaData.branch,
+      files.map(({ sha: id, path }) => ({ id, path })),
+    );
     return {
       slug,
       file: { path: data.metaData.objects.entry.path, id: null },

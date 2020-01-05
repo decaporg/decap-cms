@@ -21,6 +21,7 @@ import {
   ImplementationFile,
   unpublishedEntries,
   getPreviewStatus,
+  UnpublishedEntryMediaFile,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
@@ -247,6 +248,33 @@ export default class GitLab implements Implementation {
     );
   }
 
+  loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
+    const readFile = (
+      path: string,
+      id: string | null | undefined,
+      { parseText }: { parseText: boolean },
+    ) => this.api!.readFile(path, id, { branch, parseText });
+
+    return getMediaAsBlob(file.path, null, readFile).then(blob => {
+      const name = basename(file.path);
+      const fileObj = new File([blob], name);
+      return {
+        id: file.path,
+        displayURL: URL.createObjectURL(fileObj),
+        path: file.path,
+        name,
+        size: fileObj.size,
+        file: fileObj,
+      };
+    });
+  }
+
+  async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
+    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(branch, file)));
+
+    return mediaFiles;
+  }
+
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
@@ -259,15 +287,29 @@ export default class GitLab implements Implementation {
     return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, API_NAME);
   }
 
-  async unpublishedEntry(collection: string, slug: string) {
+  async unpublishedEntry(
+    collection: string,
+    slug: string,
+    {
+      loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
+        this.loadEntryMediaFiles(branch, files),
+    } = {},
+  ) {
     const contentKey = this.api!.generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
+    const mediaFiles = await loadEntryMediaFiles(
+      data.metaData.branch,
+      // TODO: fix this
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      data.metaData.objects.entry.mediaFiles,
+    );
     return {
       slug,
       file: { path: data.metaData.objects.entry.path, id: null },
       data: data.fileData as string,
       metaData: data.metaData,
-      mediaFiles: [],
+      mediaFiles,
       isModification: data.isModification,
     };
   }

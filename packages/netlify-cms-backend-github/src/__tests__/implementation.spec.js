@@ -146,12 +146,12 @@ describe('github backend implementation', () => {
       const file = new File([blob], name);
 
       await expect(
-        gitHubImplementation.loadEntryMediaFiles([
-          { path: 'static/media/image.png', sha: 'image.png' },
+        gitHubImplementation.loadEntryMediaFiles('branch', [
+          { path: 'static/media/image.png', id: 'sha' },
         ]),
       ).resolves.toEqual([
         {
-          id: 'image.png',
+          id: 'sha',
           displayURL: 'displayURL',
           path: 'static/media/image.png',
           name: 'image.png',
@@ -176,14 +176,17 @@ describe('github backend implementation', () => {
       gitHubImplementation.api = mockAPI;
       gitHubImplementation.loadEntryMediaFiles = jest
         .fn()
-        .mockResolvedValue([{ path: 'image.png', sha: 'sha' }]);
+        .mockResolvedValue([{ path: 'image.png', id: 'sha' }]);
 
       generateContentKey.mockReturnValue('contentKey');
 
       const data = {
         fileData: 'fileData',
         isModification: true,
-        metaData: { objects: { entry: { path: 'entry-path' }, files: [{ path: 'image.png' }] } },
+        metaData: {
+          branch: 'branch',
+          objects: { entry: { path: 'entry-path' }, files: [{ path: 'image.png', sha: 'sha' }] },
+        },
       };
       readUnpublishedBranchFile.mockResolvedValue(data);
 
@@ -192,8 +195,8 @@ describe('github backend implementation', () => {
         slug: 'slug',
         file: { path: 'entry-path', id: null },
         data: 'fileData',
-        metaData: { objects: { entry: { path: 'entry-path' }, files: [{ path: 'image.png' }] } },
-        mediaFiles: [{ path: 'image.png', sha: 'sha' }],
+        metaData: data.metaData,
+        mediaFiles: [{ path: 'image.png', id: 'sha' }],
         isModification: true,
       });
 
@@ -204,9 +207,9 @@ describe('github backend implementation', () => {
       expect(readUnpublishedBranchFile).toHaveBeenCalledWith('contentKey');
 
       expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledTimes(1);
-      expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledWith(
-        data.metaData.objects.files,
-      );
+      expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledWith('branch', [
+        { path: 'image.png', id: 'sha' },
+      ]);
     });
   });
 });

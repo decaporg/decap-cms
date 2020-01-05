@@ -19,6 +19,7 @@ import {
   entriesByFiles,
   Config,
   ImplementationFile,
+  UnpublishedEntryMediaFile,
 } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
@@ -267,17 +268,17 @@ export default class GitGateway implements Implementation {
     return this.backend!.getEntry(path);
   }
 
-  async loadEntryMediaFiles(files: { sha: string; path: string }[]) {
+  async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
     const client = await this.getLargeMediaClient();
-    const backend = this.backend as GitHubBackend;
+    const backend = this.backend as GitLabBackend | GitHubBackend;
     if (!client.enabled) {
-      return backend.loadEntryMediaFiles(files);
+      return backend!.loadEntryMediaFiles(branch, files);
     }
 
     const mediaFiles = await Promise.all(
       files.map(async file => {
         if (client.matchPath(file.path)) {
-          const { sha: id, path } = file;
+          const { id, path } = file;
           const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ ...file, id }]);
           const url = await client.getDownloadURL(largeMediaDisplayURLs[id]);
           return {
@@ -290,7 +291,7 @@ export default class GitGateway implements Implementation {
             size: 0,
           };
         } else {
-          return backend.loadMediaFile(file);
+          return backend!.loadMediaFile(branch, file);
         }
       }),
     );
@@ -532,7 +533,7 @@ export default class GitGateway implements Implementation {
   }
   unpublishedEntry(collection: string, slug: string) {
     return this.backend!.unpublishedEntry(collection, slug, {
-      loadEntryMediaFiles: files => this.loadEntryMediaFiles(files),
+      loadEntryMediaFiles: (branch, files) => this.loadEntryMediaFiles(branch, files),
     });
   }
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {

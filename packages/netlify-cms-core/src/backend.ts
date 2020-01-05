@@ -52,7 +52,6 @@ import {
   State,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
-import { selectMediaFiles } from './reducers/mediaLibrary';
 import { FOLDER, FILES } from './constants/collectionTypes';
 
 export class LocalStorageAuthStore {
@@ -553,7 +552,7 @@ export class Backend {
       this.implementation.getEntry(path),
       collection.has('media_folder') && !integration
         ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
-        : Promise.resolve(selectMediaFiles(state)),
+        : Promise.resolve(state.mediaLibrary.get('files') || []),
     ]);
 
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
