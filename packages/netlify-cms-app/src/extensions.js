@@ -23,12 +23,13 @@ import NetlifyCmsWidgetBoolean from 'netlify-cms-widget-boolean';
 import NetlifyCmsWidgetMap from 'netlify-cms-widget-map';
 import NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
 import NetlifyCmsWidgetDatetime from 'netlify-cms-widget-datetime';
+import NetlifyCmsWidgetCode from 'netlify-cms-widget-code';
 
 // Editor Components
 import image from 'netlify-cms-editor-component-image';
 
 // Locales
-import { en } from 'netlify-cms-locales';
+import * as locales from 'netlify-cms-locales';
 
 // Register all the things
 CMS.registerBackend('git-gateway', GitGatewayBackend);
@@ -51,6 +52,15 @@ CMS.registerWidget([
   NetlifyCmsWidgetMap.Widget(),
   NetlifyCmsWidgetDate.Widget(),
   NetlifyCmsWidgetDatetime.Widget(),
+  NetlifyCmsWidgetCode.Widget(),
 ]);
 CMS.registerEditorComponent(image);
-CMS.registerLocale('en', en);
+CMS.registerEditorComponent({
+  id: 'code-block',
+  label: 'Code Block',
+  widget: 'code',
+  type: 'code-block',
+});
+Object.keys(locales).forEach(locale => {
+  CMS.registerLocale(locale, locales[locale]);
+});
