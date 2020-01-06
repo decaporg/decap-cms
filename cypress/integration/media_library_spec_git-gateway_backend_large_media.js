@@ -1,6 +1,6 @@
-import fixture from './media/media_library';
-import { entry1 } from './github/entries';
-import * as specUtils from './github/spec_utils';
+import fixture from './common/media_library';
+import { entry1 } from './common/entries';
+import * as specUtils from './common/spec_utils';
 
 const backend = 'git-gateway';
 

@@ -20,6 +20,8 @@ const {
   setupGitGatewayTest,
   teardownGitGatewayTest,
 } = require('./gitGateway');
+const { setupGitLab, teardownGitLab, setupGitLabTest, teardownGitLabTest } = require('./gitlab');
+
 const { copyBackendFiles } = require('../utils/config');
 
 module.exports = async (on, config) => {
@@ -37,6 +39,9 @@ module.exports = async (on, config) => {
         case 'git-gateway':
           result = await setupGitGateway(options);
           break;
+        case 'gitlab':
+          result = await setupGitLab(options);
+          break;
       }
 
       return result;
@@ -51,6 +56,9 @@ module.exports = async (on, config) => {
           break;
         case 'git-gateway':
           await teardownGitGateway(taskData);
+          break;
+        case 'gitlab':
+          await teardownGitLab(taskData);
           break;
       }
 
@@ -70,6 +78,9 @@ module.exports = async (on, config) => {
         case 'git-gateway':
           await setupGitGatewayTest(taskData);
           break;
+        case 'gitlab':
+          await setupGitLabTest(taskData);
+          break;
       }
 
       return null;
@@ -85,6 +96,9 @@ module.exports = async (on, config) => {
           break;
         case 'git-gateway':
           await teardownGitGatewayTest(taskData);
+          break;
+        case 'gitlab':
+          await teardownGitLabTest(taskData);
           break;
       }
 

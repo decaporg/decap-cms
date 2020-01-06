@@ -30,21 +30,9 @@ function login(user) {
 }
 
 function assertNotification(message) {
-  if (Array.isArray(message)) {
-    console.log(message);
-    const messages = message.reverse();
-    cy.get('.notif__container div')
-      .should('have.length.of', messages.length)
-      .each((el, idx) => {
-        cy.wrap(el)
-          .contains(messages[idx])
-          .invoke('hide');
-      });
-  } else {
-    cy.get('.notif__container').within(() => {
-      cy.contains(message).invoke('hide');
-    });
-  }
+  cy.get('.notif__container').within(() => {
+    cy.contains(message).invoke('hide');
+  });
 }
 
 function exitEditor() {

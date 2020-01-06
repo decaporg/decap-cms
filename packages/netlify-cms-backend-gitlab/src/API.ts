@@ -395,7 +395,7 @@ export default class API {
     return this.requestJSON({
       url: `${this.repoURL}/repository/commits`,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(commitParams),
     });
   }

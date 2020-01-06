@@ -33,6 +33,7 @@ import {
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,
+  runWithLock,
   Config as C,
   UnpublishedEntryMediaFile as UEMF,
 } from './implementation';
@@ -110,6 +111,7 @@ export const NetlifyCmsLibUtil = {
   MERGE_COMMIT_MESSAGE,
   isPreviewContext,
   getPreviewStatus,
+  runWithLock,
 };
 export {
   APIError,
@@ -150,4 +152,5 @@ export {
   MERGE_COMMIT_MESSAGE,
   isPreviewContext,
   getPreviewStatus,
+  runWithLock,
 };

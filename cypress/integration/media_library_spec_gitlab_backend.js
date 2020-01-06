@@ -2,13 +2,13 @@ import fixture from './common/media_library';
 import { entry1 } from './common/entries';
 import * as specUtils from './common/spec_utils';
 
-const backend = 'github';
+const backend = 'gitlab';
 
-describe('GitHub Backend Media Library - REST API', () => {
+describe('GitLab Backend Media Library - REST API', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { use_graphql: false }, backend);
+    specUtils.before(taskResult, {}, backend);
   });
 
   after(() => {

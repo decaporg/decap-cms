@@ -1,13 +1,14 @@
 const Octokit = require('@octokit/rest');
 const fs = require('fs-extra');
 const path = require('path');
-const simpleGit = require('simple-git/promise');
+const {
+  getExpectationsFilename,
+  transformRecordedData: transformData,
+  getGitClient,
+} = require('./common');
 const { updateConfig } = require('../utils/config');
 const { escapeRegExp } = require('../utils/regexp');
 const { retrieveRecordedExpectations, resetMockServerState } = require('../utils/mock-server');
-
-const GIT_SSH_COMMAND = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no';
-const GIT_SSL_NO_VERIFY = true;
 
 const GITHUB_REPO_OWNER_SANITIZED_VALUE = 'owner';
 const GITHUB_REPO_NAME_SANITIZED_VALUE = 'repo';
@@ -51,11 +52,6 @@ function getEnvs() {
     );
   }
   return { owner, repo, token, forkOwner, forkToken };
-}
-
-function getGitClient(repoDir) {
-  const git = simpleGit(repoDir).env({ ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
-  return git;
 }
 
 async function prepareTestGitHubRepo() {
@@ -268,15 +264,6 @@ async function teardownGitHub(taskData) {
   return null;
 }
 
-const getExpectationsFilename = taskData => {
-  const { spec, testName } = taskData;
-  const basename = `${spec}__${testName}`;
-  const fixtures = path.join(__dirname, '..', 'fixtures');
-  const filename = path.join(fixtures, `${basename}.json`);
-
-  return filename;
-};
-
 async function setupGitHubTest(taskData) {
   if (process.env.RECORD_FIXTURES) {
     await resetRepositories(taskData);
@@ -312,93 +299,68 @@ const sanitizeString = (
   return replaced;
 };
 
-const HEADERS_TO_IGNORE = [
-  'Date',
-  'X-RateLimit-Remaining',
-  'X-RateLimit-Reset',
-  'ETag',
-  'Last-Modified',
-  'X-GitHub-Request-Id',
-  'X-NF-Request-ID',
-];
-
 const transformRecordedData = (expectation, toSanitize) => {
-  const { httpRequest, httpResponse } = expectation;
-
-  const responseHeaders = {};
-
-  Object.keys(httpResponse.headers)
-    .filter(key => !HEADERS_TO_IGNORE.includes(key))
-    .forEach(key => {
-      responseHeaders[key] = httpResponse.headers[key][0];
-    });
-
-  let responseBody = null;
-  if (httpResponse.body && httpResponse.body.string) {
-    responseBody = httpResponse.body.string;
-  } else if (
-    httpResponse.body &&
-    httpResponse.body.type === 'BINARY' &&
-    httpResponse.body.base64Bytes
-  ) {
-    responseBody = {
-      encoding: 'base64',
-      content: httpResponse.body.base64Bytes,
-    };
-  } else if (httpResponse.body) {
-    console.log('Unsupported response body:', JSON.stringify(httpResponse.body));
-  }
-
-  // replace recorded user with fake one
-  if (
-    responseBody &&
-    httpRequest.path === '/user' &&
-    httpRequest.headers.Host.includes('api.github.com')
-  ) {
-    const parsed = JSON.parse(responseBody);
-    if (parsed.login === toSanitize.forkOwner) {
-      responseBody = JSON.stringify(FAKE_FORK_OWNER_USER);
-    } else {
-      responseBody = JSON.stringify(FAKE_OWNER_USER);
-    }
-  }
-
-  let queryString;
-  if (httpRequest.queryStringParameters) {
-    const { queryStringParameters } = httpRequest;
-
-    queryString = Object.keys(queryStringParameters)
-      .map(key => `${key}=${queryStringParameters[key]}`)
-      .join('&');
-  }
-
-  let body;
-  if (httpRequest.body && httpRequest.body.string) {
-    try {
-      const bodyObject = JSON.parse(httpRequest.body.string);
-      if (bodyObject.encoding === 'base64') {
-        // sanitize encoded data
-        const decodedBody = Buffer.from(bodyObject.content, 'base64').toString('binary');
-        const sanitizedContent = sanitizeString(decodedBody, toSanitize);
-        const sanitizedEncodedContent = Buffer.from(sanitizedContent, 'binary').toString('base64');
-        bodyObject.content = sanitizedEncodedContent;
-        body = JSON.stringify(bodyObject);
-      } else {
+  const requestBodySanitizer = httpRequest => {
+    let body;
+    if (httpRequest.body && httpRequest.body.string) {
+      try {
+        const bodyObject = JSON.parse(httpRequest.body.string);
+        if (bodyObject.encoding === 'base64') {
+          // sanitize encoded data
+          const decodedBody = Buffer.from(bodyObject.content, 'base64').toString('binary');
+          const sanitizedContent = sanitizeString(decodedBody, toSanitize);
+          const sanitizedEncodedContent = Buffer.from(sanitizedContent, 'binary').toString(
+            'base64',
+          );
+          bodyObject.content = sanitizedEncodedContent;
+          body = JSON.stringify(bodyObject);
+        } else {
+          body = httpRequest.body.string;
+        }
+      } catch (e) {
         body = httpRequest.body.string;
       }
-    } catch (e) {
-      body = httpRequest.body.string;
     }
-  }
-
-  const cypressRouteOptions = {
-    body,
-    method: httpRequest.method,
-    url: queryString ? `${httpRequest.path}?${queryString}` : httpRequest.path,
-    headers: responseHeaders,
-    response: responseBody,
-    status: httpResponse.statusCode,
+    return body;
   };
+
+  const responseBodySanitizer = (httpRequest, httpResponse) => {
+    let responseBody = null;
+    if (httpResponse.body && httpResponse.body.string) {
+      responseBody = httpResponse.body.string;
+    } else if (
+      httpResponse.body &&
+      httpResponse.body.type === 'BINARY' &&
+      httpResponse.body.base64Bytes
+    ) {
+      responseBody = {
+        encoding: 'base64',
+        content: httpResponse.body.base64Bytes,
+      };
+    } else if (httpResponse.body) {
+      console.log('Unsupported response body:', JSON.stringify(httpResponse.body));
+    }
+
+    // replace recorded user with fake one
+    if (
+      responseBody &&
+      httpRequest.path === '/user' &&
+      httpRequest.headers.Host.includes('api.github.com')
+    ) {
+      const parsed = JSON.parse(responseBody);
+      if (parsed.login === toSanitize.forkOwner) {
+        responseBody = JSON.stringify(FAKE_FORK_OWNER_USER);
+      } else {
+        responseBody = JSON.stringify(FAKE_OWNER_USER);
+      }
+    }
+  };
+
+  const cypressRouteOptions = transformData(
+    expectation,
+    requestBodySanitizer,
+    responseBodySanitizer,
+  );
 
   return cypressRouteOptions;
 };
@@ -449,7 +411,6 @@ async function teardownGitHubTest(taskData, { transformRecordedData } = defaultO
 
 module.exports = {
   transformRecordedData,
-  getGitClient,
   setupGitHub,
   teardownGitHub,
   setupGitHubTest,

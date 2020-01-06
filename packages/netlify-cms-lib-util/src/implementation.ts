@@ -1,5 +1,6 @@
 import semaphore, { Semaphore } from 'semaphore';
 import Cursor from './Cursor';
+import { AsyncLock } from './asyncLock';
 
 export type DisplayURLObject = { id: string; path: string };
 
@@ -287,4 +288,18 @@ export const getMediaDisplayURL = async (
         .finally(() => semaphore.leave()),
     ),
   );
+};
+
+export const runWithLock = async (lock: AsyncLock, func: Function, message: string) => {
+  try {
+    const acquired = await lock.acquire();
+    if (!acquired) {
+      console.warn(message);
+    }
+
+    const result = await func();
+    return result;
+  } finally {
+    lock.release();
+  }
 };

@@ -22,6 +22,9 @@ import {
   unpublishedEntries,
   getPreviewStatus,
   UnpublishedEntryMediaFile,
+  asyncLock,
+  AsyncLock,
+  runWithLock,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
@@ -30,6 +33,7 @@ import { getBlobSHA } from 'netlify-cms-lib-util/src';
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitLab implements Implementation {
+  lock: AsyncLock;
   api: API | null;
   options: {
     proxied: boolean;
@@ -71,6 +75,7 @@ export default class GitLab implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
+    this.lock = asyncLock();
   }
 
   authComponent() {
@@ -206,7 +211,12 @@ export default class GitLab implements Implementation {
   }
 
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
-    return this.api!.persistFiles(entry, mediaFiles, options);
+    // persistEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.persistFiles(entry, mediaFiles, options),
+      'Failed to acquire persist entry lock',
+    );
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
@@ -315,15 +325,30 @@ export default class GitLab implements Implementation {
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    return this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus);
-  }
-
-  async publishUnpublishedEntry(collection: string, slug: string) {
-    return this.api!.publishUnpublishedEntry(collection, slug);
+    // updateUnpublishedEntryStatus is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus),
+      'Failed to acquire update entry status lock',
+    );
   }
 
   async deleteUnpublishedEntry(collection: string, slug: string) {
-    return this.api!.deleteUnpublishedEntry(collection, slug);
+    // deleteUnpublishedEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.deleteUnpublishedEntry(collection, slug),
+      'Failed to acquire delete entry lock',
+    );
+  }
+
+  async publishUnpublishedEntry(collection: string, slug: string) {
+    // publishUnpublishedEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.publishUnpublishedEntry(collection, slug),
+      'Failed to acquire publish entry lock',
+    );
   }
 
   async getDeployPreview(collection: string, slug: string) {

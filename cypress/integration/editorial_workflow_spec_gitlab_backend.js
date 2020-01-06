@@ -2,13 +2,13 @@ import fixture from './common/editorial_workflow';
 import * as specUtils from './common/spec_utils';
 import { entry1, entry2, entry3 } from './common/entries';
 
-const backend = 'github';
+const backend = 'gitlab';
 
-describe('Github Backend Editorial Workflow - GraphQL API', () => {
+describe('GitLab Backend Editorial Workflow', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { use_graphql: true, open_authoring: false }, backend);
+    specUtils.before(taskResult, {}, backend);
   });
 
   after(() => {
@@ -26,5 +26,6 @@ describe('Github Backend Editorial Workflow - GraphQL API', () => {
   fixture({
     entries: [entry1, entry2, entry3],
     getUser: () => taskResult.data.user,
+    getForkUser: () => taskResult.data.forkUser,
   });
 });

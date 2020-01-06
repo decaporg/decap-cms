@@ -23,6 +23,7 @@ import {
   ImplementationFile,
   getPreviewStatus,
   UnpublishedEntryMediaFile,
+  runWithLock,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { UsersGetAuthenticatedResponse as GitHubUser } from '@octokit/rest';
@@ -93,20 +94,6 @@ export default class GitHub implements Implementation {
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
-  }
-
-  async runWithLock(func: Function, message: string) {
-    try {
-      const acquired = await this.lock.acquire();
-      if (!acquired) {
-        console.warn(message);
-      }
-
-      const result = await func();
-      return result;
-    } finally {
-      this.lock.release();
-    }
   }
 
   authComponent() {
@@ -363,7 +350,8 @@ export default class GitHub implements Implementation {
 
   persistEntry(entry: Entry, mediaFiles: AssetProxy[] = [], options: PersistOptions) {
     // persistEntry is a transactional operation
-    return this.runWithLock(
+    return runWithLock(
+      this.lock,
       () => this.api!.persistFiles(entry, mediaFiles, options),
       'Failed to acquire persist entry lock',
     );
@@ -483,7 +471,8 @@ export default class GitHub implements Implementation {
 
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     // updateUnpublishedEntryStatus is a transactional operation
-    return this.runWithLock(
+    return runWithLock(
+      this.lock,
       () => this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus),
       'Failed to acquire update entry status lock',
     );
@@ -491,7 +480,8 @@ export default class GitHub implements Implementation {
 
   deleteUnpublishedEntry(collection: string, slug: string) {
     // deleteUnpublishedEntry is a transactional operation
-    return this.runWithLock(
+    return runWithLock(
+      this.lock,
       () => this.api!.deleteUnpublishedEntry(collection, slug),
       'Failed to acquire delete entry lock',
     );
@@ -499,7 +489,8 @@ export default class GitHub implements Implementation {
 
   publishUnpublishedEntry(collection: string, slug: string) {
     // publishUnpublishedEntry is a transactional operation
-    return this.runWithLock(
+    return runWithLock(
+      this.lock,
       () => this.api!.publishUnpublishedEntry(collection, slug),
       'Failed to acquire publish entry lock',
     );

@@ -1,12 +1,12 @@
 const fetch = require('node-fetch');
 const {
-  getGitClient,
   transformRecordedData,
   setupGitHub,
   teardownGitHub,
   setupGitHubTest,
   teardownGitHubTest,
 } = require('./github');
+const { getGitClient } = require('./common');
 
 function getEnvs() {
   const {
