@@ -1,4 +1,15 @@
 const en = {
+  auth: {
+    login: 'Login',
+    loggingIn: 'Logging in...',
+    loginWithNetlifyIdentity: 'Login with Netlify Identity',
+    errors: {
+      email: 'Make sure to enter your email.',
+      password: 'Please enter your password.',
+      identitySettings:
+        'Unable to access identity settings. When using git-gateway backend make sure to enable Identity service and Git Gateway.',
+    },
+  },
   app: {
     header: {
       content: 'Contents',
