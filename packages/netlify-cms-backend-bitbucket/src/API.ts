@@ -136,6 +136,17 @@ interface BitBucketFile {
   commit?: { hash: string };
 }
 
+type BitBucketUser = {
+  username: string;
+  display_name: string;
+  nickname: string;
+  links: {
+    avatar: {
+      href: string;
+    };
+  };
+};
+
 export const API_NAME = 'BitBucket';
 
 const APPLICATION_JSON = 'application/json; charset=utf-8';
@@ -180,7 +191,7 @@ export default class API {
   requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON) as Promise<any>;
   requestText = (req: ApiRequest) => this.request(req).then(this.responseToText) as Promise<string>;
 
-  user = () => this.requestJSON('/user');
+  user = () => this.requestJSON('/user') as Promise<BitBucketUser>;
 
   hasWriteAccess = async () => {
     const response = await this.request(this.repoURL);

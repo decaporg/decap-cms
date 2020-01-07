@@ -150,6 +150,8 @@ export default class BitbucketBackend implements Implementation {
       login: user.username,
       token: state.token,
       // eslint-disable-next-line @typescript-eslint/camelcase
+      avatar_url: user.links.avatar.href,
+      // eslint-disable-next-line @typescript-eslint/camelcase
       refresh_token: state.refresh_token,
     };
   }
