@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.8.0-beta.0...netlify-cms-ui-default@2.8.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* avoid nested select widget z-index conflicts ([#2990](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/2990)) ([fe09720](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/fe097202f0220b2eab426848b928258524ba6e72))
+
+
+
+
+
 # [2.8.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.7.0...netlify-cms-ui-default@2.8.0-beta.0) (2019-12-18)
 
 

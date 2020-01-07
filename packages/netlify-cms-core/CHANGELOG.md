@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.14.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.14.0-beta.1...netlify-cms-core@2.14.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* always ensure collection exists before routing ([#2992](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2992)) ([982fd7b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/982fd7b0f88f851d4e9bb33c8430313c2e816f43))
+* cleanup nested widget validation ([#2991](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2991)) ([e4ba4d9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e4ba4d9d749c864e594c10e0bb31b0b8c4e6e60b))
+* duplicate and new entry action ([#3003](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3003)) ([9e7aa0c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9e7aa0c500f2bd394ca711846ec88c2b4fbf7ec5))
+* rebase open authoring branches ([#2975](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/2975)) ([8c175f6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8c175f6132fa18a13763cc563f7d3201c1e3580e))
+
+
+### Features
+
+* **backend-git-gateway:** handle identity disabled error message ([#3002](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3002)) ([b5ffccd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b5ffccdac506db416c09aaebb38611783487c52a))
+
+
+
+
+
 # [2.14.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.14.0-beta.0...netlify-cms-core@2.14.0-beta.1) (2019-12-19)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.3](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.3-beta.0...netlify-cms@2.10.3) (2020-01-07)
+
+
+### Bug Fixes
+
+* move code widget and locales to netlify-cms-app ([#3025](https://github.com/netlify/netlify-cms/issues/3025)) ([74ecc21](https://github.com/netlify/netlify-cms/commit/74ecc21879e984e0104e5bb81c30f661162f6758))
+
+
+
+
+
 ## [2.10.3-beta.0](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.2-beta.0...netlify-cms@2.10.3-beta.0) (2019-12-20)
 
 **Note:** Version bump only for package netlify-cms

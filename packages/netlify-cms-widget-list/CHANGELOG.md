@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.0...netlify-cms-widget-list@2.4.1) (2020-01-07)
+
+
+### Bug Fixes
+
+* cleanup nested widget validation ([#2991](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/2991)) ([e4ba4d9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/e4ba4d9d749c864e594c10e0bb31b0b8c4e6e60b))
+
+
+
+
+
 # [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.0-beta.0...netlify-cms-widget-list@2.4.0) (2019-12-18)
 
 **Note:** Version bump only for package netlify-cms-widget-list

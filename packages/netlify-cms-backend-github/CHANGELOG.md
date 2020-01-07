@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.0-beta.0...netlify-cms-backend-github@2.6.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* rebase open authoring branches ([#2975](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/2975)) ([8c175f6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/8c175f6132fa18a13763cc563f7d3201c1e3580e))
+
+
+
+
+
 # [2.6.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.5.0...netlify-cms-backend-github@2.6.0-beta.0) (2019-12-18)
 
 

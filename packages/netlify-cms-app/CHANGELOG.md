@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.11.0-beta.1...netlify-cms-app@2.11.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* move code widget and locales to netlify-cms-app ([#3025](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/3025)) ([74ecc21](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/74ecc21879e984e0104e5bb81c30f661162f6758))
+
+
+
+
+
 # [2.11.0-beta.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.11.0-beta.0...netlify-cms-app@2.11.0-beta.1) (2019-12-19)
 
 **Note:** Version bump only for package netlify-cms-app

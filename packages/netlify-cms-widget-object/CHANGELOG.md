@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.3.0...netlify-cms-widget-object@2.3.1) (2020-01-07)
+
+
+### Bug Fixes
+
+* **widget-object:** allow nested widgets to overflow ([#3026](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/3026)) ([8e980bc](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/commit/8e980bc1abb516f8af889a81f0a52a1cd9456afb))
+
+
+
+
+
 # [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.2.3...netlify-cms-widget-object@2.3.0) (2019-12-16)
 
 

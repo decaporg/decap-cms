@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.3.0...netlify-cms-locales@1.4.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* **locale-pt:** add missing pt locale import ([#3029](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3029)) ([8bf01e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/8bf01e8022aa20532f5058bc423acb2a82fa6877))
+* **locales:** fix ja locale ([#3041](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3041)) ([2edc713](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/2edc7136e7f4597328a4aa50a5a4e9b3d5623b38))
+
+
+### Features
+
+* **backend-git-gateway:** handle identity disabled error message ([#3002](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3002)) ([b5ffccd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/b5ffccdac506db416c09aaebb38611783487c52a))
+* **lang:** add 'pt' locale ([#3015](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3015)) ([99169ed](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/99169ed8f74c24fec83c2ecc1dc5df2bd1dc95e4))
+
+
+
+
+
 # [1.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.3.0-beta.2...netlify-cms-locales@1.3.0) (2019-12-18)
 
 **Note:** Version bump only for package netlify-cms-locales
