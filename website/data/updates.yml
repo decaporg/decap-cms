@@ -1,4 +1,10 @@
 updates:
+  - date: '2020-01-07'
+    description: 'Bundle assets with content, bugfixes'
+    version: 2.10.3
+  - date: '2019-12-20'
+    description: 'Fix incomplete previous release'
+    version: 2.10.2
   - date: '2019-12-19'
     description: 'Fix select and relation widgets not showing dropdown'
     version: 2.10.1
