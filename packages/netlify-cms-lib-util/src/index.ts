@@ -48,6 +48,7 @@ import {
   MERGE_COMMIT_MESSAGE,
   isPreviewContext,
   getPreviewStatus,
+  PreviewState,
 } from './API';
 
 export type AsyncLock = AL;
@@ -112,6 +113,7 @@ export const NetlifyCmsLibUtil = {
   isPreviewContext,
   getPreviewStatus,
   runWithLock,
+  PreviewState,
 };
 export {
   APIError,
@@ -153,4 +155,5 @@ export {
   isPreviewContext,
   getPreviewStatus,
   runWithLock,
+  PreviewState,
 };

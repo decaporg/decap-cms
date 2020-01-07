@@ -3,6 +3,7 @@ import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
 import { fileExtension } from './path';
 import unsentRequest from './unsentRequest';
+import APIError from './APIError';
 
 type Formatter = (res: Response) => Promise<string | Blob | unknown>;
 
@@ -36,22 +37,31 @@ const responseFormatters = fromJS({
 
 export const parseResponse = async (
   res: Response,
-  { expectingOk = true, format = 'text' } = {},
+  { expectingOk = true, format = 'text', apiName = '' },
 ) => {
+  let body;
+  try {
+    const formatter = responseFormatters.get(format, false);
+    if (!formatter) {
+      throw new Error(`${format} is not a supported response format.`);
+    }
+    body = await formatter(res);
+  } catch (err) {
+    throw new APIError(err.message, res.status, apiName);
+  }
   if (expectingOk && !res.ok) {
-    throw new Error(`Expected an ok response, but received an error status: ${res.status}.`);
+    const isJSON = format === 'json';
+    const message = body.message || body.error?.message;
+    throw new APIError(isJSON && message ? message : body, res.status, apiName);
   }
-  const formatter = responseFormatters.get(format, false);
-  if (!formatter) {
-    throw new Error(`${format} is not a supported response format.`);
-  }
-  const body = await formatter(res);
-  return body as Promise<string | Blob>;
+  return body;
 };
 
-export const responseParser = (options: { expectingOk?: boolean; format?: string }) => (
-  res: Response,
-) => parseResponse(res, options);
+export const responseParser = (options: {
+  expectingOk?: boolean;
+  format: string;
+  apiName: string;
+}) => (res: Response) => parseResponse(res, options);
 
 export const parseLinkHeader = flow([
   linksString => linksString.split(','),

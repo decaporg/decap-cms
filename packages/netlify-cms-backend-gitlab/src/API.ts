@@ -18,9 +18,11 @@ import {
   statusToLabel,
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
+  responseParser,
+  PreviewState,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
-import { fromJS, Map, Set } from 'immutable';
+import { Map, Set } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
 import { CursorStore } from 'netlify-cms-lib-util/src/Cursor';
 
@@ -72,8 +74,16 @@ type GitLabCommitDiff = {
   old_path: string;
 };
 
+enum GitLabCommitStatuses {
+  Pending = 'pending',
+  Running = 'running',
+  Success = 'success',
+  Failed = 'failed',
+  Canceled = 'canceled',
+}
+
 type GitLabCommitStatus = {
-  status: 'pending' | 'running' | 'success' | 'failed' | 'canceled';
+  status: GitLabCommitStatuses;
   name: string;
   author: {
     username: string;
@@ -113,8 +123,6 @@ type GitLabMergeRequest = {
   sha: string;
 };
 
-type Formatter = (res: Response) => unknown;
-
 export default class API {
   apiRoot: string;
   token: string | boolean;
@@ -153,59 +161,13 @@ export default class API {
       p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, API_NAME))),
     ])(req);
 
-  catchFormatErrors = (format: string, formatter: Formatter) => (res: Response) => {
-    try {
-      return formatter(res);
-    } catch (err) {
-      throw new Error(
-        `Response cannot be parsed into the expected format (${format}): ${err.message}`,
-      );
-    }
-  };
+  responseToJSON = responseParser({ format: 'json', apiName: API_NAME });
+  responseToBlob = responseParser({ format: 'blob', apiName: API_NAME });
+  responseToText = responseParser({ format: 'text', apiName: API_NAME });
 
-  responseFormats = fromJS({
-    json: async (res: Response) => {
-      const contentType = res.headers.get('Content-Type');
-      if (contentType !== 'application/json' && contentType !== 'text/json') {
-        throw new Error(`${contentType} is not a valid JSON Content-Type`);
-      }
-      return res.json();
-    },
-    text: async (res: Response) => res.text(),
-    blob: async (res: Response) => res.blob(),
-  }).mapEntries(([format, formatter]: [string, Formatter]) => [
-    format,
-    this.catchFormatErrors(format, formatter),
-  ]);
-
-  parseResponse = async (res: Response, { expectingOk = true, expectingFormat = 'text' }) => {
-    let body;
-    try {
-      const formatter = this.responseFormats.get(expectingFormat, false);
-      if (!formatter) {
-        throw new Error(`${expectingFormat} is not a supported response format.`);
-      }
-      body = await formatter(res);
-    } catch (err) {
-      throw new APIError(err.message, res.status, API_NAME);
-    }
-    if (expectingOk && !res.ok) {
-      const isJSON = expectingFormat === 'json';
-      throw new APIError(isJSON && body.message ? body.message : body, res.status, API_NAME);
-    }
-    return body;
-  };
-
-  responseToJSON = (res: Response) => this.parseResponse(res, { expectingFormat: 'json' });
-
-  responseToBlob = (res: Response) =>
-    this.parseResponse(res, { expectingFormat: 'blob' }) as Promise<Blob>;
-
-  responseToText = (res: Response) =>
-    this.parseResponse(res, { expectingFormat: 'text' }) as Promise<string>;
-
-  requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON);
-  requestText = (req: ApiRequest) => this.request(req).then(this.responseToText);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON) as Promise<any>;
+  requestText = (req: ApiRequest) => this.request(req).then(this.responseToText) as Promise<string>;
 
   user = () => this.requestJSON('/user');
 
@@ -729,6 +691,12 @@ export default class API {
         ref: branch,
       },
     });
-    return statuses;
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    return statuses.map(({ name, status, target_url }) => ({
+      context: name,
+      state: status === GitLabCommitStatuses.Success ? PreviewState.Success : PreviewState.Other,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      target_url,
+    }));
   }
 }

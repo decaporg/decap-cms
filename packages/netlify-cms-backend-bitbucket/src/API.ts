@@ -12,7 +12,18 @@ import {
   Entry,
   PersistOptions,
   readFile,
+  CMS_BRANCH_PREFIX,
+  generateContentKey,
+  labelToStatus,
+  isCMSLabel,
+  EditorialWorkflowError,
+  statusToLabel,
+  DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
+  PreviewState,
 } from 'netlify-cms-lib-util';
+import { parse } from 'what-the-diff';
+import { oneLine } from 'common-tags';
 
 interface Config {
   apiRoot?: string;
@@ -21,12 +32,102 @@ interface Config {
   repo?: string;
   requestFunction?: (req: ApiRequest) => Promise<Response>;
   hasWriteAccess?: () => Promise<boolean>;
+  squashMerges: boolean;
+  initialWorkflowStatus: string;
 }
 
 interface CommitAuthor {
   name: string;
   email: string;
 }
+
+enum BitBucketPullRequestState {
+  MERGED = 'MERGED',
+  SUPERSEDED = 'SUPERSEDED',
+  OPEN = 'OPEN',
+  DECLINED = 'DECLINED',
+}
+
+type BitBucketPullRequest = {
+  description: string;
+  id: number;
+  title: string;
+  state: BitBucketPullRequestState;
+  summary: {
+    raw: string;
+  };
+  source: {
+    commit: {
+      hash: string;
+    };
+    branch: {
+      name: string;
+    };
+  };
+  destination: {
+    commit: {
+      hash: string;
+    };
+    branch: {
+      name: string;
+    };
+  };
+};
+
+type BitBucketPullRequests = {
+  size: number;
+  page: number;
+  pagelen: number;
+  next: string;
+  preview: string;
+  values: BitBucketPullRequest[];
+};
+
+type BitBucketPullComment = {
+  content: {
+    raw: string;
+  };
+};
+
+type BitBucketPullComments = {
+  size: number;
+  page: number;
+  pagelen: number;
+  next: string;
+  preview: string;
+  values: BitBucketPullComment[];
+};
+
+enum BitBucketPullRequestStatusState {
+  Successful = 'SUCCESSFUL',
+  Failed = 'FAILED',
+  InProgress = 'INPROGRESS',
+  Stopped = 'STOPPED',
+}
+
+type BitBucketPullRequestStatus = {
+  uuid: string;
+  name: string;
+  key: string;
+  refname: string;
+  url: string;
+  description: string;
+  state: BitBucketPullRequestStatusState;
+};
+
+type BitBucketPullRequestStatues = {
+  size: number;
+  page: number;
+  pagelen: number;
+  next: string;
+  preview: string;
+  values: BitBucketPullRequestStatus[];
+};
+
+type DeleteEntry = {
+  path: string;
+  delete: true;
+};
 
 interface BitBucketFile {
   id: string;
@@ -35,6 +136,10 @@ interface BitBucketFile {
   commit?: { hash: string };
 }
 
+export const API_NAME = 'BitBucket';
+
+const APPLICATION_JSON = 'application/json; charset=utf-8';
+
 export default class API {
   apiRoot: string;
   branch: string;
@@ -42,6 +147,8 @@ export default class API {
   requestFunction: (req: ApiRequest) => Promise<Response>;
   repoURL: string;
   commitAuthor?: CommitAuthor;
+  mergeStrategy: string;
+  initialWorkflowStatus: string;
 
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://api.bitbucket.org/2.0';
@@ -51,6 +158,8 @@ export default class API {
     // Allow overriding this.hasWriteAccess
     this.hasWriteAccess = config.hasWriteAccess || this.hasWriteAccess;
     this.repoURL = this.repo ? `/repositories/${this.repo}` : '';
+    this.mergeStrategy = config.squashMerges ? 'squash' : 'merge_commit';
+    this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
   buildRequest = (req: ApiRequest) =>
@@ -60,24 +169,16 @@ export default class API {
     flow([
       this.buildRequest,
       this.requestFunction,
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
+      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, API_NAME))),
     ])(req);
 
-  requestJSON = (req: ApiRequest) =>
-    flow([
-      unsentRequest.withDefaultHeaders({ 'Content-Type': 'application/json' }),
-      this.request,
-      then(responseParser({ format: 'json' })),
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
-    ])(req);
+  responseToJSON = responseParser({ format: 'json', apiName: API_NAME });
+  responseToBlob = responseParser({ format: 'blob', apiName: API_NAME });
+  responseToText = responseParser({ format: 'text', apiName: API_NAME });
 
-  requestText = (req: ApiRequest) =>
-    flow([
-      unsentRequest.withDefaultHeaders({ 'Content-Type': 'text/plain' }),
-      this.request,
-      then(responseParser({ format: 'text' })),
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, 'BitBucket'))),
-    ])(req);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON) as Promise<any>;
+  requestText = (req: ApiRequest) => this.request(req).then(this.responseToText) as Promise<string>;
 
   user = () => this.requestJSON('/user');
 
@@ -89,11 +190,11 @@ export default class API {
     return response.ok;
   };
 
-  branchCommitSha = async () => {
+  branchCommitSha = async (branch: string) => {
     const {
       target: { hash: branchSha },
-    } = await this.requestJSON(`${this.repoURL}/refs/branches/${this.branch}`);
-    return branchSha;
+    } = await this.requestJSON(`${this.repoURL}/refs/branches/${branch}`);
+    return branchSha as string;
   };
 
   isFile = ({ type }: BitBucketFile) => type === 'commit_file';
@@ -116,16 +217,14 @@ export default class API {
   readFile = async (
     path: string,
     sha?: string | null,
-    { parseText = true } = {},
+    { parseText = true, branch = this.branch } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
-      const node = await this.branchCommitSha();
+      const node = await this.branchCommitSha(branch);
       const content = await this.request({
         url: `${this.repoURL}/src/${node}/${path}`,
         cache: 'no-store',
-      }).then<string | Blob>(
-        parseText ? responseParser({ format: 'text' }) : responseParser({ format: 'blob' }),
-      );
+      }).then<string | Blob>(parseText ? this.responseToText : this.responseToBlob);
       return content;
     };
     const content = await readFile(sha, fetchContent, localForage, parseText);
@@ -160,7 +259,7 @@ export default class API {
   };
 
   listFiles = async (path: string, depth = 1) => {
-    const node = await this.branchCommitSha();
+    const node = await this.branchCommitSha(this.branch);
     const { entries, cursor } = await flow([
       // sort files by filename ascending
       // eslint-disable-next-line @typescript-eslint/camelcase
@@ -206,13 +305,25 @@ export default class API {
     return this.processFiles(entries);
   };
 
-  async persistFiles(files: (Entry | AssetProxy)[], { commitMessage }: PersistOptions) {
+  async uploadFiles(
+    files: (Entry | AssetProxy | DeleteEntry)[],
+    {
+      commitMessage,
+      branch,
+      parentSha,
+    }: { commitMessage: string; branch: string; parentSha?: string },
+  ) {
     const formData = new FormData();
     files.forEach(file => {
-      const contentBlob = get(file, 'fileObj', new Blob([(file as Entry).raw]));
-      // Third param is filename header, in case path is `message`, `branch`, etc.
-      formData.append(file.path, contentBlob, basename(file.path));
-      formData.append('branch', this.branch);
+      if ((file as DeleteEntry).delete) {
+        // delete the file
+        formData.append('files', file.path);
+      } else {
+        // add/modify the file
+        const contentBlob = get(file, 'fileObj', new Blob([(file as Entry).raw]));
+        // Third param is filename header, in case path is `message`, `branch`, etc.
+        formData.append(file.path, contentBlob, basename(file.path));
+      }
     });
     if (commitMessage) {
       formData.append('message', commitMessage);
@@ -222,6 +333,12 @@ export default class API {
       formData.append('author', `${name} <${email}>`);
     }
 
+    formData.append('branch', branch);
+
+    if (parentSha) {
+      formData.append('parents', parentSha);
+    }
+
     await this.request({
       url: `${this.repoURL}/src`,
       method: 'POST',
@@ -229,6 +346,108 @@ export default class API {
     });
 
     return files;
+  }
+
+  async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
+    const files = entry ? [entry, ...mediaFiles] : mediaFiles;
+    if (options.useWorkflow) {
+      return this.editorialWorkflowGit(files, entry as Entry, options);
+    } else {
+      return this.uploadFiles(files, { commitMessage: options.commitMessage, branch: this.branch });
+    }
+  }
+
+  async addPullRequestComment(pullRequest: BitBucketPullRequest, comment: string) {
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/pullrequests/${pullRequest.id}/comments`,
+      headers: { 'Content-Type': APPLICATION_JSON },
+      body: JSON.stringify({
+        content: {
+          raw: comment,
+        },
+      }),
+    });
+  }
+
+  async getPullRequestLabel(id: number) {
+    const comments: BitBucketPullComments = await this.requestJSON({
+      url: `${this.repoURL}/pullrequests/${id}/comments`,
+      params: {
+        pagelen: 100,
+      },
+    });
+    return comments.values.map(c => c.content.raw)[comments.values.length - 1];
+  }
+
+  async createPullRequest(branch: string, commitMessage: string, status: string) {
+    const pullRequest: BitBucketPullRequest = await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/pullrequests`,
+      headers: { 'Content-Type': APPLICATION_JSON },
+      body: JSON.stringify({
+        title: commitMessage,
+        source: {
+          branch: {
+            name: branch,
+          },
+        },
+        destination: {
+          branch: {
+            name: this.branch,
+          },
+        },
+        description: DEFAULT_PR_BODY,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        close_source_branch: true,
+      }),
+    });
+    // use comments for status labels
+    await this.addPullRequestComment(pullRequest, statusToLabel(status));
+  }
+
+  async getDifferences(branch: string) {
+    const rawDiff = await this.requestText({
+      url: `${this.repoURL}/diff/${branch}..${this.branch}`,
+      params: {
+        binary: false,
+      },
+    });
+    const diff = parse(rawDiff).map(d => ({ newPath: d.newPath.replace(/b\//, '') }));
+    return diff;
+  }
+
+  async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
+    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const unpublished = options.unpublished || false;
+    if (!unpublished) {
+      const defaultBranchSha = await this.branchCommitSha(this.branch);
+      await this.uploadFiles(files, {
+        commitMessage: options.commitMessage,
+        branch,
+        parentSha: defaultBranchSha,
+      });
+      await this.createPullRequest(
+        branch,
+        options.commitMessage,
+        options.status || this.initialWorkflowStatus,
+      );
+    } else {
+      // mark files for deletion
+      const diffs = await this.getDifferences(branch);
+      const toDelete: DeleteEntry[] = [];
+      for (const diff of diffs) {
+        if (!files.some(file => file.path === diff.newPath)) {
+          toDelete.push({ path: diff.newPath, delete: true });
+        }
+      }
+
+      await this.uploadFiles([...files, ...toDelete], {
+        commitMessage: options.commitMessage,
+        branch,
+      });
+    }
   }
 
   deleteFile = (path: string, message: string) => {
@@ -246,4 +465,185 @@ export default class API {
       `${this.repoURL}/src`,
     );
   };
+
+  generateContentKey(collectionName: string, slug: string) {
+    return generateContentKey(collectionName, slug);
+  }
+
+  contentKeyFromBranch(branch: string) {
+    return branch.substring(`${CMS_BRANCH_PREFIX}/`.length);
+  }
+
+  branchFromContentKey(contentKey: string) {
+    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
+  }
+
+  async isFileExists(path: string, branch: string) {
+    const fileExists = await this.readFile(path, null, { branch })
+      .then(() => true)
+      .catch(error => {
+        if (error instanceof APIError && error.status === 404) {
+          return false;
+        }
+        throw error;
+      });
+
+    return fileExists;
+  }
+
+  async getPullRequests(sourceBranch?: string) {
+    const sourceQuery = sourceBranch
+      ? `source.branch.name = "${sourceBranch}"`
+      : `source.branch.name ~ "${CMS_BRANCH_PREFIX}/"`;
+
+    const pullRequests: BitBucketPullRequests = await this.requestJSON({
+      url: `${this.repoURL}/pullrequests`,
+      params: {
+        pagelen: 50,
+        q: oneLine`
+        source.repository.full_name = "${this.repo}" 
+        AND state = "${BitBucketPullRequestState.OPEN}" 
+        AND destination.branch.name = "${this.branch}"
+        AND comment_count > 0
+        AND ${sourceQuery}
+        `,
+      },
+    });
+
+    const labels = await Promise.all(
+      pullRequests.values.map(pr => this.getPullRequestLabel(pr.id)),
+    );
+
+    return pullRequests.values.filter((_, index) => isCMSLabel(labels[index]));
+  }
+
+  async getBranchPullRequest(branch: string) {
+    const mergeRequests = await this.getPullRequests(branch);
+    if (mergeRequests.length <= 0) {
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+    }
+
+    return mergeRequests[0];
+  }
+
+  async retrieveMetadata(contentKey: string) {
+    const [collection, slug] = contentKey.split('/');
+    const branch = this.branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const diff = await this.getDifferences(branch);
+    const path = diff.find(d => d.newPath.includes(slug))?.newPath as string;
+    // TODO: get real file id
+    const mediaFiles = await Promise.all(
+      diff.filter(d => d.newPath !== path).map(d => ({ path: d.newPath, id: null })),
+    );
+    const label = await this.getPullRequestLabel(pullRequest.id);
+    const status = labelToStatus(label);
+    return { branch, collection, slug, path, status, mediaFiles };
+  }
+
+  async readUnpublishedBranchFile(contentKey: string) {
+    const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
+      contentKey,
+    );
+
+    const [fileData, isModification] = await Promise.all([
+      this.readFile(path, null, { branch }) as Promise<string>,
+      this.isFileExists(path, this.branch),
+    ]);
+
+    return {
+      slug,
+      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
+      fileData,
+      isModification,
+    };
+  }
+
+  async listUnpublishedBranches() {
+    console.log(
+      '%c Checking for Unpublished entries',
+      'line-height: 30px;text-align: center;font-weight: bold',
+    );
+
+    const mergeRequests = await this.getPullRequests();
+    const branches = mergeRequests.map(mr => mr.source.branch.name);
+
+    return branches;
+  }
+
+  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+
+    await this.addPullRequestComment(pullRequest, statusToLabel(newStatus));
+  }
+
+  async mergePullRequest(pullRequest: BitBucketPullRequest) {
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/pullrequests/${pullRequest.id}/merge`,
+      headers: { 'Content-Type': APPLICATION_JSON },
+      body: JSON.stringify({
+        message: MERGE_COMMIT_MESSAGE,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        close_source_branch: true,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        merge_strategy: this.mergeStrategy,
+      }),
+    });
+  }
+
+  async publishUnpublishedEntry(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+
+    await this.mergePullRequest(pullRequest);
+  }
+
+  async declinePullRequest(pullRequest: BitBucketPullRequest) {
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/pullrequests/${pullRequest.id}/decline`,
+    });
+  }
+
+  async deleteBranch(branch: string) {
+    await this.request({
+      method: 'DELETE',
+      url: `${this.repoURL}/refs/branches/${branch}`,
+    });
+  }
+
+  async deleteUnpublishedEntry(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+
+    await this.declinePullRequest(pullRequest);
+    await this.deleteBranch(branch);
+  }
+
+  async getStatuses(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+
+    const statuses: BitBucketPullRequestStatues = await this.requestJSON({
+      url: `${this.repoURL}/pullrequests/${pullRequest.id}/statuses`,
+      params: {
+        pagelen: 100,
+      },
+    });
+    return statuses.values.map(({ key, state, url }) => ({
+      context: key,
+      state:
+        state === BitBucketPullRequestStatusState.Successful
+          ? PreviewState.Success
+          : PreviewState.Other,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      target_url: url,
+    }));
+  }
 }

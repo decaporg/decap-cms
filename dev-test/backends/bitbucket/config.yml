@@ -1,5 +1,5 @@
 backend:
-  name: github
+  name: bitbucket
   branch: master
   repo: owner/repo
 

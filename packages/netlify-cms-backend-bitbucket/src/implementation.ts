@@ -15,7 +15,6 @@ import {
   PersistOptions,
   DisplayURL,
   Implementation,
-  EditorialWorkflowError,
   entriesByFolder,
   entriesByFiles,
   User,
@@ -24,22 +23,29 @@ import {
   getMediaAsBlob,
   Config,
   ImplementationFile,
+  unpublishedEntries,
+  UnpublishedEntryMediaFile,
+  runWithLock,
+  AsyncLock,
+  asyncLock,
+  getPreviewStatus,
 } from 'netlify-cms-lib-util';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
-import API from './API';
+import API, { API_NAME } from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
+  lock: AsyncLock;
   api: API | null;
   updateUserCredentials: (args: { token: string; refresh_token: string }) => Promise<null>;
   options: {
     proxied: boolean;
     API: API | null;
     updateUserCredentials: (args: { token: string; refresh_token: string }) => Promise<null>;
-    useWorkflow?: boolean;
+    initialWorkflowStatus: string;
   };
   repo: string;
   branch: string;
@@ -53,12 +59,15 @@ export default class BitbucketBackend implements Implementation {
   authenticator?: NetlifyAuthenticator;
   auth?: unknown;
   _mediaDisplayURLSem?: Semaphore;
+  squashMerges: boolean;
+  previewContext: string;
 
   constructor(config: Config, options = {}) {
     this.options = {
       proxied: false,
       API: null,
       updateUserCredentials: async () => null,
+      initialWorkflowStatus: '',
       ...options,
     };
 
@@ -80,6 +89,9 @@ export default class BitbucketBackend implements Implementation {
     this.siteId = config.site_id || '';
     this.token = '';
     this.mediaFolder = config.media_folder;
+    this.squashMerges = config.backend.squash_merges || false;
+    this.previewContext = config.backend.preview_context || '';
+    this.lock = asyncLock();
   }
 
   authComponent() {
@@ -92,6 +104,8 @@ export default class BitbucketBackend implements Implementation {
       requestFunction: this.apiRequestFunction,
       branch: this.branch,
       repo: this.repo,
+      squashMerges: this.squashMerges,
+      initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
   }
 
@@ -107,6 +121,8 @@ export default class BitbucketBackend implements Implementation {
       branch: this.branch,
       repo: this.repo,
       apiRoot: this.apiRoot,
+      squashMerges: this.squashMerges,
+      initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
 
     const isCollab = await this.api.hasWriteAccess().catch(error => {
@@ -282,7 +298,12 @@ export default class BitbucketBackend implements Implementation {
   }
 
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
-    await this.api!.persistFiles([entry, ...mediaFiles], options);
+    // persistEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.persistFiles(entry, mediaFiles, options),
+      'Failed to acquire persist entry lock',
+    );
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
@@ -290,7 +311,7 @@ export default class BitbucketBackend implements Implementation {
 
     const [id] = await Promise.all([
       getBlobSHA(fileObj),
-      this.api!.persistFiles([mediaFile], options),
+      this.api!.persistFiles(null, [mediaFile], options),
     ]);
 
     const url = URL.createObjectURL(fileObj);
@@ -323,30 +344,112 @@ export default class BitbucketBackend implements Implementation {
     );
   }
 
+  loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
+    const readFile = (
+      path: string,
+      id: string | null | undefined,
+      { parseText }: { parseText: boolean },
+    ) => this.api!.readFile(path, id, { branch, parseText });
+
+    return getMediaAsBlob(file.path, null, readFile).then(blob => {
+      const name = basename(file.path);
+      const fileObj = new File([blob], name);
+      return {
+        id: file.path,
+        displayURL: URL.createObjectURL(fileObj),
+        path: file.path,
+        name,
+        size: fileObj.size,
+        file: fileObj,
+      };
+    });
+  }
+
+  async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
+    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(branch, file)));
+
+    return mediaFiles;
+  }
+
   async unpublishedEntries() {
-    return [];
+    const listEntriesKeys = () =>
+      this.api!.listUnpublishedBranches().then(branches =>
+        branches.map(branch => this.api!.contentKeyFromBranch(branch)),
+      );
+
+    const readUnpublishedBranchFile = (contentKey: string) =>
+      this.api!.readUnpublishedBranchFile(contentKey);
+
+    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, API_NAME);
   }
 
-  async unpublishedEntry(collection: string, _slug: string) {
-    if (collection) {
-      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+  async unpublishedEntry(
+    collection: string,
+    slug: string,
+    {
+      loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
+        this.loadEntryMediaFiles(branch, files),
+    } = {},
+  ) {
+    const contentKey = this.api!.generateContentKey(collection, slug);
+    const data = await this.api!.readUnpublishedBranchFile(contentKey);
+    const mediaFiles = await loadEntryMediaFiles(
+      data.metaData.branch,
+      // TODO: fix this
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      data.metaData.objects.entry.mediaFiles,
+    );
+    return {
+      slug,
+      file: { path: data.metaData.objects.entry.path, id: null },
+      data: data.fileData as string,
+      metaData: data.metaData,
+      mediaFiles,
+      isModification: data.isModification,
+    };
+  }
+
+  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    // updateUnpublishedEntryStatus is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus),
+      'Failed to acquire update entry status lock',
+    );
+  }
+
+  async deleteUnpublishedEntry(collection: string, slug: string) {
+    // deleteUnpublishedEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.deleteUnpublishedEntry(collection, slug),
+      'Failed to acquire delete entry lock',
+    );
+  }
+
+  async publishUnpublishedEntry(collection: string, slug: string) {
+    // publishUnpublishedEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.publishUnpublishedEntry(collection, slug),
+      'Failed to acquire publish entry lock',
+    );
+  }
+
+  async getDeployPreview(collection: string, slug: string) {
+    try {
+      const statuses = await this.api!.getStatuses(collection, slug);
+      const deployStatus = getPreviewStatus(statuses, this.previewContext);
+
+      if (deployStatus) {
+        const { target_url: url, state } = deployStatus;
+        return { url, status: state };
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
     }
-    return { data: '', file: { path: '', id: null } };
-  }
-
-  async updateUnpublishedEntryStatus(_collection: string, _slug: string, _newStatus: string) {
-    return;
-  }
-
-  async publishUnpublishedEntry(_collection: string, _slug: string) {
-    return;
-  }
-
-  async deleteUnpublishedEntry(_collection: string, _slug: string) {
-    return;
-  }
-
-  async getDeployPreview(_collection: string, _slug: string) {
-    return null;
   }
 }

@@ -38,7 +38,6 @@ export default class GitLab implements Implementation {
   options: {
     proxied: boolean;
     API: API | null;
-    useWorkflow?: boolean;
     initialWorkflowStatus: string;
   };
   repo: string;
@@ -354,16 +353,7 @@ export default class GitLab implements Implementation {
   async getDeployPreview(collection: string, slug: string) {
     try {
       const statuses = await this.api!.getStatuses(collection, slug);
-      const deployStatus = getPreviewStatus(
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        statuses.map(({ name, status, target_url }) => ({
-          context: name,
-          state: status,
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          target_url,
-        })),
-        this.previewContext,
-      );
+      const deployStatus = getPreviewStatus(statuses, this.previewContext);
 
       if (deployStatus) {
         const { target_url: url, state } = deployStatus;

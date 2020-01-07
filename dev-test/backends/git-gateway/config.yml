@@ -12,7 +12,6 @@ collections:
     folder: content/posts
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    preview_path: 'posts/{{slug}}/index.html'
     fields:
       - label: Template
         name: template
@@ -46,7 +45,6 @@ collections:
     folder: content/pages
     create: true
     slug: '{{slug}}'
-    preview_path: 'pages/{{slug}}/index.html'
     fields:
       - label: Template
         name: template

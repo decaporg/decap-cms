@@ -46,12 +46,21 @@ export const isPreviewContext = (context: string, previewContext: string) => {
   return PREVIEW_CONTEXT_KEYWORDS.some(keyword => context.includes(keyword));
 };
 
+export enum PreviewState {
+  Other = 'other',
+  Success = 'success',
+}
+
 /**
  * Retrieve a deploy preview URL from an array of statuses. By default, a
  * matching status is inferred via `isPreviewContext`.
  */
 export const getPreviewStatus = (
-  statuses: { context: string; target_url: string; state: string }[],
+  statuses: {
+    context: string;
+    target_url: string;
+    state: PreviewState;
+  }[],
   previewContext: string,
 ) => {
   return statuses.find(({ context }) => {

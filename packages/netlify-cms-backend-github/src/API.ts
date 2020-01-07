@@ -18,6 +18,7 @@ import {
   generateContentKey,
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
+  PreviewState,
 } from 'netlify-cms-lib-util';
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
@@ -34,7 +35,7 @@ import {
   ReposCompareCommitsResponseBaseCommit as GitHubCompareBaseCommit,
   GitCreateCommitResponseAuthor as GitHubAuthor,
   GitCreateCommitResponseCommitter as GitHubCommiter,
-  ReposListStatusesForRefResponseItem as GitHubCommitStatus,
+  ReposListStatusesForRefResponseItem,
 } from '@octokit/rest';
 
 const CURRENT_METADATA_VERSION = '1';
@@ -74,6 +75,17 @@ type GitHubCompareCommits = GitHubCompareCommit[];
 type GitHubCompareFile = ReposCompareCommitsResponseFilesItem & { previous_filename?: string };
 
 type GitHubCompareFiles = GitHubCompareFile[];
+
+enum GitHubCommitStatusState {
+  Error = 'error',
+  Failure = 'failure',
+  Pending = 'pending',
+  Success = 'success',
+}
+
+type GitHubCommitStatus = ReposListStatusesForRefResponseItem & {
+  state: GitHubCommitStatusState;
+};
 
 export interface PR {
   number: number;
@@ -676,7 +688,13 @@ export default class API {
       const resp: { statuses: GitHubCommitStatus[] } = await this.request(
         `${this.originRepoURL}/commits/${sha}/status`,
       );
-      return resp.statuses;
+      return resp.statuses.map(s => ({
+        context: s.context,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        target_url: s.target_url,
+        state:
+          s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
+      }));
     } catch (err) {
       if (err && err.message && err.message === 'Ref not found') {
         return [];
