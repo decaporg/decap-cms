@@ -31,6 +31,9 @@ function login(user) {
 
 function assertNotification(message) {
   cy.get('.notif__container').within(() => {
+    cy.contains(message);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(100);
     cy.contains(message).invoke('hide');
   });
 }

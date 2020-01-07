@@ -1,5 +1,5 @@
-const { Gitlab } = require('gitlab');
 const fs = require('fs-extra');
+const fetch = require('node-fetch');
 const path = require('path');
 const { updateConfig } = require('../utils/config');
 const { escapeRegExp } = require('../utils/regexp');
@@ -10,9 +10,9 @@ const {
 } = require('./common');
 const { retrieveRecordedExpectations, resetMockServerState } = require('../utils/mock-server');
 
-const GITLAB_REPO_OWNER_SANITIZED_VALUE = 'owner';
-const GITLAB_REPO_NAME_SANITIZED_VALUE = 'repo';
-const GITLAB_REPO_TOKEN_SANITIZED_VALUE = 'fakeToken';
+const BITBUCKET_REPO_OWNER_SANITIZED_VALUE = 'owner';
+const BITBUCKET_REPO_NAME_SANITIZED_VALUE = 'repo';
+const BITBUCKET_REPO_TOKEN_SANITIZED_VALUE = 'fakeToken';
 
 const FAKE_OWNER_USER = {
   id: 1,
@@ -23,30 +23,64 @@ const FAKE_OWNER_USER = {
   login: 'owner',
 };
 
-function getGitLabClient(token) {
-  const client = new Gitlab({
-    token,
-  });
-
-  return client;
-}
-
-function getEnvs() {
+async function getEnvs() {
   const {
-    GITLAB_REPO_OWNER: owner,
-    GITLAB_REPO_NAME: repo,
-    GITLAB_REPO_TOKEN: token,
+    BITBUCKET_REPO_OWNER: owner,
+    BITBUCKET_REPO_NAME: repo,
+    BITBUCKET_OUATH_CONSUMER_KEY: consumerKey,
+    BITBUCKET_OUATH_CONSUMER_SECRET: consumerSecret,
   } = process.env;
-  if (!owner || !repo || !token) {
+  if (!owner || !repo || !consumerKey || !consumerSecret) {
     throw new Error(
-      'Please set GITLAB_REPO_OWNER, GITLAB_REPO_NAME, GITLAB_REPO_TOKEN environment variables',
+      'Please set BITBUCKET_REPO_OWNER, BITBUCKET_REPO_NAME, BITBUCKET_OUATH_CONSUMER_KEY, BITBUCKET_OUATH_CONSUMER_SECRET environment variables',
     );
   }
+
+  const params = new URLSearchParams();
+  params.append('grant_type', 'client_credentials');
+
+  const {
+    access_token: token,
+  } = await fetch(
+    `https://${consumerKey}:${consumerSecret}@bitbucket.org/site/oauth2/access_token`,
+    { method: 'POST', body: params },
+  ).then(r => r.json());
+
   return { owner, repo, token };
 }
 
+const API_URL = 'https://api.bitbucket.org/2.0/';
+
+function get(token, path) {
+  return fetch(`${API_URL}${path}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(r => r.json());
+}
+
+function post(token, path, body) {
+  return fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    ...(body ? { body } : {}),
+    headers: {
+      ...(body ? { 'Content-Type': 'application/json' } : {}),
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+function del(token, path) {
+  return fetch(`${API_URL}${path}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 async function prepareTestGitLabRepo() {
-  const { owner, repo, token } = getEnvs();
+  const { owner, repo, token } = await getEnvs();
 
   // postfix a random string to avoid collisions
   const postfix = Math.random()
@@ -54,18 +88,14 @@ async function prepareTestGitLabRepo() {
     .substring(2);
   const testRepoName = `${repo}-${Date.now()}-${postfix}`;
 
-  const client = getGitLabClient(token);
-
   console.log('Creating repository', testRepoName);
-  await client.Projects.create({
-    name: testRepoName,
-  });
+  await post(token, `repositories/${owner}/${testRepoName}`, JSON.stringify({ scm: 'git' }));
 
   const tempDir = path.join('.temp', testRepoName);
   await fs.remove(tempDir);
   let git = getGitClient();
 
-  const repoUrl = `git@gitlab.com:${owner}/${repo}.git`;
+  const repoUrl = `git@bitbucket.org:${owner}/${repo}.git`;
 
   console.log('Cloning repository', repoUrl);
   await git.clone(repoUrl, tempDir);
@@ -74,62 +104,49 @@ async function prepareTestGitLabRepo() {
   console.log('Pushing to new repository', testRepoName);
 
   await git.removeRemote('origin');
-  await git.addRemote('origin', `https://oauth2:${token}@gitlab.com/${owner}/${testRepoName}`);
+  await git.addRemote(
+    'origin',
+    `https://x-token-auth:${token}@bitbucket.org/${owner}/${testRepoName}`,
+  );
   await git.push(['-u', 'origin', 'master']);
-
-  await client.ProtectedBranches.unprotect(`${owner}/${testRepoName}`, 'master');
 
   return { owner, repo: testRepoName, tempDir };
 }
 
-async function getAuthenticatedUser(token) {
-  const client = getGitLabClient(token);
-  const user = await client.Users.current();
-  return { ...user, token, backendName: 'gitlab' };
-}
-
 async function getUser() {
-  const { token } = getEnvs();
-  return getAuthenticatedUser(token);
+  const { token } = await getEnvs();
+  const user = await get(token, 'user');
+  return { ...user, token, backendName: 'bitbucket' };
 }
 
 async function deleteRepositories({ owner, repo, tempDir }) {
-  const { token } = getEnvs();
-
-  const errorHandler = e => {
-    if (e.status !== 404) {
-      throw e;
-    }
-  };
+  const { token } = await getEnvs();
 
   console.log('Deleting repository', `${owner}/${repo}`);
   await fs.remove(tempDir);
 
-  let client = getGitLabClient(token);
-  await client.Projects.remove(`${owner}/${repo}`).catch(errorHandler);
+  await del(token, `repositories/${owner}/${repo}`);
 }
 
 async function resetOriginRepo({ owner, repo, tempDir }) {
   console.log('Resetting origin repo:', `${owner}/${repo}`);
 
-  const { token } = getEnvs();
-  const client = getGitLabClient(token);
+  const { token } = await getEnvs();
 
-  const projectId = `${owner}/${repo}`;
-  const mergeRequests = await client.MergeRequests.all({
-    projectId,
-    state: 'opened',
-  });
-  const ids = mergeRequests.map(mr => mr.iid);
-  console.log('Closing merge requests:', ids);
+  const pullRequests = await get(token, `repositories/${owner}/${repo}/pullrequests`);
+  const ids = pullRequests.values.map(mr => mr.id);
+
+  console.log('Closing pull requests:', ids);
   await Promise.all(
-    ids.map(id => client.MergeRequests.edit(projectId, id, { state_event: 'close' })),
+    ids.map(id => post(token, `repositories/${owner}/${repo}/pullrequests/${id}/decline`)),
   );
-  const branches = await client.Branches.all(projectId);
-  const toDelete = branches.filter(b => b.name !== 'master').map(b => b.name);
+  const branches = await get(token, `repositories/${owner}/${repo}/refs/branches`);
+  const toDelete = branches.values.filter(b => b.name !== 'master').map(b => b.name);
 
   console.log('Deleting branches', toDelete);
-  await Promise.all(toDelete.map(branch => client.Branches.remove(projectId, branch)));
+  await Promise.all(
+    toDelete.map(branch => del(token, `repositories/${owner}/${repo}/refs/branches/${branch}`)),
+  );
 
   console.log('Resetting master');
   const git = getGitClient(tempDir);
@@ -141,7 +158,7 @@ async function resetRepositories({ owner, repo, tempDir }) {
   await resetOriginRepo({ owner, repo, tempDir });
 }
 
-async function setupGitLab(options) {
+async function setupBitBucket(options) {
   if (process.env.RECORD_FIXTURES) {
     console.log('Running tests in "record" mode - live data with be used!');
     const [user, repoData] = await Promise.all([getUser(), prepareTestGitLabRepo()]);
@@ -161,21 +178,25 @@ async function setupGitLab(options) {
       config.backend = {
         ...config.backend,
         ...options,
-        repo: `${GITLAB_REPO_OWNER_SANITIZED_VALUE}/${GITLAB_REPO_NAME_SANITIZED_VALUE}`,
+        repo: `${BITBUCKET_REPO_OWNER_SANITIZED_VALUE}/${BITBUCKET_REPO_NAME_SANITIZED_VALUE}`,
       };
     });
 
     return {
-      owner: GITLAB_REPO_OWNER_SANITIZED_VALUE,
-      repo: GITLAB_REPO_NAME_SANITIZED_VALUE,
-      user: { ...FAKE_OWNER_USER, token: GITLAB_REPO_TOKEN_SANITIZED_VALUE, backendName: 'gitlab' },
+      owner: BITBUCKET_REPO_OWNER_SANITIZED_VALUE,
+      repo: BITBUCKET_REPO_NAME_SANITIZED_VALUE,
+      user: {
+        ...FAKE_OWNER_USER,
+        token: BITBUCKET_REPO_TOKEN_SANITIZED_VALUE,
+        backendName: 'bitbucket',
+      },
 
       mockResponses: true,
     };
   }
 }
 
-async function teardownGitLab(taskData) {
+async function teardownBitBucket(taskData) {
   if (process.env.RECORD_FIXTURES) {
     await deleteRepositories(taskData);
   }
@@ -183,7 +204,7 @@ async function teardownGitLab(taskData) {
   return null;
 }
 
-async function setupGitLabTest(taskData) {
+async function setupBitBucketTest(taskData) {
   if (process.env.RECORD_FIXTURES) {
     await resetRepositories(taskData);
     await resetMockServerState();
@@ -194,9 +215,9 @@ async function setupGitLabTest(taskData) {
 
 const sanitizeString = (str, { owner, repo, token, ownerName }) => {
   let replaced = str
-    .replace(new RegExp(escapeRegExp(owner), 'g'), GITLAB_REPO_OWNER_SANITIZED_VALUE)
-    .replace(new RegExp(escapeRegExp(repo), 'g'), GITLAB_REPO_NAME_SANITIZED_VALUE)
-    .replace(new RegExp(escapeRegExp(token), 'g'), GITLAB_REPO_TOKEN_SANITIZED_VALUE)
+    .replace(new RegExp(escapeRegExp(owner), 'g'), BITBUCKET_REPO_OWNER_SANITIZED_VALUE)
+    .replace(new RegExp(escapeRegExp(repo), 'g'), BITBUCKET_REPO_NAME_SANITIZED_VALUE)
+    .replace(new RegExp(escapeRegExp(token), 'g'), BITBUCKET_REPO_TOKEN_SANITIZED_VALUE)
     .replace(
       new RegExp('https://secure.gravatar.+?/u/.+?v=\\d', 'g'),
       `${FAKE_OWNER_USER.avatar_url}`,
@@ -224,6 +245,8 @@ const transformRecordedData = (expectation, toSanitize) => {
       } else {
         body = httpRequest.body.json;
       }
+    } else if (httpRequest.body && httpRequest.body.type === 'STRING' && httpRequest.body.string) {
+      body = httpRequest.body.string;
     }
     return body;
   };
@@ -232,6 +255,15 @@ const transformRecordedData = (expectation, toSanitize) => {
     let responseBody = null;
     if (httpResponse.body && httpResponse.body.string) {
       responseBody = httpResponse.body.string;
+    } else if (
+      httpResponse.body &&
+      httpResponse.body.type === 'BINARY' &&
+      httpResponse.body.base64Bytes
+    ) {
+      responseBody = {
+        encoding: 'base64',
+        content: httpResponse.body.base64Bytes,
+      };
     } else if (httpResponse.body) {
       responseBody = httpResponse.body;
     }
@@ -239,8 +271,8 @@ const transformRecordedData = (expectation, toSanitize) => {
     // replace recorded user with fake one
     if (
       responseBody &&
-      httpRequest.path === '/api/v4/user' &&
-      httpRequest.headers.Host.includes('gitlab.com')
+      httpRequest.path === '/2.0/user' &&
+      httpRequest.headers.Host.includes('api.bitbucket.org')
     ) {
       responseBody = JSON.stringify(FAKE_OWNER_USER);
     }
@@ -257,7 +289,7 @@ const transformRecordedData = (expectation, toSanitize) => {
   return cypressRouteOptions;
 };
 
-async function teardownGitLabTest(taskData) {
+async function teardownBitBucketTest(taskData) {
   if (process.env.RECORD_FIXTURES) {
     await resetRepositories(taskData);
 
@@ -266,7 +298,7 @@ async function teardownGitLabTest(taskData) {
 
       console.log('Persisting recorded data for test:', path.basename(filename));
 
-      const { owner, token } = getEnvs();
+      const { owner, token } = await getEnvs();
 
       const expectations = await retrieveRecordedExpectations();
 
@@ -295,8 +327,8 @@ async function teardownGitLabTest(taskData) {
 }
 
 module.exports = {
-  setupGitLab,
-  teardownGitLab,
-  setupGitLabTest,
-  teardownGitLabTest,
+  setupBitBucket,
+  teardownBitBucket,
+  setupBitBucketTest,
+  teardownBitBucketTest,
 };

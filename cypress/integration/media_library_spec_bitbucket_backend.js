@@ -1,10 +1,10 @@
-import fixture from './common/editorial_workflow';
+import fixture from './common/media_library';
+import { entry1 } from './common/entries';
 import * as specUtils from './common/spec_utils';
-import { entry1, entry2, entry3 } from './common/entries';
 
-const backend = 'gitlab';
+const backend = 'bitbucket';
 
-describe('GitLab Backend Editorial Workflow', () => {
+describe('BitBucket Backend Media Library - REST API', () => {
   let taskResult = { data: {} };
 
   before(() => {
@@ -23,8 +23,5 @@ describe('GitLab Backend Editorial Workflow', () => {
     specUtils.afterEach(taskResult, backend);
   });
 
-  fixture({
-    entries: [entry1, entry2, entry3],
-    getUser: () => taskResult.data.user,
-  });
+  fixture({ entries: [entry1], getUser: () => taskResult.data.user });
 });
