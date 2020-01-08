@@ -1,4 +1,15 @@
 const tr = {
+  auth: {
+    login: 'Giriş',
+    loggingIn: 'Giriş yapılıyor..',
+    loginWithNetlifyIdentity: 'Netlify Identity ile Giriş',
+    errors: {
+      email: 'E-postanızı girdiğinizden emin olun.',
+      password: 'Şifrenizi lütfen giriniz.',
+      identitySettings:
+        'Identity ayarlarına erişilemiyor. Git-gateway arka ucunu kullanırken Identity servisi ve Git Gateway etkin olduğundan emin olun.',
+    },
+  },
   app: {
     header: {
       content: 'İçerikler',
@@ -45,15 +56,13 @@ const tr = {
     },
     editor: {
       onLeavePage: 'Bu sayfadan ayrılmak istediğinize emin misiniz?',
-      onUpdatingWithUnsavedChanges:
-        'Kaydedilmemiş değişiklikleriniz var, lütfen durumu güncellemeden önce kaydedin.',
+      onUpdatingWithUnsavedChanges: 'Kaydedilmemiş değişiklikleriniz var, lütfen durumu güncellemeden önce kaydedin.',
       onPublishingNotReady: 'Lütfen yayınlamadan önce durumu "Hazır" olarak güncelleyin.',
       onPublishingWithUnsavedChanges:
         'Kaydedilmemiş değişiklikleriniz var, lütfen yayınlamadan önce kaydedin.',
       onPublishing: 'Bu girdi yayınlamak istediğinize emin misiniz?',
       onUnpublishing: 'Bu girdi yayından kaldırmak istediğinizden emin misiniz?',
-      onDeleteWithUnsavedChanges:
-        'Bu oturumda kaydedilmiş değişikliklerin yanı sıra geçerli oturumdaki kaydedilmemiş değişikliklerinizi silmek istediğinize emin misiniz?',
+      onDeleteWithUnsavedChanges: 'Bu oturumda kaydedilmiş değişikliklerin yanı sıra geçerli oturumdaki kaydedilmemiş değişikliklerinizi silmek istediğinize emin misiniz?',
       onDeletePublishedEntry: 'Bu yayınlanmış girdiyi silmek istediğinize emin misiniz?',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         'Bu girdide yayınlanmamış tüm değişiklikleri ve geçerli oturumdaki kaydedilmemiş değişikliklerinizi siler. Hala silmek istiyor musun?',
@@ -67,8 +76,10 @@ const tr = {
       publish: 'Yayınla',
       published: 'Yayınlanan',
       unpublish: 'Yayından Kaldır',
+      duplicate: 'Yayını Kopyala',
       unpublishing: 'Yayından kaldırılıyor...',
       publishAndCreateNew: 'Yayınla ve yeni oluştur',
+      publishAndDuplicate: 'Yayınla ve kopya oluştur',
       deleteUnpublishedChanges: 'Yayımlanmamış değişiklikleri sil',
       deleteUnpublishedEntry: 'Yayımlanmamış girdiyi sil',
       deletePublishedEntry: 'Yayınlanan girdiyi sil',
@@ -142,8 +153,7 @@ const tr = {
       onFailToPersist: 'Girdi devam ettirilemedi: %{details}',
       onFailToDelete: 'Girdi silinemedi: %{details}',
       onFailToUpdateStatus: 'Durum güncellenemedi: %{details}',
-      missingRequiredField:
-        'Hata! Gerekli bir alanı kaçırdınız. Lütfen kaydetmeden önce tamamlayın.',
+      missingRequiredField: 'Hata! Gerekli bir alanı kaçırdınız. Lütfen kaydetmeden önce tamamlayın.',
       entrySaved: 'Girdi kaydedildi',
       entryPublished: 'Girdi yayınlandı',
       entryUnpublished: 'Girdi yayınlanmamış',
@@ -156,11 +166,11 @@ const tr = {
   },
   workflow: {
     workflow: {
-      loading: 'Editoryal İş Akışı Girdileri Yükleniyor',
+      loading: 'İş Akışı Girdileri Yükleniyor',
       workflowHeading: 'Editoryal İş Akışı',
       newPost: 'Yeni Mesaj',
       description:
-        '%{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayına hazır. |||| %{smart_count} girdileri incelemeyi bekliyor, %{readyCount} canlı yayınlanmaya hazır. ',
+        '%{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayına hazır. |||| %{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayınlanmaya hazır. ',
     },
     workflowCard: {
       lastChange: '%{date} tarafından %{author}',
