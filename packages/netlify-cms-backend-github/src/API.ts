@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 import semaphore, { Semaphore } from 'semaphore';
-import { flow, get, initial, last, partial, result, differenceBy, trimStart } from 'lodash';
+import { flow, get, initial, last, partial, result, differenceBy, trimStart, trim } from 'lodash';
 import { map, filter } from 'lodash/fp';
 import {
   getAllResponses,
@@ -511,7 +511,7 @@ export default class API {
   }
 
   async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
-    const folder = trimStart(path, '/');
+    const folder = trim(path, '/');
     return this.request(`${repoURL}/git/trees/${branch}:${folder}`, {
       // GitHub API supports recursive=1 for getting the entire recursive tree
       // or omitting it to get the non-recursive tree
