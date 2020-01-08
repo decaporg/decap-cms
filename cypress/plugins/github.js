@@ -302,24 +302,20 @@ const sanitizeString = (
 const transformRecordedData = (expectation, toSanitize) => {
   const requestBodySanitizer = httpRequest => {
     let body;
-    if (httpRequest.body && httpRequest.body.string) {
-      try {
-        const bodyObject = JSON.parse(httpRequest.body.string);
-        if (bodyObject.encoding === 'base64') {
-          // sanitize encoded data
-          const decodedBody = Buffer.from(bodyObject.content, 'base64').toString('binary');
-          const sanitizedContent = sanitizeString(decodedBody, toSanitize);
-          const sanitizedEncodedContent = Buffer.from(sanitizedContent, 'binary').toString(
-            'base64',
-          );
-          bodyObject.content = sanitizedEncodedContent;
-          body = JSON.stringify(bodyObject);
-        } else {
-          body = httpRequest.body.string;
-        }
-      } catch (e) {
-        body = httpRequest.body.string;
+    if (httpRequest.body && httpRequest.body.type === 'JSON' && httpRequest.body.json) {
+      const bodyObject = JSON.parse(httpRequest.body.json);
+      if (bodyObject.encoding === 'base64') {
+        // sanitize encoded data
+        const decodedBody = Buffer.from(bodyObject.content, 'base64').toString('binary');
+        const sanitizedContent = sanitizeString(decodedBody, toSanitize);
+        const sanitizedEncodedContent = Buffer.from(sanitizedContent, 'binary').toString('base64');
+        bodyObject.content = sanitizedEncodedContent;
+        body = JSON.stringify(bodyObject);
+      } else {
+        body = httpRequest.body.json;
       }
+    } else if (httpRequest.body && httpRequest.body.type === 'STRING' && httpRequest.body.string) {
+      body = httpRequest.body.string;
     }
     return body;
   };
@@ -338,7 +334,7 @@ const transformRecordedData = (expectation, toSanitize) => {
         content: httpResponse.body.base64Bytes,
       };
     } else if (httpResponse.body) {
-      console.log('Unsupported response body:', JSON.stringify(httpResponse.body));
+      responseBody = httpResponse.body;
     }
 
     // replace recorded user with fake one
@@ -354,6 +350,7 @@ const transformRecordedData = (expectation, toSanitize) => {
         responseBody = JSON.stringify(FAKE_OWNER_USER);
       }
     }
+    return responseBody;
   };
 
   const cypressRouteOptions = transformData(

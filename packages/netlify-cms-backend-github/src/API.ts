@@ -26,7 +26,6 @@ import {
   ReposGetBranchResponse as GitHubBranch,
   GitGetBlobResponse as GitHubBlob,
   GitCreateTreeResponse as GitHubTree,
-  GitCreateTreeResponseTreeItem as GitHubTreeItem,
   GitCreateTreeParamsTree,
   GitCreateCommitResponse as GitHubCommit,
   ReposCompareCommitsResponseCommitsItem as GitHubCompareCommit,
@@ -39,6 +38,8 @@ import {
 } from '@octokit/rest';
 
 const CURRENT_METADATA_VERSION = '1';
+
+export const API_NAME = 'GitHub';
 
 export interface FetchError extends Error {
   status: number;
@@ -246,7 +247,7 @@ export default class API {
   }
 
   handleRequestError(error: FetchError, responseStatus: number) {
-    throw new APIError(error.message, responseStatus, 'GitHub');
+    throw new APIError(error.message, responseStatus, API_NAME);
   }
 
   async request(
@@ -278,7 +279,7 @@ export default class API {
 
   generateContentKey(collectionName: string, slug: string) {
     if (!this.useOpenAuthoring) {
-      generateContentKey(collectionName, slug);
+      return generateContentKey(collectionName, slug);
     }
 
     return `${this.repo}/${collectionName}/${slug}`;
@@ -745,8 +746,11 @@ export default class API {
     const fileDataURL = `${repoURL}/git/trees/${branch}:${fileDataPath}`;
 
     return this.request(fileDataURL, { cache: 'no-store' }).then((resp: GitHubTree) => {
-      const { sha } = resp.tree.find(file => file.path === filename) as GitHubTreeItem;
-      return sha;
+      const file = resp.tree.find(file => file.path === filename);
+      if (file) {
+        return file.sha;
+      }
+      throw new APIError('Not Found', 404, API_NAME);
     });
   }
 

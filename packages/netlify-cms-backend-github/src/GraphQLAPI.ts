@@ -15,7 +15,7 @@ import {
   DEFAULT_PR_BODY,
 } from 'netlify-cms-lib-util';
 import introspectionQueryResultData from './fragmentTypes';
-import API, { Config, BlobArgs, PR } from './API';
+import API, { Config, BlobArgs, PR, API_NAME } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
 import { GraphQLError } from 'graphql';
@@ -639,6 +639,9 @@ export default class GraphQLAPI extends API {
       variables: { owner, name, expression: `${branch}:${path}` },
     });
 
-    return data.repository.file.sha;
+    if (data.repository.file) {
+      return data.repository.file.sha;
+    }
+    throw new APIError('Not Found', 404, API_NAME);
   }
 }

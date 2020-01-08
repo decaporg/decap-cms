@@ -232,6 +232,15 @@ const transformRecordedData = (expectation, toSanitize) => {
     let responseBody = null;
     if (httpResponse.body && httpResponse.body.string) {
       responseBody = httpResponse.body.string;
+    } else if (
+      httpResponse.body &&
+      httpResponse.body.type === 'BINARY' &&
+      httpResponse.body.base64Bytes
+    ) {
+      responseBody = {
+        encoding: 'base64',
+        content: httpResponse.body.base64Bytes,
+      };
     } else if (httpResponse.body) {
       responseBody = httpResponse.body;
     }

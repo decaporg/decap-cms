@@ -15,12 +15,14 @@ const BITBUCKET_REPO_NAME_SANITIZED_VALUE = 'repo';
 const BITBUCKET_REPO_TOKEN_SANITIZED_VALUE = 'fakeToken';
 
 const FAKE_OWNER_USER = {
-  id: 1,
   name: 'owner',
-  username: 'owner',
-  avatar_url: 'https://avatars1.githubusercontent.com/u/7892489?v=4',
-  email: 'owner@email.com',
-  login: 'owner',
+  display_name: 'owner',
+  links: {
+    avatar: {
+      href: 'https://avatars1.githubusercontent.com/u/7892489?v=4',
+    },
+  },
+  nickname: 'owner',
 };
 
 async function getEnvs() {
@@ -220,11 +222,14 @@ const sanitizeString = (str, { owner, repo, token, ownerName }) => {
     .replace(new RegExp(escapeRegExp(token), 'g'), BITBUCKET_REPO_TOKEN_SANITIZED_VALUE)
     .replace(
       new RegExp('https://secure.gravatar.+?/u/.+?v=\\d', 'g'),
-      `${FAKE_OWNER_USER.avatar_url}`,
+      `${FAKE_OWNER_USER.links.avatar.href}`,
     );
 
   if (ownerName) {
-    replaced = replaced.replace(new RegExp(escapeRegExp(ownerName), 'g'), FAKE_OWNER_USER.name);
+    replaced = replaced.replace(
+      new RegExp(escapeRegExp(ownerName), 'g'),
+      FAKE_OWNER_USER.display_name,
+    );
   }
 
   return replaced;

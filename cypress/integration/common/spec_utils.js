@@ -43,7 +43,10 @@ export const afterEach = (taskResult, backend) => {
     testName,
   });
 
-  if (Cypress.mocha.getRunner().suite.ctx.currentTest.state === 'failed') {
+  if (
+    !process.env.RECORD_FIXTURES &&
+    Cypress.mocha.getRunner().suite.ctx.currentTest.state === 'failed'
+  ) {
     Cypress.runner.stop();
   }
 };
