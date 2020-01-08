@@ -1,4 +1,15 @@
 const tr = {
+  auth: {
+    login: 'Giriş',
+    loggingIn: 'Giriş yapılıyor..',
+    loginWithNetlifyIdentity: 'Netlify Identity ile Giriş',
+    errors: {
+      email: 'E-postanızı girdiğinizden emin olun.',
+      password: 'Şifrenizi lütfen giriniz.',
+      identitySettings:
+        'Identity ayarlarına erişilemiyor. Git-gateway arka ucunu kullanırken Identity servisi ve Git Gateway etkin olduğundan emin olun.',
+    },
+  },
   app: {
     header: {
       content: 'İçerikler',
@@ -67,8 +78,10 @@ const tr = {
       publish: 'Yayınla',
       published: 'Yayınlanan',
       unpublish: 'Yayından Kaldır',
+      duplicate: 'Yayını Kopyala',
       unpublishing: 'Yayından kaldırılıyor...',
       publishAndCreateNew: 'Yayınla ve yeni oluştur',
+      publishAndDuplicate: 'Yayınla ve kopya oluştur',
       deleteUnpublishedChanges: 'Yayımlanmamış değişiklikleri sil',
       deleteUnpublishedEntry: 'Yayımlanmamış girdiyi sil',
       deletePublishedEntry: 'Yayınlanan girdiyi sil',
@@ -156,11 +169,11 @@ const tr = {
   },
   workflow: {
     workflow: {
-      loading: 'Editoryal İş Akışı Girdileri Yükleniyor',
+      loading: 'İş Akışı Girdileri Yükleniyor',
       workflowHeading: 'Editoryal İş Akışı',
       newPost: 'Yeni Mesaj',
       description:
-        '%{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayına hazır. |||| %{smart_count} girdileri incelemeyi bekliyor, %{readyCount} canlı yayınlanmaya hazır. ',
+        '%{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayına hazır. |||| %{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayınlanmaya hazır. ',
     },
     workflowCard: {
       lastChange: '%{date} tarafından %{author}',
