@@ -464,7 +464,7 @@ export async function waitForMediaLibraryToLoad(
   dispatch: ThunkDispatch<State, {}, AnyAction>,
   state: State,
 ) {
-  if (state.mediaLibrary.get('isLoading') !== false) {
+  if (state.mediaLibrary.get('isLoading') !== false && !state.mediaLibrary.get('externalLibrary')) {
     await waitUntilWithTimeout(dispatch, resolve => ({
       predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS || type === MEDIA_LOAD_FAILURE,
       run: () => resolve(),
