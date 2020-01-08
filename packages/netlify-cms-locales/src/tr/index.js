@@ -56,13 +56,15 @@ const tr = {
     },
     editor: {
       onLeavePage: 'Bu sayfadan ayrılmak istediğinize emin misiniz?',
-      onUpdatingWithUnsavedChanges: 'Kaydedilmemiş değişiklikleriniz var, lütfen durumu güncellemeden önce kaydedin.',
+      onUpdatingWithUnsavedChanges:
+        'Kaydedilmemiş değişiklikleriniz var, lütfen durumu güncellemeden önce kaydedin.',
       onPublishingNotReady: 'Lütfen yayınlamadan önce durumu "Hazır" olarak güncelleyin.',
       onPublishingWithUnsavedChanges:
         'Kaydedilmemiş değişiklikleriniz var, lütfen yayınlamadan önce kaydedin.',
       onPublishing: 'Bu girdi yayınlamak istediğinize emin misiniz?',
       onUnpublishing: 'Bu girdi yayından kaldırmak istediğinizden emin misiniz?',
-      onDeleteWithUnsavedChanges: 'Bu oturumda kaydedilmiş değişikliklerin yanı sıra geçerli oturumdaki kaydedilmemiş değişikliklerinizi silmek istediğinize emin misiniz?',
+      onDeleteWithUnsavedChanges:
+        'Bu oturumda kaydedilmiş değişikliklerin yanı sıra geçerli oturumdaki kaydedilmemiş değişikliklerinizi silmek istediğinize emin misiniz?',
       onDeletePublishedEntry: 'Bu yayınlanmış girdiyi silmek istediğinize emin misiniz?',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         'Bu girdide yayınlanmamış tüm değişiklikleri ve geçerli oturumdaki kaydedilmemiş değişikliklerinizi siler. Hala silmek istiyor musun?',
@@ -153,7 +155,8 @@ const tr = {
       onFailToPersist: 'Girdi devam ettirilemedi: %{details}',
       onFailToDelete: 'Girdi silinemedi: %{details}',
       onFailToUpdateStatus: 'Durum güncellenemedi: %{details}',
-      missingRequiredField: 'Hata! Gerekli bir alanı kaçırdınız. Lütfen kaydetmeden önce tamamlayın.',
+      missingRequiredField:
+        'Hata! Gerekli bir alanı kaçırdınız. Lütfen kaydetmeden önce tamamlayın.',
       entrySaved: 'Girdi kaydedildi',
       entryPublished: 'Girdi yayınlandı',
       entryUnpublished: 'Girdi yayınlanmamış',
