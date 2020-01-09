@@ -8,7 +8,7 @@ describe('GitLab Backend Media Library - REST API', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, {}, backend);
+    specUtils.before(taskResult, { publish_mode: 'editorial_workflow' }, backend);
   });
 
   after(() => {

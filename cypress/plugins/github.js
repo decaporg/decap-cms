@@ -8,6 +8,7 @@ const {
 } = require('./common');
 const { updateConfig } = require('../utils/config');
 const { escapeRegExp } = require('../utils/regexp');
+const { merge } = require('lodash');
 const { retrieveRecordedExpectations, resetMockServerState } = require('../utils/mock-server');
 
 const GITHUB_REPO_OWNER_SANITIZED_VALUE = 'owner';
@@ -219,15 +220,12 @@ async function setupGitHub(options) {
       prepareTestGitHubRepo(),
     ]);
 
-    const { use_graphql = false, open_authoring = false } = options;
-
     await updateConfig(config => {
-      config.backend = {
-        ...config.backend,
-        use_graphql,
-        open_authoring,
-        repo: `${repoData.owner}/${repoData.repo}`,
-      };
+      merge(config, options, {
+        backend: {
+          repo: `${repoData.owner}/${repoData.repo}`,
+        },
+      });
     });
 
     return { ...repoData, user, forkUser, mockResponses: false };
@@ -235,11 +233,11 @@ async function setupGitHub(options) {
     console.log('Running tests in "playback" mode - local data with be used');
 
     await updateConfig(config => {
-      config.backend = {
-        ...config.backend,
-        ...options,
-        repo: `${GITHUB_REPO_OWNER_SANITIZED_VALUE}/${GITHUB_REPO_NAME_SANITIZED_VALUE}`,
-      };
+      merge(config, options, {
+        backend: {
+          repo: `${GITHUB_REPO_OWNER_SANITIZED_VALUE}/${GITHUB_REPO_NAME_SANITIZED_VALUE}`,
+        },
+      });
     });
 
     return {

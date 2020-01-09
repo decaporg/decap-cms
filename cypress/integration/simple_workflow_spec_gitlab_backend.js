@@ -1,14 +1,14 @@
-import fixture from './common/editorial_workflow';
+import fixture from './common/simple_workflow';
 import * as specUtils from './common/spec_utils';
 import { entry1, entry2, entry3 } from './common/entries';
 
-const backend = 'bitbucket';
+const backend = 'gitlab';
 
-describe('BitBucket Backend Editorial Workflow', () => {
+describe('GitLab Backend Simple Workflow', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { publish_mode: 'editorial_workflow' }, backend);
+    specUtils.before(taskResult, { publish_mode: 'simple' }, backend);
   });
 
   after(() => {

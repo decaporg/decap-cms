@@ -8,6 +8,7 @@ const {
   transformRecordedData: transformData,
   getGitClient,
 } = require('./common');
+const { merge } = require('lodash');
 const { retrieveRecordedExpectations, resetMockServerState } = require('../utils/mock-server');
 
 const GITLAB_REPO_OWNER_SANITIZED_VALUE = 'owner';
@@ -147,10 +148,11 @@ async function setupGitLab(options) {
     const [user, repoData] = await Promise.all([getUser(), prepareTestGitLabRepo()]);
 
     await updateConfig(config => {
-      config.backend = {
-        ...config.backend,
-        repo: `${repoData.owner}/${repoData.repo}`,
-      };
+      merge(config, options, {
+        backend: {
+          repo: `${repoData.owner}/${repoData.repo}`,
+        },
+      });
     });
 
     return { ...repoData, user, mockResponses: false };
@@ -158,11 +160,11 @@ async function setupGitLab(options) {
     console.log('Running tests in "playback" mode - local data with be used');
 
     await updateConfig(config => {
-      config.backend = {
-        ...config.backend,
-        ...options,
-        repo: `${GITLAB_REPO_OWNER_SANITIZED_VALUE}/${GITLAB_REPO_NAME_SANITIZED_VALUE}`,
-      };
+      merge(config, options, {
+        backend: {
+          repo: `${GITLAB_REPO_OWNER_SANITIZED_VALUE}/${GITLAB_REPO_NAME_SANITIZED_VALUE}`,
+        },
+      });
     });
 
     return {

@@ -8,6 +8,7 @@ const {
   transformRecordedData: transformData,
   getGitClient,
 } = require('./common');
+const { merge } = require('lodash');
 const { retrieveRecordedExpectations, resetMockServerState } = require('../utils/mock-server');
 
 const BITBUCKET_REPO_OWNER_SANITIZED_VALUE = 'owner';
@@ -166,10 +167,11 @@ async function setupBitBucket(options) {
     const [user, repoData] = await Promise.all([getUser(), prepareTestGitLabRepo()]);
 
     await updateConfig(config => {
-      config.backend = {
-        ...config.backend,
-        repo: `${repoData.owner}/${repoData.repo}`,
-      };
+      merge(config, options, {
+        backend: {
+          repo: `${repoData.owner}/${repoData.repo}`,
+        },
+      });
     });
 
     return { ...repoData, user, mockResponses: false };
@@ -177,11 +179,11 @@ async function setupBitBucket(options) {
     console.log('Running tests in "playback" mode - local data with be used');
 
     await updateConfig(config => {
-      config.backend = {
-        ...config.backend,
-        ...options,
-        repo: `${BITBUCKET_REPO_OWNER_SANITIZED_VALUE}/${BITBUCKET_REPO_NAME_SANITIZED_VALUE}`,
-      };
+      merge(config, options, {
+        backend: {
+          repo: `${BITBUCKET_REPO_OWNER_SANITIZED_VALUE}/${BITBUCKET_REPO_NAME_SANITIZED_VALUE}`,
+        },
+      });
     });
 
     return {

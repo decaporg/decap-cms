@@ -8,7 +8,14 @@ describe('Github Backend Editorial Workflow - GraphQL API', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { use_graphql: true, open_authoring: false }, backend);
+    specUtils.before(
+      taskResult,
+      {
+        backend: { use_graphql: true, open_authoring: false },
+        publish_mode: 'editorial_workflow',
+      },
+      backend,
+    );
   });
 
   after(() => {

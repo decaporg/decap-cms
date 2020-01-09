@@ -8,7 +8,14 @@ describe('GitHub Backend Media Library - REST API', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { use_graphql: false }, backend);
+    specUtils.before(
+      taskResult,
+      {
+        backend: { use_graphql: false },
+        publish_mode: 'editorial_workflow',
+      },
+      backend,
+    );
   });
 
   after(() => {
