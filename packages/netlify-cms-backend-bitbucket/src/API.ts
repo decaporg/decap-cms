@@ -23,7 +23,6 @@ import {
   PreviewState,
   FetchError,
 } from 'netlify-cms-lib-util';
-import { parse } from 'what-the-diff';
 import { oneLine } from 'common-tags';
 
 interface Config {
@@ -123,6 +122,21 @@ type BitBucketPullRequestStatues = {
   next: string;
   preview: string;
   values: BitBucketPullRequestStatus[];
+};
+
+type BitBucketDiffStat = {
+  pagelen: number;
+  page: number;
+  size: number;
+  values: {
+    status: string;
+    lines_removed: number;
+    lines_added: number;
+    new: {
+      path: string;
+      type: 'commit_file';
+    };
+  }[];
 };
 
 type DeleteEntry = {
@@ -433,14 +447,13 @@ export default class API {
   }
 
   async getDifferences(branch: string) {
-    const rawDiff = await this.requestText({
-      url: `${this.repoURL}/diff/${branch}..${this.branch}`,
+    const diff: BitBucketDiffStat = await this.requestJSON({
+      url: `${this.repoURL}/diffstat/${branch}..${this.branch}`,
       params: {
-        binary: false,
+        pagelen: 100,
       },
     });
-    const diff = parse(rawDiff).map(d => ({ newPath: d.newPath.replace(/b\//, '') }));
-    return diff;
+    return diff.values;
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
@@ -464,8 +477,8 @@ export default class API {
       const diffs = await this.getDifferences(branch);
       const toDelete: DeleteEntry[] = [];
       for (const diff of diffs) {
-        if (!files.some(file => file.path === diff.newPath)) {
-          toDelete.push({ path: diff.newPath, delete: true });
+        if (!files.some(file => file.path === diff.new.path)) {
+          toDelete.push({ path: diff.new.path, delete: true });
         }
       }
 
@@ -557,10 +570,10 @@ export default class API {
     const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const diff = await this.getDifferences(branch);
-    const path = diff.find(d => d.newPath.includes(slug))?.newPath as string;
+    const path = diff.find(d => d.new.path.includes(slug))?.new.path as string;
     // TODO: get real file id
     const mediaFiles = await Promise.all(
-      diff.filter(d => d.newPath !== path).map(d => ({ path: d.newPath, id: null })),
+      diff.filter(d => d.new.path !== path).map(d => ({ path: d.new.path, id: null })),
     );
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label);
