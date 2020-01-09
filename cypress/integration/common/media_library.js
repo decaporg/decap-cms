@@ -36,6 +36,9 @@ function assertImagesInLibrary() {
 }
 
 function assertNoImagesInLibrary() {
+  cy.get('h1')
+    .contains('Loading...')
+    .should('not.exist');
   cy.get('img[class*="CardImage"]').should('not.exist');
 }
 

@@ -21,6 +21,7 @@ import {
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
   PreviewState,
+  FetchError,
 } from 'netlify-cms-lib-util';
 import { parse } from 'what-the-diff';
 import { oneLine } from 'common-tags';
@@ -129,12 +130,21 @@ type DeleteEntry = {
   delete: true;
 };
 
-interface BitBucketFile {
+type BitBucketFile = {
   id: string;
   type: string;
   path: string;
   commit?: { hash: string };
-}
+};
+
+type BitBucketSrcResult = {
+  size: number;
+  page: number;
+  pagelen: number;
+  next: string;
+  previous: string;
+  values: BitBucketFile[];
+};
 
 type BitBucketUser = {
   username: string;
@@ -150,6 +160,15 @@ type BitBucketUser = {
 export const API_NAME = 'BitBucket';
 
 const APPLICATION_JSON = 'application/json; charset=utf-8';
+
+const replace404WithEmptyResponse = (err: FetchError) => {
+  if (err && err.status === 404) {
+    console.log('This 404 was expected and handled appropriately.');
+    return { size: 0, values: [] as BitBucketFile[] } as BitBucketSrcResult;
+  } else {
+    return Promise.reject(err);
+  }
+};
 
 export default class API {
   apiRoot: string;
@@ -242,14 +261,7 @@ export default class API {
     return content;
   };
 
-  getEntriesAndCursor = (jsonResponse: {
-    size: number;
-    page: number;
-    pagelen: number;
-    next: string;
-    previous: string;
-    values: {}[];
-  }) => {
+  getEntriesAndCursor = (jsonResponse: BitBucketSrcResult) => {
     const {
       size: count,
       page: index,
@@ -271,13 +283,16 @@ export default class API {
 
   listFiles = async (path: string, depth = 1) => {
     const node = await this.branchCommitSha(this.branch);
-    const { entries, cursor } = await flow([
-      // sort files by filename ascending
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      unsentRequest.withParams({ sort: '-path', max_depth: depth }),
-      this.requestJSON,
-      then(this.getEntriesAndCursor),
-    ])(`${this.repoURL}/src/${node}/${path}`);
+    const result: BitBucketSrcResult = await this.requestJSON({
+      url: `${this.repoURL}/src/${node}/${path}`,
+      params: {
+        // sort files by filename ascending
+        sort: '-path',
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        max_depth: depth,
+      },
+    }).catch(replace404WithEmptyResponse);
+    const { entries, cursor } = this.getEntriesAndCursor(result);
 
     return { entries: this.processFiles(entries), cursor: cursor as Cursor };
   };

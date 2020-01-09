@@ -49,6 +49,7 @@ import {
   isPreviewContext,
   getPreviewStatus,
   PreviewState,
+  FetchError as FE,
 } from './API';
 
 export type AsyncLock = AL;
@@ -75,6 +76,7 @@ export type ApiRequest =
     }
   | string;
 export type Config = C;
+export type FetchError = FE;
 
 export const NetlifyCmsLibUtil = {
   APIError,

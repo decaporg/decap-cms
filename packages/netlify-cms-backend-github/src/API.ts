@@ -19,6 +19,7 @@ import {
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
   PreviewState,
+  FetchError,
 } from 'netlify-cms-lib-util';
 import {
   UsersGetAuthenticatedResponse as GitHubUser,
@@ -40,10 +41,6 @@ import {
 const CURRENT_METADATA_VERSION = '1';
 
 export const API_NAME = 'GitHub';
-
-export interface FetchError extends Error {
-  status: number;
-}
 
 export interface Config {
   apiRoot?: string;

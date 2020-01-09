@@ -1,6 +1,6 @@
 import { API as GithubAPI } from 'netlify-cms-backend-github';
-import { Config as GitHubConfig, FetchError } from 'netlify-cms-backend-github/src/API';
-import { APIError } from 'netlify-cms-lib-util';
+import { Config as GitHubConfig } from 'netlify-cms-backend-github/src/API';
+import { APIError, FetchError } from 'netlify-cms-lib-util';
 
 type Config = GitHubConfig & {
   apiRoot: string;

@@ -10,6 +10,10 @@ export const statusToLabel = (status: string) => `${NETLIFY_CMS_LABEL_PREFIX}${s
 export const generateContentKey = (collectionName: string, slug: string) =>
   `${collectionName}/${slug}`;
 
+export interface FetchError extends Error {
+  status: number;
+}
+
 export const readFile = async (
   id: string | null | undefined,
   fetchContent: () => Promise<string | Blob>,
