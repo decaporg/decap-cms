@@ -544,12 +544,12 @@ export default class API {
   }
 
   async getBranchPullRequest(branch: string) {
-    const mergeRequests = await this.getPullRequests(branch);
-    if (mergeRequests.length <= 0) {
+    const pullRequests = await this.getPullRequests(branch);
+    if (pullRequests.length <= 0) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
 
-    return mergeRequests[0];
+    return pullRequests[0];
   }
 
   async retrieveMetadata(contentKey: string) {
@@ -591,8 +591,8 @@ export default class API {
       'line-height: 30px;text-align: center;font-weight: bold',
     );
 
-    const mergeRequests = await this.getPullRequests();
-    const branches = mergeRequests.map(mr => mr.source.branch.name);
+    const pullRequests = await this.getPullRequests();
+    const branches = pullRequests.map(mr => mr.source.branch.name);
 
     return branches;
   }
