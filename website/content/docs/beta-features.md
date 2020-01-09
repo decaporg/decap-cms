@@ -332,3 +332,21 @@ Template tags produce the following output:
 - `{{author-login}}`: the login/username of the author
 
 - `{{author-name}}`: the full name of the author (might be empty based on the user's profile)
+
+
+## Image widget file size limit
+
+You can set a limit to as what the maximum file size of a file is that users can upload directly into a image field.
+
+Example config:
+
+```yaml
+- label: "Featured Image"
+  name: "thumbnail"
+  widget: "image"
+  default: "/uploads/chocolate-dogecoin.jpg"
+  media_library:
+    config:
+      max_file_size: 512000 # in bytes, only for default media library
+```
+
