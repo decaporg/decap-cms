@@ -31,10 +31,10 @@ const zh_Hant = {
     collection: {
       sidebar: {
         collections: '集合',
-        searchAll: '尋找全部',
+        searchAll: '尋找所有集合',
       },
       collectionTop: {
-        viewAs: '以此身份',
+        viewAs: '瀏覽方式',
         newButton: '新增 %{collectionLabel}',
       },
       entries: {
@@ -59,8 +59,8 @@ const zh_Hant = {
         onUpdatingWithUnsavedChanges: '您有未儲存的變更，在更新狀態前請先進行儲存。',
         onPublishingNotReady: '在發布前，請先將狀態設定為：預備發布。',
         onPublishingWithUnsavedChanges: '您有未儲存的變更，在發布前請先進行儲存。',
-        onPublishing: '你確定要發表這篇內容嗎？',
-        onUnpublishing: '你確定要取消發表這篇內容嗎？',
+        onPublishing: '你確定要發表此內容嗎？',
+        onUnpublishing: '你確定要取消發表此內容嗎？',
         onDeleteWithUnsavedChanges:
           'Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?',
         onDeletePublishedEntry: 'Are you sure you want to delete this published entry?',
@@ -76,7 +76,7 @@ const zh_Hant = {
         publish: '發布',
         published: '已發布',
         unpublish: '取消發布',
-        duplicate: '重複內容',
+        duplicate: '建立新內容',
         unpublishing: '取消發布中...',
         publishAndCreateNew: '發布並建立內容',
         publishAndDuplicate: '發布並複製內容',
@@ -102,10 +102,10 @@ const zh_Hant = {
       },
       editorWidgets: {
         unknownControl: {
-          noControl: "No control for widget '%{widget}'.",
+          noControl: "無法控制元件： '%{widget}'.",
         },
         unknownPreview: {
-          noPreview: "No preview for widget '%{widget}'.",
+          noPreview: "無法預覽元件： '%{widget}'.",
         },
       },
     },
@@ -119,7 +119,7 @@ const zh_Hant = {
       mediaLibraryModal: {
         loading: '載入中...',
         noResults: '沒有結果',
-        noAssetsFound: '發有發現媒體資產。',
+        noAssetsFound: '沒有發現媒體資產。',
         noImagesFound: '沒有發現影像。',
         private: '私人',
         images: '影像',
@@ -150,10 +150,10 @@ const zh_Hant = {
       toast: {
         onFailToLoadEntries: '無法載入內容： %{details}',
         onFailToLoadDeployPreview: '無法預覽內容： %{details}',
-        onFailToPersist: 'Failed to persist entry： %{details}',
+        onFailToPersist: '無法暫存內容： %{details}',
         onFailToDelete: '無法刪除內容： %{details}',
         onFailToUpdateStatus: '無法更新狀態： %{details}',
-        missingRequiredField: "Oops, you've missed a required field. Please complete before saving.",
+        missingRequiredField: "糟了！你漏填了一個必須填入的欄位，在儲存前請先填完所有內容",
         entrySaved: '已儲存內容',
         entryPublished: '已發布內容',
         entryUnpublished: '已取消發布內容',
@@ -166,11 +166,11 @@ const zh_Hant = {
     },
     workflow: {
       workflow: {
-        loading: 'Loading Editorial Workflow Entries',
-        workflowHeading: 'Editorial Workflow',
-        newPost: '新的內容',
+        loading: '正在載入編輯流程的內容',
+        workflowHeading: '編輯作業流程',
+        newPost: '建立新的內容',
         description:
-          '%{smart_count} entry waiting for review, %{readyCount} ready to go live. |||| %{smart_count} entries waiting for review, %{readyCount} ready to go live. ',
+          '%{smart_count} 篇內容正在等待審核， %{readyCount} 篇已經準備進行發布。 |||| %{smart_count} 篇內容正在等待審核， %{readyCount} 篇已經準備進行發布。',
       },
       workflowCard: {
         lastChange: '%{date} by %{author}',
