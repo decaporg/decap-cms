@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
 import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from '../actions/config';
 import { Config, ConfigAction } from '../types/redux';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 const config = (state = Map({ isFetching: true }), action: ConfigAction) => {
   switch (action.type) {
@@ -23,5 +24,8 @@ const config = (state = Map({ isFetching: true }), action: ConfigAction) => {
 };
 
 export const selectLocale = (state: Config) => state.get('locale', 'en') as string;
+
+export const selectUseWorkflow = (state: Config) =>
+  state.get('publish_mode') === EDITORIAL_WORKFLOW;
 
 export default config;

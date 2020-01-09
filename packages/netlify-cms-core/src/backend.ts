@@ -3,6 +3,7 @@ import { List } from 'immutable';
 import { stripIndent } from 'common-tags';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
+import { selectUseWorkflow } from './reducers/config';
 import { selectMediaFilePath, selectMediaFolder } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
@@ -32,7 +33,7 @@ import {
   getPathDepth,
   Config as ImplementationConfig,
 } from 'netlify-cms-lib-util';
-import { EDITORIAL_WORKFLOW, status } from './constants/publishModes';
+import { status } from './constants/publishModes';
 import {
   SLUG_MISSING_REQUIRED_DATE,
   compileStringTemplate,
@@ -211,7 +212,7 @@ export class Backend {
     this.deleteAnonymousBackup();
     this.config = config as Config;
     this.implementation = implementation.init(this.config.toJS(), {
-      useWorkflow: this.config.get('publish_mode') === EDITORIAL_WORKFLOW,
+      useWorkflow: selectUseWorkflow(this.config),
       updateUserCredentials: this.updateUserCredentials,
       initialWorkflowStatus: status.first(),
     });
@@ -272,9 +273,9 @@ export class Backend {
 
   getToken = () => this.implementation.getToken();
 
-  async entryExist(collection: Collection, path: string, slug: string) {
+  async entryExist(collection: Collection, path: string, slug: string, useWorkflow: boolean) {
     const unpublishedEntry =
-      this.implementation.unpublishedEntry &&
+      useWorkflow &&
       (await this.implementation.unpublishedEntry(collection.get('name'), slug).catch(error => {
         if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
           return Promise.resolve(false);
@@ -297,9 +298,10 @@ export class Backend {
   async generateUniqueSlug(
     collection: Collection,
     entryData: EntryMap,
-    slugConfig: SlugConfig,
+    config: Config,
     usedSlugs: List<string>,
   ) {
+    const slugConfig = config.get('slug');
     const slug: string = slugFormatter(collection, entryData, slugConfig);
     let i = 1;
     let uniqueSlug = slug;
@@ -311,6 +313,7 @@ export class Backend {
         collection,
         selectEntryPath(collection, uniqueSlug) as string,
         uniqueSlug,
+        selectUseWorkflow(config),
       ))
     ) {
       uniqueSlug = `${slug}${sanitizeChar(' ', slugConfig)}${i++}`;
@@ -739,7 +742,7 @@ export class Backend {
       const slug = await this.generateUniqueSlug(
         collection,
         entryDraft.getIn(['entry', 'data']),
-        config.get('slug'),
+        config,
         usedSlugs,
       );
       const path = selectEntryPath(collection, slug) as string;
@@ -780,7 +783,7 @@ export class Backend {
       user.useOpenAuthoring,
     );
 
-    const useWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+    const useWorkflow = selectUseWorkflow(config);
 
     const collectionName = collection.get('name');
 

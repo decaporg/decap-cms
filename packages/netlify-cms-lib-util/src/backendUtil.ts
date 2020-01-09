@@ -51,7 +51,7 @@ export const parseResponse = async (
   }
   if (expectingOk && !res.ok) {
     const isJSON = format === 'json';
-    const message = isJSON ? body.message || body.error?.message : body;
+    const message = isJSON ? body.message || body.msg || body.error?.message : body;
     throw new APIError(isJSON && message ? message : body, res.status, apiName);
   }
   return body;
