@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.0...netlify-cms-backend-github@2.6.1) (2020-01-09)
+
+
+### Bug Fixes
+
+* trim '/' from folder ([#3052](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3052)) ([4b6c8de](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/4b6c8de6b2e3de28f0989b9a012cb302d4de4358))
+
+
+
+
+
 # [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.0-beta.0...netlify-cms-backend-github@2.6.0) (2020-01-07)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.7.0...netlify-cms-backend-bitbucket@2.7.1) (2020-01-09)
+
+
+### Bug Fixes
+
+* **backend-bitbucket:** fix media library not loaded on BitBucket ([#3059](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/3059)) ([8849c0e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/8849c0ea5777ee0eb85375d6e4a74d7f956c77ee))
+
+
+
+
+
 # [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.7.0-beta.0...netlify-cms-backend-bitbucket@2.7.0) (2020-01-07)
 
 **Note:** Version bump only for package netlify-cms-backend-bitbucket

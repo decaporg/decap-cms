@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.14.0...netlify-cms-core@2.14.1) (2020-01-09)
+
+
+### Bug Fixes
+
+* don't wait for external media library to load ([#3050](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3050)) ([5bd7240](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5bd724026c8ebc08c56514f2c983d49c25c914ee))
+
+
+
+
+
 # [2.14.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.14.0-beta.1...netlify-cms-core@2.14.0) (2020-01-07)
 
 
