@@ -114,7 +114,7 @@ export default class API {
     };
   };
 
-  listFiles = async (path, depth) => {
+  listFiles = async (path, depth = 1) => {
     const node = await this.branchCommitSha();
     const { entries, cursor } = await flow([
       // sort files by filename ascending
@@ -135,7 +135,7 @@ export default class API {
       })),
     ])(cursor.data.getIn(['links', action]));
 
-  listAllFiles = async (path, depth) => {
+  listAllFiles = async (path, depth = 1) => {
     const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(path, depth);
     const entries = [...initialEntries];
     let currentCursor = initialCursor;
