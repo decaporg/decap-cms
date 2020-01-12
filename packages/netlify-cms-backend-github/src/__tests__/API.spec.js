@@ -518,4 +518,24 @@ describe('github API', () => {
       });
     });
   });
+
+  test('should get preview statuses', async () => {
+    const api = new API({ repo: 'repo' });
+
+    const statuses = [
+      { context: 'deploy', state: 'success', target_url: 'deploy-url' },
+      { context: 'build', state: 'error' },
+    ];
+
+    api.request = jest.fn(() => Promise.resolve({ statuses }));
+
+    const sha = 'sha';
+    await expect(api.getStatuses(sha)).resolves.toEqual([
+      { context: 'deploy', state: 'success', target_url: 'deploy-url' },
+      { context: 'build', state: 'other' },
+    ]);
+
+    expect(api.request).toHaveBeenCalledTimes(1);
+    expect(api.request).toHaveBeenCalledWith(`/repos/repo/commits/${sha}/status`);
+  });
 });

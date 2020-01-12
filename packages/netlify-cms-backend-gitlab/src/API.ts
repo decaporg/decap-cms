@@ -682,16 +682,21 @@ export default class API {
     await this.deleteBranch(branch);
   }
 
-  async getStatuses(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchMergeRequest(branch);
+  async getMergeRequestStatues(mergeRequest: GitLabMergeRequest, branch: string) {
     const statuses: GitLabCommitStatus[] = await this.requestJSON({
       url: `${this.repoURL}/repository/commits/${mergeRequest.sha}/statuses`,
       params: {
         ref: branch,
       },
     });
+    return statuses;
+  }
+
+  async getStatuses(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    const statuses: GitLabCommitStatus[] = await this.getMergeRequestStatues(mergeRequest, branch);
     // eslint-disable-next-line @typescript-eslint/camelcase
     return statuses.map(({ name, status, target_url }) => ({
       context: name,

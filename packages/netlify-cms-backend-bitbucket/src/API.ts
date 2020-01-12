@@ -665,18 +665,24 @@ export default class API {
     await this.deleteBranch(branch);
   }
 
-  async getStatuses(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
-    const pullRequest = await this.getBranchPullRequest(branch);
-
+  async getPullRequestStatuses(pullRequest: BitBucketPullRequest) {
     const statuses: BitBucketPullRequestStatues = await this.requestJSON({
       url: `${this.repoURL}/pullrequests/${pullRequest.id}/statuses`,
       params: {
         pagelen: 100,
       },
     });
-    return statuses.values.map(({ key, state, url }) => ({
+
+    return statuses.values;
+  }
+
+  async getStatuses(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const statuses = await this.getPullRequestStatuses(pullRequest);
+
+    return statuses.map(({ key, state, url }) => ({
       context: key,
       state:
         state === BitBucketPullRequestStatusState.Successful
