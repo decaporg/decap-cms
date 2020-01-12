@@ -10,10 +10,9 @@ export function remarkParseShortcodes({ plugins }) {
 
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
-    const potentialMatchValue = value.split('\n\n')[0];
     let match;
     const plugin = plugins.find(plugin => {
-      match = potentialMatchValue.trim().match(plugin.pattern);
+      match = value.match(plugin.pattern);
       return !!match;
     });
 
