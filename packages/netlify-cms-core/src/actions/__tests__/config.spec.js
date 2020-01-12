@@ -101,5 +101,55 @@ describe('config', () => {
         ]),
       ).toEqual('_');
     });
+
+    it('should default public_folder to media_folder', () => {
+      expect(
+        applyDefaults(
+          fromJS({
+            collections: [{ folder: 'foo', media_folder: 'static/images/docs' }],
+          }),
+        ).get('collections'),
+      ).toEqual(
+        fromJS([
+          {
+            folder: 'foo',
+            media_folder: 'static/images/docs',
+            public_folder: 'static/images/docs',
+          },
+        ]),
+      );
+    });
+
+    it('should not override public_folder with media_folder', () => {
+      expect(
+        applyDefaults(
+          fromJS({
+            collections: [
+              { folder: 'foo', media_folder: 'static/images/docs', public_folder: 'images/docs' },
+            ],
+          }),
+        ).get('collections'),
+      ).toEqual(
+        fromJS([
+          {
+            folder: 'foo',
+            media_folder: 'static/images/docs',
+            public_folder: 'images/docs',
+          },
+        ]),
+      );
+    });
+
+    it("should set media_folder and public_folder to an empty string when path exists, but media_folder doesn't", () => {
+      expect(
+        applyDefaults(
+          fromJS({
+            collections: [{ folder: 'foo', path: '{{slug}}/index' }],
+          }),
+        ).get('collections'),
+      ).toEqual(
+        fromJS([{ folder: 'foo', path: '{{slug}}/index', media_folder: '', public_folder: '' }]),
+      );
+    });
   });
 });
