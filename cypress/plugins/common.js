@@ -29,7 +29,7 @@ const HEADERS_TO_IGNORE = [
   'RateLimit-Reset',
   'RateLimit-ResetTime',
   'GitLab-LB',
-];
+].map(h => h.toLowerCase());
 
 const transformRecordedData = (expectation, requestBodySanitizer, responseBodySanitizer) => {
   const { httpRequest, httpResponse } = expectation;
@@ -37,7 +37,7 @@ const transformRecordedData = (expectation, requestBodySanitizer, responseBodySa
   const responseHeaders = {};
 
   Object.keys(httpResponse.headers)
-    .filter(key => !HEADERS_TO_IGNORE.includes(key))
+    .filter(key => !HEADERS_TO_IGNORE.includes(key.toLowerCase()))
     .forEach(key => {
       responseHeaders[key] = httpResponse.headers[key][0];
     });

@@ -268,7 +268,11 @@ const transformRecordedData = (expectation, toSanitize) => {
   return cypressRouteOptions;
 };
 
-async function teardownGitLabTest(taskData) {
+const defaultOptions = {
+  transformRecordedData,
+};
+
+async function teardownGitLabTest(taskData, { transformRecordedData } = defaultOptions) {
   if (process.env.RECORD_FIXTURES) {
     await resetRepositories(taskData);
 
@@ -306,6 +310,7 @@ async function teardownGitLabTest(taskData) {
 }
 
 module.exports = {
+  transformRecordedData,
   setupGitLab,
   teardownGitLab,
   setupGitLabTest,

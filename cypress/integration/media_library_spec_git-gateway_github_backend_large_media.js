@@ -3,12 +3,13 @@ import { entry1 } from './common/entries';
 import * as specUtils from './common/spec_utils';
 
 const backend = 'git-gateway';
+const provider = 'github';
 
-describe('Git Gateway Backend Media Library - Large Media', () => {
+describe('Git Gateway (GitHub) Backend Media Library - Large Media', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { publish_mode: 'editorial_workflow' }, backend);
+    specUtils.before(taskResult, { publish_mode: 'editorial_workflow', provider }, backend);
   });
 
   after(() => {

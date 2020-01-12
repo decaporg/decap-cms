@@ -1,15 +1,15 @@
-import fixture from './common/editorial_workflow';
+import fixture from './common/simple_workflow';
 import * as specUtils from './common/spec_utils';
 import { entry1, entry2, entry3 } from './common/entries';
 
 const backend = 'git-gateway';
 const provider = 'github';
 
-describe('Git Gateway (GitHub) Backend Editorial Workflow', () => {
+describe('Git Gateway (GitHub) Backend Simple Workflow', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { publish_mode: 'editorial_workflow', provider }, backend);
+    specUtils.before(taskResult, { publish_mode: 'simple', provider }, backend);
   });
 
   after(() => {
