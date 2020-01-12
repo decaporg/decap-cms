@@ -300,6 +300,7 @@ export interface MediaLibraryAction extends Action<string> {
     controlID: string;
     forImage: boolean;
     privateUpload: boolean;
+    config: Map<string, string>;
   } & { mediaPath: string | string[] } & { page: number } & {
     files: MediaFile[];
     page: number;

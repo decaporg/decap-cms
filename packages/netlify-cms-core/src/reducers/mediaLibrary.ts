@@ -39,6 +39,7 @@ const defaultState: {
   controlID?: string;
   page?: number;
   files?: MediaFile[];
+  config: Map<string, string>;
 } = {
   isVisible: false,
   showMediaButton: true,
