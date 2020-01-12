@@ -10,3 +10,4 @@ export { default as ru } from './ru';
 export { default as ja } from './ja';
 export { default as hu } from './hu';
 export { default as pt } from './pt';
+export { default as zh_Hant } from './zh_Hant';
