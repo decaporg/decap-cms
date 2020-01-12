@@ -22,6 +22,7 @@ import {
   MERGE_COMMIT_MESSAGE,
   PreviewState,
   FetchError,
+  parseContentKey,
 } from 'netlify-cms-lib-util';
 import { oneLine } from 'common-tags';
 
@@ -566,7 +567,7 @@ export default class API {
   }
 
   async retrieveMetadata(contentKey: string) {
-    const [collection, slug] = contentKey.split('/');
+    const { collection, slug } = parseContentKey(contentKey);
     const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const diff = await this.getDifferences(branch);

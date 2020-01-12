@@ -10,6 +10,11 @@ export const statusToLabel = (status: string) => `${NETLIFY_CMS_LABEL_PREFIX}${s
 export const generateContentKey = (collectionName: string, slug: string) =>
   `${collectionName}/${slug}`;
 
+export const parseContentKey = (contentKey: string) => {
+  const index = contentKey.indexOf('/');
+  return { collection: contentKey.substr(0, index), slug: contentKey.substr(index + 1) };
+};
+
 export interface FetchError extends Error {
   status: number;
 }

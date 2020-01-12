@@ -50,6 +50,7 @@ import {
   getPreviewStatus,
   PreviewState,
   FetchError as FE,
+  parseContentKey,
 } from './API';
 
 export type AsyncLock = AL;
@@ -116,6 +117,7 @@ export const NetlifyCmsLibUtil = {
   getPreviewStatus,
   runWithLock,
   PreviewState,
+  parseContentKey,
 };
 export {
   APIError,
@@ -158,4 +160,5 @@ export {
   getPreviewStatus,
   runWithLock,
   PreviewState,
+  parseContentKey,
 };

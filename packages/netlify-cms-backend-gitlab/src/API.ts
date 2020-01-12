@@ -20,6 +20,7 @@ import {
   MERGE_COMMIT_MESSAGE,
   responseParser,
   PreviewState,
+  parseContentKey,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map, Set } from 'immutable';
@@ -492,7 +493,7 @@ export default class API {
   }
 
   async retrieveMetadata(contentKey: string) {
-    const [collection, slug] = contentKey.split('/');
+    const { collection, slug } = parseContentKey(contentKey);
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
