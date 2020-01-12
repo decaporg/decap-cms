@@ -226,6 +226,8 @@ const transformRecordedData = (expectation, toSanitize) => {
       } else {
         body = httpRequest.body.json;
       }
+    } else if (httpRequest.body && httpRequest.body.type === 'STRING' && httpRequest.body.string) {
+      body = sanitizeString(httpRequest.body.string, toSanitize);
     }
     return body;
   };
