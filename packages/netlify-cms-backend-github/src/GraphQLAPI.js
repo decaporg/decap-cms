@@ -216,7 +216,7 @@ export default class GraphQLAPI extends API {
       const allFiles = this.getAllFiles(data.repository.object.entries, path);
       return allFiles;
     } else {
-      throw new APIError('Not Found', 404, 'GitHub');
+      return [];
     }
   }
 
