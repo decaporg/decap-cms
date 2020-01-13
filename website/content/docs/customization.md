@@ -71,20 +71,54 @@ Registers a template for a folder collection or an individual file in a file col
     ```html
     <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
     <script>
-    var PostPreview = createClass({
-      render: function() {
-        var entry = this.props.entry;
-        var image = entry.getIn(['data', 'image']);
-        var bg = this.props.getAsset(image);
-        return h('div', {},
-          h('h1', {}, entry.getIn(['data', 'title'])),
-          h('img', {src: bg.toString()}),
-          h('div', {"className": "text"}, this.props.widgetFor('body'))
-        );
-      }
-    });
+      var PostPreview = createClass({
+        subscribed: true,
 
-    CMS.registerPreviewTemplate("posts", PostPreview);
+        getInitialState: function() {
+          return {
+            src: '',
+          };
+        },
+
+        _fetchAsset: function() {
+          const path = this.props.entry.getIn(['data', 'image']);
+          path &&
+            this.props.getAsset(path).then(value => {
+              if (this.subscribed) {
+                this.setState({ src: value.toString() });
+              }
+            });
+        },
+
+        componentDidMount: function() {
+          this._fetchAsset();
+        },
+
+        componentWillUnmount: function() {
+          this.subscribed = false;
+        },
+
+        componentDidUpdate: function(prevProps) {
+          const prevPath = prevProps.entry.getIn(['data', 'image']);
+          const path = this.props.entry.getIn(['data', 'image']);
+          if (prevPath !== path || prevProps.getAsset !== this.props.getAsset) {
+            this._fetchAsset();
+          }
+        },
+
+        render: function() {
+          var entry = this.props.entry;
+          return h(
+            'div',
+            {},
+            h('h1', {}, entry.getIn(['data', 'title'])),
+            h('img', { src: this.state.src }),
+            h('div', { className: 'text' }, this.props.widgetFor('body')),
+          );
+        },
+      });
+
+      CMS.registerPreviewTemplate('posts', PostPreview);
     </script>
     ```
     ### Lists and Objects
