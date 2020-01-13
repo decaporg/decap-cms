@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags';
 import { remarkParseShortcodes } from '../remarkShortcodes';
 
 // Stub of Remark Parser
@@ -11,43 +10,44 @@ function process(value, plugins, processEat = () => {}) {
   Parser.prototype.blockTokenizers.shortcode(eat, value);
 }
 
+function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
+  // initialize pattern as RegExp as done in the EditorComponent value object
+  return { id, fromBlock, pattern: new RegExp(pattern, 'm') };
+}
+
 describe('remarkParseShortcodes', () => {
-  let editorComponent;
-
-  beforeEach(() => {
-    editorComponent = {
-      id: 'foo',
-      pattern: /bar/,
-      fromBlock: jest.fn(),
-    };
+  describe('pattern matching', () => {
+    it('should work', () => {
+      const editorComponent = EditorComponent({ pattern: /bar/ });
+      process('foo bar', [editorComponent]);
+      expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
+    });
+    it('should match value surrounded in newlines', () => {
+      const editorComponent = EditorComponent({ pattern: /^bar$/ });
+      process('foo\n\nbar\n', [editorComponent]);
+      expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
+    });
+    it('should match multiline shortcodes', () => {
+      const editorComponent = EditorComponent({ pattern: /^foo\nbar$/ });
+      process('foo\nbar', [editorComponent]);
+      expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo\nbar']));
+    });
+    it('should match multiline shortcodes with empty lines', () => {
+      const editorComponent = EditorComponent({ pattern: /^foo\n\nbar$/ });
+      process('foo\n\nbar', [editorComponent]);
+      expect(editorComponent.fromBlock).toHaveBeenCalledWith(
+        expect.arrayContaining(['foo\n\nbar']),
+      );
+    });
   });
-  it('should parse shortcodes', () => {
-    process('foo bar', [editorComponent]);
-    expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
-  });
-  it('should parse multiline shortcodes', () => {
-    const value = stripIndent`
-      foo
-      bar
-    `;
-    process(value, [{ ...editorComponent, pattern: /^foo\nbar$/ }]);
-    expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo\nbar']));
-  });
-  it('should parse multiline shortcodes with empty lines', () => {
-    const value = stripIndent`
-      foo
-
-      bar
-    `;
-    process(value, [{ ...editorComponent, pattern: /^foo\n\nbar$/ }]);
-    expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo\n\nbar']));
-  });
-  it('should produce shortcode node', () => {
-    const processEat = jest.fn();
-    const shortcodeData = { bar: 'baz' };
-    const expectedNode = { type: 'shortcode', data: { shortcode: 'foo', shortcodeData } };
-    editorComponent.fromBlock = () => shortcodeData;
-    process('foo bar', [editorComponent], processEat);
-    expect(processEat).toHaveBeenCalledWith(expectedNode);
+  describe('output', () => {
+    it('should be a remark shortcode node', () => {
+      const processEat = jest.fn();
+      const shortcodeData = { bar: 'baz' };
+      const expectedNode = { type: 'shortcode', data: { shortcode: 'foo', shortcodeData } };
+      const editorComponent = EditorComponent({ pattern: /bar/, fromBlock: () => shortcodeData });
+      process('foo bar', [editorComponent], processEat);
+      expect(processEat).toHaveBeenCalledWith(expectedNode);
+    });
   });
 });
