@@ -16,7 +16,7 @@ const image = {
     const src = await getAsset(image);
     return <img src={src || ''} alt={alt || ''} title={title || ''} />;
   },
-  pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
+  pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)\n?$/,
   fields: [
     {
       label: 'Image',
