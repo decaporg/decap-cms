@@ -43,7 +43,7 @@ From a technical perspective, the workflow translates editor UI actions into com
 
 | Actions in Netlify UI ... | Perform these Git actions                                                                                         |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Save draft                | Commits to a new branch (named according to the pattern `cms/collectionName-entrySlug`), and opens a pull request |
+| Save draft                | Commits to a new branch (named according to the pattern `cms/collectionName/entrySlug`), and opens a pull request |
 | Edit draft                | Pushes another commit to the draft branch/pull request                                                            |
 | Approve and publish draft | Merges pull request and deletes branch                                                                            |
 

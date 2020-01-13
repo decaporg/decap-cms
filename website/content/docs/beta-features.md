@@ -8,6 +8,16 @@ We run new functionality in an open beta format from time to time. That means th
 
 **Use these features at your own risk.**
 
+## GitLab and BitBucket editorial workflow support
+
+You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
+
+```yaml
+publish_mode: editorial_workflow
+```
+
+In order to track unpublished entries statuses the GitLab implementation uses merge requests labels and the BitBucket implementation uses pull requests comments.
+
 ## GitHub GraphQL API
 
 Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
