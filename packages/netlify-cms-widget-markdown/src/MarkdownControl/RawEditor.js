@@ -66,6 +66,7 @@ export default class RawEditor extends React.Component {
   };
 
   handlePaste = (event, editor, next) => {
+    event.preventDefault();
     const data = event.clipboardData;
     if (isHotkey('shift', event)) {
       return next();
