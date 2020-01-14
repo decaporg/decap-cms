@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.15.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.14.1...netlify-cms-core@2.15.0) (2020-01-14)
+
+
+### Bug Fixes
+
+* **core:** force multiline flag for editor component patterns ([#3082](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3082)) ([476f450](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/476f45096efa1723936a73f2e2e04d5c7ccd293f))
+
+
+### Features
+
+* support per collection public_folder ([#3069](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3069)) ([0a50efd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0a50efda8e5a9e5cc99291890e3eab2307266c56))
+
+
+
+
+
 ## [2.14.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.14.0...netlify-cms-core@2.14.1) (2020-01-09)
 
 

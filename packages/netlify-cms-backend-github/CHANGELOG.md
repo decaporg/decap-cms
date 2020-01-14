@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.1...netlify-cms-backend-github@2.6.2) (2020-01-14)
+
+
+### Bug Fixes
+
+* **backend-github-graphql:** return empty array on non existent folder ([#3079](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3079)) ([69b130a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/69b130a3f239590f828f0e4f6f6c0a872b17548b))
+
+
+
+
+
 ## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.0...netlify-cms-backend-github@2.6.1) (2020-01-09)
 
 

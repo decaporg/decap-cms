@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.4.1...netlify-cms-locales@1.5.0) (2020-01-14)
+
+
+### Features
+
+* **lang:** add 'zh_Hant' locale ([#3068](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3068)) ([857a414](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/857a414e3d87e7bb707a8eab2469aa80dfcd35df))
+
+
+
+
+
 ## [1.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.4.0...netlify-cms-locales@1.4.1) (2020-01-09)
 
 

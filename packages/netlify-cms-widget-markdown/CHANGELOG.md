@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.0...netlify-cms-widget-markdown@2.8.1) (2020-01-14)
+
+
+### Bug Fixes
+
+* **core:** force multiline flag for editor component patterns ([#3082](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3082)) ([476f450](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/476f45096efa1723936a73f2e2e04d5c7ccd293f))
+* **widget-markdown:** allow multiline shortcodes ([#3066](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3066)) ([2929909](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/29299097cff0c280d2e97d37fe3b9888a3067554))
+* **widget-markdown:** ensure remarkToSlate result matches slate schema ([#3085](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3085)) ([fde0c5a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/fde0c5a9a776dc814bbe3a483aa286f46f45d98d))
+* **widget-markdown:** stop double pasting in raw editor ([#3083](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3083)) ([09564bf](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/09564bf8b64b2e431faf2421576b4010f05d516d))
+
+
+
+
+
 # [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.0-beta.0...netlify-cms-widget-markdown@2.8.0) (2020-01-07)
 
 
