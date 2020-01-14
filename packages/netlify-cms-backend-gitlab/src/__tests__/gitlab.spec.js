@@ -1,6 +1,5 @@
 jest.mock('netlify-cms-core/src/backend');
 import { fromJS } from 'immutable';
-import { partial } from 'lodash';
 import { oneLine, stripIndent } from 'common-tags';
 import nock from 'nock';
 import { Cursor } from 'netlify-cms-lib-util';
@@ -175,7 +174,7 @@ describe('gitlab backend', () => {
   }
 
   function mockApi(backend) {
-    return nock(backend.implementation.api_root);
+    return nock(backend.implementation.apiRoot);
   }
 
   function interceptAuth(backend, { userResponse, projectResponse } = {}) {
@@ -206,7 +205,7 @@ describe('gitlab backend', () => {
   function createHeaders(backend, { basePath, path, page, perPage, pageCount, totalCount }) {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
-    const url = `${backend.implementation.api_root}${basePath}`;
+    const url = `${backend.implementation.apiRoot}${basePath}`;
     const link = linkPage =>
       `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
 
@@ -286,18 +285,8 @@ describe('gitlab backend', () => {
     });
   }
 
-  it('throws if configuration requires editorial workflow', () => {
-    const resolveBackendWithWorkflow = partial(resolveBackend, {
-      ...defaultConfig,
-      publish_mode: 'editorial_workflow',
-    });
-    expect(resolveBackendWithWorkflow).toThrowErrorMatchingInlineSnapshot(
-      `"The GitLab backend does not support the Editorial Workflow."`,
-    );
-  });
-
   it('throws if configuration does not include repo', () => {
-    expect(resolveBackend).toThrowErrorMatchingInlineSnapshot(
+    expect(() => resolveBackend({ backend: {} })).toThrowErrorMatchingInlineSnapshot(
       `"The GitLab backend needs a \\"repo\\" in the backend configuration."`,
     );
   });
@@ -382,7 +371,12 @@ describe('gitlab backend', () => {
       interceptCollection(backend, collectionContentConfig);
 
       const entry = await backend.getEntry(
-        { config: fromJS({}), integrations: fromJS([]), entryDraft: fromJS({}) },
+        {
+          config: fromJS({}),
+          integrations: fromJS([]),
+          entryDraft: fromJS({}),
+          mediaLibrary: fromJS({}),
+        },
         fromJS(collectionContentConfig),
         slug,
       );

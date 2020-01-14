@@ -109,7 +109,7 @@ const umdExternals = Object.keys(pkg.peerDependencies || {}).reduce((previous, k
 const baseConfig = ({ target = isProduction ? 'umd' : 'umddir' } = {}) => ({
   context: process.cwd(),
   mode: isProduction ? 'production' : 'development',
-  entry: './src/index.js',
+  entry: './src',
   output: targetOutputs()[target],
   module: {
     rules: flatMap(Object.values(rules()), rule => rule()),

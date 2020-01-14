@@ -1,4 +1,4 @@
-import fixture from './media/media_library';
+import fixture from './common/media_library';
 
 const entries = [
   {

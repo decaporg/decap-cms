@@ -1,5 +1,5 @@
 import { isBoolean } from 'lodash';
-import { ImplementationMediaFile } from '../backend';
+import { ImplementationMediaFile } from 'netlify-cms-lib-util';
 
 interface Options {
   partial?: boolean;

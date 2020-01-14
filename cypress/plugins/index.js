@@ -20,6 +20,14 @@ const {
   setupGitGatewayTest,
   teardownGitGatewayTest,
 } = require('./gitGateway');
+const { setupGitLab, teardownGitLab, setupGitLabTest, teardownGitLabTest } = require('./gitlab');
+const {
+  setupBitBucket,
+  teardownBitBucket,
+  setupBitBucketTest,
+  teardownBitBucketTest,
+} = require('./bitbucket');
+
 const { copyBackendFiles } = require('../utils/config');
 
 module.exports = async (on, config) => {
@@ -37,6 +45,12 @@ module.exports = async (on, config) => {
         case 'git-gateway':
           result = await setupGitGateway(options);
           break;
+        case 'gitlab':
+          result = await setupGitLab(options);
+          break;
+        case 'bitbucket':
+          result = await setupBitBucket(options);
+          break;
       }
 
       return result;
@@ -51,6 +65,12 @@ module.exports = async (on, config) => {
           break;
         case 'git-gateway':
           await teardownGitGateway(taskData);
+          break;
+        case 'gitlab':
+          await teardownGitLab(taskData);
+          break;
+        case 'bitbucket':
+          await teardownBitBucket(taskData);
           break;
       }
 
@@ -70,6 +90,12 @@ module.exports = async (on, config) => {
         case 'git-gateway':
           await setupGitGatewayTest(taskData);
           break;
+        case 'gitlab':
+          await setupGitLabTest(taskData);
+          break;
+        case 'bitbucket':
+          await setupBitBucketTest(taskData);
+          break;
       }
 
       return null;
@@ -86,6 +112,12 @@ module.exports = async (on, config) => {
         case 'git-gateway':
           await teardownGitGatewayTest(taskData);
           break;
+        case 'gitlab':
+          await teardownGitLabTest(taskData);
+          break;
+        case 'bitbucket':
+          await teardownBitBucketTest(taskData);
+          break;
       }
 
       return null;
@@ -96,20 +128,11 @@ module.exports = async (on, config) => {
     if (browser.name === 'chrome') {
       // to allows usage of a mock proxy
       args.push('--ignore-certificate-errors');
-
-      return args;
-    }
-
-    if (browser.name === 'electron') {
-      // to allows usage of a mock proxy
-      args['ignore-certificate-errors'] = true;
-      // https://github.com/cypress-io/cypress/issues/2102
+      args.push('-–disable-gpu');
       if (browser.isHeaded) {
-        args['width'] = 1200;
-        args['height'] = 1200;
+        args.push('--window-size=1200,1200');
       } else {
-        args['width'] = 1200;
-        args['height'] = process.platform === 'darwin' ? 1178 : 1200;
+        args.push('--window-size=1200,1077');
       }
 
       return args;

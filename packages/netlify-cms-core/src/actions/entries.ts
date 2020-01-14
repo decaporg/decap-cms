@@ -7,7 +7,7 @@ import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import { Cursor } from 'netlify-cms-lib-util';
+import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
@@ -23,7 +23,7 @@ import {
 } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, Dispatch } from 'redux';
-import { waitForMediaLibraryToLoad } from './mediaLibrary';
+import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 
 const { notifSend } = notifActions;
@@ -108,7 +108,7 @@ export function entriesLoaded(
   collection: Collection,
   entries: EntryValue[],
   pagination: number | null,
-  cursor: typeof Cursor,
+  cursor: Cursor,
   append = true,
 ) {
   return {
@@ -261,7 +261,7 @@ export function loadLocalBackup() {
   };
 }
 
-export function addDraftEntryMediaFile(file: MediaFile) {
+export function addDraftEntryMediaFile(file: ImplementationMediaFile) {
   return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
 
@@ -270,7 +270,7 @@ export function removeDraftEntryMediaFile({ id }: { id: string }) {
 }
 
 export function persistLocalBackup(entry: EntryMap, collection: Collection) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
 
@@ -309,7 +309,7 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
 }
 
 export function deleteLocalBackup(collection: Collection, slug: string) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     return backend.deleteLocalDraftBackup(collection, slug);
@@ -351,7 +351,7 @@ const appendActions = fromJS({
   ['append_next']: { action: 'next', append: true },
 });
 
-const addAppendActionsToCursor = (cursor: typeof Cursor) => {
+const addAppendActionsToCursor = (cursor: Cursor) => {
   return Cursor.create(cursor).updateStore('actions', (actions: Set<string>) => {
     return actions.union(
       appendActions
@@ -393,11 +393,11 @@ export function loadEntries(collection: Collection, page = 0) {
             })
           : Cursor.create(response.cursor),
       }))
-      .then((response: { cursor: typeof Cursor; pagination: number; entries: EntryValue[] }) =>
+      .then((response: { cursor: Cursor; pagination: number; entries: EntryValue[] }) =>
         dispatch(
           entriesLoaded(
             collection,
-            response.cursor.meta.get('usingOldPaginationAPI')
+            response.cursor.meta!.get('usingOldPaginationAPI')
               ? response.entries.reverse()
               : response.entries,
             response.pagination,
@@ -422,8 +422,8 @@ export function loadEntries(collection: Collection, page = 0) {
   };
 }
 
-function traverseCursor(backend: Backend, cursor: typeof Cursor, action: string) {
-  if (!cursor.actions.has(action)) {
+function traverseCursor(backend: Backend, cursor: Cursor, action: string) {
+  if (!cursor.actions!.has(action)) {
     throw new Error(`The current cursor does not support the pagination action "${action}".`);
   }
   return backend.traverseCursor(cursor, action);
@@ -445,8 +445,8 @@ export function traverseCollectionCursor(collection: Collection, action: string)
 
     // Handle cursors representing pages in the old, integer-based
     // pagination API
-    if (cursor.meta.get('usingOldPaginationAPI', false)) {
-      return dispatch(loadEntries(collection, cursor.data.get('nextPage')));
+    if (cursor.meta!.get('usingOldPaginationAPI', false)) {
+      return dispatch(loadEntries(collection, cursor.data!.get('nextPage') as number));
     }
 
     try {
@@ -625,6 +625,10 @@ export function persistEntry(collection: Collection) {
             dismissAfter: 4000,
           }),
         );
+        // re-load media library if entry had media files
+        if (assetProxies.length > 0) {
+          dispatch(loadMedia());
+        }
         dispatch(entryPersisted(collection, serializedEntry, slug));
       })
       .catch((error: Error) => {

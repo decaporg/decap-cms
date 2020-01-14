@@ -16,18 +16,16 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
-    "immutable": "^3.8.2",
     "lodash": "^4.17.11",
     "netlify-cms-lib-util": "^2.3.0",
     "netlify-cms-ui-default": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
-    "react-immutable-proptypes": "^2.1.0",
     "uuid": "^3.3.2"
   }
 }

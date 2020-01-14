@@ -21,4 +21,11 @@ export interface StaticallyTypedRecord<T> {
   some<K extends keyof T>(predicate: (value: T[K], key: K, iter: this) => boolean): boolean;
   mapKeys<K extends keyof T, V>(mapFunc: (key: K, value: StaticallyTypedRecord<T>) => V): V[];
   find<K extends keyof T>(findFunc: (value: T[K]) => boolean): T[K];
+  filter<K extends keyof T>(
+    predicate: (value: T[K], key: K, iter: this) => boolean,
+  ): StaticallyTypedRecord<T>;
+  valueSeq<K extends keyof T>(): T[K][];
+  map<K extends keyof T, V>(
+    mapFunc: (value: T[K]) => V,
+  ): StaticallyTypedRecord<{ [key: string]: V }>;
 }

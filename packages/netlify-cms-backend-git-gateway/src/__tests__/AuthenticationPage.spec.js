@@ -1,5 +1,4 @@
 import React from 'react';
-import { Map } from 'immutable';
 import { render } from '@testing-library/react';
 
 window.netlifyIdentity = {
@@ -10,7 +9,7 @@ window.netlifyIdentity = {
 
 describe('GitGatewayAuthenticationPage', () => {
   const props = {
-    config: Map({ logo_url: 'logo_url' }),
+    config: { logo_url: 'logo_url' },
     t: jest.fn(key => key),
     onLogin: jest.fn(),
     inProgress: false,

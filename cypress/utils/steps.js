@@ -30,21 +30,12 @@ function login(user) {
 }
 
 function assertNotification(message) {
-  if (Array.isArray(message)) {
-    console.log(message);
-    const messages = message.reverse();
-    cy.get('.notif__container div')
-      .should('have.length.of', messages.length)
-      .each((el, idx) => {
-        cy.wrap(el)
-          .contains(messages[idx])
-          .invoke('hide');
-      });
-  } else {
-    cy.get('.notif__container').within(() => {
-      cy.contains(message).invoke('hide');
-    });
-  }
+  cy.get('.notif__container').within(() => {
+    cy.contains(message);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(100);
+    cy.contains(message).invoke('hide');
+  });
 }
 
 function exitEditor() {
@@ -203,7 +194,7 @@ function flushClockAndSave() {
   });
 }
 
-function populateEntry(entry) {
+function populateEntry(entry, onDone = flushClockAndSave) {
   const keys = Object.keys(entry);
   for (let key of keys) {
     const value = entry[key];
@@ -219,7 +210,7 @@ function populateEntry(entry) {
     }
   }
 
-  flushClockAndSave();
+  onDone();
 }
 
 function newPost() {
@@ -233,6 +224,34 @@ function createPost(entry) {
 
 function createPostAndExit(entry) {
   createPost(entry);
+  exitEditor();
+}
+
+function publishEntry() {
+  cy.clock().then(clock => {
+    // some input fields are de-bounced thus require advancing the clock
+    if (clock) {
+      // https://github.com/cypress-io/cypress/issues/1273
+      clock.tick(150);
+      clock.tick(150);
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
+    }
+
+    cy.contains('[role="button"]', 'Publish').as('publishButton');
+    cy.get('@publishButton')
+      .parent()
+      .within(() => {
+        cy.get('@publishButton').click();
+        cy.contains('[role="menuitem"] span', 'Publish now').click();
+      });
+    assertNotification(notifications.saved);
+  });
+}
+
+function createPostAndPublish(entry) {
+  cy.contains('a', 'New Post').click();
+  populateEntry(entry, publishEntry);
   exitEditor();
 }
 
@@ -345,6 +364,7 @@ module.exports = {
   login,
   createPost,
   createPostAndExit,
+  createPostAndPublish,
   updateExistingPostAndExit,
   exitEditor,
   goToWorkflow,

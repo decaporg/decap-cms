@@ -44,27 +44,24 @@ describe('github GraphQL API', () => {
       expect(api.getAllFiles(entries, path)).toEqual([
         {
           name: 'post-1.md',
-          sha: 'sha-1',
+          id: 'sha-1',
           type: 'blob',
           size: 1,
           path: 'posts/post-1.md',
-          blob: { size: 1 },
         },
         {
           name: 'post-2.md',
-          sha: 'sha-2',
+          id: 'sha-2',
           type: 'blob',
           size: 2,
           path: 'posts/post-2.md',
-          blob: { size: 2 },
         },
         {
           name: 'nested-post.md',
-          sha: 'nested-post-sha',
+          id: 'nested-post-sha',
           type: 'blob',
           size: 3,
           path: 'posts/2019/nested-post.md',
-          blob: { size: 3 },
         },
       ]);
     });

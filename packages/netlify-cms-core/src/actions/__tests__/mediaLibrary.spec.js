@@ -78,7 +78,7 @@ describe('mediaLibrary', () => {
       jest.clearAllMocks();
     });
 
-    it('should not persist media in editorial workflow', () => {
+    it('should not persist media when editing draft', () => {
       const { getBlobSHA } = require('netlify-cms-lib-util');
 
       getBlobSHA.mockReturnValue('000000000000000');
@@ -88,7 +88,6 @@ describe('mediaLibrary', () => {
 
       const store = mockStore({
         config: Map({
-          publish_mode: 'editorial_workflow',
           media_folder: 'static/media',
         }),
         collections: Map({
@@ -132,52 +131,7 @@ describe('mediaLibrary', () => {
       });
     });
 
-    it('should persist media when not in editorial workflow', () => {
-      const { sanitizeSlug } = require('../../lib/urlHelper');
-      sanitizeSlug.mockReturnValue('name.png');
-
-      const store = mockStore({
-        config: Map({
-          media_folder: 'static/media',
-        }),
-        collections: Map({
-          posts: Map({ name: 'posts' }),
-        }),
-        integrations: Map(),
-        mediaLibrary: Map({
-          files: List(),
-        }),
-        entryDraft: Map({
-          entry: Map({ isPersisting: false, collection: 'posts' }),
-        }),
-      });
-
-      const file = new File([''], 'name.png');
-      const assetProxy = { path: 'static/media/name.png' };
-      createAssetProxy.mockReturnValue(assetProxy);
-
-      return store.dispatch(persistMedia(file)).then(() => {
-        const actions = store.getActions();
-
-        expect(actions).toHaveLength(3);
-        expect(actions[0]).toEqual({ type: 'MEDIA_PERSIST_REQUEST' });
-        expect(actions[1]).toEqual({
-          type: 'ADD_ASSET',
-          payload: { path: 'static/media/name.png' },
-        });
-        expect(actions[2]).toEqual({
-          type: 'MEDIA_PERSIST_SUCCESS',
-          payload: {
-            file: { id: 'id' },
-          },
-        });
-
-        expect(backend.persistMedia).toHaveBeenCalledTimes(1);
-        expect(backend.persistMedia).toHaveBeenCalledWith(store.getState().config, assetProxy);
-      });
-    });
-
-    it('should persist media when draft is empty', () => {
+    it('should persist media when not editing draft', () => {
       const store = mockStore({
         config: Map({
           media_folder: 'static/media',

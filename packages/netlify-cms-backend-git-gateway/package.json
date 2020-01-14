@@ -18,7 +18,7 @@
   "scripts": {
     "develop": "yarn build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
     "gotrue-js": "^0.9.24",
@@ -29,7 +29,6 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
-    "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "netlify-cms-backend-bitbucket": "^2.3.0",
     "netlify-cms-backend-github": "^2.4.0",

@@ -75,6 +75,8 @@ const stubFetch = (win, routes) => {
       return Promise.resolve(fetchResponse);
     } else if (
       args[0].includes('api.github.com') ||
+      args[0].includes('api.bitbucket.org') ||
+      args[0].includes('gitlab.com') ||
       args[0].includes('netlify.com') ||
       args[0].includes('s3.amazonaws.com')
     ) {

@@ -14,7 +14,7 @@ describe('github API', () => {
 
     it('should fetch url with authorization header', async () => {
       const api = new API({
-        api_root: 'https://site.netlify.com/.netlify/git/github',
+        apiRoot: 'https://site.netlify.com/.netlify/git/github',
         tokenPromise: () => Promise.resolve('token'),
       });
 
@@ -40,7 +40,7 @@ describe('github API', () => {
 
     it('should throw error on not ok response with message property', async () => {
       const api = new API({
-        api_root: 'https://site.netlify.com/.netlify/git/github',
+        apiRoot: 'https://site.netlify.com/.netlify/git/github',
         tokenPromise: () => Promise.resolve('token'),
       });
 
@@ -63,7 +63,7 @@ describe('github API', () => {
 
     it('should throw error on not ok response with msg property', async () => {
       const api = new API({
-        api_root: 'https://site.netlify.com/.netlify/git/github',
+        apiRoot: 'https://site.netlify.com/.netlify/git/github',
         tokenPromise: () => Promise.resolve('token'),
       });
 

@@ -1,20 +1,22 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { getBlobSHA } from 'netlify-cms-lib-util';
+import { getBlobSHA, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { currentBackend } from '../backend';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
-import { selectMediaFilePath, selectMediaFilePublicPath } from '../reducers/entries';
+import {
+  selectMediaFilePath,
+  selectMediaFilePublicPath,
+  selectEditingDraft,
+} from '../reducers/entries';
 import { selectMediaDisplayURL, selectMediaFiles } from '../reducers/mediaLibrary';
 import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
-import { State, MediaFile, DisplayURLState } from '../types/redux';
+import { State, MediaFile, DisplayURLState, MediaLibraryInstance } from '../types/redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { MediaLibraryInstance } from '../mediaLibrary';
-import { selectEditingWorkflowDraft } from '../reducers/editorialWorkflow';
 import { waitUntilWithTimeout } from './waitUntil';
 
 const { notifSend } = notifActions;
@@ -49,7 +51,7 @@ export function createMediaLibrary(instance: MediaLibraryInstance) {
 }
 
 export function clearMediaControl(id: string) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
@@ -59,7 +61,7 @@ export function clearMediaControl(id: string) {
 }
 
 export function removeMediaControl(id: string) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
@@ -150,7 +152,7 @@ export function loadMedia(
           resolve(
             backend
               .getMedia()
-              .then((files: MediaFile[]) => dispatch(mediaLoaded(files)))
+              .then(files => dispatch(mediaLoaded(files)))
               .catch((error: { status?: number }) => {
                 console.error(error);
                 if (error.status === 404) {
@@ -177,7 +179,7 @@ function createMediaFileFromAsset({
   file: File;
   assetProxy: AssetProxy;
   draft: boolean;
-}): MediaFile {
+}): ImplementationMediaFile {
   const mediaFile = {
     id,
     name: file.name,
@@ -200,7 +202,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
-    const editingDraft = selectEditingWorkflowDraft(state);
+    const editingDraft = selectEditingDraft(state.entryDraft);
 
     /**
      * Check for existing files of the same name before persisting. If no asset
@@ -255,7 +257,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
 
       dispatch(addAsset(assetProxy));
 
-      let mediaFile: MediaFile;
+      let mediaFile: ImplementationMediaFile;
       if (integration) {
         const id = await getBlobSHA(file);
         // integration assets are persisted immediately, thus draft is false
@@ -314,7 +316,7 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
         dispatch(removeAsset(file.path));
         dispatch(removeDraftEntryMediaFile({ id: file.id }));
       } else {
-        const editingDraft = selectEditingWorkflowDraft(state);
+        const editingDraft = selectEditingDraft(state.entryDraft);
 
         dispatch(mediaDeleting());
         dispatch(removeAsset(file.path));
@@ -395,7 +397,7 @@ interface MediaOptions {
   privateUpload?: boolean;
 }
 
-export function mediaLoaded(files: MediaFile[], opts: MediaOptions = {}) {
+export function mediaLoaded(files: ImplementationMediaFile[], opts: MediaOptions = {}) {
   return {
     type: MEDIA_LOAD_SUCCESS,
     payload: { files, ...opts },
@@ -411,7 +413,7 @@ export function mediaPersisting() {
   return { type: MEDIA_PERSIST_REQUEST };
 }
 
-export function mediaPersisted(file: MediaFile, opts: MediaOptions = {}) {
+export function mediaPersisted(file: ImplementationMediaFile, opts: MediaOptions = {}) {
   const { privateUpload } = opts;
   return {
     type: MEDIA_PERSIST_SUCCESS,

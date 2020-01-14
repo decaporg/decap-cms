@@ -23,9 +23,9 @@ import {
   EntryFailurePayload,
   EntryDeletePayload,
   EntriesRequestPayload,
+  EntryDraft,
 } from '../types/redux';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util/src';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -144,8 +144,7 @@ export const selectMediaFolder = (
 ) => {
   let mediaFolder = config.get('media_folder');
 
-  const useWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  if (useWorkflow && collection && collection.has('media_folder')) {
+  if (collection && collection.has('media_folder')) {
     if (entryPath) {
       const entryDir = dirname(entryPath);
       mediaFolder = join(entryDir, collection.get('media_folder') as string);
@@ -189,12 +188,17 @@ export const selectMediaFilePublicPath = (
 
   let publicFolder = config.get('public_folder');
 
-  const useWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  if (useWorkflow && collection && collection.has('public_folder')) {
+  if (collection && collection.has('public_folder')) {
     publicFolder = collection.get('public_folder') as string;
   }
 
   return join(publicFolder, basename(mediaPath));
+};
+
+export const selectEditingDraft = (state: EntryDraft) => {
+  const entry = state.get('entry');
+  const workflowDraft = entry && !entry.isEmpty();
+  return workflowDraft;
 };
 
 export default entries;

@@ -1,5 +1,5 @@
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
-import { Collection, State, MediaFile } from '../types/redux';
+import { Collection, State } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
@@ -49,7 +49,7 @@ export function getAsset({ collection, entryPath, path }: GetAssetArgs) {
     } else {
       // load asset url from backend
       await waitForMediaLibraryToLoad(dispatch, getState());
-      const file: MediaFile | null = selectMediaFileByPath(state, resolvedPath);
+      const file = selectMediaFileByPath(state, resolvedPath);
 
       if (file) {
         const url = await getMediaDisplayURL(dispatch, getState(), file);
