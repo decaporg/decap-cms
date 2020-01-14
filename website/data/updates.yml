@@ -1,4 +1,13 @@
 updates:
+  - date: '2020-01-14'
+    description: 'Editorial workflow for GitLab and Bitbucket 🎉🎉'
+    version: 2.10.6
+  - date: '2020-01-14'
+    description: 'Collection level media_folder, multiline shortcodes, max file size validation'
+    version: 2.10.5
+  - date: '2020-01-09'
+    description: 'Bugfixes'
+    version: 2.10.4
   - date: '2020-01-07'
     description: 'Bundle assets with content, bugfixes'
     version: 2.10.3
