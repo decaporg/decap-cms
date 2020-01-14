@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.6.0...netlify-cms-backend-git-gateway@2.6.1) (2020-01-14)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
 # [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.6.0-beta.0...netlify-cms-backend-git-gateway@2.6.0) (2020-01-07)
 
 
