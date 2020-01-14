@@ -279,6 +279,12 @@ Object {
       "type": "heading-one",
     },
     Object {
+      "nodes": Array [
+        Object {
+          "object": "text",
+          "text": "",
+        },
+      ],
       "object": "block",
       "type": "thematic-break",
     },
@@ -321,6 +327,12 @@ Object {
       "type": "heading-one",
     },
     Object {
+      "nodes": Array [
+        Object {
+          "object": "text",
+          "text": "",
+        },
+      ],
       "object": "block",
       "type": "thematic-break",
     },
@@ -357,6 +369,12 @@ Object {
         },
         Object {
           "data": undefined,
+          "nodes": Array [
+            Object {
+              "object": "text",
+              "text": "",
+            },
+          ],
           "object": "inline",
           "type": "break",
         },
@@ -385,13 +403,27 @@ Object {
     Object {
       "nodes": Array [
         Object {
+          "object": "text",
+          "text": "",
+        },
+        Object {
           "data": Object {
             "alt": "super",
             "title": null,
             "url": "duper.jpg",
           },
+          "nodes": Array [
+            Object {
+              "object": "text",
+              "text": "",
+            },
+          ],
           "object": "inline",
           "type": "image",
+        },
+        Object {
+          "object": "text",
+          "text": "",
         },
       ],
       "object": "block",
@@ -639,13 +671,27 @@ Object {
     Object {
       "nodes": Array [
         Object {
+          "object": "text",
+          "text": "",
+        },
+        Object {
           "data": Object {
             "alt": "test",
             "title": null,
             "url": "test.png",
           },
+          "nodes": Array [
+            Object {
+              "object": "text",
+              "text": "",
+            },
+          ],
           "object": "inline",
           "type": "image",
+        },
+        Object {
+          "object": "text",
+          "text": "",
         },
       ],
       "object": "block",
