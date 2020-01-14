@@ -28,6 +28,42 @@ const markMap = {
   inlineCode: 'code',
 };
 
+const isInline = node => node.object === 'inline';
+const isText = node => node.object === 'text';
+
+export const wrapInlinesWithTexts = children => {
+  if (children.length <= 0) {
+    return children;
+  }
+
+  const insertLocations = [];
+  let prev = children[0];
+  if (isInline(prev)) {
+    insertLocations.push(0);
+  }
+
+  for (let i = 1; i < children.length; i++) {
+    const current = children[i];
+    if (isInline(prev) && !isText(current)) {
+      insertLocations.push(i);
+    } else if (!isText(prev) && isInline(current)) {
+      insertLocations.push(i);
+    }
+
+    prev = current;
+  }
+
+  if (isInline(prev)) {
+    insertLocations.push(children.length);
+  }
+
+  for (let i = 0; i < insertLocations.length; i++) {
+    children.splice(insertLocations[i] + i, 0, { object: 'text', text: '' });
+  }
+
+  return children;
+};
+
 /**
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
  * return a `transformNode` function that receives the MDAST as it's first argument.
@@ -43,10 +79,15 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
      * translate from MDAST to Slate, such as definitions for link/image
      * references or footnotes.
      */
-    const children =
+    let children =
       !['strong', 'emphasis', 'delete'].includes(node.type) &&
       !isEmpty(node.children) &&
       flatMap(node.children, transformNode).filter(val => val);
+
+    if (Array.isArray(children)) {
+      // Ensure that inline nodes are surrounded by text nodes to conform to slate schema
+      children = wrapInlinesWithTexts(children);
+    }
 
     /**
      * Run individual nodes through the conversion factory.
@@ -71,8 +112,10 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       nodes = undefined;
     }
 
+    // Ensure block nodes have at least one text child to conform to slate schema
+    const children = isEmpty(nodes) ? [createText('')] : nodes;
     const node = { object: 'block', type, ...props };
-    return addNodes(node, nodes);
+    return addNodes(node, children);
   }
 
   /**
@@ -80,7 +123,10 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
    */
   function createInline(type, props = {}, nodes) {
     const node = { object: 'inline', type, ...props };
-    return addNodes(node, nodes);
+
+    // Ensure inline nodes have at least one text child to conform to slate schema
+    const children = isEmpty(nodes) ? [createText('')] : nodes;
+    return addNodes(node, children);
   }
 
   /**

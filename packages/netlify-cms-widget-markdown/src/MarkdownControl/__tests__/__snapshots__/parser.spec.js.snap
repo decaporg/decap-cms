@@ -477,6 +477,10 @@ more important, there there are only so many sizes that you can use.",
             Object {
               "nodes": Array [
                 Object {
+                  "object": "text",
+                  "text": "",
+                },
+                Object {
                   "data": Object {
                     "title": null,
                     "url": "http://www.markitdown.net/",
@@ -506,6 +510,10 @@ more important, there there are only so many sizes that you can use.",
           "nodes": Array [
             Object {
               "nodes": Array [
+                Object {
+                  "object": "text",
+                  "text": "",
+                },
                 Object {
                   "data": Object {
                     "title": null,
@@ -557,6 +565,12 @@ more important, there there are only so many sizes that you can use.",
       "type": "paragraph",
     },
     Object {
+      "nodes": Array [
+        Object {
+          "object": "text",
+          "text": "",
+        },
+      ],
       "object": "block",
       "type": "thematic-break",
     },
