@@ -190,8 +190,8 @@ export const selectMediaFilePublicPath = (
   let publicFolder = config.get('public_folder');
 
   const useWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  if (useWorkflow && collection && collection.has('media_folder')) {
-    publicFolder = collection.get('media_folder') as string;
+  if (useWorkflow && collection && collection.has('public_folder')) {
+    publicFolder = collection.get('public_folder') as string;
   }
 
   return join(publicFolder, basename(mediaPath));

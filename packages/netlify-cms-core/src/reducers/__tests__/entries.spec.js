@@ -182,7 +182,7 @@ describe('entries', () => {
       ).toBe('/media/image.png');
     });
 
-    it('should resolve path from public folder when in editorial workflow for collection with no media folder', () => {
+    it('should resolve path from public folder when in editorial workflow for collection with no public folder', () => {
       expect(
         selectMediaFilePublicPath(
           Map({ public_folder: '/media', publish_mode: EDITORIAL_WORKFLOW }),
@@ -192,21 +192,21 @@ describe('entries', () => {
       ).toBe('/media/image.png');
     });
 
-    it('should resolve path from collection media folder when in editorial workflow for collection with media folder', () => {
+    it('should resolve path from collection media folder when in editorial workflow for collection with public folder', () => {
       expect(
         selectMediaFilePublicPath(
           Map({ public_folder: '/media', publish_mode: EDITORIAL_WORKFLOW }),
-          Map({ name: 'posts', folder: 'posts', media_folder: '' }),
+          Map({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
         ),
       ).toBe('image.png');
     });
 
-    it('should handle relative media_folder', () => {
+    it('should handle relative public_folder', () => {
       expect(
         selectMediaFilePublicPath(
           Map({ public_folder: '/media', publish_mode: EDITORIAL_WORKFLOW }),
-          Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
+          Map({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
         ),
       ).toBe('../../static/media/image.png');

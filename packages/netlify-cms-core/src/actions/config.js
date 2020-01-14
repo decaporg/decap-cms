@@ -64,6 +64,9 @@ export function applyDefaults(config) {
               // default value for media folder when using the path config
               collection = collection.set('media_folder', '');
             }
+            if (collection.has('media_folder') && !collection.has('public_folder')) {
+              collection = collection.set('public_folder', collection.get('media_folder'));
+            }
             return collection.set('folder', trimStart(folder, '/'));
           }
 
