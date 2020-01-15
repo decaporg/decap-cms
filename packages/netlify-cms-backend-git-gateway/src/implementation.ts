@@ -389,8 +389,11 @@ export default class GitGateway implements Implementation {
 
     return filesPromise
       .then(items =>
-        items.map(({ file: { id }, data }) => {
+        items.map(({ file: { id, path }, data }) => {
           const parsedPointerFile = parsePointerFile(data);
+          if (!parsedPointerFile.sha) {
+            console.warn(`Failed parsing pointer file ${path}`);
+          }
           return [
             {
               pointerId: id,
