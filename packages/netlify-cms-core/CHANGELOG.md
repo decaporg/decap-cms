@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.1...netlify-cms-core@2.15.2) (2020-01-15)
+
+
+### Reverts
+
+* don't force multiline flag for editor component patterns ([#3089](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3089)) ([c4cbae7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c4cbae77255d1f422fd62258a01007956d512392))
+
+
+
+
+
 ## [2.15.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.0...netlify-cms-core@2.15.1) (2020-01-14)
 
 **Note:** Version bump only for package netlify-cms-core

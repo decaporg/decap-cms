@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.1...netlify-cms-widget-markdown@2.8.2) (2020-01-15)
+
+
+### Reverts
+
+* don't force multiline flag for editor component patterns ([#3089](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3089)) ([c4cbae7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/c4cbae77255d1f422fd62258a01007956d512392))
+
+
+
+
+
 ## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.0...netlify-cms-widget-markdown@2.8.1) (2020-01-14)
 
 
