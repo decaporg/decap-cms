@@ -11,8 +11,14 @@ export function remarkParseShortcodes({ plugins }) {
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
     let match;
+    const potentialMatchValue = value.split('\n\n')[0].trimEnd();
     const plugin = plugins.find(plugin => {
       match = value.match(plugin.pattern);
+
+      if (!match) {
+        match = potentialMatchValue.match(plugin.pattern);
+      }
+
       return !!match;
     });
 
@@ -23,10 +29,19 @@ function createShortcodeTokenizer({ plugins }) {
 
       const shortcodeData = plugin.fromBlock(match);
 
-      return eat(match[0])({
-        type: 'shortcode',
-        data: { shortcode: plugin.id, shortcodeData },
-      });
+      try {
+        return eat(match[0])({
+          type: 'shortcode',
+          data: { shortcode: plugin.id, shortcodeData },
+        });
+      } catch (e) {
+        console.warn(
+          `Sent invalid data to remark. Plugin: ${plugin.id}. Value: ${
+            match[0]
+          }. Data: ${JSON.stringify(shortcodeData)}`,
+        );
+        return false;
+      }
     }
   };
 }
