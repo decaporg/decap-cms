@@ -11,8 +11,14 @@ export function remarkParseShortcodes({ plugins }) {
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
     let match;
+    const potentialMatchValue = value.split('\n\n')[0].trim();
     const plugin = plugins.find(plugin => {
       match = value.match(plugin.pattern);
+
+      if (!match) {
+        match = potentialMatchValue.match(plugin.pattern);
+      }
+
       return !!match;
     });
 
