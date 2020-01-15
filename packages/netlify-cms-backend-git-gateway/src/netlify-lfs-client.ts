@@ -16,7 +16,7 @@ export const parsePointerFile: (data: string) => PointerFile = flow([
   fromPairs,
   ({ size, oid, ...rest }) => ({
     size: parseInt(size),
-    sha: oid.split(':')[1],
+    sha: oid?.split(':')[1],
     ...rest,
   }),
 ]);
