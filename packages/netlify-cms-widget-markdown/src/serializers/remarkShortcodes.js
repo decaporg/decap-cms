@@ -35,7 +35,7 @@ function createShortcodeTokenizer({ plugins }) {
           data: { shortcode: plugin.id, shortcodeData },
         });
       } catch (e) {
-        console.log(
+        console.warn(
           `Sent invalid data to remark. Plugin: ${plugin.id}. Value: ${
             match[0]
           }. Data: ${JSON.stringify(shortcodeData)}`,
