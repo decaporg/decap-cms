@@ -17,7 +17,7 @@ const serializeAsset = async (assetProxy: AssetProxy) => {
 
 export default class ProxyBackend implements Implementation {
   proxyUrl: string;
-
+  mediaFolder: string;
   options: { initialWorkflowStatus?: string };
 
   constructor(config: Config, options = {}) {
@@ -26,6 +26,7 @@ export default class ProxyBackend implements Implementation {
     }
 
     this.proxyUrl = config.backend.proxy_url;
+    this.mediaFolder = config.media_folder;
     this.options = options;
   }
 
@@ -128,7 +129,7 @@ export default class ProxyBackend implements Implementation {
   getMedia() {
     return this.request({
       action: 'getMedia',
-      params: {},
+      params: { mediaFolder: this.mediaFolder },
     });
   }
 
@@ -154,7 +155,10 @@ export default class ProxyBackend implements Implementation {
     });
   }
 
-  async getDeployPreview() {
-    return null;
+  getDeployPreview(collection: string, slug: string) {
+    return this.request({
+      action: 'getDeployPreview',
+      params: { collection, slug },
+    });
   }
 }

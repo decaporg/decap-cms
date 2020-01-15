@@ -1,0 +1,24 @@
+require('dotenv').config();
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import { localGitMiddleware } from './middlewares/localGitMiddleware';
+import { joi } from './middlewares/joi';
+
+const app = express();
+const port = process.env.PORT || 8081;
+
+app.use(morgan('combined'));
+app.use(cors());
+app.use(express.json());
+
+app.post('/api/v1', joi());
+
+if (process.env.GIT_REPO_DIRECTORY) {
+  app.post('/api/v1', localGitMiddleware({ repoPath: process.env.GIT_REPO_DIRECTORY }));
+  console.log(`Netlify CMS configured with ${process.env.GIT_REPO_DIRECTORY}`);
+}
+
+app.listen(port, () => {
+  console.log(`Netlify CMS proxy server listening on port ${port}`);
+});

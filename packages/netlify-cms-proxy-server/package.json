@@ -1,0 +1,44 @@
+{
+  "name": "netlify-cms-proxy-server",
+  "description": "Proxy server to be used with Netlify CMS proxy backend",
+  "version": "1.0.1",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "license": "MIT",
+  "main": "dist/index",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "backend"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc",
+    "prestart": "yarn build",
+    "start": "node dist/index.js",
+    "develop": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fs-extra": "^8.1.0",
+    "joi": "^14.3.1",
+    "morgan": "^1.9.1",
+    "simple-git": "^1.129.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.2",
+    "@types/fs-extra": "^8.0.1",
+    "@types/joi": "^14.3.4",
+    "@types/morgan": "^1.7.37",
+    "@types/vfile-message": "^2.0.0",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.6.2"
+  },
+  "engines": {
+    "node": ">=v12"
+  }
+}
