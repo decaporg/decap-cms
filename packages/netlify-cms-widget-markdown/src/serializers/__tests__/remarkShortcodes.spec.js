@@ -11,8 +11,7 @@ function process(value, plugins, processEat = () => {}) {
 }
 
 function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
-  // initialize pattern as RegExp as done in the EditorComponent value object
-  return { id, fromBlock, pattern: new RegExp(pattern, 'm') };
+  return { id, fromBlock, pattern };
 }
 
 describe('remarkParseShortcodes', () => {
