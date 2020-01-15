@@ -126,10 +126,10 @@ export default class ProxyBackend implements Implementation {
     });
   }
 
-  getMedia() {
+  getMedia(mediaFolder = this.mediaFolder) {
     return this.request({
       action: 'getMedia',
-      params: { mediaFolder: this.mediaFolder },
+      params: { mediaFolder },
     });
   }
 

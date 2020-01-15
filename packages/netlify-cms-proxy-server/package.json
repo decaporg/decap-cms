@@ -13,13 +13,14 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "prestart": "yarn build",
     "start": "node dist/index.js",
     "develop": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
+    "@hapi/joi": "^17.0.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -32,10 +33,14 @@
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
     "@types/fs-extra": "^8.0.1",
-    "@types/joi": "^14.3.4",
+    "@types/hapi__joi": "^16.0.6",
+    "@types/jest": "^24.9.0",
     "@types/morgan": "^1.7.37",
     "@types/vfile-message": "^2.0.0",
+    "jest": "^24.9.0",
     "nodemon": "^2.0.2",
+    "rimraf": "^3.0.0",
+    "ts-jest": "^24.3.0",
     "ts-node": "^8.6.2"
   },
   "engines": {

@@ -1,7 +1,7 @@
 import express from 'express';
-import Joi from 'joi';
+import Joi from '@hapi/joi';
 
-const actions = [
+const allowedActions = [
   'entriesByFolder',
   'entriesByFiles',
   'getEntry',
@@ -18,70 +18,139 @@ const actions = [
   'getDeployPreview',
 ];
 
-const defaultSchema = Joi.object({
-  action: Joi.string()
-    .allow(...actions)
-    .required(),
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  params: Joi.when('action', {
+const requiredString = Joi.string().required();
+const requiredNumber = Joi.number().required();
+const requiredBool = Joi.bool().required();
+
+const collection = requiredString;
+const slug = requiredString;
+
+export const defaultSchema = ({ path = requiredString } = {}) => {
+  const asset = Joi.object({
+    path,
+    content: requiredString,
+    encoding: requiredString.valid('base64'),
+  });
+
+  const params = Joi.when('action', {
     switch: [
       {
         is: 'entriesByFolder',
         then: Joi.object({
-          folder: Joi.string().required(),
-          extension: Joi.string().required(),
-          depth: Joi.number().required(),
-        }),
+          folder: requiredString,
+          extension: requiredString,
+          depth: requiredNumber,
+        }).required(),
       },
       {
         is: 'entriesByFiles',
         then: Joi.object({
           files: Joi.array()
-            .items(Joi.object({ path: Joi.string().required() }))
+            .items(Joi.object({ path }))
             .required(),
         }),
       },
       {
         is: 'getEntry',
         then: Joi.object({
-          path: Joi.string().required(),
-        }),
+          path,
+        }).required(),
       },
       {
         is: 'unpublishedEntries',
-        then: Joi.object({}),
+        then: Joi.object({}).required(),
       },
       {
         is: 'unpublishedEntry',
         then: Joi.object({
-          collection: Joi.string().required(),
-          slug: Joi.string().required(),
-        }),
+          collection,
+          slug,
+        }).required(),
       },
       {
         is: 'deleteUnpublishedEntry',
         then: Joi.object({
-          collection: Joi.string().required(),
-          slug: Joi.string().required(),
-        }),
+          collection,
+          slug,
+        }).required(),
       },
       {
         is: 'persistEntry',
         then: Joi.object({
-          entry: Joi.object({ path: Joi.string().required() }),
-        }),
+          entry: Joi.object({ path, raw: requiredString }),
+          assets: Joi.array()
+            .items(asset)
+            .required(),
+          options: {
+            commitMessage: requiredString,
+            useWorkflow: requiredBool,
+            unpublished: requiredBool,
+            status: requiredString,
+          },
+        }).required(),
+      },
+      {
+        is: 'updateUnpublishedEntryStatus',
+        then: Joi.object({
+          collection,
+          slug,
+          newStatus: requiredString,
+        }).required(),
+      },
+      {
+        is: 'publishUnpublishedEntry',
+        then: Joi.object({
+          collection,
+          slug,
+        }).required(),
+      },
+      {
+        is: 'getMedia',
+        then: Joi.object({
+          mediaFolder: requiredString,
+        }).required(),
+      },
+      {
+        is: 'getMediaFile',
+        then: Joi.object({
+          path,
+        }).required(),
+      },
+      {
+        is: 'persistMedia',
+        then: Joi.object({
+          asset,
+        }).required(),
+      },
+      {
+        is: 'deleteFile',
+        then: Joi.object({
+          path,
+        }).required(),
+      },
+      {
+        is: 'getDeployPreview',
+        then: Joi.object({
+          collection,
+          slug,
+        }).required(),
       },
     ],
-  }),
-});
+    otherwise: Joi.forbidden(),
+  });
 
-export const joi = (schema: Joi.Schema = defaultSchema) => (
+  return Joi.object({
+    action: Joi.valid(...allowedActions).required(),
+    params,
+  });
+};
+
+export const joi = (schema: Joi.Schema) => (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { error } = Joi.validate(req.body, schema, { allowUnknown: true });
+  const { error } = schema.validate(req.body, { allowUnknown: true });
   const valid = error == null;
 
   if (valid) {
