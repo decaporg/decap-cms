@@ -1,14 +1,15 @@
 import { flow, fromPairs, get } from 'lodash';
 import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
-import { fileExtension } from './path';
 import unsentRequest from './unsentRequest';
 import APIError from './APIError';
 
 type Formatter = (res: Response) => Promise<string | Blob | unknown>;
 
 export const filterByPropExtension = (extension: string, propName: string) => <T>(arr: T[]) =>
-  arr.filter(el => fileExtension(get(el, propName)) === extension);
+  arr.filter(el =>
+    get(el, propName, '').endsWith(extension.startsWith('.') ? extension : `.${extension}`),
+  );
 
 const catchFormatErrors = (format: string, formatter: Formatter) => (res: Response) => {
   try {

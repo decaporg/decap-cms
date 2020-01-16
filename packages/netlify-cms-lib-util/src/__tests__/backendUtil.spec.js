@@ -1,4 +1,9 @@
-import { parseLinkHeader, getAllResponses, getPathDepth } from '../backendUtil';
+import {
+  parseLinkHeader,
+  getAllResponses,
+  getPathDepth,
+  filterByPropExtension,
+} from '../backendUtil';
 import { oneLine } from 'common-tags';
 import nock from 'nock';
 
@@ -77,5 +82,16 @@ describe('getPathDepth', () => {
 
   it('should return 2 for path of one nested folder', () => {
     expect(getPathDepth('{{year}}/{{slug}}')).toBe(2);
+  });
+});
+
+describe('filterByPropExtension', () => {
+  it('should return filtered array based on extension', () => {
+    expect(
+      filterByPropExtension('.html.md', 'path')([{ path: 'file.html.md' }, { path: 'file.json' }]),
+    ).toEqual([{ path: 'file.html.md' }]);
+    expect(
+      filterByPropExtension('html.md', 'path')([{ path: 'file.html.md' }, { path: 'file.json' }]),
+    ).toEqual([{ path: 'file.html.md' }]);
   });
 });
