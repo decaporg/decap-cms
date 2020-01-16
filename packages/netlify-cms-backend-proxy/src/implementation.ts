@@ -19,12 +19,14 @@ export default class ProxyBackend implements Implementation {
   proxyUrl: string;
   mediaFolder: string;
   options: { initialWorkflowStatus?: string };
+  branch: string;
 
   constructor(config: Config, options = {}) {
     if (!config.backend.proxy_url) {
       throw new Error('The Proxy backend needs a "proxy_url" in the backend configuration.');
     }
 
+    this.branch = config.backend.branch || 'master';
     this.proxyUrl = config.backend.proxy_url;
     this.mediaFolder = config.media_folder;
     this.options = options;
@@ -54,7 +56,7 @@ export default class ProxyBackend implements Implementation {
     return fetch(this.proxyUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ branch: this.branch, ...payload }),
     }).then(r => r.json());
   }
 

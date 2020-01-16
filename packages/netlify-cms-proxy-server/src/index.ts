@@ -2,8 +2,8 @@ require('dotenv').config();
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import { localGitMiddleware, getSchema } from './middlewares/localGitMiddleware';
-import { joi } from './middlewares/joi';
+import { localGitMiddleware, getSchema } from './middlewares/localGit/localGitMiddleware';
+import { joi } from './middlewares/joi/joi';
 
 const app = express();
 const port = process.env.PORT || 8081;

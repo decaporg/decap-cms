@@ -24,18 +24,18 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "fs-extra": "^8.1.0",
     "joi": "^14.3.1",
     "morgan": "^1.9.1",
-    "simple-git": "^1.129.0"
+    "simple-git": "^1.129.0",
+    "netlify-cms-lib-util": "^2.3.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
-    "@types/fs-extra": "^8.0.1",
     "@types/hapi__joi": "^16.0.6",
     "@types/jest": "^24.9.0",
     "@types/morgan": "^1.7.37",
+    "@types/node": "^13.1.7",
     "@types/vfile-message": "^2.0.0",
     "jest": "^24.9.0",
     "nodemon": "^2.0.2",

@@ -26,6 +26,10 @@ const collection = requiredString;
 const slug = requiredString;
 
 export const defaultSchema = ({ path = requiredString } = {}) => {
+  const defaultParams = Joi.object({
+    branch: requiredString,
+  });
+
   const asset = Joi.object({
     path,
     content: requiredString,
@@ -36,15 +40,17 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
     switch: [
       {
         is: 'entriesByFolder',
-        then: Joi.object({
-          folder: path,
-          extension: requiredString,
-          depth: requiredNumber,
-        }).required(),
+        then: defaultParams
+          .keys({
+            folder: path,
+            extension: requiredString,
+            depth: requiredNumber,
+          })
+          .required(),
       },
       {
         is: 'entriesByFiles',
-        then: Joi.object({
+        then: defaultParams.keys({
           files: Joi.array()
             .items(Joi.object({ path }))
             .required(),
@@ -52,88 +58,110 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
       },
       {
         is: 'getEntry',
-        then: Joi.object({
-          path,
-        }).required(),
+        then: defaultParams
+          .keys({
+            path,
+          })
+          .required(),
       },
       {
         is: 'unpublishedEntries',
-        then: Joi.object({}).required(),
+        then: defaultParams.keys({ branch: requiredString }).required(),
       },
       {
         is: 'unpublishedEntry',
-        then: Joi.object({
-          collection,
-          slug,
-        }).required(),
+        then: defaultParams
+          .keys({
+            collection,
+            slug,
+          })
+          .required(),
       },
       {
         is: 'deleteUnpublishedEntry',
-        then: Joi.object({
-          collection,
-          slug,
-        }).required(),
+        then: defaultParams
+          .keys({
+            collection,
+            slug,
+          })
+          .required(),
       },
       {
         is: 'persistEntry',
-        then: Joi.object({
-          entry: Joi.object({ path, raw: requiredString }).required(),
-          assets: Joi.array()
-            .items(asset)
-            .required(),
-          options: Joi.object({
-            commitMessage: requiredString,
-            useWorkflow: requiredBool,
-            unpublished: requiredBool,
-            status: requiredString,
-          }).required(),
-        }).required(),
+        then: defaultParams
+          .keys({
+            entry: Joi.object({ path, raw: requiredString }).required(),
+            assets: Joi.array()
+              .items(asset)
+              .required(),
+            options: Joi.object({
+              commitMessage: requiredString,
+              useWorkflow: requiredBool,
+              unpublished: requiredBool,
+              status: requiredString,
+            }).required(),
+          })
+          .required(),
       },
       {
         is: 'updateUnpublishedEntryStatus',
-        then: Joi.object({
-          collection,
-          slug,
-          newStatus: requiredString,
-        }).required(),
+        then: defaultParams
+          .keys({
+            collection,
+            slug,
+            newStatus: requiredString,
+          })
+          .required(),
       },
       {
         is: 'publishUnpublishedEntry',
-        then: Joi.object({
-          collection,
-          slug,
-        }).required(),
+        then: defaultParams
+          .keys({
+            collection,
+            slug,
+          })
+          .required(),
       },
       {
         is: 'getMedia',
-        then: Joi.object({
-          mediaFolder: path,
-        }).required(),
+        then: defaultParams
+          .keys({
+            mediaFolder: path,
+          })
+          .required(),
       },
       {
         is: 'getMediaFile',
-        then: Joi.object({
-          path,
-        }).required(),
+        then: defaultParams
+          .keys({
+            path,
+          })
+          .required(),
       },
       {
         is: 'persistMedia',
-        then: Joi.object({
-          asset: asset.required(),
-        }).required(),
+        then: defaultParams
+          .keys({
+            asset: asset.required(),
+          })
+          .required(),
       },
       {
         is: 'deleteFile',
-        then: Joi.object({
-          path,
-        }).required(),
+        then: defaultParams
+          .keys({
+            path,
+          })
+          .required(),
       },
       {
         is: 'getDeployPreview',
-        then: Joi.object({
-          collection,
-          slug,
-        }).required(),
+        then: defaultParams
+          .keys({
+            collection,
+            slug,
+          })
+          .required(),
       },
     ],
     otherwise: Joi.forbidden(),

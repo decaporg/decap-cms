@@ -7,13 +7,17 @@
     "moduleResolution": "node",
     "outDir": "dist",
     "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*", "src/types/*"]
-    },
+    "allowJs": true,
     "strict": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "paths": {
+      "netlify-cms-lib-util": ["../netlify-cms-lib-util/src"],
+      "semaphore": ["../netlify-cms-lib-util/src/types/semaphore"],
+      "js-sha256": ["../netlify-cms-lib-util/src/types/js-sha256"],
+      "*": ["node_modules/*", "src/types/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*spec.ts"]

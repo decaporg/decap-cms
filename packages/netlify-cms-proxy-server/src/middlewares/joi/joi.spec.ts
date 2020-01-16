@@ -9,6 +9,10 @@ const assetFailure = (result: Joi.ValidationResult, expectedMessage: string) => 
   expect(message).toBe(expectedMessage);
 };
 
+const defaultParams = {
+  branch: 'master',
+};
+
 describe('defaultSchema', () => {
   it('should fail on unsupported body', () => {
     const schema = defaultSchema();
@@ -30,17 +34,20 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'entriesByFolder', params: {} }),
+        schema.validate({ action: 'entriesByFolder', params: { ...defaultParams } }),
         '"params.folder" is required',
       );
       assetFailure(
-        schema.validate({ action: 'entriesByFolder', params: { folder: 'folder' } }),
+        schema.validate({
+          action: 'entriesByFolder',
+          params: { ...defaultParams, folder: 'folder' },
+        }),
         '"params.extension" is required',
       );
       assetFailure(
         schema.validate({
           action: 'entriesByFolder',
-          params: { folder: 'folder', extension: 'md' },
+          params: { ...defaultParams, folder: 'folder', extension: 'md' },
         }),
         '"params.depth" is required',
       );
@@ -50,7 +57,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'entriesByFolder',
-        params: { folder: 'folder', extension: 'md', depth: 1 },
+        params: { ...defaultParams, folder: 'folder', extension: 'md', depth: 1 },
       });
 
       expect(error).toBeUndefined();
@@ -62,15 +69,18 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'entriesByFiles', params: {} }),
+        schema.validate({ action: 'entriesByFiles', params: { ...defaultParams } }),
         '"params.files" is required',
       );
       assetFailure(
-        schema.validate({ action: 'entriesByFiles', params: { files: {} } }),
+        schema.validate({ action: 'entriesByFiles', params: { ...defaultParams, files: {} } }),
         '"params.files" must be an array',
       );
       assetFailure(
-        schema.validate({ action: 'entriesByFiles', params: { files: [{ id: 'id' }] } }),
+        schema.validate({
+          action: 'entriesByFiles',
+          params: { ...defaultParams, files: [{ id: 'id' }] },
+        }),
         '"params.files[0].path" is required',
       );
     });
@@ -79,7 +89,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'entriesByFiles',
-        params: { files: [{ path: 'path' }] },
+        params: { ...defaultParams, files: [{ path: 'path' }] },
       });
 
       expect(error).toBeUndefined();
@@ -91,11 +101,11 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'getEntry', params: {} }),
+        schema.validate({ action: 'getEntry', params: { ...defaultParams } }),
         '"params.path" is required',
       );
       assetFailure(
-        schema.validate({ action: 'getEntry', params: { path: 1 } }),
+        schema.validate({ action: 'getEntry', params: { ...defaultParams, path: 1 } }),
         '"params.path" must be a string',
       );
     });
@@ -104,7 +114,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'getEntry',
-        params: { path: 'path' },
+        params: { ...defaultParams, path: 'path' },
       });
 
       expect(error).toBeUndefined();
@@ -115,14 +125,17 @@ describe('defaultSchema', () => {
     it('should fail on invalid params', () => {
       const schema = defaultSchema();
 
-      assetFailure(schema.validate({ action: 'unpublishedEntries' }), '"params" is required');
+      assetFailure(
+        schema.validate({ action: 'unpublishedEntries', params: {} }),
+        '"params.branch" is required',
+      );
     });
 
     it('should pass on valid params', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'unpublishedEntries',
-        params: {},
+        params: { ...defaultParams, branch: 'master' },
       });
 
       expect(error).toBeUndefined();
@@ -134,17 +147,20 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'unpublishedEntry', params: {} }),
+        schema.validate({ action: 'unpublishedEntry', params: { ...defaultParams } }),
         '"params.collection" is required',
       );
       assetFailure(
-        schema.validate({ action: 'unpublishedEntry', params: { collection: 'collection' } }),
+        schema.validate({
+          action: 'unpublishedEntry',
+          params: { ...defaultParams, collection: 'collection' },
+        }),
         '"params.slug" is required',
       );
       assetFailure(
         schema.validate({
           action: 'unpublishedEntry',
-          params: { collection: 'collection', slug: 1 },
+          params: { ...defaultParams, collection: 'collection', slug: 1 },
         }),
         '"params.slug" must be a string',
       );
@@ -154,7 +170,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'unpublishedEntry',
-        params: { collection: 'collection', slug: 'slug' },
+        params: { ...defaultParams, collection: 'collection', slug: 'slug' },
       });
 
       expect(error).toBeUndefined();
@@ -166,17 +182,20 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'deleteUnpublishedEntry', params: {} }),
+        schema.validate({ action: 'deleteUnpublishedEntry', params: { ...defaultParams } }),
         '"params.collection" is required',
       );
       assetFailure(
-        schema.validate({ action: 'deleteUnpublishedEntry', params: { collection: 'collection' } }),
+        schema.validate({
+          action: 'deleteUnpublishedEntry',
+          params: { ...defaultParams, collection: 'collection' },
+        }),
         '"params.slug" is required',
       );
       assetFailure(
         schema.validate({
           action: 'deleteUnpublishedEntry',
-          params: { collection: 'collection', slug: 1 },
+          params: { ...defaultParams, collection: 'collection', slug: 1 },
         }),
         '"params.slug" must be a string',
       );
@@ -186,7 +205,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'deleteUnpublishedEntry',
-        params: { collection: 'collection', slug: 'slug' },
+        params: { ...defaultParams, collection: 'collection', slug: 'slug' },
       });
 
       expect(error).toBeUndefined();
@@ -198,13 +217,13 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'persistEntry', params: {} }),
+        schema.validate({ action: 'persistEntry', params: { ...defaultParams } }),
         '"params.entry" is required',
       );
       assetFailure(
         schema.validate({
           action: 'persistEntry',
-          params: { entry: { path: 'path', raw: 'content' } },
+          params: { ...defaultParams, entry: { path: 'path', raw: 'content' } },
         }),
         '"params.assets" is required',
       );
@@ -212,6 +231,7 @@ describe('defaultSchema', () => {
         schema.validate({
           action: 'persistEntry',
           params: {
+            ...defaultParams,
             entry: { path: 'path', raw: 'content' },
             assets: [],
           },
@@ -222,6 +242,7 @@ describe('defaultSchema', () => {
         schema.validate({
           action: 'persistEntry',
           params: {
+            ...defaultParams,
             entry: { path: 'path', raw: 'content' },
             assets: [],
             options: {},
@@ -236,6 +257,7 @@ describe('defaultSchema', () => {
       const { error } = schema.validate({
         action: 'persistEntry',
         params: {
+          ...defaultParams,
           entry: { path: 'path', raw: 'content' },
           assets: [{ path: 'path', content: 'content', encoding: 'base64' }],
           options: {
@@ -256,20 +278,20 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'updateUnpublishedEntryStatus', params: {} }),
+        schema.validate({ action: 'updateUnpublishedEntryStatus', params: { ...defaultParams } }),
         '"params.collection" is required',
       );
       assetFailure(
         schema.validate({
           action: 'updateUnpublishedEntryStatus',
-          params: { collection: 'collection' },
+          params: { ...defaultParams, collection: 'collection' },
         }),
         '"params.slug" is required',
       );
       assetFailure(
         schema.validate({
           action: 'updateUnpublishedEntryStatus',
-          params: { collection: 'collection', slug: 'slug' },
+          params: { ...defaultParams, collection: 'collection', slug: 'slug' },
         }),
         '"params.newStatus" is required',
       );
@@ -279,7 +301,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'updateUnpublishedEntryStatus',
-        params: { collection: 'collection', slug: 'slug', newStatus: 'draft' },
+        params: { ...defaultParams, collection: 'collection', slug: 'slug', newStatus: 'draft' },
       });
 
       expect(error).toBeUndefined();
@@ -291,13 +313,13 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'publishUnpublishedEntry', params: {} }),
+        schema.validate({ action: 'publishUnpublishedEntry', params: { ...defaultParams } }),
         '"params.collection" is required',
       );
       assetFailure(
         schema.validate({
           action: 'publishUnpublishedEntry',
-          params: { collection: 'collection' },
+          params: { ...defaultParams, collection: 'collection' },
         }),
         '"params.slug" is required',
       );
@@ -307,7 +329,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'publishUnpublishedEntry',
-        params: { collection: 'collection', slug: 'slug' },
+        params: { ...defaultParams, collection: 'collection', slug: 'slug' },
       });
 
       expect(error).toBeUndefined();
@@ -319,7 +341,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'getMedia', params: {} }),
+        schema.validate({ action: 'getMedia', params: { ...defaultParams } }),
         '"params.mediaFolder" is required',
       );
     });
@@ -328,7 +350,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'getMedia',
-        params: { mediaFolder: 'src/static/images' },
+        params: { ...defaultParams, mediaFolder: 'src/static/images' },
       });
 
       expect(error).toBeUndefined();
@@ -340,7 +362,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'getMediaFile', params: {} }),
+        schema.validate({ action: 'getMediaFile', params: { ...defaultParams } }),
         '"params.path" is required',
       );
     });
@@ -349,7 +371,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'getMediaFile',
-        params: { path: 'src/static/images/image.png' },
+        params: { ...defaultParams, path: 'src/static/images/image.png' },
       });
 
       expect(error).toBeUndefined();
@@ -361,11 +383,14 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'persistMedia', params: {} }),
+        schema.validate({ action: 'persistMedia', params: { ...defaultParams } }),
         '"params.asset" is required',
       );
       assetFailure(
-        schema.validate({ action: 'persistMedia', params: { asset: { path: 'path' } } }),
+        schema.validate({
+          action: 'persistMedia',
+          params: { ...defaultParams, asset: { path: 'path' } },
+        }),
         '"params.asset.content" is required',
       );
     });
@@ -374,7 +399,10 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'persistMedia',
-        params: { asset: { path: 'path', content: 'content', encoding: 'base64' } },
+        params: {
+          ...defaultParams,
+          asset: { path: 'path', content: 'content', encoding: 'base64' },
+        },
       });
 
       expect(error).toBeUndefined();
@@ -386,7 +414,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'deleteFile', params: {} }),
+        schema.validate({ action: 'deleteFile', params: { ...defaultParams } }),
         '"params.path" is required',
       );
     });
@@ -395,7 +423,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'deleteFile',
-        params: { path: 'src/static/images/image.png' },
+        params: { ...defaultParams, path: 'src/static/images/image.png' },
       });
 
       expect(error).toBeUndefined();
@@ -407,13 +435,13 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'getDeployPreview', params: {} }),
+        schema.validate({ action: 'getDeployPreview', params: { ...defaultParams } }),
         '"params.collection" is required',
       );
       assetFailure(
         schema.validate({
           action: 'getDeployPreview',
-          params: { collection: 'collection' },
+          params: { ...defaultParams, collection: 'collection' },
         }),
         '"params.slug" is required',
       );
@@ -423,7 +451,7 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'getDeployPreview',
-        params: { collection: 'collection', slug: 'slug' },
+        params: { ...defaultParams, collection: 'collection', slug: 'slug' },
       });
 
       expect(error).toBeUndefined();
