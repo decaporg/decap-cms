@@ -14,6 +14,7 @@ import {
   localForage,
   DEFAULT_PR_BODY,
 } from 'netlify-cms-lib-util';
+import { trim } from 'lodash';
 import introspectionQueryResultData from './fragmentTypes';
 import API, { Config, BlobArgs, PR, API_NAME } from './API';
 import * as queries from './queries';
@@ -250,13 +251,14 @@ export default class GraphQLAPI extends API {
 
   async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
+    const folder = trim(path, '/');
     const { data } = await this.query({
       query: queries.files(depth),
-      variables: { owner, name, expression: `${branch}:${path}` },
+      variables: { owner, name, expression: `${branch}:${folder}` },
     });
 
     if (data.repository.object) {
-      const allFiles = this.getAllFiles(data.repository.object.entries, path);
+      const allFiles = this.getAllFiles(data.repository.object.entries, folder);
       return allFiles;
     } else {
       return [];
