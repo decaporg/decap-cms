@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.3...netlify-cms-backend-github@2.6.4) (2020-01-16)
+
+
+### Bug Fixes
+
+* **backend-github-graphql:** handle trailing paths in collection folder ([#3099](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3099)) ([bc80804](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/bc808040661d345e65d49d64693cd6da3b6816fb))
+
+
+
+
+
 ## [2.6.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.2...netlify-cms-backend-github@2.6.3) (2020-01-14)
 
 **Note:** Version bump only for package netlify-cms-backend-github

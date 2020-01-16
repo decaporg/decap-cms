@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.6.1...netlify-cms-backend-git-gateway@2.6.2) (2020-01-16)
+
+
+### Bug Fixes
+
+* don't fail on malformed pointer files ([#3095](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/3095)) ([9210843](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/92108431f0c3df3e99b5aa7f462006ec3fa7777e))
+
+
+
+
+
 ## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.6.0...netlify-cms-backend-git-gateway@2.6.1) (2020-01-14)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway

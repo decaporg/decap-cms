@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.5.1...netlify-cms-lib-util@2.5.2) (2020-01-16)
+
+
+### Bug Fixes
+
+* use string endsWith to filter by extension ([#3097](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/3097)) ([6a13a85](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/6a13a85e269c8f299f71b3f5ee45fc5d34f75822))
+
+
+
+
+
 ## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.5.0...netlify-cms-lib-util@2.5.1) (2020-01-14)
 
 **Note:** Version bump only for package netlify-cms-lib-util
