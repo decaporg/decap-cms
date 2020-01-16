@@ -10,7 +10,11 @@ const listFiles = async (dir: string) => {
   return files;
 };
 
-export const getSchema = ({ repoPath }: { repoPath: string }) => {
+type Options = {
+  repoPath: string;
+};
+
+export const getSchema = ({ repoPath }: Options) => {
   const custom = Joi.extend({
     type: 'path',
     base: Joi.string().required(),
@@ -19,7 +23,6 @@ export const getSchema = ({ repoPath }: { repoPath: string }) => {
     },
     validate(value, helpers) {
       const resolvedPath = path.join(repoPath, value);
-      console.log(resolvedPath.startsWith(repoPath));
       if (!resolvedPath.startsWith(repoPath)) {
         return { value, errors: helpers.error('path.invalid') };
       }
@@ -29,7 +32,7 @@ export const getSchema = ({ repoPath }: { repoPath: string }) => {
   return schema;
 };
 
-export const localGitMiddleware = function({ repoPath }: { repoPath: string }) {
+export const localGitMiddleware = function({ repoPath }: Options) {
   // const client = simpleGit(repoPath);
   return async function(req: express.Request, res: express.Response) {
     const { body } = req;

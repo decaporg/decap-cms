@@ -37,7 +37,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
       {
         is: 'entriesByFolder',
         then: Joi.object({
-          folder: requiredString,
+          folder: path,
           extension: requiredString,
           depth: requiredNumber,
         }).required(),
@@ -77,16 +77,16 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
       {
         is: 'persistEntry',
         then: Joi.object({
-          entry: Joi.object({ path, raw: requiredString }),
+          entry: Joi.object({ path, raw: requiredString }).required(),
           assets: Joi.array()
             .items(asset)
             .required(),
-          options: {
+          options: Joi.object({
             commitMessage: requiredString,
             useWorkflow: requiredBool,
             unpublished: requiredBool,
             status: requiredString,
-          },
+          }).required(),
         }).required(),
       },
       {
@@ -107,7 +107,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
       {
         is: 'getMedia',
         then: Joi.object({
-          mediaFolder: requiredString,
+          mediaFolder: path,
         }).required(),
       },
       {
@@ -119,7 +119,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
       {
         is: 'persistMedia',
         then: Joi.object({
-          asset,
+          asset: asset.required(),
         }).required(),
       },
       {
