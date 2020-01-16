@@ -90,5 +90,8 @@ describe('filterByPropExtension', () => {
     expect(
       filterByPropExtension('.html.md', 'path')([{ path: 'file.html.md' }, { path: 'file.json' }]),
     ).toEqual([{ path: 'file.html.md' }]);
+    expect(
+      filterByPropExtension('html.md', 'path')([{ path: 'file.html.md' }, { path: 'file.json' }]),
+    ).toEqual([{ path: 'file.html.md' }]);
   });
 });
