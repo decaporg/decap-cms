@@ -1,4 +1,10 @@
 updates:
+  - date: '2020-01-16'
+    description: 'Bugfixes'
+    version: 2.10.8
+  - date: '2020-01-15'
+    description: 'Bugfixes'
+    version: 2.10.7
   - date: '2020-01-14'
     description: 'Editorial workflow for GitLab and Bitbucket 🎉🎉'
     version: 2.10.6
