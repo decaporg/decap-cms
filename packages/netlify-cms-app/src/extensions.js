@@ -2,10 +2,11 @@
 import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
 
 // Backends
-import { GitHubBackend } from 'netlify-cms-backend-github';
-import { GitLabBackend } from 'netlify-cms-backend-gitlab';
-import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway';
-import { BitbucketBackend } from 'netlify-cms-backend-bitbucket';
+// import { GitHubBackend } from 'netlify-cms-backend-github';
+// import { GitLabBackend } from 'netlify-cms-backend-gitlab';
+// import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway';
+// import { BitbucketBackend } from 'netlify-cms-backend-bitbucket';
+import { FirestoreBackend } from 'netlify-cms-backend-firestore';
 import { TestBackend } from 'netlify-cms-backend-test';
 import { ProxyBackend } from 'netlify-cms-backend-proxy';
 
@@ -33,10 +34,11 @@ import image from 'netlify-cms-editor-component-image';
 import * as locales from 'netlify-cms-locales';
 
 // Register all the things
-CMS.registerBackend('git-gateway', GitGatewayBackend);
-CMS.registerBackend('github', GitHubBackend);
-CMS.registerBackend('gitlab', GitLabBackend);
-CMS.registerBackend('bitbucket', BitbucketBackend);
+// CMS.registerBackend('git-gateway', GitGatewayBackend);
+// CMS.registerBackend('github', GitHubBackend);
+// CMS.registerBackend('gitlab', GitLabBackend);
+// CMS.registerBackend('bitbucket', BitbucketBackend);
+CMS.registerBackend('firestore', FirestoreBackend);
 CMS.registerBackend('test-repo', TestBackend);
 CMS.registerBackend('proxy', ProxyBackend);
 CMS.registerWidget([

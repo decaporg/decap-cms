@@ -1,0 +1,33 @@
+{
+  "name": "netlify-cms-backend-firestore",
+  "description": "Firestore backend for Netlify CMS",
+  "version": "2.5.1",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-firestore",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "license": "MIT",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-backend-firestore.js",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "backend",
+    "firestore"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {
+    "js-base64": "^2.5.1",
+    "semaphore": "^1.1.0"
+  },
+  "peerDependencies": {
+    "lodash": "^4.17.11",
+    "netlify-cms-lib-util": "^2.3.0",
+    "netlify-cms-ui-default": "^2.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
+}

@@ -228,7 +228,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
     files = entryFiles
-      .filter(f => dirname(f.path) === mediaFolder)
+      .filter(f => f.path.indexOf(mediaFolder) > -1)
       .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
