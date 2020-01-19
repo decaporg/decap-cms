@@ -305,5 +305,27 @@ describe('backendHelper', () => {
         ),
       ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
     });
+
+    it('should log error and ignore preview_path when date is missing', () => {
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      expect(
+        createPreviewUrl(
+          'https://www.example.com',
+          Map({
+            name: 'posts',
+            preview_path: '{{year}}',
+            preview_path_date_field: 'date',
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({}) }),
+        ),
+      ).toBe('https://www.example.com');
+
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(
+        'Collection "posts" configuration error:\n  `preview_path_date_field` must be a field with a valid date. Ignoring `preview_path`.',
+      );
+    });
   });
 });
