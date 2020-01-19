@@ -77,7 +77,7 @@ size ${size}
 export async function getPointerFileForMediaFileObj(
   client: { uploadResource: (pointer: PointerFile, resource: Blob) => Promise<string> },
   fileObj: File,
-  path: string
+  path: string,
 ) {
   const { name, size } = fileObj;
   const sha = await getBlobSHA(fileObj);
@@ -111,7 +111,7 @@ export async function getLargeMediaFilteredMediaFiles(
       }
 
       const pointerFileDetails = await getPointerFileForMediaFileObj(client, fileObj as File, path);
-      return {...mediaFile, ...pointerFileDetails};
+      return { ...mediaFile, ...pointerFileDetails };
     }),
   );
 }
