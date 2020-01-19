@@ -1,15 +1,16 @@
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import {
   commitMessageFormatter,
   prepareSlug,
   slugFormatter,
-  createPreviewUrl,
-} from '../backendHelper';
+  previewUrlFormatter,
+  summaryFormatter,
+} from '../formatters';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.mock('../../reducers/collections');
 
-describe('backendHelper', () => {
+describe('formatters', () => {
   describe('commitMessageFormatter', () => {
     const config = {
       getIn: jest.fn(),
@@ -210,7 +211,7 @@ describe('backendHelper', () => {
     const date = new Date('2020-01-01');
     jest.spyOn(global, 'Date').mockImplementation(() => date);
 
-    const { selectIdentifier } = require('Reducers/collections');
+    const { selectIdentifier } = require('../../reducers/collections');
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -281,19 +282,21 @@ describe('backendHelper', () => {
     });
   });
 
-  describe('createPreviewUrl', () => {
+  describe('previewUrlFormatter', () => {
     it('should return undefined when missing baseUrl', () => {
-      expect(createPreviewUrl('')).toBeUndefined();
+      expect(previewUrlFormatter('')).toBeUndefined();
     });
 
     it('should return baseUrl for collection with no preview_path', () => {
-      expect(createPreviewUrl('https://www.example.com', Map({}))).toBe('https://www.example.com');
+      expect(previewUrlFormatter('https://www.example.com', Map({}))).toBe(
+        'https://www.example.com',
+      );
     });
 
-    it('should compile preview url based on preview_path', () => {
+    it('should return preview url based on preview_path', () => {
       const date = new Date('2020-01-02T13:28:27.679Z');
       expect(
-        createPreviewUrl(
+        previewUrlFormatter(
           'https://www.example.com',
           Map({
             preview_path: '{{year}}/{{slug}}/{{title}}/{{fields.slug}}',
@@ -309,7 +312,7 @@ describe('backendHelper', () => {
     it('should log error and ignore preview_path when date is missing', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       expect(
-        createPreviewUrl(
+        previewUrlFormatter(
           'https://www.example.com',
           Map({
             name: 'posts',
@@ -326,6 +329,19 @@ describe('backendHelper', () => {
       expect(console.error).toHaveBeenCalledWith(
         'Collection "posts" configuration error:\n  `preview_path_date_field` must be a field with a valid date. Ignoring `preview_path`.',
       );
+    });
+  });
+
+  describe('summaryFormatter', () => {
+    it('should return summary from template', () => {
+      const { selectInferedField } = require('../../reducers/collections');
+      selectInferedField.mockReturnValue('date');
+
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      const entry = fromJS({ data: { date, title: 'title' } });
+      const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
+
+      expect(summaryFormatter('{{title}}-{{year}}', entry, collection)).toBe('title-2020');
     });
   });
 });

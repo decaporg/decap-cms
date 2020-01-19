@@ -122,7 +122,7 @@ export const slugFormatter = (
   }
 };
 
-export const createPreviewUrl = (
+export const previewUrlFormatter = (
   baseUrl: string,
   collection: Collection,
   slug: string,
@@ -177,4 +177,16 @@ export const createPreviewUrl = (
 
   const previewPath = trimStart(compiledPath, ' /');
   return `${basePath}/${previewPath}`;
+};
+
+export const summaryFormatter = (
+  summaryTemplate: string,
+  entry: EntryMap,
+  collection: Collection,
+) => {
+  const entryData = entry.get('data');
+  const date = parseDateFromEntry(entry, collection) || null;
+  const identifier = entryData.get(selectIdentifier(collection));
+  const summary = compileStringTemplate(summaryTemplate, date, identifier, entryData);
+  return summary;
 };

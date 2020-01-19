@@ -17,7 +17,7 @@ import {
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend } from './lib/registry';
-import { commitMessageFormatter, slugFormatter, createPreviewUrl } from './lib/backendHelper';
+import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import {
   localForage,
   Cursor,
@@ -587,7 +587,7 @@ export class Backend {
     }
 
     return {
-      url: createPreviewUrl(baseUrl, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(baseUrl, collection, slug, this.config.get('slug'), entry),
       status: 'SUCCESS',
     };
   }
@@ -636,7 +636,7 @@ export class Backend {
       /**
        * Create a URL using the collection `preview_path`, if provided.
        */
-      url: createPreviewUrl(deployPreview.url, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(deployPreview.url, collection, slug, this.config.get('slug'), entry),
       /**
        * Always capitalize the status for consistency.
        */

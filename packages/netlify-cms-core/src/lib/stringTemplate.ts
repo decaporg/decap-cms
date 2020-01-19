@@ -33,11 +33,7 @@ function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
   return data.get(fieldName, '') as string;
 }
 
-export function parseDateFromEntry(
-  entry: EntryMap,
-  collection: Collection,
-  fieldName: string | undefined,
-) {
+export function parseDateFromEntry(entry: EntryMap, collection: Collection, fieldName?: string) {
   const dateFieldName = fieldName || selectInferedField(collection, 'date');
   if (!dateFieldName) {
     return;
@@ -52,7 +48,7 @@ export function parseDateFromEntry(
 
 export function compileStringTemplate(
   template: string,
-  date: Date | undefined,
+  date: Date | undefined | null,
   identifier = '',
   data = Map<string, unknown>(),
   processor?: (value: string) => string,
