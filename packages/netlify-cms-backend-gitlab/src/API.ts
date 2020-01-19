@@ -453,6 +453,18 @@ export default class API {
     return branches;
   }
 
+  async getFileId(path: string, branch: string) {
+    const request = await this.request({
+      method: 'HEAD',
+      url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}`,
+      params: { ref: branch },
+      cache: 'no-store',
+    });
+
+    const blobId = request.headers.get('X-Gitlab-Blob-Id') as string;
+    return blobId;
+  }
+
   async isFileExists(path: string, branch: string) {
     const fileExists = await this.requestText({
       method: 'HEAD',
@@ -498,9 +510,14 @@ export default class API {
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
     const path = diff.find(d => d.old_path.includes(slug))?.old_path as string;
-    // TODO: get real file id
     const mediaFiles = await Promise.all(
-      diff.filter(d => d.old_path !== path).map(d => ({ path: d.new_path, id: null })),
+      diff
+        .filter(d => d.old_path !== path)
+        .map(async d => {
+          const path = d.new_path;
+          const id = await this.getFileId(path, branch);
+          return { path, id };
+        }),
     );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);

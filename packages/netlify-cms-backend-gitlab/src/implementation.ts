@@ -308,9 +308,6 @@ export default class GitLab implements Implementation {
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
     const mediaFiles = await loadEntryMediaFiles(
       data.metaData.branch,
-      // TODO: fix this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
       data.metaData.objects.entry.mediaFiles,
     );
     return {

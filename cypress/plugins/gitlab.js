@@ -60,6 +60,7 @@ async function prepareTestGitLabRepo() {
   console.log('Creating repository', testRepoName);
   await client.Projects.create({
     name: testRepoName,
+    lfs_enabled: false,
   });
 
   const tempDir = path.join('.temp', testRepoName);

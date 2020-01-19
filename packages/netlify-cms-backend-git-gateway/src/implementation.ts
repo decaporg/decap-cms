@@ -279,7 +279,10 @@ export default class GitGateway implements Implementation {
       files.map(async file => {
         if (client.matchPath(file.path)) {
           const { id, path } = file;
-          const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ ...file, id }]);
+          const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs(
+            [{ ...file, id }],
+            branch,
+          );
           const url = await client.getDownloadURL(largeMediaDisplayURLs[id]);
           return {
             id,
@@ -379,13 +382,18 @@ export default class GitGateway implements Implementation {
       },
     );
   }
-  async getLargeMediaDisplayURLs(mediaFiles: { path: string; id: string | null }[]) {
+  async getLargeMediaDisplayURLs(
+    mediaFiles: { path: string; id: string | null }[],
+    branch = this.branch,
+  ) {
     const client = await this.getLargeMediaClient();
-    const filesPromise = entriesByFiles(
-      mediaFiles,
-      this.api!.readFile.bind(this.api!),
-      'Git-Gateway',
-    );
+    const readFile = (
+      path: string,
+      id: string | null | undefined,
+      { parseText }: { parseText: boolean },
+    ) => this.api!.readFile(path, id, { branch, parseText });
+
+    const filesPromise = entriesByFiles(mediaFiles, readFile, 'Git-Gateway');
 
     return filesPromise
       .then(items =>
