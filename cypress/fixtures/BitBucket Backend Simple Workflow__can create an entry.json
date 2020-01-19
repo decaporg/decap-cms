@@ -492,6 +492,57 @@
     "status": 404
   },
   {
+    "method": "GET",
+    "url": "/2.0/repositories/owner/repo/refs/branches/master?ts=300",
+    "headers": {
+      "Server": "nginx",
+      "Vary": "Authorization",
+      "Content-Type": "application/json; charset=utf-8",
+      "X-OAuth-Scopes": "pullrequest:write, repository:delete, repository:admin, account",
+      "Access-Control-Expose-Headers": "Accept-Ranges, Content-Encoding, Content-Length, Content-Type, ETag, Last-Modified",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "X-Served-By": "app-1107",
+      "Access-Control-Allow-Origin": "*",
+      "X-Static-Version": "39e6dc2e5ab0",
+      "X-Content-Type-Options": "nosniff",
+      "X-Accepted-OAuth-Scopes": "repository",
+      "X-Credential-Type": "oauth2",
+      "X-Render-Time": "0.0888249874115",
+      "Connection": "Keep-Alive",
+      "X-Request-Count": "3854",
+      "X-Frame-Options": "SAMEORIGIN",
+      "X-Version": "39e6dc2e5ab0",
+      "content-length": "3151"
+    },
+    "response": "{\"name\": \"master\", \"links\": {\"commits\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commits/master\"}, \"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/refs/branches/master\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo/branch/master\"}}, \"default_merge_strategy\": \"merge_commit\", \"merge_strategies\": [\"merge_commit\", \"squash\", \"fast_forward\"], \"type\": \"branch\", \"target\": {\"hash\": \"536a257d1e997553bb48535542a6a6e98612cd44\", \"repository\": {\"links\": {\"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo\"}, \"avatar\": {\"href\": \"https://bytebucket.org/ravatar/%7Be32a6eaa-c63b-4525-a055-981df37b002c%7D?ts=default\"}}, \"type\": \"repository\", \"name\": \"repo\", \"full_name\": \"owner/repo\", \"uuid\": \"{e32a6eaa-c63b-4525-a055-981df37b002c}\"}, \"links\": {\"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"comments\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44/comments\"}, \"patch\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/patch/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo/commits/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"diff\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/diff/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"approve\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44/approve\"}, \"statuses\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44/statuses\"}}, \"author\": {\"raw\": \"renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>\", \"type\": \"author\"}, \"parents\": [{\"hash\": \"606d697716a4caeb12f185c49eafc1fb7364f7b2\", \"type\": \"commit\", \"links\": {\"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/606d697716a4caeb12f185c49eafc1fb7364f7b2\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo/commits/606d697716a4caeb12f185c49eafc1fb7364f7b2\"}}}], \"date\": \"2020-01-07T06:36:49+00:00\", \"message\": \"chore(deps): update dependency gh-pages to v2.2.0 (#233)\\n\\nCo-authored-by: Renovate Bot <renovatebot@gmail.com>\\r\\n\", \"type\": \"commit\"}}",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "url": "/2.0/repositories/owner/repo/src/facccab4207659a5671cd7332d826cd2c4c0770d/.gitattributes?ts=300",
+    "headers": {
+      "Server": "nginx",
+      "Vary": "Authorization",
+      "Content-Type": "application/json; charset=utf-8",
+      "X-OAuth-Scopes": "pullrequest:write, repository:delete, repository:admin, account",
+      "Access-Control-Expose-Headers": "Accept-Ranges, Content-Encoding, Content-Length, Content-Type, ETag, Last-Modified",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "X-Served-By": "app-1106",
+      "Access-Control-Allow-Origin": "*",
+      "X-Static-Version": "39e6dc2e5ab0",
+      "X-Accepted-OAuth-Scopes": "repository",
+      "X-Credential-Type": "oauth2",
+      "X-Render-Time": "0.0628678798676",
+      "Connection": "Keep-Alive",
+      "X-Request-Count": "3440",
+      "X-Frame-Options": "SAMEORIGIN",
+      "X-Version": "39e6dc2e5ab0",
+      "Content-Length": "105"
+    },
+    "response": "{\"type\":\"error\",\"error\":{\"message\":\"No such file or directory: .gitattributes\"}}",
+    "status": 404
+  },
+  {
     "body": "------WebKitFormBoundaryAMgSd2uqyRfBXcPh\r\nContent-Disposition: form-data; name=\"content/posts/1970-01-01-first-title.md\"; filename=\"1970-01-01-first-title.md\"\r\nContent-Type: application/octet-stream\r\n\r\n---\ntemplate: post\ntitle: first title\ndate: 1970-01-01T00:00:00.000Z\ndescription: first description\ncategory: first category\ntags:\n  - tag1\n---\nfirst body\n\r\n------WebKitFormBoundaryAMgSd2uqyRfBXcPh\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nCreate Post â1970-01-01-first-titleâ\r\n------WebKitFormBoundaryAMgSd2uqyRfBXcPh\r\nContent-Disposition: form-data; name=\"branch\"\r\n\r\nmaster\r\n------WebKitFormBoundaryAMgSd2uqyRfBXcPh--\r\n",
     "method": "POST",
     "url": "/2.0/repositories/owner/repo/src?ts=300",

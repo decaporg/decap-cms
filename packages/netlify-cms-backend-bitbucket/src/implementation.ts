@@ -29,11 +29,14 @@ import {
   AsyncLock,
   asyncLock,
   getPreviewStatus,
+  getLargeMediaPatternsFromGitAttributesFile,
+  getPointerFileForMediaFileObj,
+  getLargeMediaFilteredMediaFiles,
 } from 'netlify-cms-lib-util';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
-import { createPointerFile, getLFSPatterns, GitLfsClient } from './git-lfs-client';
+import { GitLfsClient } from './git-lfs-client';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -287,10 +290,16 @@ export default class BitbucketBackend implements Implementation {
   getLargeMediaClient() {
     if (!this._largeMediaClientPromise) {
       this._largeMediaClientPromise = (async (): Promise<GitLfsClient> => {
-        const { err, patterns } = await getLFSPatterns(this.api!);
-        if (err) {
-          console.error(err);
-        }
+        const patterns = await this.api!.readFile('.gitattributes')
+          .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
+          .catch((err: Error) => {
+            if (err.message.includes('404')) {
+              console.log('This 404 was expected and handled appropriately.');
+            } else {
+              console.error(err);
+            }
+            return [];
+          });
 
         return new GitLfsClient(
           !!(this.largeMediaURL && patterns.length > 0),
@@ -330,54 +339,17 @@ export default class BitbucketBackend implements Implementation {
     };
   }
 
-  async getPointerFileForMediaFileObj(fileObj: File) {
-    const client = await this.getLargeMediaClient();
-    const { name, size } = fileObj;
-    const sha = await getBlobSHA(fileObj);
-    await client.uploadResource({ sha, size }, fileObj);
-    const pointerFileString = createPointerFile({ sha, size });
-    const pointerFileBlob = new Blob([pointerFileString]);
-    const pointerFile = new File([pointerFileBlob], name, { type: 'text/plain' });
-    const pointerFileSHA = await getBlobSHA(pointerFile);
-    return {
-      file: pointerFile,
-      blob: pointerFileBlob,
-      sha: pointerFileSHA,
-      raw: pointerFileString,
-    };
-  }
-
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
     const client = await this.getLargeMediaClient();
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
-      async () => {
-        if (!client.enabled) {
-          return this.api!.persistFiles(entry, mediaFiles, options);
-        }
-
-        const largeMediaFilteredMediaFiles = await Promise.all(
-          mediaFiles.map(async mediaFile => {
-            const { fileObj, path } = mediaFile;
-            const fixedPath = path.startsWith('/') ? path.slice(1) : path;
-            if (!client.matchPath(fixedPath)) {
-              return mediaFile;
-            }
-
-            const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj as File);
-            return {
-              ...mediaFile,
-              fileObj: pointerFileDetails.file,
-              size: pointerFileDetails.blob.size,
-              sha: pointerFileDetails.sha,
-              raw: pointerFileDetails.raw,
-            };
-          }),
-        );
-
-        return this.api!.persistFiles(entry, largeMediaFilteredMediaFiles, options);
-      },
+      async () =>
+        this.api!.persistFiles(
+          entry,
+          client.enabled ? await getLargeMediaFilteredMediaFiles(client, mediaFiles) : mediaFiles,
+          options,
+        ),
       'Failed to acquire persist entry lock',
     );
   }
@@ -391,14 +363,7 @@ export default class BitbucketBackend implements Implementation {
       return this._persistMedia(mediaFile, options);
     }
 
-    const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj as File);
-    const persistMediaArgument = {
-      fileObj: pointerFileDetails.file,
-      size: pointerFileDetails.blob.size,
-      path,
-      sha: pointerFileDetails.sha,
-      raw: pointerFileDetails.raw,
-    };
+    const persistMediaArgument = await getPointerFileForMediaFileObj(client, fileObj as File, path);
     return {
       ...(await this._persistMedia(persistMediaArgument, options)),
       displayURL,
