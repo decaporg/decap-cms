@@ -142,18 +142,18 @@ export default class ProxyBackend implements Implementation {
     });
   }
 
-  async persistMedia(assetProxy: AssetProxy) {
+  async persistMedia(assetProxy: AssetProxy, options: PersistOptions) {
     const asset = await serializeAsset(assetProxy);
     return this.request({
       action: 'persistMedia',
-      params: { asset },
+      params: { asset, options: { commitMessage: options.commitMessage } },
     });
   }
 
-  deleteFile(path: string) {
+  deleteFile(path: string, commitMessage: string) {
     return this.request({
       action: 'deleteFile',
-      params: { path },
+      params: { path, options: { commitMessage } },
     });
   }
 

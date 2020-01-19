@@ -90,14 +90,14 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         is: 'persistEntry',
         then: defaultParams
           .keys({
-            entry: Joi.object({ path, raw: requiredString }).required(),
+            entry: Joi.object({ slug: requiredString, path, raw: requiredString }).required(),
             assets: Joi.array()
               .items(asset)
               .required(),
             options: Joi.object({
+              collectionName: Joi.string(),
               commitMessage: requiredString,
               useWorkflow: requiredBool,
-              unpublished: requiredBool,
               status: requiredString,
             }).required(),
           })
@@ -143,6 +143,9 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         then: defaultParams
           .keys({
             asset: asset.required(),
+            options: Joi.object({
+              commitMessage: requiredString,
+            }).required(),
           })
           .required(),
       },
@@ -151,6 +154,9 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         then: defaultParams
           .keys({
             path,
+            options: Joi.object({
+              commitMessage: requiredString,
+            }).required(),
           })
           .required(),
       },

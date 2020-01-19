@@ -1,4 +1,5 @@
-import { defaultSchema } from './joi';
+import { defaultSchema, joi } from '.';
+import express from 'express';
 import Joi from '@hapi/joi';
 
 const assetFailure = (result: Joi.ValidationResult, expectedMessage: string) => {
@@ -223,7 +224,7 @@ describe('defaultSchema', () => {
       assetFailure(
         schema.validate({
           action: 'persistEntry',
-          params: { ...defaultParams, entry: { path: 'path', raw: 'content' } },
+          params: { ...defaultParams, entry: { slug: 'slug', path: 'path', raw: 'content' } },
         }),
         '"params.assets" is required',
       );
@@ -232,7 +233,7 @@ describe('defaultSchema', () => {
           action: 'persistEntry',
           params: {
             ...defaultParams,
-            entry: { path: 'path', raw: 'content' },
+            entry: { slug: 'slug', path: 'path', raw: 'content' },
             assets: [],
           },
         }),
@@ -243,7 +244,7 @@ describe('defaultSchema', () => {
           action: 'persistEntry',
           params: {
             ...defaultParams,
-            entry: { path: 'path', raw: 'content' },
+            entry: { slug: 'slug', path: 'path', raw: 'content' },
             assets: [],
             options: {},
           },
@@ -258,12 +259,11 @@ describe('defaultSchema', () => {
         action: 'persistEntry',
         params: {
           ...defaultParams,
-          entry: { path: 'path', raw: 'content' },
+          entry: { slug: 'slug', path: 'path', raw: 'content' },
           assets: [{ path: 'path', content: 'content', encoding: 'base64' }],
           options: {
             commitMessage: 'commitMessage',
             useWorkflow: true,
-            unpublished: true,
             status: 'draft',
           },
         },
@@ -402,6 +402,7 @@ describe('defaultSchema', () => {
         params: {
           ...defaultParams,
           asset: { path: 'path', content: 'content', encoding: 'base64' },
+          options: { commitMessage: 'commitMessage' },
         },
       });
 
@@ -423,7 +424,11 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'deleteFile',
-        params: { ...defaultParams, path: 'src/static/images/image.png' },
+        params: {
+          ...defaultParams,
+          path: 'src/static/images/image.png',
+          options: { commitMessage: 'commitMessage' },
+        },
       });
 
       expect(error).toBeUndefined();
@@ -456,5 +461,45 @@ describe('defaultSchema', () => {
 
       expect(error).toBeUndefined();
     });
+  });
+});
+
+describe('joi', () => {
+  it('should call next on valid schema', () => {
+    const next = jest.fn();
+
+    const req = {
+      body: {
+        action: 'entriesByFolder',
+        params: { branch: 'master', folder: 'folder', extension: 'md', depth: 1 },
+      },
+    } as express.Request;
+    const res: express.Response = {} as express.Response;
+    joi(defaultSchema())(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  it('should send error on invalid schema', () => {
+    const next = jest.fn();
+
+    const req = {
+      body: {
+        action: 'entriesByFolder',
+      },
+    } as express.Request;
+    const json = jest.fn();
+    const status = jest.fn(() => ({ json }));
+    const res: express.Response = ({ status } as unknown) as express.Response;
+
+    joi(defaultSchema())(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(0);
+
+    expect(status).toHaveBeenCalledTimes(1);
+    expect(json).toHaveBeenCalledTimes(1);
+
+    expect(status).toHaveBeenCalledWith(422);
+    expect(json).toHaveBeenCalledWith({ error: '"params" is required' });
   });
 });

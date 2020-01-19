@@ -15,6 +15,14 @@ export const parseContentKey = (contentKey: string) => {
   return { collection: contentKey.substr(0, index), slug: contentKey.substr(index + 1) };
 };
 
+export const contentKeyFromBranch = (branch: string) => {
+  return branch.substring(`${CMS_BRANCH_PREFIX}/`.length);
+};
+
+export const branchFromContentKey = (contentKey: string) => {
+  return `${CMS_BRANCH_PREFIX}/${contentKey}`;
+};
+
 export interface FetchError extends Error {
   status: number;
 }

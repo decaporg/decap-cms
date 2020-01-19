@@ -51,6 +51,8 @@ import {
   PreviewState,
   FetchError as FE,
   parseContentKey,
+  branchFromContentKey,
+  contentKeyFromBranch,
 } from './API';
 import {
   createPointerFile,
@@ -132,6 +134,8 @@ export const NetlifyCmsLibUtil = {
   getLargeMediaPatternsFromGitAttributesFile,
   parsePointerFile,
   getPointerFileForMediaFileObj,
+  branchFromContentKey,
+  contentKeyFromBranch,
 };
 export {
   APIError,
@@ -180,4 +184,6 @@ export {
   getLargeMediaPatternsFromGitAttributesFile,
   parsePointerFile,
   getPointerFileForMediaFileObj,
+  branchFromContentKey,
+  contentKeyFromBranch,
 };

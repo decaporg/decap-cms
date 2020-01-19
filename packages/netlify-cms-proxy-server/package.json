@@ -13,11 +13,13 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "webpack",
     "prestart": "yarn build",
     "start": "node dist/index.js",
     "develop": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "yarn test --watch",
+    "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
     "@hapi/joi": "^17.0.2",
@@ -26,8 +28,8 @@
     "express": "^4.17.1",
     "joi": "^14.3.1",
     "morgan": "^1.9.1",
-    "simple-git": "^1.129.0",
-    "netlify-cms-lib-util": "^2.3.0"
+    "netlify-cms-lib-util": "^2.3.0",
+    "simple-git": "^1.129.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
@@ -41,7 +43,11 @@
     "nodemon": "^2.0.2",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.3.0",
-    "ts-node": "^8.6.2"
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.6.2",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "webpack": "^4.41.5",
+    "webpack-node-externals": "^1.7.2"
   },
   "engines": {
     "node": ">=v12"

@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import Joi = require('@hapi/joi');
-import { getSchema } from './localGitMiddleware';
+import express from 'express';
+import { validateRepo, getSchema, localGitMiddleware } from '.';
 
 jest.mock('netlify-cms-lib-util', () => jest.fn());
+jest.mock('simple-git/promise');
 
 const assetFailure = (result: Joi.ValidationResult, expectedMessage: string) => {
   const { error } = result;
@@ -16,6 +19,31 @@ const defaultParams = {
 };
 
 describe('localGitMiddleware', () => {
+  const simpleGit = require('simple-git/promise');
+
+  const git = { checkIsRepo: jest.fn(), silent: jest.fn(), branchLocal: jest.fn() };
+  git.silent.mockReturnValue(git);
+
+  simpleGit.mockReturnValue(git);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('validateRepo', () => {
+    it('should throw on non valid git repo', async () => {
+      git.checkIsRepo.mockResolvedValue(false);
+      await expect(validateRepo({ repoPath: '/Users/user/code/repo' })).rejects.toEqual(
+        new Error('/Users/user/code/repo is not a valid git repository'),
+      );
+    });
+
+    it('should not throw on valid git repo', async () => {
+      git.checkIsRepo.mockResolvedValue(true);
+      await expect(validateRepo({ repoPath: '/Users/user/code/repo' })).resolves.toBeUndefined();
+    });
+  });
+
   describe('getSchema', () => {
     it('should throw on path traversal', () => {
       const schema = getSchema({ repoPath: '/Users/user/documents/code/repo' });
@@ -83,6 +111,36 @@ describe('localGitMiddleware', () => {
       });
 
       expect(error).toBeUndefined();
+    });
+  });
+
+  describe('localGitMiddleware', () => {
+    const json = jest.fn();
+    const status = jest.fn(() => ({ json }));
+    const res: express.Response = ({ status } as unknown) as express.Response;
+
+    const repoPath = '.';
+
+    it("should return error when default branch doesn't exist", async () => {
+      git.branchLocal.mockResolvedValue({ all: ['master'] });
+
+      const req = {
+        body: {
+          action: 'getMedia',
+          params: {
+            mediaFolder: 'mediaFolder',
+            branch: 'develop',
+          },
+        },
+      } as express.Request;
+
+      await localGitMiddleware({ repoPath })(req, res);
+
+      expect(status).toHaveBeenCalledTimes(1);
+      expect(status).toHaveBeenCalledWith(422);
+
+      expect(json).toHaveBeenCalledTimes(1);
+      expect(json).toHaveBeenCalledWith({ error: "Default branch 'develop' doesn't exist" });
     });
   });
 });
