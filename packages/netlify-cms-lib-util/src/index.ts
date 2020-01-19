@@ -162,3 +162,4 @@ export {
   PreviewState,
   parseContentKey,
 };
+export * from './git-lfs';

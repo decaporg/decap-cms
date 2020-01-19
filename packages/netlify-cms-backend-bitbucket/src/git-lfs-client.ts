@@ -1,16 +1,5 @@
-import { filter, flow, fromPairs, map } from 'lodash/fp';
 import minimatch from 'minimatch';
-import { ApiRequest } from 'netlify-cms-lib-util';
-import { API as bitbucketAPI } from 'netlify-cms-backend-bitbucket';
-import { API as githubAPI } from 'netlify-cms-backend-github';
-import { API as gitlabAPI } from 'netlify-cms-backend-gitlab';
-
-type anyAPI = bitbucketAPI | githubAPI | gitlabAPI;
-
-export interface PointerFile {
-  size: number;
-  sha: string;
-}
+import { ApiRequest, PointerFile } from 'netlify-cms-lib-util';
 
 type MakeAuthorizedRequest = (req: ApiRequest) => Promise<Response>;
 
@@ -44,12 +33,6 @@ interface LfsBatchUploadResponse {
   transfer?: string;
   objects: (LfsBatchObjectUpload | LfsBatchObjectError)[];
 }
-
-export const createPointerFile = ({ size, sha }: PointerFile) => `\
-version https://git-lfs.github.com/spec/v1
-oid sha256:${sha}
-size ${size}
-`;
 
 export class GitLfsClient {
   private static defaultContentHeaders = {
@@ -114,70 +97,4 @@ export class GitLfsClient {
       return object.actions;
     });
   }
-}
-
-//
-// Pointer file parsing
-
-const splitIntoLines = (str: string) => str.split('\n');
-const splitIntoWords = (str: string) => str.split(/\s+/g);
-const isNonEmptyString = (str: string) => str !== '';
-const withoutEmptyLines = flow([map((str: string) => str.trim()), filter(isNonEmptyString)]);
-
-//
-// .gitattributes file parsing
-
-const removeGitAttributesCommentsFromLine = (line: string) => line.split('#')[0];
-
-const parseGitPatternAttribute = (attributeString: string) => {
-  // There are three kinds of attribute settings:
-  // - a key=val pair sets an attribute to a specific value
-  // - a key without a value and a leading hyphen sets an attribute to false
-  // - a key without a value and no leading hyphen sets an attribute
-  //   to true
-  if (attributeString.includes('=')) {
-    return attributeString.split('=');
-  }
-  if (attributeString.startsWith('-')) {
-    return [attributeString.slice(1), false];
-  }
-  return [attributeString, true];
-};
-
-const parseGitPatternAttributes = flow([map(parseGitPatternAttribute), fromPairs]);
-
-const parseGitAttributesPatternLine = flow([
-  splitIntoWords,
-  ([pattern, ...attributes]) => [pattern, parseGitPatternAttributes(attributes)],
-]);
-
-const parseGitAttributesFileToPatternAttributePairs = flow([
-  splitIntoLines,
-  map(removeGitAttributesCommentsFromLine),
-  withoutEmptyLines,
-  map(parseGitAttributesPatternLine),
-]);
-
-const getLargeMediaPatternsFromGitAttributesFile = flow([
-  parseGitAttributesFileToPatternAttributePairs,
-  filter(
-    ([, attributes]) =>
-      attributes.filter === 'lfs' && attributes.diff === 'lfs' && attributes.merge === 'lfs',
-  ),
-  map(([pattern]) => pattern),
-]);
-
-export function getLFSPatterns(api: anyAPI): Promise<{ err: Error | null; patterns: string[] }> {
-  return api
-    .readFile('.gitattributes')
-    .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
-    .then((patterns: string[]) => ({ err: null, patterns }))
-    .catch((err: Error) => {
-      if (err.message.includes('404')) {
-        console.log('This 404 was expected and handled appropriately.');
-        return { err: null, patterns: [] as string[] };
-      } else {
-        return { err, patterns: [] as string[] };
-      }
-    });
 }
