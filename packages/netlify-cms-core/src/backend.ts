@@ -1,5 +1,5 @@
 import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq } from 'lodash';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { stripIndent } from 'common-tags';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -297,7 +297,7 @@ export class Backend {
 
   async generateUniqueSlug(
     collection: Collection,
-    entryData: EntryMap,
+    entryData: Map<string, unknown>,
     config: Config,
     usedSlugs: List<string>,
   ) {
@@ -725,8 +725,8 @@ export class Backend {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
-      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
-      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
+      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title') as string,
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!') as string,
     };
 
     let entryObj: {
@@ -807,8 +807,6 @@ export class Backend {
         'uploadMedia',
         config,
         {
-          slug: '',
-          collection: '',
           path: file.path,
           authorLogin: user.login,
           authorName: user.name,
@@ -848,8 +846,6 @@ export class Backend {
       'deleteMedia',
       config,
       {
-        slug: '',
-        collection: '',
         path,
         authorLogin: user.login,
         authorName: user.name,

@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import { commitMessageFormatter, prepareSlug, slugFormatter } from '../backendHelper';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
-jest.mock('Reducers/collections');
+jest.mock('../../reducers/collections');
 
 describe('backendHelper', () => {
   describe('commitMessageFormatter', () => {

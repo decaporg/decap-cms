@@ -25,12 +25,12 @@ const templateVariablePattern = `{{(${templateContentPattern})}}`;
 
 // Allow `fields.` prefix in placeholder to override built in replacements
 // like "slug" and "year" with values from fields of the same name.
-function getExplicitFieldReplacement(key: string, data: Map<string, string>) {
+function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
   if (!key.startsWith(FIELD_PREFIX)) {
     return;
   }
   const fieldName = key.substring(FIELD_PREFIX.length);
-  return data.get(fieldName, '');
+  return data.get(fieldName, '') as string;
 }
 
 export function parseDateFromEntry(
@@ -54,8 +54,8 @@ export function compileStringTemplate(
   template: string,
   date: Date | undefined,
   identifier = '',
-  data = Map<string, string>(),
-  processor: (value: string) => string,
+  data = Map<string, unknown>(),
+  processor?: (value: string) => string,
 ) {
   let missingRequiredDate;
 
@@ -77,7 +77,7 @@ export function compileStringTemplate(
     } else if (key === 'slug') {
       replacement = identifier;
     } else {
-      replacement = data.get(key, '');
+      replacement = data.get(key, '') as string;
     }
 
     if (processor) {
