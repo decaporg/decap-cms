@@ -58,7 +58,9 @@
     "publish:graduate:ci": "run-s publish:prepare \"publish:version --conventional-graduate --yes\" build publish:push-git \"publish:from-git --yes\"",
     "publish:graduate:before-manual-version": "run-s publish:prepare publish:graduate:version",
     "publish:graduate:version": "run-s \"publish:version --conventional-graduate\"",
-    "publish:graduate:dry-run": "run-s \"publish:version --conventional-graduate --no-git-tag-version\""
+    "publish:graduate:dry-run": "run-s \"publish:version --conventional-graduate --no-git-tag-version\"",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "browserslist": [
     "last 2 Chrome versions",
@@ -85,6 +87,9 @@
     "@commitlint/cli": "^8.3.3",
     "@commitlint/config-conventional": "^8.2.0",
     "@octokit/rest": "^16.28.7",
+    "@storybook/addon-actions": "^5.3.6",
+    "@storybook/addon-links": "^5.3.6",
+    "@storybook/react": "^5.3.6",
     "@testing-library/jest-dom": "^4.2.3",
     "@testing-library/react": "^9.3.2",
     "@types/common-tags": "^1.8.0",
@@ -143,6 +148,8 @@
     "node-fetch": "^2.3.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-test-renderer": "^16.8.4",
     "rehype": "^7.0.0",
     "rimraf": "^3.0.0",

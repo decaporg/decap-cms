@@ -18,3 +18,4 @@ __diff_output__
 *.log
 .env
 .temp/
+storybook-static/
