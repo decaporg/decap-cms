@@ -47,7 +47,7 @@ describe('media', () => {
       });
 
       selectMediaFilePath.mockReturnValue(path);
-      const payload = { collection: Map(), entryPath: 'entryPath', path };
+      const payload = { collection: Map(), entry: Map({ path: 'entryPath' }), path };
 
       return store.dispatch(getAsset(payload)).then(result => {
         const actions = store.getActions();
@@ -58,7 +58,7 @@ describe('media', () => {
         expect(selectMediaFilePath).toHaveBeenCalledWith(
           store.getState().config,
           payload.collection,
-          payload.entryPath,
+          payload.entry,
           path,
         );
       });

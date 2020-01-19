@@ -515,8 +515,8 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
-  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
-    return getAsset({ collection, entryPath, path })(dispatch, getState);
+  boundGetAsset: (collection, entry) => (dispatch, getState) => path => {
+    return getAsset({ collection, entry, path })(dispatch, getState);
   },
 };
 
@@ -527,7 +527,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     boundGetAsset: dispatchProps.boundGetAsset(
       stateProps.collection,
-      stateProps.entryDraft.getIn(['entry', 'path']),
+      stateProps.entryDraft.get('entry'),
     ),
   };
 };

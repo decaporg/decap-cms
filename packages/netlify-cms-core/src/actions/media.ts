@@ -1,5 +1,5 @@
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
-import { Collection, State } from '../types/redux';
+import { Collection, State, EntryMap } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
@@ -25,16 +25,16 @@ export function removeAsset(path: string) {
 
 interface GetAssetArgs {
   collection: Collection;
-  entryPath: string;
+  entry: EntryMap;
   path: string;
 }
 
-export function getAsset({ collection, entryPath, path }: GetAssetArgs) {
+export function getAsset({ collection, entry, path }: GetAssetArgs) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (!path) return createAssetProxy({ path: '', file: new File([], 'empty') });
 
     const state = getState();
-    const resolvedPath = selectMediaFilePath(state.config, collection, entryPath, path);
+    const resolvedPath = selectMediaFilePath(state.config, collection, entry, path);
 
     let asset = state.medias.get(resolvedPath);
     if (asset) {

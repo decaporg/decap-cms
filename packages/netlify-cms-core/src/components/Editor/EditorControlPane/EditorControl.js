@@ -261,7 +261,7 @@ class EditorControl extends React.Component {
 
 const mapStateToProps = state => {
   const { collections, entryDraft } = state;
-  const entryPath = entryDraft.getIn(['entry', 'path']);
+  const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
 
   return {
@@ -269,7 +269,7 @@ const mapStateToProps = state => {
     isFetching: state.search.get('isFetching'),
     queryHits: state.search.get('queryHits'),
     collection,
-    entryPath,
+    entry,
   };
 };
 
@@ -286,8 +286,8 @@ const mapDispatchToProps = {
   },
   clearSearch,
   clearFieldErrors,
-  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
-    return getAsset({ collection, entryPath, path })(dispatch, getState);
+  boundGetAsset: (collection, entry) => (dispatch, getState) => path => {
+    return getAsset({ collection, entry, path })(dispatch, getState);
   },
 };
 
@@ -296,7 +296,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entryPath),
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entry),
   };
 };
 

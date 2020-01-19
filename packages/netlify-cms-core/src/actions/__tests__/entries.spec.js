@@ -201,10 +201,11 @@ describe('entries', () => {
       getAsset.mockReturnValue(() => asset);
 
       const collection = Map();
-      await expect(getMediaAssets({ mediaFiles, collection })).resolves.toEqual([asset]);
+      const entry = Map({ mediaFiles });
+      await expect(getMediaAssets({ entry, collection })).resolves.toEqual([asset]);
 
       expect(getAsset).toHaveBeenCalledTimes(1);
-      expect(getAsset).toHaveBeenCalledWith({ collection, path: 'path2' });
+      expect(getAsset).toHaveBeenCalledWith({ collection, path: 'path2', entry });
     });
   });
 });

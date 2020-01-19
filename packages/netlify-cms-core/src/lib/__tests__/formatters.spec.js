@@ -5,6 +5,7 @@ import {
   slugFormatter,
   previewUrlFormatter,
   summaryFormatter,
+  folderFormatter,
 } from '../formatters';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -342,6 +343,38 @@ describe('formatters', () => {
       const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
 
       expect(summaryFormatter('{{title}}-{{year}}', entry, collection)).toBe('title-2020');
+    });
+  });
+
+  describe('folderFormatter', () => {
+    it('should return folder is entry is undefined', () => {
+      expect(folderFormatter('static/images', undefined)).toBe('static/images');
+    });
+
+    it('should return folder is entry data is undefined', () => {
+      expect(folderFormatter('static/images', Map({}))).toBe('static/images');
+    });
+
+    it('should return formatted folder', () => {
+      const { selectIdentifier } = require('../../reducers/collections');
+      selectIdentifier.mockReturnValue('title');
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({});
+
+      expect(
+        folderFormatter(
+          '../../../{{media_folder}}/{{category}}/{{slug}}',
+          entry,
+          collection,
+          'static/images',
+          'media_folder',
+          slugConfig,
+        ),
+      ).toBe('../../../static/images/hosting-and-deployment/deployment-with-nanobox');
     });
   });
 });

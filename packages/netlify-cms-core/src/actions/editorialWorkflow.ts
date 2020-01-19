@@ -371,10 +371,9 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const entry = entryDraft.get('entry');
     const assetProxies = await getMediaAssets({
       getState,
-      mediaFiles: entry.get('mediaFiles'),
       dispatch,
       collection,
-      entryPath: entry.get('path'),
+      entry,
     });
 
     /**

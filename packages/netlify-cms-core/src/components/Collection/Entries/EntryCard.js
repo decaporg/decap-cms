@@ -144,8 +144,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = {
-  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
-    return getAsset({ collection, entryPath, path })(dispatch, getState);
+  boundGetAsset: (collection, entry) => (dispatch, getState) => path => {
+    return getAsset({ collection, entry, path })(dispatch, getState);
   },
 };
 
@@ -154,7 +154,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry.get('path')),
+    boundGetAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
   };
 };
 

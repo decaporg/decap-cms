@@ -190,3 +190,29 @@ export const summaryFormatter = (
   const summary = compileStringTemplate(summaryTemplate, date, identifier, entryData);
   return summary;
 };
+
+export const folderFormatter = (
+  folderTemplate: string,
+  entry: EntryMap | undefined,
+  collection: Collection,
+  defaultFolder: string,
+  folderKey: string,
+  slugConfig: SlugConfig,
+) => {
+  if (!entry || !entry.get('data')) {
+    return folderTemplate;
+  }
+  const entryData = entry.get('data').set(folderKey, defaultFolder);
+  const date = parseDateFromEntry(entry, collection) || null;
+  const identifier = entryData.get(selectIdentifier(collection));
+  const processSegment = getProcessSegment(slugConfig);
+
+  const mediaFolder = compileStringTemplate(
+    folderTemplate,
+    date,
+    identifier,
+    entryData,
+    (value: string) => (value === defaultFolder ? defaultFolder : processSegment(value)),
+  );
+  return mediaFolder;
+};

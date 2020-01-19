@@ -1,5 +1,5 @@
 import { attempt, flatten, isError, uniq } from 'lodash';
-import { List, Map } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
@@ -482,20 +482,24 @@ export class Backend {
 
     const integration = selectIntegration(state.integrations, null, 'assetStore');
 
-    const [loadedEntry, mediaFiles] = await Promise.all([
-      this.implementation.getEntry(path),
-      collection.has('media_folder') && !integration
-        ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
-        : Promise.resolve(state.mediaLibrary.get('files') || []),
-    ]);
+    const loadedEntry = await this.implementation.getEntry(path);
 
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
       raw: loadedEntry.data,
       label,
-      mediaFiles,
+      mediaFiles: [],
     });
 
-    return this.entryWithFormat(collection)(entry);
+    const entryWithFormat = this.entryWithFormat(collection)(entry);
+    if (collection.has('media_folder') && !integration) {
+      entry.mediaFiles = await this.implementation.getMedia(
+        selectMediaFolder(state.config, collection, fromJS(entryWithFormat)),
+      );
+    } else {
+      entry.mediaFiles = state.mediaLibrary.get('files') || [];
+    }
+
+    return entryWithFormat;
   }
 
   getMedia() {
@@ -687,7 +691,7 @@ export class Backend {
       assetProxies.map(asset => {
         // update media files path based on entry path
         const oldPath = asset.path;
-        const newPath = selectMediaFilePath(config, collection, path, oldPath);
+        const newPath = selectMediaFilePath(config, collection, entryDraft.get('entry'), oldPath);
         asset.path = newPath;
       });
     } else {

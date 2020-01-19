@@ -12,15 +12,7 @@ import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { addAssets, getAsset } from './media';
-import {
-  Collection,
-  EntryMap,
-  MediaFile,
-  State,
-  EntryFields,
-  EntryField,
-  MediaFileMap,
-} from '../types/redux';
+import { Collection, EntryMap, MediaFile, State, EntryFields, EntryField } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, Dispatch } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
@@ -539,22 +531,20 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
 
 export async function getMediaAssets({
   getState,
-  mediaFiles,
   dispatch,
   collection,
-  entryPath,
+  entry,
 }: {
   getState: () => State;
-  mediaFiles: List<MediaFileMap>;
   collection: Collection;
-  entryPath: string;
+  entry: EntryMap;
   dispatch: Dispatch;
 }) {
-  const filesArray = mediaFiles.toJS() as MediaFile[];
+  const filesArray = entry.get('mediaFiles').toJS() as MediaFile[];
   const assets = await Promise.all(
     filesArray
       .filter(file => file.draft)
-      .map(file => getAsset({ collection, entryPath, path: file.path })(dispatch, getState)),
+      .map(file => getAsset({ collection, entry, path: file.path })(dispatch, getState)),
   );
 
   return assets;
@@ -592,10 +582,9 @@ export function persistEntry(collection: Collection) {
     const entry = entryDraft.get('entry');
     const assetProxies = await getMediaAssets({
       getState,
-      mediaFiles: entry.get('mediaFiles'),
       dispatch,
       collection,
-      entryPath: entry.get('path'),
+      entry,
     });
 
     /**
