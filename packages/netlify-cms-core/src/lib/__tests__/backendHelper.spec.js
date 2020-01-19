@@ -1,5 +1,10 @@
 import { Map } from 'immutable';
-import { commitMessageFormatter, prepareSlug, slugFormatter } from '../backendHelper';
+import {
+  commitMessageFormatter,
+  prepareSlug,
+  slugFormatter,
+  createPreviewUrl,
+} from '../backendHelper';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.mock('../../reducers/collections');
@@ -273,6 +278,32 @@ describe('backendHelper', () => {
           slugConfig,
         ),
       ).toBe('sub_dir/2020/2020-01-01-post-title.en');
+    });
+  });
+
+  describe('createPreviewUrl', () => {
+    it('should return undefined when missing baseUrl', () => {
+      expect(createPreviewUrl('')).toBeUndefined();
+    });
+
+    it('should return baseUrl for collection with no preview_path', () => {
+      expect(createPreviewUrl('https://www.example.com', Map({}))).toBe('https://www.example.com');
+    });
+
+    it('should compile preview url based on preview_path', () => {
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      expect(
+        createPreviewUrl(
+          'https://www.example.com',
+          Map({
+            preview_path: '{{year}}/{{slug}}/{{title}}/{{fields.slug}}',
+            preview_path_date_field: 'date',
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ date, slug: 'entrySlug', title: 'title' }) }),
+        ),
+      ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
     });
   });
 });

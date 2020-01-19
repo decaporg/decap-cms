@@ -1,9 +1,14 @@
 import { Map } from 'immutable';
-import { flow, partialRight } from 'lodash';
+import { flow, partialRight, trimEnd, trimStart } from 'lodash';
 import { sanitizeSlug } from './urlHelper';
-import { compileStringTemplate } from './stringTemplate';
+import {
+  compileStringTemplate,
+  parseDateFromEntry,
+  SLUG_MISSING_REQUIRED_DATE,
+} from './stringTemplate';
 import { selectIdentifier } from '../reducers/collections';
-import { Collection, SlugConfig, Config } from '../types/redux';
+import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
+import { stripIndent } from 'common-tags';
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -84,6 +89,9 @@ export const prepareSlug = (slug: string) => {
   );
 };
 
+const getProcessSegment = (slugConfig: SlugConfig) =>
+  flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
+
 export const slugFormatter = (
   collection: Collection,
   entryData: Map<string, unknown>,
@@ -100,12 +108,7 @@ export const slugFormatter = (
     );
   }
 
-  const processSegment = flow([
-    value => String(value),
-    prepareSlug,
-    partialRight(sanitizeSlug, slugConfig),
-  ]);
-
+  const processSegment = getProcessSegment(slugConfig);
   const date = new Date();
   const slug = compileStringTemplate(slugTemplate, date, identifier, entryData, processSegment);
 
@@ -117,4 +120,61 @@ export const slugFormatter = (
       value === slug ? value : processSegment(value),
     );
   }
+};
+
+export const createPreviewUrl = (
+  baseUrl: string,
+  collection: Collection,
+  slug: string,
+  slugConfig: SlugConfig,
+  entry: EntryMap,
+) => {
+  /**
+   * Preview URL can't be created without `baseUrl`. This makes preview URLs
+   * optional for backends that don't support them.
+   */
+  if (!baseUrl) {
+    return;
+  }
+
+  /**
+   * Without a `previewPath` for the collection (via config), the preview URL
+   * will be the URL provided by the backend.
+   */
+  if (!collection.get('preview_path')) {
+    return baseUrl;
+  }
+
+  /**
+   * If a `previewPath` is provided for the collection, use it to construct the
+   * URL path.
+   */
+  const basePath = trimEnd(baseUrl, '/');
+  const pathTemplate = collection.get('preview_path') as string;
+  const fields = entry.get('data');
+  const date = parseDateFromEntry(entry, collection, collection.get('preview_path_date_field'));
+
+  // Prepare and sanitize slug variables only, leave the rest of the
+  // `preview_path` template as is.
+  const processSegment = getProcessSegment(slugConfig);
+  let compiledPath;
+
+  try {
+    compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
+  } catch (err) {
+    // Print an error and ignore `preview_path` if both:
+    //   1. Date is invalid (according to Moment), and
+    //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
+    if (err.name === SLUG_MISSING_REQUIRED_DATE) {
+      console.error(stripIndent`
+        Collection "${collection.get('name')}" configuration error:
+          \`preview_path_date_field\` must be a field with a valid date. Ignoring \`preview_path\`.
+      `);
+      return basePath;
+    }
+    throw err;
+  }
+
+  const previewPath = trimStart(compiledPath, ' /');
+  return `${basePath}/${previewPath}`;
 };
