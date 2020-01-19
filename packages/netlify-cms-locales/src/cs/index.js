@@ -1,13 +1,14 @@
 const cs = {
   auth: {
     login: 'Přihlásit',
-    loggingIn: 'Přihlašuji...',
+    loggingIn: 'Přihlašování...',
     loginWithNetlifyIdentity: 'Přihlásit pomocí Netlify Identity',
     errors: {
       email: 'Vyplňte emailovou adresu.',
-      password: 'Vyplňte prosím heslo.',
+      password: 'Vyplňte heslo.',
       identitySettings:
-        'Nastavení identity nenalezeno. Pokud používáte git-gateway backend nezapomeňte aktivovat službu Identity a Git Gateway' + '.',
+        'Nastavení identity nenalezeno. Používáte-li git-gateway server nezapomeňte aktivovat službu Identity a Git Gateway' +
+        '.',
     },
   },
   app: {
@@ -19,10 +20,10 @@ const cs = {
     },
     app: {
       errorHeader: 'Chyba při načítání CMS konfigurace',
-      configErrors: 'Chyby konfigurace',
+      configErrors: 'Chyba konfigurace',
       checkConfigYml: 'Zkontrolujte soubor config.yml.',
       loadingConfig: 'Načítání konfigurace...',
-      waitingBackend: 'Čekání na backend...',
+      waitingBackend: 'Čekání na server...',
     },
     notFoundPage: {
       header: 'Nenalezeno',
@@ -39,7 +40,7 @@ const cs = {
     },
     entries: {
       loadingEntries: 'Načítání záznamů',
-      cachingEntries: 'Caching záznamů',
+      cachingEntries: 'Úkládání záznamů do mezipaměti',
       longerLoading: 'Načítání může trvat několik minut',
     },
   },
@@ -47,7 +48,7 @@ const cs = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} je povinný.',
-        regexPattern: "%{fieldLabel} nesouhlasí s předepsaným vzorem: %{pattern}.",
+        regexPattern: '%{fieldLabel} nesouhlasí s předepsaným vzorem: %{pattern}.',
         processing: '%{fieldLabel} se zpracovává.',
         range: '%{fieldLabel} musí být mezi %{minValue} a %{maxValue}.',
         min: '%{fieldLabel} musí být alespoň %{minValue}.',
@@ -57,12 +58,12 @@ const cs = {
     editor: {
       onLeavePage: 'Chcete opravdu opustit tuto stránku?',
       onUpdatingWithUnsavedChanges: 'Máte neuložené změny. Uložte je prosím před změnou statusu.',
-      onPublishingNotReady: 'Změnte status na "Připraveno" před publikováním.',
+      onPublishingNotReady: 'Změňte status na "Připraveno" před publikováním.',
       onPublishingWithUnsavedChanges: 'Máte neuložené změny, prosím uložte je před publikováním.',
       onPublishing: 'Chcete opravdu publikovat tento záznam?',
       onUnpublishing: 'Chcete opravdu zrušit publikování tohoto záznamu?',
       onDeleteWithUnsavedChanges:
-        'Chcete opravdu vymazat tuto publikovanou položku a neuložené změny z této relace?',
+        'Chcete opravdu vymazat tuto publikovanou položku a všechny neuložené změny z této relace?',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         'Tato akce vymaže všechny nepublikované změny v tomto záznamu a také všechny neuložené změny z této relace. Chcete záznam skutečně vymazat?',
       onDeleteUnpublishedChanges:
@@ -135,7 +136,7 @@ const cs = {
   ui: {
     errorBoundary: {
       title: 'Chyba',
-      details: "Nastala chyba - prosím ",
+      details: 'Nastala chyba - prosím ',
       reportIt: 'nahlaště ji.',
       detailsHeading: 'Detaily',
       recoveredEntry: {
@@ -153,7 +154,7 @@ const cs = {
       onFailToPersist: 'Chyba při ukládání záznamu: %{details}',
       onFailToDelete: 'Chyba při vymazávání záznamu: %{details}',
       onFailToUpdateStatus: 'Chyba při změně statusu záznamu: %{details}',
-      missingRequiredField: "Vynchali jste povinné pole. Prosím vyplňte ho.",
+      missingRequiredField: 'Vynechali jste povinné pole. Prosím vyplňte ho.',
       entrySaved: 'Záznam uložen',
       entryPublished: 'Záznam publikován',
       entryUnpublished: 'Publikování záznamu zrušeno',
