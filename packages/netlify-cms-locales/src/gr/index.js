@@ -2,7 +2,7 @@ const gr = {
   auth: {
     login: 'Σύνδεση',
     loggingIn: 'Σύνδεση στο...',
-    loginWithNetlifyIdentity: 'Σύνδεση με την ταυτότητα Netlify',
+    loginWithNetlifyIdentity: 'Σύνδεση μέσω Netlify',
     errors: {
       email: 'Βεβαιωθείτε ότι έχετε εισαγάγει το email σας.',
       password: 'Παρακαλώ εισάγετε τον κωδικό πρόσβασής σας.',
@@ -47,11 +47,11 @@ const gr = {
     editorControlPane: {
       widget: {
         required: 'Το %{fieldLabel} είναι απαραίτητο.',
-        regexPattern: 'Το %{fieldLabel} δεν ταίριαζε με το μοτίβο: %{pattern}.',
+        regexPattern: 'Το %{fieldLabel} δεν ταιριάζει με το μοτίβο: %{pattern}.',
         processing: 'Το %{fieldLabel} επεξεργάζεται.',
         range: 'Το %{fieldLabel} πρέπει να είναι μεταξύ %{minValue} και %{maxValue}.',
         min: 'Το %{fieldLabel} πρέπει να είναι τουλάχιστον %{minValue}.',
-        max: 'Το %{fieldLabel} πρέπει να είναι %{maxValue} ή μικρότερη.',
+        max: 'Το %{fieldLabel} πρέπει να είναι %{maxValue} ή μικρότερο.',
       },
     },
     editor: {
@@ -99,7 +99,7 @@ const gr = {
       changesSaved: 'Αλλαγές που αποθηκεύτηκαν',
       draft: 'Σχέδιο',
       inReview: 'Σε επανεξέταση',
-      ready: 'Έτοιμοι',
+      ready: 'Έτοιμα',
       publishNow: 'Δημοσίευση τώρα',
       deployPreviewPendingButtonLabel: 'Έλεγχος για προεπισκόπηση',
       deployPreviewButtonLabel: 'Προβολή προεπισκόπησης',
@@ -116,12 +116,12 @@ const gr = {
   },
   mediaLibrary: {
     mediaLibraryCard: {
-      draft: 'Σχέδιο',
+      draft: 'Προσχέδιο',
     },
     mediaLibrary: {
       onDelete: 'Είστε βέβαιοι ότι θέλετε να διαγράψετε τα επιλεγμένα πολυμέσα;',
       fileTooLarge:
-        'Το αρχείο είναι πολύ μεγάλο.\nΈχει ρυθμιστεί για να μην επιτρέπει αρχεία μεγαλύτερα από %{size} kB.',
+        'Το αρχείο είναι πολύ μεγάλο.\nΔεν επιτρέπονται αρχεία μεγαλύτερα από %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Φόρτωση...',
@@ -142,8 +142,8 @@ const gr = {
   ui: {
     errorBoundary: {
       title: 'Σφάλμα',
-      details: 'Υπάρχει ένα λάθος-παρακαλώ ',
-      reportIt: 'να το αναφέρετε.',
+      details: 'Υπάρχει ένα λάθος ',
+      reportIt: 'παρακαλώ να το αναφέρετε.',
       detailsHeading: 'Λεπτομέρειες',
       recoveredEntry: {
         heading: 'Ανακτημένο έγγραφο',
@@ -161,13 +161,13 @@ const gr = {
       onFailToDelete: 'Απέτυχε η διαγραφή της καταχώρησης: %{details}',
       onFailToUpdateStatus: 'Απέτυχε η ενημέρωση της κατάστασης: %{details}',
       missingRequiredField:
-        'Ουπς, χάσατε ένα απαιτούμενο πεδίο. Συμπληρώστε πριν από την αποθήκευση.',
+        'Ουπς, ξεχάσατε ένα απαιτούμενο πεδίο. Συμπληρώστε το πριν από την αποθήκευση.',
       entrySaved: 'Η καταχώρηση Αποθηκεύτηκε',
       entryPublished: 'Η καταχώρηση δημοσιεύτηκε',
       entryUnpublished: 'Μη δημοσιευμένη καταχώρηση',
       onFailToPublishEntry: 'Η δημοσίευση απέτυχε: %{details}',
       onFailToUnpublishEntry: 'Απέτυχε η κατάργηση δημοσίευσης καταχώρησης: %{details}',
-      entryUpdated: 'Η κατάσταση εισόδου Ενημερώθηκε',
+      entryUpdated: 'Η κατάσταση εισόδου ενημερώθηκε',
       onDeleteUnpublishedChanges: 'Οι μη δημοσιευμένες αλλαγές διαγράφηκαν',
       onFailToAuth: '%{details}',
     },
@@ -178,7 +178,7 @@ const gr = {
       workflowHeading: 'Ροή εργασιών',
       newPost: 'Νέα δημοσίευση',
       description:
-        '%{smart_count} καταχώρηση σε αναμονή για αναθεώρηση, %{readyCount} έτοιμες για Live μετάβαση. |||| %{smart_count} καταχωρήσεις σε αναμονή για αναθεώρηση, %{readyCount} έτοιμες για Live μετάβαση. ',
+        '%{smart_count} καταχώρησεις σε αναμονή για αναθεώρηση, %{readyCount} έτοιμες για Live μετάβαση. |||| %{smart_count} καταχωρήσεις σε αναμονή για αναθεώρηση, %{readyCount} έτοιμες για Live μετάβαση. ',
     },
     workflowCard: {
       lastChange: '%{date} από %{author}',
@@ -196,7 +196,7 @@ const gr = {
       onPublishEntry: 'Είστε βέβαιοι ότι θέλετε να δημοσιεύσετε αυτήν την καταχώρηση;',
       draftHeader: 'Προσχέδια',
       inReviewHeader: 'Σε ανασκόπηση',
-      readyHeader: 'Έτοιμοι',
+      readyHeader: 'Έτοιμα',
       currentEntries: '%{smart_count} καταχωρηση |||| %{smart_count} καταχωρησεις',
     },
   },
