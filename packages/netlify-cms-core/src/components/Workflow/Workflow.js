@@ -20,6 +20,7 @@ import {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
+  combineColletionEntry,
 } from 'Actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from 'Reducers';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
@@ -81,6 +82,7 @@ class Workflow extends Component {
       updateUnpublishedEntryStatus,
       publishUnpublishedEntry,
       deleteUnpublishedEntry,
+      combineColletionEntry,
       collections,
       t,
     } = this.props;
@@ -127,6 +129,7 @@ class Workflow extends Component {
           handleChangeStatus={updateUnpublishedEntryStatus}
           handlePublish={publishUnpublishedEntry}
           handleDelete={deleteUnpublishedEntry}
+          handleCombineCollection={combineColletionEntry}
           isOpenAuthoring={isOpenAuthoring}
         />
       </WorkflowContainer>
@@ -161,4 +164,5 @@ export default connect(mapStateToProps, {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
+  combineColletionEntry,
 })(translate()(Workflow));

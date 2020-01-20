@@ -19,6 +19,13 @@ const styles = {
     font-size: 13px;
     padding: 6px 0;
   `,
+  cardHovered: css`
+    border-color: ${colors.active};
+  `,
+  removeTopBorderRadius: css`
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  `,
 };
 
 const WorkflowLink = styled(Link)`
@@ -92,6 +99,7 @@ const WorkflowCardContainer = styled.div`
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
+  border: 1px dashed transparent;
 
   &:hover ${CardButtonContainer} {
     opacity: 1;
@@ -128,9 +136,16 @@ const WorkflowCard = ({
   onDelete,
   canPublish,
   onPublish,
+  snapshot,
+  combineEntry,
   t,
 }) => (
-  <WorkflowCardContainer>
+  <WorkflowCardContainer
+    css={[
+      snapshot.combineTargetFor && styles.cardHovered,
+      combineEntry && styles.removeTopBorderRadius,
+    ]}
+  >
     <WorkflowLink to={editLink}>
       <CardCollection>{collectionName}</CardCollection>
       <CardTitle>{title}</CardTitle>

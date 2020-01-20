@@ -798,6 +798,20 @@ export class Backend {
     return this.implementation.updateUnpublishedEntryStatus!(collection, slug, newStatus);
   }
 
+  combineColletionEntry(parentArgs, childEntry) {
+    let slug = parentArgs.slug;
+    !parentArgs.unpublished && (slug = `${slug}-${+new Date()}`);
+    const entryObj = { path: childEntry.get('path'), slug, raw: childEntry.get('raw') };
+    const opts = {
+      commitMessage: `${parentArgs.unpublished ? 'create' : 'update'} combine collections`,
+      collectionName: parentArgs.collection,
+      useWorkflow: true,
+      unpublished: parentArgs.unpublished,
+      status: parentArgs.status,
+    };
+    return this.implementation.persistEntry(entryObj, [], opts).then(() => slug);
+  }
+
   publishUnpublishedEntry(collection: string, slug: string) {
     return this.implementation.publishUnpublishedEntry!(collection, slug);
   }

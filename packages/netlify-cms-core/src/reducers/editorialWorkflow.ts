@@ -7,6 +7,7 @@ import {
   UNPUBLISHED_ENTRY_SUCCESS,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
+  UNPUBLISHED_ENTRIES_COMBINE_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
@@ -94,30 +95,42 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
         'isPersisting',
       ]);
 
+    case UNPUBLISHED_ENTRIES_COMBINE_SUCCESS:
+      return state.withMutations(map => {
+        action.payload.entries.forEach(entry =>
+          map.setIn(
+            ['entities', `${entry.collection}.${entry.slug}`, 'combineKey'],
+            `${action.payload.combineCollection}/${action.payload.combineSlug}`,
+          ),
+        );
+      });
+
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
       // Update Optimistically
       return state.withMutations(map => {
-        map.setIn(
-          [
-            'entities',
-            `${action.payload!.collection}.${action.payload!.slug}`,
-            'metaData',
-            'status',
-          ],
-          action.payload!.newStatus,
+        const entryKeys = selectUnpublishedStatusChangeKeys(
+          map,
+          action.payload!.collection,
+          action.payload!.slug,
         );
-        map.setIn(
-          ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isUpdatingStatus'],
-          true,
-        );
+        entryKeys.forEach(key => {
+          map.setIn(['entities', key, 'metaData', 'status'], action.payload!.newStatus);
+          map.setIn(['entities', key, 'isUpdatingStatus'], true);
+        });
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
-      return state.setIn(
-        ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isUpdatingStatus'],
-        false,
-      );
+      return state.withMutations(map => {
+        const entryKeys = selectUnpublishedStatusChangeKeys(
+          map,
+          action.payload!.collection,
+          action.payload!.slug,
+        );
+        entryKeys.forEach(key => {
+          map.setIn(['entities', key, 'isUpdatingStatus'], false);
+        });
+      });
 
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       return state.setIn(
@@ -158,6 +171,25 @@ export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: str
     .filter((_v, k) => startsWith(k as string, `${collection}.`))
     .map(entry => entry.get('slug'))
     .valueSeq();
+};
+
+export const selectUnpublishedKeysByCombineKey = (state, key) => {
+  if (!state) return null;
+  const entities = state.get('entities') as Entities;
+  return state
+    entities
+    .filter(entry => entry.get('combineKey') === key)
+    .keySeq();
+};
+
+export const selectUnpublishedStatusChangeKeys = (state, collection, slug) => {
+  let entryKeys = [`${collection}.${slug}`];
+  if (collection == 'collection') {
+    const combineKey = `${collection}/${slug}`;
+    entryKeys = selectUnpublishedKeysByCombineKey(state, combineKey).toJS();
+  }
+
+  return entryKeys;
 };
 
 export default unpublishedEntries;

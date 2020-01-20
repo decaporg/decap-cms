@@ -6,7 +6,12 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Map, List } from 'immutable';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend } from '../backend';
-import { selectPublishedSlugs, selectUnpublishedSlugs, selectEntry } from '../reducers';
+import {
+  selectPublishedSlugs,
+  selectUnpublishedSlugs,
+  selectEntry,
+  selectUnpublishedEntry,
+} from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
@@ -36,6 +41,10 @@ export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
 export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
 export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
 export const UNPUBLISHED_ENTRY_PERSIST_FAILURE = 'UNPUBLISHED_ENTRY_PERSIST_FAILURE';
+
+export const UNPUBLISHED_ENTRIES_COMBINE_REQUEST = 'UNPUBLISHED_ENTRIES_COMBINE_REQUEST';
+export const UNPUBLISHED_ENTRIES_COMBINE_SUCCESS = 'UNPUBLISHED_ENTRIES_COMBINE_SUCCESS';
+export const UNPUBLISHED_ENTRIES_COMBINE_FAILURE = 'UNPUBLISHED_ENTRIES_COMBINE_FAILURE';
 
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST';
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS';
@@ -142,6 +151,36 @@ function unpublishedEntryPersistedFail(error: Error, transactionID: string) {
     payload: { error },
     optimist: { type: REVERT, id: transactionID },
     error,
+  };
+}
+
+function unpublishedEntriesCombining() {
+  return {
+    type: UNPUBLISHED_ENTRIES_COMBINE_REQUEST,
+  };
+}
+
+function unpublishedEntriesCombined(
+  entries,
+  combineCollection: string,
+  combineSlug: string,
+  transactionID: string,
+) {
+  return {
+    type: UNPUBLISHED_ENTRIES_COMBINE_SUCCESS,
+    payload: {
+      entries,
+      combineCollection,
+      combineSlug,
+    },
+    optimist: { type: COMMIT, id: transactionID },
+  };
+}
+
+function unpublishedEntryCombinedFail(error: Error, transactionID: string) {
+  return {
+    type: UNPUBLISHED_ENTRIES_COMBINE_FAILURE,
+    optimist: { type: REVERT, id: transactionID },
   };
 }
 
@@ -473,6 +512,60 @@ export function updateUnpublishedEntryStatus(
         );
         dispatch(unpublishedEntryStatusChangeError(collection, slug, transactionID));
       });
+  };
+}
+
+export function combineColletionEntry(parentArgs, childArgs) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const transactionID = uuid();
+    const childEntry = selectUnpublishedEntry(state, childArgs.collection, childArgs.slug);
+    let slug = parentArgs.slug;
+    let entries = [childArgs];
+    let parentEntry;
+    dispatch(unpublishedEntriesCombining());
+
+    try {
+      parentArgs.collection !== 'collection' &&
+        (parentEntry = selectUnpublishedEntry(state, parentArgs.collection, parentArgs.slug));
+
+      if (parentEntry) {
+        slug = await backend.combineColletionEntry(
+          {
+            collection: 'collection',
+            slug: 'combine',
+            unpublished: false,
+            status: parentArgs.status,
+          },
+          parentEntry,
+        );
+        entries = entries.concat(parentArgs);
+      }
+
+      await backend.combineColletionEntry(
+        {
+          slug,
+          collection: 'collection',
+          unpublished: true,
+        },
+        childEntry,
+      );
+
+      return dispatch(unpublishedEntriesCombined(entries, 'collection', slug, transactionID));
+    } catch (error) {
+      dispatch(
+        notifSend({
+          message: {
+            key: 'ui.toast.onFailToCombine',
+            details: error,
+          },
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      return Promise.reject(dispatch(unpublishedEntryCombinedFail(error, transactionID)));
+    }
   };
 }
 
