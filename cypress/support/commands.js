@@ -34,7 +34,25 @@ const matchRoute = (route, fetchArgs) => {
   const options = fetchArgs[1];
 
   const method = options && options.method ? options.method : 'GET';
-  const body = options && options.body;
+  let body = options && options.body;
+  let routeBody = route.body;
+
+  let bodyMatch = false;
+  if (routeBody?.encoding === 'base64' && ['File', 'Blob'].includes(body?.constructor.name)) {
+    const blob = new Blob([Buffer.from(routeBody.content, 'base64')], {
+      type: routeBody.contentType,
+    });
+    // size matching is good enough
+    bodyMatch = blob.size === body.size;
+  } else if (routeBody && body?.constructor.name === 'FormData') {
+    bodyMatch = Array.from(body.entries()).some(([key, value]) => {
+      const val = typeof value === 'string' ? value : '';
+      const match = routeBody.includes(key) && routeBody.includes(val);
+      return match;
+    });
+  } else {
+    bodyMatch = body === routeBody;
+  }
 
   // use pattern matching for the timestamp parameter
   const urlRegex = escapeRegExp(decodeURIComponent(route.url)).replace(
@@ -43,19 +61,23 @@ const matchRoute = (route, fetchArgs) => {
   );
 
   return (
-    method === route.method &&
-    body === route.body &&
-    decodeURIComponent(url).match(new RegExp(`${urlRegex}`))
+    method === route.method && bodyMatch && decodeURIComponent(url).match(new RegExp(`${urlRegex}`))
   );
 };
 
 const stubFetch = (win, routes) => {
   const fetch = win.fetch;
   cy.stub(win, 'fetch').callsFake((...args) => {
-    const routeIndex = routes.findIndex(r => matchRoute(r, args));
+    let routeIndex = routes.findIndex(r => matchRoute(r, args));
     if (routeIndex >= 0) {
-      const route = routes.splice(routeIndex, 1)[0];
-      console.log(`matched ${args[0]} to ${route.url} ${route.method} ${route.status}`);
+      let route = routes.splice(routeIndex, 1)[0];
+      const message = `matched ${args[0]} to ${route.url} ${route.method} ${route.status}`;
+      console.log(message);
+      if (route.status === 302) {
+        console.log(`resolving redirect to ${route.headers.Location}`);
+        routeIndex = routes.findIndex(r => matchRoute(r, [route.headers.Location]));
+        route = routes.splice(routeIndex, 1)[0];
+      }
 
       let blob;
       if (route.response && route.response.encoding === 'base64') {
@@ -76,6 +98,8 @@ const stubFetch = (win, routes) => {
     } else if (
       args[0].includes('api.github.com') ||
       args[0].includes('api.bitbucket.org') ||
+      args[0].includes('bitbucket.org') ||
+      args[0].includes('api.media.atlassian.com') ||
       args[0].includes('gitlab.com') ||
       args[0].includes('netlify.com') ||
       args[0].includes('s3.amazonaws.com')

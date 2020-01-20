@@ -3,12 +3,13 @@ import { entry1 } from './common/entries';
 import * as specUtils from './common/spec_utils';
 
 const backend = 'bitbucket';
+const lfs = true;
 
 describe('BitBucket Backend Media Library - Large Media', () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, {}, backend);
+    specUtils.before(taskResult, { lfs }, backend);
   });
 
   after(() => {

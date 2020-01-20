@@ -32,6 +32,7 @@ import {
   getLargeMediaPatternsFromGitAttributesFile,
   getPointerFileForMediaFileObj,
   getLargeMediaFilteredMediaFiles,
+  FetchError,
 } from 'netlify-cms-lib-util';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -292,8 +293,8 @@ export default class BitbucketBackend implements Implementation {
       this._largeMediaClientPromise = (async (): Promise<GitLfsClient> => {
         const patterns = await this.api!.readFile('.gitattributes')
           .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
-          .catch((err: Error) => {
-            if (err.message.includes('404')) {
+          .catch((err: FetchError) => {
+            if (err.status === 404) {
               console.log('This 404 was expected and handled appropriately.');
             } else {
               console.error(err);
