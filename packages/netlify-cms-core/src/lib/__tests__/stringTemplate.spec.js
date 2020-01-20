@@ -1,6 +1,29 @@
 import { fromJS } from 'immutable';
-import { compileStringTemplate, parseDateFromEntry, extractTemplateVars } from '../stringTemplate';
+import {
+  keyToPathArray,
+  compileStringTemplate,
+  parseDateFromEntry,
+  extractTemplateVars,
+} from '../stringTemplate';
 describe('stringTemplate', () => {
+  describe('keyToPathArray', () => {
+    it('should return array of length 1 with simple path', () => {
+      expect(keyToPathArray('category')).toEqual(['category']);
+    });
+
+    it('should return path array for complex path', () => {
+      expect(keyToPathArray('categories[0].title.subtitles[0].welcome[2]')).toEqual([
+        'categories',
+        '0',
+        'title',
+        'subtitles',
+        '0',
+        'welcome',
+        '2',
+      ]);
+    });
+  });
+
   describe('parseDateFromEntry', () => {
     it('should infer date field and return entry date', () => {
       const date = new Date().toISOString();
