@@ -310,6 +310,20 @@ describe('formatters', () => {
       ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
     });
 
+    it('should compile filename and extension template values', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'posts/{{filename}}.{{extension}}',
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({}), path: 'src/content/posts/title.md' }),
+        ),
+      ).toBe('https://www.example.com/posts/title.md');
+    });
+
     it('should log error and ignore preview_path when date is missing', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       expect(
@@ -375,6 +389,44 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('../../../static/images/hosting-and-deployment/deployment-with-nanobox');
+    });
+
+    it('should compile filename template value', () => {
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({});
+
+      expect(
+        folderFormatter(
+          '../../../{{media_folder}}/{{category}}/{{filename}}',
+          entry,
+          collection,
+          'static/images',
+          'media_folder',
+          slugConfig,
+        ),
+      ).toBe('../../../static/images/hosting-and-deployment/deployment-with-nanobox');
+    });
+
+    it('should compile extension template value', () => {
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({});
+
+      expect(
+        folderFormatter(
+          '{{extension}}',
+          entry,
+          collection,
+          'static/images',
+          'media_folder',
+          slugConfig,
+        ),
+      ).toBe('md');
     });
   });
 });

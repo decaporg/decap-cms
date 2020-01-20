@@ -9,6 +9,7 @@ import {
 import { selectIdentifier } from '../reducers/collections';
 import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
 import { stripIndent } from 'common-tags';
+import { basename, fileExtension } from 'netlify-cms-lib-util';
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -122,6 +123,21 @@ export const slugFormatter = (
   }
 };
 
+const addFileTemplateFields = (entryPath: string, fields: Map<string, string>) => {
+  if (!entryPath) {
+    return fields;
+  }
+
+  const extension = fileExtension(entryPath);
+  const filename = basename(entryPath, `.${extension}`);
+  fields = fields.withMutations(map => {
+    map.set('filename', filename);
+    map.set('extension', extension);
+  });
+
+  return fields;
+};
+
 export const previewUrlFormatter = (
   baseUrl: string,
   collection: Collection,
@@ -151,7 +167,8 @@ export const previewUrlFormatter = (
    */
   const basePath = trimEnd(baseUrl, '/');
   const pathTemplate = collection.get('preview_path') as string;
-  const fields = entry.get('data');
+  let fields = entry.get('data') as Map<string, string>;
+  fields = addFileTemplateFields(entry.get('path'), fields);
   const date = parseDateFromEntry(entry, collection, collection.get('preview_path_date_field'));
 
   // Prepare and sanitize slug variables only, leave the rest of the
@@ -202,16 +219,18 @@ export const folderFormatter = (
   if (!entry || !entry.get('data')) {
     return folderTemplate;
   }
-  const entryData = entry.get('data').set(folderKey, defaultFolder);
+  let fields = (entry.get('data') as Map<string, string>).set(folderKey, defaultFolder);
+  fields = addFileTemplateFields(entry.get('path'), fields);
+
   const date = parseDateFromEntry(entry, collection) || null;
-  const identifier = entryData.get(selectIdentifier(collection));
+  const identifier = fields.get(selectIdentifier(collection) as string);
   const processSegment = getProcessSegment(slugConfig);
 
   const mediaFolder = compileStringTemplate(
     folderTemplate,
     date,
     identifier,
-    entryData,
+    fields,
     (value: string) => (value === defaultFolder ? defaultFolder : processSegment(value)),
   );
   return mediaFolder;
