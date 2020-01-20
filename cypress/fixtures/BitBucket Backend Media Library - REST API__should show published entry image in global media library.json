@@ -518,6 +518,57 @@
     "status": 404
   },
   {
+  "method": "GET",
+  "url": "/2.0/repositories/owner/repo/refs/branches/master?ts=300",
+  "headers": {
+    "Server": "nginx",
+    "Vary": "Authorization",
+    "Content-Type": "application/json; charset=utf-8",
+    "X-OAuth-Scopes": "pullrequest:write, repository:delete, repository:admin, account",
+    "Access-Control-Expose-Headers": "Accept-Ranges, Content-Encoding, Content-Length, Content-Type, ETag, Last-Modified",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+    "X-Served-By": "app-1142",
+    "Access-Control-Allow-Origin": "*",
+    "X-Static-Version": "39e6dc2e5ab0",
+    "X-Content-Type-Options": "nosniff",
+    "X-Accepted-OAuth-Scopes": "repository",
+    "X-Credential-Type": "oauth2",
+    "X-Render-Time": "0.0670340061188",
+    "Connection": "Keep-Alive",
+    "X-Request-Count": "4420",
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-Version": "39e6dc2e5ab0",
+    "content-length": "3151"
+  },
+  "response": "{\"name\": \"master\", \"links\": {\"commits\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commits/master\"}, \"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/refs/branches/master\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo/branch/master\"}}, \"default_merge_strategy\": \"merge_commit\", \"merge_strategies\": [\"merge_commit\", \"squash\", \"fast_forward\"], \"type\": \"branch\", \"target\": {\"hash\": \"536a257d1e997553bb48535542a6a6e98612cd44\", \"repository\": {\"links\": {\"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo\"}, \"avatar\": {\"href\": \"https://bytebucket.org/ravatar/%7B928ac4e9-0307-48fb-b73c-38322180cf2a%7D?ts=default\"}}, \"type\": \"repository\", \"name\": \"repo\", \"full_name\": \"owner/repo\", \"uuid\": \"{928ac4e9-0307-48fb-b73c-38322180cf2a}\"}, \"links\": {\"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"comments\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44/comments\"}, \"patch\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/patch/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo/commits/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"diff\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/diff/536a257d1e997553bb48535542a6a6e98612cd44\"}, \"approve\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44/approve\"}, \"statuses\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/536a257d1e997553bb48535542a6a6e98612cd44/statuses\"}}, \"author\": {\"raw\": \"renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>\", \"type\": \"author\"}, \"parents\": [{\"hash\": \"606d697716a4caeb12f185c49eafc1fb7364f7b2\", \"type\": \"commit\", \"links\": {\"self\": {\"href\": \"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/606d697716a4caeb12f185c49eafc1fb7364f7b2\"}, \"html\": {\"href\": \"https://bitbucket.org/owner/repo/commits/606d697716a4caeb12f185c49eafc1fb7364f7b2\"}}}], \"date\": \"2020-01-07T06:36:49+00:00\", \"message\": \"chore(deps): update dependency gh-pages to v2.2.0 (#233)\\n\\nCo-authored-by: Renovate Bot <renovatebot@gmail.com>\\r\\n\", \"type\": \"commit\"}}",
+  "status": 200
+},
+  {
+    "method": "GET",
+    "url": "/2.0/repositories/owner/repo/src/536a257d1e997553bb48535542a6a6e98612cd44/.gitattributes?ts=300",
+    "headers": {
+      "Server": "nginx",
+      "Vary": "Authorization",
+      "Content-Type": "application/json; charset=utf-8",
+      "X-OAuth-Scopes": "pullrequest:write, repository:delete, repository:admin, account",
+      "Access-Control-Expose-Headers": "Accept-Ranges, Content-Encoding, Content-Length, Content-Type, ETag, Last-Modified",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "X-Served-By": "app-1131",
+      "Access-Control-Allow-Origin": "*",
+      "X-Static-Version": "39e6dc2e5ab0",
+      "X-Accepted-OAuth-Scopes": "repository",
+      "X-Credential-Type": "oauth2",
+      "X-Render-Time": "0.0504078865051",
+      "Connection": "Keep-Alive",
+      "X-Request-Count": "1511",
+      "X-Frame-Options": "SAMEORIGIN",
+      "X-Version": "39e6dc2e5ab0",
+      "Content-Length": "105"
+    },
+    "response": "{\"type\":\"error\",\"error\":{\"message\":\"No such file or directory: .gitattributes\"}}",
+    "status": 404
+  },
+  {
     "method": "GET",
     "url": "/2.0/repositories/owner/repo/refs/branches/master?ts=300",
     "headers": {
