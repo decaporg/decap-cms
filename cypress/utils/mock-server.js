@@ -30,6 +30,8 @@ const retrieveRecordedExpectations = async () => {
       Host.includes('api.github.com') ||
       (Host.includes('gitlab.com') && httpRequest.path.includes('api/v4')) ||
       Host.includes('api.bitbucket.org') ||
+      (Host.includes('bitbucket.org') && httpRequest.path.includes('info/lfs')) ||
+      Host.includes('api.media.atlassian.com') ||
       Host.some(host => host.includes('netlify.com')) ||
       Host.some(host => host.includes('s3.amazonaws.com'))
     );

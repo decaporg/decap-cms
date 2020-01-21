@@ -29,10 +29,15 @@ import {
   AsyncLock,
   asyncLock,
   getPreviewStatus,
+  getLargeMediaPatternsFromGitAttributesFile,
+  getPointerFileForMediaFileObj,
+  getLargeMediaFilteredMediaFiles,
+  FetchError,
 } from 'netlify-cms-lib-util';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
+import { GitLfsClient } from './git-lfs-client';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -61,6 +66,8 @@ export default class BitbucketBackend implements Implementation {
   _mediaDisplayURLSem?: Semaphore;
   squashMerges: boolean;
   previewContext: string;
+  largeMediaURL: string;
+  _largeMediaClientPromise?: Promise<GitLfsClient>;
 
   constructor(config: Config, options = {}) {
     this.options = {
@@ -87,6 +94,8 @@ export default class BitbucketBackend implements Implementation {
     this.apiRoot = config.backend.api_root || 'https://api.bitbucket.org/2.0';
     this.baseUrl = config.base_url || '';
     this.siteId = config.site_id || '';
+    this.largeMediaURL =
+      config.backend.large_media_url || `https://bitbucket.org/${config.backend.repo}/info/lfs`;
     this.token = '';
     this.mediaFolder = config.media_folder;
     this.squashMerges = config.backend.squash_merges || false;
@@ -108,6 +117,13 @@ export default class BitbucketBackend implements Implementation {
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
   }
+
+  requestFunction = (req: ApiRequest) =>
+    this.getToken()
+      .then(
+        token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req) as ApiRequest,
+      )
+      .then(unsentRequest.performRequest);
 
   restoreUser(user: User) {
     return this.authenticate(user);
@@ -272,6 +288,31 @@ export default class BitbucketBackend implements Implementation {
     );
   }
 
+  getLargeMediaClient() {
+    if (!this._largeMediaClientPromise) {
+      this._largeMediaClientPromise = (async (): Promise<GitLfsClient> => {
+        const patterns = await this.api!.readFile('.gitattributes')
+          .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
+          .catch((err: FetchError) => {
+            if (err.status === 404) {
+              console.log('This 404 was expected and handled appropriately.');
+            } else {
+              console.error(err);
+            }
+            return [];
+          });
+
+        return new GitLfsClient(
+          !!(this.largeMediaURL && patterns.length > 0),
+          this.largeMediaURL,
+          patterns,
+          this.requestFunction,
+        );
+      })();
+    }
+    return this._largeMediaClientPromise;
+  }
+
   getMediaDisplayURL(displayURL: DisplayURL) {
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
     return getMediaDisplayURL(
@@ -300,15 +341,37 @@ export default class BitbucketBackend implements Implementation {
   }
 
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+    const client = await this.getLargeMediaClient();
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.persistFiles(entry, mediaFiles, options),
+      async () =>
+        this.api!.persistFiles(
+          entry,
+          client.enabled ? await getLargeMediaFilteredMediaFiles(client, mediaFiles) : mediaFiles,
+          options,
+        ),
       'Failed to acquire persist entry lock',
     );
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
+    const { fileObj, path } = mediaFile;
+    const displayURL = URL.createObjectURL(fileObj);
+    const client = await this.getLargeMediaClient();
+    const fixedPath = path.startsWith('/') ? path.slice(1) : path;
+    if (!client.enabled || !client.matchPath(fixedPath)) {
+      return this._persistMedia(mediaFile, options);
+    }
+
+    const persistMediaArgument = await getPointerFileForMediaFileObj(client, fileObj as File, path);
+    return {
+      ...(await this._persistMedia(persistMediaArgument, options)),
+      displayURL,
+    };
+  }
+
+  async _persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
     const fileObj = mediaFile.fileObj as File;
 
     const [id] = await Promise.all([

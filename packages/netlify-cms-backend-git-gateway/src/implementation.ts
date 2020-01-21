@@ -4,7 +4,6 @@ import { fromPairs, get, pick, intersection, unzip } from 'lodash';
 import ini from 'ini';
 import {
   APIError,
-  getBlobSHA,
   unsentRequest,
   basename,
   ApiRequest,
@@ -20,6 +19,11 @@ import {
   Config,
   ImplementationFile,
   UnpublishedEntryMediaFile,
+  parsePointerFile,
+  getLargeMediaPatternsFromGitAttributesFile,
+  PointerFile,
+  getPointerFileForMediaFileObj,
+  getLargeMediaFilteredMediaFiles,
 } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
@@ -27,14 +31,7 @@ import { BitbucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbu
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
-import {
-  parsePointerFile,
-  createPointerFile,
-  getLargeMediaPatternsFromGitAttributesFile,
-  getClient,
-  Client,
-  PointerFile,
-} from './netlify-lfs-client';
+import { getClient, Client } from './netlify-lfs-client';
 
 declare global {
   interface Window {
@@ -466,49 +463,13 @@ export default class GitGateway implements Implementation {
     return this.backend!.getMediaFile(path);
   }
 
-  async getPointerFileForMediaFileObj(fileObj: File) {
-    const client = await this.getLargeMediaClient();
-    const { name, size } = fileObj;
-    const sha = await getBlobSHA(fileObj);
-    await client.uploadResource({ sha, size }, fileObj);
-    const pointerFileString = createPointerFile({ sha, size });
-    const pointerFileBlob = new Blob([pointerFileString]);
-    const pointerFile = new File([pointerFileBlob], name, { type: 'text/plain' });
-    const pointerFileSHA = await getBlobSHA(pointerFile);
-    return {
-      file: pointerFile,
-      blob: pointerFileBlob,
-      sha: pointerFileSHA,
-      raw: pointerFileString,
-    };
-  }
-
   async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
     const client = await this.getLargeMediaClient();
-    if (!client.enabled) {
-      return this.backend!.persistEntry(entry, mediaFiles, options);
-    }
-
-    const largeMediaFilteredMediaFiles = await Promise.all(
-      mediaFiles.map(async mediaFile => {
-        const { fileObj, path } = mediaFile;
-        const fixedPath = path.startsWith('/') ? path.slice(1) : path;
-        if (!client.matchPath(fixedPath)) {
-          return mediaFile;
-        }
-
-        const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj as File);
-        return {
-          ...mediaFile,
-          fileObj: pointerFileDetails.file,
-          size: pointerFileDetails.blob.size,
-          sha: pointerFileDetails.sha,
-          raw: pointerFileDetails.raw,
-        };
-      }),
+    return this.backend!.persistEntry(
+      entry,
+      client.enabled ? await getLargeMediaFilteredMediaFiles(client, mediaFiles) : mediaFiles,
+      options,
     );
-
-    return this.backend!.persistEntry(entry, largeMediaFilteredMediaFiles, options);
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
@@ -520,14 +481,7 @@ export default class GitGateway implements Implementation {
       return this.backend!.persistMedia(mediaFile, options);
     }
 
-    const pointerFileDetails = await this.getPointerFileForMediaFileObj(fileObj as File);
-    const persistMediaArgument = {
-      fileObj: pointerFileDetails.file,
-      size: pointerFileDetails.blob.size,
-      path,
-      sha: pointerFileDetails.sha,
-      raw: pointerFileDetails.raw,
-    };
+    const persistMediaArgument = await getPointerFileForMediaFileObj(client, fileObj as File, path);
     return {
       ...(await this.backend!.persistMedia(persistMediaArgument, options)),
       displayURL,

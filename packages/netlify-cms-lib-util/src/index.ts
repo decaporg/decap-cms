@@ -52,6 +52,14 @@ import {
   FetchError as FE,
   parseContentKey,
 } from './API';
+import {
+  createPointerFile,
+  getLargeMediaFilteredMediaFiles,
+  getLargeMediaPatternsFromGitAttributesFile,
+  parsePointerFile,
+  getPointerFileForMediaFileObj,
+  PointerFile as PF,
+} from './git-lfs';
 
 export type AsyncLock = AL;
 export type Implementation = I;
@@ -78,6 +86,7 @@ export type ApiRequest =
   | string;
 export type Config = C;
 export type FetchError = FE;
+export type PointerFile = PF;
 
 export const NetlifyCmsLibUtil = {
   APIError,
@@ -118,6 +127,11 @@ export const NetlifyCmsLibUtil = {
   runWithLock,
   PreviewState,
   parseContentKey,
+  createPointerFile,
+  getLargeMediaFilteredMediaFiles,
+  getLargeMediaPatternsFromGitAttributesFile,
+  parsePointerFile,
+  getPointerFileForMediaFileObj,
 };
 export {
   APIError,
@@ -161,4 +175,9 @@ export {
   runWithLock,
   PreviewState,
   parseContentKey,
+  createPointerFile,
+  getLargeMediaFilteredMediaFiles,
+  getLargeMediaPatternsFromGitAttributesFile,
+  parsePointerFile,
+  getPointerFileForMediaFileObj,
 };

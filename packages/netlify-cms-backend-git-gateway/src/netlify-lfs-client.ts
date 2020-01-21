@@ -1,30 +1,6 @@
-import { filter, flow, fromPairs, map } from 'lodash/fp';
+import { flow, fromPairs, map } from 'lodash/fp';
 import minimatch from 'minimatch';
-import { ApiRequest } from 'netlify-cms-lib-util';
-
-//
-// Pointer file parsing
-
-const splitIntoLines = (str: string) => str.split('\n');
-const splitIntoWords = (str: string) => str.split(/\s+/g);
-const isNonEmptyString = (str: string) => str !== '';
-const withoutEmptyLines = flow([map((str: string) => str.trim()), filter(isNonEmptyString)]);
-export const parsePointerFile: (data: string) => PointerFile = flow([
-  splitIntoLines,
-  withoutEmptyLines,
-  map(splitIntoWords),
-  fromPairs,
-  ({ size, oid, ...rest }) => ({
-    size: parseInt(size),
-    sha: oid?.split(':')[1],
-    ...rest,
-  }),
-]);
-
-export type PointerFile = {
-  size: number;
-  sha: string;
-};
+import { ApiRequest, PointerFile } from 'netlify-cms-lib-util';
 
 type MakeAuthorizedRequest = (req: ApiRequest) => Promise<Response>;
 
@@ -37,56 +13,6 @@ type ClientConfig = {
   enabled: boolean;
   transformImages: ImageTransformations | boolean;
 };
-
-export const createPointerFile = ({ size, sha }: PointerFile) => `\
-version https://git-lfs.github.com/spec/v1
-oid sha256:${sha}
-size ${size}
-`;
-
-//
-// .gitattributes file parsing
-
-const removeGitAttributesCommentsFromLine = (line: string) => line.split('#')[0];
-
-const parseGitPatternAttribute = (attributeString: string) => {
-  // There are three kinds of attribute settings:
-  // - a key=val pair sets an attribute to a specific value
-  // - a key without a value and a leading hyphen sets an attribute to false
-  // - a key without a value and no leading hyphen sets an attribute
-  //   to true
-  if (attributeString.includes('=')) {
-    return attributeString.split('=');
-  }
-  if (attributeString.startsWith('-')) {
-    return [attributeString.slice(1), false];
-  }
-  return [attributeString, true];
-};
-
-const parseGitPatternAttributes = flow([map(parseGitPatternAttribute), fromPairs]);
-
-const parseGitAttributesPatternLine = flow([
-  splitIntoWords,
-  ([pattern, ...attributes]) => [pattern, parseGitPatternAttributes(attributes)],
-]);
-
-const parseGitAttributesFileToPatternAttributePairs = flow([
-  splitIntoLines,
-  map(removeGitAttributesCommentsFromLine),
-  withoutEmptyLines,
-  map(parseGitAttributesPatternLine),
-]);
-
-export const getLargeMediaPatternsFromGitAttributesFile = flow([
-  parseGitAttributesFileToPatternAttributePairs,
-  filter(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ([_pattern, attributes]) =>
-      attributes.filter === 'lfs' && attributes.diff === 'lfs' && attributes.merge === 'lfs',
-  ),
-  map(([pattern]) => pattern),
-]);
 
 export const matchPath = ({ patterns }: ClientConfig, path: string) =>
   patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));

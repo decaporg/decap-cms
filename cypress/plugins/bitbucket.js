@@ -82,7 +82,7 @@ function del(token, path) {
   });
 }
 
-async function prepareTestGitLabRepo() {
+async function prepareTestBitBucketRepo({ lfs }) {
   const { owner, repo, token } = await getEnvs();
 
   // postfix a random string to avoid collisions
@@ -112,6 +112,15 @@ async function prepareTestGitLabRepo() {
     `https://x-token-auth:${token}@bitbucket.org/${owner}/${testRepoName}`,
   );
   await git.push(['-u', 'origin', 'master']);
+
+  if (lfs) {
+    console.log(`Enabling LFS for repo ${owner}/${repo}`);
+    await git.addConfig('commit.gpgsign', 'false');
+    await git.raw(['lfs', 'track', '*.png', '*.jpg']);
+    await git.add('.gitattributes');
+    await git.commit('chore: track images files under LFS');
+    await git.push('origin', 'master');
+  }
 
   return { owner, repo: testRepoName, tempDir };
 }
@@ -162,12 +171,13 @@ async function resetRepositories({ owner, repo, tempDir }) {
 }
 
 async function setupBitBucket(options) {
+  const { lfs = false, ...rest } = options;
   if (process.env.RECORD_FIXTURES) {
     console.log('Running tests in "record" mode - live data with be used!');
-    const [user, repoData] = await Promise.all([getUser(), prepareTestGitLabRepo()]);
+    const [user, repoData] = await Promise.all([getUser(), prepareTestBitBucketRepo({ lfs })]);
 
     await updateConfig(config => {
-      merge(config, options, {
+      merge(config, rest, {
         backend: {
           repo: `${repoData.owner}/${repoData.repo}`,
         },
@@ -179,7 +189,7 @@ async function setupBitBucket(options) {
     console.log('Running tests in "playback" mode - local data with be used');
 
     await updateConfig(config => {
-      merge(config, options, {
+      merge(config, rest, {
         backend: {
           repo: `${BITBUCKET_REPO_OWNER_SANITIZED_VALUE}/${BITBUCKET_REPO_NAME_SANITIZED_VALUE}`,
         },
@@ -225,7 +235,9 @@ const sanitizeString = (str, { owner, repo, token, ownerName }) => {
     .replace(
       new RegExp('https://secure.gravatar.+?/u/.+?v=\\d', 'g'),
       `${FAKE_OWNER_USER.links.avatar.href}`,
-    );
+    )
+    .replace(new RegExp(/\?token=.+?&/g), 'token=fakeToken&')
+    .replace(new RegExp(/&client=.+?&/g), 'client=fakeClient&');
 
   if (ownerName) {
     replaced = replaced.replace(
@@ -254,6 +266,16 @@ const transformRecordedData = (expectation, toSanitize) => {
       }
     } else if (httpRequest.body && httpRequest.body.type === 'STRING' && httpRequest.body.string) {
       body = httpRequest.body.string;
+    } else if (
+      httpRequest.body &&
+      httpRequest.body.type === 'BINARY' &&
+      httpRequest.body.base64Bytes
+    ) {
+      body = {
+        encoding: 'base64',
+        content: httpRequest.body.base64Bytes,
+        contentType: httpRequest.body.contentType,
+      };
     }
     return body;
   };
