@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.6.2...netlify-cms-backend-git-gateway@2.7.0) (2020-01-21)
+
+
+### Bug Fixes
+
+* **git-gateway-gitlab:** fix large media support for editorial workflow ([#3105](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/3105)) ([038803c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/038803c9f249de386812652372c35c4c53935295))
+
+
+### Features
+
+* **backend-bitbucket:** Add Git-LFS support ([#3118](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/3118)) ([a48c02d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/a48c02d852ca5e11055da3a14cefae8d17a68498))
+
+
+
+
+
 ## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.6.1...netlify-cms-backend-git-gateway@2.6.2) (2020-01-16)
 
 

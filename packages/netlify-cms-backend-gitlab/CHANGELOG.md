@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.5.1...netlify-cms-backend-gitlab@2.5.2) (2020-01-21)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** check for shared group permissions ([#3122](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3122)) ([f1739e9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/f1739e978f9dee1de42dd5479ec80a5d991a9bfe))
+* **git-gateway-gitlab:** fix large media support for editorial workflow ([#3105](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3105)) ([038803c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/038803c9f249de386812652372c35c4c53935295))
+
+
+
+
+
 ## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.5.0...netlify-cms-backend-gitlab@2.5.1) (2020-01-14)
 
 **Note:** Version bump only for package netlify-cms-backend-gitlab

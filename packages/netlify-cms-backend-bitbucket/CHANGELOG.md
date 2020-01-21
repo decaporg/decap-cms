@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.7.2...netlify-cms-backend-bitbucket@2.8.0) (2020-01-21)
+
+
+### Features
+
+* **backend-bitbucket:** Add Git-LFS support ([#3118](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/3118)) ([a48c02d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/a48c02d852ca5e11055da3a14cefae8d17a68498))
+
+
+
+
+
 ## [2.7.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.7.1...netlify-cms-backend-bitbucket@2.7.2) (2020-01-14)
 
 **Note:** Version bump only for package netlify-cms-backend-bitbucket
