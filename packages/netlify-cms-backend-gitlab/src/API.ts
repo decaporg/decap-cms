@@ -124,6 +124,28 @@ type GitLabMergeRequest = {
   sha: string;
 };
 
+type GitLabRepo = {
+  shared_with_groups: { group_access_level: number }[] | null;
+  permissions: {
+    project_access: { access_level: number } | null;
+    group_access: { access_level: number } | null;
+  };
+};
+
+type GitLabBranch = {
+  developers_can_push: boolean;
+  developers_can_merge: boolean;
+};
+
+export const getMaxAccess = (groups: { group_access_level: number }[]) => {
+  return groups.reduce((previous, current) => {
+    if (current.group_access_level > previous.group_access_level) {
+      return current;
+    }
+    return previous;
+  }, groups[0]);
+};
+
 export default class API {
   apiRoot: string;
   token: string | boolean;
@@ -173,17 +195,40 @@ export default class API {
   user = () => this.requestJSON('/user');
 
   WRITE_ACCESS = 30;
-  hasWriteAccess = () =>
-    this.requestJSON(this.repoURL).then(({ permissions }) => {
-      const { project_access: projectAccess, group_access: groupAccess } = permissions;
-      if (projectAccess && projectAccess.access_level >= this.WRITE_ACCESS) {
+  MAINTAINER_ACCESS = 40;
+
+  hasWriteAccess = async () => {
+    const {
+      shared_with_groups: sharedWithGroups,
+      permissions,
+    }: GitLabRepo = await this.requestJSON(this.repoURL);
+    const { project_access: projectAccess, group_access: groupAccess } = permissions;
+    if (projectAccess && projectAccess.access_level >= this.WRITE_ACCESS) {
+      return true;
+    }
+    if (groupAccess && groupAccess.access_level >= this.WRITE_ACCESS) {
+      return true;
+    }
+    // check for group write permissions
+    if (sharedWithGroups && sharedWithGroups.length > 0) {
+      const maxAccess = getMaxAccess(sharedWithGroups);
+      // maintainer access
+      if (maxAccess.group_access_level >= this.MAINTAINER_ACCESS) {
         return true;
       }
-      if (groupAccess && groupAccess.access_level >= this.WRITE_ACCESS) {
-        return true;
+      // developer access
+      if (maxAccess.group_access_level >= this.WRITE_ACCESS) {
+        // check permissions to merge and push
+        const branch: GitLabBranch = await this.requestJSON(
+          `${this.repoURL}/repository/branches/${this.branch}`,
+        ).catch(() => ({}));
+        if (branch.developers_can_merge && branch.developers_can_push) {
+          return true;
+        }
       }
-      return false;
-    });
+    }
+    return false;
+  };
 
   readFile = async (
     path: string,
