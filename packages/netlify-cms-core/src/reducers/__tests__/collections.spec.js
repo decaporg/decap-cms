@@ -1,6 +1,11 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { configLoaded } from 'Actions/config';
-import collections, { selectAllowDeletion, selectEntryPath, selectEntrySlug } from '../collections';
+import collections, {
+  selectAllowDeletion,
+  selectEntryPath,
+  selectEntrySlug,
+  getFieldsNames,
+} from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
 describe('collections', () => {
@@ -74,6 +79,32 @@ describe('collections', () => {
           'posts/dir1/dir2/slug.md',
         ),
       ).toBe('dir1/dir2/slug');
+    });
+  });
+
+  describe('getFieldsNames', () => {
+    it('should get flat fields names', () => {
+      const collection = fromJS({
+        fields: [{ name: 'en' }, { name: 'es' }],
+      });
+      expect(getFieldsNames(collection.get('fields').toArray())).toEqual(['en', 'es']);
+    });
+
+    it('should get nested fields names', () => {
+      const collection = fromJS({
+        fields: [
+          { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
+          { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
+        ],
+      });
+      expect(getFieldsNames(collection.get('fields').toArray())).toEqual([
+        'en',
+        'es',
+        'en.title',
+        'en.body',
+        'es.title',
+        'es.body',
+      ]);
     });
   });
 });

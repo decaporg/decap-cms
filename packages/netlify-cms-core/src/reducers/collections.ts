@@ -122,10 +122,24 @@ export const selectAllowDeletion = (collection: Collection) =>
   selectors[collection.get('type')].allowDeletion(collection);
 export const selectTemplateName = (collection: Collection, slug: string) =>
   selectors[collection.get('type')].templateName(collection, slug);
+
+export const getFieldsNames = (fields: EntryField[], prefix = '') => {
+  let names = fields.map(f => `${prefix}${f.get('name')}`);
+
+  fields.forEach((f, index) => {
+    if (f.has('fields')) {
+      const fields = f.get('fields')?.toArray() as EntryField[];
+      names = [...names, ...getFieldsNames(fields, `${names[index]}.`)];
+    }
+  });
+
+  return names;
+};
+
 export const selectIdentifier = (collection: Collection) => {
   const identifier = collection.get('identifier_field');
   const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
-  const fieldNames = collection.get('fields', List<EntryField>()).map(field => field?.get('name'));
+  const fieldNames = getFieldsNames(collection.get('fields', List<EntryField>()).toArray());
   return identifierFields.find(id =>
     fieldNames.find(name => name?.toLowerCase().trim() === id.toLowerCase().trim()),
   );

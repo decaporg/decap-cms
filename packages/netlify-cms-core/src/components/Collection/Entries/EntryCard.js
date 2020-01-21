@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { colors, colorsRaw, components, lengths, Asset } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { summaryFormatter } from 'Lib/formatters';
+import { keyToPathArray } from 'Lib/stringTemplate';
 
 const ListCard = styled.li`
   ${components.card};
@@ -125,7 +126,7 @@ const mapStateToProps = (state, ownProps) => {
   const { entry, inferedFields, collection } = ownProps;
   const label = entry.get('label');
   const entryData = entry.get('data');
-  const defaultTitle = label || entryData.get(inferedFields.titleField);
+  const defaultTitle = label || entryData.getIn(keyToPathArray(inferedFields.titleField));
   const summaryTemplate = collection.get('summary');
   const summary = summaryTemplate
     ? summaryFormatter(summaryTemplate, entry, collection)

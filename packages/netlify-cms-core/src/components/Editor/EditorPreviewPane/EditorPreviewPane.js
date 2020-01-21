@@ -6,6 +6,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
+import { keyToPathArray } from 'Lib/stringTemplate';
 import { ErrorBoundary } from 'UI';
 import { selectTemplateName, selectInferedField } from 'Reducers/collections';
 import { INFERABLE_FIELDS } from 'Constants/fieldInference';
@@ -87,8 +88,17 @@ export default class PreviewPane extends React.Component {
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
-    if (Object.keys(this.inferedFields).indexOf(name) !== -1) {
-      value = this.inferedFields[name].defaultPreview(value);
+
+    const inferedField = Object.entries(this.inferedFields)
+      .filter(([key]) => {
+        // identifier fields can reference nested (e.g. 'en.title') fields so we get the last part
+        const array = keyToPathArray(key);
+        return name === array[array.length - 1];
+      })
+      .map(([, value]) => value)[0];
+
+    if (inferedField) {
+      value = inferedField.defaultPreview(value);
     } else if (
       value &&
       labelledWidgets.indexOf(field.get('widget')) !== -1 &&

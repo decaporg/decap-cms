@@ -5,6 +5,7 @@ import {
   compileStringTemplate,
   parseDateFromEntry,
   SLUG_MISSING_REQUIRED_DATE,
+  keyToPathArray,
 } from './stringTemplate';
 import { selectIdentifier } from '../reducers/collections';
 import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
@@ -100,9 +101,7 @@ export const slugFormatter = (
 ) => {
   const slugTemplate = collection.get('slug') || '{{slug}}';
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  const identifier = entryData.get(selectIdentifier(collection)) as string;
+  const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
   if (!identifier) {
     throw new Error(
       'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
@@ -203,7 +202,7 @@ export const summaryFormatter = (
 ) => {
   const entryData = entry.get('data');
   const date = parseDateFromEntry(entry, collection) || null;
-  const identifier = entryData.get(selectIdentifier(collection));
+  const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
   const summary = compileStringTemplate(summaryTemplate, date, identifier, entryData);
   return summary;
 };
@@ -223,7 +222,7 @@ export const folderFormatter = (
   fields = addFileTemplateFields(entry.get('path'), fields);
 
   const date = parseDateFromEntry(entry, collection) || null;
-  const identifier = fields.get(selectIdentifier(collection) as string);
+  const identifier = fields.getIn(keyToPathArray(selectIdentifier(collection) as string));
   const processSegment = getProcessSegment(slugConfig);
 
   const mediaFolder = compileStringTemplate(
