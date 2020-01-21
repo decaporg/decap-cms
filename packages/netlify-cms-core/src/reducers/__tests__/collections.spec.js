@@ -6,6 +6,7 @@ import collections, {
   selectEntrySlug,
   selectFieldsMediaFolders,
   selectMediaFolders,
+  getFieldsNames,
 } from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
@@ -235,6 +236,32 @@ describe('collections', () => {
           fromJS({ slug: 'name', path: 'src/post/post1.md' }),
         ),
       ).toEqual(['file_media_folder', 'image_media_folder']);
+    });
+  });
+
+  describe('getFieldsNames', () => {
+    it('should get flat fields names', () => {
+      const collection = fromJS({
+        fields: [{ name: 'en' }, { name: 'es' }],
+      });
+      expect(getFieldsNames(collection.get('fields').toArray())).toEqual(['en', 'es']);
+    });
+
+    it('should get nested fields names', () => {
+      const collection = fromJS({
+        fields: [
+          { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
+          { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
+        ],
+      });
+      expect(getFieldsNames(collection.get('fields').toArray())).toEqual([
+        'en',
+        'es',
+        'en.title',
+        'en.body',
+        'es.title',
+        'es.body',
+      ]);
     });
   });
 });
