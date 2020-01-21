@@ -195,6 +195,8 @@ export default class API {
   user = () => this.requestJSON('/user');
 
   WRITE_ACCESS = 30;
+  MAINTAINER_ACCESS = 40;
+
   hasWriteAccess = async () => {
     const {
       shared_with_groups: sharedWithGroups,
@@ -207,9 +209,14 @@ export default class API {
     if (groupAccess && groupAccess.access_level >= this.WRITE_ACCESS) {
       return true;
     }
+    // check for group write permissions
     if (sharedWithGroups && sharedWithGroups.length > 0) {
       const maxAccess = getMaxAccess(sharedWithGroups);
-      // check for group write permissions
+      // maintainer access
+      if (maxAccess.group_access_level >= this.MAINTAINER_ACCESS) {
+        return true;
+      }
+      // developer access
       if (maxAccess.group_access_level >= this.WRITE_ACCESS) {
         // check permissions to merge and push
         const branch: GitLabBranch = await this.requestJSON(

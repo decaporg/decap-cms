@@ -48,6 +48,18 @@ describe('GitLab API', () => {
       await expect(api.hasWriteAccess()).resolves.toBe(false);
     });
 
+    test('should return true on shared group access_level >= 40', async () => {
+      const api = new API({ repo: 'repo' });
+      api.requestJSON = jest.fn().mockResolvedValueOnce({
+        permissions: { project_access: null, group_access: null },
+        shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 40 }],
+      });
+
+      await expect(api.hasWriteAccess()).resolves.toBe(true);
+
+      expect(api.requestJSON).toHaveBeenCalledTimes(1);
+    });
+
     test('should return true on shared group access_level >= 30, developers can merge and push', async () => {
       const api = new API({ repo: 'repo' });
 
