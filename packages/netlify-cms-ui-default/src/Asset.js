@@ -24,7 +24,6 @@ class Asset extends React.Component {
   }
 
   componentDidMount() {
-    this.true = false;
     this._fetchAsset();
   }
 
