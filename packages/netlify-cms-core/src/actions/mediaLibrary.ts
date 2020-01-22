@@ -489,18 +489,20 @@ export async function getMediaDisplayURL(
     // url loading had an error
     url = null;
   } else {
-    if (!displayURLState.get('isFetching')) {
-      // load display url
-      dispatch(loadMediaDisplayURL(file));
-    }
-
     const key = file.id;
-    url = await waitUntilWithTimeout<string>(dispatch, resolve => ({
+    const promise = waitUntilWithTimeout<string>(dispatch, resolve => ({
       predicate: ({ type, payload }) =>
         (type === MEDIA_DISPLAY_URL_SUCCESS || type === MEDIA_DISPLAY_URL_FAILURE) &&
         payload.key === key,
       run: (_dispatch, _getState, action) => resolve(action.payload.url),
     }));
+
+    if (!displayURLState.get('isFetching')) {
+      // load display url
+      dispatch(loadMediaDisplayURL(file));
+    }
+
+    url = await promise;
   }
 
   return url;

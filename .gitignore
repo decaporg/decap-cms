@@ -13,7 +13,7 @@ website/data/contributors.json
 cypress/videos
 cypress/screenshots
 __diff_output__
-/coverage/
+coverage/
 .cache
 *.log
 .env

@@ -1,7 +1,9 @@
 export const EDITORIAL_WORKFLOW_ERROR = 'EDITORIAL_WORKFLOW_ERROR';
 
 export default class EditorialWorkflowError extends Error {
-  constructor(message, notUnderEditorialWorkflow) {
+  message: string;
+  notUnderEditorialWorkflow: boolean;
+  constructor(message: string, notUnderEditorialWorkflow: boolean) {
     super(message);
     this.message = message;
     this.notUnderEditorialWorkflow = notUnderEditorialWorkflow;

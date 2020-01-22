@@ -84,6 +84,7 @@ export type Config = {
     gateway_url?: string;
     large_media_url?: string;
     use_large_media_transforms_in_media_library?: boolean;
+    proxy_url?: string;
   };
   media_folder: string;
   base_url?: string;
