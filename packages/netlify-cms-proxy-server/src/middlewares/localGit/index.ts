@@ -86,7 +86,7 @@ const listFiles = async (dir: string, extension: string, depth: number): Promise
           : [res].filter(f => f.endsWith(extension));
       }),
     );
-    return files.flat();
+    return ([] as string[]).concat(...files);
   } catch (e) {
     return [];
   }

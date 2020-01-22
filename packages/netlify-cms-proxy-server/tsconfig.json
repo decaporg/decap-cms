@@ -3,7 +3,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2019",
+    "target": "ES2018",
     "moduleResolution": "node",
     "outDir": "dist",
     "baseUrl": ".",
