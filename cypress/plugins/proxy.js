@@ -10,6 +10,8 @@ const initRepo = async dir => {
   await fs.mkdirp(dir);
   const git = getGitClient(dir);
   await git.init();
+  await git.addConfig('user.email', 'cms-cypress-test@netlify.com');
+  await git.addConfig('user.name', 'cms-cypress-test');
 
   const readme = 'README.md';
   await fs.writeFile(path.join(dir, readme), '');
