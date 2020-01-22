@@ -105,12 +105,13 @@ export function insertMedia(mediaPath: string | string[]) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const config = state.config;
+    const entry = state.entryDraft.get('entry');
     const collectionName = state.entryDraft.getIn(['entry', 'collection']);
     const collection = state.collections.get(collectionName);
     if (Array.isArray(mediaPath)) {
-      mediaPath = mediaPath.map(path => selectMediaFilePublicPath(config, collection, path));
+      mediaPath = mediaPath.map(path => selectMediaFilePublicPath(config, collection, path, entry));
     } else {
-      mediaPath = selectMediaFilePublicPath(config, collection, mediaPath as string);
+      mediaPath = selectMediaFilePublicPath(config, collection, mediaPath as string, entry);
     }
     dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
   };
@@ -246,9 +247,8 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
         throw new Error('The Private Upload option is only available for Asset Store Integration');
       } else {
         const entry = state.entryDraft.get('entry');
-        const entryPath = entry?.get('path');
         const collection = state.collections.get(entry?.get('collection'));
-        const path = selectMediaFilePath(state.config, collection, entryPath, file.name);
+        const path = selectMediaFilePath(state.config, collection, entry, file.name);
         assetProxy = createAssetProxy({
           file,
           path,

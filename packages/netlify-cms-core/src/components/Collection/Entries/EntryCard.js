@@ -5,8 +5,7 @@ import { getAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
 import { colors, colorsRaw, components, lengths, Asset } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { compileStringTemplate, parseDateFromEntry } from 'Lib/stringTemplate';
-import { selectIdentifier } from 'Reducers/collections';
+import { summaryFormatter } from 'Lib/formatters';
 
 const ListCard = styled.li`
   ${components.card};
@@ -89,35 +88,19 @@ const CardImageAsset = ({ getAsset, image }) => {
 };
 
 const EntryCard = ({
-  collection,
-  entry,
-  inferedFields,
+  path,
+  summary,
+  image,
   collectionLabel,
   viewStyle = VIEW_STYLE_LIST,
   boundGetAsset,
 }) => {
-  const label = entry.get('label');
-  const entryData = entry.get('data');
-  const defaultTitle = label || entryData.get(inferedFields.titleField);
-  const path = `/collections/${collection.get('name')}/entries/${entry.get('slug')}`;
-  const summary = collection.get('summary');
-  const date = parseDateFromEntry(entry, collection) || null;
-  const identifier = entryData.get(selectIdentifier(collection));
-  const title = summary
-    ? compileStringTemplate(summary, date, identifier, entryData)
-    : defaultTitle;
-
-  let image = entryData.get(inferedFields.imageField);
-  if (image) {
-    image = encodeURI(image);
-  }
-
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
       <ListCard>
         <ListCardLink to={path}>
           {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-          <ListCardTitle>{title}</ListCardTitle>
+          <ListCardTitle>{summary}</ListCardTitle>
         </ListCardLink>
       </ListCard>
     );
@@ -129,7 +112,7 @@ const EntryCard = ({
         <GridCardLink to={path}>
           <CardBody hasImage={image}>
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-            <CardHeading>{title}</CardHeading>
+            <CardHeading>{summary}</CardHeading>
           </CardBody>
           {image ? <CardImageAsset getAsset={boundGetAsset} image={image} /> : null}
         </GridCardLink>
@@ -138,9 +121,31 @@ const EntryCard = ({
   }
 };
 
+const mapStateToProps = (state, ownProps) => {
+  const { entry, inferedFields, collection } = ownProps;
+  const label = entry.get('label');
+  const entryData = entry.get('data');
+  const defaultTitle = label || entryData.get(inferedFields.titleField);
+  const summaryTemplate = collection.get('summary');
+  const summary = summaryTemplate
+    ? summaryFormatter(summaryTemplate, entry, collection)
+    : defaultTitle;
+
+  let image = entryData.get(inferedFields.imageField);
+  if (image) {
+    image = encodeURI(image);
+  }
+
+  return {
+    summary,
+    path: `/collections/${collection.get('name')}/entries/${entry.get('slug')}`,
+    image,
+  };
+};
+
 const mapDispatchToProps = {
-  boundGetAsset: (collection, entryPath) => (dispatch, getState) => path => {
-    return getAsset({ collection, entryPath, path })(dispatch, getState);
+  boundGetAsset: (collection, entry) => (dispatch, getState) => path => {
+    return getAsset({ collection, entry, path })(dispatch, getState);
   },
 };
 
@@ -149,10 +154,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry.get('path')),
+    boundGetAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
   };
 };
 
-const ConnectedEntryCard = connect(null, mapDispatchToProps, mergeProps)(EntryCard);
+const ConnectedEntryCard = connect(mapStateToProps, mapDispatchToProps, mergeProps)(EntryCard);
 
 export default ConnectedEntryCard;

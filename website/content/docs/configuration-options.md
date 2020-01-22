@@ -256,6 +256,7 @@ would like to reference that field via `{{slug}}`, you can do so by adding the e
 prefix, eg. `{{fields.slug}}`.
 
 **Available template tags:**
+
 * Any field can be referenced by wrapping the field name in double curly braces, eg. `{{author}}`
 * `{{slug}}`: a url-safe version of the `title` field (or identifier field) for the file
 * `{{year}}`: 4-digit year of the file creation date
@@ -266,16 +267,19 @@ prefix, eg. `{{fields.slug}}`.
 * `{{second}}`: 2-digit second of the file creation date
 
 **Example:**
+
 ```yaml
 slug: "{{year}}-{{month}}-{{day}}_{{slug}}"
 ```
 
 **Example using field names:**
+
 ```yaml
 slug: "{{year}}-{{month}}-{{day}}_{{title}}_{{some_other_field}}"
 ```
 
 **Example using field name that conflicts with a template tag:**
+
 ```yaml
 slug: "{{year}}-{{month}}-{{day}}_{{fields.slug}}"
 ```
@@ -289,16 +293,25 @@ root of a deploy preview.
 **Available template tags:**
 
 Template tags are the same as those for [slug](#slug), with the following exceptions:
+
 * `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the
     case with [`slug` configuration](#slug)
 * The date based template tags, such as `{{year}}` and `{{month}}`, are pulled from a date field in your entry, and may require additional configuration - see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
+* `{{filename}}` The file name without the extension part.
+* `{{extension}}` The file extension.
 
-**Example:**
+**Examples:**
 
 ```yaml
 collections:
   - name: posts
     preview_path: "blog/{{year}}/{{month}}/{{slug}}"
+```
+
+```yaml
+collections:
+  - name: posts
+    preview_path: "blog/{{year}}/{{month}}/{{filename}}.{{extension}}"
 ```
 
 ### `preview_path_date_field`
@@ -358,13 +371,13 @@ This setting changes options for the editor view of the collection. It has one o
      preview: false
 ```
 
-
 ### `summary`
 
 This setting allows the customisation of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`.
 This option over-rides the default of `title` field and `identifier_field`.
 
 **Example**
+
 ```yaml
     summary: "Version: {{version}} - {{title}}"
 ```

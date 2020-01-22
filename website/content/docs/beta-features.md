@@ -55,7 +55,7 @@ You can now specify a `path` template (similar to the `slug` template) to contro
 
 This allows saving content in subfolders, e.g. configuring `path: '{{year}}/{{slug}}'` will save the content under `2019/post-title.md`.
 
-## Folder Collections Media Folder
+## Folder Collections Media and Public Folder
 
 By default the CMS stores media files for all collections under a global `media_folder` directory as specified in the configuration.
 
@@ -86,6 +86,7 @@ collections:
     folder: content/posts
     path: '{{slug}}/index'
     media_folder: ''
+    public_folder: ''
     fields:
       - label: Title
         name: title
@@ -97,7 +98,7 @@ collections:
 
 More specifically, saving a entry with a title of `example post` with an image named `image.png` will result in a directory structure of:
 
-```
+```bash
 content
   posts
     example-post
@@ -108,6 +109,15 @@ content
 And for the image field being populated with a value of `image.png`.
 
 **Note: When specifying a `path` on a folder collection `media_folder` defaults to an empty string.**
+
+**Available template tags:**
+
+Supports all of the [`slug` templates](/docs/configuration-options#slug) and:
+
+* `{{filename}}` The file name without the extension part.
+* `{{extension}}` The file extension.
+* `{{media_folder}}` The global `media_folder`.
+* `{{public_folder}}` The global `public_folder`.
 
 ## List Widget: Variable Types
 
@@ -343,7 +353,6 @@ Template tags produce the following output:
 
 - `{{author-name}}`: the full name of the author (might be empty based on the user's profile)
 
-
 ## Image widget file size limit
 
 You can set a limit to as what the maximum file size of a file is that users can upload directly into a image field.
@@ -359,4 +368,3 @@ Example config:
     config:
       max_file_size: 512000 # in bytes, only for default media library
 ```
-

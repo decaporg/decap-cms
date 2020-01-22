@@ -1,6 +1,5 @@
-import { attempt, flatten, isError, trimStart, trimEnd, flow, partialRight, uniq } from 'lodash';
-import { List } from 'immutable';
-import { stripIndent } from 'common-tags';
+import { attempt, flatten, isError, uniq } from 'lodash';
+import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
@@ -16,9 +15,9 @@ import {
   selectInferedField,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
-import { sanitizeSlug, sanitizeChar } from './lib/urlHelper';
+import { sanitizeChar } from './lib/urlHelper';
 import { getBackend } from './lib/registry';
-import { commitMessageFormatter, slugFormatter, prepareSlug } from './lib/backendHelper';
+import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import {
   localForage,
   Cursor,
@@ -34,18 +33,11 @@ import {
   Config as ImplementationConfig,
 } from 'netlify-cms-lib-util';
 import { status } from './constants/publishModes';
-import {
-  SLUG_MISSING_REQUIRED_DATE,
-  compileStringTemplate,
-  extractTemplateVars,
-  parseDateFromEntry,
-  dateParsers,
-} from './lib/stringTemplate';
+import { extractTemplateVars, dateParsers } from './lib/stringTemplate';
 import {
   Collection,
   EntryMap,
   Config,
-  SlugConfig,
   FilterRule,
   Collections,
   EntryDraft,
@@ -97,67 +89,6 @@ const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
   if (a.score < b.score) return 1;
   return 0;
 };
-
-function createPreviewUrl(
-  baseUrl: string,
-  collection: Collection,
-  slug: string,
-  slugConfig: SlugConfig,
-  entry: EntryMap,
-) {
-  /**
-   * Preview URL can't be created without `baseUrl`. This makes preview URLs
-   * optional for backends that don't support them.
-   */
-  if (!baseUrl) {
-    return;
-  }
-
-  /**
-   * Without a `previewPath` for the collection (via config), the preview URL
-   * will be the URL provided by the backend.
-   */
-  if (!collection.get('preview_path')) {
-    return baseUrl;
-  }
-
-  /**
-   * If a `previewPath` is provided for the collection, use it to construct the
-   * URL path.
-   */
-  const basePath = trimEnd(baseUrl, '/');
-  const pathTemplate = collection.get('preview_path') as string;
-  const fields = entry.get('data');
-  const date = parseDateFromEntry(entry, collection, collection.get('preview_path_date_field'));
-
-  // Prepare and sanitize slug variables only, leave the rest of the
-  // `preview_path` template as is.
-  const processSegment = flow([
-    value => String(value),
-    prepareSlug,
-    partialRight(sanitizeSlug, slugConfig),
-  ]);
-  let compiledPath;
-
-  try {
-    compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
-  } catch (err) {
-    // Print an error and ignore `preview_path` if both:
-    //   1. Date is invalid (according to Moment), and
-    //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
-    if (err.name === SLUG_MISSING_REQUIRED_DATE) {
-      console.error(stripIndent`
-        Collection "${collection.get('name')}" configuration error:
-          \`preview_path_date_field\` must be a field with a valid date. Ignoring \`preview_path\`.
-      `);
-      return basePath;
-    }
-    throw err;
-  }
-
-  const previewPath = trimStart(compiledPath, ' /');
-  return `${basePath}/${previewPath}`;
-}
 
 interface AuthStore {
   retrieve: () => User;
@@ -297,7 +228,7 @@ export class Backend {
 
   async generateUniqueSlug(
     collection: Collection,
-    entryData: EntryMap,
+    entryData: Map<string, unknown>,
     config: Config,
     usedSlugs: List<string>,
   ) {
@@ -551,20 +482,24 @@ export class Backend {
 
     const integration = selectIntegration(state.integrations, null, 'assetStore');
 
-    const [loadedEntry, mediaFiles] = await Promise.all([
-      this.implementation.getEntry(path),
-      collection.has('media_folder') && !integration
-        ? this.implementation.getMedia(selectMediaFolder(state.config, collection, path))
-        : Promise.resolve(state.mediaLibrary.get('files') || []),
-    ]);
+    const loadedEntry = await this.implementation.getEntry(path);
 
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
       raw: loadedEntry.data,
       label,
-      mediaFiles,
+      mediaFiles: [],
     });
 
-    return this.entryWithFormat(collection)(entry);
+    const entryWithFormat = this.entryWithFormat(collection)(entry);
+    if (collection.has('media_folder') && !integration) {
+      entry.mediaFiles = await this.implementation.getMedia(
+        selectMediaFolder(state.config, collection, fromJS(entryWithFormat)),
+      );
+    } else {
+      entry.mediaFiles = state.mediaLibrary.get('files') || [];
+    }
+
+    return entryWithFormat;
   }
 
   getMedia() {
@@ -656,7 +591,7 @@ export class Backend {
     }
 
     return {
-      url: createPreviewUrl(baseUrl, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(baseUrl, collection, slug, this.config.get('slug'), entry),
       status: 'SUCCESS',
     };
   }
@@ -705,7 +640,7 @@ export class Backend {
       /**
        * Create a URL using the collection `preview_path`, if provided.
        */
-      url: createPreviewUrl(deployPreview.url, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(deployPreview.url, collection, slug, this.config.get('slug'), entry),
       /**
        * Always capitalize the status for consistency.
        */
@@ -725,8 +660,8 @@ export class Backend {
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     const parsedData = {
-      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title'),
-      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!'),
+      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title') as string,
+      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!') as string,
     };
 
     let entryObj: {
@@ -756,7 +691,7 @@ export class Backend {
       assetProxies.map(asset => {
         // update media files path based on entry path
         const oldPath = asset.path;
-        const newPath = selectMediaFilePath(config, collection, path, oldPath);
+        const newPath = selectMediaFilePath(config, collection, entryDraft.get('entry'), oldPath);
         asset.path = newPath;
       });
     } else {
@@ -807,8 +742,6 @@ export class Backend {
         'uploadMedia',
         config,
         {
-          slug: '',
-          collection: '',
           path: file.path,
           authorLogin: user.login,
           authorName: user.name,
@@ -848,8 +781,6 @@ export class Backend {
       'deleteMedia',
       config,
       {
-        slug: '',
-        collection: '',
         path,
         authorLogin: user.login,
         authorName: user.name,

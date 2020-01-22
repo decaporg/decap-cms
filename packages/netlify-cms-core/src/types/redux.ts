@@ -23,6 +23,7 @@ type BackendObject = {
   gateway_url?: string;
   large_media_url?: string;
   use_large_media_transforms_in_media_library?: boolean;
+  commit_messages: Map<string, string>;
 };
 
 type Backend = StaticallyTypedRecord<Backend> & BackendObject;
@@ -130,6 +131,9 @@ type CollectionObject = {
   delete?: boolean;
   identifier_field?: string;
   path?: string;
+  slug?: string;
+  label_singular?: string;
+  label: string;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

@@ -93,7 +93,7 @@ describe('entries', () => {
         selectMediaFolder(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
-          'posts/title/index.md',
+          Map({ path: 'posts/title/index.md' }),
         ),
       ).toEqual('posts/title');
     });
@@ -103,9 +103,36 @@ describe('entries', () => {
         selectMediaFolder(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '../' }),
-          'posts/title/index.md',
+          Map({ path: 'posts/title/index.md' }),
         ),
       ).toEqual('posts/');
+    });
+
+    it('should resolve media folder template', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        media_folder: '../../../{{media_folder}}/{{category}}/{{slug}}',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: 'static/media', slug: slugConfig }),
+          collection,
+          entry,
+        ),
+      ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
   });
 
@@ -149,7 +176,7 @@ describe('entries', () => {
         selectMediaFilePath(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
-          'posts/title/index.md',
+          Map({ path: 'posts/title/index.md' }),
           'image.png',
         ),
       ).toBe('static/media/image.png');
@@ -187,6 +214,34 @@ describe('entries', () => {
           'image.png',
         ),
       ).toBe('../../static/media/image.png');
+    });
+
+    it('should resolve public folder template', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        public_folder: '/{{public_folder}}/{{category}}/{{slug}}',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFilePublicPath(
+          fromJS({ public_folder: 'static/media', slug: slugConfig }),
+          collection,
+          'image.png',
+          entry,
+        ),
+      ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
   });
 });

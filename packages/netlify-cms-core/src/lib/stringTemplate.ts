@@ -23,21 +23,40 @@ const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
 const templateVariablePattern = `{{(${templateContentPattern})}}`;
 
+export const keyToPathArray = (key: string) => {
+  const parts = [];
+  const separator = '';
+  const chars = key.split(separator);
+
+  let currentChar;
+  let currentStr = [];
+  while ((currentChar = chars.shift())) {
+    if (['[', ']', '.'].includes(currentChar)) {
+      if (currentStr.length > 0) {
+        parts.push(currentStr.join(separator));
+      }
+      currentStr = [];
+    } else {
+      currentStr.push(currentChar);
+    }
+  }
+  if (currentStr.length > 0) {
+    parts.push(currentStr.join(separator));
+  }
+  return parts;
+};
+
 // Allow `fields.` prefix in placeholder to override built in replacements
 // like "slug" and "year" with values from fields of the same name.
-function getExplicitFieldReplacement(key: string, data: Map<string, string>) {
+function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
   if (!key.startsWith(FIELD_PREFIX)) {
     return;
   }
   const fieldName = key.substring(FIELD_PREFIX.length);
-  return data.get(fieldName, '');
+  return data.getIn(keyToPathArray(fieldName), '') as string;
 }
 
-export function parseDateFromEntry(
-  entry: EntryMap,
-  collection: Collection,
-  fieldName: string | undefined,
-) {
+export function parseDateFromEntry(entry: EntryMap, collection: Collection, fieldName?: string) {
   const dateFieldName = fieldName || selectInferedField(collection, 'date');
   if (!dateFieldName) {
     return;
@@ -52,10 +71,10 @@ export function parseDateFromEntry(
 
 export function compileStringTemplate(
   template: string,
-  date: Date | undefined,
+  date: Date | undefined | null,
   identifier = '',
-  data = Map<string, string>(),
-  processor: (value: string) => string,
+  data = Map<string, unknown>(),
+  processor?: (value: string) => string,
 ) {
   let missingRequiredDate;
 
@@ -63,36 +82,39 @@ export function compileStringTemplate(
   // `null` as the date arg.
   const useDate = date !== null;
 
-  const slug = template.replace(RegExp(templateVariablePattern, 'g'), (_, key: string) => {
-    let replacement;
-    const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
+  const compiledString = template.replace(
+    RegExp(templateVariablePattern, 'g'),
+    (_, key: string) => {
+      let replacement;
+      const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
 
-    if (explicitFieldReplacement) {
-      replacement = explicitFieldReplacement;
-    } else if (dateParsers[key] && !date) {
-      missingRequiredDate = true;
-      return '';
-    } else if (dateParsers[key]) {
-      replacement = dateParsers[key](date as Date);
-    } else if (key === 'slug') {
-      replacement = identifier;
-    } else {
-      replacement = data.get(key, '');
-    }
+      if (explicitFieldReplacement) {
+        replacement = explicitFieldReplacement;
+      } else if (dateParsers[key] && !date) {
+        missingRequiredDate = true;
+        return '';
+      } else if (dateParsers[key]) {
+        replacement = dateParsers[key](date as Date);
+      } else if (key === 'slug') {
+        replacement = identifier;
+      } else {
+        replacement = data.getIn(keyToPathArray(key), '') as string;
+      }
 
-    if (processor) {
-      return processor(replacement);
-    }
+      if (processor) {
+        return processor(replacement);
+      }
 
-    return replacement;
-  });
+      return replacement;
+    },
+  );
 
   if (useDate && missingRequiredDate) {
     const err = new Error();
     err.name = SLUG_MISSING_REQUIRED_DATE;
     throw err;
   } else {
-    return slug;
+    return compiledString;
   }
 }
 

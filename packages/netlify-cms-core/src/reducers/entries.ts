@@ -9,7 +9,6 @@ import {
   ENTRIES_FAILURE,
   ENTRY_DELETE_SUCCESS,
 } from '../actions/entries';
-
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
   EntriesAction,
@@ -24,8 +23,10 @@ import {
   EntryDeletePayload,
   EntriesRequestPayload,
   EntryDraft,
+  EntryMap,
 } from '../types/redux';
-import { isAbsolutePath, basename } from 'netlify-cms-lib-util/src';
+import { folderFormatter } from '../lib/formatters';
+import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -140,14 +141,23 @@ const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 export const selectMediaFolder = (
   config: Config,
   collection: Collection | null,
-  entryPath: string | null,
+  entryMap: EntryMap | undefined,
 ) => {
   let mediaFolder = config.get('media_folder');
 
   if (collection && collection.has('media_folder')) {
+    const entryPath = entryMap?.get('path');
     if (entryPath) {
       const entryDir = dirname(entryPath);
-      mediaFolder = join(entryDir, collection.get('media_folder') as string);
+      const folder = folderFormatter(
+        collection.get('media_folder') as string,
+        entryMap as EntryMap,
+        collection,
+        mediaFolder,
+        'media_folder',
+        config.get('slug'),
+      );
+      mediaFolder = join(entryDir, folder as string);
     } else {
       mediaFolder = join(collection.get('folder') as string, DRAFT_MEDIA_FILES);
     }
@@ -159,7 +169,7 @@ export const selectMediaFolder = (
 export const selectMediaFilePath = (
   config: Config,
   collection: Collection | null,
-  entryPath: string | null,
+  entryMap: EntryMap | undefined,
   mediaPath: string,
 ) => {
   if (isAbsolutePath(mediaPath)) {
@@ -169,9 +179,9 @@ export const selectMediaFilePath = (
   let mediaFolder;
   if (mediaPath.startsWith('/')) {
     // absolute media paths are not bound to a collection
-    mediaFolder = selectMediaFolder(config, null, null);
+    mediaFolder = selectMediaFolder(config, null, entryMap);
   } else {
-    mediaFolder = selectMediaFolder(config, collection, entryPath);
+    mediaFolder = selectMediaFolder(config, collection, entryMap);
   }
 
   return join(mediaFolder, basename(mediaPath));
@@ -181,6 +191,7 @@ export const selectMediaFilePublicPath = (
   config: Config,
   collection: Collection | null,
   mediaPath: string,
+  entryMap: EntryMap | undefined,
 ) => {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
@@ -189,7 +200,14 @@ export const selectMediaFilePublicPath = (
   let publicFolder = config.get('public_folder');
 
   if (collection && collection.has('public_folder')) {
-    publicFolder = collection.get('public_folder') as string;
+    publicFolder = folderFormatter(
+      collection.get('public_folder') as string,
+      entryMap,
+      collection,
+      publicFolder,
+      'public_folder',
+      config.get('slug'),
+    );
   }
 
   return join(publicFolder, basename(mediaPath));
