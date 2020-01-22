@@ -54,7 +54,7 @@ jobs:
   e2e-with-cypress-record:
     needs: build
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     strategy:
       matrix:
@@ -95,7 +95,7 @@ jobs:
   e2e-no-cypress-record:
     needs: build
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     steps:
       - uses: actions/checkout@v1
