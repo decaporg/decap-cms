@@ -6,6 +6,8 @@ import {
   Config,
   Implementation,
   ImplementationFile,
+  EditorialWorkflowError,
+  APIError,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 
@@ -13,6 +15,30 @@ const serializeAsset = async (assetProxy: AssetProxy) => {
   const base64content = await assetProxy.toBase64!();
 
   return { path: assetProxy.path, content: base64content, encoding: 'base64' };
+};
+
+type MediaFile = {
+  id: string;
+  content: string;
+  encoding: string;
+  name: string;
+  path: string;
+};
+
+const deserializeMediaFile = ({ id, content, encoding, path, name }: MediaFile) => {
+  let byteArray = new Uint8Array(0);
+  if (encoding !== 'base64') {
+    console.error(`Unsupported encoding '${encoding}' for file '${path}'`);
+  } else {
+    const decodedContent = atob(content);
+    byteArray = new Uint8Array(decodedContent.length);
+    for (let i = 0; i < decodedContent.length; i++) {
+      byteArray[i] = decodedContent.charCodeAt(i);
+    }
+  }
+  const file = new File([byteArray], name);
+  const url = URL.createObjectURL(file);
+  return { id, name, path, file, size: file.size, url, displayURL: url };
 };
 
 export default class ProxyBackend implements Implementation {
@@ -52,53 +78,70 @@ export default class ProxyBackend implements Implementation {
     return Promise.resolve('');
   }
 
-  request(payload: { action: string; params: Record<string, unknown> }) {
-    return fetch(this.proxyUrl, {
+  async request(payload: { action: string; params: Record<string, unknown> }) {
+    const response = await fetch(this.proxyUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({ branch: this.branch, ...payload }),
-    }).then(r => r.json());
+    });
+
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else {
+      throw new APIError(json.message, response.status, 'Proxy');
+    }
   }
 
   entriesByFolder(folder: string, extension: string, depth: number) {
     return this.request({
       action: 'entriesByFolder',
-      params: { folder, extension, depth },
+      params: { branch: this.branch, folder, extension, depth },
     });
   }
 
   entriesByFiles(files: ImplementationFile[]) {
     return this.request({
       action: 'entriesByFiles',
-      params: { files },
+      params: { branch: this.branch, files },
     });
   }
 
   getEntry(path: string) {
     return this.request({
       action: 'getEntry',
-      params: { path },
+      params: { branch: this.branch, path },
     });
   }
 
   unpublishedEntries() {
     return this.request({
       action: 'unpublishedEntries',
-      params: {},
+      params: { branch: this.branch },
     });
   }
 
-  unpublishedEntry(collection: string, slug: string) {
-    return this.request({
-      action: 'unpublishedEntry',
-      params: { collection, slug },
-    });
+  async unpublishedEntry(collection: string, slug: string) {
+    try {
+      const entry = await this.request({
+        action: 'unpublishedEntry',
+        params: { branch: this.branch, collection, slug },
+      });
+
+      const mediaFiles = entry.mediaFiles.map(deserializeMediaFile);
+      return { ...entry, mediaFiles };
+    } catch (e) {
+      if (e.status === 404) {
+        throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      }
+      throw e;
+    }
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {
     return this.request({
       action: 'deleteUnpublishedEntry',
-      params: { collection, slug },
+      params: { branch: this.branch, collection, slug },
     });
   }
 
@@ -107,6 +150,7 @@ export default class ProxyBackend implements Implementation {
     return this.request({
       action: 'persistEntry',
       params: {
+        branch: this.branch,
         entry,
         assets,
         options: { ...options, status: options.status || this.options.initialWorkflowStatus },
@@ -117,50 +161,55 @@ export default class ProxyBackend implements Implementation {
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     return this.request({
       action: 'updateUnpublishedEntryStatus',
-      params: { collection, slug, newStatus },
+      params: { branch: this.branch, collection, slug, newStatus },
     });
   }
 
   publishUnpublishedEntry(collection: string, slug: string) {
     return this.request({
       action: 'publishUnpublishedEntry',
-      params: { collection, slug },
+      params: { branch: this.branch, collection, slug },
     });
   }
 
-  getMedia(mediaFolder = this.mediaFolder) {
-    return this.request({
+  async getMedia(mediaFolder = this.mediaFolder) {
+    const files: MediaFile[] = await this.request({
       action: 'getMedia',
-      params: { mediaFolder },
+      params: { branch: this.branch, mediaFolder },
     });
+
+    return files.map(deserializeMediaFile);
   }
 
-  getMediaFile(path: string) {
-    return this.request({
+  async getMediaFile(path: string) {
+    const file = await this.request({
       action: 'getMediaFile',
-      params: { path },
+      params: { branch: this.branch, path },
     });
+    return deserializeMediaFile(file);
   }
 
   async persistMedia(assetProxy: AssetProxy, options: PersistOptions) {
     const asset = await serializeAsset(assetProxy);
-    return this.request({
+    const file: MediaFile = await this.request({
       action: 'persistMedia',
-      params: { asset, options: { commitMessage: options.commitMessage } },
+      params: { branch: this.branch, asset, options: { commitMessage: options.commitMessage } },
     });
+
+    return deserializeMediaFile(file);
   }
 
   deleteFile(path: string, commitMessage: string) {
     return this.request({
       action: 'deleteFile',
-      params: { path, options: { commitMessage } },
+      params: { branch: this.branch, path, options: { commitMessage } },
     });
   }
 
   getDeployPreview(collection: string, slug: string) {
     return this.request({
       action: 'getDeployPreview',
-      params: { collection, slug },
+      params: { branch: this.branch, collection, slug },
     });
   }
 }

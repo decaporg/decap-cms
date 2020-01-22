@@ -21,7 +21,12 @@ const defaultParams = {
 describe('localGitMiddleware', () => {
   const simpleGit = require('simple-git/promise');
 
-  const git = { checkIsRepo: jest.fn(), silent: jest.fn(), branchLocal: jest.fn() };
+  const git = {
+    checkIsRepo: jest.fn(),
+    silent: jest.fn(),
+    branchLocal: jest.fn(),
+    checkout: jest.fn(),
+  };
   git.silent.mockReturnValue(git);
 
   simpleGit.mockReturnValue(git);

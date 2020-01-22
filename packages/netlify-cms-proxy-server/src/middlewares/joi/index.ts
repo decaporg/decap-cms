@@ -2,6 +2,7 @@ import express from 'express';
 import Joi from '@hapi/joi';
 
 const allowedActions = [
+  'info',
   'entriesByFolder',
   'entriesByFiles',
   'getEntry',
@@ -38,6 +39,10 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
 
   const params = Joi.when('action', {
     switch: [
+      {
+        is: 'info',
+        then: Joi.allow(),
+      },
       {
         is: 'entriesByFolder',
         then: defaultParams

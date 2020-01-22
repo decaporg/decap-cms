@@ -51,6 +51,10 @@ export type GetMediaParams = {
   mediaFolder: string;
 };
 
+export type GetMediaFileParams = {
+  path: string;
+};
+
 export type PersistMediaParams = {
   asset: Asset;
   options: {

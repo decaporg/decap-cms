@@ -22,17 +22,26 @@ export const waitUntilWithTimeout = async <T>(
     dispatch(waitUntil(waitActionArgs(resolve)));
   });
 
-  const timeoutPromise = new Promise<T>((resolve, reject) => {
-    setTimeout(() => (waitDone ? resolve() : reject(new Error('Wait Action timed out'))), timeout);
+  const timeoutPromise = new Promise<T | null>(resolve => {
+    setTimeout(() => {
+      if (waitDone) {
+        resolve();
+      } else {
+        console.warn('Wait Action timed out');
+        resolve(null);
+      }
+    }, timeout);
   });
 
   const result = await Promise.race([
-    waitPromise.then(result => {
-      waitDone = true;
-      return result;
-    }),
+    waitPromise
+      .then(result => {
+        waitDone = true;
+        return result;
+      })
+      .catch(null),
     timeoutPromise,
-  ]).catch(null);
+  ]);
 
   return result;
 };
