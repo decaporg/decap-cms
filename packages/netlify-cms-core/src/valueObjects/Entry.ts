@@ -10,6 +10,7 @@ interface Options {
   metaData?: unknown | null;
   isModification?: boolean | null;
   mediaFiles?: ImplementationMediaFile[] | null;
+  combineKey?: string | null;
 }
 
 export interface EntryValue {
@@ -38,6 +39,7 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     metaData: options.metaData || null,
     isModification: isBoolean(options.isModification) ? options.isModification : null,
     mediaFiles: options.mediaFiles || [],
+    ...(options.combineKey && { combineKey: options.combineKey }),
   };
 
   return returnObj;

@@ -363,7 +363,11 @@ export class Editor extends React.Component {
     } else if (!window.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
       return;
     }
-    await deleteUnpublishedEntry(collection.get('name'), slug);
+    await deleteUnpublishedEntry(
+      collection.get('name'),
+      slug,
+      entryDraft.get('entry').has('combineKey'),
+    );
 
     this.deleteBackup();
 

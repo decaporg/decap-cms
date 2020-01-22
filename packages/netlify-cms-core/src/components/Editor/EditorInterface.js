@@ -258,6 +258,7 @@ class EditorInterface extends Component {
           onLogoutClick={onLogoutClick}
           loadDeployPreview={loadDeployPreview}
           deployPreview={deployPreview}
+          combineEntry={entry.has('combineKey')}
         />
         <Editor key={draftKey}>
           <ViewControls>

@@ -401,8 +401,10 @@ class EditorToolbar extends React.Component {
       isNewEntry,
       useOpenAuthoring,
       isPersisting,
+      combineEntry,
       t,
     } = this.props;
+    if (combineEntry) return;
     if (currentStatus) {
       return (
         <>

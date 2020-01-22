@@ -154,12 +154,16 @@ const WorkflowCard = ({
     </WorkflowLink>
     <CardButtonContainer>
       <DeleteButton onClick={onDelete}>
-        {isModification
+        {combineEntry
+          ? t('workflow.workflowCard.deleteAllEntries')
+          : isModification
           ? t('workflow.workflowCard.deleteChanges')
           : t('workflow.workflowCard.deleteNewEntry')}
       </DeleteButton>
       <PublishButton disabled={!canPublish} onClick={onPublish}>
-        {isModification
+        {combineEntry
+          ? t('workflow.workflowCard.publishAllEntries')
+          : isModification
           ? t('workflow.workflowCard.publishChanges')
           : t('workflow.workflowCard.publishNewEntry')}
       </PublishButton>

@@ -179,8 +179,10 @@ const en = {
       lastChangeNoDate: 'by %{author}',
       deleteChanges: 'Delete changes',
       deleteNewEntry: 'Delete new entry',
+      deleteAllEntries: 'Delete all Entries',
       publishChanges: 'Publish changes',
       publishNewEntry: 'Publish new entry',
+      publishAllEntries: 'Publish all Entries',
     },
     workflowList: {
       onDeleteEntry: 'Are you sure you want to delete this entry?',

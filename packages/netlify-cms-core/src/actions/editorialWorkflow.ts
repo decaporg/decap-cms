@@ -154,9 +154,10 @@ function unpublishedEntryPersistedFail(error: Error, transactionID: string) {
   };
 }
 
-function unpublishedEntriesCombining() {
+function unpublishedEntriesCombining(transactionID: string) {
   return {
     type: UNPUBLISHED_ENTRIES_COMBINE_REQUEST,
+    optimist: { type: BEGIN, id: transactionID },
   };
 }
 
@@ -524,7 +525,7 @@ export function combineColletionEntry(parentArgs, childArgs) {
     let slug = parentArgs.slug;
     let entries = [childArgs];
     let parentEntry;
-    dispatch(unpublishedEntriesCombining());
+    dispatch(unpublishedEntriesCombining(transactionID));
 
     try {
       parentArgs.collection !== 'collection' &&
@@ -621,7 +622,9 @@ export function publishUnpublishedEntry(collection: string, slug: string) {
         );
 
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
-        return dispatch(loadEntry(collections.get(collection), slug));
+        return (
+          collection !== 'collection' && dispatch(loadEntry(collections.get(collection), slug))
+        );
       })
       .catch((error: Error) => {
         dispatch(

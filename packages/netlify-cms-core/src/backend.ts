@@ -568,6 +568,7 @@ export class Backend {
           isModification: loadedEntry.isModification,
           metaData: loadedEntry.metaData,
           mediaFiles: loadedEntry.mediaFiles,
+          combineKey: loadedEntry.combineKey,
         });
         return entry;
       })

@@ -108,6 +108,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
       // Update Optimistically
       return state.withMutations(map => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const entryKeys = selectUnpublishedStatusChangeKeys(
           map,
           action.payload!.collection,
@@ -122,6 +123,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
       return state.withMutations(map => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const entryKeys = selectUnpublishedStatusChangeKeys(
           map,
           action.payload!.collection,
@@ -133,19 +135,44 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
       });
 
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
-      return state.setIn(
-        ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isPublishing'],
-        true,
-      );
+      return state.withMutations(map => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const entryKeys = selectUnpublishedStatusChangeKeys(
+          map,
+          action.payload!.collection,
+          action.payload!.slug,
+        );
+        entryKeys.forEach(key => {
+          map.setIn(['entities', key, 'isPublishing'], true);
+        });
+      });
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
     case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
       return state.withMutations(map => {
-        map.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const entryKeys = selectUnpublishedStatusChangeKeys(
+          map,
+          action.payload!.collection,
+          action.payload!.slug,
+        );
+        entryKeys.forEach(key => {
+          map.deleteIn(['entities', key]);
+        });
       });
 
     case UNPUBLISHED_ENTRY_DELETE_SUCCESS:
-      return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
+      return state.withMutations(map => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const entryKeys = selectUnpublishedStatusChangeKeys(
+          map,
+          action.payload!.collection,
+          action.payload!.slug,
+        );
+        entryKeys.forEach(key => {
+          map.deleteIn(['entities', key]);
+        });
+      });
 
     default:
       return state;
@@ -176,10 +203,7 @@ export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: str
 export const selectUnpublishedKeysByCombineKey = (state, key) => {
   if (!state) return null;
   const entities = state.get('entities') as Entities;
-  return state
-    entities
-    .filter(entry => entry.get('combineKey') === key)
-    .keySeq();
+  return entities.filter(entry => entry.get('combineKey') === key).keySeq();
 };
 
 export const selectUnpublishedStatusChangeKeys = (state, collection, slug) => {

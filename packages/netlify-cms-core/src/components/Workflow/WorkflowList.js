@@ -116,7 +116,7 @@ const ColumnCount = styled.p`
 const TabList = styled(UnstyledTabList)`
   display: flex;
   flex-wrap: wrap;
-  padding: 0;
+  padding: 0 10px;
   margin: 0;
   background-color: #fff;
   border-top-right-radius: 5px;
@@ -148,6 +148,11 @@ const getColumnHeaderText = (columnName, t) => {
   }
 };
 
+const parseDraggableId = id => {
+  const [collection, ...slugParts] = id.split('/');
+  return { collection, slug: slugParts.join('/') };
+};
+
 class WorkflowList extends React.Component {
   static propTypes = {
     entries: ImmutablePropTypes.orderedMap,
@@ -161,30 +166,29 @@ class WorkflowList extends React.Component {
 
   onDragEnd = result => {
     const { source, destination, draggableId, combine } = result;
-    const [collection, ...slug] = draggableId.split('/');
+
+    const { collection, slug } = parseDraggableId(draggableId);
     if (combine) {
-      const [parentCollection, ...parentSlug] = combine.draggableId.split('/');
+      if (collection == 'collection' || combine.droppableId !== source.droppableId) return;
+      const { collection: parentCollection, slug: parentSlug } = parseDraggableId(
+        combine.draggableId,
+      );
       const parent = {
         collection: parentCollection,
-        slug: parentSlug.join('/'),
-        status: source.droppableId,
+        slug: parentSlug,
+        status: combine.droppableId,
       };
-      const child = { collection, slug: slug.join('/') };
+      const child = { collection, slug };
       return this.props.handleCombineCollection(parent, child);
     }
 
     destination &&
-      this.props.handleChangeStatus(
-        collection,
-        slug.join('/'),
-        source.droppableId,
-        destination.droppableId,
-      );
+      this.props.handleChangeStatus(collection, slug, source.droppableId, destination.droppableId);
   };
 
-  requestDelete = (collection, slug, ownStatus) => {
+  requestDelete = (collection, slug) => {
     if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
-      this.props.handleDelete(collection, slug, ownStatus);
+      this.props.handleDelete(collection, slug);
     }
   };
 
@@ -235,9 +239,9 @@ class WorkflowList extends React.Component {
 
   renderCombineCards = (entries, count) => {
     if (entries.isEmpty()) return null;
-    return entries.entrySeq().map(([combineKey, currEntries], idx) => {
+    return entries.entrySeq().map(([key, currEntries], idx) => {
       return (
-        <Draggable draggableId={`${combineKey}`} index={count + idx} key={`${combineKey}`}>
+        <Draggable draggableId={`${key}`} index={count + idx} key={`${key}`}>
           {(provided, snapshot) => (
             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
               <Tabs selectedTabClassName="selected">
@@ -249,30 +253,18 @@ class WorkflowList extends React.Component {
                   ))}
                 </TabList>
                 {currEntries.map((entry, idx) => {
-                  const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
-                  const slug = entry.get('slug');
-                  const editLink = `collections/${entry.getIn([
-                    'metaData',
-                    'collection',
-                  ])}/entries/${slug}`;
-                  const ownStatus = entry.getIn(['metaData', 'status']);
-                  const collection = entry.getIn(['metaData', 'collection']);
-                  const isModification = entry.get('isModification');
-                  const canPublish =
-                    ownStatus === status.last() && !entry.get('isPersisting', false);
+                  const { collection, slug } = parseDraggableId(key);
                   return (
                     <TabPanel key={idx}>
                       <WorkflowCard
-                        collectionName={collection}
-                        title={entry.get('label') || entry.getIn(['data', 'title'])}
-                        authorLastChange={entry.getIn(['metaData', 'user'])}
-                        body={entry.getIn(['data', 'body'])}
-                        isModification={isModification}
-                        editLink={editLink}
-                        timestamp={timestamp}
-                        onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
-                        canPublish={canPublish}
-                        onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
+                        {...this.workflowCardProps(entry)}
+                        onDelete={this.requestDelete.bind(this, collection, slug)}
+                        onPublish={this.requestPublish.bind(
+                          this,
+                          collection,
+                          slug,
+                          entry.getIn(['metaData', 'status']),
+                        )}
                         snapshot={snapshot}
                         combineEntry
                       />
@@ -297,13 +289,8 @@ class WorkflowList extends React.Component {
     return (
       <div>
         {singleEntries.map((entry, idx) => {
-          const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
-          const slug = entry.get('slug');
-          const editLink = `collections/${entry.getIn(['metaData', 'collection'])}/entries/${slug}`;
-          const ownStatus = entry.getIn(['metaData', 'status']);
           const collection = entry.getIn(['metaData', 'collection']);
-          const isModification = entry.get('isModification');
-          const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
+          const slug = entry.get('slug');
           return (
             <Draggable
               draggableId={`${collection}/${slug}`}
@@ -316,19 +303,7 @@ class WorkflowList extends React.Component {
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
                 >
-                  <WorkflowCard
-                    collectionName={collection}
-                    title={entry.get('label') || entry.getIn(['data', 'title'])}
-                    authorLastChange={entry.getIn(['metaData', 'user'])}
-                    body={entry.getIn(['data', 'body'])}
-                    isModification={isModification}
-                    editLink={editLink}
-                    timestamp={timestamp}
-                    onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
-                    canPublish={canPublish}
-                    onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
-                    snapshot={snapshot}
-                  />
+                  <WorkflowCard {...this.workflowCardProps(entry)} snapshot={snapshot} />
                 </div>
               )}
             </Draggable>
@@ -338,6 +313,29 @@ class WorkflowList extends React.Component {
       </div>
     );
   };
+
+  workflowCardProps = entry => {
+    const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
+    const slug = entry.get('slug');
+    const editLink = `collections/${entry.getIn(['metaData', 'collection'])}/entries/${slug}`;
+    const ownStatus = entry.getIn(['metaData', 'status']);
+    const collection = entry.getIn(['metaData', 'collection']);
+    const isModification = entry.get('isModification');
+    const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
+    return {
+      collectionName: collection,
+      title: entry.get('label') || entry.getIn(['data', 'title']),
+      authorLastChange: entry.getIn(['metaData', 'user']),
+      body: entry.getIn(['data', 'body']),
+      isModification,
+      editLink,
+      timestamp,
+      canPublish,
+      onDelete: this.requestDelete.bind(this, collection, slug),
+      onPublish: this.requestPublish.bind(this, collection, slug, ownStatus),
+    };
+  };
+
   render() {
     const columns = this.renderColumns(this.props.entries);
     const ListContainer = this.props.isOpenAuthoring

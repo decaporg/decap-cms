@@ -60,6 +60,10 @@ const getCursor = (
   });
 };
 
+const getIndexesByKey = (files, key) => {
+  return files.reduce((a, e, i) => (e.combineKey === key ? a.concat(i) : a), []).reverse();
+};
+
 export const getFolderEntries = (
   tree: RepoTree,
   folder: string,
@@ -202,10 +206,13 @@ export default class TestBackend implements Implementation {
 
   deleteUnpublishedEntry(collection: string, slug: string) {
     const unpubStore = window.repoFilesUnpublished;
-    const existingEntryIndex = unpubStore.findIndex(
-      e => e.metaData!.collection === collection && e.slug === slug,
-    );
-    unpubStore.splice(existingEntryIndex, 1);
+    let entryIndexes = [
+      unpubStore.findIndex(e => e.metaData!.collection === collection && e.slug === slug),
+    ];
+    collection === 'collection' &&
+      (entryIndexes = getIndexesByKey(unpubStore, `${collection}/${slug}`));
+
+    entryIndexes.forEach(i => unpubStore.splice(i, 1));
     return Promise.resolve();
   }
 
@@ -219,8 +226,11 @@ export default class TestBackend implements Implementation {
 
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {
+        const collectionName = options.collectionName;
+        const combineKey = `${options.collectionName}/${slug}`;
         const unpubEntry = {
           ...unpubStore[existingEntryIndex],
+          ...(collectionName == 'collection' && { combineKey }),
           data: raw,
           title: options.parsedData && options.parsedData.title,
           description: options.parsedData && options.parsedData.description,
@@ -268,27 +278,38 @@ export default class TestBackend implements Implementation {
 
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     const unpubStore = window.repoFilesUnpublished;
-    const entryIndex = unpubStore.findIndex(
-      e => e.metaData!.collection === collection && e.slug === slug,
-    );
-    unpubStore[entryIndex]!.metaData!.status = newStatus;
+    let entryIndexes = [
+      unpubStore.findIndex(e => e.metaData!.collection === collection && e.slug === slug),
+    ];
+    collection === 'collection' &&
+      (entryIndexes = getIndexesByKey(unpubStore, `${collection}/${slug}`));
+
+    entryIndexes.forEach(i => (unpubStore[i]!.metaData!.status = newStatus));
     return Promise.resolve();
   }
 
   async publishUnpublishedEntry(collection: string, slug: string) {
     const unpubStore = window.repoFilesUnpublished;
-    const unpubEntryIndex = unpubStore.findIndex(
-      e => e.metaData!.collection === collection && e.slug === slug,
-    );
-    const unpubEntry = unpubStore[unpubEntryIndex];
-    const entry = {
-      raw: unpubEntry.data,
-      slug: unpubEntry.slug as string,
-      path: unpubEntry.file.path,
-    };
-    unpubStore.splice(unpubEntryIndex, 1);
+    let entryIndexes = [
+      unpubStore.findIndex(e => e.metaData!.collection === collection && e.slug === slug),
+    ];
+    collection === 'collection' &&
+      (entryIndexes = getIndexesByKey(unpubStore, `${collection}/${slug}`));
+    const unpubEntries = entryIndexes.map(i => {
+      const entry = unpubStore[i];
+      return {
+        raw: entry.data,
+        slug: entry.slug as string,
+        path: entry.file.path,
+        mediaFiles: entry.mediaFiles!,
+      };
+    });
 
-    await this.persistEntry(entry, unpubEntry.mediaFiles!, { commitMessage: '' });
+    entryIndexes.forEach(i => unpubStore.splice(i, 1));
+
+    await Promise.all(
+      unpubEntries.map(entry => this.persistEntry(entry, entry.mediaFiles, { commitMessage: '' })),
+    );
   }
 
   getMedia() {
