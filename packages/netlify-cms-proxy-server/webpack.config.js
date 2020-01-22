@@ -6,7 +6,7 @@ const { NODE_ENV = 'production' } = process.env;
 const allowList = [/^netlify-cms-lib-util/];
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: path.join('src', 'index.ts'),
   mode: NODE_ENV,
   target: 'node',
   devtool: 'source-map',
@@ -30,7 +30,7 @@ module.exports = {
     nodeExternals({ whitelist: allowList }),
     nodeExternals({
       whitelist: allowList,
-      modulesDir: path.resolve(__dirname, '../../node_modules'),
+      modulesDir: path.resolve(__dirname, path.join('..', '..', 'node_modules')),
     }),
   ],
 };
