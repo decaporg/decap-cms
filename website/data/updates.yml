@@ -1,4 +1,10 @@
 updates:
+  - date: '2020-01-22'
+    description: 'support dynamic (templated) media_folder/path_folder config'
+    version: 2.10.10
+  - date: '2020-01-21'
+    description: 'Git LFS support fixes, other backend fixes'
+    version: 2.10.9
   - date: '2020-01-16'
     description: 'Bugfixes'
     version: 2.10.8
