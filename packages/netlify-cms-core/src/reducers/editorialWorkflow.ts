@@ -20,6 +20,7 @@ import {
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { EditorialWorkflowAction, EditorialWorkflow, Entities } from '../types/redux';
+import { isCombineKey } from 'netlify-cms-lib-util';
 
 const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
   switch (action.type) {
@@ -208,7 +209,7 @@ export const selectUnpublishedKeysByCombineKey = (state, key) => {
 
 export const selectUnpublishedStatusChangeKeys = (state, collection, slug) => {
   let entryKeys = [`${collection}.${slug}`];
-  if (collection == 'collection') {
+  if (isCombineKey(collection, slug)) {
     const combineKey = `${collection}/${slug}`;
     entryKeys = selectUnpublishedKeysByCombineKey(state, combineKey).toJS();
   }

@@ -14,6 +14,7 @@ import {
   User,
   Config,
   ImplementationFile,
+  isCombineKey,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 
@@ -209,7 +210,7 @@ export default class TestBackend implements Implementation {
     let entryIndexes = [
       unpubStore.findIndex(e => e.metaData!.collection === collection && e.slug === slug),
     ];
-    collection === 'collection' &&
+    isCombineKey(collection, slug) &&
       (entryIndexes = getIndexesByKey(unpubStore, `${collection}/${slug}`));
 
     entryIndexes.forEach(i => unpubStore.splice(i, 1));
@@ -230,7 +231,7 @@ export default class TestBackend implements Implementation {
         const combineKey = `${options.collectionName}/${slug}`;
         const unpubEntry = {
           ...unpubStore[existingEntryIndex],
-          ...(collectionName == 'collection' && { combineKey }),
+          ...(isCombineKey(collectionName, slug) && { combineKey }),
           data: raw,
           title: options.parsedData && options.parsedData.title,
           description: options.parsedData && options.parsedData.description,
@@ -281,7 +282,7 @@ export default class TestBackend implements Implementation {
     let entryIndexes = [
       unpubStore.findIndex(e => e.metaData!.collection === collection && e.slug === slug),
     ];
-    collection === 'collection' &&
+    isCombineKey(collection, slug) &&
       (entryIndexes = getIndexesByKey(unpubStore, `${collection}/${slug}`));
 
     entryIndexes.forEach(i => (unpubStore[i]!.metaData!.status = newStatus));
@@ -293,7 +294,7 @@ export default class TestBackend implements Implementation {
     let entryIndexes = [
       unpubStore.findIndex(e => e.metaData!.collection === collection && e.slug === slug),
     ];
-    collection === 'collection' &&
+    isCombineKey(collection, slug) &&
       (entryIndexes = getIndexesByKey(unpubStore, `${collection}/${slug}`));
     const unpubEntries = entryIndexes.map(i => {
       const entry = unpubStore[i];

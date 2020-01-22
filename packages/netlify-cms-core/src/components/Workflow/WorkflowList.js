@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import moment from 'moment';
 import { translate } from 'react-polyglot';
 import { colors, lengths, Icon } from 'netlify-cms-ui-default';
+import { isCombineKey } from 'netlify-cms-lib-util';
 import { status } from 'Constants/publishModes';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Tab as UnstyledTab, Tabs, TabList as UnstyledTabList, TabPanel } from 'react-tabs';
@@ -169,7 +170,7 @@ class WorkflowList extends React.Component {
 
     const { collection, slug } = parseDraggableId(draggableId);
     if (combine) {
-      if (collection == 'collection' || combine.droppableId !== source.droppableId) return;
+      if (isCombineKey(collection, slug) || combine.droppableId !== source.droppableId) return;
       const { collection: parentCollection, slug: parentSlug } = parseDraggableId(
         combine.draggableId,
       );

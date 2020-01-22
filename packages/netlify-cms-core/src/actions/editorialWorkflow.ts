@@ -14,7 +14,12 @@ import {
 } from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
-import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
+import {
+  EDITORIAL_WORKFLOW_ERROR,
+  COMBINE_COLLECTIONS,
+  COMBINE_SLUG,
+  isCombineKey,
+} from 'netlify-cms-lib-util';
 import { loadEntry, entryDeleted, getMediaAssets } from './entries';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
@@ -528,14 +533,14 @@ export function combineColletionEntry(parentArgs, childArgs) {
     dispatch(unpublishedEntriesCombining(transactionID));
 
     try {
-      parentArgs.collection !== 'collection' &&
+      !isCombineKey(parentArgs.collection, parentArgs.slug) &&
         (parentEntry = selectUnpublishedEntry(state, parentArgs.collection, parentArgs.slug));
 
       if (parentEntry) {
         slug = await backend.combineColletionEntry(
           {
-            collection: 'collection',
-            slug: 'combine',
+            collection: COMBINE_COLLECTIONS,
+            slug: COMBINE_SLUG,
             unpublished: false,
             status: parentArgs.status,
           },
@@ -547,14 +552,17 @@ export function combineColletionEntry(parentArgs, childArgs) {
       await backend.combineColletionEntry(
         {
           slug,
-          collection: 'collection',
+          collection: COMBINE_COLLECTIONS,
           unpublished: true,
         },
         childEntry,
       );
 
-      return dispatch(unpublishedEntriesCombined(entries, 'collection', slug, transactionID));
+      return dispatch(
+        unpublishedEntriesCombined(entries, COMBINE_COLLECTIONS, slug, transactionID),
+      );
     } catch (error) {
+      console.log(error);
       dispatch(
         notifSend({
           message: {

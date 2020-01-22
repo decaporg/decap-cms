@@ -53,6 +53,9 @@ import {
   parseContentKey,
   branchFromContentKey,
   contentKeyFromBranch,
+  COMBINE_COLLECTIONS,
+  COMBINE_SLUG,
+  isCombineKey,
 } from './API';
 import {
   createPointerFile,
@@ -136,6 +139,9 @@ export const NetlifyCmsLibUtil = {
   getPointerFileForMediaFileObj,
   branchFromContentKey,
   contentKeyFromBranch,
+  COMBINE_COLLECTIONS,
+  COMBINE_SLUG,
+  isCombineKey,
 };
 export {
   APIError,
@@ -186,4 +192,7 @@ export {
   getPointerFileForMediaFileObj,
   branchFromContentKey,
   contentKeyFromBranch,
+  COMBINE_COLLECTIONS,
+  COMBINE_SLUG,
+  isCombineKey,
 };
