@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import Joi = require('@hapi/joi');
+import Joi from '@hapi/joi';
 import express from 'express';
 import { validateRepo, getSchema, localGitMiddleware } from '.';
 

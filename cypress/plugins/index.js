@@ -27,6 +27,7 @@ const {
   setupBitBucketTest,
   teardownBitBucketTest,
 } = require('./bitbucket');
+const { setupProxy, teardownProxy, setupProxyTest, teardownProxyTest } = require('./proxy');
 
 const { copyBackendFiles } = require('../utils/config');
 
@@ -51,6 +52,9 @@ module.exports = async (on, config) => {
         case 'bitbucket':
           result = await setupBitBucket(options);
           break;
+        case 'proxy':
+          result = await setupProxy(options);
+          break;
       }
 
       return result;
@@ -71,6 +75,9 @@ module.exports = async (on, config) => {
           break;
         case 'bitbucket':
           await teardownBitBucket(taskData);
+          break;
+        case 'proxy':
+          await teardownProxy(taskData);
           break;
       }
 
@@ -96,6 +103,9 @@ module.exports = async (on, config) => {
         case 'bitbucket':
           await setupBitBucketTest(taskData);
           break;
+        case 'proxy':
+          await setupProxyTest(taskData);
+          break;
       }
 
       return null;
@@ -117,6 +127,9 @@ module.exports = async (on, config) => {
           break;
         case 'bitbucket':
           await teardownBitBucketTest(taskData);
+          break;
+        case 'proxy':
+          await teardownProxyTest(taskData);
           break;
       }
 

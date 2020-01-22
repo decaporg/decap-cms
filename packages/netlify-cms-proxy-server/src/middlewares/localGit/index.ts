@@ -30,7 +30,8 @@ import {
   Entry,
   GetMediaFileParams,
 } from '../types';
-import simpleGit = require('simple-git/promise');
+// eslint-disable-next-line import/default
+import simpleGit from 'simple-git/promise';
 
 const sha256 = (buffer: Buffer) => {
   return crypto
@@ -87,7 +88,6 @@ const listFiles = async (dir: string, extension: string, depth: number): Promise
     );
     return files.flat();
   } catch (e) {
-    console.log(e.message);
     return [];
   }
 };
@@ -112,7 +112,6 @@ const entriesFromFiles = async (repoPath: string, files: string[]) => {
           file: { path: file, id: sha256(content) },
         };
       } catch (e) {
-        console.log(e.message);
         return { data: null, file: { path: file, id: null } };
       }
     }),
@@ -358,7 +357,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
               } else {
                 await git.checkoutLocalBranch(cmsBranch);
               }
-              await git.rebase([branch]);
+              await git.rebase([branch, '--no-gpg-sign', '--no-gpg-sign']);
               const diff = await git.diffSummary([branch, cmsBranch]);
               const data = await getEntryDataFromDiff(
                 git,

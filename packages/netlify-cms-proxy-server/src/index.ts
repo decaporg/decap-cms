@@ -19,7 +19,7 @@ const port = process.env.PORT || 8081;
     process.exit(1);
   }
 
-  app.listen(port, () => {
+  return app.listen(port, () => {
     console.log(`Netlify CMS Proxy Server listening on port ${port}`);
   });
 })();

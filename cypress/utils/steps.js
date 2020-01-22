@@ -133,19 +133,21 @@ function deleteEntryInEditor() {
 
 function assertOnCollectionsPage() {
   cy.url().should('contain', '/#/collections/posts');
-  cy.contains('h2', 'Collections');
 }
 
 function assertEntryDeleted(entry) {
-  if (Array.isArray(entry)) {
-    const titles = entry.map(e => e.title);
-    cy.get('a h2').each(el => {
-      expect(titles).not.to.include(el.text());
-    });
-  } else {
-    cy.get('a h2').each(el => {
-      expect(entry.title).not.to.equal(el.text());
-    });
+  const hasEntries = Cypress.$('a h2').length > 0;
+  if (hasEntries) {
+    if (Array.isArray(entry)) {
+      const titles = entry.map(e => e.title);
+      cy.get('a h2').each(el => {
+        expect(titles).not.to.include(el.text());
+      });
+    } else {
+      cy.get('a h2').each(el => {
+        expect(entry.title).not.to.equal(el.text());
+      });
+    }
   }
 }
 
