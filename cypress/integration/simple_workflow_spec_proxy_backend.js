@@ -9,6 +9,7 @@ describe('Proxy Backend Simple Workflow', () => {
 
   before(() => {
     specUtils.before(taskResult, { publish_mode: 'simple' }, backend);
+    Cypress.config('defaultCommandTimeout', 5 * 1000);
   });
 
   after(() => {
