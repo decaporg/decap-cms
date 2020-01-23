@@ -26,6 +26,7 @@ const ImageWrapper = styled.div`
   margin-bottom: 20px;
   border: ${borders.textField};
   border-radius: ${lengths.borderRadius};
+  overflow: hidden;
   ${effects.checkerboard};
   ${shadows.inset};
 `;
