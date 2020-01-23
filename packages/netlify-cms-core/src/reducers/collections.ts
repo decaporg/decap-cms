@@ -195,6 +195,10 @@ export const getFieldsNames = (fields: EntryField[], prefix = '') => {
       const fields = f.get('fields')?.toArray() as EntryField[];
       names = [...names, ...getFieldsNames(fields, `${names[index]}.`)];
     }
+    if (f.has('field')) {
+      const field = f.get('field') as EntryField;
+      names = [...names, ...getFieldsNames([field], `${names[index]}.`)];
+    }
   });
 
   return names;

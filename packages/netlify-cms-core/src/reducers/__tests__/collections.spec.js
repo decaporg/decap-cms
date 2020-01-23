@@ -252,15 +252,19 @@ describe('collections', () => {
         fields: [
           { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
           { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
+          { name: 'it', field: { name: 'title', fields: [{ name: 'subTitle' }] } },
         ],
       });
       expect(getFieldsNames(collection.get('fields').toArray())).toEqual([
         'en',
         'es',
+        'it',
         'en.title',
         'en.body',
         'es.title',
         'es.body',
+        'it.title',
+        'it.title.subTitle',
       ]);
     });
   });
