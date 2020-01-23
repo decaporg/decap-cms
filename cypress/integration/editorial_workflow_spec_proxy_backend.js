@@ -9,6 +9,7 @@ describe('Proxy Backend Editorial Workflow', () => {
 
   before(() => {
     specUtils.before(taskResult, { publish_mode: 'editorial_workflow' }, backend);
+    Cypress.config('defaultCommandTimeout', 5 * 1000);
   });
 
   after(() => {

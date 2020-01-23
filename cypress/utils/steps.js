@@ -33,7 +33,7 @@ function assertNotification(message) {
   cy.get('.notif__container').within(() => {
     cy.contains(message);
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(100);
+    cy.wait(500);
     cy.contains(message).invoke('hide');
   });
 }
@@ -136,19 +136,21 @@ function assertOnCollectionsPage() {
 }
 
 function assertEntryDeleted(entry) {
-  const hasEntries = Cypress.$('a h2').length > 0;
-  if (hasEntries) {
-    if (Array.isArray(entry)) {
-      const titles = entry.map(e => e.title);
-      cy.get('a h2').each(el => {
-        expect(titles).not.to.include(el.text());
-      });
-    } else {
-      cy.get('a h2').each(el => {
-        expect(entry.title).not.to.equal(el.text());
-      });
+  cy.get('body').then($body => {
+    const entriesHeaders = $body.find('a h2');
+    if (entriesHeaders.length > 0) {
+      if (Array.isArray(entry)) {
+        const titles = entry.map(e => e.title);
+        cy.get('a h2').each(el => {
+          expect(titles).not.to.include(el.text());
+        });
+      } else {
+        cy.get('a h2').each(el => {
+          expect(entry.title).not.to.equal(el.text());
+        });
+      }
     }
-  }
+  });
 }
 
 function assertWorkflowStatus({ title }, status) {

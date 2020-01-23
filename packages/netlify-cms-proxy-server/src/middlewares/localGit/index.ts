@@ -214,6 +214,34 @@ const commitEntry = async (
   await commit(git, commitMessage, [entry.path, ...assets.map(a => a.path)]);
 };
 
+const rebase = async (git: simpleGit.SimpleGit, branch: string) => {
+  const gpgSign = await git.raw(['config', 'commit.gpgsign']);
+  try {
+    if (gpgSign === 'true') {
+      await git.addConfig('commit.gpgsign', 'false');
+    }
+    await git.rebase([branch, '--no-verify']);
+  } finally {
+    if (gpgSign === 'true') {
+      await git.addConfig('commit.gpgsign', gpgSign);
+    }
+  }
+};
+
+const merge = async (git: simpleGit.SimpleGit, from: string, to: string) => {
+  const gpgSign = await git.raw(['config', 'commit.gpgsign']);
+  try {
+    if (gpgSign === 'true') {
+      await git.addConfig('commit.gpgsign', 'false');
+    }
+    await git.mergeFromTo(from, to);
+  } finally {
+    if (gpgSign === 'true') {
+      await git.addConfig('commit.gpgsign', gpgSign);
+    }
+  }
+};
+
 const isBranchExists = async (git: simpleGit.SimpleGit, branch: string) => {
   const branchExists = await git.branchLocal().then(({ all }) => all.includes(branch));
   return branchExists;
@@ -357,7 +385,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
               } else {
                 await git.checkoutLocalBranch(cmsBranch);
               }
-              await git.rebase([branch, '--no-gpg-sign', '--no-gpg-sign']);
+              await rebase(git, branch);
               const diff = await git.diffSummary([branch, cmsBranch]);
               const data = await getEntryDataFromDiff(
                 git,
@@ -398,7 +426,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
           const { collection, slug } = body.params as PublishUnpublishedEntryParams;
           const contentKey = generateContentKey(collection, slug);
           const cmsBranch = branchFromContentKey(contentKey);
-          await git.mergeFromTo(cmsBranch, branch);
+          await merge(git, cmsBranch, branch);
           await git.deleteLocalBranch(cmsBranch);
           res.json({ message: `branch ${cmsBranch} merged to ${branch}` });
           break;
