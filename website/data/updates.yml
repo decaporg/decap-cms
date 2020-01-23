@@ -1,5 +1,8 @@
 updates:
   - date: '2020-01-22'
+    description: 'fix image widget overflow'
+    version: 2.10.11
+  - date: '2020-01-22'
     description: 'support dynamic (templated) media_folder/path_folder config'
     version: 2.10.10
   - date: '2020-01-21'
