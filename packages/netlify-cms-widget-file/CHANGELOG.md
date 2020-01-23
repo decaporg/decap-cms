@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.0...netlify-cms-widget-file@2.5.1) (2020-01-23)
+
+
+### Bug Fixes
+
+* **widget-image:** hide image overflow in widget control ([#3131](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/3131)) ([db2cbb6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/db2cbb6f5d4136cc7fadba1c2d8977b0fd813c9b))
+
+
+
+
+
 # [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.0-beta.0...netlify-cms-widget-file@2.5.0) (2020-01-07)
 
 **Note:** Version bump only for package netlify-cms-widget-file
