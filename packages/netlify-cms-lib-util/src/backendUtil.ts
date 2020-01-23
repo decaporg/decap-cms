@@ -80,7 +80,8 @@ export const parseLinkHeader = flow([
 export const getAllResponses = async (
   url: string,
   options: { headers?: {} } = {},
-  linkHeaderRelName = 'next',
+  linkHeaderRelName: string,
+  nextUrlProcessor: (url: string) => string,
 ) => {
   const maxResponses = 30;
   let responseCount = 1;
@@ -95,7 +96,7 @@ export const getAllResponses = async (
     const nextURL = linkHeader && parseLinkHeader(linkHeader)[linkHeaderRelName];
 
     const { headers = {} } = options;
-    req = nextURL && unsentRequest.fromFetchArguments(nextURL, { headers });
+    req = nextURL && unsentRequest.fromFetchArguments(nextUrlProcessor(nextURL), { headers });
     pageResponses.push(pageResponse);
     responseCount++;
   }

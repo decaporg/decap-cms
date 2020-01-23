@@ -95,4 +95,8 @@ export default class API extends GithubAPI {
       body: JSON.stringify(commitParams),
     });
   }
+
+  nextUrlProcessor() {
+    return (url: string) => url.replace(/^(?:[a-z]+:\/\/.+?\/.+?\/.+?\/)/, `${this.apiRoot}/`);
+  }
 }

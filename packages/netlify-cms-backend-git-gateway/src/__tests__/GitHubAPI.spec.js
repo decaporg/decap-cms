@@ -84,4 +84,16 @@ describe('github API', () => {
       );
     });
   });
+
+  describe('nextUrlProcessor', () => {
+    it('should re-write github url', () => {
+      const api = new API({
+        apiRoot: 'https://site.netlify.com/.netlify/git/github',
+      });
+
+      expect(api.nextUrlProcessor()('https://api.github.com/repositories/10000/pulls')).toEqual(
+        'https://site.netlify.com/.netlify/git/github/pulls',
+      );
+    });
+  });
 });

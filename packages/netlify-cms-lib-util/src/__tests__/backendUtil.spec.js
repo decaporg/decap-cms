@@ -66,7 +66,7 @@ describe('getAllResponses', () => {
 
   it('should return all paged response', async () => {
     interceptCall({ repeat: 3, data: generatePulls(70) });
-    const res = await getAllResponses('https://api.github.com/pulls');
+    const res = await getAllResponses('https://api.github.com/pulls', {}, 'next', url => url);
     const pages = await Promise.all(res.map(res => res.json()));
 
     expect(pages[0]).toHaveLength(30);
