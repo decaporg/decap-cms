@@ -215,20 +215,15 @@ Assuming you have the netlify-cms package installed to your project, manual init
 ```js
 // This global flag enables manual initialization.
 window.CMS_MANUAL_INIT = true
-
 // Usage with import from npm package
 import CMS, { init } from 'netlify-cms'
-
 // Usage with script tag
 const { CMS, initCMS: init } = window
-
 /**
  * Initialize without passing in config - equivalent to just importing
  * Netlify CMS the old way.
  */
-
 init()
-
 /**
  * Optionally pass in a config object. This object will be merged into
  * `config.yml` if it exists, and any portion that conflicts with
@@ -239,7 +234,6 @@ init()
  * your `config.yml` can be missing its backend property, allowing you
  * to set this property at runtime.
  */
-
 init({
   config: {
     backend: {
@@ -247,7 +241,6 @@ init({
     },
   },
 })
-
 /**
  * Optionally pass in a complete config object and set a flag
  *  (`load_config_file: false`) to ignore the `config.yml`.
@@ -257,7 +250,6 @@ init({
  * It is not required if the `config.yml` file is missing to set
  * `load_config_file`, but will improve performance and avoid a load error.
  */
-
 init({
   config: {
     backend: {
@@ -276,7 +268,6 @@ init({
     ],
   },
 })
-
 // The registry works as expected, and can be used before or after init.
 CMS.registerPreviewTemplate(...);
 ```
@@ -292,7 +283,6 @@ CMS.registerPreviewTemplate(...);
  */
 import CMS from 'netlify-cms';
 import styles from '!css-loader!sass-loader!../main.scss'
-
 CMS.registerPreviewStyle(styles.toString(), { raw: true })
 ```
 

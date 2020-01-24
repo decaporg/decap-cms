@@ -9,7 +9,6 @@ Alternatively, you can specify a custom config file using a link tag:
 
 ```html
 <!-- Note the "type" and "rel" attribute values, which are required. -->
-
 <link href="path/to/config.yml" type="text/yaml" rel="cms-config-url">
 ```
 

@@ -1,34 +1,48 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import { Link, graphql } from 'gatsby';
+import { css } from '@emotion/core';
 
 import Layout from '../components/layout';
+import Container from '../components/container';
+import MetaInfo from '../components/meta-info';
+import Page from '../components/page';
+import Lead from '../components/lead';
+
+import theme from '../theme';
 
 const Blog = ({ data }) => (
   <Layout>
-    <div className="blog page">
-      <Helmet>
-        <title>Blog</title>
-        <meta name="description" content="Recent news and updates about Netlify CMS." />
-      </Helmet>
-      <div className="container">
+    <Helmet>
+      <title>Blog</title>
+      <meta name="description" content="Recent news and updates about Netlify CMS." />
+    </Helmet>
+    <Page>
+      <Container size="sm">
         <h1>Netlify CMS Blog</h1>
         {data.allMarkdownRemark.edges.map(({ node }) => (
-          <article className="blog-list-item" key={node.id}>
-            <h2>
-              <Link to={node.fields.slug} className="article">
-                {node.frontmatter.title}
-              </Link>
+          <article
+            key={node.id}
+            css={css`
+              margin-bottom: ${theme.space[5]};
+            `}
+          >
+            <h2
+              css={css`
+                margin-bottom: 0;
+              `}
+            >
+              <Link to={node.fields.slug}>{node.frontmatter.title}</Link>
             </h2>
-            <p className="meta-info">
+            <MetaInfo>
               by {node.frontmatter.author} on {node.frontmatter.date}
-            </p>
-            <p>{node.frontmatter.description}</p>
+            </MetaInfo>
+            <Lead>{node.frontmatter.description}</Lead>
           </article>
         ))}
         {/* TODO: pagination */}
-      </div>
-    </div>
+      </Container>
+    </Page>
   </Layout>
 );
 

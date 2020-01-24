@@ -1,67 +1,53 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql, StaticQuery } from 'gatsby';
-
+import { ThemeProvider } from 'emotion-theming';
 import Header from './header';
 import Footer from './footer';
-import Notification from './notification';
+import GlobalStyles from '../global-styles';
+import theme from '../theme';
 
-import '../css/imports/base.css';
-import '../css/imports/utilities.css';
-import '../css/imports/chat.css';
-
-const Layout = ({ children }) => {
-  return (
-    <StaticQuery
-      query={graphql`
-        query layoutQuery {
-          site {
-            siteMetadata {
-              title
-              description
-            }
-          }
-          footer: file(relativePath: { regex: "/global/" }) {
-            childDataYaml {
-              footer {
-                buttons {
-                  url
-                  name
-                }
-              }
-            }
-          }
-          notifs: file(relativePath: { regex: "/notifications/" }) {
-            childDataYaml {
-              notifications {
-                published
-                loud
-                message
-                url
-              }
-            }
+const LAYOUT_QUERY = graphql`
+  query layoutQuery {
+    site {
+      siteMetadata {
+        title
+        description
+      }
+    }
+    footer: file(relativePath: { regex: "/global/" }) {
+      childDataYaml {
+        footer {
+          buttons {
+            url
+            name
           }
         }
-      `}
-    >
+      }
+    }
+  }
+`;
+
+const Layout = ({ hasPageHero, children }) => {
+  return (
+    <StaticQuery query={LAYOUT_QUERY}>
       {data => {
         const { title, description } = data.site.siteMetadata;
-        const notifs = data.notifs.childDataYaml.notifications.filter(notif => notif.published);
 
         return (
-          <Fragment>
+          <ThemeProvider theme={theme}>
+            <GlobalStyles />
             <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>
               <meta name="description" content={description} />
+              <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,900|Roboto+Mono:400,700"
+              />
             </Helmet>
-            {notifs.map((node, i) => (
-              <Notification key={i} url={node.url} loud={node.loud}>
-                {node.message}
-              </Notification>
-            ))}
-            <Header notifications={notifs} />
+            <Header hasHeroBelow={hasPageHero} />
             {children}
             <Footer buttons={data.footer.childDataYaml.footer.buttons} />
-          </Fragment>
+          </ThemeProvider>
         );
       }}
     </StaticQuery>

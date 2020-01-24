@@ -1,6 +1,64 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import styled from '@emotion/styled';
+
+import theme from '../theme';
 
 import screenshotEditor from '../img/screenshot-editor.jpg';
+
+const VideoLink = styled.a`
+  position: relative;
+  cursor: pointer;
+  display: block;
+
+  &:hover {
+    div {
+      background-color: ${theme.colors.blue};
+      box-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.15), 0 2px 6px 0 rgba(0, 0, 0, 0.3);
+      transform: scale(1.1);
+    }
+    svg {
+      fill: #fff;
+    }
+  }
+
+  &:active {
+    div {
+      transform: scale(0.9);
+    }
+  }
+
+  img,
+  iframe {
+    width: 100%;
+    border-radius: ${theme.radii[2]};
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.15), 0 3px 9px 0 rgba(0, 0, 0, 0.3);
+  }
+`;
+
+const VideoButton = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 90px;
+  height: 90px;
+  margin: auto;
+  color: ${theme.colors.blue};
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 100px;
+  transition: 0.1s;
+
+  svg {
+    position: absolute;
+    left: 30px;
+    top: 24px;
+    width: 44px;
+    height: 44px;
+    fill: #3a69c7;
+  }
+`;
 
 /**
  * We should be able to import complete inline svg's rather than base64, this
@@ -16,45 +74,35 @@ const PlayIcon = ({ className }) => (
   </svg>
 );
 
-class VideoEmbed extends Component {
-  state = {
-    toggled: false,
-  };
-  toggleVideo = () => {
-    this.setState({
-      toggled: true,
-    });
-  };
-  render() {
-    const { toggled } = this.state;
+const VideoEmbed = () => {
+  const [toggled, setToggled] = useState(false);
 
-    const embedcode = (
-      <iframe
-        width={560}
-        height={315}
-        src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&showinfo=0&autoplay=1"
-        frameBorder={0}
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-        title="video_embed"
-      />
-    );
+  const toggleVideo = () => setToggled(true);
 
-    const imgPlaceholder = (
-      <img src={screenshotEditor} className="responsive" alt="editor video screenshot" />
-    );
+  const embedcode = (
+    <iframe
+      title="Netlify CMS video"
+      width={560}
+      height={315}
+      src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&showinfo=0&autoplay=1"
+      frameBorder={0}
+      allow="autoplay; encrypted-media"
+      allowFullScreen
+    />
+  );
 
-    return (
-      <div className="hero-graphic" onClick={this.toggleVideo}>
-        {toggled ? embedcode : imgPlaceholder}
-        {!toggled && (
-          <div className="hero-videolink">
-            <PlayIcon className="hero-videolink-arrow" />
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+  const imgPlaceholder = <img src={screenshotEditor} alt="Netlify CMS editor" />;
+
+  return (
+    <VideoLink onClick={toggleVideo}>
+      {toggled ? embedcode : imgPlaceholder}
+      {!toggled && (
+        <VideoButton>
+          <PlayIcon />
+        </VideoButton>
+      )}
+    </VideoLink>
+  );
+};
 
 export default VideoEmbed;

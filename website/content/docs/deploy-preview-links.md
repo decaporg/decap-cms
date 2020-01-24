@@ -49,7 +49,7 @@ to a post in your repo may look like `content/blog/2018-01-new-post.md`, but the
 on your site would look more like: `/blog/2018-01-new-post/`. Here's how you would use
 `preview_path` in your configuration for this scenario:
 
-```yml
+```yaml
 collections:
   - name: blog
     folder: content/blog
@@ -65,9 +65,8 @@ template, `{{slug}}` is only the url-safe [identifier
 field](../configuration-options/#identifier_field), while in the `preview_path` template, `{{slug}}`
 is the entire slug for the entry. For example:
 
-```yml
+```yaml
 # for an entry created Jan 1, 2000 with identifier "My New Post!"
-
 collections:
   - name: posts
     slug: {{year}}-{{month}}-{{slug}} # {{slug}} will compile to "my-new-post"
@@ -91,7 +90,6 @@ through static site generators.
 
 ```yaml
 # This collection's date field will be inferred because it has a field named `"date"`
-
 collections:
   - name: posts
     preview_path: blog/{{year}}/{{month}}/{{title}}
@@ -99,9 +97,7 @@ collections:
       - { name: title, label: Title }
         { name: date, label: Date, widget: date }
         { name: body, label: Body, widget: markdown }
-
 # This collection requires `path_preview_date_field` because the no obvious date field is available
-
 collections:
   - name: posts
     preview_path: blog/{{year}}/{{month}}/{{title}}

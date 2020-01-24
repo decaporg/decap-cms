@@ -17,7 +17,7 @@ You can [sign up for Cloudinary](https://cloudinary.com/users/register/free) for
 
 To use the Cloudinary media library within Netlify CMS, you'll need to update your Netlify CMS configuration file with the information from your Cloudinary account:
 
-```yml
+```yaml
 media_library:
   name: cloudinary
   config:
@@ -70,17 +70,17 @@ Global configuration, which is meant to affect the Cloudinary widget at all time
 as seen below, under the primary `media_library` property. Settings applied here will affect every
 instance of the Cloudinary widget.
 
-```yml
+```yaml
 # global
 media_library:
   name: cloudinary
   output_filename_only: false
   config:
     default_transformations:
-      -   - fetch_format: auto
-            width: 160
-            quality: auto
-            crop: scale
+      - - fetch_format: auto
+          width: 160
+          quality: auto
+          crop: scale
 ```
 
 #### Field configuration
@@ -89,22 +89,22 @@ Configuration can also be provided for individual fields that use the media libr
 is very similar to the global configuration, except the settings are added to an individual `field`.
 For example:
 
-```yml
+```yaml
 # field
 fields: # The fields each document in this collection have
-      - label: 'Cover Image'
-        name: 'image'
-        widget: 'image'
-        required: false
-        tagname: ''
-        media_library:
-          config:
-            default_transformations:
-              -   - fetch_format: auto
-                    width: 300    
-                    quality: auto
-                    crop: fill
-                    effect: grayscale
+- label: 'Cover Image'
+  name: 'image'
+  widget: 'image'
+  required: false
+  tagname: ''
+  media_library:
+    config:
+      default_transformations:
+        - fetch_format: auto
+          width: 300    
+          quality: auto
+          crop: fill
+          effect: grayscale
 ```
 
 ## Inserting Cloudinary URL in page templates
@@ -113,24 +113,22 @@ If you prefer to provide direction so that images are transformed in a specific 
 
 * Either globally or for specific fields, configure the Cloudinary extension to only output the asset filename
 
-  ```yml
-  # global
-  media_library:
-    name: cloudinary
-    output_filename_only: true
-
-  # field
-  media_library:
-    name: cloudinary
-    output_filename_only: true
-  ```
+```yaml
+# global
+media_library:
+  name: cloudinary
+  output_filename_only: true
+# field
+media_library:
+  name: cloudinary
+  output_filename_only: true
+```
 
 * Provide a dynamic URL in the site template
 
-  ```hbs
-  {{! handlebars example }}
-
-  <img src="https://res.cloudinary.com/<cloud_name>/<resource_type>/<type>/<transformations>/{{image}}"/>
-  ```
+```handlebars
+{{! handlebars example }}
+<img src="https://res.cloudinary.com/<cloud_name>/<resource_type>/<type>/<transformations>/{{image}}"/>
+```
 
 Your dynamic URL can be formed conditionally to provide any desired transformations - please see Cloudinary's [image transformation reference](https://cloudinary.com/documentation/image_transformation_reference) for available transformations.

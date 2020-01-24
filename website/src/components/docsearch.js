@@ -1,35 +1,56 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, memo } from 'react';
+import styled from '@emotion/styled';
 
+import theme from '../theme';
 import searchIcon from '../img/search.svg';
 
-class DocSearch extends Component {
-  state = {
-    enabled: true,
-  };
-  componentDidMount() {
+const SearchForm = styled.form`
+  > span {
+    width: 100%;
+  }
+`;
+
+const SearchField = styled.input`
+  color: white;
+  font-size: ${theme.fontsize[3]};
+  border-radius: ${theme.radii[1]};
+  background-color: rgba(255, 255, 255, 0.1);
+  background-image: url(${searchIcon});
+  background-repeat: no-repeat;
+  background-position: ${theme.space[2]} 50%;
+  border: 0;
+  appearance: none;
+  width: 100%;
+  padding: ${theme.space[2]};
+  padding-left: 30px;
+  outline: 0;
+`;
+
+const DocSearch = () => {
+  const [enabled, setEnabled] = useState(true);
+
+  useEffect(() => {
     if (window.docsearch) {
       window.docsearch({
         apiKey: '08d03dc80862e84c70c5a1e769b13019',
         indexName: 'netlifycms',
-        inputSelector: '.algolia-search',
+        inputSelector: '#algolia-search',
         debug: false, // Set debug to true if you want to inspect the dropdown
       });
     } else {
-      this.setState({ enabled: false });
+      setEnabled(false);
     }
-  }
-  render() {
-    if (!this.state.enabled) {
-      return null;
-    }
+  }, []);
 
-    return (
-      <div className="utility-input">
-        <img src={searchIcon} alt="" />
-        <input type="search" placeholder="Search the docs" className="algolia-search" />
-      </div>
-    );
+  if (!enabled) {
+    return null;
   }
-}
 
-export default DocSearch;
+  return (
+    <SearchForm>
+      <SearchField type="search" placeholder="Search the docs" id="algolia-search" />
+    </SearchForm>
+  );
+};
+
+export default memo(DocSearch);

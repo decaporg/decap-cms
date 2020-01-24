@@ -19,11 +19,10 @@ To use it in your own project stored on GitHub or GitLab, follow these steps:
 
 1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the steps to get started.
 2. Add the following lines to your Netlify CMS `config.yml` file:
-
-    ```yaml
-    backend:
-      name: git-gateway
-    ```
+  ```yaml
+  backend:
+    name: git-gateway
+  ```
 
 ### Reconnect after Changing Repository Permissions
 
@@ -45,19 +44,17 @@ To enable basic GitHub authentication:
 
 1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
 2. Add the following lines to your Netlify CMS `config.yml` file:
-
-    ```yaml
-    backend:
-      name: github
-      repo: owner-name/repo-name # Path to your GitHub repository
-    ```
+  ```yaml
+  backend:
+    name: github
+    repo: owner-name/repo-name # Path to your GitHub repository
+  ```
 
 ### Specifying a status for deploy previews
 The GitHub backend supports [deploy preview links](../deploy-preview-links). Netlify CMS checks the
 `context` of a commit's [statuses](https://help.github.com/articles/about-status-checks/) and infers
 one that seems to represent a deploy preview. If you need to customize this behavior, you can
 specify which context to look for using `preview_context`:
-
 
 ```yaml
 backend:
@@ -87,11 +84,11 @@ To enable it:
 2. Follow the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider) to add your new GitLab Application ID and Secret to your Netlify site dashboard.
 3. In your repository, add the following lines to your Netlify CMS `config.yml` file:
 
-    ```yaml
-    backend:
-      name: gitlab
-      repo: owner-name/repo-name # Path to your GitLab repository
-    ```
+```yaml
+backend:
+  name: gitlab
+  repo: owner-name/repo-name # Path to your GitLab repository
+```
 
 ### Client-Side Implicit Grant (GitLab)
 

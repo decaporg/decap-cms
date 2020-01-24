@@ -1,8 +1,8 @@
 const path = require('path');
 const { createFilePath } = require('gatsby-source-filesystem');
 
-exports.createPages = async ({ graphql, boundActionCreators }) => {
-  const { createPage } = boundActionCreators;
+exports.createPages = async ({ graphql, actions }) => {
+  const { createPage } = actions;
 
   const docPage = path.resolve('./src/templates/doc-page.js');
   const blogPost = path.resolve('./src/templates/blog-post.js');
@@ -51,8 +51,8 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
 
 const pad = n => (n >= 10 ? n : `0${n}`);
 
-exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
-  const { createNodeField } = boundActionCreators;
+exports.onCreateNode = ({ node, actions, getNode }) => {
+  const { createNodeField } = actions;
 
   if (node.internal.type === 'MarkdownRemark') {
     const value = createFilePath({ node, getNode });

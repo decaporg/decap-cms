@@ -70,7 +70,7 @@ module.exports = {
     },
     'gatsby-transformer-yaml',
     'gatsby-transformer-json',
-    'gatsby-plugin-postcss',
+    'gatsby-plugin-emotion',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-catch-links',
     {
@@ -80,7 +80,7 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-plugin-manifest`,
+      resolve: 'gatsby-plugin-manifest',
       options: {
         name: 'NetlifyCMS',
         short_name: 'NetlifyCMS',
