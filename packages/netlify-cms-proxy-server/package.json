@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-proxy-server",
   "description": "Proxy server to be used with Netlify CMS proxy backend",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
@@ -28,7 +28,7 @@
     "express": "^4.17.1",
     "joi": "^14.3.1",
     "morgan": "^1.9.1",
-    "netlify-cms-lib-util": "^2.6.1",
+    "netlify-cms-lib-util": "^2.6.2",
     "simple-git": "^1.129.0"
   },
   "devDependencies": {

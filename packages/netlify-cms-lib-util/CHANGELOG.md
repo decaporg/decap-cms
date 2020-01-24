@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.6.1...netlify-cms-lib-util@2.6.2) (2020-01-24)
+
+
+### Bug Fixes
+
+* **backend-git-gateway:** re-write GitHub pagination links ([#3135](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/3135)) ([834f6b9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/834f6b9e457f3738ce0f240ddd4cc160aff9e2f5))
+
+
+
+
+
 ## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.6.0...netlify-cms-lib-util@2.6.1) (2020-01-22)
 
 **Note:** Version bump only for package netlify-cms-lib-util
