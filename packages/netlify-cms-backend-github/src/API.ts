@@ -264,10 +264,19 @@ export default class API {
       .catch(error => this.handleRequestError(error, responseStatus));
   }
 
+  nextUrlProcessor() {
+    return (url: string) => url;
+  }
+
   async requestAllPages<T>(url: string, options: Options = {}) {
     const headers = await this.requestHeaders(options.headers || {});
     const processedURL = this.urlFor(url, options);
-    const allResponses = await getAllResponses(processedURL, { ...options, headers });
+    const allResponses = await getAllResponses(
+      processedURL,
+      { ...options, headers },
+      'next',
+      this.nextUrlProcessor(),
+    );
     const pages: T[][] = await Promise.all(
       allResponses.map((res: Response) => this.parseResponse(res)),
     );
