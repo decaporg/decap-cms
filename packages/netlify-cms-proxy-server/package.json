@@ -26,9 +26,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "joi": "^14.3.1",
     "morgan": "^1.9.1",
-    "netlify-cms-lib-util": "^2.6.2",
     "simple-git": "^1.129.0"
   },
   "devDependencies": {
@@ -40,6 +38,7 @@
     "@types/node": "^13.1.7",
     "@types/vfile-message": "^2.0.0",
     "jest": "^24.9.0",
+    "netlify-cms-lib-util": "^2.6.2",
     "nodemon": "^2.0.2",
     "ts-jest": "^24.3.0",
     "ts-loader": "^6.2.1",
@@ -50,5 +49,8 @@
   },
   "engines": {
     "node": ">=v10"
+  },
+  "bin": {
+    "netlify-cms-proxy-server": "./dist/index.js"
   }
 }
