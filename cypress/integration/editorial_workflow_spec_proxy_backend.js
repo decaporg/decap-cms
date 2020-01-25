@@ -4,7 +4,7 @@ import { entry1, entry2, entry3 } from './common/entries';
 
 const backend = 'proxy';
 
-describe('Proxy Backend Editorial Workflow', () => {
+describe.skip('Proxy Backend Editorial Workflow', () => {
   let taskResult = { data: {} };
 
   before(() => {
