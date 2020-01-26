@@ -56,9 +56,11 @@ const it = {
     },
     editor: {
       onLeavePage: 'Sei sicuro di voler lasciare questa pagina?',
-      onUpdatingWithUnsavedChanges: 'Hai delle modifiche non salvate, salvale prima di aggiornare lo status.',
+      onUpdatingWithUnsavedChanges:
+        'Hai delle modifiche non salvate, salvale prima di aggiornare lo status.',
       onPublishingNotReady: 'Aggiorna lo status a "Pronto" prima di pubblicare.',
-      onPublishingWithUnsavedChanges: 'Hai delle modifiche non salvate, salvale prima di pubblicare.',
+      onPublishingWithUnsavedChanges:
+        'Hai delle modifiche non salvate, salvale prima di pubblicare.',
       onPublishing: 'Sei sicuro di voler pubblicare questa voce?',
       onUnpublishing: 'Sei sicuro di voler nascondere questa voce?',
       onDeleteWithUnsavedChanges:
@@ -115,7 +117,8 @@ const it = {
     },
     mediaLibrary: {
       onDelete: 'Sei sicuro di voler cancellare il media selezionato?',
-      fileTooLarge: 'File troppo grande.\nConfigurato per non accettare file piú grandi di %{size} kB.',
+      fileTooLarge:
+        'File troppo grande.\nConfigurato per non accettare file piú grandi di %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Caricamento...',
@@ -154,7 +157,8 @@ const it = {
       onFailToPersist: 'Salvataggio della voce non riuscito: %{details}',
       onFailToDelete: 'Cancellazione della voce non riuscita: %{details}',
       onFailToUpdateStatus: 'Aggiornamento dello status non riuscito: %{details}',
-      missingRequiredField: "Oops, ti sei perso un campo obbligatorio. Per favore completalo prima di salvare.",
+      missingRequiredField:
+        'Oops, ti sei perso un campo obbligatorio. Per favore completalo prima di salvare.',
       entrySaved: 'Voce salvata',
       entryPublished: 'Voce pubblicata',
       entryUnpublished: 'Voce rimossa dalla pubblicazione',
