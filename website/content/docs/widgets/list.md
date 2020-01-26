@@ -5,7 +5,7 @@ title: list
 
 The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists.
 
-- **Name:** "list"
+- **Name:** 'list'
 - **UI:** if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values
 - **Data type:** list of widget values
 - **Options:**
