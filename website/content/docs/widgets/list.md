@@ -1,11 +1,11 @@
 ---
-label: 'List'
+label: "List"
 title: list
 ---
 
 The list widget allows you to create a repeatable item in the UI which saves as a list of widget values. map a user-provided string with a comma delimiter into a list. You can choose any widget as a child of a list widget—even other lists.
 
-- **Name:** `list`
+- **Name:** "list"
 - **UI:** if `fields` is specified, field containing a repeatable child widget, with controls for adding, deleting, and re-ordering the repeated widgets; if unspecified, a text input for entering comma-separated values
 - **Data type:** list of widget values
 - **Options:**
@@ -15,24 +15,24 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
 - **Example** (`field`/`fields` not specified):
   ```yaml
-  - label: 'Tags'
-    name: 'tags'
-    widget: 'list'
-    default: ['news']
+  - label: "Tags"
+    name: "tags"
+    widget: "list"
+    default: ["news"]
   ```
 - **Example** (`allow_add` marked `false`):
   ```yaml
-  - label: 'Tags'
-    name: 'tags'
-    widget: 'list'
+  - label: "Tags"
+    name: "tags"
+    widget: "list"
     allow_add: false
-    default: ['news']
+    default: ["news"]
   ```
 - **Example** (with `field`):
   ```yaml
-  - label: 'Gallery'
-    name: 'galleryImages'
-    widget: 'list'
+  - label: "Gallery"
+    name: "galleryImages"
+    widget: "list"
     field: { label: Image, name: image, widget: image }
   ```
 - **Example** (with `fields`):
