@@ -53,5 +53,4 @@ The list widget allows you to create a repeatable item in the UI which saves as 
             ]
         }
       ]
-      }
   ```
