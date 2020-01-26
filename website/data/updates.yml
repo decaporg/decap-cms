@@ -1,4 +1,7 @@
 updates:
+  - date: '2020-01-26'
+    description: 'fix multiple image field issue'
+    version: 2.10.13
   - date: '2020-01-23'
     description: 'fix Git Gateway/GitHub issues'
     version: 2.10.12
