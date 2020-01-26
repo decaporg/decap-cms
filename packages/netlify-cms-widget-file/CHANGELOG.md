@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.1...netlify-cms-widget-file@2.5.2) (2020-01-26)
+
+
+### Bug Fixes
+
+* **media-library:** pass correct value to Asset component ([#3140](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/3140)) ([b1026c9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/b1026c980c70f0b45b47cbe555f4984aa9eea310))
+
+
+
+
+
 ## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.0...netlify-cms-widget-file@2.5.1) (2020-01-23)
 
 
