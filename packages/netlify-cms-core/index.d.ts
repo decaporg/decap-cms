@@ -3,7 +3,13 @@ declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { Map } from 'immutable';
 
-  export type CmsBackendType = 'git-gateway' | 'github' | 'gitlab' | 'bitbucket' | 'test-repo';
+  export type CmsBackendType =
+    | 'azure'
+    | 'git-gateway'
+    | 'github'
+    | 'gitlab'
+    | 'bitbucket'
+    | 'test-repo';
 
   export type CmsMapWidgetType = 'Point' | 'LineString' | 'Polygon';
 
