@@ -5,6 +5,7 @@ export { default as es } from './es';
 export { default as fr } from './fr';
 export { default as gr } from './gr';
 export { default as hu } from './hu';
+export { default as it } from './it';
 export { default as ja } from './ja';
 export { default as nl } from './nl';
 export { default as pl } from './pl';
