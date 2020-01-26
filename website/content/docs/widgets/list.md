@@ -43,7 +43,8 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     fields:
       [
         {label: Quote, name: quote, widget: string, default: "Everything is awesome!"},
-        {label: Author,
+        {
+          label: Author,
           name: author,
           widget: object,
           fields:
