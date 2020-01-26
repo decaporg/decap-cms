@@ -223,7 +223,7 @@ export default function withFileControl({ forImage } = {}) {
           <MultiImageWrapper>
             {value.map(val => (
               <ImageWrapper key={val}>
-                <ImageAsset getAsset={getAsset} value={value} />
+                <ImageAsset getAsset={getAsset} value={val} />
               </ImageWrapper>
             ))}
           </MultiImageWrapper>
