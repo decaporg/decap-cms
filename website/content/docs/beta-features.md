@@ -74,7 +74,7 @@ Some static site generators (e.g. Gatsby) work best when using relative image pa
 
 This can now be achieved using a per collection `media_folder` configuration which specifies a relative media folder for the collection.
 
-For example, the following configuration will result in media files being saved in the same directory as the entry and the image field being populated with the relative path to the image.
+For example, the following configuration will result in media files being saved in the same directory as the entry, and the image field being populated with the relative path to the image.
 
 ```yaml
 media_folder: static/media
@@ -96,7 +96,7 @@ collections:
         widget: 'image'
 ```
 
-More specifically, saving a entry with a title of `example post` with an image named `image.png` will result in a directory structure of:
+More specifically, saving an entry with a title of `example post` with an image named `image.png` will result in a directory structure of:
 
 ```bash
 content
@@ -108,7 +108,7 @@ content
 
 And for the image field being populated with a value of `image.png`.
 
-**Note: When specifying a `path` on a folder collection `media_folder` defaults to an empty string.**
+**Note: When specifying a `path` on a folder collection, `media_folder` defaults to an empty string.**
 
 **Available template tags:**
 
