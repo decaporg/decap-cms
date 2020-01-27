@@ -9,7 +9,7 @@ The code widget provides a code editor (powered by [Codemirror](https://codemirr
 - **UI:** code editor
 - **Data type:** string
 - **Options:**
-  - `default_language`: optional; default language to use
+  - `defaultLanguage`: optional; default language to use
   - `allow_language_selection`: optional; defaults to `false`: allows syntax to be changed
   - `keys`: optional; sets key names for code and lang if outputting an object; defaults to `{ code: 'code', lang: 'lang' }`
   - `output_code_only`: set to `true` to output the string value only, defaults to `false`
