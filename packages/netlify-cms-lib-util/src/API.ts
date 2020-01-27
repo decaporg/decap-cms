@@ -4,6 +4,7 @@ export const MERGE_COMMIT_MESSAGE = 'Automatically generated. Merged on Netlify 
 
 export const COMBINE_COLLECTIONS = 'collections';
 export const COMBINE_SLUG = 'combine';
+export const COMBINE_PR_TITLE = 'Create combine entries';
 
 const NETLIFY_CMS_LABEL_PREFIX = 'netlify-cms/';
 export const isCMSLabel = (label: string) => label.startsWith(NETLIFY_CMS_LABEL_PREFIX);
@@ -24,9 +25,14 @@ export const contentKeyFromBranch = (branch: string) => {
 
 export const branchFromContentKey = (contentKey: string) => {
   return `${CMS_BRANCH_PREFIX}/${contentKey}`;
+};
 
 export const isCombineKey = (collectionName: string, slug: string) => {
   return collectionName === COMBINE_COLLECTIONS && slug.startsWith(`${COMBINE_SLUG}-`);
+};
+
+export const isBinaryFile = file => {
+  return file.diff.startsWith('Binary files');
 };
 
 export interface FetchError extends Error {

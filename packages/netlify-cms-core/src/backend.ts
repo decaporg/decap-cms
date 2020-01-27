@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq } from 'lodash';
+import { attempt, flatten, isError, uniq, trimStart } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -13,6 +13,7 @@ import {
   selectAllowDeletion,
   selectFolderEntryExtension,
   selectInferedField,
+  selectCollectionsNameFolder,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -534,7 +535,11 @@ export class Backend {
   }
 
   unpublishedEntries(collections: Collections) {
+    const collectionsNameFolder = selectCollectionsNameFolder(collections);
     return this.implementation.unpublishedEntries!()
+      .then(entries =>
+        entries.map(loadedEntry => this.inferCollection(loadedEntry, collectionsNameFolder)),
+      )
       .then(entries =>
         entries.map(loadedEntry => {
           const collectionName = loadedEntry.metaData!.collection;
@@ -543,6 +548,7 @@ export class Backend {
             raw: loadedEntry.data,
             isModification: loadedEntry.isModification,
             label: selectFileEntryLabel(collection, loadedEntry.slug!),
+            combineKey: loadedEntry.combineKey,
           });
           entry.metaData = loadedEntry.metaData;
           return entry;
@@ -560,8 +566,55 @@ export class Backend {
       }));
   }
 
+  inferCollection(entry, collectionsNameFolder) {
+    if (!entry.combineKey) return entry;
+    const path = entry.file.path;
+    const inferredCollection = collectionsNameFolder.reduce((acc, item) => {
+      const slug = path.slice(item.folderPath.length);
+      if (path.startsWith(item.folderPath)) {
+        // file collection
+        if (slug === '') return item;
+        if (
+          acc.folderPath &&
+          (path.slice(acc.folderPath.length) === '' ||
+            path.slice(acc.folderPath.length).length < slug.length)
+        ) {
+          return acc;
+        }
+        return {
+          ...item,
+          ...(!item.slug && { slug: trimStart(slug.substring(0, slug.lastIndexOf('.')), '/') }),
+        };
+      }
+      return acc;
+    }, {});
+
+    return {
+      ...entry,
+      slug: inferredCollection.slug,
+      metaData: { ...entry.metaData, collection: inferredCollection.name },
+    };
+  }
+
   unpublishedEntry(collection: Collection, slug: string) {
     return this.implementation!.unpublishedEntry!(collection.get('name') as string, slug)
+      .then(loadedEntry => {
+        const entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
+          raw: loadedEntry.data,
+          isModification: loadedEntry.isModification,
+          metaData: loadedEntry.metaData,
+          mediaFiles: loadedEntry.mediaFiles,
+          combineKey: loadedEntry.combineKey,
+        });
+        return entry;
+      })
+      .then(this.entryWithFormat(collection));
+  }
+
+  unpublishedCombineEntry(collection, combineKey, path, collections) {
+    const collectionsNameFolder = selectCollectionsNameFolder(collections);
+    return this.implementation!.unpublishedCombineEntry!(combineKey, path)
+      .then(loadedEntry => this.inferCollection(loadedEntry, collectionsNameFolder))
       .then(loadedEntry => {
         const entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
@@ -624,7 +677,11 @@ export class Backend {
       count = 0;
     while (!deployPreview && count < maxAttempts) {
       count++;
-      deployPreview = await this.implementation.getDeployPreview(collection.get('name'), slug);
+      deployPreview = await this.implementation.getDeployPreview(
+        collection.get('name'),
+        slug,
+        entry.get('combineKey'),
+      );
       if (!deployPreview) {
         await new Promise(resolve => setTimeout(() => resolve(), interval));
       }
@@ -723,12 +780,15 @@ export class Backend {
 
     const collectionName = collection.get('name');
 
+    const combineKey = entryDraft.getIn(['entry', 'combineKey']);
+
     const updatedOptions = { unpublished, status };
     const opts = {
       newEntry,
       parsedData,
       commitMessage,
       collectionName,
+      combineKey,
       useWorkflow,
       ...updatedOptions,
     };
@@ -799,18 +859,9 @@ export class Backend {
     return this.implementation.updateUnpublishedEntryStatus!(collection, slug, newStatus);
   }
 
-  combineColletionEntry(parentArgs, childEntry) {
-    let slug = parentArgs.slug;
-    !parentArgs.unpublished && (slug = `${slug}-${+new Date()}`);
-    const entryObj = { path: childEntry.get('path'), slug, raw: childEntry.get('raw') };
-    const opts = {
-      commitMessage: `${parentArgs.unpublished ? 'create' : 'update'} combine collections`,
-      collectionName: parentArgs.collection,
-      useWorkflow: true,
-      unpublished: parentArgs.unpublished,
-      status: parentArgs.status,
-    };
-    return this.implementation.persistEntry(entryObj, [], opts).then(() => slug);
+  combineColletionEntry(combineArgs, entries) {
+    console.log(combineArgs, entries);
+    return this.implementation.combineColletionEntry(combineArgs, entries);
   }
 
   publishUnpublishedEntry(collection: string, slug: string) {

@@ -55,7 +55,9 @@ import {
   contentKeyFromBranch,
   COMBINE_COLLECTIONS,
   COMBINE_SLUG,
+  COMBINE_PR_TITLE,
   isCombineKey,
+  isBinaryFile,
 } from './API';
 import {
   createPointerFile,
@@ -141,7 +143,9 @@ export const NetlifyCmsLibUtil = {
   contentKeyFromBranch,
   COMBINE_COLLECTIONS,
   COMBINE_SLUG,
+  COMBINE_PR_TITLE,
   isCombineKey,
+  isBinaryFile,
 };
 export {
   APIError,
@@ -194,5 +198,7 @@ export {
   contentKeyFromBranch,
   COMBINE_COLLECTIONS,
   COMBINE_SLUG,
+  COMBINE_PR_TITLE,
   isCombineKey,
+  isBinaryFile,
 };

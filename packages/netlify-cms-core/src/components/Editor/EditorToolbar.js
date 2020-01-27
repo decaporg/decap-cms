@@ -359,6 +359,7 @@ class EditorToolbar extends React.Component {
       isDeleting,
       isNewEntry,
       isModification,
+      combineEntry,
       t,
     } = this.props;
 
@@ -375,7 +376,7 @@ class EditorToolbar extends React.Component {
       <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
-      !showDelete && !hasUnpublishedChanges && !isModification ? null : (
+      (!showDelete && !hasUnpublishedChanges && !isModification) || combineEntry ? null : (
         <DeleteButton
           key="delete-button"
           onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
@@ -404,43 +405,46 @@ class EditorToolbar extends React.Component {
       combineEntry,
       t,
     } = this.props;
-    if (combineEntry) return;
     if (currentStatus) {
       return (
         <>
           {this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}
-          <ToolbarDropdown
-            dropdownTopOverlap="40px"
-            dropdownWidth="120px"
-            renderButton={() => (
-              <StatusButton>
-                {isUpdatingStatus
-                  ? t('editor.editorToolbar.updating')
-                  : t('editor.editorToolbar.setStatus')}
-              </StatusButton>
-            )}
-          >
-            <StatusDropdownItem
-              label={t('editor.editorToolbar.draft')}
-              onClick={() => onChangeStatus('DRAFT')}
-              icon={currentStatus === status.get('DRAFT') ? 'check' : null}
-            />
-            <StatusDropdownItem
-              label={t('editor.editorToolbar.inReview')}
-              onClick={() => onChangeStatus('PENDING_REVIEW')}
-              icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
-            />
-            {useOpenAuthoring ? (
-              ''
-            ) : (
+          {combineEntry ? (
+            ''
+          ) : (
+            <ToolbarDropdown
+              dropdownTopOverlap="40px"
+              dropdownWidth="120px"
+              renderButton={() => (
+                <StatusButton>
+                  {isUpdatingStatus
+                    ? t('editor.editorToolbar.updating')
+                    : t('editor.editorToolbar.setStatus')}
+                </StatusButton>
+              )}
+            >
               <StatusDropdownItem
-                label={t('editor.editorToolbar.ready')}
-                onClick={() => onChangeStatus('PENDING_PUBLISH')}
-                icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
+                label={t('editor.editorToolbar.draft')}
+                onClick={() => onChangeStatus('DRAFT')}
+                icon={currentStatus === status.get('DRAFT') ? 'check' : null}
               />
-            )}
-          </ToolbarDropdown>
-          {useOpenAuthoring ? (
+              <StatusDropdownItem
+                label={t('editor.editorToolbar.inReview')}
+                onClick={() => onChangeStatus('PENDING_REVIEW')}
+                icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
+              />
+              {useOpenAuthoring ? (
+                ''
+              ) : (
+                <StatusDropdownItem
+                  label={t('editor.editorToolbar.ready')}
+                  onClick={() => onChangeStatus('PENDING_PUBLISH')}
+                  icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
+                />
+              )}
+            </ToolbarDropdown>
+          )}
+          {useOpenAuthoring || combineEntry ? (
             ''
           ) : (
             <ToolbarDropdown

@@ -179,4 +179,18 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
   return null;
 };
 
+export const selectCollectionsNameFolder = collections => {
+  return collections.valueSeq().reduce((acc, item) => {
+    const name = item.get('name');
+    if (item.has('folder')) {
+      return [...acc, { name, folderPath: item.get('folder') }];
+    } else if (item.has('files')) {
+      return [
+        ...acc,
+        ...item.get('files').map(f => ({ name, folderPath: f.get('file'), slug: f.get('name') })),
+      ];
+    }
+  }, []);
+};
+
 export default collections;

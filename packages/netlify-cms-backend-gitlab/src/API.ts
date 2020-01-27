@@ -21,10 +21,13 @@ import {
   responseParser,
   PreviewState,
   parseContentKey,
+  COMBINE_PR_TITLE,
+  isBinaryFile,
+  isCombineKey,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map, Set } from 'immutable';
-import { flow, partial, result, trimStart } from 'lodash';
+import { flow, partial, result, trimStart, has } from 'lodash';
 import { CursorStore } from 'netlify-cms-lib-util/src/Cursor';
 
 export const API_NAME = 'GitLab';
@@ -468,6 +471,10 @@ export default class API {
     return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
 
+  getBranchName(collectionName: string, slug: string) {
+    return this.branchFromContentKey(this.generateContentKey(collectionName, slug));
+  }
+
   async getMergeRequests(sourceBranch?: string) {
     const mergeRequests: GitLabMergeRequest[] = await this.requestJSON({
       url: `${this.repoURL}/merge_requests`,
@@ -555,35 +562,81 @@ export default class API {
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
     const path = diff.find(d => d.old_path.includes(slug))?.old_path as string;
-    const mediaFiles = await Promise.all(
+    const otherFiles = await Promise.all(
       diff
         .filter(d => d.old_path !== path)
         .map(async d => {
           const path = d.new_path;
-          const id = await this.getFileId(path, branch);
-          return { path, id };
+          return {
+            path,
+            ...(isBinaryFile(d)
+              ? { id: await this.getFileId(path, branch) }
+              : { newFile: d.new_file }),
+          };
         }),
     );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
-    return { branch, collection, slug, path, status, mediaFiles };
+    const timeStamp = mergeRequest.updated_at;
+    return { branch, collection, slug, path, status, timeStamp, otherFiles };
   }
 
-  async readUnpublishedBranchFile(contentKey: string) {
-    const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
-      contentKey,
-    );
+  async readUnpublishedBranchFile(contentKey: string, loadEntryMediaFiles) {
+    const {
+      branch,
+      collection,
+      slug,
+      path,
+      status,
+      timeStamp,
+      otherFiles,
+    } = await this.retrieveMetadata(contentKey);
+
+    if (isCombineKey(collection, slug)) {
+      const mediaFiles = otherFiles.filter(f => f.id);
+      const loadedMediaFiles =
+        loadEntryMediaFiles && (await loadEntryMediaFiles(branch, mediaFiles));
+      return await Promise.all(
+        otherFiles
+          .filter(f => has(f, 'newFile'))
+          .map(async file => {
+            const fileData = await this.readFile(file.path, null, { branch });
+            return {
+              file: { path: file.path, id: null },
+              metaData: {
+                branch,
+                objects: { entry: { path: file.path, mediaFiles } },
+                status,
+                timeStamp,
+              },
+              data: fileData,
+              isModification: !file.newFile,
+              combineKey: contentKey,
+              ...(loadedMediaFiles && { mediaFiles: loadedMediaFiles }),
+            };
+          }),
+      );
+    }
 
     const [fileData, isModification] = await Promise.all([
       this.readFile(path, null, { branch }) as Promise<string>,
       this.isFileExists(path, this.branch),
     ]);
+    const loadedMediaFiles = loadEntryMediaFiles && (await loadEntryMediaFiles(branch, otherFiles));
 
     return {
       slug,
-      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
-      fileData,
+      file: { path, id: null },
+      metaData: {
+        branch,
+        collection,
+        objects: { entry: { path, mediaFiles: otherFiles } },
+        status,
+        timeStamp,
+      },
+      data: fileData,
       isModification,
+      ...(loadedMediaFiles && { mediaFiles: loadedMediaFiles }),
     };
   }
 
@@ -636,7 +689,8 @@ export default class API {
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
+    const contentKey =
+      options.combineKey || this.generateContentKey(options.collectionName as string, entry.slug);
     const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
@@ -661,7 +715,7 @@ export default class API {
 
       // mark files for deletion
       for (const diff of diffs) {
-        if (!items.some(item => item.path === diff.new_path)) {
+        if (!items.some(item => item.path === diff.new_path) && isBinaryFile(diff)) {
           items.push({ action: CommitAction.DELETE, path: diff.new_path });
         }
       }
@@ -681,6 +735,44 @@ export default class API {
         labels: labels.join(','),
       },
     });
+  }
+
+  async updateMergeRequestTargetBranch(mergeRequest: GitLabMergeRequest, branch: string) {
+    await this.requestJSON({
+      method: 'PUT',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
+      params: {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        target_branch: branch,
+      },
+    });
+  }
+
+  async createBranch(branch, ref) {
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/repository/branches`,
+      params: {
+        branch,
+        ref,
+      },
+    });
+  }
+
+  async combineColletionEntry(combineArgs, entries) {
+    const combineBranch = this.getBranchName(combineArgs.collection, combineArgs.slug);
+    const [mergeEntry, refEntry] = entries;
+    if (!combineArgs.unpublished) {
+      const ref = this.getBranchName(refEntry.collection, refEntry.slug);
+      await this.createBranch(combineBranch, ref);
+      await this.deleteBranch(ref);
+      await this.createMergeRequest(combineBranch, COMBINE_PR_TITLE, combineArgs.status);
+    }
+
+    const branch = this.getBranchName(mergeEntry.collection, mergeEntry.slug);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    await this.updateMergeRequestTargetBranch(mergeRequest, combineBranch);
+    await this.mergeMergeRequest(mergeRequest);
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
@@ -754,8 +846,8 @@ export default class API {
     return statuses;
   }
 
-  async getStatuses(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
+  async getStatuses(collectionName: string, slug: string, combineKey) {
+    const contentKey = combineKey || this.generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const statuses: GitLabCommitStatus[] = await this.getMergeRequestStatues(mergeRequest, branch);

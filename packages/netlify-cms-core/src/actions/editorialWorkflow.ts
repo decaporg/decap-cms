@@ -159,15 +159,24 @@ function unpublishedEntryPersistedFail(error: Error, transactionID: string) {
   };
 }
 
-function unpublishedEntriesCombining(transactionID: string) {
+function unpublishedEntriesCombining(
+  entries,
+  combineCollection: string,
+  combineSlug: string,
+  transactionID: string,
+) {
   return {
     type: UNPUBLISHED_ENTRIES_COMBINE_REQUEST,
+    payload: {
+      entries,
+      combineCollection,
+      combineSlug,
+    },
     optimist: { type: BEGIN, id: transactionID },
   };
 }
 
 function unpublishedEntriesCombined(
-  entries,
   combineCollection: string,
   combineSlug: string,
   transactionID: string,
@@ -175,7 +184,6 @@ function unpublishedEntriesCombined(
   return {
     type: UNPUBLISHED_ENTRIES_COMBINE_SUCCESS,
     payload: {
-      entries,
       combineCollection,
       combineSlug,
     },
@@ -302,16 +310,28 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     //run possible unpublishedEntries migration
     if (!entriesLoaded) {
       try {
-        const { entries, pagination } = await backend.unpublishedEntries(state.collections);
-        dispatch(unpublishedEntriesLoaded(entries, pagination));
+        await backend
+          .unpublishedEntries(state.collections)
+          .then(({ entries, pagination }) =>
+            dispatch(unpublishedEntriesLoaded(entries, pagination)),
+          );
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
-
+    const selectedEntry = selectUnpublishedEntry(getState(), collection.get('name'), slug);
+    const combineKey = selectedEntry && selectedEntry.get('combineKey');
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {
-      const entry = (await backend.unpublishedEntry(collection, slug)) as EntryValue;
+      const entry = (combineKey
+        ? await backend.unpublishedCombineEntry(
+            collection,
+            combineKey,
+            selectedEntry.get('path'),
+            state.collections,
+          )
+        : await backend.unpublishedEntry(collection, slug)) as EntryValue;
+
       const assetProxies = await Promise.all(
         entry.mediaFiles.map(({ url, file, path }) =>
           createAssetProxy({
@@ -526,55 +546,49 @@ export function combineColletionEntry(parentArgs, childArgs) {
     const state = getState();
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    const childEntry = selectUnpublishedEntry(state, childArgs.collection, childArgs.slug);
-    let slug = parentArgs.slug;
+    let combineArgs = { ...parentArgs, unpublished: true };
     let entries = [childArgs];
-    let parentEntry;
-    dispatch(unpublishedEntriesCombining(transactionID));
 
-    try {
-      !isCombineKey(parentArgs.collection, parentArgs.slug) &&
-        (parentEntry = selectUnpublishedEntry(state, parentArgs.collection, parentArgs.slug));
-
-      if (parentEntry) {
-        slug = await backend.combineColletionEntry(
-          {
-            collection: COMBINE_COLLECTIONS,
-            slug: COMBINE_SLUG,
-            unpublished: false,
-            status: parentArgs.status,
-          },
-          parentEntry,
-        );
-        entries = entries.concat(parentArgs);
-      }
-
-      await backend.combineColletionEntry(
-        {
-          slug,
-          collection: COMBINE_COLLECTIONS,
-          unpublished: true,
-        },
-        childEntry,
-      );
-
-      return dispatch(
-        unpublishedEntriesCombined(entries, COMBINE_COLLECTIONS, slug, transactionID),
-      );
-    } catch (error) {
-      console.log(error);
-      dispatch(
-        notifSend({
-          message: {
-            key: 'ui.toast.onFailToCombine',
-            details: error,
-          },
-          kind: 'danger',
-          dismissAfter: 8000,
-        }),
-      );
-      return Promise.reject(dispatch(unpublishedEntryCombinedFail(error, transactionID)));
+    if (!isCombineKey(parentArgs.collection, parentArgs.slug)) {
+      entries = entries.concat(parentArgs);
+      combineArgs = {
+        collection: COMBINE_COLLECTIONS,
+        slug: `${COMBINE_SLUG}-${+new Date()}`,
+        status: parentArgs.status,
+        unpublished: false,
+      };
     }
+    dispatch(
+      unpublishedEntriesCombining(entries, combineArgs.collection, combineArgs.slug, transactionID),
+    );
+
+    return backend
+      .combineColletionEntry(combineArgs, entries)
+      .then(() => {
+        dispatch(
+          notifSend({
+            message: { key: 'ui.toast.entryCombined' },
+            kind: 'success',
+            dismissAfter: 4000,
+          }),
+        );
+        dispatch(
+          unpublishedEntriesCombined(combineArgs.collection, combineArgs.slug, transactionID),
+        );
+      })
+      .catch((error: Error) => {
+        dispatch(
+          notifSend({
+            message: {
+              key: 'ui.toast.onFailToCombine',
+              details: error,
+            },
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+        return Promise.reject(dispatch(unpublishedEntryCombinedFail(error, transactionID)));
+      });
   };
 }
 
@@ -631,7 +645,7 @@ export function publishUnpublishedEntry(collection: string, slug: string) {
 
         dispatch(unpublishedEntryPublished(collection, slug, transactionID));
         return (
-          collection !== 'collection' && dispatch(loadEntry(collections.get(collection), slug))
+          !isCombineKey(collection, slug) && dispatch(loadEntry(collections.get(collection), slug))
         );
       })
       .catch((error: Error) => {

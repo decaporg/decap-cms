@@ -454,4 +454,51 @@ describe('Backend', () => {
       );
     });
   });
+
+  describe('inferCollection', () => {
+    const implementation = {
+      init: jest.fn(() => implementation),
+    };
+    const config = Map({});
+
+    const backend = new Backend(implementation, { config, backendName: 'github' });
+    const collectionsNameFolder = [
+      { name: 'posts', folderPath: '_posts' },
+      { name: 'blogs', folderPath: '_posts/sub-dir' },
+      { name: 'settings', folderPath: '_data/settings.json', slug: 'general' },
+    ];
+
+    it('should infer collection from file entry', async () => {
+      const entry = { file: { path: '_data/settings.json' }, combineKey: 'key' };
+      const result = backend.inferCollection(entry, collectionsNameFolder);
+      expect(result).toEqual({
+        slug: 'general',
+        file: { path: '_data/settings.json' },
+        combineKey: 'key',
+        metaData: { collection: 'settings' },
+      });
+    });
+
+    it('should infer collection from folder entry', async () => {
+      const entry = { file: { path: '_posts/slug.md' }, combineKey: 'key' };
+      const result = backend.inferCollection(entry, collectionsNameFolder);
+      expect(result).toEqual({
+        slug: 'slug',
+        file: { path: '_posts/slug.md' },
+        combineKey: 'key',
+        metaData: { collection: 'posts' },
+      });
+    });
+
+    it('should infer collection from sub folder entry', async () => {
+      const entry = { file: { path: '_posts/sub-dir/slug.md' }, combineKey: 'key' };
+      const result = backend.inferCollection(entry, collectionsNameFolder);
+      expect(result).toEqual({
+        slug: 'slug',
+        file: { path: '_posts/sub-dir/slug.md' },
+        combineKey: 'key',
+        metaData: { collection: 'blogs' },
+      });
+    });
+  });
 });

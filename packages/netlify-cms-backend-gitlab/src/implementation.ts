@@ -299,25 +299,29 @@ export default class GitLab implements Implementation {
   async unpublishedEntry(
     collection: string,
     slug: string,
+    combineKey: string,
     {
       loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
         this.loadEntryMediaFiles(branch, files),
     } = {},
   ) {
-    const contentKey = this.api!.generateContentKey(collection, slug);
-    const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const mediaFiles = await loadEntryMediaFiles(
-      data.metaData.branch,
-      data.metaData.objects.entry.mediaFiles,
+    const contentKey = combineKey || this.api!.generateContentKey(collection, slug);
+    return await this.api!.readUnpublishedBranchFile(contentKey, loadEntryMediaFiles);
+  }
+
+  async unpublishedCombineEntry(combineKey, path) {
+    return await this.unpublishedEntry('', '', combineKey).then(entries =>
+      entries.find(entry => entry.file.path === path),
     );
-    return {
-      slug,
-      file: { path: data.metaData.objects.entry.path, id: null },
-      data: data.fileData as string,
-      metaData: data.metaData,
-      mediaFiles,
-      isModification: data.isModification,
-    };
+  }
+
+  async combineColletionEntry(combineArgs, entries) {
+    //  combineColletionEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.combineColletionEntry(combineArgs, entries),
+      'Failed to acquire combine entry  lock',
+    );
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
@@ -347,9 +351,9 @@ export default class GitLab implements Implementation {
     );
   }
 
-  async getDeployPreview(collection: string, slug: string) {
+  async getDeployPreview(collection: string, slug: string, combineKey: string) {
     try {
-      const statuses = await this.api!.getStatuses(collection, slug);
+      const statuses = await this.api!.getStatuses(collection, slug, combineKey);
       const deployStatus = getPreviewStatus(statuses, this.previewContext);
 
       if (deployStatus) {

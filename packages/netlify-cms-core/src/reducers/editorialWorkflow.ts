@@ -7,6 +7,7 @@ import {
   UNPUBLISHED_ENTRY_SUCCESS,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
+  UNPUBLISHED_ENTRIES_COMBINE_REQUEST,
   UNPUBLISHED_ENTRIES_COMBINE_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
@@ -96,14 +97,29 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
         'isPersisting',
       ]);
 
-    case UNPUBLISHED_ENTRIES_COMBINE_SUCCESS:
+    case UNPUBLISHED_ENTRIES_COMBINE_REQUEST:
       return state.withMutations(map => {
         action.payload.entries.forEach(entry =>
-          map.setIn(
-            ['entities', `${entry.collection}.${entry.slug}`, 'combineKey'],
-            `${action.payload.combineCollection}/${action.payload.combineSlug}`,
-          ),
+          map
+            .setIn(
+              ['entities', `${entry.collection}.${entry.slug}`, 'combineKey'],
+              `${action.payload.combineCollection}/${action.payload.combineSlug}`,
+            )
+            .setIn(['entities', `${entry.collection}.${entry.slug}`, 'isPersisting'], true),
         );
+      });
+
+    case UNPUBLISHED_ENTRIES_COMBINE_SUCCESS:
+      return state.withMutations(map => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const entryKeys = selectUnpublishedKeysByCombineKey(
+          map,
+          action.payload!.collection,
+          action.payload!.slug,
+        );
+        entryKeys.forEach(key => {
+          map.setIn(['entities', key, 'isPersisting']);
+        });
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
@@ -201,17 +217,20 @@ export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: str
     .valueSeq();
 };
 
-export const selectUnpublishedKeysByCombineKey = (state, key) => {
+export const selectUnpublishedKeysByCombineKey = (state, collection, slug) => {
   if (!state) return null;
+  const combineKey = `${collection}/${slug}`;
   const entities = state.get('entities') as Entities;
-  return entities.filter(entry => entry.get('combineKey') === key).keySeq();
+  return entities
+    .filter(entry => entry.get('combineKey') === combineKey)
+    .keySeq()
+    .toJS();
 };
 
 export const selectUnpublishedStatusChangeKeys = (state, collection, slug) => {
   let entryKeys = [`${collection}.${slug}`];
   if (isCombineKey(collection, slug)) {
-    const combineKey = `${collection}/${slug}`;
-    entryKeys = selectUnpublishedKeysByCombineKey(state, combineKey).toJS();
+    entryKeys = selectUnpublishedKeysByCombineKey(state, collection, slug);
   }
 
   return entryKeys;
