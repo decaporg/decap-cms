@@ -267,7 +267,8 @@ You'll need to update `_includes/navigation.html` accordingly. `{% for item in s
 ```html
 <nav>
   {% for item in site.data.navigation.items %}
-    <a href="{{ site.baseurl }}{{ item.link }}" {% if page.url == item.link %}style="color: red;"{% endif %}>
+    <a href="{{ site.baseurl }}{{ item.link }}" {% if page.url == item.link %}style="color: red;"
+    {% endif %}>
       {{ item.name }}
     </a>
   {% endfor %}

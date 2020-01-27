@@ -44,7 +44,8 @@ title: Example Article
 date: 2019-01-01
 ---
 
-This is an example article. You probably want to delete it and write your own articles once you finished this guide!
+This is an example article. You probably want to delete it and write your own articles once
+you finished this guide!
 ```
 
 ### Activate the blog extension
@@ -112,10 +113,12 @@ In the newly created `index.html` we add scripts for Netlify CMS and the Netlify
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Netlify CMS</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" type="text/javascript"></script>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"
+    type="text/javascript"></script>
   </head>
   <body>
-    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js" 
+    type="text/javascript"></script>
   </body>
 </html>
 

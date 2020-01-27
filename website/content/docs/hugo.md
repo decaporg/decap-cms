@@ -115,7 +115,8 @@ It's now time to commit your changes and push to GitHub. You can run the followi
 git init # Initialize a git repository
 git add . # Add every file
 git commit -m "Initial Commit" # Commit every file with the message 'Initial Commit'
-git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git # Create a new repo on GitHub and add it to this project as a remote repository.
+git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git # Create a new 
+# repo on GitHub and add it to this project as a remote repository.
 git push -u origin master # Push your changes
 ```
 
