@@ -122,7 +122,7 @@ export default class CodeControl extends React.Component {
   getInitialLang = () => {
     const { value, field } = this.props;
     const lang =
-      (this.valueIsMap() && value && value.get(this.keys.lang)) || field.get('defaultLanguage');
+      (this.valueIsMap() && value && value.get(this.keys.lang)) || field.get('default_language');
     const langInfo = this.getLanguageByName(lang);
     if (lang && !langInfo) {
       this.setState({ unknownLang: lang });
