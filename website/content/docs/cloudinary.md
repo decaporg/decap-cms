@@ -128,7 +128,8 @@ media_library:
 
 ```handlebars
 {{! handlebars example }}
-<img src="https://res.cloudinary.com/<cloud_name>/<resource_type>/<type>/<transformations>/{{image}}"/>
+<img src="https://res.cloudinary.com/<cloud_name>/<resource_type>/<type>/<transformations>/
+{{image}}"/>
 ```
 
 Your dynamic URL can be formed conditionally to provide any desired transformations - please see Cloudinary's [image transformation reference](https://cloudinary.com/documentation/image_transformation_reference) for available transformations.
