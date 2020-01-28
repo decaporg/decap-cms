@@ -490,8 +490,8 @@ export default class GitGateway implements Implementation {
   deleteFile(path: string, commitMessage: string) {
     return this.backend!.deleteFile(path, commitMessage);
   }
-  async getDeployPreview(collection: string, slug: string) {
-    return this.backend!.getDeployPreview(collection, slug);
+  async getDeployPreview(collection: string, slug: string, combineKey: string | undefined) {
+    return this.backend!.getDeployPreview(collection, slug, combineKey);
   }
   unpublishedEntries() {
     return this.backend!.unpublishedEntries();
@@ -500,6 +500,12 @@ export default class GitGateway implements Implementation {
     return this.backend!.unpublishedEntry(collection, slug, {
       loadEntryMediaFiles: (branch, files) => this.loadEntryMediaFiles(branch, files),
     });
+  }
+  unpublishedCombineEntry(combineKey: string, path: string) {
+    return this.backend!.unpublishedCombineEntry(combineKey, path);
+  }
+  combineColletionEntry(combineArgs, entries) {
+    return this.backend!.combineColletionEntry(combineArgs, entries);
   }
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     return this.backend!.updateUnpublishedEntryStatus(collection, slug, newStatus);

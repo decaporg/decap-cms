@@ -205,6 +205,16 @@ export default class TestBackend implements Implementation {
     return Promise.resolve(entry);
   }
 
+  unpublishedCombineEntry(combineKey: string, path: string) {
+    const entry = window.repoFilesUnpublished.find(
+      e => e.combineKey === combineKey && e.file.path === path,
+    );
+
+    entry.mediaFiles = this.getMediaFiles(entry);
+
+    return Promise.resolve(entry);
+  }
+
   deleteUnpublishedEntry(collection: string, slug: string) {
     const unpubStore = window.repoFilesUnpublished;
     let entryIndexes = [
@@ -227,11 +237,8 @@ export default class TestBackend implements Implementation {
 
       const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
       if (existingEntryIndex >= 0) {
-        const collectionName = options.collectionName;
-        const combineKey = `${options.collectionName}/${slug}`;
         const unpubEntry = {
           ...unpubStore[existingEntryIndex],
-          ...(isCombineKey(collectionName, slug) && { combineKey }),
           data: raw,
           title: options.parsedData && options.parsedData.title,
           description: options.parsedData && options.parsedData.description,
@@ -274,6 +281,23 @@ export default class TestBackend implements Implementation {
     (obj[segments.shift() as string] as RepoFile) = entry;
 
     await Promise.all(assetProxies.map(file => this.persistMedia(file)));
+    return Promise.resolve();
+  }
+
+  combineColletionEntry(combineArgs, entries) {
+    const unpubStore = window.repoFilesUnpublished;
+    entries.map(entry => {
+      const existingEntryIndex = unpubStore.findIndex(
+        e => e.slug === entry.slug && e.metaData.collection == entry.collection,
+      );
+      const unpubEntry = {
+        ...unpubStore[existingEntryIndex],
+        combineKey: `${combineArgs.collection}/${combineArgs.slug}`,
+      };
+
+      unpubStore.splice(existingEntryIndex, 1, unpubEntry);
+    });
+
     return Promise.resolve();
   }
 

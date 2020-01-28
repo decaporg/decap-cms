@@ -611,7 +611,12 @@ export class Backend {
       .then(this.entryWithFormat(collection));
   }
 
-  unpublishedCombineEntry(collection, combineKey, path, collections) {
+  unpublishedCombineEntry(
+    collection: Collection,
+    combineKey: string,
+    path: string,
+    collections: Collections,
+  ) {
     const collectionsNameFolder = selectCollectionsNameFolder(collections);
     return this.implementation!.unpublishedCombineEntry!(combineKey, path)
       .then(loadedEntry => this.inferCollection(loadedEntry, collectionsNameFolder))
@@ -860,7 +865,7 @@ export class Backend {
   }
 
   combineColletionEntry(combineArgs, entries) {
-    return this.implementation.combineColletionEntry(combineArgs, entries);
+    return this.implementation.combineColletionEntry!(combineArgs, entries);
   }
 
   publishUnpublishedEntry(collection: string, slug: string) {

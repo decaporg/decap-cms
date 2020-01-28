@@ -451,7 +451,7 @@ export default class BitbucketBackend implements Implementation {
   async unpublishedEntry(
     collection: string,
     slug: string,
-    combineKey: string,
+    combineKey: string | undefined,
     {
       loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
         this.loadEntryMediaFiles(branch, files),
@@ -461,7 +461,7 @@ export default class BitbucketBackend implements Implementation {
     return await this.api!.readUnpublishedBranchFile(contentKey, loadEntryMediaFiles);
   }
 
-  async unpublishedCombineEntry(combineKey, path) {
+  async unpublishedCombineEntry(combineKey: string, path: string) {
     return await this.unpublishedEntry('', '', combineKey).then(entries =>
       entries.find(entry => entry.file.path === path),
     );

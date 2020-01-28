@@ -497,7 +497,7 @@ export default class API {
       .catch(replace404WithEmptyArray);
   }
 
-  async readUnpublishedBranchFile(contentKey: string) {
+  async readUnpublishedBranchFile(contentKey: string, loadEntryMediaFiles) {
     try {
       const metaData = await this.retrieveMetadata(contentKey).then(data =>
         data.objects.entry.path ? data : Promise.reject(null),
@@ -516,12 +516,21 @@ export default class API {
         }) as Promise<string>,
         this.isUnpublishedEntryModification(metaData.objects.entry.path),
       ]);
+      const files = metaData.objects.files || [];
+      const loadedMediaFiles =
+        loadEntryMediaFiles &&
+        (await loadEntryMediaFiles(
+          metaData.branch,
+          files.map(({ sha: id, path }) => ({ id, path })),
+        ));
 
       return {
         metaData,
-        fileData,
+        file: { path: metaData.objects.entry.path, id: null },
+        data: fileData,
         isModification,
         slug: this.slugFromContentKey(contentKey, metaData.collection),
+        ...(loadedMediaFiles && { mediaFiles: loadedMediaFiles }),
       };
     } catch (e) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);

@@ -114,8 +114,8 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const entryKeys = selectUnpublishedKeysByCombineKey(
           map,
-          action.payload!.collection,
-          action.payload!.slug,
+          action.payload!.combineCollection,
+          action.payload!.combineSlug,
         );
         entryKeys.forEach(key => {
           map.deleteIn(['entities', key, 'isPersisting']);

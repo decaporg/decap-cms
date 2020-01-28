@@ -595,6 +595,7 @@ export function combineColletionEntry(parentArgs, childArgs) {
 export function deleteUnpublishedEntry(collection: string, slug: string) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
+    console.log(collection);
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     dispatch(unpublishedEntryDeleteRequest(collection, slug, transactionID));

@@ -427,20 +427,7 @@ export default class GitHub implements Implementation {
     } = {},
   ) {
     const contentKey = this.api!.generateContentKey(collection, slug);
-    const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const files = data.metaData.objects.files || [];
-    const mediaFiles = await loadEntryMediaFiles(
-      data.metaData.branch,
-      files.map(({ sha: id, path }) => ({ id, path })),
-    );
-    return {
-      slug,
-      file: { path: data.metaData.objects.entry.path, id: null },
-      data: data.fileData as string,
-      metaData: data.metaData,
-      mediaFiles,
-      isModification: data.isModification,
-    };
+    return await this.api!.readUnpublishedBranchFile(contentKey, loadEntryMediaFiles);
   }
 
   /**
