@@ -157,6 +157,10 @@ export const selectMediaFolder = (
         'media_folder',
         config.get('slug'),
       );
+      // return absolute paths as is
+      if (folder.startsWith('/')) {
+        return folder;
+      }
       mediaFolder = join(entryDir, folder as string);
     } else {
       mediaFolder = join(collection.get('folder') as string, DRAFT_MEDIA_FILES);
@@ -176,13 +180,7 @@ export const selectMediaFilePath = (
     return mediaPath;
   }
 
-  let mediaFolder;
-  if (mediaPath.startsWith('/')) {
-    // absolute media paths are not bound to a collection
-    mediaFolder = selectMediaFolder(config, null, entryMap);
-  } else {
-    mediaFolder = selectMediaFolder(config, collection, entryMap);
-  }
+  const mediaFolder = selectMediaFolder(config, collection, entryMap);
 
   return join(mediaFolder, basename(mediaPath));
 };
