@@ -1,4 +1,4 @@
-import { flow, get } from 'lodash';
+import { flow, get, has } from 'lodash';
 import {
   localForage,
   unsentRequest,
@@ -23,8 +23,12 @@ import {
   PreviewState,
   FetchError,
   parseContentKey,
+  COMBINE_PR_TITLE,
+  isBinaryFile,
+  isCombineKey,
 } from 'netlify-cms-lib-util';
 import { oneLine } from 'common-tags';
+import { parse } from 'what-the-diff';
 
 interface Config {
   apiRoot?: string;
@@ -447,18 +451,54 @@ export default class API {
     await this.addPullRequestComment(pullRequest, statusToLabel(status));
   }
 
+  async updatePullRequestTargetBranch(pullRequest: BitBucketPullRequest, branch: string) {
+    return this.requestJSON({
+      method: 'PUT',
+      url: `${this.repoURL}/pullrequests/${pullRequest.id}`,
+      headers: { 'Content-Type': APPLICATION_JSON },
+      body: JSON.stringify({
+        title: pullRequest.title,
+        destination: {
+          branch: {
+            name: branch,
+          },
+        },
+      }),
+    });
+  }
+
+  createBranch(branch: string, ref: string) {
+    return this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/refs/branches`,
+      headers: { 'Content-Type': APPLICATION_JSON },
+      body: JSON.stringify({
+        name: branch,
+        target: {
+          hash: ref,
+        },
+      }),
+    });
+  }
+
   async getDifferences(branch: string) {
-    const diff: BitBucketDiffStat = await this.requestJSON({
-      url: `${this.repoURL}/diffstat/${branch}..${this.branch}`,
+    const rawDiff = await this.requestText({
+      url: `${this.repoURL}/diff/${branch}..${this.branch}`,
       params: {
-        pagelen: 100,
+        binary: false,
       },
     });
-    return diff.values;
+    const diff = parse(rawDiff).map(d => ({
+      newPath: d.newPath.replace(/b\//, ''),
+      binary: d.binary,
+      status: d.status,
+    }));
+    return diff;
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
+    const contentKey =
+      options.combineKey || this.generateContentKey(options.collectionName as string, entry.slug);
     const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
@@ -478,8 +518,8 @@ export default class API {
       const diffs = await this.getDifferences(branch);
       const toDelete: DeleteEntry[] = [];
       for (const diff of diffs) {
-        if (!files.some(file => file.path === diff.new.path)) {
-          toDelete.push({ path: diff.new.path, delete: true });
+        if (!files.some(file => file.path === diff.newPath) && isBinaryFile(diff)) {
+          toDelete.push({ path: diff.newPath, delete: true });
         }
       }
 
@@ -516,6 +556,10 @@ export default class API {
 
   branchFromContentKey(contentKey: string) {
     return `${CMS_BRANCH_PREFIX}/${contentKey}`;
+  }
+
+  getBranchName(collectionName: string, slug: string) {
+    return this.branchFromContentKey(this.generateContentKey(collectionName, slug));
   }
 
   async isFileExists(path: string, branch: string) {
@@ -571,31 +615,78 @@ export default class API {
     const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const diff = await this.getDifferences(branch);
-    const path = diff.find(d => d.new.path.includes(slug))?.new.path as string;
+    const path = diff.find(d => d.newPath.includes(slug))?.newPath as string;
     // TODO: get real file id
-    const mediaFiles = await Promise.all(
-      diff.filter(d => d.new.path !== path).map(d => ({ path: d.new.path, id: null })),
+    const otherFiles = await Promise.all(
+      diff
+        .filter(d => d.newPath !== path)
+        .map(d => ({
+          path: d.newPath,
+          ...(isBinaryFile(d) ? { id: null } : { newFile: d.status === 'added' }),
+        })),
     );
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label);
-    return { branch, collection, slug, path, status, mediaFiles };
+    const timeStamp = pullRequest.updated_on;
+    return { branch, collection, slug, path, status, timeStamp, otherFiles };
   }
 
-  async readUnpublishedBranchFile(contentKey: string) {
-    const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
-      contentKey,
-    );
+  async readUnpublishedBranchFile(contentKey: string, loadEntryMediaFiles) {
+    const {
+      branch,
+      collection,
+      slug,
+      path,
+      status,
+      timeStamp,
+      otherFiles,
+    } = await this.retrieveMetadata(contentKey);
+
+    if (isCombineKey(collection, slug)) {
+      const mediaFiles = otherFiles.filter(f => has(f, 'id'));
+      const loadedMediaFiles =
+        loadEntryMediaFiles && (await loadEntryMediaFiles(branch, mediaFiles));
+      return await Promise.all(
+        otherFiles
+          .filter(f => has(f, 'newFile'))
+          .map(async file => {
+            const fileData = await this.readFile(file.path, null, { branch });
+            return {
+              file: { path: file.path, id: null },
+              metaData: {
+                branch,
+                objects: { entry: { path: file.path, mediaFiles } },
+                status,
+                timeStamp,
+              },
+              data: fileData,
+              isModification: !file.newFile,
+              combineKey: contentKey,
+              ...(loadedMediaFiles && { mediaFiles: loadedMediaFiles }),
+            };
+          }),
+      );
+    }
 
     const [fileData, isModification] = await Promise.all([
       this.readFile(path, null, { branch }) as Promise<string>,
       this.isFileExists(path, this.branch),
     ]);
+    const loadedMediaFiles = loadEntryMediaFiles && (await loadEntryMediaFiles(branch, otherFiles));
 
     return {
       slug,
-      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
-      fileData,
+      file: { path, id: null },
+      metaData: {
+        branch,
+        collection,
+        objects: { entry: { path, mediaFiles: otherFiles } },
+        timeStamp,
+        status,
+      },
+      data: fileData,
       isModification,
+      ...(loadedMediaFiles && { mediaFiles: loadedMediaFiles }),
     };
   }
 
@@ -609,6 +700,23 @@ export default class API {
     const branches = pullRequests.map(mr => mr.source.branch.name);
 
     return branches;
+  }
+
+  async combineColletionEntry(combineArgs, entries) {
+    const combineBranch = this.getBranchName(combineArgs.collection, combineArgs.slug);
+    const [mergeEntry, refEntry] = entries;
+    if (!combineArgs.unpublished) {
+      const refBranch = this.getBranchName(refEntry.collection, refEntry.slug);
+      const ref = await this.branchCommitSha(refBranch);
+      await this.createBranch(combineBranch, ref);
+      await this.deleteUnpublishedEntry(refEntry.collection, refEntry.slug);
+      await this.createPullRequest(combineBranch, COMBINE_PR_TITLE, combineArgs.status);
+    }
+
+    const mergeBranch = this.getBranchName(mergeEntry.collection, mergeEntry.slug);
+    const pullRequest = await this.getBranchPullRequest(mergeBranch);
+    await this.updatePullRequestTargetBranch(pullRequest, combineBranch);
+    await this.mergePullRequest(pullRequest);
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
@@ -676,8 +784,8 @@ export default class API {
     return statuses.values;
   }
 
-  async getStatuses(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
+  async getStatuses(collectionName: string, slug: string, combineKey: string) {
+    const contentKey = combineKey || this.generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const statuses = await this.getPullRequestStatuses(pullRequest);

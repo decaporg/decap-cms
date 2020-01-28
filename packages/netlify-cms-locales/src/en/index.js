@@ -158,7 +158,7 @@ const en = {
       entrySaved: 'Entry saved',
       entryPublished: 'Entry published',
       entryUnpublished: 'Entry unpublished',
-      entryCombined: 'Entries Combines',
+      entryCombined: 'Entries Combined',
       onFailToPublishEntry: 'Failed to publish: %{details}',
       onFailToUnpublishEntry: 'Failed to unpublish entry: %{details}',
       onFailToCombine: 'Failed to combine Entries: %{details}',

@@ -860,7 +860,6 @@ export class Backend {
   }
 
   combineColletionEntry(combineArgs, entries) {
-    console.log(combineArgs, entries);
     return this.implementation.combineColletionEntry(combineArgs, entries);
   }
 

@@ -118,7 +118,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
           action.payload!.slug,
         );
         entryKeys.forEach(key => {
-          map.setIn(['entities', key, 'isPersisting']);
+          map.deleteIn(['entities', key, 'isPersisting']);
         });
       });
 
@@ -126,7 +126,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
       // Update Optimistically
       return state.withMutations(map => {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        const entryKeys = selectUnpublishedStatusChangeKeys(
+        const entryKeys = selectUnpublishedEntryKeys(
           map,
           action.payload!.collection,
           action.payload!.slug,
@@ -141,7 +141,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
       return state.withMutations(map => {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        const entryKeys = selectUnpublishedStatusChangeKeys(
+        const entryKeys = selectUnpublishedEntryKeys(
           map,
           action.payload!.collection,
           action.payload!.slug,
@@ -154,7 +154,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       return state.withMutations(map => {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        const entryKeys = selectUnpublishedStatusChangeKeys(
+        const entryKeys = selectUnpublishedEntryKeys(
           map,
           action.payload!.collection,
           action.payload!.slug,
@@ -168,7 +168,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
       return state.withMutations(map => {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        const entryKeys = selectUnpublishedStatusChangeKeys(
+        const entryKeys = selectUnpublishedEntryKeys(
           map,
           action.payload!.collection,
           action.payload!.slug,
@@ -181,7 +181,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     case UNPUBLISHED_ENTRY_DELETE_SUCCESS:
       return state.withMutations(map => {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        const entryKeys = selectUnpublishedStatusChangeKeys(
+        const entryKeys = selectUnpublishedEntryKeys(
           map,
           action.payload!.collection,
           action.payload!.slug,
@@ -227,7 +227,7 @@ export const selectUnpublishedKeysByCombineKey = (state, collection, slug) => {
     .toJS();
 };
 
-export const selectUnpublishedStatusChangeKeys = (state, collection, slug) => {
+export const selectUnpublishedEntryKeys = (state, collection, slug) => {
   let entryKeys = [`${collection}.${slug}`];
   if (isCombineKey(collection, slug)) {
     entryKeys = selectUnpublishedKeysByCombineKey(state, collection, slug);

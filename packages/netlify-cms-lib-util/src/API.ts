@@ -31,9 +31,8 @@ export const isCombineKey = (collectionName: string, slug: string) => {
   return collectionName === COMBINE_COLLECTIONS && slug.startsWith(`${COMBINE_SLUG}-`);
 };
 
-export const isBinaryFile = file => {
-  return file.diff.startsWith('Binary files');
-};
+export const isBinaryFile = file =>
+  file.binary || (file.diff && file.diff.startsWith('Binary files'));
 
 export interface FetchError extends Error {
   status: number;

@@ -846,7 +846,7 @@ export default class API {
     return statuses;
   }
 
-  async getStatuses(collectionName: string, slug: string, combineKey) {
+  async getStatuses(collectionName: string, slug: string, combineKey: string) {
     const contentKey = combineKey || this.generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
