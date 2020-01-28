@@ -29,6 +29,10 @@ const styles = {
     align-items: center;
     border: 0 solid ${colors.textFieldBorder};
   `,
+  publishedButton: css`
+    background-color: ${colorsRaw.tealLight};
+    color: ${colorsRaw.teal};
+  `,
 };
 
 const ToolbarContainer = styled.div`
@@ -140,9 +144,12 @@ const SaveButton = styled(ToolbarButton)`
   ${buttons.lightBlue};
 `;
 
-const PublishedButton = styled(StyledDropdownButton)`
-  background-color: ${colorsRaw.tealLight};
-  color: ${colorsRaw.teal};
+const PublishedToolbarButton = styled(StyledDropdownButton)`
+  ${styles.publishedButton}
+`;
+
+const PublishedButton = styled(ToolbarButton)`
+  ${styles.publishedButton}
 `;
 
 const PublishButton = styled(StyledDropdownButton)`
@@ -289,23 +296,33 @@ class EditorToolbar extends React.Component {
       isNewEntry,
       t,
     } = this.props;
+
+    const canCreate = collection.get('create');
     if (!isNewEntry && !hasChanged) {
       return (
         <>
           {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          <ToolbarDropdown
-            dropdownTopOverlap="40px"
-            dropdownWidth="150px"
-            renderButton={() => (
-              <PublishedButton>{t('editor.editorToolbar.published')}</PublishedButton>
-            )}
-          >
-            <DropdownItem
-              label={t('editor.editorToolbar.duplicate')}
-              icon="add"
-              onClick={onDuplicate}
-            />
-          </ToolbarDropdown>
+          {canCreate ? (
+            <ToolbarDropdown
+              dropdownTopOverlap="40px"
+              dropdownWidth="150px"
+              renderButton={() => (
+                <PublishedToolbarButton>
+                  {t('editor.editorToolbar.published')}
+                </PublishedToolbarButton>
+              )}
+            >
+              {
+                <DropdownItem
+                  label={t('editor.editorToolbar.duplicate')}
+                  icon="add"
+                  onClick={onDuplicate}
+                />
+              }
+            </ToolbarDropdown>
+          ) : (
+            <PublishedButton>{t('editor.editorToolbar.published')}</PublishedButton>
+          )}
         </>
       );
     }
@@ -328,7 +345,7 @@ class EditorToolbar extends React.Component {
             iconDirection="right"
             onClick={onPersist}
           />
-          {collection.get('create') ? (
+          {canCreate ? (
             <>
               <DropdownItem
                 label={t('editor.editorToolbar.publishAndCreateNew')}
@@ -403,6 +420,8 @@ class EditorToolbar extends React.Component {
       isPersisting,
       t,
     } = this.props;
+
+    const canCreate = collection.get('create');
     if (currentStatus) {
       return (
         <>
@@ -458,7 +477,7 @@ class EditorToolbar extends React.Component {
                 iconDirection="right"
                 onClick={onPublish}
               />
-              {collection.get('create') ? (
+              {canCreate ? (
                 <>
                   <DropdownItem
                     label={t('editor.editorToolbar.publishAndCreateNew')}
@@ -489,11 +508,11 @@ class EditorToolbar extends React.Component {
             dropdownTopOverlap="40px"
             dropdownWidth="150px"
             renderButton={() => (
-              <PublishedButton>
+              <PublishedToolbarButton>
                 {isPersisting
                   ? t('editor.editorToolbar.unpublishing')
                   : t('editor.editorToolbar.published')}
-              </PublishedButton>
+              </PublishedToolbarButton>
             )}
           >
             <DropdownItem
@@ -502,11 +521,13 @@ class EditorToolbar extends React.Component {
               iconDirection="right"
               onClick={unPublish}
             />
-            <DropdownItem
-              label={t('editor.editorToolbar.duplicate')}
-              icon="add"
-              onClick={onDuplicate}
-            />
+            {canCreate && (
+              <DropdownItem
+                label={t('editor.editorToolbar.duplicate')}
+                icon="add"
+                onClick={onDuplicate}
+              />
+            )}
           </ToolbarDropdown>
         </>
       );
