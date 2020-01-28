@@ -309,7 +309,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
           const entries = await runOnBranch(git, branch, () =>
             entriesFromFiles(
               repoPath,
-              payload.files.map(file => path.join(repoPath, file.path)),
+              payload.files.map(file => file.path),
             ),
           );
           res.json(entries);
