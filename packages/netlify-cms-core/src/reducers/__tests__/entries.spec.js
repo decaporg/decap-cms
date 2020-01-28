@@ -98,7 +98,7 @@ describe('entries', () => {
       ).toEqual('posts/title');
     });
 
-    it('should resolve relative media folder', () => {
+    it('should resolve collection relative media folder', () => {
       expect(
         selectMediaFolder(
           Map({ media_folder: 'static/media' }),
@@ -108,7 +108,21 @@ describe('entries', () => {
       ).toEqual('posts/');
     });
 
-    it('should resolve media folder template', () => {
+    it('should return collection absolute media folder as is', () => {
+      expect(
+        selectMediaFolder(
+          Map({ media_folder: '/static/Images' }),
+          Map({
+            name: 'getting-started',
+            folder: 'src/docs/getting-started',
+            media_folder: '/static/images/docs/getting-started',
+          }),
+          Map({ path: 'src/docs/getting-started/with-github.md' }),
+        ),
+      ).toEqual('/static/images/docs/getting-started');
+    });
+
+    it('should compile relative media folder template', () => {
       const slugConfig = {
         encoding: 'unicode',
         clean_accents: false,
@@ -134,6 +148,33 @@ describe('entries', () => {
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
+
+    it('should compile absolute media folder template', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'src/docs/extending/overview.md',
+        data: { title: 'Overview' },
+      });
+      const collection = fromJS({
+        name: 'extending',
+        folder: 'src/docs/extending',
+        media_folder: '{{media_folder}}/docs/extending',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: '/static/images', slug: slugConfig }),
+          collection,
+          entry,
+        ),
+      ).toEqual('/static/images/docs/extending');
+    });
   });
 
   describe('selectMediaFilePath', () => {
@@ -143,13 +184,7 @@ describe('entries', () => {
       );
     });
 
-    it('should resolve path from global media folder when absolute path', () => {
-      expect(
-        selectMediaFilePath(Map({ media_folder: 'static/media' }), null, null, '/media/image.png'),
-      ).toBe('static/media/image.png');
-    });
-
-    it('should resolve path from global media folder when relative path for collection with no media folder', () => {
+    it('should resolve path from global media folder for collection with no media folder', () => {
       expect(
         selectMediaFilePath(
           Map({ media_folder: 'static/media' }),
@@ -160,7 +195,7 @@ describe('entries', () => {
       ).toBe('static/media/image.png');
     });
 
-    it('should resolve path from collection media folder when relative path for collection with media folder', () => {
+    it('should resolve path from collection media folder for collection with media folder', () => {
       expect(
         selectMediaFilePath(
           Map({ media_folder: 'static/media' }),
@@ -196,7 +231,7 @@ describe('entries', () => {
       ).toBe('/media/image.png');
     });
 
-    it('should resolve path from collection media folder for collection with public folder', () => {
+    it('should resolve path from collection public folder for collection with public folder', () => {
       expect(
         selectMediaFilePublicPath(
           Map({ public_folder: '/media' }),
@@ -216,7 +251,7 @@ describe('entries', () => {
       ).toBe('../../static/media/image.png');
     });
 
-    it('should resolve public folder template', () => {
+    it('should compile public folder template', () => {
       const slugConfig = {
         encoding: 'unicode',
         clean_accents: false,
