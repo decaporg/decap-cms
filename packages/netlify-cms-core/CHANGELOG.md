@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.3...netlify-cms-core@2.15.4) (2020-01-29)
+
+
+### Bug Fixes
+
+* allow absolute paths for collection media folder ([#3160](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3160)) ([a215cfb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a215cfbe3aa875fb932878039a5efbde6d97b538))
+* don't show duplicate entry when create is disabled ([#3162](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3162)) ([06c045e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/06c045e4e610d0578619ad0c7f787e41de769980))
+
+
+
+
+
 ## [2.15.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.2...netlify-cms-core@2.15.3) (2020-01-22)
 
 **Note:** Version bump only for package netlify-cms-core

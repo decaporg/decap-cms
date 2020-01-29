@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.1.2...netlify-cms-widget-code@1.1.3) (2020-01-29)
+
+
+### Bug Fixes
+
+* **widget-code:** use snake case for default language option ([#3155](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/issues/3155)) ([32854de](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/commit/32854de41c1d0ef81836ffdad8851a583086d6a6))
+
+
+
+
+
 ## [1.1.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.1.2-beta.0...netlify-cms-widget-code@1.1.2) (2020-01-07)
 
 **Note:** Version bump only for package netlify-cms-widget-code

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.6.0...netlify-cms-locales@1.7.0) (2020-01-29)
+
+
+### Features
+
+* **locale:** add italian localization ([#3141](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3141)) ([dc403e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/dc403e4a82cc79c10f431dc55431b25fc68024a6))
+
+
+
+
+
 # [1.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.5.0...netlify-cms-locales@1.6.0) (2020-01-21)
 
 
