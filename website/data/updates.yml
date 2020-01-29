@@ -1,4 +1,7 @@
 updates:
+  - date: '2020-01-28'
+    description: 'bugfixes'
+    version: 2.10.14
   - date: '2020-01-26'
     description: 'fix multiple image field issue'
     version: 2.10.13
