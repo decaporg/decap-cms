@@ -11,6 +11,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
 - **Options:**
   - `default`: if `fields` is specified, declare defaults on the child widgets; if not, you may specify a list of strings to populate the text field
   - `allow_add`: if added and labeled `false`, button to add additional widgets disappears
+  - `collapsed`: if added and labeled `false`, the list widget's content does not collapse by default
   - `field`: a single widget field to be repeated
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
 - **Example** (`field`/`fields` not specified):
@@ -48,4 +49,14 @@ The list widget allows you to create a repeatable item in the UI which saves as 
           fields:
             - {label: Name, name: name, widget: string, default: "Emmet"}
             - {label: Avatar, name: avatar, widget: image, default: "/img/emmet.jpg"}
+    ```
+- **Example** (`collapsed` marked `false`):
+    ```yaml
+    - label: "Testimonials"
+      name: "testimonials"
+      collapsed: false
+      widget: "list"
+      fields:
+        - {label: Quote, name: quote, widget: string, default: "Everything is awesome!"}
+        - {label: Author, name: author, widget: string }
     ```
