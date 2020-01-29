@@ -691,7 +691,12 @@ export class Backend {
       assetProxies.map(asset => {
         // update media files path based on entry path
         const oldPath = asset.path;
-        const newPath = selectMediaFilePath(config, collection, entryDraft.get('entry'), oldPath);
+        const newPath = selectMediaFilePath(
+          config,
+          collection,
+          entryDraft.get('entry').set('path', path),
+          oldPath,
+        );
         asset.path = newPath;
       });
     } else {
