@@ -80,7 +80,7 @@ const pt = {
       deleting: 'Deletando...',
       updating: 'Atualizando...',
       setStatus: 'Definir status',
-      backCollection: ' Escrevando na coleção %{collectionLabel}',
+      backCollection: ' Escrevendo na coleção %{collectionLabel}',
       unsavedChanges: 'Alterções não salvas',
       changesSaved: 'Alterações salvas',
       draft: 'Rascunho',
