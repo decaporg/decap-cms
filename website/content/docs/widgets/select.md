@@ -16,6 +16,8 @@ The select widget allows you to pick a string value from a dropdown menu.
       - string values: the label displayed in the dropdown is the value saved in the file
       - object with `label` and `value` fields: the label displays in the dropdown; the value is saved in the file
   - `multiple`: accepts a boolean; defaults to `false`
+  - `min`: minimum number of items; ignored if **multiple** is not `true`
+  - `max`: maximum number of items; ignored if **multiple** is not `true`
 - **Example** (options as strings):
     ```yaml
     - label: "Align Content"
@@ -42,4 +44,14 @@ The select widget allows you to pick a string value from a dropdown menu.
       options: ["Design", "UX", "Dev"]
       default: ["Design"]
     ```
-
+- **Example** (min/max):
+    ```yaml
+    - label: "Tags"
+      name: "tags"
+      widget: "select"
+      multiple: true
+      min: 1
+      max: 3
+      options: ["Design", "UX", "Dev"]
+      default: ["Design"]
+    ```
