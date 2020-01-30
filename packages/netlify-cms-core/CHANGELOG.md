@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.4...netlify-cms-core@2.15.5) (2020-01-30)
+
+
+### Bug Fixes
+
+* media file path ([#3166](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3166)) ([d1179e3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d1179e3999cba5a022981042262c8e44e26c53d1))
+
+
+
+
+
 ## [2.15.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.3...netlify-cms-core@2.15.4) (2020-01-29)
 
 
