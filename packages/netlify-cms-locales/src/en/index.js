@@ -52,6 +52,10 @@ const en = {
         range: '%{fieldLabel} must be between %{minValue} and %{maxValue}.',
         min: '%{fieldLabel} must be at least %{minValue}.',
         max: '%{fieldLabel} must be %{maxValue} or less.',
+        rangeCount: '%{fieldLabel} must have between %{minCount} and %{maxCount} item(s).',
+        rangeCountExact: '%{fieldLabel} must have exactly %{count} item(s).',
+        minCount: '%{fieldLabel} must be at least %{minCount} item(s).',
+        maxCount: '%{fieldLabel} must be %{maxCount} or less item(s).',
       },
     },
     editor: {
