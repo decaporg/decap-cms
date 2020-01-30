@@ -247,7 +247,9 @@ describe('Select widget', () => {
         field: fromJS({ options: stringOptions, multiple: true, min: 2, max: 2 }),
         defaultValue: fromJS([stringOptions[0], stringOptions[1], stringOptions[2]]),
       };
-      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeCountExact"`);
+      expect(validate(opts)).toMatchInlineSnapshot(
+        `"editor.editorControlPane.widget.rangeCountExact"`,
+      );
     });
     it('should pass when min is met', () => {
       const opts = {

@@ -102,7 +102,7 @@ export default class SelectControl extends React.Component {
       }
     }
     return { error: false };
-  }
+  };
 
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
