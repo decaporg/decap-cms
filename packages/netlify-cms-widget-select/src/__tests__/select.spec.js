@@ -1,5 +1,5 @@
 import React from 'react';
-import { fromJS } from 'immutable';
+import { fromJS, List } from 'immutable';
 import { render, fireEvent } from '@testing-library/react';
 import { NetlifyCmsWidgetSelect } from '../';
 
@@ -53,7 +53,7 @@ function setup({ field, defaultValue }) {
             setActiveStyle={setActiveSpy}
             setInactiveStyle={setInactiveSpy}
             ref={widgetRef => (ref = widgetRef)}
-            t={jest.fn(msg => msg)}
+            t={msg => msg}
           />
         );
       }}
@@ -161,7 +161,23 @@ describe('Select widget', () => {
       expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[2].value]));
     });
 
-    it('should call onChange with empty list when no item is selected', () => {
+    it('should call onChange with empty list on mount when required is true', () => {
+      const field = fromJS({ options, multiple: true, required: true });
+      const { onChangeSpy } = setup({
+        field,
+      });
+      expect(onChangeSpy).toHaveBeenCalledWith(List());
+    });
+
+    it('should not call onChange with empty list on mount when required is false', () => {
+      const field = fromJS({ options, multiple: true });
+      const { onChangeSpy } = setup({
+        field,
+      });
+      expect(onChangeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call onChange with empty list when no item is selected and required is true', () => {
       const field = fromJS({ options, multiple: true });
       const { input, onChangeSpy } = setup({
         field,
@@ -172,11 +188,20 @@ describe('Select widget', () => {
       fireEvent.keyDown(input, { key: 'Delete' });
 
       expect(onChangeSpy).toHaveBeenCalledTimes(1);
-      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([]));
+      expect(onChangeSpy).toHaveBeenCalledWith(null);
     });
 
-    it('should call onChange with empty list when selection is cleared', () => {
-      const field = fromJS({ options, multiple: true });
+    it('should call onChange with value in list on mount when value is not a list and required is true', () => {
+      const field = fromJS({ options, multiple: true, required: true });
+      const { onChangeSpy } = setup({
+        field,
+        defaultValue: options[1].value,
+      });
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([options[1].value]));
+    });
+
+    it('should call onChange with empty list when selection is cleared and required is true', () => {
+      const field = fromJS({ options, multiple: true, required: true });
       const { container, onChangeSpy } = setup({
         field,
         defaultValue: fromJS([options[1].value]),
@@ -185,7 +210,20 @@ describe('Select widget', () => {
       clickClearButton(container);
 
       expect(onChangeSpy).toHaveBeenCalledTimes(1);
-      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([]));
+      expect(onChangeSpy).toHaveBeenCalledWith(List());
+    });
+
+    it('should call onChange with null when selection is cleared and required is false', () => {
+      const field = fromJS({ options, multiple: true, required: false });
+      const { container, onChangeSpy } = setup({
+        field,
+        defaultValue: fromJS([options[1].value]),
+      });
+
+      clickClearButton(container);
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(null);
     });
 
     it('should respect default value', () => {
@@ -210,7 +248,7 @@ describe('Select widget', () => {
       expect(getByText('baz')).toBeInTheDocument();
     });
   });
-  describe.only('validation', () => {
+  describe('validation', () => {
     function validate(setupOpts) {
       const { ref } = setup(setupOpts);
       const { error } = ref.isValid();
@@ -218,7 +256,8 @@ describe('Select widget', () => {
     }
     it('should fail with less items than min allows', () => {
       const opts = {
-        field: fromJS({ options: stringOptions, multiple: true, min: 1 }),
+        field: fromJS({ options: stringOptions, multiple: true, min: 2 }),
+        defaultValue: fromJS([stringOptions[0]]),
       };
       expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeMin"`);
     });
@@ -231,7 +270,8 @@ describe('Select widget', () => {
     });
     it('should enforce min when both min and max are set', () => {
       const opts = {
-        field: fromJS({ options: stringOptions, multiple: true, min: 1, max: 2 }),
+        field: fromJS({ options: stringOptions, multiple: true, min: 2, max: 3 }),
+        defaultValue: fromJS([stringOptions[0]]),
       };
       expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeCount"`);
     });
@@ -285,6 +325,20 @@ describe('Select widget', () => {
         defaultValue: fromJS([stringOptions[0]]),
       };
       expect(validate(opts)).toBeUndefined();
+    });
+    it('should not fail for empty field (should work for optional field)', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 2 }),
+      };
+      const { ref, input, getByText, container } = setup(opts);
+      expect(ref.isValid().error?.message).toBeUndefined();
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText('foo'));
+      expect(ref.isValid().error?.message).toMatchInlineSnapshot(
+        `"editor.editorControlPane.widget.rangeMin"`,
+      );
+      clickClearButton(container);
+      expect(ref.isValid().error?.message).toBeUndefined();
     });
   });
 });
