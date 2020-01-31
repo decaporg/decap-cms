@@ -1,4 +1,4 @@
-import { wrapInlinesWithTexts } from '../remarkSlate';
+import { wrapInlinesWithTexts, mergeAdjacentTexts } from '../remarkSlate';
 describe('remarkSlate', () => {
   describe('wrapInlinesWithTexts', () => {
     it('should handle empty array', () => {
@@ -71,6 +71,74 @@ describe('remarkSlate', () => {
         { object: 'text', text: 'world' },
         { object: 'inline' },
         { object: 'text', text: '' },
+      ]);
+    });
+  });
+
+  describe('mergeAdjacentTexts', () => {
+    it('should handle empty array', () => {
+      const children = [];
+      expect(mergeAdjacentTexts(children)).toBe(children);
+    });
+
+    it('should merge adjacent texts with same marks', () => {
+      const children = [
+        { object: 'text', text: '<a href="https://www.netlify.com" target="_blank">', marks: [] },
+        { object: 'text', text: 'Netlify', marks: [] },
+        { object: 'text', text: '</a>', marks: [] },
+      ];
+
+      expect(mergeAdjacentTexts(children)).toEqual([
+        {
+          object: 'text',
+          text: '<a href="https://www.netlify.com" target="_blank">Netlify</a>',
+          marks: [],
+        },
+      ]);
+    });
+
+    it('should not merge adjacent texts with different marks', () => {
+      const children = [
+        { object: 'text', text: '<a href="https://www.netlify.com" target="_blank">', marks: [] },
+        { object: 'text', text: 'Netlify', marks: ['b'] },
+        { object: 'text', text: '</a>', marks: [] },
+      ];
+
+      expect(mergeAdjacentTexts(children)).toEqual(children);
+    });
+
+    it('should handle mixed children array', () => {
+      const children = [
+        { object: 'inline' },
+        { object: 'text', text: '<a href="https://www.netlify.com" target="_blank">', marks: [] },
+        { object: 'text', text: 'Netlify', marks: [] },
+        { object: 'text', text: '</a>', marks: [] },
+        { object: 'inline' },
+        { object: 'text', text: '<a href="https://www.netlify.com" target="_blank">', marks: [] },
+        { object: 'text', text: 'Netlify', marks: ['b'] },
+        { object: 'text', text: '</a>', marks: [] },
+        { object: 'text', text: '<a href="https://www.netlify.com" target="_blank">', marks: [] },
+        { object: 'inline' },
+        { object: 'text', text: '</a>', marks: [] },
+      ];
+
+      expect(mergeAdjacentTexts(children)).toEqual([
+        { object: 'inline' },
+        {
+          object: 'text',
+          text: '<a href="https://www.netlify.com" target="_blank">Netlify</a>',
+          marks: [],
+        },
+        { object: 'inline' },
+        { object: 'text', text: '<a href="https://www.netlify.com" target="_blank">', marks: [] },
+        { object: 'text', text: 'Netlify', marks: ['b'] },
+        {
+          object: 'text',
+          text: '</a><a href="https://www.netlify.com" target="_blank">',
+          marks: [],
+        },
+        { object: 'inline' },
+        { object: 'text', text: '</a>', marks: [] },
       ]);
     });
   });
