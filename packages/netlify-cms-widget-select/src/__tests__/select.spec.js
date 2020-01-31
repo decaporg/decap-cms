@@ -34,7 +34,7 @@ class SelectController extends React.Component {
 }
 
 function setup({ field, defaultValue }) {
-  let renderArgs;
+  let renderArgs, ref;
   const stateChangeSpy = jest.fn();
   const setActiveSpy = jest.fn();
   const setInactiveSpy = jest.fn();
@@ -52,6 +52,8 @@ function setup({ field, defaultValue }) {
             classNameWrapper=""
             setActiveStyle={setActiveSpy}
             setInactiveStyle={setInactiveSpy}
+            ref={widgetRef => (ref = widgetRef)}
+            t={jest.fn(msg => msg)}
           />
         );
       }}
@@ -66,6 +68,7 @@ function setup({ field, defaultValue }) {
     stateChangeSpy,
     setActiveSpy,
     setInactiveSpy,
+    ref,
     input,
   };
 }
@@ -205,6 +208,83 @@ describe('Select widget', () => {
 
       expect(getByText('bar')).toBeInTheDocument();
       expect(getByText('baz')).toBeInTheDocument();
+    });
+  });
+  describe.only('validation', () => {
+    function validate(setupOpts) {
+      const { ref } = setup(setupOpts);
+      const { error } = ref.isValid();
+      return error?.message;
+    }
+    it('should fail with less items than min allows', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 1 }),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeMin"`);
+    });
+    it('should fail with more items than max allows', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, max: 1 }),
+        defaultValue: fromJS([stringOptions[0], stringOptions[1]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeMax"`);
+    });
+    it('should enforce min when both min and max are set', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 1, max: 2 }),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeCount"`);
+    });
+    it('should enforce max when both min and max are set', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 1, max: 2 }),
+        defaultValue: fromJS([stringOptions[0], stringOptions[1], stringOptions[2]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeCount"`);
+    });
+    it('should enforce min and max when they are the same value', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 2, max: 2 }),
+        defaultValue: fromJS([stringOptions[0], stringOptions[1], stringOptions[2]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(
+        `"editor.editorControlPane.widget.rangeCountExact"`,
+      );
+    });
+    it('should pass when min is met', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 1 }),
+        defaultValue: fromJS([stringOptions[0]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should pass when max is met', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, max: 1 }),
+        defaultValue: fromJS([stringOptions[0]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should pass when both min and max are met', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 2, max: 3 }),
+        defaultValue: fromJS([stringOptions[0], stringOptions[1]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should pass when both min and max are met, and are the same value', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, multiple: true, min: 2, max: 2 }),
+        defaultValue: fromJS([stringOptions[0], stringOptions[1]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should not fail on min/max if multiple is not true', () => {
+      const opts = {
+        field: fromJS({ options: stringOptions, min: 2, max: 2 }),
+        defaultValue: fromJS([stringOptions[0]]),
+      };
+      expect(validate(opts)).toBeUndefined();
     });
   });
 });
