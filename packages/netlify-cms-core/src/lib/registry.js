@@ -192,24 +192,24 @@ export function getMediaLibrary(name) {
   return registry.mediaLibraries.find(ml => ml.name === name);
 }
 
-export function getEventListeners(name) {
+function validateEventName(name) {
   if (!allowedEvents.includes(name)) {
     throw new Error(`Invalid event name '${name}'`);
   }
+}
+
+export function getEventListeners(name) {
+  validateEventName(name);
   return [...registry.eventHandlers[name]];
 }
 
 export function registerEventListener({ name, handler }, options = {}) {
-  if (!allowedEvents.includes(name)) {
-    throw new Error(`Invalid event name '${name}'`);
-  }
+  validateEventName(name);
   registry.eventHandlers[name].push({ handler, options });
 }
 
 export async function invokeEvent({ name, data }) {
-  if (!allowedEvents.includes(name)) {
-    throw new Error(`Invalid event name '${name}'`);
-  }
+  validateEventName(name);
   const handlers = registry.eventHandlers[name];
   for (const { handler, options } of handlers) {
     try {
@@ -221,9 +221,7 @@ export async function invokeEvent({ name, data }) {
 }
 
 export function removeEventListener({ name, handler }) {
-  if (!allowedEvents.includes(name)) {
-    throw new Error(`Invalid event name '${name}'`);
-  }
+  validateEventName(name);
   if (handler) {
     registry.eventHandlers[name] = registry.eventHandlers[name].filter(
       item => item.handler !== handler,
