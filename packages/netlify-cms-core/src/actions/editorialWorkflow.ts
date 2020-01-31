@@ -6,7 +6,12 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Map, List } from 'immutable';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend } from '../backend';
-import { selectPublishedSlugs, selectUnpublishedSlugs, selectEntry } from '../reducers';
+import {
+  selectPublishedSlugs,
+  selectUnpublishedSlugs,
+  selectEntry,
+  selectUnpublishedEntry,
+} from '../reducers';
 import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
@@ -513,9 +518,10 @@ export function publishUnpublishedEntry(collection: string, slug: string) {
     const collections = state.collections;
     const backend = currentBackend(state.config);
     const transactionID = uuid();
+    const entry = selectUnpublishedEntry(state, collection, slug);
     dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
     return backend
-      .publishUnpublishedEntry(collection, slug)
+      .publishUnpublishedEntry(entry)
       .then(() => {
         // re-load media after entry was published
         dispatch(loadMedia());
