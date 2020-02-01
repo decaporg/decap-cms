@@ -59,47 +59,25 @@ export default class SelectControl extends React.Component {
     const { field, value, t } = this.props;
     const min = field.get('min');
     const max = field.get('max');
+    const minMaxError = messageKey => ({
+      error: {
+        message: t(`editor.editorControlPane.widget.${messageKey}`, {
+          fieldLabel: field.get('label', field.get('name')),
+          minValue: min,
+          maxValue: max,
+        }),
+      },
+    });
+
     if (!field.get('multiple')) {
       return { error: false };
     }
-    if ([min, max].every(isNumber)) {
-      const isValid = value && value.size >= min && value.size <= max;
-      const messageKey = min === max ? 'rangeCountExact' : 'rangeCount';
-      if (!isValid) {
-        return {
-          error: {
-            message: t(`editor.editorControlPane.widget.${messageKey}`, {
-              fieldLabel: field.get('label', field.get('name')),
-              minValue: min,
-              maxValue: max,
-            }),
-          },
-        };
-      }
-    } else if (isNumber(min)) {
-      const isValid = value && value.size >= min;
-      if (!isValid) {
-        return {
-          error: {
-            message: t('editor.editorControlPane.widget.rangeMin', {
-              fieldLabel: field.get('label', field.get('name')),
-              minValue: min,
-            }),
-          },
-        };
-      }
-    } else if (isNumber(max)) {
-      const isValid = !value || value.size <= max;
-      if (!isValid) {
-        return {
-          error: {
-            message: t('editor.editorControlPane.widget.rangeMax', {
-              fieldLabel: field.get('label', field.get('name')),
-              maxValue: max,
-            }),
-          },
-        };
-      }
+    if ([min, max].every(isNumber) && value?.size && (value.size < min || value.size > max)) {
+      return minMaxError(min === max ? 'rangeCountExact' : 'rangeCount');
+    } else if (isNumber(min) && min > 0 && value?.size && value.size < min) {
+      return minMaxError('rangeMin');
+    } else if (isNumber(max) && value?.size && value.size > max) {
+      return minMaxError('rangeMax');
     }
     return { error: false };
   };
@@ -107,17 +85,30 @@ export default class SelectControl extends React.Component {
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
     const isMultiple = field.get('multiple', false);
+    const isEmpty = isMultiple ? !selectedOption?.length : !selectedOption;
 
-    if (Array.isArray(selectedOption)) {
-      if (!isMultiple && selectedOption.length === 0) {
-        onChange(null);
-      } else {
-        onChange(fromJS(selectedOption.map(optionToString)));
-      }
+    if (field.get('required') && isEmpty && isMultiple) {
+      onChange(List());
+    } else if (isEmpty) {
+      onChange(null);
+    } else if (isMultiple) {
+      const options = selectedOption.map(optionToString);
+      onChange(fromJS(options));
     } else {
       onChange(optionToString(selectedOption));
     }
   };
+
+  componentDidMount() {
+    const { field, onChange, value } = this.props;
+    if (field.get('required') && field.get('multiple')) {
+      if (value && !List.isList(value)) {
+        onChange(fromJS([value]));
+      } else if (!value) {
+        onChange(fromJS([]));
+      }
+    }
+  }
 
   render() {
     const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
