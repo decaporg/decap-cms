@@ -3,6 +3,12 @@ import produce from 'immer';
 import { oneLine } from 'common-tags';
 import EditorComponent from 'ValueObjects/EditorComponent';
 
+const allowedEvents = ['prePublish', 'postPublish'];
+const eventHandlers = {};
+allowedEvents.forEach(e => {
+  eventHandlers[e] = [];
+});
+
 /**
  * Global Registry Object
  */
@@ -15,6 +21,7 @@ const registry = {
   widgetValueSerializers: {},
   mediaLibraries: [],
   locales: {},
+  eventHandlers,
 };
 
 export default {
@@ -36,6 +43,10 @@ export default {
   getMediaLibrary,
   registerLocale,
   getLocale,
+  registerEventListener,
+  removeEventListener,
+  getEventListeners,
+  invokeEvent,
 };
 
 /**
@@ -179,6 +190,45 @@ export function registerMediaLibrary(mediaLibrary, options) {
 
 export function getMediaLibrary(name) {
   return registry.mediaLibraries.find(ml => ml.name === name);
+}
+
+function validateEventName(name) {
+  if (!allowedEvents.includes(name)) {
+    throw new Error(`Invalid event name '${name}'`);
+  }
+}
+
+export function getEventListeners(name) {
+  validateEventName(name);
+  return [...registry.eventHandlers[name]];
+}
+
+export function registerEventListener({ name, handler }, options = {}) {
+  validateEventName(name);
+  registry.eventHandlers[name].push({ handler, options });
+}
+
+export async function invokeEvent({ name, data }) {
+  validateEventName(name);
+  const handlers = registry.eventHandlers[name];
+  for (const { handler, options } of handlers) {
+    try {
+      await handler(data, options);
+    } catch (e) {
+      console.warn(`Failed running handler for event ${name} with message: ${e.message}`);
+    }
+  }
+}
+
+export function removeEventListener({ name, handler }) {
+  validateEventName(name);
+  if (handler) {
+    registry.eventHandlers[name] = registry.eventHandlers[name].filter(
+      item => item.handler !== handler,
+    );
+  } else {
+    registry.eventHandlers[name] = [];
+  }
 }
 
 /**

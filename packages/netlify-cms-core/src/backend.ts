@@ -16,7 +16,7 @@ import {
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
-import { getBackend } from './lib/registry';
+import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import {
   localForage,
@@ -737,7 +737,27 @@ export class Backend {
       ...updatedOptions,
     };
 
-    return this.implementation.persistEntry(entryObj, assetProxies, opts).then(() => entryObj.slug);
+    if (!useWorkflow) {
+      await this.invokePrePublishEvent(entryDraft.get('entry'));
+    }
+
+    await this.implementation.persistEntry(entryObj, assetProxies, opts);
+
+    if (!useWorkflow) {
+      await this.invokePostPublishEvent(entryDraft.get('entry'));
+    }
+
+    return entryObj.slug;
+  }
+
+  async invokePrePublishEvent(entry: EntryMap) {
+    const { login, name } = (await this.currentUser()) as User;
+    await invokeEvent({ name: 'prePublish', data: { entry, author: { login, name } } });
+  }
+
+  async invokePostPublishEvent(entry: EntryMap) {
+    const { login, name } = (await this.currentUser()) as User;
+    await invokeEvent({ name: 'postPublish', data: { entry, author: { login, name } } });
   }
 
   async persistMedia(config: Config, file: AssetProxy) {
@@ -803,8 +823,13 @@ export class Backend {
     return this.implementation.updateUnpublishedEntryStatus!(collection, slug, newStatus);
   }
 
-  publishUnpublishedEntry(collection: string, slug: string) {
-    return this.implementation.publishUnpublishedEntry!(collection, slug);
+  async publishUnpublishedEntry(entry: EntryMap) {
+    const collection = entry.get('collection');
+    const slug = entry.get('slug');
+
+    await this.invokePrePublishEvent(entry);
+    await this.implementation.publishUnpublishedEntry!(collection, slug);
+    await this.invokePostPublishEvent(entry);
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {

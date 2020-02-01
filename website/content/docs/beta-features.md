@@ -27,7 +27,7 @@ backend:
 
 > `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 
-## GitLab and BitBucket editorial workflow support
+## GitLab and BitBucket Editorial Workflow Support
 
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
@@ -377,3 +377,23 @@ Example config:
     config:
       max_file_size: 512000 # in bytes, only for default media library
 ```
+
+## Registering to CMS Events
+
+You can execute a function when a specific CMS event occurs.
+
+Example usage:
+
+```javascript
+CMS.registerEventListener({
+  name: 'prePublish',
+  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
+});
+
+CMS.registerEventListener({
+  name: 'postPublish',
+  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
+});
+```
+
+> Supported events are `prePublish` and `postPublish`
