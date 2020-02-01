@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.2...netlify-cms-widget-markdown@2.8.3) (2020-02-01)
+
+
+### Bug Fixes
+
+* **editor:** merge adjacent text nodes with same marks ([#3173](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3173)) ([b4c5fc7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/b4c5fc77839a7459fd2733f105514a86c8c43c22))
+
+
+
+
+
 ## [2.8.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.1...netlify-cms-widget-markdown@2.8.2) (2020-01-15)
 
 

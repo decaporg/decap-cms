@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.16.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.5...netlify-cms-core@2.16.0) (2020-02-01)
+
+
+### Features
+
+* add prePublish,postPublish events ([#3172](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3172)) ([0d7e36b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0d7e36ba7952b1353b5a5bc4417994d45596a9a1))
+
+
+
+
+
 ## [2.15.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.4...netlify-cms-core@2.15.5) (2020-01-30)
 
 
