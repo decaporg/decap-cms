@@ -1,4 +1,4 @@
-import { isEmpty, isArray, flatMap, map, flatten } from 'lodash';
+import { isEmpty, isArray, flatMap, map, flatten, isEqual } from 'lodash';
 
 /**
  * Map of MDAST node types to Slate node types.
@@ -30,6 +30,7 @@ const markMap = {
 
 const isInline = node => node.object === 'inline';
 const isText = node => node.object === 'text';
+const isMarksEqual = (node1, node2) => isEqual(node1.marks, node2.marks);
 
 export const wrapInlinesWithTexts = children => {
   if (children.length <= 0) {
@@ -64,6 +65,39 @@ export const wrapInlinesWithTexts = children => {
   return children;
 };
 
+export const mergeAdjacentTexts = children => {
+  if (children.length <= 0) {
+    return children;
+  }
+
+  const mergedChildren = [];
+
+  let isMerging = false;
+  let current;
+
+  for (let i = 0; i < children.length - 1; i++) {
+    if (!isMerging) {
+      current = children[i];
+    }
+    const next = children[i + 1];
+    if (isText(current) && isText(next) && isMarksEqual(current, next)) {
+      isMerging = true;
+      current = { ...current, text: `${current.text}${next.text}` };
+    } else {
+      mergedChildren.push(current);
+      isMerging = false;
+    }
+  }
+
+  if (isMerging) {
+    mergedChildren.push(current);
+  } else {
+    mergedChildren.push(children[children.length - 1]);
+  }
+
+  return mergedChildren;
+};
+
 /**
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins
  * return a `transformNode` function that receives the MDAST as it's first argument.
@@ -87,6 +121,8 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
     if (Array.isArray(children)) {
       // Ensure that inline nodes are surrounded by text nodes to conform to slate schema
       children = wrapInlinesWithTexts(children);
+      // Merge adjacent text nodes with the same marks to conform to slate schema
+      children = mergeAdjacentTexts(children);
     }
 
     /**
