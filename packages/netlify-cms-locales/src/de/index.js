@@ -1,4 +1,15 @@
 const de = {
+  auth: {
+    login: 'Login',
+    loggingIn: 'Sie werden eingeloggt...',
+    loginWithNetlifyIdentity: 'Mit Netlify Identity einloggen',
+    errors: {
+      email: 'Stellen Sie sicher, Ihre E-Mail-Adresse einzugeben.',
+      password: 'Bitte geben Sie Ihr Passwort ein.',
+      identitySettings:
+        'Identity Einstellungen konnten nicht abgerufen werden. Stellen Sie bei der Verwendung des Git-Gateway Backends sicher, den Identity Service und das Git Gateway zu aktivieren.',
+    },
+  },
   app: {
     header: {
       content: 'Inhalt',
@@ -7,7 +18,7 @@ const de = {
       quickAdd: 'Schnell-Erstellung',
     },
     app: {
-      errorHeader: 'Fehler beim laden der CMS-Konfiguration.',
+      errorHeader: 'Fehler beim Laden der CMS-Konfiguration.',
       configErrors: 'Konfigurationsfehler',
       checkConfigYml: 'Überprüfen Sie die config.yml Konfigurationsdatei.',
       loadingConfig: 'Konfiguration laden...',
@@ -24,7 +35,7 @@ const de = {
     },
     collectionTop: {
       viewAs: 'Anzeigen als',
-      newButton: 'Neuer %{collectionLabel}',
+      newButton: 'Neue(r) %{collectionLabel}',
     },
     entries: {
       loadingEntries: 'Beiträge laden',
@@ -41,6 +52,10 @@ const de = {
         range: '%{fieldLabel} muss zwischen %{minValue} und %{maxValue} liegen.',
         min: '%{fieldLabel} muss größer als %{minValue} sein.',
         max: '%{fieldLabel} darf nicht größer als %{maxValue} sein.',
+        rangeCount: '%{fieldLabel} muss %{minCount} bis %{maxCount} Element(e) enthalten.',
+        rangeCountExact: '%{fieldLabel} muss exakt %{count} Element(e) enthalten.',
+        minCount: '%{fieldLabel} muss mindestens %{minCount} Element(e) enthalten.',
+        maxCount: '%{fieldLabel} darf maximal %{maxCount} Element(e) enthalten.',
       },
     },
     editor: {
@@ -48,10 +63,11 @@ const de = {
       onUpdatingWithUnsavedChanges:
         'Es sind noch ungespeicherte Änderungen vorhanden. Bitte speichern Sie diese, bevor Sie den Status aktualisieren.',
       onPublishingNotReady:
-        'Bitte setzten die den Status auf "Abgeschlossen" vor dem Veröffentlichen.',
+        'Bitte setzten die den Status vor dem Veröffentlichen auf "Abgeschlossen".',
       onPublishingWithUnsavedChanges:
         'Es sind noch ungespeicherte Änderungen vorhanden. Bitte speicheren Sie vor dem Veröffentlichen.',
-      onPublishing: 'Soll dieser Beitrag wirklich veröffentlich werden?',
+      onPublishing: 'Soll dieser Beitrag wirklich veröffentlicht werden?',
+      onUnpublishing: 'Soll die Veröffentlichung dieses Beitrags wirklich zurückgezogen werden?',
       onDeleteWithUnsavedChanges:
         'Möchten Sie diesen veröffentlichten Beitrag, sowie Ihre nicht gespeicherten Änderungen löschen?',
       onDeletePublishedEntry: 'Soll dieser veröffentlichte Beitrag wirklich gelöscht werden?',
@@ -67,14 +83,18 @@ const de = {
       publishing: 'Veröffentlichen...',
       publish: 'Veröffentlichen',
       published: 'Veröffentlicht',
+      unpublish: 'Veröffentlichung zurückziehen',
+      duplicate: 'Duplizieren',
+      unpublishing: 'Veröffentlichung wird zurückgezogen...',
       publishAndCreateNew: 'Veröffentlichen und neuen Beitrag erstellen',
+      publishAndDuplicate: 'Veröffentlichen und Beitrag duplizieren',
       deleteUnpublishedChanges: 'Unveröffentlichte Änderungen verwerfen',
       deleteUnpublishedEntry: 'Lösche unveröffentlichten Beitrag',
       deletePublishedEntry: 'Lösche veröffentlichten Beitrag',
       deleteEntry: 'Lösche Beitrag',
       saving: 'Speichern...',
       save: 'Speichern',
-      deleting: 'Entfernen...',
+      deleting: 'Löschen...',
       updating: 'Aktualisieren...',
       setStatus: 'Status setzen',
       backCollection: 'Zurück zu allen %{collectionLabel}',
@@ -103,6 +123,7 @@ const de = {
     },
     mediaLibrary: {
       onDelete: 'Soll das ausgewählte Medium wirklich gelöscht werden?',
+      fileTooLarge: 'Datei zu groß.\nErlaubt sind nur Dateien bis %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Laden...',
@@ -116,8 +137,8 @@ const de = {
       uploading: 'Hochladen...',
       uploadNew: 'Hochladen',
       deleting: 'Löschen...',
-      deleteSelected: 'Ausgewähltes Medium löschen',
-      chooseSelected: 'Ausgewähltes Medium verwenden',
+      deleteSelected: 'Ausgewähltes Element löschen',
+      chooseSelected: 'Ausgewähltes Element verwenden',
     },
   },
   ui: {
@@ -144,7 +165,10 @@ const de = {
       missingRequiredField: 'Oops, einige zwingend erforderliche Felder sind nicht ausgefüllt.',
       entrySaved: 'Beitrag gespeichert',
       entryPublished: 'Beitrag veröffentlicht',
+      entryUnpublished: 'Beitrag nicht mehr öffentlich',
       onFailToPublishEntry: 'Veröffentlichen fehlgeschlagen: %{details}',
+      onFailToUnpublishEntry:
+        'Veröffentlichung des Beitrags konnte nicht rückgängig gemacht werden: %{details}',
       entryUpdated: 'Beitragsstatus aktualisiert',
       onDeleteUnpublishedChanges: 'Unveröffentlichte Änderungen verworfen',
       onFailToAuth: '%{details}',
@@ -173,7 +197,7 @@ const de = {
         'Nur Beiträge im Status "Abgeschlossen" können veröffentlicht werden. Bitte ziehen Sie den Beitrag in die "Abgeschlossen" Spalte um die Veröffentlichung zu aktivieren.',
       onPublishEntry: 'Soll dieser Beitrag wirklich veröffentlicht werden soll?',
       draftHeader: 'Entwurf',
-      inReviewHeader: 'Zur Überprüfung',
+      inReviewHeader: 'In Prüfung',
       readyHeader: 'Abgeschlossen',
       currentEntries: '%{smart_count} Beitrag |||| %{smart_count} Beiträge',
     },
