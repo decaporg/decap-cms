@@ -137,6 +137,8 @@ Once you've reached this point, you should be able to access the CMS in your bro
 
 ## Integrating content in Nuxt with Vuex
 
+**Note:** In order to use `nuxtServerInit` your mode must be `universal` in your `nuxt.config.js`.
+
 Next, you'll set up the integrated Vuex store to collect blog posts. Create a file `index.js` in the `store/` directory, and add **state**, **mutations**, and **actions** for your blog posts:
 
 ```js
