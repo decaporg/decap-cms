@@ -43,6 +43,8 @@ media_library:
 Once you've finished updating your Netlify CMS configuration, the Uploadcare widget will appear when
 using the image or file widgets.
 
+**Note:** The Netlify CMS media library extensions for Uploadcare are not included in `netlify-cms-app`. If you're using `netlify-cms-app`, you'll need to [register the media libraries yourself](https://www.netlifycms.org/blog/2019/07/netlify-cms-gatsby-plugin-4-0-0#using-media-libraries-with-netlify-cms-app).
+
 ## Configuring the Uploadcare Widget
 
 The Uploadcare widget can be configured with settings that are outlined [in their
