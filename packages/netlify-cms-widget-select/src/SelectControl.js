@@ -63,8 +63,9 @@ export default class SelectControl extends React.Component {
       error: {
         message: t(`editor.editorControlPane.widget.${messageKey}`, {
           fieldLabel: field.get('label', field.get('name')),
-          minValue: min,
-          maxValue: max,
+          minCount: min,
+          maxCount: max,
+          count: min,
         }),
       },
     });
