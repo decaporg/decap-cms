@@ -190,13 +190,11 @@ export const joi = (schema: Joi.Schema) => (
   next: express.NextFunction,
 ) => {
   const { error } = schema.validate(req.body, { allowUnknown: true });
-  const valid = error == null;
-
-  if (valid) {
-    next();
-  } else {
+  if (error) {
     const { details } = error;
     const message = details.map(i => i.message).join(',');
     res.status(422).json({ error: message });
+  } else {
+    next();
   }
 };
