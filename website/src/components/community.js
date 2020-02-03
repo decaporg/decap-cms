@@ -1,43 +1,52 @@
 import React from 'react';
-import Markdownify from '../components/markdownify';
+import { css } from '@emotion/core';
+import Markdownify from './markdownify';
+import PageHero from './page-hero';
+import HeroTitle from './hero-title';
+import Lead from './lead';
+import Container from './container';
+import SectionLabel from './section-label';
+import Page from './page';
+import Grid from './grid';
+import CommunityChannelsList from './community-channels-list';
+import theme from '../theme';
 
 const Community = ({ headline, subhead, sections }) => (
-  <div className="community page">
-    <section className="hero">
-      <div className="contained">
-        <div className="hero-copy">
-          <h1 className="headline">
-            <Markdownify source={headline} />
-          </h1>
-          <h2 className="subhead">
-            <Markdownify source={subhead} />
-          </h2>
-        </div>
+  <>
+    <PageHero>
+      <div
+        css={css`
+          margin-bottom: 20px;
+        `}
+      >
+        <HeroTitle>
+          <Markdownify source={headline} />
+        </HeroTitle>
+        <Lead light>
+          <Markdownify source={subhead} />
+        </Lead>
       </div>
-    </section>
+    </PageHero>
 
-    <section className="community-channels clearfix">
-      <div className="contained">
-        <div className="half">
-          {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
-            <React.Fragment key={channelIdx}>
-              <h4 className="section-label">{sectionTitle}</h4>
-              <ul className="community-channels-list">
-                {channels.map(({ title: channelTitle, description, url }, idx) => (
-                  <li key={idx}>
-                    <a href={url}>
-                      <strong>{channelTitle}</strong>
-                      <p>{description}</p>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    </section>
-  </div>
+    <Container>
+      <Page>
+        <Grid cols={2}>
+          <div
+            css={css`
+              margin-bottom: ${theme.space[5]};
+            `}
+          >
+            {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
+              <React.Fragment key={channelIdx}>
+                <SectionLabel>{sectionTitle}</SectionLabel>
+                <CommunityChannelsList channels={channels} />
+              </React.Fragment>
+            ))}
+          </div>
+        </Grid>
+      </Page>
+    </Container>
+  </>
 );
 
 export default Community;
