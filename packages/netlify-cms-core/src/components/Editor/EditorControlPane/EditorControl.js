@@ -79,7 +79,7 @@ export const ControlHint = styled.p`
   margin-bottom: 0;
   padding: 3px 0;
   font-size: 12px;
-  color: ${props =>
+  color: ${(props) =>
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
   transition: color ${transitions.main};
 `;
@@ -167,13 +167,13 @@ class EditorControl extends React.Component {
             {errors && (
               <ControlErrorsList>
                 {errors.map(
-                  error =>
+                  (error) =>
                     error.message &&
                     typeof error.message === 'string' && (
                       <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
                         {error.message}
                       </li>
-                    ),
+                    )
                 )}
               </ControlErrorsList>
             )}
@@ -182,7 +182,9 @@ class EditorControl extends React.Component {
               hasErrors={!!errors}
               htmlFor={this.uniqueFieldId}
             >
-              {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
+              {`${field.get('label', field.get('name'))}${
+                isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''
+              }`}
             </FieldLabel>
             <Widget
               classNameWrapper={cx(
@@ -198,7 +200,7 @@ class EditorControl extends React.Component {
                   [css`
                     ${styleStrings.widgetError};
                   `]: !!errors,
-                },
+                }
               )}
               classNameWidget={css`
                 ${styleStrings.widget};
@@ -259,7 +261,7 @@ class EditorControl extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { collections, entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
@@ -286,7 +288,7 @@ const mapDispatchToProps = {
   },
   clearSearch,
   clearFieldErrors,
-  boundGetAsset: (collection, entry) => (dispatch, getState) => path => {
+  boundGetAsset: (collection, entry) => (dispatch, getState) => (path) => {
     return getAsset({ collection, entry, path })(dispatch, getState);
   },
 };
@@ -303,7 +305,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 const ConnectedEditorControl = connect(
   mapStateToProps,
   mapDispatchToProps,
-  mergeProps,
+  mergeProps
 )(translate()(EditorControl));
 
 export default ConnectedEditorControl;
