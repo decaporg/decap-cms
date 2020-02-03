@@ -313,12 +313,13 @@ export function deleteLocalBackup(collection: Collection, slug: string) {
  */
 
 export function loadEntry(collection: Collection, slug: string) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    await waitForMediaLibraryToLoad(dispatch, getState());
     dispatch(entryLoading(collection, slug));
     return backend
-      .getEntry(state, collection, slug)
+      .getEntry(getState(), collection, slug)
       .then((loadedEntry: EntryValue) => {
         return dispatch(entryLoaded(collection, loadedEntry));
       })

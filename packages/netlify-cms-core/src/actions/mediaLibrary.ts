@@ -147,26 +147,28 @@ export function loadMedia(
       }
     }
     dispatch(mediaLoading(page));
-    return new Promise(resolve => {
-      setTimeout(
-        () =>
-          resolve(
-            backend
-              .getMedia()
-              .then(files => dispatch(mediaLoaded(files)))
-              .catch((error: { status?: number }) => {
-                console.error(error);
-                if (error.status === 404) {
-                  console.log('This 404 was expected and handled appropriately.');
-                  dispatch(mediaLoaded([]));
-                } else {
-                  dispatch(mediaLoadFailed());
-                }
-              }),
-          ),
-        delay,
-      );
-    });
+
+    const loadFunction = () =>
+      backend
+        .getMedia()
+        .then(files => dispatch(mediaLoaded(files)))
+        .catch((error: { status?: number }) => {
+          console.error(error);
+          if (error.status === 404) {
+            console.log('This 404 was expected and handled appropriately.');
+            dispatch(mediaLoaded([]));
+          } else {
+            dispatch(mediaLoadFailed());
+          }
+        });
+
+    if (delay > 0) {
+      return new Promise(resolve => {
+        setTimeout(() => resolve(loadFunction()), delay);
+      });
+    } else {
+      return loadFunction();
+    }
   };
 }
 
