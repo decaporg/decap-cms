@@ -7,8 +7,14 @@ on:
     tags:
       - '*'
 
+    paths-ignore:
+      - 'website/**'
+
   pull_request:
     types: [opened, synchronize, reopened]
+
+    paths-ignore:
+      - 'website/**'
 
 jobs:
   build:
