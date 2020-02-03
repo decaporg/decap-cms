@@ -32,7 +32,7 @@
     "gatsby-transformer-yaml": "2.2.24",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "netlify-cms": "^2.10.16",
+    "netlify-cms-app": "^2.11.13",
     "prismjs": "^1.19.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
