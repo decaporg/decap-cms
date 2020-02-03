@@ -10,7 +10,7 @@ const ChatLink = styled.a`
 `;
 
 const ChatButton = () => (
-  <ChatLink href="/chat">
+  <ChatLink href="/chat" target="_blank" rel="noopener noreferrer">
     <img src="/img/slack.svg" />
   </ChatLink>
 );
