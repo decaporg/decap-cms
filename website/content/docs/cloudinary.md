@@ -27,6 +27,8 @@ media_library:
 
 **Note:** The user must be logged in to the Cloudinary account connected to the `api_key` used in your Netlify CMS configuration. 
 
+**Note:** The Netlify CMS media library extensions for Cloudinary are not included in `netlify-cms-app`. If you're using `netlify-cms-app`, you'll need to [register the media libraries yourself](https://www.netlifycms.org/blog/2019/07/netlify-cms-gatsby-plugin-4-0-0#using-media-libraries-with-netlify-cms-app).
+
 ### Security Considerations
 Although this setup exposes the `cloud_name` and `api_key` publicly via the `/admin/config.yml` endpoint, this information is not sensitive. Any integration of the Cloudinary media library requires this information to be exposed publicly. To use this library or use the restricted Cloudinary API endpoints, the user must have access to the Cloudinary account login details or the `api_secret` associated with the `cloud_name` and `api_key`.
 

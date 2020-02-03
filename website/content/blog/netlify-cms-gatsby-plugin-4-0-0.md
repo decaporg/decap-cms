@@ -96,15 +96,15 @@ The Netlify CMS media library extensions for Cloudinary and Uploadcare are not i
 **Note:** if you're using `gatsby-starter-netlify-cms`, the media libraries are registered within the starter itself.
 
 ```javascript
-import CMS from 'netlify-cms-app'
+import CMS from 'netlify-cms-app';
 
 // You only need to import the media library that you'll use. We register both
 // here for example purposes.
-import uploadcare from 'netlify-cms-media-library-uploadcare'
-import cloudinary from 'netlify-cms-media-library-cloudinary'
+import uploadcare from 'netlify-cms-media-library-uploadcare';
+import cloudinary from 'netlify-cms-media-library-cloudinary';
 
-CMS.registerMediaLibrary('uploadcare', uploadcare)
-CMS.registerMediaLibrary('cloudinary', cloudinary)
+CMS.registerMediaLibrary(uploadcare);
+CMS.registerMediaLibrary(cloudinary);
 ```
 
 For more information about the media libraries, refer to the docs.
