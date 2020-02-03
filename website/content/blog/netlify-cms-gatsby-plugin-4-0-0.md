@@ -104,7 +104,7 @@ import uploadcare from 'netlify-cms-media-library-uploadcare';
 import cloudinary from 'netlify-cms-media-library-cloudinary';
 
 CMS.registerMediaLibrary(uploadcare);
-CMS.registerMediaLibrary('cloudinary', cloudinary);
+CMS.registerMediaLibrary(cloudinary);
 ```
 
 For more information about the media libraries, refer to the docs.
