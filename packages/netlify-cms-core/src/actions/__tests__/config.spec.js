@@ -1,5 +1,7 @@
 import { fromJS } from 'immutable';
-import { applyDefaults } from '../config';
+import { applyDefaults, detectProxyServer } from '../config';
+
+jest.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('config', () => {
   describe('applyDefaults', () => {
@@ -166,6 +168,65 @@ describe('config', () => {
           );
         });
       });
+    });
+  });
+
+  describe('detectProxyServer', () => {
+    const assetFetchCalled = (url = 'http://localhost:8081/api/v1') => {
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledWith(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'info' }),
+      });
+    };
+
+    beforeEach(() => {
+      delete window.location;
+    });
+
+    it('should return undefined when not on localhost', async () => {
+      window.location = { hostname: 'www.netlify.com' };
+      await expect(detectProxyServer()).resolves.toBeUndefined();
+    });
+
+    it('should return undefined when fetch returns an error', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn().mockRejectedValue(new Error());
+      await expect(detectProxyServer()).resolves.toBeUndefined();
+
+      assetFetchCalled();
+    });
+
+    it('should return undefined when fetch returns an invalid response', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: [] }) });
+      await expect(detectProxyServer()).resolves.toBeUndefined();
+
+      assetFetchCalled();
+    });
+
+    it('should return proxyUrl when fetch returns a invalid response', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: 'test-repo' }) });
+      await expect(detectProxyServer()).resolves.toBe('http://localhost:8081/api/v1');
+
+      assetFetchCalled();
+    });
+
+    it('should use NETLIFY_CMS_PROXY_URL if defined', async () => {
+      window.location = { hostname: 'localhost' };
+      global.NETLIFY_CMS_PROXY_URL = 'http://localhost:8082/api/v1';
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: 'test-repo' }) });
+      await expect(detectProxyServer()).resolves.toBe(global.NETLIFY_CMS_PROXY_URL);
+
+      assetFetchCalled(global.NETLIFY_CMS_PROXY_URL);
     });
   });
 });

@@ -1,8 +1,3 @@
-backend:
-  name: proxy
-  branch: master
-  proxy_url: http://localhost:8082/api/v1
-
 publish_mode: editorial_workflow
 media_folder: static/media
 public_folder: /media
