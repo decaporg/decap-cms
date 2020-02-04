@@ -24,6 +24,7 @@ export default class MarkdownControl extends React.Component {
     value: PropTypes.string,
     field: ImmutablePropTypes.map.isRequired,
     getEditorComponents: PropTypes.func,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -61,6 +62,7 @@ export default class MarkdownControl extends React.Component {
       field,
       getEditorComponents,
       resolveWidget,
+      t,
     } = this.props;
 
     const { mode, pendingFocus } = this.state;
@@ -77,6 +79,7 @@ export default class MarkdownControl extends React.Component {
           getEditorComponents={getEditorComponents}
           resolveWidget={resolveWidget}
           pendingFocus={pendingFocus && this.setFocusReceived}
+          t={t}
         />
       </div>
     );
@@ -91,6 +94,7 @@ export default class MarkdownControl extends React.Component {
           value={value}
           field={field}
           pendingFocus={pendingFocus && this.setFocusReceived}
+          t={t}
         />
       </div>
     );

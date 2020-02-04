@@ -17,6 +17,7 @@ export default class BitbucketAuthenticationPage extends React.Component {
     authEndpoint: PropTypes.string,
     config: PropTypes.object.isRequired,
     clearHash: PropTypes.func,
+    t: PropTypes.func.isRequired,
   };
 
   state = {};
@@ -70,7 +71,7 @@ export default class BitbucketAuthenticationPage extends React.Component {
   };
 
   render() {
-    const { inProgress, config } = this.props;
+    const { inProgress, config, t } = this.props;
 
     return (
       <AuthenticationPage
@@ -82,7 +83,7 @@ export default class BitbucketAuthenticationPage extends React.Component {
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="bitbucket" />
-            {inProgress ? 'Logging in...' : 'Login with Bitbucket'}
+            {inProgress ? t('auth.loggingIn') : t('auth.loginWithBitbucket')}
           </React.Fragment>
         )}
       />

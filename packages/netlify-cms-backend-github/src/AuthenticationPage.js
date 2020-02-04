@@ -29,6 +29,7 @@ export default class GitHubAuthenticationPage extends React.Component {
     authEndpoint: PropTypes.string,
     config: PropTypes.object.isRequired,
     clearHash: PropTypes.func,
+    t: PropTypes.func.isRequired,
   };
 
   state = {};
@@ -92,15 +93,17 @@ export default class GitHubAuthenticationPage extends React.Component {
     });
   };
 
-  renderLoginButton = () =>
-    this.props.inProgress || this.state.findingFork ? (
-      'Logging in...'
+  renderLoginButton = () => {
+    const { inProgress, t } = this.props;
+    return inProgress || this.state.findingFork ? (
+      t('auth.loggingIn')
     ) : (
       <React.Fragment>
         <LoginButtonIcon type="github" />
-        {' Login with GitHub'}
+        {t('auth.loginWithGitHub')}
       </React.Fragment>
     );
+  };
 
   getAuthenticationPageRenderArgs() {
     const { requestingFork } = this.state;

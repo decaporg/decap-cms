@@ -182,7 +182,9 @@ class EditorControl extends React.Component {
               hasErrors={!!errors}
               htmlFor={this.uniqueFieldId}
             >
-              {`${field.get('label', field.get('name'))}${isFieldOptional ? ' (optional)' : ''}`}
+              {`${field.get('label', field.get('name'))}${
+                isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''
+              }`}
             </FieldLabel>
             <Widget
               classNameWrapper={cx(
