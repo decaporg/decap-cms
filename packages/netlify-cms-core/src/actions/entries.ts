@@ -290,8 +290,17 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
     if (entry) {
       // load assets from backup
       const mediaFiles = entry.mediaFiles || [];
-      const assetProxies: AssetProxy[] = mediaFiles.map(file =>
-        createAssetProxy({ path: file.path, file: file.file, url: file.url }),
+      const assetProxies: AssetProxy[] = await Promise.all(
+        mediaFiles.map(file => {
+          if (file.file || file.url) {
+            return createAssetProxy({ path: file.path, file: file.file, url: file.url });
+          } else {
+            return getAsset({ collection, entry: fromJS(entry), path: file.path })(
+              dispatch,
+              getState,
+            );
+          }
+        }),
       );
       dispatch(addAssets(assetProxies));
 

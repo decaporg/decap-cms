@@ -450,7 +450,8 @@ export class Backend {
           // make sure to serialize the file
           if (file.url?.startsWith('blob:')) {
             const blob = await fetch(file.url as string).then(res => res.blob());
-            return { ...file, file: new File([blob], file.name) };
+            const options = file.name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
+            return { ...file, file: new File([blob], file.name, options) };
           }
           return file;
         }),
