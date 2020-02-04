@@ -6,8 +6,6 @@ site_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
-locale: 'en'
-
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI

@@ -104,6 +104,7 @@ export default function withFileControl({ forImage } = {}) {
       onRemoveMediaControl: PropTypes.func.isRequired,
       classNameWrapper: PropTypes.string.isRequired,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+      t: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
@@ -236,37 +237,40 @@ export default function withFileControl({ forImage } = {}) {
       );
     };
 
-    renderSelection = subject => (
-      <div>
-        {forImage ? this.renderImages() : null}
+    renderSelection = subject => {
+      const { t } = this.props;
+      return (
         <div>
-          {forImage ? null : this.renderFileLinks()}
-          <FileWidgetButton onClick={this.handleChange}>
-            Choose different {subject}
-          </FileWidgetButton>
-          <FileWidgetButtonRemove onClick={this.handleRemove}>
-            Remove {subject}
-          </FileWidgetButtonRemove>
+          {forImage ? this.renderImages() : null}
+          <div>
+            {forImage ? null : this.renderFileLinks()}
+            <FileWidgetButton onClick={this.handleChange}>
+              {t(`editor.editorWidgets.${subject}.chooseDifferent`)}
+            </FileWidgetButton>
+            <FileWidgetButtonRemove onClick={this.handleRemove}>
+              {t(`editor.editorWidgets.${subject}.remove`)}
+            </FileWidgetButtonRemove>
+          </div>
         </div>
-      </div>
-    );
+      );
+    };
 
-    renderNoSelection = (subject, article) => (
-      <FileWidgetButton onClick={this.handleChange}>
-        Choose {article} {subject}
-      </FileWidgetButton>
-    );
+    renderNoSelection = subject => {
+      const { t } = this.props;
+      return (
+        <FileWidgetButton onClick={this.handleChange}>
+          {t(`editor.editorWidgets.${subject}.choose`)}
+        </FileWidgetButton>
+      );
+    };
 
     render() {
       const { value, classNameWrapper } = this.props;
       const subject = forImage ? 'image' : 'file';
-      const article = forImage ? 'an' : 'a';
 
       return (
         <div className={classNameWrapper}>
-          <span>
-            {value ? this.renderSelection(subject) : this.renderNoSelection(subject, article)}
-          </span>
+          <span>{value ? this.renderSelection(subject) : this.renderNoSelection(subject)}</span>
         </div>
       );
     }

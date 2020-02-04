@@ -114,6 +114,16 @@ const en = {
         richText: 'Rich Text',
         markdown: 'Markdown',
       },
+      image: {
+        choose: 'Choose an image',
+        chooseDifferent: 'Choose different image',
+        remove: 'Remove image',
+      },
+      file: {
+        choose: 'Choose a file',
+        chooseDifferent: 'Choose different file',
+        remove: 'Remove file',
+      },
       unknownControl: {
         noControl: "No control for widget '%{widget}'.",
       },
