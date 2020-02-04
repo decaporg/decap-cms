@@ -110,6 +110,10 @@ const en = {
       deployButtonLabel: 'View Live',
     },
     editorWidgets: {
+      markdown: {
+        richText: 'Rich Text',
+        markdown: 'Markdown',
+      },
       unknownControl: {
         noControl: "No control for widget '%{widget}'.",
       },

@@ -82,6 +82,7 @@ export default class Editor extends React.Component {
     value: PropTypes.string,
     field: ImmutablePropTypes.map.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -142,7 +143,7 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { onAddAsset, getAsset, className, field } = this.props;
+    const { onAddAsset, getAsset, className, field, t } = this.props;
     return (
       <div
         css={coreCss`
@@ -163,6 +164,7 @@ export default class Editor extends React.Component {
             hasMark={this.hasMark}
             hasInline={this.hasInline}
             hasBlock={this.hasBlock}
+            t={t}
           />
         </EditorControlBar>
         <ClassNames>

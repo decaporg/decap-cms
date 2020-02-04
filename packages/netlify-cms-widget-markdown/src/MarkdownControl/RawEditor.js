@@ -101,7 +101,7 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { className, field } = this.props;
+    const { className, field, t } = this.props;
     return (
       <RawEditorContainer>
         <EditorControlBar>
@@ -127,6 +127,7 @@ export default class RawEditor extends React.Component {
               onCut={this.handleCut}
               onCopy={this.handleCopy}
               ref={this.processRef}
+              t={t}
             />
           )}
         </ClassNames>
@@ -141,4 +142,5 @@ RawEditor.propTypes = {
   className: PropTypes.string.isRequired,
   value: PropTypes.string,
   field: ImmutablePropTypes.map.isRequired,
+  t: PropTypes.func.isRequired,
 };

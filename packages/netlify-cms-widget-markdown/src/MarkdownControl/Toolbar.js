@@ -83,6 +83,7 @@ export default class Toolbar extends React.Component {
     hasMark: PropTypes.func,
     hasInline: PropTypes.func,
     hasBlock: PropTypes.func,
+    t: PropTypes.func.isRequired,
   };
 
   isHidden = button => {
@@ -113,6 +114,7 @@ export default class Toolbar extends React.Component {
       hasMark = () => {},
       hasInline = () => {},
       hasBlock = () => {},
+      t,
     } = this.props;
 
     return (
@@ -246,10 +248,12 @@ export default class Toolbar extends React.Component {
         </div>
         <ToolbarToggle>
           <ToolbarToggleLabel isActive={!rawMode} offPosition>
-            Rich Text
+            {t('editor.editorWidgets.markdown.richText')}
           </ToolbarToggleLabel>
           <StyledToggle active={rawMode} onChange={onToggleMode} />
-          <ToolbarToggleLabel isActive={rawMode}>Markdown</ToolbarToggleLabel>
+          <ToolbarToggleLabel isActive={rawMode}>
+            {t('editor.editorWidgets.markdown.markdown')}
+          </ToolbarToggleLabel>
         </ToolbarToggle>
       </ToolbarContainer>
     );
