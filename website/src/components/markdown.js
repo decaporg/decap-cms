@@ -126,7 +126,11 @@ const StyledMarkdown = styled.div`
 `;
 
 const Markdown = ({ html }) => {
-  return <StyledMarkdown dangerouslySetInnerHTML={{ __html: html }} />;
+  if (React.isValidElement(html)) {
+    return html;
+  } else {
+    return <StyledMarkdown dangerouslySetInnerHTML={{ __html: html }} />;
+  }
 };
 
 export default Markdown;

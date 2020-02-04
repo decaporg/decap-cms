@@ -40,6 +40,18 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: 'gatsby-plugin-manifest',
+      options: {
+        name: 'NetlifyCMS',
+        short_name: 'NetlifyCMS',
+        start_url: '/',
+        background_color: '#ffffff',
+        theme_color: '#ffffff',
+        display: 'standalone',
+        icon: 'static/img/favicon/icon-512x512.png',
+      },
+    },
+    {
       resolve: 'gatsby-source-filesystem',
       options: {
         path: `${__dirname}/content`,
@@ -60,6 +72,13 @@ module.exports = {
         plugins: [
           'gatsby-remark-autolink-headers',
           {
+            resolve: "gatsby-remark-external-links",
+            options: {
+              target: "_blank",
+              rel: "noopener noreferrer"
+            }
+          },
+          {
             resolve: 'gatsby-remark-prismjs',
             options: {
               noInlineHighlight: true,
@@ -77,18 +96,6 @@ module.exports = {
       resolve: 'gatsby-plugin-netlify-cms',
       options: {
         modulePath: `${__dirname}/src/cms/cms.js`,
-      },
-    },
-    {
-      resolve: 'gatsby-plugin-manifest',
-      options: {
-        name: 'NetlifyCMS',
-        short_name: 'NetlifyCMS',
-        start_url: '/',
-        background_color: '#ffffff',
-        theme_color: '#ffffff',
-        display: 'standalone',
-        icon: 'static/img/favicon/icon-512x512.png',
       },
     },
   ],

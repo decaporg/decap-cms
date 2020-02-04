@@ -10,7 +10,7 @@ sections:
         url: /chat
       - title: Netlify Community
         description: Ask and answer questions on the Netlify CMS channel of the Netlify community forum.
-        url: https://community.netlify.com/c/netlify-platform/netlify-cms
+        url: https://community.netlify.com/c/netlify-cms
       - title: GitHub Issues
         description: Report bugs, request features, and comment on existing issues.
         url: https://github.com/netlify/netlify-cms/issues

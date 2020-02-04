@@ -1,5 +1,5 @@
 import React from 'react';
-import CMS from 'netlify-cms';
+import CMS from 'netlify-cms-app';
 import dayjs from 'dayjs';
 import Prism from 'prismjs';
 import { BlogPostTemplate } from '../templates/blog-post';
@@ -64,13 +64,14 @@ const WidgetDocPreview = ({ entry, widgetFor }) => (
 
 const ReleasePreview = ({ entry }) => (
   <WhatsNew
-    updates={[
-      entry.getIn(['data', 'updates']).map(release => ({
+    updates={entry
+      .getIn(['data', 'updates'])
+      .map(release => ({
         version: release.get('version'),
         date: dayjs(release.get('date')).format('MMMM D, YYYY'),
         description: release.get('description'),
-      })),
-    ]}
+      }))
+      .toJS()}
   />
 );
 

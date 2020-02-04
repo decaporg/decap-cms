@@ -44,7 +44,7 @@ const CommunityChannelsList = ({ channels }) => (
   <StyledCommunityChannelsList>
     {channels.map(({ title, description, url }, idx) => (
       <li key={idx}>
-        <a href={url}>
+        <a href={url} target="_blank" rel="noopener noreferrer">
           <strong>{title}</strong>
           <p>{description}</p>
         </a>
