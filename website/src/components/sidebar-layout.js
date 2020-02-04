@@ -6,7 +6,7 @@ import { mq } from '../utils';
 import styled from '@emotion/styled';
 
 const Children = styled.div`
-  max-width: 80%;
+  overflow: auto;
 `;
 
 const SidebarLayout = ({ sidebar, children }) => (
