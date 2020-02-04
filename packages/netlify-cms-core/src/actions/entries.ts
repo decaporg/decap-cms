@@ -654,7 +654,7 @@ export function deleteEntry(collection: Collection, slug: string) {
 
     dispatch(entryDeleting(collection, slug));
     return backend
-      .deleteEntry(state.config, collection, slug)
+      .deleteEntry(state, collection, slug)
       .then(() => {
         return dispatch(entryDeleted(collection, slug));
       })

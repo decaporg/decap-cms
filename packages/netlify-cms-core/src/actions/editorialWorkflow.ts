@@ -558,7 +558,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
     const entryDraft = (Map().set('entry', entry) as unknown) as EntryDraft;
     dispatch(unpublishedEntryPersisting(collection, entry, transactionID));
     return backend
-      .deleteEntry(state.config, collection, slug)
+      .deleteEntry(state, collection, slug)
       .then(() =>
         backend.persistEntry({
           config: state.config,

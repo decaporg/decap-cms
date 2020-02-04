@@ -394,6 +394,16 @@ CMS.registerEventListener({
   name: 'postPublish',
   handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
 });
+
+CMS.registerEventListener({
+  name: 'preUnpublish',
+  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
+});
+
+CMS.registerEventListener({
+  name: 'postUnpublish',
+  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
+});
 ```
 
-> Supported events are `prePublish` and `postPublish`
+> Supported events are `prePublish`, `postPublish`, `preUnpublish` and `postUnpublish`
