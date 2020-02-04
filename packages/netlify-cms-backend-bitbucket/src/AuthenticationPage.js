@@ -86,6 +86,7 @@ export default class BitbucketAuthenticationPage extends React.Component {
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithBitbucket')}
           </React.Fragment>
         )}
+        t={t}
       />
     );
   }

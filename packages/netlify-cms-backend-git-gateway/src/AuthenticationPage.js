@@ -216,6 +216,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
             </LoginButton>
           </AuthForm>
         )}
+        t={t}
       />
     );
   }

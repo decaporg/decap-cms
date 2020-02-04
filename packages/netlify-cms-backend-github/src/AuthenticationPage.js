@@ -132,7 +132,7 @@ export default class GitHubAuthenticationPage extends React.Component {
   }
 
   render() {
-    const { inProgress, config } = this.props;
+    const { inProgress, config, t } = this.props;
     const { loginError, requestingFork, findingFork } = this.state;
 
     return (
@@ -143,6 +143,7 @@ export default class GitHubAuthenticationPage extends React.Component {
         logoUrl={config.logo_url}
         siteUrl={config.site_url}
         {...this.getAuthenticationPageRenderArgs()}
+        t={t}
       />
     );
   }
