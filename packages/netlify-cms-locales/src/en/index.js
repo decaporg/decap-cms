@@ -3,6 +3,9 @@ const en = {
     login: 'Login',
     loggingIn: 'Logging in...',
     loginWithNetlifyIdentity: 'Login with Netlify Identity',
+    loginWithBitbucket: 'Login with Bitbucket',
+    loginWithGitHub: 'Login with GitHub',
+    loginWithGitLab: 'Login with GitLab',
     errors: {
       email: 'Make sure to enter your email.',
       password: 'Please enter your password.',
