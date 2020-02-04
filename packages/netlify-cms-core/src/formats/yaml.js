@@ -37,6 +37,9 @@ const OutputSchema = new yaml.Schema({
 
 export default {
   fromFile(content) {
+    if (content && content.trim().endsWith('---')) {
+      content = content.trim().slice(0, -3);
+    }
     return yaml.safeLoad(content);
   },
 
