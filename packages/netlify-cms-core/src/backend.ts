@@ -3,7 +3,7 @@ import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
-import { selectMediaFilePath, selectMediaFolder } from './reducers/entries';
+import { selectMediaFilePath, selectMediaFolder, selectEntry } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
   selectEntrySlug,
@@ -751,14 +751,25 @@ export class Backend {
     return entryObj.slug;
   }
 
-  async invokePrePublishEvent(entry: EntryMap) {
+  async invokeEventWithEntry(event: string, entry: EntryMap) {
     const { login, name } = (await this.currentUser()) as User;
-    await invokeEvent({ name: 'prePublish', data: { entry, author: { login, name } } });
+    await invokeEvent({ name: event, data: { entry, author: { login, name } } });
+  }
+
+  async invokePrePublishEvent(entry: EntryMap) {
+    await this.invokeEventWithEntry('prePublish', entry);
   }
 
   async invokePostPublishEvent(entry: EntryMap) {
-    const { login, name } = (await this.currentUser()) as User;
-    await invokeEvent({ name: 'postPublish', data: { entry, author: { login, name } } });
+    await this.invokeEventWithEntry('postPublish', entry);
+  }
+
+  async invokePreUnpublishEvent(entry: EntryMap) {
+    await this.invokeEventWithEntry('preUnpublish', entry);
+  }
+
+  async invokePostUnpublishEvent(entry: EntryMap) {
+    await this.invokeEventWithEntry('postUnpublish', entry);
   }
 
   async persistMedia(config: Config, file: AssetProxy) {
@@ -778,13 +789,14 @@ export class Backend {
     return this.implementation.persistMedia(file, options);
   }
 
-  async deleteEntry(config: Config, collection: Collection, slug: string) {
+  async deleteEntry(state: State, collection: Collection, slug: string) {
     const path = selectEntryPath(collection, slug) as string;
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
     }
 
+    const config = state.config;
     const user = (await this.currentUser()) as User;
     const commitMessage = commitMessageFormatter(
       'delete',
@@ -798,7 +810,12 @@ export class Backend {
       },
       user.useOpenAuthoring,
     );
-    return this.implementation.deleteFile(path, commitMessage);
+
+    const entry = selectEntry(state.entries, collection.get('name'), slug);
+    await this.invokePreUnpublishEvent(entry);
+    const result = await this.implementation.deleteFile(path, commitMessage);
+    await this.invokePostUnpublishEvent(entry);
+    return result;
   }
 
   async deleteMedia(config: Config, path: string) {
