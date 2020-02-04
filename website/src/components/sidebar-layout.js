@@ -3,6 +3,11 @@ import { css } from '@emotion/core';
 
 import Page from './page';
 import { mq } from '../utils';
+import styled from '@emotion/styled';
+
+const Children = styled.div`
+  max-width: 80%;
+`;
 
 const SidebarLayout = ({ sidebar, children }) => (
   <Page
@@ -15,7 +20,7 @@ const SidebarLayout = ({ sidebar, children }) => (
     `}
   >
     <div>{sidebar}</div>
-    <div>{children}</div>
+    <Children>{children}</Children>
   </Page>
 );
 
