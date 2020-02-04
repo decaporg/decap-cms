@@ -1,4 +1,12 @@
 const pl = {
+  auth: {
+    login: 'Zaloguj się',
+    loggingIn: 'Logowanie...',
+    errors: {
+      email: 'Wprowadź swój adres email',
+      password: 'Wprowadź swoje hasło',
+    },
+  },
   app: {
     header: {
       content: 'Treść',
@@ -41,6 +49,10 @@ const pl = {
         range: '%{fieldLabel} musi być pomiędzy %{minValue} a %{maxValue}.',
         min: '%{fieldLabel} musi być co najmniej %{minValue}.',
         max: '%{fieldLabel} musi być %{maxValue} lub mniej.',
+        rangeCount: '%{fieldLabel} musi mieć od %{minCount} do %{maxCount} elementów',
+        rangeCountExact: '%{fieldLabel} musi mieć %{count} elementów',
+        minCount: '%{fieldLabel} musi mieć przynajmniej %{minCount} elementów',
+        maxCount: '%{fieldLabel} może mieć maksymalnie %{maxCount} elementów',
       },
     },
     editor: {
@@ -65,6 +77,7 @@ const pl = {
       publishing: 'Publikowanie...',
       publish: 'Opublikuj',
       published: 'Opublikowane',
+      duplicate: 'Zduplikuj',
       unpublish: 'Cofnij publikację',
       unpublishing: 'Cofanie publikacji...',
       publishAndCreateNew: 'Opublikuj i dodaj',
@@ -89,6 +102,20 @@ const pl = {
       deployButtonLabel: 'Zobacz na żywo',
     },
     editorWidgets: {
+      markdown: {
+        //richText: 'Edytor wizualny' - I'm not sure about that
+        markdown: 'Markdown',
+      },
+      image: {
+        choose: 'Wybierz zdjęcie',
+        chooseDifferent: 'Zmień zdjęcie',
+        remove: 'Usuń zdjęcie',
+      },
+      file: {
+        choose: 'Wybierz plik',
+        chooseDifferent: 'Wybierz inny plik',
+        remove: 'Usuń plik',
+      },
       unknownControl: {
         noControl: "Brak kontrolki dla widżetu '%{widget}'.",
       },
@@ -103,6 +130,7 @@ const pl = {
     },
     mediaLibrary: {
       onDelete: 'Czy na pewno chcesz usunąć zaznaczone multimedia?',
+      fileTooLarge: 'Plik jest za duży.\nUstawiony maksymalny rozmiar pliku: %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Ładowanie...',
