@@ -102,6 +102,20 @@ const ja = {
       deployButtonLabel: 'ライブで見る',
     },
     editorWidgets: {
+      markdown: {
+        richText: 'リッチテキスト',
+        markdown: 'マークダウン',
+      },
+      image: {
+        choose: '画像を選択',
+        chooseDifferent: '他の画像を選択',
+        remove: '画像を削除',
+      },
+      file: {
+        choose: 'ファイルを選択',
+        chooseDifferent: '他のファイルを選択',
+        remove: 'ファイルを削除',
+      },
       unknownControl: {
         noControl: "'%{widget}'はウィジェットとして利用できません。",
       },
