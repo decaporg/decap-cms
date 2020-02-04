@@ -3,6 +3,9 @@ const zh_Hant = {
     login: '登入',
     loggingIn: '正在登入...',
     loginWithNetlifyIdentity: '使用你的 Netlify 帳號來進行登入',
+    loginWithBitbucket: '使用你的 Bitbucket 帳號來進行登入',
+    loginWithGitHub: '使用你的 GitHub 帳號來進行登入',
+    loginWithGitLab: '使用你的 GitLab 帳號來進行登入',
     errors: {
       email: '請確認你已經輸入你的電子郵件。',
       password: '請輸入你的密碼。',

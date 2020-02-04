@@ -3,6 +3,9 @@ const gr = {
     login: 'Σύνδεση',
     loggingIn: 'Σύνδεση στο...',
     loginWithNetlifyIdentity: 'Σύνδεση μέσω Netlify',
+    loginWithBitbucket: 'Σύνδεση μέσω Bitbucket',
+    loginWithGitHub: 'Σύνδεση μέσω GitHub',
+    loginWithGitLab: 'Σύνδεση μέσω GitLab',
     errors: {
       email: 'Βεβαιωθείτε ότι έχετε εισαγάγει το email σας.',
       password: 'Παρακαλώ εισάγετε τον κωδικό πρόσβασής σας.',

@@ -3,6 +3,9 @@ const cs = {
     login: 'Přihlásit',
     loggingIn: 'Přihlašování...',
     loginWithNetlifyIdentity: 'Přihlásit pomocí Netlify Identity',
+    loginWithBitbucket: 'Přihlásit pomocí Bitbucket',
+    loginWithGitHub: 'Přihlásit pomocí GitHub',
+    loginWithGitLab: 'Přihlásit pomocí GitLab',
     errors: {
       email: 'Vyplňte emailovou adresu.',
       password: 'Vyplňte heslo.',

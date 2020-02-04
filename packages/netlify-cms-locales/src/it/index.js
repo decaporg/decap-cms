@@ -3,6 +3,9 @@ const it = {
     login: 'Accedi',
     loggingIn: "Effettuando l'accesso...",
     loginWithNetlifyIdentity: 'Accedi con Netlify Identity',
+    loginWithBitbucket: 'Accedi con Bitbucket',
+    loginWithGitHub: 'Accedi con GitHub',
+    loginWithGitLab: 'Accedi con GitLab',
     errors: {
       email: 'Assicurati di inserire la tua mail.',
       password: 'Inserisci la tua password.',
