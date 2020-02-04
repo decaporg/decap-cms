@@ -44,6 +44,11 @@ const en = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'optional',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} is required.',

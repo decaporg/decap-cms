@@ -33,6 +33,11 @@ const pl = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'opcjonalne',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} jest wymagane.',
