@@ -110,6 +110,7 @@ export default class RawEditor extends React.Component {
             buttons={field.get('buttons')}
             disabled
             rawMode
+            t={t}
           />
         </EditorControlBar>
         <ClassNames>

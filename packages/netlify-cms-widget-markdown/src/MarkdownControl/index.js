@@ -94,6 +94,7 @@ export default class MarkdownControl extends React.Component {
           value={value}
           field={field}
           pendingFocus={pendingFocus && this.setFocusReceived}
+          t={t}
         />
       </div>
     );
