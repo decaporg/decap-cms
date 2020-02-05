@@ -1,6 +1,15 @@
+backend:
+  name: github
+  branch: master
+  repo: owner/repo
+
 publish_mode: editorial_workflow
 media_folder: static/media
 public_folder: /media
+
+local_backend:
+  url: http://localhost:8082/api/v1
+
 collections:
   - name: posts
     label: Posts

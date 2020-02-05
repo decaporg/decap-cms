@@ -42,6 +42,18 @@ const getConfigSchema = () => ({
       },
       required: ['name'],
     },
+    local_backend: {
+      oneOf: [
+        { type: 'boolean' },
+        {
+          type: 'object',
+          properties: {
+            url: { type: 'string', examples: ['http://localhost:8081/api/v1'] },
+          },
+          required: ['url'],
+        },
+      ],
+    },
     locale: { type: 'string', examples: ['en', 'fr', 'de'] },
     site_url: { type: 'string', examples: ['https://example.com'] },
     display_url: { type: 'string', examples: ['https://example.com'] },

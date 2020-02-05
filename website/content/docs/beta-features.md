@@ -14,11 +14,18 @@ You can connect Netlify CMS to a local Git repository, instead of working with a
 
 1. Navigate to a local Git repository configured with the CMS.
 2. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
-3. Start your local development server (e.g. run `gatsby develop`).
+3. Add the `local_backend` configuration to your `config.yml`:
 
-When not using a preloaded config via `CMS.init`, the CMS will try to auto detect a running Proxy Server by sending a request to `http://localhost:8081/api/v1`.
+```yaml
+# when using the default proxy server port
+local_backend: true
 
-If you're using a custom port you can set a global window variable named `NETLIFY_CMS_PROXY_URL` to control which endpoint the CMS will try to connect to (e.g. `NETLIFY_CMS_PROXY_URL = 'http://localhost:8082/api/v1'`).
+# when using a custom proxy server port
+local_backend:
+  url: http://localhost:8082/api/v1
+```
+
+4. Start your local development server (e.g. run `gatsby develop`).
 
 **Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 

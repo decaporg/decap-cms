@@ -187,13 +187,16 @@ describe('config', () => {
 
     it('should return undefined when not on localhost', async () => {
       window.location = { hostname: 'www.netlify.com' };
+      global.fetch = jest.fn();
       await expect(detectProxyServer()).resolves.toBeUndefined();
+
+      expect(global.fetch).toHaveBeenCalledTimes(0);
     });
 
     it('should return undefined when fetch returns an error', async () => {
       window.location = { hostname: 'localhost' };
       global.fetch = jest.fn().mockRejectedValue(new Error());
-      await expect(detectProxyServer()).resolves.toBeUndefined();
+      await expect(detectProxyServer(true)).resolves.toBeUndefined();
 
       assetFetchCalled();
     });
@@ -203,30 +206,30 @@ describe('config', () => {
       global.fetch = jest
         .fn()
         .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: [] }) });
-      await expect(detectProxyServer()).resolves.toBeUndefined();
+      await expect(detectProxyServer(true)).resolves.toBeUndefined();
 
       assetFetchCalled();
     });
 
-    it('should return proxyUrl when fetch returns a invalid response', async () => {
+    it('should return proxyUrl when fetch returns a valid response', async () => {
       window.location = { hostname: 'localhost' };
       global.fetch = jest
         .fn()
         .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: 'test-repo' }) });
-      await expect(detectProxyServer()).resolves.toBe('http://localhost:8081/api/v1');
+      await expect(detectProxyServer(true)).resolves.toBe('http://localhost:8081/api/v1');
 
       assetFetchCalled();
     });
 
-    it('should use NETLIFY_CMS_PROXY_URL if defined', async () => {
+    it('should use local_backend url', async () => {
+      const url = 'http://localhost:8082/api/v1';
       window.location = { hostname: 'localhost' };
-      global.NETLIFY_CMS_PROXY_URL = 'http://localhost:8082/api/v1';
       global.fetch = jest
         .fn()
         .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: 'test-repo' }) });
-      await expect(detectProxyServer()).resolves.toBe(global.NETLIFY_CMS_PROXY_URL);
+      await expect(detectProxyServer({ url })).resolves.toBe(url);
 
-      assetFetchCalled(global.NETLIFY_CMS_PROXY_URL);
+      assetFetchCalled(url);
     });
   });
 });
