@@ -126,5 +126,31 @@ describe('config', () => {
         });
       }).toThrowError("'collections[0]' should be object");
     });
+
+    it('should throw if local_backend is not a boolean or plain object', () => {
+      expect(() => {
+        validateConfig(merge(validConfig, { local_backend: [] }));
+      }).toThrowError("'local_backend' should be boolean");
+    });
+
+    it('should throw if local_backend is a plain object but missing url property', () => {
+      expect(() => {
+        validateConfig(merge(validConfig, { local_backend: {} }));
+      }).toThrowError("'local_backend' should be object");
+    });
+
+    it('should not throw if local_backend is a boolean', () => {
+      expect(() => {
+        validateConfig(merge(validConfig, { local_backend: true }));
+      }).not.toThrowError();
+    });
+
+    it('should not throw if local_backend is a plain object with url property', () => {
+      expect(() => {
+        validateConfig(
+          merge(validConfig, { local_backend: { url: 'http://localhost:8081/api/v1' } }),
+        );
+      }).not.toThrowError();
+    });
   });
 });

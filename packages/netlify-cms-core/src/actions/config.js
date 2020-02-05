@@ -1,6 +1,6 @@
 import yaml from 'js-yaml';
 import { Map, fromJS } from 'immutable';
-import { trimStart, get } from 'lodash';
+import { trimStart, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
@@ -145,6 +145,31 @@ export function mergeConfig(config) {
   return { type: CONFIG_MERGE, payload: config };
 }
 
+export async function detectProxyServer(localBackend) {
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    let proxyUrl;
+    if (localBackend === true) {
+      proxyUrl = 'http://localhost:8081/api/v1';
+    } else if (isPlainObject(localBackend)) {
+      proxyUrl = localBackend.url;
+    }
+    try {
+      console.log(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
+      const { repo } = await fetch(`${proxyUrl}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'info' }),
+      }).then(res => res.json());
+      if (typeof repo === 'string') {
+        console.log(`Detected Netlify CMS Proxy Server at '${proxyUrl}' with repo: '${repo}'`);
+        return proxyUrl;
+      }
+    } catch {
+      console.log(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
+    }
+  }
+}
+
 export function loadConfig() {
   if (window.CMS_CONFIG) {
     return configDidLoad(fromJS(window.CMS_CONFIG));
@@ -155,16 +180,28 @@ export function loadConfig() {
     try {
       const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
+      const isPreloaded = preloadedConfig && preloadedConfig.size > 1;
       const loadedConfig =
         preloadedConfig && preloadedConfig.get('load_config_file') === false
           ? {}
-          : await getConfig(configUrl, preloadedConfig && preloadedConfig.size > 1);
+          : await getConfig(configUrl, isPreloaded);
 
       /**
        * Merge any existing configuration so the result can be validated.
        */
-      const mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig);
+      let mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig);
+
       validateConfig(mergedConfig.toJS());
+
+      // detect running Netlify CMS proxy
+      if (mergedConfig.has('local_backend')) {
+        const proxyUrl = await detectProxyServer(mergedConfig.toJS().local_backend);
+        if (proxyUrl) {
+          mergedConfig = mergePreloadedConfig(mergedConfig, {
+            backend: { name: 'proxy', proxy_url: proxyUrl },
+          });
+        }
+      }
 
       const config = applyDefaults(mergedConfig);
 

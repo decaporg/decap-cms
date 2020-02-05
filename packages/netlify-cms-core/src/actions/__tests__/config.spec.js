@@ -1,5 +1,7 @@
 import { fromJS } from 'immutable';
-import { applyDefaults } from '../config';
+import { applyDefaults, detectProxyServer } from '../config';
+
+jest.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('config', () => {
   describe('applyDefaults', () => {
@@ -166,6 +168,68 @@ describe('config', () => {
           );
         });
       });
+    });
+  });
+
+  describe('detectProxyServer', () => {
+    const assetFetchCalled = (url = 'http://localhost:8081/api/v1') => {
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledWith(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'info' }),
+      });
+    };
+
+    beforeEach(() => {
+      delete window.location;
+    });
+
+    it('should return undefined when not on localhost', async () => {
+      window.location = { hostname: 'www.netlify.com' };
+      global.fetch = jest.fn();
+      await expect(detectProxyServer()).resolves.toBeUndefined();
+
+      expect(global.fetch).toHaveBeenCalledTimes(0);
+    });
+
+    it('should return undefined when fetch returns an error', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn().mockRejectedValue(new Error());
+      await expect(detectProxyServer(true)).resolves.toBeUndefined();
+
+      assetFetchCalled();
+    });
+
+    it('should return undefined when fetch returns an invalid response', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: [] }) });
+      await expect(detectProxyServer(true)).resolves.toBeUndefined();
+
+      assetFetchCalled();
+    });
+
+    it('should return proxyUrl when fetch returns a valid response', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: 'test-repo' }) });
+      await expect(detectProxyServer(true)).resolves.toBe('http://localhost:8081/api/v1');
+
+      assetFetchCalled();
+    });
+
+    it('should use local_backend url', async () => {
+      const url = 'http://localhost:8082/api/v1';
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: 'test-repo' }) });
+      await expect(detectProxyServer({ url })).resolves.toBe(url);
+
+      assetFetchCalled(url);
     });
   });
 });
