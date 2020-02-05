@@ -1,4 +1,18 @@
 const nl = {
+  auth: {
+    login: 'Inloggen',
+    loggingIn: 'Inloggen...',
+    loginWithNetlifyIdentity: 'Inloggen met Netlify Identity',
+    loginWithBitbucket: 'Inloggen met Bitbucket',
+    loginWithGitHub: 'Inloggen met GitHub',
+    loginWithGitLab: 'Inloggen met GitLab',
+    errors: {
+      email: 'Voer uw email in.',
+      password: 'Voer uw wachtwoord in.',
+      identitySettings:
+        'Netlify Identity instellingen niet gevonden. Wanneer u git-gateway als backend gebruikt moet u de Identity service en Git Gateway activeren in uw Netlify instellingen.',
+    },
+  },
   app: {
     header: {
       content: 'Inhoud',
@@ -39,8 +53,12 @@ const nl = {
         regexPattern: '%{fieldLabel} komt niet overeen met het patroon: %{pattern}.',
         processing: '%{fieldLabel} wordt verwerkt.',
         range: '%{fieldLabel} moet tussen %{minValue} en %{maxValue} liggen.',
-        min: '%{fieldLabel} moet tenminste %{minValue} zijn.',
-        max: '%{fieldLabel} moet hoogstens %{maxValue} zijn.',
+        min: '%{fieldLabel} moet tenminste %{minValue} bevatten.',
+        max: '%{fieldLabel} moet hoogstens %{maxValue} bevatten.',
+        rangeCount: '%{fieldLabel} moet tussen %{minCount} en %{maxCount} item(s) bevatten.',
+        rangeCountExact: '%{fieldLabel} moet exact %{count} item(s) bevatten.',
+        minCount: '%{fieldLabel} moet tenminste %{minCount} item(s) bevatten.',
+        maxCount: '%{fieldLabel} moet hoogstens %{maxCount} item(s) bevatten.',
       },
     },
     editor: {
@@ -65,6 +83,9 @@ const nl = {
       publishing: 'Publiceren...',
       publish: 'Publiceer',
       published: 'Gepubliceerd',
+      unpublished: 'Publicatie ongedaan maken',
+      duplicate: 'Dupliceren',
+      unpublishing: 'Publicatie ongedaan maken...',
       publishAndCreateNew: 'Publiceer en maak nieuw item aan',
       deleteUnpublishedChanges: 'Verwijder niet-gepubliceerde wijzigingen',
       deleteUnpublishedEntry: 'Niet-gepubliceerd item verwijderen',
@@ -86,7 +107,22 @@ const nl = {
       deployPreviewButtonLabel: 'Bekijk voorvertoning',
       deployButtonLabel: 'Bekijk Live',
     },
+
     editorWidgets: {
+      markdown: {
+        richText: 'Rijke tekst',
+        markdown: 'Markdown',
+      },
+      image: {
+        choose: 'Kies een afbeelding',
+        chooseDifferent: 'Kies een andere afbeelding',
+        remove: 'Verwijder afbeelding',
+      },
+      file: {
+        choose: 'Kies een bestand',
+        chooseDifferent: 'Kies een ander bestand',
+        remove: 'Verwijder bestand',
+      },
       unknownControl: {
         noControl: "Geen control voor widget '%{widget}'.",
       },
@@ -101,6 +137,8 @@ const nl = {
     },
     mediaLibrary: {
       onDelete: 'Weet u zeker dat u de geselecteerde media wilt verwijderen?',
+      fileTooLarge:
+        'Het bestand is te groot.\n De instellingen staan geen bestanden toe groter dan %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Laden...',
