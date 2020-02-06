@@ -134,7 +134,8 @@ export const selectMediaLibraryConfigs = (collection: Collection) => {
       ?.toArray()
       .map(f => f.get('fields').toArray()) as EntryField[][];
 
-    return getFieldsMediaLibraryConfigs(fields.flat());
+    const flattened = [] as EntryField[];
+    return getFieldsMediaLibraryConfigs(flattened.concat(...fields));
   }
 
   return [];
