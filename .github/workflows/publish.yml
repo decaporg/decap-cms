@@ -1,0 +1,41 @@
+name: Netlify CMS Publish
+
+on:
+  repository_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: update yarn to latest version
+        run: |
+          sudo apt update && sudo apt install yarn
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Publish Netlify CMS
+        uses: erezrokah/2fa-with-slack-action@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          SLACK_TOKEN: ${{secrets.SLACK_TOKEN}}
+          CONVERSATION_ID: ${{secrets.CONVERSATION_ID}}
+          PUBLISH_COMMAND: "yarn\npublish:dry-run"
+          CODE_PATTERN: 'Enter OTP'
