@@ -38,11 +38,11 @@ exports.handler = async function(event) {
 
     const params = new URLSearchParams(event.body);
     const command = params.get('command');
-    const userName = params.get('user_name');
+    const userId = params.get('user_id');
 
     const allowedUsers = (process.env.ALLOWED_USERS || '').split(',');
-    if (!allowedUsers.includes(userName)) {
-      throw new Error(`User ${userName} is not allowed to run command`);
+    if (!allowedUsers.includes(userId)) {
+      throw new Error(`User '${params.get('user_name')}' is not allowed to run command`);
     }
 
     const expectedCommand = process.env.PUBLISH_COMMAND;
