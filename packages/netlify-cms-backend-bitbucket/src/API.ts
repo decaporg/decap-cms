@@ -458,7 +458,7 @@ export default class API {
 
     return parse(rawDiff).map(d => ({
       newPath: d.newPath.replace(/b\//, ''),
-      binary: d.binary,
+      binary: d.binary || /.svg$/.test(d.newPath),
       newFile: d.status == 'added',
     }));
   }

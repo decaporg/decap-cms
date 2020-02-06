@@ -546,7 +546,10 @@ export default class API {
       },
     });
 
-    return result.diffs;
+    return result.diffs.map(d => ({
+      ...d,
+      binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
+    }));
   }
 
   async retrieveMetadata(contentKey: string) {
@@ -554,7 +557,7 @@ export default class API {
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
-    const { old_path: path, new_file: newFile } = diff.find(d => !d.diff.startsWith('Binary'));
+    const { old_path: path, new_file: newFile } = diff.find(d => !d.binary);
     const mediaFiles = await Promise.all(
       diff
         .filter(d => d.old_path !== path)
