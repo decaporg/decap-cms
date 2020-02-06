@@ -10,14 +10,23 @@ const StyledImage = styled(({ value: src }) => <img src={src || ''} role="presen
   height: auto;
 `;
 
-const StyledImageAsset = ({ getAsset, value }) => {
-  return <Asset path={value} getAsset={getAsset} component={StyledImage} />;
+const StyledImageAsset = ({ getAsset, value, field }) => {
+  return (
+    <Asset
+      folder={field.getIn(['media_library', 'config', 'media_folder'])}
+      path={value}
+      getAsset={getAsset}
+      component={StyledImage}
+    />
+  );
 };
 
 const ImagePreviewContent = props => {
-  const { value, getAsset } = props;
+  const { value, getAsset, field } = props;
   if (Array.isArray(value) || List.isList(value)) {
-    return value.map(val => <StyledImageAsset key={val} value={val} getAsset={getAsset} />);
+    return value.map(val => (
+      <StyledImageAsset key={val} value={val} getAsset={getAsset} field={field} />
+    ));
   }
   return <StyledImageAsset {...props} />;
 };

@@ -19,7 +19,7 @@ interface MediaLibrary {
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
   const lib = (getMediaLibrary(name) as unknown) as MediaLibrary;
-  const handleInsert = (url: string) => store.dispatch(insertMedia(url));
+  const handleInsert = (url: string) => store.dispatch(insertMedia(url, undefined));
   const instance = await lib.init({ options, handleInsert });
   store.dispatch(createMediaLibrary(instance));
 });

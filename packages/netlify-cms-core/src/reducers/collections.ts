@@ -106,6 +106,40 @@ const selectors = {
   },
 };
 
+const getFieldsMediaLibraryConfigs = (fields: EntryField[]) => {
+  const mediaLibs = fields.filter(f => f.has('media_library')).map(f => f.get('media_library'));
+  let configs = mediaLibs.filter(m => m?.has('config')).map(m => m?.get('config'));
+
+  fields.forEach(f => {
+    if (f.has('fields')) {
+      const fields = f.get('fields')?.toArray() as EntryField[];
+      configs = [...configs, ...getFieldsMediaLibraryConfigs(fields)];
+    }
+    if (f.has('field')) {
+      const field = f.get('field') as EntryField;
+      configs = [...configs, ...getFieldsMediaLibraryConfigs([field])];
+    }
+  });
+
+  return configs;
+};
+
+export const selectMediaLibraryConfigs = (collection: Collection) => {
+  if (collection.has('folder')) {
+    const fields = collection.get('fields').toArray();
+    return getFieldsMediaLibraryConfigs(fields);
+  } else if (collection.has('files')) {
+    const fields = collection
+      .get('files')
+      ?.toArray()
+      .map(f => f.get('fields').toArray()) as EntryField[][];
+
+    return getFieldsMediaLibraryConfigs(fields.flat());
+  }
+
+  return [];
+};
+
 export const selectFields = (collection: Collection, slug: string) =>
   selectors[collection.get('type')].fields(collection, slug);
 export const selectFolderEntryExtension = (collection: Collection) =>

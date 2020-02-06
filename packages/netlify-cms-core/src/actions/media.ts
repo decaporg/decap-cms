@@ -2,6 +2,7 @@ import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { Collection, State, EntryMap } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { fromJS } from 'immutable';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
 import { selectMediaFilePath } from '../reducers/entries';
 import { selectMediaFileByPath } from '../reducers/mediaLibrary';
@@ -27,14 +28,22 @@ interface GetAssetArgs {
   collection: Collection;
   entry: EntryMap;
   path: string;
+  folder?: string;
 }
 
-export function getAsset({ collection, entry, path }: GetAssetArgs) {
+export function getAsset({ collection, entry, path, folder }: GetAssetArgs) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (!path) return createAssetProxy({ path: '', file: new File([], 'empty') });
 
     const state = getState();
-    const resolvedPath = selectMediaFilePath(state.config, collection, entry, path);
+    const resolvedPath = selectMediaFilePath(
+      state.config,
+      collection,
+      entry,
+      path,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      fromJS(folder ? { media_folder: folder } : {}),
+    );
 
     let asset = state.medias.get(resolvedPath);
     if (asset) {

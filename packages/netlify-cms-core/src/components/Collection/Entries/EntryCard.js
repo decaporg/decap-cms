@@ -83,14 +83,15 @@ const CardImage = styled.div`
   height: 150px;
 `;
 
-const CardImageAsset = ({ getAsset, image }) => {
-  return <Asset path={image} getAsset={getAsset} component={CardImage} />;
+const CardImageAsset = ({ getAsset, image, folder }) => {
+  return <Asset folder={folder} path={image} getAsset={getAsset} component={CardImage} />;
 };
 
 const EntryCard = ({
   path,
   summary,
   image,
+  imageFolder,
   collectionLabel,
   viewStyle = VIEW_STYLE_LIST,
   boundGetAsset,
@@ -114,7 +115,9 @@ const EntryCard = ({
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>{summary}</CardHeading>
           </CardBody>
-          {image ? <CardImageAsset getAsset={boundGetAsset} image={image} /> : null}
+          {image ? (
+            <CardImageAsset getAsset={boundGetAsset} image={image} folder={imageFolder} />
+          ) : null}
         </GridCardLink>
       </GridCard>
     );
@@ -140,12 +143,16 @@ const mapStateToProps = (state, ownProps) => {
     summary,
     path: `/collections/${collection.get('name')}/entries/${entry.get('slug')}`,
     image,
+    imageFolder: collection
+      .get('fields')
+      ?.find(f => f.get('name') === inferedFields.imageField && f.get('widget') === 'image')
+      ?.getIn(['media_library', 'config', 'media_folder']),
   };
 };
 
 const mapDispatchToProps = {
-  boundGetAsset: (collection, entry) => (dispatch, getState) => path => {
-    return getAsset({ collection, entry, path })(dispatch, getState);
+  boundGetAsset: (collection, entry) => (dispatch, getState) => (path, folder) => {
+    return getAsset({ collection, entry, path, folder })(dispatch, getState);
   },
 };
 

@@ -74,16 +74,22 @@ describe('entries', () => {
   describe('selectMediaFolder', () => {
     it("should return global media folder when collection doesn't specify media_folder", () => {
       expect(
-        selectMediaFolder(Map({ media_folder: 'static/media' }), Map({ name: 'posts' })),
+        selectMediaFolder(
+          Map({ media_folder: 'static/media' }),
+          Map({ name: 'posts' }),
+          undefined,
+          Map(),
+        ),
       ).toEqual('static/media');
     });
 
-    it('should return draft media folder when collection specifies media_folder and entry path is null', () => {
+    it('should return draft media folder when collection specifies media_folder and entry is undefined', () => {
       expect(
         selectMediaFolder(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
-          null,
+          undefined,
+          Map(),
         ),
       ).toEqual('posts/DRAFT_MEDIA_FILES');
     });
@@ -94,6 +100,7 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           Map({ path: 'posts/title/index.md' }),
+          Map(),
         ),
       ).toEqual('posts/title');
     });
@@ -104,11 +111,12 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '../' }),
           Map({ path: 'posts/title/index.md' }),
+          Map(),
         ),
       ).toEqual('posts/');
     });
 
-    it('should return collection absolute media folder as is', () => {
+    it('should return collection absolute media folder without leading slash', () => {
       expect(
         selectMediaFolder(
           Map({ media_folder: '/static/Images' }),
@@ -118,8 +126,9 @@ describe('entries', () => {
             media_folder: '/static/images/docs/getting-started',
           }),
           Map({ path: 'src/docs/getting-started/with-github.md' }),
+          Map(),
         ),
-      ).toEqual('/static/images/docs/getting-started');
+      ).toEqual('static/images/docs/getting-started');
     });
 
     it('should compile relative media folder template', () => {
@@ -145,6 +154,7 @@ describe('entries', () => {
           fromJS({ media_folder: 'static/media', slug: slugConfig }),
           collection,
           entry,
+          Map(),
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
@@ -172,8 +182,9 @@ describe('entries', () => {
           fromJS({ media_folder: '/static/images', slug: slugConfig }),
           collection,
           entry,
+          Map(),
         ),
-      ).toEqual('/static/images/docs/extending');
+      ).toEqual('static/images/docs/extending');
     });
   });
 
@@ -189,8 +200,9 @@ describe('entries', () => {
         selectMediaFilePath(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts' }),
-          null,
+          undefined,
           'image.png',
+          Map(),
         ),
       ).toBe('static/media/image.png');
     });
@@ -200,8 +212,9 @@ describe('entries', () => {
         selectMediaFilePath(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
-          null,
+          undefined,
           'image.png',
+          Map(),
         ),
       ).toBe('posts/DRAFT_MEDIA_FILES/image.png');
     });
@@ -213,6 +226,7 @@ describe('entries', () => {
           Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
           Map({ path: 'posts/title/index.md' }),
           'image.png',
+          Map(),
         ),
       ).toBe('static/media/image.png');
     });
@@ -227,7 +241,13 @@ describe('entries', () => {
 
     it('should resolve path from public folder for collection with no media folder', () => {
       expect(
-        selectMediaFilePublicPath(Map({ public_folder: '/media' }), null, '/media/image.png'),
+        selectMediaFilePublicPath(
+          Map({ public_folder: '/media' }),
+          null,
+          '/media/image.png',
+          undefined,
+          Map(),
+        ),
       ).toBe('/media/image.png');
     });
 
@@ -237,6 +257,8 @@ describe('entries', () => {
           Map({ public_folder: '/media' }),
           Map({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
+          undefined,
+          Map(),
         ),
       ).toBe('image.png');
     });
@@ -247,6 +269,8 @@ describe('entries', () => {
           Map({ public_folder: '/media' }),
           Map({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
+          undefined,
+          Map(),
         ),
       ).toBe('../../static/media/image.png');
     });
@@ -275,6 +299,7 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
+          Map(),
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });

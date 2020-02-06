@@ -173,7 +173,7 @@ class MediaLibrary extends React.Component {
         }),
       );
     } else {
-      await persistMedia(file, { privateUpload });
+      await persistMedia(file, { privateUpload, config });
 
       this.setState({ selectedFile: this.props.files[0] });
 
@@ -190,8 +190,8 @@ class MediaLibrary extends React.Component {
   handleInsert = () => {
     const { selectedFile } = this.state;
     const { path } = selectedFile;
-    const { insertMedia } = this.props;
-    insertMedia(path);
+    const { insertMedia, config } = this.props;
+    insertMedia(path, config);
     this.handleClose();
   };
 

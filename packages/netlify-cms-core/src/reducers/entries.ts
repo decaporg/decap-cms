@@ -24,9 +24,11 @@ import {
   EntriesRequestPayload,
   EntryDraft,
   EntryMap,
+  MediaLibraryConfig,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
+import { trimStart } from 'lodash';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -142,24 +144,28 @@ export const selectMediaFolder = (
   config: Config,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
+  fieldConfig: MediaLibraryConfig | undefined,
 ) => {
   let mediaFolder = config.get('media_folder');
 
-  if (collection && collection.has('media_folder')) {
+  if (collection && (collection.has('media_folder') || fieldConfig?.has('media_folder'))) {
     const entryPath = entryMap?.get('path');
     if (entryPath) {
       const entryDir = dirname(entryPath);
+      const toFormat =
+        (fieldConfig?.get('media_folder') as string) || (collection.get('media_folder') as string);
+
       const folder = folderFormatter(
-        collection.get('media_folder') as string,
+        toFormat,
         entryMap as EntryMap,
         collection,
         mediaFolder,
         'media_folder',
         config.get('slug'),
       );
-      // return absolute paths as is
+      // return absolute paths as is without the leading '/'
       if (folder.startsWith('/')) {
-        return folder;
+        return trimStart(folder, '/');
       }
       mediaFolder = join(entryDir, folder as string);
     } else {
@@ -175,12 +181,13 @@ export const selectMediaFilePath = (
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   mediaPath: string,
+  fieldConfig: MediaLibraryConfig | undefined,
 ) => {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
 
-  const mediaFolder = selectMediaFolder(config, collection, entryMap);
+  const mediaFolder = selectMediaFolder(config, collection, entryMap, fieldConfig);
 
   return join(mediaFolder, basename(mediaPath));
 };
@@ -190,6 +197,7 @@ export const selectMediaFilePublicPath = (
   collection: Collection | null,
   mediaPath: string,
   entryMap: EntryMap | undefined,
+  fieldConfig: MediaLibraryConfig | undefined,
 ) => {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
@@ -197,9 +205,12 @@ export const selectMediaFilePublicPath = (
 
   let publicFolder = config.get('public_folder');
 
-  if (collection && collection.has('public_folder')) {
+  if (collection && (collection.has('public_folder') || fieldConfig?.has('public_folder'))) {
+    const toFormat =
+      (fieldConfig?.get('public_folder') as string) || (collection.get('public_folder') as string);
+
     publicFolder = folderFormatter(
-      collection.get('public_folder') as string,
+      toFormat,
       entryMap,
       collection,
       publicFolder,

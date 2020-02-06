@@ -14,7 +14,13 @@ import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
-import { State, MediaFile, DisplayURLState, MediaLibraryInstance } from '../types/redux';
+import {
+  State,
+  MediaFile,
+  DisplayURLState,
+  MediaLibraryInstance,
+  MediaLibraryConfig,
+} from '../types/redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { waitUntilWithTimeout } from './waitUntil';
@@ -101,7 +107,10 @@ export function closeMediaLibrary() {
   };
 }
 
-export function insertMedia(mediaPath: string | string[]) {
+export function insertMedia(
+  mediaPath: string | string[],
+  fieldConfig: MediaLibraryConfig | undefined,
+) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const config = state.config;
@@ -109,9 +118,17 @@ export function insertMedia(mediaPath: string | string[]) {
     const collectionName = state.entryDraft.getIn(['entry', 'collection']);
     const collection = state.collections.get(collectionName);
     if (Array.isArray(mediaPath)) {
-      mediaPath = mediaPath.map(path => selectMediaFilePublicPath(config, collection, path, entry));
+      mediaPath = mediaPath.map(path =>
+        selectMediaFilePublicPath(config, collection, path, entry, fieldConfig),
+      );
     } else {
-      mediaPath = selectMediaFilePublicPath(config, collection, mediaPath as string, entry);
+      mediaPath = selectMediaFilePublicPath(
+        config,
+        collection,
+        mediaPath as string,
+        entry,
+        fieldConfig,
+      );
     }
     dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
   };
@@ -191,12 +208,13 @@ function createMediaFileFromAsset({
     size: file.size,
     url: assetProxy.url,
     path: assetProxy.path,
+    folder: assetProxy.folder,
   };
   return mediaFile;
 }
 
 export function persistMedia(file: File, opts: MediaOptions = {}) {
-  const { privateUpload } = opts;
+  const { privateUpload, config } = opts;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -250,10 +268,11 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else {
         const entry = state.entryDraft.get('entry');
         const collection = state.collections.get(entry?.get('collection'));
-        const path = selectMediaFilePath(state.config, collection, entry, file.name);
+        const path = selectMediaFilePath(state.config, collection, entry, file.name, config);
         assetProxy = createAssetProxy({
           file,
           path,
+          folder: config?.get('media_folder'),
         });
       }
 
@@ -397,6 +416,8 @@ export function mediaLoading(page: number) {
 
 interface MediaOptions {
   privateUpload?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config?: MediaLibraryConfig;
 }
 
 export function mediaLoaded(files: ImplementationMediaFile[], opts: MediaOptions = {}) {

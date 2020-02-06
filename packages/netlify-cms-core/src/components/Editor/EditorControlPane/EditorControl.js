@@ -288,8 +288,8 @@ const mapDispatchToProps = {
   },
   clearSearch,
   clearFieldErrors,
-  boundGetAsset: (collection, entry) => (dispatch, getState) => path => {
-    return getAsset({ collection, entry, path })(dispatch, getState);
+  boundGetAsset: (collection, entry) => (dispatch, getState) => (path, folder) => {
+    return getAsset({ collection, entry, path, folder })(dispatch, getState);
   },
 };
 

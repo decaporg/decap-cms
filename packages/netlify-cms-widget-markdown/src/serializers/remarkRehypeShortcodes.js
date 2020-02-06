@@ -53,9 +53,9 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
    * Retrieve the shortcode preview component.
    */
   async function getPreview(plugin, shortcodeData) {
-    const { toPreview, widget } = plugin;
+    const { toPreview, widget, fields } = plugin;
     if (toPreview) {
-      return toPreview(shortcodeData, getAsset);
+      return toPreview(shortcodeData, getAsset, fields);
     }
     const preview = resolveWidget(widget);
     return React.createElement(preview.preview, {

@@ -60,6 +60,7 @@ describe('media', () => {
           payload.collection,
           payload.entry,
           path,
+          Map(),
         );
       });
     });

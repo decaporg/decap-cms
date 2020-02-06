@@ -59,6 +59,23 @@ export default class Editor extends React.Component {
       this.codeBlockComponent || editorComponents.has('code-block')
         ? editorComponents
         : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
+
+    // merge editor media library config to image components
+    if (this.editorComponents.has('image') && this.props.field.has('media_library')) {
+      const imageComponent = this.editorComponents.get('image');
+      const fields = imageComponent?.fields;
+
+      if (fields) {
+        imageComponent.fields = fields.update(
+          fields.findIndex(f => f.get('widget') === 'image'),
+          f =>
+            f.set(
+              'media_library',
+              this.props.field.get('media_library').mergeDeep(f.get('media_library')),
+            ),
+        );
+      }
+    }
     this.renderBlock = renderBlock({
       classNameWrapper: props.className,
       resolveWidget: props.resolveWidget,

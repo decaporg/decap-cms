@@ -13,6 +13,7 @@ import {
   selectAllowDeletion,
   selectFolderEntryExtension,
   selectInferedField,
+  selectMediaLibraryConfigs,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -43,6 +44,8 @@ import {
   EntryDraft,
   CollectionFile,
   State,
+  EntryField,
+  MediaLibraryConfig,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
@@ -88,6 +91,19 @@ const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
   if (a.score > b.score) return -1;
   if (a.score < b.score) return 1;
   return 0;
+};
+
+export const getFieldsNames = (fields: EntryField[], prefix = '') => {
+  let names = fields.map(f => `${prefix}${f.get('name')}`);
+
+  fields.forEach((f, index) => {
+    if (f.has('fields')) {
+      const fields = f.get('fields')?.toArray() as EntryField[];
+      names = [...names, ...getFieldsNames(fields, `${names[index]}.`)];
+    }
+  });
+
+  return names;
 };
 
 interface AuthStore {
@@ -492,10 +508,26 @@ export class Backend {
     });
 
     const entryWithFormat = this.entryWithFormat(collection)(entry);
-    if (collection.has('media_folder') && !integration) {
-      entry.mediaFiles = await this.implementation.getMedia(
-        selectMediaFolder(state.config, collection, fromJS(entryWithFormat)),
-      );
+    const mediaLibraryConfigs = selectMediaLibraryConfigs(collection).filter(c =>
+      c?.has('media_folder'),
+    );
+    if ((collection.has('media_folder') || mediaLibraryConfigs.length > 0) && !integration) {
+      const folders =
+        mediaLibraryConfigs.length > 0
+          ? mediaLibraryConfigs.map(config =>
+              selectMediaFolder(
+                state.config,
+                collection,
+                fromJS(entryWithFormat),
+                config as MediaLibraryConfig,
+              ),
+            )
+          : [selectMediaFolder(state.config, collection, fromJS(entryWithFormat), fromJS({}))];
+
+      entry.mediaFiles = [];
+      for (const folder of folders) {
+        entry.mediaFiles = [...entry.mediaFiles, ...(await this.implementation.getMedia(folder))];
+      }
     } else {
       entry.mediaFiles = state.mediaLibrary.get('files') || [];
     }
@@ -697,6 +729,8 @@ export class Backend {
           collection,
           entryDraft.get('entry').set('path', path),
           oldPath,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          fromJS(asset.folder ? { media_folder: asset.folder } : {}),
         );
         asset.path = newPath;
       });
