@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.5...netlify-cms-backend-github@2.6.6) (2020-02-06)
+
+
+### Bug Fixes
+
+* **locale:** remove hard coded strings ([#3193](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3193)) ([fc91bf8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/fc91bf8781e65ce1dc946363dbb10419a145c66b))
+
+
+
+
+
 ## [2.6.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.4...netlify-cms-backend-github@2.6.5) (2020-01-24)
 
 

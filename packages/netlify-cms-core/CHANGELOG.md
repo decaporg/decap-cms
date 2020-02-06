@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.17.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.16.0...netlify-cms-core@2.17.0) (2020-02-06)
+
+
+### Bug Fixes
+
+* **core:** strip closing separators in yaml files ([#3198](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3198)) ([60ecc72](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/60ecc72dfab660eea795fb1307df8596d65cd78b))
+* **locale:** remove hard coded strings ([#3193](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3193)) ([fc91bf8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/fc91bf8781e65ce1dc946363dbb10419a145c66b))
+* load missing assets when retrieving backup ([#3192](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3192)) ([7d792f3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/7d792f3005b1092c393c39ced90e2408fb43236b))
+* media library on reload ([#3174](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3174)) ([4f55442](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/4f5544287fbd13be03794ec15bcfe992588290ed))
+
+
+### Features
+
+* **core:** auto detect proxy server on load ([#3195](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3195)) ([614f1ae](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/614f1aea63de672a89dc55d485ad0302bc1f1bf2))
+* add preUnpublish, postUnpublish events ([#3196](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3196)) ([18e284e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/18e284ece83fb6ae07a953dbdefe347bc48d4acc))
+
+
+
+
+
 # [2.16.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.15.5...netlify-cms-core@2.16.0) (2020-02-01)
 
 

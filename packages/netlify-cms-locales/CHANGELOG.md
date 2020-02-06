@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.8.0...netlify-cms-locales@1.9.0) (2020-02-06)
+
+
+### Bug Fixes
+
+* **locale:** add missing german translations ([#3179](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3179)) ([e6deab0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/e6deab03b9e255d968b4a5e40956712e96eb336e))
+* **locale:** remove hard coded strings ([#3193](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3193)) ([fc91bf8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/fc91bf8781e65ce1dc946363dbb10419a145c66b))
+
+
+### Features
+
+* **dutch:** add missing dutch translations ([#3200](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3200)) ([2043c0b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/2043c0b7829dff018fa8835bead55b4b78f0f6d6))
+* **polish:** add missing polish translations ([#3197](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3197)) ([4525936](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/4525936136dd0d9d9c9f3ea3e338dfbd0775348f))
+
+
+
+
+
 # [1.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.7.0...netlify-cms-locales@1.8.0) (2020-02-01)
 
 

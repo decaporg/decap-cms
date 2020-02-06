@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.7.1...netlify-cms-backend-test@2.7.2) (2020-02-06)
+
+
+### Bug Fixes
+
+* **locale:** remove hard coded strings ([#3193](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/issues/3193)) ([fc91bf8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/commit/fc91bf8781e65ce1dc946363dbb10419a145c66b))
+
+
+
+
+
 ## [2.7.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.7.0...netlify-cms-backend-test@2.7.1) (2020-01-14)
 
 **Note:** Version bump only for package netlify-cms-backend-test

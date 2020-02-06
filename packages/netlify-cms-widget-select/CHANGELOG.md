@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.5.0...netlify-cms-widget-select@2.5.1) (2020-02-06)
+
+
+### Bug Fixes
+
+* **widget-select:** fix exactCount error message ([#3177](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/3177)) ([46f7763](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/46f7763ccd1445b758006770252cc911b12de15d))
+
+
+
+
+
 # [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.4.3...netlify-cms-widget-select@2.5.0) (2020-02-01)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.2...netlify-cms-widget-file@2.5.3) (2020-02-06)
+
+
+### Bug Fixes
+
+* **locale:** remove hard coded strings ([#3193](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/3193)) ([fc91bf8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/fc91bf8781e65ce1dc946363dbb10419a145c66b))
+
+
+
+
+
 ## [2.5.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.1...netlify-cms-widget-file@2.5.2) (2020-01-26)
 
 
