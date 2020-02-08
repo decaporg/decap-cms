@@ -14,7 +14,7 @@ import {
   lengths,
   shadows,
   buttons,
-} from 'netlify-cms-ui-default';
+} from 'netlify-cms-ui-legacy';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
 const styles = {

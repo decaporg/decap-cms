@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import Waypoint from 'react-waypoint';
 import MediaLibraryCard from './MediaLibraryCard';
 import { Map } from 'immutable';
-import { colors } from 'netlify-cms-ui-default';
+import { colors } from 'netlify-cms-ui-legacy';
 
 const CardGridContainer = styled.div`
   overflow-y: auto;

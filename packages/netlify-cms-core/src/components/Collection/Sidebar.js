@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
+import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-legacy';
 import { searchCollections } from 'Actions/collections';
 
 const styles = {

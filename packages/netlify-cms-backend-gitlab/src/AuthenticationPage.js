@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { NetlifyAuthenticator, ImplicitAuthenticator } from 'netlify-cms-lib-auth';
-import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
+import { AuthenticationPage, Icon } from 'netlify-cms-ui-legacy';
 
 const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;

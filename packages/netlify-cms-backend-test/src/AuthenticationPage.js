@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
-// import { Button } from 'netlify-identity-widget';
 
 // Set one variable for all sizing aka the magicNumber, for more info contact @danoszz
 

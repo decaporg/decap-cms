@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
 import SplitPane from 'react-split-pane';
-import { colors, colorsRaw, components, transitions, IconButton } from 'netlify-cms-ui-default';
+import { colors, colorsRaw, components, transitions, IconButton } from 'netlify-cms-ui-legacy';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';

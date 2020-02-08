@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
+import { WidgetPreviewContainer } from 'netlify-cms-ui-legacy';
 
 const ListPreview = ({ values }) => (
   <ul>

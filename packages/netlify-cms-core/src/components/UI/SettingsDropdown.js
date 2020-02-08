@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
+import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-legacy';
 import { stripProtocol } from 'Lib/urlHelper';
 
 const styles = {
