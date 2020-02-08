@@ -14,7 +14,7 @@ import {
   resolveFieldKeyType,
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
-import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
+import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-legacy';
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';

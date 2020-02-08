@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
+import { WidgetPreviewContainer } from 'netlify-cms-ui-legacy';
 import { markdownToHtml } from './serializers';
 
 class MarkdownPreview extends React.Component {

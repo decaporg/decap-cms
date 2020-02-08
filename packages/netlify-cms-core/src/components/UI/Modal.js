@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { css, Global, ClassNames } from '@emotion/core';
 import ReactModal from 'react-modal';
-import { transitions, shadows, lengths } from 'netlify-cms-ui-default';
+import { transitions, shadows, lengths } from 'netlify-cms-ui-legacy';
 
 const ReactModalGlobalStyles = () => (
   <Global

@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { getAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths, Asset } from 'netlify-cms-ui-default';
+import { colors, colorsRaw, components, lengths, Asset } from 'netlify-cms-ui-legacy';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { summaryFormatter } from 'Lib/formatters';
 

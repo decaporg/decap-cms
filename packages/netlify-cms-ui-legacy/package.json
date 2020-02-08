@@ -1,0 +1,31 @@
+{
+  "name": "netlify-cms-ui-legacy",
+  "description": "Legacy UI components for Netlify CMS.",
+  "version": "2.8.0",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-legacy",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "license": "MIT",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-ui-legacy.js",
+  "keywords": [
+    "netlify-cms"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "dependencies": {
+    "react-aria-menubutton": "^6.0.0",
+    "react-toggled": "^1.1.2",
+    "react-transition-group": "^2.6.0"
+  },
+  "peerDependencies": {
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
+}

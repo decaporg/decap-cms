@@ -11,7 +11,7 @@ jest.mock('lodash/debounce', () => {
   };
 });
 jest.mock('../EditorInterface', () => props => <mock-editor-interface {...props} />);
-jest.mock('netlify-cms-ui-default', () => {
+jest.mock('netlify-cms-ui-legacy', () => {
   return {
     // eslint-disable-next-line react/display-name
     Loader: props => <mock-loader {...props} />,

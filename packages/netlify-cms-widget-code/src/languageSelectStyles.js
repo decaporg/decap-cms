@@ -1,4 +1,4 @@
-import { reactSelectStyles, borders } from 'netlify-cms-ui-default';
+import { reactSelectStyles, borders } from 'netlify-cms-ui-legacy';
 
 const languageSelectStyles = {
   ...reactSelectStyles,

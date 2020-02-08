@@ -12,7 +12,7 @@ import {
   colors,
   transitions,
   lengths,
-} from 'netlify-cms-ui-default';
+} from 'netlify-cms-ui-legacy';
 import ToolbarButton from './ToolbarButton';
 
 const ToolbarContainer = styled.div`
