@@ -44,7 +44,6 @@ import {
   EntryDraft,
   CollectionFile,
   State,
-  EntryField,
   MediaLibraryConfig,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
