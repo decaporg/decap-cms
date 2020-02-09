@@ -36,6 +36,7 @@ import {
   runWithLock,
   Config as C,
   UnpublishedEntryMediaFile as UEMF,
+  blobToFileObj,
 } from './implementation';
 import {
   readFile,
@@ -136,6 +137,7 @@ export const NetlifyCmsLibUtil = {
   getPointerFileForMediaFileObj,
   branchFromContentKey,
   contentKeyFromBranch,
+  blobToFileObj,
 };
 export {
   APIError,
@@ -186,4 +188,5 @@ export {
   getPointerFileForMediaFileObj,
   branchFromContentKey,
   contentKeyFromBranch,
+  blobToFileObj,
 };

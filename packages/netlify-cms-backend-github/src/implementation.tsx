@@ -24,6 +24,7 @@ import {
   getPreviewStatus,
   UnpublishedEntryMediaFile,
   runWithLock,
+  blobToFileObj,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { UsersGetAuthenticatedResponse as GitHubUser } from '@octokit/rest';
@@ -388,7 +389,7 @@ export default class GitHub implements Implementation {
 
     return getMediaAsBlob(file.path, file.id, readFile).then(blob => {
       const name = basename(file.path);
-      const fileObj = new File([blob], name);
+      const fileObj = blobToFileObj(name, blob);
       return {
         id: file.id,
         displayURL: URL.createObjectURL(fileObj),

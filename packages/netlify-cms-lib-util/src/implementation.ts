@@ -265,6 +265,11 @@ export const unpublishedEntries = async (
   }
 };
 
+export const blobToFileObj = (name: string, blob: Blob) => {
+  const options = name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
+  return new File([blob], name, options);
+};
+
 export const getMediaAsBlob = async (path: string, id: string | null, readFile: ReadFile) => {
   let blob: Blob;
   if (path.match(/.svg$/)) {
