@@ -7,7 +7,7 @@ import { css as coreCss, ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce } from 'lodash';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
-import { lengths, fonts } from 'netlify-cms-ui-default';
+import { lengths, fonts } from 'netlify-cms-ui-legacy';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import { slateToMarkdown, markdownToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';

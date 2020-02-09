@@ -15,7 +15,7 @@ import {
   colors,
   components,
   buttons,
-} from 'netlify-cms-ui-default';
+} from 'netlify-cms-ui-legacy';
 import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
 

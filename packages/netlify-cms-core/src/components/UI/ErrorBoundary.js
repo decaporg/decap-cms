@@ -4,7 +4,7 @@ import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'netlify-cms-lib-util';
-import { buttons, colors } from 'netlify-cms-ui-default';
+import { buttons, colors } from 'netlify-cms-ui-legacy';
 
 const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?template=bug_report.md';
 

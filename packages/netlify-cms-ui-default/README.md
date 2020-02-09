@@ -1,11 +1,8 @@
-# Docs coming soon!
+# Netlify CMS UI Default
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+This package contains the default UI elements that are used in Netlify CMS.
 
-In the meantime, you can:
+*This specific package contains breaking changes from Netlify 2.x.*
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-ui-default/README.md)!
+Part of the 3.0 update is a UI overhaul. This means that the `netlify-cms-ui-legacy` package contains the 2.0 styling.
+This `netlify-cms-ui-default` package is entirely new, and contains the styles, and components for the new UI.

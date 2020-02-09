@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
-import { WidgetPreviewContainer, Asset } from 'netlify-cms-ui-default';
+import { WidgetPreviewContainer, Asset } from 'netlify-cms-ui-legacy';
 
 const StyledImage = styled(({ value: src }) => <img src={src || ''} role="presentation" />)`
   display: block;

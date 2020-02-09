@@ -2,7 +2,7 @@
 import React from 'react';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
-import { colors, lengths } from 'netlify-cms-ui-default';
+import { colors, lengths } from 'netlify-cms-ui-legacy';
 import VoidBlock from './components/VoidBlock';
 import Shortcode from './components/Shortcode';
 
