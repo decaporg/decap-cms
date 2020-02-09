@@ -25,10 +25,11 @@ import {
   asyncLock,
   AsyncLock,
   runWithLock,
+  getBlobSHA,
+  blobToFileObj,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
-import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -266,7 +267,7 @@ export default class GitLab implements Implementation {
 
     return getMediaAsBlob(file.path, null, readFile).then(blob => {
       const name = basename(file.path);
-      const fileObj = new File([blob], name);
+      const fileObj = blobToFileObj(name, blob);
       return {
         id: file.path,
         displayURL: URL.createObjectURL(fileObj),
