@@ -163,9 +163,10 @@ export const selectMediaFolder = (
       );
       // return absolute paths as is without the leading '/'
       if (folder.startsWith('/')) {
-        return trimStart(folder, '/');
+        mediaFolder = join(trimStart(folder, '/'));
+      } else {
+        mediaFolder = join(entryDir, folder as string);
       }
-      mediaFolder = join(entryDir, folder as string);
     } else {
       mediaFolder = join(collection.get('folder') as string, DRAFT_MEDIA_FILES);
     }

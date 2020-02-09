@@ -213,6 +213,44 @@ describe('entries', () => {
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
+
+    it('should handle double slashes', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        media_folder: '{{media_folder}}/blog',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: '/static/img/', slug: slugConfig }),
+          collection,
+          entry,
+          undefined,
+        ),
+      ).toEqual('static/img/blog');
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: 'static/img/', slug: slugConfig }),
+          collection,
+          entry,
+          undefined,
+        ),
+      ).toEqual('content/en/hosting-and-deployment/static/img/blog');
+    });
   });
 
   describe('selectMediaFilePath', () => {
@@ -363,6 +401,34 @@ describe('entries', () => {
       expect(
         selectMediaFilePublicPath(
           fromJS({ public_folder: 'static/media', slug: slugConfig }),
+          collection,
+          'image.png',
+          entry,
+          '/{{public_folder}}/{{category}}/{{slug}}',
+        ),
+      ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
+    });
+
+    it('should handle double slashes', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFilePublicPath(
+          fromJS({ public_folder: 'static/media/', slug: slugConfig }),
           collection,
           'image.png',
           entry,
