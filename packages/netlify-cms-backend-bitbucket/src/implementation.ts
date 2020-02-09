@@ -419,7 +419,7 @@ export default class BitbucketBackend implements Implementation {
 
     return getMediaAsBlob(file.path, null, readFile).then(blob => {
       const name = basename(file.path);
-      const fileObj = new File([blob], name);
+      const fileObj = blobToFileObj(name, blob);
       return {
         id: file.path,
         displayURL: URL.createObjectURL(fileObj),

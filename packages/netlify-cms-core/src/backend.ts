@@ -710,8 +710,7 @@ export class Backend {
           collection,
           entryDraft.get('entry').set('path', path),
           oldPath,
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          fromJS(asset.folder ? { media_folder: asset.folder } : {}),
+          asset.folder,
         );
         asset.path = newPath;
       });

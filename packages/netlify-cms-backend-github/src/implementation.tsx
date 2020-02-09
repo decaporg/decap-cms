@@ -325,7 +325,7 @@ export default class GitHub implements Implementation {
     const blob = await getMediaAsBlob(path, null, this.api!.readFile.bind(this.api!));
 
     const name = basename(path);
-    const fileObj = new File([blob], name);
+    const fileObj = blobToFileObj(name, blob);
     const url = URL.createObjectURL(fileObj);
     const id = await getBlobSHA(blob);
 

@@ -332,6 +332,8 @@ const mapStateToProps = state => {
     page: mediaLibrary.get('page'),
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
+    mediaFolder: mediaLibrary.get('mediaFolder'),
+    publicFolder: mediaLibrary.get('publicFolder'),
   };
   return { ...mediaLibraryProps };
 };

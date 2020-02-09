@@ -307,6 +307,8 @@ export interface MediaLibraryAction extends Action<string> {
     forImage: boolean;
     privateUpload: boolean;
     config: Map<string, string>;
+    mediaFolder?: string;
+    publicFolder?: string;
   } & { mediaPath: string | string[] } & { page: number } & {
     files: MediaFile[];
     page: number;

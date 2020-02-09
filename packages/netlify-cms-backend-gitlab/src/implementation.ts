@@ -195,7 +195,7 @@ export default class GitLab implements Implementation {
   async getMediaFile(path: string) {
     const name = basename(path);
     const blob = await getMediaAsBlob(path, null, this.api!.readFile.bind(this.api!));
-    const fileObj = new File([blob], name);
+    const fileObj = blobToFileObj(name, blob);
     const url = URL.createObjectURL(fileObj);
     const id = await getBlobSHA(blob);
 

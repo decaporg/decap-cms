@@ -146,7 +146,7 @@ const mapStateToProps = (state, ownProps) => {
     imageFolder: collection
       .get('fields')
       ?.find(f => f.get('name') === inferedFields.imageField && f.get('widget') === 'image')
-      ?.getIn(['media_library', 'config', 'media_folder']),
+      ?.get('media_folder'),
   };
 };
 

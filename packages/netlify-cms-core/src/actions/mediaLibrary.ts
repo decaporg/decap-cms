@@ -77,6 +77,8 @@ export function openMediaLibrary(
     config?: Map<string, unknown>;
     allowMultiple?: boolean;
     forImage?: boolean;
+    mediaFolder?: string;
+    publicFolder?: string;
   } = {},
 ) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
