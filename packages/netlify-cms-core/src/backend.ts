@@ -498,17 +498,20 @@ export class Backend {
       c?.has('media_folder'),
     );
     if ((collection.has('media_folder') || mediaLibraryConfigs.length > 0) && !integration) {
-      const folders =
-        mediaLibraryConfigs.length > 0
-          ? mediaLibraryConfigs.map(config =>
-              selectMediaFolder(
-                state.config,
-                collection,
-                fromJS(entryWithFormat),
-                config as MediaLibraryConfig,
-              ),
-            )
-          : [selectMediaFolder(state.config, collection, fromJS(entryWithFormat), fromJS({}))];
+      const folders = mediaLibraryConfigs.map(config =>
+        selectMediaFolder(
+          state.config,
+          collection,
+          fromJS(entryWithFormat),
+          config as MediaLibraryConfig,
+        ),
+      );
+
+      if (collection.has('media_folder')) {
+        folders.unshift(
+          selectMediaFolder(state.config, collection, fromJS(entryWithFormat), fromJS({})),
+        );
+      }
 
       entry.mediaFiles = [];
       for (const folder of folders) {
