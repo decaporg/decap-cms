@@ -126,21 +126,6 @@ type BitBucketPullRequestStatues = {
   values: BitBucketPullRequestStatus[];
 };
 
-type BitBucketDiffStat = {
-  pagelen: number;
-  page: number;
-  size: number;
-  values: {
-    status: string;
-    lines_removed: number;
-    lines_added: number;
-    new: {
-      path: string;
-      type: 'commit_file';
-    };
-  }[];
-};
-
 type DeleteEntry = {
   path: string;
   delete: true;
@@ -459,7 +444,7 @@ export default class API {
     return parse(rawDiff).map(d => ({
       newPath: d.newPath.replace(/b\//, ''),
       binary: d.binary || /.svg$/.test(d.newPath),
-      newFile: d.status == 'added',
+      newFile: d.status === 'added',
     }));
   }
 
@@ -577,7 +562,10 @@ export default class API {
     const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const diff = await this.getDifferences(branch);
-    const { newPath: path, newFile } = diff.find(d => !d.binary);
+    const { newPath: path, newFile } = diff.find(d => !d.binary) as {
+      newPath: string;
+      newFile: boolean;
+    };
     // TODO: get real file id
     const mediaFiles = await Promise.all(
       diff.filter(d => d.newPath !== path).map(d => ({ path: d.newPath, id: null })),
@@ -598,7 +586,7 @@ export default class API {
       mediaFiles,
     } = await this.retrieveMetadata(contentKey);
 
-    const fileData = (await this.readFile(path, null, { branch })) as Promise<string>;
+    const fileData = (await this.readFile(path, null, { branch })) as string;
 
     return {
       slug,

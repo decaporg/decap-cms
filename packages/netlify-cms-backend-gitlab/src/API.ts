@@ -73,6 +73,7 @@ type GitLabCommitDiff = {
   diff: string;
   new_path: string;
   old_path: string;
+  new_file: boolean;
 };
 
 enum GitLabCommitStatuses {
@@ -557,7 +558,10 @@ export default class API {
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
-    const { old_path: path, new_file: newFile } = diff.find(d => !d.binary);
+    const { old_path: path, new_file: newFile } = diff.find(d => !d.binary) as {
+      old_path: string;
+      new_file: boolean;
+    };
     const mediaFiles = await Promise.all(
       diff
         .filter(d => d.old_path !== path)
@@ -583,7 +587,7 @@ export default class API {
       mediaFiles,
     } = await this.retrieveMetadata(contentKey);
 
-    const fileData = (await this.readFile(path, null, { branch })) as Promise<string>;
+    const fileData = (await this.readFile(path, null, { branch })) as string;
 
     return {
       slug,
