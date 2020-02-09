@@ -5,6 +5,7 @@ import collections, {
   selectEntryPath,
   selectEntrySlug,
   selectFieldsMediaFolders,
+  selectMediaFolders,
 } from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
@@ -96,19 +97,16 @@ describe('collections', () => {
               {
                 name: 'image',
                 media_folder: 'image_media_folder',
-                public_folder: 'image_public_folder',
               },
               {
                 name: 'body',
                 media_folder: 'body_media_folder',
-                public_folder: 'body_public_folder',
               },
               {
                 name: 'list_1',
                 field: {
                   name: 'list_1_item',
                   media_folder: 'list_1_item_media_folder',
-                  public_folder: 'list_1_item_public_folder',
                 },
               },
               {
@@ -117,7 +115,6 @@ describe('collections', () => {
                   {
                     name: 'list_2_item',
                     media_folder: 'list_2_item_media_folder',
-                    public_folder: 'list_2_item_public_folder',
                   },
                 ],
               },
@@ -142,7 +139,6 @@ describe('collections', () => {
                   {
                     name: 'image',
                     media_folder: 'image_media_folder',
-                    public_folder: 'image_public_folder',
                   },
                 ],
               },
@@ -151,7 +147,6 @@ describe('collections', () => {
                   {
                     name: 'body',
                     media_folder: 'body_media_folder',
-                    public_folder: 'body_public_folder',
                   },
                 ],
               },
@@ -162,7 +157,6 @@ describe('collections', () => {
                     field: {
                       name: 'list_1_item',
                       media_folder: 'list_1_item_media_folder',
-                      public_folder: 'list_1_item_public_folder',
                     },
                   },
                 ],
@@ -175,7 +169,6 @@ describe('collections', () => {
                       {
                         name: 'list_2_item',
                         media_folder: 'list_2_item_media_folder',
-                        public_folder: 'list_2_item_public_folder',
                       },
                     ],
                   },
@@ -190,6 +183,58 @@ describe('collections', () => {
         'list_1_item_media_folder',
         'list_2_item_media_folder',
       ]);
+    });
+  });
+
+  describe('selectMediaFolders', () => {
+    const slug = {
+      encoding: 'unicode',
+      clean_accents: false,
+      sanitize_replacement: '-',
+    };
+
+    const config = fromJS({ slug });
+    it('should return fields and collection folder', () => {
+      expect(
+        selectMediaFolders(
+          { config },
+          fromJS({
+            folder: 'posts',
+            media_folder: '/collection_media_folder',
+            fields: [
+              {
+                name: 'image',
+                media_folder: '/image_media_folder',
+              },
+            ],
+          }),
+          fromJS({ slug: 'name', path: 'src/post/post1.md' }),
+        ),
+      ).toEqual(['collection_media_folder', 'image_media_folder']);
+    });
+
+    it('should return fields and collection folder', () => {
+      expect(
+        selectMediaFolders(
+          { config },
+          fromJS({
+            files: [
+              {
+                name: 'name',
+                file: 'src/post/post1.md',
+                media_folder: '/file_media_folder',
+                fields: [
+                  {
+                    name: 'image',
+                    media_folder: '/image_media_folder',
+                  },
+                ],
+              },
+            ],
+          }),
+          fromJS({ slug: 'name', path: 'src/post/post1.md' }),
+        ),
+      ).toEqual(['file_media_folder', 'image_media_folder']);
     });
   });
 });

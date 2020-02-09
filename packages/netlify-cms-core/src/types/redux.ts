@@ -110,6 +110,8 @@ export type CollectionFile = StaticallyTypedRecord<{
   name: string;
   fields: EntryFields;
   label: string;
+  media_folder?: string;
+  public_folder?: string;
 }>;
 
 export type CollectionFiles = List<CollectionFile>;

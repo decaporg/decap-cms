@@ -5,7 +5,15 @@ import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
-import { CollectionsAction, Collection, CollectionFiles, EntryField } from '../types/redux';
+import {
+  CollectionsAction,
+  Collection,
+  CollectionFiles,
+  EntryField,
+  State,
+  EntryMap,
+} from '../types/redux';
+import { selectMediaFolder } from './entries';
 
 const collections = (state = null, action: CollectionsAction) => {
   switch (action.type) {
@@ -142,6 +150,24 @@ export const selectFieldsMediaFolders = (collection: Collection) => {
   }
 
   return [];
+};
+
+export const selectMediaFolders = (state: State, collection: Collection, entry: EntryMap) => {
+  const fieldsFolders = selectFieldsMediaFolders(collection);
+  const folders = fieldsFolders.map(folder =>
+    selectMediaFolder(state.config, collection, entry, folder),
+  );
+
+  if (
+    collection.has('media_folder') ||
+    collection
+      .get('files')
+      ?.find(file => file?.get('name') === entry?.get('slug') && file?.has('media_folder'))
+  ) {
+    folders.unshift(selectMediaFolder(state.config, collection, entry, undefined));
+  }
+
+  return folders;
 };
 
 export const selectFields = (collection: Collection, slug: string) =>

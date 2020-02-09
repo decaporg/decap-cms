@@ -3,7 +3,7 @@ import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
-import { selectMediaFilePath, selectMediaFolder, selectEntry } from './reducers/entries';
+import { selectMediaFilePath, selectEntry } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
   selectEntrySlug,
@@ -13,7 +13,7 @@ import {
   selectAllowDeletion,
   selectFolderEntryExtension,
   selectInferedField,
-  selectFieldsMediaFolders,
+  selectMediaFolders,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -493,20 +493,10 @@ export class Backend {
     });
 
     const entryWithFormat = this.entryWithFormat(collection)(entry);
-    const mediaLibraryFolders = selectFieldsMediaFolders(collection);
-    if ((collection.has('media_folder') || mediaLibraryFolders.length > 0) && !integration) {
-      const folders = mediaLibraryFolders.map(folder =>
-        selectMediaFolder(state.config, collection, fromJS(entryWithFormat), folder),
-      );
-
-      if (collection.has('media_folder')) {
-        folders.unshift(
-          selectMediaFolder(state.config, collection, fromJS(entryWithFormat), undefined),
-        );
-      }
-
+    const mediaFolders = selectMediaFolders(state, collection, fromJS(entryWithFormat));
+    if (mediaFolders.length > 0 && !integration) {
       entry.mediaFiles = [];
-      for (const folder of folders) {
+      for (const folder of mediaFolders) {
         entry.mediaFiles = [...entry.mediaFiles, ...(await this.implementation.getMedia(folder))];
       }
     } else {

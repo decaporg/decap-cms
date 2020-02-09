@@ -139,6 +139,32 @@ export const selectEntries = (state: Entries, collection: string) => {
 
 const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 
+const getCustomFolder = (
+  name: 'media_folder' | 'public_folder',
+  collection: Collection | null,
+  slug: string | undefined,
+  fieldFolder: string | undefined,
+) => {
+  if (!collection) {
+    return undefined;
+  }
+  if (fieldFolder !== undefined) {
+    return fieldFolder;
+  }
+  if (collection.has('files') && slug) {
+    const file = collection.get('files')?.find(f => f?.get('name') === slug);
+    if (file && file.has(name)) {
+      return file.get(name);
+    }
+  }
+
+  if (collection.has(name)) {
+    return collection.get(name);
+  }
+
+  return undefined;
+};
+
 export const selectMediaFolder = (
   config: Config,
   collection: Collection | null,
@@ -147,16 +173,21 @@ export const selectMediaFolder = (
 ) => {
   let mediaFolder = config.get('media_folder');
 
-  if (collection && (collection.has('media_folder') || fieldMediaFolder !== undefined)) {
+  const customFolder = getCustomFolder(
+    'media_folder',
+    collection,
+    entryMap?.get('slug'),
+    fieldMediaFolder,
+  );
+
+  if (customFolder !== undefined) {
     const entryPath = entryMap?.get('path');
     if (entryPath) {
       const entryDir = dirname(entryPath);
-      const toFormat = fieldMediaFolder || (collection.get('media_folder') as string);
-
       const folder = folderFormatter(
-        toFormat,
+        customFolder,
         entryMap as EntryMap,
-        collection,
+        collection!,
         mediaFolder,
         'media_folder',
         config.get('slug'),
@@ -168,7 +199,7 @@ export const selectMediaFolder = (
         mediaFolder = join(entryDir, folder as string);
       }
     } else {
-      mediaFolder = join(collection.get('folder') as string, DRAFT_MEDIA_FILES);
+      mediaFolder = join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
     }
   }
 
@@ -204,13 +235,18 @@ export const selectMediaFilePublicPath = (
 
   let publicFolder = config.get('public_folder');
 
-  if (collection && (collection.has('public_folder') || fieldPublicFolder !== undefined)) {
-    const toFormat = fieldPublicFolder || (collection.get('public_folder') as string);
+  const customFolder = getCustomFolder(
+    'public_folder',
+    collection,
+    entryMap?.get('slug'),
+    fieldPublicFolder,
+  );
 
+  if (customFolder !== undefined) {
     publicFolder = folderFormatter(
-      toFormat,
+      customFolder,
       entryMap,
-      collection,
+      collection!,
       publicFolder,
       'public_folder',
       config.get('slug'),
