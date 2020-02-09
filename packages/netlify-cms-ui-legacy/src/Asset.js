@@ -6,6 +6,7 @@ class Asset extends React.Component {
     path: PropTypes.string.isRequired,
     getAsset: PropTypes.func.isRequired,
     component: PropTypes.elementType.isRequired,
+    folder: PropTypes.string,
   };
 
   subscribed = true;
@@ -14,13 +15,12 @@ class Asset extends React.Component {
     value: null,
   };
 
-  _fetchAsset() {
-    const { getAsset, path } = this.props;
-    getAsset(path).then(value => {
-      if (this.subscribed) {
-        this.setState({ value });
-      }
-    });
+  async _fetchAsset() {
+    const { getAsset, path, folder } = this.props;
+    const value = await getAsset(path, folder);
+    if (this.subscribed) {
+      this.setState({ value });
+    }
   }
 
   componentDidMount() {
@@ -32,7 +32,11 @@ class Asset extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.path !== this.props.path || prevProps.getAsset !== this.props.getAsset) {
+    if (
+      prevProps.path !== this.props.path ||
+      prevProps.getAsset !== this.props.getAsset ||
+      prevProps.folder !== this.props.folder
+    ) {
       this._fetchAsset();
     }
   }

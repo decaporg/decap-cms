@@ -16,28 +16,12 @@ import images from './images/_index';
  */
 
 /**
- * Configuration for individual icons.
- */
-const config = {
-  arrow: {
-    direction: 'left',
-  },
-  chevron: {
-    direction: 'down',
-  },
-  'chevron-double': {
-    direction: 'down',
-  },
-};
-
-/**
  * Map icon definition objects - imported object of images simply maps the icon
  * name to the raw svg, so we move that to the `image` property of the
  * definition object and set any additional configured properties for each icon.
  */
-const icons = mapValues(images, (image, name) => {
-  const props = config[name] || {};
-  return { image, ...props };
+const icons = mapValues(images, (image) => {
+  return { image };
 });
 
 export default icons;
