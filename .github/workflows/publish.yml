@@ -10,7 +10,7 @@ jobs:
       SENDER: ${{ github.event.sender.login }}
       ALLOWED_LOGINS_TO_PUBLISH: ${{ secrets.ALLOWED_LOGINS_TO_PUBLISH }}
     steps:
-      - name: "Check Permission To Publish"
+      - name: 'Check Permission To Publish'
         run: |
           if [[ "$SENDER" =~ ^$ALLOWED_LOGINS_TO_PUBLISH$ ]]; then
               echo "$SENDER is allowed to publish"
