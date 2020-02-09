@@ -186,6 +186,33 @@ describe('entries', () => {
         ),
       ).toEqual('static/images/docs/extending');
     });
+
+    it('should compile field media folder template', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: 'static/media', slug: slugConfig }),
+          collection,
+          entry,
+          '../../../{{media_folder}}/{{category}}/{{slug}}',
+        ),
+      ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
+    });
   });
 
   describe('selectMediaFilePath', () => {
@@ -227,6 +254,18 @@ describe('entries', () => {
           Map({ path: 'posts/title/index.md' }),
           'image.png',
           undefined,
+        ),
+      ).toBe('static/media/image.png');
+    });
+
+    it('should handle field media_folder', () => {
+      expect(
+        selectMediaFilePath(
+          Map({ media_folder: 'static/media' }),
+          Map({ name: 'posts', folder: 'posts' }),
+          Map({ path: 'posts/title/index.md' }),
+          'image.png',
+          '../../static/media/',
         ),
       ).toBe('static/media/image.png');
     });
@@ -275,7 +314,7 @@ describe('entries', () => {
       ).toBe('../../static/media/image.png');
     });
 
-    it('should compile public folder template', () => {
+    it('should compile collection public folder template', () => {
       const slugConfig = {
         encoding: 'unicode',
         clean_accents: false,
@@ -300,6 +339,34 @@ describe('entries', () => {
           'image.png',
           entry,
           undefined,
+        ),
+      ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
+    });
+
+    it('should compile field public folder template', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFilePublicPath(
+          fromJS({ public_folder: 'static/media', slug: slugConfig }),
+          collection,
+          'image.png',
+          entry,
+          '/{{public_folder}}/{{category}}/{{slug}}',
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
