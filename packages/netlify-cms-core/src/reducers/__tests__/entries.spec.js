@@ -78,7 +78,7 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts' }),
           undefined,
-          Map(),
+          undefined,
         ),
       ).toEqual('static/media');
     });
@@ -89,7 +89,7 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           undefined,
-          Map(),
+          undefined,
         ),
       ).toEqual('posts/DRAFT_MEDIA_FILES');
     });
@@ -100,7 +100,7 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           Map({ path: 'posts/title/index.md' }),
-          Map(),
+          undefined,
         ),
       ).toEqual('posts/title');
     });
@@ -111,7 +111,7 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '../' }),
           Map({ path: 'posts/title/index.md' }),
-          Map(),
+          undefined,
         ),
       ).toEqual('posts/');
     });
@@ -126,7 +126,7 @@ describe('entries', () => {
             media_folder: '/static/images/docs/getting-started',
           }),
           Map({ path: 'src/docs/getting-started/with-github.md' }),
-          Map(),
+          undefined,
         ),
       ).toEqual('static/images/docs/getting-started');
     });
@@ -154,7 +154,7 @@ describe('entries', () => {
           fromJS({ media_folder: 'static/media', slug: slugConfig }),
           collection,
           entry,
-          Map(),
+          undefined,
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
@@ -182,7 +182,7 @@ describe('entries', () => {
           fromJS({ media_folder: '/static/images', slug: slugConfig }),
           collection,
           entry,
-          Map(),
+          undefined,
         ),
       ).toEqual('static/images/docs/extending');
     });
@@ -202,7 +202,7 @@ describe('entries', () => {
           Map({ name: 'posts', folder: 'posts' }),
           undefined,
           'image.png',
-          Map(),
+          undefined,
         ),
       ).toBe('static/media/image.png');
     });
@@ -214,7 +214,7 @@ describe('entries', () => {
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           undefined,
           'image.png',
-          Map(),
+          undefined,
         ),
       ).toBe('posts/DRAFT_MEDIA_FILES/image.png');
     });
@@ -226,7 +226,7 @@ describe('entries', () => {
           Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
           Map({ path: 'posts/title/index.md' }),
           'image.png',
-          Map(),
+          undefined,
         ),
       ).toBe('static/media/image.png');
     });
@@ -246,7 +246,7 @@ describe('entries', () => {
           null,
           '/media/image.png',
           undefined,
-          Map(),
+          undefined,
         ),
       ).toBe('/media/image.png');
     });
@@ -258,7 +258,7 @@ describe('entries', () => {
           Map({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
           undefined,
-          Map(),
+          undefined,
         ),
       ).toBe('image.png');
     });
@@ -270,7 +270,7 @@ describe('entries', () => {
           Map({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
           undefined,
-          Map(),
+          undefined,
         ),
       ).toBe('../../static/media/image.png');
     });
@@ -299,7 +299,7 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
-          Map(),
+          undefined,
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });

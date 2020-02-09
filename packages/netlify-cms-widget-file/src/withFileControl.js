@@ -175,6 +175,8 @@ export default function withFileControl({ forImage } = {}) {
         value,
         allowMultiple: !!mediaLibraryFieldOptions.get('allow_multiple', true),
         config: mediaLibraryFieldOptions.get('config'),
+        mediaFolder: field.get('media_folder'),
+        publicFolder: field.get('public_folder'),
       });
     };
 
@@ -219,7 +221,7 @@ export default function withFileControl({ forImage } = {}) {
 
     renderImages = () => {
       const { getAsset, value, field } = this.props;
-      const folder = field.getIn(['media_library', 'config', 'media_folder']);
+      const folder = field.get('media_folder');
 
       if (isMultiple(value)) {
         return (

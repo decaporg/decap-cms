@@ -1,10 +1,10 @@
-import { OrderedMap, fromJS, Map } from 'immutable';
+import { OrderedMap, fromJS } from 'immutable';
 import { configLoaded } from 'Actions/config';
 import collections, {
   selectAllowDeletion,
   selectEntryPath,
   selectEntrySlug,
-  selectMediaLibraryConfigs,
+  selectFieldsMediaFolders,
 } from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
@@ -82,45 +82,33 @@ describe('collections', () => {
     });
   });
 
-  describe('selectMediaLibraryConfigs', () => {
+  describe('selectFieldsMediaFolders', () => {
     it('should return empty array for invalid collection', () => {
-      expect(selectMediaLibraryConfigs(fromJS({}))).toEqual([]);
+      expect(selectFieldsMediaFolders(fromJS({}))).toEqual([]);
     });
 
     it('should return configs for folder collection', () => {
       expect(
-        selectMediaLibraryConfigs(
+        selectFieldsMediaFolders(
           fromJS({
             folder: 'posts',
             fields: [
               {
                 name: 'image',
-                media_library: {
-                  config: {
-                    media_folder: 'image_media_folder',
-                    public_folder: 'image_public_folder',
-                  },
-                },
+                media_folder: 'image_media_folder',
+                public_folder: 'image_public_folder',
               },
               {
                 name: 'body',
-                media_library: {
-                  config: {
-                    media_folder: 'body_media_folder',
-                    public_folder: 'body_public_folder',
-                  },
-                },
+                media_folder: 'body_media_folder',
+                public_folder: 'body_public_folder',
               },
               {
                 name: 'list_1',
                 field: {
                   name: 'list_1_item',
-                  media_library: {
-                    config: {
-                      media_folder: 'list_1_item_media_folder',
-                      public_folder: 'list_1_item_public_folder',
-                    },
-                  },
+                  media_folder: 'list_1_item_media_folder',
+                  public_folder: 'list_1_item_public_folder',
                 },
               },
               {
@@ -128,12 +116,8 @@ describe('collections', () => {
                 fields: [
                   {
                     name: 'list_2_item',
-                    media_library: {
-                      config: {
-                        media_folder: 'list_2_item_media_folder',
-                        public_folder: 'list_2_item_public_folder',
-                      },
-                    },
+                    media_folder: 'list_2_item_media_folder',
+                    public_folder: 'list_2_item_public_folder',
                   },
                 ],
               },
@@ -141,40 +125,24 @@ describe('collections', () => {
           }),
         ),
       ).toEqual([
-        Map({
-          media_folder: 'image_media_folder',
-          public_folder: 'image_public_folder',
-        }),
-        Map({
-          media_folder: 'body_media_folder',
-          public_folder: 'body_public_folder',
-        }),
-        Map({
-          media_folder: 'list_1_item_media_folder',
-          public_folder: 'list_1_item_public_folder',
-        }),
-        Map({
-          media_folder: 'list_2_item_media_folder',
-          public_folder: 'list_2_item_public_folder',
-        }),
+        'image_media_folder',
+        'body_media_folder',
+        'list_1_item_media_folder',
+        'list_2_item_media_folder',
       ]);
     });
 
     it('should return configs for files collection', () => {
       expect(
-        selectMediaLibraryConfigs(
+        selectFieldsMediaFolders(
           fromJS({
             files: [
               {
                 fields: [
                   {
                     name: 'image',
-                    media_library: {
-                      config: {
-                        media_folder: 'image_media_folder',
-                        public_folder: 'image_public_folder',
-                      },
-                    },
+                    media_folder: 'image_media_folder',
+                    public_folder: 'image_public_folder',
                   },
                 ],
               },
@@ -182,12 +150,8 @@ describe('collections', () => {
                 fields: [
                   {
                     name: 'body',
-                    media_library: {
-                      config: {
-                        media_folder: 'body_media_folder',
-                        public_folder: 'body_public_folder',
-                      },
-                    },
+                    media_folder: 'body_media_folder',
+                    public_folder: 'body_public_folder',
                   },
                 ],
               },
@@ -197,12 +161,8 @@ describe('collections', () => {
                     name: 'list_1',
                     field: {
                       name: 'list_1_item',
-                      media_library: {
-                        config: {
-                          media_folder: 'list_1_item_media_folder',
-                          public_folder: 'list_1_item_public_folder',
-                        },
-                      },
+                      media_folder: 'list_1_item_media_folder',
+                      public_folder: 'list_1_item_public_folder',
                     },
                   },
                 ],
@@ -214,12 +174,8 @@ describe('collections', () => {
                     fields: [
                       {
                         name: 'list_2_item',
-                        media_library: {
-                          config: {
-                            media_folder: 'list_2_item_media_folder',
-                            public_folder: 'list_2_item_public_folder',
-                          },
-                        },
+                        media_folder: 'list_2_item_media_folder',
+                        public_folder: 'list_2_item_public_folder',
                       },
                     ],
                   },
@@ -229,22 +185,10 @@ describe('collections', () => {
           }),
         ),
       ).toEqual([
-        Map({
-          media_folder: 'image_media_folder',
-          public_folder: 'image_public_folder',
-        }),
-        Map({
-          media_folder: 'body_media_folder',
-          public_folder: 'body_public_folder',
-        }),
-        Map({
-          media_folder: 'list_1_item_media_folder',
-          public_folder: 'list_1_item_public_folder',
-        }),
-        Map({
-          media_folder: 'list_2_item_media_folder',
-          public_folder: 'list_2_item_public_folder',
-        }),
+        'image_media_folder',
+        'body_media_folder',
+        'list_1_item_media_folder',
+        'list_2_item_media_folder',
       ]);
     });
   });

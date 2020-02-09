@@ -13,7 +13,7 @@ const StyledImage = styled(({ value: src }) => <img src={src || ''} role="presen
 const StyledImageAsset = ({ getAsset, value, field }) => {
   return (
     <Asset
-      folder={field.getIn(['media_library', 'config', 'media_folder'])}
+      folder={field.get('media_folder')}
       path={value}
       getAsset={getAsset}
       component={StyledImage}

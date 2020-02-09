@@ -13,7 +13,7 @@ import {
   selectAllowDeletion,
   selectFolderEntryExtension,
   selectInferedField,
-  selectMediaLibraryConfigs,
+  selectFieldsMediaFolders,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -45,7 +45,6 @@ import {
   EntryDraft,
   CollectionFile,
   State,
-  MediaLibraryConfig,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
@@ -494,22 +493,15 @@ export class Backend {
     });
 
     const entryWithFormat = this.entryWithFormat(collection)(entry);
-    const mediaLibraryConfigs = selectMediaLibraryConfigs(collection).filter(c =>
-      c?.has('media_folder'),
-    );
-    if ((collection.has('media_folder') || mediaLibraryConfigs.length > 0) && !integration) {
-      const folders = mediaLibraryConfigs.map(config =>
-        selectMediaFolder(
-          state.config,
-          collection,
-          fromJS(entryWithFormat),
-          config as MediaLibraryConfig,
-        ),
+    const mediaLibraryFolders = selectFieldsMediaFolders(collection);
+    if ((collection.has('media_folder') || mediaLibraryFolders.length > 0) && !integration) {
+      const folders = mediaLibraryFolders.map(folder =>
+        selectMediaFolder(state.config, collection, fromJS(entryWithFormat), folder),
       );
 
       if (collection.has('media_folder')) {
         folders.unshift(
-          selectMediaFolder(state.config, collection, fromJS(entryWithFormat), fromJS({})),
+          selectMediaFolder(state.config, collection, fromJS(entryWithFormat), undefined),
         );
       }
 

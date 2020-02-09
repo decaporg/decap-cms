@@ -106,28 +106,27 @@ const selectors = {
   },
 };
 
-const getFieldsMediaLibraryConfigs = (fields: EntryField[]) => {
-  const mediaLibs = fields.filter(f => f.has('media_library')).map(f => f.get('media_library'));
-  let configs = mediaLibs.filter(m => m?.has('config')).map(m => m?.get('config'));
+const getFieldsMediaFolders = (fields: EntryField[]) => {
+  let mediaFolders = fields.filter(f => f.has('media_folder')).map(f => f.get('media_folder'));
 
   fields.forEach(f => {
     if (f.has('fields')) {
       const fields = f.get('fields')?.toArray() as EntryField[];
-      configs = [...configs, ...getFieldsMediaLibraryConfigs(fields)];
+      mediaFolders = [...mediaFolders, ...getFieldsMediaFolders(fields)];
     }
     if (f.has('field')) {
       const field = f.get('field') as EntryField;
-      configs = [...configs, ...getFieldsMediaLibraryConfigs([field])];
+      mediaFolders = [...mediaFolders, ...getFieldsMediaFolders([field])];
     }
   });
 
-  return configs;
+  return mediaFolders;
 };
 
-export const selectMediaLibraryConfigs = (collection: Collection) => {
+export const selectFieldsMediaFolders = (collection: Collection) => {
   if (collection.has('folder')) {
     const fields = collection.get('fields').toArray();
-    return getFieldsMediaLibraryConfigs(fields);
+    return getFieldsMediaFolders(fields);
   } else if (collection.has('files')) {
     const fields = collection
       .get('files')
@@ -135,7 +134,7 @@ export const selectMediaLibraryConfigs = (collection: Collection) => {
       .map(f => f.get('fields').toArray()) as EntryField[][];
 
     const flattened = [] as EntryField[];
-    return getFieldsMediaLibraryConfigs(flattened.concat(...fields));
+    return getFieldsMediaFolders(flattened.concat(...fields));
   }
 
   return [];

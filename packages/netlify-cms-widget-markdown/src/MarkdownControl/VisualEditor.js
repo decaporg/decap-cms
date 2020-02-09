@@ -60,22 +60,7 @@ export default class Editor extends React.Component {
         ? editorComponents
         : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
 
-    // merge editor media library config to image components
-    if (this.editorComponents.has('image') && this.props.field.has('media_library')) {
-      const imageComponent = this.editorComponents.get('image');
-      const fields = imageComponent?.fields;
-
-      if (fields) {
-        imageComponent.fields = fields.update(
-          fields.findIndex(f => f.get('widget') === 'image'),
-          f =>
-            f.set(
-              'media_library',
-              this.props.field.get('media_library').mergeDeep(f.get('media_library')),
-            ),
-        );
-      }
-    }
+    this.mergeMediaConfig();
     this.renderBlock = renderBlock({
       classNameWrapper: props.className,
       resolveWidget: props.resolveWidget,
@@ -101,6 +86,38 @@ export default class Editor extends React.Component {
     getEditorComponents: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
+
+  mergeMediaConfig() {
+    // merge editor media library config to image components
+    if (this.editorComponents.has('image')) {
+      const imageComponent = this.editorComponents.get('image');
+      const fields = imageComponent?.fields;
+
+      if (fields) {
+        imageComponent.fields = fields.update(
+          fields.findIndex(f => f.get('widget') === 'image'),
+          f => {
+            // merge `media_library` config
+            if (this.props.field.has('media_library')) {
+              f = f.set(
+                'media_library',
+                this.props.field.get('media_library').mergeDeep(f.get('media_library')),
+              );
+            }
+            // merge 'media_folder'
+            if (this.props.field.has('media_folder') && !f.has('media_folder')) {
+              f = f.set('media_folder', this.props.field.get('media_folder'));
+            }
+            // merge 'public_folder'
+            if (this.props.field.has('public_folder') && !f.has('public_folder')) {
+              f = f.set('public_folder', this.props.field.get('public_folder'));
+            }
+            return f;
+          },
+        );
+      }
+    }
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !this.state.value.equals(nextState.value);

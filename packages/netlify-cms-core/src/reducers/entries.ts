@@ -24,7 +24,6 @@ import {
   EntriesRequestPayload,
   EntryDraft,
   EntryMap,
-  MediaLibraryConfig,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
@@ -144,16 +143,15 @@ export const selectMediaFolder = (
   config: Config,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
-  fieldConfig: MediaLibraryConfig | undefined,
+  fieldMediaFolder: string | undefined,
 ) => {
   let mediaFolder = config.get('media_folder');
 
-  if (collection && (collection.has('media_folder') || fieldConfig?.has('media_folder'))) {
+  if (collection && (collection.has('media_folder') || fieldMediaFolder !== undefined)) {
     const entryPath = entryMap?.get('path');
     if (entryPath) {
       const entryDir = dirname(entryPath);
-      const toFormat =
-        (fieldConfig?.get('media_folder') as string) || (collection.get('media_folder') as string);
+      const toFormat = fieldMediaFolder || (collection.get('media_folder') as string);
 
       const folder = folderFormatter(
         toFormat,
@@ -181,13 +179,13 @@ export const selectMediaFilePath = (
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   mediaPath: string,
-  fieldConfig: MediaLibraryConfig | undefined,
+  fieldMediaFolder: string | undefined,
 ) => {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
 
-  const mediaFolder = selectMediaFolder(config, collection, entryMap, fieldConfig);
+  const mediaFolder = selectMediaFolder(config, collection, entryMap, fieldMediaFolder);
 
   return join(mediaFolder, basename(mediaPath));
 };
@@ -197,7 +195,7 @@ export const selectMediaFilePublicPath = (
   collection: Collection | null,
   mediaPath: string,
   entryMap: EntryMap | undefined,
-  fieldConfig: MediaLibraryConfig | undefined,
+  fieldPublicFolder: string | undefined,
 ) => {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
@@ -205,9 +203,8 @@ export const selectMediaFilePublicPath = (
 
   let publicFolder = config.get('public_folder');
 
-  if (collection && (collection.has('public_folder') || fieldConfig?.has('public_folder'))) {
-    const toFormat =
-      (fieldConfig?.get('public_folder') as string) || (collection.get('public_folder') as string);
+  if (collection && (collection.has('public_folder') || fieldPublicFolder !== undefined)) {
+    const toFormat = fieldPublicFolder || (collection.get('public_folder') as string);
 
     publicFolder = folderFormatter(
       toFormat,

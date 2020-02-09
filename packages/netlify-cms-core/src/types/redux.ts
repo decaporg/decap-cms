@@ -88,20 +88,14 @@ export type EntryDraft = StaticallyTypedRecord<{
   fieldsErrors: FieldsErrors;
 }>;
 
-export type MediaLibraryConfig = StaticallyTypedRecord<{
-  media_folder?: string;
-  public_folder?: string;
-}>;
-
 export type EntryField = StaticallyTypedRecord<{
   field?: EntryField;
   fields?: List<EntryField>;
   widget: string;
   name: string;
   default: string | null;
-  media_library?: StaticallyTypedRecord<{
-    config?: MediaLibraryConfig;
-  }>;
+  media_folder?: string;
+  public_folder?: string;
 }>;
 
 export type EntryFields = List<EntryField>;
