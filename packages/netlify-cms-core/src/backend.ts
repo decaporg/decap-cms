@@ -93,19 +93,6 @@ const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
   return 0;
 };
 
-export const getFieldsNames = (fields: EntryField[], prefix = '') => {
-  let names = fields.map(f => `${prefix}${f.get('name')}`);
-
-  fields.forEach((f, index) => {
-    if (f.has('fields')) {
-      const fields = f.get('fields')?.toArray() as EntryField[];
-      names = [...names, ...getFieldsNames(fields, `${names[index]}.`)];
-    }
-  });
-
-  return names;
-};
-
 interface AuthStore {
   retrieve: () => User;
   store: (user: User) => void;
