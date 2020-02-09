@@ -10,6 +10,8 @@ We run new functionality in an open beta format from time to time. That means th
 
 ## Working with a Local Git Repository
 
+**_added in netlify-cms@2.10.17 / netlify-cms-app@2.11.14_**
+
 You can connect Netlify CMS to a local Git repository, instead of working with a live repo.
 
 1. Navigate to a local Git repository configured with the CMS.
@@ -30,6 +32,8 @@ local_backend:
 **Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 
 ## GitLab and BitBucket Editorial Workflow Support
+
+**_added in netlify-cms@2.10.6 / netlify-cms-app@2.11.3_**
 
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
