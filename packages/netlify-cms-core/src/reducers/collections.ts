@@ -107,18 +107,22 @@ const selectors = {
 };
 
 const getFieldsMediaFolders = (fields: EntryField[]) => {
-  let mediaFolders = fields.filter(f => f.has('media_folder')).map(f => f.get('media_folder'));
+  const mediaFolders = fields.reduce((acc, f) => {
+    if (f.has('media_folder')) {
+      acc = [...acc, f.get('media_folder') as string];
+    }
 
-  fields.forEach(f => {
     if (f.has('fields')) {
       const fields = f.get('fields')?.toArray() as EntryField[];
-      mediaFolders = [...mediaFolders, ...getFieldsMediaFolders(fields)];
+      acc = [...acc, ...getFieldsMediaFolders(fields)];
     }
     if (f.has('field')) {
       const field = f.get('field') as EntryField;
-      mediaFolders = [...mediaFolders, ...getFieldsMediaFolders([field])];
+      acc = [...acc, ...getFieldsMediaFolders([field])];
     }
-  });
+
+    return acc;
+  }, [] as string[]);
 
   return mediaFolders;
 };
