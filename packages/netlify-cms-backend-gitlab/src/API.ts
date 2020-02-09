@@ -73,6 +73,7 @@ type GitLabCommitDiff = {
   diff: string;
   new_path: string;
   old_path: string;
+  new_file: boolean;
 };
 
 enum GitLabCommitStatuses {
@@ -546,7 +547,10 @@ export default class API {
       },
     });
 
-    return result.diffs;
+    return result.diffs.map(d => ({
+      ...d,
+      binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
+    }));
   }
 
   async retrieveMetadata(contentKey: string) {
@@ -554,7 +558,10 @@ export default class API {
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
-    const path = diff.find(d => d.old_path.includes(slug))?.old_path as string;
+    const { old_path: path, new_file: newFile } = diff.find(d => !d.binary) as {
+      old_path: string;
+      new_file: boolean;
+    };
     const mediaFiles = await Promise.all(
       diff
         .filter(d => d.old_path !== path)
@@ -566,24 +573,27 @@ export default class API {
     );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
-    return { branch, collection, slug, path, status, mediaFiles };
+    return { branch, collection, slug, path, status, newFile, mediaFiles };
   }
 
   async readUnpublishedBranchFile(contentKey: string) {
-    const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
-      contentKey,
-    );
+    const {
+      branch,
+      collection,
+      slug,
+      path,
+      status,
+      newFile,
+      mediaFiles,
+    } = await this.retrieveMetadata(contentKey);
 
-    const [fileData, isModification] = await Promise.all([
-      this.readFile(path, null, { branch }) as Promise<string>,
-      this.isFileExists(path, this.branch),
-    ]);
+    const fileData = (await this.readFile(path, null, { branch })) as string;
 
     return {
       slug,
       metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
       fileData,
-      isModification,
+      isModification: !newFile,
     };
   }
 

@@ -25,6 +25,7 @@ import {
   parseContentKey,
 } from 'netlify-cms-lib-util';
 import { oneLine } from 'common-tags';
+import { parse } from 'what-the-diff';
 
 interface Config {
   apiRoot?: string;
@@ -123,21 +124,6 @@ type BitBucketPullRequestStatues = {
   next: string;
   preview: string;
   values: BitBucketPullRequestStatus[];
-};
-
-type BitBucketDiffStat = {
-  pagelen: number;
-  page: number;
-  size: number;
-  values: {
-    status: string;
-    lines_removed: number;
-    lines_added: number;
-    new: {
-      path: string;
-      type: 'commit_file';
-    };
-  }[];
 };
 
 type DeleteEntry = {
@@ -448,13 +434,18 @@ export default class API {
   }
 
   async getDifferences(branch: string) {
-    const diff: BitBucketDiffStat = await this.requestJSON({
-      url: `${this.repoURL}/diffstat/${branch}..${this.branch}`,
+    const rawDiff = await this.requestText({
+      url: `${this.repoURL}/diff/${branch}..${this.branch}`,
       params: {
-        pagelen: 100,
+        binary: false,
       },
     });
-    return diff.values;
+
+    return parse(rawDiff).map(d => ({
+      newPath: d.newPath.replace(/b\//, ''),
+      binary: d.binary || /.svg$/.test(d.newPath),
+      newFile: d.status === 'added',
+    }));
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
@@ -478,8 +469,8 @@ export default class API {
       const diffs = await this.getDifferences(branch);
       const toDelete: DeleteEntry[] = [];
       for (const diff of diffs) {
-        if (!files.some(file => file.path === diff.new.path)) {
-          toDelete.push({ path: diff.new.path, delete: true });
+        if (!files.some(file => file.path === diff.newPath)) {
+          toDelete.push({ path: diff.newPath, delete: true });
         }
       }
 
@@ -571,31 +562,37 @@ export default class API {
     const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const diff = await this.getDifferences(branch);
-    const path = diff.find(d => d.new.path.includes(slug))?.new.path as string;
+    const { newPath: path, newFile } = diff.find(d => !d.binary) as {
+      newPath: string;
+      newFile: boolean;
+    };
     // TODO: get real file id
     const mediaFiles = await Promise.all(
-      diff.filter(d => d.new.path !== path).map(d => ({ path: d.new.path, id: null })),
+      diff.filter(d => d.newPath !== path).map(d => ({ path: d.newPath, id: null })),
     );
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label);
-    return { branch, collection, slug, path, status, mediaFiles };
+    return { branch, collection, slug, path, status, newFile, mediaFiles };
   }
 
   async readUnpublishedBranchFile(contentKey: string) {
-    const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
-      contentKey,
-    );
+    const {
+      branch,
+      collection,
+      slug,
+      path,
+      status,
+      newFile,
+      mediaFiles,
+    } = await this.retrieveMetadata(contentKey);
 
-    const [fileData, isModification] = await Promise.all([
-      this.readFile(path, null, { branch }) as Promise<string>,
-      this.isFileExists(path, this.branch),
-    ]);
+    const fileData = (await this.readFile(path, null, { branch })) as string;
 
     return {
       slug,
       metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
       fileData,
-      isModification,
+      isModification: !newFile,
     };
   }
 
