@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.3...netlify-cms-widget-file@2.6.0) (2020-02-10)
-
-
-### Features
-
-* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
-
-
-
-
-
 ## [2.5.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.5.2...netlify-cms-widget-file@2.5.3) (2020-02-06)
 
 

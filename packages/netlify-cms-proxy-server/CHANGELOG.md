@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [1.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.0.7...netlify-cms-proxy-server@1.1.0) (2020-02-10)
-
-
-### Features
-
-* **proxy-server:** add local fs middleware and make it the default ([#3217](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/3217)) ([31dbd72](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/31dbd72273b723bb6bbb551641a6e4bcc1f0314b))
-
-
-
-
-
 ## [1.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.0.6...netlify-cms-proxy-server@1.0.7) (2020-02-06)
 
 **Note:** Version bump only for package netlify-cms-proxy-server

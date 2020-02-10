@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.6...netlify-cms-backend-github@2.7.0) (2020-02-10)
-
-
-### Features
-
-* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
-
-
-
-
-
 ## [2.6.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.6.5...netlify-cms-backend-github@2.6.6) (2020-02-06)
 
 
