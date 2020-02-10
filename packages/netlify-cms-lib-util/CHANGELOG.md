@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.6.2...netlify-cms-lib-util@2.7.0) (2020-02-10)
+
+
+### Bug Fixes
+
+* filter paginated results ([#3216](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/3216)) ([0a482b1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/0a482b10049bcfa022b81165cabf4512d77e0b88))
+
+
+### Features
+
+* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
+
+
+
+
+
 ## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.6.1...netlify-cms-lib-util@2.6.2) (2020-01-24)
 
 
