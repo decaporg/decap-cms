@@ -6,7 +6,7 @@ import { ClassNames, Global, css as coreCss } from '@emotion/core';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-legacy';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
 import { addAsset, getAsset } from 'Actions/media';

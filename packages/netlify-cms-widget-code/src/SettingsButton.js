@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
+import { Icon, buttons, shadows } from 'netlify-cms-ui-legacy';
 
 const StyledSettingsButton = styled.button`
   ${buttons.button};

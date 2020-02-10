@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { colors } from 'netlify-cms-ui-default';
+import { colors } from 'netlify-cms-ui-legacy';
 
 const EmptyMessageContainer = styled.div`
   height: 100%;

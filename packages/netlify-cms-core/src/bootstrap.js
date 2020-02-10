@@ -9,7 +9,7 @@ import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Lib/phrases';
 import { selectLocale } from 'Reducers/config';
 import { I18n } from 'react-polyglot';
-import { GlobalStyles } from 'netlify-cms-ui-default';
+import { GlobalStyles } from 'netlify-cms-ui-legacy';
 import { ErrorBoundary } from 'UI';
 import App from 'App/App';
 import 'EditorWidgets';

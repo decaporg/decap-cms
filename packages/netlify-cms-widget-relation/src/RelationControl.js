@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Async as AsyncSelect } from 'react-select';
 import { find, isEmpty, last, debounce } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
-import { reactSelectStyles } from 'netlify-cms-ui-default';
+import { reactSelectStyles } from 'netlify-cms-ui-legacy';
 
 function optionToString(option) {
   return option && option.value ? option.value : '';

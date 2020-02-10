@@ -14,7 +14,7 @@ import {
   effects,
   shadows,
   Asset,
-} from 'netlify-cms-ui-default';
+} from 'netlify-cms-ui-legacy';
 
 const MAX_DISPLAY_LENGTH = 50;
 

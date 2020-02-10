@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
 import { Map, List } from 'immutable';
-import { ObjectWidgetTopBar, lengths } from 'netlify-cms-ui-default';
+import { ObjectWidgetTopBar, lengths } from 'netlify-cms-ui-legacy';
 
 const styleStrings = {
   nestedObjectControl: `
