@@ -56,7 +56,14 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('showMediaButton', action.payload.enableStandalone());
       });
     case MEDIA_LIBRARY_OPEN: {
-      const { controlID, forImage, privateUpload, config } = action.payload;
+      const {
+        controlID,
+        forImage,
+        privateUpload,
+        config,
+        mediaFolder,
+        publicFolder,
+      } = action.payload;
       const libConfig = config || Map();
       const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
@@ -77,6 +84,8 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('canInsert', !!controlID);
         map.set('privateUpload', privateUpload);
         map.set('config', libConfig);
+        map.set('mediaFolder', mediaFolder);
+        map.set('publicFolder', publicFolder);
       });
     }
     case MEDIA_LIBRARY_CLOSE:

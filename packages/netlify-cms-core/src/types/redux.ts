@@ -94,6 +94,8 @@ export type EntryField = StaticallyTypedRecord<{
   widget: string;
   name: string;
   default: string | null;
+  media_folder?: string;
+  public_folder?: string;
 }>;
 
 export type EntryFields = List<EntryField>;
@@ -108,6 +110,8 @@ export type CollectionFile = StaticallyTypedRecord<{
   name: string;
   fields: EntryFields;
   label: string;
+  media_folder?: string;
+  public_folder?: string;
 }>;
 
 export type CollectionFiles = List<CollectionFile>;
@@ -305,6 +309,8 @@ export interface MediaLibraryAction extends Action<string> {
     forImage: boolean;
     privateUpload: boolean;
     config: Map<string, string>;
+    mediaFolder?: string;
+    publicFolder?: string;
   } & { mediaPath: string | string[] } & { page: number } & {
     files: MediaFile[];
     page: number;

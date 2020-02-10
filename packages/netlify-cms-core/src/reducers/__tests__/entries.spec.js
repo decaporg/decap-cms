@@ -74,16 +74,22 @@ describe('entries', () => {
   describe('selectMediaFolder', () => {
     it("should return global media folder when collection doesn't specify media_folder", () => {
       expect(
-        selectMediaFolder(Map({ media_folder: 'static/media' }), Map({ name: 'posts' })),
+        selectMediaFolder(
+          Map({ media_folder: 'static/media' }),
+          Map({ name: 'posts' }),
+          undefined,
+          undefined,
+        ),
       ).toEqual('static/media');
     });
 
-    it('should return draft media folder when collection specifies media_folder and entry path is null', () => {
+    it('should return draft media folder when collection specifies media_folder and entry is undefined', () => {
       expect(
         selectMediaFolder(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
-          null,
+          undefined,
+          undefined,
         ),
       ).toEqual('posts/DRAFT_MEDIA_FILES');
     });
@@ -94,6 +100,7 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
           Map({ path: 'posts/title/index.md' }),
+          undefined,
         ),
       ).toEqual('posts/title');
     });
@@ -104,11 +111,12 @@ describe('entries', () => {
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '../' }),
           Map({ path: 'posts/title/index.md' }),
+          undefined,
         ),
       ).toEqual('posts/');
     });
 
-    it('should return collection absolute media folder as is', () => {
+    it('should return collection absolute media folder without leading slash', () => {
       expect(
         selectMediaFolder(
           Map({ media_folder: '/static/Images' }),
@@ -118,8 +126,9 @@ describe('entries', () => {
             media_folder: '/static/images/docs/getting-started',
           }),
           Map({ path: 'src/docs/getting-started/with-github.md' }),
+          undefined,
         ),
-      ).toEqual('/static/images/docs/getting-started');
+      ).toEqual('static/images/docs/getting-started');
     });
 
     it('should compile relative media folder template', () => {
@@ -145,6 +154,7 @@ describe('entries', () => {
           fromJS({ media_folder: 'static/media', slug: slugConfig }),
           collection,
           entry,
+          undefined,
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
@@ -172,8 +182,85 @@ describe('entries', () => {
           fromJS({ media_folder: '/static/images', slug: slugConfig }),
           collection,
           entry,
+          undefined,
         ),
-      ).toEqual('/static/images/docs/extending');
+      ).toEqual('static/images/docs/extending');
+    });
+
+    it('should compile field media folder template', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: 'static/media', slug: slugConfig }),
+          collection,
+          entry,
+          '../../../{{media_folder}}/{{category}}/{{slug}}',
+        ),
+      ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
+    });
+
+    it('should handle double slashes', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        media_folder: '{{media_folder}}/blog',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: '/static/img/', slug: slugConfig }),
+          collection,
+          entry,
+          undefined,
+        ),
+      ).toEqual('static/img/blog');
+
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: 'static/img/', slug: slugConfig }),
+          collection,
+          entry,
+          undefined,
+        ),
+      ).toEqual('content/en/hosting-and-deployment/static/img/blog');
+    });
+
+    it('should handle file media_folder', () => {
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', files: [{ name: 'index', media_folder: '/static/images/' }] }),
+          fromJS({ path: 'posts/title/index.md', slug: 'index' }),
+          undefined,
+        ),
+      ).toBe('static/images/');
     });
   });
 
@@ -189,8 +276,9 @@ describe('entries', () => {
         selectMediaFilePath(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts' }),
-          null,
+          undefined,
           'image.png',
+          undefined,
         ),
       ).toBe('static/media/image.png');
     });
@@ -200,8 +288,9 @@ describe('entries', () => {
         selectMediaFilePath(
           Map({ media_folder: 'static/media' }),
           Map({ name: 'posts', folder: 'posts', media_folder: '' }),
-          null,
+          undefined,
           'image.png',
+          undefined,
         ),
       ).toBe('posts/DRAFT_MEDIA_FILES/image.png');
     });
@@ -213,6 +302,19 @@ describe('entries', () => {
           Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
           Map({ path: 'posts/title/index.md' }),
           'image.png',
+          undefined,
+        ),
+      ).toBe('static/media/image.png');
+    });
+
+    it('should handle field media_folder', () => {
+      expect(
+        selectMediaFilePath(
+          Map({ media_folder: 'static/media' }),
+          Map({ name: 'posts', folder: 'posts' }),
+          Map({ path: 'posts/title/index.md' }),
+          'image.png',
+          '../../static/media/',
         ),
       ).toBe('static/media/image.png');
     });
@@ -227,7 +329,13 @@ describe('entries', () => {
 
     it('should resolve path from public folder for collection with no media folder', () => {
       expect(
-        selectMediaFilePublicPath(Map({ public_folder: '/media' }), null, '/media/image.png'),
+        selectMediaFilePublicPath(
+          Map({ public_folder: '/media' }),
+          null,
+          '/media/image.png',
+          undefined,
+          undefined,
+        ),
       ).toBe('/media/image.png');
     });
 
@@ -237,6 +345,8 @@ describe('entries', () => {
           Map({ public_folder: '/media' }),
           Map({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
+          undefined,
+          undefined,
         ),
       ).toBe('image.png');
     });
@@ -247,11 +357,13 @@ describe('entries', () => {
           Map({ public_folder: '/media' }),
           Map({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
+          undefined,
+          undefined,
         ),
       ).toBe('../../static/media/image.png');
     });
 
-    it('should compile public folder template', () => {
+    it('should compile collection public folder template', () => {
       const slugConfig = {
         encoding: 'unicode',
         clean_accents: false,
@@ -275,8 +387,93 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
+          undefined,
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
+    });
+
+    it('should compile field public folder template', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFilePublicPath(
+          fromJS({ public_folder: 'static/media', slug: slugConfig }),
+          collection,
+          'image.png',
+          entry,
+          '/{{public_folder}}/{{category}}/{{slug}}',
+        ),
+      ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
+    });
+
+    it('should handle double slashes', () => {
+      const slugConfig = {
+        encoding: 'unicode',
+        clean_accents: false,
+        sanitize_replacement: '-',
+      };
+
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        name: 'posts',
+        folder: 'content',
+        fields: [{ name: 'title', widget: 'string' }],
+      });
+
+      expect(
+        selectMediaFilePublicPath(
+          fromJS({ public_folder: 'static/media/', slug: slugConfig }),
+          collection,
+          'image.png',
+          entry,
+          '/{{public_folder}}/{{category}}/{{slug}}',
+        ),
+      ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
+    });
+
+    it('should handle file public_folder', () => {
+      const entry = fromJS({
+        path: 'src/posts/index.md',
+        slug: 'index',
+      });
+
+      const collection = fromJS({
+        name: 'posts',
+        files: [
+          {
+            name: 'index',
+            public_folder: '/images',
+            fields: [{ name: 'title', widget: 'string' }],
+          },
+        ],
+      });
+
+      expect(
+        selectMediaFilePublicPath(
+          fromJS({ public_folder: 'static/media/' }),
+          collection,
+          'image.png',
+          entry,
+          undefined,
+        ),
+      ).toBe('/images/image.png');
     });
   });
 });

@@ -3,7 +3,7 @@ import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
-import { selectMediaFilePath, selectMediaFolder, selectEntry } from './reducers/entries';
+import { selectMediaFilePath, selectEntry } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
   selectEntrySlug,
@@ -13,6 +13,7 @@ import {
   selectAllowDeletion,
   selectFolderEntryExtension,
   selectInferedField,
+  selectMediaFolders,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -31,6 +32,7 @@ import {
   User,
   getPathDepth,
   Config as ImplementationConfig,
+  blobToFileObj,
 } from 'netlify-cms-lib-util';
 import { status } from './constants/publishModes';
 import { extractTemplateVars, dateParsers } from './lib/stringTemplate';
@@ -450,8 +452,7 @@ export class Backend {
           // make sure to serialize the file
           if (file.url?.startsWith('blob:')) {
             const blob = await fetch(file.url as string).then(res => res.blob());
-            const options = file.name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
-            return { ...file, file: new File([blob], file.name, options) };
+            return { ...file, file: blobToFileObj(file.name, blob) };
           }
           return file;
         }),
@@ -492,10 +493,12 @@ export class Backend {
     });
 
     const entryWithFormat = this.entryWithFormat(collection)(entry);
-    if (collection.has('media_folder') && !integration) {
-      entry.mediaFiles = await this.implementation.getMedia(
-        selectMediaFolder(state.config, collection, fromJS(entryWithFormat)),
-      );
+    const mediaFolders = selectMediaFolders(state, collection, fromJS(entryWithFormat));
+    if (mediaFolders.length > 0 && !integration) {
+      entry.mediaFiles = [];
+      for (const folder of mediaFolders) {
+        entry.mediaFiles = [...entry.mediaFiles, ...(await this.implementation.getMedia(folder))];
+      }
     } else {
       entry.mediaFiles = state.mediaLibrary.get('files') || [];
     }
@@ -697,6 +700,7 @@ export class Backend {
           collection,
           entryDraft.get('entry').set('path', path),
           oldPath,
+          asset.folder,
         );
         asset.path = newPath;
       });

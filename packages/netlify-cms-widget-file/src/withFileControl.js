@@ -37,8 +37,8 @@ const Image = styled(({ value: src }) => <img src={src || ''} role="presentation
   object-fit: contain;
 `;
 
-const ImageAsset = ({ getAsset, value }) => {
-  return <Asset path={value} getAsset={getAsset} component={Image} />;
+const ImageAsset = ({ getAsset, value, folder }) => {
+  return <Asset folder={folder} path={value} getAsset={getAsset} component={Image} />;
 };
 
 const MultiImageWrapper = styled.div`
@@ -175,6 +175,8 @@ export default function withFileControl({ forImage } = {}) {
         value,
         allowMultiple: !!mediaLibraryFieldOptions.get('allow_multiple', true),
         config: mediaLibraryFieldOptions.get('config'),
+        mediaFolder: field.get('media_folder'),
+        publicFolder: field.get('public_folder'),
       });
     };
 
@@ -218,13 +220,15 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     renderImages = () => {
-      const { getAsset, value } = this.props;
+      const { getAsset, value, field } = this.props;
+      const folder = field.get('media_folder');
+
       if (isMultiple(value)) {
         return (
           <MultiImageWrapper>
             {value.map(val => (
               <ImageWrapper key={val}>
-                <ImageAsset getAsset={getAsset} value={val} />
+                <ImageAsset getAsset={getAsset} value={val} folder={folder} />
               </ImageWrapper>
             ))}
           </MultiImageWrapper>
@@ -232,7 +236,7 @@ export default function withFileControl({ forImage } = {}) {
       }
       return (
         <ImageWrapper>
-          <ImageAsset getAsset={getAsset} value={value} />
+          <ImageAsset getAsset={getAsset} value={value} folder={folder} />
         </ImageWrapper>
       );
     };

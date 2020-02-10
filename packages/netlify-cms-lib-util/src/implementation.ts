@@ -18,6 +18,7 @@ export interface ImplementationMediaFile {
   draft?: boolean;
   url?: string;
   file?: File;
+  folder?: string;
 }
 
 export interface UnpublishedEntryMediaFile {
@@ -262,6 +263,11 @@ export const unpublishedEntries = async (
     }
     throw error;
   }
+};
+
+export const blobToFileObj = (name: string, blob: Blob) => {
+  const options = name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
+  return new File([blob], name, options);
 };
 
 export const getMediaAsBlob = async (path: string, id: string | null, readFile: ReadFile) => {

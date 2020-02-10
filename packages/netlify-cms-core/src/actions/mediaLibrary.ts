@@ -77,6 +77,8 @@ export function openMediaLibrary(
     config?: Map<string, unknown>;
     allowMultiple?: boolean;
     forImage?: boolean;
+    mediaFolder?: string;
+    publicFolder?: string;
   } = {},
 ) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -101,7 +103,7 @@ export function closeMediaLibrary() {
   };
 }
 
-export function insertMedia(mediaPath: string | string[]) {
+export function insertMedia(mediaPath: string | string[], publicFolder: string | undefined) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const config = state.config;
@@ -109,9 +111,17 @@ export function insertMedia(mediaPath: string | string[]) {
     const collectionName = state.entryDraft.getIn(['entry', 'collection']);
     const collection = state.collections.get(collectionName);
     if (Array.isArray(mediaPath)) {
-      mediaPath = mediaPath.map(path => selectMediaFilePublicPath(config, collection, path, entry));
+      mediaPath = mediaPath.map(path =>
+        selectMediaFilePublicPath(config, collection, path, entry, publicFolder),
+      );
     } else {
-      mediaPath = selectMediaFilePublicPath(config, collection, mediaPath as string, entry);
+      mediaPath = selectMediaFilePublicPath(
+        config,
+        collection,
+        mediaPath as string,
+        entry,
+        publicFolder,
+      );
     }
     dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
   };
@@ -191,12 +201,13 @@ function createMediaFileFromAsset({
     size: file.size,
     url: assetProxy.url,
     path: assetProxy.path,
+    folder: assetProxy.folder,
   };
   return mediaFile;
 }
 
 export function persistMedia(file: File, opts: MediaOptions = {}) {
-  const { privateUpload } = opts;
+  const { privateUpload, mediaFolder } = opts;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -250,10 +261,11 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else {
         const entry = state.entryDraft.get('entry');
         const collection = state.collections.get(entry?.get('collection'));
-        const path = selectMediaFilePath(state.config, collection, entry, file.name);
+        const path = selectMediaFilePath(state.config, collection, entry, file.name, mediaFolder);
         assetProxy = createAssetProxy({
           file,
           path,
+          folder: mediaFolder,
         });
       }
 
@@ -397,6 +409,7 @@ export function mediaLoading(page: number) {
 
 interface MediaOptions {
   privateUpload?: boolean;
+  mediaFolder?: string;
 }
 
 export function mediaLoaded(files: ImplementationMediaFile[], opts: MediaOptions = {}) {

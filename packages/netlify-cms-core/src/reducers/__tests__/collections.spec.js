@@ -1,6 +1,12 @@
 import { OrderedMap, fromJS } from 'immutable';
 import { configLoaded } from 'Actions/config';
-import collections, { selectAllowDeletion, selectEntryPath, selectEntrySlug } from '../collections';
+import collections, {
+  selectAllowDeletion,
+  selectEntryPath,
+  selectEntrySlug,
+  selectFieldsMediaFolders,
+  selectMediaFolders,
+} from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
 describe('collections', () => {
@@ -74,6 +80,161 @@ describe('collections', () => {
           'posts/dir1/dir2/slug.md',
         ),
       ).toBe('dir1/dir2/slug');
+    });
+  });
+
+  describe('selectFieldsMediaFolders', () => {
+    it('should return empty array for invalid collection', () => {
+      expect(selectFieldsMediaFolders(fromJS({}))).toEqual([]);
+    });
+
+    it('should return configs for folder collection', () => {
+      expect(
+        selectFieldsMediaFolders(
+          fromJS({
+            folder: 'posts',
+            fields: [
+              {
+                name: 'image',
+                media_folder: 'image_media_folder',
+              },
+              {
+                name: 'body',
+                media_folder: 'body_media_folder',
+              },
+              {
+                name: 'list_1',
+                field: {
+                  name: 'list_1_item',
+                  media_folder: 'list_1_item_media_folder',
+                },
+              },
+              {
+                name: 'list_2',
+                fields: [
+                  {
+                    name: 'list_2_item',
+                    media_folder: 'list_2_item_media_folder',
+                  },
+                ],
+              },
+            ],
+          }),
+        ),
+      ).toEqual([
+        'image_media_folder',
+        'body_media_folder',
+        'list_1_item_media_folder',
+        'list_2_item_media_folder',
+      ]);
+    });
+
+    it('should return configs for files collection', () => {
+      expect(
+        selectFieldsMediaFolders(
+          fromJS({
+            files: [
+              {
+                fields: [
+                  {
+                    name: 'image',
+                    media_folder: 'image_media_folder',
+                  },
+                ],
+              },
+              {
+                fields: [
+                  {
+                    name: 'body',
+                    media_folder: 'body_media_folder',
+                  },
+                ],
+              },
+              {
+                fields: [
+                  {
+                    name: 'list_1',
+                    field: {
+                      name: 'list_1_item',
+                      media_folder: 'list_1_item_media_folder',
+                    },
+                  },
+                ],
+              },
+              {
+                fields: [
+                  {
+                    name: 'list_2',
+                    fields: [
+                      {
+                        name: 'list_2_item',
+                        media_folder: 'list_2_item_media_folder',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          }),
+        ),
+      ).toEqual([
+        'image_media_folder',
+        'body_media_folder',
+        'list_1_item_media_folder',
+        'list_2_item_media_folder',
+      ]);
+    });
+  });
+
+  describe('selectMediaFolders', () => {
+    const slug = {
+      encoding: 'unicode',
+      clean_accents: false,
+      sanitize_replacement: '-',
+    };
+
+    const config = fromJS({ slug });
+    it('should return fields and collection folder', () => {
+      expect(
+        selectMediaFolders(
+          { config },
+          fromJS({
+            folder: 'posts',
+            media_folder: '/collection_media_folder',
+            fields: [
+              {
+                name: 'image',
+                media_folder: '/image_media_folder',
+              },
+            ],
+          }),
+          fromJS({ slug: 'name', path: 'src/post/post1.md' }),
+        ),
+      ).toEqual(['collection_media_folder', 'image_media_folder']);
+    });
+
+    it('should return fields and collection folder', () => {
+      expect(
+        selectMediaFolders(
+          { config },
+          fromJS({
+            files: [
+              {
+                name: 'name',
+                file: 'src/post/post1.md',
+                media_folder: '/file_media_folder',
+                fields: [
+                  {
+                    name: 'image',
+                    media_folder: '/image_media_folder',
+                  },
+                ],
+              },
+            ],
+          }),
+          fromJS({ slug: 'name', path: 'src/post/post1.md' }),
+        ),
+      ).toEqual(['file_media_folder', 'image_media_folder']);
     });
   });
 });

@@ -5,7 +5,15 @@ import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
-import { CollectionsAction, Collection, CollectionFiles, EntryField } from '../types/redux';
+import {
+  CollectionsAction,
+  Collection,
+  CollectionFiles,
+  EntryField,
+  State,
+  EntryMap,
+} from '../types/redux';
+import { selectMediaFolder } from './entries';
 
 const collections = (state = null, action: CollectionsAction) => {
   switch (action.type) {
@@ -104,6 +112,62 @@ const selectors = {
       return slug;
     },
   },
+};
+
+const getFieldsMediaFolders = (fields: EntryField[]) => {
+  const mediaFolders = fields.reduce((acc, f) => {
+    if (f.has('media_folder')) {
+      acc = [...acc, f.get('media_folder') as string];
+    }
+
+    if (f.has('fields')) {
+      const fields = f.get('fields')?.toArray() as EntryField[];
+      acc = [...acc, ...getFieldsMediaFolders(fields)];
+    }
+    if (f.has('field')) {
+      const field = f.get('field') as EntryField;
+      acc = [...acc, ...getFieldsMediaFolders([field])];
+    }
+
+    return acc;
+  }, [] as string[]);
+
+  return mediaFolders;
+};
+
+export const selectFieldsMediaFolders = (collection: Collection) => {
+  if (collection.has('folder')) {
+    const fields = collection.get('fields').toArray();
+    return getFieldsMediaFolders(fields);
+  } else if (collection.has('files')) {
+    const fields = collection
+      .get('files')
+      ?.toArray()
+      .map(f => f.get('fields').toArray()) as EntryField[][];
+
+    const flattened = [] as EntryField[];
+    return getFieldsMediaFolders(flattened.concat(...fields));
+  }
+
+  return [];
+};
+
+export const selectMediaFolders = (state: State, collection: Collection, entry: EntryMap) => {
+  const fieldsFolders = selectFieldsMediaFolders(collection);
+  const folders = fieldsFolders.map(folder =>
+    selectMediaFolder(state.config, collection, entry, folder),
+  );
+
+  if (
+    collection.has('media_folder') ||
+    collection
+      .get('files')
+      ?.find(file => file?.get('name') === entry?.get('slug') && file?.has('media_folder'))
+  ) {
+    folders.unshift(selectMediaFolder(state.config, collection, entry, undefined));
+  }
+
+  return folders;
 };
 
 export const selectFields = (collection: Collection, slug: string) =>

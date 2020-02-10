@@ -27,14 +27,14 @@ interface GetAssetArgs {
   collection: Collection;
   entry: EntryMap;
   path: string;
+  folder?: string;
 }
 
-export function getAsset({ collection, entry, path }: GetAssetArgs) {
+export function getAsset({ collection, entry, path, folder }: GetAssetArgs) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (!path) return createAssetProxy({ path: '', file: new File([], 'empty') });
-
     const state = getState();
-    const resolvedPath = selectMediaFilePath(state.config, collection, entry, path);
+    const resolvedPath = selectMediaFilePath(state.config, collection, entry, path, folder);
 
     let asset = state.medias.get(resolvedPath);
     if (asset) {
