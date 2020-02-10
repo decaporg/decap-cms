@@ -25,7 +25,7 @@ export const localFsMiddleware = ({ repoPath }: Options) => {
       const { body } = req;
 
       switch (body.action) {
-        case 'action': {
+        case 'info': {
           res.json({
             repo: path.basename(repoPath),
             // eslint-disable-next-line @typescript-eslint/camelcase
