@@ -38,7 +38,16 @@ const jsToMap = (obj: {}) => {
   return immutableObj;
 };
 
-const knownMetaKeys = Set(['index', 'count', 'pageSize', 'pageCount', 'usingOldPaginationAPI']);
+const knownMetaKeys = Set([
+  'index',
+  'count',
+  'pageSize',
+  'pageCount',
+  'usingOldPaginationAPI',
+  'extension',
+  'folder',
+  'depth',
+]);
 const filterUnknownMetaKeys = (meta: Map<string, string>) =>
   meta.filter((_v, k) => knownMetaKeys.has(k as string));
 
