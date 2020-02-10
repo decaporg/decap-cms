@@ -251,7 +251,7 @@ export default class BitbucketBackend implements Implementation {
 
     const listFiles = () =>
       this.api!.listFiles(folder, depth).then(({ entries, cursor: c }) => {
-        cursor = c;
+        cursor = c.mergeMeta({ extension });
         return filterByPropExtension(extension, 'path')(entries);
       });
 
@@ -397,16 +397,21 @@ export default class BitbucketBackend implements Implementation {
   }
 
   traverseCursor(cursor: Cursor, action: string) {
-    return this.api!.traverseCursor(cursor, action).then(
-      async ({ entries, cursor: newCursor }) => ({
+    return this.api!.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => {
+      const extension = cursor.meta?.get('extension');
+      if (extension) {
+        entries = filterByPropExtension(extension as string, 'path')(entries);
+        newCursor = newCursor.mergeMeta({ extension });
+      }
+      return {
         entries: await Promise.all(
           entries.map(file =>
             this.api!.readFile(file.path, file.id).then(data => ({ file, data: data as string })),
           ),
         ),
         cursor: newCursor,
-      }),
-    );
+      };
+    });
   }
 
   loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {

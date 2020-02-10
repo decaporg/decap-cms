@@ -141,7 +141,7 @@ export default class GitLab implements Implementation {
 
     const listFiles = () =>
       this.api!.listFiles(folder, depth > 1).then(({ files, cursor: c }) => {
-        cursor = c;
+        cursor = c.mergeMeta({ folder, extension, depth });
         return files.filter(file => this.filterFile(folder, file, extension, depth));
       });
 
@@ -245,16 +245,25 @@ export default class GitLab implements Implementation {
   }
 
   traverseCursor(cursor: Cursor, action: string) {
-    return this.api!.traverseCursor(cursor, action).then(
-      async ({ entries, cursor: newCursor }) => ({
+    return this.api!.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => {
+      const [folder, depth, extension] = [
+        cursor.meta?.get('folder') as string,
+        cursor.meta?.get('depth') as number,
+        cursor.meta?.get('extension') as string,
+      ];
+      if (folder && depth && extension) {
+        entries = entries.filter(f => this.filterFile(folder, f, extension, depth));
+        newCursor = newCursor.mergeMeta({ folder, extension, depth });
+      }
+      return {
         entries: await Promise.all(
           entries.map(file =>
             this.api!.readFile(file.path, file.id).then(data => ({ file, data: data as string })),
           ),
         ),
         cursor: newCursor,
-      }),
-    );
+      };
+    });
   }
 
   loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
