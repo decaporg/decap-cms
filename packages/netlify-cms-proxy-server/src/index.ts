@@ -15,7 +15,7 @@ const port = process.env.PORT || 8081;
 
   try {
     const mode = process.env.MODE || 'fs';
-    if (process.env.MODE === 'fs') {
+    if (mode === 'fs') {
       registerLocalFs(app);
     } else if (mode === 'git') {
       registerLocalGit(app);
