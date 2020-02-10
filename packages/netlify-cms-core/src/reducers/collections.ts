@@ -14,6 +14,7 @@ import {
   EntryMap,
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
+import { keyToPathArray } from '../lib/stringTemplate';
 
 const collections = (state = null, action: CollectionsAction) => {
   switch (action.type) {
@@ -202,6 +203,24 @@ export const getFieldsNames = (fields: EntryField[], prefix = '') => {
   });
 
   return names;
+};
+
+export const selectField = (collection: Collection, key: string) => {
+  const array = keyToPathArray(key);
+  let name: string | undefined;
+  let field;
+  let fields = collection.get('fields', List<EntryField>()).toArray();
+  while ((name = array.shift()) && fields) {
+    field = fields.find(f => f.get('name') === name);
+    if (field?.has('fields')) {
+      fields = field?.get('fields')?.toArray() as EntryField[];
+    }
+    if (field?.has('field')) {
+      fields = [field?.get('field') as EntryField];
+    }
+  }
+
+  return field;
 };
 
 export const selectIdentifier = (collection: Collection) => {

@@ -6,9 +6,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
-import { keyToPathArray } from 'Lib/stringTemplate';
 import { ErrorBoundary } from 'UI';
-import { selectTemplateName, selectInferedField } from 'Reducers/collections';
+import { selectTemplateName, selectInferedField, selectField } from 'Reducers/collections';
 import { INFERABLE_FIELDS } from 'Constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
@@ -88,12 +87,10 @@ export default class PreviewPane extends React.Component {
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
-
     const inferedField = Object.entries(this.inferedFields)
       .filter(([key]) => {
-        // identifier fields can reference nested (e.g. 'en.title') fields so we get the last part
-        const array = keyToPathArray(key);
-        return name === array[array.length - 1];
+        const fieldToMatch = selectField(this.props.collection, key);
+        return fieldToMatch === field;
       })
       .map(([, value]) => value)[0];
 
