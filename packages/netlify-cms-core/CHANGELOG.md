@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.18.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.17.0...netlify-cms-core@2.18.0) (2020-02-10)
+
+
+### Features
+
+* **proxy-server:** add local fs middleware and make it the default ([#3217](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3217)) ([31dbd72](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/31dbd72273b723bb6bbb551641a6e4bcc1f0314b))
+* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([a015d1d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a015d1d92a4b1c0130c44fcef1c9ecdb157a0f07))
+
+
+
+
+
 # [2.17.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.16.0...netlify-cms-core@2.17.0) (2020-02-06)
 
 

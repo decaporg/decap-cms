@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.5.3...netlify-cms-backend-gitlab@2.6.0) (2020-02-10)
+
+
+### Bug Fixes
+
+* filter paginated results ([#3216](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3216)) ([0a482b1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/0a482b10049bcfa022b81165cabf4512d77e0b88))
+* workflow file collection ([#3207](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3207)) ([d22f7e6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/d22f7e680e7064e8607cf8b420571fa40a6c314e))
+
+
+### Features
+
+* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([a015d1d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/a015d1d92a4b1c0130c44fcef1c9ecdb157a0f07))
+
+
+
+
+
 ## [2.5.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.5.2...netlify-cms-backend-gitlab@2.5.3) (2020-02-06)
 
 

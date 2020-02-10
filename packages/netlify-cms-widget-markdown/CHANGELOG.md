@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.4...netlify-cms-widget-markdown@2.9.0) (2020-02-10)
+
+
+### Features
+
+* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([a015d1d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/a015d1d92a4b1c0130c44fcef1c9ecdb157a0f07))
+
+
+
+
+
 ## [2.8.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.3...netlify-cms-widget-markdown@2.8.4) (2020-02-06)
 
 
