@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 
 const Children = styled.div`
   overflow: auto;
+  padding-left: 2rem;
 `;
 
 const SidebarLayout = ({ sidebar, children }) => (
