@@ -57,7 +57,7 @@ jobs:
       - name: Publish Netlify CMS
         uses: erezrokah/2fa-with-slack-action@v1.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PUBLISH_TOKEN }}
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
           SLACK_TOKEN: ${{secrets.SLACK_TOKEN}}
           CONVERSATION_ID: ${{secrets.CONVERSATION_ID}}
