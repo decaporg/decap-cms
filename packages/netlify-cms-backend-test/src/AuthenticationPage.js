@@ -36,7 +36,6 @@ const AuthenticationPageModal = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  background: #ffffff;
   width: ${27 * 16}px;
   box-shadow: 0 2px 4px 0 rgba(14, 30, 37, 0.12);
   border-radius: 8px;

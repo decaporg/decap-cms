@@ -20,7 +20,7 @@ import images from './images/_index';
  * name to the raw svg, so we move that to the `image` property of the
  * definition object and set any additional configured properties for each icon.
  */
-const icons = mapValues(images, (image) => {
+const icons = mapValues(images, image => {
   return { image };
 });
 

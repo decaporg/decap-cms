@@ -15,7 +15,7 @@ const LoginButton = styled.button`
   position: relative;
   margin-bottom: 1rem;
   color: white;
-  background-color: ${ props => props.color || "#798291" };
+  background-color: ${props => props.color || '#798291'};
 
   &:last-of-type {
     margin-bottom: 0;

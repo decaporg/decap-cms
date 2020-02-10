@@ -43,10 +43,6 @@ const buttons = {
     font-weight: 500;
     padding: 0 15px;
   `,
-}
-
-export {
-  fonts,
-  buttons,
-  shadows,
 };
+
+export { fonts, buttons, shadows };
