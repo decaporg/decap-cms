@@ -23,17 +23,17 @@ export const localFsMiddleware = ({ repoPath }: Options) => {
   return async function(req: express.Request, res: express.Response) {
     try {
       const { body } = req;
-      if (body.action === 'info') {
-        res.json({
-          repo: path.basename(repoPath),
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          publish_modes: ['simple'],
-          type: 'local_fs',
-        });
-        return;
-      }
 
       switch (body.action) {
+        case 'action': {
+          res.json({
+            repo: path.basename(repoPath),
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            publish_modes: ['simple'],
+            type: 'local_fs',
+          });
+          break;
+        }
         case 'entriesByFolder': {
           const payload = body.params as EntriesByFolderParams;
           const { folder, extension, depth } = payload;
