@@ -1,14 +1,15 @@
-import fixture from './common/media_library';
+import fixture from './common/simple_workflow';
 import * as specUtils from './common/spec_utils';
-import { entry1 } from './common/entries';
+import { entry1, entry2, entry3 } from './common/entries';
 
 const backend = 'proxy';
+const mode = 'fs';
 
-describe('Proxy Backend Media Library - REST API', () => {
+describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { publish_mode: 'editorial_workflow' }, backend);
+    specUtils.before(taskResult, { publish_mode: 'simple', mode }, backend);
     Cypress.config('defaultCommandTimeout', 5 * 1000);
   });
 
@@ -24,5 +25,8 @@ describe('Proxy Backend Media Library - REST API', () => {
     specUtils.afterEach(taskResult, backend);
   });
 
-  fixture({ entries: [entry1], getUser: () => taskResult.data.user });
+  fixture({
+    entries: [entry1, entry2, entry3],
+    getUser: () => taskResult.data.user,
+  });
 });

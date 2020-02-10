@@ -19,13 +19,21 @@ const initRepo = async dir => {
   await git.commit('initial commit', readme, { '--no-verify': true, '--no-gpg-sign': true });
 };
 
-const startServer = async repoDir => {
+const startServer = async (repoDir, mode) => {
   const tsNode = path.join(__dirname, '..', '..', 'node_modules', '.bin', 'ts-node');
   const serverDir = path.join(__dirname, '..', '..', 'packages', 'netlify-cms-proxy-server');
   const distIndex = path.join(serverDir, 'dist', 'index.js');
   const tsIndex = path.join(serverDir, 'src', 'index.ts');
 
-  const env = { ...process.env, GIT_REPO_DIRECTORY: path.resolve(repoDir), PORT: 8082 };
+  const port = 8082;
+  const env = {
+    ...process.env,
+    GIT_REPO_DIRECTORY: path.resolve(repoDir),
+    PORT: port,
+    MODE: mode,
+  };
+
+  console.log(`Starting proxy server on port '${port}' with mode ${mode}`);
   if (await fs.pathExists(distIndex)) {
     serverProcess = spawn('node', [distIndex], { env, cwd: serverDir });
   } else {
@@ -58,11 +66,13 @@ async function setupProxy(options) {
   const testRepoName = `proxy-test-repo-${Date.now()}-${postfix}`;
   const tempDir = path.join('.temp', testRepoName);
 
+  const { mode, ...rest } = options;
+
   await updateConfig(config => {
-    merge(config, options);
+    merge(config, rest);
   });
 
-  return { tempDir };
+  return { tempDir, mode };
 }
 
 async function teardownProxy(taskData) {
@@ -76,7 +86,7 @@ async function teardownProxy(taskData) {
 
 async function setupProxyTest(taskData) {
   await initRepo(taskData.tempDir);
-  serverProcess = await startServer(taskData.tempDir);
+  serverProcess = await startServer(taskData.tempDir, taskData.mode);
   return null;
 }
 

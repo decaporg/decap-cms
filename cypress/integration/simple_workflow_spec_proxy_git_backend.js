@@ -1,14 +1,15 @@
-import fixture from './common/editorial_workflow';
+import fixture from './common/simple_workflow';
 import * as specUtils from './common/spec_utils';
 import { entry1, entry2, entry3 } from './common/entries';
 
 const backend = 'proxy';
+const mode = 'git';
 
-describe.skip('Proxy Backend Editorial Workflow', () => {
+describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
   let taskResult = { data: {} };
 
   before(() => {
-    specUtils.before(taskResult, { publish_mode: 'editorial_workflow' }, backend);
+    specUtils.before(taskResult, { publish_mode: 'simple', mode }, backend);
     Cypress.config('defaultCommandTimeout', 5 * 1000);
   });
 
