@@ -155,19 +155,48 @@ export async function detectProxyServer(localBackend) {
     }
     try {
       console.log(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
-      const { repo } = await fetch(`${proxyUrl}`, {
+      const { repo, publish_modes, type } = await fetch(`${proxyUrl}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'info' }),
       }).then(res => res.json());
-      if (typeof repo === 'string') {
+      if (typeof repo === 'string' && Array.isArray(publish_modes) && typeof type === 'string') {
         console.log(`Detected Netlify CMS Proxy Server at '${proxyUrl}' with repo: '${repo}'`);
-        return proxyUrl;
+        return { proxyUrl, publish_modes, type };
       }
     } catch {
       console.log(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
     }
   }
+  return {};
+}
+
+export async function handleLocalBackend(mergedConfig) {
+  if (mergedConfig.has('local_backend')) {
+    const { proxyUrl, publish_modes, type } = await detectProxyServer(
+      mergedConfig.toJS().local_backend,
+    );
+    if (proxyUrl) {
+      mergedConfig = mergePreloadedConfig(mergedConfig, {
+        backend: { name: 'proxy', proxy_url: proxyUrl },
+      });
+      if (
+        mergedConfig.has('publish_mode') &&
+        !publish_modes.includes(mergedConfig.get('publish_mode'))
+      ) {
+        const newPublishMode = publish_modes[0];
+        console.log(
+          `'${mergedConfig.get(
+            'publish_mode',
+          )}' is not supported by '${type}' backend, switching to '${newPublishMode}'`,
+        );
+        mergedConfig = mergePreloadedConfig(mergedConfig, {
+          publish_mode: newPublishMode,
+        });
+      }
+    }
+  }
+  return mergedConfig;
 }
 
 export function loadConfig() {
@@ -193,15 +222,7 @@ export function loadConfig() {
 
       validateConfig(mergedConfig.toJS());
 
-      // detect running Netlify CMS proxy
-      if (mergedConfig.has('local_backend')) {
-        const proxyUrl = await detectProxyServer(mergedConfig.toJS().local_backend);
-        if (proxyUrl) {
-          mergedConfig = mergePreloadedConfig(mergedConfig, {
-            backend: { name: 'proxy', proxy_url: proxyUrl },
-          });
-        }
-      }
+      mergedConfig = await handleLocalBackend(mergedConfig);
 
       const config = applyDefaults(mergedConfig);
 

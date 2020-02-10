@@ -1,8 +1,6 @@
 import express from 'express';
 import path from 'path';
-import crypto from 'crypto';
 import { promises as fs } from 'fs';
-import Joi from '@hapi/joi';
 import {
   parseContentKey,
   branchFromContentKey,
@@ -32,18 +30,9 @@ import {
 } from '../types';
 // eslint-disable-next-line import/default
 import simpleGit from 'simple-git/promise';
-
-const sha256 = (buffer: Buffer) => {
-  return crypto
-    .createHash('sha256')
-    .update(buffer)
-    .digest('hex');
-};
-
-const writeFile = async (filePath: string, content: Buffer | string) => {
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, content);
-};
+import { pathTraversal } from '../joi/customValidators';
+import { listRepoFiles, writeFile } from '../utils/fs';
+import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
 const commit = async (git: simpleGit.SimpleGit, commitMessage: string, files: string[]) => {
   await git.add(files);
@@ -69,53 +58,6 @@ const runOnBranch = async <T>(git: simpleGit.SimpleGit, branch: string, func: ()
   } finally {
     await git.checkout(currentBranch);
   }
-};
-
-const listFiles = async (dir: string, extension: string, depth: number): Promise<string[]> => {
-  if (depth <= 0) {
-    return [];
-  }
-
-  try {
-    const dirents = await fs.readdir(dir, { withFileTypes: true });
-    const files = await Promise.all(
-      dirents.map(dirent => {
-        const res = path.join(dir, dirent.name);
-        return dirent.isDirectory()
-          ? listFiles(res, extension, depth - 1)
-          : [res].filter(f => f.endsWith(extension));
-      }),
-    );
-    return ([] as string[]).concat(...files);
-  } catch (e) {
-    return [];
-  }
-};
-
-const listRepoFiles = async (
-  repoPath: string,
-  folder: string,
-  extension: string,
-  depth: number,
-) => {
-  const files = await listFiles(path.join(repoPath, folder), extension, depth);
-  return files.map(f => f.substr(repoPath.length + 1));
-};
-
-const entriesFromFiles = async (repoPath: string, files: string[]) => {
-  return Promise.all(
-    files.map(async file => {
-      try {
-        const content = await fs.readFile(path.join(repoPath, file));
-        return {
-          data: content.toString(),
-          file: { path: file, id: sha256(content) },
-        };
-      } catch (e) {
-        return { data: null, file: { path: file, id: null } };
-      }
-    }),
-  );
 };
 
 const branchDescription = (branch: string) => `branch.${branch}.description`;
@@ -168,20 +110,6 @@ const entriesFromDiffs = async (
   }
 
   return entries;
-};
-
-const readMediaFile = async (repoPath: string, file: string) => {
-  const encoding = 'base64';
-  const buffer = await fs.readFile(path.join(repoPath, file));
-  const id = sha256(buffer);
-
-  return {
-    id,
-    content: buffer.toString(encoding),
-    encoding,
-    path: file,
-    name: path.basename(file),
-  };
 };
 
 const getEntryMediaFiles = async (
@@ -256,20 +184,7 @@ export const validateRepo = async ({ repoPath }: Options) => {
 };
 
 export const getSchema = ({ repoPath }: Options) => {
-  const custom = Joi.extend({
-    type: 'path',
-    base: Joi.string().required(),
-    messages: {
-      'path.invalid': '{{#label}} must resolve to a path under the configured repository',
-    },
-    validate(value, helpers) {
-      const resolvedPath = path.join(repoPath, value);
-      if (!resolvedPath.startsWith(repoPath)) {
-        return { value, errors: helpers.error('path.invalid') };
-      }
-    },
-  });
-  const schema = defaultSchema({ path: custom.path() });
+  const schema = defaultSchema({ path: pathTraversal(repoPath) });
   return schema;
 };
 
@@ -280,7 +195,12 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
     try {
       const { body } = req;
       if (body.action === 'info') {
-        res.json({ repo: path.basename(repoPath) });
+        res.json({
+          repo: path.basename(repoPath),
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          publish_modes: ['simple', 'editorial_workflow'],
+          type: 'local_git',
+        });
         return;
       }
       const { branch } = body.params as DefaultParams;
@@ -502,5 +422,5 @@ export const registerMiddleware = async (app: express.Express) => {
   await validateRepo({ repoPath });
   app.post('/api/v1', joi(getSchema({ repoPath })));
   app.post('/api/v1', localGitMiddleware({ repoPath }));
-  console.log(`Netlify CMS Proxy Server configured with ${repoPath}`);
+  console.log(`Netlify CMS Git Proxy Server configured with ${repoPath}`);
 };
