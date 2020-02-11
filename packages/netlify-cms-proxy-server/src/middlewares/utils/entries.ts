@@ -9,6 +9,9 @@ const sha256 = (buffer: Buffer) => {
     .digest('hex');
 };
 
+// normalize windows os path format
+const normalizePath = (path: string) => path.replace(/\\/g, '/');
+
 export const entriesFromFiles = async (repoPath: string, files: string[]) => {
   return Promise.all(
     files.map(async file => {
@@ -16,7 +19,7 @@ export const entriesFromFiles = async (repoPath: string, files: string[]) => {
         const content = await fs.readFile(path.join(repoPath, file));
         return {
           data: content.toString(),
-          file: { path: file, id: sha256(content) },
+          file: { path: normalizePath(file), id: sha256(content) },
         };
       } catch (e) {
         return { data: null, file: { path: file, id: null } };
@@ -34,7 +37,7 @@ export const readMediaFile = async (repoPath: string, file: string) => {
     id,
     content: buffer.toString(encoding),
     encoding,
-    path: file,
+    path: normalizePath(file),
     name: path.basename(file),
   };
 };
