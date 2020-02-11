@@ -32,7 +32,6 @@ import {
 import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from 'Reducers';
-import { getAsset } from 'Actions/media';
 import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
@@ -46,7 +45,6 @@ const navigateToEntry = (collectionName, slug) =>
 
 export class Editor extends React.Component {
   static propTypes = {
-    boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
     changeDraftFieldValidation: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
@@ -379,7 +377,6 @@ export class Editor extends React.Component {
       entry,
       entryDraft,
       fields,
-      boundGetAsset,
       collection,
       changeDraftField,
       changeDraftFieldValidation,
@@ -420,7 +417,6 @@ export class Editor extends React.Component {
       <EditorInterface
         draftKey={draftKey}
         entry={entryDraft.get('entry')}
-        getAsset={boundGetAsset}
         collection={collection}
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
@@ -472,6 +468,7 @@ function mapStateToProps(state, ownProps) {
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
   const draftKey = entryDraft.get('key');
+
   return {
     collection,
     collections,
@@ -515,25 +512,6 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
-  boundGetAsset: (collection, entry) => (dispatch, getState) => (path, folder) => {
-    return getAsset({ collection, entry, path, folder })(dispatch, getState);
-  },
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(
-      stateProps.collection,
-      stateProps.entryDraft.get('entry'),
-    ),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(withWorkflow(translate()(Editor)));
+export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));

@@ -6,15 +6,7 @@ import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
-import {
-  lengths,
-  components,
-  buttons,
-  borders,
-  effects,
-  shadows,
-  Asset,
-} from 'netlify-cms-ui-default';
+import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-default';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -31,15 +23,13 @@ const ImageWrapper = styled.div`
   ${shadows.inset};
 `;
 
-const Image = styled(({ value: src }) => <img src={src || ''} role="presentation" />)`
+const StyledImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: contain;
 `;
 
-const ImageAsset = ({ getAsset, value, folder }) => {
-  return <Asset folder={folder} path={value} getAsset={getAsset} component={Image} />;
-};
+const Image = props => <StyledImage role="presentation" {...props} />;
 
 const MultiImageWrapper = styled.div`
   display: flex;
@@ -118,9 +108,9 @@ export default function withFileControl({ forImage } = {}) {
 
     shouldComponentUpdate(nextProps) {
       /**
-       * Always update if the value changes.
+       * Always update if the value or getAsset changes.
        */
-      if (this.props.value !== nextProps.value) {
+      if (this.props.value !== nextProps.value || this.props.getAsset !== nextProps.getAsset) {
         return true;
       }
 
@@ -228,15 +218,17 @@ export default function withFileControl({ forImage } = {}) {
           <MultiImageWrapper>
             {value.map(val => (
               <ImageWrapper key={val}>
-                <ImageAsset getAsset={getAsset} value={val} folder={folder} />
+                <Image src={getAsset(val, folder) || ''} />
               </ImageWrapper>
             ))}
           </MultiImageWrapper>
         );
       }
+
+      const src = getAsset(value, folder);
       return (
         <ImageWrapper>
-          <ImageAsset getAsset={getAsset} value={value} folder={folder} />
+          <Image src={src || ''} />
         </ImageWrapper>
       );
     };

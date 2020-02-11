@@ -8,6 +8,9 @@ import { lengths } from 'netlify-cms-ui-default';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
 import { ErrorBoundary } from 'UI';
 import { selectTemplateName, selectInferedField, selectField } from 'Reducers/collections';
+import { connect } from 'react-redux';
+import { boundGetAsset } from 'Actions/media';
+import { selectIsLoadingAsset } from 'Reducers/medias';
 import { INFERABLE_FIELDS } from 'Constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
@@ -21,7 +24,7 @@ const PreviewPaneFrame = styled(Frame)`
   border-radius: ${lengths.borderRadius};
 `;
 
-export default class PreviewPane extends React.Component {
+export class PreviewPane extends React.Component {
   getWidget = (field, value, metadata, props, idx = null) => {
     const { getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));
@@ -74,9 +77,9 @@ export default class PreviewPane extends React.Component {
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
     let value = values && values.get(field.get('name'));
-    let nestedFields = field.get('fields');
-    let singleField = field.get('field');
-    let metadata = fieldsMetaData && fieldsMetaData.get(field.get('name'), Map());
+    const nestedFields = field.get('fields');
+    const singleField = field.get('field');
+    const metadata = fieldsMetaData && fieldsMetaData.get(field.get('name'), Map());
 
     if (nestedFields) {
       field = field.set('fields', this.getNestedWidgets(nestedFields, value, metadata));
@@ -233,3 +236,25 @@ PreviewPane.propTypes = {
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => {
+  const isLoadingAsset = selectIsLoadingAsset(state.medias);
+  return { isLoadingAsset };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
+  };
+};
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    getAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(PreviewPane);
