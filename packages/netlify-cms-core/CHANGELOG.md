@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.18.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.0...netlify-cms-core@2.18.1) (2020-02-11)
+
+
+### Bug Fixes
+
+* **core:** use correct name for edit route param ([#3236](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3236)) ([cfd2fed](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/cfd2fed494dc707e03ade086009ebfdd27578477))
+
+
+
+
+
 # [2.18.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.17.0...netlify-cms-core@2.18.0) (2020-02-10)
 
 
