@@ -150,11 +150,13 @@ With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly 
       auth_type: implicit
       app_id: # The Key from your Bitbucket settings
     ```
-  
+
 **Warning:** With Bitbucket implicit grant, the authentication is valid for 1 hour only. After that, the user has to login again, **which can lead to data loss** if the expiration occurs while content is being edited.
 
 ## Test Repo Backend
-You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but any changes will disapear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
+You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but any changes will disappear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
+
+Note: as every backends, `test-repo` uses local browser storage, so it doesn't have access to your file system and can't interact with local git repositories. As a consequence, while using this backend you **won't see any already existing local files**.
 
 To enable this backend, add the following lines to your Netlify CMS `config.yml` file:
 
