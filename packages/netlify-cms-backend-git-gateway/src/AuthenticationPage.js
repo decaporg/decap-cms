@@ -194,7 +194,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>
             {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
-            {!errors.server ? null : <ErrorMessage>{errors.server}</ErrorMessage>}
+            {!errors.server ? null : <ErrorMessage>{String(errors.server)}</ErrorMessage>}
             <ErrorMessage>{errors.email || null}</ErrorMessage>
             <AuthInput
               type="text"
