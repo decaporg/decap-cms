@@ -92,7 +92,7 @@ const EntryCard = ({
   imageFolder,
   collectionLabel,
   viewStyle = VIEW_STYLE_LIST,
-  boundGetAsset,
+  getAsset,
 }) => {
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
@@ -105,7 +105,7 @@ const EntryCard = ({
     );
   }
 
-  const asset = boundGetAsset(image, imageFolder);
+  const asset = getAsset(image, imageFolder);
   const src = asset.toString();
 
   if (viewStyle === VIEW_STYLE_GRID) {
@@ -163,7 +163,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
+    getAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
   };
 };
 
