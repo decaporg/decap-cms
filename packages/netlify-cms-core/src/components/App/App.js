@@ -217,11 +217,11 @@ class App extends React.Component {
               render={props => <Collection {...props} isSearchResults />}
             />
             <RouteInCollection
-              path="/edit/:collectionName/:entryName"
+              path="/edit/:name/:entryName"
               collections={collections}
               render={({ match }) => {
-                const { collectionName, entryName } = match.params;
-                return <Redirect to={`/collections/${collectionName}/entries/${entryName}`} />;
+                const { name, entryName } = match.params;
+                return <Redirect to={`/collections/${name}/entries/${entryName}`} />;
               }}
             />
             <Route component={NotFoundPage} />
