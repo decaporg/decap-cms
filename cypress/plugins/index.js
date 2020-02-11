@@ -137,18 +137,18 @@ module.exports = async (on, config) => {
     },
   });
 
-  on('before:browser:launch', (browser = {}, args) => {
+  on('before:browser:launch', (browser = {}, launchOptions) => {
     if (browser.name === 'chrome') {
       // to allows usage of a mock proxy
-      args.push('--ignore-certificate-errors');
-      args.push('-–disable-gpu');
+      launchOptions.args.push('--ignore-certificate-errors');
+      launchOptions.args.push('-–disable-gpu');
       if (browser.isHeaded) {
-        args.push('--window-size=1200,1200');
+        launchOptions.args.push('--window-size=1200,1200');
       } else {
-        args.push('--window-size=1200,1077');
+        launchOptions.args.push('--window-size=1200,1077');
       }
 
-      return args;
+      return launchOptions;
     }
   });
 
