@@ -115,31 +115,31 @@ const selectors = {
   },
 };
 
-const getFieldsMediaFolders = (fields: EntryField[]) => {
-  const mediaFolders = fields.reduce((acc, f) => {
+const getFieldsWithMediaFolders = (fields: EntryField[]) => {
+  const fieldsWithMediaFolders = fields.reduce((acc, f) => {
     if (f.has('media_folder')) {
-      acc = [...acc, f.get('media_folder') as string];
+      acc = [...acc, f];
     }
 
     if (f.has('fields')) {
       const fields = f.get('fields')?.toArray() as EntryField[];
-      acc = [...acc, ...getFieldsMediaFolders(fields)];
+      acc = [...acc, ...getFieldsWithMediaFolders(fields)];
     }
     if (f.has('field')) {
       const field = f.get('field') as EntryField;
-      acc = [...acc, ...getFieldsMediaFolders([field])];
+      acc = [...acc, ...getFieldsWithMediaFolders([field])];
     }
 
     return acc;
-  }, [] as string[]);
+  }, [] as EntryField[]);
 
-  return mediaFolders;
+  return fieldsWithMediaFolders;
 };
 
-export const selectFieldsMediaFolders = (collection: Collection) => {
+export const selectFieldsWithMediaFolders = (collection: Collection) => {
   if (collection.has('folder')) {
     const fields = collection.get('fields').toArray();
-    return getFieldsMediaFolders(fields);
+    return getFieldsWithMediaFolders(fields);
   } else if (collection.has('files')) {
     const fields = collection
       .get('files')
@@ -147,17 +147,16 @@ export const selectFieldsMediaFolders = (collection: Collection) => {
       .map(f => f.get('fields').toArray()) as EntryField[][];
 
     const flattened = [] as EntryField[];
-    return getFieldsMediaFolders(flattened.concat(...fields));
+    return getFieldsWithMediaFolders(flattened.concat(...fields));
   }
 
   return [];
 };
 
 export const selectMediaFolders = (state: State, collection: Collection, entry: EntryMap) => {
-  const fieldsFolders = selectFieldsMediaFolders(collection);
-  const folders = fieldsFolders.map(folder =>
-    selectMediaFolder(state.config, collection, entry, folder),
-  );
+  const fields = selectFieldsWithMediaFolders(collection);
+
+  const folders = fields.map(f => selectMediaFolder(state.config, collection, entry, f));
 
   if (
     collection.has('media_folder') ||

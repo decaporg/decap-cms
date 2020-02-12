@@ -4,7 +4,7 @@ import collections, {
   selectAllowDeletion,
   selectEntryPath,
   selectEntrySlug,
-  selectFieldsMediaFolders,
+  selectFieldsWithMediaFolders,
   selectMediaFolders,
   getFieldsNames,
   selectField,
@@ -87,12 +87,12 @@ describe('collections', () => {
 
   describe('selectFieldsMediaFolders', () => {
     it('should return empty array for invalid collection', () => {
-      expect(selectFieldsMediaFolders(fromJS({}))).toEqual([]);
+      expect(selectFieldsWithMediaFolders(fromJS({}))).toEqual([]);
     });
 
     it('should return configs for folder collection', () => {
       expect(
-        selectFieldsMediaFolders(
+        selectFieldsWithMediaFolders(
           fromJS({
             folder: 'posts',
             fields: [
@@ -124,16 +124,22 @@ describe('collections', () => {
           }),
         ),
       ).toEqual([
-        'image_media_folder',
-        'body_media_folder',
-        'list_1_item_media_folder',
-        'list_2_item_media_folder',
+        fromJS({
+          name: 'image',
+          media_folder: 'image_media_folder',
+        }),
+        fromJS({ name: 'body', media_folder: 'body_media_folder' }),
+        fromJS({ name: 'list_1_item', media_folder: 'list_1_item_media_folder' }),
+        fromJS({
+          name: 'list_2_item',
+          media_folder: 'list_2_item_media_folder',
+        }),
       ]);
     });
 
     it('should return configs for files collection', () => {
       expect(
-        selectFieldsMediaFolders(
+        selectFieldsWithMediaFolders(
           fromJS({
             files: [
               {
@@ -180,10 +186,16 @@ describe('collections', () => {
           }),
         ),
       ).toEqual([
-        'image_media_folder',
-        'body_media_folder',
-        'list_1_item_media_folder',
-        'list_2_item_media_folder',
+        fromJS({
+          name: 'image',
+          media_folder: 'image_media_folder',
+        }),
+        fromJS({ name: 'body', media_folder: 'body_media_folder' }),
+        fromJS({ name: 'list_1_item', media_folder: 'list_1_item_media_folder' }),
+        fromJS({
+          name: 'list_2_item',
+          media_folder: 'list_2_item_media_folder',
+        }),
       ]);
     });
   });
@@ -215,7 +227,7 @@ describe('collections', () => {
       ).toEqual(['collection_media_folder', 'image_media_folder']);
     });
 
-    it('should return fields and collection folder', () => {
+    it.only('should return fields and collection folder', () => {
       expect(
         selectMediaFolders(
           { config },

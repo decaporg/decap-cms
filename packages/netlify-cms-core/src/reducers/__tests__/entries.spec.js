@@ -1,4 +1,4 @@
-import { Map, OrderedMap, fromJS } from 'immutable';
+import { OrderedMap, fromJS } from 'immutable';
 import * as actions from 'Actions/entries';
 import reducer, {
   selectMediaFolder,
@@ -7,13 +7,13 @@ import reducer, {
 } from '../entries';
 
 const initialState = OrderedMap({
-  posts: Map({ name: 'posts' }),
+  posts: fromJS({ name: 'posts' }),
 });
 
 describe('entries', () => {
   describe('reducer', () => {
     it('should mark entries as fetching', () => {
-      expect(reducer(initialState, actions.entriesLoading(Map({ name: 'posts' })))).toEqual(
+      expect(reducer(initialState, actions.entriesLoading(fromJS({ name: 'posts' })))).toEqual(
         OrderedMap(
           fromJS({
             posts: { name: 'posts' },
@@ -31,7 +31,7 @@ describe('entries', () => {
         { slug: 'b', title: 'B' },
       ];
       expect(
-        reducer(initialState, actions.entriesLoaded(Map({ name: 'posts' }), entries, 0)),
+        reducer(initialState, actions.entriesLoaded(fromJS({ name: 'posts' }), entries, 0)),
       ).toEqual(
         OrderedMap(
           fromJS({
@@ -53,7 +53,7 @@ describe('entries', () => {
 
     it('should handle loaded entry', () => {
       const entry = { slug: 'a', path: '' };
-      expect(reducer(initialState, actions.entryLoaded(Map({ name: 'posts' }), entry))).toEqual(
+      expect(reducer(initialState, actions.entryLoaded(fromJS({ name: 'posts' }), entry))).toEqual(
         OrderedMap(
           fromJS({
             posts: { name: 'posts' },
@@ -75,8 +75,8 @@ describe('entries', () => {
     it("should return global media folder when collection doesn't specify media_folder", () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts' }),
           undefined,
           undefined,
         ),
@@ -86,8 +86,8 @@ describe('entries', () => {
     it('should return draft media folder when collection specifies media_folder and entry is undefined', () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts', folder: 'posts', media_folder: '' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
           undefined,
           undefined,
         ),
@@ -97,9 +97,9 @@ describe('entries', () => {
     it('should return relative media folder when collection specifies media_folder and entry path is not null', () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts', folder: 'posts', media_folder: '' }),
-          Map({ path: 'posts/title/index.md' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
+          fromJS({ path: 'posts/title/index.md' }),
           undefined,
         ),
       ).toEqual('posts/title');
@@ -108,9 +108,9 @@ describe('entries', () => {
     it('should resolve collection relative media folder', () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts', folder: 'posts', media_folder: '../' }),
-          Map({ path: 'posts/title/index.md' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', folder: 'posts', media_folder: '../' }),
+          fromJS({ path: 'posts/title/index.md' }),
           undefined,
         ),
       ).toEqual('posts/');
@@ -119,13 +119,13 @@ describe('entries', () => {
     it('should return collection absolute media folder without leading slash', () => {
       expect(
         selectMediaFolder(
-          Map({ media_folder: '/static/Images' }),
-          Map({
+          fromJS({ media_folder: '/static/Images' }),
+          fromJS({
             name: 'getting-started',
             folder: 'src/docs/getting-started',
             media_folder: '/static/images/docs/getting-started',
           }),
-          Map({ path: 'src/docs/getting-started/with-github.md' }),
+          fromJS({ path: 'src/docs/getting-started/with-github.md' }),
           undefined,
         ),
       ).toEqual('static/images/docs/getting-started');
@@ -209,7 +209,7 @@ describe('entries', () => {
           fromJS({ media_folder: 'static/media', slug: slugConfig }),
           collection,
           entry,
-          '../../../{{media_folder}}/{{category}}/{{slug}}',
+          fromJS({ media_folder: '../../../{{media_folder}}/{{category}}/{{slug}}' }),
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
@@ -262,6 +262,46 @@ describe('entries', () => {
         ),
       ).toBe('static/images/');
     });
+
+    it('should cascade media_folders', () => {
+      const mainImageField = fromJS({ name: 'main_image' });
+      const logoField = fromJS({ name: 'logo', media_folder: '{{media_folder}}/logos/' });
+      const nestedField2 = fromJS({ name: 'nested', media_folder: '{{media_folder}}/nested2/' });
+      const nestedField1 = fromJS({
+        name: 'nested',
+        media_folder: '{{media_folder}}/nested1/',
+        fields: [nestedField2],
+      });
+
+      const args = [
+        fromJS({ media_folder: '/static/img' }),
+        fromJS({
+          name: 'general',
+          media_folder: '{{media_folder}}/general/',
+          files: [
+            {
+              name: 'customers',
+              media_folder: '{{media_folder}}/customers/',
+              fields: [
+                mainImageField,
+                logoField,
+                { media_folder: '{{media_folder}}/nested', field: nestedField1 },
+              ],
+            },
+          ],
+        }),
+        fromJS({ path: 'src/customers/customers.md', slug: 'customers', data: { title: 'title' } }),
+      ];
+
+      expect(selectMediaFolder(...args, mainImageField)).toBe('static/img/general/customers/');
+      expect(selectMediaFolder(...args, logoField)).toBe('static/img/general/customers/logos/');
+      expect(selectMediaFolder(...args, nestedField1)).toBe(
+        'static/img/general/customers/nested/nested1/',
+      );
+      expect(selectMediaFolder(...args, nestedField2)).toBe(
+        'static/img/general/customers/nested/nested1/nested2/',
+      );
+    });
   });
 
   describe('selectMediaFilePath', () => {
@@ -274,8 +314,8 @@ describe('entries', () => {
     it('should resolve path from global media folder for collection with no media folder', () => {
       expect(
         selectMediaFilePath(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts', folder: 'posts' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', folder: 'posts' }),
           undefined,
           'image.png',
           undefined,
@@ -286,8 +326,8 @@ describe('entries', () => {
     it('should resolve path from collection media folder for collection with media folder', () => {
       expect(
         selectMediaFilePath(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts', folder: 'posts', media_folder: '' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
           undefined,
           'image.png',
           undefined,
@@ -298,9 +338,9 @@ describe('entries', () => {
     it('should handle relative media_folder', () => {
       expect(
         selectMediaFilePath(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
-          Map({ path: 'posts/title/index.md' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
+          fromJS({ path: 'posts/title/index.md' }),
           'image.png',
           undefined,
         ),
@@ -310,11 +350,11 @@ describe('entries', () => {
     it('should handle field media_folder', () => {
       expect(
         selectMediaFilePath(
-          Map({ media_folder: 'static/media' }),
-          Map({ name: 'posts', folder: 'posts' }),
-          Map({ path: 'posts/title/index.md' }),
+          fromJS({ media_folder: 'static/media' }),
+          fromJS({ name: 'posts', folder: 'posts', fields: [] }),
+          fromJS({ path: 'posts/title/index.md' }),
           'image.png',
-          '../../static/media/',
+          fromJS({ media_folder: '../../static/media/' }),
         ),
       ).toBe('static/media/image.png');
     });
@@ -330,7 +370,7 @@ describe('entries', () => {
     it('should resolve path from public folder for collection with no media folder', () => {
       expect(
         selectMediaFilePublicPath(
-          Map({ public_folder: '/media' }),
+          fromJS({ public_folder: '/media' }),
           null,
           '/media/image.png',
           undefined,
@@ -342,8 +382,8 @@ describe('entries', () => {
     it('should resolve path from collection public folder for collection with public folder', () => {
       expect(
         selectMediaFilePublicPath(
-          Map({ public_folder: '/media' }),
-          Map({ name: 'posts', folder: 'posts', public_folder: '' }),
+          fromJS({ public_folder: '/media' }),
+          fromJS({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
           undefined,
           undefined,
@@ -354,8 +394,8 @@ describe('entries', () => {
     it('should handle relative public_folder', () => {
       expect(
         selectMediaFilePublicPath(
-          Map({ public_folder: '/media' }),
-          Map({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
+          fromJS({ public_folder: '/media' }),
+          fromJS({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
           undefined,
           undefined,
@@ -415,7 +455,7 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
-          '/{{public_folder}}/{{category}}/{{slug}}',
+          fromJS({ public_folder: '/{{public_folder}}/{{category}}/{{slug}}' }),
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
@@ -443,7 +483,7 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
-          '/{{public_folder}}/{{category}}/{{slug}}',
+          fromJS({ public_folder: '/{{public_folder}}/{{category}}/{{slug}}' }),
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
