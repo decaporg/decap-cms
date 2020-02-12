@@ -6,6 +6,8 @@ import collections, {
   selectEntrySlug,
   selectFieldsMediaFolders,
   selectMediaFolders,
+  getFieldsNames,
+  selectField,
 } from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
@@ -235,6 +237,72 @@ describe('collections', () => {
           fromJS({ slug: 'name', path: 'src/post/post1.md' }),
         ),
       ).toEqual(['file_media_folder', 'image_media_folder']);
+    });
+  });
+
+  describe('getFieldsNames', () => {
+    it('should get flat fields names', () => {
+      const collection = fromJS({
+        fields: [{ name: 'en' }, { name: 'es' }],
+      });
+      expect(getFieldsNames(collection.get('fields').toArray())).toEqual(['en', 'es']);
+    });
+
+    it('should get nested fields names', () => {
+      const collection = fromJS({
+        fields: [
+          { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
+          { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
+          { name: 'it', field: { name: 'title', fields: [{ name: 'subTitle' }] } },
+        ],
+      });
+      expect(getFieldsNames(collection.get('fields').toArray())).toEqual([
+        'en',
+        'es',
+        'it',
+        'en.title',
+        'en.body',
+        'es.title',
+        'es.body',
+        'it.title',
+        'it.title.subTitle',
+      ]);
+    });
+  });
+
+  describe('selectField', () => {
+    it('should return top field by key', () => {
+      const collection = fromJS({
+        fields: [{ name: 'en' }, { name: 'es' }],
+      });
+      expect(selectField(collection, 'en')).toBe(collection.get('fields').get(0));
+    });
+
+    it('should return nested field by key', () => {
+      const collection = fromJS({
+        fields: [
+          { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
+          { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
+          { name: 'it', field: { name: 'title', fields: [{ name: 'subTitle' }] } },
+        ],
+      });
+
+      expect(selectField(collection, 'en.title')).toBe(
+        collection
+          .get('fields')
+          .get(0)
+          .get('fields')
+          .get(0),
+      );
+
+      expect(selectField(collection, 'it.title.subTitle')).toBe(
+        collection
+          .get('fields')
+          .get(2)
+          .get('field')
+          .get('fields')
+          .get(0),
+      );
     });
   });
 });
