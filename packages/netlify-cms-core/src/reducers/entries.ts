@@ -146,32 +146,32 @@ const getFileField = (collectionFiles: CollectionFiles, slug: string | undefined
   return file;
 };
 
-const getCustomFolder = (
+const hasCustomFolder = (
   folderKey: 'media_folder' | 'public_folder',
   collection: Collection | null,
   slug: string | undefined,
   field: EntryField | undefined,
 ) => {
   if (!collection) {
-    return undefined;
+    return false;
   }
 
   if (field && field.has(folderKey)) {
-    return field.get(folderKey)!;
+    return true;
   }
 
   if (collection.has('files')) {
     const file = getFileField(collection.get('files')!, slug);
     if (file && file.has(folderKey)) {
-      return field ? `{{${folderKey}}}` : file.get(folderKey)!;
+      return true;
     }
   }
 
   if (collection.has(folderKey)) {
-    return field ? `{{${folderKey}}}` : collection.get(folderKey)!;
+    return true;
   }
 
-  return undefined;
+  return false;
 };
 
 const traverseFields = (
@@ -185,7 +185,14 @@ const traverseFields = (
 ): string | null => {
   const matchedField = fields.filter(f => f === field)[0];
   if (matchedField) {
-    return currentFolder;
+    return folderFormatter(
+      matchedField.has(folderKey) ? matchedField.get(folderKey)! : `{{${folderKey}}}`,
+      entryMap,
+      collection,
+      currentFolder,
+      folderKey,
+      config.get('slug'),
+    );
   }
 
   for (let f of fields) {
@@ -227,14 +234,14 @@ const traverseFields = (
   return null;
 };
 
-const evaluateParentFolder = (
+const evaluateFolder = (
   folderKey: 'media_folder' | 'public_folder',
   config: Config,
   collection: Collection,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
 ) => {
-  let defaultFolder = config.get(folderKey);
+  let currentFolder = config.get(folderKey);
 
   // add identity template if doesn't exist
   if (!collection.has(folderKey)) {
@@ -244,11 +251,11 @@ const evaluateParentFolder = (
   if (collection.has('files')) {
     // files collection evaluate the collection template
     // then move on to the specific file configuration denoted by the slug
-    defaultFolder = folderFormatter(
+    currentFolder = folderFormatter(
       collection.get(folderKey)!,
       entryMap,
       collection,
-      defaultFolder,
+      currentFolder,
       folderKey,
       config.get('slug'),
     );
@@ -260,69 +267,63 @@ const evaluateParentFolder = (
         file = file.set(folderKey, `{{${folderKey}}}`);
       }
 
-      if (!field) {
-        // files collection with no specific field - the collection is the parent
-        return defaultFolder;
-      }
-
-      // files collection with a specific field, evaluate the file template
+      // files collection, evaluate the file template
       // and keep evaluating until we match our field
-      defaultFolder = folderFormatter(
+      currentFolder = folderFormatter(
         file.get(folderKey)!,
         entryMap,
         collection,
-        defaultFolder,
+        currentFolder,
         folderKey,
         config.get('slug'),
       );
 
-      const folder = traverseFields(
+      if (field) {
+        const fieldFolder = traverseFields(
+          folderKey,
+          config,
+          collection,
+          entryMap,
+          field,
+          file.get('fields')!.toArray(),
+          currentFolder,
+        );
+
+        if (fieldFolder) {
+          currentFolder = fieldFolder;
+        }
+      }
+    }
+  } else {
+    // folder collection, evaluate the collection template
+    // and keep evaluating until we match our field
+    currentFolder = folderFormatter(
+      collection.get(folderKey)!,
+      entryMap,
+      collection,
+      currentFolder,
+      folderKey,
+      config.get('slug'),
+    );
+
+    if (field) {
+      const fieldFolder = traverseFields(
         folderKey,
         config,
         collection,
         entryMap,
         field,
-        file.get('fields')!.toArray(),
-        defaultFolder,
+        collection.get('fields')!.toArray(),
+        currentFolder,
       );
 
-      if (folder) {
-        defaultFolder = folder;
+      if (fieldFolder) {
+        currentFolder = fieldFolder;
       }
-    }
-  } else {
-    if (!field) {
-      // folder collection with no specific field - the root config is the parent
-      return defaultFolder;
-    }
-
-    // folder collection with a specific field, evaluate the collection template
-    // and keep evaluating until we match our field
-    defaultFolder = folderFormatter(
-      collection.get(folderKey)!,
-      entryMap,
-      collection,
-      defaultFolder,
-      folderKey,
-      config.get('slug'),
-    );
-
-    const folder = traverseFields(
-      folderKey,
-      config,
-      collection,
-      entryMap,
-      field,
-      collection.get('fields')!.toArray(),
-      defaultFolder,
-    );
-
-    if (folder) {
-      defaultFolder = folder;
     }
   }
 
-  return defaultFolder;
+  return currentFolder;
 };
 
 export const selectMediaFolder = (
@@ -334,22 +335,13 @@ export const selectMediaFolder = (
   const name = 'media_folder';
   let mediaFolder = config.get(name);
 
-  const customFolder = getCustomFolder(name, collection, entryMap?.get('slug'), field);
+  const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
-  if (customFolder !== undefined) {
+  if (customFolder) {
     const entryPath = entryMap?.get('path');
     if (entryPath) {
       const entryDir = dirname(entryPath);
-      const parentFolder = evaluateParentFolder(name, config, collection!, entryMap, field);
-      const folder = folderFormatter(
-        customFolder,
-        entryMap,
-        collection!,
-        parentFolder,
-        name,
-        config.get('slug'),
-      );
-
+      const folder = evaluateFolder(name, config, collection!, entryMap, field);
       // return absolute paths as is without the leading '/'
       if (folder.startsWith('/')) {
         mediaFolder = join(trimStart(folder, '/'));
@@ -394,18 +386,10 @@ export const selectMediaFilePublicPath = (
   const name = 'public_folder';
   let publicFolder = config.get(name);
 
-  const customFolder = getCustomFolder(name, collection, entryMap?.get('slug'), field);
+  const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
-  if (customFolder !== undefined) {
-    const parentFolder = evaluateParentFolder(name, config, collection!, entryMap, field);
-    publicFolder = folderFormatter(
-      customFolder,
-      entryMap,
-      collection!,
-      parentFolder,
-      name,
-      config.get('slug'),
-    );
+  if (customFolder) {
+    publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
   }
 
   return join(publicFolder, basename(mediaPath));

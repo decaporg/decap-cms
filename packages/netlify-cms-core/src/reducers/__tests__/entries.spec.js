@@ -201,7 +201,13 @@ describe('entries', () => {
       const collection = fromJS({
         name: 'posts',
         folder: 'content',
-        fields: [{ name: 'title', widget: 'string' }],
+        fields: [
+          {
+            name: 'title',
+            widget: 'string',
+            media_folder: '../../../{{media_folder}}/{{category}}/{{slug}}',
+          },
+        ],
       });
 
       expect(
@@ -209,7 +215,7 @@ describe('entries', () => {
           fromJS({ media_folder: 'static/media', slug: slugConfig }),
           collection,
           entry,
-          fromJS({ media_folder: '../../../{{media_folder}}/{{category}}/{{slug}}' }),
+          collection.get('fields').get(0),
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
@@ -348,13 +354,14 @@ describe('entries', () => {
     });
 
     it('should handle field media_folder', () => {
+      const field = fromJS({ media_folder: '../../static/media/' });
       expect(
         selectMediaFilePath(
           fromJS({ media_folder: 'static/media' }),
-          fromJS({ name: 'posts', folder: 'posts', fields: [] }),
+          fromJS({ name: 'posts', folder: 'posts', fields: [field] }),
           fromJS({ path: 'posts/title/index.md' }),
           'image.png',
-          fromJS({ media_folder: '../../static/media/' }),
+          field,
         ),
       ).toBe('static/media/image.png');
     });
@@ -443,10 +450,16 @@ describe('entries', () => {
         path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
         data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
       });
+
+      const field = fromJS({
+        name: 'title',
+        widget: 'string',
+        public_folder: '/{{public_folder}}/{{category}}/{{slug}}',
+      });
       const collection = fromJS({
         name: 'posts',
         folder: 'content',
-        fields: [{ name: 'title', widget: 'string' }],
+        fields: [field],
       });
 
       expect(
@@ -455,7 +468,7 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
-          fromJS({ public_folder: '/{{public_folder}}/{{category}}/{{slug}}' }),
+          field,
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
@@ -471,10 +484,16 @@ describe('entries', () => {
         path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
         data: { title: 'Deployment With NanoBox', category: 'Hosting And Deployment' },
       });
+
+      const field = fromJS({
+        name: 'title',
+        widget: 'string',
+        public_folder: '/{{public_folder}}/{{category}}/{{slug}}',
+      });
       const collection = fromJS({
         name: 'posts',
         folder: 'content',
-        fields: [{ name: 'title', widget: 'string' }],
+        fields: [field],
       });
 
       expect(
@@ -483,7 +502,7 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
-          fromJS({ public_folder: '/{{public_folder}}/{{category}}/{{slug}}' }),
+          field,
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
