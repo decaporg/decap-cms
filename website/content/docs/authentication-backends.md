@@ -156,7 +156,7 @@ With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly 
 ## Test Repo Backend
 You can use the `test-repo` backend to try out Netlify CMS without connecting to a Git repo. With this backend, you can write and publish content normally, but any changes will disappear when you reload the page. This backend powers the Netlify CMS [demo site](https://cms-demo.netlify.com/).
 
-Note: as every backends, `test-repo` uses local browser storage, so it doesn't have access to your file system and can't interact with local git repositories. As a consequence, while using this backend you **won't see any already existing local files**.
+**Note:** The `test-repo` backend can't access your local file system, nor does it connect to a Git repo, thus you won't see any existing files while using it.
 
 To enable this backend, add the following lines to your Netlify CMS `config.yml` file:
 
