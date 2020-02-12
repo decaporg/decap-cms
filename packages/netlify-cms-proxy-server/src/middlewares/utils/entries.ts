@@ -12,17 +12,23 @@ const sha256 = (buffer: Buffer) => {
 // normalize windows os path format
 const normalizePath = (path: string) => path.replace(/\\/g, '/');
 
-export const entriesFromFiles = async (repoPath: string, files: string[]) => {
+export const entriesFromFiles = async (
+  repoPath: string,
+  files: { path: string; label?: string }[],
+) => {
   return Promise.all(
     files.map(async file => {
       try {
-        const content = await fs.readFile(path.join(repoPath, file));
+        const content = await fs.readFile(path.join(repoPath, file.path));
         return {
           data: content.toString(),
-          file: { path: normalizePath(file), id: sha256(content) },
+          file: { path: normalizePath(file.path), id: sha256(content) },
         };
       } catch (e) {
-        return { data: null, file: { path: file, id: null } };
+        return {
+          data: null,
+          file: { path: normalizePath(file.path), label: file.label, id: null },
+        };
       }
     }),
   );

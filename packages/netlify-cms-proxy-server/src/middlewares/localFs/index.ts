@@ -38,23 +38,23 @@ export const localFsMiddleware = ({ repoPath }: Options) => {
           const payload = body.params as EntriesByFolderParams;
           const { folder, extension, depth } = payload;
           const entries = await listRepoFiles(repoPath, folder, extension, depth).then(files =>
-            entriesFromFiles(repoPath, files),
+            entriesFromFiles(
+              repoPath,
+              files.map(file => ({ path: file })),
+            ),
           );
           res.json(entries);
           break;
         }
         case 'entriesByFiles': {
           const payload = body.params as EntriesByFilesParams;
-          const entries = await entriesFromFiles(
-            repoPath,
-            payload.files.map(file => file.path),
-          );
+          const entries = await entriesFromFiles(repoPath, payload.files);
           res.json(entries);
           break;
         }
         case 'getEntry': {
           const payload = body.params as GetEntryParams;
-          const [entry] = await entriesFromFiles(repoPath, [payload.path]);
+          const [entry] = await entriesFromFiles(repoPath, [{ path: payload.path }]);
           res.json(entry);
           break;
         }
