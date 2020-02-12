@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.18.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.1...netlify-cms-core@2.18.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* handle missing inferred title field ([#3239](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3239)) ([ca8cf71](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ca8cf71ab0d479547c649fb1fce8e72db6207c27))
+
+
+
+
+
 ## [2.18.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.0...netlify-cms-core@2.18.1) (2020-02-11)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.1.1...netlify-cms-proxy-server@1.1.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* **proxy-server:** better handle files based collections ([#3237](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/3237)) ([3678053](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/3678053f0c419718000a21768790618749df762c))
+
+
+
+
+
 ## [1.1.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.1.0...netlify-cms-proxy-server@1.1.1) (2020-02-11)
 
 **Note:** Version bump only for package netlify-cms-proxy-server
