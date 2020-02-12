@@ -129,7 +129,9 @@ const mapStateToProps = (state, ownProps) => {
   const { entry, inferedFields, collection } = ownProps;
   const label = entry.get('label');
   const entryData = entry.get('data');
-  const defaultTitle = label || entryData.getIn(keyToPathArray(inferedFields.titleField));
+  const defaultTitle =
+    label ||
+    (inferedFields.titleField && entryData.getIn(keyToPathArray(inferedFields.titleField)));
   const summaryTemplate = collection.get('summary');
   const summary = summaryTemplate
     ? summaryFormatter(summaryTemplate, entry, collection)
