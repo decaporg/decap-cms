@@ -25,6 +25,10 @@ local_backend: true
 # when using a custom proxy server port
 local_backend:
   url: http://localhost:8082/api/v1
+
+# in all cases the backend property must be kept
+backend:
+  name: whatever
 ```
 
 4. Start your local development server (e.g. run `gatsby develop`).
