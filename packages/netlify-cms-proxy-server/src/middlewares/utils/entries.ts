@@ -22,7 +22,7 @@ export const entriesFromFiles = async (
         const content = await fs.readFile(path.join(repoPath, file.path));
         return {
           data: content.toString(),
-          file: { path: normalizePath(file.path), id: sha256(content) },
+          file: { path: normalizePath(file.path), label: file.label, id: sha256(content) },
         };
       } catch (e) {
         return {
