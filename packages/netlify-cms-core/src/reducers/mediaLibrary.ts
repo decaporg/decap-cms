@@ -19,7 +19,7 @@ import {
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
 } from '../actions/mediaLibrary';
-import { selectEditingDraft } from './entries';
+import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
 import {
   State,
@@ -213,7 +213,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
   }
 };
 
-export function selectMediaFiles(state: State) {
+export function selectMediaFiles(state: State, field?: EntryField) {
   const { mediaLibrary, entryDraft } = state;
   const editingDraft = selectEditingDraft(state.entryDraft);
   const integration = selectIntegration(state, null, 'assetStore');
@@ -223,7 +223,12 @@ export function selectMediaFiles(state: State) {
     const entryFiles = entryDraft
       .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
       .toJS() as MediaFile[];
-    files = entryFiles.map(file => ({ key: file.id, ...file }));
+    const entry = entryDraft.get('entry');
+    const collection = state.collections.get(entry?.get('collection'));
+    const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
+    files = entryFiles
+      .filter(f => f.path.startsWith(mediaFolder))
+      .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
   }

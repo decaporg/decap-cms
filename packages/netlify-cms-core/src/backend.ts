@@ -497,7 +497,6 @@ export class Backend {
     const integration = selectIntegration(state.integrations, null, 'assetStore');
 
     const loadedEntry = await this.implementation.getEntry(path);
-
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
       raw: loadedEntry.data,
       label,

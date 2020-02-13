@@ -315,10 +315,11 @@ class MediaLibrary extends React.Component {
 
 const mapStateToProps = state => {
   const { mediaLibrary } = state;
+  const field = mediaLibrary.get('field');
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
-    files: selectMediaFiles(state),
+    files: selectMediaFiles(state, field),
     displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
     dynamicSearchActive: mediaLibrary.get('dynamicSearchActive'),
@@ -332,7 +333,7 @@ const mapStateToProps = state => {
     page: mediaLibrary.get('page'),
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
-    field: mediaLibrary.get('field'),
+    field,
   };
   return { ...mediaLibraryProps };
 };

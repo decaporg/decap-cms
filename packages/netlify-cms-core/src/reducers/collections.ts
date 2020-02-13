@@ -136,34 +136,40 @@ const getFieldsWithMediaFolders = (fields: EntryField[]) => {
   return fieldsWithMediaFolders;
 };
 
-export const selectFieldsWithMediaFolders = (collection: Collection) => {
+const getFileFromSlug = (collection: Collection, slug: string) => {
+  return collection
+    .get('files')
+    ?.toArray()
+    .filter(f => f.get('name') === slug)[0];
+};
+
+export const selectFieldsWithMediaFolders = (collection: Collection, slug: string) => {
   if (collection.has('folder')) {
     const fields = collection.get('fields').toArray();
     return getFieldsWithMediaFolders(fields);
   } else if (collection.has('files')) {
-    const fields = collection
-      .get('files')
-      ?.toArray()
-      .map(f => f.get('fields').toArray()) as EntryField[][];
-
-    const flattened = [] as EntryField[];
-    return getFieldsWithMediaFolders(flattened.concat(...fields));
+    const fields =
+      getFileFromSlug(collection, slug)
+        ?.get('fields')
+        .toArray() || [];
+    return getFieldsWithMediaFolders(fields);
   }
 
   return [];
 };
 
 export const selectMediaFolders = (state: State, collection: Collection, entry: EntryMap) => {
-  const fields = selectFieldsWithMediaFolders(collection);
-
+  const fields = selectFieldsWithMediaFolders(collection, entry.get('slug'));
   const folders = fields.map(f => selectMediaFolder(state.config, collection, entry, f));
-
-  if (
-    collection.has('media_folder') ||
-    collection
-      .get('files')
-      ?.find(file => file?.get('name') === entry?.get('slug') && file?.has('media_folder'))
-  ) {
+  if (collection.has('files')) {
+    const file = getFileFromSlug(collection, entry.get('slug'));
+    if (file) {
+      folders.unshift(selectMediaFolder(state.config, collection, entry, undefined));
+    }
+  }
+  if (collection.has('media_folder')) {
+    // stop evaluating media folders at collection level
+    collection = collection.delete('files');
     folders.unshift(selectMediaFolder(state.config, collection, entry, undefined));
   }
 
