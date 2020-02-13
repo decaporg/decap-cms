@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.5.0...netlify-cms-widget-relation@2.5.1) (2020-02-13)
+
+
+### Bug Fixes
+
+* change getAsset to not return a promise ([#3232](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/3232)) ([ab685e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/ab685e85943d1ac48142f157683bc2126fd6af16))
+
+
+
+
+
 # [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.4.2...netlify-cms-widget-relation@2.5.0) (2019-11-18)
 
 

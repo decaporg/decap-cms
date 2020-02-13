@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.18.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.2...netlify-cms-core@2.18.3) (2020-02-13)
+
+
+### Bug Fixes
+
+* change getAsset to not return a promise ([#3232](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3232)) ([ab685e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ab685e85943d1ac48142f157683bc2126fd6af16))
+
+
+
+
+
 ## [2.18.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.1...netlify-cms-core@2.18.2) (2020-02-12)
 
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.21](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.20...netlify-cms@2.10.21) (2020-02-13)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
 ## [2.10.20](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.19...netlify-cms@2.10.20) (2020-02-12)
 
 **Note:** Version bump only for package netlify-cms
