@@ -12,11 +12,11 @@ const FileLink = styled(({ href, path }) => (
   display: block;
 `;
 
-function FileLinkList({ values, getAsset, folder }) {
+function FileLinkList({ values, getAsset, field }) {
   return (
     <div>
       {values.map(value => (
-        <FileLink key={value} path={value} href={getAsset(value, folder)} />
+        <FileLink key={value} path={value} href={getAsset(value, field)} />
       ))}
     </div>
   );
@@ -24,12 +24,10 @@ function FileLinkList({ values, getAsset, folder }) {
 
 function FileContent(props) {
   const { value, getAsset, field } = props;
-  const folder = field.get('media_folder');
-
   if (Array.isArray(value) || List.isList(value)) {
-    return <FileLinkList values={value} getAsset={getAsset} folder={folder} />;
+    return <FileLinkList values={value} getAsset={getAsset} field={field} />;
   }
-  return <FileLink key={value} path={value} href={getAsset(value, folder)} />;
+  return <FileLink key={value} path={value} href={getAsset(value, field)} />;
 }
 
 const FilePreview = props => (

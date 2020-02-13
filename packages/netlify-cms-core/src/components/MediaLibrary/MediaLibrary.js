@@ -160,7 +160,7 @@ class MediaLibrary extends React.Component {
     event.persist();
     event.stopPropagation();
     event.preventDefault();
-    const { persistMedia, privateUpload, config, t, mediaFolder } = this.props;
+    const { persistMedia, privateUpload, config, t, field } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
@@ -173,7 +173,7 @@ class MediaLibrary extends React.Component {
         }),
       );
     } else {
-      await persistMedia(file, { privateUpload, mediaFolder });
+      await persistMedia(file, { privateUpload, field });
 
       this.setState({ selectedFile: this.props.files[0] });
 
@@ -190,8 +190,8 @@ class MediaLibrary extends React.Component {
   handleInsert = () => {
     const { selectedFile } = this.state;
     const { path } = selectedFile;
-    const { insertMedia, publicFolder } = this.props;
-    insertMedia(path, publicFolder);
+    const { insertMedia, field } = this.props;
+    insertMedia(path, field);
     this.handleClose();
   };
 
@@ -332,8 +332,7 @@ const mapStateToProps = state => {
     page: mediaLibrary.get('page'),
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
-    mediaFolder: mediaLibrary.get('mediaFolder'),
-    publicFolder: mediaLibrary.get('publicFolder'),
+    field: mediaLibrary.get('field'),
   };
   return { ...mediaLibraryProps };
 };

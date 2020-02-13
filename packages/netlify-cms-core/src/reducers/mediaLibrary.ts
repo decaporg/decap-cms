@@ -28,6 +28,7 @@ import {
   MediaFile,
   MediaFileMap,
   DisplayURLState,
+  EntryField,
 } from '../types/redux';
 
 const defaultState: {
@@ -40,6 +41,7 @@ const defaultState: {
   page?: number;
   files?: MediaFile[];
   config: Map<string, string>;
+  field?: EntryField;
 } = {
   isVisible: false,
   showMediaButton: true,
@@ -56,14 +58,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('showMediaButton', action.payload.enableStandalone());
       });
     case MEDIA_LIBRARY_OPEN: {
-      const {
-        controlID,
-        forImage,
-        privateUpload,
-        config,
-        mediaFolder,
-        publicFolder,
-      } = action.payload;
+      const { controlID, forImage, privateUpload, config, field } = action.payload;
       const libConfig = config || Map();
       const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
@@ -75,6 +70,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
           privateUpload,
           config: libConfig,
           controlMedia: Map(),
+          field,
         });
       }
       return state.withMutations(map => {
@@ -84,8 +80,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('canInsert', !!controlID);
         map.set('privateUpload', privateUpload);
         map.set('config', libConfig);
-        map.set('mediaFolder', mediaFolder);
-        map.set('publicFolder', publicFolder);
+        map.set('field', field);
       });
     }
     case MEDIA_LIBRARY_CLOSE:

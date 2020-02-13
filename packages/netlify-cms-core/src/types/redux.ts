@@ -2,7 +2,7 @@ import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
 import { Map, List } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
-import { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import { MediaFile as BackendMediaFile } from '../backend';
 
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
@@ -164,7 +164,7 @@ export interface MediaLibraryInstance {
 
 export type DisplayURL = { id: string; path: string } | string;
 
-export type MediaFile = ImplementationMediaFile & { key?: string };
+export type MediaFile = BackendMediaFile & { key?: string };
 
 export type MediaFileMap = StaticallyTypedRecord<MediaFile>;
 
@@ -311,8 +311,7 @@ export interface MediaLibraryAction extends Action<string> {
     forImage: boolean;
     privateUpload: boolean;
     config: Map<string, string>;
-    mediaFolder?: string;
-    publicFolder?: string;
+    field?: EntryField;
   } & { mediaPath: string | string[] } & { page: number } & {
     files: MediaFile[];
     page: number;

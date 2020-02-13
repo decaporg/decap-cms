@@ -165,8 +165,7 @@ export default function withFileControl({ forImage } = {}) {
         value,
         allowMultiple: !!mediaLibraryFieldOptions.get('allow_multiple', true),
         config: mediaLibraryFieldOptions.get('config'),
-        mediaFolder: field.get('media_folder'),
-        publicFolder: field.get('public_folder'),
+        field,
       });
     };
 
@@ -211,21 +210,20 @@ export default function withFileControl({ forImage } = {}) {
 
     renderImages = () => {
       const { getAsset, value, field } = this.props;
-      const folder = field.get('media_folder');
 
       if (isMultiple(value)) {
         return (
           <MultiImageWrapper>
             {value.map(val => (
               <ImageWrapper key={val}>
-                <Image src={getAsset(val, folder) || ''} />
+                <Image src={getAsset(val, field) || ''} />
               </ImageWrapper>
             ))}
           </MultiImageWrapper>
         );
       }
 
-      const src = getAsset(value, folder);
+      const src = getAsset(value, field);
       return (
         <ImageWrapper>
           <Image src={src || ''} />

@@ -89,7 +89,7 @@ const EntryCard = ({
   path,
   summary,
   image,
-  imageFolder,
+  imageField,
   collectionLabel,
   viewStyle = VIEW_STYLE_LIST,
   getAsset,
@@ -105,7 +105,7 @@ const EntryCard = ({
     );
   }
 
-  const asset = getAsset(image, imageFolder);
+  const asset = getAsset(image, imageField);
   const src = asset.toString();
 
   if (viewStyle === VIEW_STYLE_GRID) {
@@ -148,8 +148,7 @@ const mapStateToProps = (state, ownProps) => {
     image,
     imageFolder: collection
       .get('fields')
-      ?.find(f => f.get('name') === inferedFields.imageField && f.get('widget') === 'image')
-      ?.get('media_folder'),
+      ?.find(f => f.get('name') === inferedFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
   };
 };

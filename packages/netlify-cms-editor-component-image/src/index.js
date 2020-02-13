@@ -14,8 +14,7 @@ const image = {
   // eslint-disable-next-line react/display-name
   toPreview: ({ alt, image, title }, getAsset, fields) => {
     const imageField = fields?.find(f => f.get('widget') === 'image');
-    const folder = imageField?.get('media_folder');
-    const src = getAsset(image, folder);
+    const src = getAsset(image, imageField);
     return <img src={src || ''} alt={alt || ''} title={title || ''} />;
   },
   pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
