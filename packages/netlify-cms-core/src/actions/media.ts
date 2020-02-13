@@ -101,7 +101,8 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
     if (isLoading) {
       return emptyAsset;
     }
-    if (asset && !error) {
+
+    if (asset) {
       // There is already an AssetProxy in memory for this path. Use it.
       return asset;
     }
@@ -111,8 +112,14 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
       asset = createAssetProxy({ path: resolvedPath, url: path });
       dispatch(addAsset(asset));
     } else {
-      dispatch(loadAsset(resolvedPath));
-      asset = emptyAsset;
+      if (error) {
+        // on load error default back to original path
+        asset = createAssetProxy({ path, url: path });
+        dispatch(addAsset(asset));
+      } else {
+        dispatch(loadAsset(resolvedPath));
+        asset = emptyAsset;
+      }
     }
 
     return asset;

@@ -358,12 +358,8 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
 
 export async function getMediaFile(state: State, path: string) {
   const backend = currentBackend(state.config);
-  try {
-    const { url } = await backend.getMediaFile(path);
-    return { url };
-  } catch (e) {
-    return { url: path };
-  }
+  const { url } = await backend.getMediaFile(path);
+  return { url };
 }
 
 export function loadMediaDisplayURL(file: MediaFile) {
