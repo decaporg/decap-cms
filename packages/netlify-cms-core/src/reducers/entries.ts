@@ -267,8 +267,7 @@ const evaluateFolder = (
         file = file.set(folderKey, `{{${folderKey}}}`);
       }
 
-      // files collection, evaluate the file template
-      // and keep evaluating until we match our field
+      // evaluate the file template and keep evaluating until we match our field
       currentFolder = folderFormatter(
         file.get(folderKey)!,
         entryMap,
