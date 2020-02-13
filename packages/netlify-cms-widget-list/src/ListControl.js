@@ -186,7 +186,7 @@ export default class ListControl extends React.Component {
 
   handleAddType = (type, typeKey) => {
     const { value, onChange } = this.props;
-    let parsedValue = fromJS(this.mixedDefault(typeKey, type));
+    const parsedValue = fromJS(this.mixedDefault(typeKey, type));
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   };

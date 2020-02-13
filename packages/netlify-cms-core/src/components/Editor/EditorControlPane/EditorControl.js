@@ -1,4 +1,5 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
@@ -9,7 +10,8 @@ import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, loadEntry } from 'Actions/entries';
-import { addAsset, getAsset } from 'Actions/media';
+import { addAsset, boundGetAsset } from 'Actions/media';
+import { selectIsLoadingAsset } from 'Reducers/medias';
 import { query, clearSearch } from 'Actions/search';
 import {
   openMediaLibrary,
@@ -265,6 +267,7 @@ const mapStateToProps = state => {
   const { collections, entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+  const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
@@ -272,25 +275,32 @@ const mapStateToProps = state => {
     queryHits: state.search.get('queryHits'),
     collection,
     entry,
+    isLoadingAsset,
   };
 };
 
-const mapDispatchToProps = {
-  openMediaLibrary,
-  clearMediaControl,
-  removeMediaControl,
-  removeInsertedMedia,
-  addAsset,
-  query,
-  loadEntry: (collectionName, slug) => (dispatch, getState) => {
-    const collection = getState().collections.get(collectionName);
-    return loadEntry(collection, slug)(dispatch, getState);
-  },
-  clearSearch,
-  clearFieldErrors,
-  boundGetAsset: (collection, entry) => (dispatch, getState) => (path, folder) => {
-    return getAsset({ collection, entry, path, folder })(dispatch, getState);
-  },
+const mapDispatchToProps = dispatch => {
+  const creators = bindActionCreators(
+    {
+      openMediaLibrary,
+      clearMediaControl,
+      removeMediaControl,
+      removeInsertedMedia,
+      addAsset,
+      query,
+      clearSearch,
+      clearFieldErrors,
+    },
+    dispatch,
+  );
+  return {
+    ...creators,
+    loadEntry: (collectionName, slug) => (dispatch, getState) => {
+      const collection = getState().collections.get(collectionName);
+      return loadEntry(collection, slug)(dispatch, getState);
+    },
+    boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
+  };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

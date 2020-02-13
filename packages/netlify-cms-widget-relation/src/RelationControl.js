@@ -114,7 +114,7 @@ export default class RelationControl extends React.Component {
   };
 
   parseNestedFields = (targetObject, field) => {
-    let nestedField = field.split('.');
+    const nestedField = field.split('.');
     let f = targetObject;
     for (let i = 0; i < nestedField.length; i++) {
       f = f[nestedField[i]];

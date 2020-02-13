@@ -144,7 +144,9 @@ export type Collection = StaticallyTypedRecord<CollectionObject>;
 
 export type Collections = StaticallyTypedRecord<{ [path: string]: Collection & CollectionObject }>;
 
-export type Medias = StaticallyTypedRecord<{ [path: string]: AssetProxy | undefined }>;
+export type Medias = StaticallyTypedRecord<{
+  [path: string]: { asset: AssetProxy | undefined; isLoading: boolean; error: Error | null };
+}>;
 
 export interface MediaLibraryInstance {
   show: (args: {
@@ -216,7 +218,7 @@ export interface State {
 }
 
 export interface MediasAction extends Action<string> {
-  payload: string | AssetProxy | AssetProxy[];
+  payload: string | AssetProxy | AssetProxy[] | { path: string } | { path: string; error: Error };
 }
 
 export interface ConfigAction extends Action<string> {
