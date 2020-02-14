@@ -113,7 +113,7 @@ describe('entries', () => {
           fromJS({ path: 'posts/title/index.md' }),
           undefined,
         ),
-      ).toEqual('posts/');
+      ).toEqual('posts');
     });
 
     it('should return collection absolute media folder without leading slash', () => {
@@ -266,7 +266,7 @@ describe('entries', () => {
           fromJS({ path: 'posts/title/index.md', slug: 'index' }),
           undefined,
         ),
-      ).toBe('static/images/');
+      ).toBe('static/images');
     });
 
     it('should cascade media_folders', () => {
@@ -299,13 +299,13 @@ describe('entries', () => {
         fromJS({ path: 'src/customers/customers.md', slug: 'customers', data: { title: 'title' } }),
       ];
 
-      expect(selectMediaFolder(...args, mainImageField)).toBe('static/img/general/customers/');
-      expect(selectMediaFolder(...args, logoField)).toBe('static/img/general/customers/logos/');
+      expect(selectMediaFolder(...args, mainImageField)).toBe('static/img/general/customers');
+      expect(selectMediaFolder(...args, logoField)).toBe('static/img/general/customers/logos');
       expect(selectMediaFolder(...args, nestedField1)).toBe(
-        'static/img/general/customers/nested/nested1/',
+        'static/img/general/customers/nested/nested1',
       );
       expect(selectMediaFolder(...args, nestedField2)).toBe(
-        'static/img/general/customers/nested/nested1/nested2/',
+        'static/img/general/customers/nested/nested1/nested2',
       );
     });
   });

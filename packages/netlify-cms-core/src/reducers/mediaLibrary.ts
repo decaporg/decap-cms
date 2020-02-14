@@ -30,6 +30,7 @@ import {
   DisplayURLState,
   EntryField,
 } from '../types/redux';
+import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;
@@ -227,7 +228,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
     files = entryFiles
-      .filter(f => f.path.startsWith(mediaFolder))
+      .filter(f => dirname(f.path) === mediaFolder)
       .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];

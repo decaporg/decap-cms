@@ -29,7 +29,7 @@ import {
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trimStart } from 'lodash';
+import { trim } from 'lodash';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -341,9 +341,9 @@ export const selectMediaFolder = (
     if (entryPath) {
       const entryDir = dirname(entryPath);
       const folder = evaluateFolder(name, config, collection!, entryMap, field);
-      // return absolute paths as is without the leading '/'
+      // return absolute paths as is
       if (folder.startsWith('/')) {
-        mediaFolder = join(trimStart(folder, '/'));
+        mediaFolder = join(folder);
       } else {
         mediaFolder = join(entryDir, folder as string);
       }
@@ -352,7 +352,7 @@ export const selectMediaFolder = (
     }
   }
 
-  return mediaFolder;
+  return trim(mediaFolder, '/');
 };
 
 export const selectMediaFilePath = (

@@ -223,7 +223,7 @@ describe('collections', () => {
           }),
           fromJS({ slug: 'name', path: 'src/post/post1.md', data: {} }),
         ),
-      ).toEqual(['static/img/general/', 'static/img/general/customers/']);
+      ).toEqual(['static/img/general', 'static/img/general/customers']);
     });
 
     it('should return fields, file and collection folders', () => {
@@ -249,9 +249,9 @@ describe('collections', () => {
           fromJS({ slug: 'name', path: 'src/post/post1.md', data: {} }),
         ),
       ).toEqual([
-        'static/img/general/',
-        'static/img/general/customers/',
-        'static/img/general/customers/logos/',
+        'static/img/general',
+        'static/img/general/customers',
+        'static/img/general/customers/logos',
       ]);
     });
   });
