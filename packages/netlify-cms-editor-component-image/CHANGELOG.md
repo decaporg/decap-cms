@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/compare/netlify-cms-editor-component-image@2.6.1...netlify-cms-editor-component-image@2.6.2) (2020-02-14)
+
+**Note:** Version bump only for package netlify-cms-editor-component-image
+
+
+
+
+
 ## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/compare/netlify-cms-editor-component-image@2.6.0...netlify-cms-editor-component-image@2.6.1) (2020-02-13)
 
 

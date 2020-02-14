@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.18.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.3...netlify-cms-core@2.18.4) (2020-02-14)
+
+
+### Bug Fixes
+
+* **core:** report config error when external media lib is missing ([#3255](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3255)) ([1d63038](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1d63038e78a6db1e7a061b5ba447f951d892595a))
+* dispatch QUERY_FAILURE on query failure ([#3243](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3243)) ([2447f9c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2447f9c311db3c5db35ce6501c0380d304709d50))
+
+
+
+
+
 ## [2.18.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.2...netlify-cms-core@2.18.3) (2020-02-13)
 
 

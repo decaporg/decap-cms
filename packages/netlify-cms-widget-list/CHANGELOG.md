@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.2...netlify-cms-widget-list@2.4.3) (2020-02-14)
+
+
+### Bug Fixes
+
+* remove empty list item ([#3245](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/3245)) ([f915bf3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/f915bf375fc8faa9b4ed5b3684861dfbe462a032))
+
+
+
+
+
 ## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.1...netlify-cms-widget-list@2.4.2) (2020-02-13)
 
 
