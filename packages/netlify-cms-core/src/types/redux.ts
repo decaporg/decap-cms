@@ -41,6 +41,7 @@ export type Config = StaticallyTypedRecord<{
   site_id?: string;
   site_url?: string;
   show_preview_links?: boolean;
+  isFetching?: boolean;
 }>;
 
 type PagesObject = {
