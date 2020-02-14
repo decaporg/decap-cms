@@ -3,7 +3,9 @@ import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from '..
 import { Config, ConfigAction } from '../types/redux';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
-const config = (state = Map({ isFetching: true }), action: ConfigAction) => {
+const defaultState: Map<string, boolean | string> = Map({ isFetching: true });
+
+const config = (state = defaultState, action: ConfigAction) => {
   switch (action.type) {
     case CONFIG_MERGE:
       return state.mergeDeep(action.payload);
@@ -17,7 +19,10 @@ const config = (state = Map({ isFetching: true }), action: ConfigAction) => {
        */
       return action.payload.delete('isFetching');
     case CONFIG_FAILURE:
-      return Map({ error: action.payload.toString() });
+      return state.withMutations(s => {
+        s.delete('isFetching');
+        s.set('error', action.payload.toString());
+      });
     default:
       return state;
   }
