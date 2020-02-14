@@ -297,14 +297,14 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
               path: file.path,
               file: file.file,
               url: file.url,
-              folder: file.folder,
+              field: file.field,
             });
           } else {
             return getAsset({
               collection,
               entry: fromJS(entry),
               path: file.path,
-              folder: file.folder,
+              field: file.field,
             })(dispatch, getState);
           }
         }),
@@ -557,12 +557,15 @@ export async function getMediaAssets({
   entry: EntryMap;
   dispatch: Dispatch;
 }) {
-  const filesArray = entry.get('mediaFiles').toJS() as MediaFile[];
+  const filesArray = entry.get('mediaFiles').toArray();
   const assets = await Promise.all(
     filesArray
-      .filter(file => file.draft)
+      .filter(file => file.get('draft'))
       .map(file =>
-        getAsset({ collection, entry, path: file.path, folder: file.folder })(dispatch, getState),
+        getAsset({ collection, entry, path: file.get('path'), field: file.get('field') })(
+          dispatch,
+          getState,
+        ),
       ),
   );
 

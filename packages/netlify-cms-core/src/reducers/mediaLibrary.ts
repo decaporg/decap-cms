@@ -19,7 +19,7 @@ import {
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
 } from '../actions/mediaLibrary';
-import { selectEditingDraft } from './entries';
+import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
 import {
   State,
@@ -28,7 +28,9 @@ import {
   MediaFile,
   MediaFileMap,
   DisplayURLState,
+  EntryField,
 } from '../types/redux';
+import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;
@@ -40,6 +42,7 @@ const defaultState: {
   page?: number;
   files?: MediaFile[];
   config: Map<string, string>;
+  field?: EntryField;
 } = {
   isVisible: false,
   showMediaButton: true,
@@ -56,14 +59,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('showMediaButton', action.payload.enableStandalone());
       });
     case MEDIA_LIBRARY_OPEN: {
-      const {
-        controlID,
-        forImage,
-        privateUpload,
-        config,
-        mediaFolder,
-        publicFolder,
-      } = action.payload;
+      const { controlID, forImage, privateUpload, config, field } = action.payload;
       const libConfig = config || Map();
       const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
@@ -75,6 +71,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
           privateUpload,
           config: libConfig,
           controlMedia: Map(),
+          field,
         });
       }
       return state.withMutations(map => {
@@ -84,8 +81,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('canInsert', !!controlID);
         map.set('privateUpload', privateUpload);
         map.set('config', libConfig);
-        map.set('mediaFolder', mediaFolder);
-        map.set('publicFolder', publicFolder);
+        map.set('field', field);
       });
     }
     case MEDIA_LIBRARY_CLOSE:
@@ -218,7 +214,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
   }
 };
 
-export function selectMediaFiles(state: State) {
+export function selectMediaFiles(state: State, field?: EntryField) {
   const { mediaLibrary, entryDraft } = state;
   const editingDraft = selectEditingDraft(state.entryDraft);
   const integration = selectIntegration(state, null, 'assetStore');
@@ -228,7 +224,12 @@ export function selectMediaFiles(state: State) {
     const entryFiles = entryDraft
       .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
       .toJS() as MediaFile[];
-    files = entryFiles.map(file => ({ key: file.id, ...file }));
+    const entry = entryDraft.get('entry');
+    const collection = state.collections.get(entry?.get('collection'));
+    const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
+    files = entryFiles
+      .filter(f => dirname(f.path) === mediaFolder)
+      .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
   }

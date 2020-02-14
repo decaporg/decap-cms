@@ -218,6 +218,7 @@ export const folderFormatter = (
   if (!entry || !entry.get('data')) {
     return folderTemplate;
   }
+
   let fields = (entry.get('data') as Map<string, string>).set(folderKey, defaultFolder);
   fields = addFileTemplateFields(entry.get('path'), fields);
 
@@ -232,5 +233,6 @@ export const folderFormatter = (
     fields,
     (value: string) => (value === defaultFolder ? defaultFolder : processSegment(value)),
   );
+
   return mediaFolder;
 };

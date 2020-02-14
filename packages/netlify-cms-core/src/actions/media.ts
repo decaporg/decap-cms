@@ -1,5 +1,5 @@
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
-import { Collection, State, EntryMap } from '../types/redux';
+import { Collection, State, EntryMap, EntryField } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
@@ -67,7 +67,7 @@ interface GetAssetArgs {
   collection: Collection;
   entry: EntryMap;
   path: string;
-  folder?: string;
+  field?: EntryField;
 }
 
 const emptyAsset = createAssetProxy({
@@ -82,26 +82,27 @@ export function boundGetAsset(
   collection: Collection,
   entry: EntryMap,
 ) {
-  const bound = (path: string, folder: string) => {
-    const asset = dispatch(getAsset({ collection, entry, path, folder }));
+  const bound = (path: string, field: EntryField) => {
+    const asset = dispatch(getAsset({ collection, entry, path, field }));
     return asset;
   };
 
   return bound;
 }
 
-export function getAsset({ collection, entry, path, folder }: GetAssetArgs) {
+export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (!path) return emptyAsset;
 
     const state = getState();
-    const resolvedPath = selectMediaFilePath(state.config, collection, entry, path, folder);
+    const resolvedPath = selectMediaFilePath(state.config, collection, entry, path, field);
 
     let { asset, isLoading, error } = state.medias.get(resolvedPath) || {};
     if (isLoading) {
       return emptyAsset;
     }
-    if (asset && !error) {
+
+    if (asset) {
       // There is already an AssetProxy in memory for this path. Use it.
       return asset;
     }
@@ -111,8 +112,14 @@ export function getAsset({ collection, entry, path, folder }: GetAssetArgs) {
       asset = createAssetProxy({ path: resolvedPath, url: path });
       dispatch(addAsset(asset));
     } else {
-      dispatch(loadAsset(resolvedPath));
-      asset = emptyAsset;
+      if (error) {
+        // on load error default back to original path
+        asset = createAssetProxy({ path, url: path });
+        dispatch(addAsset(asset));
+      } else {
+        dispatch(loadAsset(resolvedPath));
+        asset = emptyAsset;
+      }
     }
 
     return asset;

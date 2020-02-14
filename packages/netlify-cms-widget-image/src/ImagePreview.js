@@ -11,7 +11,7 @@ const StyledImage = styled(({ src }) => <img src={src || ''} role="presentation"
 `;
 
 const StyledImageAsset = ({ getAsset, value, field }) => {
-  return <StyledImage src={getAsset(value, field.get('media_folder'))} />;
+  return <StyledImage src={getAsset(value, field)} />;
 };
 
 const ImagePreviewContent = props => {

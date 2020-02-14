@@ -4,7 +4,7 @@ import collections, {
   selectAllowDeletion,
   selectEntryPath,
   selectEntrySlug,
-  selectFieldsMediaFolders,
+  selectFieldsWithMediaFolders,
   selectMediaFolders,
   getFieldsNames,
   selectField,
@@ -87,12 +87,12 @@ describe('collections', () => {
 
   describe('selectFieldsMediaFolders', () => {
     it('should return empty array for invalid collection', () => {
-      expect(selectFieldsMediaFolders(fromJS({}))).toEqual([]);
+      expect(selectFieldsWithMediaFolders(fromJS({}))).toEqual([]);
     });
 
     it('should return configs for folder collection', () => {
       expect(
-        selectFieldsMediaFolders(
+        selectFieldsWithMediaFolders(
           fromJS({
             folder: 'posts',
             fields: [
@@ -124,19 +124,26 @@ describe('collections', () => {
           }),
         ),
       ).toEqual([
-        'image_media_folder',
-        'body_media_folder',
-        'list_1_item_media_folder',
-        'list_2_item_media_folder',
+        fromJS({
+          name: 'image',
+          media_folder: 'image_media_folder',
+        }),
+        fromJS({ name: 'body', media_folder: 'body_media_folder' }),
+        fromJS({ name: 'list_1_item', media_folder: 'list_1_item_media_folder' }),
+        fromJS({
+          name: 'list_2_item',
+          media_folder: 'list_2_item_media_folder',
+        }),
       ]);
     });
 
     it('should return configs for files collection', () => {
       expect(
-        selectFieldsMediaFolders(
+        selectFieldsWithMediaFolders(
           fromJS({
             files: [
               {
+                name: 'file1',
                 fields: [
                   {
                     name: 'image',
@@ -145,6 +152,7 @@ describe('collections', () => {
                 ],
               },
               {
+                name: 'file2',
                 fields: [
                   {
                     name: 'body',
@@ -153,6 +161,7 @@ describe('collections', () => {
                 ],
               },
               {
+                name: 'file3',
                 fields: [
                   {
                     name: 'list_1',
@@ -164,6 +173,7 @@ describe('collections', () => {
                 ],
               },
               {
+                name: 'file4',
                 fields: [
                   {
                     name: 'list_2',
@@ -178,12 +188,13 @@ describe('collections', () => {
               },
             ],
           }),
+          'file4',
         ),
       ).toEqual([
-        'image_media_folder',
-        'body_media_folder',
-        'list_1_item_media_folder',
-        'list_2_item_media_folder',
+        fromJS({
+          name: 'list_2_item',
+          media_folder: 'list_2_item_media_folder',
+        }),
       ]);
     });
   });
@@ -195,48 +206,53 @@ describe('collections', () => {
       sanitize_replacement: '-',
     };
 
-    const config = fromJS({ slug });
-    it('should return fields and collection folder', () => {
+    const config = fromJS({ slug, media_folder: '/static/img' });
+    it('should return fields and collection folders', () => {
       expect(
         selectMediaFolders(
           { config },
           fromJS({
             folder: 'posts',
-            media_folder: '/collection_media_folder',
+            media_folder: '{{media_folder}}/general/',
             fields: [
               {
                 name: 'image',
-                media_folder: '/image_media_folder',
+                media_folder: '{{media_folder}}/customers/',
               },
             ],
           }),
-          fromJS({ slug: 'name', path: 'src/post/post1.md' }),
+          fromJS({ slug: 'name', path: 'src/post/post1.md', data: {} }),
         ),
-      ).toEqual(['collection_media_folder', 'image_media_folder']);
+      ).toEqual(['static/img/general', 'static/img/general/customers']);
     });
 
-    it('should return fields and collection folder', () => {
+    it('should return fields, file and collection folders', () => {
       expect(
         selectMediaFolders(
           { config },
           fromJS({
+            media_folder: '{{media_folder}}/general/',
             files: [
               {
                 name: 'name',
                 file: 'src/post/post1.md',
-                media_folder: '/file_media_folder',
+                media_folder: '{{media_folder}}/customers/',
                 fields: [
                   {
                     name: 'image',
-                    media_folder: '/image_media_folder',
+                    media_folder: '{{media_folder}}/logos/',
                   },
                 ],
               },
             ],
           }),
-          fromJS({ slug: 'name', path: 'src/post/post1.md' }),
+          fromJS({ slug: 'name', path: 'src/post/post1.md', data: {} }),
         ),
-      ).toEqual(['file_media_folder', 'image_media_folder']);
+      ).toEqual([
+        'static/img/general',
+        'static/img/general/customers',
+        'static/img/general/customers/logos',
+      ]);
     });
   });
 

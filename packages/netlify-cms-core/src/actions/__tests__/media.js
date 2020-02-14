@@ -105,5 +105,26 @@ describe('media', () => {
       });
       expect(result).toEqual(emptyAsset);
     });
+
+    it('should return asset with original path on load error', () => {
+      const path = 'static/media/image.png';
+      const store = mockStore({
+        medias: Map({ [path]: { error: true } }),
+      });
+
+      selectMediaFilePath.mockReturnValue(path);
+      const payload = { path };
+
+      const result = store.dispatch(getAsset(payload));
+      const actions = store.getActions();
+
+      const asset = new AssetProxy({ url: path, path });
+      expect(actions).toHaveLength(1);
+      expect(actions[0]).toEqual({
+        type: ADD_ASSET,
+        payload: asset,
+      });
+      expect(result).toEqual(asset);
+    });
   });
 });

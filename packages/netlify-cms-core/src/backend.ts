@@ -27,7 +27,6 @@ import {
   Implementation as BackendImplementation,
   DisplayURL,
   ImplementationEntry,
-  ImplementationMediaFile,
   Credentials,
   User,
   getPathDepth,
@@ -45,6 +44,7 @@ import {
   EntryDraft,
   CollectionFile,
   State,
+  EntryField,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
@@ -104,10 +104,22 @@ interface BackendOptions {
   config?: Config;
 }
 
+export interface MediaFile {
+  name: string;
+  id: string;
+  size?: number;
+  displayURL?: DisplayURL;
+  path: string;
+  draft?: boolean;
+  url?: string;
+  file?: File;
+  field?: EntryField;
+}
+
 interface BackupEntry {
   raw: string;
   path: string;
-  mediaFiles: ImplementationMediaFile[];
+  mediaFiles: MediaFile[];
 }
 
 interface PersistArgs {
@@ -444,11 +456,11 @@ export class Backend {
       return;
     }
 
-    const mediaFiles = await Promise.all<ImplementationMediaFile>(
+    const mediaFiles = await Promise.all<MediaFile>(
       entry
         .get('mediaFiles')
         .toJS()
-        .map(async (file: ImplementationMediaFile) => {
+        .map(async (file: MediaFile) => {
           // make sure to serialize the file
           if (file.url?.startsWith('blob:')) {
             const blob = await fetch(file.url as string).then(res => res.blob());
@@ -485,7 +497,6 @@ export class Backend {
     const integration = selectIntegration(state.integrations, null, 'assetStore');
 
     const loadedEntry = await this.implementation.getEntry(path);
-
     const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
       raw: loadedEntry.data,
       label,
@@ -700,7 +711,7 @@ export class Backend {
           collection,
           entryDraft.get('entry').set('path', path),
           oldPath,
-          asset.folder,
+          asset.field,
         );
         asset.path = newPath;
       });
