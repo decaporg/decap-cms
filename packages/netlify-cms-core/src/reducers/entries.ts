@@ -288,7 +288,7 @@ const evaluateFolder = (
           currentFolder,
         );
 
-        if (fieldFolder) {
+        if (fieldFolder !== null) {
           currentFolder = fieldFolder;
         }
       }
@@ -316,7 +316,7 @@ const evaluateFolder = (
         currentFolder,
       );
 
-      if (fieldFolder) {
+      if (fieldFolder !== null) {
         currentFolder = fieldFolder;
       }
     }

@@ -116,6 +116,23 @@ describe('entries', () => {
       ).toEqual('posts');
     });
 
+    it('should resolve field relative media folder', () => {
+      const field = fromJS({ media_folder: '' });
+      expect(
+        selectMediaFolder(
+          fromJS({ media_folder: '/static/img' }),
+          fromJS({
+            name: 'other',
+            folder: 'other',
+            fields: [field],
+            media_folder: '../',
+          }),
+          fromJS({ path: 'src/other/other.md', data: {} }),
+          field,
+        ),
+      ).toEqual('src/other');
+    });
+
     it('should return collection absolute media folder without leading slash', () => {
       expect(
         selectMediaFolder(
