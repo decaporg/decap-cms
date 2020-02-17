@@ -27,9 +27,11 @@ import {
   blobToFileObj,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
-import { UsersGetAuthenticatedResponse as GitHubUser } from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
 import API, { Entry } from './API';
 import GraphQLAPI from './GraphQLAPI';
+
+type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 

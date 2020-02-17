@@ -21,22 +21,22 @@ import {
   PreviewState,
   FetchError,
 } from 'netlify-cms-lib-util';
-import {
-  UsersGetAuthenticatedResponse as GitHubUser,
-  ReposGetResponse as GitHubRepo,
-  ReposGetBranchResponse as GitHubBranch,
-  GitGetBlobResponse as GitHubBlob,
-  GitCreateTreeResponse as GitHubTree,
-  GitCreateTreeParamsTree,
-  GitCreateCommitResponse as GitHubCommit,
-  ReposCompareCommitsResponseCommitsItem as GitHubCompareCommit,
-  ReposCompareCommitsResponseFilesItem,
-  ReposCompareCommitsResponse as GitHubCompareResponse,
-  ReposCompareCommitsResponseBaseCommit as GitHubCompareBaseCommit,
-  GitCreateCommitResponseAuthor as GitHubAuthor,
-  GitCreateCommitResponseCommitter as GitHubCommiter,
-  ReposListStatusesForRefResponseItem,
-} from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
+
+type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
+type GitHubRepo = Octokit.ReposGetResponse;
+type GitHubBranch = Octokit.ReposGetBranchResponse;
+type GitHubBlob = Octokit.GitGetBlobResponse;
+type GitHubTree = Octokit.GitCreateTreeResponse;
+type GitCreateTreeParamsTree = Octokit.GitCreateTreeParamsTree;
+type GitHubCommit = Octokit.GitCreateCommitResponse;
+type GitHubCompareCommit = Octokit.ReposCompareCommitsResponseCommitsItem;
+type ReposCompareCommitsResponseFilesItem = Octokit.ReposCompareCommitsResponseFilesItem;
+type GitHubCompareResponse = Octokit.ReposCompareCommitsResponse;
+type GitHubCompareBaseCommit = Octokit.ReposCompareCommitsResponseBaseCommit;
+type GitHubAuthor = Octokit.GitCreateCommitResponseAuthor;
+type GitHubCommitter = Octokit.GitCreateCommitResponseCommitter;
+type ReposListStatusesForRefResponseItem = Octokit.ReposListStatusesForRefResponseItem;
 
 const CURRENT_METADATA_VERSION = '1';
 
@@ -1223,7 +1223,7 @@ export default class API {
     treeSha: string,
     parents: string[],
     author?: GitHubAuthor,
-    committer?: GitHubCommiter,
+    committer?: GitHubCommitter,
   ): Promise<GitHubCommit> {
     return this.request(`${this.repoURL}/git/commits`, {
       method: 'POST',
