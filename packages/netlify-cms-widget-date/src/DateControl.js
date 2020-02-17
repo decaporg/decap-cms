@@ -62,7 +62,7 @@ export default class DateControl extends React.Component {
      */
     if (!value && value !== '') {
       setTimeout(() => {
-        this.handleChange(new Date());
+        this.handleChange(new Date(), false);
       }, 0);
     }
   }
@@ -72,7 +72,7 @@ export default class DateControl extends React.Component {
   isValidDate = datetime =>
     moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
 
-  handleChange = datetime => {
+  handleChange = (datetime, hasChanged) => {
     /**
      * Set the date only if it is valid.
      */
@@ -89,10 +89,10 @@ export default class DateControl extends React.Component {
      */
     if (format) {
       const formattedValue = datetime ? moment(datetime).format(format) : '';
-      onChange(formattedValue);
+      onChange(formattedValue, undefined, hasChanged);
     } else {
       const value = moment.isMoment(datetime) ? datetime.toDate() : datetime;
-      onChange(value);
+      onChange(value, undefined, hasChanged);
     }
   };
 

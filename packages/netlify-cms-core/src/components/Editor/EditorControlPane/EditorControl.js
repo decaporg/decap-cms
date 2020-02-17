@@ -222,7 +222,9 @@ class EditorControl extends React.Component {
               value={value}
               mediaPaths={mediaPaths}
               metadata={metadata}
-              onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
+              onChange={(newValue, newMetadata, hasChanged) =>
+                onChange(fieldName, newValue, newMetadata, hasChanged)
+              }
               onValidate={onValidate && partial(onValidate, this.uniqueFieldId)}
               onOpenMediaLibrary={openMediaLibrary}
               onClearMediaControl={clearMediaControl}

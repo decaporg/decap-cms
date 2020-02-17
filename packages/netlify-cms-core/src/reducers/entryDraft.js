@@ -92,7 +92,7 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.withMutations(state => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
         state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
-        state.set('hasChanged', true);
+        state.set('hasChanged', state.get('hasChanged') || action.payload.hasChanged);
       });
 
     case DRAFT_VALIDATION_ERRORS:

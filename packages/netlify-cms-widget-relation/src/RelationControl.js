@@ -74,11 +74,15 @@ export default class RelationControl extends React.Component {
         listValue.forEach(val => {
           const hit = hits.find(i => this.parseNestedFields(i.data, valueField) === val);
           if (hit) {
-            onChange(value, {
-              [field.get('name')]: {
-                [field.get('collection')]: { [val]: hit.data },
+            onChange(
+              value,
+              {
+                [field.get('name')]: {
+                  [field.get('collection')]: { [val]: hit.data },
+                },
               },
-            });
+              false,
+            );
           }
         });
       }

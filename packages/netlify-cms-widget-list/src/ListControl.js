@@ -248,7 +248,7 @@ export default class ListControl extends React.Component {
   getObjectValue = idx => this.props.value.get(idx) || Map();
 
   handleChangeFor(index) {
-    return (fieldName, newValue, newMetadata) => {
+    return (fieldName, newValue, newMetadata, hasChanged) => {
       const { value, metadata, onChange, field } = this.props;
       const collectionName = field.get('name');
       const listFieldObjectWidget = field.getIn(['field', 'widget']) === 'object';
@@ -261,7 +261,7 @@ export default class ListControl extends React.Component {
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata || {}),
       };
-      onChange(value.set(index, newObjectValue), parsedMetadata);
+      onChange(value.set(index, newObjectValue), parsedMetadata, hasChanged);
     };
   }
 
