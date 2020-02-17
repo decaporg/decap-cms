@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.1...netlify-cms-widget-markdown@2.9.2) (2020-02-17)
+
+
+### Bug Fixes
+
+* **widget-markdown:** allow shortcodes as list items ([#3278](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3278)) ([cdd3747](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/cdd3747850cca77f61b663cbfeda9765a72eb8d0))
+
+
+
+
+
 ## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.0...netlify-cms-widget-markdown@2.9.1) (2020-02-13)
 
 
