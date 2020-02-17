@@ -1,14 +1,11 @@
 import { Base64 } from 'js-base64';
 import semaphore, { Semaphore } from 'semaphore';
-import { flow, get, initial, last, partial, result, differenceBy, trimStart, trim } from 'lodash';
-import { map, filter } from 'lodash/fp';
+import { initial, last, partial, result, trimStart, trim } from 'lodash';
 import {
   getAllResponses,
   APIError,
   EditorialWorkflowError,
-  flowAsync,
   localForage,
-  onlySuccessfulPromises,
   basename,
   AssetProxy,
   Entry as LibEntry,
@@ -20,6 +17,11 @@ import {
   MERGE_COMMIT_MESSAGE,
   PreviewState,
   FetchError,
+  parseContentKey,
+  branchFromContentKey,
+  isCMSLabel,
+  labelToStatus,
+  statusToLabel,
 } from 'netlify-cms-lib-util';
 import { Octokit } from '@octokit/rest';
 
@@ -33,12 +35,14 @@ type GitHubCommit = Octokit.GitCreateCommitResponse;
 type GitHubCompareCommit = Octokit.ReposCompareCommitsResponseCommitsItem;
 type ReposCompareCommitsResponseFilesItem = Octokit.ReposCompareCommitsResponseFilesItem;
 type GitHubCompareResponse = Octokit.ReposCompareCommitsResponse;
-type GitHubCompareBaseCommit = Octokit.ReposCompareCommitsResponseBaseCommit;
 type GitHubAuthor = Octokit.GitCreateCommitResponseAuthor;
 type GitHubCommitter = Octokit.GitCreateCommitResponseCommitter;
 type ReposListStatusesForRefResponseItem = Octokit.ReposListStatusesForRefResponseItem;
+type GitHubPulls = Octokit.PullsListResponse;
+type GitHubPull = Octokit.PullsListResponseItem;
 
-const CURRENT_METADATA_VERSION = '1';
+const client = new Octokit();
+client.pulls.list();
 
 export const API_NAME = 'GitHub';
 
@@ -122,7 +126,7 @@ export interface BlobArgs {
 
 type Param = string | number | undefined;
 
-type Options = RequestInit & { params?: Record<string, Param | Record<string, Param>> };
+type Options = RequestInit & { params?: Record<string, Param | Record<string, Param> | string[]> };
 
 const replace404WithEmptyArray = (err: FetchError) => {
   if (err && err.status === 404) {
@@ -145,6 +149,10 @@ export default class API {
   useOpenAuthoring?: boolean;
   repo: string;
   originRepo: string;
+  repoOwner: string;
+  repoName: string;
+  originRepoOwner: string;
+  originRepoName: string;
   repoURL: string;
   originRepoURL: string;
   mergeMethod: string;
@@ -165,6 +173,14 @@ export default class API {
     this.repoURL = `/repos/${this.repo}`;
     // when not in 'useOpenAuthoring' mode originRepoURL === repoURL
     this.originRepoURL = `/repos/${this.originRepo}`;
+
+    const [repoParts, originRepoParts] = [this.repo.split('/'), this.originRepo.split('/')];
+    this.repoOwner = repoParts[0];
+    this.repoName = repoParts[1];
+
+    this.originRepoOwner = originRepoParts[0];
+    this.originRepoName = originRepoParts[1];
+
     this.mergeMethod = config.squashMerges ? 'squash' : 'merge';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
@@ -291,12 +307,12 @@ export default class API {
     return `${this.repo}/${collectionName}/${slug}`;
   }
 
-  slugFromContentKey(contentKey: string, collectionName: string) {
+  parseContentKey(contentKey: string) {
     if (!this.useOpenAuthoring) {
-      return contentKey.substring(collectionName.length + 1);
+      return parseContentKey(contentKey);
     }
 
-    return contentKey.substring(this.repo.length + collectionName.length + 2);
+    return parseContentKey(contentKey.substring(this.repo.length + 1));
   }
 
   generateBranchName(contentKey: string) {
@@ -391,7 +407,7 @@ export default class API {
     );
   }
 
-  retrieveMetadata(key: string): Promise<Metadata> {
+  retrieveMetadataOld(key: string): Promise<Metadata> {
     const cache = localForage.getItem<{ data: Metadata; expires: number }>(`gh.meta.${key}`);
     return cache.then(cached => {
       if (cached && cached.expires > Date.now()) {
@@ -430,6 +446,60 @@ export default class API {
         .then((response: string) => JSON.parse(response))
         .catch(errorHandler);
     });
+  }
+
+  async getPullRequests(head?: string) {
+    const pullRequests: GitHubPulls = await this.request(`${this.repoURL}/pulls`, {
+      params: {
+        state: 'open',
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        base: this.branch,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        ...(head ? { head: this.getHeadReference(head) } : {}),
+      },
+    });
+
+    return pullRequests.filter(
+      pr => pr.head.ref.startsWith(CMS_BRANCH_PREFIX) && pr.labels.some(l => isCMSLabel(l.name)),
+    );
+  }
+
+  async getBranchPullRequest(branch: string) {
+    const pullRequests = await this.getPullRequests(branch);
+    if (pullRequests.length <= 0) {
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+    }
+
+    return pullRequests[0];
+  }
+
+  async retrieveMetadata(contentKey: string) {
+    const { collection, slug } = parseContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch).catch(e => {
+      if (this.useOpenAuthoring) {
+        return ({ head: { sha: '' }, labels: [] } as unknown) as GitHubPull;
+      } else {
+        throw e;
+      }
+    });
+    const { files: diff } = await this.getDifferences(pullRequest.head.sha);
+    const { path, newFile } = diff
+      .filter(d => d.filename.includes(slug))
+      .map(f => ({ path: f.filename, newFile: f.status === 'added' }))[0];
+
+    const mediaFiles = await Promise.all(
+      diff
+        .filter(d => d.filename !== path)
+        .map(async d => {
+          const path = d.filename;
+          const id = d.sha;
+          return { path, id };
+        }),
+    );
+    const label = pullRequest.labels.find(l => isCMSLabel(l.name)) as { name: string };
+    const status = labelToStatus(label.name);
+    return { branch, collection, slug, path, status, newFile, mediaFiles, pullRequest };
   }
 
   async readFile(
@@ -499,9 +569,16 @@ export default class API {
 
   async readUnpublishedBranchFile(contentKey: string) {
     try {
-      const metaData = await this.retrieveMetadata(contentKey).then(data =>
-        data.objects.entry.path ? data : Promise.reject(null),
-      );
+      const {
+        branch,
+        collection,
+        slug,
+        path,
+        status,
+        newFile,
+        mediaFiles,
+      } = await this.retrieveMetadata(contentKey);
+
       const repoURL = this.useOpenAuthoring
         ? `/repos/${contentKey
             .split('/')
@@ -509,100 +586,52 @@ export default class API {
             .join('/')}`
         : this.repoURL;
 
-      const [fileData, isModification] = await Promise.all([
-        this.readFile(metaData.objects.entry.path, null, {
-          branch: metaData.branch,
-          repoURL,
-        }) as Promise<string>,
-        this.isUnpublishedEntryModification(metaData.objects.entry.path),
-      ]);
+      const fileData = (await this.readFile(path, null, { branch, repoURL })) as string;
 
       return {
-        metaData,
+        slug,
+        metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
         fileData,
-        isModification,
-        slug: this.slugFromContentKey(contentKey, metaData.collection),
+        isModification: !newFile,
       };
     } catch (e) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
   }
 
-  isUnpublishedEntryModification(path: string) {
-    return this.readFile(path, null, {
-      branch: this.branch,
-      repoURL: this.originRepoURL,
-    })
-      .then(() => true)
-      .catch((err: Error) => {
-        if (err.message && err.message === 'Not Found') {
-          return false;
-        }
-        throw err;
-      });
-  }
-
-  getPRsForBranchName = (branchName: string) => {
-    // Get PRs with a `head` of `branchName`. Note that this is a
-    // substring match, so we need to check that the `head.ref` of
-    // at least one of the returned objects matches `branchName`.
-    return this.requestAllPages<{ head: { ref: string } }>(`${this.repoURL}/pulls`, {
-      params: {
-        head: branchName,
-        state: 'open',
-        base: this.branch,
-      },
-    });
-  };
-
-  getUpdatedOpenAuthoringMetadata = async (
-    contentKey: string,
-    { metadata: metadataArg }: { metadata?: Metadata } = {},
-  ) => {
-    const metadata = metadataArg || (await this.retrieveMetadata(contentKey)) || {};
-    const { pr: prMetadata, status } = metadata;
+  getUpdatedOpenAuthoringMetadata = async (contentKey: string) => {
+    const { status, pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
 
     // Set the status to draft if no corresponding PR is recorded
-    if (!prMetadata && status !== 'draft') {
-      const newMetadata = { ...metadata, status: 'draft' };
-      this.storeMetadata(contentKey, newMetadata);
+    if (!pullRequest && status !== 'draft') {
+      const newMetadata = { status: 'draft' };
       return newMetadata;
     }
 
     // If no status is recorded, but there is a PR, check if the PR is
     // closed or not and update the status accordingly.
-    if (prMetadata) {
-      const { number: prNumber } = prMetadata;
-      const originPRInfo = await this.getPullRequest(prNumber);
-      const { state: currentState, merged_at: mergedAt } = originPRInfo;
+    if (pullRequest) {
+      const { state: currentState, merged_at: mergedAt } = pullRequest;
       if (currentState === 'closed' && mergedAt) {
-        // The PR has been merged; delete the unpublished entry
-        const { collection } = metadata;
-        const slug = this.slugFromContentKey(contentKey, collection);
-        this.deleteUnpublishedEntry(collection, slug);
-        return;
+        await this.deleteUnpublishedEntry(collection, slug);
       } else if (currentState === 'closed' && !mergedAt) {
         if (status !== 'draft') {
-          const newMetadata = { ...metadata, status: 'draft' };
-          await this.storeMetadata(contentKey, newMetadata);
-          return newMetadata;
+          await this.setPullRequestStatus(pullRequest, 'draft');
         }
       } else {
         if (status !== 'pending_review') {
           // PR is open and has not been merged
-          const newMetadata = { ...metadata, status: 'pending_review' };
-          await this.storeMetadata(contentKey, newMetadata);
-          return newMetadata;
+          await this.setPullRequestStatus(pullRequest, 'pending_review');
         }
       }
     }
 
-    return metadata;
+    return pullRequest;
   };
 
-  async migrateToVersion1(branch: Branch, metaData: Metadata) {
+  async migrateToVersion1(branch: string, metaData: Metadata) {
     // hard code key/branch generation logic to ignore future changes
-    const oldContentKey = branch.ref.substring(`refs/heads/cms/`.length);
+    const oldContentKey = branch.substring(`refs/heads/cms/`.length);
     const newContentKey = `${metaData.collection}/${oldContentKey}`;
     const newBranchName = `cms/${newContentKey}`;
 
@@ -629,8 +658,8 @@ export default class API {
     return newBranch;
   }
 
-  async migrateBranch(branch: Branch) {
-    const metadata = await this.retrieveMetadata(this.contentKeyFromRef(branch.ref));
+  async migrateBranch(branch: string) {
+    const metadata = await this.retrieveMetadataOld(this.contentKeyFromRef(branch));
     if (!metadata.version) {
       // migrate branch from cms/slug to cms/collection/slug
       branch = await this.migrateToVersion1(branch, metadata);
@@ -639,51 +668,20 @@ export default class API {
     return branch;
   }
 
-  async listUnpublishedBranches(): Promise<Branch[]> {
+  async listUnpublishedBranches() {
     console.log(
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
 
-    try {
-      const branches: Branch[] = await this.request(`${this.repoURL}/git/refs/heads/cms`).catch(
-        replace404WithEmptyArray,
-      );
+    const pullRequests = await this.getPullRequests();
+    const branches = pullRequests.map(pr => pr.head.ref);
 
-      let filterFunction;
-      if (this.useOpenAuthoring) {
-        const getUpdatedOpenAuthoringBranches = flow([
-          map(async (branch: Branch) => {
-            const contentKey = this.contentKeyFromRef(branch.ref);
-            const metadata = await this.getUpdatedOpenAuthoringMetadata(contentKey);
-            // filter out removed entries
-            if (!metadata) {
-              return Promise.reject('Unpublished entry was removed');
-            }
-            return branch;
-          }),
-          onlySuccessfulPromises,
-        ]);
-        filterFunction = getUpdatedOpenAuthoringBranches;
-      } else {
-        const prs = await this.getPRsForBranchName(CMS_BRANCH_PREFIX);
-        const onlyBranchesWithOpenPRs = flowAsync([
-          filter(({ ref }: Branch) => prs.some(pr => pr.head.ref === this.branchNameFromRef(ref))),
-          map((branch: Branch) => this.migrateBranch(branch)),
-          onlySuccessfulPromises,
-        ]);
-
-        filterFunction = onlyBranchesWithOpenPRs;
-      }
-
-      return await filterFunction(branches);
-    } catch (err) {
-      console.log(
-        '%c No Unpublished entries',
-        'line-height: 30px;text-align: center;font-weight: bold',
-      );
-      throw err;
+    for (const branch of branches) {
+      await this.migrateBranch(branch);
     }
+
+    return branches;
   }
 
   /**
@@ -790,98 +788,66 @@ export default class API {
     return this.createPR(commitMessage, branchName);
   }
 
+  async updatePullRequestLabels(number: number, labels: string[]) {
+    await this.request(`${this.repoURL}/issues/${number}/labels`, {
+      method: 'PUT',
+      params: {
+        labels,
+      },
+    });
+  }
+
   async editorialWorkflowGit(
     files: TreeFile[],
     entry: Entry,
     mediaFilesList: MediaFile[],
     options: PersistOptions,
   ) {
-    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
-    const branchName = this.generateBranchName(contentKey);
+    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
+    const branch = this.generateBranchName(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
-      // Open new editorial review workflow for this entry - Create new metadata and commit to new branch
-      const userPromise = this.user();
       const branchData = await this.getDefaultBranch();
       const changeTree = await this.updateTree(branchData.commit.sha, files);
       const commitResponse = await this.commit(options.commitMessage, changeTree);
 
-      let pr;
       if (this.useOpenAuthoring) {
-        await this.createBranch(branchName, commitResponse.sha);
+        await this.createBranch(branch, commitResponse.sha);
       } else {
-        pr = await this.createBranchAndPullRequest(
-          branchName,
+        const pr = await this.createBranchAndPullRequest(
+          branch,
           commitResponse.sha,
           options.commitMessage,
         );
+        await this.setPullRequestStatus(pr, options.status || this.initialWorkflowStatus);
+      }
+    } else {
+      // Entry is already on editorial review workflow - commit to existing branch
+      const { files: diffs } = await this.getDifferences(branch);
+
+      // mark media files to remove
+      const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
+      for (const diff of diffs) {
+        if (!mediaFilesList.some(file => file.path === diff.filename)) {
+          mediaFilesToRemove.push({ path: diff.filename, sha: null });
+        }
       }
 
-      const user = await userPromise;
-      return this.storeMetadata(contentKey, {
-        type: 'PR',
-        pr: pr
-          ? {
-              number: pr.number,
-              head: pr.head && pr.head.sha,
-            }
-          : undefined,
-        user: user.name || user.login,
-        status: options.status || this.initialWorkflowStatus,
-        branch: branchName,
-        collection: options.collectionName as string,
-        commitMessage: options.commitMessage,
-        title: options.parsedData && options.parsedData.title,
-        description: options.parsedData && options.parsedData.description,
-        objects: {
-          entry: {
-            path: entry.path,
-            sha: entry.sha as string,
-          },
-          files: mediaFilesList,
-        },
-        timeStamp: new Date().toISOString(),
-        version: CURRENT_METADATA_VERSION,
-      });
-    } else {
-      // Entry is already on editorial review workflow - just update metadata and commit to existing branch
-      const metadata = await this.retrieveMetadata(contentKey);
-      // mark media files to remove
-      const metadataMediaFiles: MediaFile[] = get(metadata, 'objects.files', []);
-      const mediaFilesToRemove: { path: string; sha: string | null }[] = differenceBy(
-        metadataMediaFiles,
-        mediaFilesList,
-        'path',
-      ).map(file => ({ ...file, type: 'blob', sha: null }));
-
       // rebase the branch before applying new changes
-      const rebasedHead = await this.rebaseBranch(branchName);
+      const rebasedHead = await this.rebaseBranch(branch);
       const treeFiles = mediaFilesToRemove.concat(files);
       const changeTree = await this.updateTree(rebasedHead.sha, treeFiles);
       const commit = await this.commit(options.commitMessage, changeTree);
-      const { title, description } = options.parsedData || {};
 
-      const pr = metadata.pr ? { ...metadata.pr, head: commit.sha } : undefined;
-      const objects = {
-        entry: { path: entry.path, sha: entry.sha as string },
-        files: mediaFilesList,
-      };
-
-      const updatedMetadata = { ...metadata, pr, title, description, objects };
-
-      await this.storeMetadata(contentKey, updatedMetadata);
-      return this.patchBranch(branchName, commit.sha, { force: true });
+      return this.patchBranch(branch, commit.sha, { force: true });
     }
   }
 
-  async compareBranchToDefault(
-    branchName: string,
-  ): Promise<{ baseCommit: GitHubCompareBaseCommit; commits: GitHubCompareCommits }> {
-    const headReference = await this.getHeadReference(branchName);
-    const { base_commit: baseCommit, commits }: GitHubCompareResponse = await this.request(
-      `${this.originRepoURL}/compare/${this.branch}...${headReference}`,
+  async getDifferences(to: string) {
+    const result: GitHubCompareResponse = await await this.request(
+      `${this.originRepoURL}/compare/${this.branch}...${to}`,
     );
-    return { baseCommit, commits };
+    return result;
   }
 
   async getCommitsDiff(baseSha: string, headSha: string): Promise<GitHubCompareFiles> {
@@ -955,7 +921,7 @@ export default class API {
   async rebaseBranch(branchName: string) {
     try {
       // Get the diff between the default branch the published branch
-      const { baseCommit, commits } = await this.compareBranchToDefault(branchName);
+      const { base_commit: baseCommit, commits } = await this.getDifferences(branchName);
       // Rebase the branch based on the diff
       const rebasedHead = await this.rebaseCommits(baseCommit, commits);
       return rebasedHead;
@@ -972,73 +938,62 @@ export default class API {
     return this.request(`${this.originRepoURL}/pulls/${prNumber} }`);
   }
 
-  async updateUnpublishedEntryStatus(collectionName: string, slug: string, status: string) {
+  async setPullRequestStatus(pullRequest: GitHubPull, newStatus: string) {
+    const labels = [
+      ...pullRequest.labels.filter(label => !isCMSLabel(label.name)).map(l => l.name),
+      statusToLabel(newStatus),
+    ];
+    await this.updatePullRequestLabels(pullRequest.number, labels);
+  }
+
+  async updateUnpublishedEntryStatus(collectionName: string, slug: string, newStatus: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const metadata = await this.retrieveMetadata(contentKey);
+    const { pullRequest } = await this.retrieveMetadata(contentKey);
 
     if (!this.useOpenAuthoring) {
-      return this.storeMetadata(contentKey, {
-        ...metadata,
-        status,
-      });
-    }
-
-    if (status === 'pending_publish') {
-      throw new Error('Open Authoring entries may not be set to the status "pending_publish".');
-    }
-
-    const { pr: prMetadata } = metadata;
-    if (prMetadata) {
-      const { number: prNumber } = prMetadata;
-      const originPRInfo = await this.getPullRequest(prNumber);
-      const { state } = originPRInfo;
-      if (state === 'open' && status === 'draft') {
-        await this.closePR(prMetadata);
-        return this.storeMetadata(contentKey, {
-          ...metadata,
-          status,
-        });
+      await this.setPullRequestStatus(pullRequest, newStatus);
+    } else {
+      if (status === 'pending_publish') {
+        throw new Error('Open Authoring entries may not be set to the status "pending_publish".');
       }
 
-      if (state === 'closed' && status === 'pending_review') {
-        await this.openPR(prMetadata);
-        return this.storeMetadata(contentKey, {
-          ...metadata,
-          status,
-        });
-      }
-    }
+      if (pullRequest) {
+        const { state } = pullRequest;
+        if (state === 'open' && newStatus === 'draft') {
+          await this.closePR(pullRequest);
+          await this.setPullRequestStatus(pullRequest, newStatus);
+        }
 
-    if (!prMetadata && status === 'pending_review') {
-      const branchName = this.generateBranchName(contentKey);
-      const commitMessage = metadata.commitMessage || API.DEFAULT_COMMIT_MESSAGE;
-      const { number, head } = await this.createPR(commitMessage, branchName);
-      return this.storeMetadata(contentKey, {
-        ...metadata,
-        pr: { number, head },
-        status,
-      });
+        if (state === 'closed' && newStatus === 'pending_review') {
+          await this.openPR(pullRequest);
+          await this.setPullRequestStatus(pullRequest, newStatus);
+        }
+      }
+
+      if (!pullRequest && newStatus === 'pending_review') {
+        const branch = branchFromContentKey(contentKey);
+        const pullRequest = await this.createPR(API.DEFAULT_COMMIT_MESSAGE, branch);
+        await this.setPullRequestStatus(pullRequest, newStatus);
+      }
     }
   }
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branchName = this.generateBranchName(contentKey);
-    return this.retrieveMetadata(contentKey)
-      .then(metadata => (metadata && metadata.pr ? this.closePR(metadata.pr) : Promise.resolve()))
-      .then(() => this.deleteBranch(branchName))
-      .then(() => this.deleteMetadata(contentKey));
+    const branch = this.generateBranchName(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.closePR(pullRequest);
+    await this.deleteBranch(branch);
   }
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branchName = this.generateBranchName(contentKey);
-    const metadata = await this.retrieveMetadata(contentKey);
-    await this.mergePR(metadata.pr as PR, metadata.objects);
-    await this.deleteBranch(branchName);
-    await this.deleteMetadata(contentKey);
+    const branch = this.generateBranchName(contentKey);
 
-    return metadata;
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.mergePR(pullRequest, { entry: { path: '', sha: '' }, files: [] });
+    await this.deleteBranch(branch);
   }
 
   createRef(type: string, name: string, sha: string) {
@@ -1095,22 +1050,22 @@ export default class API {
     });
   }
 
-  async getHeadReference(head: string) {
-    const headReference = this.useOpenAuthoring ? `${(await this.user()).login}:${head}` : head;
-    return headReference;
+  getHeadReference(head: string) {
+    return `${this.repoOwner}:${head}`;
   }
 
   async createPR(title: string, head: string) {
-    const headReference = await this.getHeadReference(head);
-    return this.request(`${this.originRepoURL}/pulls`, {
+    const result: Octokit.PullsCreateResponse = await this.request(`${this.originRepoURL}/pulls`, {
       method: 'POST',
       body: JSON.stringify({
         title,
         body: DEFAULT_PR_BODY,
-        head: headReference,
+        head: this.getHeadReference(head),
         base: this.branch,
       }),
     });
+
+    return result;
   }
 
   async openPR(pullRequest: PR) {
@@ -1135,7 +1090,7 @@ export default class API {
     });
   }
 
-  mergePR(pullrequest: PR, objects: MetaDataObjects) {
+  mergePR(pullrequest: GitHubPull, objects: MetaDataObjects) {
     const { head: headSha, number } = pullrequest;
     console.log('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
     return this.request(`${this.originRepoURL}/pulls/${number}/merge`, {

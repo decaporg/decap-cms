@@ -51,21 +51,10 @@ interface TreeFile {
 type Error = GraphQLError & { type: string };
 
 export default class GraphQLAPI extends API {
-  repoOwner: string;
-  repoName: string;
-  originRepoOwner: string;
-  originRepoName: string;
   client: ApolloClient<NormalizedCacheObject>;
 
   constructor(config: Config) {
     super(config);
-
-    const [repoParts, originRepoParts] = [this.repo.split('/'), this.originRepo.split('/')];
-    this.repoOwner = repoParts[0];
-    this.repoName = repoParts[1];
-
-    this.originRepoOwner = originRepoParts[0];
-    this.originRepoName = originRepoParts[1];
 
     this.client = this.getApolloClient();
   }
@@ -284,10 +273,10 @@ export default class GraphQLAPI extends API {
       }[];
     };
     if (nodes.length > 0) {
-      const branches = [] as { ref: string }[];
+      const branches = [] as string[];
       nodes.forEach(({ associatedPullRequests }) => {
         associatedPullRequests.nodes.forEach(({ headRef }) => {
-          branches.push({ ref: `${headRef.prefix}${headRef.name}` });
+          branches.push(`${headRef.prefix}${headRef.name}`);
         });
       });
 
@@ -304,8 +293,16 @@ export default class GraphQLAPI extends API {
   async readUnpublishedBranchFile(contentKey: string) {
     // retrieveMetadata(contentKey) rejects in case of no metadata
     const metaData = await this.retrieveMetadata(contentKey).catch(() => null);
-    if (metaData && metaData.objects && metaData.objects.entry && metaData.objects.entry.path) {
-      const { path } = metaData.objects.entry;
+    if (metaData) {
+      const {
+        branch,
+        collection,
+        slug,
+        path,
+        status,
+        newFile,
+        mediaFiles,
+      } = await this.retrieveMetadata(contentKey);
       const { repoOwner: headOwner, repoName: headRepoName } = this;
       const { originRepoOwner: baseOwner, originRepoName: baseRepoName } = this;
 
@@ -324,10 +321,10 @@ export default class GraphQLAPI extends API {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
       const result = {
-        metaData,
+        metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
         fileData: data.head.object.text,
-        isModification: !!data.base.object,
-        slug: this.slugFromContentKey(contentKey, metaData.collection),
+        isModification: newFile,
+        slug,
       };
       return result;
     } else {
@@ -498,10 +495,10 @@ export default class GraphQLAPI extends API {
       const branchName = this.generateBranchName(contentKey);
 
       const metadata = await this.retrieveMetadata(contentKey);
-      if (metadata && metadata.pr) {
+      if (metadata && metadata.pullRequest) {
         const { branch, pullRequest } = await this.getPullRequestAndBranch(
           branchName,
-          metadata.pr.number,
+          metadata.pullRequest.number,
         );
 
         const { data } = await this.mutate({

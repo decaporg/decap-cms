@@ -412,7 +412,7 @@ export default class GitHub implements Implementation {
   unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(({ ref }) => this.api!.contentKeyFromRef(ref)),
+        branches.map(branch => this.api!.contentKeyFromRef(branch)),
       );
 
     const readUnpublishedBranchFile = (contentKey: string) =>
@@ -431,10 +431,10 @@ export default class GitHub implements Implementation {
   ) {
     const contentKey = this.api!.generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const files = data.metaData.objects.files || [];
+    const files = data.metaData.objects.entry.mediaFiles || [];
     const mediaFiles = await loadEntryMediaFiles(
       data.metaData.branch,
-      files.map(({ sha: id, path }) => ({ id, path })),
+      files.map(({ id, path }) => ({ id, path })),
     );
     return {
       slug,
@@ -456,11 +456,12 @@ export default class GitHub implements Implementation {
     const contentKey = this.api!.generateContentKey(collectionName, slug);
     const data = await this.api!.retrieveMetadata(contentKey);
 
-    if (!data || !data.pr) {
+    if (!data || !data.pullRequest) {
       return null;
     }
 
-    const headSHA = typeof data.pr.head === 'string' ? data.pr.head : data.pr.head.sha;
+    const headSHA =
+      typeof data.pullRequest.head === 'string' ? data.pullRequest.head : data.pullRequest.head.sha;
     const statuses = await this.api!.getStatuses(headSHA);
     const deployStatus = getPreviewStatus(statuses, this.previewContext);
 
