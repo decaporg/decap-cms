@@ -88,7 +88,7 @@ const nl = {
       duplicate: 'Dupliceren',
       unpublishing: 'Publicatie ongedaan maken...',
       publishAndCreateNew: 'Publiceer en maak nieuw item aan',
-      publishAndDuplicate: 'Publiceer en dupliceer',
+      publishAndDuplicate: 'Publiceer en dupliceer item',
       deleteUnpublishedChanges: 'Verwijder niet-gepubliceerde wijzigingen',
       deleteUnpublishedEntry: 'Niet-gepubliceerd item verwijderen',
       deletePublishedEntry: 'Gepubliceerd item verwijderen',
