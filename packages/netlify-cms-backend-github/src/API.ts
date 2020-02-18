@@ -35,6 +35,8 @@ type GitHubPull = Octokit.PullsListResponseItem;
 
 export const API_NAME = 'GitHub';
 
+const MOCK_PULL_REQUEST = -1;
+
 export interface Config {
   apiRoot?: string;
   token?: string;
@@ -420,7 +422,7 @@ export default class API {
 
   async getPullRequests(head: string, predicate = withCmsLabel) {
     const pullRequests: Octokit.PullsListResponse = await this.requestAllPages(
-      `${this.repoURL}/pulls`,
+      `${this.originRepoURL}/pulls`,
       {
         params: {
           head,
@@ -436,22 +438,30 @@ export default class API {
   async getBranchPullRequest(branch: string) {
     const pullRequests = await this.getPullRequests(branch);
     if (pullRequests.length <= 0) {
-      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      if (this.useOpenAuthoring) {
+        try {
+          const data = await this.getBranch(branch);
+          return {
+            head: { sha: data.commit.sha },
+            number: MOCK_PULL_REQUEST,
+            labels: [{ name: statusToLabel(this.initialWorkflowStatus) }],
+            state: 'open',
+          } as GitHubPull;
+        } catch (e) {
+          throw new EditorialWorkflowError('content is not under editorial workflow', true);
+        }
+      } else {
+        throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      }
     }
 
     return pullRequests[0];
   }
 
   async retrieveMetadata(contentKey: string) {
-    const { collection, slug } = parseContentKey(contentKey);
+    const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
-    const pullRequest = await this.getBranchPullRequest(branch).catch(e => {
-      if (this.useOpenAuthoring) {
-        return ({ head: { sha: '' }, labels: [] } as unknown) as GitHubPull;
-      } else {
-        throw e;
-      }
-    });
+    const pullRequest = await this.getBranchPullRequest(branch);
     const { files: diff } = await this.getDifferences(pullRequest.head.sha);
     const { path, newFile } = diff
       .filter(d => d.filename.includes(slug))
@@ -579,34 +589,25 @@ export default class API {
     }
   }
 
-  getUpdatedOpenAuthoringMetadata = async (contentKey: string) => {
+  syncOpenAuthoringMetadata = async (contentKey: string) => {
     const { status, pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
-
-    // Set the status to draft if no corresponding PR is recorded
-    if (!pullRequest && status !== 'draft') {
-      const newMetadata = { status: 'draft' };
-      return newMetadata;
+    if (pullRequest.number === MOCK_PULL_REQUEST) {
+      return;
     }
+    const { state: currentState, merged_at: mergedAt } = pullRequest;
 
-    // If no status is recorded, but there is a PR, check if the PR is
-    // closed or not and update the status accordingly.
-    if (pullRequest) {
-      const { state: currentState, merged_at: mergedAt } = pullRequest;
-      if (currentState === 'closed' && mergedAt) {
-        await this.deleteUnpublishedEntry(collection, slug);
-      } else if (currentState === 'closed' && !mergedAt) {
-        if (status !== 'draft') {
-          await this.setPullRequestStatus(pullRequest, 'draft');
-        }
-      } else {
-        if (status !== 'pending_review') {
-          // PR is open and has not been merged
-          await this.setPullRequestStatus(pullRequest, 'pending_review');
-        }
+    if (currentState === 'closed' && mergedAt) {
+      await this.deleteUnpublishedEntry(collection, slug);
+    } else if (currentState === 'closed' && !mergedAt) {
+      if (status !== 'draft') {
+        await this.setPullRequestStatus(pullRequest, 'draft');
+      }
+    } else {
+      if (status !== 'pending_review') {
+        // PR is open and has not been merged
+        await this.setPullRequestStatus(pullRequest, 'pending_review');
       }
     }
-
-    return pullRequest;
   };
 
   async migrateToVersion1(branch: string, metaData: Metadata) {
@@ -689,8 +690,9 @@ export default class API {
       const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.request(
         `${this.repoURL}/git/refs/heads/cms`,
       ).catch(() => []);
-
       branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
+      // sync open authoring metadata
+      await Promise.all(branches.map(b => this.syncOpenAuthoringMetadata(contentKeyFromBranch(b))));
     } else {
       // non open authoring branches are always linked to a pr
       const cmsPullRequests = await this.getPullRequests(CMS_BRANCH_PREFIX);
@@ -961,7 +963,7 @@ export default class API {
         throw new Error('Open Authoring entries may not be set to the status "pending_publish".');
       }
 
-      if (pullRequest) {
+      if (pullRequest.number !== MOCK_PULL_REQUEST) {
         const { state } = pullRequest;
         if (state === 'open' && newStatus === 'draft') {
           await this.closePR(pullRequest.number);
@@ -972,9 +974,7 @@ export default class API {
           await this.openPR(pullRequest.number);
           await this.setPullRequestStatus(pullRequest, newStatus);
         }
-      }
-
-      if (!pullRequest && newStatus === 'pending_review') {
+      } else if (newStatus === 'pending_review') {
         const branch = branchFromContentKey(contentKey);
         const pullRequest = await this.createPR(API.DEFAULT_COMMIT_MESSAGE, branch);
         await this.setPullRequestStatus(pullRequest, newStatus);
@@ -1024,6 +1024,13 @@ export default class API {
     return this.request(`${this.repoURL}/git/refs/${type}/${encodeURIComponent(name)}`, {
       method: 'DELETE',
     });
+  }
+
+  async getBranch(branch: string) {
+    const result: Octokit.ReposGetBranchResponse = await this.request(
+      `${this.repoURL}/branches/${encodeURIComponent(branch)}`,
+    );
+    return result;
   }
 
   async getDefaultBranch() {
