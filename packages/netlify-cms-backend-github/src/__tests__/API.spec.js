@@ -21,28 +21,35 @@ describe('github API', () => {
   describe('editorialWorkflowGit', () => {
     it('should create PR with correct base branch name when publishing with editorial workflow', () => {
       let prBaseBranch = null;
-      const api = new API({ branch: 'gh-pages', repo: 'my-repo' });
+      let labels = null;
+      const api = new API({
+        branch: 'gh-pages',
+        repo: 'owner/my-repo',
+        initialWorkflowStatus: 'draft',
+      });
       const responses = {
-        '/repos/my-repo/branches/gh-pages': () => ({ commit: { sha: 'def' } }),
-        '/repos/my-repo/git/trees/def': () => ({ tree: [] }),
-        '/repos/my-repo/git/trees': () => ({}),
-        '/repos/my-repo/git/commits': () => ({}),
-        '/repos/my-repo/git/refs': () => ({}),
-        '/repos/my-repo/pulls': pullRequest => {
-          prBaseBranch = JSON.parse(pullRequest.body).base;
-          return { head: { sha: 'cbd' } };
+        '/repos/owner/my-repo/branches/gh-pages': () => ({ commit: { sha: 'def' } }),
+        '/repos/owner/my-repo/git/trees/def': () => ({ tree: [] }),
+        '/repos/owner/my-repo/git/trees': () => ({}),
+        '/repos/owner/my-repo/git/commits': () => ({}),
+        '/repos/owner/my-repo/git/refs': () => ({}),
+        '/repos/owner/my-repo/pulls': req => {
+          prBaseBranch = JSON.parse(req.body).base;
+          return { head: { sha: 'cbd' }, labels: [], number: 1 };
         },
-        '/user': () => ({}),
-        '/repos/my-repo/git/blobs': () => ({}),
-        '/repos/my-repo/git/refs/meta/_netlify_cms': () => ({ object: {} }),
+        '/repos/owner/my-repo/issues/1/labels': req => {
+          labels = req.params.labels;
+          return {};
+        },
       };
       mockAPI(api, responses);
 
       return expect(
-        api
-          .editorialWorkflowGit([], { slug: 'entry', sha: 'abc' }, null, {})
-          .then(() => prBaseBranch),
-      ).resolves.toEqual('gh-pages');
+        api.editorialWorkflowGit([], { slug: 'entry', sha: 'abc' }, null, {}).then(() => ({
+          prBaseBranch,
+          labels,
+        })),
+      ).resolves.toEqual({ prBaseBranch: 'gh-pages', labels: ['netlify-cms/draft'] });
     });
   });
 
@@ -298,16 +305,16 @@ describe('github API', () => {
       const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
       api.migrateToVersion1 = jest.fn().mockResolvedValue(newBranch);
       const metadata = { type: 'PR' };
-      api.retrieveMetadata = jest.fn().mockResolvedValue(metadata);
+      api.retrieveMetadataOld = jest.fn().mockResolvedValue(metadata);
 
-      const branch = { ref: 'refs/heads/cms/2019-11-11-post-title' };
+      const branch = 'refs/heads/cms/2019-11-11-post-title';
       await expect(api.migrateBranch(branch)).resolves.toBe(newBranch);
 
       expect(api.migrateToVersion1).toHaveBeenCalledTimes(1);
       expect(api.migrateToVersion1).toHaveBeenCalledWith(branch, metadata);
 
-      expect(api.retrieveMetadata).toHaveBeenCalledTimes(1);
-      expect(api.retrieveMetadata).toHaveBeenCalledWith('2019-11-11-post-title');
+      expect(api.retrieveMetadataOld).toHaveBeenCalledTimes(1);
+      expect(api.retrieveMetadataOld).toHaveBeenCalledWith('2019-11-11-post-title');
     });
 
     it('should not migrate to version 1 when version is 1', async () => {
@@ -315,15 +322,15 @@ describe('github API', () => {
 
       api.migrateToVersion1 = jest.fn();
       const metadata = { type: 'PR', version: '1' };
-      api.retrieveMetadata = jest.fn().mockResolvedValue(metadata);
+      api.retrieveMetadataOld = jest.fn().mockResolvedValue(metadata);
 
-      const branch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
+      const branch = 'refs/heads/cms/posts/2019-11-11-post-title';
       await expect(api.migrateBranch(branch)).resolves.toBe(branch);
 
       expect(api.migrateToVersion1).toHaveBeenCalledTimes(0);
 
-      expect(api.retrieveMetadata).toHaveBeenCalledTimes(1);
-      expect(api.retrieveMetadata).toHaveBeenCalledWith('posts/2019-11-11-post-title');
+      expect(api.retrieveMetadataOld).toHaveBeenCalledTimes(1);
+      expect(api.retrieveMetadataOld).toHaveBeenCalledWith('posts/2019-11-11-post-title');
     });
   });
 
@@ -342,7 +349,7 @@ describe('github API', () => {
       api.deleteBranch = jest.fn();
       api.deleteMetadata = jest.fn();
 
-      const branch = { ref: 'refs/heads/cms/2019-11-11-post-title' };
+      const branch = 'refs/heads/cms/2019-11-11-post-title';
       const metadata = {
         branch: 'cms/2019-11-11-post-title',
         type: 'PR',
@@ -351,7 +358,7 @@ describe('github API', () => {
         collection: 'posts',
       };
 
-      await expect(api.migrateToVersion1(branch, metadata)).resolves.toBe(newBranch);
+      await expect(api.migrateToVersion1(branch, metadata)).resolves.toBe(newBranch.ref);
 
       expect(api.createBranch).toHaveBeenCalledTimes(1);
       expect(api.createBranch).toHaveBeenCalledWith('cms/posts/2019-11-11-post-title', 'old_head');
@@ -370,7 +377,7 @@ describe('github API', () => {
       });
 
       expect(api.closePR).toHaveBeenCalledTimes(1);
-      expect(api.closePR).toHaveBeenCalledWith(metadata.pr);
+      expect(api.closePR).toHaveBeenCalledWith(metadata.pr.number);
 
       expect(api.deleteBranch).toHaveBeenCalledTimes(1);
       expect(api.deleteBranch).toHaveBeenCalledWith('cms/2019-11-11-post-title');

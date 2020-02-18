@@ -26,23 +26,11 @@ import {
 import { Octokit } from '@octokit/rest';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
-type GitHubRepo = Octokit.ReposGetResponse;
-type GitHubBranch = Octokit.ReposGetBranchResponse;
-type GitHubBlob = Octokit.GitGetBlobResponse;
-type GitHubTree = Octokit.GitCreateTreeResponse;
 type GitCreateTreeParamsTree = Octokit.GitCreateTreeParamsTree;
-type GitHubCommit = Octokit.GitCreateCommitResponse;
 type GitHubCompareCommit = Octokit.ReposCompareCommitsResponseCommitsItem;
-type ReposCompareCommitsResponseFilesItem = Octokit.ReposCompareCommitsResponseFilesItem;
-type GitHubCompareResponse = Octokit.ReposCompareCommitsResponse;
 type GitHubAuthor = Octokit.GitCreateCommitResponseAuthor;
 type GitHubCommitter = Octokit.GitCreateCommitResponseCommitter;
-type ReposListStatusesForRefResponseItem = Octokit.ReposListStatusesForRefResponseItem;
-type GitHubPulls = Octokit.PullsListResponse;
 type GitHubPull = Octokit.PullsListResponseItem;
-
-const client = new Octokit();
-client.pulls.list();
 
 export const API_NAME = 'GitHub';
 
@@ -74,7 +62,9 @@ type TreeEntry = Override<GitCreateTreeParamsTree, { sha: string | null }>;
 
 type GitHubCompareCommits = GitHubCompareCommit[];
 
-type GitHubCompareFile = ReposCompareCommitsResponseFilesItem & { previous_filename?: string };
+type GitHubCompareFile = Octokit.ReposCompareCommitsResponseFilesItem & {
+  previous_filename?: string;
+};
 
 type GitHubCompareFiles = GitHubCompareFile[];
 
@@ -85,14 +75,9 @@ enum GitHubCommitStatusState {
   Success = 'success',
 }
 
-type GitHubCommitStatus = ReposListStatusesForRefResponseItem & {
+type GitHubCommitStatus = Octokit.ReposListStatusesForRefResponseItem & {
   state: GitHubCommitStatusState;
 };
-
-export interface PR {
-  number: number;
-  head: string | { sha: string };
-}
 
 interface MetaDataObjects {
   entry: { path: string; sha: string };
@@ -104,7 +89,10 @@ export interface Metadata {
   objects: MetaDataObjects;
   branch: string;
   status: string;
-  pr?: PR;
+  pr?: {
+    number: number;
+    head: string | { sha: string };
+  };
   collection: string;
   commitMessage: string;
   version?: string;
@@ -127,15 +115,6 @@ export interface BlobArgs {
 type Param = string | number | undefined;
 
 type Options = RequestInit & { params?: Record<string, Param | Record<string, Param> | string[]> };
-
-const replace404WithEmptyArray = (err: FetchError) => {
-  if (err && err.status === 404) {
-    console.log('This 404 was expected and handled appropriately.');
-    return [];
-  } else {
-    return Promise.reject(err);
-  }
-};
 
 type MediaFile = {
   sha: string;
@@ -194,13 +173,14 @@ export default class API {
     return this._userPromise;
   }
 
-  hasWriteAccess() {
-    return this.request(this.repoURL)
-      .then((repo: GitHubRepo) => repo.permissions.push)
-      .catch((error: Error) => {
-        console.error('Problem fetching repo data from GitHub');
-        throw error;
-      });
+  async hasWriteAccess() {
+    try {
+      const result: Octokit.ReposGetResponse = await this.request(this.repoURL);
+      return result.permissions.push;
+    } catch (error) {
+      console.error('Problem fetching repo data from GitHub');
+      throw error;
+    }
   }
 
   reset() {
@@ -449,7 +429,7 @@ export default class API {
   }
 
   async getPullRequests(head?: string) {
-    const pullRequests: GitHubPulls = await this.request(`${this.repoURL}/pulls`, {
+    const pullRequests: Octokit.PullsListResponse = await this.request(`${this.repoURL}/pulls`, {
       params: {
         state: 'open',
         // eslint-disable-next-line @typescript-eslint/camelcase
@@ -524,7 +504,7 @@ export default class API {
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
-    const result: GitHubBlob = await this.request(`${repoURL}/git/blobs/${sha}`);
+    const result: Octokit.GitGetBlobResponse = await this.request(`${repoURL}/git/blobs/${sha}`);
 
     if (parseText) {
       // treat content as a utf-8 string
@@ -547,13 +527,17 @@ export default class API {
     { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {},
   ): Promise<{ type: string; id: string; name: string; path: string; size: number }[]> {
     const folder = trim(path, '/');
-    return this.request(`${repoURL}/git/trees/${branch}:${folder}`, {
-      // GitHub API supports recursive=1 for getting the entire recursive tree
-      // or omitting it to get the non-recursive tree
-      params: depth > 1 ? { recursive: 1 } : {},
-    })
-      .then((res: GitHubTree) =>
-        res.tree
+    try {
+      const result: Octokit.GitGetTreeResponse = await this.request(
+        `${repoURL}/git/trees/${branch}:${folder}`,
+        {
+          // GitHub API supports recursive=1 for getting the entire recursive tree
+          // or omitting it to get the non-recursive tree
+          params: depth > 1 ? { recursive: 1 } : {},
+        },
+      );
+      return (
+        result.tree
           // filter only files and up to the required depth
           .filter(file => file.type === 'blob' && file.path.split('/').length <= depth)
           .map(file => ({
@@ -561,10 +545,17 @@ export default class API {
             id: file.sha,
             name: basename(file.path),
             path: `${folder}/${file.path}`,
-            size: file.size,
-          })),
-      )
-      .catch(replace404WithEmptyArray);
+            size: file.size!,
+          }))
+      );
+    } catch (err) {
+      if (err && err.status === 404) {
+        console.log('This 404 was expected and handled appropriately.');
+        return [];
+      } else {
+        throw err;
+      }
+    }
   }
 
   async readUnpublishedBranchFile(contentKey: string) {
@@ -636,7 +627,7 @@ export default class API {
     const newBranchName = `cms/${newContentKey}`;
 
     // create new branch and pull request in new format
-    const newBranch = await this.createBranch(newBranchName, (metaData.pr as PR).head as string);
+    const newBranch = await this.createBranch(newBranchName, metaData.pr!.head as string);
     const pr = await this.createPR(metaData.commitMessage, newBranchName);
 
     // store new metadata
@@ -651,11 +642,11 @@ export default class API {
     });
 
     // remove old data
-    await this.closePR(metaData.pr as PR);
+    await this.closePR(metaData.pr!.number);
     await this.deleteBranch(metaData.branch);
     await this.deleteMetadata(oldContentKey);
 
-    return newBranch;
+    return newBranch.ref;
   }
 
   async migrateBranch(branch: string) {
@@ -736,7 +727,7 @@ export default class API {
     }
   }
 
-  getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
+  async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
     /**
      * We need to request the tree first to get the SHA. We use extended SHA-1
      * syntax (<rev>:<path>) to get a blob from a tree without having to recurse
@@ -749,13 +740,15 @@ export default class API {
     const fileDataPath = encodeURIComponent(directory);
     const fileDataURL = `${repoURL}/git/trees/${branch}:${fileDataPath}`;
 
-    return this.request(fileDataURL, { cache: 'no-store' }).then((resp: GitHubTree) => {
-      const file = resp.tree.find(file => file.path === filename);
-      if (file) {
-        return file.sha;
-      }
-      throw new APIError('Not Found', 404, API_NAME);
+    const result: Octokit.GitGetTreeResponse = await this.request(fileDataURL, {
+      cache: 'no-store',
     });
+    const file = result.tree.find(file => file.path === filename);
+    if (file) {
+      return file.sha;
+    } else {
+      throw new APIError('Not Found', 404, API_NAME);
+    }
   }
 
   deleteFile(path: string, message: string) {
@@ -844,14 +837,14 @@ export default class API {
   }
 
   async getDifferences(to: string) {
-    const result: GitHubCompareResponse = await await this.request(
+    const result: Octokit.ReposCompareCommitsResponse = await this.request(
       `${this.originRepoURL}/compare/${this.branch}...${to}`,
     );
     return result;
   }
 
   async getCommitsDiff(baseSha: string, headSha: string): Promise<GitHubCompareFiles> {
-    const { files }: GitHubCompareResponse = await this.request(
+    const { files }: Octokit.ReposCompareCommitsResponse = await this.request(
       `${this.repoURL}/compare/${baseSha}...${headSha}`,
     );
     return files;
@@ -931,13 +924,6 @@ export default class API {
     }
   }
 
-  /**
-   * Get a pull request by PR number.
-   */
-  getPullRequest(prNumber: number) {
-    return this.request(`${this.originRepoURL}/pulls/${prNumber} }`);
-  }
-
   async setPullRequestStatus(pullRequest: GitHubPull, newStatus: string) {
     const labels = [
       ...pullRequest.labels.filter(label => !isCMSLabel(label.name)).map(l => l.name),
@@ -960,12 +946,12 @@ export default class API {
       if (pullRequest) {
         const { state } = pullRequest;
         if (state === 'open' && newStatus === 'draft') {
-          await this.closePR(pullRequest);
+          await this.closePR(pullRequest.number);
           await this.setPullRequestStatus(pullRequest, newStatus);
         }
 
         if (state === 'closed' && newStatus === 'pending_review') {
-          await this.openPR(pullRequest);
+          await this.openPR(pullRequest.number);
           await this.setPullRequestStatus(pullRequest, newStatus);
         }
       }
@@ -983,7 +969,7 @@ export default class API {
     const branch = this.generateBranchName(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
-    await this.closePR(pullRequest);
+    await this.closePR(pullRequest.number);
     await this.deleteBranch(branch);
   }
 
@@ -996,19 +982,24 @@ export default class API {
     await this.deleteBranch(branch);
   }
 
-  createRef(type: string, name: string, sha: string) {
-    return this.request(`${this.repoURL}/git/refs`, {
+  async createRef(type: string, name: string, sha: string) {
+    const result: Octokit.GitCreateRefResponse = await this.request(`${this.repoURL}/git/refs`, {
       method: 'POST',
       body: JSON.stringify({ ref: `refs/${type}/${name}`, sha }),
     });
+    return result;
   }
 
-  patchRef(type: string, name: string, sha: string, opts: { force?: boolean } = {}) {
+  async patchRef(type: string, name: string, sha: string, opts: { force?: boolean } = {}) {
     const force = opts.force || false;
-    return this.request(`${this.repoURL}/git/refs/${type}/${encodeURIComponent(name)}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ sha, force }),
-    });
+    const result: Octokit.GitUpdateRefResponse = await this.request(
+      `${this.repoURL}/git/refs/${type}/${encodeURIComponent(name)}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ sha, force }),
+      },
+    );
+    return result;
   }
 
   deleteRef(type: string, name: string) {
@@ -1017,8 +1008,11 @@ export default class API {
     });
   }
 
-  getDefaultBranch(): Promise<GitHubBranch> {
-    return this.request(`${this.originRepoURL}/branches/${encodeURIComponent(this.branch)}`);
+  async getDefaultBranch() {
+    const result: Octokit.ReposGetBranchResponse = await this.request(
+      `${this.originRepoURL}/branches/${encodeURIComponent(this.branch)}`,
+    );
+    return result;
   }
 
   createBranch(branchName: string, sha: string) {
@@ -1068,47 +1062,59 @@ export default class API {
     return result;
   }
 
-  async openPR(pullRequest: PR) {
-    const { number } = pullRequest;
+  async openPR(number: number) {
     console.log('%c Re-opening PR', 'line-height: 30px;text-align: center;font-weight: bold');
-    return this.request(`${this.originRepoURL}/pulls/${number}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        state: 'open',
-      }),
-    });
+    const result: Octokit.PullsUpdateBranchResponse = await this.request(
+      `${this.originRepoURL}/pulls/${number}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({
+          state: 'open',
+        }),
+      },
+    );
+    return result;
   }
 
-  closePR(pullRequest: PR) {
-    const { number } = pullRequest;
+  async closePR(number: number) {
     console.log('%c Deleting PR', 'line-height: 30px;text-align: center;font-weight: bold');
-    return this.request(`${this.originRepoURL}/pulls/${number}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        state: 'closed',
-      }),
-    });
+    const result: Octokit.PullsUpdateBranchResponse = await this.request(
+      `${this.originRepoURL}/pulls/${number}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({
+          state: 'closed',
+        }),
+      },
+    );
+    return result;
   }
 
-  mergePR(pullrequest: GitHubPull, objects: MetaDataObjects) {
+  async mergePR(pullrequest: GitHubPull, objects: MetaDataObjects) {
     const { head: headSha, number } = pullrequest;
     console.log('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
-    return this.request(`${this.originRepoURL}/pulls/${number}/merge`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        commit_message: MERGE_COMMIT_MESSAGE,
-        sha: headSha,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        merge_method: this.mergeMethod,
-      }),
-    }).catch(error => {
+    try {
+      const result: Octokit.PullsMergeResponse = await this.request(
+        `${this.originRepoURL}/pulls/${number}/merge`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            commit_message: MERGE_COMMIT_MESSAGE,
+            sha: headSha,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            merge_method: this.mergeMethod,
+          }),
+        },
+      );
+      return result;
+    } catch (error) {
       if (error instanceof APIError && error.status === 405) {
         return this.forceMergePR(objects);
       } else {
         throw error;
       }
-    });
+    }
   }
 
   forceMergePR(objects: MetaDataObjects) {
@@ -1160,12 +1166,13 @@ export default class API {
     return { ...newTree, parentSha: baseSha };
   }
 
-  createTree(baseSha: string, tree: TreeEntry[]): Promise<GitHubTree> {
-    return this.request(`${this.repoURL}/git/trees`, {
+  async createTree(baseSha: string, tree: TreeEntry[]) {
+    const result: Octokit.GitCreateTreeResponse = await this.request(`${this.repoURL}/git/trees`, {
       method: 'POST',
       // eslint-disable-next-line @typescript-eslint/camelcase
       body: JSON.stringify({ base_tree: baseSha, tree }),
     });
+    return result;
   }
 
   commit(message: string, changeTree: { parentSha?: string; sha: string }) {
@@ -1173,16 +1180,20 @@ export default class API {
     return this.createCommit(message, changeTree.sha, parents);
   }
 
-  createCommit(
+  async createCommit(
     message: string,
     treeSha: string,
     parents: string[],
     author?: GitHubAuthor,
     committer?: GitHubCommitter,
-  ): Promise<GitHubCommit> {
-    return this.request(`${this.repoURL}/git/commits`, {
-      method: 'POST',
-      body: JSON.stringify({ message, tree: treeSha, parents, author, committer }),
-    });
+  ) {
+    const result: Octokit.GitCreateCommitResponse = await this.request(
+      `${this.repoURL}/git/commits`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ message, tree: treeSha, parents, author, committer }),
+      },
+    );
+    return result;
   }
 }

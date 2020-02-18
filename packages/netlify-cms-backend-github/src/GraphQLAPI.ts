@@ -16,7 +16,7 @@ import {
 } from 'netlify-cms-lib-util';
 import { trim } from 'lodash';
 import introspectionQueryResultData from './fragmentTypes';
-import API, { Config, BlobArgs, PR, API_NAME } from './API';
+import API, { Config, BlobArgs, API_NAME } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
 import { GraphQLError } from 'graphql';
@@ -445,7 +445,7 @@ export default class GraphQLAPI extends API {
     return { branch: repository.branch, pullRequest: origin.pullRequest };
   }
 
-  async openPR({ number }: PR) {
+  async openPR(number: number) {
     const pullRequest = await this.getPullRequest(number);
 
     const { data } = await this.mutate({
@@ -467,7 +467,7 @@ export default class GraphQLAPI extends API {
     return data!.closePullRequest;
   }
 
-  async closePR({ number }: PR) {
+  async closePR(number: number) {
     const pullRequest = await this.getPullRequest(number);
 
     const { data } = await this.mutate({
