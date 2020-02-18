@@ -25,6 +25,7 @@ import {
   UnpublishedEntryMediaFile,
   runWithLock,
   blobToFileObj,
+  contentKeyFromBranch,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { Octokit } from '@octokit/rest';
@@ -412,7 +413,7 @@ export default class GitHub implements Implementation {
   unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => this.api!.contentKeyFromRef(branch)),
+        branches.map(branch => contentKeyFromBranch(branch)),
       );
 
     const readUnpublishedBranchFile = (contentKey: string) =>
@@ -446,29 +447,18 @@ export default class GitHub implements Implementation {
     };
   }
 
-  /**
-   * Uses GitHub's Statuses API to retrieve statuses, infers which is for a
-   * deploy preview via `getPreviewStatus`. Returns the url provided by the
-   * status, as well as the status state, which should be one of 'success',
-   * 'pending', and 'failure'.
-   */
-  async getDeployPreview(collectionName: string, slug: string) {
-    const contentKey = this.api!.generateContentKey(collectionName, slug);
-    const data = await this.api!.retrieveMetadata(contentKey);
+  async getDeployPreview(collection: string, slug: string) {
+    try {
+      const statuses = await this.api!.getStatuses(collection, slug);
+      const deployStatus = getPreviewStatus(statuses, this.previewContext);
 
-    if (!data || !data.pullRequest) {
-      return null;
-    }
-
-    const headSHA =
-      typeof data.pullRequest.head === 'string' ? data.pullRequest.head : data.pullRequest.head.sha;
-    const statuses = await this.api!.getStatuses(headSHA);
-    const deployStatus = getPreviewStatus(statuses, this.previewContext);
-
-    if (deployStatus) {
-      const { target_url: url, state } = deployStatus;
-      return { url, status: state };
-    } else {
+      if (deployStatus) {
+        const { target_url: url, state } = deployStatus;
+        return { url, status: state };
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }

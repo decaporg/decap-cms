@@ -22,6 +22,7 @@ import {
   isCMSLabel,
   labelToStatus,
   statusToLabel,
+  contentKeyFromBranch,
 } from 'netlify-cms-lib-util';
 import { Octokit } from '@octokit/rest';
 
@@ -102,10 +103,6 @@ export interface Metadata {
   timeStamp: string;
 }
 
-export interface Branch {
-  ref: string;
-}
-
 export interface BlobArgs {
   sha: string;
   repoURL: string;
@@ -120,6 +117,10 @@ type MediaFile = {
   sha: string;
   path: string;
 };
+
+const withCmsLabel = (pr: Octokit.PullsListResponseItem) => pr.labels.some(l => isCMSLabel(l.name));
+const withoutCmsLabel = (pr: Octokit.PullsListResponseItem) =>
+  pr.labels.every(l => !isCMSLabel(l.name));
 
 export default class API {
   apiRoot: string;
@@ -280,11 +281,12 @@ export default class API {
   }
 
   generateContentKey(collectionName: string, slug: string) {
+    const contentKey = generateContentKey(collectionName, slug);
     if (!this.useOpenAuthoring) {
-      return generateContentKey(collectionName, slug);
+      return contentKey;
     }
 
-    return `${this.repo}/${collectionName}/${slug}`;
+    return `${this.repo}/${contentKey}`;
   }
 
   parseContentKey(contentKey: string) {
@@ -293,18 +295,6 @@ export default class API {
     }
 
     return parseContentKey(contentKey.substring(this.repo.length + 1));
-  }
-
-  generateBranchName(contentKey: string) {
-    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
-  }
-
-  branchNameFromRef(ref: string) {
-    return ref.substring('refs/heads/'.length);
-  }
-
-  contentKeyFromRef(ref: string) {
-    return ref.substring(`refs/heads/${CMS_BRANCH_PREFIX}/`.length);
   }
 
   checkMetadataRef() {
@@ -428,20 +418,19 @@ export default class API {
     });
   }
 
-  async getPullRequests(head?: string) {
-    const pullRequests: Octokit.PullsListResponse = await this.request(`${this.repoURL}/pulls`, {
-      params: {
-        state: 'open',
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        base: this.branch,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        ...(head ? { head: this.getHeadReference(head) } : {}),
+  async getPullRequests(head: string, predicate = withCmsLabel) {
+    const pullRequests: Octokit.PullsListResponse = await this.requestAllPages(
+      `${this.repoURL}/pulls`,
+      {
+        params: {
+          head,
+          base: this.branch,
+          state: 'open',
+        },
       },
-    });
-
-    return pullRequests.filter(
-      pr => pr.head.ref.startsWith(CMS_BRANCH_PREFIX) && pr.labels.some(l => isCMSLabel(l.name)),
     );
+
+    return pullRequests.filter(predicate);
   }
 
   async getBranchPullRequest(branch: string) {
@@ -622,16 +611,16 @@ export default class API {
 
   async migrateToVersion1(branch: string, metaData: Metadata) {
     // hard code key/branch generation logic to ignore future changes
-    const oldContentKey = branch.substring(`refs/heads/cms/`.length);
+    const oldContentKey = branch.substring(`cms/`.length);
     const newContentKey = `${metaData.collection}/${oldContentKey}`;
     const newBranchName = `cms/${newContentKey}`;
 
     // create new branch and pull request in new format
-    const newBranch = await this.createBranch(newBranchName, metaData.pr!.head as string);
+    await this.createBranch(newBranchName, metaData.pr!.head as string);
     const pr = await this.createPR(metaData.commitMessage, newBranchName);
 
     // store new metadata
-    await this.storeMetadata(newContentKey, {
+    const newMetadata = {
       ...metaData,
       pr: {
         number: pr.number,
@@ -639,24 +628,47 @@ export default class API {
       },
       branch: newBranchName,
       version: '1',
-    });
+    };
+    await this.storeMetadata(newContentKey, newMetadata);
 
     // remove old data
     await this.closePR(metaData.pr!.number);
     await this.deleteBranch(metaData.branch);
     await this.deleteMetadata(oldContentKey);
 
-    return newBranch.ref;
+    return newMetadata;
+  }
+
+  async migrateToPullRequestLabels(branch: string, metaData: Metadata) {
+    const pullRequest: Octokit.PullsGetResponse = await this.request(
+      `${this.repoURL}/pulls/${metaData.pr?.number}`,
+    );
+
+    await this.setPullRequestStatus(pullRequest, metaData.status);
+
+    const contentKey = branch.substring(`cms/`.length);
+    await this.deleteMetadata(contentKey);
+    return metaData;
   }
 
   async migrateBranch(branch: string) {
-    const metadata = await this.retrieveMetadataOld(this.contentKeyFromRef(branch));
-    if (!metadata.version) {
-      // migrate branch from cms/slug to cms/collection/slug
-      branch = await this.migrateToVersion1(branch, metadata);
+    let metadata = await this.retrieveMetadataOld(contentKeyFromBranch(branch)).catch(
+      () => undefined,
+    );
+
+    if (!metadata) {
+      return;
     }
 
-    return branch;
+    if (!metadata.version) {
+      // migrate branch from cms/slug to cms/collection/slug
+      metadata = await this.migrateToVersion1(branch, metadata);
+    }
+
+    if (metadata.version === '1') {
+      // migrate branch from using orphan ref to store metadata to pull requests label
+      metadata = await this.migrateToPullRequestLabels(branch, metadata);
+    }
   }
 
   async listUnpublishedBranches() {
@@ -665,11 +677,24 @@ export default class API {
       'line-height: 30px;text-align: center;font-weight: bold',
     );
 
-    const pullRequests = await this.getPullRequests();
-    const branches = pullRequests.map(pr => pr.head.ref);
-
-    for (const branch of branches) {
+    // backwards compatibility code, get relevant branches and migrate them
+    const pullRequests = await this.getPullRequests(CMS_BRANCH_PREFIX, withoutCmsLabel);
+    for (const branch of pullRequests.map(pr => pr.head.ref)) {
       await this.migrateBranch(branch);
+    }
+
+    let branches;
+    if (this.useOpenAuthoring) {
+      // open authoring branches can exist without a pr
+      const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.request(
+        `${this.repoURL}/git/refs/heads/cms`,
+      ).catch(() => []);
+
+      branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
+    } else {
+      // non open authoring branches are always linked to a pr
+      const cmsPullRequests = await this.getPullRequests(CMS_BRANCH_PREFIX);
+      branches = cmsPullRequests.map(pr => pr.head.ref);
     }
 
     return branches;
@@ -679,24 +704,19 @@ export default class API {
    * Retrieve statuses for a given SHA. Unrelated to the editorial workflow
    * concept of entry "status". Useful for things like deploy preview links.
    */
-  async getStatuses(sha: string) {
-    try {
-      const resp: { statuses: GitHubCommitStatus[] } = await this.request(
-        `${this.originRepoURL}/commits/${sha}/status`,
-      );
-      return resp.statuses.map(s => ({
-        context: s.context,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        target_url: s.target_url,
-        state:
-          s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
-      }));
-    } catch (err) {
-      if (err && err.message && err.message === 'Ref not found') {
-        return [];
-      }
-      throw err;
-    }
+  async getStatuses(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const data = await this.retrieveMetadata(contentKey);
+    const resp: { statuses: GitHubCommitStatus[] } = await this.request(
+      `${this.originRepoURL}/commits/${data.pullRequest.head.sha}/status`,
+    );
+    return resp.statuses.map(s => ({
+      context: s.context,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      target_url: s.target_url,
+      state:
+        s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
+    }));
   }
 
   async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
@@ -784,9 +804,7 @@ export default class API {
   async updatePullRequestLabels(number: number, labels: string[]) {
     await this.request(`${this.repoURL}/issues/${number}/labels`, {
       method: 'PUT',
-      params: {
-        labels,
-      },
+      body: JSON.stringify({ labels }),
     });
   }
 
@@ -796,8 +814,8 @@ export default class API {
     mediaFilesList: MediaFile[],
     options: PersistOptions,
   ) {
-    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
-    const branch = this.generateBranchName(contentKey);
+    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
+    const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       const branchData = await this.getDefaultBranch();
@@ -966,7 +984,7 @@ export default class API {
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.generateBranchName(contentKey);
+    const branch = branchFromContentKey(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
     await this.closePR(pullRequest.number);
@@ -975,7 +993,7 @@ export default class API {
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.generateBranchName(contentKey);
+    const branch = branchFromContentKey(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
     await this.mergePR(pullRequest, { entry: { path: '', sha: '' }, files: [] });
@@ -1091,17 +1109,16 @@ export default class API {
   }
 
   async mergePR(pullrequest: GitHubPull, objects: MetaDataObjects) {
-    const { head: headSha, number } = pullrequest;
     console.log('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
     try {
       const result: Octokit.PullsMergeResponse = await this.request(
-        `${this.originRepoURL}/pulls/${number}/merge`,
+        `${this.originRepoURL}/pulls/${pullrequest.number}/merge`,
         {
           method: 'PUT',
           body: JSON.stringify({
             // eslint-disable-next-line @typescript-eslint/camelcase
             commit_message: MERGE_COMMIT_MESSAGE,
-            sha: headSha,
+            sha: pullrequest.head.sha,
             // eslint-disable-next-line @typescript-eslint/camelcase
             merge_method: this.mergeMethod,
           }),

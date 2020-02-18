@@ -13,6 +13,7 @@ import {
   readFile,
   localForage,
   DEFAULT_PR_BODY,
+  branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { trim } from 'lodash';
 import introspectionQueryResultData from './fragmentTypes';
@@ -280,7 +281,8 @@ export default class GraphQLAPI extends API {
         });
       });
 
-      return await Promise.all(branches.map(branch => this.migrateBranch(branch)));
+      await Promise.all(branches.map(branch => this.migrateBranch(branch)));
+      return branches;
     } else {
       console.log(
         '%c No Unpublished entries',
@@ -492,7 +494,7 @@ export default class GraphQLAPI extends API {
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
     try {
       const contentKey = this.generateContentKey(collectionName, slug);
-      const branchName = this.generateBranchName(contentKey);
+      const branchName = branchFromContentKey(contentKey);
 
       const metadata = await this.retrieveMetadata(contentKey);
       if (metadata && metadata.pullRequest) {

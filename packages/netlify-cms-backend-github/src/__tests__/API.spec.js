@@ -38,7 +38,7 @@ describe('github API', () => {
           return { head: { sha: 'cbd' }, labels: [], number: 1 };
         },
         '/repos/owner/my-repo/issues/1/labels': req => {
-          labels = req.params.labels;
+          labels = JSON.parse(req.body).labels;
           return {};
         },
       };
@@ -302,13 +302,13 @@ describe('github API', () => {
     it('should migrate to version 1 when no version', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
-      const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
-      api.migrateToVersion1 = jest.fn().mockResolvedValue(newBranch);
       const metadata = { type: 'PR' };
       api.retrieveMetadataOld = jest.fn().mockResolvedValue(metadata);
+      const newBranch = 'cms/posts/2019-11-11-post-title';
+      api.migrateToVersion1 = jest.fn().mockResolvedValue({ ...metadata, branch: newBranch });
 
-      const branch = 'refs/heads/cms/2019-11-11-post-title';
-      await expect(api.migrateBranch(branch)).resolves.toBe(newBranch);
+      const branch = 'cms/2019-11-11-post-title';
+      await api.migrateBranch(branch);
 
       expect(api.migrateToVersion1).toHaveBeenCalledTimes(1);
       expect(api.migrateToVersion1).toHaveBeenCalledWith(branch, metadata);
@@ -317,17 +317,21 @@ describe('github API', () => {
       expect(api.retrieveMetadataOld).toHaveBeenCalledWith('2019-11-11-post-title');
     });
 
-    it('should not migrate to version 1 when version is 1', async () => {
+    it('should migrate to pull request labels when version is 1', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
       api.migrateToVersion1 = jest.fn();
       const metadata = { type: 'PR', version: '1' };
       api.retrieveMetadataOld = jest.fn().mockResolvedValue(metadata);
+      api.migrateToPullRequestLabels = jest.fn().mockResolvedValue(metadata);
 
-      const branch = 'refs/heads/cms/posts/2019-11-11-post-title';
-      await expect(api.migrateBranch(branch)).resolves.toBe(branch);
+      const branch = 'cms/posts/2019-11-11-post-title';
+      await api.migrateBranch(branch);
 
       expect(api.migrateToVersion1).toHaveBeenCalledTimes(0);
+
+      expect(api.migrateToPullRequestLabels).toHaveBeenCalledTimes(1);
+      expect(api.migrateToPullRequestLabels).toHaveBeenCalledWith(branch, metadata);
 
       expect(api.retrieveMetadataOld).toHaveBeenCalledTimes(1);
       expect(api.retrieveMetadataOld).toHaveBeenCalledWith('posts/2019-11-11-post-title');
@@ -349,16 +353,24 @@ describe('github API', () => {
       api.deleteBranch = jest.fn();
       api.deleteMetadata = jest.fn();
 
-      const branch = 'refs/heads/cms/2019-11-11-post-title';
+      const branch = 'cms/2019-11-11-post-title';
       const metadata = {
-        branch: 'cms/2019-11-11-post-title',
+        branch,
         type: 'PR',
         pr: { head: 'old_head' },
         commitMessage: 'commitMessage',
         collection: 'posts',
       };
 
-      await expect(api.migrateToVersion1(branch, metadata)).resolves.toBe(newBranch.ref);
+      const expectedMetadata = {
+        type: 'PR',
+        pr: { head: 'new_head', number: 2 },
+        commitMessage: 'commitMessage',
+        collection: 'posts',
+        branch: 'cms/posts/2019-11-11-post-title',
+        version: '1',
+      };
+      await expect(api.migrateToVersion1(branch, metadata)).resolves.toEqual(expectedMetadata);
 
       expect(api.createBranch).toHaveBeenCalledTimes(1);
       expect(api.createBranch).toHaveBeenCalledWith('cms/posts/2019-11-11-post-title', 'old_head');
@@ -367,14 +379,10 @@ describe('github API', () => {
       expect(api.createPR).toHaveBeenCalledWith('commitMessage', 'cms/posts/2019-11-11-post-title');
 
       expect(api.storeMetadata).toHaveBeenCalledTimes(1);
-      expect(api.storeMetadata).toHaveBeenCalledWith('posts/2019-11-11-post-title', {
-        type: 'PR',
-        pr: { head: 'new_head', number: 2 },
-        commitMessage: 'commitMessage',
-        collection: 'posts',
-        branch: 'cms/posts/2019-11-11-post-title',
-        version: '1',
-      });
+      expect(api.storeMetadata).toHaveBeenCalledWith(
+        'posts/2019-11-11-post-title',
+        expectedMetadata,
+      );
 
       expect(api.closePR).toHaveBeenCalledTimes(1);
       expect(api.closePR).toHaveBeenCalledWith(metadata.pr.number);
@@ -535,13 +543,18 @@ describe('github API', () => {
     ];
 
     api.request = jest.fn(() => Promise.resolve({ statuses }));
-
     const sha = 'sha';
-    await expect(api.getStatuses(sha)).resolves.toEqual([
+    api.retrieveMetadata = jest.fn(() => Promise.resolve({ pullRequest: { head: { sha } } }));
+
+    const collection = 'collection';
+    const slug = 'slug';
+    await expect(api.getStatuses(collection, slug)).resolves.toEqual([
       { context: 'deploy', state: 'success', target_url: 'deploy-url' },
       { context: 'build', state: 'other' },
     ]);
 
+    expect(api.retrieveMetadata).toHaveBeenCalledTimes(1);
+    expect(api.retrieveMetadata).toHaveBeenCalledWith('collection/slug');
     expect(api.request).toHaveBeenCalledTimes(1);
     expect(api.request).toHaveBeenCalledWith(`/repos/repo/commits/${sha}/status`);
   });
