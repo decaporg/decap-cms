@@ -9,7 +9,6 @@ import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import {
   APIError,
-  EditorialWorkflowError,
   readFile,
   localForage,
   DEFAULT_PR_BODY,
@@ -17,10 +16,11 @@ import {
 } from 'netlify-cms-lib-util';
 import { trim } from 'lodash';
 import introspectionQueryResultData from './fragmentTypes';
-import API, { Config, BlobArgs, API_NAME } from './API';
+import API, { Config, BlobArgs, API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
 import { GraphQLError } from 'graphql';
+import { Octokit } from '@octokit/rest';
 
 const NO_CACHE = 'no-cache';
 const CACHE_FIRST = 'cache-first';
@@ -204,7 +204,64 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  async getStatuses(sha: string) {
+  async getPullRequests(
+    head: string | undefined,
+    state: PullRequestState,
+    predicate: (pr: Octokit.PullsListResponseItem) => boolean,
+  ) {
+    const { originRepoOwner: owner, originRepoName: name } = this;
+    let states = [];
+    if (state === PullRequestState.Open) {
+      states.push('OPEN');
+    } else if (state === PullRequestState.Closed) {
+      states.push('CLOSED');
+    } else {
+      states = ['OPEN', 'CLOSED', 'MERGED'];
+    }
+    const { data } = await this.query({
+      query: queries.pullRequests,
+      variables: {
+        owner,
+        name,
+        ...(head ? { head } : {}),
+        states,
+      },
+    });
+    const {
+      pullRequests,
+    }: {
+      pullRequests: {
+        nodes: {
+          id: string;
+          baseRefName: string;
+          baseRefOid: string;
+          body: string;
+          headRefName: string;
+          headRefOid: string;
+          number: number;
+          state: string;
+          title: string;
+          mergedAt: string | null;
+          labels: { nodes: { name: string }[] };
+        }[];
+      };
+    } = data.repository;
+
+    const mapped = pullRequests.nodes.map(pr => ({
+      ...pr,
+      labels: pr.labels.nodes,
+      head: { ref: pr.headRefName, sha: pr.headRefOid },
+      base: { ref: pr.baseRefName, sha: pr.baseRefOid },
+    }));
+
+    return ((mapped as unknown) as Octokit.PullsListResponseItem[]).filter(predicate);
+  }
+
+  async getStatuses(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const sha = pullRequest.head.sha;
     const { originRepoOwner: owner, originRepoName: name } = this;
     const { data } = await this.query({ query: queries.statues, variables: { owner, name, sha } });
     if (data.repository.object) {
@@ -252,85 +309,6 @@ export default class GraphQLAPI extends API {
       return allFiles;
     } else {
       return [];
-    }
-  }
-
-  async listUnpublishedBranches() {
-    if (this.useOpenAuthoring) {
-      return super.listUnpublishedBranches();
-    }
-    console.log(
-      '%c Checking for Unpublished entries',
-      'line-height: 30px;text-align: center;font-weight: bold',
-    );
-    const { repoOwner: owner, repoName: name } = this;
-    const { data } = await this.query({
-      query: queries.unpublishedPrBranches,
-      variables: { owner, name },
-    });
-    const { nodes } = data.repository.refs as {
-      nodes: {
-        associatedPullRequests: { nodes: { headRef: { prefix: string; name: string } }[] };
-      }[];
-    };
-    if (nodes.length > 0) {
-      const branches = [] as string[];
-      nodes.forEach(({ associatedPullRequests }) => {
-        associatedPullRequests.nodes.forEach(({ headRef }) => {
-          branches.push(`${headRef.prefix}${headRef.name}`);
-        });
-      });
-
-      await Promise.all(branches.map(branch => this.migrateBranch(branch)));
-      return branches;
-    } else {
-      console.log(
-        '%c No Unpublished entries',
-        'line-height: 30px;text-align: center;font-weight: bold',
-      );
-      throw new APIError('Not Found', 404, 'GitHub');
-    }
-  }
-
-  async readUnpublishedBranchFile(contentKey: string) {
-    // retrieveMetadata(contentKey) rejects in case of no metadata
-    const metaData = await this.retrieveMetadata(contentKey).catch(() => null);
-    if (metaData) {
-      const {
-        branch,
-        collection,
-        slug,
-        path,
-        status,
-        newFile,
-        mediaFiles,
-      } = await this.retrieveMetadata(contentKey);
-      const { repoOwner: headOwner, repoName: headRepoName } = this;
-      const { originRepoOwner: baseOwner, originRepoName: baseRepoName } = this;
-
-      const { data } = await this.query({
-        query: queries.unpublishedBranchFile,
-        variables: {
-          headOwner,
-          headRepoName,
-          headExpression: `${metaData.branch}:${path}`,
-          baseOwner,
-          baseRepoName,
-          baseExpression: `${this.branch}:${path}`,
-        },
-      });
-      if (!data.head.object) {
-        throw new EditorialWorkflowError('content is not under editorial workflow', true);
-      }
-      const result = {
-        metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
-        fileData: data.head.object.text,
-        isModification: newFile,
-        slug,
-      };
-      return result;
-    } else {
-      throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
   }
 
@@ -413,7 +391,10 @@ export default class GraphQLAPI extends API {
     // https://developer.github.com/v4/enum/pullrequeststate/
     // GraphQL state: [CLOSED, MERGED, OPEN]
     // REST API state: [closed, open]
-    const state = data.repository.pullRequest.state === 'OPEN' ? 'open' : 'closed';
+    const state =
+      data.repository.pullRequest.state === 'OPEN'
+        ? PullRequestState.Open
+        : PullRequestState.Closed;
     return {
       ...data.repository.pullRequest,
       state,
@@ -423,7 +404,6 @@ export default class GraphQLAPI extends API {
   getPullRequestAndBranchQuery(branch: string, number: number) {
     const { repoOwner: owner, repoName: name } = this;
     const { originRepoOwner, originRepoName } = this;
-
     return {
       query: queries.pullRequestAndBranch,
       variables: {
@@ -495,9 +475,8 @@ export default class GraphQLAPI extends API {
     try {
       const contentKey = this.generateContentKey(collectionName, slug);
       const branchName = branchFromContentKey(contentKey);
-
       const metadata = await this.retrieveMetadata(contentKey);
-      if (metadata && metadata.pullRequest) {
+      if (metadata.pullRequest.number !== MOCK_PULL_REQUEST) {
         const { branch, pullRequest } = await this.getPullRequestAndBranch(
           branchName,
           metadata.pullRequest.number,

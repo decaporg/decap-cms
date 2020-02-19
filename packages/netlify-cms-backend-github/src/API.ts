@@ -35,7 +35,7 @@ type GitHubPull = Octokit.PullsListResponseItem;
 
 export const API_NAME = 'GitHub';
 
-const MOCK_PULL_REQUEST = -1;
+export const MOCK_PULL_REQUEST = -1;
 
 export interface Config {
   apiRoot?: string;
@@ -78,7 +78,7 @@ enum GitHubCommitStatusState {
   Success = 'success',
 }
 
-enum PullRequestState {
+export enum PullRequestState {
   Open = 'open',
   Closed = 'closed',
   All = 'all',
@@ -427,7 +427,7 @@ export default class API {
   }
 
   async getPullRequests(
-    head: string,
+    head: string | undefined,
     state: PullRequestState,
     predicate: (pr: Octokit.PullsListResponseItem) => boolean,
   ) {
@@ -435,7 +435,7 @@ export default class API {
       `${this.originRepoURL}/pulls`,
       {
         params: {
-          head: this.getHeadReference(head),
+          ...(head ? { head: this.getHeadReference(head) } : {}),
           base: this.branch,
           state,
           // eslint-disable-next-line @typescript-eslint/camelcase
@@ -451,7 +451,7 @@ export default class API {
     // we can't use labels when using open authoring
     // since the contributor doesn't have access to set labels
     // a branch without a pr (or a closed pr) means a 'draft' entry
-    // a branch with a pr means a 'pending_review' entry
+    // a branch with an opened pr means a 'pending_review' entry
     if (pullRequests.length <= 0) {
       try {
         const data = await this.getBranch(branch);
@@ -494,13 +494,13 @@ export default class API {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-    const { files: diff } = await this.getDifferences(pullRequest.head.sha);
-    const { path, newFile } = diff
+    const { files: diffs } = await this.getDifferences(pullRequest.head.sha);
+    const { path, newFile } = diffs
       .filter(d => d.filename.includes(slug))
       .map(f => ({ path: f.filename, newFile: f.status === 'added' }))[0];
 
     const mediaFiles = await Promise.all(
-      diff
+      diffs
         .filter(d => d.filename !== path)
         .map(async d => {
           const path = d.filename;
@@ -696,6 +696,13 @@ export default class API {
     }
   }
 
+  async getCmsBranches() {
+    const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.request(
+      `${this.repoURL}/git/refs/heads/cms`,
+    ).catch(() => []);
+    return cmsBranches;
+  }
+
   async listUnpublishedBranches() {
     console.log(
       '%c Checking for Unpublished entries',
@@ -705,9 +712,7 @@ export default class API {
     let branches: string[];
     if (this.useOpenAuthoring) {
       // open authoring branches can exist without a pr
-      const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.request(
-        `${this.repoURL}/git/refs/heads/cms`,
-      ).catch(() => []);
+      const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.getCmsBranches();
       branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
       // filter irrelevant branches
       const branchesWithFilter = await Promise.all(
@@ -717,16 +722,15 @@ export default class API {
     } else {
       // backwards compatibility code, get relevant branches and migrate them
       const pullRequests = await this.getPullRequests(
-        CMS_BRANCH_PREFIX,
+        undefined,
         PullRequestState.Open,
         withoutCmsLabel,
       );
       for (const branch of pullRequests.map(pr => pr.head.ref)) {
         await this.migrateBranch(branch);
       }
-      // non open authoring branches are always linked to a pr
       const cmsPullRequests = await this.getPullRequests(
-        CMS_BRANCH_PREFIX,
+        undefined,
         PullRequestState.Open,
         withCmsLabel,
       );
@@ -742,9 +746,11 @@ export default class API {
    */
   async getStatuses(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const data = await this.retrieveMetadata(contentKey);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const sha = pullRequest.head.sha;
     const resp: { statuses: GitHubCommitStatus[] } = await this.request(
-      `${this.originRepoURL}/commits/${data.pullRequest.head.sha}/status`,
+      `${this.originRepoURL}/commits/${sha}/status`,
     );
     return resp.statuses.map(s => ({
       context: s.context,
@@ -1018,7 +1024,9 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
-    await this.closePR(pullRequest.number);
+    if (pullRequest.number !== MOCK_PULL_REQUEST) {
+      await this.closePR(pullRequest.number);
+    }
     await this.deleteBranch(branch);
   }
 

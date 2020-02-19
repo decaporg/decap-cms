@@ -544,7 +544,7 @@ describe('github API', () => {
 
     api.request = jest.fn(() => Promise.resolve({ statuses }));
     const sha = 'sha';
-    api.retrieveMetadata = jest.fn(() => Promise.resolve({ pullRequest: { head: { sha } } }));
+    api.getBranchPullRequest = jest.fn(() => Promise.resolve({ head: { sha } }));
 
     const collection = 'collection';
     const slug = 'slug';
@@ -553,8 +553,8 @@ describe('github API', () => {
       { context: 'build', state: 'other' },
     ]);
 
-    expect(api.retrieveMetadata).toHaveBeenCalledTimes(1);
-    expect(api.retrieveMetadata).toHaveBeenCalledWith('collection/slug');
+    expect(api.getBranchPullRequest).toHaveBeenCalledTimes(1);
+    expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/collection/slug');
     expect(api.request).toHaveBeenCalledTimes(1);
     expect(api.request).toHaveBeenCalledWith(`/repos/repo/commits/${sha}/status`);
   });

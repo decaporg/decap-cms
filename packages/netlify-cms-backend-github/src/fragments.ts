@@ -41,6 +41,7 @@ export const pullRequest = gql`
   fragment PullRequestParts on PullRequest {
     id
     baseRefName
+    baseRefOid
     body
     headRefName
     headRefOid
