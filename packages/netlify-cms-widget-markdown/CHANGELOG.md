@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.2...netlify-cms-widget-markdown@2.9.3) (2020-02-19)
+
+
+### Bug Fixes
+
+* **widget-markdown:** don't add duplicate marks ([#3290](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3290)) ([2a0aef2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/2a0aef27d1c1c7eac146f890d896233262322c7f))
+
+
+
+
+
 ## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.1...netlify-cms-widget-markdown@2.9.2) (2020-02-17)
 
 
