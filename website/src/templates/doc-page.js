@@ -4,11 +4,11 @@ import { graphql } from 'gatsby';
 import 'prismjs/themes/prism-tomorrow.css';
 
 import Layout from '../components/layout';
-import EditLink from '../components/edit-link';
-import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
 import Container from '../components/container';
 import SidebarLayout from '../components/sidebar-layout';
+import EditLink from '../components/edit-link';
+import Widgets from '../components/widgets';
 import Markdown from '../components/markdown';
 
 const toMenu = (menu, nav) =>
@@ -36,12 +36,12 @@ export const DocsTemplate = ({
 }) => (
   <Container size="md">
     <SidebarLayout
-      sidebar={<div>{showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}</div>}
+      sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}
     >
       <article data-docs-content>
         {editLinkPath && <EditLink path={editLinkPath} />}
         <h1>{title}</h1>
-        <Markdown html={body || html} />
+        <Markdown body={body} html={html} />
         {showWidgets && <Widgets widgets={widgets} />}
       </article>
     </SidebarLayout>

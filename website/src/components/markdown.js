@@ -125,12 +125,11 @@ const StyledMarkdown = styled.div`
   }
 `;
 
-const Markdown = ({ html }) => {
-  if (React.isValidElement(html)) {
-    return html;
-  } else {
-    return <StyledMarkdown dangerouslySetInnerHTML={{ __html: html }} />;
+const Markdown = ({ body, html }) => {
+  if (body) {
+    return <StyledMarkdown>{body}</StyledMarkdown>
   }
+  return <StyledMarkdown dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 export default Markdown;
