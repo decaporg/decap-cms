@@ -15,7 +15,7 @@ const EditLink = ({ collection, filename }) => (
       }
     `}
   >
-    <a href={`/admin/#/edit/${collection}/${filename}`}>
+    <a href={`/admin/#/edit/${collection}/${filename}`} target="_blank">
       <svg
         version="1.1"
         id="pencil"

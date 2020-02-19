@@ -29,7 +29,7 @@ const DocsSidebar = ({ docsNav, location }) => (
 
 export const DocsTemplate = ({
   title,
-  editLinkPath,
+  filename,
   body,
   html,
   showWidgets,
@@ -44,8 +44,8 @@ export const DocsTemplate = ({
       sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}
     >
       <article data-docs-content>
-        {editLinkPath && (
-          <EditLink collection={`docs_${group}`} filename={filenameFromPath(editLinkPath)} />
+        {filename && (
+          <EditLink collection={`docs_${group}`} filename={filename} />
         )}
         <h1>{title}</h1>
         <Markdown body={body} html={html} />
@@ -57,17 +57,18 @@ export const DocsTemplate = ({
 
 const DocPage = ({ data, location }) => {
   const { nav, page: { frontmatter, html, fields }, widgets, menu } = data;
-  const { title, path, group } = frontmatter
+  const { title, group } = frontmatter
 
   const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
   const showWidgets = location.pathname.indexOf('/docs/widgets') !== -1;
+  const filename = filenameFromPath(fields.path);
 
   return (
     <Layout>
       <Helmet title={title} />
       <DocsTemplate
         title={title}
-        editLinkPath={fields.path}
+        filename={filename}
         html={html}
         showWidgets={showWidgets}
         widgets={widgets}
