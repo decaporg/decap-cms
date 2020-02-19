@@ -1,42 +1,15 @@
 const pkg = require('./package.json');
+const fs = require('fs');
+const yaml = require('js-yaml');
+
+const staticConfig = yaml.safeLoad(fs.readFileSync('./site.yml', 'utf8'));
 
 module.exports = {
   siteMetadata: {
     title: 'Netlify CMS | Open-Source Content Management System',
     description: 'Open source content management for your Git workflow',
     siteUrl: pkg.homepage,
-    menu: {
-      docs: [
-        {
-          name: 'start',
-          title: 'Quick Start',
-        },
-        {
-          name: 'features',
-          title: 'Features',
-        },
-        {
-          name: 'reference',
-          title: 'Reference',
-        },
-        {
-          name: 'media',
-          title: 'Media',
-        },
-        {
-          name: 'guides',
-          title: 'Guides',
-        },
-        {
-          name: 'customization',
-          title: 'Customization',
-        },
-        {
-          name: 'contributing',
-          title: 'Contributing',
-        },
-      ],
-    },
+    menu: staticConfig.menu,
   },
   plugins: [
     {

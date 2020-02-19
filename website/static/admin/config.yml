@@ -25,7 +25,7 @@ docs_collection: &docs_collection
 
 collections:
   - <<: *docs_collection
-    name: docs_quick_start
+    name: docs_start
     label: "Docs: Quick Start"
     filter:
       field: group

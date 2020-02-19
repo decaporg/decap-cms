@@ -11,6 +11,10 @@ import EditLink from '../components/edit-link';
 import Widgets from '../components/widgets';
 import Markdown from '../components/markdown';
 
+function filenameFromPath(p) {
+  return p.split('/').slice(-1)[0].split('.')[0];
+}
+
 const toMenu = (menu, nav) =>
   menu.map(group => ({
     title: group.title,
@@ -33,13 +37,16 @@ export const DocsTemplate = ({
   showSidebar,
   docsNav,
   location,
+  group,
 }) => (
   <Container size="md">
     <SidebarLayout
       sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}
     >
       <article data-docs-content>
-        {editLinkPath && <EditLink path={editLinkPath} />}
+        {editLinkPath && (
+          <EditLink collection={`docs_${group}`} filename={filenameFromPath(editLinkPath)} />
+        )}
         <h1>{title}</h1>
         <Markdown body={body} html={html} />
         {showWidgets && <Widgets widgets={widgets} />}
@@ -49,22 +56,24 @@ export const DocsTemplate = ({
 );
 
 const DocPage = ({ data, location }) => {
-  const { nav, page, widgets, menu } = data;
+  const { nav, page: { frontmatter, html, fields }, widgets, menu } = data;
+  const { title, path, group } = frontmatter
 
   const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
   const showWidgets = location.pathname.indexOf('/docs/widgets') !== -1;
 
   return (
     <Layout>
-      <Helmet title={page.frontmatter.title} />
+      <Helmet title={title} />
       <DocsTemplate
-        title={page.frontmatter.title}
-        editLinkPath={page.fields.path}
-        html={page.html}
+        title={title}
+        editLinkPath={fields.path}
+        html={html}
         showWidgets={showWidgets}
         widgets={widgets}
         docsNav={docsNav}
         location={location}
+        group={group}
         showSidebar
       />
     </Layout>
@@ -79,6 +88,7 @@ export const pageQuery = graphql`
       }
       frontmatter {
         title
+        group
       }
       html
     }

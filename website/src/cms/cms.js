@@ -11,6 +11,7 @@ import WidgetDoc from '../components/widget-doc';
 import WhatsNew from '../components/whats-new';
 import Notification from '../components/notification';
 import Community from '../components/community';
+import siteConfig from '../../site.yml';
 
 let emotionCache;
 function getEmotionCache() {
@@ -126,16 +127,8 @@ const NotificationPreview = ({ entry }) => (
 );
 
 CMS.registerPreviewTemplate('blog', BlogPostPreview);
-[
-  'quick_start',
-  'features',
-  'reference',
-  'media',
-  'guides',
-  'customization',
-  'contributing',
-].forEach(group => {
-  CMS.registerPreviewTemplate(`docs_${group}`, DocsPreview);
+siteConfig.menu.docs.forEach(group => {
+  CMS.registerPreviewTemplate(`docs_${group.name}`, DocsPreview);
 });
 CMS.registerPreviewTemplate('widget_docs', WidgetDocPreview);
 CMS.registerPreviewTemplate('releases', ReleasePreview);
