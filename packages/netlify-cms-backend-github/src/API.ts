@@ -78,6 +78,12 @@ enum GitHubCommitStatusState {
   Success = 'success',
 }
 
+enum PullRequestState {
+  Open = 'open',
+  Closed = 'closed',
+  All = 'all',
+}
+
 type GitHubCommitStatus = Octokit.ReposListStatusesForRefResponseItem & {
   state: GitHubCommitStatusState;
 };
@@ -420,14 +426,20 @@ export default class API {
     });
   }
 
-  async getPullRequests(head: string, predicate = withCmsLabel) {
+  async getPullRequests(
+    head: string,
+    state: PullRequestState,
+    predicate: (pr: Octokit.PullsListResponseItem) => boolean,
+  ) {
     const pullRequests: Octokit.PullsListResponse = await this.requestAllPages(
       `${this.originRepoURL}/pulls`,
       {
         params: {
-          head,
+          head: this.getHeadReference(head),
           base: this.branch,
-          state: 'open',
+          state,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          per_page: 100,
         },
       },
     );
@@ -435,27 +447,47 @@ export default class API {
     return pullRequests.filter(predicate);
   }
 
-  async getBranchPullRequest(branch: string) {
-    const pullRequests = await this.getPullRequests(branch);
+  async getOpenAuthoringPullRequest(branch: string, pullRequests: Octokit.PullsListResponseItem[]) {
+    // we can't use labels when using open authoring
+    // since the contributor doesn't have access to set labels
+    // a branch without a pr (or a closed pr) means a 'draft' entry
+    // a branch with a pr means a 'pending_review' entry
     if (pullRequests.length <= 0) {
-      if (this.useOpenAuthoring) {
-        try {
-          const data = await this.getBranch(branch);
-          return {
-            head: { sha: data.commit.sha },
-            number: MOCK_PULL_REQUEST,
-            labels: [{ name: statusToLabel(this.initialWorkflowStatus) }],
-            state: 'open',
-          } as GitHubPull;
-        } catch (e) {
-          throw new EditorialWorkflowError('content is not under editorial workflow', true);
-        }
-      } else {
+      try {
+        const data = await this.getBranch(branch);
+        return {
+          head: { sha: data.commit.sha },
+          number: MOCK_PULL_REQUEST,
+          labels: [{ name: statusToLabel(this.initialWorkflowStatus) }],
+          state: PullRequestState.Open,
+        } as GitHubPull;
+      } catch (e) {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
-    }
+    } else {
+      const pullRequest = pullRequests[0];
+      pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name));
+      const cmsLabel =
+        pullRequest.state === PullRequestState.Closed
+          ? { name: statusToLabel(this.initialWorkflowStatus) }
+          : { name: statusToLabel('pending_review') };
 
-    return pullRequests[0];
+      pullRequest.labels.push(cmsLabel as Octokit.PullsGetResponseLabelsItem);
+      return pullRequest;
+    }
+  }
+
+  async getBranchPullRequest(branch: string) {
+    if (this.useOpenAuthoring) {
+      const pullRequests = await this.getPullRequests(branch, PullRequestState.All, () => true);
+      return this.getOpenAuthoringPullRequest(branch, pullRequests);
+    } else {
+      const pullRequests = await this.getPullRequests(branch, PullRequestState.Open, withCmsLabel);
+      if (pullRequests.length <= 0) {
+        throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      }
+      return pullRequests[0];
+    }
   }
 
   async retrieveMetadata(contentKey: string) {
@@ -589,24 +621,16 @@ export default class API {
     }
   }
 
-  syncOpenAuthoringMetadata = async (contentKey: string) => {
-    const { status, pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
-    if (pullRequest.number === MOCK_PULL_REQUEST) {
-      return;
-    }
+  filterOpenAuthoringBranches = async (branch: string) => {
+    const contentKey = contentKeyFromBranch(branch);
+    const { pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
     const { state: currentState, merged_at: mergedAt } = pullRequest;
-
-    if (currentState === 'closed' && mergedAt) {
+    if (pullRequest.number !== MOCK_PULL_REQUEST && currentState === 'closed' && mergedAt) {
+      // pr was merged, delete entry
       await this.deleteUnpublishedEntry(collection, slug);
-    } else if (currentState === 'closed' && !mergedAt) {
-      if (status !== 'draft') {
-        await this.setPullRequestStatus(pullRequest, 'draft');
-      }
+      return { branch, filter: false };
     } else {
-      if (status !== 'pending_review') {
-        // PR is open and has not been merged
-        await this.setPullRequestStatus(pullRequest, 'pending_review');
-      }
+      return { branch, filter: true };
     }
   };
 
@@ -678,24 +702,34 @@ export default class API {
       'line-height: 30px;text-align: center;font-weight: bold',
     );
 
-    // backwards compatibility code, get relevant branches and migrate them
-    const pullRequests = await this.getPullRequests(CMS_BRANCH_PREFIX, withoutCmsLabel);
-    for (const branch of pullRequests.map(pr => pr.head.ref)) {
-      await this.migrateBranch(branch);
-    }
-
-    let branches;
+    let branches: string[];
     if (this.useOpenAuthoring) {
       // open authoring branches can exist without a pr
       const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.request(
         `${this.repoURL}/git/refs/heads/cms`,
       ).catch(() => []);
       branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
-      // sync open authoring metadata
-      await Promise.all(branches.map(b => this.syncOpenAuthoringMetadata(contentKeyFromBranch(b))));
+      // filter irrelevant branches
+      const branchesWithFilter = await Promise.all(
+        branches.map(b => this.filterOpenAuthoringBranches(b)),
+      );
+      branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
     } else {
+      // backwards compatibility code, get relevant branches and migrate them
+      const pullRequests = await this.getPullRequests(
+        CMS_BRANCH_PREFIX,
+        PullRequestState.Open,
+        withoutCmsLabel,
+      );
+      for (const branch of pullRequests.map(pr => pr.head.ref)) {
+        await this.migrateBranch(branch);
+      }
       // non open authoring branches are always linked to a pr
-      const cmsPullRequests = await this.getPullRequests(CMS_BRANCH_PREFIX);
+      const cmsPullRequests = await this.getPullRequests(
+        CMS_BRANCH_PREFIX,
+        PullRequestState.Open,
+        withCmsLabel,
+      );
       branches = cmsPullRequests.map(pr => pr.head.ref);
     }
 
@@ -954,7 +988,8 @@ export default class API {
 
   async updateUnpublishedEntryStatus(collectionName: string, slug: string, newStatus: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const { pullRequest } = await this.retrieveMetadata(contentKey);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
 
     if (!this.useOpenAuthoring) {
       await this.setPullRequestStatus(pullRequest, newStatus);
@@ -965,19 +1000,15 @@ export default class API {
 
       if (pullRequest.number !== MOCK_PULL_REQUEST) {
         const { state } = pullRequest;
-        if (state === 'open' && newStatus === 'draft') {
+        if (state === PullRequestState.Open && newStatus === 'draft') {
           await this.closePR(pullRequest.number);
-          await this.setPullRequestStatus(pullRequest, newStatus);
         }
-
-        if (state === 'closed' && newStatus === 'pending_review') {
+        if (state === PullRequestState.Closed && newStatus === 'pending_review') {
           await this.openPR(pullRequest.number);
-          await this.setPullRequestStatus(pullRequest, newStatus);
         }
       } else if (newStatus === 'pending_review') {
         const branch = branchFromContentKey(contentKey);
-        const pullRequest = await this.createPR(API.DEFAULT_COMMIT_MESSAGE, branch);
-        await this.setPullRequestStatus(pullRequest, newStatus);
+        await this.createPR(API.DEFAULT_COMMIT_MESSAGE, branch);
       }
     }
   }
@@ -1094,7 +1125,7 @@ export default class API {
       {
         method: 'PATCH',
         body: JSON.stringify({
-          state: 'open',
+          state: PullRequestState.Open,
         }),
       },
     );
@@ -1108,7 +1139,7 @@ export default class API {
       {
         method: 'PATCH',
         body: JSON.stringify({
-          state: 'closed',
+          state: PullRequestState.Closed,
         }),
       },
     );
