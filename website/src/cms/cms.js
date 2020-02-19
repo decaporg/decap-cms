@@ -2,92 +2,135 @@ import React from 'react';
 import CMS from 'netlify-cms-app';
 import dayjs from 'dayjs';
 import Prism from 'prismjs';
+import { CacheProvider } from '@emotion/core';
+import createCache from '@emotion/cache';
 import { BlogPostTemplate } from '../templates/blog-post';
+import { LayoutTemplate as Layout } from '../components/layout';
 import { DocsTemplate } from '../templates/doc-page';
 import WidgetDoc from '../components/widget-doc';
 import WhatsNew from '../components/whats-new';
 import Notification from '../components/notification';
 import Community from '../components/community';
+import siteConfig from '../../site.yml';
 
-const withHighlight = WrappedComponent =>
-  class Highlight extends React.Component {
-    constructor(props) {
-      super(props);
-      this.ref = React.createRef();
-    }
+let emotionCache;
+function getEmotionCache() {
+  const previewPaneIframe = document.querySelector('iframe[class*="PreviewPaneFrame"]');
+  const previewPaneHeadEl = previewPaneIframe.contentWindow.document.querySelector('head');
+  if (!emotionCache || emotionCache.sheet.container !== previewPaneHeadEl) {
+    emotionCache = createCache({ container: previewPaneHeadEl });
+  }
+  return emotionCache;
+}
 
-    highlight() {
-      Prism.highlightAllUnder(this.ref.current);
-    }
+const PreviewContainer = ({ children, highlight }) => (
+  <CacheProvider value={getEmotionCache()}>
+    <Layout>
+      {highlight ? <Highlight>{children}</Highlight> : children}
+    </Layout>
+  </CacheProvider>
+);
 
-    componentDidMount() {
-      this.highlight();
-    }
+class Highlight extends React.Component {
+  constructor(props) {
+    super(props);
+    this.ref = React.createRef();
+  }
 
-    componentDidUpdate() {
-      this.highlight();
-    }
+  highlight() {
+    setTimeout(() => {
+      if (this.ref.current) {
+        Prism.highlightAllUnder(this.ref.current);
+      }
+    })
+  }
 
-    render() {
-      return (
-        <div className="language-markup" ref={this.ref}>
-          <WrappedComponent {...this.props} />
-        </div>
-      );
-    }
-  };
+  componentDidMount() {
+    this.highlight();
+  }
+
+  componentDidUpdate() {
+    this.highlight();
+  }
+
+  render() {
+    return (
+      <div ref={this.ref}>
+        {this.props.children}
+      </div>
+    );
+  }
+};
 
 const BlogPostPreview = ({ entry, widgetFor }) => {
   const data = entry.get('data');
   return (
-    <BlogPostTemplate
-      title={data.get('title')}
-      author={data.get('author')}
-      date={dayjs(data.get('date')).format('MMMM D, YYYY')}
-      body={widgetFor('body')}
-    />
+    <PreviewContainer highlight={true}>
+      <BlogPostTemplate
+        title={data.get('title')}
+        author={data.get('author')}
+        date={dayjs(data.get('date')).format('MMMM D, YYYY')}
+        body={widgetFor('body')}
+      />
+    </PreviewContainer>
   );
 };
 
 const CommunityPreview = ({ entry }) => {
   const { title, headline, subhead, sections } = entry.get('data').toJS();
-  return <Community title={title} headline={headline} subhead={subhead} sections={sections} />;
+  return (
+    <PreviewContainer>
+      <Community title={title} headline={headline} subhead={subhead} sections={sections} />
+    </PreviewContainer>
+  );
 };
 
 const DocsPreview = ({ entry, widgetFor }) => (
-  <DocsTemplate title={entry.getIn(['data', 'title'])} body={widgetFor('body')} />
+  <PreviewContainer highlight={true}>
+    <DocsTemplate title={entry.getIn(['data', 'title'])} body={widgetFor('body')} />
+  </PreviewContainer>
 );
 
 const WidgetDocPreview = ({ entry, widgetFor }) => (
-  <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')} />
+  <PreviewContainer highlight={true}>
+    <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')} />
+  </PreviewContainer>
 );
 
 const ReleasePreview = ({ entry }) => (
-  <WhatsNew
-    updates={entry
-      .getIn(['data', 'updates'])
-      .map(release => ({
-        version: release.get('version'),
-        date: dayjs(release.get('date')).format('MMMM D, YYYY'),
-        description: release.get('description'),
-      }))
-      .toJS()}
-  />
+  <PreviewContainer highlight={true}>
+    <WhatsNew
+      updates={entry
+        .getIn(['data', 'updates'])
+        .map(release => ({
+          version: release.get('version'),
+          date: dayjs(release.get('date')).format('MMMM D, YYYY'),
+          description: release.get('description'),
+        }))
+        .toJS()}
+    />
+  </PreviewContainer>
 );
 
-const NotificationPreview = ({ entry }) =>
-  entry
-    .getIn(['data', 'notifications'])
-    .filter(notif => notif.get('published'))
-    .map((notif, idx) => (
-      <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
-        {notif.get('message')}
-      </Notification>
-    ));
+const NotificationPreview = ({ entry }) => (
+  <PreviewContainer>
+    {entry
+      .getIn(['data', 'notifications'])
+      .filter(notif => notif.get('published'))
+      .map((notif, idx) => (
+        <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
+          {notif.get('message')}
+        </Notification>
+      ))
+    }
+  </PreviewContainer>
+);
 
-CMS.registerPreviewTemplate('blog', withHighlight(BlogPostPreview));
-CMS.registerPreviewTemplate('docs', withHighlight(DocsPreview));
-CMS.registerPreviewTemplate('widget_docs', withHighlight(WidgetDocPreview));
+CMS.registerPreviewTemplate('blog', BlogPostPreview);
+siteConfig.menu.docs.forEach(group => {
+  CMS.registerPreviewTemplate(`docs_${group.name}`, DocsPreview);
+});
+CMS.registerPreviewTemplate('widget_docs', WidgetDocPreview);
 CMS.registerPreviewTemplate('releases', ReleasePreview);
 CMS.registerPreviewTemplate('notifications', NotificationPreview);
 CMS.registerPreviewTemplate('community', CommunityPreview);

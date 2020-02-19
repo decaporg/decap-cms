@@ -24,7 +24,7 @@ export const BlogPostTemplate = ({ title, author, date, body, html }) => (
       <MetaInfo>
         by {author} on {date}
       </MetaInfo>
-      <Markdown html={body || html} />
+      <Markdown body={body} html={html} />
     </Page>
   </Container>
 );

@@ -2,71 +2,116 @@ backend:
   name: github
   repo: netlify/netlify-cms
   squash_merges: true
+  open_authoring: true
 
-site_url: "https://www.netlifycms.org"
+local_backend: true
+
+site_url: https://www.netlifycms.org
 
 publish_mode: editorial_workflow
 
-media_folder: "website/static/img" # Folder where user uploaded files should go
-public_folder: "img"
+media_folder: website/static/img
+public_folder: img
 
-collections: # A list of collections the CMS should be able to edit
-  - name: "docs" # Used in routes, ie.: /admin/collections/:slug/edit
-    label: "Docs" # Used in the UI, ie.: "New Post"
-    folder: "website/content/docs" # The path to the folder where the documents are stored
-    create: true # Allow users to create new documents in this collection
-    preview_path: "docs/{{slug}}"
-    fields: # The fields each document in this collection have
-      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
-      - {label: "Group", name: "group", widget: "string"}
-      - {label: "Weight", name: "weight", widget: "number"}
-      - {label: "Body", name: "body", widget: "markdown"}
-  - name: "widget_docs" # Used in routes, ie.: /admin/collections/:slug/edit
-    label: "Widget Docs" # Used in the UI, ie.: "New Post"
-    folder: "website/content/docs/widgets" # The path to the folder where the documents are stored
+docs_collection: &docs_collection
+  folder: website/content/docs
+  create: true
+  preview_path: "docs/{{slug}}"
+  fields:
+    - { label: Title, name: title }
+    - { label: Group, name: group, widget: select, options: [start, features, reference, media, guides, customization, contributing] }
+    - { label: Weight, name: weight, widget: number }
+    - { label: Body, name: body, widget: markdown }
+
+collections:
+  - <<: *docs_collection
+    name: docs_start
+    label: "Docs: Quick Start"
+    filter:
+      field: group
+      value: start
+  - <<: *docs_collection
+    name: docs_features
+    label: "Docs: Features"
+    filter:
+      field: group
+      value: features
+  - <<: *docs_collection
+    name: docs_reference
+    label: "Docs: Reference"
+    filter:
+      field: group
+      value: reference
+  - <<: *docs_collection
+    name: docs_media
+    label: "Docs: Media"
+    filter:
+      field: group
+      value: media
+  - <<: *docs_collection
+    name: docs_guides
+    label: "Docs: Guides"
+    filter:
+      field: group
+      value: guides
+  - <<: *docs_collection
+    name: docs_customization
+    label: "Docs: Customization"
+    filter:
+      field: group
+      value: customization
+  - <<: *docs_collection
+    name: docs_contributing
+    label: "Docs: Contributing"
+    filter:
+      field: group
+      value: contributing
+  - name: widget_docs
+    label: "Docs: Widgets"
+    folder: website/content/docs/widgets
     preview_path: "docs/widgets/{{title}}"
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - {label: "Name", name: "title"}
-      - {label: "Label", name: "label"}
-      - {label: "Body", name: "body", widget: "markdown"}
-  - name: "blog"
-    label: "Blog"
-    label_singular: "Post"
-    folder: "website/content/blog"
+    create: true
+    fields:
+      - { label: Name, name: title }
+      - { label: Label, name: label }
+      - { label: Body, name: body, widget: markdown }
+  - name: blog
+    label: Blog
+    label_singular: Post
+    folder: website/content/blog
     preview_path: "blog/{{year}}/{{month}}/{{title}}"
     create: true
     fields:
-      - {label: "Title", name: "title", widget: "string", tagname: "h1"}
-      - {label: "Author", name: "author", widget: "string"}
-      - {label: "Description (for blog list)", name: "description", widget: "text"}
-      - {label: "Meta Description (defaults to Description)", name: "meta_description", widget: "text", required: false}
-      - {label: "Twitter Image", name: "twitter_image", widget: "image"}
-      - {label: "Date", name: "date", widget: "date"}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - { label: Title, name: title }
+      - { label: Author, name: author }
+      - { label: Description (for blog list), name: description, widget: text }
+      - { label: Meta Description (defaults to Description), name: meta_description, widget: text, required: false }
+      - { label: Twitter Image, name: twitter_image, widget: image }
+      - { label: Date, name: date, widget: date }
+      - { label: Body, name: body, widget: markdown }
   - name: community
     label: Community
     files:
       - name: community
         label: Community
         file: website/content/pages/community.md
-        preview_path: "community"
+        preview_path: community
         fields:
-          - {label: Title, name: title}
-          - {label: Headline, name: headline}
-          - {label: Subheading, name: subhead}
+          - { label: Title, name: title }
+          - { label: Headline, name: headline }
+          - { label: Subheading, name: subhead }
           - label: Sections
             name: sections
             widget: list
             fields:
-              - {name: title, label: Title}
+              - { name: title, label: Title }
               - name: channels
                 label: Channels
                 widget: list
                 fields:
-                  - {name: title, label: Title}
-                  - {name: url, label: URL}
-                  - {name: description, label: Description}
+                  - { name: title, label: Title }
+                  - { name: url, label: URL }
+                  - { name: description, label: Description }
   - name: updates
     label: Updates
     files:
@@ -78,9 +123,9 @@ collections: # A list of collections the CMS should be able to edit
             label: Releases
             widget: list
             fields:
-              - {name: version, label: Version}
-              - {name: date, label: Date, widget: date}
-              - {name: description, label: Description}
+              - { name: version, label: Version }
+              - { name: date, label: Date, widget: date }
+              - { name: description, label: Description }
       - name: notifications
         label: Notifications
         file: website/data/notifications.yml
@@ -90,8 +135,8 @@ collections: # A list of collections the CMS should be able to edit
             label: Notifications
             widget: list
             fields:
-              - {label: Title, name: title, widget: string, tagname: h1}
-              - {label: Published, name: published, widget: boolean}
-              - {label: Loud, name: loud, widget: boolean}
-              - {label: Message, name: message, widget: text}
-              - {label: URL, name: url}
+              - { label: Title, name: title }
+              - { label: Published, name: published, widget: boolean }
+              - { label: Loud, name: loud, widget: boolean }
+              - { label: Message, name: message, widget: text }
+              - { label: URL, name: url}
