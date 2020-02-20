@@ -127,7 +127,7 @@ const StyledMarkdown = styled.div`
 
 const Markdown = ({ body, html }) => {
   if (body) {
-    return <StyledMarkdown>{body}</StyledMarkdown>
+    return <StyledMarkdown>{body}</StyledMarkdown>;
   }
   return <StyledMarkdown dangerouslySetInnerHTML={{ __html: html }} />;
 };

@@ -33,7 +33,7 @@ export const LayoutTemplate = ({ children }) => (
     <GlobalStyles />
     {children}
   </ThemeProvider>
-)
+);
 
 const Layout = ({ hasPageHero, children }) => {
   return (
