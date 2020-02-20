@@ -644,19 +644,19 @@ export default class API {
     }
   };
 
-  async migrateToVersion1(branch: string, metaData: Metadata) {
+  async migrateToVersion1(pullRequest: Octokit.PullsListResponseItem, metadata: Metadata) {
     // hard code key/branch generation logic to ignore future changes
-    const oldContentKey = branch.substring(`cms/`.length);
-    const newContentKey = `${metaData.collection}/${oldContentKey}`;
+    const oldContentKey = pullRequest.head.ref.substring(`cms/`.length);
+    const newContentKey = `${metadata.collection}/${oldContentKey}`;
     const newBranchName = `cms/${newContentKey}`;
 
     // create new branch and pull request in new format
-    await this.createBranch(newBranchName, metaData.pr!.head as string);
-    const pr = await this.createPR(metaData.commitMessage, newBranchName);
+    await this.createBranch(newBranchName, pullRequest.head.sha as string);
+    const pr = await this.createPR(pullRequest.title, newBranchName);
 
     // store new metadata
     const newMetadata = {
-      ...metaData,
+      ...metadata,
       pr: {
         number: pr.number,
         head: pr.head.sha,
@@ -667,27 +667,22 @@ export default class API {
     await this.storeMetadata(newContentKey, newMetadata);
 
     // remove old data
-    await this.closePR(metaData.pr!.number);
-    await this.deleteBranch(metaData.branch);
+    await this.closePR(metadata.pr!.number);
+    await this.deleteBranch(metadata.branch);
     await this.deleteMetadata(oldContentKey);
 
-    return newMetadata;
+    return { metadata: newMetadata, pullRequest: pr };
   }
 
-  async migrateToPullRequestLabels(branch: string, metaData: Metadata) {
-    const pullRequest: Octokit.PullsGetResponse = await this.request(
-      `${this.repoURL}/pulls/${metaData.pr?.number}`,
-    );
+  async migrateToPullRequestLabels(pullRequest: Octokit.PullsListResponseItem, metadata: Metadata) {
+    await this.setPullRequestStatus(pullRequest, metadata.status);
 
-    await this.setPullRequestStatus(pullRequest, metaData.status);
-
-    const contentKey = branch.substring(`cms/`.length);
+    const contentKey = pullRequest.head.ref.substring(`cms/`.length);
     await this.deleteMetadata(contentKey);
-    return metaData;
   }
 
-  async migrateBranch(branch: string) {
-    let metadata = await this.retrieveMetadataOld(contentKeyFromBranch(branch)).catch(
+  async migratePullRequest(pullRequest: Octokit.PullsListResponseItem) {
+    let metadata = await this.retrieveMetadataOld(contentKeyFromBranch(pullRequest.head.ref)).catch(
       () => undefined,
     );
 
@@ -696,13 +691,13 @@ export default class API {
     }
 
     if (!metadata.version) {
-      // migrate branch from cms/slug to cms/collection/slug
-      metadata = await this.migrateToVersion1(branch, metadata);
+      // migrate branch from cms/slug to cms/collection/slug0
+      ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
     }
 
     if (metadata.version === '1') {
       // migrate branch from using orphan ref to store metadata to pull requests label
-      metadata = await this.migrateToPullRequestLabels(branch, metadata);
+      await this.migrateToPullRequestLabels(pullRequest, metadata);
     }
   }
 
@@ -736,8 +731,8 @@ export default class API {
         PullRequestState.Open,
         withoutCmsLabel,
       );
-      for (const branch of pullRequests.map(pr => pr.head.ref)) {
-        await this.migrateBranch(branch);
+      for (const pr of pullRequests) {
+        await this.migratePullRequest(pr);
       }
       const cmsPullRequests = await this.getPullRequests(
         undefined,
