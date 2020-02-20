@@ -1113,7 +1113,11 @@ export default class API {
   }
 
   getHeadReference(head: string) {
-    return `${this.repoOwner}:${head}`;
+    if (this.repoOwner) {
+      return `${this.repoOwner}:${head}`;
+    } else {
+      return head;
+    }
   }
 
   async createPR(title: string, head: string) {
