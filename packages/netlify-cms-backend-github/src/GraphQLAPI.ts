@@ -233,11 +233,11 @@ export default class GraphQLAPI extends API {
     predicate: (pr: Octokit.PullsListResponseItem) => boolean,
   ) {
     const { originRepoOwner: owner, originRepoName: name } = this;
-    let states = [];
+    let states;
     if (state === PullRequestState.Open) {
-      states.push('OPEN');
+      states = ['OPEN'];
     } else if (state === PullRequestState.Closed) {
-      states.push('CLOSED');
+      states = ['CLOSED', 'MERGED'];
     } else {
       states = ['OPEN', 'CLOSED', 'MERGED'];
     }

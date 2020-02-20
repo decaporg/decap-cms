@@ -631,7 +631,11 @@ export default class API {
     const contentKey = contentKeyFromBranch(branch);
     const { pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
     const { state: currentState, merged_at: mergedAt } = pullRequest;
-    if (pullRequest.number !== MOCK_PULL_REQUEST && currentState === 'closed' && mergedAt) {
+    if (
+      pullRequest.number !== MOCK_PULL_REQUEST &&
+      currentState === PullRequestState.Closed &&
+      mergedAt
+    ) {
       // pr was merged, delete entry
       await this.deleteUnpublishedEntry(collection, slug);
       return { branch, filter: false };
