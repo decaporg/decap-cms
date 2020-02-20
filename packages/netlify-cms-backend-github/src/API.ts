@@ -501,8 +501,9 @@ export default class API {
       pullRequest.head.sha,
       this.repoURL,
     );
+    // media files don't have a patch attribute, except svg files
     const { path, newFile } = diffs
-      .filter(d => d.filename.includes(slug))
+      .filter(d => d.patch && !d.filename.endsWith('.svg'))
       .map(f => ({ path: f.filename, newFile: f.status === 'added' }))[0];
 
     const mediaFiles = await Promise.all(
