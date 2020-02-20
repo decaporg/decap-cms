@@ -703,9 +703,9 @@ export default class API {
   }
 
   async getCmsBranches() {
-    const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.request(
+    const cmsBranches = await this.requestAllPages<Octokit.GitListMatchingRefsResponseItem>(
       `${this.repoURL}/git/refs/heads/cms`,
-    ).catch(() => []);
+    ).catch(() => [] as Octokit.GitListMatchingRefsResponseItem[]);
     return cmsBranches;
   }
 

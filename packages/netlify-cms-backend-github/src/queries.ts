@@ -126,6 +126,21 @@ export const branch = gql`
   ${fragments.branch}
 `;
 
+export const cmsBranches = gql`
+  query cmsBranches($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+      ...RepositoryParts
+      refs(refPrefix: "refs/heads/cms/", last: 100) {
+        nodes {
+          ...BranchParts
+        }
+      }
+    }
+  }
+  ${fragments.repository}
+  ${fragments.branch}
+`;
+
 export const repository = gql`
   query repository($owner: String!, $name: String!) {
     repository(owner: $owner, name: $name) {
@@ -158,11 +173,6 @@ export const pullRequests = gql`
       pullRequests(last: 100, headRefName: $head, states: $states) {
         nodes {
           ...PullRequestParts
-          labels(last: 100) {
-            nodes {
-              name
-            }
-          }
         }
       }
     }

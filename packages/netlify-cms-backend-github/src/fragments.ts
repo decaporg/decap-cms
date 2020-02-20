@@ -52,6 +52,11 @@ export const pullRequest = gql`
     repository {
       ...RepositoryParts
     }
+    labels(last: 100) {
+      nodes {
+        name
+      }
+    }
   }
   ${repository}
 `;

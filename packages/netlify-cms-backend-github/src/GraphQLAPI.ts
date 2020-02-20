@@ -49,6 +49,29 @@ interface TreeFile {
   name: string;
 }
 
+type GraphQLPullRequest = {
+  id: string;
+  baseRefName: string;
+  baseRefOid: string;
+  body: string;
+  headRefName: string;
+  headRefOid: string;
+  number: number;
+  state: string;
+  title: string;
+  mergedAt: string | null;
+  labels: { nodes: { name: string }[] };
+};
+
+const transformPullRequest = (pr: GraphQLPullRequest) => {
+  return {
+    ...pr,
+    labels: pr.labels.nodes,
+    head: { ref: pr.headRefName, sha: pr.headRefOid },
+    base: { ref: pr.baseRefName, sha: pr.baseRefOid },
+  };
+};
+
 type Error = GraphQLError & { type: string };
 
 export default class GraphQLAPI extends API {
@@ -231,30 +254,28 @@ export default class GraphQLAPI extends API {
       pullRequests,
     }: {
       pullRequests: {
-        nodes: {
-          id: string;
-          baseRefName: string;
-          baseRefOid: string;
-          body: string;
-          headRefName: string;
-          headRefOid: string;
-          number: number;
-          state: string;
-          title: string;
-          mergedAt: string | null;
-          labels: { nodes: { name: string }[] };
-        }[];
+        nodes: GraphQLPullRequest[];
       };
     } = data.repository;
 
-    const mapped = pullRequests.nodes.map(pr => ({
-      ...pr,
-      labels: pr.labels.nodes,
-      head: { ref: pr.headRefName, sha: pr.headRefOid },
-      base: { ref: pr.baseRefName, sha: pr.baseRefOid },
-    }));
+    const mapped = pullRequests.nodes.map(transformPullRequest);
 
     return ((mapped as unknown) as Octokit.PullsListResponseItem[]).filter(predicate);
+  }
+
+  async getCmsBranches() {
+    const { repoOwner: owner, repoName: name } = this;
+    const { data } = await this.query({
+      query: queries.cmsBranches,
+      variables: {
+        owner,
+        name,
+      },
+    });
+
+    return data.repository.refs.nodes.map(({ name, prefix }: { name: string; prefix: string }) => ({
+      ref: `${prefix}${name}`,
+    }));
   }
 
   async getStatuses(collectionName: string, slug: string) {
@@ -446,7 +467,7 @@ export default class GraphQLAPI extends API {
       },
     });
 
-    return data!.closePullRequest;
+    return data!.reopenPullRequest;
   }
 
   async closePR(number: number) {
@@ -609,7 +630,7 @@ export default class GraphQLAPI extends API {
       },
     });
     const { pullRequest } = data!.createPullRequest;
-    return { ...pullRequest, head: { sha: pullRequest.headRefOid } };
+    return (transformPullRequest(pullRequest) as unknown) as Octokit.PullsCreateResponse;
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
