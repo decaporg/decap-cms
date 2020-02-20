@@ -126,9 +126,28 @@ type MediaFile = {
   path: string;
 };
 
-const withCmsLabel = (pr: Octokit.PullsListResponseItem) => pr.labels.some(l => isCMSLabel(l.name));
-const withoutCmsLabel = (pr: Octokit.PullsListResponseItem) =>
-  pr.labels.every(l => !isCMSLabel(l.name));
+const withCmsLabel = (pr: GitHubPull) => pr.labels.some(l => isCMSLabel(l.name));
+const withoutCmsLabel = (pr: GitHubPull) => pr.labels.every(l => !isCMSLabel(l.name));
+
+const getTreeFiles = (files: GitHubCompareFiles) => {
+  const treeFiles = files.reduce((arr, file) => {
+    if (file.status === 'removed') {
+      // delete the file
+      arr.push({ sha: null, path: file.filename });
+    } else if (file.status === 'renamed') {
+      // delete the previous file
+      arr.push({ sha: null, path: file.previous_filename as string });
+      // add the renamed file
+      arr.push({ sha: file.sha, path: file.filename });
+    } else {
+      // add the  file
+      arr.push({ sha: file.sha, path: file.filename });
+    }
+    return arr;
+  }, [] as { sha: string | null; path: string }[]);
+
+  return treeFiles;
+};
 
 export default class API {
   apiRoot: string;
@@ -429,7 +448,7 @@ export default class API {
   async getPullRequests(
     head: string | undefined,
     state: PullRequestState,
-    predicate: (pr: Octokit.PullsListResponseItem) => boolean,
+    predicate: (pr: GitHubPull) => boolean,
   ) {
     const pullRequests: Octokit.PullsListResponse = await this.requestAllPages(
       `${this.originRepoURL}/pulls`,
@@ -447,7 +466,7 @@ export default class API {
     return pullRequests.filter(predicate);
   }
 
-  async getOpenAuthoringPullRequest(branch: string, pullRequests: Octokit.PullsListResponseItem[]) {
+  async getOpenAuthoringPullRequest(branch: string, pullRequests: GitHubPull[]) {
     // we can't use labels when using open authoring
     // since the contributor doesn't have access to set labels
     // a branch without a pr (or a closed pr) means a 'draft' entry
@@ -645,7 +664,7 @@ export default class API {
     }
   };
 
-  async migrateToVersion1(pullRequest: Octokit.PullsListResponseItem, metadata: Metadata) {
+  async migrateToVersion1(pullRequest: GitHubPull, metadata: Metadata) {
     // hard code key/branch generation logic to ignore future changes
     const oldContentKey = pullRequest.head.ref.substring(`cms/`.length);
     const newContentKey = `${metadata.collection}/${oldContentKey}`;
@@ -675,14 +694,14 @@ export default class API {
     return { metadata: newMetadata, pullRequest: pr };
   }
 
-  async migrateToPullRequestLabels(pullRequest: Octokit.PullsListResponseItem, metadata: Metadata) {
+  async migrateToPullRequestLabels(pullRequest: GitHubPull, metadata: Metadata) {
     await this.setPullRequestStatus(pullRequest, metadata.status);
 
     const contentKey = pullRequest.head.ref.substring(`cms/`.length);
     await this.deleteMetadata(contentKey);
   }
 
-  async migratePullRequest(pullRequest: Octokit.PullsListResponseItem) {
+  async migratePullRequest(pullRequest: GitHubPull) {
     let metadata = await this.retrieveMetadataOld(contentKeyFromBranch(pullRequest.head.ref)).catch(
       () => undefined,
     );
@@ -912,25 +931,10 @@ export default class API {
   async rebaseSingleCommit(baseCommit: GitHubCompareCommit, commit: GitHubCompareCommit) {
     // first get the diff between the commits
     const result = await this.getDifferences(commit.parents[0].sha, commit.sha, this.repoURL);
-    const files = result.files as GitHubCompareFiles;
-    const treeFiles = files.reduce((arr, file) => {
-      if (file.status === 'removed') {
-        // delete the file
-        arr.push({ sha: null, path: file.filename });
-      } else if (file.status === 'renamed') {
-        // delete the previous file
-        arr.push({ sha: null, path: file.previous_filename as string });
-        // add the renamed file
-        arr.push({ sha: file.sha, path: file.filename });
-      } else {
-        // add the  file
-        arr.push({ sha: file.sha, path: file.filename });
-      }
-      return arr;
-    }, [] as { sha: string | null; path: string }[]);
+    const files = getTreeFiles(result.files as GitHubCompareFiles);
 
     // create a tree with baseCommit as the base with the diff applied
-    const tree = await this.updateTree(baseCommit.sha, treeFiles);
+    const tree = await this.updateTree(baseCommit.sha, files);
     const { message, author, committer } = commit.commit;
 
     // create a new commit from the updated tree
@@ -1039,7 +1043,7 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
-    await this.mergePR(pullRequest, { entry: { path: '', sha: '' }, files: [] });
+    await this.mergePR(pullRequest);
     await this.deleteBranch(branch);
   }
 
@@ -1162,7 +1166,7 @@ export default class API {
     return result;
   }
 
-  async mergePR(pullrequest: GitHubPull, objects: MetaDataObjects) {
+  async mergePR(pullrequest: GitHubPull) {
     console.log('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
     try {
       const result: Octokit.PullsMergeResponse = await this.request(
@@ -1181,15 +1185,21 @@ export default class API {
       return result;
     } catch (error) {
       if (error instanceof APIError && error.status === 405) {
-        return this.forceMergePR(objects);
+        return this.forceMergePR(pullrequest);
       } else {
         throw error;
       }
     }
   }
 
-  forceMergePR(objects: MetaDataObjects) {
-    const files = objects.files.concat(objects.entry);
+  async forceMergePR(pullRequest: GitHubPull) {
+    const result = await this.getDifferences(
+      pullRequest.base.sha,
+      pullRequest.head.sha,
+      this.repoURL,
+    );
+    const files = getTreeFiles(result.files as GitHubCompareFiles);
+
     let commitMessage = 'Automatically generated. Merged on Netlify CMS\n\nForce merge of:';
     files.forEach(file => {
       commitMessage += `\n* "${file.path}"`;
