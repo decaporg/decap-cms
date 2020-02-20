@@ -300,7 +300,7 @@ export default class GitHub implements Implementation {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
 
     const readFile = (path: string, id: string | null | undefined) =>
-      this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+      this.api!.readFile(path, id, { repoURL }).catch(() => '') as Promise<string>;
 
     return entriesByFiles(files, readFile, 'GitHub');
   }
@@ -308,10 +308,12 @@ export default class GitHub implements Implementation {
   // Fetches a single entry.
   getEntry(path: string) {
     const repoURL = this.api!.originRepoURL;
-    return this.api!.readFile(path, null, { repoURL }).then(data => ({
-      file: { path, id: null },
-      data: data as string,
-    }));
+    return this.api!.readFile(path, null, { repoURL })
+      .then(data => ({
+        file: { path, id: null },
+        data: data as string,
+      }))
+      .catch(() => ({ file: { path, id: null }, data: '' }));
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
