@@ -200,7 +200,7 @@ function flushClockAndSave() {
 
 function populateEntry(entry, onDone = flushClockAndSave) {
   const keys = Object.keys(entry);
-  for (let key of keys) {
+  for (const key of keys) {
     const value = entry[key];
     if (key === 'body') {
       cy.getMarkdownEditor()

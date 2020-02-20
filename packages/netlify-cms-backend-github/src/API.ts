@@ -452,9 +452,12 @@ export default class API {
     // since the contributor doesn't have access to set labels
     // a branch without a pr (or a closed pr) means a 'draft' entry
     // a branch with an opened pr means a 'pending_review' entry
-    if (pullRequests.length <= 0) {
+    const data = await this.getBranch(branch);
+    // since we get pull requests by branch name, make sure to filter by head sha
+    const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.sha)[0];
+    // if no pull request is found for the branch we return a mocked one
+    if (!pullRequest) {
       try {
-        const data = await this.getBranch(branch);
         return {
           head: { sha: data.commit.sha },
           number: MOCK_PULL_REQUEST,
@@ -465,7 +468,6 @@ export default class API {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
     } else {
-      const pullRequest = pullRequests[0];
       pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name));
       const cmsLabel =
         pullRequest.state === PullRequestState.Closed
@@ -494,7 +496,11 @@ export default class API {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-    const { files: diffs } = await this.getDifferences(pullRequest.head.sha);
+    const { files: diffs } = await this.getDifferences(
+      this.branch,
+      pullRequest.head.sha,
+      this.repoURL,
+    );
     const { path, newFile } = diffs
       .filter(d => d.filename.includes(slug))
       .map(f => ({ path: f.filename, newFile: f.status === 'added' }))[0];
@@ -876,7 +882,7 @@ export default class API {
       }
     } else {
       // Entry is already on editorial review workflow - commit to existing branch
-      const { files: diffs } = await this.getDifferences(branch);
+      const { files: diffs } = await this.getDifferences(this.branch, branch, this.repoURL);
 
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
@@ -896,23 +902,17 @@ export default class API {
     }
   }
 
-  async getDifferences(to: string) {
+  async getDifferences(from: string, to: string, repoURL: string) {
     const result: Octokit.ReposCompareCommitsResponse = await this.request(
-      `${this.originRepoURL}/compare/${this.branch}...${to}`,
+      `${repoURL}/compare/${from}...${to}`,
     );
     return result;
   }
 
-  async getCommitsDiff(baseSha: string, headSha: string): Promise<GitHubCompareFiles> {
-    const { files }: Octokit.ReposCompareCommitsResponse = await this.request(
-      `${this.repoURL}/compare/${baseSha}...${headSha}`,
-    );
-    return files;
-  }
-
   async rebaseSingleCommit(baseCommit: GitHubCompareCommit, commit: GitHubCompareCommit) {
     // first get the diff between the commits
-    const files = await this.getCommitsDiff(commit.parents[0].sha, commit.sha);
+    const result = await this.getDifferences(commit.parents[0].sha, commit.sha, this.repoURL);
+    const files = result.files as GitHubCompareFiles;
     const treeFiles = files.reduce((arr, file) => {
       if (file.status === 'removed') {
         // delete the file
@@ -971,10 +971,14 @@ export default class API {
     }
   }
 
-  async rebaseBranch(branchName: string) {
+  async rebaseBranch(branch: string) {
     try {
       // Get the diff between the default branch the published branch
-      const { base_commit: baseCommit, commits } = await this.getDifferences(branchName);
+      const { base_commit: baseCommit, commits } = await this.getDifferences(
+        this.branch,
+        this.getHeadReference(branch),
+        this.originRepoURL,
+      );
       // Rebase the branch based on the diff
       const rebasedHead = await this.rebaseCommits(baseCommit, commits);
       return rebasedHead;

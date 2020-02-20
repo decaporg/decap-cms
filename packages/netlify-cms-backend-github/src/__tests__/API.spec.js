@@ -399,16 +399,18 @@ describe('github API', () => {
     it('should create updated tree and commit', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
-      api.getCommitsDiff = jest.fn().mockResolvedValueOnce([
-        { filename: 'removed.md', status: 'removed', sha: 'removed_sha' },
-        {
-          filename: 'renamed.md',
-          status: 'renamed',
-          previous_filename: 'previous_filename.md',
-          sha: 'renamed_sha',
-        },
-        { filename: 'added.md', status: 'added', sha: 'added_sha' },
-      ]);
+      api.getDifferences = jest.fn().mockResolvedValueOnce({
+        files: [
+          { filename: 'removed.md', status: 'removed', sha: 'removed_sha' },
+          {
+            filename: 'renamed.md',
+            status: 'renamed',
+            previous_filename: 'previous_filename.md',
+            sha: 'renamed_sha',
+          },
+          { filename: 'added.md', status: 'added', sha: 'added_sha' },
+        ],
+      });
 
       const newTree = { sha: 'new_tree_sha' };
       api.updateTree = jest.fn().mockResolvedValueOnce(newTree);
@@ -429,8 +431,8 @@ describe('github API', () => {
 
       await expect(api.rebaseSingleCommit(baseCommit, commit)).resolves.toBe(newCommit);
 
-      expect(api.getCommitsDiff).toHaveBeenCalledTimes(1);
-      expect(api.getCommitsDiff).toHaveBeenCalledWith('parent_sha', 'sha');
+      expect(api.getDifferences).toHaveBeenCalledTimes(1);
+      expect(api.getDifferences).toHaveBeenCalledWith('parent_sha', 'sha', '/repos/owner/repo');
 
       expect(api.updateTree).toHaveBeenCalledTimes(1);
       expect(api.updateTree).toHaveBeenCalledWith('base_commit_sha', [
