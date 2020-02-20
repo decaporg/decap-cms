@@ -15,12 +15,12 @@ import { renderBlock, renderInline, renderMark } from './renderers';
 import plugins from './plugins/visual';
 import schema from './schema';
 
-const visualEditorStyles = `
+const visualEditorStyles = ({ minimal }) => `
   position: relative;
   overflow: hidden;
   overflow-x: auto;
   font-family: ${fonts.primary};
-  min-height: ${lengths.richTextEditorMinHeight};
+  min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-top: 0;
@@ -208,7 +208,7 @@ export default class Editor extends React.Component {
               className={cx(
                 className,
                 css`
-                  ${visualEditorStyles}
+                  ${visualEditorStyles({ minimal: field.get('minimal') })}
                 `,
               )}
             >
