@@ -25,9 +25,7 @@ function getEmotionCache() {
 
 const PreviewContainer = ({ children, highlight }) => (
   <CacheProvider value={getEmotionCache()}>
-    <Layout>
-      {highlight ? <Highlight>{children}</Highlight> : children}
-    </Layout>
+    <Layout>{highlight ? <Highlight>{children}</Highlight> : children}</Layout>
   </CacheProvider>
 );
 
@@ -42,7 +40,7 @@ class Highlight extends React.Component {
       if (this.ref.current) {
         Prism.highlightAllUnder(this.ref.current);
       }
-    })
+    });
   }
 
   componentDidMount() {
@@ -54,13 +52,9 @@ class Highlight extends React.Component {
   }
 
   render() {
-    return (
-      <div ref={this.ref}>
-        {this.props.children}
-      </div>
-    );
+    return <div ref={this.ref}>{this.props.children}</div>;
   }
-};
+}
 
 const BlogPostPreview = ({ entry, widgetFor }) => {
   const data = entry.get('data');
@@ -121,8 +115,7 @@ const NotificationPreview = ({ entry }) => (
         <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
           {notif.get('message')}
         </Notification>
-      ))
-    }
+      ))}
   </PreviewContainer>
 );
 

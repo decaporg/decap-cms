@@ -12,7 +12,10 @@ import Widgets from '../components/widgets';
 import Markdown from '../components/markdown';
 
 function filenameFromPath(p) {
-  return p.split('/').slice(-1)[0].split('.')[0];
+  return p
+    .split('/')
+    .slice(-1)[0]
+    .split('.')[0];
 }
 
 const toMenu = (menu, nav) =>
@@ -40,13 +43,9 @@ export const DocsTemplate = ({
   group,
 }) => (
   <Container size="md">
-    <SidebarLayout
-      sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}
-    >
+    <SidebarLayout sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}>
       <article data-docs-content>
-        {filename && (
-          <EditLink collection={`docs_${group}`} filename={filename} />
-        )}
+        {filename && <EditLink collection={`docs_${group}`} filename={filename} />}
         <h1>{title}</h1>
         <Markdown body={body} html={html} />
         {showWidgets && <Widgets widgets={widgets} />}
@@ -56,8 +55,13 @@ export const DocsTemplate = ({
 );
 
 const DocPage = ({ data, location }) => {
-  const { nav, page: { frontmatter, html, fields }, widgets, menu } = data;
-  const { title, group } = frontmatter
+  const {
+    nav,
+    page: { frontmatter, html, fields },
+    widgets,
+    menu,
+  } = data;
+  const { title, group } = frontmatter;
 
   const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
   const showWidgets = location.pathname.indexOf('/docs/widgets') !== -1;
