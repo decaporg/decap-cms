@@ -22,20 +22,21 @@ const definitionList = {
       return;
     }
     const itemExp = /(.+)\n: (.+)/g;
-    const list = match[1] && [...match[1].matchAll(itemExp)]
-      .map(({ 1: term, 2: definition }) => ({ term, definition }));
+    const list =
+      match[1] &&
+      [...match[1].matchAll(itemExp)].map(({ 1: term, 2: definition }) => ({ term, definition }));
     return list;
   },
   toBlock: (list = []) => {
     return list.map(({ term, definition }) => `${term}\n: ${definition}`).join('\n\n');
   },
-
+  // eslint-disable-next-line react/display-name
   toPreview: (list = []) => (
     <dl>
       {list.map(({ term, definition }) => (
         <>
-          <dt dangerouslySetInnerHTML={{ __html: marked(term)}}/>
-          <dd dangerouslySetInnerHTML={{ __html: marked(definition)}}/>
+          <dt dangerouslySetInnerHTML={{ __html: marked(term) }} />
+          <dd dangerouslySetInnerHTML={{ __html: marked(definition) }} />
         </>
       ))}
     </dl>
