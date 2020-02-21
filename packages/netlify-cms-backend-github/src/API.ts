@@ -1022,7 +1022,10 @@ export default class API {
         }
       } else if (newStatus === 'pending_review') {
         const branch = branchFromContentKey(contentKey);
-        await this.createPR(API.DEFAULT_COMMIT_MESSAGE, branch);
+        // get the first commit message as the pr title
+        const diff = await this.getDifferences(this.branch, branch, this.repoURL);
+        const title = diff.commits[0]?.commit?.message || API.DEFAULT_COMMIT_MESSAGE;
+        await this.createPR(title, branch);
       }
     }
   }
