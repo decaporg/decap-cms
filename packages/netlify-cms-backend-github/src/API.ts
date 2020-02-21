@@ -454,7 +454,7 @@ export default class API {
       `${this.originRepoURL}/pulls`,
       {
         params: {
-          ...(head ? { head: this.getHeadReference(head) } : {}),
+          ...(head ? { head: await this.getHeadReference(head) } : {}),
           base: this.branch,
           state,
           // eslint-disable-next-line @typescript-eslint/camelcase
@@ -472,7 +472,7 @@ export default class API {
     // a branch without a pr (or a closed pr) means a 'draft' entry
     // a branch with an opened pr means a 'pending_review' entry
     const data = await this.getBranch(branch);
-    // since we get pull requests by branch name, make sure to filter by head sha
+    // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
     const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.sha)[0];
     // if no pull request is found for the branch we return a mocked one
     if (!pullRequest) {
@@ -980,7 +980,7 @@ export default class API {
       // Get the diff between the default branch the published branch
       const { base_commit: baseCommit, commits } = await this.getDifferences(
         this.branch,
-        this.getHeadReference(branch),
+        await this.getHeadReference(branch),
         this.originRepoURL,
       );
       // Rebase the branch based on the diff
@@ -1116,12 +1116,8 @@ export default class API {
     });
   }
 
-  getHeadReference(head: string) {
-    if (this.repoOwner) {
-      return `${this.repoOwner}:${head}`;
-    } else {
-      return head;
-    }
+  async getHeadReference(head: string) {
+    return `${this.repoOwner}:${head}`;
   }
 
   async createPR(title: string, head: string) {
@@ -1130,7 +1126,7 @@ export default class API {
       body: JSON.stringify({
         title,
         body: DEFAULT_PR_BODY,
-        head: this.getHeadReference(head),
+        head: await this.getHeadReference(head),
         base: this.branch,
       }),
     });
