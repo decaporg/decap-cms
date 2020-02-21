@@ -181,7 +181,7 @@ const tr = {
       onFailToPersist: 'Girdi devam ettirilemedi: %{details}',
       onFailToDelete: 'Girdi silinemedi: %{details}',
       onFailToUpdateStatus: 'Durum güncellenemedi: %{details}',
-      missingRequiredField: 'Gerekli bir alanı eksik. Lütfen kaydetmeden önce tamamlayın.',
+      missingRequiredField: 'Gerekli bir alan eksik. Lütfen kaydetmeden önce tamamlayın.',
       entrySaved: 'Girdi kaydedildi',
       entryPublished: 'Girdi yayınlandı',
       entryUnpublished: 'Girdi yayınlanmamış',
