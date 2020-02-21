@@ -1,0 +1,34 @@
+{
+  "name": "netlify-cms-editor-component-definition-list",
+  "description": "Definition list component for Netlify CMS editor widget",
+  "version": "1.0.0",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-definition-list",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-editor-component-definition-list.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "editor",
+    "component"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  },
+  "peerDependencies": {
+    "react": "^16.8.4"
+  },
+  "dependencies": {
+    "common-tags": "^1.8.0",
+    "marked": "^0.8.0"
+  }
+}
