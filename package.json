@@ -157,11 +157,14 @@
     "rimraf": "^3.0.0",
     "simple-git": "^1.124.0",
     "start-server-and-test": "^1.7.11",
+    "storybook-multiple-themeprovider": "^1.5.1",
     "style-loader": "^0.23.1",
+    "styled-components": "^5.0.1",
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-config-styled-components": "^0.1.1",
     "svg-inline-loader": "^0.8.0",
+    "themeprovider-storybook": "^1.3.0",
     "to-string-loader": "^1.1.5",
     "typescript": "^3.7.2",
     "unist-util-visit": "^1.4.0",
@@ -181,10 +184,12 @@
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^10.0.9",
+    "color": "^3.1.2",
     "emotion": "^10.0.9",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-babel": "^5.3.0",
-    "lerna": "^3.15.0"
+    "lerna": "^3.15.0",
+    "react-hot-loader": "^4.12.19"
   },
   "husky": {
     "hooks": {

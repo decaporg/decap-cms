@@ -1,5 +1,6 @@
 module.exports = {
   stories: [
+    '../packages/netlify-cms-ui-default/src/**/*.stories.js',
     '../packages/netlify-cms-core/src/**/*.stories.js',
     '../packages/netlify-cms-ui-legacy/src/**/*.stories.js',
   ],
