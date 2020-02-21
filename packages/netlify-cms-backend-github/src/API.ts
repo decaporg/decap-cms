@@ -525,15 +525,12 @@ export default class API {
       .filter(d => d.patch && !d.filename.endsWith('.svg'))
       .map(f => ({ path: f.filename, newFile: f.status === 'added' }))[0];
 
-    const mediaFiles = await Promise.all(
-      diffs
-        .filter(d => d.filename !== path)
-        .map(async d => {
-          const path = d.filename;
-          const id = d.sha;
-          return { path, id };
-        }),
-    );
+    const mediaFiles = diffs
+      .filter(d => d.filename !== path)
+      .map(({ filename: path, sha: id }) => ({
+        path,
+        id,
+      }));
     const label = pullRequest.labels.find(l => isCMSLabel(l.name)) as { name: string };
     const status = labelToStatus(label.name);
     return { branch, collection, slug, path, status, newFile, mediaFiles, pullRequest };
@@ -711,7 +708,7 @@ export default class API {
     }
 
     if (!metadata.version) {
-      // migrate branch from cms/slug to cms/collection/slug0
+      // migrate branch from cms/slug to cms/collection/slug
       ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
     }
 
@@ -745,7 +742,7 @@ export default class API {
       );
       branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
     } else {
-      // backwards compatibility code, get relevant branches and migrate them
+      // backwards compatibility code, get relevant pull requests and migrate them
       const pullRequests = await this.getPullRequests(
         undefined,
         PullRequestState.Open,
