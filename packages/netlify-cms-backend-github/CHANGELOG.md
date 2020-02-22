@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.8.0...netlify-cms-backend-github@2.8.1) (2020-02-22)
+
+
+### Reverts
+
+* Revert "feat(core): Align GitHub metadata handling with other backends (#3292)" ([5bdd3df](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/5bdd3df9ccbb5149c22d79987ebdcd6cab4b261f)), closes [#3292](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3292)
+
+
+
+
+
 # [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.7.1...netlify-cms-backend-github@2.8.0) (2020-02-22)
 
 
