@@ -21,6 +21,7 @@ import {
   responseParser,
   PreviewState,
   parseContentKey,
+  branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map, Set } from 'immutable';
@@ -457,18 +458,6 @@ export default class API {
     ])(`${this.repoURL}/repository/files/${encodeURIComponent(path)}`);
   };
 
-  generateContentKey(collectionName: string, slug: string) {
-    return generateContentKey(collectionName, slug);
-  }
-
-  contentKeyFromBranch(branch: string) {
-    return branch.substring(`${CMS_BRANCH_PREFIX}/`.length);
-  }
-
-  branchFromContentKey(contentKey: string) {
-    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
-  }
-
   async getMergeRequests(sourceBranch?: string) {
     const mergeRequests: GitLabMergeRequest[] = await this.requestJSON({
       url: `${this.repoURL}/merge_requests`,
@@ -555,7 +544,7 @@ export default class API {
 
   async retrieveMetadata(contentKey: string) {
     const { collection, slug } = parseContentKey(contentKey);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
     const { old_path: path, new_file: newFile } = diff.find(d => !d.binary) as {
@@ -646,8 +635,8 @@ export default class API {
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
+    const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       const items = await this.getCommitItems(files, this.branch);
@@ -694,8 +683,8 @@ export default class API {
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    const contentKey = this.generateContentKey(collection, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
 
     const labels = [
@@ -722,8 +711,8 @@ export default class API {
   }
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     await this.mergeMergeRequest(mergeRequest);
   }
@@ -747,8 +736,8 @@ export default class API {
   }
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     await this.closeMergeRequest(mergeRequest);
     await this.deleteBranch(branch);
@@ -765,8 +754,8 @@ export default class API {
   }
 
   async getStatuses(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const statuses: GitLabCommitStatus[] = await this.getMergeRequestStatues(mergeRequest, branch);
     // eslint-disable-next-line @typescript-eslint/camelcase
