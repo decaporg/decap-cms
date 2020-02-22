@@ -1,0 +1,9 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#root > div {
+    padding: 0;
+}

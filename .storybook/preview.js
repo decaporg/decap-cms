@@ -3,6 +3,8 @@ import { addDecorator, configure } from '@storybook/react';
 import { withThemesProvider } from 'storybook-multiple-themeprovider';
 import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/themes';
 
+import './preview.css';
+
 // Options:
 const themes = [
   {
