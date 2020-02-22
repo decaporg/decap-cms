@@ -25,7 +25,6 @@ import {
   UnpublishedEntryMediaFile,
   runWithLock,
   blobToFileObj,
-  contentKeyFromBranch,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { Octokit } from '@octokit/rest';
@@ -300,7 +299,7 @@ export default class GitHub implements Implementation {
     const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
 
     const readFile = (path: string, id: string | null | undefined) =>
-      this.api!.readFile(path, id, { repoURL }).catch(() => '') as Promise<string>;
+      this.api!.readFile(path, id, { repoURL }) as Promise<string>;
 
     return entriesByFiles(files, readFile, 'GitHub');
   }
@@ -308,12 +307,10 @@ export default class GitHub implements Implementation {
   // Fetches a single entry.
   getEntry(path: string) {
     const repoURL = this.api!.originRepoURL;
-    return this.api!.readFile(path, null, { repoURL })
-      .then(data => ({
-        file: { path, id: null },
-        data: data as string,
-      }))
-      .catch(() => ({ file: { path, id: null }, data: '' }));
+    return this.api!.readFile(path, null, { repoURL }).then(data => ({
+      file: { path, id: null },
+      data: data as string,
+    }));
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
@@ -415,7 +412,7 @@ export default class GitHub implements Implementation {
   unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => contentKeyFromBranch(branch)),
+        branches.map(({ ref }) => this.api!.contentKeyFromRef(ref)),
       );
 
     const readUnpublishedBranchFile = (contentKey: string) =>
@@ -434,10 +431,10 @@ export default class GitHub implements Implementation {
   ) {
     const contentKey = this.api!.generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const files = data.metaData.objects.entry.mediaFiles || [];
+    const files = data.metaData.objects.files || [];
     const mediaFiles = await loadEntryMediaFiles(
       data.metaData.branch,
-      files.map(({ id, path }) => ({ id, path })),
+      files.map(({ sha: id, path }) => ({ id, path })),
     );
     return {
       slug,
@@ -449,18 +446,28 @@ export default class GitHub implements Implementation {
     };
   }
 
-  async getDeployPreview(collection: string, slug: string) {
-    try {
-      const statuses = await this.api!.getStatuses(collection, slug);
-      const deployStatus = getPreviewStatus(statuses, this.previewContext);
+  /**
+   * Uses GitHub's Statuses API to retrieve statuses, infers which is for a
+   * deploy preview via `getPreviewStatus`. Returns the url provided by the
+   * status, as well as the status state, which should be one of 'success',
+   * 'pending', and 'failure'.
+   */
+  async getDeployPreview(collectionName: string, slug: string) {
+    const contentKey = this.api!.generateContentKey(collectionName, slug);
+    const data = await this.api!.retrieveMetadata(contentKey);
 
-      if (deployStatus) {
-        const { target_url: url, state } = deployStatus;
-        return { url, status: state };
-      } else {
-        return null;
-      }
-    } catch (e) {
+    if (!data || !data.pr) {
+      return null;
+    }
+
+    const headSHA = typeof data.pr.head === 'string' ? data.pr.head : data.pr.head.sha;
+    const statuses = await this.api!.getStatuses(headSHA);
+    const deployStatus = getPreviewStatus(statuses, this.previewContext);
+
+    if (deployStatus) {
+      const { target_url: url, state } = deployStatus;
+      return { url, status: state };
+    } else {
       return null;
     }
   }

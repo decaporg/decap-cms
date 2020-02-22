@@ -185,9 +185,7 @@ describe('github backend implementation', () => {
         isModification: true,
         metaData: {
           branch: 'branch',
-          objects: {
-            entry: { path: 'entry-path', mediaFiles: [{ path: 'image.png', id: 'sha' }] },
-          },
+          objects: { entry: { path: 'entry-path' }, files: [{ path: 'image.png', sha: 'sha' }] },
         },
       };
       readUnpublishedBranchFile.mockResolvedValue(data);
