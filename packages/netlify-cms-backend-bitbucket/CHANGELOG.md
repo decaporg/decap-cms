@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.9.0...netlify-cms-backend-bitbucket@2.10.0) (2020-02-22)
+
+
+### Features
+
+* **core:** Align GitHub metadata handling with other backends ([#3292](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/3292)) ([8193b5a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/8193b5ace89d6f14a6c756235a50b186a763b6b1))
+
+
+
+
+
 # [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.8.1...netlify-cms-backend-bitbucket@2.9.0) (2020-02-10)
 
 

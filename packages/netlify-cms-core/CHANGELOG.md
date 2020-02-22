@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.19.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.4...netlify-cms-core@2.19.0) (2020-02-22)
+
+
+### Features
+
+* Add 'hero' as inferable image field ([#3294](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3294)) ([971926c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/971926c36941694acdc37649494f1f62f3f5f40e))
+
+
+
+
+
 ## [2.18.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.3...netlify-cms-core@2.18.4) (2020-02-14)
 
 

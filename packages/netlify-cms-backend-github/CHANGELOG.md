@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.7.1...netlify-cms-backend-github@2.8.0) (2020-02-22)
+
+
+### Features
+
+* **core:** Align GitHub metadata handling with other backends ([#3292](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3292)) ([8193b5a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/8193b5ace89d6f14a6c756235a50b186a763b6b1))
+
+
+
+
+
 ## [2.7.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.7.0...netlify-cms-backend-github@2.7.1) (2020-02-17)
 
 **Note:** Version bump only for package netlify-cms-backend-github
