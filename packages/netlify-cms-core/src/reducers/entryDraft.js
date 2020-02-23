@@ -88,13 +88,22 @@ const entryDraftReducer = (state = Map(), action) => {
       });
       return state.set('localBackup', newState);
     }
-    case DRAFT_CHANGE_FIELD:
-      return state.withMutations(state => {
+    case DRAFT_CHANGE_FIELD: {
+      const publishedEntry = action.payload.publishedEntry || Map();
+      const unpublishedEntry = action.payload.unpublishedEntry || Map();
+      let newState = state.withMutations(state => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
         state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
         state.set('hasChanged', true);
       });
+      const newStateData = newState.getIn(['entry', 'data']);
 
+      (newStateData.equals(unpublishedEntry.get('data')) ||
+        newStateData.equals(publishedEntry.get('data'))) &&
+        (newState = newState.set('hasChanged', false));
+
+      return newState;
+    }
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
         return state.deleteIn(['fieldsErrors', action.payload.uniquefieldId]);

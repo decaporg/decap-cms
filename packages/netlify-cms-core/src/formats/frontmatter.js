@@ -72,7 +72,7 @@ class FrontmatterFormatter {
     const result = matter(content, { engines: parsers, ...format });
     return {
       ...result.data,
-      body: result.content,
+      ...(result.content.trim() && { body: result.content }),
     };
   }
 
