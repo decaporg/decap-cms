@@ -18,7 +18,9 @@ const entry = {
   path: 'content/blog/art-and-wine-festival.md',
   partial: false,
   raw: '',
-  data: {},
+  data: {
+    dataField: 'dataFieldInitialValue',
+  },
   metaData: null,
 };
 
@@ -62,6 +64,47 @@ describe('entryDraft reducer', () => {
   describe('DRAFT_DISCARD', () => {
     it('should discard the draft and return initial state', () => {
       expect(reducer(initialState, actions.discardDraft())).toEqual(initialState);
+    });
+  });
+
+  describe('DRAFT_CHANGE_FIELD', () => {
+    it('should update the draft field', () => {
+      const initialEntry = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+
+      const actualState = reducer(
+        initialEntry,
+        actions.changeDraftField('dataField', 'update', {}),
+      );
+
+      expect(actualState.toJS()).toEqual({
+        ...initialEntry.toJS(),
+        entry: {
+          ...initialEntry.toJS().entry,
+          data: {
+            dataField: 'update',
+          },
+        },
+        hasChanged: true,
+      });
+    });
+
+    it('should metadata update the draft field without marking hasChanged', () => {
+      const initialEntry = reducer(initialState, actions.createDraftFromEntry(fromJS(entry)));
+
+      const actualState = reducer(
+        initialEntry,
+        actions.changeDraftField('dataField', 'dataFieldInitialValue', {
+          metaField: 'metaFieldValue',
+        }),
+      );
+
+      expect(actualState.toJS()).toEqual({
+        ...initialEntry.toJS(),
+        fieldsMetaData: {
+          metaField: 'metaFieldValue',
+        },
+        hasChanged: false,
+      });
     });
   });
 
