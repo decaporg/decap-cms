@@ -30,7 +30,7 @@ By default, all entries created or edited in the Netlify CMS are committed direc
 
 The `publish_mode` option allows you to enable "Editorial Workflow" mode for more control over the content publishing phases. All unpublished entries will be arranged in a board according to their status, and they can be further reviewed and edited before going live.
 
-**Note:** Editorial workflow works with GitHub repositories only. Support for other GitLab and Bitbucket is [](https://github.com/netlify/netlify-cms/issues/568)[in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
+**Note:** Editorial workflow works with GitHub repositories only. Support for GitLab and Bitbucket is [](https://github.com/netlify/netlify-cms/issues/568)[in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
@@ -207,8 +207,7 @@ The last few options require more detailed information.
 
 ### `identifier_field`
 
-Netlify CMS expects every entry to provide a field named `"title"` that serves as an identifier for the entry. The identifier field serves as an entry's title when viewing a list of entries, and is
-used in [slug](#slug) creation. If you would like to use a field other than `"title"` as the identifier, you can set `identifier_field` to the name of the other field.
+Netlify CMS expects every entry to provide a field named `"title"` that serves as an identifier for the entry. The identifier field serves as an entry's title when viewing a list of entries, and is used in [slug](#slug) creation. If you would like to use a field other than `"title"` as the identifier, you can set `identifier_field` to the name of the other field.
 
 **Example**
 
@@ -277,8 +276,7 @@ slug: "{{year}}-{{month}}-{{day}}_{{fields.slug}}"
 
 ### `preview_path`
 
-A string representing the path where content in this collection can be found on the live site. This allows deploy preview links to direct to lead to a specific piece of content rather than the site
-root of a deploy preview.
+A string representing the path where content in this collection can be found on the live site. This allows deploy preview links to direct to lead to a specific piece of content rather than the site root of a deploy preview.
 
 **Available template tags:**
 
