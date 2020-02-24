@@ -156,7 +156,9 @@ show_preview_links: false
 
 ## Slug Type
 
-The `slug` option allows you to change how filenames for entries are created and sanitized. For modifying the actual data in a slug, see the per-collection option below.
+The `slug` option allows you to change how filenames for entries are created and sanitized.
+It also applies to filenames of media inserted via the default media library.  
+For modifying the actual data in a slug, see the per-collection option below.
 
 `slug` accepts multiple options:
 
