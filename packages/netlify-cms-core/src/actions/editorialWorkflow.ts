@@ -386,7 +386,9 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(entry.get('data'), fields);
+    let serializedData = serializeValues(entry.get('data'), fields);
+    //preserve unknown fields value
+    serializedData = entry.get('data').mergeDeep(serializedData);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 
