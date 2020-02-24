@@ -416,7 +416,7 @@ describe('github API', () => {
       );
 
       expect(api.closePR).toHaveBeenCalledTimes(1);
-      expect(api.closePR).toHaveBeenCalledWith(metadata.pr.number);
+      expect(api.closePR).toHaveBeenCalledWith(pr.number);
 
       expect(api.deleteBranch).toHaveBeenCalledTimes(1);
       expect(api.deleteBranch).toHaveBeenCalledWith('cms/2019-11-11-post-title');
