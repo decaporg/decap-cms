@@ -41,6 +41,7 @@ export const pullRequest = gql`
   fragment PullRequestParts on PullRequest {
     id
     baseRefName
+    baseRefOid
     body
     headRefName
     headRefOid
@@ -50,6 +51,11 @@ export const pullRequest = gql`
     merged_at: mergedAt
     repository {
       ...RepositoryParts
+    }
+    labels(last: 100) {
+      nodes {
+        name
+      }
     }
   }
   ${repository}
