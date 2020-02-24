@@ -50,3 +50,10 @@ export const afterEach = (taskResult, backend) => {
     Cypress.runner.stop();
   }
 };
+
+export const seedRepo = (taskResult, backend) => {
+  cy.task('seedRepo', {
+    backend,
+    ...taskResult.data,
+  });
+};

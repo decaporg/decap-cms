@@ -368,7 +368,7 @@ export default class API {
           const changeTree = await this.updateTree(branchData.sha, [file as TreeFile]);
           const { sha } = await this.commit(`Updating “${key}” metadata`, changeTree);
           await this.patchRef('meta', '_netlify_cms', sha);
-          localForage.setItem(`gh.meta.${key}`, {
+          await localForage.setItem(`gh.meta.${key}`, {
             expires: Date.now() + 300000, // In 5 minutes
             data,
           });
@@ -404,45 +404,48 @@ export default class API {
     );
   }
 
-  retrieveMetadataOld(key: string): Promise<Metadata> {
-    const cache = localForage.getItem<{ data: Metadata; expires: number }>(`gh.meta.${key}`);
-    return cache.then(cached => {
-      if (cached && cached.expires > Date.now()) {
-        return cached.data as Metadata;
+  async retrieveMetadataOld(key: string): Promise<Metadata> {
+    console.log(
+      '%c Checking for MetaData files',
+      'line-height: 30px;text-align: center;font-weight: bold',
+    );
+
+    const metadataRequestOptions = {
+      params: { ref: 'refs/meta/_netlify_cms' },
+      headers: { Accept: 'application/vnd.github.v3.raw' },
+      cache: 'no-store' as RequestCache,
+    };
+
+    const errorHandler = (err: Error) => {
+      if (err.message === 'Not Found') {
+        console.log(
+          '%c %s does not have metadata',
+          'line-height: 30px;text-align: center;font-weight: bold',
+          key,
+        );
       }
-      console.log(
-        '%c Checking for MetaData files',
-        'line-height: 30px;text-align: center;font-weight: bold',
-      );
+      throw err;
+    };
 
-      const metadataRequestOptions = {
-        params: { ref: 'refs/meta/_netlify_cms' },
-        headers: { Accept: 'application/vnd.github.v3.raw' },
-        cache: 'no-store' as RequestCache,
-      };
-
-      const errorHandler = (err: Error) => {
-        if (err.message === 'Not Found') {
-          console.log(
-            '%c %s does not have metadata',
-            'line-height: 30px;text-align: center;font-weight: bold',
-            key,
-          );
-        }
-        throw err;
-      };
-
-      if (!this.useOpenAuthoring) {
-        return this.request(`${this.repoURL}/contents/${key}.json`, metadataRequestOptions)
-          .then((response: string) => JSON.parse(response))
-          .catch(errorHandler);
-      }
-
-      const [user, repo] = key.split('/');
-      return this.request(`/repos/${user}/${repo}/contents/${key}.json`, metadataRequestOptions)
+    if (!this.useOpenAuthoring) {
+      const result = await this.request(
+        `${this.repoURL}/contents/${key}.json`,
+        metadataRequestOptions,
+      )
         .then((response: string) => JSON.parse(response))
         .catch(errorHandler);
-    });
+
+      return result;
+    }
+
+    const [user, repo] = key.split('/');
+    const result = this.request(
+      `/repos/${user}/${repo}/contents/${key}.json`,
+      metadataRequestOptions,
+    )
+      .then((response: string) => JSON.parse(response))
+      .catch(errorHandler);
+    return result;
   }
 
   async getPullRequests(
@@ -463,7 +466,9 @@ export default class API {
       },
     );
 
-    return pullRequests.filter(predicate);
+    return pullRequests.filter(
+      pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
+    );
   }
 
   async getOpenAuthoringPullRequest(branch: string, pullRequests: GitHubPull[]) {
@@ -684,8 +689,8 @@ export default class API {
     await this.storeMetadata(newContentKey, newMetadata);
 
     // remove old data
-    await this.closePR(metadata.pr!.number);
-    await this.deleteBranch(metadata.branch);
+    await this.closePR(pullRequest.number);
+    await this.deleteBranch(pullRequest.head.ref);
     await this.deleteMetadata(oldContentKey);
 
     return { metadata: newMetadata, pullRequest: pr };
@@ -699,23 +704,38 @@ export default class API {
   }
 
   async migratePullRequest(pullRequest: GitHubPull) {
-    let metadata = await this.retrieveMetadataOld(contentKeyFromBranch(pullRequest.head.ref)).catch(
-      () => undefined,
-    );
+    const { number } = pullRequest;
+    console.log(`Migrating Pull Request '${number}'`);
+    const contentKey = contentKeyFromBranch(pullRequest.head.ref);
+    let metadata = await this.retrieveMetadataOld(contentKey).catch(() => undefined);
 
     if (!metadata) {
       return;
     }
 
+    let newNumber = number;
     if (!metadata.version) {
+      console.log(`Migrating Pull Request '${number}' to version 1`);
       // migrate branch from cms/slug to cms/collection/slug
       ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
+      newNumber = pullRequest.number;
+      console.log(
+        `Done migrating Pull Request '${number}' to version 1. New pull request '${newNumber}' created.`,
+      );
     }
 
     if (metadata.version === '1') {
+      console.log(`Migrating Pull Request '${newNumber}' to labels`);
       // migrate branch from using orphan ref to store metadata to pull requests label
       await this.migrateToPullRequestLabels(pullRequest, metadata);
+      console.log(`Done migrating Pull Request '${newNumber}' to labels`);
     }
+
+    console.log(
+      `Done migrating Pull Request '${
+        number === newNumber ? newNumber : `${number} => ${newNumber}`
+      }'`,
+    );
   }
 
   async getCmsBranches() {

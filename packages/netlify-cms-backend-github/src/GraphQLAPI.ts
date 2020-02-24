@@ -13,6 +13,7 @@ import {
   localForage,
   DEFAULT_PR_BODY,
   branchFromContentKey,
+  CMS_BRANCH_PREFIX,
 } from 'netlify-cms-lib-util';
 import { trim } from 'lodash';
 import introspectionQueryResultData from './fragmentTypes';
@@ -260,7 +261,9 @@ export default class GraphQLAPI extends API {
 
     const mapped = pullRequests.nodes.map(transformPullRequest);
 
-    return ((mapped as unknown) as Octokit.PullsListResponseItem[]).filter(predicate);
+    return ((mapped as unknown) as Octokit.PullsListResponseItem[]).filter(
+      pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
+    );
   }
 
   async getCmsBranches() {
