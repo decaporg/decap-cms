@@ -38,37 +38,6 @@ export const blob = gql`
   ${fragments.blobWithText}
 `;
 
-export const unpublishedBranchFile = gql`
-  query unpublishedBranchFile(
-    $headOwner: String!
-    $headRepoName: String!
-    $headExpression: String!
-    $baseOwner: String!
-    $baseRepoName: String!
-    $baseExpression: String!
-  ) {
-    head: repository(owner: $headOwner, name: $headRepoName) {
-      ...RepositoryParts
-      object(expression: $headExpression) {
-        ... on Blob {
-          ...BlobWithTextParts
-        }
-      }
-    }
-    base: repository(owner: $baseOwner, name: $baseRepoName) {
-      ...RepositoryParts
-      object(expression: $baseExpression) {
-        ... on Blob {
-          id
-          oid
-        }
-      }
-    }
-  }
-  ${fragments.repository}
-  ${fragments.blobWithText}
-`;
-
 export const statues = gql`
   query statues($owner: String!, $name: String!, $sha: GitObjectID!) {
     repository(owner: $owner, name: $name) {
@@ -140,30 +109,6 @@ export const files = (depth: number) => gql`
   ${fragments.fileEntry}
 `;
 
-export const unpublishedPrBranches = gql`
-  query unpublishedPrBranches($owner: String!, $name: String!) {
-    repository(owner: $owner, name: $name) {
-      ...RepositoryParts
-      refs(refPrefix: "refs/heads/cms/", last: 50) {
-        nodes {
-          id
-          associatedPullRequests(last: 50, states: OPEN) {
-            nodes {
-              id
-              headRef {
-                id
-                name
-                prefix
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  ${fragments.repository}
-`;
-
 const branchQueryPart = `
 branch: ref(qualifiedName: $qualifiedName) {
   ...BranchParts
@@ -175,6 +120,21 @@ export const branch = gql`
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
       ${branchQueryPart}
+    }
+  }
+  ${fragments.repository}
+  ${fragments.branch}
+`;
+
+export const cmsBranches = gql`
+  query cmsBranches($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+      ...RepositoryParts
+      refs(refPrefix: "refs/heads/cms/", last: 100) {
+        nodes {
+          ...BranchParts
+        }
+      }
     }
   }
   ${fragments.repository}
@@ -206,13 +166,27 @@ export const pullRequest = gql`
   ${fragments.pullRequest}
 `;
 
+export const pullRequests = gql`
+  query pullRequests($owner: String!, $name: String!, $head: String, $states: [PullRequestState!]) {
+    repository(owner: $owner, name: $name) {
+      id
+      pullRequests(last: 100, headRefName: $head, states: $states) {
+        nodes {
+          ...PullRequestParts
+        }
+      }
+    }
+  }
+  ${fragments.pullRequest}
+`;
+
 export const pullRequestAndBranch = gql`
-  query pullRequestAndBranch($owner: String!, $name: String!, $origin_owner: String!, $origin_name: String!, $qualifiedName: String!, $number: Int!) {
+  query pullRequestAndBranch($owner: String!, $name: String!, $originRepoOwner: String!, $originRepoName: String!, $qualifiedName: String!, $number: Int!) {
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
       ${branchQueryPart}
     }
-    origin: repository(owner: $origin_owner, name: $origin_name) {
+    origin: repository(owner: $originRepoOwner, name: $originRepoName) {
       ...RepositoryParts
       ${pullRequestQueryPart}
     }
@@ -220,47 +194,6 @@ export const pullRequestAndBranch = gql`
   ${fragments.repository}
   ${fragments.branch}
   ${fragments.pullRequest}
-`;
-
-export const commitTree = gql`
-  query commitTree($owner: String!, $name: String!, $sha: GitObjectID!) {
-    repository(owner: $owner, name: $name) {
-      ...RepositoryParts
-      commit: object(oid: $sha) {
-        ...ObjectParts
-        ... on Commit {
-          tree {
-            ...ObjectParts
-            entries {
-              ...TreeEntryParts
-            }
-          }
-        }
-      }
-    }
-  }
-  ${fragments.repository}
-  ${fragments.object}
-  ${fragments.treeEntry}
-`;
-
-export const tree = gql`
-  query tree($owner: String!, $name: String!, $sha: GitObjectID!) {
-    repository(owner: $owner, name: $name) {
-      ...RepositoryParts
-      tree: object(oid: $sha) {
-        ...ObjectParts
-        ... on Tree {
-          entries {
-            ...TreeEntryParts
-          }
-        }
-      }
-    }
-  }
-  ${fragments.repository}
-  ${fragments.object}
-  ${fragments.treeEntry}
 `;
 
 export const fileSha = gql`

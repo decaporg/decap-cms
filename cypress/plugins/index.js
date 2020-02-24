@@ -13,7 +13,13 @@
 require('dotenv').config();
 const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
 
-const { setupGitHub, teardownGitHub, setupGitHubTest, teardownGitHubTest } = require('./github');
+const {
+  setupGitHub,
+  teardownGitHub,
+  setupGitHubTest,
+  teardownGitHubTest,
+  seedGitHubRepo,
+} = require('./github');
 const {
   setupGitGateway,
   teardownGitGateway,
@@ -29,7 +35,7 @@ const {
 } = require('./bitbucket');
 const { setupProxy, teardownProxy, setupProxyTest, teardownProxyTest } = require('./proxy');
 
-const { copyBackendFiles } = require('../utils/config');
+const { copyBackendFiles, switchVersion } = require('../utils/config');
 
 module.exports = async (on, config) => {
   // `on` is used to hook into various events Cypress emits
@@ -132,6 +138,28 @@ module.exports = async (on, config) => {
           await teardownProxyTest(taskData);
           break;
       }
+
+      return null;
+    },
+    async seedRepo(taskData) {
+      const { backend } = taskData;
+
+      console.log(`Seeding repository for backend`, backend);
+
+      switch (backend) {
+        case 'github':
+          await seedGitHubRepo(taskData);
+          break;
+      }
+
+      return null;
+    },
+    async switchToVersion(taskData) {
+      const { version } = taskData;
+
+      console.log(`Switching CMS to version '${version}'`);
+
+      await switchVersion(version);
 
       return null;
     },

@@ -34,6 +34,8 @@ import {
   getLargeMediaFilteredMediaFiles,
   FetchError,
   blobToFileObj,
+  contentKeyFromBranch,
+  generateContentKey,
 } from 'netlify-cms-lib-util';
 import NetlifyAuthenticator from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -445,7 +447,7 @@ export default class BitbucketBackend implements Implementation {
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => this.api!.contentKeyFromBranch(branch)),
+        branches.map(branch => contentKeyFromBranch(branch)),
       );
 
     const readUnpublishedBranchFile = (contentKey: string) =>
@@ -462,7 +464,7 @@ export default class BitbucketBackend implements Implementation {
         this.loadEntryMediaFiles(branch, files),
     } = {},
   ) {
-    const contentKey = this.api!.generateContentKey(collection, slug);
+    const contentKey = generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
     const mediaFiles = await loadEntryMediaFiles(
       data.metaData.branch,

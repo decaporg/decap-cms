@@ -41,7 +41,7 @@ export const readFile = async (
 
   const content = await fetchContent();
   if (key) {
-    localForage.setItem(key, content);
+    await localForage.setItem(key, content);
   }
   return content;
 };

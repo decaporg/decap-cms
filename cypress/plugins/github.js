@@ -1,4 +1,4 @@
-const Octokit = require('@octokit/rest');
+const { Octokit } = require('@octokit/rest');
 const fs = require('fs-extra');
 const path = require('path');
 const {
@@ -139,6 +139,14 @@ async function deleteRepositories({ owner, repo, tempDir }) {
     .catch(errorHandler);
 }
 
+async function batchRequests(items, batchSize, func) {
+  while (items.length > 0) {
+    const batch = items.splice(0, batchSize);
+    await Promise.all(batch.map(func));
+    await new Promise(resolve => setTimeout(resolve, 2500));
+  }
+}
+
 async function resetOriginRepo({ owner, repo, tempDir }) {
   console.log('Resetting origin repo:', `${owner}/${repo}`);
   const { token } = getEnvs();
@@ -151,30 +159,28 @@ async function resetOriginRepo({ owner, repo, tempDir }) {
   });
   const numbers = prs.map(pr => pr.number);
   console.log('Closing prs:', numbers);
-  await Promise.all(
-    numbers.map(pull_number =>
-      client.pulls.update({
-        owner,
-        repo,
-        pull_number,
-        state: 'closed',
-      }),
-    ),
-  );
+
+  await batchRequests(numbers, 10, async pull_number => {
+    await client.pulls.update({
+      owner,
+      repo,
+      pull_number,
+      state: 'closed',
+    });
+  });
 
   const { data: branches } = await client.repos.listBranches({ owner, repo });
   const refs = branches.filter(b => b.name !== 'master').map(b => `heads/${b.name}`);
 
   console.log('Deleting refs', refs);
-  await Promise.all(
-    refs.map(ref =>
-      client.git.deleteRef({
-        owner,
-        repo,
-        ref,
-      }),
-    ),
-  );
+
+  await batchRequests(refs, 10, async ref => {
+    await client.git.deleteRef({
+      owner,
+      repo,
+      ref,
+    });
+  });
 
   console.log('Resetting master');
   const git = getGitClient(tempDir);
@@ -404,10 +410,69 @@ async function teardownGitHubTest(taskData, { transformRecordedData } = defaultO
   return null;
 }
 
+async function seedGitHubRepo(taskData) {
+  if (process.env.RECORD_FIXTURES) {
+    const { owner, token } = getEnvs();
+
+    const client = getGitHubClient(token);
+    const repo = taskData.repo;
+
+    try {
+      console.log('Getting master branch');
+      const { data: master } = await client.repos.getBranch({
+        owner,
+        repo,
+        branch: 'master',
+      });
+
+      const prCount = 120;
+      const prs = new Array(prCount).fill(0).map((v, i) => i);
+      const batchSize = 5;
+      await batchRequests(prs, batchSize, async i => {
+        const branch = `seed_branch_${i}`;
+        console.log(`Creating branch ${branch}`);
+        await client.git.createRef({
+          owner,
+          repo,
+          ref: `refs/heads/${branch}`,
+          sha: master.commit.sha,
+        });
+
+        const path = `seed/file_${i}`;
+        console.log(`Creating file ${path}`);
+        await client.repos.createOrUpdateFile({
+          owner,
+          repo,
+          branch,
+          content: Buffer.from(`Seed File ${i}`).toString('base64'),
+          message: `Create seed file ${i}`,
+          path,
+        });
+
+        const title = `Non CMS Pull Request ${i}`;
+        console.log(`Creating PR ${title}`);
+        await client.pulls.create({
+          owner,
+          repo,
+          base: 'master',
+          head: branch,
+          title,
+        });
+      });
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  return null;
+}
+
 module.exports = {
   transformRecordedData,
   setupGitHub,
   teardownGitHub,
   setupGitHubTest,
   teardownGitHubTest,
+  seedGitHubRepo,
 };

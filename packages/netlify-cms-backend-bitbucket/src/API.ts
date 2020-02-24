@@ -23,6 +23,7 @@ import {
   PreviewState,
   FetchError,
   parseContentKey,
+  branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
@@ -449,8 +450,8 @@ export default class API {
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
+    const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       const defaultBranchSha = await this.branchCommitSha(this.branch);
@@ -496,18 +497,6 @@ export default class API {
       `${this.repoURL}/src`,
     );
   };
-
-  generateContentKey(collectionName: string, slug: string) {
-    return generateContentKey(collectionName, slug);
-  }
-
-  contentKeyFromBranch(branch: string) {
-    return branch.substring(`${CMS_BRANCH_PREFIX}/`.length);
-  }
-
-  branchFromContentKey(contentKey: string) {
-    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
-  }
 
   async isFileExists(path: string, branch: string) {
     const fileExists = await this.readFile(path, null, { branch })
@@ -559,7 +548,7 @@ export default class API {
 
   async retrieveMetadata(contentKey: string) {
     const { collection, slug } = parseContentKey(contentKey);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const diff = await this.getDifferences(branch);
     const { newPath: path, newFile } = diff.find(d => !d.binary) as {
@@ -609,8 +598,8 @@ export default class API {
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    const contentKey = this.generateContentKey(collection, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
 
     await this.addPullRequestComment(pullRequest, statusToLabel(newStatus));
@@ -632,8 +621,8 @@ export default class API {
   }
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
 
     await this.mergePullRequest(pullRequest);
@@ -654,8 +643,8 @@ export default class API {
   }
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
 
     await this.declinePullRequest(pullRequest);
@@ -674,8 +663,8 @@ export default class API {
   }
 
   async getStatuses(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const statuses = await this.getPullRequestStatuses(pullRequest);
 
