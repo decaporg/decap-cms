@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.7.1...netlify-cms-backend-gitlab@2.8.0) (2020-02-25)
+
+
+### Features
+
+* **core:** align GitHub metadata handling with other backends ([#3316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3316)) ([7e0a8ad](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/7e0a8ad532012576dc5e40bd4e9d54522e307123)), closes [#3292](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3292)
+
+
+
+
+
 ## [2.7.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.7.0...netlify-cms-backend-gitlab@2.7.1) (2020-02-22)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.19.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.19.0...netlify-cms-core@2.19.1) (2020-02-25)
+
+
+### Bug Fixes
+
+* **backend-github:** improve workflow migration edge cases/messaging ([#3319](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3319)) ([684b79e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/684b79e43bebb63ce1e844eae5c8c0e76087687b))
+
+
+
+
+
 # [2.19.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.4...netlify-cms-core@2.19.0) (2020-02-22)
 
 
