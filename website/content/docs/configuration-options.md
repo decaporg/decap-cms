@@ -18,7 +18,7 @@ You can find details about all configuration options below. Note that [YAML synt
 
 ## Backend
 
-_This setting is required._
+*This setting is required.*
 
 The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Authentication & Backends](../authentication-backends).
 
@@ -30,7 +30,7 @@ By default, all entries created or edited in the Netlify CMS are committed direc
 
 The `publish_mode` option allows you to enable "Editorial Workflow" mode for more control over the content publishing phases. All unpublished entries will be arranged in a board according to their status, and they can be further reviewed and edited before going live.
 
-**Note:** Editorial workflow works with GitHub repositories only. Support for other Git hosts is [coming soon](https://github.com/netlify/netlify-cms/issues/568).
+**Note:** Editorial workflow works with GitHub repositories only. Support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
@@ -52,7 +52,7 @@ Netlify CMS users can upload files to your repository using the Media Gallery. T
 
 ### Media Folder
 
-_This setting is required._
+*This setting is required.*
 
 The `media_folder` option specifies the folder path where uploaded files should be saved, relative to the base of the repo.
 
@@ -72,9 +72,7 @@ Based on the settings above, if a user used an image widget field called `avatar
 
 ## Media Library
 
-Media library integrations are configured via the `media_library` property, and its value should be
-an object with at least a `name` property. A `config` property can also be used for options that
-should be passed to the library in use.
+Media library integrations are configured via the `media_library` property, and its value should be an object with at least a `name` property. A `config` property can also be used for options that should be passed to the library in use.
 
 **Example:**
 
@@ -87,9 +85,7 @@ media_library:
 
 ## Site URL
 
-The `site_url` setting should provide a URL to your published site. May be used by the CMS for
-various functionality. Used together with a collection's `preview_path` to create links to live
-content.
+The `site_url` setting should provide a URL to your published site. May be used by the CMS for various functionality. Used together with a collection's `preview_path` to create links to live content.
 
 **Example:**
 
@@ -165,6 +161,7 @@ The `slug` option allows you to change how filenames for entries are created and
 `slug` accepts multiple options:
 
 * `encoding`
+
   * `unicode` (default): Sanitize filenames (slugs) according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs.
   * `ascii`: Sanitize filenames (slugs) according to [RFC3986](https://tools.ietf.org/html/rfc3986). The only allowed characters are (0-9, a-z, A-Z, `_`, `-`, `~`).
 * `clean_accents`: Set to `true` to remove diacritics from slug characters before sanitizing. This is often helpful when using `ascii` encoding.
@@ -181,7 +178,7 @@ slug:
 
 ## Collections
 
-_This setting is required._
+*This setting is required.*
 
 The `collections` setting is the heart of your Netlify CMS configuration, as it determines how content types and editor fields in the UI generate files and content in your repository. Each collection you configure displays in the left sidebar of the Content page of the editor UI, in the order they are entered into your Netlify CMS `config.yml` file.
 
@@ -210,10 +207,7 @@ The last few options require more detailed information.
 
 ### `identifier_field`
 
-Netlify CMS expects every entry to provide a field named `"title"` that serves as an identifier for
-the entry. The identifier field serves as an entry's title when viewing a list of entries, and is
-used in [slug](#slug) creation. If you would like to use a field other than `"title"` as the
-identifier, you can set `identifier_field` to the name of the other field.
+Netlify CMS expects every entry to provide a field named `"title"` that serves as an identifier for the entry. The identifier field serves as an entry's title when viewing a list of entries, and is used in [slug](#slug) creation. If you would like to use a field other than `"title"` as the identifier, you can set `identifier_field` to the name of the other field.
 
 **Example**
 
@@ -249,10 +243,7 @@ If you have an explicit frontmatter format declared, this option allows you to s
 
 For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field (a different field can be used via [`identifier_field`](#identifier_field)).
 
-The slug template can also reference a field value by name, eg. `{{title}}`. If a field name
-conflicts with a built in template tag name - for example, if you have a field named `slug`, and
-would like to reference that field via `{{slug}}`, you can do so by adding the explicit `fields.`
-prefix, eg. `{{fields.slug}}`.
+The slug template can also reference a field value by name, eg. `{{title}}`. If a field name conflicts with a built in template tag name - for example, if you have a field named `slug`, and would like to reference that field via `{{slug}}`, you can do so by adding the explicit `fields.` prefix, eg. `{{fields.slug}}`.
 
 **Available template tags:**
 
@@ -285,16 +276,13 @@ slug: "{{year}}-{{month}}-{{day}}_{{fields.slug}}"
 
 ### `preview_path`
 
-A string representing the path where content in this collection can be found on the live site. This
-allows deploy preview links to direct to lead to a specific piece of content rather than the site
-root of a deploy preview.
+A string representing the path where content in this collection can be found on the live site. This allows deploy preview links to direct to lead to a specific piece of content rather than the site root of a deploy preview.
 
 **Available template tags:**
 
 Template tags are the same as those for [slug](#slug), with the following exceptions:
 
-* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the
-    case with [`slug` configuration](#slug)
+* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the   case with [`slug` configuration](#slug)
 * The date based template tags, such as `{{year}}` and `{{month}}`, are pulled from a date field in your entry, and may require additional configuration - see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
@@ -315,11 +303,7 @@ collections:
 
 ### `preview_path_date_field`
 
-The name of a date field for parsing date-based template tags from `preview_path`. If this field is
-not provided and `preview_path` contains date-based template tags (eg. `{{year}}`), Netlify CMS will
-attempt to infer a usable date field by checking for common date field names, such as `date`. If you
-find that you need to specify a date field, you can use `preview_path_date_field` to tell Netlify
-CMS which field to use for preview path template tags.
+The name of a date field for parsing date-based template tags from `preview_path`. If this field is not provided and `preview_path` contains date-based template tags (eg. `{{year}}`), Netlify CMS will attempt to infer a usable date field by checking for common date field names, such as `date`. If you find that you need to specify a date field, you can use `preview_path_date_field` to tell Netlify CMS which field to use for preview path template tags.
 
 **Example:**
 
@@ -372,8 +356,7 @@ This setting changes options for the editor view of the collection. It has one o
 
 ### `summary`
 
-This setting allows the customisation of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`.
-This option over-rides the default of `title` field and `identifier_field`.
+This setting allows the customisation of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`. This option over-rides the default of `title` field and `identifier_field`.
 
 **Example**
 
