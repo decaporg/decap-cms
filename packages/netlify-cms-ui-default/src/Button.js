@@ -6,7 +6,7 @@ import Icon from './Icon';
 const ButtonGroup = undefined;
 
 const StyledButton = styled.button`
-  ${({ theme, size, type, primary, transparent, light, overlay }) => `
+  ${({ theme, size, type, primary, transparent }) => `
     font-family: ${theme.fontFamily};
     font-size: ${size === 'sm' ? 12 : 14}px;
     padding: ${size === 'sm' ? `0 0.5rem` : `0 0.75rem`};
