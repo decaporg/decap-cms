@@ -3,8 +3,10 @@ import fs from 'fs';
 import { markdownToSlate } from '../';
 
 describe('markdownToSlate', () => {
-  it('should handle use case from issue 3280', () => {
-    const mdast = fs.readFileSync(path.join(__dirname, '__fixtures__', 'issue_3280.md'));
+  it('should not add duplicate identical marks under the same node (GitHub Issue 3280)', () => {
+    const mdast = fs.readFileSync(
+      path.join(__dirname, '__fixtures__', 'duplicate_marks_github_issue_3280.md'),
+    );
     const slate = markdownToSlate(mdast);
 
     expect(slate).toEqual({
