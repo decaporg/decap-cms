@@ -372,9 +372,11 @@ describe('github API', () => {
 
       const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
       api.createBranch = jest.fn().mockResolvedValue(newBranch);
+      api.getBranch = jest.fn().mockRejectedValue(new Error('Branch not found'));
 
       const newPr = { ...pr, number: 2 };
       api.createPR = jest.fn().mockResolvedValue(newPr);
+      api.getPullRequests = jest.fn().mockResolvedValue([]);
 
       api.storeMetadata = jest.fn();
       api.closePR = jest.fn();
@@ -403,11 +405,166 @@ describe('github API', () => {
         pullRequest: newPr,
       });
 
+      expect(api.getBranch).toHaveBeenCalledTimes(1);
+      expect(api.getBranch).toHaveBeenCalledWith('cms/posts/2019-11-11-post-title');
       expect(api.createBranch).toHaveBeenCalledTimes(1);
       expect(api.createBranch).toHaveBeenCalledWith('cms/posts/2019-11-11-post-title', 'pr_head');
 
+      expect(api.getPullRequests).toHaveBeenCalledTimes(1);
+      expect(api.getPullRequests).toHaveBeenCalledWith(
+        'cms/posts/2019-11-11-post-title',
+        'all',
+        expect.any(Function),
+      );
       expect(api.createPR).toHaveBeenCalledTimes(1);
       expect(api.createPR).toHaveBeenCalledWith('pr title', 'cms/posts/2019-11-11-post-title');
+
+      expect(api.storeMetadata).toHaveBeenCalledTimes(1);
+      expect(api.storeMetadata).toHaveBeenCalledWith(
+        'posts/2019-11-11-post-title',
+        expectedMetadata,
+      );
+
+      expect(api.closePR).toHaveBeenCalledTimes(1);
+      expect(api.closePR).toHaveBeenCalledWith(pr.number);
+
+      expect(api.deleteBranch).toHaveBeenCalledTimes(1);
+      expect(api.deleteBranch).toHaveBeenCalledWith('cms/2019-11-11-post-title');
+
+      expect(api.deleteMetadata).toHaveBeenCalledTimes(1);
+      expect(api.deleteMetadata).toHaveBeenCalledWith('2019-11-11-post-title');
+    });
+
+    it('should not create new branch if exists', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const pr = {
+        head: { ref: 'cms/2019-11-11-post-title', sha: 'pr_head' },
+        title: 'pr title',
+        number: 1,
+        labels: [],
+      };
+
+      const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
+      api.createBranch = jest.fn();
+      api.getBranch = jest.fn().mockResolvedValue(newBranch);
+
+      const newPr = { ...pr, number: 2 };
+      api.createPR = jest.fn().mockResolvedValue(newPr);
+      api.getPullRequests = jest.fn().mockResolvedValue([]);
+
+      api.storeMetadata = jest.fn();
+      api.closePR = jest.fn();
+      api.deleteBranch = jest.fn();
+      api.deleteMetadata = jest.fn();
+
+      const branch = 'cms/2019-11-11-post-title';
+      const metadata = {
+        branch,
+        type: 'PR',
+        pr: { head: pr.head.sha },
+        commitMessage: 'commitMessage',
+        collection: 'posts',
+      };
+
+      const expectedMetadata = {
+        type: 'PR',
+        pr: { head: newPr.head.sha, number: 2 },
+        commitMessage: 'commitMessage',
+        collection: 'posts',
+        branch: 'cms/posts/2019-11-11-post-title',
+        version: '1',
+      };
+      await expect(api.migrateToVersion1(pr, metadata)).resolves.toEqual({
+        metadata: expectedMetadata,
+        pullRequest: newPr,
+      });
+
+      expect(api.getBranch).toHaveBeenCalledTimes(1);
+      expect(api.getBranch).toHaveBeenCalledWith('cms/posts/2019-11-11-post-title');
+      expect(api.createBranch).toHaveBeenCalledTimes(0);
+
+      expect(api.getPullRequests).toHaveBeenCalledTimes(1);
+      expect(api.getPullRequests).toHaveBeenCalledWith(
+        'cms/posts/2019-11-11-post-title',
+        'all',
+        expect.any(Function),
+      );
+      expect(api.createPR).toHaveBeenCalledTimes(1);
+      expect(api.createPR).toHaveBeenCalledWith('pr title', 'cms/posts/2019-11-11-post-title');
+
+      expect(api.storeMetadata).toHaveBeenCalledTimes(1);
+      expect(api.storeMetadata).toHaveBeenCalledWith(
+        'posts/2019-11-11-post-title',
+        expectedMetadata,
+      );
+
+      expect(api.closePR).toHaveBeenCalledTimes(1);
+      expect(api.closePR).toHaveBeenCalledWith(pr.number);
+
+      expect(api.deleteBranch).toHaveBeenCalledTimes(1);
+      expect(api.deleteBranch).toHaveBeenCalledWith('cms/2019-11-11-post-title');
+
+      expect(api.deleteMetadata).toHaveBeenCalledTimes(1);
+      expect(api.deleteMetadata).toHaveBeenCalledWith('2019-11-11-post-title');
+    });
+
+    it('should not create new pr if exists', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const pr = {
+        head: { ref: 'cms/2019-11-11-post-title', sha: 'pr_head' },
+        title: 'pr title',
+        number: 1,
+        labels: [],
+      };
+
+      const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
+      api.createBranch = jest.fn();
+      api.getBranch = jest.fn().mockResolvedValue(newBranch);
+
+      const newPr = { ...pr, number: 2 };
+      api.createPR = jest.fn();
+      api.getPullRequests = jest.fn().mockResolvedValue([newPr]);
+
+      api.storeMetadata = jest.fn();
+      api.closePR = jest.fn();
+      api.deleteBranch = jest.fn();
+      api.deleteMetadata = jest.fn();
+
+      const branch = 'cms/2019-11-11-post-title';
+      const metadata = {
+        branch,
+        type: 'PR',
+        pr: { head: pr.head.sha },
+        commitMessage: 'commitMessage',
+        collection: 'posts',
+      };
+
+      const expectedMetadata = {
+        type: 'PR',
+        pr: { head: newPr.head.sha, number: 2 },
+        commitMessage: 'commitMessage',
+        collection: 'posts',
+        branch: 'cms/posts/2019-11-11-post-title',
+        version: '1',
+      };
+      await expect(api.migrateToVersion1(pr, metadata)).resolves.toEqual({
+        metadata: expectedMetadata,
+        pullRequest: newPr,
+      });
+
+      expect(api.getBranch).toHaveBeenCalledTimes(1);
+      expect(api.getBranch).toHaveBeenCalledWith('cms/posts/2019-11-11-post-title');
+      expect(api.createBranch).toHaveBeenCalledTimes(0);
+
+      expect(api.getPullRequests).toHaveBeenCalledTimes(1);
+      expect(api.getPullRequests).toHaveBeenCalledWith(
+        'cms/posts/2019-11-11-post-title',
+        'all',
+        expect.any(Function),
+      );
+      expect(api.createPR).toHaveBeenCalledTimes(0);
 
       expect(api.storeMetadata).toHaveBeenCalledTimes(1);
       expect(api.storeMetadata).toHaveBeenCalledWith(

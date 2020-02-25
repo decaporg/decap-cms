@@ -73,8 +73,8 @@ function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
   assertNotification(notifications.updated);
 }
 
-function publishWorkflowEntry({ title }) {
-  cy.contains('h2', workflowStatus.ready)
+function publishWorkflowEntry({ title }, timeout) {
+  cy.contains('h2', workflowStatus.ready, { timeout })
     .parent()
     .within(() => {
       cy.contains('a', title)

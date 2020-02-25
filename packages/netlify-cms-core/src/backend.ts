@@ -557,7 +557,7 @@ export class Backend {
           const entry = createEntry(collectionName, loadedEntry.slug, loadedEntry.file.path, {
             raw: loadedEntry.data,
             isModification: loadedEntry.isModification,
-            label: selectFileEntryLabel(collection, loadedEntry.slug!),
+            label: collection && selectFileEntryLabel(collection, loadedEntry.slug!),
           });
           entry.metaData = loadedEntry.metaData;
           return entry;
@@ -569,6 +569,10 @@ export class Backend {
           const collection = collections.get(entry.collection);
           if (collection) {
             acc.push(this.entryWithFormat(collection)(entry) as EntryValue);
+          } else {
+            console.warn(
+              `Missing collection '${entry.collection}' for entry with path '${entry.path}'`,
+            );
           }
           return acc;
         }, [] as EntryValue[]),

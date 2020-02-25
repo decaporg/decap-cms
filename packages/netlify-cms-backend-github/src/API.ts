@@ -1,6 +1,7 @@
 import { Base64 } from 'js-base64';
 import semaphore, { Semaphore } from 'semaphore';
 import { initial, last, partial, result, trimStart, trim } from 'lodash';
+import { oneLine } from 'common-tags';
 import {
   getAllResponses,
   APIError,
@@ -148,6 +149,8 @@ const getTreeFiles = (files: GitHubCompareFiles) => {
 
   return treeFiles;
 };
+
+let migrationNotified = false;
 
 export default class API {
   apiRoot: string;
@@ -672,9 +675,14 @@ export default class API {
     const newContentKey = `${metadata.collection}/${oldContentKey}`;
     const newBranchName = `cms/${newContentKey}`;
 
-    // create new branch and pull request in new format
-    await this.createBranch(newBranchName, pullRequest.head.sha as string);
-    const pr = await this.createPR(pullRequest.title, newBranchName);
+    // retrieve or create new branch and pull request in new format
+    const branch = await this.getBranch(newBranchName).catch(() => undefined);
+    if (!branch) {
+      await this.createBranch(newBranchName, pullRequest.head.sha as string);
+    }
+    const pr =
+      (await this.getPullRequests(newBranchName, PullRequestState.All, () => true))[0] ||
+      (await this.createPR(pullRequest.title, newBranchName));
 
     // store new metadata
     const newMetadata = {
@@ -703,9 +711,9 @@ export default class API {
     await this.deleteMetadata(contentKey);
   }
 
-  async migratePullRequest(pullRequest: GitHubPull) {
+  async migratePullRequest(pullRequest: GitHubPull, countMessage: string) {
     const { number } = pullRequest;
-    console.log(`Migrating Pull Request '${number}'`);
+    console.log(`Migrating Pull Request '${number}' (${countMessage})`);
     const contentKey = contentKeyFromBranch(pullRequest.head.ref);
     let metadata = await this.retrieveMetadataOld(contentKey).catch(() => undefined);
 
@@ -768,8 +776,18 @@ export default class API {
         PullRequestState.Open,
         withoutCmsLabel,
       );
+      let prCount = 0;
       for (const pr of pullRequests) {
-        await this.migratePullRequest(pr);
+        if (!migrationNotified) {
+          migrationNotified = true;
+          alert(oneLine`
+            Netlify CMS is adding labels to ${pullRequests.length} of your Editorial Workflow
+            entries. The "Workflow" tab will be unavailable during this migration. You may use other
+            areas of the CMS during this time. Note that closing the CMS will pause the migration.
+          `);
+        }
+        prCount = prCount + 1;
+        await this.migratePullRequest(pr, `${prCount} of ${pullRequests.length}`);
       }
       const cmsPullRequests = await this.getPullRequests(
         undefined,
