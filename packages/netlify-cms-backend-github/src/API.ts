@@ -150,7 +150,7 @@ const getTreeFiles = (files: GitHubCompareFiles) => {
   return treeFiles;
 };
 
-let migrationNotified: boolean = false;
+let migrationNotified = false;
 
 export default class API {
   apiRoot: string;
@@ -680,9 +680,9 @@ export default class API {
     if (!branch) {
       await this.createBranch(newBranchName, pullRequest.head.sha as string);
     }
-    const pr: object =
+    const pr =
       (await this.getPullRequests(newBranchName, PullRequestState.All, () => true))[0] ||
-      await this.createPR(pullRequest.title, newBranchName);
+      (await this.createPR(pullRequest.title, newBranchName));
 
     // store new metadata
     const newMetadata = {
@@ -776,7 +776,7 @@ export default class API {
         PullRequestState.Open,
         withoutCmsLabel,
       );
-      let prCount: number = 0;
+      let prCount = 0;
       for (const pr of pullRequests) {
         if (!migrationNotified) {
           migrationNotified = true;
