@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.20.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.19.1...netlify-cms-core@2.20.0) (2020-02-25)
+
+
+### Features
+
+* sanitize media filenames according to global slug setting ([#3315](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3315)) ([8874769](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8874769b317e6e364c881039c0c9308826f49cff))
+
+
+
+
+
 ## [2.19.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.19.0...netlify-cms-core@2.19.1) (2020-02-25)
 
 

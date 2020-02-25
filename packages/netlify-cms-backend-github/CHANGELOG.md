@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.0...netlify-cms-backend-github@2.9.1) (2020-02-25)
+
+
+### Bug Fixes
+
+* **backend-github:** fail workflow migrations gracefully ([#3325](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3325)) ([83e0383](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/83e0383b690fb452ea40cb165a56f65a695dc83c))
+
+
+
+
+
 # [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.8.1...netlify-cms-backend-github@2.9.0) (2020-02-25)
 
 
