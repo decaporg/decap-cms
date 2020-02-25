@@ -680,6 +680,7 @@ export default class API {
     if (!branch) {
       await this.createBranch(newBranchName, pullRequest.head.sha as string);
     }
+
     const pr =
       (await this.getPullRequests(newBranchName, PullRequestState.All, () => true))[0] ||
       (await this.createPR(pullRequest.title, newBranchName));
@@ -725,7 +726,13 @@ export default class API {
     if (!metadata.version) {
       console.log(`Migrating Pull Request '${number}' to version 1`);
       // migrate branch from cms/slug to cms/collection/slug
-      ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
+      try {
+        ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
+      } catch (e) {
+        console.log(`Failed to migrate Pull Request '${number}' to version 1. See error below.`);
+        console.error(e);
+        return;
+      }
       newNumber = pullRequest.number;
       console.log(
         `Done migrating Pull Request '${number}' to version 1. New pull request '${newNumber}' created.`,
