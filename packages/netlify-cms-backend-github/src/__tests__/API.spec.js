@@ -372,7 +372,7 @@ describe('github API', () => {
 
       const newBranch = { ref: 'refs/heads/cms/posts/2019-11-11-post-title' };
       api.createBranch = jest.fn().mockResolvedValue(newBranch);
-      api.getBranch = jest.fn();
+      api.getBranch = jest.fn().mockRejectedValue(new Error('Branch not found'));
 
       const newPr = { ...pr, number: 2 };
       api.createPR = jest.fn().mockResolvedValue(newPr);

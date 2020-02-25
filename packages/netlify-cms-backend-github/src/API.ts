@@ -676,7 +676,7 @@ export default class API {
     const newBranchName = `cms/${newContentKey}`;
 
     // retrieve or create new branch and pull request in new format
-    const branch = await this.getBranch(newBranchName);
+    const branch = await this.getBranch(newBranchName).catch(() => undefined);
     if (!branch) {
       await this.createBranch(newBranchName, pullRequest.head.sha as string);
     }

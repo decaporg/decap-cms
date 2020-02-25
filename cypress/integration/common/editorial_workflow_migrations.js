@@ -41,8 +41,7 @@ export default function({ entries, getUser }) {
       cy.reload();
 
       // allow migration code to run for 5 minutes
-      Cypress.config('defaultCommandTimeout', 5 * 60 * 1000);
-      publishWorkflowEntry(entries[2]);
+      publishWorkflowEntry(entries[2], 5 * 60 * 1000);
       publishWorkflowEntry(entries[1]);
       publishWorkflowEntry(entries[0]);
       goToCollections();
