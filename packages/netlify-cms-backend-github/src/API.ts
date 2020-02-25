@@ -728,12 +728,10 @@ export default class API {
       // migrate branch from cms/slug to cms/collection/slug
       try {
         ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
-      } catch(e) {
-        console.log(
-          `Failed to migrate Pull Request '${number}' to version 1. See error below.`,
-        );
+      } catch (e) {
+        console.log(`Failed to migrate Pull Request '${number}' to version 1. See error below.`);
         console.error(e);
-        return
+        return;
       }
       newNumber = pullRequest.number;
       console.log(
