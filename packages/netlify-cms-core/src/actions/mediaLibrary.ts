@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { getBlobSHA, ImplementationMediaFile } from 'netlify-cms-lib-util';
+import { basename, getBlobSHA, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { currentBackend } from '../backend';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
@@ -195,7 +195,7 @@ function createMediaFileFromAsset({
 }): ImplementationMediaFile {
   const mediaFile = {
     id,
-    name: file.name,
+    name: basename(assetProxy.path),
     displayURL: assetProxy.url,
     draft,
     size: file.size,
@@ -253,7 +253,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
         } catch (error) {
           assetProxy = createAssetProxy({
             file,
-            path: file.name,
+            path: fileName,
           });
         }
       } else if (privateUpload) {
@@ -261,7 +261,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else {
         const entry = state.entryDraft.get('entry');
         const collection = state.collections.get(entry?.get('collection'));
-        const path = selectMediaFilePath(state.config, collection, entry, file.name, field);
+        const path = selectMediaFilePath(state.config, collection, entry, fileName, field);
         assetProxy = createAssetProxy({
           file,
           path,
@@ -278,7 +278,12 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
         mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft: false });
       } else if (editingDraft) {
         const id = await getBlobSHA(file);
-        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft: editingDraft });
+        mediaFile = createMediaFileFromAsset({
+          id,
+          file,
+          assetProxy,
+          draft: editingDraft,
+        });
         return dispatch(addDraftEntryMediaFile(mediaFile));
       } else {
         mediaFile = await backend.persistMedia(state.config, assetProxy);
