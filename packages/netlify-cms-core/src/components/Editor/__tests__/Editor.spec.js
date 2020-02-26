@@ -203,7 +203,7 @@ describe('Editor', () => {
       <Editor
         {...props}
         entryDraft={fromJS({ entry: { mediaFiles: [{ id: '1' }] } })}
-        entry={fromJS({ isFetching: false })}
+        entry={fromJS({ isFetching: false, data: {} })}
         hasChanged={true}
       />,
     );
@@ -232,7 +232,7 @@ describe('Editor', () => {
           entry: {},
           fieldsMetaData: {},
         })}
-        entry={fromJS({ isFetching: false, mediaFiles: [{ id: '1' }] })}
+        entry={fromJS({ isFetching: false, mediaFiles: [{ id: '1' }], data: {} })}
       />,
     );
 
