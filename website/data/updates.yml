@@ -279,6 +279,7 @@ updates:
   - date: '2018-12-07'
     description: Small bug fix release.
     version: 1.0.1
+    url: 'https://www.netlifycms.org/blog/2019/02/netlify-cms-2-4-0'
   - date: '2018-12-07'
     description: >-
       The first major release of Netlify CMS with an all-new UI, revamped
