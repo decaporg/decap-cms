@@ -27,7 +27,7 @@ const runSerializer = (values, fields, method) => {
    * registered serializers.  If the field is a list or object, call recursively
    * for nested fields.
    */
-  return fields.reduce((acc, field) => {
+  let serializedData = fields.reduce((acc, field) => {
     const fieldName = field.get('name');
     const value = values.get(fieldName);
     const serializer = getWidgetValueSerializer(field.get('widget'));
@@ -58,6 +58,11 @@ const runSerializer = (values, fields, method) => {
 
     return acc;
   }, Map());
+
+  //preserve unknown fields value
+  serializedData = values.mergeDeep(serializedData);
+
+  return serializedData;
 };
 
 export const serializeValues = (values, fields) => {

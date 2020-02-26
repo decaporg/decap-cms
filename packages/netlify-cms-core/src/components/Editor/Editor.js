@@ -204,9 +204,7 @@ export class Editor extends React.Component {
        * Deserialize entry values for widgets with registered serializers before
        * creating the entry draft.
        */
-      let values = deserializeValues(entry.get('data'), fields);
-      //preserve unknown fields value
-      values = entry.get('data').mergeDeep(values);
+      const values = deserializeValues(entry.get('data'), fields);
       const deserializedEntry = entry.set('data', values);
       const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
       this.createDraft(deserializedEntry, fieldsMetaData);
