@@ -45,7 +45,7 @@ const DropdownButton = styled(StyledDropdownButton)`
   @media (max-width: 1200px) {
     padding-left: 10px;
   }
-`
+`;
 
 const ToolbarContainer = styled.div`
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
@@ -148,7 +148,7 @@ const ToolbarButton = styled.button`
   ${styles.noOverflow};
   display: block;
 
-  @media(max-width: 1200px) {
+  @media (max-width: 1200px) {
     padding: 0 10px;
   }
 `;
