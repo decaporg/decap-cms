@@ -126,6 +126,7 @@ collections:
               - { name: version, label: Version }
               - { name: date, label: Date, widget: date }
               - { name: description, label: Description }
+              - { name: url, label: Url, required: false }
       - name: notifications
         label: Notifications
         file: website/data/notifications.yml
