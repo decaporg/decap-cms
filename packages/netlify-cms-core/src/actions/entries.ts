@@ -223,12 +223,11 @@ export function changeDraftField(
   field: string,
   value: string,
   metadata: Record<string, unknown>,
-  publishedEntry: EntryMap,
-  unpublishedEntry: EntryMap,
+  entries: EntryMap[],
 ) {
   return {
     type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata, publishedEntry, unpublishedEntry },
+    payload: { field, value, metadata, entries },
   };
 }
 

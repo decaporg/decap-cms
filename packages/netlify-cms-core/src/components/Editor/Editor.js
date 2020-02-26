@@ -228,9 +228,8 @@ export class Editor extends React.Component {
   };
 
   handleChangeDraftField = (field, value, metadata) => {
-    const publishedEntry = this.props.publishedEntry;
-    const unPublishedEntry = this.props.unPublishedEntry;
-    this.props.changeDraftField(field, value, metadata, publishedEntry, unPublishedEntry);
+    const entries = [this.props.unPublishedEntry, this.props.publishedEntry].filter(Boolean);
+    this.props.changeDraftField(field, value, metadata, entries);
   };
 
   handleChangeStatus = newStatusName => {

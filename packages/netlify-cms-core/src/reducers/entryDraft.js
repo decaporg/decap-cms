@@ -89,20 +89,12 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.set('localBackup', newState);
     }
     case DRAFT_CHANGE_FIELD: {
-      const publishedEntry = action.payload.publishedEntry || Map();
-      const unpublishedEntry = action.payload.unpublishedEntry || Map();
-      let newState = state.withMutations(state => {
+      return state.withMutations(state => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);
         state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
-        state.set('hasChanged', true);
+        const newData = state.getIn(['entry', 'data']);
+        state.set('hasChanged', !action.payload.entries.some(e => newData.equals(e.get('data'))));
       });
-      const newStateData = newState.getIn(['entry', 'data']);
-
-      (newStateData.equals(unpublishedEntry.get('data')) ||
-        newStateData.equals(publishedEntry.get('data'))) &&
-        (newState = newState.set('hasChanged', false));
-
-      return newState;
     }
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
