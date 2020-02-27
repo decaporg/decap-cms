@@ -288,7 +288,7 @@ const sanitizeString = (
     .replace(new RegExp(escapeRegExp(repo), 'g'), GITHUB_REPO_NAME_SANITIZED_VALUE)
     .replace(new RegExp(escapeRegExp(token), 'g'), GITHUB_REPO_TOKEN_SANITIZED_VALUE)
     .replace(
-      new RegExp('https://avatars\\d+\\.githubusercontent\\.com/u/\\d+?v=\\d', 'g'),
+      new RegExp('https://avatars\\d+\\.githubusercontent\\.com/u/\\d+?\\?v=\\d', 'g'),
       `${FAKE_OWNER_USER.avatar_url}`,
     );
 
