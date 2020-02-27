@@ -47,6 +47,11 @@ const zh_Hant = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: '可选的',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} 是必須的。',
@@ -104,6 +109,16 @@ const zh_Hant = {
       deployButtonLabel: '觀看已發布的內容',
     },
     editorWidgets: {
+      image: {
+        choose: '选择一张图片',
+        chooseDifferent: '选择其他图片',
+        remove: '移除图片',
+      },
+      file: {
+        choose: '选择一个文件',
+        chooseDifferent: '选择其他文件',
+        remove: '删除文件',
+      },
       unknownControl: {
         noControl: "無法控制元件： '%{widget}'.",
       },

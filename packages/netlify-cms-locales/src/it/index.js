@@ -47,6 +47,11 @@ const it = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'opzionale',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} è richiesto.',
@@ -106,6 +111,16 @@ const it = {
       deployButtonLabel: 'Guarda Live',
     },
     editorWidgets: {
+      image: {
+        choose: 'Scegli un\'immagine',
+        chooseDifferent: 'Scegli un\'immagine diversa',
+        remove: 'Rimuovi immagine',
+      },
+      file: {
+        choose: 'Scegli un file',
+        chooseDifferent: 'Scegli un altro file',
+        remove: 'Rimuovi il file',
+      },
       unknownControl: {
         noControl: "Nessun controllo per il widget '%{widget}'.",
       },

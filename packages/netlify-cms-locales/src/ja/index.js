@@ -47,6 +47,11 @@ const ja = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'オプショナル',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel}は必須です。',

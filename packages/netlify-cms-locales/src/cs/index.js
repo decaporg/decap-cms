@@ -48,6 +48,11 @@ const cs = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'volitelný',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} je povinný.',
@@ -104,6 +109,16 @@ const cs = {
       deployButtonLabel: 'Zobrazit na webu',
     },
     editorWidgets: {
+      image: {
+        choose: 'vyberte obrázek',
+        chooseDifferent: 'vyberte jiný obrázek',
+        remove: 'odstranit obrázek',
+      },
+      file: {
+        choose: 'vyberte soubor',
+        chooseDifferent: 'vyberte jiný soubor',
+        remove: 'odebrat soubor',
+      },
       unknownControl: {
         noControl: "Žádné ovládání pro widget '%{widget}'.",
       },

@@ -33,6 +33,11 @@ const ru = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'необязательный',
+      },
+    },
     editorControlPane: {
       widget: {
         required: 'Необходимо указать значение поля %{fieldLabel}.',
@@ -91,6 +96,16 @@ const ru = {
       deployButtonLabel: 'Просмотр',
     },
     editorWidgets: {
+      image: {
+        choose: 'Выберите изображение',
+        chooseDifferent: 'Выберите другое изображение',
+        remove: 'Удалить изображение',
+      },
+      file: {
+        choose: 'Выберите файл',
+        chooseDifferent: 'Выберите другой файл',
+        remove: 'Удалить файл',
+      },
       unknownControl: {
         noControl: "Нет контрола для виджета '%{widget}'.",
       },

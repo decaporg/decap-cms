@@ -47,6 +47,11 @@ const de = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'optional',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} ist erforderlich.',
@@ -112,6 +117,16 @@ const de = {
       deployButtonLabel: 'Live ansehen',
     },
     editorWidgets: {
+      image: {
+        choose: 'Wähle ein Bild',
+        chooseDifferent: 'Wähle ein anderes Bild',
+        remove: 'Entferne Bild',
+      },
+      file: {
+        choose: 'Wählen Sie eine Datei',
+        chooseDifferent: 'Wählen Sie eine andere Datei',
+        remove: 'Datei löschen',
+      },
       unknownControl: {
         noControl: "Kein Bedienelement für Widget '%{widget}'.",
       },
