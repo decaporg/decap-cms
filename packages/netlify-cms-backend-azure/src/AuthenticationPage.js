@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { ImplicitAuthenticator } from 'netlify-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
@@ -16,8 +15,9 @@ export default class AzureAuthenticationPage extends React.Component {
     base_url: PropTypes.string,
     siteId: PropTypes.string,
     authEndpoint: PropTypes.string,
-    config: ImmutablePropTypes.map,
+    config: PropTypes.object.isRequired,
     clearHash: PropTypes.func,
+    t: PropTypes.func.isRequired,
   };
 
   state = {};
@@ -57,7 +57,7 @@ export default class AzureAuthenticationPage extends React.Component {
   };
 
   render() {
-    const { inProgress, config } = this.props;
+    const { inProgress, config, t } = this.props;
 
     return (
       <AuthenticationPage
@@ -68,7 +68,7 @@ export default class AzureAuthenticationPage extends React.Component {
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="azure" />
-            {inProgress ? 'Logging in...' : 'Login with Azure'}
+            {inProgress ? t('auth.loggingIn') : t('auth.loginWithAzure')}
           </React.Fragment>
         )}
       />

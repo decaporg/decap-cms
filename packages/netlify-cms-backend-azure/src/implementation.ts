@@ -13,6 +13,7 @@ import {
   AssetProxy,
   PersistOptions,
   getMediaDisplayURL,
+  generateContentKey,
   getMediaAsBlob,
   Config,
   getPreviewStatus,
@@ -22,7 +23,7 @@ import {
   User,
   unpublishedEntries,
   UnpublishedEntryMediaFile,
-  entriesByFiles
+  entriesByFiles,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -325,7 +326,7 @@ export default class Azure implements Implementation {
         this.loadEntryMediaFiles(branch, files),
     } = {},
   ) {
-    const contentKey = this.api!.generateContentKey(collection, slug);
+    const contentKey = generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
     const mediaFiles = await loadEntryMediaFiles(
       data.metaData.branch,
@@ -376,13 +377,7 @@ export default class Azure implements Implementation {
    */
   async getDeployPreview(collection: string, slug: string) {
     try {
-      const data = await this.api!.retrieveMetadata(slug);
-
-      if (!data) {
-        return null;
-      }
-
-      const statuses = await this.api!.getStatuses(data.pr.head);
+      const statuses = await this.api!.getStatuses(collection, slug);
       const deployStatus = getPreviewStatus(statuses, this.previewContext);
 
       if (deployStatus) {

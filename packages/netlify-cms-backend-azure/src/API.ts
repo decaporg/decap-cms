@@ -11,12 +11,14 @@ import {
   PersistOptions,
   readFile,
   CMS_BRANCH_PREFIX,
+  DEFAULT_PR_BODY,
   generateContentKey,
   parseContentKey,
   labelToStatus,
   isCMSLabel,
   EditorialWorkflowError,
   statusToLabel,
+  PreviewState,
 } from 'netlify-cms-lib-util';
 
 export const API_NAME = 'Azure DevOps';
@@ -214,7 +216,7 @@ export default class API {
   token?: string;
   branch: string;
   squashMerges: boolean;
-  repo?: AzureRepo;
+  repo: AzureRepo;
   endpointUrl: string;
   initialWorkflowStatus: string;
   commitAuthor?: AzureCommitAuthor;
@@ -296,16 +298,15 @@ export default class API {
     const mergeRequest = await this.getBranchMergeRequest(branch);
 
     const diff = await this.getDifferences(mergeRequest.sourceRefName);
-    const path1 = diff.find((d: any) => d.item.path.includes(slug));
+    const path1 = diff.find(d => d.item.path.includes(slug));
     const path = path1?.item.path as string;
-    const mediaFiles = 
-      diff
-        .filter((d: any) => !d.item.isFolder)
-        .map((d: any) => {
-          const path = d.item.path;
-          const id = d.item.objectId;
-          return { path, id };
-        });
+    const mediaFiles = diff
+      .filter(d => !d.item.isFolder)
+      .map(d => {
+        const path = d.item.path;
+        const id = d.item.objectId;
+        return { path, id };
+      });
 
     const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) => isCMSLabel(l.name));
     const labelText = prLabel ? prLabel.name : statusToLabel('draft');
@@ -402,15 +403,19 @@ export default class API {
     });
   }
 
-  uploadAndCommit(items: any, comment = 'Creating new files', branch: string = this.branch, newBranch = false) {
+  uploadAndCommit(
+    items: any,
+    comment = 'Creating new files',
+    branch: string = this.branch,
+    newBranch = false,
+  ) {
     return this.getRef(branch).then(async (ref: AzureRef) => {
-      
       if (ref == null) {
         ref = await this.getRef(this.branch);
       }
 
       if (newBranch) {
-        ref = new AzureRef(this.branchToRef(branch), ref.objectId); 
+        ref = new AzureRef(this.branchToRef(branch), ref.objectId);
       }
 
       console.log(JSON.stringify(ref));
@@ -480,9 +485,19 @@ export default class API {
    * Retrieve statuses for a given SHA. Unrelated to the editorial workflow
    * concept of entry "status". Useful for things like deploy preview links.
    */
-  async getStatuses(sha: string) {
-    const resp = await this.requestJSON(`${this.endpointUrl}/commits/${sha}/status`);
-    return resp.statuses;
+  async getStatuses(collection: string, slug: string) {
+    const contentKey = generateContentKey(collection, slug);
+    const branch = this.branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+
+    const statuses: any[] = [];
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    return statuses.map(({ name, status: boolean, target_url }) => ({
+      context: name,
+      state: status ? PreviewState.Success : PreviewState.Other,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      target_url,
+    }));
   }
 
   async getCommitItems(files: (Entry | AssetProxy)[], branch: string) {
@@ -533,10 +548,6 @@ export default class API {
         body: JSON.stringify(push),
       });
     });
-  }
-
-  generateContentKey(collectionName: string, slug: string) {
-    return generateContentKey(collectionName, slug);
   }
 
   contentKeyFromBranch(branch: string) {
@@ -604,12 +615,7 @@ export default class API {
       sourceRefName: this.branchToRef(branch),
       targetRefName: this.branchToRef(this.branch),
       title: commitMessage,
-      description: `Editorial workflow to manage approval and merge of ${commitMessage}`,
-      reviewers: [
-        {
-          id: (await this.user()).id,
-        },
-      ],
+      description: DEFAULT_PR_BODY,
       labels: [
         {
           name: statusToLabel(status),
@@ -649,7 +655,7 @@ export default class API {
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
+    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
     const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
 
@@ -677,7 +683,7 @@ export default class API {
    * @param newStatus The new status for the item.
    */
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    const contentKey = this.generateContentKey(collection, slug);
+    const contentKey = generateContentKey(collection, slug);
     const branch = this.branchFromContentKey(contentKey);
 
     const mergeRequest = await this.getBranchMergeRequest(branch);
@@ -693,14 +699,14 @@ export default class API {
   }
 
   async deleteUnpublishedEntry(collectionName: any, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
+    const contentKey = generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     await this.abandonPullRequest(mergeRequest);
   }
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
-    const contentKey = this.generateContentKey(collectionName, slug);
+    const contentKey = generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     await this.completePullRequest(mergeRequest);

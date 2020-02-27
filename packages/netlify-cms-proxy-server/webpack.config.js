@@ -26,11 +26,6 @@ module.exports = {
         test: /\.ts$/,
         use: ['ts-loader'],
       },
-      {
-        test: /\.css$/,
-        //include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(moduleNameToPath),
-        use: ['to-string-loader', 'css-loader'],
-      },
     ],
   },
   externals: [
