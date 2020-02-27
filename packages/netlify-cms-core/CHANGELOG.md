@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.20.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.20.0...netlify-cms-core@2.20.1) (2020-02-27)
+
+
+### Bug Fixes
+
+* preserve unknown fields value ([#3314](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3314)) ([908c42f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/908c42fb588ce87f4e197df65db2d238f34837f4))
+* **core:** improve editor buttons for smaller screens ([#3327](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3327)) ([53365b7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/53365b73701c872948a1e65da00a655e0718e8cb))
+
+
+
+
+
 # [2.20.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.19.1...netlify-cms-core@2.20.0) (2020-02-25)
 
 
