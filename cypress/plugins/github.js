@@ -287,7 +287,10 @@ const sanitizeString = (
     .replace(new RegExp(escapeRegExp(owner), 'g'), GITHUB_REPO_OWNER_SANITIZED_VALUE)
     .replace(new RegExp(escapeRegExp(repo), 'g'), GITHUB_REPO_NAME_SANITIZED_VALUE)
     .replace(new RegExp(escapeRegExp(token), 'g'), GITHUB_REPO_TOKEN_SANITIZED_VALUE)
-    .replace(new RegExp('https://avatars.+?/u/.+?v=\\d', 'g'), `${FAKE_OWNER_USER.avatar_url}`);
+    .replace(
+      new RegExp('https://avatars\\d+\\.githubusercontent\\.com/u/\\d+?\\?v=\\d', 'g'),
+      `${FAKE_OWNER_USER.avatar_url}`,
+    );
 
   if (ownerName) {
     replaced = replaced.replace(new RegExp(escapeRegExp(ownerName), 'g'), FAKE_OWNER_USER.name);

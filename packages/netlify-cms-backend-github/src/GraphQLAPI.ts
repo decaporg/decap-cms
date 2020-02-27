@@ -62,13 +62,17 @@ type GraphQLPullRequest = {
   title: string;
   mergedAt: string | null;
   labels: { nodes: { name: string }[] };
+  repository: {
+    id: string;
+    isFork: boolean;
+  };
 };
 
 const transformPullRequest = (pr: GraphQLPullRequest) => {
   return {
     ...pr,
     labels: pr.labels.nodes,
-    head: { ref: pr.headRefName, sha: pr.headRefOid },
+    head: { ref: pr.headRefName, sha: pr.headRefOid, repo: { fork: pr.repository.isFork } },
     base: { ref: pr.baseRefName, sha: pr.baseRefOid },
   };
 };
@@ -266,13 +270,14 @@ export default class GraphQLAPI extends API {
     );
   }
 
-  async getCmsBranches() {
+  async getOpenAuthoringBranches() {
     const { repoOwner: owner, repoName: name } = this;
     const { data } = await this.query({
-      query: queries.cmsBranches,
+      query: queries.openAuthoringBranches,
       variables: {
         owner,
         name,
+        refPrefix: `refs/heads/cms/${this.repo}/`,
       },
     });
 
