@@ -4,8 +4,8 @@ import { entry1, entry2, entry3 } from './common/entries';
 
 const backend = 'github';
 
-describe.skip('Github Backend Editorial Workflow - GraphQL API', () => {
-  let taskResult = { data: {} };
+describe('Github Backend Editorial Workflow - GraphQL API', () => {
+  const taskResult = { data: {} };
 
   before(() => {
     specUtils.before(
