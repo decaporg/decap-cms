@@ -719,6 +719,7 @@ export default class API {
     let metadata = await this.retrieveMetadataOld(contentKey).catch(() => undefined);
 
     if (!metadata) {
+      console.log(`Skipped migrating Pull Request '${number}' (${countMessage})`);
       return;
     }
 
@@ -753,9 +754,9 @@ export default class API {
     );
   }
 
-  async getCmsBranches() {
+  async getOpenAuthoringBranches() {
     const cmsBranches = await this.requestAllPages<Octokit.GitListMatchingRefsResponseItem>(
-      `${this.repoURL}/git/refs/heads/cms`,
+      `${this.repoURL}/git/refs/heads/cms/${this.repo}`,
     ).catch(() => [] as Octokit.GitListMatchingRefsResponseItem[]);
     return cmsBranches;
   }
@@ -769,7 +770,7 @@ export default class API {
     let branches: string[];
     if (this.useOpenAuthoring) {
       // open authoring branches can exist without a pr
-      const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.getCmsBranches();
+      const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.getOpenAuthoringBranches();
       branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
       // filter irrelevant branches
       const branchesWithFilter = await Promise.all(
@@ -781,7 +782,7 @@ export default class API {
       const pullRequests = await this.getPullRequests(
         undefined,
         PullRequestState.Open,
-        withoutCmsLabel,
+        pr => !pr.head.repo.fork && withoutCmsLabel(pr),
       );
       let prCount = 0;
       for (const pr of pullRequests) {

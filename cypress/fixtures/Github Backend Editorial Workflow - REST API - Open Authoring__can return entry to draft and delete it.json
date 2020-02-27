@@ -388,7 +388,7 @@
   },
   {
     "method": "GET",
-    "url": "/repos/forkOwner/repo/git/refs/heads/cms?ts=300",
+    "url": "/repos/forkOwner/repo/git/refs/heads/cms/forkOwner/repo?ts=300",
     "headers": {
       "Content-Type": "application/json; charset=utf-8",
       "Server": "GitHub.com",
