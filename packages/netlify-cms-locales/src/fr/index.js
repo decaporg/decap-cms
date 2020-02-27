@@ -95,7 +95,7 @@ const fr = {
       image: {
         choose: 'Choisissez une image',
         chooseDifferent: 'Choisissez une image différente',
-        remove: 'Supprimer l\'image',
+        remove: "Supprimer l'image",
       },
       file: {
         choose: 'Choisissez un fichier',

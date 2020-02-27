@@ -112,8 +112,8 @@ const it = {
     },
     editorWidgets: {
       image: {
-        choose: 'Scegli un\'immagine',
-        chooseDifferent: 'Scegli un\'immagine diversa',
+        choose: "Scegli un'immagine",
+        chooseDifferent: "Scegli un'immagine diversa",
         remove: 'Rimuovi immagine',
       },
       file: {
