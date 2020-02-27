@@ -126,11 +126,11 @@ export const branch = gql`
   ${fragments.branch}
 `;
 
-export const cmsBranches = gql`
-  query cmsBranches($owner: String!, $name: String!) {
+export const openAuthoringBranches = gql`
+  query openAuthoringBranches($owner: String!, $name: String!, $refPrefix: String!) {
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
-      refs(refPrefix: "refs/heads/cms/", last: 100) {
+      refs(refPrefix: $refPrefix, last: 100) {
         nodes {
           ...BranchParts
         }

@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export const repository = gql`
   fragment RepositoryParts on Repository {
     id
+    isFork
   }
 `;
 
