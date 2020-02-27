@@ -50,13 +50,12 @@ export default class ImplicitAuthenticator {
       authURL.searchParams.set('resource', options.resource);
     }
 
-    const state = JSON.stringify({ nonce: createNonce() });
+    const state = JSON.stringify({ auth_type: 'implicit', nonce: createNonce() });
+
     authURL.searchParams.set('state', state);
 
     document.location.assign(authURL.href);
   }
-
-
 
   /**
    * Complete authentication if we were redirected back to from the provider.
@@ -80,7 +79,7 @@ export default class ImplicitAuthenticator {
     if (params.has('error')) {
       return cb(new Error(`${params.get('error')}: ${params.get('error_description')}`));
     }
-    
+
     if (params.has('access_token')) {
       const { access_token: token, ...data } = params.toJS();
       cb(null, { token, ...data });

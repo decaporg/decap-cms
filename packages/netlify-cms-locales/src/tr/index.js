@@ -3,6 +3,7 @@ const tr = {
     login: 'Giriş',
     loggingIn: 'Giriş yapılıyor..',
     loginWithNetlifyIdentity: 'Netlify Identity ile Giriş',
+    loginWithAzure: 'Azure ile Giriş',
     loginWithBitbucket: 'Bitbucket ile Giriş',
     loginWithGitHub: 'GitHub ile Giriş',
     loginWithGitLab: 'GitLab ile Giriş',

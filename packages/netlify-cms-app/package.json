@@ -31,7 +31,7 @@
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "netlify-cms-backend-azure": "^2.5.0",
+    "netlify-cms-backend-azure": "^1.0.0",
     "netlify-cms-backend-bitbucket": "^2.10.1",
     "netlify-cms-backend-git-gateway": "^2.8.1",
     "netlify-cms-backend-github": "^2.8.1",

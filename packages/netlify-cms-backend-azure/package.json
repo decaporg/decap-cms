@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-azure",
   "description": "Azure DevOps backend for Netlify CMS",
-  "version": "2.5.0",
+  "version": "1.0.0",
   "license": "MIT",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-azure",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
