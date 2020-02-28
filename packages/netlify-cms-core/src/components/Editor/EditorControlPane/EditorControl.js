@@ -7,7 +7,17 @@ import { ClassNames, Global, css as coreCss } from '@emotion/core';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import {
+  FieldLabel,
+  colors,
+  transitions,
+  lengths,
+  borders,
+  Dropdown,
+  DropdownItem,
+  StyledDropdownButton,
+  buttons,
+} from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
 import { addAsset, boundGetAsset } from 'Actions/media';
@@ -76,6 +86,20 @@ const ControlErrorsList = styled.ul`
   position: relative;
   font-weight: 600;
   top: 20px;
+`;
+
+const LocaleButton = styled(StyledDropdownButton)`
+  ${buttons.button};
+  ${buttons.medium};
+  color: ${colors.controlLabel};
+  background: ${colors.textFieldBorder};
+  height: 20px;
+  line-height: 28px;
+  margin-right: 8px;
+
+  &:after {
+    top: 11px;
+  }
 `;
 
 export const ControlHint = styled.p`
@@ -173,6 +197,9 @@ class EditorControl extends React.Component {
       isEditorComponent,
       isNewEditorComponent,
       parentIds,
+      locales,
+      selectedLocale,
+      onLocaleChange,
       t,
       validateMetaField,
     } = this.props;
@@ -187,6 +214,24 @@ class EditorControl extends React.Component {
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
+    const multiContent = field.get('multiContent');
+    const label = (
+      <>
+        {locales && multiContent ? (
+          <Dropdown
+            renderButton={() => <LocaleButton>{selectedLocale}</LocaleButton>}
+            dropdownTopOverlap="30px"
+            dropdownWidth="100px"
+          >
+            {locales.map(l => (
+              <DropdownItem key={l} label={l} onClick={() => onLocaleChange(l)} />
+            ))}
+          </Dropdown>
+        ) : (
+          `${field.get('label', field.get('name'))}`
+        )}
+      </>
+    );
 
     return (
       <ClassNames>
@@ -211,9 +256,7 @@ class EditorControl extends React.Component {
               hasErrors={hasErrors}
               htmlFor={this.uniqueFieldId}
             >
-              {`${field.get('label', field.get('name'))}${
-                isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''
-              }`}
+              {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
             </FieldLabel>
             <Widget
               classNameWrapper={cx(
