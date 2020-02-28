@@ -208,8 +208,9 @@ const traverseFields = (
       folderKey,
       config.get('slug'),
     );
+    let fieldFolder = null;
     if (f.has('fields')) {
-      return traverseFields(
+      fieldFolder = traverseFields(
         folderKey,
         config,
         collection,
@@ -219,7 +220,7 @@ const traverseFields = (
         folder,
       );
     } else if (f.has('field')) {
-      return traverseFields(
+      fieldFolder = traverseFields(
         folderKey,
         config,
         collection,
@@ -228,6 +229,19 @@ const traverseFields = (
         [f.get('field')!],
         folder,
       );
+    } else if (f.has('types')) {
+      fieldFolder = traverseFields(
+        folderKey,
+        config,
+        collection,
+        entryMap,
+        field,
+        f.get('types')!.toArray(),
+        folder,
+      );
+    }
+    if (fieldFolder != null) {
+      return fieldFolder;
     }
   }
 

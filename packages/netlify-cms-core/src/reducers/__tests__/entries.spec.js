@@ -289,7 +289,12 @@ describe('entries', () => {
     it('should cascade media_folders', () => {
       const mainImageField = fromJS({ name: 'main_image' });
       const logoField = fromJS({ name: 'logo', media_folder: '{{media_folder}}/logos/' });
-      const nestedField2 = fromJS({ name: 'nested', media_folder: '{{media_folder}}/nested2/' });
+      const nestedField3 = fromJS({ name: 'nested', media_folder: '{{media_folder}}/nested3/' });
+      const nestedField2 = fromJS({
+        name: 'nested',
+        media_folder: '{{media_folder}}/nested2/',
+        types: [nestedField3],
+      });
       const nestedField1 = fromJS({
         name: 'nested',
         media_folder: '{{media_folder}}/nested1/',
@@ -323,6 +328,9 @@ describe('entries', () => {
       );
       expect(selectMediaFolder(...args, nestedField2)).toBe(
         'static/img/general/customers/nested/nested1/nested2',
+      );
+      expect(selectMediaFolder(...args, nestedField3)).toBe(
+        'static/img/general/customers/nested/nested1/nested2/nested3',
       );
     });
   });

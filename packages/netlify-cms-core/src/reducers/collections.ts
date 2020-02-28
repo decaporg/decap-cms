@@ -124,10 +124,12 @@ const getFieldsWithMediaFolders = (fields: EntryField[]) => {
     if (f.has('fields')) {
       const fields = f.get('fields')?.toArray() as EntryField[];
       acc = [...acc, ...getFieldsWithMediaFolders(fields)];
-    }
-    if (f.has('field')) {
+    } else if (f.has('field')) {
       const field = f.get('field') as EntryField;
       acc = [...acc, ...getFieldsWithMediaFolders([field])];
+    } else if (f.has('types')) {
+      const types = f.get('types')?.toArray() as EntryField[];
+      acc = [...acc, ...getFieldsWithMediaFolders(types)];
     }
 
     return acc;
@@ -200,10 +202,12 @@ export const getFieldsNames = (fields: EntryField[], prefix = '') => {
     if (f.has('fields')) {
       const fields = f.get('fields')?.toArray() as EntryField[];
       names = [...names, ...getFieldsNames(fields, `${names[index]}.`)];
-    }
-    if (f.has('field')) {
+    } else if (f.has('field')) {
       const field = f.get('field') as EntryField;
       names = [...names, ...getFieldsNames([field], `${names[index]}.`)];
+    } else if (f.has('types')) {
+      const types = f.get('types')?.toArray() as EntryField[];
+      names = [...names, ...getFieldsNames(types, `${names[index]}.`)];
     }
   });
 
@@ -219,9 +223,10 @@ export const selectField = (collection: Collection, key: string) => {
     field = fields.find(f => f.get('name') === name);
     if (field?.has('fields')) {
       fields = field?.get('fields')?.toArray() as EntryField[];
-    }
-    if (field?.has('field')) {
+    } else if (field?.has('field')) {
       fields = [field?.get('field') as EntryField];
+    } else if (field?.has('types')) {
+      fields = field?.get('types')?.toArray() as EntryField[];
     }
   }
 
