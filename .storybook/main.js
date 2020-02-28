@@ -9,5 +9,6 @@ module.exports = {
     '@storybook/addon-knobs',
     '@storybook/addon-links',
     'storybook-dark-mode',
+    '@storybook/addon-viewport',
   ],
 };

@@ -91,6 +91,7 @@
     "@octokit/rest": "^16.28.7",
     "@storybook/addon-actions": "^5.3.6",
     "@storybook/addon-links": "^5.3.6",
+    "@storybook/addon-viewport": "^5.3.14",
     "@storybook/react": "^5.3.6",
     "@testing-library/jest-dom": "^4.2.3",
     "@testing-library/react": "^9.3.2",
