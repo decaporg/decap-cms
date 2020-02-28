@@ -395,6 +395,7 @@ describe('collections', () => {
           },
           { name: 'list', field: { name: 'image' } },
           { name: 'body' },
+          { name: 'widgetList', types: [{ name: 'widget' }] },
         ],
       });
 
@@ -412,6 +413,7 @@ describe('collections', () => {
             },
             { name: 'list', field: { name: 'image' } },
             { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
           ],
         }),
       );
@@ -429,6 +431,7 @@ describe('collections', () => {
             },
             { name: 'list', field: { name: 'image' } },
             { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
           ],
         }),
       );
@@ -447,6 +450,7 @@ describe('collections', () => {
             },
             { name: 'list', field: { name: 'image' } },
             { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
           ],
         }),
       );
@@ -461,6 +465,23 @@ describe('collections', () => {
             },
             { name: 'list', field: { name: 'image', default: 'default' } },
             { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
+          ],
+        }),
+      );
+
+      expect(updateFieldByKey(collection, 'widgetList.widget', updater)).toEqual(
+        fromJS({
+          fields: [
+            { name: 'title' },
+            { name: 'image' },
+            {
+              name: 'object',
+              fields: [{ name: 'title' }, { name: 'gallery', fields: [{ name: 'image' }] }],
+            },
+            { name: 'list', field: { name: 'image' } },
+            { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget', default: 'default' }] },
           ],
         }),
       );

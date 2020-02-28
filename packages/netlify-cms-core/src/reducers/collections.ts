@@ -261,6 +261,8 @@ export const updateFieldByKey = (
           return field.set('fields', traverseFields(field.get('fields')!));
         } else if (field.has('field')) {
           return field.set('field', traverseFields(List([field.get('field')!])).get(0));
+        } else if (field.has('types')) {
+          return field.set('types', traverseFields(field.get('types')!));
         } else {
           return field;
         }
