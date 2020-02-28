@@ -33,6 +33,11 @@ const hu = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'választható',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} kötelező mező.',
@@ -93,6 +98,16 @@ const hu = {
       deployButtonLabel: 'Élő megtekintése',
     },
     editorWidgets: {
+      image: {
+        choose: 'Válasszon képet',
+        chooseDifferent: 'Válasszon másik képet',
+        remove: 'Távolítsa el a képet',
+      },
+      file: {
+        choose: 'Válasszon fájlt',
+        chooseDifferent: 'Válasszon másik fájlt',
+        remove: 'Távolítsa el a fájlt',
+      },
       unknownControl: {
         noControl: "Nincs vezérlés a '%{widget}' widget számára.",
       },

@@ -69,6 +69,7 @@ const AuthenticationPage = ({
   renderPageContent,
   logoUrl,
   siteUrl,
+  t,
 }) => {
   return (
     <StyledAuthenticationPage>
@@ -80,7 +81,7 @@ const AuthenticationPage = ({
           {renderButtonContent()}
         </LoginButton>
       )}
-      {siteUrl && <GoBackButton href={siteUrl} />}
+      {siteUrl && <GoBackButton href={siteUrl} t={t} />}
       {logoUrl ? <NetlifyCreditIcon size="100px" type="netlify-cms" /> : null}
     </StyledAuthenticationPage>
   );
@@ -94,6 +95,7 @@ AuthenticationPage.propTypes = {
   loginErrorMessage: PropTypes.node,
   renderButtonContent: PropTypes.func,
   renderPageContent: PropTypes.func,
+  t: PropTypes.func.isRequired,
 };
 
 export default AuthenticationPage;

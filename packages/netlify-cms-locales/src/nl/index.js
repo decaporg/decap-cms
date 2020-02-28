@@ -47,6 +47,11 @@ const nl = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'optioneel',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} is vereist.',

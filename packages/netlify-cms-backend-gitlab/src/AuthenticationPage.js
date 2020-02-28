@@ -83,6 +83,7 @@ export default class GitLabAuthenticationPage extends React.Component {
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithGitLab')}
           </React.Fragment>
         )}
+        t={t}
       />
     );
   }

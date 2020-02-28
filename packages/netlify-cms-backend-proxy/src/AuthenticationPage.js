@@ -55,7 +55,7 @@ export default class AuthenticationPage extends React.Component {
         <LoginButton disabled={inProgress} onClick={this.handleLogin}>
           {inProgress ? t('auth.loggingIn') : t('auth.login')}
         </LoginButton>
-        {config.site_url && <GoBackButton href={config.site_url}></GoBackButton>}
+        {config.site_url && <GoBackButton href={config.site_url} t={t}></GoBackButton>}
       </StyledAuthenticationPage>
     );
   }
