@@ -227,6 +227,11 @@ export class Editor extends React.Component {
     if (entry) this.props.createDraftFromEntry(entry, metadata);
   };
 
+  handleChangeDraftField = (field, value, metadata) => {
+    const entries = [this.props.unPublishedEntry, this.props.publishedEntry].filter(Boolean);
+    this.props.changeDraftField(field, value, metadata, entries);
+  };
+
   handleChangeStatus = newStatusName => {
     const {
       entryDraft,
@@ -378,7 +383,6 @@ export class Editor extends React.Component {
       entryDraft,
       fields,
       collection,
-      changeDraftField,
       changeDraftFieldValidation,
       user,
       hasChanged,
@@ -421,7 +425,7 @@ export class Editor extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
-        onChange={changeDraftField}
+        onChange={this.handleChangeDraftField}
         onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
@@ -463,8 +467,9 @@ function mapStateToProps(state, ownProps) {
   const useOpenAuthoring = globalUI.get('useOpenAuthoring', false);
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
-  const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
-  const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const unPublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
+  const publishedEntry = selectEntry(state, collectionName, slug);
+  const currentStatus = unPublishedEntry && unPublishedEntry.getIn(['metaData', 'status']);
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
   const draftKey = entryDraft.get('key');
@@ -488,6 +493,8 @@ function mapStateToProps(state, ownProps) {
     deployPreview,
     localBackup,
     draftKey,
+    publishedEntry,
+    unPublishedEntry,
   };
 }
 

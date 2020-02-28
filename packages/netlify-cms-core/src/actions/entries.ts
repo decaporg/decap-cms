@@ -219,10 +219,15 @@ export function discardDraft() {
   return { type: DRAFT_DISCARD };
 }
 
-export function changeDraftField(field: string, value: string, metadata: Record<string, unknown>) {
+export function changeDraftField(
+  field: string,
+  value: string,
+  metadata: Record<string, unknown>,
+  entries: EntryMap[],
+) {
   return {
     type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata },
+    payload: { field, value, metadata, entries },
   };
 }
 
