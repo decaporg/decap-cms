@@ -416,3 +416,33 @@ CMS.registerEventListener({
 ```
 
 > Supported events are `prePublish`, `postPublish`, `preUnpublish` and `postUnpublish`
+
+## Dynamic Default Values
+
+When linking to `/admin/#/collections/posts/new` you can pass URL parameters to pre-populate an entry.
+
+For example given the configuration:
+
+```yaml
+collections:
+  - name: posts
+    label: Posts
+    folder: content/posts
+    create: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Object
+        name: object
+        widget: object
+        fields:
+          - label: Title
+            name: title
+            widget: string
+```
+
+clicking the following link: `/#/collections/posts/new?title=first&object.title=second`
+
+will open the editor for a new post with the `title` field populated with `first` and the nested `object.title` field
+with `second`.

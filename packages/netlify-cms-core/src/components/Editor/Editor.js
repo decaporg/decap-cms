@@ -78,6 +78,7 @@ export class Editor extends React.Component {
     user: ImmutablePropTypes.map.isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string,
+      search: PropTypes.string,
     }),
     hasChanged: PropTypes.bool,
     t: PropTypes.func.isRequired,
@@ -104,7 +105,7 @@ export class Editor extends React.Component {
     retrieveLocalBackup(collection, slug);
 
     if (newEntry) {
-      createEmptyDraft(collection);
+      createEmptyDraft(collection, this.props.location.search);
     } else {
       loadEntry(collection, slug);
     }
@@ -209,7 +210,7 @@ export class Editor extends React.Component {
       const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
       this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
-      prevProps.createEmptyDraft(collection);
+      prevProps.createEmptyDraft(collection, this.props.location.search);
     }
   }
 

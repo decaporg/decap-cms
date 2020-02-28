@@ -5,7 +5,7 @@ import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectFields } from '../reducers/collections';
+import { selectFields, updateFieldByKey } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
@@ -488,9 +488,26 @@ export function traverseCollectionCursor(collection: Collection, action: string)
   };
 }
 
-export function createEmptyDraft(collection: Collection) {
+const escapeHtml = (unsafe: string) => {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+};
+
+export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const dataFields = createEmptyDraftData(collection.get('fields', List()));
+    const params = new URLSearchParams(search);
+    params.forEach((value, key) => {
+      collection = updateFieldByKey(collection, key, field =>
+        field.set('default', escapeHtml(value)),
+      );
+    });
+
+    const fields = collection.get('fields', List());
+    const dataFields = createEmptyDraftData(fields);
 
     let mediaFiles = [] as MediaFile[];
     if (!collection.has('media_folder')) {
