@@ -120,6 +120,15 @@ describe('collections', () => {
                   },
                 ],
               },
+              {
+                name: 'list_3',
+                types: [
+                  {
+                    name: 'list_3_type',
+                    media_folder: 'list_3_type_media_folder',
+                  },
+                ],
+              },
             ],
           }),
         ),
@@ -133,6 +142,10 @@ describe('collections', () => {
         fromJS({
           name: 'list_2_item',
           media_folder: 'list_2_item_media_folder',
+        }),
+        fromJS({
+          name: 'list_3_type',
+          media_folder: 'list_3_type_media_folder',
         }),
       ]);
     });
@@ -182,6 +195,15 @@ describe('collections', () => {
                         name: 'list_2_item',
                         media_folder: 'list_2_item_media_folder',
                       },
+                      {
+                        name: 'list_3',
+                        types: [
+                          {
+                            name: 'list_3_type',
+                            media_folder: 'list_3_type_media_folder',
+                          },
+                        ],
+                      },
                     ],
                   },
                 ],
@@ -194,6 +216,10 @@ describe('collections', () => {
         fromJS({
           name: 'list_2_item',
           media_folder: 'list_2_item_media_folder',
+        }),
+        fromJS({
+          name: 'list_3_type',
+          media_folder: 'list_3_type_media_folder',
         }),
       ]);
     });
@@ -219,11 +245,19 @@ describe('collections', () => {
                 name: 'image',
                 media_folder: '{{media_folder}}/customers/',
               },
+              {
+                name: 'list',
+                types: [{ name: 'widget', media_folder: '{{media_folder}}/widgets' }],
+              },
             ],
           }),
           fromJS({ slug: 'name', path: 'src/post/post1.md', data: {} }),
         ),
-      ).toEqual(['static/img/general', 'static/img/general/customers']);
+      ).toEqual([
+        'static/img/general',
+        'static/img/general/customers',
+        'static/img/general/widgets',
+      ]);
     });
 
     it('should return fields, file and collection folders', () => {
@@ -242,6 +276,10 @@ describe('collections', () => {
                     name: 'image',
                     media_folder: '{{media_folder}}/logos/',
                   },
+                  {
+                    name: 'list',
+                    types: [{ name: 'widget', media_folder: '{{media_folder}}/widgets' }],
+                  },
                 ],
               },
             ],
@@ -252,6 +290,7 @@ describe('collections', () => {
         'static/img/general',
         'static/img/general/customers',
         'static/img/general/customers/logos',
+        'static/img/general/customers/widgets',
       ]);
     });
   });
@@ -270,18 +309,25 @@ describe('collections', () => {
           { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
           { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
           { name: 'it', field: { name: 'title', fields: [{ name: 'subTitle' }] } },
+          {
+            name: 'fr',
+            fields: [{ name: 'title', widget: 'list', types: [{ name: 'variableType' }] }],
+          },
         ],
       });
       expect(getFieldsNames(collection.get('fields').toArray())).toEqual([
         'en',
         'es',
         'it',
+        'fr',
         'en.title',
         'en.body',
         'es.title',
         'es.body',
         'it.title',
         'it.title.subTitle',
+        'fr.title',
+        'fr.title.variableType',
       ]);
     });
   });
@@ -300,6 +346,10 @@ describe('collections', () => {
           { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
           { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
           { name: 'it', field: { name: 'title', fields: [{ name: 'subTitle' }] } },
+          {
+            name: 'fr',
+            fields: [{ name: 'title', widget: 'list', types: [{ name: 'variableType' }] }],
+          },
         ],
       });
 
@@ -317,6 +367,16 @@ describe('collections', () => {
           .get(2)
           .get('field')
           .get('fields')
+          .get(0),
+      );
+
+      expect(selectField(collection, 'fr.title.variableType')).toBe(
+        collection
+          .get('fields')
+          .get(3)
+          .get('fields')
+          .get(0)
+          .get('types')
           .get(0),
       );
     });

@@ -92,6 +92,7 @@ export type EntryDraft = StaticallyTypedRecord<{
 export type EntryField = StaticallyTypedRecord<{
   field?: EntryField;
   fields?: List<EntryField>;
+  types?: List<EntryField>;
   widget: string;
   name: string;
   default: string | null;
