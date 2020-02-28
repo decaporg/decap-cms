@@ -159,6 +159,7 @@
     "simple-git": "^1.124.0",
     "start-server-and-test": "^1.7.11",
     "storybook-addon-emotion-theme": "^2.1.1",
+    "storybook-dark-mode": "^0.3.0",
     "storybook-multiple-themeprovider": "^1.5.1",
     "style-loader": "^0.23.1",
     "styled-components": "^5.0.1",

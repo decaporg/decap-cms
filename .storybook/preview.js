@@ -1,27 +1,113 @@
-import React from 'react';
-import { addDecorator, configure } from '@storybook/react';
-import { withThemesProvider } from 'storybook-multiple-themeprovider';
+import React, { useState, useEffect } from 'react';
+import addons from '@storybook/addons';
+import { addDecorator, addParameters } from '@storybook/react';
+import { themes } from '@storybook/theming';
+import { ThemeProvider } from 'emotion-theming';
 import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/theme';
 
 import './preview.css';
 
-// Options:
-const themes = [
-  {
-    name: 'dark',
-    backgroundColor: darkTheme.color.background,
-    ...darkTheme,
+addParameters({
+  darkMode: {
+    // Override the default dark theme
+    dark: {
+      ...themes.dark,
+      colorPrimary: darkTheme.color.primary['500'],
+      colorSecondary: darkTheme.color.primary['500'],
+
+      // UI
+      appBg: darkTheme.color.background,
+      appContentBg: darkTheme.color.surface,
+      appBorderColor: darkTheme.color.border,
+      appBorderRadius: 4,
+
+      // Typography
+      fontBase: darkTheme.fontFamily,
+      fontCode: 'monospace',
+
+      // Text colors
+      textColor: darkTheme.color.highEmphasis,
+      textInverseColor: darkTheme.color.surface,
+      // Toolbar default and active colors
+      barTextColor: darkTheme.color.mediumEmphasis,
+      barSelectedColor: darkTheme.color.highEmphasis,
+      barBg: darkTheme.color.elevatedSurface,
+
+      // Form colors
+      inputBg: darkTheme.color.background,
+      inputBorder: darkTheme.color.border,
+      inputTextColor: darkTheme.color.highEmphasis,
+      inputBorderRadius: 4,
+
+      brandTitle: 'Netlify CMS',
+      brandUrl: 'https://netlifycms.org',
+      brandImage: 'https://www.netlify.com/img/press/logos/full-logo-dark.png',
+    },
+    // Override the default light theme
+    light: {
+      ...themes.normal,
+      colorPrimary: lightTheme.color.primary['500'],
+      colorSecondary: lightTheme.color.primary['500'],
+
+      // UI
+      appBg: lightTheme.color.background,
+      appContentBg: lightTheme.color.surface,
+      appBorderColor: lightTheme.color.border,
+      appBorderRadius: 4,
+
+      // Typography
+      fontBase: lightTheme.fontFamily,
+      fontCode: 'monospace',
+
+      // Text colors
+      textColor: lightTheme.color.highEmphasis,
+      textInverseColor: lightTheme.color.surface,
+      // Toolbar default and active colors
+      barTextColor: lightTheme.color.mediumEmphasis,
+      barSelectedColor: lightTheme.color.highEmphasis,
+      barBg: lightTheme.color.elevatedSurface,
+
+      // Form colors
+      inputBg: 'white',
+      inputBorder: lightTheme.color.border,
+      inputTextColor: lightTheme.color.highEmphasis,
+      inputBorderRadius: 4,
+
+      brandTitle: 'Netlify CMS',
+      brandUrl: 'https://netlifycms.org',
+      brandImage: 'https://www.netlify.com/img/press/logos/full-logo-light.png',
+    },
   },
-  {
-    name: 'light',
-    backgroundColor: lightTheme.color.background,
-    ...lightTheme,
-  },
-];
+});
+
+// get channel to listen to event emitter
+const channel = addons.getChannel();
+
+// create a component that listens for the DARK_MODE event
+function ThemeWrapper(props) {
+  const [isDark, setDark] = useState(false);
+
+  useEffect(() => {
+    // listen to DARK_MODE event
+    channel.on('DARK_MODE', setDark);
+    return () => channel.off('DARK_MODE', setDark);
+  }, [channel, setDark]);
+
+  // render your custom theme provider
+  return (
+    <ThemeProvider
+      theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
+    >
+      {props.children}
+    </ThemeProvider>
+  );
+}
 
 const fill = { height: '100vh', width: '100vw' };
-
 const center = { display: 'flex', alignItems: 'center', justifyContent: 'center' };
 
-addDecorator(story => <div style={{ ...fill, ...center }}>{story()}</div>);
-addDecorator(withThemesProvider(themes));
+addDecorator(renderStory => (
+  <ThemeWrapper>
+    <div style={{ ...fill, ...center }}>{renderStory()}</div>
+  </ThemeWrapper>
+));
