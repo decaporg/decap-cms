@@ -12,6 +12,10 @@ const ControlPaneContainer = styled.div`
 `;
 
 export default class ControlPane extends React.Component {
+  state = {
+    selectedLocale: this.props.locales && this.props.locales.first(),
+  };
+
   componentValidate = {};
 
   controlRef(field, wrappedControl) {
@@ -22,8 +26,20 @@ export default class ControlPane extends React.Component {
       wrappedControl.innerWrappedControl?.validate || wrappedControl.validate;
   }
 
+  getFields = () => {
+    let fields = this.props.fields;
+    if (this.props.collection.get('multi_content')) {
+      fields = fields.filter(f => f.get('name') === this.state.selectedLocale);
+    }
+    return fields;
+  };
+
+  handleLocaleChange = val => {
+    this.setState({ selectedLocale: val });
+  };
+
   validate = () => {
-    this.props.fields.forEach(field => {
+    this.getFields().forEach(field => {
       if (field.get('widget') === 'hidden') return;
       this.componentValidate[field.get('name')]();
     });
@@ -32,13 +48,14 @@ export default class ControlPane extends React.Component {
   render() {
     const {
       collection,
-      fields,
       entry,
       fieldsMetaData,
       fieldsErrors,
       onChange,
       onValidate,
+      locales,
     } = this.props;
+    const fields = this.getFields();
 
     if (!collection || !fields) {
       return null;
@@ -68,6 +85,9 @@ export default class ControlPane extends React.Component {
               controlRef={this.controlRef}
               entry={entry}
               collection={collection}
+              selectedLocale={this.state.selectedLocale}
+              onLocaleChange={this.handleLocaleChange}
+              locales={locales}
             />
           );
         })}

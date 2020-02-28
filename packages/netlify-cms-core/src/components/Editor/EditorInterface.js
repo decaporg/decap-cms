@@ -134,13 +134,13 @@ class EditorInterface extends Component {
 
   handleOnPersist = (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
-    this.controlPaneRef.validate();
+    this.handleRefValidation();
     this.props.onPersist({ createNew, duplicate });
   };
 
   handleOnPublish = (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
-    this.controlPaneRef.validate();
+    this.handleRefValidation();
     this.props.onPublish({ createNew, duplicate });
   };
 
@@ -154,6 +154,10 @@ class EditorInterface extends Component {
     const newScrollSyncEnabled = !this.state.scrollSyncEnabled;
     this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
     localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
+  };
+
+  handleRefValidation = () => {
+    [this.controlPaneRef, this.controlPaneRef2].filter(Boolean).forEach(c => c.validate());
   };
 
   render() {
@@ -186,24 +190,32 @@ class EditorInterface extends Component {
       deployPreview,
       draftKey,
       editorBackLink,
+      locales,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
-
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
+    const editorProps = {
+      collection,
+      entry,
+      fields,
+      fieldsMetaData,
+      fieldsErrors,
+      onChange,
+      onValidate,
+      locales,
+    };
+    const multiContent = collection.get('multi_content');
 
     const editor = (
       <ControlPaneContainer blockEntry={showEventBlocker}>
-        <EditorControlPane
-          collection={collection}
-          entry={entry}
-          fields={fields}
-          fieldsMetaData={fieldsMetaData}
-          fieldsErrors={fieldsErrors}
-          onChange={onChange}
-          onValidate={onValidate}
-          ref={c => (this.controlPaneRef = c)}
-        />
+        <EditorControlPane {...editorProps} ref={c => (this.controlPaneRef = c)} />
+      </ControlPaneContainer>
+    );
+
+    const editor2 = (
+      <ControlPaneContainer blockEntry={showEventBlocker}>
+        <EditorControlPane {...editorProps} ref={c => (this.controlPaneRef2 = c)} />
       </ControlPaneContainer>
     );
 
@@ -227,6 +239,23 @@ class EditorInterface extends Component {
                 fieldsMetaData={fieldsMetaData}
               />
             </PreviewPaneContainer>
+          </StyledSplitPane>
+        </div>
+      </ScrollSync>
+    );
+
+    const editorWithEditor = (
+      <ScrollSync enabled={this.state.scrollSyncEnabled}>
+        <div>
+          <StyledSplitPane
+            maxSize={-100}
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
+            onDragStarted={this.handleSplitPaneDragStart}
+            onDragFinished={this.handleSplitPaneDragFinished}
+          >
+            <ScrollSyncPane>{editor}</ScrollSyncPane>
+            <ScrollSyncPane>{editor2}</ScrollSyncPane>
           </StyledSplitPane>
         </div>
       </ScrollSync>
@@ -287,7 +316,9 @@ class EditorInterface extends Component {
               />
             )}
           </ViewControls>
-          {collectionPreviewEnabled && this.state.previewVisible ? (
+          {multiContent ? (
+            editorWithEditor
+          ) : collectionPreviewEnabled && this.state.previewVisible ? (
             editorWithPreview
           ) : (
             <NoPreviewContainer>{editor}</NoPreviewContainer>

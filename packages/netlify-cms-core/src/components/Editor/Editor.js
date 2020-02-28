@@ -367,6 +367,7 @@ export class Editor extends React.Component {
       loadDeployPreview,
       draftKey,
       slug,
+      locales,
       t,
       editorBackLink,
     } = this.props;
@@ -416,6 +417,7 @@ export class Editor extends React.Component {
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
+        locales={locales}
         loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
         editorBackLink={editorBackLink}
       />
@@ -444,6 +446,7 @@ function mapStateToProps(state, ownProps) {
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
   const draftKey = entryDraft.get('key');
+  const locales = config.get('locales');
   let editorBackLink = `/collections/${collectionName}`;
   if (collection.has('nested') && slug) {
     const pathParts = slug.split('/');
@@ -474,6 +477,7 @@ function mapStateToProps(state, ownProps) {
     publishedEntry,
     unPublishedEntry,
     editorBackLink,
+    locales,
   };
 }
 

@@ -4,7 +4,7 @@ import { trimStart, trim, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
-import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
+import { selectDefaultSortableFields, traverseFields, selectIdentifier } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
@@ -63,6 +63,7 @@ export function applyDefaults(config) {
         map.setIn(['slug', 'sanitize_replacement'], '-');
       }
 
+      const langs = map.get('locales');
       // Strip leading slash from collection folders and files
       map.set(
         'collections',
@@ -97,6 +98,22 @@ export function applyDefaults(config) {
               collection = collection.set('fields', fromJS([]).concat(metaFields, fields));
             } else {
               collection = collection.set('meta', Map());
+            }
+
+            const fields = collection.get('fields');
+            const identifier_field = selectIdentifier(collection);
+            if (langs && fields && collection.get('multi_content')) {
+              // add languague fields
+              collection = collection.set(
+                'fields',
+                fromJS(addLanguageFields(fields.toJS(), langs.toJS())),
+              );
+
+              // add identifier field
+              collection = collection.set(
+                'identifier_field',
+                `${langs.first()}.${identifier_field}`,
+              );
             }
           }
 
@@ -139,6 +156,12 @@ export function applyDefaults(config) {
         }),
       );
     });
+}
+
+export function addLanguageFields(fields, langs) {
+  return langs.reduce((acc, item) => {
+    return [...acc, { label: item, name: item, widget: 'object', fields, multiContent: true }];
+  }, []);
 }
 
 function mergePreloadedConfig(preloadedConfig, loadedConfig) {
