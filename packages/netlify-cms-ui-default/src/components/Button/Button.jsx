@@ -161,21 +161,18 @@ const StyledIcon = styled(Icon)`
   vertical-align: middle;
 `;
 
-const Button = ({ icon, children, className, dropdown, size, iconSize, disabled, ...props }) => {
-  console.log('Button rendered');
-  return (
-    <StyledButton
-      size={size}
-      iconOnly={!children && icon}
-      className={className}
-      disabled={disabled}
-      {...props}
-    >
-      {icon && <StyledIcon hasText={!!children} name={icon} size={iconSize} />}
-      {children}
-      {dropdown && <Caret />}
-    </StyledButton>
-  );
-};
+const Button = ({ icon, children, className, dropdown, size, iconSize, disabled, ...props }) => (
+  <StyledButton
+    size={size}
+    iconOnly={!children && icon}
+    className={className}
+    disabled={disabled}
+    {...props}
+  >
+    {icon && <StyledIcon hasText={!!children} name={icon} size={iconSize} />}
+    {children}
+    {dropdown && <Caret />}
+  </StyledButton>
+);
 
 export default Button;

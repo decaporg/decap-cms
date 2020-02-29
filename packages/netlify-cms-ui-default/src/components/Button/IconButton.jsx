@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import Icon from './Icon';
+import Icon from '../Icon';
 import ButtonGroup from './ButtonGroup';
 import color from 'color';
 
@@ -15,16 +15,17 @@ const IconButtonWrap = styled.button`
       : `transparent`};
   border: none;
   padding: 0.25rem;
-  height: 2rem;
-  width: 2rem;
+  width: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : 2)}rem;
+  height: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : 2)}rem;
   border-radius: 6px;
   outline: none;
   cursor: pointer;
   transition: 250ms;
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${({ theme, active }) =>
       active ? theme.color.success['500'] : theme.color.highEmphasis};
-    background-color: ${({ theme, active, darkMode }) =>
+    background-color: ${({ theme, active }) =>
       active
         ? color(theme.color.success['500'])
             .alpha(0.2)
@@ -36,7 +37,7 @@ const IconButtonWrap = styled.button`
   &:active {
     color: ${({ theme, active }) =>
       active ? theme.color.success['500'] : theme.color.highEmphasis};
-    background-color: ${({ theme, active, darkMode }) =>
+    background-color: ${({ theme, active }) =>
       active
         ? color(theme.color.success['500'])
             .alpha(0.3)
@@ -50,9 +51,9 @@ const IconButtonWrap = styled.button`
   }
 `;
 
-const IconButton = ({ icon, ...props }) => (
-  <IconButtonWrap {...props}>
-    <Icon name={icon} />
+const IconButton = ({ icon, size, ...props }) => (
+  <IconButtonWrap size={size} {...props}>
+    <Icon name={icon} size={size} />
   </IconButtonWrap>
 );
 

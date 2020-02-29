@@ -175,7 +175,19 @@ const Icon = ({ name, ...props }) => {
 };
 
 const SizedIcon = ({ size, className, ...props }) => (
-  <Icon {...props} className={className} size={size === 'lg' ? '24' : size ? size : '18'} />
+  <Icon
+    {...props}
+    className={className}
+    size={
+      size === 'lg'
+        ? '24'
+        : size === 'sm'
+        ? '16'
+        : size === null || size === undefined || size === 'md'
+        ? '20'
+        : size
+    }
+  />
 );
 
 export default SizedIcon;

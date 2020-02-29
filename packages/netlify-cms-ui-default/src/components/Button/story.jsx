@@ -3,12 +3,12 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 
-import { Button, ButtonGroup } from '.';
+import { Button, ButtonGroup, IconButton } from '.';
+import { iconComponents } from '../Icon/Icon';
 
 storiesOf('Inputs', module)
   .addDecorator(withKnobs)
   .add('Button', () => {
-    // return <div>Hello world!</div>;
     return (
       <ButtonGroup>
         <Button
@@ -20,6 +20,25 @@ storiesOf('Inputs', module)
         >
           Button
         </Button>
+      </ButtonGroup>
+    );
+  })
+  .add('IconButton', () => {
+    return (
+      <ButtonGroup>
+        <IconButton
+          icon={select(
+            'name',
+            {
+              default: null,
+              ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
+            },
+            null,
+          )}
+          size={select('size', { sm: 'sm', md: null, lg: 'lg' }, null)}
+          active={boolean('active', false)}
+          onClick={action('onClick')}
+        />
       </ButtonGroup>
     );
   });
