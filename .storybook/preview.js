@@ -43,12 +43,10 @@ const themeViewports = {
   },
 };
 
-console.log(lightTheme.responsive.breakpoints, INITIAL_VIEWPORTS, themeViewports);
-
 addParameters({
   viewport: {
     viewports: {
-      ...customViewports,
+      ...themeViewports,
       ...INITIAL_VIEWPORTS,
     },
   },
