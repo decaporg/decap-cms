@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-const SVG = ({ className = "", size = "24" }) => (
+const SVG = ({ className = '', size = '24' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -12,7 +12,6 @@ const SVG = ({ className = "", size = "24" }) => (
     stroke-width="2"
     stroke-linecap="round"
     stroke-linejoin="round"
-    class="feather feather-activity"
   >
     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
   </svg>
