@@ -23,6 +23,21 @@ storiesOf('Inputs', module)
       </ButtonGroup>
     );
   })
+  .add('ButtonGroup', () => {
+    return (
+      <ButtonGroup
+        direction={select(
+          'direction',
+          { 'horizontal (default)': null, vertical: 'vertical' },
+          null,
+        )}
+      >
+        <Button>Button 1</Button>
+        <Button>Button 2</Button>
+        <Button primary>Primary Button</Button>
+      </ButtonGroup>
+    );
+  })
   .add('IconButton', () => {
     return (
       <ButtonGroup>

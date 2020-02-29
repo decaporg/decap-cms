@@ -145,7 +145,7 @@ function ThemeWrapper(props) {
   );
 }
 
-const fill = { height: '100vh', width: '100vw' };
+const fill = { height: '100%', width: '100%' };
 const center = { display: 'flex', alignItems: 'center', justifyContent: 'center' };
 
 addDecorator(renderStory => (
