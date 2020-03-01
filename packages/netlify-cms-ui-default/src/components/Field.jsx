@@ -31,8 +31,9 @@ const FieldInside = styled.div`
 `;
 
 const StyledLabel = styled(Label)`
+  font-family: ${({ theme }) => theme.fontFamily};
   ${({ control }) => (control ? `flex: 1; margin: 0;` : ``)}
-  ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)}
+  ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)};
 `;
 
 const Field = ({ focus, labelTarget, label, children, control, onClick, className, noBorder }) => (

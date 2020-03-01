@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import styled from '@emotion/styled';
-import Field from '../Field';
-import ToggleSwitch from '../ToggleSwitch';
+import React from 'react';
+import Field from '../../Field';
+import ToggleSwitch from '../../ToggleSwitch';
 
-const TextWidget = ({ name, label, onChange, placeholder, children, value }) => {
+const BooleanWidget = ({ name, label, onChange, className, children, value }) => {
   return (
     <Field
       label={label}
       labelTarget={name}
       control
       onClick={() => (value ? onChange(false) : onChange(true))}
+      className={className}
     >
       <ToggleSwitch onChange={() => (value ? onChange(false) : onChange(true))} checked={value} />
       {children && children}
@@ -17,4 +17,4 @@ const TextWidget = ({ name, label, onChange, placeholder, children, value }) => 
   );
 };
 
-export default TextWidget;
+export default BooleanWidget;

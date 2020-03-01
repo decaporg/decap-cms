@@ -4,14 +4,21 @@ import color from 'color';
 import Icon from '../Icon';
 
 export const MenuItemWrap = styled.div`
+  font-family: ${({ theme }) => theme.fontFamily};
   padding: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
+  line-height: 1.25rem;
   transition: 200ms;
   display: flex;
   align-items: center;
   border-radius: 4px;
-  color: ${({ theme }) => theme.color.highEmphasis};
+  color: ${({ theme, type }) =>
+    type === 'danger'
+      ? theme.color.danger[theme.darkMode ? '300' : '700']
+      : type === 'success'
+      ? theme.color.success[theme.darkMode ? '300' : '700']
+      : theme.color.highEmphasis};
   cursor: pointer;
   &:hover {
     background-color: ${({ theme }) => theme.color.elevatedSurfaceHighlight};
@@ -21,7 +28,7 @@ export const MenuItemWrap = styled.div`
       background-color: ${color(theme.color.danger['500'])
         .alpha(0.2)
         .string()};
-      color: ${theme.color.danger[theme.darkMode ? '300' : '800']};
+      color: ${theme.color.danger[theme.darkMode ? '300' : '700']};
     `
         : ``}
     ${({ theme, type }) =>
@@ -30,17 +37,9 @@ export const MenuItemWrap = styled.div`
         background-color: ${color(theme.color.success['500'])
           .alpha(0.2)
           .string()};
-      color: ${theme.color.success[theme.darkMode ? '300' : '800']};
+      color: ${theme.color.success[theme.darkMode ? '300' : '700']};
     `
         : ``}
-  }
-  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
-    color: ${({ theme, type }) =>
-      type === 'danger'
-        ? theme.color.danger[theme.darkMode ? '300' : '800']
-        : type === 'success'
-        ? theme.color.success[theme.darkMode ? '300' : '800']
-        : theme.color.highEmphasis};
   }
 `;
 

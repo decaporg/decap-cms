@@ -161,7 +161,7 @@ const StyledIcon = styled(Icon)`
   vertical-align: middle;
 `;
 
-const Button = ({ icon, children, className, dropdown, size, iconSize, disabled, ...props }) => (
+const Button = ({ icon, children, className, hasMenu, size, iconSize, disabled, ...props }) => (
   <StyledButton
     size={size}
     iconOnly={!children && icon}
@@ -171,7 +171,7 @@ const Button = ({ icon, children, className, dropdown, size, iconSize, disabled,
   >
     {icon && <StyledIcon hasText={!!children} name={icon} size={iconSize} />}
     {children}
-    {dropdown && <Caret />}
+    {hasMenu && <Caret />}
   </StyledButton>
 );
 

@@ -44,6 +44,18 @@ const themeViewports = {
 };
 
 addParameters({
+  options: {
+    /**
+     * display the top-level grouping as a "root" in the sidebar
+     * @type {Boolean}
+     */
+    showRoots: true,
+    /**
+     * sidebar tree animations
+     * @type {Boolean}
+     */
+    sidebarAnimations: true,
+  },
   viewport: {
     viewports: {
       ...themeViewports,

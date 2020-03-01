@@ -20,12 +20,9 @@ const MenuWrap = styled.div`
 
 const Menu = React.forwardRef(function Menu(props, ref) {
   const {
-    autoFocus: autoFocusProp,
     children,
-    classes,
     className,
     onClose,
-    onEntering,
     open,
     transitionDuration = 250,
     anchorOrigin,
@@ -42,8 +39,14 @@ const Menu = React.forwardRef(function Menu(props, ref) {
     <Popover
       getContentAnchorEl={getContentAnchorEl}
       onClose={onClose}
-      anchorOrigin={anchorOrigin || { y: 'top', x: 'left' }}
-      transformOrigin={transformOrigin || { y: 'top', x: 'right' }}
+      anchorOrigin={{
+        x: (anchorOrigin && anchorOrigin.x) || 'right',
+        y: (anchorOrigin && anchorOrigin.y) || 'bottom',
+      }}
+      transformOrigin={{
+        x: (transformOrigin && transformOrigin.x) || 'right',
+        y: (transformOrigin && transformOrigin.y) || 'top',
+      }}
       open={open}
       ref={ref}
       transitionDuration={transitionDuration}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import Field from '../Field';
+import Field from '../../Field';
 
 const StyledInput = styled.input`
   color: ${({ theme }) => theme.color.highEmphasis};
@@ -29,11 +29,18 @@ const TextWidget = ({
   value,
   focused,
   title,
+  className,
 }) => {
   const [focus, setFocus] = useState();
 
   return (
-    <Field onClick={onClick} label={label} labelTarget={name} focus={focused || focus}>
+    <Field
+      onClick={onClick}
+      label={label}
+      labelTarget={name}
+      focus={focused || focus}
+      className={className}
+    >
       <StyledInput
         clickable={readOnly && !!onClick}
         onClick={onClick}
