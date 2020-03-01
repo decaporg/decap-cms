@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import IconButton from '../IconButton';
+import { IconButton } from '../Button';
 
-const CloseBtn = styled(IconButton).attrs({ name: 'close' })`
+const CloseBtn = styled(IconButton)`
   align-self: flex-start;
 `;
+
+CloseBtn.defaultProps = {
+  icon: 'close',
+};
 
 function CloseButton({ closeToast, ariaLabel }) {
   return (

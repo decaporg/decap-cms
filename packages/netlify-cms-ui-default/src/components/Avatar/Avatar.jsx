@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 export default styled.div`
   border-radius: ${props => (props.size ? props.size : 32)}px;

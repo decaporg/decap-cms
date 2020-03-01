@@ -1,8 +1,8 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, select } from '@storybook/addon-knobs';
+import { withKnobs, boolean, select, text } from '@storybook/addon-knobs';
 
-import { Button, ButtonGroup, IconButton } from '.';
+import { Button, ButtonGroup, IconButton, AvatarButton } from '.';
 import { iconComponents } from '../Icon/Icon';
 
 export default {
@@ -54,7 +54,7 @@ export const _IconButton = () => {
             default: null,
             ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
           },
-          null
+          null,
         )}
         size={select('size', { sm: 'sm', 'md (default)': null, lg: 'lg' }, null)}
         active={boolean('active', false)}
@@ -66,4 +66,21 @@ export const _IconButton = () => {
 
 _IconButton.story = {
   name: 'IconButton',
+};
+
+export const _AvatarButton = () => {
+  return (
+    <ButtonGroup>
+      <AvatarButton
+        src={text('src', 'https://randomuser.me/api/portraits/men/94.jpg')}
+        size={select('size', { sm: 'sm', 'md (default)': null, lg: 'lg' }, null)}
+        active={boolean('active', false)}
+        onClick={action('onClick')}
+      />
+    </ButtonGroup>
+  );
+};
+
+_AvatarButton.story = {
+  name: 'AvatarButton',
 };

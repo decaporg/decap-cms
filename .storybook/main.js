@@ -10,7 +10,7 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-docs',
     '@storybook/addon-viewport',
-    '@storybook/addon-storysource',
+    // '@storybook/addon-storysource',
     'storybook-dark-mode',
   ],
 };

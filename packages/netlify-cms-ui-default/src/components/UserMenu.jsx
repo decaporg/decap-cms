@@ -1,21 +1,6 @@
 import React, { useState } from 'react';
-import styled from '@emotion/styled';
-import Avatar from './Avatar';
+import { AvatarButton } from './Button';
 import { Menu, MenuItem } from './Menu';
-
-const StyledAvatar = styled(Avatar)`
-  margin-left: 0.5rem;
-  cursor: pointer;
-  transition: 200ms;
-  ${({ active, theme }) =>
-    active ? `box-shadow: 0 0 0 4px ${theme.color.elevatedSurfaceHighlight}` : ''}
-  &:hover {
-    opacity: 0.9;
-  }
-  &:active {
-    opacity: 0.75;
-  }
-`;
 
 const UserMenu = ({ setDarkMode, darkMode }) => {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
@@ -26,7 +11,7 @@ const UserMenu = ({ setDarkMode, darkMode }) => {
 
   return (
     <>
-      <StyledAvatar
+      <AvatarButton
         src="https://randomuser.me/api/portraits/men/1.jpg"
         onClick={e => setUserMenuAnchorEl(e.currentTarget)}
         active={!!userMenuAnchorEl}
