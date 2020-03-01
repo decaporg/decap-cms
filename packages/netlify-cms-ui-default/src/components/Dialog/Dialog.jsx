@@ -225,6 +225,7 @@ class Dialog extends React.Component {
       : this.props.position
       ? { ...this.props.position }
       : { x: 'center', y: 'center' };
+    console.log({ isMobile, position });
 
     let direction = null;
 
@@ -254,10 +255,10 @@ class Dialog extends React.Component {
         onEscapeKeyDown={onEscapeKeyDown}
         onClose={onClose}
         open={open}
-        position={position}
         role="dialog"
         zIndex={zIndex}
         {...other}
+        position={position}
       >
         <TransitionComponent
           appear

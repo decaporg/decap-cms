@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 
+// TODO: add name prop and display two initials
+
 export default styled.div`
   border-radius: ${props => (props.size ? props.size : 32)}px;
   width: ${props => (props.size ? props.size : 32)}px;

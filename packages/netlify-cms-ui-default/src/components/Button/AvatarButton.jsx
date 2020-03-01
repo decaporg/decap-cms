@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import Avatar from '../Avatar';
 
 const AvatarButton = styled(Avatar)`
-  margin-left: 0.5rem;
   cursor: pointer;
   transition: 200ms;
   ${({ active, theme }) =>

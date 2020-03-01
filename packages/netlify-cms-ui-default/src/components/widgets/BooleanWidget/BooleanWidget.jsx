@@ -11,7 +11,10 @@ const BooleanWidget = ({ name, label, onChange, className, children, value }) =>
       onClick={() => (value ? onChange(false) : onChange(true))}
       className={className}
     >
-      <ToggleSwitch onChange={() => (value ? onChange(false) : onChange(true))} checked={value} />
+      <ToggleSwitch
+        onChange={() => (value && onChange ? onChange(false) : onChange(true))}
+        checked={value}
+      />
       {children && children}
     </Field>
   );
