@@ -27,6 +27,8 @@ import {
   runWithLock,
   getBlobSHA,
   blobToFileObj,
+  contentKeyFromBranch,
+  generateContentKey,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
@@ -297,7 +299,7 @@ export default class GitLab implements Implementation {
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => this.api!.contentKeyFromBranch(branch)),
+        branches.map(branch => contentKeyFromBranch(branch)),
       );
 
     const readUnpublishedBranchFile = (contentKey: string) =>
@@ -314,7 +316,7 @@ export default class GitLab implements Implementation {
         this.loadEntryMediaFiles(branch, files),
     } = {},
   ) {
-    const contentKey = this.api!.generateContentKey(collection, slug);
+    const contentKey = generateContentKey(collection, slug);
     const data = await this.api!.readUnpublishedBranchFile(contentKey);
     const mediaFiles = await loadEntryMediaFiles(
       data.metaData.branch,

@@ -230,7 +230,9 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
      * mark nodes, if any.
      */
     const markType = markMap[node.type];
-    const marks = markType ? [...parentMarks, { type: markMap[node.type] }] : parentMarks;
+    const marks = markType
+      ? [...parentMarks.filter(({ type }) => type !== markType), { type: markType }]
+      : parentMarks;
 
     const children = flatMap(node.children, child => processMarkChild(child, marks));
 

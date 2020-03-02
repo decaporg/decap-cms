@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.2...netlify-cms-widget-markdown@2.9.3) (2020-02-19)
+
+
+### Bug Fixes
+
+* **widget-markdown:** don't add duplicate marks ([#3290](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3290)) ([2a0aef2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/2a0aef27d1c1c7eac146f890d896233262322c7f))
+
+
+
+
+
+## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.1...netlify-cms-widget-markdown@2.9.2) (2020-02-17)
+
+
+### Bug Fixes
+
+* **widget-markdown:** allow shortcodes as list items ([#3278](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3278)) ([cdd3747](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/cdd3747850cca77f61b663cbfeda9765a72eb8d0))
+
+
+
+
+
+## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.0...netlify-cms-widget-markdown@2.9.1) (2020-02-13)
+
+
+### Bug Fixes
+
+* change getAsset to not return a promise ([#3232](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3232)) ([ab685e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/ab685e85943d1ac48142f157683bc2126fd6af16))
+
+
+
+
+
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.4...netlify-cms-widget-markdown@2.9.0) (2020-02-10)
+
+
+### Features
+
+* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([a015d1d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/a015d1d92a4b1c0130c44fcef1c9ecdb157a0f07))
+
+
+
+
+
 ## [2.8.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.8.3...netlify-cms-widget-markdown@2.8.4) (2020-02-06)
 
 

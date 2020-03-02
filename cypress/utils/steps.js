@@ -73,8 +73,8 @@ function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
   assertNotification(notifications.updated);
 }
 
-function publishWorkflowEntry({ title }) {
-  cy.contains('h2', workflowStatus.ready)
+function publishWorkflowEntry({ title }, timeout) {
+  cy.contains('h2', workflowStatus.ready, { timeout })
     .parent()
     .within(() => {
       cy.contains('a', title)
@@ -200,7 +200,7 @@ function flushClockAndSave() {
 
 function populateEntry(entry, onDone = flushClockAndSave) {
   const keys = Object.keys(entry);
-  for (let key of keys) {
+  for (const key of keys) {
     const value = entry[key];
     if (key === 'body') {
       cy.getMarkdownEditor()

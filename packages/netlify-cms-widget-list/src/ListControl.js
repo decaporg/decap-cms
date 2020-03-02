@@ -186,7 +186,7 @@ export default class ListControl extends React.Component {
 
   handleAddType = (type, typeKey) => {
     const { value, onChange } = this.props;
-    let parsedValue = fromJS(this.mixedDefault(typeKey, type));
+    const parsedValue = fromJS(this.mixedDefault(typeKey, type));
     this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
     onChange((value || List()).push(parsedValue));
   };
@@ -273,7 +273,10 @@ export default class ListControl extends React.Component {
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
 
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
-    const parsedMetadata = metadata && { [collectionName]: metadata.removeIn(metadataRemovePath) };
+    const parsedMetadata =
+      metadata && !metadata.isEmpty()
+        ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
+        : metadata;
 
     // Removed item object index is the last item in the list
     const removedItemIndex = value.count() - 1;

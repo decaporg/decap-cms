@@ -23,7 +23,10 @@ const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
 const templateVariablePattern = `{{(${templateContentPattern})}}`;
 
-export const keyToPathArray = (key: string) => {
+export const keyToPathArray = (key?: string) => {
+  if (!key) {
+    return [];
+  }
   const parts = [];
   const separator = '';
   const chars = key.split(separator);

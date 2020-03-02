@@ -160,6 +160,9 @@ const en = {
     },
   },
   ui: {
+    default: {
+      goBackToSite: 'Go back to site',
+    },
     errorBoundary: {
       title: 'Error',
       details: "There's been an error - please ",

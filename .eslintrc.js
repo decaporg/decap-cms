@@ -30,6 +30,12 @@ module.exports = {
     'emotion/styled-import': 'error',
     'require-atomic-updates': [0],
     'object-shorthand': ['error', 'always'],
+    'prefer-const': [
+      'error',
+      {
+        destructuring: 'all',
+      },
+    ],
   },
   plugins: ['babel', 'emotion', 'cypress'],
   settings: {

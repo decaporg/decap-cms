@@ -74,7 +74,7 @@ export function querySuccess(namespace, collection, searchFields, searchTerm, re
 
 export function queryFailure(namespace, collection, searchFields, searchTerm, error) {
   return {
-    type: QUERY_SUCCESS,
+    type: QUERY_FAILURE,
     payload: {
       namespace,
       collection,

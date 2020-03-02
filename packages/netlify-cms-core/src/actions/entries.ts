@@ -5,7 +5,7 @@ import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectFields } from '../reducers/collections';
+import { selectFields, updateFieldByKey } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
@@ -219,10 +219,15 @@ export function discardDraft() {
   return { type: DRAFT_DISCARD };
 }
 
-export function changeDraftField(field: string, value: string, metadata: Record<string, unknown>) {
+export function changeDraftField(
+  field: string,
+  value: string,
+  metadata: Record<string, unknown>,
+  entries: EntryMap[],
+) {
   return {
     type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata },
+    payload: { field, value, metadata, entries },
   };
 }
 
@@ -297,14 +302,14 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
               path: file.path,
               file: file.file,
               url: file.url,
-              folder: file.folder,
+              field: file.field,
             });
           } else {
             return getAsset({
               collection,
               entry: fromJS(entry),
               path: file.path,
-              folder: file.folder,
+              field: file.field,
             })(dispatch, getState);
           }
         }),
@@ -483,9 +488,37 @@ export function traverseCollectionCursor(collection: Collection, action: string)
   };
 }
 
-export function createEmptyDraft(collection: Collection) {
+const escapeHtml = (unsafe: string) => {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+};
+
+const processValue = (unsafe: string) => {
+  if (['true', 'True', 'TRUE'].includes(unsafe)) {
+    return true;
+  }
+  if (['false', 'False', 'FALSE'].includes(unsafe)) {
+    return false;
+  }
+
+  return escapeHtml(unsafe);
+};
+
+export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const dataFields = createEmptyDraftData(collection.get('fields', List()));
+    const params = new URLSearchParams(search);
+    params.forEach((value, key) => {
+      collection = updateFieldByKey(collection, key, field =>
+        field.set('default', processValue(value)),
+      );
+    });
+
+    const fields = collection.get('fields', List());
+    const dataFields = createEmptyDraftData(fields);
 
     let mediaFiles = [] as MediaFile[];
     if (!collection.has('media_folder')) {
@@ -499,12 +532,21 @@ export function createEmptyDraft(collection: Collection) {
 }
 
 interface DraftEntryData {
-  [name: string]: string | null | DraftEntryData | DraftEntryData[] | (string | DraftEntryData)[];
+  [name: string]:
+    | string
+    | null
+    | boolean
+    | DraftEntryData
+    | DraftEntryData[]
+    | (string | DraftEntryData | boolean)[];
 }
 
 export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
   return fields.reduce(
-    (reduction: DraftEntryData | string | undefined, value: EntryField | undefined) => {
+    (
+      reduction: DraftEntryData | string | undefined | boolean,
+      value: EntryField | undefined | boolean,
+    ) => {
       const acc = reduction as DraftEntryData;
       const item = value as EntryField;
       const subfields = item.get('field') || item.get('fields');
@@ -557,12 +599,15 @@ export async function getMediaAssets({
   entry: EntryMap;
   dispatch: Dispatch;
 }) {
-  const filesArray = entry.get('mediaFiles').toJS() as MediaFile[];
+  const filesArray = entry.get('mediaFiles').toArray();
   const assets = await Promise.all(
     filesArray
-      .filter(file => file.draft)
+      .filter(file => file.get('draft'))
       .map(file =>
-        getAsset({ collection, entry, path: file.path, folder: file.folder })(dispatch, getState),
+        getAsset({ collection, entry, path: file.get('path'), field: file.get('field') })(
+          dispatch,
+          getState,
+        ),
       ),
   );
 

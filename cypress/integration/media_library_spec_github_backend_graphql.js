@@ -5,7 +5,7 @@ import * as specUtils from './common/spec_utils';
 const backend = 'github';
 
 describe('GitHub Backend Media Library - GraphQL API', () => {
-  let taskResult = { data: {} };
+  const taskResult = { data: {} };
 
   before(() => {
     specUtils.before(

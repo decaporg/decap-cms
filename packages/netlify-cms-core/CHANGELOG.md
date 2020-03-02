@@ -3,6 +3,113 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.20.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.20.0...netlify-cms-core@2.20.1) (2020-02-27)
+
+
+### Bug Fixes
+
+* preserve unknown fields value ([#3314](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3314)) ([908c42f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/908c42fb588ce87f4e197df65db2d238f34837f4))
+* **core:** improve editor buttons for smaller screens ([#3327](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3327)) ([53365b7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/53365b73701c872948a1e65da00a655e0718e8cb))
+
+
+
+
+
+# [2.20.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.19.1...netlify-cms-core@2.20.0) (2020-02-25)
+
+
+### Features
+
+* sanitize media filenames according to global slug setting ([#3315](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3315)) ([8874769](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8874769b317e6e364c881039c0c9308826f49cff))
+
+
+
+
+
+## [2.19.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.19.0...netlify-cms-core@2.19.1) (2020-02-25)
+
+
+### Bug Fixes
+
+* **backend-github:** improve workflow migration edge cases/messaging ([#3319](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3319)) ([684b79e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/684b79e43bebb63ce1e844eae5c8c0e76087687b))
+
+
+
+
+
+# [2.19.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.4...netlify-cms-core@2.19.0) (2020-02-22)
+
+
+### Features
+
+* Add 'hero' as inferable image field ([#3294](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3294)) ([971926c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/971926c36941694acdc37649494f1f62f3f5f40e))
+
+
+
+
+
+## [2.18.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.3...netlify-cms-core@2.18.4) (2020-02-14)
+
+
+### Bug Fixes
+
+* **core:** report config error when external media lib is missing ([#3255](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3255)) ([1d63038](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1d63038e78a6db1e7a061b5ba447f951d892595a))
+* dispatch QUERY_FAILURE on query failure ([#3243](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3243)) ([2447f9c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2447f9c311db3c5db35ce6501c0380d304709d50))
+
+
+
+
+
+## [2.18.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.2...netlify-cms-core@2.18.3) (2020-02-13)
+
+
+### Bug Fixes
+
+* change getAsset to not return a promise ([#3232](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3232)) ([ab685e8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ab685e85943d1ac48142f157683bc2126fd6af16))
+
+
+
+
+
+## [2.18.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.1...netlify-cms-core@2.18.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* handle missing inferred title field ([#3239](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3239)) ([ca8cf71](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ca8cf71ab0d479547c649fb1fce8e72db6207c27))
+
+
+
+
+
+## [2.18.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.18.0...netlify-cms-core@2.18.1) (2020-02-11)
+
+
+### Bug Fixes
+
+* **core:** use correct name for edit route param ([#3236](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3236)) ([cfd2fed](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/cfd2fed494dc707e03ade086009ebfdd27578477))
+
+
+
+
+
+# [2.18.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.17.0...netlify-cms-core@2.18.0) (2020-02-10)
+
+
+### Features
+
+* **proxy-server:** add local fs middleware and make it the default ([#3217](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3217)) ([31dbd72](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/31dbd72273b723bb6bbb551641a6e4bcc1f0314b))
+* field based media/public folders ([#3208](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3208)) ([97bc0c8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/97bc0c8dc489e736f89d748ba832d78400fe4332))
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([a015d1d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a015d1d92a4b1c0130c44fcef1c9ecdb157a0f07))
+
+
+
+
+
 # [2.17.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.16.0...netlify-cms-core@2.17.0) (2020-02-06)
 
 

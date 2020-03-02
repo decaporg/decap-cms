@@ -32,7 +32,6 @@ import {
 import { loadDeployPreview } from 'Actions/deploys';
 import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from 'Reducers';
-import { getAsset } from 'Actions/media';
 import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import EditorInterface from './EditorInterface';
@@ -46,7 +45,6 @@ const navigateToEntry = (collectionName, slug) =>
 
 export class Editor extends React.Component {
   static propTypes = {
-    boundGetAsset: PropTypes.func.isRequired,
     changeDraftField: PropTypes.func.isRequired,
     changeDraftFieldValidation: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
@@ -80,6 +78,7 @@ export class Editor extends React.Component {
     user: ImmutablePropTypes.map.isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string,
+      search: PropTypes.string,
     }),
     hasChanged: PropTypes.bool,
     t: PropTypes.func.isRequired,
@@ -106,7 +105,7 @@ export class Editor extends React.Component {
     retrieveLocalBackup(collection, slug);
 
     if (newEntry) {
-      createEmptyDraft(collection);
+      createEmptyDraft(collection, this.props.location.search);
     } else {
       loadEntry(collection, slug);
     }
@@ -211,7 +210,7 @@ export class Editor extends React.Component {
       const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
       this.createDraft(deserializedEntry, fieldsMetaData);
     } else if (newEntry) {
-      prevProps.createEmptyDraft(collection);
+      prevProps.createEmptyDraft(collection, this.props.location.search);
     }
   }
 
@@ -227,6 +226,11 @@ export class Editor extends React.Component {
 
   createDraft = (entry, metadata) => {
     if (entry) this.props.createDraftFromEntry(entry, metadata);
+  };
+
+  handleChangeDraftField = (field, value, metadata) => {
+    const entries = [this.props.unPublishedEntry, this.props.publishedEntry].filter(Boolean);
+    this.props.changeDraftField(field, value, metadata, entries);
   };
 
   handleChangeStatus = newStatusName => {
@@ -379,9 +383,7 @@ export class Editor extends React.Component {
       entry,
       entryDraft,
       fields,
-      boundGetAsset,
       collection,
-      changeDraftField,
       changeDraftFieldValidation,
       user,
       hasChanged,
@@ -420,12 +422,11 @@ export class Editor extends React.Component {
       <EditorInterface
         draftKey={draftKey}
         entry={entryDraft.get('entry')}
-        getAsset={boundGetAsset}
         collection={collection}
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
-        onChange={changeDraftField}
+        onChange={this.handleChangeDraftField}
         onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
@@ -467,11 +468,13 @@ function mapStateToProps(state, ownProps) {
   const useOpenAuthoring = globalUI.get('useOpenAuthoring', false);
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
-  const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
-  const currentStatus = unpublishedEntry && unpublishedEntry.getIn(['metaData', 'status']);
+  const unPublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
+  const publishedEntry = selectEntry(state, collectionName, slug);
+  const currentStatus = unPublishedEntry && unPublishedEntry.getIn(['metaData', 'status']);
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
   const draftKey = entryDraft.get('key');
+
   return {
     collection,
     collections,
@@ -491,6 +494,8 @@ function mapStateToProps(state, ownProps) {
     deployPreview,
     localBackup,
     draftKey,
+    publishedEntry,
+    unPublishedEntry,
   };
 }
 
@@ -515,25 +520,6 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
-  boundGetAsset: (collection, entry) => (dispatch, getState) => (path, folder) => {
-    return getAsset({ collection, entry, path, folder })(dispatch, getState);
-  },
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(
-      stateProps.collection,
-      stateProps.entryDraft.get('entry'),
-    ),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(withWorkflow(translate()(Editor)));
+export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));

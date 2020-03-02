@@ -13,7 +13,8 @@ class PreviewHOC extends React.Component {
     return (
       isWidgetContainer ||
       this.props.value !== nextProps.value ||
-      this.props.fieldsMetaData !== nextProps.fieldsMetaData
+      this.props.fieldsMetaData !== nextProps.fieldsMetaData ||
+      this.props.getAsset !== nextProps.getAsset
     );
   }
 

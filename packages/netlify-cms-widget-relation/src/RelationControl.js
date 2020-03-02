@@ -114,7 +114,7 @@ export default class RelationControl extends React.Component {
   };
 
   parseNestedFields = (targetObject, field) => {
-    let nestedField = field.split('.');
+    const nestedField = field.split('.');
     let f = targetObject;
     for (let i = 0; i < nestedField.length; i++) {
       f = f[nestedField[i]];
@@ -157,7 +157,10 @@ export default class RelationControl extends React.Component {
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
 
     query(forID, collection, searchFieldsArray, term).then(({ payload }) => {
-      let options = this.parseHitOptions(payload.response.hits);
+      let options =
+        payload.response && payload.response.hits
+          ? this.parseHitOptions(payload.response.hits)
+          : [];
 
       if (!this.allOptions && !term) {
         this.allOptions = options;

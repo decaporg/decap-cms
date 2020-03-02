@@ -98,7 +98,7 @@ const entriesFromDiffs = async (
     );
     const entryPath = data.metaData.objects.entry.path;
     const [entry] = await runOnBranch(git, cmsBranch, () =>
-      entriesFromFiles(repoPath, [entryPath]),
+      entriesFromFiles(repoPath, [{ path: entryPath }]),
     );
 
     const rawDiff = await git.diff([branch, cmsBranch, '--', entryPath]);
@@ -218,7 +218,10 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
           const { folder, extension, depth } = payload;
           const entries = await runOnBranch(git, branch, () =>
             listRepoFiles(repoPath, folder, extension, depth).then(files =>
-              entriesFromFiles(repoPath, files),
+              entriesFromFiles(
+                repoPath,
+                files.map(file => ({ path: file })),
+              ),
             ),
           );
           res.json(entries);
@@ -227,10 +230,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
         case 'entriesByFiles': {
           const payload = body.params as EntriesByFilesParams;
           const entries = await runOnBranch(git, branch, () =>
-            entriesFromFiles(
-              repoPath,
-              payload.files.map(file => file.path),
-            ),
+            entriesFromFiles(repoPath, payload.files),
           );
           res.json(entries);
           break;
@@ -238,7 +238,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
         case 'getEntry': {
           const payload = body.params as GetEntryParams;
           const [entry] = await runOnBranch(git, branch, () =>
-            entriesFromFiles(repoPath, [payload.path]),
+            entriesFromFiles(repoPath, [{ path: payload.path }]),
           );
           res.json(entry);
           break;

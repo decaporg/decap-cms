@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
-import { WidgetPreviewContainer, Asset } from 'netlify-cms-ui-legacy';
+import { WidgetPreviewContainer } from 'netlify-cms-ui-legacy';
 
-const FileLink = styled(({ value: href, path }) => (
+const FileLink = styled(({ href, path }) => (
   <a href={href} rel="noopener noreferrer" target="_blank">
     {path}
   </a>
@@ -12,25 +12,22 @@ const FileLink = styled(({ value: href, path }) => (
   display: block;
 `;
 
-const FileLinkAsset = ({ value, getAsset }) => {
-  return <Asset path={value} getAsset={getAsset} component={FileLink} />;
-};
-
-function FileLinkList({ values, getAsset }) {
+function FileLinkList({ values, getAsset, field }) {
   return (
     <div>
       {values.map(value => (
-        <FileLinkAsset key={value} value={value} getAsset={getAsset} />
+        <FileLink key={value} path={value} href={getAsset(value, field)} />
       ))}
     </div>
   );
 }
 
-function FileContent({ value, getAsset }) {
+function FileContent(props) {
+  const { value, getAsset, field } = props;
   if (Array.isArray(value) || List.isList(value)) {
-    return <FileLinkList values={value} getAsset={getAsset} />;
+    return <FileLinkList values={value} getAsset={getAsset} field={field} />;
   }
-  return <FileLinkAsset value={value} getAsset={getAsset} />;
+  return <FileLink key={value} path={value} href={getAsset(value, field)} />;
 }
 
 const FilePreview = props => (

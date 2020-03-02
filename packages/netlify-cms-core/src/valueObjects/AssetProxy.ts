@@ -1,21 +1,23 @@
+import { EntryField } from '../types/redux';
+
 interface AssetProxyArgs {
   path: string;
   url?: string;
   file?: File;
-  folder?: string;
+  field?: EntryField;
 }
 
 export default class AssetProxy {
   url: string;
   fileObj?: File;
   path: string;
-  folder?: string;
+  field?: EntryField;
 
-  constructor({ url, file, path, folder }: AssetProxyArgs) {
+  constructor({ url, file, path, field }: AssetProxyArgs) {
     this.url = url ? url : window.URL.createObjectURL(file);
     this.fileObj = file;
     this.path = path;
-    this.folder = folder;
+    this.field = field;
   }
 
   toString(): string {
@@ -38,6 +40,6 @@ export default class AssetProxy {
   }
 }
 
-export function createAssetProxy({ url, file, path, folder }: AssetProxyArgs): AssetProxy {
-  return new AssetProxy({ url, file, path, folder });
+export function createAssetProxy({ url, file, path, field }: AssetProxyArgs): AssetProxy {
+  return new AssetProxy({ url, file, path, field });
 }
