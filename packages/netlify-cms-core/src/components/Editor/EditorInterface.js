@@ -156,7 +156,6 @@ class EditorInterface extends Component {
       fields,
       fieldsMetaData,
       fieldsErrors,
-      getAsset,
       onChange,
       showDelete,
       onDelete,
@@ -218,7 +217,6 @@ class EditorInterface extends Component {
                 entry={entry}
                 fields={fields}
                 fieldsMetaData={fieldsMetaData}
-                getAsset={getAsset}
               />
             </PreviewPaneContainer>
           </StyledSplitPane>
@@ -297,7 +295,6 @@ EditorInterface.propTypes = {
   fields: ImmutablePropTypes.list.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   fieldsErrors: ImmutablePropTypes.map.isRequired,
-  getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   onPersist: PropTypes.func.isRequired,

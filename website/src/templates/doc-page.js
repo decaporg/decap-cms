@@ -4,12 +4,19 @@ import { graphql } from 'gatsby';
 import 'prismjs/themes/prism-tomorrow.css';
 
 import Layout from '../components/layout';
-import EditLink from '../components/edit-link';
-import Widgets from '../components/widgets';
 import DocsNav from '../components/docs-nav';
 import Container from '../components/container';
 import SidebarLayout from '../components/sidebar-layout';
+import EditLink from '../components/edit-link';
+import Widgets from '../components/widgets';
 import Markdown from '../components/markdown';
+
+function filenameFromPath(p) {
+  return p
+    .split('/')
+    .slice(-1)[0]
+    .split('.')[0];
+}
 
 const toMenu = (menu, nav) =>
   menu.map(group => ({
@@ -25,7 +32,7 @@ const DocsSidebar = ({ docsNav, location }) => (
 
 export const DocsTemplate = ({
   title,
-  editLinkPath,
+  filename,
   body,
   html,
   showWidgets,
@@ -33,15 +40,14 @@ export const DocsTemplate = ({
   showSidebar,
   docsNav,
   location,
+  group,
 }) => (
   <Container size="md">
-    <SidebarLayout
-      sidebar={<div>{showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}</div>}
-    >
+    <SidebarLayout sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}>
       <article data-docs-content>
-        {editLinkPath && <EditLink path={editLinkPath} />}
+        {filename && <EditLink collection={`docs_${group}`} filename={filename} />}
         <h1>{title}</h1>
-        <Markdown html={body || html} />
+        <Markdown body={body} html={html} />
         {showWidgets && <Widgets widgets={widgets} />}
       </article>
     </SidebarLayout>
@@ -49,22 +55,30 @@ export const DocsTemplate = ({
 );
 
 const DocPage = ({ data, location }) => {
-  const { nav, page, widgets, menu } = data;
+  const {
+    nav,
+    page: { frontmatter, html, fields },
+    widgets,
+    menu,
+  } = data;
+  const { title, group } = frontmatter;
 
   const docsNav = toMenu(menu.siteMetadata.menu.docs, nav);
   const showWidgets = location.pathname.indexOf('/docs/widgets') !== -1;
+  const filename = filenameFromPath(fields.path);
 
   return (
     <Layout>
-      <Helmet title={page.frontmatter.title} />
+      <Helmet title={title} />
       <DocsTemplate
-        title={page.frontmatter.title}
-        editLinkPath={page.fields.path}
-        html={page.html}
+        title={title}
+        filename={filename}
+        html={html}
         showWidgets={showWidgets}
         widgets={widgets}
         docsNav={docsNav}
         location={location}
+        group={group}
         showSidebar
       />
     </Layout>
@@ -79,6 +93,7 @@ export const pageQuery = graphql`
       }
       frontmatter {
         title
+        group
       }
       html
     }

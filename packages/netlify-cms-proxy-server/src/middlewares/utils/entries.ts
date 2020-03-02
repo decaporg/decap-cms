@@ -9,17 +9,26 @@ const sha256 = (buffer: Buffer) => {
     .digest('hex');
 };
 
-export const entriesFromFiles = async (repoPath: string, files: string[]) => {
+// normalize windows os path format
+const normalizePath = (path: string) => path.replace(/\\/g, '/');
+
+export const entriesFromFiles = async (
+  repoPath: string,
+  files: { path: string; label?: string }[],
+) => {
   return Promise.all(
     files.map(async file => {
       try {
-        const content = await fs.readFile(path.join(repoPath, file));
+        const content = await fs.readFile(path.join(repoPath, file.path));
         return {
           data: content.toString(),
-          file: { path: file, id: sha256(content) },
+          file: { path: normalizePath(file.path), label: file.label, id: sha256(content) },
         };
       } catch (e) {
-        return { data: null, file: { path: file, id: null } };
+        return {
+          data: null,
+          file: { path: normalizePath(file.path), label: file.label, id: null },
+        };
       }
     }),
   );
@@ -34,7 +43,7 @@ export const readMediaFile = async (repoPath: string, file: string) => {
     id,
     content: buffer.toString(encoding),
     encoding,
-    path: file,
+    path: normalizePath(file),
     name: path.basename(file),
   };
 };

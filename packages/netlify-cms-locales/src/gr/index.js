@@ -3,6 +3,9 @@ const gr = {
     login: 'Σύνδεση',
     loggingIn: 'Σύνδεση στο...',
     loginWithNetlifyIdentity: 'Σύνδεση μέσω Netlify',
+    loginWithBitbucket: 'Σύνδεση μέσω Bitbucket',
+    loginWithGitHub: 'Σύνδεση μέσω GitHub',
+    loginWithGitLab: 'Σύνδεση μέσω GitLab',
     errors: {
       email: 'Βεβαιωθείτε ότι έχετε εισαγάγει το email σας.',
       password: 'Παρακαλώ εισάγετε τον κωδικό πρόσβασής σας.',
@@ -44,6 +47,11 @@ const gr = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'προαιρετικός',
+      },
+    },
     editorControlPane: {
       widget: {
         required: 'Το %{fieldLabel} είναι απαραίτητο.',
@@ -106,6 +114,16 @@ const gr = {
       deployButtonLabel: 'Προβολή Live',
     },
     editorWidgets: {
+      image: {
+        choose: 'Επιλέξτε μια εικόνα',
+        chooseDifferent: 'Επιλέξτε διαφορετική εικόνα',
+        remove: 'Αφαιρέστε την εικόνα',
+      },
+      file: {
+        choose: 'Επιλέξτε ένα αρχείο',
+        chooseDifferent: 'Επιλέξτε διαφορετικό αρχείο',
+        remove: 'Αφαιρέστε το αρχείο',
+      },
       unknownControl: {
         noControl: "Δεν υπάρχει έλεγχος για το widget '%{widget}'.",
       },

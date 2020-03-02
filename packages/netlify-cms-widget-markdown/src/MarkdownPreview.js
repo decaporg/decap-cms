@@ -10,42 +10,13 @@ class MarkdownPreview extends React.Component {
     value: PropTypes.string,
   };
 
-  subscribed = true;
-
-  state = {
-    html: null,
-  };
-
-  async _renderHtml() {
-    const { value, getAsset, resolveWidget } = this.props;
-    if (value) {
-      const html = await markdownToHtml(value, { getAsset, resolveWidget });
-      if (this.subscribed) {
-        this.setState({ html });
-      }
-    }
-  }
-
-  componentDidMount() {
-    this._renderHtml();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value || prevProps.getAsset !== this.props.getAsset) {
-      this._renderHtml();
-    }
-  }
-
-  componentWillUnmount() {
-    this.subscribed = false;
-  }
-
   render() {
-    const { html } = this.state;
-
-    if (html === null) {
+    const { value, getAsset, resolveWidget } = this.props;
+    if (value === null) {
       return null;
     }
+
+    const html = markdownToHtml(value, { getAsset, resolveWidget });
 
     return <WidgetPreviewContainer dangerouslySetInnerHTML={{ __html: html }} />;
   }

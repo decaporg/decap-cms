@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-ui-legacy",
   "description": "Legacy UI components for Netlify CMS.",
-  "version": "2.8.0",
+  "version": "2.9.1",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-legacy",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",

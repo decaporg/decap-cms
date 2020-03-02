@@ -90,6 +90,7 @@ const schema = ({ voidCodeBlock } = {}) => ({
             { type: 'numbered-list' },
             { type: 'thematic-break' },
             { type: 'table' },
+            { type: 'shortcode' },
           ],
         },
       ],
@@ -101,45 +102,6 @@ const schema = ({ voidCodeBlock } = {}) => ({
     {
       match: [{ object: 'block', type: 'list-item' }],
       parent: [{ type: 'bulleted-list' }, { type: 'numbered-list' }],
-      /*
-      normalize: (editor, error) => {
-        switch (error.code) {
-          // If a list item is wrapped in something other than a list, wrap it
-          // in a list. This is only known to happen when toggling blockquote
-          // with multiple list items selected.
-          case 'parent_type_invalid': {
-            const parent = editor.value.document.getParent(error.node.key)
-            const grandparent = editor.value.document.getParent(parent.key)
-            console.log(editor.value.blocks)
-
-            if (
-              !editor.everyBlock('list-item') ||
-              !editor.areSiblings(editor.value.blocks) ||
-              !['bulleted-list', 'numbered-list'].includes(grandparent.type)
-            ) {
-              return;
-            }
-
-            editor.withoutNormalizing(() => {
-              const entireListSelected = editor.value.blocks.length === parent.nodes.length;
-              editor.setNodeByKey(parent.key, grandparent.type);
-
-              console.log(entireListSelected)
-              console.log(JSON.stringify(editor.value.document.toJS(), null, 2))
-              // Wrap the entire list if all list items are selected
-              if (entireListSelected) {
-                editor.setNodeByKey(grandparent.key, parent.type)
-              } else {
-                editor
-                  .wrapBlockByKey(parent.key, parent.type)
-                  .wrapBlockByKey(grandparent.key, 'list-item');
-              }
-            })
-            return;
-          }
-        }
-      },
-      */
     },
 
     /**

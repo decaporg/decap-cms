@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/core';
 
-const EditLink = ({ path }) => (
+const EditLink = ({ collection, filename }) => (
   <div
     css={css`
       float: right;
@@ -15,7 +15,7 @@ const EditLink = ({ path }) => (
       }
     `}
   >
-    <a href={`https://github.com/netlify/netlify-cms/blob/master/website/content/${path}`}>
+    <a href={`/admin/#/edit/${collection}/${filename}`} target="_blank" rel="noopener noreferrer">
       <svg
         version="1.1"
         id="pencil"

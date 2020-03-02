@@ -59,7 +59,7 @@ The control component receives one (1) callback as a prop: `onChange`.
 * onChange (required): Should be called when the users changes the current value. It will ultimately end up updating the EntryDraft object in the Redux Store, thus updating the preview component.
 * onAddAsset & onRemoveAsset (optionals): Should be invoked with an `AssetProxy` value object if the field accepts file uploads for media (images, for example). `onAddAsset` will get the current media stored in the Redux state tree while `onRemoveAsset` will remove it. AssetProxy objects are stored in the `Medias` object and referenced in the `EntryDraft` object on the state tree.
 
-Both control and preview widgets receive a `getAsset` selector via props. Displaying the media (or its URI) for the user should always be done via `getAsset`, as it returns a Promise that resolves to an AssetProxy that can return the correct value for both medias already persisted on the server and cached media not yet uploaded.
+Both control and preview widgets receive a `getAsset` selector via props. Displaying the media (or its URI) for the user should always be done via `getAsset`, as it returns an AssetProxy that can return the correct value for both medias already persisted on the server and cached media not yet uploaded.
 
 The actual persistence of the content and medias inserted into the control component is delegated to the backend implementation. The backend will be called with the updated values and a list of assetProxy objects for each field of the entry, and should return a promise that can resolve into the persisted entry object and the list of the persisted media URIs.
 

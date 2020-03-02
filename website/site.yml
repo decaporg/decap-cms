@@ -1,0 +1,16 @@
+menu:
+  docs:
+    - name: start
+      title: Quick Start
+    - name: features
+      title: Features
+    - name: reference
+      title: Reference
+    - name: media
+      title: Media
+    - name: guides
+      title: Guides
+    - name: customization
+      title: Customization
+    - name: contributing
+      title: Contributing

@@ -33,6 +33,11 @@ const es = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'opcional',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} es obligatorio.',
@@ -88,6 +93,16 @@ const es = {
       deployButtonLabel: 'Ver publicación',
     },
     editorWidgets: {
+      image: {
+        choose: 'Elige una imagen',
+        chooseDifferent: 'Elige una imagen diferente',
+        remove: 'Quita la imagen',
+      },
+      file: {
+        choose: 'Escoge un archivo',
+        chooseDifferent: 'Elige un archivo diferente',
+        remove: 'Remover archivo',
+      },
       unknownControl: {
         noControl: "No existe un control para el widget '%{widget}'.",
       },
