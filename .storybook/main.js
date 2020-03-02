@@ -10,7 +10,15 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-docs',
     '@storybook/addon-viewport',
-    // '@storybook/addon-storysource',
+    '@storybook/addon-storysource',
     'storybook-dark-mode',
   ],
+  webpackFinal: config => {
+    config.module.rules.push({
+      test: /(story|stories).(js|jsx|mdx)/,
+      loaders: [require.resolve('@storybook/source-loader')],
+      enforce: 'pre',
+    });
+    return config;
+  },
 };
