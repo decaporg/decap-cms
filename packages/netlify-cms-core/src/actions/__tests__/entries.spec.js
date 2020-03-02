@@ -61,17 +61,17 @@ describe('entries', () => {
       const store = mockStore({ mediaLibrary: fromJS({ files: [] }) });
 
       const collection = fromJS({
-        fields: [{ name: 'title' }],
+        fields: [{ name: 'title' }, { name: 'boolean' }],
       });
 
-      return store.dispatch(createEmptyDraft(collection, '?title=title')).then(() => {
+      return store.dispatch(createEmptyDraft(collection, '?title=title&boolean=True')).then(() => {
         const actions = store.getActions();
         expect(actions).toHaveLength(1);
 
         expect(actions[0]).toEqual({
           payload: {
             collection: undefined,
-            data: { title: 'title' },
+            data: { title: 'title', boolean: true },
             isModification: null,
             label: null,
             mediaFiles: fromJS([]),

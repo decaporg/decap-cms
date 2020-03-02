@@ -497,12 +497,23 @@ const escapeHtml = (unsafe: string) => {
     .replace(/'/g, '&#039;');
 };
 
+const processValue = (unsafe: string) => {
+  if (['true', 'True', 'TRUE'].includes(unsafe)) {
+    return true;
+  }
+  if (['false', 'False', 'FALSE'].includes(unsafe)) {
+    return false;
+  }
+
+  return escapeHtml(unsafe);
+};
+
 export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const params = new URLSearchParams(search);
     params.forEach((value, key) => {
       collection = updateFieldByKey(collection, key, field =>
-        field.set('default', escapeHtml(value)),
+        field.set('default', processValue(value)),
       );
     });
 
@@ -521,12 +532,21 @@ export function createEmptyDraft(collection: Collection, search: string) {
 }
 
 interface DraftEntryData {
-  [name: string]: string | null | DraftEntryData | DraftEntryData[] | (string | DraftEntryData)[];
+  [name: string]:
+    | string
+    | null
+    | boolean
+    | DraftEntryData
+    | DraftEntryData[]
+    | (string | DraftEntryData | boolean)[];
 }
 
 export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
   return fields.reduce(
-    (reduction: DraftEntryData | string | undefined, value: EntryField | undefined) => {
+    (
+      reduction: DraftEntryData | string | undefined | boolean,
+      value: EntryField | undefined | boolean,
+    ) => {
       const acc = reduction as DraftEntryData;
       const item = value as EntryField;
       const subfields = item.get('field') || item.get('fields');

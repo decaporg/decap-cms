@@ -95,7 +95,7 @@ export type EntryField = StaticallyTypedRecord<{
   types?: List<EntryField>;
   widget: string;
   name: string;
-  default: string | null;
+  default: string | null | boolean;
   media_folder?: string;
   public_folder?: string;
 }>;
