@@ -523,11 +523,7 @@ export default class API {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-    const { files: diffs } = await this.getDifferences(
-      this.branch,
-      pullRequest.head.sha,
-      this.repoURL,
-    );
+    const { files: diffs } = await this.getDifferences(this.branch, pullRequest.head.sha);
     // media files don't have a patch attribute, except svg files
     const { path, newFile } = diffs
       .filter(d => d.patch && !d.filename.endsWith('.svg'))
@@ -944,7 +940,10 @@ export default class API {
       }
     } else {
       // Entry is already on editorial review workflow - commit to existing branch
-      const { files: diffs } = await this.getDifferences(this.branch, branch, this.repoURL);
+      const { files: diffs } = await this.getDifferences(
+        this.branch,
+        await this.getHeadReference(branch),
+      );
 
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
@@ -964,16 +963,28 @@ export default class API {
     }
   }
 
-  async getDifferences(from: string, to: string, repoURL: string) {
-    const result: Octokit.ReposCompareCommitsResponse = await this.request(
-      `${repoURL}/compare/${from}...${to}`,
-    );
-    return result;
+  async getDifferences(from: string, to: string) {
+    const attempts = 3;
+    // retry this as sometimes GitHub returns an initial 404 on cross repo compare
+    for (let i = 1; i <= attempts; i++) {
+      try {
+        const result: Octokit.ReposCompareCommitsResponse = await this.request(
+          `${this.originRepoURL}/compare/${from}...${to}`,
+        );
+        return result;
+      } catch (e) {
+        if (i === attempts) {
+          throw e;
+        }
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+    throw new APIError('Not Found', 404, API_NAME);
   }
 
   async rebaseSingleCommit(baseCommit: GitHubCompareCommit, commit: GitHubCompareCommit) {
     // first get the diff between the commits
-    const result = await this.getDifferences(commit.parents[0].sha, commit.sha, this.repoURL);
+    const result = await this.getDifferences(commit.parents[0].sha, commit.sha);
     const files = getTreeFiles(result.files as GitHubCompareFiles);
 
     // create a tree with baseCommit as the base with the diff applied
@@ -1024,7 +1035,6 @@ export default class API {
       const { base_commit: baseCommit, commits } = await this.getDifferences(
         this.branch,
         await this.getHeadReference(branch),
-        this.originRepoURL,
       );
       // Rebase the branch based on the diff
       const rebasedHead = await this.rebaseCommits(baseCommit, commits);
@@ -1066,7 +1076,7 @@ export default class API {
       } else if (newStatus === 'pending_review') {
         const branch = branchFromContentKey(contentKey);
         // get the first commit message as the pr title
-        const diff = await this.getDifferences(this.branch, branch, this.repoURL);
+        const diff = await this.getDifferences(this.branch, await this.getHeadReference(branch));
         const title = diff.commits[0]?.commit?.message || API.DEFAULT_COMMIT_MESSAGE;
         await this.createPR(title, branch);
       }
@@ -1235,11 +1245,7 @@ export default class API {
   }
 
   async forceMergePR(pullRequest: GitHubPull) {
-    const result = await this.getDifferences(
-      pullRequest.base.sha,
-      pullRequest.head.sha,
-      this.repoURL,
-    );
+    const result = await this.getDifferences(pullRequest.base.sha, pullRequest.head.sha);
     const files = getTreeFiles(result.files as GitHubCompareFiles);
 
     let commitMessage = 'Automatically generated. Merged on Netlify CMS\n\nForce merge of:';
