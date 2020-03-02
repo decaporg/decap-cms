@@ -91,6 +91,7 @@ export const _MenuItem = () => {
           )}
           type={select('type', { default: null, success: 'success', danger: 'danger' }, null)}
           selected={boolean('selected', false)}
+          disabled={boolean('disabled', false)}
         >
           Menu Item
         </MenuItem>

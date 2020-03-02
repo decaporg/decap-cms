@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import Button from './Button';
-import Tree from './Tree';
-
-import { Menu, MenuItem } from './Menu';
+import { Button } from '../../Button';
+import Tree from '../../Tree';
+import { Menu, MenuItem } from '../../Menu';
 
 const ListItem = styled.div`
   margin-left: -1rem;
@@ -48,12 +47,15 @@ const ListWidgetItem = ({
   labelSingular,
   index,
   item,
+  items,
   fields,
   onDelete,
-  onAddAfterClick,
+  addListItem,
+  moveListItem,
   handleChange,
   toggleExpand,
   last,
+  className,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [treeType, setTreeType] = useState(null);
@@ -67,11 +69,11 @@ const ListWidgetItem = ({
   }
 
   return (
-    <ListItem>
+    <ListItem className={className}>
       <Tree
         onExpandToggle={() => toggleExpand(index)}
         expanded={itemExpanded}
-        label={`${labelSingular} ${index + 1}`}
+        label={labelSingular}
         description={!!Object.keys(item).length && item[Object.keys(item)[0]]}
         type={treeType}
         onHeaderMouseEnter={() => setTreeType('success')}
@@ -88,21 +90,50 @@ const ListWidgetItem = ({
               onClick={() => onDelete(index)}
             />
             <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleClose}>
-              <MenuItem icon="arrow-up" onClick={handleClose}>
+              <MenuItem
+                icon="arrow-up"
+                onClick={() => {
+                  moveListItem(index, index - 1);
+                  handleClose();
+                }}
+                disabled={index === 0}
+              >
                 Move up
               </MenuItem>
-              <MenuItem icon="arrow-down" onClick={handleClose}>
+              <MenuItem
+                icon="arrow-down"
+                onClick={() => {
+                  moveListItem(index, index + 1);
+                  handleClose();
+                }}
+                disabled={index === items.length - 1}
+              >
                 Move down
               </MenuItem>
-              <MenuItem icon="plus-circle" onClick={handleClose}>
+              <MenuItem
+                icon="plus-circle"
+                onClick={() => {
+                  addListItem(index);
+                  handleClose();
+                }}
+              >
                 Add new above
               </MenuItem>
-              <MenuItem icon="plus-circle" onClick={handleClose}>
+              <MenuItem
+                icon="plus-circle"
+                onClick={() => {
+                  addListItem(index + 1);
+                  handleClose();
+                }}
+              >
                 Add new below
               </MenuItem>
               <MenuItem
                 icon="copy"
-                onClick={handleClose}
+                onClick={() => {
+                  addListItem(index + 1, item);
+                  handleClose();
+                }}
                 onMouseEnter={() => setTreeType('success')}
                 onMouseLeave={() => setTreeType(null)}
               >
@@ -130,7 +161,7 @@ const ListWidgetItem = ({
         <AddNewHoverZone>
           <AddNewIconButton
             icon="plus-circle"
-            onClick={() => onAddAfterClick(index)}
+            onClick={() => addListItem(index + 1)}
             iconSize="1.5rem"
           />
         </AddNewHoverZone>

@@ -49,7 +49,7 @@ const TextWidget = ({
         id={name}
         name={name}
         placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}
-        value={value}
+        value={value || ''}
         onChange={e => onChange(e.target.value)}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}

@@ -210,8 +210,6 @@ class Modal extends React.Component {
     const { exited } = this.state;
     const hasTransition = getHasTransition(this.props);
 
-    console.log({ position });
-
     if (!keepMounted && !open && (!hasTransition || exited)) return null;
 
     const childProps = {};

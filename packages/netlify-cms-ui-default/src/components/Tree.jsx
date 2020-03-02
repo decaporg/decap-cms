@@ -4,11 +4,9 @@ import { animated, useSpring, a } from 'react-spring';
 import { useMeasure, usePrevious } from '../utils/helpers';
 import Icon from './Icon';
 import Label from './Label';
-import Button from './Button';
+import { Button } from './Button';
 
-const ExpandButton = styled(Button).attrs(() => ({
-  transparent: true,
-}))`
+const ExpandButton = styled(Button)`
   padding: 0 0.5rem;
   margin-left: -0.75rem;
   &:hover,
@@ -19,13 +17,17 @@ const ExpandButton = styled(Button).attrs(() => ({
     background-color: transparent;
   }
 `;
-const ExpandIcon = styled(Icon).attrs(() => ({
-  name: 'chevron-right',
-}))`
+ExpandButton.defaultProps = {
+  transparent: true,
+};
+const ExpandIcon = styled(Icon)`
   vertical-align: middle;
   transform: rotate(${({ expanded }) => (expanded ? 90 : 0)}deg);
   transition: 200ms;
 `;
+ExpandIcon.defaultProps = {
+  name: 'chevron-right',
+};
 const StyledLabel = styled(Label)`
   margin-bottom: -0.25rem;
   cursor: move;
@@ -38,6 +40,8 @@ const TreeHeader = styled.div`
   cursor: move;
 `;
 const TreeHeaderText = styled.div`
+  font-family: ${({ theme }) => theme.fontFamily};
+  color: ${({ theme }) => theme.color.highEmphasis};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,14 +49,17 @@ const TreeHeaderText = styled.div`
   margin-left: -2px;
   padding: 0.75rem 0;
   height: 3.5rem;
+  box-sizing: border-box;
 `;
 const TreeHeaderDescription = styled.div`
+  font-family: ${({ theme }) => theme.fontFamily};
+  color: ${({ theme }) => theme.color.highEmphasis};
   margin-top: 0.375rem;
   transition: 200ms;
   margin-bottom: ${({ expanded }) => (expanded ? `-1.5rem` : `-0.5rem`)};
   opacity: ${({ expanded }) => (expanded ? `0` : `1`)};
 `;
-const TreeContentWrap = styled(animated.div)`
+export const TreeContentWrap = styled(animated.div)`
   margin-left: 0.25rem;
   box-shadow: inset 0 -1px 0 0 ${({ theme }) => theme.color.border},
     ${({ theme, type }) =>
@@ -89,10 +96,10 @@ const Tree = memo(
     const previous = usePrevious(expanded);
     const [bind, { height: viewHeight }] = useMeasure();
     const { opacity, transform } = useSpring({
-      from: { opacity: 0, transform: 'translate3d(0, 0, 0)' },
+      from: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
       to: {
         opacity: expanded ? 1 : 0,
-        transform: `translate3d(${expanded ? 0 : '0'}, 0, 0)`,
+        transform: `translate3d(0, 0, 0)`,
       },
     });
     const { height } = useSpring({
@@ -138,7 +145,9 @@ const Tree = memo(
           }}
           type={type}
         >
-          <TreeContent style={{ transform, opacity }} {...bind} children={children} />
+          <TreeContent style={{ transform, opacity }} {...bind}>
+            {children}
+          </TreeContent>
         </TreeContentWrap>
       </TreeWrap>
     );

@@ -41,6 +41,13 @@ export const MenuItemWrap = styled.div`
     `
         : ``}
   }
+  ${({ disabled }) =>
+    disabled
+      ? `
+    cursor: not-allowed;
+    opacity: 0.5;
+  `
+      : ``}
 `;
 
 const TextWrap = styled.div`
@@ -56,8 +63,14 @@ const SelectedIcon = styled(Icon)`
   vertical-align: middle;
 `;
 
-const MenuItem = ({ children, icon, onClick, selected, type, className, ...props }) => (
-  <MenuItemWrap onClick={onClick} type={type} className={className} {...props}>
+const MenuItem = ({ children, icon, onClick, selected, type, className, disabled, ...props }) => (
+  <MenuItemWrap
+    onClick={!disabled && onClick}
+    type={type}
+    className={className}
+    disabled={disabled}
+    {...props}
+  >
     {icon && <StyledIcon name={icon} />}
     <TextWrap>{children}</TextWrap>
     {selected && <SelectedIcon name="check" />}
