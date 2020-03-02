@@ -1,4 +1,2 @@
-import ToastContainer from './ToastContainer'
-import toast from './utils/toast'
-
-export { toast, ToastContainer }
+export { default as ToastContainer } from './ToastContainer';
+export { default as toast } from './utils/toast';

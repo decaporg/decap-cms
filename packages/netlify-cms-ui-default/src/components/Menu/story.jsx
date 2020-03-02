@@ -16,7 +16,7 @@ export const _Menu = () => {
     <div>
       <ButtonGroup>
         <Button onClick={e => setMenuAnchorEl(e.currentTarget)} hasMenu>
-          Menu trigger
+          Open Menu
         </Button>
       </ButtonGroup>
       <Menu
@@ -31,7 +31,7 @@ export const _Menu = () => {
               center: 'center',
               'right (default)': 'right',
             },
-            'right'
+            'right',
           ),
           y: select(
             'anchorOrigin.y',
@@ -40,7 +40,7 @@ export const _Menu = () => {
               center: 'center',
               'bottom (default)': 'bottom',
             },
-            'bottom'
+            'bottom',
           ),
         }}
         transformOrigin={{
@@ -51,7 +51,7 @@ export const _Menu = () => {
               center: 'center',
               'right (default)': 'right',
             },
-            'right'
+            'right',
           ),
           y: select(
             'transformOrigin.y',
@@ -60,7 +60,7 @@ export const _Menu = () => {
               center: 'center',
               bottom: 'bottom',
             },
-            'top'
+            'top',
           ),
         }}
       >
@@ -87,9 +87,10 @@ export const _MenuItem = () => {
               default: null,
               ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
             },
-            null
+            null,
           )}
           type={select('type', { default: null, success: 'success', danger: 'danger' }, null)}
+          selected={boolean('selected', false)}
         >
           Menu Item
         </MenuItem>

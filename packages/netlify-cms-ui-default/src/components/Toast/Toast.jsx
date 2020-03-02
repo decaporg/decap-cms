@@ -49,6 +49,7 @@ const ToastInside = styled.div`
   }
 `;
 const ToastContentWrap = styled.div`
+  font-family: ${({ theme }) => theme.fontFamily};
   display: flex;
 `;
 const ToastContent = styled.div`
@@ -60,6 +61,7 @@ const ToastActions = styled.div`
   padding: 12px 12px 12px 0;
 `;
 const Title = styled.h4`
+  font-family: ${({ theme }) => theme.fontFamily};
   color: ${({ theme }) => theme.color.highEmphasis};
   padding: 0;
   margin: 0 0 ${props => (props.hasContent ? '8px' : 0)} 0;
@@ -77,7 +79,10 @@ const IconWrap = styled.div`
       return color(theme.color.success['500'])
         .alpha(0.2)
         .string();
-    if (type === TYPE.WARNING) return '#FEF3E2';
+    if (type === TYPE.WARNING)
+      return color('#FFB81C')
+        .alpha(0.2)
+        .string();
     if (type === TYPE.ERROR)
       return color(theme.color.danger['500'])
         .alpha(0.2)
@@ -88,7 +93,7 @@ const IconWrap = styled.div`
   }};
   color: ${({ type, theme }) => {
     if (type === TYPE.SUCCESS) return theme.color.success[500];
-    if (type === TYPE.WARNING) return '#D07A00';
+    if (type === TYPE.WARNING) return '#FFB81C';
     if (type === TYPE.ERROR) return theme.color.danger[500];
     return theme.color.mediumEmphasis;
   }};

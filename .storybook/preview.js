@@ -5,6 +5,7 @@ import { themes } from '@storybook/theming';
 import { ThemeProvider } from 'emotion-theming';
 import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/theme';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { ToastContainer } from '../packages/netlify-cms-ui-default/src/components/Toast';
 
 import './preview.css';
 
@@ -163,5 +164,6 @@ const center = { display: 'flex', alignItems: 'center', justifyContent: 'center'
 addDecorator(renderStory => (
   <ThemeWrapper>
     <div style={{ ...fill, ...center }}>{renderStory()}</div>
+    <ToastContainer />
   </ThemeWrapper>
 ));

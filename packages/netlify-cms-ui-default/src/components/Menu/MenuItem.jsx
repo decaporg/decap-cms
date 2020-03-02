@@ -49,9 +49,11 @@ const TextWrap = styled.div`
 
 const StyledIcon = styled(Icon)`
   margin-right: 0.75rem;
+  vertical-align: middle;
 `;
 const SelectedIcon = styled(Icon)`
   margin-left: 0.75rem;
+  vertical-align: middle;
 `;
 
 const MenuItem = ({ children, icon, onClick, selected, type, className, ...props }) => (

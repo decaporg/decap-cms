@@ -146,6 +146,7 @@ export const StyledButton = styled.button`
 `;
 const Caret = styled.div`
   display: inline-block;
+  vertical-align: middle;
   width: 0;
   height: 0;
   border-left: 4px solid transparent;

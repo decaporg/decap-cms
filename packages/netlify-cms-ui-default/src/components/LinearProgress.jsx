@@ -1,9 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled, { keyframes, css } from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { css, keyframes } from '@emotion/core';
+import styled from '@emotion/styled';
 
-import { TYPE } from "../utils/constants";
-import { falseOrDelay } from "../utils/propValidator";
+import { TYPE } from '../utils/constants';
+import { falseOrDelay } from '../utils/propValidator';
 
 const LinearProgressWrap = styled.div`
   width: 100%;
@@ -24,7 +25,7 @@ const countdownAnimation = keyframes`
 const ProgressIndicator = styled.div`
   background-color: ${({ type, theme }) => {
     if (type === TYPE.SUCCESS) return theme.color.success[500];
-    if (type === TYPE.WARNING) return "#FFB81C";
+    if (type === TYPE.WARNING) return '#FFB81C';
     if (type === TYPE.ERROR) return theme.color.danger[500];
     return theme.color.mediumEmphasis;
   }};
@@ -39,17 +40,11 @@ const ProgressIndicator = styled.div`
     css`
       transform-origin: left;
       animation: ${countdownAnimation} ${props.countdown}ms linear forwards;
-      animation-play-state: ${props => (props.paused ? "paused" : "running")};
+      animation-play-state: ${props => (props.paused ? 'paused' : 'running')};
     `}
 `;
 
-const LinearProgress = ({
-  value,
-  type,
-  countdown,
-  pauseCountdown,
-  onCountdown
-}) => (
+const LinearProgress = ({ value, type, countdown, pauseCountdown, onCountdown }) => (
   <LinearProgressWrap>
     <ProgressIndicator
       value={value}
@@ -95,11 +90,11 @@ LinearProgress.propTypes = {
   /**
    * Progress value (0-100)
    */
-  value: PropTypes.number
+  value: PropTypes.number,
 };
 
 LinearProgress.defaultProps = {
-  type: TYPE.DEFAULT
+  type: TYPE.DEFAULT,
 };
 
 export default LinearProgress;
