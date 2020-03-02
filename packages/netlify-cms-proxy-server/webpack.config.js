@@ -7,13 +7,14 @@ const { NODE_ENV = 'production' } = process.env;
 const allowList = [/^netlify-cms-lib-util/];
 
 module.exports = {
-  entry: path.join('src', 'index.ts'),
+  entry: { index: path.join('src', 'index.ts'), middlewares: path.join('src', 'middlewares.ts') },
   mode: NODE_ENV,
   target: 'node',
   devtool: 'source-map',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
+    filename: '[name].js',
+    libraryTarget: 'commonjs2',
   },
   resolve: {
     plugins: [new TsconfigPathsPlugin()],
