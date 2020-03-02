@@ -32,7 +32,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
-    "@types/hapi__joi": "16.0.11",
+    "@types/hapi__joi": "16.0.12",
     "@types/jest": "^24.9.0",
     "@types/morgan": "^1.7.37",
     "@types/node": "^13.1.7",
