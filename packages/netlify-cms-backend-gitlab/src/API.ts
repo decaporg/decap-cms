@@ -512,10 +512,10 @@ export default class API {
     return items;
   }
 
-  async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
-    const files = entry ? [entry, ...mediaFiles] : mediaFiles;
+  async persistFiles(entries: Entry[] | null, mediaFiles: AssetProxy[], options: PersistOptions) {
+    const files = entries ? [...entries, ...mediaFiles] : mediaFiles;
     if (options.useWorkflow) {
-      return this.editorialWorkflowGit(files, entry as Entry, options);
+      return this.editorialWorkflowGit(files, entries[0] as Entry, options);
     } else {
       const items = await this.getCommitItems(files, this.branch);
       return this.uploadAndCommit(items, {

@@ -260,11 +260,11 @@ export default class GitLab implements Implementation {
     };
   }
 
-  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entries: Entry[], mediaFiles: AssetProxy[], options: PersistOptions) {
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.persistFiles(entry, mediaFiles, options),
+      () => this.api!.persistFiles(entries, mediaFiles, options),
       'Failed to acquire persist entry lock',
     );
   }
