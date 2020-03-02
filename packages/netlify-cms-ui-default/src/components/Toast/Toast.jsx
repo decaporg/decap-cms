@@ -296,7 +296,7 @@ class Toast extends Component {
             onTouchStart={this.onDragStart}
           >
             <ToastContentWrap
-              {...(this.props.in && { role: role })}
+              {...(this.props.in && { role })}
               className={cx('Toastify__toast-body', bodyClassName)}
             >
               <IconWrap type={type}>

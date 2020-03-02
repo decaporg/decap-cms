@@ -88,7 +88,7 @@ export function useForkRef(refA, refB) {
 
 export function queryStringToJSON(search) {
   const pairs = search.slice(1).split("&");
-  let result = {};
+  const result = {};
 
   pairs.forEach(pair => {
     pair = pair.split("=");

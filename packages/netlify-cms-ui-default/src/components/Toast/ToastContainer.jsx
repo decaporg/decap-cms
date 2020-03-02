@@ -200,7 +200,7 @@ class ToastContainer extends Component {
       ? false
       : cloneElement(closeButton, {
           closeToast: () => this.removeToast(toastId),
-          type: type,
+          type,
         });
   }
 
@@ -259,7 +259,7 @@ class ToastContainer extends Component {
       type: options.type,
       content: options.content,
       title: options.title,
-      closeToast: closeToast,
+      closeToast,
       onClick: options.onClick,
       updateId: options.updateId,
       rtl: this.props.rtl,

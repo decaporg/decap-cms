@@ -272,7 +272,7 @@ class Popover extends Component {
     } = this.props;
 
     const { style } = this.state;
-    let transitionDuration = transitionDurationProp;
+    const transitionDuration = transitionDurationProp;
     const container =
       containerProp || (anchorEl ? ownerDocument(getAnchorEl(anchorEl)).body : undefined);
     const isMobile = isWindowDown('xs') && supportsMobile;

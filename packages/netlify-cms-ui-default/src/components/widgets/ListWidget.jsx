@@ -19,7 +19,7 @@ class ListWidget extends React.Component {
   state = { focus: false, items: [], expandedItems: [] };
 
   handleAdd = pos => {
-    let items = [...this.state.items];
+    const items = [...this.state.items];
     items.push({});
 
     this.setState({ items }, () => {
@@ -29,9 +29,9 @@ class ListWidget extends React.Component {
   };
 
   handleAddAfterClick = index => {
-    let items = [...this.state.items];
+    const items = [...this.state.items];
     items.splice(index + 1, 0, {});
-    let expandedItems = this.state.expandedItems.map(item => (item > index ? item + 1 : item));
+    const expandedItems = this.state.expandedItems.map(item => (item > index ? item + 1 : item));
 
     this.setState({ items, expandedItems }, () => {
       this.props.onChange(this.state.items);
@@ -54,7 +54,7 @@ class ListWidget extends React.Component {
   };
 
   handleChange = (data, index) => {
-    let items = [...this.state.items];
+    const items = [...this.state.items];
     items[index] = {
       ...items[index],
       ...data,
