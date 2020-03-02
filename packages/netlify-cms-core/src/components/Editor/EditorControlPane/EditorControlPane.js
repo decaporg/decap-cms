@@ -13,7 +13,7 @@ const ControlPaneContainer = styled.div`
 
 export default class ControlPane extends React.Component {
   state = {
-    selectedLocale: this.props.locales && this.props.locales.first(),
+    selectedLocale: this.props.locale,
   };
 
   componentValidate = {};
@@ -28,7 +28,7 @@ export default class ControlPane extends React.Component {
 
   getFields = () => {
     let fields = this.props.fields;
-    if (this.props.collection.get('multi_content')) {
+    if (this.props.collection.get('multi_content') && this.props.locales) {
       fields = fields.filter(f => f.get('name') === this.state.selectedLocale);
     }
     return fields;

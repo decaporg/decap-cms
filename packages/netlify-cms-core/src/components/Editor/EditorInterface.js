@@ -195,6 +195,7 @@ class EditorInterface extends Component {
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
+    const multiContent = collection.get('multi_content') && locales;
     const editorProps = {
       collection,
       entry,
@@ -205,17 +206,24 @@ class EditorInterface extends Component {
       onValidate,
       locales,
     };
-    const multiContent = collection.get('multi_content');
 
     const editor = (
       <ControlPaneContainer blockEntry={showEventBlocker}>
-        <EditorControlPane {...editorProps} ref={c => (this.controlPaneRef = c)} />
+        <EditorControlPane
+          {...editorProps}
+          ref={c => (this.controlPaneRef = c)}
+          locale={locales && locales.first()}
+        />
       </ControlPaneContainer>
     );
 
     const editor2 = (
       <ControlPaneContainer blockEntry={showEventBlocker}>
-        <EditorControlPane {...editorProps} ref={c => (this.controlPaneRef2 = c)} />
+        <EditorControlPane
+          {...editorProps}
+          ref={c => (this.controlPaneRef2 = c)}
+          locale={locales && locales.last()}
+        />
       </ControlPaneContainer>
     );
 

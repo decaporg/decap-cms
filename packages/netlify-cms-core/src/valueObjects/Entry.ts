@@ -30,6 +30,8 @@ export interface EntryValue {
   updatedOn: string;
   status?: string;
   meta: { path?: string };
+  multiContent?: string;
+  multiContentKey?: string;
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
@@ -47,6 +49,10 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     updatedOn: options.updatedOn || '',
     status: options.status || '',
     meta: options.meta || {},
+    ...(options.multiContentKey && {
+      multiContentKey: options.multiContentKey,
+      multiContent: options.multiContent,
+    }),
   };
 
   return returnObj;

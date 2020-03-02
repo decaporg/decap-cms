@@ -109,7 +109,11 @@ export function applyDefaults(config) {
                 fromJS(addLanguageFields(fields.toJS(), langs.toJS())),
               );
 
-              // add identifier field
+              // remove path for different folder config
+              if (collection.get('multi_content') === 'diff_folder') {
+                collection = collection.delete('path');
+              }
+              // add identifier config
               collection = collection.set(
                 'identifier_field',
                 `${langs.first()}.${identifier_field}`,
@@ -119,6 +123,8 @@ export function applyDefaults(config) {
 
           const files = collection.get('files');
           if (files) {
+            // remove multi_content config if set
+            collection = collection.delete('multi_content');
             collection = collection.delete('nested');
             collection = collection.delete('meta');
             collection = collection.set(

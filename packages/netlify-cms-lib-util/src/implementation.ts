@@ -211,7 +211,7 @@ const fetchFiles = async (
     );
   });
   return Promise.all(promises).then(loadedEntries =>
-    loadedEntries.filter(loadedEntry => !(loadedEntry as { error: boolean }).error),
+    loadedEntries.flat().filter(loadedEntry => !(loadedEntry as { error: boolean }).error),
   ) as Promise<ImplementationEntry[]>;
 };
 
