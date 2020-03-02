@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
+import { attempt, flatten, isError, uniq, trim, sortBy, groupBy, get, set } from 'lodash';
 import { List, Map, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -439,20 +439,21 @@ export class Backend {
     return filteredEntries;
   }
 
-  async listEntries(collection: Collection) {
+  async listEntries(collection: Collection, depth: number) {
     const extension = selectFolderEntryExtension(collection);
     let listMethod: () => Promise<ImplementationEntry[]>;
     const collectionType = collection.get('type');
     if (collectionType === FOLDER) {
-      listMethod = () => {
-        const depth =
-          collection.get('nested')?.get('depth') ||
-          getPathDepth(collection.get('path', '') as string);
+      const selectedDepth =
+        depth ||
+        collection.get('nested')?.get('depth') ||
+        getPathDepth(collection.get('path', '') as string);
 
+      listMethod = () => {
         return this.implementation.entriesByFolder(
           collection.get('folder') as string,
           extension,
-          depth,
+          selectedDepth,
         );
       };
     } else if (collectionType === FILES) {
@@ -491,19 +492,20 @@ export class Backend {
   // repeats the process. Once there is no available "next" action, it
   // returns all the collected entries. Used to retrieve all entries
   // for local searches and queries.
-  async listAllEntries(collection: Collection) {
+  async listAllEntries(collection: Collection, depth: number) {
+    const selectedDepth =
+	  depth ||
+      collection.get('nested')?.get('depth') ||
+      getPathDepth(collection.get('path', '') as string);
+
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const extension = selectFolderEntryExtension(collection);
-      const depth =
-        collection.get('nested')?.get('depth') ||
-        getPathDepth(collection.get('path', '') as string);
-
       return this.implementation
-        .allEntriesByFolder(collection.get('folder') as string, extension, depth)
+        .allEntriesByFolder(collection.get('folder') as string, extension, selectedDepth)
         .then(entries => this.processEntries(entries, collection));
     }
 
-    const response = await this.listEntries(collection);
+    const response = await this.listEntries(collection, selectedDepth);
     const { entries } = response;
     let { cursor } = response;
     while (cursor && cursor.actions!.includes('next')) {
@@ -512,6 +514,39 @@ export class Backend {
       cursor = newCursor;
     }
     return entries;
+  }
+
+  async listAllMultipleEntires(collection: Collection, page: number, locales: string[]) {
+    const multiContent = collection.get('multi_content');
+    const depth = multiContent === 'diff_folder' ? 2 : 0;
+    const entries = await this.listAllEntries(collection, depth);
+    let multiEntries;
+    if (multiContent === 'same_folder') {
+      multiEntries = entries
+        .filter(entry => locales.some(l => entry.slug.endsWith(`.${l}`)))
+        .map(entry => {
+          const path = entry.path.split('.');
+          const locale = path.splice(-2, 2)[0];
+          return {
+            ...entry,
+            slug: entry.slug.replace(`.${locale}`, ''),
+            multiContentKey: path.join('.'),
+          };
+        });
+    } else if (multiContent === 'diff_folder') {
+      multiEntries = entries
+        .filter(entry => locales.some(l => entry.slug.startsWith(`${l}/`)))
+        .map(entry => {
+          const path = entry.path.split('/');
+          const locale = path.splice(-2, 1)[0];
+          return {
+            ...entry,
+            slug: entry.slug.replace(`${locale}/`, ''),
+            multiContentKey: path.join('/'),
+          };
+        });
+    }
+    return { entries: this.combineMultiContentEntries(multiEntries, collection) };
   }
 
   async search(collections: Collection[], searchTerm: string) {
@@ -711,21 +746,61 @@ export class Backend {
     return localForage.removeItem(getEntryBackupKey());
   }
 
-  async getEntry(state: State, collection: Collection, slug: string) {
+  async getEntry(
+    state: State,
+    collection: Collection,
+    slug: string,
+    locales: string[],
+    multiContent: string,
+  ) {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
+    const extension = selectFolderEntryExtension(collection);
+    let loadedEntries;
+    let mediaFiles;
 
-    const loadedEntry = await this.implementation.getEntry(path);
-    let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
-      raw: loadedEntry.data,
-      label,
-      mediaFiles: [],
-      meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
-    });
+    if (locales && multiContent === 'same_folder') {
+      loadedEntries = await Promise.all(
+        locales.map(l =>
+          this.implementation
+            .getEntry(path.replace(extension, `${l}.${extension}`))
+            .catch(() => undefined),
+        ),
+      );
+    } else if (locales && multiContent === 'diff_folder') {
+      loadedEntries = await Promise.all(
+        locales.map(l =>
+          this.implementation
+            .getEntry(path.replace(`${slug}`, `${l}/${slug}`))
+            .catch(() => undefined),
+        ),
+      );
+    } else {
+      const loadedEntry = await this.implementation.getEntry(path);
+      loadedEntries = [loadedEntry];
+    }
 
-    entry = this.entryWithFormat(collection)(entry);
-    entry = await this.processEntry(state, collection, entry);
-    return entry;
+    const entries = await Promise.all(
+      loadedEntries.filter(Boolean).map(async loadedEntry => {
+        let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+          raw: loadedEntry.data,
+          label,
+          mediaFiles: [],
+          meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+        });
+
+        entry = this.entryWithFormat(collection)(entry);
+        entry = await this.processEntry(state, collection, entry);
+
+        return entry;
+      }),
+    );
+
+    if (entries.length === 1) {
+      return entries[0];
+    }
+
+    return this.combineEntries(entries, multiContent);
   }
 
   getMedia() {
@@ -874,6 +949,34 @@ export class Backend {
     return entry;
   }
 
+  combineMultiContentEntries(entries: entryMap[], collection: Collection) {
+    const groupEntries = groupBy(entries, 'multiContentKey');
+    return Object.keys(groupEntries).reduce((acc, key) => {
+      const entries = groupEntries[key];
+      const multiContent =
+        entries[0].multiContent || (collection && collection.get('multi_content'));
+      return [...acc, this.combineEntries(entries, multiContent)];
+    }, []);
+  }
+
+  combineEntries(entries: entryMap[], multiContent: string) {
+    const data = {};
+    let splitChar;
+    let path;
+    if (multiContent == 'same_folder') {
+      splitChar = '.';
+    } else if (multiContent == 'diff_folder') {
+      splitChar = '/';
+    }
+    entries.forEach(e => {
+      const entryPath = e.path.split(splitChar);
+      const locale = entryPath.splice(-2, 1)[0];
+      !path && (path = entryPath.join(splitChar));
+      data[locale] = e.data;
+    });
+    return { ...entries[0], path, raw: '', data };
+  }
+
   /**
    * Creates a URL using `site_url` from the config and `preview_path` from the
    * entry's collection. Does not currently make a request through the backend,
@@ -961,6 +1064,7 @@ export class Backend {
     const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+    const hasMultipleContent = collection.get('multi_content') && config.get('locales');
 
     const useWorkflow = selectUseWorkflow(config);
 
@@ -1014,14 +1118,46 @@ export class Backend {
       };
     }
 
+    let entriesObj = [entryObj];
+    if (hasMultipleContent) {
+      const multiContent = collection.get('multi_content');
+      const extension = selectFolderEntryExtension(collection);
+      const data = entryDraft.getIn(['entry', 'data']).toJS();
+      const locales = Object.keys(data);
+      entriesObj = [];
+      if (multiContent === 'same_folder') {
+        locales.forEach(l => {
+          entriesObj.push({
+            path: entryObj.path.replace(extension, `${l}.${extension}`),
+            slug: entryObj.slug,
+            raw: this.entryToRaw(
+              collection,
+              entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
+            ),
+          });
+        });
+      } else if (multiContent === 'diff_folder') {
+        locales.forEach(l => {
+          entriesObj.push({
+            path: entryObj.path.replace(`${entryObj.slug}`, `${l}/${entryObj.slug}`),
+            slug: entryObj.slug,
+            raw: this.entryToRaw(
+              collection,
+              entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
+            ),
+          });
+        });
+      }
+    }
+
     const user = (await this.currentUser()) as User;
     const commitMessage = commitMessageFormatter(
       newEntry ? 'create' : 'update',
       config,
       {
         collection,
-        slug: entryObj.slug,
-        path: entryObj.path,
+        slug: entriesObj[0].slug,
+        path: entriesObj[0].path,
         authorLogin: user.login,
         authorName: user.name,
       },
@@ -1043,7 +1179,7 @@ export class Backend {
       await this.invokePrePublishEvent(entryDraft.get('entry'));
     }
 
-    await this.implementation.persistEntry(entryObj, assetProxies, opts);
+    await this.implementation.persistEntry(entriesObj, assetProxies, opts);
 
     await this.invokePostSaveEvent(entryDraft.get('entry'));
 
@@ -1100,8 +1236,9 @@ export class Backend {
     return this.implementation.persistMedia(file, options);
   }
 
-  async deleteEntry(state: State, collection: Collection, slug: string) {
+  async deleteEntry(state: State, collection: Collection, slug: string, locales, multiContent) {
     const path = selectEntryPath(collection, slug) as string;
+    const extension = selectFolderEntryExtension(collection) as string;
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
@@ -1122,9 +1259,28 @@ export class Backend {
       user.useOpenAuthoring,
     );
 
+    let result;
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
-    const result = await this.implementation.deleteFile(path, commitMessage);
+    if (locales && multiContent === 'same_folder') {
+      result = await Promise.all(
+        locales.map(l =>
+          this.implementation
+            .deleteFile(path.replace(extension, `${l}.${extension}`))
+            .catch(() => undefined),
+        ),
+      );
+    } else if (locales && multiContent === 'diff_folder') {
+      result = await Promise.all(
+        locales.map(l =>
+          this.implementation
+            .deleteFile(path.replace(`${slug}`, `${l}/${slug}`))
+            .catch(() => undefined),
+        ),
+      );
+    } else {
+      result = await this.implementation.deleteFile(path, commitMessage);
+    }
     await this.invokePostUnpublishEvent(entry);
     return result;
   }
