@@ -203,7 +203,6 @@ class Dialog extends React.Component {
       BackdropProps,
       disableBackdropClick,
       disableEscapeKeyDown,
-      noPadding,
       onEscapeKeyDown,
       onEnter,
       onEntering,

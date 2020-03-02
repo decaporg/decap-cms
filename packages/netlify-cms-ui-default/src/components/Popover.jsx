@@ -305,6 +305,7 @@ class Popover extends Component {
           <div
             style={isMobile ? mobileContainerStyles : containerStyles}
             ref={ref => {
+              // eslint-disable-next-line react/no-find-dom-node
               this.containerRef = ReactDOM.findDOMNode(ref);
             }}
           >

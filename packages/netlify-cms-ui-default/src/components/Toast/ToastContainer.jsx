@@ -254,7 +254,7 @@ class ToastContainer extends Component {
     const closeToast = () => this.removeToast(toastId);
     const toastOptions = {
       id: toastId,
-      // â ï¸ if no options.key, this.toastKey - 1 is assigned
+      // if no options.key, this.toastKey - 1 is assigned
       key: options.key || this.toastKey++,
       type: options.type,
       content: options.content,

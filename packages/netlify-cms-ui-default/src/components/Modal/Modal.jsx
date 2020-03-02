@@ -14,11 +14,12 @@ import { ariaHidden } from './manageAriaHidden';
 
 function getContainer(container, defaultContainer) {
   container = typeof container === 'function' ? container() : container;
+  // eslint-disable-next-line react/no-find-dom-node
   return ReactDOM.findDOMNode(container) || defaultContainer;
 }
 
 function getHasTransition(props) {
-  return props.children ? props.children.props.hasOwnProperty('in') : false;
+  return props.children ? Object.prototype.hasOwnProperty.call(props.children.props, 'in') : false;
 }
 
 const ModalWrap = styled.div`
@@ -205,7 +206,6 @@ class Modal extends React.Component {
       open,
       position,
       zIndex,
-      ...other
     } = this.props;
     const { exited } = this.state;
     const hasTransition = getHasTransition(this.props);

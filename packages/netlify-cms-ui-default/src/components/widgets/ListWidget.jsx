@@ -18,7 +18,7 @@ const ActionWrap = styled.div`
 class ListWidget extends React.Component {
   state = { focus: false, items: [], expandedItems: [] };
 
-  handleAdd = pos => {
+  handleAdd = () => {
     const items = [...this.state.items];
     items.push({});
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, select } from '@storybook/addon-knobs';
+import { withKnobs } from '@storybook/addon-knobs';
 
 import TextWidget from '.';
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, select } from '@storybook/addon-knobs';
+import { withKnobs, select } from '@storybook/addon-knobs';
 
 import Icon, { iconComponents } from './Icon';
 
@@ -24,7 +23,7 @@ export const _Icon = () => {
           default: null,
           ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
         },
-        null
+        null,
       )}
     />
   );

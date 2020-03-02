@@ -138,7 +138,9 @@ const Tree = memo(
           }}
           type={type}
         >
-          <TreeContent style={{ transform, opacity }} {...bind} children={children} />
+          <TreeContent style={{ transform, opacity }} {...bind}>
+            {children}
+          </TreeContent>
         </TreeContentWrap>
       </TreeWrap>
     );

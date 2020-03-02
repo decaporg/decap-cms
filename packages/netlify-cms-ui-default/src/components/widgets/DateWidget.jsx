@@ -26,10 +26,10 @@ const StyledDatetimePicker = styled(DatetimePicker)`
   background-color: transparent;
 `;
 
-const DateWidget = ({ value, onChange, ...props }) => {
+const DateWidget = ({ onChange, ...props }) => {
   const [date, setDate] = useState(moment());
   const [anchorEl, setAnchorEl] = useState(null);
-  const [anchorElWidth, setAnchorElWidth] = useState();
+  const [setAnchorElWidth] = useState();
 
   function handleOpenMenu(event) {
     setAnchorElWidth(`${event.currentTarget.offsetWidth}px`);

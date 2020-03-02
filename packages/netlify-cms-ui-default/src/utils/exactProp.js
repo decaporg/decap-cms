@@ -3,30 +3,30 @@
 // the module was forked.
 
 // Only exported for test purposes.
-export const specialProperty = 'exact-prop: \u200b'
+export const specialProperty = 'exact-prop: \u200b';
 
 function exactProp(propTypes) {
   /* istanbul ignore if */
   if (process.env.NODE_ENV === 'production') {
-    return propTypes
+    return propTypes;
   }
 
   return {
     ...propTypes,
     [specialProperty]: props => {
       const unsupportedProps = Object.keys(props).filter(
-        prop => !propTypes.hasOwnProperty(prop),
-      )
+        prop => !Object.prototype.hasOwnProperty.call(propTypes, prop),
+      );
       if (unsupportedProps.length > 0) {
         return new Error(
           `The following properties are not supported: ${unsupportedProps
             .map(prop => `\`${prop}\``)
             .join(', ')}. Please remove them.`,
-        )
+        );
       }
-      return null
+      return null;
     },
-  }
+  };
 }
 
-export default exactProp
+export default exactProp;

@@ -1,7 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
-import { action } from '@storybook/addon-actions';
-import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
+import { withKnobs, text, select } from '@storybook/addon-knobs';
 
 import Avatar from '.';
 

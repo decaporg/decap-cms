@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import styled from '@emotion/styled';
-import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, select, text } from '@storybook/addon-knobs';
 
 import Dialog from '.';
