@@ -142,10 +142,10 @@ And for the image field being populated with a value of `image.png`.
 
 Supports all of the [`slug` templates](/docs/configuration-options#slug) and:
 
-* `{{filename}}` The file name without the extension part.
-* `{{extension}}` The file extension.
-* `{{media_folder}}` The global `media_folder`.
-* `{{public_folder}}` The global `public_folder`.
+- `{{filename}}` The file name without the extension part.
+- `{{extension}}` The file extension.
+- `{{media_folder}}` The global `media_folder`.
+- `{{public_folder}}` The global `public_folder`.
 
 ## List Widget: Variable Types
 
@@ -156,9 +156,9 @@ pane.**
 
 To use variable types in the list widget, update your field configuration as follows:
 
-1. Instead of defining your list fields under `fields` or `field`, define them under `types`.  Similar to `fields`, `types` must be an array of field definition objects.
+1. Instead of defining your list fields under `fields` or `field`, define them under `types`. Similar to `fields`, `types` must be an array of field definition objects.
 2. Each field definition under `types` must use the `object` widget (this is the default value for
-`widget`).
+   `widget`).
 
 ### Additional list widget options
 
@@ -171,27 +171,27 @@ The example configuration below imagines a scenario where the editor can add two
 either a "carousel" or a "spotlight". Each type has a unique name and set of fields.
 
 ```yaml
-- label: "Home Section"
-  name: "sections"
-  widget: "list"
+- label: 'Home Section'
+  name: 'sections'
+  widget: 'list'
   types:
-    - label: "Carousel"
-      name: "carousel"
+    - label: 'Carousel'
+      name: 'carousel'
       widget: object
       fields:
-        - {label: Header, name: header, widget: string, default: "Image Gallery"}
-        - {label: Template, name: template, widget: string, default: "carousel.html"}
+        - { label: Header, name: header, widget: string, default: 'Image Gallery' }
+        - { label: Template, name: template, widget: string, default: 'carousel.html' }
         - label: Images
           name: images
           widget: list
-          field: {label: Image, name: image, widget: image}
-    - label: "Spotlight"
-      name: "spotlight"
+          field: { label: Image, name: image, widget: image }
+    - label: 'Spotlight'
+      name: 'spotlight'
       widget: object
       fields:
-        - {label: Header, name: header, widget: string, default: "Spotlight"}
-        - {label: Template, name: template, widget: string, default: "spotlight.html"}
-        - {label: Text, name: text, widget: text, default: "Hello World"}
+        - { label: Header, name: header, widget: string, default: 'Spotlight' }
+        - { label: Template, name: template, widget: string, default: 'spotlight.html' }
+        - { label: Text, name: text, widget: text, default: 'Hello World' }
 ```
 
 ### Example Output
@@ -310,8 +310,8 @@ CMS.registerPreviewTemplate(...);
  * Takes advantage of the `toString` method in the return value of `css-loader`.
  */
 import CMS from 'netlify-cms';
-import styles from '!css-loader!sass-loader!../main.scss'
-CMS.registerPreviewStyle(styles.toString(), { raw: true })
+import styles from '!css-loader!sass-loader!../main.scss';
+CMS.registerPreviewStyle(styles.toString(), { raw: true });
 ```
 
 ## Squash merge GitHub pull requests
@@ -348,14 +348,14 @@ backend:
 
 Netlify CMS generates the following commit types:
 
-Commit type   | When is it triggered?        | Available template tags
---------------|------------------------------|-----------------------------
-`create`      | A new entry is created       | `slug`, `path`, `collection`
-`update`      | An existing entry is changed | `slug`, `path`, `collection`
-`delete`      | An exising entry is deleted  | `slug`, `path`, `collection`
-`uploadMedia` | A media file is uploaded     | `path`
-`deleteMedia` | A media file is deleted      | `path`
-`openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name`
+| Commit type     | When is it triggered?                    | Available template tags                  |
+| --------------- | ---------------------------------------- | ---------------------------------------- |
+| `create`        | A new entry is created                   | `slug`, `path`, `collection`             |
+| `update`        | An existing entry is changed             | `slug`, `path`, `collection`             |
+| `delete`        | An exising entry is deleted              | `slug`, `path`, `collection`             |
+| `uploadMedia`   | A media file is uploaded                 | `path`                                   |
+| `deleteMedia`   | A media file is deleted                  | `path`                                   |
+| `openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name` |
 
 Template tags produce the following output:
 
@@ -378,10 +378,10 @@ You can set a limit to as what the maximum file size of a file is that users can
 Example config:
 
 ```yaml
-- label: "Featured Image"
-  name: "thumbnail"
-  widget: "image"
-  default: "/uploads/chocolate-dogecoin.jpg"
+- label: 'Featured Image'
+  name: 'thumbnail'
+  widget: 'image'
+  default: '/uploads/chocolate-dogecoin.jpg'
   media_library:
     config:
       max_file_size: 512000 # in bytes, only for default media library
@@ -415,4 +415,39 @@ CMS.registerEventListener({
 });
 ```
 
-> Supported events are `prePublish`, `postPublish`, `preUnpublish` and `postUnpublish`
+**Note:** Supported events are `prePublish`, `postPublish`, `preUnpublish` and `postUnpublish`.
+
+## Dynamic Default Values
+
+When linking to `/admin/#/collections/posts/new` you can pass URL parameters to pre-populate an entry.
+
+For example given the configuration:
+
+```yaml
+collections:
+  - name: posts
+    label: Posts
+    folder: content/posts
+    create: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Object
+        name: object
+        widget: object
+        fields:
+          - label: Title
+            name: title
+            widget: string
+      - label: body
+        name: body
+        widget: markdown
+```
+
+clicking the following link: `/#/collections/posts/new?title=first&object.title=second&body=%23%20content`
+
+will open the editor for a new post with the `title` field populated with `first`, the nested `object.title` field
+with `second` and the markdown `body` field with `# content`.
+
+**Note:** URL Encoding might be required for certain values (e.g. in the previous example the value for `body` is URL encoded).

@@ -233,6 +233,53 @@ export const selectField = (collection: Collection, key: string) => {
   return field;
 };
 
+export const updateFieldByKey = (
+  collection: Collection,
+  key: string,
+  updater: (field: EntryField) => EntryField,
+) => {
+  const selected = selectField(collection, key);
+  if (!selected) {
+    return collection;
+  }
+
+  let updated = false;
+
+  const traverseFields = (fields: List<EntryField>) => {
+    if (updated) {
+      // we can stop once the field is found
+      return fields;
+    }
+
+    fields = fields
+      .map(f => {
+        const field = f as EntryField;
+        if (field === selected) {
+          updated = true;
+          return updater(field);
+        } else if (field.has('fields')) {
+          return field.set('fields', traverseFields(field.get('fields')!));
+        } else if (field.has('field')) {
+          return field.set('field', traverseFields(List([field.get('field')!])).get(0));
+        } else if (field.has('types')) {
+          return field.set('types', traverseFields(field.get('types')!));
+        } else {
+          return field;
+        }
+      })
+      .toList() as List<EntryField>;
+
+    return fields;
+  };
+
+  collection = collection.set(
+    'fields',
+    traverseFields(collection.get('fields', List<EntryField>())),
+  );
+
+  return collection;
+};
+
 export const selectIdentifier = (collection: Collection) => {
   const identifier = collection.get('identifier_field');
   const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;

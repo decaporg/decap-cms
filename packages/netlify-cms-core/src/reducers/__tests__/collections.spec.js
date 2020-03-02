@@ -8,6 +8,7 @@ import collections, {
   selectMediaFolders,
   getFieldsNames,
   selectField,
+  updateFieldByKey,
 } from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
@@ -378,6 +379,111 @@ describe('collections', () => {
           .get(0)
           .get('types')
           .get(0),
+      );
+    });
+  });
+
+  describe('updateFieldByKey', () => {
+    it('should update field by key', () => {
+      const collection = fromJS({
+        fields: [
+          { name: 'title' },
+          { name: 'image' },
+          {
+            name: 'object',
+            fields: [{ name: 'title' }, { name: 'gallery', fields: [{ name: 'image' }] }],
+          },
+          { name: 'list', field: { name: 'image' } },
+          { name: 'body' },
+          { name: 'widgetList', types: [{ name: 'widget' }] },
+        ],
+      });
+
+      const updater = field => field.set('default', 'default');
+
+      expect(updateFieldByKey(collection, 'non-existent', updater)).toBe(collection);
+      expect(updateFieldByKey(collection, 'title', updater)).toEqual(
+        fromJS({
+          fields: [
+            { name: 'title', default: 'default' },
+            { name: 'image' },
+            {
+              name: 'object',
+              fields: [{ name: 'title' }, { name: 'gallery', fields: [{ name: 'image' }] }],
+            },
+            { name: 'list', field: { name: 'image' } },
+            { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
+          ],
+        }),
+      );
+      expect(updateFieldByKey(collection, 'object.title', updater)).toEqual(
+        fromJS({
+          fields: [
+            { name: 'title' },
+            { name: 'image' },
+            {
+              name: 'object',
+              fields: [
+                { name: 'title', default: 'default' },
+                { name: 'gallery', fields: [{ name: 'image' }] },
+              ],
+            },
+            { name: 'list', field: { name: 'image' } },
+            { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
+          ],
+        }),
+      );
+
+      expect(updateFieldByKey(collection, 'object.gallery.image', updater)).toEqual(
+        fromJS({
+          fields: [
+            { name: 'title' },
+            { name: 'image' },
+            {
+              name: 'object',
+              fields: [
+                { name: 'title' },
+                { name: 'gallery', fields: [{ name: 'image', default: 'default' }] },
+              ],
+            },
+            { name: 'list', field: { name: 'image' } },
+            { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
+          ],
+        }),
+      );
+      expect(updateFieldByKey(collection, 'list.image', updater)).toEqual(
+        fromJS({
+          fields: [
+            { name: 'title' },
+            { name: 'image' },
+            {
+              name: 'object',
+              fields: [{ name: 'title' }, { name: 'gallery', fields: [{ name: 'image' }] }],
+            },
+            { name: 'list', field: { name: 'image', default: 'default' } },
+            { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget' }] },
+          ],
+        }),
+      );
+
+      expect(updateFieldByKey(collection, 'widgetList.widget', updater)).toEqual(
+        fromJS({
+          fields: [
+            { name: 'title' },
+            { name: 'image' },
+            {
+              name: 'object',
+              fields: [{ name: 'title' }, { name: 'gallery', fields: [{ name: 'image' }] }],
+            },
+            { name: 'list', field: { name: 'image' } },
+            { name: 'body' },
+            { name: 'widgetList', types: [{ name: 'widget', default: 'default' }] },
+          ],
+        }),
       );
     });
   });

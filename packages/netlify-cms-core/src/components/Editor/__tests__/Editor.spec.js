@@ -50,6 +50,7 @@ describe('Editor', () => {
     localBackup: fromJS({}),
     retrieveLocalBackup: jest.fn(),
     persistLocalBackup: jest.fn(),
+    location: { search: '?title=title' },
   };
 
   beforeEach(() => {
@@ -114,7 +115,7 @@ describe('Editor', () => {
     );
 
     expect(props.createEmptyDraft).toHaveBeenCalledTimes(1);
-    expect(props.createEmptyDraft).toHaveBeenCalledWith(props.collection);
+    expect(props.createEmptyDraft).toHaveBeenCalledWith(props.collection, '?title=title');
     expect(props.loadEntry).toHaveBeenCalledTimes(0);
   });
 
