@@ -1064,7 +1064,9 @@ export class Backend {
     const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
-    const hasMultipleContent = collection.get('multi_content') && config.get('locales');
+    const hasMultipleContent =
+      ['same_folder', 'diff_folder'].includes(collection.get('multi_content')) &&
+      config.get('locales');
 
     const useWorkflow = selectUseWorkflow(config);
 
@@ -1117,7 +1119,7 @@ export class Backend {
         newPath: customPath,
       };
     }
-
+    console.log(entryObj);
     let entriesObj = [entryObj];
     if (hasMultipleContent) {
       const multiContent = collection.get('multi_content');

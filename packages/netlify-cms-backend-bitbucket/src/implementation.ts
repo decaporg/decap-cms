@@ -428,14 +428,14 @@ export default class BitbucketBackend implements Implementation {
     };
   }
 
-  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entries: Entry[], mediaFiles: AssetProxy[], options: PersistOptions) {
     const client = await this.getLargeMediaClient();
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
       async () =>
         this.api!.persistFiles(
-          entry,
+          entries,
           client.enabled ? await getLargeMediaFilteredMediaFiles(client, mediaFiles) : mediaFiles,
           options,
         ),
