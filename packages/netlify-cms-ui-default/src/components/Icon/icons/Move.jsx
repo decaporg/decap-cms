@@ -9,9 +9,9 @@ const SVG = ({ className = "", size = "24" }) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <polyline points="5 9 2 12 5 15" />
     <polyline points="9 5 12 2 15 5" />

@@ -20,6 +20,11 @@ import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
 const styles = {
+  noOverflow: css`
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  `,
   buttonMargin: css`
     margin: 0 10px;
   `,
@@ -34,6 +39,13 @@ const styles = {
     color: ${colorsRaw.teal};
   `,
 };
+
+const DropdownButton = styled(StyledDropdownButton)`
+  ${styles.noOverflow}
+  @media (max-width: 1200px) {
+    padding-left: 10px;
+  }
+`;
 
 const ToolbarContainer = styled.div`
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
@@ -133,7 +145,12 @@ const ToolbarButton = styled.button`
   ${buttons.button};
   ${buttons.default};
   ${styles.buttonMargin};
+  ${styles.noOverflow};
   display: block;
+
+  @media (max-width: 1200px) {
+    padding: 0 10px;
+  }
 `;
 
 const DeleteButton = styled(ToolbarButton)`
@@ -144,7 +161,7 @@ const SaveButton = styled(ToolbarButton)`
   ${buttons.lightBlue};
 `;
 
-const PublishedToolbarButton = styled(StyledDropdownButton)`
+const PublishedToolbarButton = styled(DropdownButton)`
   ${styles.publishedButton}
 `;
 
@@ -152,11 +169,11 @@ const PublishedButton = styled(ToolbarButton)`
   ${styles.publishedButton}
 `;
 
-const PublishButton = styled(StyledDropdownButton)`
+const PublishButton = styled(DropdownButton)`
   background-color: ${colorsRaw.teal};
 `;
 
-const StatusButton = styled(StyledDropdownButton)`
+const StatusButton = styled(DropdownButton)`
   background-color: ${colorsRaw.tealLight};
   color: ${colorsRaw.teal};
 `;

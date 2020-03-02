@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import Popover from './Popover';
 
@@ -20,15 +20,10 @@ const TooltipWrap = styled.div`
 
 const Menu = React.forwardRef(function Menu(props, ref) {
   const {
-    autoFocus: autoFocusProp,
     children,
-    classes,
     enterDelay = 0,
     leaveDelay = 0,
-    onClose,
-    onEntering,
     transitionDuration = 250,
-    className,
     anchorOrigin,
     transformOrigin,
     label,
@@ -43,12 +38,12 @@ const Menu = React.forwardRef(function Menu(props, ref) {
 
   const getContentAnchorEl = () => firstSelectedItemRef.current || firstValidItemRef.current;
 
-  const handleMouseEnter = e => {
+  const handleMouseEnter = () => {
     clearTimeout(mouseLeaveTimeout);
     mouseEnterTimeout = setTimeout(() => setOpen(true), enterDelay);
   };
 
-  const handleMouseLeave = e => {
+  const handleMouseLeave = () => {
     clearTimeout(mouseEnterTimeout);
     mouseLeaveTimeout = setTimeout(() => setOpen(false), leaveDelay);
   };

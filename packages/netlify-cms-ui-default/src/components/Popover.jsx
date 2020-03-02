@@ -272,7 +272,7 @@ class Popover extends Component {
     } = this.props;
 
     const { style } = this.state;
-    let transitionDuration = transitionDurationProp;
+    const transitionDuration = transitionDurationProp;
     const container =
       containerProp || (anchorEl ? ownerDocument(getAnchorEl(anchorEl)).body : undefined);
     const isMobile = isWindowDown('xs') && supportsMobile;
@@ -305,6 +305,7 @@ class Popover extends Component {
           <div
             style={isMobile ? mobileContainerStyles : containerStyles}
             ref={ref => {
+              // eslint-disable-next-line react/no-find-dom-node
               this.containerRef = ReactDOM.findDOMNode(ref);
             }}
           >

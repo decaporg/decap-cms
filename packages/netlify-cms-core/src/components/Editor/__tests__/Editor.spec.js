@@ -50,6 +50,7 @@ describe('Editor', () => {
     localBackup: fromJS({}),
     retrieveLocalBackup: jest.fn(),
     persistLocalBackup: jest.fn(),
+    location: { search: '?title=title' },
   };
 
   beforeEach(() => {
@@ -114,7 +115,7 @@ describe('Editor', () => {
     );
 
     expect(props.createEmptyDraft).toHaveBeenCalledTimes(1);
-    expect(props.createEmptyDraft).toHaveBeenCalledWith(props.collection);
+    expect(props.createEmptyDraft).toHaveBeenCalledWith(props.collection, '?title=title');
     expect(props.loadEntry).toHaveBeenCalledTimes(0);
   });
 
@@ -203,7 +204,7 @@ describe('Editor', () => {
       <Editor
         {...props}
         entryDraft={fromJS({ entry: { mediaFiles: [{ id: '1' }] } })}
-        entry={fromJS({ isFetching: false })}
+        entry={fromJS({ isFetching: false, data: {} })}
         hasChanged={true}
       />,
     );
@@ -232,7 +233,7 @@ describe('Editor', () => {
           entry: {},
           fieldsMetaData: {},
         })}
-        entry={fromJS({ isFetching: false, mediaFiles: [{ id: '1' }] })}
+        entry={fromJS({ isFetching: false, mediaFiles: [{ id: '1' }], data: {} })}
       />,
     );
 

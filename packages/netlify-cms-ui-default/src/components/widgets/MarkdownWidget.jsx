@@ -43,7 +43,7 @@ const EditorWrap = styled.div`
   }
 `;
 
-let initialValue = {
+const initialValue = {
   document: {
     nodes: [
       {

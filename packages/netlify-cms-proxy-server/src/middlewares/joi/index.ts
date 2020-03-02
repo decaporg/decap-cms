@@ -57,7 +57,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         is: 'entriesByFiles',
         then: defaultParams.keys({
           files: Joi.array()
-            .items(Joi.object({ path }))
+            .items(Joi.object({ path, label: Joi.string() }))
             .required(),
         }),
       },

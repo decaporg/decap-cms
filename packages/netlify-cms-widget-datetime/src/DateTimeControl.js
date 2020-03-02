@@ -37,18 +37,25 @@ export default class DateTimeControl extends React.Component {
     };
   }
 
+  getDefaultValue() {
+    const { field } = this.props;
+    const defaultValue = field.get('default');
+    return defaultValue;
+  }
+
   formats = this.getFormats();
+  defaultValue = this.getDefaultValue();
 
   componentDidMount() {
     const { value } = this.props;
 
     /**
-     * Set the current date as default value if no default value is provided. An
-     * empty string means the value is intentionally blank.
+     * Set the current date as default value if no value is provided and default is absent. An
+     * empty default string means the value is intentionally blank.
      */
-    if (!value && value !== '') {
+    if (value === undefined) {
       setTimeout(() => {
-        this.handleChange(new Date());
+        this.handleChange(this.defaultValue === undefined ? new Date() : this.defaultValue);
       }, 0);
     }
   }
@@ -101,6 +108,7 @@ export default class DateTimeControl extends React.Component {
   render() {
     const { forID, value, classNameWrapper, setActiveStyle } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
+
     return (
       <div
         css={css`

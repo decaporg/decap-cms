@@ -1,4 +1,13 @@
 updates:
+  - date: 2020-02-25T22:11:47.613Z
+    description: Fix workflow PR label migrations
+    version: 2.10.28
+  - date: 2020-02-25T22:12:09.753Z
+    description: 'GitHub backend improvements, reintroduce workflow PR labels, bugfixes'
+    version: 2.10.27
+  - date: 2020-02-22T05:00:00.000Z
+    description: Revert editorial workflow labels for GitHub
+    version: 2.10.26
   - date: '2020-02-05'
     description: 'Local development support (beta), unpublish hook, bugfixes'
     version: 2.10.17
@@ -6,91 +15,105 @@ updates:
     description: 'prepublish/postpublish hooks, min/max select widget validation'
     version: 2.10.16
   - date: '2020-01-30'
-    description: 'bugfixes'
+    description: bugfixes
     version: 2.10.15
   - date: '2020-01-28'
-    description: 'bugfixes'
+    description: bugfixes
     version: 2.10.14
   - date: '2020-01-26'
-    description: 'fix multiple image field issue'
+    description: fix multiple image field issue
     version: 2.10.13
   - date: '2020-01-23'
-    description: 'fix Git Gateway/GitHub issues'
+    description: fix Git Gateway/GitHub issues
     version: 2.10.12
   - date: '2020-01-22'
-    description: 'fix image widget overflow'
+    description: fix image widget overflow
     version: 2.10.11
   - date: '2020-01-22'
-    description: 'support dynamic (templated) media_folder/path_folder config'
+    description: support dynamic (templated) media_folder/path_folder config
     version: 2.10.10
   - date: '2020-01-21'
     description: 'Git LFS support fixes, other backend fixes'
     version: 2.10.9
   - date: '2020-01-16'
-    description: 'Bugfixes'
+    description: Bugfixes
     version: 2.10.8
   - date: '2020-01-15'
-    description: 'Bugfixes'
+    description: Bugfixes
     version: 2.10.7
   - date: '2020-01-14'
-    description: 'Editorial workflow for GitLab and Bitbucket 🎉🎉'
+    description: "Editorial workflow for GitLab and Bitbucket \U0001F389\U0001F389"
     version: 2.10.6
   - date: '2020-01-14'
-    description: 'Collection level media_folder, multiline shortcodes, max file size validation'
+    description: >-
+      Collection level media_folder, multiline shortcodes, max file size
+      validation
     version: 2.10.5
   - date: '2020-01-09'
-    description: 'Bugfixes'
+    description: Bugfixes
     version: 2.10.4
   - date: '2020-01-07'
     description: 'Bundle assets with content, bugfixes'
     version: 2.10.3
   - date: '2019-12-20'
-    description: 'Fix incomplete previous release'
+    description: Fix incomplete previous release
     version: 2.10.2
   - date: '2019-12-19'
-    description: 'Fix select and relation widgets not showing dropdown'
+    description: Fix select and relation widgets not showing dropdown
     version: 2.10.1
   - date: '2019-12-18'
     description: 'Open Authoring, content bundles, code editor, and lots of bugfixes'
     version: 2.10.0
   - date: '2019-07-24'
-    description: 'Fix collection view search'
+    description: Fix collection view search
     version: 2.9.7
   - date: '2019-07-11'
-    description: 'Fix default values in list widgets'
+    description: Fix default values in list widgets
     version: 2.9.6
   - date: '2019-06-28'
-    description: 'Fix entry loading for GitLab'
+    description: Fix entry loading for GitLab
     version: 2.9.5
   - date: '2019-06-26'
-    description: 'Reference nested fields in relation widget, validate simple lists, bugfixes'
+    description: >-
+      Reference nested fields in relation widget, validate simple lists,
+      bugfixes
     version: 2.9.4
   - date: '2019-06-18'
-    description: 'Fix new entries error for non-GitHub backends'
+    description: Fix new entries error for non-GitHub backends
     version: 2.9.3
   - date: '2019-06-14'
     description: 'Match any char with shortcode/editor component patterns, bugfixes'
     version: 2.9.2
   - date: '2019-04-10'
-    description: 'Entry card customization, Bitbucket implicit auth, fix image previews, other bugfixes'
+    description: >-
+      Entry card customization, Bitbucket implicit auth, fix image previews,
+      other bugfixes
     version: 2.9.1
   - date: '2019-03-29'
-    description: 'Add netlify-cms-app package with external deps, fix breaking preview templates'
+    description: >-
+      Add netlify-cms-app package with external deps, fix breaking preview
+      templates
     version: 2.9.0
   - date: '2019-03-22'
     description: 'Add es module builds, fix large media binary output'
     version: 2.8.0
   - date: '2019-03-21'
-    description: 'Standalone UMD builds with externalized dependencies for all extension packages'
+    description: >-
+      Standalone UMD builds with externalized dependencies for all extension
+      packages
     version: 2.7.0
   - date: '2019-03-11'
-    description: 'Fix Cloudinary multiselect, preview pane and config fixes, other improvements'
+    description: >-
+      Fix Cloudinary multiselect, preview pane and config fixes, other
+      improvements
     version: 2.6.1
   - date: '2019-03-07'
-    description: 'Add entry recovery after error, fix large media GitHub URL output, other fixes'
+    description: >-
+      Add entry recovery after error, fix large media GitHub URL output, other
+      fixes
     version: 2.6.0
   - date: '2019-02-28'
-    description: 'Fix previews of GitHub images'
+    description: Fix previews of GitHub images
     version: 2.5.1
   - date: '2019-02-26'
     description: 'Netlify Large Media support, multi-select relation widget, and more'

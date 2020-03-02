@@ -33,6 +33,11 @@ const fr = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'optionnel',
+      },
+    },
     editorControlPane: {
       widget: {
         required: 'Le champ %{fieldLabel} est requis.',
@@ -87,6 +92,16 @@ const fr = {
       deployButtonLabel: 'Voir en direct',
     },
     editorWidgets: {
+      image: {
+        choose: 'Choisissez une image',
+        chooseDifferent: 'Choisissez une image différente',
+        remove: "Supprimer l'image",
+      },
+      file: {
+        choose: 'Choisissez un fichier',
+        chooseDifferent: 'Choisissez un fichier différent',
+        remove: 'Effacer le fichier',
+      },
       unknownControl: {
         noControl: "Pas de contrôle pour le gadget '%{widget}'.",
       },

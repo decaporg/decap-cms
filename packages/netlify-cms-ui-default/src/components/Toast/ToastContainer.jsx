@@ -200,7 +200,7 @@ class ToastContainer extends Component {
       ? false
       : cloneElement(closeButton, {
           closeToast: () => this.removeToast(toastId),
-          type: type,
+          type,
         });
   }
 
@@ -254,12 +254,12 @@ class ToastContainer extends Component {
     const closeToast = () => this.removeToast(toastId);
     const toastOptions = {
       id: toastId,
-      // â ï¸ if no options.key, this.toastKey - 1 is assigned
+      // if no options.key, this.toastKey - 1 is assigned
       key: options.key || this.toastKey++,
       type: options.type,
       content: options.content,
       title: options.title,
-      closeToast: closeToast,
+      closeToast,
       onClick: options.onClick,
       updateId: options.updateId,
       rtl: this.props.rtl,

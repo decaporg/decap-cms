@@ -15,12 +15,12 @@ const SidebarLayout = ({ sidebar, children }) => (
     css={css`
       ${mq[1]} {
         display: grid;
-        grid-template-columns: 300px 1fr;
+        grid-template-columns: ${sidebar ? '300px' : ''} minmax(0, 1fr);
         grid-gap: 2rem;
       }
     `}
   >
-    <div>{sidebar}</div>
+    {sidebar && <div>{sidebar}</div>}
     <Children>{children}</Children>
   </Page>
 );

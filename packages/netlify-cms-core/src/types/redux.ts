@@ -2,7 +2,7 @@ import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
 import { Map, List } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
-import { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import { MediaFile as BackendMediaFile } from '../backend';
 
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
@@ -41,6 +41,7 @@ export type Config = StaticallyTypedRecord<{
   site_id?: string;
   site_url?: string;
   show_preview_links?: boolean;
+  isFetching?: boolean;
 }>;
 
 type PagesObject = {
@@ -91,9 +92,10 @@ export type EntryDraft = StaticallyTypedRecord<{
 export type EntryField = StaticallyTypedRecord<{
   field?: EntryField;
   fields?: List<EntryField>;
+  types?: List<EntryField>;
   widget: string;
   name: string;
-  default: string | null;
+  default: string | null | boolean;
   media_folder?: string;
   public_folder?: string;
 }>;
@@ -144,7 +146,9 @@ export type Collection = StaticallyTypedRecord<CollectionObject>;
 
 export type Collections = StaticallyTypedRecord<{ [path: string]: Collection & CollectionObject }>;
 
-export type Medias = StaticallyTypedRecord<{ [path: string]: AssetProxy | undefined }>;
+export type Medias = StaticallyTypedRecord<{
+  [path: string]: { asset: AssetProxy | undefined; isLoading: boolean; error: Error | null };
+}>;
 
 export interface MediaLibraryInstance {
   show: (args: {
@@ -162,7 +166,7 @@ export interface MediaLibraryInstance {
 
 export type DisplayURL = { id: string; path: string } | string;
 
-export type MediaFile = ImplementationMediaFile & { key?: string };
+export type MediaFile = BackendMediaFile & { key?: string };
 
 export type MediaFileMap = StaticallyTypedRecord<MediaFile>;
 
@@ -216,7 +220,7 @@ export interface State {
 }
 
 export interface MediasAction extends Action<string> {
-  payload: string | AssetProxy | AssetProxy[];
+  payload: string | AssetProxy | AssetProxy[] | { path: string } | { path: string; error: Error };
 }
 
 export interface ConfigAction extends Action<string> {
@@ -309,8 +313,7 @@ export interface MediaLibraryAction extends Action<string> {
     forImage: boolean;
     privateUpload: boolean;
     config: Map<string, string>;
-    mediaFolder?: string;
-    publicFolder?: string;
+    field?: EntryField;
   } & { mediaPath: string | string[] } & { page: number } & {
     files: MediaFile[];
     page: number;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import TextWidget from './TextWidget';
-import Button from '../Button';
 import IconButton from '../IconButton';
 import { Menu, MenuItem } from '../Menu';
 

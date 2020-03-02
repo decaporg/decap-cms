@@ -1,5 +1,5 @@
 import { isBoolean } from 'lodash';
-import { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import { MediaFile } from '../backend';
 
 interface Options {
   partial?: boolean;
@@ -9,7 +9,7 @@ interface Options {
   label?: string | null;
   metaData?: unknown | null;
   isModification?: boolean | null;
-  mediaFiles?: ImplementationMediaFile[] | null;
+  mediaFiles?: MediaFile[] | null;
 }
 
 export interface EntryValue {
@@ -23,7 +23,7 @@ export interface EntryValue {
   label: string | null;
   metaData: unknown | null;
   isModification: boolean | null;
-  mediaFiles: ImplementationMediaFile[];
+  mediaFiles: MediaFile[];
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {

@@ -34,7 +34,7 @@ const NavigationMenuItemInside = styled.a`
   ${NavigationMenuItemWrap}:hover & {
     color: ${({ theme, active }) =>
       active ? theme.color.success['500'] : theme.color.highEmphasis};
-    background-color: ${({ theme, active, darkMode }) =>
+    background-color: ${({ theme, active }) =>
       active
         ? color(theme.color.success['500'])
             .alpha(0.2)
@@ -46,7 +46,7 @@ const NavigationMenuItemInside = styled.a`
   ${NavigationMenuItemWrap}:active & {
     color: ${({ theme, active }) =>
       active ? theme.color.success['500'] : theme.color.highEmphasis};
-    background-color: ${({ theme, active, darkMode }) =>
+    background-color: ${({ theme, active }) =>
       active
         ? color(theme.color.success['500'])
             .alpha(0.3)

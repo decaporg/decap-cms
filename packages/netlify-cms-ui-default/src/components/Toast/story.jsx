@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import styled from '@emotion/styled';
-import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, number, select, text } from '@storybook/addon-knobs';
+import React from 'react';
+import { withKnobs, number, select, text } from '@storybook/addon-knobs';
 
 import { toast } from '.';
 import { Button, ButtonGroup } from '../Button';

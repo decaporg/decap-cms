@@ -18,15 +18,13 @@ export default {
 
 export const _ListWidget = () => {
   const [links, setLinks] = useState([]);
+
   return (
     <StyledListWidget
       name="featureLinks"
       label="Links"
       labelSingular="Link"
-      onChange={links => {
-        setLinks(links);
-        console.log({ links });
-      }}
+      onChange={links => setLinks(links)}
       fields={(setListItemValue, linkIndex) => (
         <React.Fragment>
           <TextWidget

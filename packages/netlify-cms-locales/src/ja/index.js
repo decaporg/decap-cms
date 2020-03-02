@@ -3,6 +3,9 @@ const ja = {
     login: 'ログイン',
     loggingIn: 'ログインしています...',
     loginWithNetlifyIdentity: 'Netlify Identity でログインする',
+    loginWithBitbucket: 'Bitbucket でログインする',
+    loginWithGitHub: 'GitHub でログインする',
+    loginWithGitLab: 'GitLab でログインする',
     errors: {
       email: 'メールアドレスを確認してください。',
       password: 'パスワードを入力してください。',
@@ -44,6 +47,11 @@ const ja = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'オプショナル',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel}は必須です。',

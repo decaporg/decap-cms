@@ -28,6 +28,13 @@ const LAYOUT_QUERY = graphql`
   }
 `;
 
+export const LayoutTemplate = ({ children }) => (
+  <ThemeProvider theme={theme}>
+    <GlobalStyles />
+    {children}
+  </ThemeProvider>
+);
+
 const Layout = ({ hasPageHero, children }) => {
   return (
     <StaticQuery query={LAYOUT_QUERY}>
@@ -35,8 +42,12 @@ const Layout = ({ hasPageHero, children }) => {
         const { title, description } = data.site.siteMetadata;
 
         return (
-          <ThemeProvider theme={theme}>
-            <GlobalStyles />
+          <LayoutTemplate
+            title={title}
+            description={description}
+            hasPageHero={hasPageHero}
+            footerButtons={data.footer.childDataYaml.footer.buttons}
+          >
             <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>
               <meta name="description" content={description} />
               <link
@@ -47,7 +58,7 @@ const Layout = ({ hasPageHero, children }) => {
             <Header hasHeroBelow={hasPageHero} />
             {children}
             <Footer buttons={data.footer.childDataYaml.footer.buttons} />
-          </ThemeProvider>
+          </LayoutTemplate>
         );
       }}
     </StaticQuery>

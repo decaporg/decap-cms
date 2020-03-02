@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.2.5...netlify-cms-widget-datetime@2.2.6) (2020-02-17)
+
+
+### Bug Fixes
+
+* **widget-datetime:** use default value when value is undefined ([#3269](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/issues/3269)) ([8cc5fcb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/commit/8cc5fcbb1957b224fe3adb01364eb0de658ad666))
+
+
+
+
+
 ## [2.2.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.2.4...netlify-cms-widget-datetime@2.2.5) (2019-11-07)
 
 

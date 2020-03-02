@@ -104,7 +104,7 @@ const Toolbar = ({ title, breadcrumbs, darkMode, setDarkMode, isMobile }) => {
           <Breadcrumbs>
             {!isMobile &&
               breadcrumbs.map((breadcrumb, index) => (
-                <React.Fragment>
+                <React.Fragment key={breadcrumb.label}>
                   <Breadcrumb>{breadcrumb.label}</Breadcrumb>
                   {breadcrumbs.length !== index + 1 && <BreadcrumbSeparator />}
                 </React.Fragment>
@@ -131,6 +131,7 @@ const Toolbar = ({ title, breadcrumbs, darkMode, setDarkMode, isMobile }) => {
             >
               {languages.map(language => (
                 <MenuItem
+                  key={language.name}
                   selected={selectedLanguage === language.name}
                   onClick={() => {
                     setSelectedLanguage(language.name);

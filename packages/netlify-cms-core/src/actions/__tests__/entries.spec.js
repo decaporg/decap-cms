@@ -1,5 +1,6 @@
 import { fromJS, Map } from 'immutable';
 import {
+  createEmptyDraft,
   createEmptyDraftData,
   retrieveLocalBackup,
   persistLocalBackup,
@@ -23,6 +24,99 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 describe('entries', () => {
+  describe('createEmptyDraft', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+    it('should dispatch draft created action', () => {
+      const store = mockStore({ mediaLibrary: fromJS({ files: [] }) });
+
+      const collection = fromJS({
+        fields: [{ name: 'title' }],
+      });
+
+      return store.dispatch(createEmptyDraft(collection, '')).then(() => {
+        const actions = store.getActions();
+        expect(actions).toHaveLength(1);
+
+        expect(actions[0]).toEqual({
+          payload: {
+            collection: undefined,
+            data: {},
+            isModification: null,
+            label: null,
+            mediaFiles: fromJS([]),
+            metaData: null,
+            partial: false,
+            path: '',
+            raw: '',
+            slug: '',
+          },
+          type: 'DRAFT_CREATE_EMPTY',
+        });
+      });
+    });
+
+    it('should populate draft entry from URL param', () => {
+      const store = mockStore({ mediaLibrary: fromJS({ files: [] }) });
+
+      const collection = fromJS({
+        fields: [{ name: 'title' }, { name: 'boolean' }],
+      });
+
+      return store.dispatch(createEmptyDraft(collection, '?title=title&boolean=True')).then(() => {
+        const actions = store.getActions();
+        expect(actions).toHaveLength(1);
+
+        expect(actions[0]).toEqual({
+          payload: {
+            collection: undefined,
+            data: { title: 'title', boolean: true },
+            isModification: null,
+            label: null,
+            mediaFiles: fromJS([]),
+            metaData: null,
+            partial: false,
+            path: '',
+            raw: '',
+            slug: '',
+          },
+          type: 'DRAFT_CREATE_EMPTY',
+        });
+      });
+    });
+
+    it('should html escape URL params', () => {
+      const store = mockStore({ mediaLibrary: fromJS({ files: [] }) });
+
+      const collection = fromJS({
+        fields: [{ name: 'title' }],
+      });
+
+      return store
+        .dispatch(createEmptyDraft(collection, "?title=<script>alert('hello')</script>"))
+        .then(() => {
+          const actions = store.getActions();
+          expect(actions).toHaveLength(1);
+
+          expect(actions[0]).toEqual({
+            payload: {
+              collection: undefined,
+              data: { title: '&lt;script&gt;alert(&#039;hello&#039;)&lt;/script&gt;' },
+              isModification: null,
+              label: null,
+              mediaFiles: fromJS([]),
+              metaData: null,
+              partial: false,
+              path: '',
+              raw: '',
+              slug: '',
+            },
+            type: 'DRAFT_CREATE_EMPTY',
+          });
+        });
+    });
+  });
   describe('createEmptyDraftData', () => {
     it('should set default value for list field widget', () => {
       const fields = fromJS([

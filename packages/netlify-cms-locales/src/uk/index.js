@@ -33,6 +33,11 @@ const uk = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'необов’язково',
+      },
+    },
     editorControlPane: {
       widget: {
         required: "%{fieldLabel} є обов'язковим.",
@@ -87,6 +92,16 @@ const uk = {
       deployButtonLabel: 'Переглянути наживо',
     },
     editorWidgets: {
+      image: {
+        choose: 'Виберіть зображення',
+        chooseDifferent: 'Виберіть інше зображення',
+        remove: 'Видалити зображення',
+      },
+      file: {
+        choose: 'Виберіть файл',
+        chooseDifferent: 'Виберіть інший файл',
+        remove: 'Видалити файл',
+      },
       unknownControl: {
         noControl: "Відсутній модуль для '%{widget}'.",
       },

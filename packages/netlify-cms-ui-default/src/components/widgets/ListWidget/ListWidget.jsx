@@ -6,7 +6,6 @@ import Field from '../../Field';
 import { Button } from '../../Button';
 import ListWidgetItem from './ListWidgetItem';
 import { TreeContentWrap } from '../../Tree';
-// import { Container, Draggable } from 'react-smooth-dnd';
 
 const Draggable = sortableElement(({ children }) => <>{children}</>);
 
@@ -41,10 +40,9 @@ class ListWidget extends React.Component {
   state = { focus: false, items: [], expandedItems: [] };
 
   addListItem = (index, data = {}) => {
-    console.log('addListItem called', { index, data });
-    let items = [...this.state.items];
+    const items = [...this.state.items];
     items.splice(index, 0, data);
-    let expandedItems = this.state.expandedItems.map(item => (item >= index ? item + 1 : item));
+    const expandedItems = this.state.expandedItems.map(item => (item >= index ? item + 1 : item));
 
     this.setState({ items, expandedItems }, () => {
       this.props.onChange(this.state.items);
@@ -65,14 +63,11 @@ class ListWidget extends React.Component {
     delete items[index];
     items = items.filter(item => item !== null);
 
-    this.setState({ items }, () => {
-      this.props.onChange(this.state.items);
-      console.log({ expandedItems: this.state.expandedItems });
-    });
+    this.setState({ items }, () => this.props.onChange(this.state.items));
   };
 
   handleChange = (data, index) => {
-    let items = [...this.state.items];
+    const items = [...this.state.items];
     items[index] = {
       ...items[index],
       ...data,
@@ -109,8 +104,6 @@ class ListWidget extends React.Component {
       }
       return item;
     });
-
-    console.log({ items });
 
     // Setting items to empty array intentionally to trigger unmount and remount so no transition animation occurs
     this.setState({ items: [], expandedItems }, () =>

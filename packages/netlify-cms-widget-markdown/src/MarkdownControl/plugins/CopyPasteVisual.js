@@ -5,10 +5,9 @@ import isHotkey from 'is-hotkey';
 import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../../serializers';
 
 const CopyPasteVisual = ({ getAsset, resolveWidget }) => {
-  const handleCopy = async (event, editor) => {
-    event.persist();
+  const handleCopy = (event, editor) => {
     const markdown = slateToMarkdown(editor.value.fragment.toJS());
-    const html = await markdownToHtml(markdown, { getAsset, resolveWidget });
+    const html = markdownToHtml(markdown, { getAsset, resolveWidget });
     setEventTransfer(event, 'text', markdown);
     setEventTransfer(event, 'html', html);
     setEventTransfer(event, 'fragment', base64.serializeNode(editor.value.fragment));
@@ -32,8 +31,8 @@ const CopyPasteVisual = ({ getAsset, resolveWidget }) => {
       const doc = Document.fromJSON(ast);
       return editor.insertFragment(doc);
     },
-    async onCopy(event, editor, next) {
-      await handleCopy(event, editor, next);
+    onCopy(event, editor, next) {
+      handleCopy(event, editor, next);
     },
     onCut(event, editor, next) {
       handleCopy(event, editor, next);

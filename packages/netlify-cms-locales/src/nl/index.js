@@ -47,6 +47,11 @@ const nl = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'optioneel',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} is vereist.',
@@ -83,10 +88,12 @@ const nl = {
       publishing: 'Publiceren...',
       publish: 'Publiceer',
       published: 'Gepubliceerd',
-      unpublished: 'Publicatie ongedaan maken',
+      unpublish: 'Publicatie terugtrekken',
+      unpublished: 'Publicatie teruggetrokken',
       duplicate: 'Dupliceren',
       unpublishing: 'Publicatie ongedaan maken...',
       publishAndCreateNew: 'Publiceer en maak nieuw item aan',
+      publishAndDuplicate: 'Publiceer en dupliceer item',
       deleteUnpublishedChanges: 'Verwijder niet-gepubliceerde wijzigingen',
       deleteUnpublishedEntry: 'Niet-gepubliceerd item verwijderen',
       deletePublishedEntry: 'Gepubliceerd item verwijderen',

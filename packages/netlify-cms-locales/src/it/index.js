@@ -3,6 +3,9 @@ const it = {
     login: 'Accedi',
     loggingIn: "Effettuando l'accesso...",
     loginWithNetlifyIdentity: 'Accedi con Netlify Identity',
+    loginWithBitbucket: 'Accedi con Bitbucket',
+    loginWithGitHub: 'Accedi con GitHub',
+    loginWithGitLab: 'Accedi con GitLab',
     errors: {
       email: 'Assicurati di inserire la tua mail.',
       password: 'Inserisci la tua password.',
@@ -44,6 +47,11 @@ const it = {
     },
   },
   editor: {
+    editorControl: {
+      field: {
+        optional: 'opzionale',
+      },
+    },
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} è richiesto.',
@@ -103,6 +111,16 @@ const it = {
       deployButtonLabel: 'Guarda Live',
     },
     editorWidgets: {
+      image: {
+        choose: "Scegli un'immagine",
+        chooseDifferent: "Scegli un'immagine diversa",
+        remove: 'Rimuovi immagine',
+      },
+      file: {
+        choose: 'Scegli un file',
+        chooseDifferent: 'Scegli un altro file',
+        remove: 'Rimuovi il file',
+      },
       unknownControl: {
         noControl: "Nessun controllo per il widget '%{widget}'.",
       },

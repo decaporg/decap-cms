@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { colorsRaw } from './styles.js';
 import Icon from './Icon';
@@ -20,11 +21,18 @@ const ButtonText = styled.p`
 `;
 
 export default class GoBackButton extends React.Component {
+  static propTypes = {
+    href: PropTypes.string.isRequired,
+    t: PropTypes.func.isRequired,
+  };
+
   render() {
+    const { href, t } = this.props;
+
     return (
-      <GoBackButtonStyle href={this.props.href}>
+      <GoBackButtonStyle href={href}>
         <Icon type="arrow" size="small" />
-        <ButtonText>Go back to site</ButtonText>
+        <ButtonText>{t('ui.default.goBackToSite')}</ButtonText>
       </GoBackButtonStyle>
     );
   }

@@ -203,7 +203,6 @@ class Dialog extends React.Component {
       BackdropProps,
       disableBackdropClick,
       disableEscapeKeyDown,
-      noPadding,
       onEscapeKeyDown,
       onEnter,
       onEntering,
@@ -220,7 +219,7 @@ class Dialog extends React.Component {
 
     const isMobile = isWindowDown('xs');
 
-    let position = isMobile
+    const position = isMobile
       ? { x: 'stretch', y: 'bottom' }
       : this.props.position
       ? { ...this.props.position }
