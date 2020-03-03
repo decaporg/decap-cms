@@ -280,7 +280,7 @@ describe('github API', () => {
         },
       ];
 
-      await api.persistFiles(entry, mediaFiles, { useWorkflow: true });
+      await api.persistFiles([entry], mediaFiles, { useWorkflow: true });
 
       expect(api.uploadBlob).toHaveBeenCalledTimes(3);
       expect(api.uploadBlob).toHaveBeenCalledWith(entry);

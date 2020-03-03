@@ -1235,15 +1235,17 @@ export class Backend {
     return this.implementation.persistMedia(file, options);
   }
 
-  async deleteEntry(state: State, collection: Collection, slug: string, locales, multiContent) {
+  async deleteEntry(state: State, collection: Collection, slug: string) {
+    const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
     const extension = selectFolderEntryExtension(collection) as string;
+    const multiContent = DIFF_FILE_TYPES.includes(collection.get('multi_content'));
+    const locales = config.get('locales');
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
     }
 
-    const config = state.config;
     const user = (await this.currentUser()) as User;
     const commitMessage = commitMessageFormatter(
       'delete',
@@ -1261,7 +1263,7 @@ export class Backend {
     let result;
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
-    if (locales && multiContent === 'same_folder') {
+    if (locales && multiContent === SAME_FOLDER) {
       result = await Promise.all(
         locales.map(l =>
           this.implementation
@@ -1269,7 +1271,7 @@ export class Backend {
             .catch(() => undefined),
         ),
       );
-    } else if (locales && multiContent === 'diff_folder') {
+    } else if (locales && multiContent === DIFF_FOLDER) {
       result = await Promise.all(
         locales.map(l =>
           this.implementation
