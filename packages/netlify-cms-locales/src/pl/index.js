@@ -192,6 +192,7 @@ const pl = {
       newPost: 'Nowa pozycja',
       description:
         '%{smart_count} pozycja oczekuje na recenzję, %{readyCount} oczekuje na publikacje. |||| %{smart_count} pozycje oczekują na recenzję, %{readyCount} oczekuje na publikacje. |||| %{smart_count} pozycji oczekuje na recenzje, %{readyCount} oczekuje na publikacje. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} przez %{author}',

@@ -199,6 +199,7 @@ const tr = {
       newPost: 'Yeni Mesaj',
       description:
         '%{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayına hazır. |||| %{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayınlanmaya hazır. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} tarafından %{author}',

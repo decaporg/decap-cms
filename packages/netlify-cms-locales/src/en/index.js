@@ -201,6 +201,7 @@ const en = {
       newPost: 'New Post',
       description:
         '%{smart_count} entry waiting for review, %{readyCount} ready to go live. |||| %{smart_count} entries waiting for review, %{readyCount} ready to go live. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} by %{author}',

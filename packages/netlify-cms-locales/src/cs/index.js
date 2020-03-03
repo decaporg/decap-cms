@@ -190,6 +190,7 @@ const cs = {
       newPost: 'Nový post',
       description:
         '%{smart_count} záznam čeká na schválení, %{readyCount} připraven k publikaci. |||| %{smart_count} čeká na schválení, %{readyCount} připraveno k publikaci. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} (%{author})',

@@ -194,6 +194,7 @@ const it = {
       newPost: 'Nuovo Post',
       description:
         '%{smart_count} voce attende la revisione, %{readyCount} pronte per la pubblicazione. |||| %{smart_count} voci attendono la revisione, %{readyCount} pronte per la pubblicazione. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} da %{author}',

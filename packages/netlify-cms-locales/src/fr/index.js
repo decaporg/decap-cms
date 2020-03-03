@@ -171,6 +171,7 @@ const fr = {
       newPost: 'Nouvel article',
       description:
         '%{smart_count} entrée en attente de revue, %{readyCount} prête(s) à être publiée(s). |||| %{smart_count} entrées en attente de revue, %{readyCount} prête(s) à être publiée(s). ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} par %{author}',

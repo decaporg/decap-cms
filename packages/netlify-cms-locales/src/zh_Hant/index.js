@@ -189,6 +189,7 @@ const zh_Hant = {
       newPost: '建立新的內容',
       description:
         '%{smart_count} 篇內容正在等待審核， %{readyCount} 篇已經準備進行發布。 |||| %{smart_count} 篇內容正在等待審核， %{readyCount} 篇已經準備進行發布。',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} by %{author}',

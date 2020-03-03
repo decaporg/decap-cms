@@ -178,6 +178,7 @@ const hu = {
       newPost: 'New Post',
       description:
         '%{smart_count} bejegyzés felülvizsgálatra vár, %{readyCount} élesítésre vár. |||| %{smart_count} bejegyzés felülvizsgálatra vár, %{readyCount} élesítésre vár. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date}, írta %{author}',

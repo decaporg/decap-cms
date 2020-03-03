@@ -197,6 +197,7 @@ const gr = {
       newPost: 'Νέα δημοσίευση',
       description:
         '%{smart_count} καταχώρησεις σε αναμονή για αναθεώρηση, %{readyCount} έτοιμες για Live μετάβαση. |||| %{smart_count} καταχωρήσεις σε αναμονή για αναθεώρηση, %{readyCount} έτοιμες για Live μετάβαση. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} από %{author}',

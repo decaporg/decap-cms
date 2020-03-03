@@ -170,6 +170,7 @@ const uk = {
       workflowHeading: 'Редакція',
       newPost: 'Новий запис',
       description: '%{smart_count} записів очікують розгляду, %{readyCount} готові до публікації. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} від %{author}',

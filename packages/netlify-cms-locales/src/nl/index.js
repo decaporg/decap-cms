@@ -199,6 +199,7 @@ const nl = {
       newPost: 'Nieuw bericht',
       description:
         '%{smart_count} item wacht op beoordeling, %{readyCount} klaar om live te gaan. |||| %{smart_count} items wachten op beoordeling, %{readyCount} klaar om live te gaan. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} door %{author}',

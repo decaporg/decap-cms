@@ -177,6 +177,7 @@ const ru = {
       newPost: 'Новая запись',
       description:
         'Число записей, ожидающих проверки — %{smart_count}, готовых к публикации — %{readyCount}. |||| Число записей, ожидающих проверки — %{smart_count}, готовых к публикации — %{readyCount}. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date}, %{author}',

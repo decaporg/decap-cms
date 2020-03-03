@@ -178,6 +178,7 @@ const pt = {
       newPost: 'Nova Publicação',
       description:
         '%{smart_count} entrada aguardando revisão, %{readyCount} pronta para publicação. |||| %{smart_count} entradas aguardando revisão, %{readyCount} pronta para publicação.',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} por %{author}',
