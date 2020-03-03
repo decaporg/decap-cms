@@ -1,4 +1,10 @@
 updates:
+  - date: 2020-03-03T21:00:34.318Z
+    version: 2.10.30
+    description: 'Field defaults via query string, proxy backend as middleware, bugfixes'
+  - date: 2020-02-27T21:00:33.890Z
+    version: 2.10.29
+    description: 'Preserve non-configured fields, open authoring bugfixes'
   - date: 2020-02-25T22:11:47.613Z
     description: Fix workflow PR label migrations
     version: 2.10.28
