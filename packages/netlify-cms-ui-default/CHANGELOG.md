@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.1...netlify-cms-ui-default@2.9.2) (2020-03-03)
+
+
+### Bug Fixes
+
+* **locale:** Remove hard coded string literals ([#3333](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/3333)) ([7c45a3c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/7c45a3cda983be427864a56e58791565eb9232e2))
+
+
+
+
+
 ## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.0...netlify-cms-ui-default@2.9.1) (2020-02-13)
 
 

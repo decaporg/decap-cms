@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.21.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.20.1...netlify-cms-core@2.21.0) (2020-03-03)
+
+
+### Bug Fixes
+
+* consider variable types when traversing collection fields ([#3347](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3347)) ([961cde4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/961cde4ea523027a1367bbdb84adbc2843a79b57))
+* ensure draft changes ([#3306](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3306)) ([cf81f58](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/cf81f587cf517b2906e261e89090de984aad3ce3))
+
+
+### Features
+
+* populate new entry from URL params ([#3343](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3343)) ([e0b1246](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e0b124681093c6f1dff9b9ec0ffab835716e66b5))
+
+
+
+
+
 ## [2.20.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.20.0...netlify-cms-core@2.20.1) (2020-02-27)
 
 

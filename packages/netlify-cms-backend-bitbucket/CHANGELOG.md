@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.11.0...netlify-cms-backend-bitbucket@2.11.1) (2020-03-03)
+
+
+### Bug Fixes
+
+* **locale:** Remove hard coded string literals ([#3333](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/3333)) ([7c45a3c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/7c45a3cda983be427864a56e58791565eb9232e2))
+
+
+
+
+
 # [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.10.1...netlify-cms-backend-bitbucket@2.11.0) (2020-02-25)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.1.5...netlify-cms-proxy-server@1.2.0) (2020-03-03)
+
+
+### Features
+
+* **proxy-server:** export proxy middlewares ([#3361](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/3361)) ([4e1e5a9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/4e1e5a9bd54f9fcfcfd7e971729c8d2d796f9a1b))
+
+
+
+
+
 ## [1.1.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.1.4...netlify-cms-proxy-server@1.1.5) (2020-02-25)
 
 **Note:** Version bump only for package netlify-cms-proxy-server

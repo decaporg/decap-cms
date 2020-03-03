@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.2...netlify-cms-backend-github@2.9.3) (2020-03-03)
+
+
+### Bug Fixes
+
+* **locale:** Remove hard coded string literals ([#3333](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3333)) ([7c45a3c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/7c45a3cda983be427864a56e58791565eb9232e2))
+* **open-authoring:** use origin repo when calling compare API ([#3363](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3363)) ([e40b81a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/e40b81a5647d45487d6ddf17245beddd354e0f39))
+
+
+
+
+
 ## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.1...netlify-cms-backend-github@2.9.2) (2020-02-27)
 
 **Note:** Version bump only for package netlify-cms-backend-github
