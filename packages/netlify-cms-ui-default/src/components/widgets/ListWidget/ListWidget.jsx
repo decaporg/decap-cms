@@ -139,7 +139,14 @@ class ListWidget extends React.Component {
             </Button>
           )}
         </ActionWrap>
-        <Container onSortEnd={this.handleDrop} lockAxis="y" helperClass="dragging" distance={1}>
+        <Container
+          onSortEnd={this.handleDrop}
+          lockAxis="y"
+          helperClass="dragging"
+          distance={1}
+          lockToContainerEdges
+          lockOffset="0%"
+        >
           {items.map((item, index) => {
             const itemExpanded = expandedItems.indexOf(index) !== -1;
 

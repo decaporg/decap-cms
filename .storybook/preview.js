@@ -140,7 +140,7 @@ const channel = addons.getChannel();
 
 // create a component that listens for the DARK_MODE event
 function ThemeWrapper(props) {
-  const [isDark, setDark] = useState(false);
+  const [isDark, setDark] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   useEffect(() => {
     // listen to DARK_MODE event
