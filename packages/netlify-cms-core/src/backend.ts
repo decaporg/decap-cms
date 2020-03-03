@@ -55,6 +55,7 @@ import {
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
+import { SAME_FOLDER, DIFF_FOLDER, DIFF_FILE_TYPES } from 'Constants/multiContentTypes';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
@@ -518,10 +519,10 @@ export class Backend {
 
   async listAllMultipleEntires(collection: Collection, page: number, locales: string[]) {
     const multiContent = collection.get('multi_content');
-    const depth = multiContent === 'diff_folder' ? 2 : 0;
+    const depth = multiContent === DIFF_FOLDER ? 2 : 0;
     const entries = await this.listAllEntries(collection, depth);
     let multiEntries;
-    if (multiContent === 'same_folder') {
+    if (multiContent === SAME_FOLDER) {
       multiEntries = entries
         .filter(entry => locales.some(l => entry.slug.endsWith(`.${l}`)))
         .map(entry => {
@@ -533,7 +534,7 @@ export class Backend {
             multiContentKey: path.join('.'),
           };
         });
-    } else if (multiContent === 'diff_folder') {
+    } else if (multiContent === DIFF_FOLDER) {
       multiEntries = entries
         .filter(entry => locales.some(l => entry.slug.startsWith(`${l}/`)))
         .map(entry => {
@@ -746,20 +747,17 @@ export class Backend {
     return localForage.removeItem(getEntryBackupKey());
   }
 
-  async getEntry(
-    state: State,
-    collection: Collection,
-    slug: string,
-    locales: string[],
-    multiContent: string,
-  ) {
+  async getEntry(state: State, collection: Collection, slug: string) {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
     const extension = selectFolderEntryExtension(collection);
+    const integration = selectIntegration(state.integrations, null, 'assetStore');
+    const multiContent = collection.get('multi_content');
+    const locales = state.config.get('locales');
     let loadedEntries;
     let mediaFiles;
 
-    if (locales && multiContent === 'same_folder') {
+    if (locales && multiContent === SAME_FOLDER) {
       loadedEntries = await Promise.all(
         locales.map(l =>
           this.implementation
@@ -767,7 +765,7 @@ export class Backend {
             .catch(() => undefined),
         ),
       );
-    } else if (locales && multiContent === 'diff_folder') {
+    } else if (locales && multiContent === DIFF_FOLDER) {
       loadedEntries = await Promise.all(
         locales.map(l =>
           this.implementation
@@ -963,9 +961,9 @@ export class Backend {
     const data = {};
     let splitChar;
     let path;
-    if (multiContent == 'same_folder') {
+    if (multiContent === SAME_FOLDER) {
       splitChar = '.';
-    } else if (multiContent == 'diff_folder') {
+    } else if (multiContent === DIFF_FOLDER) {
       splitChar = '/';
     }
     entries.forEach(e => {
@@ -1064,9 +1062,8 @@ export class Backend {
     const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
-    const hasMultipleContent =
-      ['same_folder', 'diff_folder'].includes(collection.get('multi_content')) &&
-      config.get('locales');
+    const MultiContentDiffFiles =
+      DIFF_FILE_TYPES.includes(collection.get('multi_content')) && config.get('locales');
 
     const useWorkflow = selectUseWorkflow(config);
 
@@ -1119,15 +1116,15 @@ export class Backend {
         newPath: customPath,
       };
     }
-    console.log(entryObj);
+
     let entriesObj = [entryObj];
-    if (hasMultipleContent) {
+    if (MultiContentDiffFiles) {
       const multiContent = collection.get('multi_content');
       const extension = selectFolderEntryExtension(collection);
       const data = entryDraft.getIn(['entry', 'data']).toJS();
       const locales = Object.keys(data);
       entriesObj = [];
-      if (multiContent === 'same_folder') {
+      if (multiContent === SAME_FOLDER) {
         locales.forEach(l => {
           entriesObj.push({
             path: entryObj.path.replace(extension, `${l}.${extension}`),
@@ -1138,7 +1135,7 @@ export class Backend {
             ),
           });
         });
-      } else if (multiContent === 'diff_folder') {
+      } else if (multiContent === DIFF_FOLDER) {
         locales.forEach(l => {
           entriesObj.push({
             path: entryObj.path.replace(`${entryObj.slug}`, `${l}/${entryObj.slug}`),

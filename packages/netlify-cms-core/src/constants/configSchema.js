@@ -5,6 +5,7 @@ import locale from 'locale-codes';
 import { uniq } from 'lodash';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
 import { getWidgets } from 'Lib/registry';
+import { SINGLE_FILE, SAME_FOLDER, DIFF_FOLDER } from 'Constants/multiContentTypes';
 
 /**
  * valid locales.
@@ -192,6 +193,7 @@ const getConfigSchema = () => ({
               type: 'string',
             },
           },
+<<<<<<< HEAD
           fields: fieldsConfig(),
           sortableFields: {
             type: 'array',
@@ -224,7 +226,7 @@ const getConfigSchema = () => ({
             additionalProperties: false,
             minProperties: 1,
           },
-          multi_content: { type: 'string', enum: ['single_file', 'same_folder', 'diff_folder'] },
+          multi_content: { type: 'string', enum: [SINGLE_FILE, SAME_FOLDER, DIFF_FOLDER] },
         },
         required: ['name', 'label'],
         oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
