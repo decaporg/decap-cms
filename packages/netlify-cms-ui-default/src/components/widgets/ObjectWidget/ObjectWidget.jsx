@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import Field from '../Field';
-import Tree from '../Tree';
+import Field from '../../Field';
+import Tree from '../../Tree';
 
 const StyledField = styled(Field)`
   padding: 0 0 0 1rem;
 `;
 
-const TextWidget = ({ label, onChange, fields }) => {
+const ObjectWidget = ({ label, onChange, fields, className }) => {
   const [expanded, setExpanded] = useState(true);
   const [data, setData] = useState();
   const [treeType, setTreeType] = useState();
@@ -19,10 +19,10 @@ const TextWidget = ({ label, onChange, fields }) => {
   };
 
   return (
-    <StyledField>
+    <StyledField className={className}>
       <Tree
         single
-        onExpandToggle={() => (expanded ? setExpanded(false) : setExpanded(true))}
+        onExpandToggle={() => setExpanded(!expanded)}
         expanded={expanded}
         label={`${label}`}
         description={data && !!Object.keys(data).length && data[Object.keys(data)[0]]}
@@ -36,4 +36,4 @@ const TextWidget = ({ label, onChange, fields }) => {
   );
 };
 
-export default TextWidget;
+export default ObjectWidget;
