@@ -6,6 +6,7 @@ import {
   applyDefaults,
   detectProxyServer,
   handleLocalBackend,
+  addLocaleFields,
 } from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -692,6 +693,39 @@ describe('config', () => {
           backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
         }),
       );
+    });
+  });
+
+  describe('addLocaleFields', () => {
+    it('should add locale fields', () => {
+      const fields = [
+        { name: 'title', widget: 'string' },
+        { name: 'content', widget: 'markdown' },
+      ];
+      const actual = addLocaleFields(fields, ['en', 'fr']);
+
+      expect(actual).toEqual([
+        {
+          label: 'en',
+          name: 'en',
+          widget: 'object',
+          multiContentId: Symbol.for('multiContentId'),
+          fields: [
+            { name: 'title', widget: 'string' },
+            { name: 'content', widget: 'markdown' },
+          ],
+        },
+        {
+          label: 'fr',
+          name: 'fr',
+          widget: 'object',
+          multiContentId: Symbol.for('multiContentId'),
+          fields: [
+            { name: 'title', widget: 'string' },
+            { name: 'content', widget: 'markdown' },
+          ],
+        },
+      ]);
     });
   });
 });

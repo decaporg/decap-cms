@@ -874,12 +874,10 @@ export function deleteEntry(collection: Collection, slug: string) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const locales = state.config.get('locales');
-    const multiContent = DIFF_FILE_TYPES.includes(collection.get('multi_content'));
 
     dispatch(entryDeleting(collection, slug));
     return backend
-      .deleteEntry(state, collection, slug, locales, multiContent)
+      .deleteEntry(state, collection, slug)
       .then(() => {
         return dispatch(entryDeleted(collection, slug));
       })
