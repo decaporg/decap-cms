@@ -650,7 +650,6 @@ export default class API {
     const { collection, slug } = parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
-<<<<<<< HEAD
     const diffs = await this.getDifferences(mergeRequest.sha);
     const diffsWithIds = await Promise.all(
       diffs.map(async d => {
@@ -658,20 +657,6 @@ export default class API {
         const id = await this.getFileId(path, branch);
         return { id, path, newFile };
       }),
-=======
-    const diff = await this.getDifferences(mergeRequest.sha);
-    const entries = diff
-      .filter(d => !d.binary)
-      .map(d => ({ path: d.old_path, newFile: d.new_file }));
-    const mediaFiles = await Promise.all(
-      diff
-        .filter(d => d.binary)
-        .map(async d => {
-          const path = d.new_path;
-          const id = await this.getFileId(path, branch);
-          return { path, id };
-        }),
->>>>>>> 022a9a3e... feat(bitbucket): support multi content
     );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
