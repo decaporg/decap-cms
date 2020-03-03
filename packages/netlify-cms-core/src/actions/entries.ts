@@ -11,6 +11,7 @@ import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
+import { DIFF_FILE_TYPES } from 'Constants/multiContentTypes';
 import { addAssets, getAsset } from './media';
 import {
   Collection,
@@ -543,6 +544,7 @@ export function loadEntries(collection: Collection, page = 0) {
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)
       : backend;
     const append = !!(page && !isNaN(page) && page > 0);
+    dispatch(entriesLoading(collection));
 
     try {
       let response: {
@@ -552,7 +554,7 @@ export function loadEntries(collection: Collection, page = 0) {
       } = await (collection.has('nested')
         ? // nested collections require all entries to construct the tree
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
-        : locales && ['same_folder', 'diff_folder'].includes(multiContent)
+        : locales && DIFF_FILE_TYPES.includes(multiContent)
         ? provider.listAllMultipleEntires(collection, locales)
         : provider.listEntries(collection, page));
       response = {
@@ -873,7 +875,7 @@ export function deleteEntry(collection: Collection, slug: string) {
     const state = getState();
     const backend = currentBackend(state.config);
     const locales = state.config.get('locales');
-    const multiContent = collection.get('multi_content') === 'multiple_files';
+    const multiContent = DIFF_FILE_TYPES.includes(collection.get('multi_content'));
 
     dispatch(entryDeleting(collection, slug));
     return backend

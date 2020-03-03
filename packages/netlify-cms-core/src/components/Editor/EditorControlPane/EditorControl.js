@@ -214,10 +214,10 @@ class EditorControl extends React.Component {
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
-    const multiContentWidget = field.get('multiContent');
+    const multiContentWidgetId = field.get('multiContentId') === Symbol.for('multiContentId');
     const label = (
       <>
-        {locales && multiContentWidget ? (
+        {locales && multiContentWidgetId ? (
           <Dropdown
             renderButton={() => <LocaleButton>{selectedLocale}</LocaleButton>}
             dropdownTopOverlap="30px"
