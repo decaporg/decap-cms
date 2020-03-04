@@ -51,6 +51,8 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     meta: options.meta || {},
     ...(options.multiContentKey && {
       multiContentKey: options.multiContentKey,
+    }),
+    ...(options.multiContent && {
       multiContent: options.multiContent,
     }),
   };
