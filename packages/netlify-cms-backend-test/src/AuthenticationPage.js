@@ -75,7 +75,6 @@ const StyledHeader = styled.h1`
 const HeaderText = styled.div`
   line-height: 40px;
   font-weight: 800;
-  margin-top: -6px;
   margin-left: 12px;
 `;
 const StyledSubtitle = styled.h2`

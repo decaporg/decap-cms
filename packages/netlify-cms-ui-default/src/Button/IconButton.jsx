@@ -18,6 +18,9 @@ const IconButtonWrap = styled.button`
   width: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : 2)}rem;
   height: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : 2)}rem;
   border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   outline: none;
   cursor: pointer;
   transition: 250ms;
