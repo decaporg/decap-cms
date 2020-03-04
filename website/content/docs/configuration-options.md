@@ -284,7 +284,7 @@ A string representing the path where content in this collection can be found on 
 
 Template tags are the same as those for [slug](#slug), with the following exceptions:
 
-* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the   case with [`slug` configuration](#slug)
+* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the case with [`slug` configuration](#slug))
 * The date based template tags, such as `{{year}}` and `{{month}}`, are pulled from a date field in your entry, and may require additional configuration - see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
@@ -358,7 +358,14 @@ This setting changes options for the editor view of the collection. It has one o
 
 ### `summary`
 
-This setting allows the customisation of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`. This option over-rides the default of `title` field and `identifier_field`.
+This setting allows the customization of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`. This option over-rides the default of `title` field and `identifier_field`.
+
+**Available template tags:**
+
+Template tags are the same as those for [slug](#slug), with the following additions:
+
+* `{{filename}}` The file name without the extension part.
+* `{{extension}}` The file extension.
 
 **Example**
 

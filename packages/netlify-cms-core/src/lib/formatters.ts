@@ -200,9 +200,11 @@ export const summaryFormatter = (
   entry: EntryMap,
   collection: Collection,
 ) => {
-  const entryData = entry.get('data');
+  let entryData = entry.get('data');
   const date = parseDateFromEntry(entry, collection) || null;
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
+
+  entryData = addFileTemplateFields(entry.get('path'), entryData);
   const summary = compileStringTemplate(summaryTemplate, date, identifier, entryData);
   return summary;
 };
