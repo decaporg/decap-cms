@@ -116,8 +116,8 @@ export function getWidget(name) {
   const widget = registry.widgets[name];
   if (!widget) {
     const nameLowerCase = name.toLowerCase();
-    const hasLowercase = !!registry.widgets[nameLowerCase];
-    const message = hasLowercase
+    const hasLowerCase = !!registry.widgets[nameLowerCase];
+    const message = hasLowerCase
       ? `Could not find widget '${name}'. Did you mean '${nameLowerCase}'?`
       : `Could not find widget '${name}'. Please make sure the widget name is configured correctly or register it via 'registerwidget'.`;
     throw new Error(message);
