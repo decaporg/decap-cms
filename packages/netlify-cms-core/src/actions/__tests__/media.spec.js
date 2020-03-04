@@ -108,17 +108,18 @@ describe('media', () => {
 
     it('should return asset with original path on load error', () => {
       const path = 'static/media/image.png';
+      const resolvePath = 'resolvePath';
       const store = mockStore({
-        medias: Map({ [path]: { error: true } }),
+        medias: Map({ [resolvePath]: { error: true } }),
       });
 
-      selectMediaFilePath.mockReturnValue(path);
+      selectMediaFilePath.mockReturnValue(resolvePath);
       const payload = { path };
 
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
 
-      const asset = new AssetProxy({ url: path, path });
+      const asset = new AssetProxy({ url: path, path: resolvePath });
       expect(actions).toHaveLength(1);
       expect(actions[0]).toEqual({
         type: ADD_ASSET,
