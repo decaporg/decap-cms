@@ -151,8 +151,7 @@ Supports all of the [`slug` templates](/docs/configuration-options#slug) and:
 
 Before this feature, the [list widget](/docs/widgets/#list) allowed a set of fields to be repeated, but every list item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Netlify CMS.
 
-**Note: this feature does not yet support previews, and will not output anything in the preview
-pane.**
+**Note: this feature does not yet support default previews and requires [registering a preview template](/docs/customization#registerpreviewtemplate) in order to show up in the preview pane.**
 
 To use variable types in the list widget, update your field configuration as follows:
 
