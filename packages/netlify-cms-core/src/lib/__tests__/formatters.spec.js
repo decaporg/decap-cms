@@ -368,7 +368,7 @@ describe('formatters', () => {
       const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
 
       expect(
-        summaryFormatter('{{title}}-{{year}}-{{filename}}-{{extension}}', entry, collection),
+        summaryFormatter('{{title}}-{{year}}-{{filename}}.{{extension}}', entry, collection),
       ).toBe('title-2020-post.md');
     });
   });
