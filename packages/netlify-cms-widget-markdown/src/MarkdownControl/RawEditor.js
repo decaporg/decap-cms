@@ -13,19 +13,17 @@ import { markdownToHtml } from '../serializers';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
 
-const styleStrings = {
-  slateRaw: `
-    position: relative;
-    overflow: hidden;
-    overflow-x: auto;
-    min-height: ${lengths.richTextEditorMinHeight};
-    font-family: ${fonts.mono};
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-top: 0;
-    margin-top: -${editorStyleVars.stickyDistanceBottom};
-  `,
-};
+const rawEditorStyles = ({ minimal }) => `
+  position: relative;
+  overflow: hidden;
+  overflow-x: auto;
+  min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
+  font-family: ${fonts.mono};
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
+  margin-top: -${editorStyleVars.stickyDistanceBottom};
+`;
 
 const RawEditorContainer = styled.div`
   position: relative;
@@ -118,7 +116,7 @@ export default class RawEditor extends React.Component {
               className={cx(
                 className,
                 css`
-                  ${styleStrings.slateRaw}
+                  ${rawEditorStyles({ minimal: field.get('minimal') })}
                 `,
               )}
               value={this.state.value}
