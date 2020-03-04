@@ -29,7 +29,7 @@ export class AzureRepo {
   name: string;
 
   constructor(location?: string | null) {
-    if (!location || location == undefined) {
+    if (!location) {
       throw new Error(
         "An Azure repository must be specified in the format 'organisation/project/repo'.",
       );
@@ -52,6 +52,65 @@ export interface AzureCommitAuthor {
   name: string;
   email: string;
 }
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-5.1#gititem
+export interface AzureGitItem {
+  // this is the response we see in Azure, but it is just documented as "Object[]" so it is inconsistent
+  _links: {
+    tree: {
+      href: string;
+    };
+  };
+  commitId: string;
+  isFolder: boolean;
+  isSymLink: boolean;
+}
+
+export interface AzureGitTreeRef {
+  _links: AzureReferenceLinks[];
+  url: string;
+  href: string;
+  treeEntries?: AzureGitTreeEntryRef[];
+}
+
+export interface AzureReferenceLinks {
+  links: object[];
+  tree?: AzureGitTreeRef;
+}
+
+export interface AzureGitTreeEntryRef {
+  gitObjectType: string;
+  objectId: string;
+  relativePath: string;
+  size: number;
+  url: string;
+}
+
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-5.1#gitpullrequest
+export interface AzureWebApiTagDefinition {
+  active: boolean;
+  id: string;
+  name: string;
+  url: string;
+}
+
+export interface AzurePullRequest {
+  title: string;
+  artifactId: string;
+  closedDate: string;
+  isDraft: string;
+  status: AzurePullRequestStatus;
+  mergeStatus: AzureAsyncPullRequestStatus;
+  pullRequestId: number;
+  labels: AzureWebApiTagDefinition[];
+  sourceRefName: string;
+}
+
+// This does not match Azure documentation, but it is what comes back from some calls
+// PullRequest as an example is documented as returning PullRequest[], but it actually
+// returns that inside of this value prop in the json
+export interface AzureArray<T> {
+  value: T[];
+}
 
 enum AzureCommitChangeType {
   ADD = 'add',
@@ -69,6 +128,33 @@ enum AzurePullRequestStatus {
   ACTIVE = 'active',
   COMPLETED = 'completed',
   ABANDONED = 'abandoned',
+}
+
+enum AzureAsyncPullRequestStatus {
+  CONFLICTS = 'conflicts',
+  FAILURE = 'failure',
+  QUEUED = 'queued',
+  REJECTED = 'rejectedByPolicy',
+  SUCCEEDED = 'succeeded',
+}
+
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-5.1#gitcommitdiffs
+export interface AzureGitCommitDiffs {
+  changes: AzureGitChange[];
+}
+
+export interface AzureGitChange {
+  item: AzureGitChangeItem;
+}
+
+export interface AzureGitChangeItem {
+  objectId: string;
+  originalObjectId: string;
+  gitObjectType: string;
+  commitId: string;
+  path: string;
+  isFolder: string;
+  url: string;
 }
 
 type AzureRefUpdate = {
@@ -139,6 +225,10 @@ class AzureCommitRenameChange extends AzureCommitChange {
     super(AzureCommitChangeType.RENAME, destination);
     this.sourceServerItem = source;
   }
+}
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
@@ -273,7 +363,7 @@ export default class API {
   responseToBlob = responseParser({ format: 'blob', apiName: API_NAME });
   responseToText = responseParser({ format: 'text', apiName: API_NAME });
 
-  requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON) as Promise<any>;
+  requestJSON = <T>(req: ApiRequest) => this.request(req).then(this.responseToJSON) as Promise<T>;
   requestText = (req: ApiRequest) => this.request(req).then(this.responseToText) as Promise<string>;
 
   toBase64 = (str: string) => Promise.resolve(Base64.encode(str));
@@ -311,9 +401,8 @@ export default class API {
     const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) => isCMSLabel(l.name));
     const labelText = prLabel ? prLabel.name : statusToLabel('draft');
     const status = labelToStatus(labelText);
-    const retval = { branch, collection, slug, path, status, mediaFiles };
 
-    return retval;
+    return { branch, collection, slug, path, status, mediaFiles };
   }
 
   /**
@@ -330,20 +419,18 @@ export default class API {
     { parseText = true, branch = this.branch } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
-      const content = await this.request({
+      return await this.request({
         url: `${this.endpointUrl}/items/`,
         params: { version: branch, path },
         cache: 'no-store',
       }).then<Blob | string>(parseText ? this.responseToText : this.responseToBlob);
-      return content;
     };
 
-    const content = await readFile(sha, fetchContent, localForage, parseText);
-    return content;
+    return await readFile(sha, fetchContent, localForage, parseText);
   };
 
   listFiles = async (path: string, recursive = false) => {
-    return await this.requestJSON({
+    return await this.requestJSON<AzureGitItem>({
       url: `${this.endpointUrl}/items/`,
       params: {
         version: this.branch,
@@ -356,12 +443,14 @@ export default class API {
         return response._links.tree.href;
       })
       .then(url => {
-        return this.requestJSON(url);
+        return this.requestJSON<AzureGitTreeRef>(url);
       })
       .then(response => {
         const files = response.treeEntries || [];
         if (!Array.isArray(files)) {
-          throw new Error(`Cannot list files, path ${path} is not a directory but a ${files.type}`);
+          throw new Error(
+            `Cannot list files, path ${path} is not a directory but a ${typeof files}`,
+          );
         }
         files.forEach((f: any) => {
           f.relativePath = `${path}/${f.relativePath}`;
@@ -485,14 +574,16 @@ export default class API {
    * Retrieve statuses for a given SHA. Unrelated to the editorial workflow
    * concept of entry "status". Useful for things like deploy preview links.
    */
+  // async getStatuses(collection: string, slug: string) {
   async getStatuses(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
     const branch = this.branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchMergeRequest(branch);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    await this.getBranchMergeRequest(branch);
 
     const statuses: any[] = [];
     // eslint-disable-next-line @typescript-eslint/camelcase
-    return statuses.map(({ name, status: boolean, target_url }) => ({
+    return statuses.map(({ name, status, target_url }) => ({
       context: name,
       state: status ? PreviewState.Success : PreviewState.Other,
       // eslint-disable-next-line @typescript-eslint/camelcase
@@ -558,8 +649,8 @@ export default class API {
     return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
 
-  async getMergeRequests(sourceBranch?: string) {
-    const mergeRequests = await this.requestJSON({
+  async getMergeRequests(sourceBranch?: string): Promise<AzurePullRequest[]> {
+    const mergeRequests = await this.requestJSON<AzureArray<AzurePullRequest>>({
       url: `${this.endpointUrl}/pullrequests`,
       params: {
         'searchCriteria.status': 'active',
@@ -571,6 +662,7 @@ export default class API {
       },
     });
 
+    console.log('MERGE REQUETS', mergeRequests);
     return mergeRequests.value.filter((mr: any) =>
       mr.sourceRefName.startsWith(this.branchToRef(CMS_BRANCH_PREFIX)),
     );
@@ -633,7 +725,7 @@ export default class API {
     });
   }
 
-  async getBranchMergeRequest(branch: string) {
+  async getBranchMergeRequest(branch: string): Promise<AzurePullRequest> {
     const mergeRequests = await this.getMergeRequests(branch);
     if (mergeRequests.length <= 0) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
@@ -642,8 +734,8 @@ export default class API {
     return mergeRequests[0];
   }
 
-  async getDifferences(to: string) {
-    const result = await this.requestJSON({
+  async getDifferences(to: string): Promise<AzureGitChange[]> {
+    const result: AzureGitCommitDiffs = await this.requestJSON({
       url: `${this.endpointUrl}/diffs/commits`,
       params: {
         baseVersion: this.branch,
@@ -651,6 +743,7 @@ export default class API {
       },
     });
 
+    console.log('HERE ARE THE GIT DIFFS', result);
     return result.changes;
   }
 
@@ -758,11 +851,20 @@ export default class API {
       },
     };
 
-    await this.requestJSON({
+    let response = await this.requestJSON<AzurePullRequest>({
       method: 'PATCH',
       url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(mergeRequest.pullRequestId)}`,
       body: JSON.stringify(pullRequestCompletion),
     });
+
+    // We need to wait for Azure to complete the pull request to actually complete
+    // Sometimes this is instant, but frequently it is 1-3 seconds
+    while (response.mergeStatus === 'queued') {
+      await delay(500);
+      response = await this.requestJSON({
+        url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(mergeRequest.pullRequestId)}`,
+      });
+    }
   }
 
   /**
