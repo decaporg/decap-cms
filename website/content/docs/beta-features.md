@@ -67,7 +67,7 @@ Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.o
 
 ## Open Authoring
 
-When using the [GitHub backend](/docs/authentication-backends/#github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
+When using the [GitHub backend](/docs/github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
 
 At the same time, any contributors who _do_ have write access to the repository can continue to use Netlify CMS normally.
 

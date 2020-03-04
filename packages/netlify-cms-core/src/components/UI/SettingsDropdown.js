@@ -57,7 +57,7 @@ const SettingsDropdown = ({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
   <React.Fragment>
     {isTestRepo && (
       <AppHeaderTestRepoIndicator
-        href="https://www.netlifycms.org/docs/authentication-backends#test-repo-backend"
+        href="https://www.netlifycms.org/docs/test-backend"
         target="_blank"
         rel="noopener noreferrer"
       >
