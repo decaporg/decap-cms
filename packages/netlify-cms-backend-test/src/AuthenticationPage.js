@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Icon, LoginButton } from 'netlify-cms-ui-default';
+import { Icon, Button, ButtonGroup, Logo, ParticleBackground } from 'netlify-cms-ui-default';
 
 // Set one variable for all sizing aka the magicNumber, for more info contact @danoszz
 const magicNumber = 48;
@@ -14,18 +14,18 @@ const StyledAuthenticationPage = styled.section`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #0c1e24;
+  background-color: ${({ theme }) => theme.color.background};
   position: relative;
-  &:after {
-    content: '';
-    width: 100%;
-    height: 50%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background-color: #f2f5f7;
-    z-index: 0;
-  }
+`;
+
+const StyledParticleBackground = styled(ParticleBackground)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: ${({ theme }) => theme.color.neutral['1400']};
+  z-index: 0;
 `;
 
 const AuthenticationPageModal = styled.div`
@@ -35,7 +35,7 @@ const AuthenticationPageModal = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.color.surface};
   width: ${27 * 16}px;
   box-shadow: 0 2px 4px 0 rgba(14, 30, 37, 0.12);
   border-radius: 8px;
@@ -46,22 +46,17 @@ const PageModalLogoWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   max-width: ${magicNumber * 6}px;
+  margin-bottom: 2rem;
 `;
 
-const PageLogoIcon = styled(Icon)`
-  display: flex;
-  align-items: center;
-  height: 100%;
-  width: calc(100% - ${magicNumber}px);
-  margin: 0 auto;
-`;
-
-const PageModalButtonsWrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
+const PageModalButtonsWrapper = styled(ButtonGroup)`
   width: 100%;
+  margin: 0;
   margin-top: ${magicNumber * 1.5}px;
 `;
+PageModalButtonsWrapper.defaultProps = {
+  direction: 'vertical',
+};
 
 const InputWrapper = styled.div`
   position: relative;
@@ -111,6 +106,22 @@ const StyledLabel = styled.label`
   margin-top: ${magicNumber / 4}px;
 `;
 
+const StyledButtonGroup = styled(ButtonGroup)`
+  margin: 0;
+  width: 100%;
+`;
+
+const LoginButton = styled(Button)`
+  position: relative;
+
+  & svg {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    margin: 0;
+  }
+`;
+
 class LoginInputs extends React.Component {
   render = () => {
     return (
@@ -134,11 +145,11 @@ class LoginForm extends React.Component {
     return (
       <>
         <StyledHeader>Log in with Netlify Identity</StyledHeader>
-        <StyledSubtitle>Enter your e-mailaddress and password to log in.</StyledSubtitle>
+        <StyledSubtitle>Enter your e-mail address and password to log in.</StyledSubtitle>
         <StyledForm onSubmit={this.props.handleSubmit}>
           <LoginInputs />
           <ForgotPasswordLink>Forgot your password?</ForgotPasswordLink>
-          <LoginButton type="submit" color="#1ead9e" disabled={this.props.inProgress}>
+          <LoginButton primary type="submit" color="#1ead9e" disabled={this.props.inProgress}>
             {inProgress ? t('auth.loggingIn') : t('auth.login')}
           </LoginButton>
         </StyledForm>
@@ -148,25 +159,32 @@ class LoginForm extends React.Component {
 }
 
 class BackendSelector extends React.Component {
-  renderThirdPartyLogins = () =>
-    Object.keys(this.props.availableBackends).map(backend => {
-      const { color, icon, handler } = this.props.availableBackends[backend];
-
-      return (
-        <LoginButton key={backend} disabled={this.props.inProgress} onClick={handler} color={color}>
-          {icon && <Icon type={icon} />}
-          {this.props.inProgress ? 'Logging in...' : `Log In with ${backend}`}
-        </LoginButton>
-      );
-    });
-
   render = () => {
     return (
       <>
         <PageModalLogoWrapper>
-          <PageLogoIcon size="300px" type="netlify-cms" />
+          <Logo />
         </PageModalLogoWrapper>
-        <PageModalButtonsWrapper>{this.renderThirdPartyLogins()}</PageModalButtonsWrapper>
+        <StyledButtonGroup direction="vertical">
+          {Object.keys(this.props.availableBackends).map(backend => {
+            const { color, icon, handler } = this.props.availableBackends[backend];
+
+            return (
+              <LoginButton
+                primary
+                size="lg"
+                type={backend === 'Netlify Identity' && 'success'}
+                key={backend}
+                disabled={this.props.inProgress}
+                onClick={handler}
+                color={color}
+                icon={icon}
+              >
+                {this.props.inProgress ? 'Logging in...' : `Log In with ${backend}`}
+              </LoginButton>
+            );
+          })}
+        </StyledButtonGroup>
       </>
     );
   };
@@ -251,6 +269,7 @@ export default class AuthenticationPage extends React.Component {
   render() {
     return (
       <StyledAuthenticationPage>
+        <StyledParticleBackground />
         <AuthenticationPageModal>{this.renderContent()}</AuthenticationPageModal>
       </StyledAuthenticationPage>
     );

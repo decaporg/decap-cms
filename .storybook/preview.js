@@ -5,7 +5,7 @@ import { themes } from '@storybook/theming';
 import { ThemeProvider } from 'emotion-theming';
 import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/theme';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import { ToastContainer } from '../packages/netlify-cms-ui-default/src/components/Toast';
+import { ToastContainer } from '../packages/netlify-cms-ui-default/src/Toast';
 
 import './preview.css';
 

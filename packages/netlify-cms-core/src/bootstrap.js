@@ -9,8 +9,10 @@ import { mergeConfig } from 'Actions/config';
 import { getPhrases } from 'Lib/phrases';
 import { selectLocale } from 'Reducers/config';
 import { I18n } from 'react-polyglot';
+import { ThemeProvider } from 'emotion-theming';
 import { GlobalStyles } from 'netlify-cms-ui-legacy';
 import { ErrorBoundary } from 'UI';
+import { lightTheme, darkTheme } from 'netlify-cms-ui-default';
 import App from 'App/App';
 import 'EditorWidgets';
 import 'coreSrc/mediaLibrary';
@@ -79,14 +81,22 @@ function bootstrap(opts = {}) {
   /**
    * Create connected root component.
    */
-  const Root = () => (
-    <>
-      <GlobalStyles />
-      <Provider store={store}>
-        <ConnectedTranslatedApp />
-      </Provider>
-    </>
-  );
+  const Root = () => {
+    const isDark = window && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeProvider
+          theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
+        >
+          <Provider store={store}>
+            <ConnectedTranslatedApp />
+          </Provider>
+        </ThemeProvider>
+      </>
+    );
+  };
 
   /**
    * Render application root.

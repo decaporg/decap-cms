@@ -1,8 +1,36 @@
 import * as responsive from './utils/responsive';
 import color from './utils/color';
 
+const fonts = {
+  sansSerif: `
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol"
+  `,
+  serif: `
+    'Charter',
+    serif
+  `,
+  mono: `
+    'SFMono-Regular',
+    Consolas,
+    "Liberation Mono",
+    Menlo,
+    Courier,
+    monospace;
+  `,
+};
+
 export const lightTheme = {
-  fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+  fontFamily: fonts.sansSerif,
+  fonts,
   responsive,
   color: {
     ...color,
@@ -30,7 +58,8 @@ export const lightTheme = {
 };
 
 export const darkTheme = {
-  fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+  fontFamily: fonts.sansSerif,
+  fonts,
   responsive,
   color: {
     ...color,

@@ -201,6 +201,7 @@
     "eslint-plugin-babel": "^5.3.0",
     "keycode": "^2.2.0",
     "lerna": "^3.15.0",
+    "particleground-light": "^1.0.6",
     "react-event-listener": "^0.6.6",
     "react-spring": "^8.0.27"
   },
