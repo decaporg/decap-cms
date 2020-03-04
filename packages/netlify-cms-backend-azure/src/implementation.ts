@@ -29,6 +29,10 @@ import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
+const voidReturn = () => {
+  return;
+};
+
 /**
  * Check a given status context string to determine if it provides a link to a
  * deploy preview. Checks for an exact match against `previewContext` if given,
@@ -150,7 +154,7 @@ export default class Azure implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(collection: string, extension: string, depth: number) {
+  entriesByFolder(collection: string, extension: string) {
     return this.api!.listFiles(collection)
       .then(files => {
         if (extension) {
@@ -158,7 +162,8 @@ export default class Azure implements Implementation {
         }
         return files;
       })
-      .then(this.fetchFiles);
+      .then(this.fetchFiles)
+      .catch(() => []);
   }
 
   entriesByFiles(files: ImplementationFile[]) {
@@ -249,11 +254,14 @@ export default class Azure implements Implementation {
     };
   }
 
-  persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
-    return this.api!.persistFiles(entry, mediaFiles, options);
+  persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions): Promise<void> {
+    return this.api!.persistFiles(entry, mediaFiles, options).then(voidReturn);
   }
 
-  async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
+  async persistMedia(
+    mediaFile: AssetProxy,
+    options: PersistOptions,
+  ): Promise<ImplementationMediaFile> {
     const fileObj = mediaFile.fileObj as File;
 
     const [id] = await Promise.all([
@@ -271,12 +279,12 @@ export default class Azure implements Implementation {
       size: fileObj!.size,
       file: fileObj,
       url,
-      id,
+      id: id as string,
     };
   }
 
-  deleteFile(path: string, commitMessage: string) {
-    return this.api!.deleteFile(path, commitMessage);
+  deleteFile(path: string, commitMessage: string): Promise<void> {
+    return this.api!.deleteFile(path, commitMessage).then(voidReturn);
   }
 
   loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
