@@ -1239,7 +1239,8 @@ export class Backend {
     const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
     const extension = selectFolderEntryExtension(collection) as string;
-    const multiContent = DIFF_FILE_TYPES.includes(collection.get('multi_content'));
+    const MultiContentDiffFiles =
+      DIFF_FILE_TYPES.includes(collection.get('multi_content')) && config.get('locales');
     const locales = config.get('locales');
 
     if (!selectAllowDeletion(collection)) {
@@ -1260,30 +1261,28 @@ export class Backend {
       user.useOpenAuthoring,
     );
 
-    let result;
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
-    if (locales && multiContent === SAME_FOLDER) {
-      result = await Promise.all(
-        locales.map(l =>
-          this.implementation
-            .deleteFile(path.replace(extension, `${l}.${extension}`))
-            .catch(() => undefined),
-        ),
-      );
-    } else if (locales && multiContent === DIFF_FOLDER) {
-      result = await Promise.all(
-        locales.map(l =>
-          this.implementation
-            .deleteFile(path.replace(`${slug}`, `${l}/${slug}`))
-            .catch(() => undefined),
-        ),
-      );
+    if (MultiContentDiffFiles) {
+      const multiContent = collection.get('multi_content');
+      if (multiContent === SAME_FOLDER) {
+        for (const l of locales) {
+          await this.implementation
+            .deleteFile(path.replace(extension, `${l}.${extension}`), commitMessage)
+            .catch(() => undefined);
+        }
+      } else if (multiContent === DIFF_FOLDER) {
+        for (const l of locales) {
+          await this.implementation
+            .deleteFile(path.replace(`${slug}`, `${l}/${slug}`), commitMessage)
+            .catch(() => undefined);
+        }
+      }
     } else {
-      result = await this.implementation.deleteFile(path, commitMessage);
+      await this.implementation.deleteFile(path, commitMessage);
     }
     await this.invokePostUnpublishEvent(entry);
-    return result;
+    return Promise.resolve();
   }
 
   async deleteMedia(config: Config, path: string) {
