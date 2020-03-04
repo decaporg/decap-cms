@@ -3,6 +3,8 @@ import semaphore, { Semaphore } from 'semaphore';
 import trimStart from 'lodash/trimStart';
 import { stripIndent } from 'common-tags';
 import {
+  CURSOR_COMPATIBILITY_SYMBOL,
+  Cursor,
   asyncLock,
   basename,
   AsyncLock,
@@ -29,12 +31,14 @@ import {
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { Octokit } from '@octokit/rest';
-import API, { Entry } from './API';
+import API, { Entry, API_NAME } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
+
+type ApiFile = { id: string; type: string; name: string; path: string; size: number };
 
 export default class GitHub implements Implementation {
   lock: AsyncLock;
@@ -281,19 +285,72 @@ export default class GitHub implements Implementation {
     return Promise.resolve(this.token);
   }
 
+  getCursorAndFiles = (files: ApiFile[], page: number) => {
+    const pageSize = 20;
+    const count = files.length;
+    const pageCount = Math.ceil(files.length / pageSize);
+
+    const actions = [] as string[];
+    if (page > 1) {
+      actions.push('prev');
+      actions.push('first');
+    }
+    if (page < pageCount) {
+      actions.push('next');
+      actions.push('last');
+    }
+
+    const cursor = Cursor.create({
+      actions,
+      meta: { page, count, pageSize, pageCount },
+      data: { files },
+    });
+    const pageFiles = files.slice((page - 1) * pageSize, page * pageSize);
+    return { cursor, files: pageFiles };
+  };
+
   async entriesByFolder(folder: string, extension: string, depth: number) {
-    const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
+    const repoURL = this.api!.originRepoURL;
+
+    let cursor: Cursor;
 
     const listFiles = () =>
       this.api!.listFiles(folder, {
         repoURL,
         depth,
-      }).then(filterByPropExtension(extension, 'path'));
+      }).then(files => {
+        const filtered = filterByPropExtension(extension, 'path')(files);
+        const result = this.getCursorAndFiles(filtered, 1);
+        cursor = result.cursor;
+        return result.files;
+      });
 
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }) as Promise<string>;
 
-    return entriesByFolder(listFiles, readFile, 'GitHub');
+    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+    return files;
+  }
+
+  async allEntriesByFolder(folder: string, extension: string, depth: number) {
+    const repoURL = this.api!.originRepoURL;
+
+    const listFiles = () =>
+      this.api!.listFiles(folder, {
+        repoURL,
+        depth,
+      }).then(files => {
+        return filterByPropExtension(extension, 'path')(files);
+      });
+
+    const readFile = (path: string, id: string | null | undefined) =>
+      this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+
+    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    return files;
   }
 
   entriesByFiles(files: ImplementationFile[]) {
@@ -383,6 +440,49 @@ export default class GitHub implements Implementation {
 
   deleteFile(path: string, commitMessage: string) {
     return this.api!.deleteFile(path, commitMessage);
+  }
+
+  async traverseCursor(cursor: Cursor, action: string) {
+    const meta = cursor.meta!;
+    const files = cursor.data!.get('files')!.toJS() as ApiFile[];
+
+    let result: { cursor: Cursor; files: ApiFile[] };
+    switch (action) {
+      case 'first': {
+        result = this.getCursorAndFiles(files, 1);
+        break;
+      }
+      case 'last': {
+        result = this.getCursorAndFiles(files, meta.get('pageCount'));
+        break;
+      }
+      case 'next': {
+        result = this.getCursorAndFiles(files, meta.get('page') + 1);
+        break;
+      }
+      case 'prev': {
+        result = this.getCursorAndFiles(files, meta.get('page') - 1);
+        break;
+      }
+      default: {
+        result = this.getCursorAndFiles(files, 1);
+        break;
+      }
+    }
+
+    return {
+      entries: await Promise.all(
+        result.files.map(file =>
+          this.api!.readFile(file.path, file.id, { repoURL: this.api!.originRepoURL }).then(
+            data => ({
+              file,
+              data: data as string,
+            }),
+          ),
+        ),
+      ),
+      cursor: result.cursor,
+    };
   }
 
   loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
