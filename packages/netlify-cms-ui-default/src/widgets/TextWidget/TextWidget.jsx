@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import Field from '../../Field';
+import Icon from '../../Icon';
 
 const StyledInput = styled.input`
   color: ${({ theme }) => theme.color.highEmphasis};
@@ -18,9 +19,16 @@ const StyledInput = styled.input`
   }
 `;
 
+const InputIcon = styled(Icon)`
+  position: absolute;
+  bottom: -0.125rem;
+  right: 0;
+`;
+
 const TextWidget = ({
   name,
   label,
+  icon,
   onChange,
   onClick,
   readOnly,
@@ -58,6 +66,7 @@ const TextWidget = ({
         title={title}
       />
       {children && children}
+      {icon && <InputIcon name={icon} />}
     </Field>
   );
 };
