@@ -24,6 +24,7 @@ import {
   unpublishedEntries,
   UnpublishedEntryMediaFile,
   entriesByFiles,
+  filterByPropExtension,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -158,7 +159,7 @@ export default class Azure implements Implementation {
     return this.api!.listFiles(collection)
       .then(files => {
         if (extension) {
-          return files.filter(file => file.relativePath.endsWith('.' + extension));
+          return filterByPropExtension(extension, 'relativePath')(files);
         }
         return files;
       })
