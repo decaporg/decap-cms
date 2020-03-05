@@ -29,9 +29,9 @@ export class AzureRepo {
   name: string;
 
   constructor(location?: string | null) {
-    if (!location) {
+    if (!location || !/^[^/]+\/[^/]+(|\/[^/]+)$/gi.test(location)) {
       throw new Error(
-        "An Azure repository must be specified in the format 'organisation/project/repo'.",
+        "An Azure repository must be specified in the format 'organisation/project', or 'organisation/project/repo'.",
       );
     }
 
@@ -42,18 +42,18 @@ export class AzureRepo {
   }
 }
 
-export interface AzureUser {
+interface AzureUser {
   id: string;
   displayName: string;
   emailAddress: string;
 }
 
-export interface AzureCommitAuthor {
+interface AzureCommitAuthor {
   name: string;
   email: string;
 }
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-5.1#gititem
-export interface AzureGitItem {
+interface AzureGitItem {
   // this is the response we see in Azure, but it is just documented as "Object[]" so it is inconsistent
   _links: {
     tree: {
@@ -65,19 +65,19 @@ export interface AzureGitItem {
   isSymLink: boolean;
 }
 
-export interface AzureGitTreeRef {
+interface AzureGitTreeRef {
   _links: AzureReferenceLinks[];
   url: string;
   href: string;
   treeEntries?: AzureGitTreeEntryRef[];
 }
 
-export interface AzureReferenceLinks {
+interface AzureReferenceLinks {
   links: object[];
   tree?: AzureGitTreeRef;
 }
 
-export interface AzureGitTreeEntryRef {
+interface AzureGitTreeEntryRef {
   gitObjectType: string;
   objectId: string;
   relativePath: string;
@@ -86,14 +86,14 @@ export interface AzureGitTreeEntryRef {
 }
 
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-5.1#gitpullrequest
-export interface AzureWebApiTagDefinition {
+interface AzureWebApiTagDefinition {
   active: boolean;
   id: string;
   name: string;
   url: string;
 }
 
-export interface AzurePullRequest {
+interface AzurePullRequest {
   title: string;
   artifactId: string;
   closedDate: string;
@@ -108,7 +108,7 @@ export interface AzurePullRequest {
 // This does not match Azure documentation, but it is what comes back from some calls
 // PullRequest as an example is documented as returning PullRequest[], but it actually
 // returns that inside of this value prop in the json
-export interface AzureArray<T> {
+interface AzureArray<T> {
   value: T[];
 }
 
@@ -139,15 +139,15 @@ enum AzureAsyncPullRequestStatus {
 }
 
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-5.1#gitcommitdiffs
-export interface AzureGitCommitDiffs {
+interface AzureGitCommitDiffs {
   changes: AzureGitChange[];
 }
 
-export interface AzureGitChange {
+interface AzureGitChange {
   item: AzureGitChangeItem;
 }
 
-export interface AzureGitChangeItem {
+interface AzureGitChangeItem {
   objectId: string;
   originalObjectId: string;
   gitObjectType: string;
@@ -385,7 +385,7 @@ export default class API {
   async retrieveMetadata(contentKey: string) {
     const { collection, slug } = parseContentKey(contentKey);
     const branch = this.branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchMergeRequest(branch);
+    const mergeRequest = await this.getBranchPullRequest(branch);
 
     const diff = await this.getDifferences(mergeRequest.sourceRefName);
     const path1 = diff.find(d => d.item.path.includes(slug));
@@ -579,7 +579,7 @@ export default class API {
     const contentKey = generateContentKey(collection, slug);
     const branch = this.branchFromContentKey(contentKey);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    await this.getBranchMergeRequest(branch);
+    await this.getBranchPullRequest(branch);
 
     const statuses: any[] = [];
     // eslint-disable-next-line @typescript-eslint/camelcase
@@ -649,8 +649,8 @@ export default class API {
     return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
 
-  async getMergeRequests(sourceBranch?: string): Promise<AzurePullRequest[]> {
-    const mergeRequests = await this.requestJSON<AzureArray<AzurePullRequest>>({
+  async getPullRequests(sourceBranch?: string): Promise<AzurePullRequest[]> {
+    const pullRequests = await this.requestJSON<AzureArray<AzurePullRequest>>({
       url: `${this.endpointUrl}/pullrequests`,
       params: {
         'searchCriteria.status': 'active',
@@ -662,8 +662,7 @@ export default class API {
       },
     });
 
-    console.log('MERGE REQUETS', mergeRequests);
-    return mergeRequests.value.filter((mr: any) =>
+    return pullRequests.value.filter((mr: any) =>
       mr.sourceRefName.startsWith(this.branchToRef(CMS_BRANCH_PREFIX)),
     );
   }
@@ -673,8 +672,8 @@ export default class API {
    * merge requests projected to just their source branch names.
    */
   async listUnpublishedBranches(): Promise<string[]> {
-    const mergeRequests = await this.getMergeRequests();
-    const branches = mergeRequests.map((mr: any) => this.refToBranch(mr.sourceRefName));
+    const pullRequests = await this.getPullRequests();
+    const branches = pullRequests.map((mr: any) => this.refToBranch(mr.sourceRefName));
     return branches;
   }
 
@@ -725,13 +724,13 @@ export default class API {
     });
   }
 
-  async getBranchMergeRequest(branch: string): Promise<AzurePullRequest> {
-    const mergeRequests = await this.getMergeRequests(branch);
-    if (mergeRequests.length <= 0) {
+  async getBranchPullRequest(branch: string): Promise<AzurePullRequest> {
+    const pullRequests = await this.getPullRequests(branch);
+    if (pullRequests.length <= 0) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
 
-    return mergeRequests[0];
+    return pullRequests[0];
   }
 
   async getDifferences(to: string): Promise<AzureGitChange[]> {
@@ -743,7 +742,6 @@ export default class API {
       },
     });
 
-    console.log('HERE ARE THE GIT DIFFS', result);
     return result.changes;
   }
 
@@ -779,7 +777,7 @@ export default class API {
     const contentKey = generateContentKey(collection, slug);
     const branch = this.branchFromContentKey(contentKey);
 
-    const mergeRequest = await this.getBranchMergeRequest(branch);
+    const mergeRequest = await this.getBranchPullRequest(branch);
 
     const labels = [
       ...mergeRequest.labels
@@ -794,44 +792,44 @@ export default class API {
   async deleteUnpublishedEntry(collectionName: any, slug: string) {
     const contentKey = generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchMergeRequest(branch);
+    const mergeRequest = await this.getBranchPullRequest(branch);
     await this.abandonPullRequest(mergeRequest);
   }
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchMergeRequest(branch);
+    const mergeRequest = await this.getBranchPullRequest(branch);
     await this.completePullRequest(mergeRequest);
   }
 
-  async updatePullRequestLabels(mergeRequest: any, labels: string[]) {
-    mergeRequest.labels.forEach(async (l: AzurePRLabel) => {
+  async updatePullRequestLabels(pullRequest: AzurePullRequest, labels: string[]) {
+    for (const l of pullRequest.labels) {
       if (isCMSLabel(l.name)) {
         await this.requestText({
           method: 'DELETE',
           url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
-            mergeRequest.pullRequestId,
+            pullRequest.pullRequestId,
           )}/labels/${encodeURIComponent(l.id)}`,
           params: {
             'api-version': '5.1-preview.1',
           },
         });
       }
-    });
+    }
 
-    labels.forEach(async (l: string) => {
+    for (const l of labels) {
       await this.requestText({
         method: 'POST',
         url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
-          mergeRequest.pullRequestId,
+          pullRequest.pullRequestId,
         )}/labels`,
         params: {
           'api-version': '5.1-preview',
         },
         body: JSON.stringify({ name: l }),
       });
-    });
+    }
   }
 
   /**
