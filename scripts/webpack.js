@@ -115,7 +115,7 @@ const baseConfig = ({ target = isProduction ? 'umd' : 'umddir' } = {}) => ({
     rules: flatMap(Object.values(rules()), rule => rule()),
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
   plugins: Object.values(plugins()).map(plugin => plugin()),
   devtool: isTest ? '' : 'source-map',

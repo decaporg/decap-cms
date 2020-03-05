@@ -1,9 +1,7 @@
-const BLACKLIST = ["template", "script", "style"];
+const BLACKLIST = ['template', 'script', 'style'];
 
 function isHidable(node) {
-  return (
-    node.nodeType === 1 && BLACKLIST.indexOf(node.tagName.toLowerCase()) === -1
-  );
+  return node.nodeType === 1 && BLACKLIST.indexOf(node.tagName.toLowerCase()) === -1;
 }
 
 function siblings(container, mount, currentNode, callback) {
@@ -15,9 +13,9 @@ function siblings(container, mount, currentNode, callback) {
 
 export function ariaHidden(node, show) {
   if (show) {
-    node.setAttribute("aria-hidden", "true");
+    node.setAttribute('aria-hidden', 'true');
   } else {
-    node.removeAttribute("aria-hidden");
+    node.removeAttribute('aria-hidden');
   }
 }
 

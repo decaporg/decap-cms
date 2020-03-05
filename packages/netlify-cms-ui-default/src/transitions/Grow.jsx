@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Transition from "react-transition-group/Transition";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Transition from 'react-transition-group/Transition';
 
 function getScale(value) {
   return `scale(${value}, ${value ** 2})`;
@@ -11,12 +11,12 @@ const styles = {
     opacity: 0,
     transform: getScale(0.75),
     transition:
-      "opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms"
+      'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
   },
   entering: { opacity: 1, transform: getScale(1) },
   entered: { opacity: 1, transform: `${getScale(1)} translateZ(0)` },
   exiting: { opacity: 0, transform: getScale(0.75) },
-  exited: { opacity: 0, transform: getScale(0.75) }
+  exited: { opacity: 0, transform: getScale(0.75) },
 };
 
 class Grow extends React.Component {
@@ -37,7 +37,7 @@ class Grow extends React.Component {
     const style = {
       ...styleProp,
       ...styles.default,
-      ...(React.isValidElement(children) ? children.props.style : {})
+      ...(React.isValidElement(children) ? children.props.style : {}),
     };
 
     return (
@@ -45,13 +45,13 @@ class Grow extends React.Component {
         appear
         onEnter={this.handleEnter}
         onExit={this.handleExit}
-        timeout={timeout === "auto" ? null : timeout}
+        timeout={timeout === 'auto' ? null : timeout}
         {...other}
       >
         {(state, childProps) => {
           return React.cloneElement(children, {
             style: { ...style, ...styles[state] },
-            ...childProps
+            ...childProps,
           });
         }}
       </Transition>
@@ -68,8 +68,8 @@ Grow.propTypes = {
   theme: PropTypes.object,
   timeout: PropTypes.oneOfType([
     PropTypes.number,
-    PropTypes.shape({ enter: PropTypes.number, exit: PropTypes.number })
-  ])
+    PropTypes.shape({ enter: PropTypes.number, exit: PropTypes.number }),
+  ]),
 };
 
 Grow.defaultProps = { timeout: 250 };

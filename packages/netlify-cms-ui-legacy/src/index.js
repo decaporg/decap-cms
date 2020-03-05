@@ -25,7 +25,7 @@ import {
   GlobalStyles,
 } from './styles';
 
-export const NetlifyCmsUiDefault = {
+export const NetlifyCmsUiLegacy = {
   Dropdown,
   DropdownItem,
   DropdownButton,

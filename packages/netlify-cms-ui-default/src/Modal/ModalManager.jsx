@@ -1,7 +1,7 @@
-import css from "dom-helpers/css";
-import getScrollbarSize from "dom-helpers/scrollbarSize";
-import isOverflowing from "./isOverflowing";
-import { ariaHidden, ariaHiddenSiblings } from "./manageAriaHidden";
+import css from 'dom-helpers/css';
+import getScrollbarSize from 'dom-helpers/scrollbarSize';
+import isOverflowing from './isOverflowing';
+import { ariaHidden, ariaHiddenSiblings } from './manageAriaHidden';
 
 function findIndexOf(data, callback) {
   let idx = -1;
@@ -16,15 +16,15 @@ function findIndexOf(data, callback) {
 }
 
 function getPaddingRight(node) {
-  return parseInt(css(node, "paddingRight") || 0, 10);
+  return parseInt(css(node, 'paddingRight') || 0, 10);
 }
 
 function setContainerStyle(data, container) {
-  const style = { overflow: "hidden" };
+  const style = { overflow: 'hidden' };
 
   data.style = {
     overflow: container.style.overflow,
-    paddingRight: container.style.paddingRight
+    paddingRight: container.style.paddingRight,
   };
 
   if (data.overflowing) {
@@ -62,13 +62,9 @@ class ModalManager {
     this.modals.push(modal);
 
     if (modal.modalRef) ariaHidden(modal.modalRef, false);
-    if (this.hideSiblingNodes)
-      ariaHiddenSiblings(container, modal.mountNode, modal.modalRef, true);
+    if (this.hideSiblingNodes) ariaHiddenSiblings(container, modal.mountNode, modal.modalRef, true);
 
-    const containerIdx = findIndexOf(
-      this.data,
-      item => item.container === container
-    );
+    const containerIdx = findIndexOf(this.data, item => item.container === container);
 
     if (containerIdx !== -1) {
       this.data[containerIdx].modals.push(modal);
@@ -79,7 +75,7 @@ class ModalManager {
       modals: [modal],
       container,
       overflowing: isOverflowing(container),
-      prevPaddings: []
+      prevPaddings: [],
     };
 
     if (this.handleContainerOverflow) setContainerStyle(data, container);
@@ -94,10 +90,7 @@ class ModalManager {
 
     if (modalIdx === -1) return modalIdx;
 
-    const containerIdx = findIndexOf(
-      this.data,
-      item => item.modals.indexOf(modal) !== -1
-    );
+    const containerIdx = findIndexOf(this.data, item => item.modals.indexOf(modal) !== -1);
     const data = this.data[containerIdx];
 
     data.modals.splice(data.modals.indexOf(modal), 1);
@@ -107,12 +100,7 @@ class ModalManager {
       if (this.handleContainerOverflow) removeContainerStyle(data);
       if (modal.modalRef) ariaHidden(modal.modalRef, true);
       if (this.hideSiblingNodes)
-        ariaHiddenSiblings(
-          data.container,
-          modal.mountNode,
-          modal.modalRef,
-          false
-        );
+        ariaHiddenSiblings(data.container, modal.mountNode, modal.modalRef, false);
       this.data.splice(containerIdx, 1);
     } else if (this.hideSiblingNodes) {
       const nextTop = data.modals[data.modals.length - 1];
@@ -124,9 +112,7 @@ class ModalManager {
   }
 
   isTopModal(modal) {
-    return (
-      !!this.modals.length && this.modals[this.modals.length - 1] === modal
-    );
+    return !!this.modals.length && this.modals[this.modals.length - 1] === modal;
   }
 }
 

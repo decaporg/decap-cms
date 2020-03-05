@@ -1,5 +1,5 @@
 function ownerDocument(node) {
-  return (node && node.ownerDocument) || document
+  return (node && node.ownerDocument) || document;
 }
 
-export default ownerDocument
+export default ownerDocument;

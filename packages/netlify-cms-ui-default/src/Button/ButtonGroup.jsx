@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
 
-import { Button } from './Button';
-
 const ButtonGroup = styled.div`
   margin: -4px;
   display: inline-flex;

@@ -11,7 +11,6 @@ export * from './Avatar';
 export { default as Backdrop } from './Backdrop';
 export * from './Backdrop';
 
-export { Button, ButtonGroup, IconButton, AvatarButton } from './Button';
 export * from './Button';
 
 export { default as Dialog } from './Dialog';
@@ -47,7 +46,6 @@ export * from './Logo';
 export { default as LogoTile } from './LogoTile';
 export * from './LogoTile';
 
-export { default as Menu } from './Menu';
 export * from './Menu';
 
 export { default as MobileNavigationMenu } from './MobileNavigationMenu';
@@ -74,7 +72,6 @@ export * from './ResponsiveLayout';
 export { default as RootRef } from './RootRef';
 export * from './RootRef';
 
-export { default as Toast } from './Toast';
 export * from './Toast';
 
 export { default as ToggleSwitch } from './ToggleSwitch';
@@ -92,5 +89,4 @@ export * from './Tree';
 export { default as UserMenu } from './UserMenu';
 export * from './UserMenu';
 
-export { default as WindowDimensionsProvider } from './WindowDimensionsProvider';
 export * from './WindowDimensionsProvider';

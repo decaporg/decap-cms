@@ -1,22 +1,22 @@
-export const keys = ["xs", "sm", "md", "lg", "xl"];
+export const keys = ['xs', 'sm', 'md', 'lg', 'xl'];
 
 const values = {
   xs: 0,
   sm: 600,
   md: 960,
   lg: 1280,
-  xl: 1920
+  xl: 1920,
 };
-const unit = "px";
+const unit = 'px';
 const step = 5;
 
 function up(key) {
-  const value = typeof values[key] === "number" ? values[key] : key;
+  const value = typeof values[key] === 'number' ? values[key] : key;
   return `@media (min-width:${value}${unit})`;
 }
 
 function isUp(key) {
-  return window.matchMedia(up(key).replace("@media ", "")).matches;
+  return window.matchMedia(up(key).replace('@media ', '')).matches;
 }
 
 function down(key) {
@@ -25,16 +25,15 @@ function down(key) {
 
   if (endIndex === keys.length) {
     // xl down applies to all sizes
-    return up("xs");
+    return up('xs');
   }
 
-  const value =
-    typeof upperbound === "number" && endIndex > 0 ? upperbound : key;
+  const value = typeof upperbound === 'number' && endIndex > 0 ? upperbound : key;
   return `@media (max-width:${value - step / 100}${unit})`;
 }
 
 function isDown(key) {
-  return window.matchMedia(down(key).replace("@media ", "")).matches;
+  return window.matchMedia(down(key).replace('@media ', '')).matches;
 }
 
 function between(start, end) {
@@ -45,11 +44,8 @@ function between(start, end) {
   }
 
   return (
-    `@media (min-width:${
-      typeof values[start] === "number" ? values[start] : start
-    }${unit}) and ` +
-    `(max-width:${(endIndex !== -1 &&
-    typeof values[keys[endIndex + 1]] === "number"
+    `@media (min-width:${typeof values[start] === 'number' ? values[start] : start}${unit}) and ` +
+    `(max-width:${(endIndex !== -1 && typeof values[keys[endIndex + 1]] === 'number'
       ? values[keys[endIndex + 1]]
       : end) -
       step / 100}${unit})`
@@ -57,7 +53,7 @@ function between(start, end) {
 }
 
 function isBetween(start, end) {
-  return window.matchMedia(between(start, end).replace("@media ", "")).matches;
+  return window.matchMedia(between(start, end).replace('@media ', '')).matches;
 }
 
 function only(key) {
@@ -65,7 +61,7 @@ function only(key) {
 }
 
 function isOnly(key) {
-  return window.matchMedia(only(key).replace("@media ", "")).matches;
+  return window.matchMedia(only(key).replace('@media ', '')).matches;
 }
 
 export {
@@ -78,7 +74,7 @@ export {
   up as mediaQueryUp,
   down as mediaQueryDown,
   between as mediaQueryBetween,
-  only as mediaQueryOnly
+  only as mediaQueryOnly,
 };
 
-console.log(isDown("sm"));
+console.log(isDown('sm'));

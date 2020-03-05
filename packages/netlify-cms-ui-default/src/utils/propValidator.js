@@ -1,7 +1,7 @@
-import { isValidElement } from "react";
+import { isValidElement } from 'react';
 
 export function isValidDelay(val) {
-  return typeof val === "number" && !isNaN(val) && val > 0;
+  return typeof val === 'number' && !isNaN(val) && val > 0;
 }
 
 export function objectValues(obj) {
@@ -12,7 +12,7 @@ function withRequired(fn) {
   fn.isRequired = function(props, propName, componentName) {
     const prop = props[propName];
 
-    if (typeof prop === "undefined") {
+    if (typeof prop === 'undefined') {
       return new Error(`The prop ${propName} is marked as required in 
       ${componentName}, but its value is undefined.`);
     }

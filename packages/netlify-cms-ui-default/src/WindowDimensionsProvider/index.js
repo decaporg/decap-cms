@@ -1,1 +1,4 @@
-export { default } from './WindowDimensionsProvider';
+export {
+  default as WindowDimensionsProvider,
+  useWindowDimensions,
+} from './WindowDimensionsProvider';

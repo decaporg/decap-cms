@@ -1,11 +1,11 @@
 // LazyLoadModule.jsx
-import * as React from "react";
-export class LazyLoadModule extends React.Component {
+import * as React from 'react';
+export default class LazyLoadModule extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      module: null
+      module: null,
     };
   }
 

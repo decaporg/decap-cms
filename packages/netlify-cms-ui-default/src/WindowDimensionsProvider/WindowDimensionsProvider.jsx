@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export const WindowDimensionsCtx = createContext(null);
 
 const windowDims = () => ({
   height: window.innerHeight,
-  width: window.innerWidth
+  width: window.innerWidth,
 });
 
 const WindowDimensionsProvider = ({ children }) => {
@@ -13,16 +13,12 @@ const WindowDimensionsProvider = ({ children }) => {
     const handleResize = () => {
       setDimensions(windowDims());
     };
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
-  return (
-    <WindowDimensionsCtx.Provider value={dimensions}>
-      {children}
-    </WindowDimensionsCtx.Provider>
-  );
+  return <WindowDimensionsCtx.Provider value={dimensions}>{children}</WindowDimensionsCtx.Provider>;
 };
 
 export default WindowDimensionsProvider;

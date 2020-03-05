@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import ResizeObserver from "resize-observer-polyfill";
-import warning from "warning";
+import React, { useState, useRef, useEffect } from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
+import warning from 'warning';
 
 export function usePrevious(value) {
   const ref = useRef();
@@ -11,9 +11,7 @@ export function usePrevious(value) {
 export function useMeasure() {
   const ref = useRef();
   const [bounds, set] = useState({ left: 0, top: 0, width: 0, height: 0 });
-  const [ro] = useState(
-    () => new ResizeObserver(([entry]) => set(entry.contentRect))
-  );
+  const [ro] = useState(() => new ResizeObserver(([entry]) => set(entry.contentRect)));
   useEffect(() => {
     if (ref.current) ro.observe(ref.current);
     return () => ro.disconnect();
@@ -33,12 +31,11 @@ export function useMeasure() {
 
 export const camelToKebabCase = string =>
   string
-    .replace(/([a-z])([A-Z])/g, "$1-$2")
-    .replace(/\s+/g, "-")
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .replace(/\s+/g, '-')
     .toLowerCase();
 
-export const kebabToCamelCase = string =>
-  string.replace(/-([a-z])/g, g => g[1].toUpperCase());
+export const kebabToCamelCase = string => string.replace(/-([a-z])/g, g => g[1].toUpperCase());
 
 export function createChainedFunction(...funcs) {
   return funcs.reduce(
@@ -48,8 +45,8 @@ export function createChainedFunction(...funcs) {
       }
 
       warning(
-        typeof func === "function",
-        "Invalid Argument Type, must only provide functions, undefined, or null."
+        typeof func === 'function',
+        'Invalid Argument Type, must only provide functions, undefined, or null.',
       );
 
       return function chainedFunction(...args) {
@@ -57,12 +54,12 @@ export function createChainedFunction(...funcs) {
         func.apply(this, args);
       };
     },
-    () => {}
+    () => {},
   );
 }
 
 export function setRef(ref, value) {
-  if (typeof ref === "function") {
+  if (typeof ref === 'function') {
     ref(value);
   } else if (ref) {
     ref.current = value;
@@ -87,12 +84,12 @@ export function useForkRef(refA, refB) {
 }
 
 export function queryStringToJSON(search) {
-  const pairs = search.slice(1).split("&");
+  const pairs = search.slice(1).split('&');
   const result = {};
 
   pairs.forEach(pair => {
-    pair = pair.split("=");
-    result[pair[0]] = decodeURIComponent(pair[1] || "");
+    pair = pair.split('=');
+    result[pair[0]] = decodeURIComponent(pair[1] || '');
   });
 
   return JSON.parse(JSON.stringify(result));
@@ -101,12 +98,12 @@ export function queryStringToJSON(search) {
 // A change of the browser zoom change the scrollbar size.
 // Credit https://github.com/twbs/bootstrap/blob/3ffe3a5d82f6f561b82ff78d82b32a7d14aed558/js/src/modal.js#L512-L519
 export function getScrollbarSize() {
-  const scrollDiv = document.createElement("div");
-  scrollDiv.style.width = "99px";
-  scrollDiv.style.height = "99px";
-  scrollDiv.style.position = "absolute";
-  scrollDiv.style.top = "-9999px";
-  scrollDiv.style.overflow = "scroll";
+  const scrollDiv = document.createElement('div');
+  scrollDiv.style.width = '99px';
+  scrollDiv.style.height = '99px';
+  scrollDiv.style.position = 'absolute';
+  scrollDiv.style.top = '-9999px';
+  scrollDiv.style.overflow = 'scroll';
 
   document.body.appendChild(scrollDiv);
   const scrollbarSize = scrollDiv.offsetWidth - scrollDiv.clientWidth;

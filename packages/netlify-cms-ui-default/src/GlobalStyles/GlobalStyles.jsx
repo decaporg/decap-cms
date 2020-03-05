@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import color from "color";
+import { createGlobalStyle } from 'styled-components';
+import color from 'color';
 
 const GlobalStyles = createGlobalStyle`
   html {
@@ -14,10 +14,10 @@ const GlobalStyles = createGlobalStyle`
 
   *::selection {
     background-color: ${({ theme }) =>
-      color(theme.color.success["500"])
+      color(theme.color.success['500'])
         .alpha(0.3)
         .string()};
-    color: ${({ theme }) => theme.color.success[theme.darkMode ? "200" : "800"]}
+    color: ${({ theme }) => theme.color.success[theme.darkMode ? '200' : '800']}
   }
 
   html,
@@ -27,7 +27,7 @@ const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     margin: 0;
     padding: 0;
-    color: ${({ theme }) => theme.color.neutral["800"]};
+    color: ${({ theme }) => theme.color.neutral['800']};
     background: ${({ theme }) => theme.color.background};
     height: 100%;
   }
@@ -92,19 +92,19 @@ const GlobalStyles = createGlobalStyle`
   }
 
   a {
-    color: ${props => props.theme.color.primary["400"]};
+    color: ${props => props.theme.color.primary['400']};
     text-decoration: none;
   }
 
   .dnd-list-item-drop-preview {
-    background-color: ${props => props.theme.color.neutral["50"]};
+    background-color: ${props => props.theme.color.neutral['50']};
     border-radius: 0.5rem;
 
   }
   .dnd-list-item-ghost {
     background: ${props => props.theme.color.elevatedSurface};
     box-shadow: 0 8px 24px 0 ${({ theme }) =>
-      theme.darkMode ? "rgba(0,0,0,0.5)" : "rgba(14,30,37,0.15)"};
+      theme.darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(14,30,37,0.15)'};
   }
   .dnd-list-item-ghost-drop {
 
@@ -181,7 +181,7 @@ const GlobalStyles = createGlobalStyle`
     flex-wrap: wrap;
   }
   .datetime-picker .calendar table thead th {
-    color: ${props => props.theme.color.primary["500"]};
+    color: ${props => props.theme.color.primary['500']};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -230,12 +230,12 @@ const GlobalStyles = createGlobalStyle`
     font-weight: 400;
   }
   .datetime-picker .calendar table tbody tr td.selected {
-    background-color: ${props => props.theme.color.primary["500"]};
+    background-color: ${props => props.theme.color.primary['500']};
     color: #fff;
     font-weight: 400;
   }
   .datetime-picker .calendar table tbody tr td.selected:hover {
-    background-color: ${props => props.theme.color.primary["400"]};
+    background-color: ${props => props.theme.color.primary['400']};
     color: #fff;
   }
   .datetime-picker .calendar table tbody tr td.selected.start {
@@ -418,8 +418,8 @@ const GlobalStyles = createGlobalStyle`
     transform: rotate(45deg);
   }
   .datetime-picker .time .sliders .slider {
-    background-image: linear-gradient(90deg,${props =>
-      props.theme.color.disabled},${props => props.theme.color.disabled});
+    background-image: linear-gradient(90deg,${props => props.theme.color.disabled},${props =>
+  props.theme.color.disabled});
   }
   .datetime-picker .time .sliders .slider .handle {
     background-color: ${props => props.theme.color.primary[500]};

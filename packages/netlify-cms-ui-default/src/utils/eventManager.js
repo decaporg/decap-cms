@@ -18,12 +18,10 @@ const eventManager = {
     if (!this.list.has(event)) {
       return false;
     }
-    this.list
-      .get(event)
-      .forEach(callback => setTimeout(() => callback.call(null, ...args), 0));
+    this.list.get(event).forEach(callback => setTimeout(() => callback.call(null, ...args), 0));
 
     return true;
-  }
+  },
 };
 
 export default eventManager;

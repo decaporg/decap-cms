@@ -1,6 +1,5 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, select, text } from '@storybook/addon-knobs';
+import { withKnobs } from '@storybook/addon-knobs';
 
 import AuthenticationPage from './AuthenticationPage';
 
@@ -11,7 +10,12 @@ export default {
 
 export const _AuthenticationPage = () => {
   return (
-    <AuthenticationPage onLogin={() => false} inProgress={false} config={{}} t={() => false} />
+    <AuthenticationPage
+      onLogin={() => false}
+      inProgress={false}
+      config={{ backend: {} }}
+      t={() => false}
+    />
   );
 };
 
