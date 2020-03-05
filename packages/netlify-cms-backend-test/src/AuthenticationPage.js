@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Color from 'color';
 import {
-  Icon,
   IconButton,
   Button,
   ButtonGroup,
@@ -12,8 +11,6 @@ import {
   TextWidget,
 } from 'netlify-cms-ui-default';
 
-// Set one variable for all sizing aka the magicNumber, for more info contact @danoszz
-const magicNumber = 48;
 const textGrey = '#798291';
 const offset = 4;
 
@@ -46,24 +43,12 @@ const AuthPageDialog = styled.div`
   width: ${27 * 16}px;
   box-shadow: 0 2px 4px 0 rgba(14, 30, 37, 0.12);
   border-radius: 8px;
-  padding: ${magicNumber / 2}px;
+  padding: 1.5rem;
 `;
 const LogoWrap = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  max-width: ${magicNumber * 6}px;
-  margin-bottom: 2rem;
-`;
-const InputWrap = styled.div`
-  position: relative;
-  margin-left: -${magicNumber / 2}px;
-  margin-right: -${magicNumber / 2}px;
-  border-bottom: 1px solid ${({ theme }) => theme.color.border};
-`;
-const InputIcon = styled(Icon)`
-  position: absolute;
-  bottom: 8px;
-  right: 28px;
+  margin-bottom: 1.5rem;
 `;
 const StyledHeader = styled.h1`
   align-self: flex-start;
@@ -93,32 +78,12 @@ const StyledTextWidget = styled(TextWidget)`
   margin: 0 -1.5rem;
   padding: 1rem 1.75rem;
 `;
-const StyledInput = styled.input`
-  width: 100%;
-  font-size: 16px;
-  appearance: none;
-  padding: ${magicNumber / 4}px ${magicNumber / 2 + offset}px;
-  background-color: transparent;
-  color: ${({ theme }) => theme.color.highEmphasis};
-  &::placeholder {
-    color: ${({ theme }) => theme.color.disabled};
-  }
-`;
 const ForgotPasswordLink = styled.p`
   font-size: 10px;
   font-weight: bold;
-  color: ${textGrey};
-  align-self: flex-start;
-  margin: ${magicNumber / 4}px 0 ${magicNumber / 2}px ${offset}px;
-`;
-const StyledLabel = styled.label`
-  display: block;
-  position: relative;
-  font-size: 12px;
-  font-weight: bold;
-  padding-left: ${magicNumber / 2 + offset}px;
-  margin-top: ${magicNumber / 4}px;
   color: ${({ theme }) => theme.color.lowEmphasis};
+  align-self: flex-start;
+  margin: 0.25rem 0 0.75rem ${offset}px;
 `;
 const StyledButtonGroup = styled(ButtonGroup)`
   margin: 0;
@@ -146,7 +111,6 @@ const LoginButton = styled(Button)`
     }
   `
       : ``}
-
   & svg {
     position: absolute;
     left: 10px;
@@ -226,6 +190,9 @@ export default class AuthenticationPage extends React.Component {
       <AuthPageWrap>
         <ParticleBg />
         <AuthPageDialog>
+          <LogoWrap>
+            <Logo />
+          </LogoWrap>
           {backendSelected ? (
             <>
               <StyledHeader>
@@ -268,9 +235,6 @@ export default class AuthenticationPage extends React.Component {
             </>
           ) : (
             <>
-              <LogoWrap>
-                <Logo />
-              </LogoWrap>
               <StyledButtonGroup direction="vertical">
                 {Object.keys(this.state.availableBackends).map(backend => {
                   const { color, icon, handler } = this.state.availableBackends[backend];
