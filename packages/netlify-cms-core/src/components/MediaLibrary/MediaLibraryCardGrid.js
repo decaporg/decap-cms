@@ -52,7 +52,7 @@ const CardWrapper = props => {
         draftText={cardDraftText}
         width={cardWidth}
         height={cardHeight}
-        margin={0}
+        margin={'0px'}
         isPrivate={isPrivate}
         displayURL={displayURLs.get(file.id, file.url ? Map({ url: file.url }) : Map())}
         loadDisplayURL={() => loadDisplayURL(file)}
