@@ -62,7 +62,7 @@
     "publish:graduate:version": "run-s \"publish:version --conventional-graduate\"",
     "publish:graduate:dry-run": "run-s \"publish:version --conventional-graduate --no-git-tag-version\"",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "yarn build && build-storybook"
   },
   "browserslist": [
     "last 2 Chrome versions",
