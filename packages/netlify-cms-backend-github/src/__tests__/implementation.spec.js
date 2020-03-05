@@ -1,4 +1,5 @@
 import GitHubImplementation from '../implementation';
+import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -212,6 +213,187 @@ describe('github backend implementation', () => {
       expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledWith('branch', [
         { path: 'image.png', id: 'sha' },
       ]);
+    });
+  });
+
+  describe('entriesByFolder', () => {
+    const listFiles = jest.fn();
+    const readFile = jest.fn();
+
+    const mockAPI = {
+      listFiles,
+      readFile,
+      originRepoURL: 'originRepoURL',
+    };
+
+    it('should return entries and cursor', async () => {
+      const gitHubImplementation = new GitHubImplementation(config);
+      gitHubImplementation.api = mockAPI;
+
+      const files = [];
+      const count = 1501;
+      for (let i = 0; i < count; i++) {
+        const id = `${i}`.padStart(`${count}`.length, '0');
+        files.push({
+          id,
+          path: `posts/post-${id}.md`,
+        });
+      }
+
+      listFiles.mockResolvedValue(files);
+      readFile.mockImplementation((path, id) => Promise.resolve(`${id}`));
+
+      const expectedEntries = files
+        .slice(0, 20)
+        .map(({ id, path }) => ({ data: id, file: { path, id } }));
+
+      const expectedCursor = Cursor.create({
+        actions: ['next', 'last'],
+        meta: { page: 1, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      expectedEntries[CURSOR_COMPATIBILITY_SYMBOL] = expectedCursor;
+
+      const result = await gitHubImplementation.entriesByFolder('posts', 'md', 1);
+
+      expect(result).toEqual(expectedEntries);
+      expect(listFiles).toHaveBeenCalledTimes(1);
+      expect(listFiles).toHaveBeenCalledWith('posts', { depth: 1, repoURL: 'originRepoURL' });
+      expect(readFile).toHaveBeenCalledTimes(20);
+    });
+  });
+
+  describe('traverseCursor', () => {
+    const listFiles = jest.fn();
+    const readFile = jest.fn((path, id) => Promise.resolve(`${id}`));
+
+    const mockAPI = {
+      listFiles,
+      readFile,
+      originRepoURL: 'originRepoURL',
+    };
+
+    const files = [];
+    const count = 1501;
+    for (let i = 0; i < count; i++) {
+      const id = `${i}`.padStart(`${count}`.length, '0');
+      files.push({
+        id,
+        path: `posts/post-${id}.md`,
+      });
+    }
+
+    it('should handle next action', async () => {
+      const gitHubImplementation = new GitHubImplementation(config);
+      gitHubImplementation.api = mockAPI;
+
+      const cursor = Cursor.create({
+        actions: ['next', 'last'],
+        meta: { page: 1, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const expectedEntries = files
+        .slice(20, 40)
+        .map(({ id, path }) => ({ data: id, file: { path, id } }));
+
+      const expectedCursor = Cursor.create({
+        actions: ['prev', 'first', 'next', 'last'],
+        meta: { page: 2, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const result = await gitHubImplementation.traverseCursor(cursor, 'next');
+
+      expect(result).toEqual({
+        entries: expectedEntries,
+        cursor: expectedCursor,
+      });
+    });
+
+    it('should handle prev action', async () => {
+      const gitHubImplementation = new GitHubImplementation(config);
+      gitHubImplementation.api = mockAPI;
+
+      const cursor = Cursor.create({
+        actions: ['prev', 'first', 'next', 'last'],
+        meta: { page: 2, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const expectedEntries = files
+        .slice(0, 20)
+        .map(({ id, path }) => ({ data: id, file: { path, id } }));
+
+      const expectedCursor = Cursor.create({
+        actions: ['next', 'last'],
+        meta: { page: 1, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const result = await gitHubImplementation.traverseCursor(cursor, 'prev');
+
+      expect(result).toEqual({
+        entries: expectedEntries,
+        cursor: expectedCursor,
+      });
+    });
+
+    it('should handle last action', async () => {
+      const gitHubImplementation = new GitHubImplementation(config);
+      gitHubImplementation.api = mockAPI;
+
+      const cursor = Cursor.create({
+        actions: ['next', 'last'],
+        meta: { page: 1, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const expectedEntries = files
+        .slice(1500)
+        .map(({ id, path }) => ({ data: id, file: { path, id } }));
+
+      const expectedCursor = Cursor.create({
+        actions: ['prev', 'first'],
+        meta: { page: 76, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const result = await gitHubImplementation.traverseCursor(cursor, 'last');
+
+      expect(result).toEqual({
+        entries: expectedEntries,
+        cursor: expectedCursor,
+      });
+    });
+
+    it('should handle first action', async () => {
+      const gitHubImplementation = new GitHubImplementation(config);
+      gitHubImplementation.api = mockAPI;
+
+      const cursor = Cursor.create({
+        actions: ['prev', 'first'],
+        meta: { page: 76, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const expectedEntries = files
+        .slice(0, 20)
+        .map(({ id, path }) => ({ data: id, file: { path, id } }));
+
+      const expectedCursor = Cursor.create({
+        actions: ['next', 'last'],
+        meta: { page: 1, count, pageSize: 20, pageCount: 76 },
+        data: { files },
+      });
+
+      const result = await gitHubImplementation.traverseCursor(cursor, 'first');
+
+      expect(result).toEqual({
+        entries: expectedEntries,
+        cursor: expectedCursor,
+      });
     });
   });
 });

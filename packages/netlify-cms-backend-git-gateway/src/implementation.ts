@@ -258,6 +258,9 @@ export default class GitGateway implements Implementation {
   entriesByFolder(folder: string, extension: string, depth: number) {
     return this.backend!.entriesByFolder(folder, extension, depth);
   }
+  allEntriesByFolder(folder: string, extension: string, depth: number) {
+    return this.backend!.allEntriesByFolder(folder, extension, depth);
+  }
   entriesByFiles(files: ImplementationFile[]) {
     return this.backend!.entriesByFiles(files);
   }
@@ -511,6 +514,6 @@ export default class GitGateway implements Implementation {
     return this.backend!.publishUnpublishedEntry(collection, slug);
   }
   traverseCursor(cursor: Cursor, action: string) {
-    return (this.backend as GitLabBackend | BitbucketBackend).traverseCursor!(cursor, action);
+    return this.backend!.traverseCursor!(cursor, action);
   }
 }

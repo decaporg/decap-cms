@@ -40,6 +40,7 @@ const jsToMap = (obj: {}) => {
 
 const knownMetaKeys = Set([
   'index',
+  'page',
   'count',
   'pageSize',
   'pageCount',
@@ -85,8 +86,10 @@ const getActionHandlers = (store: CursorStore, handler: ActionHandler) =>
 export default class Cursor {
   store?: CursorStore;
   actions?: Set<string>;
-  data?: Map<string, unknown>;
-  meta?: Map<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: Map<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  meta?: Map<string, any>;
 
   static create(...args: {}[]) {
     return new Cursor(...args);
