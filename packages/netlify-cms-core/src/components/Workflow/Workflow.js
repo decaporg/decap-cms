@@ -128,6 +128,7 @@ class Workflow extends Component {
           handlePublish={publishUnpublishedEntry}
           handleDelete={deleteUnpublishedEntry}
           isOpenAuthoring={isOpenAuthoring}
+          collections={collections}
         />
       </WorkflowContainer>
     );

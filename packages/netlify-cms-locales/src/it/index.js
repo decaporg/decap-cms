@@ -127,6 +127,14 @@ const it = {
       unknownPreview: {
         noPreview: "Nessuna preview per il widget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -194,6 +202,7 @@ const it = {
       newPost: 'Nuovo Post',
       description:
         '%{smart_count} voce attende la revisione, %{readyCount} pronte per la pubblicazione. |||| %{smart_count} voci attendono la revisione, %{readyCount} pronte per la pubblicazione. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} da %{author}',

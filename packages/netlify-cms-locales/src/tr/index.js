@@ -135,6 +135,14 @@ const tr = {
       unknownPreview: {
         noPreview: "'%{widget}' Widget için önizleme yok.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -199,6 +207,7 @@ const tr = {
       newPost: 'Yeni Mesaj',
       description:
         '%{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayına hazır. |||| %{smart_count} girdi incelemeyi bekliyor, %{readyCount} yayınlanmaya hazır. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} tarafından %{author}',

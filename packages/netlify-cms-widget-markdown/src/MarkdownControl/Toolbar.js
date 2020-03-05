@@ -48,7 +48,7 @@ const ToolbarToggleLabel = styled.span`
   text-align: center;
   white-space: nowrap;
   line-height: 20px;
-  width: ${props => (props.offPosition ? '62px' : '70px')};
+  min-width: ${props => (props.offPosition ? '62px' : '70px')};
 
   ${props =>
     props.isActive &&
@@ -57,15 +57,6 @@ const ToolbarToggleLabel = styled.span`
       color: ${colors.active};
     `};
 `;
-
-const headingOptions = {
-  'heading-one': 'Heading 1',
-  'heading-two': 'Heading 2',
-  'heading-three': 'Heading 3',
-  'heading-four': 'Heading 4',
-  'heading-five': 'Heading 5',
-  'heading-six': 'Heading 6',
-};
 
 export default class Toolbar extends React.Component {
   static propTypes = {
@@ -122,6 +113,15 @@ export default class Toolbar extends React.Component {
     const showEditorComponents = !editorComponents || editorComponents.size >= 1;
     const showPlugin = ({ id }) => (editorComponents ? editorComponents.includes(id) : true);
     const pluginsList = plugins ? plugins.toList().filter(showPlugin) : List();
+
+    const headingOptions = {
+      'heading-one': t('editor.editorWidgets.headingOptions.headingOne'),
+      'heading-two': t('editor.editorWidgets.headingOptions.headingTwo'),
+      'heading-three': t('editor.editorWidgets.headingOptions.headingThree'),
+      'heading-four': t('editor.editorWidgets.headingOptions.headingFour'),
+      'heading-five': t('editor.editorWidgets.headingOptions.headingFive'),
+      'heading-six': t('editor.editorWidgets.headingOptions.headingSix'),
+    };
 
     return (
       <ToolbarContainer>
