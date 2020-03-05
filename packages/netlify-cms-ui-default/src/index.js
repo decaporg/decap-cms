@@ -89,4 +89,7 @@ export * from './Tree';
 export { default as UserMenu } from './UserMenu';
 export * from './UserMenu';
 
+export { default as TextWidget } from './widgets/TextWidget';
+export * from './widgets/TextWidget';
+
 export * from './WindowDimensionsProvider';

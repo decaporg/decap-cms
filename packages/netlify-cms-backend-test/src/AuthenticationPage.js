@@ -9,6 +9,7 @@ import {
   ButtonGroup,
   Logo,
   ParticleBackground,
+  TextWidget,
 } from 'netlify-cms-ui-default';
 
 // Set one variable for all sizing aka the magicNumber, for more info contact @danoszz
@@ -77,15 +78,20 @@ const HeaderText = styled.div`
   font-weight: 800;
   margin-left: 12px;
 `;
-const StyledSubtitle = styled.h2`
+const StyledSubtitle = styled.div`
   align-self: flex-start;
   padding-left: ${offset}px;
   color: ${textGrey};
   color: ${({ theme }) => theme.color.lowEmphasis};
+  margin-bottom: 1rem;
 `;
 const StyledForm = styled.form`
   width: 100%;
   appearance: none;
+`;
+const StyledTextWidget = styled(TextWidget)`
+  margin: 0 -1.5rem;
+  padding: 1rem 1.75rem;
 `;
 const StyledInput = styled.input`
   width: 100%;
@@ -120,8 +126,7 @@ const StyledButtonGroup = styled(ButtonGroup)`
 `;
 const LoginButton = styled(Button)`
   position: relative;
-  width: 100%;
-  margin-left: 0;
+  width: calc(100% - 0.5rem);
   ${({ color }) =>
     color
       ? `
@@ -155,6 +160,8 @@ export default class AuthenticationPage extends React.Component {
     super(props);
 
     this.state = {
+      email: '',
+      password: '',
       backendSelected: false,
       selectedBackend: null,
       availableBackends: {
@@ -230,33 +237,33 @@ export default class AuthenticationPage extends React.Component {
                 <HeaderText>Log in with Netlify Identity</HeaderText>
               </StyledHeader>
               <StyledSubtitle>Enter your e-mail address and password to log in.</StyledSubtitle>
-              <StyledForm onSubmit={this.props.handleSubmit}>
-                <InputWrap>
-                  <StyledLabel htmlFor="email">E-mail</StyledLabel>
-                  <InputIcon name="mail" />
-                  <StyledInput
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="Type email"
-                    required
-                  />
-                </InputWrap>
-                <InputWrap>
-                  <StyledLabel htmlFor="password">Password</StyledLabel>
-                  <InputIcon name="lock" />
-                  <StyledInput
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="Type password"
-                    required
-                  />
-                </InputWrap>
+              <StyledForm
+                onSubmit={e => {
+                  e.preventDefault();
+                  this.props.handleSubmit;
+                }}
+              >
+                <StyledTextWidget
+                  label="Email"
+                  icon="mail"
+                  placeholder="Type email"
+                  value={this.state.email}
+                  onChange={email => this.setState({ email })}
+                />
+                <StyledTextWidget
+                  password
+                  label="Password"
+                  icon="lock"
+                  placeholder="Type password"
+                  value={this.state.password}
+                  onChange={password => this.setState({ password })}
+                />
                 <ForgotPasswordLink>Forgot your password?</ForgotPasswordLink>
-                <LoginButton primary type="success" size="lg" disabled={inProgress}>
-                  {inProgress ? t('auth.loggingIn') : t('auth.login')}
-                </LoginButton>
+                <StyledButtonGroup direction="vertical">
+                  <LoginButton primary type="success" size="lg" disabled={inProgress}>
+                    {inProgress ? t('auth.loggingIn') : t('auth.login')}
+                  </LoginButton>
+                </StyledButtonGroup>
               </StyledForm>
             </>
           ) : (

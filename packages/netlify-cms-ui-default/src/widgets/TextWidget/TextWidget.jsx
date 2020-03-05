@@ -29,6 +29,7 @@ const TextWidget = ({
   value,
   focused,
   title,
+  password,
   className,
 }) => {
   const [focus, setFocus] = useState();
@@ -45,7 +46,7 @@ const TextWidget = ({
         clickable={readOnly && !!onClick}
         onClick={onClick}
         readOnly={readOnly}
-        type="text"
+        type={password ? 'password' : 'text'}
         id={name}
         name={name}
         placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}

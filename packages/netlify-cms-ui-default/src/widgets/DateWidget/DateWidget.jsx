@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import moment from 'moment';
 import { DatetimePicker } from 'rc-datetime-picker';
-import TextWidget from './TextWidget';
-import IconButton from '../IconButton';
-import { Menu } from '../Menu';
+import TextWidget from '../TextWidget';
+import { IconButton } from '../../Button';
+import { Menu } from '../../Menu';
+import DatepickerStyles from './DatepickerStyles';
 
 const StyledIconButton = styled(IconButton)`
   position: absolute;
@@ -26,13 +27,12 @@ const StyledDatetimePicker = styled(DatetimePicker)`
   background-color: transparent;
 `;
 
-const DateWidget = ({ onChange, ...props }) => {
+const DateWidget = ({ onChange, className, ...props }) => {
   const [date, setDate] = useState(moment());
   const [anchorEl, setAnchorEl] = useState(null);
-  const [setAnchorElWidth] = useState();
 
   function handleOpenMenu(event) {
-    setAnchorElWidth(`${event.currentTarget.offsetWidth}px`);
+    // setAnchorElWidth(`${event.currentTarget.offsetWidth}px`);
     setAnchorEl(event.currentTarget);
   }
 
@@ -44,13 +44,15 @@ const DateWidget = ({ onChange, ...props }) => {
   }
 
   return (
-    <div>
+    <>
+      <DatepickerStyles />
       <TextWidget
         {...props}
         readOnly
         value={date && date.format('YYYY-MM-DD HH:mm')}
         onClick={handleOpenMenu}
         focused={!!anchorEl}
+        className={className}
       >
         <StyledIconButton icon="calendar" active={!!anchorEl} />
       </TextWidget>
@@ -69,7 +71,7 @@ const DateWidget = ({ onChange, ...props }) => {
           onChange={date => setDate(date)}
         />
       </StyledMenu>
-    </div>
+    </>
   );
 };
 export default DateWidget;

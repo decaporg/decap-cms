@@ -5343,6 +5343,11 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
+blacklist@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/blacklist/-/blacklist-1.1.4.tgz#b2dd09d6177625b2caa69835a37b28995fa9a2f2"
+  integrity sha1-st0J1hd2JbLKppg1o3somV+povI=
+
 bluebird@3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.1.tgz#df70e302b471d7473489acf26a93d63b53f874de"
@@ -6736,7 +6741,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1, create-react-class@^15.5.2:
+create-react-class@^15.5.1, create-react-class@^15.5.2, create-react-class@^15.6.2:
   version "15.6.3"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
   integrity sha512-M+/3Q6E6DLO6Yx3OwrWjwHBnvfXXYA7W+dFjt/ZDBemHO1DDZhsalX/NUtnTYclN6GfnBDRh4qRHjcDHmlJBJg==
@@ -14672,6 +14677,16 @@ rbush@2.0.2:
   dependencies:
     quickselect "^1.0.1"
 
+rc-datetime-picker@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/rc-datetime-picker/-/rc-datetime-picker-1.6.1.tgz#c036cac364c08c01c123eadd9b830d28fccfb45e"
+  integrity sha1-wDbKw2TAjAHBI+rdm4MNKPzPtF4=
+  dependencies:
+    blacklist "^1.1.4"
+    classnames "^2.2.5"
+    create-react-class "^15.6.2"
+    react-slider "^0.9.0"
+
 rc@^1.0.1, rc@^1.1.6:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"
@@ -15097,6 +15112,11 @@ react-sizeme@^2.6.7:
     invariant "^2.2.4"
     shallowequal "^1.1.0"
     throttle-debounce "^2.1.0"
+
+react-slider@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/react-slider/-/react-slider-0.9.0.tgz#584ae63325be115581fc08bf7753adb8e4d4a0b1"
+  integrity sha512-xAcW33uW82317OcJw0vcpT2N949MqwNSy53CiuPwXOEx/g4BdFbOgfemlsueEd+3q7DvAAP/Kj8fiy+1rekfiA==
 
 react-sortable-hoc@^1.0.0:
   version "1.11.0"
