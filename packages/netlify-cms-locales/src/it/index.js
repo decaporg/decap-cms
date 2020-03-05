@@ -127,6 +127,14 @@ const it = {
       unknownPreview: {
         noPreview: "Nessuna preview per il widget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: "Heading 1",
+        headingTwo: "Heading 2",
+        headingThree: "Heading 3",
+        headingFour: "Heading 4",
+        headingFive: "Heading 5",
+        headingSix: "Heading 6",
+      },
     },
   },
   mediaLibrary: {

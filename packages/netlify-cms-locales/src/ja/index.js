@@ -111,8 +111,8 @@ const ja = {
     },
     editorWidgets: {
       markdown: {
-        richText: 'Rich Text',
-        markdown: 'Markdown',
+        richText: 'リッチテキスト',
+        markdown: 'マークダウン',
       },
       image: {
         choose: '画像を選択',
@@ -129,6 +129,14 @@ const ja = {
       },
       unknownPreview: {
         noPreview: "'%{widget}'のウィジェットにはプレビューがありません。",
+      },
+      headingOptions: {
+        headingOne: "見出し 1",
+        headingTwo: "見出し 2",
+        headingThree: "見出し 3",
+        headingFour: "見出し 4",
+        headingFive: "見出し 5",
+        headingSix: "見出し 6",
       },
     },
   },
