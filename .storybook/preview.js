@@ -3,6 +3,7 @@ import addons from '@storybook/addons';
 import { addDecorator, addParameters } from '@storybook/react';
 import { themes } from '@storybook/theming';
 import { ThemeProvider } from 'emotion-theming';
+import styled from '@emotion/styled';
 import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/theme';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { ToastContainer } from '../packages/netlify-cms-ui-default/src/Toast';
@@ -140,7 +141,7 @@ addParameters({
 const channel = addons.getChannel();
 
 // create a component that listens for the DARK_MODE event
-function ThemeWrapper(props) {
+const ThemeWrapper = ({ children }) => {
   const [isDark, setDark] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   useEffect(() => {
@@ -149,23 +150,28 @@ function ThemeWrapper(props) {
     return () => channel.off('DARK_MODE', setDark);
   }, [channel, setDark]);
 
-  // render your custom theme provider
   return (
     <ThemeProvider
       theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
     >
-      {props.children}
+      {children}
     </ThemeProvider>
   );
-}
+};
 
-const fill = { height: '100%', width: '100%' };
-const center = { display: 'flex', alignItems: 'center', justifyContent: 'center' };
+const StoryWrap = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.color.surface};
+`;
 
 addDecorator(renderStory => (
   <ThemeWrapper>
     <GlobalStyles />
-    <div style={{ ...fill, ...center }}>{renderStory()}</div>
+    <StoryWrap>{renderStory()}</StoryWrap>
     <ToastContainer />
   </ThemeWrapper>
 ));
