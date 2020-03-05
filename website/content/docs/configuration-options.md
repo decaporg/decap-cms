@@ -30,7 +30,7 @@ By default, all entries created or edited in the Netlify CMS are committed direc
 
 The `publish_mode` option allows you to enable "Editorial Workflow" mode for more control over the content publishing phases. All unpublished entries will be arranged in a board according to their status, and they can be further reviewed and edited before going live.
 
-**Note:** Editorial workflow works with GitHub repositories only. Support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
+**Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
