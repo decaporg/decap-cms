@@ -17,6 +17,7 @@ import { colors } from 'netlify-cms-ui-default';
  * widths per breakpoint.
  */
 const cardWidth = `280px`;
+const cardHeight = `240px`;
 const cardMargin = `10px`;
 
 /**
@@ -172,6 +173,7 @@ const MediaLibraryModal = ({
         paginatingMessage={t('mediaLibrary.mediaLibraryModal.loading')}
         cardDraftText={t('mediaLibrary.mediaLibraryCard.draft')}
         cardWidth={cardWidth}
+        cardHeight={cardHeight}
         cardMargin={cardMargin}
         isPrivate={privateUpload}
         loadDisplayURL={loadDisplayURL}
