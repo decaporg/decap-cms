@@ -66,11 +66,6 @@ const getDownloadURL = (
       return Promise.resolve('');
     });
 
-const getResourceDownloadURLArgs = (_clientConfig: ClientConfig, objects: PointerFile[]) => {
-  const result = objects.map(({ sha }) => [sha, { sha }]) as [string, { sha: string }][];
-  return Promise.resolve(result);
-};
-
 const uploadOperation = (objects: PointerFile[]) => ({
   operation: 'upload',
   transfers: ['basic'],
@@ -129,7 +124,6 @@ const configureFn = (config: ClientConfig, fn: Function) => (...args: unknown[])
 const clientFns: Record<string, Function> = {
   resourceExists,
   getResourceUploadURLs,
-  getResourceDownloadURLArgs,
   getDownloadURL,
   uploadResource,
   matchPath,
@@ -138,7 +132,6 @@ const clientFns: Record<string, Function> = {
 export type Client = {
   resourceExists: (pointer: PointerFile) => Promise<boolean | undefined>;
   getResourceUploadURLs: (objects: PointerFile[]) => Promise<string>;
-  getResourceDownloadURLArgs: (objects: PointerFile[]) => Promise<[string, { sha: string }][]>;
   getDownloadURL: (pointer: PointerFile) => Promise<string>;
   uploadResource: (pointer: PointerFile, blob: Blob) => Promise<string>;
   matchPath: (path: string) => boolean;
