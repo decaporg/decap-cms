@@ -26,5 +26,6 @@
     "netlify-cms-media-library-uploadcare": "^0.5.5",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
-  }
+  },
+  "incrementToForceBump": 0
 }
