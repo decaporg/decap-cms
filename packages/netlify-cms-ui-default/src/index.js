@@ -48,9 +48,6 @@ export * from './LogoTile';
 
 export * from './Menu';
 
-export { default as MobileNavigationMenu } from './MobileNavigationMenu';
-export * from './MobileNavigationMenu';
-
 export { default as Modal } from './Modal';
 export * from './Modal';
 

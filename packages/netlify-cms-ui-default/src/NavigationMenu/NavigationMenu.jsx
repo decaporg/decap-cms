@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import NavigationMenuItem from './NavigationMenuItem';
+import MobileNavigationMenu from './MobileNavigationMenu';
+import { isWindowDown } from '../utils/responsive';
 
 const NavWrap = styled.div`
   width: ${({ collapsed }) => (collapsed ? '56px' : '240px')};
+  height: 100%;
   padding: 12px 0;
   background-color: ${({ theme }) => theme.color.surface};
   display: flex;
@@ -28,7 +31,19 @@ const CondenseNavigationMenuItem = styled(NavigationMenuItem)`
   }
 `;
 
-const NavigationMenu = ({ collapsed, onToggleCollapse }) => {
+const NavigationMenu = () => {
+  const [collapsed, setCollapsed] = useState(true);
+  const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
+  const handleResize = () => setIsMobile(isWindowDown('xs'));
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  if (isMobile) return <MobileNavigationMenu />;
+
   return (
     <NavWrap collapsed={collapsed}>
       <NavTop>
@@ -59,7 +74,7 @@ const NavigationMenu = ({ collapsed, onToggleCollapse }) => {
         <CondenseNavigationMenuItem
           icon="chevron-right"
           collapsed={collapsed}
-          onClick={onToggleCollapse}
+          onClick={() => setCollapsed(!collapsed)}
         />
       </NavBottom>
     </NavWrap>

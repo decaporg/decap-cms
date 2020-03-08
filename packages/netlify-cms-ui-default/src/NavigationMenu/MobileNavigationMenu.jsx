@@ -170,7 +170,7 @@ const NavTop = styled.div`
 `;
 const NavBottom = styled.div``;
 
-const MobileNavigationBar = ({ darkMode, setDarkMode }) => {
+const MobileNavigationMenu = ({ darkMode, setDarkMode }) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   return (
@@ -266,4 +266,4 @@ const NavIconButton = ({ active, icon, hasSubmenu, ...props }) => {
   );
 };
 
-export default MobileNavigationBar;
+export default MobileNavigationMenu;
