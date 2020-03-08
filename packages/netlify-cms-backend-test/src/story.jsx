@@ -20,7 +20,7 @@ export const _AuthenticationPage = () => {
         onLogin={() => false}
         inProgress={false}
         config={{ backend: {} }}
-        t={() => 'Login'}
+        t={() => 'Sign In'}
       />
     </Wrap>
   );

@@ -22,6 +22,10 @@ const AuthPageWrap = styled.section`
   height: 100vh;
   background-color: ${({ theme }) => theme.color.background};
   position: relative;
+  padding: 1rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    justify-content: flex-end;
+  }
 `;
 const ParticleBg = styled(ParticleBackground)`
   width: 100%;
@@ -44,11 +48,18 @@ const AuthPageDialog = styled.div`
   box-shadow: 0 2px 4px 0 rgba(14, 30, 37, 0.12);
   border-radius: 8px;
   padding: 1.5rem;
+  max-width: 100%;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    padding: 1rem;
+  }
 `;
 const LogoWrap = styled.div`
   display: flex;
   flex-flow: column nowrap;
   margin-bottom: 1.5rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    margin-bottom: 1rem;
+  }
 `;
 const StyledHeader = styled.h1`
   align-self: flex-start;
@@ -57,11 +68,14 @@ const StyledHeader = styled.h1`
   color: ${({ theme }) => theme.color.highEmphasis};
   display: flex;
   align-items: center;
+  margin-bottom: 1rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    margin-bottom: 0;
+  }
 `;
 const HeaderText = styled.div`
   line-height: 40px;
   font-weight: 800;
-  margin-left: 12px;
 `;
 const StyledSubtitle = styled.div`
   align-self: flex-start;
@@ -69,6 +83,9 @@ const StyledSubtitle = styled.div`
   color: ${textGrey};
   color: ${({ theme }) => theme.color.lowEmphasis};
   margin-bottom: 1rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    display: none;
+  }
 `;
 const StyledForm = styled.form`
   width: 100%;
@@ -77,6 +94,10 @@ const StyledForm = styled.form`
 const StyledTextWidget = styled(TextWidget)`
   margin: 0 -1.5rem;
   padding: 1rem 1.75rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    margin: 0 -1rem;
+    padding: 1rem 1.25rem;
+  }
 `;
 const ForgotPasswordLink = styled.p`
   font-size: 10px;
@@ -118,6 +139,17 @@ const LoginButton = styled(Button)`
     margin: 0;
   }
 `;
+const BackButton = styled(IconButton)`
+  margin-right: 0.5rem;
+  margin-left: -0.5rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    margin-left: 0;
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+`;
+BackButton.defaultProps = { icon: 'arrow-left', size: 'lg' };
 
 export default class AuthenticationPage extends React.Component {
   constructor(props) {
@@ -196,14 +228,10 @@ export default class AuthenticationPage extends React.Component {
           {backendSelected ? (
             <>
               <StyledHeader>
-                <IconButton
-                  icon="arrow-left"
-                  size="lg"
-                  onClick={() => this.setState({ backendSelected: false })}
-                />
-                <HeaderText>Log in with Netlify Identity</HeaderText>
+                <BackButton onClick={() => this.setState({ backendSelected: false })} />
+                <HeaderText>Sign in with Netlify Identity</HeaderText>
               </StyledHeader>
-              <StyledSubtitle>Enter your e-mail address and password to log in.</StyledSubtitle>
+              <StyledSubtitle>Enter your e-mail address and password to sign in.</StyledSubtitle>
               <StyledForm
                 onSubmit={e => {
                   e.preventDefault();
@@ -250,7 +278,7 @@ export default class AuthenticationPage extends React.Component {
                       color={color}
                       icon={icon}
                     >
-                      {inProgress ? 'Logging in...' : `Log In with ${backend}`}
+                      {inProgress ? 'Signing in...' : `Sign in with ${backend}`}
                     </LoginButton>
                   );
                 })}
