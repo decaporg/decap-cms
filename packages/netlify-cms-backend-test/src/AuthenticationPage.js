@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Color from 'color';
@@ -9,10 +9,8 @@ import {
   Logo,
   ParticleBackground,
   TextWidget,
+  Slide,
 } from 'netlify-cms-ui-default';
-
-const textGrey = '#798291';
-const offset = 4;
 
 const AuthPageWrap = styled.section`
   display: flex;
@@ -44,7 +42,7 @@ const AuthPageDialog = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.color.surface};
-  width: ${27 * 16}px;
+  width: 25rem;
   box-shadow: 0 2px 4px 0 rgba(14, 30, 37, 0.12);
   border-radius: 8px;
   padding: 1.5rem;
@@ -64,7 +62,7 @@ const LogoWrap = styled.div`
 const StyledHeader = styled.h1`
   align-self: flex-start;
   font-size: 19.2px;
-  padding-left: ${offset}px;
+  padding-left: 0.25rem;
   color: ${({ theme }) => theme.color.highEmphasis};
   display: flex;
   align-items: center;
@@ -79,8 +77,7 @@ const HeaderText = styled.div`
 `;
 const StyledSubtitle = styled.div`
   align-self: flex-start;
-  padding-left: ${offset}px;
-  color: ${textGrey};
+  padding-left: 0.25rem;
   color: ${({ theme }) => theme.color.lowEmphasis};
   margin-bottom: 1rem;
   ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
@@ -104,11 +101,17 @@ const ForgotPasswordLink = styled.p`
   font-weight: bold;
   color: ${({ theme }) => theme.color.lowEmphasis};
   align-self: flex-start;
-  margin: 0.25rem 0 0.75rem ${offset}px;
+  margin: 0.25rem 0 0.75rem 0.25rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    display: none;
+  }
 `;
 const StyledButtonGroup = styled(ButtonGroup)`
   margin: 0;
   width: 100%;
+`;
+const LoginButtonGroup = styled(StyledButtonGroup)`
+  margin-top: 1rem;
 `;
 const LoginButton = styled(Button)`
   position: relative;
@@ -139,154 +142,242 @@ const LoginButton = styled(Button)`
     margin: 0;
   }
 `;
+LoginButton.defaultProps = { size: 'lg' };
 const BackButton = styled(IconButton)`
   margin-right: 0.5rem;
   margin-left: -0.5rem;
+
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    display: none;
+  }
+`;
+BackButton.defaultProps = { icon: 'arrow-left', size: 'lg' };
+
+const MobileBackButton = styled(BackButton)`
+  display: none;
   ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
     margin-left: 0;
     position: absolute;
     top: 0.75rem;
     left: 0.75rem;
+    display: block;
+    transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: ${({ show }) => (show ? 1 : 0)};
   }
 `;
-BackButton.defaultProps = { icon: 'arrow-left', size: 'lg' };
 
-export default class AuthenticationPage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      email: '',
-      password: '',
-      backendSelected: false,
-      selectedBackend: null,
-      availableBackends: {
-        'Netlify Identity': {
-          icon: 'netlify',
-          handler: this.handleBackendSelection,
-        },
-        Github: {
-          icon: 'github',
-          color: '#333333',
-          handler: this.handleLogin,
-        },
-        Gitlab: {
-          icon: 'gitlab',
-          color: '#e24328',
-          handler: this.handleLogin,
-        },
-        Bitbucket: {
-          icon: 'bitbucket',
-          color: '#0146b3',
-          handler: this.handleLogin,
-        },
-      },
-    };
+const DialogContentWrap = styled.div`
+  width: calc(100% + 3rem);
+  overflow: hidden;
+  transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  ${({ height }) => (height ? `height: ${height}px;` : ``)}
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    width: calc(100% + 2rem);
   }
+`;
+const DialogContent = styled.div`
+  width: 100%;
+  padding: 0 1.5rem;
+  transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  ${({ active }) => (active ? `` : `position: absolute; top: 0; left: 0;`)}
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    padding: 0 1rem;
+  }
+`;
+const DialogFooter = styled.footer`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  color: white;
+  font-size: 0.75rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    position: static;
+    padding: 0;
+    width: calc(100% + 2rem);
+    border-top: 1px solid ${({ theme }) => theme.color.border};
+    padding: 1rem 1rem 0;
+    margin-top: 1rem;
+    & span {
+      display: none;
+    }
+  }
+  & a {
+    color: white;
+    font-size: 0.75rem;
+    border-bottom: 1px dotted;
+    cursor: pointer;
+  }
+`;
 
-  static propTypes = {
-    onLogin: PropTypes.func.isRequired,
-    inProgress: PropTypes.bool,
-    config: PropTypes.object.isRequired,
-    t: PropTypes.func.isRequired,
-  };
+const FooterButtonGroup = styled(StyledButtonGroup)`
+  display: none;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    display: flex;
+  }
+`;
 
-  componentDidMount = () => {
-    /**
-     * Allow login screen to be skipped for demo purposes.
-     */
-    const skipLogin = this.props.config.backend.login === false;
+const NETLIFY_IDENTITY = 'Netlify Identity';
+const backends = {
+  [NETLIFY_IDENTITY]: {
+    icon: 'netlify',
+  },
+  Github: {
+    icon: 'github',
+    color: '#333333',
+  },
+  Gitlab: {
+    icon: 'gitlab',
+    color: '#e24328',
+  },
+  Bitbucket: {
+    icon: 'bitbucket',
+    color: '#0146b3',
+  },
+};
+
+const AuthenticationPage = ({ onLogin, inProgress, config, t, handleSubmit }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [selectedBackend, setSelectedBackend] = useState(null);
+  const backendSelectRef = useRef();
+  const signinFormRef = useRef();
+  const [backendSelectHeight, setBackendSelectHeight] = useState();
+  const [signinFormHeight, setSigninFormHeight] = useState();
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (backendSelectRef.current) setBackendSelectHeight(backendSelectRef.current.offsetHeight);
+    });
+    // Allow login screen to be skipped for demo purposes.
+    const skipLogin = config.backend.login === false;
     if (skipLogin) {
-      this.props.onLogin(this.state);
+      onLogin();
+    }
+  }, []);
+
+  const handleSignin = (backend, e) => {
+    e.preventDefault();
+    setSelectedBackend(backend);
+
+    if (backend !== NETLIFY_IDENTITY) {
+      onLogin({ email, password, selectedBackend });
     }
   };
 
-  handleLogin = e => {
-    e.preventDefault();
-    this.props.onLogin(this.state);
-  };
-
-  handleBackendSelection = e => {
-    e.preventDefault();
-    this.setState({
-      backendSelected: true,
-      selectedBackend: 'Netlify Identity',
+  useEffect(() => {
+    setTimeout(() => {
+      if (backendSelectRef.current) setBackendSelectHeight(backendSelectRef.current.offsetHeight);
     });
-  };
+  }, [backendSelectRef, selectedBackend]);
 
-  render() {
-    const { t, inProgress } = this.props;
-    const { backendSelected } = this.state;
+  useEffect(() => {
+    setTimeout(() => {
+      if (signinFormRef.current) setSigninFormHeight(signinFormRef.current.offsetHeight);
+    });
+  }, [signinFormRef, selectedBackend]);
 
-    return (
-      <AuthPageWrap>
-        <ParticleBg />
-        <AuthPageDialog>
-          <LogoWrap>
-            <Logo />
-          </LogoWrap>
-          {backendSelected ? (
-            <>
+  return (
+    <AuthPageWrap>
+      <ParticleBg />
+      <AuthPageDialog>
+        <LogoWrap>
+          <Logo />
+        </LogoWrap>
+        <MobileBackButton
+          onClick={() => setSelectedBackend(null)}
+          show={selectedBackend === NETLIFY_IDENTITY}
+        />
+        <DialogContentWrap
+          style={{
+            height:
+              selectedBackend === NETLIFY_IDENTITY && signinFormHeight
+                ? signinFormHeight
+                : backendSelectHeight,
+          }}
+        >
+          <Slide direction="left" in={selectedBackend === NETLIFY_IDENTITY}>
+            <DialogContent ref={signinFormRef} active={selectedBackend === NETLIFY_IDENTITY}>
               <StyledHeader>
-                <BackButton onClick={() => this.setState({ backendSelected: false })} />
+                <BackButton onClick={() => setSelectedBackend(null)} />
                 <HeaderText>Sign in with Netlify Identity</HeaderText>
               </StyledHeader>
-              <StyledSubtitle>Enter your e-mail address and password to sign in.</StyledSubtitle>
+              <StyledSubtitle>Enter your email address and password to sign in.</StyledSubtitle>
               <StyledForm
                 onSubmit={e => {
                   e.preventDefault();
-                  this.props.handleSubmit;
+                  handleSubmit;
                 }}
               >
                 <StyledTextWidget
                   label="Email"
                   icon="mail"
                   placeholder="Type email"
-                  value={this.state.email}
-                  onChange={email => this.setState({ email })}
+                  value={email}
+                  onChange={email => setEmail(email)}
                 />
                 <StyledTextWidget
                   password
                   label="Password"
                   icon="lock"
                   placeholder="Type password"
-                  value={this.state.password}
-                  onChange={password => this.setState({ password })}
+                  value={password}
+                  onChange={password => setPassword(password)}
                 />
                 <ForgotPasswordLink>Forgot your password?</ForgotPasswordLink>
-                <StyledButtonGroup direction="vertical">
+                <LoginButtonGroup direction="vertical">
                   <LoginButton primary type="success" size="lg" disabled={inProgress}>
                     {inProgress ? t('auth.loggingIn') : t('auth.login')}
                   </LoginButton>
-                </StyledButtonGroup>
+                </LoginButtonGroup>
               </StyledForm>
-            </>
-          ) : (
-            <>
+            </DialogContent>
+          </Slide>
+          <Slide direction="right" in={selectedBackend !== NETLIFY_IDENTITY}>
+            <DialogContent ref={backendSelectRef} active={selectedBackend !== NETLIFY_IDENTITY}>
               <StyledButtonGroup direction="vertical">
-                {Object.keys(this.state.availableBackends).map(backend => {
-                  const { color, icon, handler } = this.state.availableBackends[backend];
-
-                  return (
-                    <LoginButton
-                      primary
-                      size="lg"
-                      type={backend === 'Netlify Identity' && 'success'}
-                      key={backend}
-                      disabled={inProgress}
-                      onClick={handler}
-                      color={color}
-                      icon={icon}
-                    >
-                      {inProgress ? 'Signing in...' : `Sign in with ${backend}`}
-                    </LoginButton>
-                  );
-                })}
+                {Object.keys(backends).map(backend => (
+                  <LoginButton
+                    primary
+                    size="lg"
+                    type={backend === NETLIFY_IDENTITY && 'success'}
+                    key={backend}
+                    disabled={inProgress}
+                    onClick={e => handleSignin(backend, e)}
+                    color={backends[backend].color}
+                    icon={backends[backend].icon}
+                  >
+                    {inProgress && selectedBackend === backend
+                      ? 'Signing in...'
+                      : `Sign in with ${backend}`}
+                  </LoginButton>
+                ))}
               </StyledButtonGroup>
-            </>
-          )}
-        </AuthPageDialog>
-      </AuthPageWrap>
-    );
-  }
-}
+            </DialogContent>
+          </Slide>
+        </DialogContentWrap>
+        <DialogFooter>
+          <span>
+            Need an account? <a href="#">Create one</a>.
+          </span>
+          <FooterButtonGroup>
+            <LoginButton>Forgot my Password</LoginButton>
+            <LoginButton>Sign up</LoginButton>
+          </FooterButtonGroup>
+        </DialogFooter>
+      </AuthPageDialog>
+    </AuthPageWrap>
+  );
+};
+
+AuthenticationPage.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+  inProgress: PropTypes.bool,
+  config: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
+};
+
+export default AuthenticationPage;
