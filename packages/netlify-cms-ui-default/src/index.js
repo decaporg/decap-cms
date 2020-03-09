@@ -92,4 +92,7 @@ export * from './widgets/TextWidget';
 export { default as Slide } from './transitions/Slide';
 export * from './transitions/Slide';
 
+export { isWindowDown, isWindowUp } from './utils/responsive';
+export * from './transitions/Slide';
+
 export * from './WindowDimensionsProvider';

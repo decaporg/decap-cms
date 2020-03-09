@@ -150,6 +150,19 @@ const ThemeWrapper = ({ children }) => {
     return () => channel.off('DARK_MODE', setDark);
   }, [channel, setDark]);
 
+  const handleResize = () => {
+    const vh = window.innerHeight * 0.01;
+
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <ThemeProvider
       theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
