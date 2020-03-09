@@ -581,34 +581,38 @@ describe('config', () => {
 
   describe('addLocaleFields', () => {
     it('should add locale fields', () => {
-      const fields = [
+      const fields = fromJS([
         { name: 'title', widget: 'string' },
+        { name: 'date', widget: 'date' },
         { name: 'content', widget: 'markdown' },
-      ];
+      ]);
       const actual = addLocaleFields(fields, ['en', 'fr']);
 
-      expect(actual).toEqual([
-        {
-          label: 'en',
-          name: 'en',
-          widget: 'object',
-          multiContentId: Symbol.for('multiContentId'),
-          fields: [
-            { name: 'title', widget: 'string' },
-            { name: 'content', widget: 'markdown' },
-          ],
-        },
-        {
-          label: 'fr',
-          name: 'fr',
-          widget: 'object',
-          multiContentId: Symbol.for('multiContentId'),
-          fields: [
-            { name: 'title', widget: 'string' },
-            { name: 'content', widget: 'markdown' },
-          ],
-        },
-      ]);
+      expect(actual).toEqual(
+        fromJS([
+          {
+            label: 'en',
+            name: 'en',
+            widget: 'object',
+            multiContentId: Symbol.for('multiContentId'),
+            fields: [
+              { name: 'title', widget: 'string' },
+              { name: 'date', widget: 'date' },
+              { name: 'content', widget: 'markdown' },
+            ],
+          },
+          {
+            label: 'fr',
+            name: 'fr',
+            widget: 'object',
+            multiContentId: Symbol.for('multiContentId'),
+            fields: [
+              { name: 'title', widget: 'string' },
+              { name: 'content', widget: 'markdown' },
+            ],
+          },
+        ]),
+      );
     });
   });
 });

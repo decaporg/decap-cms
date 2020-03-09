@@ -10459,11 +10459,6 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
 
-iso639-codes@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/iso639-codes/-/iso639-codes-1.0.1.tgz#674a45cdabbfdf3719b8b971b93ca1eedbbb4a1d"
-  integrity sha512-jdTSv8yn6D7GODDrRtuWG7y3du3aoa+ki5H8h/Y48/NleNAd7Fw/M2niTTLXGH4QnqhJ98hg1JMQtP9csQ31Lg==
-
 isobject@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-2.1.0.tgz#f065561096a3f1da2ef46272f815c840d87e0c89"
@@ -18413,11 +18408,6 @@ widest-line@^3.1.0:
   integrity sha512-NsmoXalsWVDMGupxZ5R08ka9flZjjiLvHVAWYOKtiKM8ujtZWr9cRffak+uSE48+Ob8ObalXpwyeUiyDD6QFgg==
   dependencies:
     string-width "^4.0.0"
-
-windows-locale@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/windows-locale/-/windows-locale-1.0.1.tgz#b965309efddc48bf44912c8e596dd3796387e568"
-  integrity sha512-X8B22Cg9njwV4h3C5j28xmZ2eWaO69j63WhReeglB69LOT3LoqSO4Vb6TTVSfFikh4KQ9qBOJb6+WvR4tVLTfQ==
 
 windows-release@^3.1.0:
   version "3.3.1"

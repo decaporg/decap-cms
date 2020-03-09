@@ -120,13 +120,23 @@ export default class Editor extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value);
+    const raw = nextState.value.document.toJS();
+    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
+    return !this.state.value.equals(nextState.value) || nextProps.value !== markdown;
   }
 
   componentDidMount() {
     if (this.props.pendingFocus) {
       this.editor.focus();
       this.props.pendingFocus();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({
+        value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
+      });
     }
   }
 

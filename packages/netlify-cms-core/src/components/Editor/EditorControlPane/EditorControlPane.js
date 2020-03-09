@@ -18,6 +18,18 @@ export default class ControlPane extends React.Component {
 
   componentValidate = {};
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.collection.get('multi_content') &&
+      !prevProps.fieldsErrors.equals(this.props.fieldsErrors) &&
+      this.props.defaultEditor
+    ) {
+      // show default locale fields on field error
+      const defaultLocale = this.props.collection.get('locales').first();
+      this.handleLocaleChange(defaultLocale);
+    }
+  }
+
   controlRef(field, wrappedControl) {
     if (!wrappedControl) return;
     const name = field.get('name');
@@ -26,10 +38,11 @@ export default class ControlPane extends React.Component {
       wrappedControl.innerWrappedControl?.validate || wrappedControl.validate;
   }
 
-  getFields = () => {
+  getFields = (defaultLocale = '') => {
     let fields = this.props.fields;
-    if (this.props.collection.get('multi_content') && this.props.locales) {
-      fields = fields.filter(f => f.get('name') === this.state.selectedLocale);
+    const selectedLocale = defaultLocale || this.state.selectedLocale;
+    if (this.props.collection.get('multi_content')) {
+      fields = fields.filter(f => f.get('name') === selectedLocale);
     }
     return fields;
   };
@@ -39,22 +52,16 @@ export default class ControlPane extends React.Component {
   };
 
   validate = () => {
-    this.getFields().forEach(field => {
+    const collection = this.props.collection;
+    const defaultLocale = collection.get('multi_content') && collection.get('locales').first();
+    this.getFields(defaultLocale).forEach(field => {
       if (field.get('widget') === 'hidden') return;
       this.componentValidate[field.get('name')]();
     });
   };
 
   render() {
-    const {
-      collection,
-      entry,
-      fieldsMetaData,
-      fieldsErrors,
-      onChange,
-      onValidate,
-      locales,
-    } = this.props;
+    const { collection, entry, fieldsMetaData, fieldsErrors, onChange, onValidate } = this.props;
     const fields = this.getFields();
 
     if (!collection || !fields) {
@@ -87,7 +94,6 @@ export default class ControlPane extends React.Component {
               collection={collection}
               selectedLocale={this.state.selectedLocale}
               onLocaleChange={this.handleLocaleChange}
-              locales={locales}
             />
           );
         })}

@@ -528,6 +528,7 @@ export function loadEntries(collection: Collection, page = 0) {
     const backend = currentBackend(state.config);
     const locales = state.config.get('locales');
     const multiContent = collection.get('multi_content');
+    const i18nStructure = collection.get('i18n_structure');
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)

@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { ThunkDispatch } from 'redux-thunk';
-import { Map, List } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
@@ -23,6 +23,7 @@ import {
   createDraftFromEntry,
   loadEntries,
 } from './entries';
+import { DIFF_FILE_TYPES } from 'Constants/multiContentTypes';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
@@ -266,6 +267,9 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const locales = state.config.get('locales');
+    const multiContent = collection.get('multi_content');
+    const i18nStructure = collection.get('i18n_structure');
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
     //run possible unpublishedEntries migration
     if (!entriesLoaded) {
@@ -292,6 +296,21 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
           ),
       );
       dispatch(addAssets(assetProxies));
+
+      if (multiContent && DIFF_FILE_TYPES.includes(i18nStructure)) {
+        const publishedEntries = get(
+          getState().entries.toJS(),
+          `pages.${collection.get('name')}.ids`,
+          false,
+        );
+        !publishedEntries && (await dispatch(loadEntry(collection, slug)));
+
+        if (entry.isModification) {
+          const publishedEntry = selectEntry(getState(), collection.get('name'), slug);
+          entry = publishedEntry.mergeDeep(fromJS(entry)).toJS();
+        }
+      }
+
       dispatch(unpublishedEntryLoaded(collection, entry));
       dispatch(createDraftFromEntry(entry));
     } catch (error) {
