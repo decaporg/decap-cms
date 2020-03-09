@@ -18,7 +18,7 @@ const AuthPageWrap = styled.section`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  height: --vh;
+  height: calc(100 * var(--vh));
   background-color: ${({ theme }) => theme.color.background};
   position: relative;
   padding: 1rem;
