@@ -1,8 +1,8 @@
 ---
 title: test
 author: test
-description: test
-meta_description: test
+description: test 2
+meta_description: test 2
 twitter_image: img/care-chair-clean-clinic-305567.jpg
 date: 2020-03-09T18:13:45.553Z
 ---
