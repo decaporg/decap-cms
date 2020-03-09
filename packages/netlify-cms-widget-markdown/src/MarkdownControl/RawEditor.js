@@ -38,7 +38,16 @@ export default class RawEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !this.state.value.equals(nextState.value);
+    return (
+      !this.state.value.equals(nextState.value) ||
+      nextProps.value !== Plain.serialize(nextState.value)
+    );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({ value: Plain.deserialize(this.props.value) });
+    }
   }
 
   componentDidMount() {

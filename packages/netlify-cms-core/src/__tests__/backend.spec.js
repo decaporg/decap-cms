@@ -941,7 +941,7 @@ describe('Backend', () => {
     });
   });
 
-    describe('combineMultipleContentEntries', () => {
+  describe('combineMultipleContentEntries', () => {
     const implementation = {
       init: jest.fn(() => implementation),
     };

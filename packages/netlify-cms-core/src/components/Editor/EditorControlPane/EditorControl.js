@@ -215,6 +215,7 @@ class EditorControl extends React.Component {
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
     const multiContentWidgetId = field.get('multiContentId') === Symbol.for('multiContentId');
+    const locales = this.props.collection.get('locales');
     const label = (
       <>
         {locales && multiContentWidgetId ? (
