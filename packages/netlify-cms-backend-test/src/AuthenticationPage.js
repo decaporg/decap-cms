@@ -10,6 +10,8 @@ import {
   ParticleBackground,
   TextWidget,
   Slide,
+  Grow,
+  isWindowDown,
 } from 'netlify-cms-ui-default';
 
 const AuthPageWrap = styled.section`
@@ -244,20 +246,23 @@ const AuthenticationPage = ({ onLogin, inProgress, config, t, handleSubmit }) =>
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedBackend, setSelectedBackend] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
   const backendSelectRef = useRef();
   const signinFormRef = useRef();
   const [backendSelectHeight, setBackendSelectHeight] = useState();
   const [signinFormHeight, setSigninFormHeight] = useState();
+  const isMobile = isWindowDown('xs');
+  const EnterTransitionComponent = isMobile ? Slide : Grow;
 
   useEffect(() => {
-    setTimeout(() => {
-      if (backendSelectRef.current) setBackendSelectHeight(backendSelectRef.current.offsetHeight);
-    });
+    if (backendSelectRef.current)
+      setTimeout(() => {
+        setBackendSelectHeight(backendSelectRef.current.offsetHeight);
+      });
     // Allow login screen to be skipped for demo purposes.
-    const skipLogin = config.backend.login === false;
-    if (skipLogin) {
-      onLogin();
-    }
+    if (config.backend.login === false) onLogin();
+
+    setTimeout(() => setShowAuth(true), 200);
   }, []);
 
   const handleSignin = (backend, e) => {
@@ -284,92 +289,94 @@ const AuthenticationPage = ({ onLogin, inProgress, config, t, handleSubmit }) =>
   return (
     <AuthPageWrap>
       <ParticleBg />
-      <AuthPageDialog>
-        <LogoWrap>
-          <Logo />
-        </LogoWrap>
-        <MobileBackButton
-          onClick={() => setSelectedBackend(null)}
-          show={selectedBackend === NETLIFY_IDENTITY}
-        />
-        <DialogContentWrap
-          style={{
-            height:
-              selectedBackend === NETLIFY_IDENTITY && signinFormHeight
-                ? signinFormHeight
-                : backendSelectHeight,
-          }}
-        >
-          <Slide direction="left" in={selectedBackend === NETLIFY_IDENTITY}>
-            <DialogContent ref={signinFormRef} active={selectedBackend === NETLIFY_IDENTITY}>
-              <StyledHeader>
-                <BackButton onClick={() => setSelectedBackend(null)} />
-                <HeaderText>Sign in with Netlify Identity</HeaderText>
-              </StyledHeader>
-              <StyledSubtitle>Enter your email address and password to sign in.</StyledSubtitle>
-              <StyledForm
-                onSubmit={e => {
-                  e.preventDefault();
-                  handleSubmit;
-                }}
-              >
-                <StyledTextWidget
-                  label="Email"
-                  icon="mail"
-                  placeholder="Type email"
-                  value={email}
-                  onChange={email => setEmail(email)}
-                />
-                <StyledTextWidget
-                  password
-                  label="Password"
-                  icon="lock"
-                  placeholder="Type password"
-                  value={password}
-                  onChange={password => setPassword(password)}
-                />
-                <ForgotPasswordLink>Forgot your password?</ForgotPasswordLink>
-                <LoginButtonGroup direction="vertical">
-                  <LoginButton primary type="success" size="lg" disabled={inProgress}>
-                    {inProgress ? t('auth.loggingIn') : t('auth.login')}
-                  </LoginButton>
-                </LoginButtonGroup>
-              </StyledForm>
-            </DialogContent>
-          </Slide>
-          <Slide direction="right" in={selectedBackend !== NETLIFY_IDENTITY}>
-            <DialogContent ref={backendSelectRef} active={selectedBackend !== NETLIFY_IDENTITY}>
-              <StyledButtonGroup direction="vertical">
-                {Object.keys(backends).map(backend => (
-                  <LoginButton
-                    primary
-                    size="lg"
-                    type={backend === NETLIFY_IDENTITY && 'success'}
-                    key={backend}
-                    disabled={inProgress}
-                    onClick={e => handleSignin(backend, e)}
-                    color={backends[backend].color}
-                    icon={backends[backend].icon}
-                  >
-                    {inProgress && selectedBackend === backend
-                      ? 'Signing in...'
-                      : `Sign in with ${backend}`}
-                  </LoginButton>
-                ))}
-              </StyledButtonGroup>
-            </DialogContent>
-          </Slide>
-        </DialogContentWrap>
-        <DialogFooter>
-          <span>
-            Need an account? <a href="#">Create one</a>.
-          </span>
-          <FooterButtonGroup>
-            <LoginButton>Forgot my Password</LoginButton>
-            <LoginButton>Sign up</LoginButton>
-          </FooterButtonGroup>
-        </DialogFooter>
-      </AuthPageDialog>
+      <EnterTransitionComponent in={showAuth} direction="up">
+        <AuthPageDialog>
+          <LogoWrap>
+            <Logo />
+          </LogoWrap>
+          <MobileBackButton
+            onClick={() => setSelectedBackend(null)}
+            show={selectedBackend === NETLIFY_IDENTITY}
+          />
+          <DialogContentWrap
+            style={{
+              height:
+                selectedBackend === NETLIFY_IDENTITY && signinFormHeight
+                  ? signinFormHeight
+                  : backendSelectHeight,
+            }}
+          >
+            <Slide direction="left" in={selectedBackend === NETLIFY_IDENTITY} appear={false}>
+              <DialogContent ref={signinFormRef} active={selectedBackend === NETLIFY_IDENTITY}>
+                <StyledHeader>
+                  <BackButton onClick={() => setSelectedBackend(null)} />
+                  <HeaderText>Sign in with Netlify Identity</HeaderText>
+                </StyledHeader>
+                <StyledSubtitle>Enter your email address and password to sign in.</StyledSubtitle>
+                <StyledForm
+                  onSubmit={e => {
+                    e.preventDefault();
+                    handleSubmit;
+                  }}
+                >
+                  <StyledTextWidget
+                    label="Email"
+                    icon="mail"
+                    placeholder="Type email"
+                    value={email}
+                    onChange={email => setEmail(email)}
+                  />
+                  <StyledTextWidget
+                    password
+                    label="Password"
+                    icon="lock"
+                    placeholder="Type password"
+                    value={password}
+                    onChange={password => setPassword(password)}
+                  />
+                  <ForgotPasswordLink>Forgot your password?</ForgotPasswordLink>
+                  <LoginButtonGroup direction="vertical">
+                    <LoginButton primary type="success" size="lg" disabled={inProgress}>
+                      {inProgress ? t('auth.loggingIn') : t('auth.login')}
+                    </LoginButton>
+                  </LoginButtonGroup>
+                </StyledForm>
+              </DialogContent>
+            </Slide>
+            <Slide direction="right" in={selectedBackend !== NETLIFY_IDENTITY} appear={false}>
+              <DialogContent ref={backendSelectRef} active={selectedBackend !== NETLIFY_IDENTITY}>
+                <StyledButtonGroup direction="vertical">
+                  {Object.keys(backends).map(backend => (
+                    <LoginButton
+                      primary
+                      size="lg"
+                      type={backend === NETLIFY_IDENTITY && 'success'}
+                      key={backend}
+                      disabled={inProgress}
+                      onClick={e => handleSignin(backend, e)}
+                      color={backends[backend].color}
+                      icon={backends[backend].icon}
+                    >
+                      {inProgress && selectedBackend === backend
+                        ? 'Signing in...'
+                        : `Sign in with ${backend}`}
+                    </LoginButton>
+                  ))}
+                </StyledButtonGroup>
+              </DialogContent>
+            </Slide>
+          </DialogContentWrap>
+          <DialogFooter>
+            <span>
+              Need an account? <a href="#">Create one</a>.
+            </span>
+            <FooterButtonGroup>
+              <LoginButton>Forgot my Password</LoginButton>
+              <LoginButton>Sign up</LoginButton>
+            </FooterButtonGroup>
+          </DialogFooter>
+        </AuthPageDialog>
+      </EnterTransitionComponent>
     </AuthPageWrap>
   );
 };

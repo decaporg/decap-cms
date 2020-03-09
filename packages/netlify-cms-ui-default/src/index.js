@@ -89,10 +89,8 @@ export * from './UserMenu';
 export { default as TextWidget } from './widgets/TextWidget';
 export * from './widgets/TextWidget';
 
-export { default as Slide } from './transitions/Slide';
-export * from './transitions/Slide';
+export { Slide, Grow, Fade } from './transitions';
 
 export { isWindowDown, isWindowUp } from './utils/responsive';
-export * from './transitions/Slide';
 
 export * from './WindowDimensionsProvider';
