@@ -4,10 +4,7 @@ import { AsyncLock } from './asyncLock';
 
 export type DisplayURLObject = { id: string; path: string };
 
-export type DisplayURL =
-  | DisplayURLObject
-  | string
-  | { original: DisplayURL; path?: string; largeMedia?: string };
+export type DisplayURL = DisplayURLObject | string;
 
 export interface ImplementationMediaFile {
   name: string;

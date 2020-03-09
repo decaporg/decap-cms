@@ -1,6 +1,6 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
-import { fromPairs, get, pick, intersection, unzip } from 'lodash';
+import { get, pick, intersection } from 'lodash';
 import ini from 'ini';
 import {
   APIError,
@@ -21,9 +21,9 @@ import {
   UnpublishedEntryMediaFile,
   parsePointerFile,
   getLargeMediaPatternsFromGitAttributesFile,
-  PointerFile,
   getPointerFileForMediaFileObj,
   getLargeMediaFilteredMediaFiles,
+  DisplayURLObject,
 } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
@@ -73,12 +73,6 @@ interface NetlifyUser extends Credentials {
   jwt: () => Promise<string>;
   email: string;
   user_metadata: { full_name: string; avatar_url: string };
-}
-
-interface GetMediaDisplayURLArgs {
-  path: string;
-  original: { id: string; path: string } | string;
-  largeMedia: PointerFile;
 }
 
 export default class GitGateway implements Implementation {
@@ -278,12 +272,8 @@ export default class GitGateway implements Implementation {
     const mediaFiles = await Promise.all(
       files.map(async file => {
         if (client.matchPath(file.path)) {
-          const { id, path } = file;
-          const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs(
-            [{ ...file, id }],
-            branch,
-          );
-          const url = await client.getDownloadURL(largeMediaDisplayURLs[id]);
+          const { path, id } = file;
+          const url = await this.getLargeMediaDisplayURL({ path, id }, branch);
           return {
             id,
             name: basename(path),
@@ -303,32 +293,7 @@ export default class GitGateway implements Implementation {
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
-    return Promise.all([this.backend!.getMedia(mediaFolder), this.getLargeMediaClient()]).then(
-      async ([mediaFiles, largeMediaClient]) => {
-        if (!largeMediaClient.enabled) {
-          return mediaFiles.map(({ displayURL, ...rest }) => ({
-            ...rest,
-            displayURL: { original: displayURL },
-          }));
-        }
-        if (mediaFiles.length === 0) {
-          return [];
-        }
-        const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs(mediaFiles);
-        return mediaFiles.map(({ id, displayURL, path, ...rest }) => {
-          return {
-            ...rest,
-            id,
-            path,
-            displayURL: {
-              path,
-              original: displayURL,
-              largeMedia: largeMediaDisplayURLs[id],
-            },
-          };
-        });
-      },
-    );
+    return this.backend!.getMedia(mediaFolder);
   }
 
   // this method memoizes this._getLargeMediaClient so that there can
@@ -382,79 +347,54 @@ export default class GitGateway implements Implementation {
       },
     );
   }
-  async getLargeMediaDisplayURLs(
-    mediaFiles: { path: string; id: string | null }[],
+  async getLargeMediaDisplayURL(
+    { path, id }: { path: string; id: string | null },
     branch = this.branch,
   ) {
-    const client = await this.getLargeMediaClient();
     const readFile = (
       path: string,
       id: string | null | undefined,
       { parseText }: { parseText: boolean },
     ) => this.api!.readFile(path, id, { branch, parseText });
 
-    const filesPromise = entriesByFiles(mediaFiles, readFile, 'Git-Gateway');
+    const items = await entriesByFiles([{ path, id }], readFile, 'Git-Gateway');
+    const entry = items[0];
+    const pointerFile = parsePointerFile(entry.data);
+    if (!pointerFile.sha) {
+      console.warn(`Failed parsing pointer file ${path}`);
+      return path;
+    }
 
-    return filesPromise
-      .then(items =>
-        items.map(({ file: { id, path }, data }) => {
-          const parsedPointerFile = parsePointerFile(data);
-          if (!parsedPointerFile.sha) {
-            console.warn(`Failed parsing pointer file ${path}`);
-          }
-          return [
-            {
-              pointerId: id,
-              resourceId: parsedPointerFile.sha,
-            },
-            parsedPointerFile,
-          ];
-        }),
-      )
-      .then(unzip)
-      .then(([idMaps, files]) =>
-        Promise.all([
-          idMaps as { pointerId: string; resourceId: string }[],
-          client.getResourceDownloadURLArgs(files as PointerFile[]).then(r => fromPairs(r)),
-        ]),
-      )
-      .then(([idMaps, resourceMap]) =>
-        idMaps.map(({ pointerId, resourceId }) => [pointerId, resourceMap[resourceId]]),
-      )
-      .then(fromPairs);
+    const client = await this.getLargeMediaClient();
+    const url = await client.getDownloadURL(pointerFile);
+    return url;
   }
 
-  getMediaDisplayURL(displayURL: DisplayURL) {
-    const {
-      path,
-      original,
-      largeMedia: largeMediaDisplayURL,
-    } = (displayURL as unknown) as GetMediaDisplayURLArgs;
-    return this.getLargeMediaClient().then(client => {
-      if (client.enabled && client.matchPath(path)) {
-        return client.getDownloadURL(largeMediaDisplayURL);
-      }
-      if (typeof original === 'string') {
-        return original;
-      }
-      if (this.backend!.getMediaDisplayURL) {
-        return this.backend!.getMediaDisplayURL(original);
-      }
-      const err = new Error(
-        `getMediaDisplayURL is not implemented by the ${this.backendType} backend, but the backend returned a displayURL which was not a string!`,
-      ) as Error & {
-        displayURL: DisplayURL;
-      };
-      err.displayURL = displayURL;
-      return Promise.reject(err);
-    });
+  async getMediaDisplayURL(displayURL: DisplayURL) {
+    const { path, id } = displayURL as DisplayURLObject;
+    const client = await this.getLargeMediaClient();
+    if (client.enabled && client.matchPath(path)) {
+      return this.getLargeMediaDisplayURL({ path, id });
+    }
+    if (typeof displayURL === 'string') {
+      return displayURL;
+    }
+    if (this.backend!.getMediaDisplayURL) {
+      return this.backend!.getMediaDisplayURL(displayURL);
+    }
+    const err = new Error(
+      `getMediaDisplayURL is not implemented by the ${this.backendType} backend, but the backend returned a displayURL which was not a string!`,
+    ) as Error & {
+      displayURL: DisplayURL;
+    };
+    err.displayURL = displayURL;
+    return Promise.reject(err);
   }
 
   async getMediaFile(path: string) {
     const client = await this.getLargeMediaClient();
     if (client.enabled && client.matchPath(path)) {
-      const largeMediaDisplayURLs = await this.getLargeMediaDisplayURLs([{ path, id: null }]);
-      const url = await client.getDownloadURL(Object.values(largeMediaDisplayURLs)[0]);
+      const url = await this.getLargeMediaDisplayURL({ path, id: null });
       return {
         id: url,
         name: basename(path),
