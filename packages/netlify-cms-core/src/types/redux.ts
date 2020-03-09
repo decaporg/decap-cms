@@ -201,7 +201,12 @@ interface SearchItem {
   slug: string;
 }
 
-export type Search = StaticallyTypedRecord<{ entryIds?: SearchItem[] }>;
+export type Search = StaticallyTypedRecord<{
+  entryIds?: SearchItem[];
+  isFetching: boolean;
+  term: string | null;
+  page: number;
+}>;
 
 export type Cursors = StaticallyTypedRecord<{}>;
 
