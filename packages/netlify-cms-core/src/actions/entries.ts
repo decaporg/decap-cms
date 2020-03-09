@@ -383,7 +383,7 @@ const addAppendActionsToCursor = (cursor: Cursor) => {
 };
 
 export function loadEntries(collection: Collection, page = 0) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (collection.get('isFetching')) {
       return;
     }
@@ -395,11 +395,15 @@ export function loadEntries(collection: Collection, page = 0) {
       : backend;
     const append = !!(page && !isNaN(page) && page > 0);
     dispatch(entriesLoading(collection));
-    provider
-      .listEntries(collection, page)
-      .then((response: { cursor: typeof Cursor }) => ({
-        ...response,
 
+    try {
+      let response: {
+        cursor: Cursor;
+        pagination: number;
+        entries: EntryValue[];
+      } = await provider.listEntries(collection, page);
+      response = {
+        ...response,
         // The only existing backend using the pagination system is the
         // Algolia integration, which is also the only integration used
         // to list entries. Thus, this checking for an integration can
@@ -413,33 +417,32 @@ export function loadEntries(collection: Collection, page = 0) {
               data: { nextPage: page + 1 },
             })
           : Cursor.create(response.cursor),
-      }))
-      .then((response: { cursor: Cursor; pagination: number; entries: EntryValue[] }) =>
-        dispatch(
-          entriesLoaded(
-            collection,
-            response.cursor.meta!.get('usingOldPaginationAPI')
-              ? response.entries.reverse()
-              : response.entries,
-            response.pagination,
-            addAppendActionsToCursor(response.cursor),
-            append,
-          ),
+      };
+
+      dispatch(
+        entriesLoaded(
+          collection,
+          response.cursor.meta!.get('usingOldPaginationAPI')
+            ? response.entries.reverse()
+            : response.entries,
+          response.pagination,
+          addAppendActionsToCursor(response.cursor),
+          append,
         ),
-      )
-      .catch((err: Error) => {
-        dispatch(
-          notifSend({
-            message: {
-              details: err,
-              key: 'ui.toast.onFailToLoadEntries',
-            },
-            kind: 'danger',
-            dismissAfter: 8000,
-          }),
-        );
-        return Promise.reject(dispatch(entriesFailed(collection, err)));
-      });
+      );
+    } catch (err) {
+      dispatch(
+        notifSend({
+          message: {
+            details: err,
+            key: 'ui.toast.onFailToLoadEntries',
+          },
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      return Promise.reject(dispatch(entriesFailed(collection, err)));
+    }
   };
 }
 
