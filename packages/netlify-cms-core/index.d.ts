@@ -207,7 +207,7 @@ declare module 'netlify-cms-core' {
     registerPreviewTemplate: (name: string, component: ComponentType) => void;
     registerWidget: (
       widget: string | CmsWidgetParam,
-      control: ComponentType,
+      control?: ComponentType,
       preview?: ComponentType,
     ) => void;
     registerWidgetValueSerializer: (
