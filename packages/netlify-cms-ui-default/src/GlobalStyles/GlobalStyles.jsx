@@ -59,34 +59,6 @@ const getGlobalStyles = theme => css`
     color: ${theme.highEmphasis};
   }
 
-  h1 {
-    font-size: 3rem;
-    line-height: 1.25em;
-    font-weight: 300;
-    letter-spacing: -0.0125em;
-  }
-
-  h2 {
-    font-size: 2.5rem;
-    line-height: 1.25em;
-    font-weight: 300;
-    letter-spacing: -0.0125em;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.25;
-  }
-
-  h4 {
-    font-weight: 700;
-  }
-
-  h5 {
-    font-weight: 700;
-  }
-
   p {
     color: ${theme.color.mediumEmphasis};
     margin-bottom: 24px;

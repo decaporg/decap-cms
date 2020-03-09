@@ -10,9 +10,9 @@ import { getPhrases } from 'Lib/phrases';
 import { selectLocale } from 'Reducers/config';
 import { I18n } from 'react-polyglot';
 import { ThemeProvider } from 'emotion-theming';
-import { GlobalStyles } from 'netlify-cms-ui-legacy';
+import { GlobalStyles as GlobalLegacyStyles } from 'netlify-cms-ui-legacy';
 import { ErrorBoundary } from 'UI';
-import { lightTheme, darkTheme, isWindowDown } from 'netlify-cms-ui-default';
+import { lightTheme, darkTheme, isWindowDown, GlobalStyles } from 'netlify-cms-ui-default';
 import App from 'App/App';
 import 'EditorWidgets';
 import 'coreSrc/mediaLibrary';
@@ -102,10 +102,11 @@ function bootstrap(opts = {}) {
 
     return (
       <>
-        <GlobalStyles />
+        <GlobalLegacyStyles />
         <ThemeProvider
           theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
         >
+          <GlobalStyles />
           <Provider store={store}>
             <ConnectedTranslatedApp />
           </Provider>
