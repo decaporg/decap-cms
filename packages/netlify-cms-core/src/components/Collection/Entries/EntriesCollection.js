@@ -15,6 +15,7 @@ import Entries from './Entries';
 class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
+    page: PropTypes.number,
     entries: ImmutablePropTypes.list,
     isFetching: PropTypes.bool.isRequired,
     viewStyle: PropTypes.string,
@@ -44,7 +45,7 @@ class EntriesCollection extends React.Component {
   };
 
   render() {
-    const { collection, entries, isFetching, viewStyle, cursor } = this.props;
+    const { collection, entries, isFetching, viewStyle, cursor, page } = this.props;
 
     return (
       <Entries
@@ -55,6 +56,7 @@ class EntriesCollection extends React.Component {
         viewStyle={viewStyle}
         cursor={cursor}
         handleCursorActions={partial(this.handleCursorActions, cursor)}
+        page={page}
       />
     );
   }

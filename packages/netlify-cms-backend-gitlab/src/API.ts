@@ -251,26 +251,24 @@ export default class API {
   };
 
   getCursorFromHeaders = (headers: Headers) => {
-    // indices and page counts are assumed to be zero-based, but the
-    // indices and page counts returned from GitLab are one-based
-    const index = parseInt(headers.get('X-Page') as string, 10) - 1;
-    const pageCount = parseInt(headers.get('X-Total-Pages') as string, 10) - 1;
+    const page = parseInt(headers.get('X-Page') as string, 10);
+    const pageCount = parseInt(headers.get('X-Total-Pages') as string, 10);
     const pageSize = parseInt(headers.get('X-Per-Page') as string, 10);
     const count = parseInt(headers.get('X-Total') as string, 10);
     const links = parseLinkHeader(headers.get('Link') as string);
     const actions = Map(links)
       .keySeq()
       .flatMap(key =>
-        (key === 'prev' && index > 0) ||
-        (key === 'next' && index < pageCount) ||
-        (key === 'first' && index > 0) ||
-        (key === 'last' && index < pageCount)
+        (key === 'prev' && page > 1) ||
+        (key === 'next' && page < pageCount) ||
+        (key === 'first' && page > 1) ||
+        (key === 'last' && page < pageCount)
           ? [key]
           : [],
       );
     return Cursor.create({
       actions,
-      meta: { index, count, pageSize, pageCount },
+      meta: { page, count, pageSize, pageCount },
       data: { links },
     });
   };
@@ -295,52 +293,14 @@ export default class API {
       then(([cursor, entries]: [Cursor, {}[]]) => ({ cursor, entries })),
     ])(req);
 
-  reversableActions = Map({
-    first: 'last',
-    last: 'first',
-    next: 'prev',
-    prev: 'next',
-  });
-
-  reverseCursor = (cursor: Cursor) => {
-    const pageCount = cursor.meta!.get('pageCount', 0) as number;
-    const currentIndex = cursor.meta!.get('index', 0) as number;
-    const newIndex = pageCount - currentIndex;
-
-    const links = cursor.data!.get('links', Map()) as Map<string, string>;
-    const reversedLinks = links.mapEntries(tuple => {
-      const [k, v] = tuple as string[];
-      return [this.reversableActions.get(k) || k, v];
-    });
-
-    const reversedActions = cursor.actions!.map(
-      action => this.reversableActions.get(action as string) || (action as string),
-    );
-
-    return cursor.updateStore((store: CursorStore) =>
-      store!
-        .setIn(['meta', 'index'], newIndex)
-        .setIn(['data', 'links'], reversedLinks)
-        .set('actions', (reversedActions as unknown) as Set<string>),
-    );
-  };
-
-  // The exported listFiles and traverseCursor reverse the direction
-  // of the cursors, since GitLab's pagination sorts the opposite way
-  // we want to sort by default (it sorts by filename _descending_,
-  // while the CMS defaults to sorting by filename _ascending_, at
-  // least in the current GitHub backend). This should eventually be
-  // refactored.
   listFiles = async (path: string, recursive = false) => {
-    const firstPageCursor = await this.fetchCursor({
+    const { entries, cursor } = await this.fetchCursorAndEntries({
       url: `${this.repoURL}/repository/tree`,
       params: { path, ref: this.branch, recursive },
     });
-    const lastPageLink = firstPageCursor.data.getIn(['links', 'last']);
-    const { entries, cursor } = await this.fetchCursorAndEntries(lastPageLink);
     return {
-      files: entries.filter(({ type }) => type === 'blob').reverse(),
-      cursor: this.reverseCursor(cursor),
+      files: entries.filter(({ type }) => type === 'blob'),
+      cursor,
     };
   };
 
@@ -348,8 +308,8 @@ export default class API {
     const link = cursor.data!.getIn(['links', action]);
     const { entries, cursor: newCursor } = await this.fetchCursorAndEntries(link);
     return {
-      entries: entries.filter(({ type }) => type === 'blob').reverse(),
-      cursor: this.reverseCursor(newCursor),
+      entries: entries.filter(({ type }) => type === 'blob'),
+      cursor: newCursor,
     };
   };
 

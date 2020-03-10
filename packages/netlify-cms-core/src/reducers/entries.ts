@@ -8,6 +8,9 @@ import {
   ENTRIES_SUCCESS,
   ENTRIES_FAILURE,
   ENTRY_DELETE_SUCCESS,
+  SORT_ENTRIES_REQUEST,
+  SORT_ENTRIES_SUCCESS,
+  SORT_ENTRIES_FAILURE,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
@@ -26,10 +29,15 @@ import {
   EntryMap,
   EntryField,
   CollectionFiles,
+  EntriesSortRequestPayload,
+  EntriesSortSuccessPayload,
+  EntriesSortFailurePayload,
+  SortDirection,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim } from 'lodash';
+import { trim, sortBy } from 'lodash';
+import { keyToPathArray } from '../lib/stringTemplate';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -37,7 +45,10 @@ let append: boolean;
 let page: number;
 let slug: string;
 
-const entries = (state = Map({ entities: Map(), pages: Map() }), action: EntriesAction) => {
+const entries = (
+  state = Map({ entities: Map(), pages: Map(), sort: Map() }),
+  action: EntriesAction,
+) => {
   switch (action.type) {
     case ENTRY_REQUEST: {
       const payload = action.payload as EntryRequestPayload;
@@ -59,7 +70,10 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action: Entries
 
     case ENTRIES_REQUEST: {
       const payload = action.payload as EntriesRequestPayload;
-      return state.setIn(['pages', payload.collection, 'isFetching'], true);
+      return state.withMutations(map => {
+        map.deleteIn(['sort', collection]);
+        state.setIn(['pages', payload.collection, 'isFetching'], true);
+      });
     }
 
     case ENTRIES_SUCCESS: {
@@ -123,9 +137,58 @@ const entries = (state = Map({ entities: Map(), pages: Map() }), action: Entries
       });
     }
 
+    case SORT_ENTRIES_REQUEST: {
+      const payload = action.payload as EntriesSortRequestPayload;
+      const { collection, key, direction } = payload;
+      return state.withMutations(map => {
+        map.setIn(['sort', collection], fromJS({ key, direction }));
+        map.setIn(['pages', collection, 'isFetching'], true);
+        map.deleteIn(['pages', collection, 'page']);
+      });
+    }
+
+    case SORT_ENTRIES_SUCCESS: {
+      const payload = action.payload as EntriesSortSuccessPayload;
+      const { collection, key, direction, entries } = payload;
+      loadedEntries = entries;
+      return state.withMutations(map => {
+        loadedEntries.forEach(entry =>
+          map.setIn(
+            ['entities', `${entry.collection}.${entry.slug}`],
+            fromJS(entry).set('isFetching', false),
+          ),
+        );
+        map.setIn(['sort', collection], fromJS({ key, direction }));
+        map.setIn(['pages', collection, 'isFetching'], false);
+
+        const ids = List(loadedEntries.map(entry => entry.slug));
+        map.setIn(
+          ['pages', collection],
+          Map({
+            page: 1,
+            ids,
+          }),
+        );
+      });
+    }
+
+    case SORT_ENTRIES_FAILURE: {
+      const payload = action.payload as EntriesSortFailurePayload;
+      const { collection } = payload;
+      return state.withMutations(map => {
+        map.deleteIn(['sort', collection]);
+        map.setIn(['pages', collection, 'isFetching'], false);
+      });
+    }
+
     default:
       return state;
   }
+};
+
+export const selectEntriesSort = (entries: Entries, collection: string) => {
+  const sort = entries.getIn(['sort', collection])?.toJS();
+  return sort;
 };
 
 export const selectEntry = (state: Entries, collection: string, slug: string) =>
@@ -136,7 +199,19 @@ export const selectPublishedSlugs = (state: Entries, collection: string) =>
 
 export const selectEntries = (state: Entries, collection: string) => {
   const slugs = selectPublishedSlugs(state, collection);
-  return slugs && slugs.map(slug => selectEntry(state, collection, slug as string));
+  let entries =
+    slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
+
+  const sort = selectEntriesSort(state, collection);
+  if (entries && sort) {
+    const { key, direction } = sort;
+    const sorted = sortBy(
+      entries.toArray(),
+      item => item.get('data')?.getIn(keyToPathArray(key)) || '',
+    );
+    entries = List(direction === SortDirection.Ascending ? sorted : sorted.reverse());
+  }
+  return entries;
 };
 
 const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';

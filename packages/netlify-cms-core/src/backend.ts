@@ -284,7 +284,7 @@ export class Backend {
     return filteredEntries;
   }
 
-  listEntries(collection: Collection) {
+  async listEntries(collection: Collection) {
     const extension = selectFolderEntryExtension(collection);
     let listMethod: () => Promise<ImplementationEntry[]>;
     const collectionType = collection.get('type');
@@ -307,20 +307,23 @@ export class Backend {
     } else {
       throw new Error(`Unknown collection type: ${collectionType}`);
     }
-    return listMethod().then((loadedEntries: ImplementationEntry[]) => ({
-      entries: this.processEntries(loadedEntries, collection),
-      /*
+    const loadedEntries = await listMethod();
+    /*
           Wrap cursors so we can tell which collection the cursor is
           from. This is done to prevent traverseCursor from requiring a
           `collection` argument.
         */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      cursor: Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
-        cursorType: 'collectionEntries',
-        collection,
-      }),
-    }));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    const cursor = Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
+      cursorType: 'collectionEntries',
+      collection,
+    });
+    return {
+      entries: this.processEntries(loadedEntries, collection),
+      pagination: cursor.meta?.get('page'),
+      cursor,
+    };
   }
 
   // The same as listEntries, except that if a cursor with the "next"

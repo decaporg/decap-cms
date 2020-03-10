@@ -71,18 +71,24 @@ export function applyDefaults(config) {
             if (collection.has('media_folder') && !collection.has('public_folder')) {
               collection = collection.set('public_folder', collection.get('media_folder'));
             }
-            return collection.set('folder', trimStart(folder, '/'));
+            collection = collection.set('folder', trimStart(folder, '/'));
           }
 
           const files = collection.get('files');
           if (files) {
-            return collection.set(
+            collection = collection.set(
               'files',
               files.map(file => {
                 return file.set('file', trimStart(file.get('file'), '/'));
               }),
             );
           }
+
+          if (!collection.has('sortableFields')) {
+            collection = collection.set('sortableFields', fromJS([]));
+          }
+
+          return collection;
         }),
       );
     });

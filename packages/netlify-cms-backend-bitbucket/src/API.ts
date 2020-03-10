@@ -267,7 +267,7 @@ export default class API {
   getEntriesAndCursor = (jsonResponse: BitBucketSrcResult) => {
     const {
       size: count,
-      page: index,
+      page,
       pagelen: pageSize,
       next,
       previous: prev,
@@ -278,7 +278,7 @@ export default class API {
       entries,
       cursor: Cursor.create({
         actions: [...(next ? ['next'] : []), ...(prev ? ['prev'] : [])],
-        meta: { index, count, pageSize, pageCount },
+        meta: { page, count, pageSize, pageCount },
         data: { links: { next, prev } },
       }),
     };
@@ -289,8 +289,6 @@ export default class API {
     const result: BitBucketSrcResult = await this.requestJSON({
       url: `${this.repoURL}/src/${node}/${path}`,
       params: {
-        // sort files by filename ascending
-        sort: '-path',
         // eslint-disable-next-line @typescript-eslint/camelcase
         max_depth: depth,
       },

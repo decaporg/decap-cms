@@ -52,11 +52,23 @@ type Pages = StaticallyTypedRecord<PagesObject>;
 
 type EntitiesObject = { [key: string]: EntryMap };
 
+export enum SortDirection {
+  Ascending = 'Ascending',
+  Descending = 'Descending',
+}
+
+type SortObject = {
+  [collection: string]: StaticallyTypedRecord<{ key: string; direction: SortDirection }>;
+};
+
+type Sort = StaticallyTypedRecord<SortObject>;
+
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
   entities: Entities & EntitiesObject;
+  sort: Sort & SortObject;
 }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;
@@ -273,6 +285,18 @@ export interface EntriesSuccessPayload extends EntryPayload {
   entries: EntryObject[];
   append: boolean;
   page: number;
+}
+export interface EntriesSortRequestPayload extends EntryPayload {
+  key: string;
+  direction: string;
+}
+
+export interface EntriesSortSuccessPayload extends EntriesSortRequestPayload {
+  entries: EntryObject[];
+}
+
+export interface EntriesSortFailurePayload extends EntryPayload {
+  error: Error;
 }
 
 export interface EntriesAction extends Action<string> {

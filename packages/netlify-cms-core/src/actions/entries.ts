@@ -12,11 +12,20 @@ import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { addAssets, getAsset } from './media';
-import { Collection, EntryMap, State, EntryFields, EntryField } from '../types/redux';
+import {
+  Collection,
+  EntryMap,
+  State,
+  EntryFields,
+  EntryField,
+  SortDirection,
+} from '../types/redux';
+
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
+import { selectEntriesSort } from '../reducers/entries';
 
 const { notifSend } = notifActions;
 
@@ -30,6 +39,10 @@ export const ENTRY_FAILURE = 'ENTRY_FAILURE';
 export const ENTRIES_REQUEST = 'ENTRIES_REQUEST';
 export const ENTRIES_SUCCESS = 'ENTRIES_SUCCESS';
 export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
+
+export const SORT_ENTRIES_REQUEST = 'SORT_ENTRIES_REQUEST';
+export const SORT_ENTRIES_SUCCESS = 'SORT_ENTRIES_SUCCESS';
+export const SORT_ENTRIES_FAILURE = 'SORT_ENTRIES_FAILURE';
 
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
@@ -121,6 +134,51 @@ export function entriesFailed(collection: Collection, error: Error) {
     error: 'Failed to load entries',
     payload: error.toString(),
     meta: { collection: collection.get('name') },
+  };
+}
+
+export function sortByField(
+  collection: Collection,
+  key: string,
+  direction: SortDirection = SortDirection.Ascending,
+) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+
+    const sort = selectEntriesSort(state.entries, collection.get('name'));
+    if (sort && sort.direction === direction && sort.key === key) {
+      return dispatch(loadEntries(collection));
+    }
+
+    dispatch({
+      type: SORT_ENTRIES_REQUEST,
+      payload: {
+        collection: collection.get('name'),
+        key,
+        direction,
+      },
+    });
+    try {
+      const allEntries = await backend.listAllEntries(collection);
+      dispatch({
+        type: SORT_ENTRIES_SUCCESS,
+        payload: {
+          collection: collection.get('name'),
+          key,
+          direction,
+          entries: allEntries,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: SORT_ENTRIES_FAILURE,
+        payload: {
+          collection: collection.get('name'),
+          error,
+        },
+      });
+    }
   };
 }
 
@@ -476,10 +534,10 @@ export function traverseCollectionCursor(collection: Collection, action: string)
     try {
       dispatch(entriesLoading(collection));
       const { entries, cursor: newCursor } = await traverseCursor(backend, cursor, realAction);
-      // Pass null for the old pagination argument - this will
-      // eventually be removed.
+
+      const pagination = newCursor.meta?.get('page');
       return dispatch(
-        entriesLoaded(collection, entries, null, addAppendActionsToCursor(newCursor), append),
+        entriesLoaded(collection, entries, pagination, addAppendActionsToCursor(newCursor), append),
       );
     } catch (err) {
       console.error(err);
@@ -487,7 +545,7 @@ export function traverseCollectionCursor(collection: Collection, action: string)
         notifSend({
           message: {
             details: err,
-            key: 'ui.toast.onFailToPersist',
+            key: 'ui.toast.onFailToLoadEntries',
           },
           kind: 'danger',
           dismissAfter: 8000,

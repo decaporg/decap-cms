@@ -1,9 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from '@emotion/styled';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { Loader } from 'netlify-cms-ui-default';
+import { Loader, components, lengths } from 'netlify-cms-ui-default';
 import EntryListing from './EntryListing';
+
+const PaginationMessage = styled.div`
+  width: ${lengths.topCardWidth};
+  padding: 16px;
+  text-align: center;
+`;
+
+const NoEntriesMessage = styled(PaginationMessage)`
+  ${components.card};
+`;
 
 const Entries = ({
   collections,
@@ -13,6 +24,7 @@ const Entries = ({
   cursor,
   handleCursorActions,
   t,
+  page,
 }) => {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -20,23 +32,28 @@ const Entries = ({
     t('collection.entries.longerLoading'),
   ];
 
-  if (entries) {
-    return (
-      <EntryListing
-        collections={collections}
-        entries={entries}
-        viewStyle={viewStyle}
-        cursor={cursor}
-        handleCursorActions={handleCursorActions}
-      />
-    );
-  }
-
-  if (isFetching) {
+  if (isFetching && page === undefined) {
     return <Loader active>{loadingMessages}</Loader>;
   }
 
-  return <div className="nc-collectionPage-noEntries">No Entries</div>;
+  if (entries && entries.size > 0) {
+    return (
+      <>
+        <EntryListing
+          collections={collections}
+          entries={entries}
+          viewStyle={viewStyle}
+          cursor={cursor}
+          handleCursorActions={handleCursorActions}
+        />
+        {isFetching && page !== undefined ? (
+          <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
+        ) : null}
+      </>
+    );
+  }
+
+  return <NoEntriesMessage>{t('collection.entries.noEntries')}</NoEntriesMessage>;
 };
 
 Entries.propTypes = {

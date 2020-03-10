@@ -57,9 +57,7 @@ class Collection extends React.Component {
         <CollectionMain>
           {isSearchResults ? null : (
             <CollectionTop
-              collectionLabel={collection.get('label')}
-              collectionLabelSingular={collection.get('label_singular')}
-              collectionDescription={collection.get('description')}
+              collection={collection}
               newEntryUrl={newEntryUrl}
               viewStyle={this.state.viewStyle}
               onChangeViewStyle={this.handleChangeViewStyle}
@@ -77,7 +75,14 @@ function mapStateToProps(state, ownProps) {
   const { isSearchResults, match } = ownProps;
   const { name, searchTerm } = match.params;
   const collection = name ? collections.get(name) : collections.first();
-  return { collection, collections, collectionName: name, isSearchResults, searchTerm };
+
+  return {
+    collection,
+    collections,
+    collectionName: name,
+    isSearchResults,
+    searchTerm,
+  };
 }
 
 export default connect(mapStateToProps)(Collection);
