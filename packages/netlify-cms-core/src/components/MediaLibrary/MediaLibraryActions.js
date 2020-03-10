@@ -4,6 +4,7 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { FileUploadButton } from 'UI';
 import { buttons, shadows } from 'netlify-cms-ui-legacy';
+import { Button, ButtonGroup } from 'netlify-cms-ui-default'
 
 const styles = {
   button: css`
@@ -51,16 +52,6 @@ const StyledUploadButton = styled(FileUploadButton)`
   }
 `;
 
-const DeleteButton = styled.button`
-  ${styles.button};
-  ${buttons.lightRed};
-`;
-
-const InsertButton = styled.button`
-  ${styles.button};
-  ${buttons.green};
-`;
-
 const LowerActionsContainer = styled.div`
   margin-top: 30px;
 `;
@@ -86,14 +77,16 @@ const MediaLibraryActions = ({
       disabled={!uploadEnabled}
     />
     <LowerActionsContainer>
-      <DeleteButton onClick={onDelete} disabled={!deleteEnabled}>
-        {deleteButtonLabel}
-      </DeleteButton>
-      {!insertVisible ? null : (
-        <InsertButton onClick={onInsert} disabled={!insertEnabled}>
-          {insertButtonLabel}
-        </InsertButton>
-      )}
+      <ButtonGroup>
+        <Button type="danger" onClick={onDelete} disabled={!deleteEnabled}>
+          {deleteButtonLabel}
+        </Button>
+        {!insertVisible ? null : (
+          <Button onClick={onInsert} disabled={!insertEnabled}>
+            {insertButtonLabel}
+          </Button>
+        )}
+      </ButtonGroup>
     </LowerActionsContainer>
   </ActionsContainer>
 );
