@@ -16,6 +16,7 @@ import {
   components,
   buttons,
 } from 'netlify-cms-ui-legacy';
+import { Button, ButtonGroup } from 'netlify-cms-ui-default'
 import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
@@ -153,14 +154,6 @@ const ToolbarButton = styled.button`
   }
 `;
 
-const DeleteButton = styled(ToolbarButton)`
-  ${buttons.lightRed};
-`;
-
-const SaveButton = styled(ToolbarButton)`
-  ${buttons.lightBlue};
-`;
-
 const PublishedToolbarButton = styled(DropdownButton)`
   ${styles.publishedButton}
 `;
@@ -267,7 +260,7 @@ class EditorToolbar extends React.Component {
     return (
       <div>
         {showDelete ? (
-          <DeleteButton onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</DeleteButton>
+          <Button type="danger" onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</Button>
         ) : null}
       </div>
     );
@@ -405,19 +398,22 @@ class EditorToolbar extends React.Component {
         t('editor.editorToolbar.deleteUnpublishedEntry')) ||
       (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
-    return [
-      <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
-        {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
-      </SaveButton>,
-      !showDelete && !hasUnpublishedChanges && !isModification ? null : (
-        <DeleteButton
-          key="delete-button"
-          onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
-        >
-          {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
-        </DeleteButton>
-      ),
-    ];
+    return (
+      <ButtonGroup>
+        <Button type="success" key="save-button" onClick={() => hasChanged && onPersist()}>
+          {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
+        </Button>
+        {!showDelete && !hasUnpublishedChanges && !isModification ? null : (
+          <Button
+            type="danger"
+            key="delete-button"
+            onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+          >
+            {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
+          </Button>
+        )}
+      </ButtonGroup>
+    );
   };
 
   renderWorkflowPublishControls = () => {

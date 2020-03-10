@@ -3,8 +3,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { Icon, components, buttons, shadows, colors } from 'netlify-cms-ui-legacy';
-import { Card } from 'netlify-cms-ui-default';
+import { components, colors } from 'netlify-cms-ui-legacy';
+import { Card,Button, IconButton, ButtonGroup } from 'netlify-cms-ui-default'
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 const CollectionTopContainer = styled(Card)`
@@ -20,15 +20,6 @@ const CollectionTopRow = styled.div`
 
 const CollectionTopHeading = styled.h1`
   ${components.cardTopHeading};
-`;
-
-const CollectionTopNewButton = styled(Link)`
-  ${buttons.button};
-  ${shadows.dropDeep};
-  ${buttons.default};
-  ${buttons.gray};
-
-  padding: 0 30px;
 `;
 
 const CollectionTopDescription = styled.p`
@@ -48,23 +39,6 @@ const ViewControlsText = styled.span`
   margin-right: 12px;
 `;
 
-const ViewControlsButton = styled.button`
-  ${buttons.button};
-  color: ${props => (props.isActive ? colors.active : '#b3b9c4')};
-  background-color: transparent;
-  display: block;
-  padding: 0;
-  margin: 0 4px;
-
-  &:last-child {
-    margin-right: 0;
-  }
-
-  ${Icon} {
-    display: block;
-  }
-`;
-
 const CollectionTop = ({
   collectionLabel,
   collectionLabelSingular,
@@ -79,11 +53,13 @@ const CollectionTop = ({
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
         {newEntryUrl ? (
-          <CollectionTopNewButton to={newEntryUrl}>
-            {t('collection.collectionTop.newButton', {
-              collectionLabel: collectionLabelSingular || collectionLabel,
-            })}
-          </CollectionTopNewButton>
+          <Link to={newEntryUrl}>
+            <Button icon="plus" primary to={newEntryUrl}>
+              {t('collection.collectionTop.newButton', {
+                collectionLabel: collectionLabelSingular || collectionLabel,
+              })}
+            </Button>
+          </Link>
         ) : null}
       </CollectionTopRow>
       {collectionDescription ? (
@@ -91,18 +67,18 @@ const CollectionTop = ({
       ) : null}
       <ViewControls>
         <ViewControlsText>{t('collection.collectionTop.viewAs')}:</ViewControlsText>
-        <ViewControlsButton
-          isActive={viewStyle === VIEW_STYLE_LIST}
-          onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
-        >
-          <Icon type="list" />
-        </ViewControlsButton>
-        <ViewControlsButton
-          isActive={viewStyle === VIEW_STYLE_GRID}
-          onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
-        >
-          <Icon type="grid" />
-        </ViewControlsButton>
+        <ButtonGroup>
+          <IconButton
+            icon="menu"
+            active={viewStyle === VIEW_STYLE_LIST}
+            onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
+          />
+          <IconButton
+            icon="grid"
+            active={viewStyle === VIEW_STYLE_GRID}
+            onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
+          />
+        </ButtonGroup>
       </ViewControls>
     </CollectionTopContainer>
   );
