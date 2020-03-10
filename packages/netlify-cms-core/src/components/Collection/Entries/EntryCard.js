@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-legacy';
+import { colors, lengths } from 'netlify-cms-ui-legacy';
 import { Card } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { summaryFormatter } from 'Lib/formatters';
@@ -74,7 +74,7 @@ const CardBody = styled.div`
     left: -20%;
     height: 140%;
     width: 140%;
-    box-shadow: inset 0 -15px 24px background-color: ${({ theme }) => theme.color.surface};;
+    box-shadow: inset 0 -15px 24px background-color: ${({ theme }) => theme.color.surface};
   }
 `;
 

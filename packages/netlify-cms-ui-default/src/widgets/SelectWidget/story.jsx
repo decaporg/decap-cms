@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { withKnobs, boolean } from '@storybook/addon-knobs';
+import { withKnobs } from '@storybook/addon-knobs';
 
 import SelectWidget from '.';
 
