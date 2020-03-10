@@ -72,7 +72,7 @@ const entries = (
       const payload = action.payload as EntriesRequestPayload;
       return state.withMutations(map => {
         map.deleteIn(['sort', collection]);
-        state.setIn(['pages', payload.collection, 'isFetching'], true);
+        map.setIn(['pages', payload.collection, 'isFetching'], true);
       });
     }
 
