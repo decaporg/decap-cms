@@ -1,21 +1,13 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import {
-  Icon,
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  colors,
-  lengths,
-  shadows,
-  buttons,
-} from 'netlify-cms-ui-legacy';
+import { Icon, colors, lengths, shadows, buttons } from 'netlify-cms-ui-legacy';
 import SettingsDropdown from 'UI/SettingsDropdown';
+import { Button, ButtonGroup, Menu, MenuItem } from 'netlify-cms-ui-default';
 
 const styles = {
   buttonActive: css`
@@ -86,123 +78,110 @@ const AppHeaderActions = styled.div`
   align-items: center;
 `;
 
-const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
-  ${buttons.button};
-  ${buttons.medium};
-  ${buttons.gray};
-  margin-right: 8px;
-
-  &:after {
-    top: 11px;
-  }
-`;
-
 const AppHeaderNavList = styled.ul`
   display: flex;
   margin: 0;
   list-style: none;
 `;
 
-class Header extends React.Component {
-  static propTypes = {
-    user: ImmutablePropTypes.map.isRequired,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
-    onCreateEntryClick: PropTypes.func.isRequired,
-    onLogoutClick: PropTypes.func.isRequired,
-    openMediaLibrary: PropTypes.func.isRequired,
-    hasWorkflow: PropTypes.bool.isRequired,
-    displayUrl: PropTypes.string,
-    isTestRepo: PropTypes.bool,
-    t: PropTypes.func.isRequired,
-  };
-
-  handleCreatePostClick = collectionName => {
-    const { onCreateEntryClick } = this.props;
+const Header = ({
+  user,
+  collections,
+  onLogoutClick,
+  onCreateEntryClick,
+  openMediaLibrary,
+  hasWorkflow,
+  displayUrl,
+  isTestRepo,
+  t,
+  showMediaButton,
+}) => {
+  const [menuAnchorEl, setMenuAnchorEl] = useState();
+  const handleCreatePostClick = collectionName => {
+    setMenuAnchorEl(null)
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
     }
   };
-
-  render() {
-    const {
-      user,
-      collections,
-      onLogoutClick,
-      openMediaLibrary,
-      hasWorkflow,
-      displayUrl,
-      isTestRepo,
-      t,
-      showMediaButton,
-    } = this.props;
-
-    const createableCollections = collections
-      .filter(collection => collection.get('create'))
-      .toList();
-
-    return (
-      <AppHeader>
-        <AppHeaderContent>
-          <nav>
-            <AppHeaderNavList>
+  const createableCollections = collections
+    .filter(collection => collection.get('create'))
+    .toList();
+  return (
+    <AppHeader>
+      <AppHeaderContent>
+        <nav>
+          <AppHeaderNavList>
+            <li>
+              <AppHeaderNavLink
+                to="/"
+                activeClassName="header-link-active"
+                isActive={(match, location) => location.pathname.startsWith('/collections/')}
+              >
+                <Icon type="page" />
+                {t('app.header.content')}
+              </AppHeaderNavLink>
+            </li>
+            {hasWorkflow && (
               <li>
-                <AppHeaderNavLink
-                  to="/"
-                  activeClassName="header-link-active"
-                  isActive={(match, location) => location.pathname.startsWith('/collections/')}
-                >
-                  <Icon type="page" />
-                  {t('app.header.content')}
+                <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
+                  <Icon type="workflow" />
+                  {t('app.header.workflow')}
                 </AppHeaderNavLink>
               </li>
-              {hasWorkflow && (
-                <li>
-                  <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                    <Icon type="workflow" />
-                    {t('app.header.workflow')}
-                  </AppHeaderNavLink>
-                </li>
-              )}
-              {showMediaButton && (
-                <li>
-                  <AppHeaderButton onClick={openMediaLibrary}>
-                    <Icon type="media-alt" />
-                    {t('app.header.media')}
-                  </AppHeaderButton>
-                </li>
-              )}
-            </AppHeaderNavList>
-          </nav>
-          <AppHeaderActions>
-            {createableCollections.size > 0 && (
-              <Dropdown
-                renderButton={() => (
-                  <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
-                )}
-                dropdownTopOverlap="30px"
-                dropdownWidth="160px"
-                dropdownPosition="left"
+            )}
+            {showMediaButton && (
+              <li>
+                <AppHeaderButton onClick={openMediaLibrary}>
+                  <Icon type="media-alt" />
+                  {t('app.header.media')}
+                </AppHeaderButton>
+              </li>
+            )}
+          </AppHeaderNavList>
+        </nav>
+        <AppHeaderActions>
+          {createableCollections.size > 0 && (
+            <>
+              <ButtonGroup>
+                <Button primary onClick={e => setMenuAnchorEl(e.currentTarget)} hasMenu>
+                  {t('app.header.quickAdd')}
+                </Button>
+              </ButtonGroup>
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={!!menuAnchorEl}
+                onClose={() => setMenuAnchorEl(null)}
               >
                 {createableCollections.map(collection => (
-                  <DropdownItem
-                    key={collection.get('name')}
-                    label={collection.get('label_singular') || collection.get('label')}
-                    onClick={() => this.handleCreatePostClick(collection.get('name'))}
-                  />
+                  <MenuItem key={collection.get('name')} onClick={() => handleCreatePostClick(collection.get('name'))}>
+                    {collection.get('label_singular') || collection.get('label')}
+                  </MenuItem>
                 ))}
-              </Dropdown>
-            )}
-            <SettingsDropdown
-              displayUrl={displayUrl}
-              isTestRepo={isTestRepo}
-              imageUrl={user.get('avatar_url')}
-              onLogoutClick={onLogoutClick}
-            />
-          </AppHeaderActions>
-        </AppHeaderContent>
-      </AppHeader>
-    );
-  }
+              </Menu>
+            </>
+          )}
+          <SettingsDropdown
+            displayUrl={displayUrl}
+            isTestRepo={isTestRepo}
+            imageUrl={user.get('avatar_url')}
+            onLogoutClick={onLogoutClick}
+          />
+        </AppHeaderActions>
+      </AppHeaderContent>
+    </AppHeader>
+  );
+}
+
+Header.propTypes = {
+  user: ImmutablePropTypes.map.isRequired,
+  collections: ImmutablePropTypes.orderedMap.isRequired,
+  onCreateEntryClick: PropTypes.func.isRequired,
+  onLogoutClick: PropTypes.func.isRequired,
+  openMediaLibrary: PropTypes.func.isRequired,
+  hasWorkflow: PropTypes.bool.isRequired,
+  displayUrl: PropTypes.string,
+  isTestRepo: PropTypes.bool,
+  t: PropTypes.func.isRequired,
 }
 
 export default translate()(Header);
