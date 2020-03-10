@@ -4,17 +4,18 @@ import { connect } from 'react-redux';
 import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
 import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-legacy';
+import { Card } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { summaryFormatter } from 'Lib/formatters';
 import { keyToPathArray } from 'Lib/stringTemplate';
 import { selectIsLoadingAsset } from 'Reducers/medias';
 
-const ListCard = styled.li`
-  ${components.card};
+const ListCard = styled(Card)`
   width: ${lengths.topCardWidth};
   margin-left: 12px;
   margin-bottom: 16px;
   overflow: hidden;
+  color: ${({ theme }) => theme.color.mediumEmphasis};
 `;
 
 const ListCardLink = styled(Link)`
@@ -22,31 +23,31 @@ const ListCardLink = styled(Link)`
   max-width: 100%;
   padding: 16px 22px;
   &:hover {
-    background-color: ${colors.foreground};
+    background-color: ${({ theme }) => theme.color.surfaceHighlight};
   }
 `;
 
-const GridCard = styled.li`
-  ${components.card};
+const GridCard = styled(Card)`
   flex: 0 0 335px;
   height: 240px;
   overflow: hidden;
   margin-left: 12px;
   margin-bottom: 16px;
+  background-color: ${({ theme }) => theme.color.elevatedSurface};
 `;
 
 const GridCardLink = styled(Link)`
   display: block;
   &,
   &:hover {
-    background-color: ${colors.foreground};
+    background-color: ${({ theme }) => theme.color.elevatedSurface};
     color: ${colors.text};
   }
 `;
 
 const CollectionLabel = styled.h2`
   font-size: 12px;
-  color: ${colors.textLead};
+  color: ${({ theme }) => theme.color.highEmphasis};
   text-transform: uppercase;
 `;
 
@@ -73,7 +74,7 @@ const CardBody = styled.div`
     left: -20%;
     height: 140%;
     width: 140%;
-    box-shadow: inset 0 -15px 24px ${colorsRaw.white};
+    box-shadow: inset 0 -15px 24px background-color: ${({ theme }) => theme.color.surface};;
   }
 `;
 

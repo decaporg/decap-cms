@@ -282,7 +282,6 @@ const components = {
     height: 2.28571429rem;
   `,
   cardTop: css`
-    ${card};
     width: ${lengths.topCardWidth};
     max-width: 100%;
     padding: 18px 20px;

@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import { components, colors, colorsRaw, transitions, buttons } from 'netlify-cms-ui-legacy';
+import { Card } from 'netlify-cms-ui-default';
 
 const styles = {
   text: css`
@@ -87,8 +88,7 @@ const PublishButton = styled.button`
   }
 `;
 
-const WorkflowCardContainer = styled.div`
-  ${components.card};
+const WorkflowCardContainer = styled(Card)`
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;

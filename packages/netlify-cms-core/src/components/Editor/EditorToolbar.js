@@ -56,7 +56,7 @@ const ToolbarContainer = styled.div`
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.color.surface};
   height: 66px;
   display: flex;
   justify-content: space-between;

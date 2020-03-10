@@ -6,6 +6,7 @@ import color from 'color';
 
 import LinearProgress from '../LinearProgress';
 import Icon from '../Icon';
+import Card from '../Card';
 import { POSITION, TYPE } from '../utils/constants';
 import { falseOrElement, falseOrDelay, objectValues } from '../utils/propValidator';
 
@@ -27,12 +28,9 @@ const ToastWrap = styled.div`
     z-index: 1;
   }
 `;
-const ToastInside = styled.div`
+const ToastInside = styled(Card)`
   position: relative;
   box-sizing: border-box;
-  background-color: ${({ theme }) => theme.color.elevatedSurface};
-  border-radius: 6px;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15), 0 4px 16px 0 rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   max-height: 800px;
@@ -45,9 +43,11 @@ const ToastInside = styled.div`
     margin-right: 16px;
   }
   ${ToastWrap}:hover & {
-    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2), 0 16px 64px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: ${({ theme }) => theme.shadow({ size: 'lg', theme })};
   }
 `;
+ToastInside.defaultProps = { elevation: 'sm', rounded: 'lg' };
+
 const ToastContentWrap = styled.div`
   font-family: ${({ theme }) => theme.fontFamily};
   display: flex;

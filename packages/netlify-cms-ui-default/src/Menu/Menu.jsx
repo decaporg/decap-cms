@@ -1,22 +1,18 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import Card from '../Card';
 import Popover from '../Popover';
 import { isWindowDown } from '../utils/responsive';
 import { MenuItemWrap } from './MenuItem';
 
-const MenuWrap = styled.div`
-  background: ${({ theme }) => theme.color.elevatedSurface};
-  box-shadow: 0 0 4px 1px
-      ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(14, 30, 37, 0.06)')},
-    0 ${({ isMobile }) => (isMobile ? '-' : '')}8px 16px 0
-      ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(14, 30, 37, 0.2)')};
-  border-radius: ${({ isMobile }) => (isMobile ? 0 : '6px')};
+const MenuWrap = styled(Card)`
   padding: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.25rem')};
   min-width: ${({ width }) => (width ? width : '200px')};
   & > ${MenuItemWrap} {
     ${({ isMobile }) => (isMobile ? `padding: 0.75rem;` : ``)}
   }
 `;
+MenuWrap.defaultProps = { elevation: 'md' };
 
 const Menu = React.forwardRef(function Menu(props, ref) {
   const {
@@ -53,7 +49,13 @@ const Menu = React.forwardRef(function Menu(props, ref) {
       supportsMobile
       {...other}
     >
-      <MenuWrap isMobile={isMobile} className={className} width={width}>
+      <MenuWrap
+        isMobile={isMobile}
+        direction={isMobile ? 'up' : 'down'}
+        rounded={isMobile ? false : 'lg'}
+        className={className}
+        width={width}
+      >
         {children}
       </MenuWrap>
     </Popover>

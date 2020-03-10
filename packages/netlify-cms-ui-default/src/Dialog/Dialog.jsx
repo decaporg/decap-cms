@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from '../Modal';
+import Card from '../Card';
 import Grow from '../transitions/Grow';
 import Slide from '../transitions/Slide';
 import { ButtonGroup, IconButton } from '../Button';
@@ -10,9 +11,12 @@ import { isWindowDown } from '../utils/responsive';
 
 import styled from '@emotion/styled';
 
-const DialogWrap = styled.div`
-  background-color: ${({ theme }) => theme.color.elevatedSurface};
+const DialogWrap = styled(Card)`
   outline: none;
+  ${({ position, width }) => !width && position.x !== 'stretch' && `min-width: 20rem;`}
+  ${({ position, width }) => !width && position.x !== 'stretch' && `max-width: 30rem;`}
+  ${({ width }) => width && `width: ${width};`}
+  ${({ position }) => position.x === 'stretch' && `flex: 1;`}
   border-radius: ${({ position }) => {
     if (
       (position.x === 'center' && position.y === 'center') ||
@@ -49,36 +53,42 @@ const DialogWrap = styled.div`
   )
     return 8;
   return 0;
-}}px;
-  ${({ position, width }) => !width && position.x !== 'stretch' && `min-width: 20rem;`}
-  ${({ position, width }) => !width && position.x !== 'stretch' && `max-width: 30rem;`}
-  ${({ width }) => width && `width: ${width};`}
-  box-shadow:
-    ${({ position }) => {
-      if (position.x === 'center') return 0;
-      if (position.x === 'left') return 4;
-      if (position.x === 'right') return -4;
-      if (position.x === 'stretch') return 0;
-    }}px ${({ position }) => {
-  if (position.y === 'center') return 4;
-  if (position.y === 'top') return 4;
-  if (position.y === 'bottom') return -4;
-  if (position.y === 'stretch') return 0;
-}}px 16px ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(14,30,37,0.25)')}, ${({
-  position,
-}) => {
-  if (position.x === 'center') return 0;
-  if (position.x === 'left') return 32;
-  if (position.x === 'right') return -32;
-  if (position.x === 'stretch') return 0;
-}}px ${({ position }) => {
-  if (position.y === 'center') return 32;
-  if (position.y === 'top') return 32;
-  if (position.y === 'bottom') return -32;
-  if (position.y === 'stretch') return 0;
-}}px 64px ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.3)' : 'rgba(14,30,37,0.15)')};
-${({ position }) => position.x === 'stretch' && `flex: 1;`}
+}}px;’
 `;
+
+// const DialogWrap = styled.div`
+//   background-color: ${({ theme }) => theme.color.elevatedSurface};
+//   outline: none;
+//
+//   ${({ position, width }) => !width && position.x !== 'stretch' && `min-width: 20rem;`}
+//   ${({ position, width }) => !width && position.x !== 'stretch' && `max-width: 30rem;`}
+//   ${({ width }) => width && `width: ${width};`}
+//   box-shadow:
+//     ${({ position }) => {
+//       if (position.x === 'center') return 0;
+//       if (position.x === 'left') return 4;
+//       if (position.x === 'right') return -4;
+//       if (position.x === 'stretch') return 0;
+//     }}px ${({ position }) => {
+//   if (position.y === 'center') return 4;
+//   if (position.y === 'top') return 4;
+//   if (position.y === 'bottom') return -4;
+//   if (position.y === 'stretch') return 0;
+// }}px 16px ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(14,30,37,0.25)')}, ${({
+//   position,
+// }) => {
+//   if (position.x === 'center') return 0;
+//   if (position.x === 'left') return 32;
+//   if (position.x === 'right') return -32;
+//   if (position.x === 'stretch') return 0;
+// }}px ${({ position }) => {
+//   if (position.y === 'center') return 32;
+//   if (position.y === 'top') return 32;
+//   if (position.y === 'bottom') return -32;
+//   if (position.y === 'stretch') return 0;
+// }}px 64px ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.3)' : 'rgba(14,30,37,0.15)')};
+// ${({ position }) => position.x === 'stretch' && `flex: 1;`}
+// `;
 const Header = styled.div`
   justify-content: space-between;
   align-items: center;
@@ -226,7 +236,7 @@ class Dialog extends React.Component {
       : { x: 'center', y: 'center' };
     console.log({ isMobile, position });
 
-    let direction = null;
+    let direction;
 
     if (position.x === 'left') direction = 'right';
     if (position.x === 'right') direction = 'left';
@@ -272,7 +282,13 @@ class Dialog extends React.Component {
           direction={direction}
           {...TransitionProps}
         >
-          <DialogWrap width={width} position={position} isMobile={isMobile}>
+          <DialogWrap
+            width={width}
+            direction={direction ? direction : 'down'}
+            elevation="lg"
+            position={position}
+            isMobile={isMobile}
+          >
             <Header>
               {title && (
                 <Title

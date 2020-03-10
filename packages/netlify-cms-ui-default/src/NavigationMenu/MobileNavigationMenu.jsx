@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import color from 'color';
 import { Transition } from 'react-transition-group';
 
+import Card from '../Card';
 import Icon from '../Icon';
 
 import LogoTile from '../LogoTile';
@@ -13,9 +14,8 @@ import { Menu, MenuItem } from '../Menu';
 const NavWrap = styled.div`
   height: 3.5rem;
 `;
-const Nav = styled.div`
+const Nav = styled(Card)`
   background-color: ${({ theme }) => theme.color.surface};
-  box-shadow: 0 -2px 4px 0 ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(121, 130, 145, 0.2)')};
   height: 3.5rem;
   display: flex;
   padding: 4px;
@@ -25,6 +25,7 @@ const Nav = styled.div`
   left: 0;
   width: 100%;
 `;
+Nav.defaultProps = { elevation: 'sm', rounded: false, direction: 'up' };
 const NavIconButtonWrap = styled.button`
   margin: 4px;
   flex: 1;
@@ -98,10 +99,8 @@ const MenuWrap = styled.div`
     }
   }}
 `;
-const ToolbarWrap = styled.div`
+const ToolbarWrap = styled(Card)`
   background-color: ${({ theme }) => theme.color.surface};
-  box-shadow: 0 2px 4px 0
-    ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(121, 130, 145, 0.2)')};
   height: 3.5rem;
   display: flex;
   position: relative;
@@ -123,6 +122,7 @@ const ToolbarWrap = styled.div`
     }
   }}
 `;
+ToolbarWrap.defaultProps = { rounded: false, elevation: 'sm' };
 const SiteNameWrap = styled.div`
   flex: 1;
   padding: 0.5rem 0;

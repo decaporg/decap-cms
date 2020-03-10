@@ -6,6 +6,7 @@ import { css } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
 import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-legacy';
+import { Card } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 
 const styles = {
@@ -16,8 +17,7 @@ const styles = {
   `,
 };
 
-const SidebarContainer = styled.aside`
-  ${components.card};
+const SidebarContainer = styled(Card)`
   width: 250px;
   padding: 8px 0 12px;
   position: fixed;
@@ -30,7 +30,7 @@ const SidebarHeading = styled.h2`
   font-weight: 600;
   padding: 0;
   margin: 18px 12px 12px;
-  color: ${colors.textLead};
+  color: ${({ theme }) => theme.color.highEmphasis};
 `;
 
 const SearchContainer = styled.div`

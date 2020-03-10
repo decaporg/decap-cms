@@ -56,7 +56,7 @@ const getGlobalStyles = theme => css`
   h4,
   h5,
   h6 {
-    color: ${theme.highEmphasis};
+    color: ${theme.color.highEmphasis};
   }
 
   p {

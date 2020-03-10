@@ -1,5 +1,6 @@
 import * as responsive from './utils/responsive';
 import color from './utils/color';
+import shadow from './utils/shadow';
 
 const fonts = {
   sansSerif: `
@@ -32,6 +33,7 @@ export const lightTheme = {
   fontFamily: fonts.sansSerif,
   fonts,
   responsive,
+  shadow,
   color: {
     ...color,
     primary: color.turquoise,
@@ -61,6 +63,7 @@ export const darkTheme = {
   fontFamily: fonts.sansSerif,
   fonts,
   responsive,
+  shadow,
   color: {
     ...color,
     responsive,

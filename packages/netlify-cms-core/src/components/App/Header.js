@@ -23,20 +23,15 @@ const styles = {
   `,
 };
 
-const AppHeader = props => (
-  <header
-    css={css`
-      ${shadows.dropMain};
-      position: sticky;
-      width: 100%;
-      top: 0;
-      background-color: ${colors.foreground};
-      z-index: 300;
-      height: ${lengths.topBarHeight};
-    `}
-    {...props}
-  />
-);
+const AppHeader = styled.header`
+  ${shadows.dropMain};
+  position: sticky;
+  width: 100%;
+  top: 0;
+  background-color: ${({ theme }) => theme.color.surface};
+  z-index: 300;
+  height: ${lengths.topBarHeight};
+`;
 
 const AppHeaderContent = styled.div`
   display: flex;

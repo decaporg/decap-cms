@@ -13,6 +13,9 @@ export * from './Backdrop';
 
 export * from './Button';
 
+export { default as Card } from './Card';
+export * from './Card';
+
 export { default as Dialog } from './Dialog';
 export * from './Dialog';
 

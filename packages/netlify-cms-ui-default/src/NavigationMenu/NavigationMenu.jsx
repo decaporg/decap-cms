@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+import Card from '../Card';
 import NavigationMenuItem from './NavigationMenuItem';
 import MobileNavigationMenu from './MobileNavigationMenu';
 import { isWindowDown } from '../utils/responsive';
 
-const NavWrap = styled.div`
+const NavWrap = styled(Card)`
   width: ${({ collapsed }) => (collapsed ? '56px' : '240px')};
   height: 100%;
   padding: 12px 0;
   background-color: ${({ theme }) => theme.color.surface};
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 4px 0
-    ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(121, 130, 145, 0.2)')};
   position: relative;
   transition: width ${({ collapsed }) => (collapsed ? '200ms' : '250ms')}
     cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
   overflow-y: auto;
 `;
+NavWrap.defaultProps = { elevation: 'sm', rounded: false, direction: 'right' };
 const NavTop = styled.div`
   flex: 1;
 `;

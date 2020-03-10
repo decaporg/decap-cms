@@ -14,6 +14,7 @@ import {
   components,
   shadows,
 } from 'netlify-cms-ui-legacy';
+import { Card } from 'netlify-cms-ui-default';
 import { createNewEntry } from 'Actions/collections';
 import {
   loadUnpublishedEntries,
@@ -30,7 +31,7 @@ const WorkflowContainer = styled.div`
   height: 100vh;
 `;
 
-const WorkflowTop = styled.div`
+const WorkflowTop = styled(Card)`
   ${components.cardTop};
 `;
 
