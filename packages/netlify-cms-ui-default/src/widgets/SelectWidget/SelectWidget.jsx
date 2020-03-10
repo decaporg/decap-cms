@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import TextWidget from './TextWidget';
-import IconButton from '../IconButton';
-import { Menu, MenuItem } from '../Menu';
+import TextWidget from '../TextWidget';
+import { IconButton } from '../../Button';
+import { Menu, MenuItem } from '../../Menu';
 
 const StyledIconButton = styled(IconButton)`
   position: absolute;
@@ -10,7 +10,16 @@ const StyledIconButton = styled(IconButton)`
   bottom: -0.5rem;
 `;
 
-const SelectWidget = ({ options, value, onChange, label, labelSingular, multiple, ...props }) => {
+const SelectWidget = ({
+  options,
+  value,
+  onChange,
+  label,
+  labelSingular,
+  multiple,
+  className,
+  ...props
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElWidth, setAnchorElWidth] = useState();
 
@@ -29,7 +38,7 @@ const SelectWidget = ({ options, value, onChange, label, labelSingular, multiple
   const selection = options.find(option => option.name === value);
 
   return (
-    <div>
+    <>
       <TextWidget
         {...props}
         readOnly
@@ -46,6 +55,7 @@ const SelectWidget = ({ options, value, onChange, label, labelSingular, multiple
         onClick={handleOpenMenu}
         focused={!!anchorEl}
         value={options && selection && selection.label}
+        className={className}
       >
         <StyledIconButton
           disabled={!options}
@@ -74,7 +84,7 @@ const SelectWidget = ({ options, value, onChange, label, labelSingular, multiple
           ))}
         </Menu>
       )}
-    </div>
+    </>
   );
 };
 
