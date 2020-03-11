@@ -1,5 +1,5 @@
 import { fromJS, List, Map, Set } from 'immutable';
-import { isEqual } from 'lodash';
+import { isEqual, sortBy } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
@@ -25,6 +25,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
+import { keyToPathArray } from '../lib/stringTemplate';
 import { selectEntriesSort } from '../reducers/entries';
 
 const { notifSend } = notifActions;
@@ -146,11 +147,6 @@ export function sortByField(
     const state = getState();
     const backend = currentBackend(state.config);
 
-    const sort = selectEntriesSort(state.entries, collection.get('name'));
-    if (sort && sort.direction === direction && sort.key === key) {
-      return dispatch(loadEntries(collection));
-    }
-
     dispatch({
       type: SORT_ENTRIES_REQUEST,
       payload: {
@@ -160,14 +156,20 @@ export function sortByField(
       },
     });
     try {
-      const allEntries = await backend.listAllEntries(collection);
+      let entries = await backend.listAllEntries(collection);
+
+      if (direction !== SortDirection.None) {
+        entries = sortBy(entries, ['data', ...keyToPathArray(key)]);
+        entries = direction === SortDirection.Ascending ? entries : entries.reverse();
+      }
+
       dispatch({
         type: SORT_ENTRIES_SUCCESS,
         payload: {
           collection: collection.get('name'),
           key,
           direction,
-          entries: allEntries,
+          entries,
         },
       });
     } catch (error) {
@@ -175,6 +177,8 @@ export function sortByField(
         type: SORT_ENTRIES_FAILURE,
         payload: {
           collection: collection.get('name'),
+          key,
+          direction,
           error,
         },
       });
@@ -446,6 +450,14 @@ export function loadEntries(collection: Collection, page = 0) {
       return;
     }
     const state = getState();
+    const sort = selectEntriesSort(state.entries, collection.get('name'));
+    if (sort) {
+      const field = Object.values(sort).filter(v => v.active)[0];
+      if (field) {
+        return dispatch(sortByField(collection, field.key, field.direction));
+      }
+    }
+
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration

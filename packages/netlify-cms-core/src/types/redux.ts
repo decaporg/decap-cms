@@ -55,13 +55,16 @@ type EntitiesObject = { [key: string]: EntryMap };
 export enum SortDirection {
   Ascending = 'Ascending',
   Descending = 'Descending',
+  None = 'None',
 }
 
 type SortObject = {
-  [collection: string]: StaticallyTypedRecord<{ key: string; direction: SortDirection }>;
+  [collection: string]: StaticallyTypedRecord<{
+    [key: string]: { key: string; direction: SortDirection; active: boolean };
+  }>;
 };
 
-type Sort = StaticallyTypedRecord<SortObject>;
+export type Sort = StaticallyTypedRecord<SortObject>;
 
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
@@ -295,7 +298,7 @@ export interface EntriesSortSuccessPayload extends EntriesSortRequestPayload {
   entries: EntryObject[];
 }
 
-export interface EntriesSortFailurePayload extends EntryPayload {
+export interface EntriesSortFailurePayload extends EntriesSortRequestPayload {
   error: Error;
 }
 

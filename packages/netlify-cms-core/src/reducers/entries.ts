@@ -32,12 +32,11 @@ import {
   EntriesSortRequestPayload,
   EntriesSortSuccessPayload,
   EntriesSortFailurePayload,
-  SortDirection,
+  Sort,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, sortBy } from 'lodash';
-import { keyToPathArray } from '../lib/stringTemplate';
+import { trim, once } from 'lodash';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -45,8 +44,25 @@ let append: boolean;
 let page: number;
 let slug: string;
 
+const storageSortKey = 'netlify-cms.entries.sort';
+const loadSort = once(() => {
+  const sort = localStorage.getItem(storageSortKey);
+  if (sort) {
+    try {
+      return fromJS(JSON.parse(sort));
+    } catch (e) {
+      return Map();
+    }
+  }
+  return Map();
+});
+
+const persistSort = (sort: Sort) => {
+  localStorage.setItem(storageSortKey, JSON.stringify(sort.toJS()));
+};
+
 const entries = (
-  state = Map({ entities: Map(), pages: Map(), sort: Map() }),
+  state = Map({ entities: Map(), pages: Map(), sort: loadSort() }),
   action: EntriesAction,
 ) => {
   switch (action.type) {
@@ -70,10 +86,12 @@ const entries = (
 
     case ENTRIES_REQUEST: {
       const payload = action.payload as EntriesRequestPayload;
-      return state.withMutations(map => {
-        map.deleteIn(['sort', collection]);
+      const newState = state.withMutations(map => {
+        map.deleteIn(['sort', payload.collection]);
         map.setIn(['pages', payload.collection, 'isFetching'], true);
       });
+      persistSort(newState.get('sort'));
+      return newState;
     }
 
     case ENTRIES_SUCCESS: {
@@ -140,25 +158,43 @@ const entries = (
     case SORT_ENTRIES_REQUEST: {
       const payload = action.payload as EntriesSortRequestPayload;
       const { collection, key, direction } = payload;
-      return state.withMutations(map => {
-        map.setIn(['sort', collection], fromJS({ key, direction }));
+      const newState = state.withMutations(map => {
+        map.updateIn(['sort', collection], (sort: Map<string, Map<string, string | boolean>>) => {
+          if (!sort) {
+            return fromJS({ [key]: { key, direction, active: true } });
+          } else {
+            sort = sort.map(item => item!.set('active', false)).toMap();
+            sort = sort.set(key, fromJS({ key, direction, active: true }));
+            return sort;
+          }
+        });
         map.setIn(['pages', collection, 'isFetching'], true);
         map.deleteIn(['pages', collection, 'page']);
       });
+      persistSort(newState.get('sort'));
+      return newState;
     }
 
     case SORT_ENTRIES_SUCCESS: {
       const payload = action.payload as EntriesSortSuccessPayload;
       const { collection, key, direction, entries } = payload;
       loadedEntries = entries;
-      return state.withMutations(map => {
+      const newState = state.withMutations(map => {
         loadedEntries.forEach(entry =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
           ),
         );
-        map.setIn(['sort', collection], fromJS({ key, direction }));
+        map.updateIn(['sort', collection], (sort: Map<string, Map<string, string | boolean>>) => {
+          if (!sort) {
+            return fromJS({ [key]: { key, direction, active: true } });
+          } else {
+            sort = sort.map(item => item!.set('active', false)).toMap();
+            sort = sort.set(key, fromJS({ key, direction, active: true }));
+            return sort;
+          }
+        });
         map.setIn(['pages', collection, 'isFetching'], false);
 
         const ids = List(loadedEntries.map(entry => entry.slug));
@@ -170,15 +206,19 @@ const entries = (
           }),
         );
       });
+      persistSort(newState.get('sort'));
+      return newState;
     }
 
     case SORT_ENTRIES_FAILURE: {
       const payload = action.payload as EntriesSortFailurePayload;
-      const { collection } = payload;
-      return state.withMutations(map => {
-        map.deleteIn(['sort', collection]);
+      const { collection, key } = payload;
+      const newState = state.withMutations(map => {
+        map.deleteIn(['sort', collection, key]);
         map.setIn(['pages', collection, 'isFetching'], false);
       });
+      persistSort(newState.get('sort'));
+      return newState;
     }
 
     default:
@@ -199,18 +239,9 @@ export const selectPublishedSlugs = (state: Entries, collection: string) =>
 
 export const selectEntries = (state: Entries, collection: string) => {
   const slugs = selectPublishedSlugs(state, collection);
-  let entries =
+  const entries =
     slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
 
-  const sort = selectEntriesSort(state, collection);
-  if (entries && sort) {
-    const { key, direction } = sort;
-    const sorted = sortBy(
-      entries.toArray(),
-      item => item.get('data')?.getIn(keyToPathArray(key)) || '',
-    );
-    entries = List(direction === SortDirection.Ascending ? sorted : sorted.reverse());
-  }
   return entries;
 };
 

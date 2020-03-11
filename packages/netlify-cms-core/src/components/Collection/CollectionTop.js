@@ -1,20 +1,12 @@
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React from 'react';
+import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import {
-  Icon,
-  components,
-  buttons,
-  shadows,
-  colors,
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-} from 'netlify-cms-ui-default';
+import { Icon, components, buttons, shadows, colors } from 'netlify-cms-ui-default';
 import { selectField } from 'Reducers/collections';
 import { sortByField } from 'Actions/entries';
 import { selectEntriesSort } from 'Reducers/entries';
@@ -85,77 +77,79 @@ const ViewControlsButton = styled.button`
   }
 `;
 
-const StyledDropdownItem = styled(DropdownItem)`
-  ${components.dropdownItem}
-`;
-
-const SortButton = styled(StyledDropdownButton)`
-  ${buttons.button};
-  ${buttons.medium};
-  ${buttons.gray};
-  margin-right: 8px;
-
-  &:after {
-    top: 11px;
-  }
-
-  &.active {
+const styles = {
+  buttonActive: css`
     color: ${colors.active};
+    background-color: ${colors.activeBackground};
+  `,
+};
+
+const SortButton = styled.button`
+  ${buttons.button};
+  color: ${props => (props.isActive ? colors.active : '#7b8290')};
+  background-color: ${props => (props.isActive ? colors.activeBackground : 'none')};
+
+  flex: 0 0 auto;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+
+  ${Icon} {
+    margin-right: 4px;
+    color: ${props => (props.isActive ? colors.active : '#7b8290')};
+    background-color: ${props => (props.isActive ? colors.activeBackground : 'none')};
+  }
+
+  &:hover {
+    ${styles.buttonActive};
+
+    ${Icon} {
+      ${styles.buttonActive};
+    }
   }
 `;
 
-const SortControls = ({ t, fields, onSortClick, sortField, sortDirection }) => {
+const SortList = styled.ul`
+  display: flex;
+  align-items: center;
+  margin: 0;
+  list-style: none;
+`;
+
+const SortControls = ({ t, fields, onSortClick, sort }) => {
   const items = fields.map(f => {
+    const sortField = sort && sort[f.key];
+    const sortDirection = sortField?.direction;
+    const isActive = sortField?.active && sortDirection !== SortDirection.None;
+    let nextDirection;
+    switch (sortDirection) {
+      case SortDirection.Ascending:
+        nextDirection = isActive ? SortDirection.Descending : sortDirection;
+        break;
+      case SortDirection.Descending:
+        nextDirection = isActive ? SortDirection.None : sortDirection;
+        break;
+      default:
+        nextDirection = SortDirection.Ascending;
+        break;
+    }
+
     return (
-      <StyledDropdownItem
-        key={f.key}
-        label={f.label}
-        onClick={() => onSortClick(f.key, sortDirection)}
-        className={sortField?.key === f.key ? 'active' : ''}
-      />
+      <SortButton key={f.key} onClick={() => onSortClick(f.key, nextDirection)} isActive={isActive}>
+        {sortDirection === SortDirection.Descending ? (
+          <Icon type="chevron" direction="down" size="small" />
+        ) : (
+          <Icon type="chevron" direction="up" size="small" />
+        )}
+        {f.label}
+      </SortButton>
     );
   });
-
-  const selected = sortField || fields[0];
-  const { key } = selected;
-
-  const directions = [
-    <StyledDropdownItem
-      key={SortDirection.Ascending}
-      label={SortDirection.Ascending}
-      onClick={() => onSortClick(key, SortDirection.Ascending)}
-      className={sortDirection === SortDirection.Ascending ? 'active' : ''}
-    />,
-    <StyledDropdownItem
-      key={SortDirection.Descending}
-      label={SortDirection.Descending}
-      onClick={() => onSortClick(key, SortDirection.Descending)}
-      className={sortDirection === SortDirection.Descending ? 'active' : ''}
-    />,
-  ];
-
-  const sortLabel =
-    sortDirection === SortDirection.Ascending
-      ? t('collection.collectionTop.ascending')
-      : t('collection.collectionTop.descending');
 
   return (
     <ViewControlsSection>
       <ViewControlsText>{t('collection.collectionTop.sortBy')}:</ViewControlsText>
-      <Dropdown
-        renderButton={() => (
-          <SortButton className={sortField ? 'active' : ''}>{selected.label}</SortButton>
-        )}
-      >
-        {items}
-      </Dropdown>
-      <Dropdown
-        renderButton={() => (
-          <SortButton className={sortField ? 'active' : ''}>{sortLabel}</SortButton>
-        )}
-      >
-        {directions}
-      </Dropdown>
+      <SortList>{items}</SortList>
     </ViewControlsSection>
   );
 };
@@ -163,18 +157,10 @@ const SortControls = ({ t, fields, onSortClick, sortField, sortDirection }) => {
 function mapStateToProps(state, ownProps) {
   const { collection } = ownProps;
   const sort = selectEntriesSort(state.entries, collection.get('name'));
-  const sortField =
-    sort?.key &&
-    selectField(collection, sort.key)
-      ?.set('key', sort.key)
-      .toJS();
-
-  const sortDirection = sort?.direction || SortDirection.Ascending;
 
   return {
     collection,
-    sortField,
-    sortDirection,
+    sort,
   };
 }
 
