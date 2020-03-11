@@ -375,10 +375,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     const entry = entryDraft.get('entry');
-    const assetProxies = await getMediaAssets({
-      getState,
-      dispatch,
-      collection,
+    const assetProxies = getMediaAssets({
       entry,
     });
 
