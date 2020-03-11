@@ -6,7 +6,7 @@ import { Button, IconButton } from '../Button';
 import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
 import { isWindowDown } from '../utils/responsive'
-import { usePageTitle } from '../hooks'
+import { useUIContext } from '../hooks'
 
 const AppBarWrap = styled.div`
   background-color: ${({ theme }) => theme.color.surface};
@@ -76,7 +76,7 @@ const AppBar = ({
 }) => {
   const [notifMenuAnchorEl, setNotifMenuAnchorEl] = useState(null);
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
-  const [pageTitle] = usePageTitle();
+  const {pageTitle} = useUIContext();
   const handleResize = () => setIsMobile(isWindowDown('xs'));
 
   useEffect(() => {
