@@ -5,6 +5,10 @@ import { lightTheme, darkTheme } from './theme';
 
 export { LoginButton, fonts, buttons, shadows, lightTheme, darkTheme };
 
+export { default as AppBar } from './AppBar'
+
+export { default as AppWrap } from './AppWrap'
+
 export { default as Avatar } from './Avatar';
 export * from './Avatar';
 
@@ -30,6 +34,10 @@ export * from './Fullscreen';
 
 export { default as GlobalStyles } from './GlobalStyles';
 export * from './GlobalStyles';
+
+export * from './HOC';
+
+export * from './hooks';
 
 export { default as Icon } from './Icon';
 export * from './Icon';
@@ -76,9 +84,6 @@ export * from './Toast';
 
 export { default as ToggleSwitch } from './ToggleSwitch';
 export * from './ToggleSwitch';
-
-export { default as Toolbar } from './Toolbar';
-export * from './Toolbar';
 
 export { default as Tooltip } from './Tooltip';
 export * from './Tooltip';

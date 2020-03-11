@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { AvatarButton } from '../Button';
 import { Menu, MenuItem } from '../Menu';
+import { useDarkMode } from '../hooks'
 
-const UserMenu = ({ setDarkMode, darkMode, className }) => {
+const UserMenu = ({ className }) => {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
+  const [darkMode, setDarkMode] = useDarkMode();
 
   const handleClose = () => {
     setUserMenuAnchorEl(null);

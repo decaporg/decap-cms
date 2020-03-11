@@ -5,7 +5,8 @@ import Icon from '../Icon';
 import { Button, IconButton } from '../Button';
 import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
-import { isWindowDown } from '../utils/responsive';
+import { isWindowDown } from '../utils/responsive'
+import { usePageTitle } from '../hooks'
 
 const AppBarWrap = styled.div`
   background-color: ${({ theme }) => theme.color.surface};
@@ -69,15 +70,13 @@ const EndWrap = styled.div`
 `;
 
 const AppBar = ({
-  title,
   breadcrumbs,
-  darkMode,
-  setDarkMode,
   renderStartContent,
   renderEndContent,
 }) => {
   const [notifMenuAnchorEl, setNotifMenuAnchorEl] = useState(null);
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
+  const [pageTitle] = usePageTitle();
   const handleResize = () => setIsMobile(isWindowDown('xs'));
 
   useEffect(() => {
@@ -96,9 +95,9 @@ const AppBar = ({
       )}
       <StartWrap>
         <TitleWrap>
-          {title && <Title>{title}</Title>}
+          {pageTitle && <Title>{pageTitle}</Title>}
           {breadcrumbs && (
-            <Breadcrumbs hasTitle={!!title}>
+            <Breadcrumbs hasTitle={!!pageTitle}>
               {!isMobile &&
                 breadcrumbs.map((breadcrumb, index) => (
                   <React.Fragment key={breadcrumb.label}>
@@ -126,7 +125,7 @@ const AppBar = ({
             >
               <MenuItem onClick={() => setNotifMenuAnchorEl(null)}>No new notifications</MenuItem>
             </Menu>
-            <StyledUserMenu darkMode={darkMode} setDarkMode={setDarkMode} />
+            <StyledUserMenu />
           </ActionsWrap>
         )}
       </EndWrap>
