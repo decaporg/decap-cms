@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import styled from '@emotion/styled';
-import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/theme';
+import { lightTheme, darkTheme } from '../theme';
 import { ToastContainer } from '../Toast';
 import GlobalStyles from '../GlobalStyles';
 import NavigationMenu from '../NavigationMenu';
 import AppBar from '../AppBar';
+import { useLocalStorageState } from '../hooks'
 
 const AppOuter = styled.div`
   padding-top: 3.5rem;
@@ -29,8 +30,35 @@ const AppContent = styled.div`
   overflow-y: auto;
 `;
 
+export const UIContext = React.createContext();
+const UIContextProvider = ({children}) => {
+  const [darkMode, setDarkMode] = useLocalStorageState('darkMode', window && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const [navCollapsed, setNavCollapsed] = useLocalStorageState('navCollapsed', false);
+  const [pageTitle, setPageTitle] = useState();
+  const [appBarStart, setAppBarStart] = useState();
+  const [appBarEnd, setAppBarEnd] = useState();
+
+  return (
+    <UIContext.Provider
+      value={{
+        appBarStart,
+        setAppBarStart,
+        appBarEnd,
+        setAppBarEnd,
+        darkMode,
+        setDarkMode,
+        navCollapsed,
+        setNavCollapsed,
+        pageTitle,
+        setPageTitle
+      }}
+    >
+      {children}
+    </UIContext.Provider>
+  );
+};
+
 const AppWrap = ({ children }) => {
-  const [isDark, setDark] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
   const handleResize = () => {
     const vh = window.innerHeight * 0.01;
 
@@ -45,19 +73,25 @@ const AppWrap = ({ children }) => {
   }, []);
 
   return (
-    <ThemeProvider
-      theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
-    >
-      <GlobalStyles />
-      <AppOuter>
-        <AppBar />
-        <AppBody>
-          <NavigationMenu />
-          <AppContent>{children}</AppContent>
-        </AppBody>
-        <ToastContainer />
-      </AppOuter>
-    </ThemeProvider>
+    <UIContextProvider>
+      <UIContext.Consumer>
+        {({darkMode}) => (
+          <ThemeProvider
+            theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
+          >
+            <GlobalStyles />
+            <AppOuter>
+              <AppBar />
+              <AppBody>
+                <NavigationMenu />
+                <AppContent>{children}</AppContent>
+              </AppBody>
+              <ToastContainer />
+            </AppOuter>
+          </ThemeProvider>
+        )}
+      </UIContext.Consumer>
+    </UIContextProvider>
   );
 };
 
