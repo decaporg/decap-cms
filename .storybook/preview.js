@@ -5,7 +5,13 @@ import { themes } from '@storybook/theming';
 import { ThemeProvider } from 'emotion-theming';
 import styled from '@emotion/styled';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import { lightTheme, darkTheme, UIProvider, UIContext, GlobalStyles } from 'netlify-cms-ui-default';
+import {
+  lightTheme,
+  darkTheme,
+  UIProvider,
+  UIContext,
+  GlobalStyles,
+} from '../packages/netlify-cms-ui-default/src';
 
 import './preview.css';
 
