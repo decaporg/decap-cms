@@ -4,11 +4,15 @@ import { addDecorator, addParameters } from '@storybook/react';
 import { themes } from '@storybook/theming';
 import { ThemeProvider } from 'emotion-theming';
 import styled from '@emotion/styled';
-import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/theme';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import { ToastContainer } from '../packages/netlify-cms-ui-default/src/Toast';
-import { UIContextProvider, UIContext} from '../packages/netlify-cms-ui-default/src/AppWrap/AppWrap'
-import GlobalStyles from '../packages/netlify-cms-ui-default/src/GlobalStyles';
+import {
+  lightTheme,
+  darkTheme,
+  ToastContainer,
+  UIContextProvider,
+  UIContext,
+  GlobalStyles,
+} from 'netlify-cms-ui-default';
 
 import './preview.css';
 
@@ -143,7 +147,6 @@ const channel = addons.getChannel();
 
 // create a component that listens for the DARK_MODE event
 const ThemeWrapper = ({ darkMode, setDarkMode, children }) => {
-
   useEffect(() => {
     // listen to DARK_MODE event
     channel.on('DARK_MODE', setDarkMode);
@@ -164,9 +167,7 @@ const ThemeWrapper = ({ darkMode, setDarkMode, children }) => {
   }, []);
 
   return (
-    <ThemeProvider
-      theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
-    >
+    <ThemeProvider theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}>
       {children}
     </ThemeProvider>
   );
@@ -184,7 +185,7 @@ const StoryWrap = styled.div`
 addDecorator(renderStory => (
   <UIContextProvider>
     <UIContext.Consumer>
-      {({darkMode, setDarkMode}) => (
+      {({ darkMode, setDarkMode }) => (
         <ThemeWrapper darkMode={darkMode} setDarkMode={setDarkMode}>
           <GlobalStyles />
           <StoryWrap>{renderStory()}</StoryWrap>

@@ -9,7 +9,7 @@ export default {
   decorators: [withKnobs],
 };
 
-export const _Dialog = () => {
+const StoryDialog = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -59,3 +59,5 @@ export const _Dialog = () => {
     </div>
   );
 };
+
+export const _Dialog = () => <StoryDialog />;

@@ -10,7 +10,7 @@ export default {
   decorators: [withKnobs],
 };
 
-export const _Menu = () => {
+const StoryMenu = () => {
   const [menuAnchorEl, setMenuAnchorEl] = useState();
   return (
     <div>
@@ -71,6 +71,8 @@ export const _Menu = () => {
     </div>
   );
 };
+
+export const _Menu = () => <StoryMenu />;
 
 export const _MenuItem = () => {
   return (

@@ -5,9 +5,9 @@ import { lightTheme, darkTheme } from './theme';
 
 export { LoginButton, fonts, buttons, shadows, lightTheme, darkTheme };
 
-export { default as AppBar } from './AppBar'
+export { default as AppBar } from './AppBar';
 
-export { default as AppWrap } from './AppWrap'
+export { default as AppWrap, UIContext, UIContextProvider } from './AppWrap';
 
 export { default as Avatar } from './Avatar';
 export * from './Avatar';
