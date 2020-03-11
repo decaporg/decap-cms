@@ -96,7 +96,6 @@ class ToastTransition extends React.Component {
         {...other}
       >
         {(state, childProps) => {
-          console.log(state, this.props.el);
           return React.cloneElement(children, {
             style: { ...style, ...styles[state] },
             ...childProps,

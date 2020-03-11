@@ -275,6 +275,7 @@ class Toast extends Component {
         in={this.props.in}
         appear
         unmountOnExit
+        delay={200}
         onExited={onExited}
         position={position}
         preventExitTransition={this.state.preventExitTransition}
@@ -288,7 +289,6 @@ class Toast extends Component {
               this.flag.canCloseOnClick && closeToast();
             }}
             ref={ref => {
-              console.log(this.ref);
               !this.ref && !this.state.el && this.setState({ el: ref });
               return (this.ref = ref);
             }}

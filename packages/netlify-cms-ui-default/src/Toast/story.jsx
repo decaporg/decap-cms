@@ -1,7 +1,7 @@
 import React from 'react';
 import { withKnobs, number, select, text } from '@storybook/addon-knobs';
 
-import { toast } from '.';
+import { toast, ToastContainer } from '.';
 import { Button, ButtonGroup } from '../Button';
 
 export default {
@@ -25,6 +25,7 @@ export const _Toast = () => {
       <ButtonGroup>
         <Button onClick={() => toast({ title, content, type, autoClose })}>Pop a Toast</Button>
       </ButtonGroup>
+      <ToastContainer />
     </div>
   );
 };

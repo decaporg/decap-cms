@@ -5,14 +5,7 @@ import { themes } from '@storybook/theming';
 import { ThemeProvider } from 'emotion-theming';
 import styled from '@emotion/styled';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import {
-  lightTheme,
-  darkTheme,
-  ToastContainer,
-  UIProvider,
-  UIContext,
-  GlobalStyles,
-} from 'netlify-cms-ui-default';
+import { lightTheme, darkTheme, UIProvider, UIContext, GlobalStyles } from 'netlify-cms-ui-default';
 
 import './preview.css';
 
@@ -185,16 +178,12 @@ const StoryWrap = styled.div`
 addDecorator(renderStory => (
   <UIProvider>
     <UIContext.Consumer>
-      {({ darkMode, setDarkMode }) => {
-        console.log({ darkMode });
-        return (
-          <ThemeWrapper darkMode={darkMode} setDarkMode={setDarkMode}>
-            <GlobalStyles />
-            <StoryWrap>{renderStory()}</StoryWrap>
-            <ToastContainer />
-          </ThemeWrapper>
-        );
-      }}
+      {({ darkMode, setDarkMode }) => (
+        <ThemeWrapper darkMode={darkMode} setDarkMode={setDarkMode}>
+          <GlobalStyles />
+          <StoryWrap>{renderStory()}</StoryWrap>
+        </ThemeWrapper>
+      )}
     </UIContext.Consumer>
   </UIProvider>
 ));
