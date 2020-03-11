@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import addons from '@storybook/addons';
 import { addDecorator, addParameters } from '@storybook/react';
 import { themes } from '@storybook/theming';
@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 import { lightTheme, darkTheme } from '../packages/netlify-cms-ui-default/src/theme';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { ToastContainer } from '../packages/netlify-cms-ui-default/src/Toast';
+import { UIContextProvider, UIContext} from '../packages/netlify-cms-ui-default/src/AppWrap/AppWrap'
 import GlobalStyles from '../packages/netlify-cms-ui-default/src/GlobalStyles';
 
 import './preview.css';
@@ -141,14 +142,13 @@ addParameters({
 const channel = addons.getChannel();
 
 // create a component that listens for the DARK_MODE event
-const ThemeWrapper = ({ children }) => {
-  const [isDark, setDark] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
+const ThemeWrapper = ({ darkMode, setDarkMode, children }) => {
 
   useEffect(() => {
     // listen to DARK_MODE event
-    channel.on('DARK_MODE', setDark);
-    return () => channel.off('DARK_MODE', setDark);
-  }, [channel, setDark]);
+    channel.on('DARK_MODE', setDarkMode);
+    return () => channel.off('DARK_MODE', setDarkMode);
+  }, [channel, setDarkMode]);
 
   const handleResize = () => {
     const vh = window.innerHeight * 0.01;
@@ -165,7 +165,7 @@ const ThemeWrapper = ({ children }) => {
 
   return (
     <ThemeProvider
-      theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
+      theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
     >
       {children}
     </ThemeProvider>
@@ -182,9 +182,15 @@ const StoryWrap = styled.div`
 `;
 
 addDecorator(renderStory => (
-  <ThemeWrapper>
-    <GlobalStyles />
-    <StoryWrap>{renderStory()}</StoryWrap>
-    <ToastContainer />
-  </ThemeWrapper>
+  <UIContextProvider>
+    <UIContext.Consumer>
+      {({darkMode, setDarkMode}) => (
+        <ThemeWrapper darkMode={darkMode} setDarkMode={setDarkMode}>
+          <GlobalStyles />
+          <StoryWrap>{renderStory()}</StoryWrap>
+          <ToastContainer />
+        </ThemeWrapper>
+      )}
+    </UIContext.Consumer>
+  </UIContextProvider>
 ));

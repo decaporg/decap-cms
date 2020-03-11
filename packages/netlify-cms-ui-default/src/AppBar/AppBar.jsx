@@ -103,7 +103,7 @@ const AppBar = ({
                   <React.Fragment key={breadcrumb.label}>
                     <Breadcrumb>{breadcrumb.label}</Breadcrumb>
                     {breadcrumbs.length !== index + 1 && (
-                      <BreadcrumbSeparator size={title ? '0.75rem' : '1rem'} />
+                      <BreadcrumbSeparator size={pageTitle ? '0.75rem' : '1rem'} />
                     )}
                   </React.Fragment>
                 ))}

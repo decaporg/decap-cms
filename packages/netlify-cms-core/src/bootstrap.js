@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { Route } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { I18n } from 'react-polyglot';
 import { ThemeProvider } from 'emotion-theming';
 import { GlobalStyles as GlobalLegacyStyles } from 'netlify-cms-ui-legacy';
 import { ErrorBoundary } from 'UI';
-import { lightTheme, darkTheme, isWindowDown, GlobalStyles } from 'netlify-cms-ui-default';
+import { lightTheme, darkTheme, GlobalStyles } from 'netlify-cms-ui-default';
 import App from 'App/App';
 import 'EditorWidgets';
 import 'coreSrc/mediaLibrary';
@@ -83,22 +83,6 @@ function bootstrap(opts = {}) {
    */
   const Root = () => {
     const isDark = window && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
-    const handleResize = () => {
-      // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-      const vh = window.innerHeight * 0.01;
-      // Then we set the value in the --vh custom property to the root of the document
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-
-      setIsMobile(isWindowDown('xs'));
-    };
-
-    useEffect(() => {
-      window.addEventListener('resize', handleResize);
-      handleResize();
-
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     return (
       <>
