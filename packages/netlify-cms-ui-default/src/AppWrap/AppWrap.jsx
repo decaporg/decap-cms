@@ -31,7 +31,7 @@ const AppContent = styled.div`
 `;
 
 export const UIContext = React.createContext();
-const UIContextProvider = ({children}) => {
+export const UIContextProvider = ({children}) => {
   const [darkMode, setDarkMode] = useLocalStorageState('darkMode', window && window.matchMedia('(prefers-color-scheme: dark)').matches);
   const [navCollapsed, setNavCollapsed] = useLocalStorageState('navCollapsed', false);
   const [pageTitle, setPageTitle] = useState();

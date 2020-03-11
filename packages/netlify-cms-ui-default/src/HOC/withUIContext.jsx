@@ -1,3 +1,4 @@
+import React from 'react'
 import { UIContext } from '../AppWrap'
 
 export const withUIContext = Component => props => (

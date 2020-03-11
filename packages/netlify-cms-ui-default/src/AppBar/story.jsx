@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { withKnobs, boolean, text, array, object } from '@storybook/addon-knobs';
+import { withKnobs, boolean, text, object } from '@storybook/addon-knobs';
 
 import AppBar from '.';
 
 import { isWindowDown } from '../utils/responsive';
 
-import { Button, IconButton, ButtonGroup } from '../Button';
+import { Button, ButtonGroup } from '../Button';
 import { Menu, MenuItem } from '../Menu';
 import Dialog from '../Dialog';
 import { toast } from '../Toast';
