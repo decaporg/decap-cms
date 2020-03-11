@@ -30,7 +30,6 @@ const AppHeader = props => (
       position: sticky;
       width: 100%;
       min-width: 800px;
-      max-width: 1440px;
       top: 0;
       background-color: ${colors.foreground};
       z-index: 300;
@@ -43,6 +42,7 @@ const AppHeader = props => (
 const AppHeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
+  max-width: 1440px;
   padding: 0 12px;
   margin: 0 auto;
 `;
