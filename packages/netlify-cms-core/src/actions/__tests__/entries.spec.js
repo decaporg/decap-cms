@@ -8,15 +8,9 @@ import {
 } from '../entries';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import AssetProxy from '../../valueObjects/AssetProxy';
 
 jest.mock('coreSrc/backend');
-jest.mock('../media', () => {
-  const media = jest.requireActual('../media');
-  return {
-    ...media,
-    getAsset: jest.fn(),
-  };
-});
 jest.mock('netlify-cms-lib-util');
 jest.mock('../mediaLibrary');
 
@@ -286,20 +280,11 @@ describe('entries', () => {
       jest.clearAllMocks();
     });
 
-    it('should map mediaFiles to assets', async () => {
-      const { getAsset } = require('../media');
+    it('should map mediaFiles to assets', () => {
       const mediaFiles = fromJS([{ path: 'path1' }, { path: 'path2', draft: true }]);
 
-      const asset = { path: 'path1' };
-
-      getAsset.mockReturnValue(() => asset);
-
-      const collection = Map();
       const entry = Map({ mediaFiles });
-      await expect(getMediaAssets({ entry, collection })).resolves.toEqual([asset]);
-
-      expect(getAsset).toHaveBeenCalledTimes(1);
-      expect(getAsset).toHaveBeenCalledWith({ collection, path: 'path2', entry });
+      expect(getMediaAssets({ entry })).toEqual([new AssetProxy({ path: 'path2' })]);
     });
   });
 });
