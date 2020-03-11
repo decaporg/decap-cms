@@ -9,7 +9,7 @@ import {
   lightTheme,
   darkTheme,
   ToastContainer,
-  UIContextProvider,
+  UIProvider,
   UIContext,
   GlobalStyles,
 } from 'netlify-cms-ui-default';
@@ -183,15 +183,18 @@ const StoryWrap = styled.div`
 `;
 
 addDecorator(renderStory => (
-  <UIContextProvider>
+  <UIProvider>
     <UIContext.Consumer>
-      {({ darkMode, setDarkMode }) => (
-        <ThemeWrapper darkMode={darkMode} setDarkMode={setDarkMode}>
-          <GlobalStyles />
-          <StoryWrap>{renderStory()}</StoryWrap>
-          <ToastContainer />
-        </ThemeWrapper>
-      )}
+      {({ darkMode, setDarkMode }) => {
+        console.log({ darkMode });
+        return (
+          <ThemeWrapper darkMode={darkMode} setDarkMode={setDarkMode}>
+            <GlobalStyles />
+            <StoryWrap>{renderStory()}</StoryWrap>
+            <ToastContainer />
+          </ThemeWrapper>
+        );
+      }}
     </UIContext.Consumer>
-  </UIContextProvider>
+  </UIProvider>
 ));

@@ -1,1 +1,1 @@
-export { default, UIContext, UIContextProvider } from './AppWrap';
+export { default } from './AppWrap';

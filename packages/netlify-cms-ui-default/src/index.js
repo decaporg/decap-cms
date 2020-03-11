@@ -7,7 +7,7 @@ export { LoginButton, fonts, buttons, shadows, lightTheme, darkTheme };
 
 export { default as AppBar } from './AppBar';
 
-export { default as AppWrap, UIContext, UIContextProvider } from './AppWrap';
+export { default as AppWrap } from './AppWrap';
 
 export { default as Avatar } from './Avatar';
 export * from './Avatar';
@@ -90,6 +90,8 @@ export * from './Tooltip';
 
 export { default as Tree } from './Tree';
 export * from './Tree';
+
+export * from './UIContext';
 
 export { default as UserMenu } from './UserMenu';
 export * from './UserMenu';

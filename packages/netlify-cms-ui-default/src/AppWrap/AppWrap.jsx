@@ -6,7 +6,7 @@ import { ToastContainer } from '../Toast';
 import GlobalStyles from '../GlobalStyles';
 import NavigationMenu from '../NavigationMenu';
 import AppBar from '../AppBar';
-import { useLocalStorageState } from '../hooks'
+import { UIContext, UIProvider } from '../UIContext';
 
 const AppOuter = styled.div`
   padding-top: 3.5rem;
@@ -30,34 +30,6 @@ const AppContent = styled.div`
   overflow-y: auto;
 `;
 
-export const UIContext = React.createContext();
-export const UIContextProvider = ({children}) => {
-  const [darkMode, setDarkMode] = useLocalStorageState('darkMode', window && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const [navCollapsed, setNavCollapsed] = useLocalStorageState('navCollapsed', false);
-  const [pageTitle, setPageTitle] = useState();
-  const [appBarStart, setAppBarStart] = useState();
-  const [appBarEnd, setAppBarEnd] = useState();
-
-  return (
-    <UIContext.Provider
-      value={{
-        appBarStart,
-        setAppBarStart,
-        appBarEnd,
-        setAppBarEnd,
-        darkMode,
-        setDarkMode,
-        navCollapsed,
-        setNavCollapsed,
-        pageTitle,
-        setPageTitle
-      }}
-    >
-      {children}
-    </UIContext.Provider>
-  );
-};
-
 const AppWrap = ({ children }) => {
   const handleResize = () => {
     const vh = window.innerHeight * 0.01;
@@ -73,9 +45,9 @@ const AppWrap = ({ children }) => {
   }, []);
 
   return (
-    <UIContextProvider>
+    <UIProvider>
       <UIContext.Consumer>
-        {({darkMode}) => (
+        {({ darkMode }) => (
           <ThemeProvider
             theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
           >
@@ -91,7 +63,7 @@ const AppWrap = ({ children }) => {
           </ThemeProvider>
         )}
       </UIContext.Consumer>
-    </UIContextProvider>
+    </UIProvider>
   );
 };
 

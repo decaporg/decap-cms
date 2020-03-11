@@ -5,8 +5,8 @@ import Icon from '../Icon';
 import { Button, IconButton } from '../Button';
 import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
-import { isWindowDown } from '../utils/responsive'
-import { useUIContext } from '../hooks'
+import { isWindowDown } from '../utils/responsive';
+import { useUIContext } from '../hooks';
 
 const AppBarWrap = styled.div`
   background-color: ${({ theme }) => theme.color.surface};
@@ -69,14 +69,10 @@ const EndWrap = styled.div`
   align-items: center;
 `;
 
-const AppBar = ({
-  breadcrumbs,
-  renderStartContent,
-  renderEndContent,
-}) => {
+const AppBar = ({ breadcrumbs, renderStartContent, renderEndContent }) => {
   const [notifMenuAnchorEl, setNotifMenuAnchorEl] = useState(null);
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
-  const {pageTitle} = useUIContext();
+  const { pageTitle } = useUIContext();
   const handleResize = () => setIsMobile(isWindowDown('xs'));
 
   useEffect(() => {
