@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { AvatarButton } from '../Button';
 import { Menu, MenuItem } from '../Menu';
 
-const UserMenu = ({ setDarkMode, darkMode }) => {
+const UserMenu = ({ setDarkMode, darkMode, className }) => {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
 
-  function handleClose() {
+  const handleClose = () => {
     setUserMenuAnchorEl(null);
-  }
+  };
 
   return (
     <>
@@ -15,6 +15,7 @@ const UserMenu = ({ setDarkMode, darkMode }) => {
         src="https://randomuser.me/api/portraits/men/1.jpg"
         onClick={e => setUserMenuAnchorEl(e.currentTarget)}
         active={!!userMenuAnchorEl}
+        className={className}
       />
       <Menu
         anchorEl={userMenuAnchorEl}
