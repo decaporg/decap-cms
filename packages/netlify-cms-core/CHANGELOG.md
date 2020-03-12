@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.22.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.21.0...netlify-cms-core@2.22.0) (2020-03-12)
+
+
+### Bug Fixes
+
+* **type-defs:** signature for CMS.registerWidget ([#3386](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3386)) ([9c0f618](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9c0f61814859f06759798601b05d80745e4197be))
+* cache assets using resolved path on error ([#3378](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3378)) ([f3fd43b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f3fd43b81928abaea99b50ee4223de3c0498cb71))
+* ja locale labels ([#3367](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3367)) ([50837b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/50837b0068ac8972ce16cbf5f238aa5a2c5bd6e9))
+* show better error for missing widgets ([#3377](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3377)) ([ff3b62d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ff3b62d12fc853fb3b712b7b33bf7064a6579a04))
+
+
+### Features
+
+* add media lib virtualization ([#3381](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3381)) ([92e7601](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/92e76011e7a9e8b5370088b0a2c065df66b5f7fb))
+* support filename and extension vars in summary ([#3375](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3375)) ([12444ca](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/12444ca761d5cd40d766847f117e55b0e0ca6e9e))
+
+
+
+
+
 # [2.21.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.20.1...netlify-cms-core@2.21.0) (2020-03-03)
 
 

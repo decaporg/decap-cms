@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.3...netlify-cms-backend-github@2.10.0) (2020-03-12)
+
+
+### Bug Fixes
+
+* **backend-github:** don't create new commits on empty diff when rebasing ([#3411](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3411)) ([70de9f6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/70de9f6b4b89dd8e23205929033745572562e8fc))
+* update repo owner from GitHub API to match casing ([#3410](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3410)) ([c2e7a24](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/c2e7a24dc20dfea5b1289c5705095d2cf8b04c54))
+
+
+### Features
+
+* **backend-github:** add pagination ([#3379](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3379)) ([39f1307](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/39f1307e3a36447da8c9b3ca79b1d7db52ea1a19))
+
+
+
+
+
 ## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.2...netlify-cms-backend-github@2.9.3) (2020-03-03)
 
 

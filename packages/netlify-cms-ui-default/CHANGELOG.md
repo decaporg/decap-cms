@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.2...netlify-cms-ui-default@2.9.3) (2020-03-12)
+
+
+### Bug Fixes
+
+* ja locale labels ([#3367](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/3367)) ([50837b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/50837b0068ac8972ce16cbf5f238aa5a2c5bd6e9))
+
+
+
+
+
 ## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.1...netlify-cms-ui-default@2.9.2) (2020-03-03)
 
 
