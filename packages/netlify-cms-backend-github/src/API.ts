@@ -989,18 +989,24 @@ export default class API {
     const result = await this.getDifferences(commit.parents[0].sha, commit.sha);
     const files = getTreeFiles(result.files as GitHubCompareFiles);
 
-    // create a tree with baseCommit as the base with the diff applied
-    const tree = await this.updateTree(baseCommit.sha, files);
-    const { message, author, committer } = commit.commit;
+    // only update the tree if changes were detected
+    if (files.length > 0) {
+      // create a tree with baseCommit as the base with the diff applied
+      const tree = await this.updateTree(baseCommit.sha, files);
+      const { message, author, committer } = commit.commit;
 
-    // create a new commit from the updated tree
-    return (this.createCommit(
-      message,
-      tree.sha,
-      [baseCommit.sha],
-      author,
-      committer,
-    ) as unknown) as GitHubCompareCommit;
+      // create a new commit from the updated tree
+      const newCommit = await this.createCommit(
+        message,
+        tree.sha,
+        [baseCommit.sha],
+        author,
+        committer,
+      );
+      return (newCommit as unknown) as GitHubCompareCommit;
+    } else {
+      return commit;
+    }
   }
 
   /**
