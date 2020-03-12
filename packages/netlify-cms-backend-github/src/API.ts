@@ -207,6 +207,8 @@ export default class API {
   async hasWriteAccess() {
     try {
       const result: Octokit.ReposGetResponse = await this.request(this.repoURL);
+      // update config repoOwner to avoid case sensitivity issues with GitHub
+      this.repoOwner = result.owner.login;
       return result.permissions.push;
     } catch (error) {
       console.error('Problem fetching repo data from GitHub');
