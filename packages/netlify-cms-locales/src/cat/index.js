@@ -9,7 +9,7 @@ const cat = {
     app: {
       errorHeader: 'Error al carregar la configuració del CMS',
       configErrors: 'Errors de configuració',
-      checkConfigYml: 'Comprovi l\'arxiu config.yml.',
+      checkConfigYml: "Comprovi l'arxiu config.yml.",
       loadingConfig: 'Carregant configuració....',
       waitingBackend: 'Esperant al servidor...',
     },
@@ -43,29 +43,29 @@ const cat = {
         required: '%{fieldLabel} és obligatori.',
         regexPattern: '%{fieldLabel} no coincideix amb el patró: %{pattern}.',
         processing: '%{fieldLabel} està processant.',
-        range: '%{fieldLabel} ha d\'estar entre %{minValue} i %{maxValue}.',
+        range: "%{fieldLabel} ha d'estar entre %{minValue} i %{maxValue}.",
         min: '%{fieldLabel} ha ser com a mínim %{minValue}.',
         max: '%{fieldLabel} ha de ser %{maxValue} o més.',
       },
     },
     editor: {
-      onLeavePage: 'Estàs segur que vols deixa aquesta pàgina?',
+      onLeavePage: 'Estàs segur que vols deixar aquesta pàgina?',
       onUpdatingWithUnsavedChanges:
-        'Té canvis no guardats, si us plau, guardi\'ls abans d\'actualitzar l\'estat.',
+        "Té canvis no guardats, si us plau, guardi'ls abans d'actualitzar l'estat.",
       onPublishingNotReady: 'si us plau, actualitzi l\'estat a "Ready" abans de publicar.',
       onPublishingWithUnsavedChanges:
-        'Té canvis no guardats, siusplay, guardi\'ls abans de publicar-los.',
+        "Té canvis no guardats, siusplay, guardi'ls abans de publicar-los.",
       onPublishing: 'Està segur que vol publicar aquesta entrada?',
       onDeleteWithUnsavedChanges:
         'Està segur que vol eliminar aquesta entrada publicada, així com els canvis no guardats de la sessió actual?',
       onDeletePublishedEntry: 'Està segur que vol eliminar aquesta entrada publicada?',
       onDeleteUnpublishedChangesWithUnsavedChanges:
-        'Això eliminarà tots els canvis no publicats d\'aquesta entrada així com els canvis no guardats de la sessió actual. Encara vol procedir?',
+        "Això eliminarà tots els canvis no publicats d'aquesta entrada així com els canvis no guardats de la sessió actual. Encara vol procedir?",
       onDeleteUnpublishedChanges:
         'Tots els canvis no publicats en aquesta entrada seràn esborrats. Encara els vol eliminar?',
       loadingEntry: 'Carregant entrada...',
       confirmLoadBackup:
-        'S\'ha recuperat una copia de seguretat local per aquesta entrada. La vol utilitzar?',
+        "S'ha recuperat una copia de seguretat local per aquesta entrada. La vol utilitzar?",
     },
     editorToolbar: {
       publishing: 'Publicant...',
@@ -145,12 +145,13 @@ const cat = {
   ui: {
     errorBoundary: {
       title: 'Error',
-      details: 'S\'ha produït un error - si us plau ',
-      reportIt: 'informa\'ns d\'això.',
+      details: "S'ha produït un error - si us plau ",
+      reportIt: "informa'ns d'això.",
       detailsHeading: 'Detalls',
       recoveredEntry: {
         heading: 'Document recuperat',
-        warning: 'Si us plau, copiï/enganxi això en algun lloc abans de navegar a una altre pàgina!',
+        warning:
+          'Si us plau, copiï/enganxi això en algun lloc abans de navegar a una altre pàgina!',
         copyButtonLabel: 'Copiar al porta-retalls',
       },
     },
@@ -158,17 +159,17 @@ const cat = {
       logOut: 'Tancar sessió',
     },
     toast: {
-      onFailToLoadEntries: 'No s\'ha ha pogut carregar l\'entrada: %{details}',
-      onFailToLoadDeployPreview: 'No s\'ha pogut carregar la vista prèvia: %{details}',
-      onFailToPersist: 'No s\'ha pogut guardar l\'entrada: %{details}',
-      onFailToDelete: 'No s\'ha pogut eliminar l\'entrada: %{details}',
-      onFailToUpdateStatus: 'No s\'ha pogut actualitzar l\'estat: %{details}',
+      onFailToLoadEntries: "No s'ha ha pogut carregar l'entrada: %{details}",
+      onFailToLoadDeployPreview: "No s'ha pogut carregar la vista prèvia: %{details}",
+      onFailToPersist: "No s'ha pogut guardar l'entrada: %{details}",
+      onFailToDelete: "No s'ha pogut eliminar l'entrada: %{details}",
+      onFailToUpdateStatus: "No s'ha pogut actualitzar l'estat: %{details}",
       missingRequiredField:
-        'Ups, no ha omplert un camp obligatori. Si us plau, ompli\'l abans de guardar.',
+        "Ups, no ha omplert un camp obligatori. Si us plau, ompli'l abans de guardar.",
       entrySaved: 'Entrada guardada',
       entryPublished: 'Entrada publicada',
-      onFailToPublishEntry: 'No s\'ha pogut publicar: %{details}',
-      entryUpdated: 'Estat de l\'entrada actualitzat',
+      onFailToPublishEntry: "No s'ha pogut publicar: %{details}",
+      entryUpdated: "Estat de l'entrada actualitzat",
       onDeleteUnpublishedChanges: 'Canvis no publicats eliminats',
       onFailToAuth: '%{details}',
     },
