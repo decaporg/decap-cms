@@ -194,7 +194,7 @@ const cat = {
       onFailToPersist: 'No s\'ha pogut guardar l\'entrada: %{details}',
       onFailToDelete: 'No s\'ha pogut eliminar l\'entrada: %{details}',
       onFailToUpdateStatus: 'No s\'ha pogut actualitzar l\'estat: %{details}',
-      missingRequiredField: 'Ups, no ha omplert un camp obligatori. Si us plau, ompli\'l abans de guardar.',
+      missingRequiredField: 'Ups, no ha omplert un camp obligatori. Si us plau,  ompli\'l abans de guardar.',
       entrySaved: 'Entrada guardada',
       entryPublished: 'Entrada publicada',
       entryUnpublished: 'Entrada despublicada',
@@ -224,7 +224,7 @@ const cat = {
       publishNewEntry: 'Publicar nova entrada',
     },
     workflowList: {
-      onDeleteEntry: 'Està seguro que vol borrar aquesta entrada?',
+      onDeleteEntry: 'Està segur que vol borrar aquesta entrada?',
       onPublishingNotReadyEntry:
         'Només es poden publicar elements amb estat "Llest". Si us plau, arrossegui la targeta fins la columna "Llest" per a permetre\'n la publicació',
       onPublishEntry: 'Està segur que vol publicar aquesta entrada?',
