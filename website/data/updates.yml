@@ -1,4 +1,7 @@
 updates:
+  - date: 2020-03-12T20:58:33.994Z
+    version: 2.10.31
+    description: 'Lazy loading for large directories in GitHub, bugfixes'
   - date: 2020-03-03T21:00:34.318Z
     version: 2.10.30
     description: 'Field defaults via query string, proxy backend as middleware, bugfixes'
