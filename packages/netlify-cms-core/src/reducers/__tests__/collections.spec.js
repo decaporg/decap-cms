@@ -1,16 +1,16 @@
-import { OrderedMap, fromJS } from 'immutable';
 import { configLoaded } from 'Actions/config';
+import { FILES, FOLDER } from 'Constants/collectionTypes';
+import { fromJS, OrderedMap } from 'immutable';
 import collections, {
+  getFieldsNames,
   selectAllowDeletion,
   selectEntryPath,
   selectEntrySlug,
+  selectField,
   selectFieldsWithMediaFolders,
   selectMediaFolders,
-  getFieldsNames,
-  selectField,
   updateFieldByKey,
 } from '../collections';
-import { FILES, FOLDER } from 'Constants/collectionTypes';
 
 describe('collections', () => {
   it('should handle an empty state', () => {
@@ -248,7 +248,12 @@ describe('collections', () => {
               },
               {
                 name: 'list',
-                types: [{ name: 'widget', media_folder: '{{media_folder}}/widgets' }],
+                types: [
+                  {
+                    name: 'widget',
+                    media_folder: '{{media_folder}}/widgets',
+                  },
+                ],
               },
             ],
           }),
@@ -279,7 +284,12 @@ describe('collections', () => {
                   },
                   {
                     name: 'list',
-                    types: [{ name: 'widget', media_folder: '{{media_folder}}/widgets' }],
+                    types: [
+                      {
+                        name: 'widget',
+                        media_folder: '{{media_folder}}/widgets',
+                      },
+                    ],
                   },
                 ],
               },
@@ -299,9 +309,9 @@ describe('collections', () => {
   describe('getFieldsNames', () => {
     it('should get flat fields names', () => {
       const collection = fromJS({
-        fields: [{ name: 'en' }, { name: 'es' }],
+        fields: [{ name: 'en' }, { name: 'es' }, { name: 'cat' }],
       });
-      expect(getFieldsNames(collection.get('fields').toArray())).toEqual(['en', 'es']);
+      expect(getFieldsNames(collection.get('fields').toArray())).toEqual(['en', 'es', 'cat']);
     });
 
     it('should get nested fields names', () => {
@@ -309,22 +319,35 @@ describe('collections', () => {
         fields: [
           { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
           { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
-          { name: 'it', field: { name: 'title', fields: [{ name: 'subTitle' }] } },
+          { name: 'cat', fields: [{ name: 'title' }, { name: 'body' }] },
+          {
+            name: 'it',
+            field: { name: 'title', fields: [{ name: 'subTitle' }] },
+          },
           {
             name: 'fr',
-            fields: [{ name: 'title', widget: 'list', types: [{ name: 'variableType' }] }],
+            fields: [
+              {
+                name: 'title',
+                widget: 'list',
+                types: [{ name: 'variableType' }],
+              },
+            ],
           },
         ],
       });
       expect(getFieldsNames(collection.get('fields').toArray())).toEqual([
         'en',
         'es',
+        'cat',
         'it',
         'fr',
         'en.title',
         'en.body',
         'es.title',
         'es.body',
+        'cat.title',
+        'cat.body',
         'it.title',
         'it.title.subTitle',
         'fr.title',
@@ -336,7 +359,7 @@ describe('collections', () => {
   describe('selectField', () => {
     it('should return top field by key', () => {
       const collection = fromJS({
-        fields: [{ name: 'en' }, { name: 'es' }],
+        fields: [{ name: 'en' }, { name: 'es' }, { name: 'cat' }],
       });
       expect(selectField(collection, 'en')).toBe(collection.get('fields').get(0));
     });
@@ -346,11 +369,21 @@ describe('collections', () => {
         fields: [
           { name: 'en', fields: [{ name: 'title' }, { name: 'body' }] },
           { name: 'es', fields: [{ name: 'title' }, { name: 'body' }] },
-          { name: 'it', field: { name: 'title', fields: [{ name: 'subTitle' }] } },
+          {
+            name: 'it',
+            field: { name: 'title', fields: [{ name: 'subTitle' }] },
+          },
           {
             name: 'fr',
-            fields: [{ name: 'title', widget: 'list', types: [{ name: 'variableType' }] }],
+            fields: [
+              {
+                name: 'title',
+                widget: 'list',
+                types: [{ name: 'variableType' }],
+              },
+            ],
           },
+          { name: 'cat', fields: [{ name: 'title' }, { name: 'body' }] },
         ],
       });
 
@@ -445,7 +478,10 @@ describe('collections', () => {
               name: 'object',
               fields: [
                 { name: 'title' },
-                { name: 'gallery', fields: [{ name: 'image', default: 'default' }] },
+                {
+                  name: 'gallery',
+                  fields: [{ name: 'image', default: 'default' }],
+                },
               ],
             },
             { name: 'list', field: { name: 'image' } },
@@ -481,7 +517,10 @@ describe('collections', () => {
             },
             { name: 'list', field: { name: 'image' } },
             { name: 'body' },
-            { name: 'widgetList', types: [{ name: 'widget', default: 'default' }] },
+            {
+              name: 'widgetList',
+              types: [{ name: 'widget', default: 'default' }],
+            },
           ],
         }),
       );
