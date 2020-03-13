@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.9.4...netlify-cms-locales@1.10.0) (2020-03-13)
+
+
+### Features
+
+* **catalan-translation:** add catalan translation ([#3412](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3412)) ([66baec4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/66baec4b8f6680d2d2d24e4a8297358d72266dc9))
+
+
+
+
+
 ## [1.9.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.9.3...netlify-cms-locales@1.9.4) (2020-03-12)
 
 
