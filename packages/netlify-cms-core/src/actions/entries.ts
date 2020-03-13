@@ -339,26 +339,25 @@ export function loadEntry(collection: Collection, slug: string) {
     const backend = currentBackend(state.config);
     await waitForMediaLibraryToLoad(dispatch, getState());
     dispatch(entryLoading(collection, slug));
-    return backend
-      .getEntry(getState(), collection, slug)
-      .then((loadedEntry: EntryValue) => {
-        dispatch(entryLoaded(collection, loadedEntry));
-        dispatch(createDraftFromEntry(loadedEntry));
-      })
-      .catch((error: Error) => {
-        console.error(error);
-        dispatch(
-          notifSend({
-            message: {
-              details: error.message,
-              key: 'ui.toast.onFailToLoadEntries',
-            },
-            kind: 'danger',
-            dismissAfter: 8000,
-          }),
-        );
-        dispatch(entryLoadError(error, collection, slug));
-      });
+
+    try {
+      const loadedEntry = await backend.getEntry(getState(), collection, slug);
+      dispatch(entryLoaded(collection, loadedEntry));
+      dispatch(createDraftFromEntry(loadedEntry));
+    } catch (error) {
+      console.error(error);
+      dispatch(
+        notifSend({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToLoadEntries',
+          },
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      dispatch(entryLoadError(error, collection, slug));
+    }
   };
 }
 
