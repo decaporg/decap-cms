@@ -5,7 +5,7 @@ import Icon from '../Icon';
 import { ButtonGroup } from '../Button';
 import color from 'color';
 
-const NavigationMenuItemWrap = styled.div`
+const NavMenuItemWrap = styled.a`
   width: 100%;
   display: flex;
   align-items: center;
@@ -13,7 +13,7 @@ const NavigationMenuItemWrap = styled.div`
   padding: 0 12px;
   cursor: pointer;
 `;
-const NavigationMenuItemInside = styled.a`
+const NavMenuItemInside = styled.span`
   display: flex;
   align-items: center;
   width: 100%;
@@ -31,7 +31,7 @@ const NavigationMenuItemInside = styled.a`
   border-radius: 6px;
   outline: none;
   transition: 200ms;
-  ${NavigationMenuItemWrap}:hover & {
+  ${NavMenuItemWrap}:hover & {
     color: ${({ theme, active }) =>
       active ? theme.color.success['500'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
@@ -43,7 +43,7 @@ const NavigationMenuItemInside = styled.a`
             .alpha(0.05)
             .string()};
   }
-  ${NavigationMenuItemWrap}:active & {
+  ${NavMenuItemWrap}:active & {
     color: ${({ theme, active }) =>
       active ? theme.color.success['500'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
@@ -70,7 +70,7 @@ const Label = styled.span`
   font-size: 0.875rem;
   font-weight: 600;
   opacity: ${({ collapsed }) => (collapsed ? '0' : '1')};
-  transition: 200ms;
+  transition: opacity 200ms;
 `;
 
 const NavItemContents = styled.span`
@@ -79,8 +79,12 @@ const NavItemContents = styled.span`
   min-width: 13.5rem;
   align-items: center;
 `;
+const ExternalLinkIcon = styled(Icon)`
+  color: ${({ theme }) => theme.color.disabled};
+`;
+ExternalLinkIcon.defaultProps = { name: 'external-link', size: 'sm' };
 
-const NavigationMenuItem = ({ icon, label, collapsed, href, active, onClick }) => {
+const NavMenuItem = ({ icon, label, className, collapsed, href, active, onClick }) => {
   return (
     <Tooltip
       label={collapsed && label}
@@ -89,21 +93,23 @@ const NavigationMenuItem = ({ icon, label, collapsed, href, active, onClick }) =
       enterDelay={500}
       leaveDelay={250}
     >
-      <NavigationMenuItemWrap>
-        <NavigationMenuItemInside
-          active={active}
-          onClick={onClick}
-          href={href}
-          target={href ? '_blank' : undefined}
-          rel={href ? 'noopener noreferred' : undefined}>
+      <NavMenuItemWrap
+        className={className}
+        onClick={onClick}
+        href={href}
+        target={href ? '_blank' : undefined}
+        rel={href ? 'noopener noreferred' : undefined}
+      >
+        <NavMenuItemInside active={active}>
           <NavItemContents>
             <Icon name={icon} />
             <Label collapsed={collapsed}>{label}</Label>
+            {href && <ExternalLinkIcon />}
           </NavItemContents>
-        </NavigationMenuItemInside>
-      </NavigationMenuItemWrap>
+        </NavMenuItemInside>
+      </NavMenuItemWrap>
     </Tooltip>
   );
-}
+};
 
-export default NavigationMenuItem;
+export default NavMenuItem;

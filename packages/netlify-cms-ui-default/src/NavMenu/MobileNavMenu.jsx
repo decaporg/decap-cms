@@ -8,7 +8,7 @@ import Icon from '../Icon';
 
 import LogoTile from '../LogoTile';
 import UserMenu from '../UserMenu';
-import NavigationMenuItem from '../NavigationMenu/NavigationMenuItem';
+import NavMenuItem from '../NavMenu/NavMenuItem';
 import { Menu, MenuItem } from '../Menu';
 
 const NavWrap = styled.div`
@@ -170,7 +170,7 @@ const NavTop = styled.div`
 `;
 const NavBottom = styled.div``;
 
-const MobileNavigationMenu = ({ darkMode, setDarkMode }) => {
+const MobileNavMenu = ({ darkMode, setDarkMode }) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   return (
@@ -228,20 +228,20 @@ const MobileNavigationMenu = ({ darkMode, setDarkMode }) => {
             </ToolbarWrap>
             <MenuContent state={state}>
               <NavTop>
-                <NavigationMenuItem icon="edit-3" label="Posts" active />
-                <NavigationMenuItem icon="inbox" label="Post Categories" />
-                <NavigationMenuItem icon="file-text" label="Pages" />
-                <NavigationMenuItem icon="shopping-cart" label="Products" />
-                <NavigationMenuItem icon="package" label="Product Categories" />
-                <NavigationMenuItem icon="users" label="Authors" />
-                <NavigationMenuItem icon="calendar" label="Events" />
-                <NavigationMenuItem icon="image" label="Media" />
+                <NavMenuItem icon="edit-3" label="Posts" active />
+                <NavMenuItem icon="inbox" label="Post Categories" />
+                <NavMenuItem icon="file-text" label="Pages" />
+                <NavMenuItem icon="shopping-cart" label="Products" />
+                <NavMenuItem icon="package" label="Product Categories" />
+                <NavMenuItem icon="users" label="Authors" />
+                <NavMenuItem icon="calendar" label="Events" />
+                <NavMenuItem icon="image" label="Media" />
               </NavTop>
               <NavBottom>
-                <NavigationMenuItem icon="bar-chart" label="Analytics" externalLink />
-                <NavigationMenuItem icon="server" label="Product Categories" externalLink />
-                <NavigationMenuItem icon="github" label="GitHub Repository" externalLink />
-                <NavigationMenuItem icon="settings" label="Settings" />
+                <NavMenuItem icon="bar-chart" label="Analytics" externalLink />
+                <NavMenuItem icon="server" label="Product Categories" externalLink />
+                <NavMenuItem icon="github" label="GitHub Repository" externalLink />
+                <NavMenuItem icon="settings" label="Settings" />
               </NavBottom>
             </MenuContent>
           </MenuWrap>
@@ -266,4 +266,4 @@ const NavIconButton = ({ active, icon, hasSubmenu, ...props }) => {
   );
 };
 
-export default MobileNavigationMenu;
+export default MobileNavMenu;

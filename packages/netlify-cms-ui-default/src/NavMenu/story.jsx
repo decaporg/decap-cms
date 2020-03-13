@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { withKnobs, object } from '@storybook/addon-knobs';
 
-import NavigationMenu from '.';
+import NavMenu from '.';
 
 export default {
-  title: 'Components/NavigationMenu',
+  title: 'Components/NavMenu',
   decorators: [withKnobs],
 };
 
@@ -25,29 +25,44 @@ const sections = [
       { id: 'product-categories', icon: 'package', label: 'Products Categories' },
       { id: 'authors', icon: 'users', label: 'Authors' },
       { id: 'events', icon: 'calendar', label: 'Events' },
-    ]
+    ],
   },
   {
     items: [
       { id: 'media', icon: 'image', label: 'Media' },
-      { id: 'workflow', icon: 'workflow', label: 'Workflow' }
-    ]
+      { id: 'workflow', icon: 'workflow', label: 'Workflow' },
+    ],
   },
   {
     items: [
-      { id: 'analytics', label: 'Analytics', href: 'https://app.netlify.com/my-website/analytics', icon: 'bar-chart' },
-      { id: 'netlify', label: 'Netlify', href: 'https://app.netlify.com/my-website/', icon: 'server' },
-      { id: 'github-repo', label: 'Github Repository', href: 'https://github.com/joebob/my-website', icon: 'github' },
+      {
+        id: 'analytics',
+        label: 'Analytics',
+        href: 'https://app.netlify.com/my-website/analytics',
+        icon: 'bar-chart',
+      },
+      {
+        id: 'netlify',
+        label: 'Netlify',
+        href: 'https://app.netlify.com/sites/my-website',
+        icon: 'server',
+      },
+      {
+        id: 'github-repo',
+        label: 'Github Repository',
+        href: 'https://github.com/joebob/my-website',
+        icon: 'github',
+      },
       { id: 'settings', label: 'Settings', icon: 'settings' },
-    ]
-  }
-]
+    ],
+  },
+];
 
-export const _NavigationMenu = () => {
-  const [activeItemId, setActiveItemId] = useState('posts')
+export const _NavMenu = () => {
+  const [activeItemId, setActiveItemId] = useState('posts');
   return (
     <Wrap>
-      <NavigationMenu
+      <NavMenu
         activeItem={activeItemId}
         sections={object('Sections', sections)}
         onItemClick={item => setActiveItemId(item.id)}
@@ -56,6 +71,6 @@ export const _NavigationMenu = () => {
   );
 };
 
-_NavigationMenu.story = {
-  name: 'NavigationMenu',
+_NavMenu.story = {
+  name: 'NavMenu',
 };

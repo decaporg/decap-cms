@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { lightTheme, darkTheme } from '../theme';
 import { ToastContainer } from '../Toast';
 import GlobalStyles from '../GlobalStyles';
-import NavigationMenu from '../NavigationMenu';
+import NavMenu from '../NavMenu';
 import AppBar from '../AppBar';
 import { UIContext, UIProvider } from '../UIContext';
 
@@ -55,7 +55,7 @@ const AppWrap = ({ children }) => {
             <AppOuter>
               <AppBar />
               <AppBody>
-                <NavigationMenu />
+                <NavMenu />
                 <AppContent>{children}</AppContent>
               </AppBody>
               <ToastContainer />
