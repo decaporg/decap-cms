@@ -2,6 +2,7 @@ export { default as cs } from './cs';
 export { default as de } from './de';
 export { default as en } from './en';
 export { default as es } from './es';
+export { default as ca } from './ca';
 export { default as fr } from './fr';
 export { default as gr } from './gr';
 export { default as hu } from './hu';
