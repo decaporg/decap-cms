@@ -10,7 +10,6 @@ import { logoutUser } from 'Actions/auth';
 import {
   loadEntry,
   loadEntries,
-  createDraftFromEntry,
   createDraftDuplicateFromEntry,
   createEmptyDraft,
   discardDraft,
@@ -30,7 +29,6 @@ import {
   deleteUnpublishedEntry,
 } from 'Actions/editorialWorkflow';
 import { loadDeployPreview } from 'Actions/deploys';
-import { deserializeValues } from 'Lib/serializeEntryValues';
 import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from 'Reducers';
 import { selectFields } from 'Reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
@@ -48,7 +46,6 @@ export class Editor extends React.Component {
     changeDraftField: PropTypes.func.isRequired,
     changeDraftFieldValidation: PropTypes.func.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
-    createDraftFromEntry: PropTypes.func.isRequired,
     createDraftDuplicateFromEntry: PropTypes.func.isRequired,
     createEmptyDraft: PropTypes.func.isRequired,
     discardDraft: PropTypes.func.isRequired,
@@ -198,18 +195,9 @@ export class Editor extends React.Component {
 
     if (prevProps.entry === this.props.entry) return;
 
-    const { entry, newEntry, fields, collection } = this.props;
+    const { newEntry, collection } = this.props;
 
-    if (entry && !entry.get('isFetching') && !entry.get('error')) {
-      /**
-       * Deserialize entry values for widgets with registered serializers before
-       * creating the entry draft.
-       */
-      const values = deserializeValues(entry.get('data'), fields);
-      const deserializedEntry = entry.set('data', values);
-      const fieldsMetaData = this.props.entryDraft && this.props.entryDraft.get('fieldsMetaData');
-      this.createDraft(deserializedEntry, fieldsMetaData);
-    } else if (newEntry) {
+    if (newEntry) {
       prevProps.createEmptyDraft(collection, this.props.location.search);
     }
   }
@@ -223,10 +211,6 @@ export class Editor extends React.Component {
   createBackup = debounce(function(entry, collection) {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
-
-  createDraft = (entry, metadata) => {
-    if (entry) this.props.createDraftFromEntry(entry, metadata);
-  };
 
   handleChangeDraftField = (field, value, metadata) => {
     const entries = [this.props.unPublishedEntry, this.props.publishedEntry].filter(Boolean);
@@ -509,7 +493,6 @@ const mapDispatchToProps = {
   retrieveLocalBackup,
   persistLocalBackup,
   deleteLocalBackup,
-  createDraftFromEntry,
   createDraftDuplicateFromEntry,
   createEmptyDraft,
   discardDraft,
