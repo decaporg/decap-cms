@@ -13,6 +13,9 @@ const NavMenuItemWrap = styled.a`
   padding: 0 12px;
   cursor: pointer;
 `;
+const ExternalLinkIcon = styled(Icon)`
+  color: ${({ theme }) => theme.color.disabled};
+`;
 const NavMenuItemInside = styled.span`
   display: flex;
   align-items: center;
@@ -37,11 +40,17 @@ const NavMenuItemInside = styled.span`
     background-color: ${({ theme, active }) =>
       active
         ? color(theme.color.success['500'])
-            .alpha(0.2)
+            .alpha(0.1)
             .string()
         : color(theme.color.highEmphasis)
             .alpha(0.05)
             .string()};
+    ${({ active }) =>
+      active
+        ? `
+      cursor: default;
+    `
+        : ``}
   }
   ${NavMenuItemWrap}:active & {
     color: ${({ theme, active }) =>
@@ -49,7 +58,7 @@ const NavMenuItemInside = styled.span`
     background-color: ${({ theme, active }) =>
       active
         ? color(theme.color.success['500'])
-            .alpha(0.3)
+            .alpha(0.1)
             .string()
         : color(theme.color.highEmphasis)
             .alpha(0.1)
@@ -59,7 +68,10 @@ const NavMenuItemInside = styled.span`
     margin: 2px;
   }
   & svg {
-    margin: 0.4375rem;
+    margin: 0.375rem;
+  }
+  & ${ExternalLinkIcon} {
+    margin-right: 0.5rem;
   }
 `;
 const Label = styled.span`
@@ -72,16 +84,13 @@ const Label = styled.span`
   opacity: ${({ collapsed }) => (collapsed ? '0' : '1')};
   transition: opacity 200ms;
 `;
-
 const NavItemContents = styled.span`
   display: flex;
   width: 13.5rem;
   min-width: 13.5rem;
   align-items: center;
 `;
-const ExternalLinkIcon = styled(Icon)`
-  color: ${({ theme }) => theme.color.disabled};
-`;
+
 ExternalLinkIcon.defaultProps = { name: 'external-link', size: 'sm' };
 
 const NavMenuItem = ({ icon, label, className, collapsed, href, active, onClick }) => {
