@@ -82,6 +82,7 @@ import UploadCloud from './icons/UploadCloud';
 import Upload from './icons/Upload';
 import User from './icons/User';
 import Users from './icons/Users';
+import Workflow from './icons/Workflow'
 import X from './icons/X';
 import Zap from './icons/Zap';
 
@@ -170,6 +171,7 @@ export const iconComponents = {
   'upload': Upload,
   'user': User,
   'users': Users,
+  'workflow': Workflow,
   'x': X,
   'zap': Zap,
 };

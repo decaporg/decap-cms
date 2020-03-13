@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import styled from '@emotion/styled';
 import { lightTheme, darkTheme } from '../theme';

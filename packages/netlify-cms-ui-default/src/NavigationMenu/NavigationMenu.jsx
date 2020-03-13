@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types'
 import styled from '@emotion/styled';
 import Card from '../Card';
 import NavigationMenuItem from './NavigationMenuItem';
 import MobileNavigationMenu from './MobileNavigationMenu';
 import { isWindowDown } from '../utils/responsive';
+import { useUIContext } from '../hooks'
 
 const NavWrap = styled(Card)`
   width: ${({ collapsed }) => (collapsed ? '56px' : '240px')};
@@ -20,7 +22,11 @@ const NavWrap = styled(Card)`
 `;
 NavWrap.defaultProps = { elevation: 'sm', rounded: false, direction: 'right' };
 const NavTop = styled.div`
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: ${({ last }) => (last ? 'flex-end' : 'flex-start')};
+  flex: ${({ last }) => (last ? '1' : '0')};
+
 `;
 const NavBottom = styled.div``;
 const CondenseNavigationMenuItem = styled(NavigationMenuItem)`
@@ -31,8 +37,12 @@ const CondenseNavigationMenuItem = styled(NavigationMenuItem)`
   }
 `;
 
-const NavigationMenu = () => {
-  const [collapsed, setCollapsed] = useState(true);
+const NavigationMenu = ({
+  sections,
+  activeItem,
+  onItemClick,
+}) => {
+  const {navCollapsed: collapsed, setNavCollapsed: setCollapsed} = useUIContext();
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
   const handleResize = () => setIsMobile(isWindowDown('xs'));
 
@@ -42,35 +52,31 @@ const NavigationMenu = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (isMobile) return <MobileNavigationMenu />;
+  if (isMobile) return (
+    <MobileNavigationMenu />
+  );
 
   return (
     <NavWrap collapsed={collapsed}>
-      <NavTop>
-        <NavigationMenuItem icon="edit-3" label="Posts" active collapsed={collapsed} />
-        <NavigationMenuItem icon="inbox" label="Post Categories" collapsed={collapsed} />
-        <NavigationMenuItem icon="file-text" label="Pages" collapsed={collapsed} />
-        <NavigationMenuItem icon="shopping-cart" label="Products" collapsed={collapsed} />
-        <NavigationMenuItem icon="package" label="Product Categories" collapsed={collapsed} />
-        <NavigationMenuItem icon="users" label="Authors" collapsed={collapsed} />
-        <NavigationMenuItem icon="calendar" label="Events" collapsed={collapsed} />
-        <NavigationMenuItem icon="image" label="Media" collapsed={collapsed} />
-      </NavTop>
+      {sections && sections.map((section, index) => (
+        <NavTop key={index} last={index && index + 1 === sections.length}>
+          {section.items && section.items.map(item => (
+            <NavigationMenuItem
+              key={item.id}
+              active={activeItem === item.id}
+              label={item.label}
+              icon={item.icon}
+              collapsed={collapsed}
+              href={item.href}
+              onClick={() => {
+                item.onClick && item.onClick();
+                onItemClick && onItemClick(item);
+              }}
+            />
+          ))}
+        </NavTop>
+      ))}
       <NavBottom>
-        <NavigationMenuItem icon="bar-chart" label="Analytics" collapsed={collapsed} externalLink />
-        <NavigationMenuItem
-          icon="server"
-          label="Product Categories"
-          collapsed={collapsed}
-          externalLink
-        />
-        <NavigationMenuItem
-          icon="github"
-          label="GitHub Repository"
-          collapsed={collapsed}
-          externalLink
-        />
-        <NavigationMenuItem icon="settings" label="Settings" collapsed={collapsed} />
         <CondenseNavigationMenuItem
           icon="chevron-right"
           collapsed={collapsed}
@@ -80,5 +86,10 @@ const NavigationMenu = () => {
     </NavWrap>
   );
 };
+
+NavigationMenu.propTypes = {
+  sections: PropTypes.array,
+  // onItemClick: PropTypes.function
+}
 
 export default NavigationMenu;
