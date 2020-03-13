@@ -1,4 +1,4 @@
-const cat = {
+const ca = {
   auth: {
     login: 'Iniciar sessió',
     loggingIn: 'Iniciant sessió...',
@@ -238,4 +238,4 @@ const cat = {
   },
 };
 
-export default cat;
+export default ca;
