@@ -80,23 +80,30 @@ const NavItemContents = styled.span`
   align-items: center;
 `;
 
-const NavigationMenuItem = ({ icon, label, collapsed, ...props }) => (
-  <Tooltip
-    label={collapsed && label}
-    anchorOrigin={{ y: 'center', x: 'right' }}
-    transformOrigin={{ y: 'center', x: 'left' }}
-    enterDelay={500}
-    leaveDelay={250}
-  >
-    <NavigationMenuItemWrap {...props}>
-      <NavigationMenuItemInside {...props}>
-        <NavItemContents>
-          <Icon name={icon} />
-          <Label collapsed={collapsed}>{label}</Label>
-        </NavItemContents>
-      </NavigationMenuItemInside>
-    </NavigationMenuItemWrap>
-  </Tooltip>
-);
+const NavigationMenuItem = ({ icon, label, collapsed, href, active, onClick }) => {
+  return (
+    <Tooltip
+      label={collapsed && label}
+      anchorOrigin={{ y: 'center', x: 'right' }}
+      transformOrigin={{ y: 'center', x: 'left' }}
+      enterDelay={500}
+      leaveDelay={250}
+    >
+      <NavigationMenuItemWrap>
+        <NavigationMenuItemInside
+          active={active}
+          onClick={onClick}
+          href={href}
+          target={href ? '_blank' : undefined}
+          rel={href ? 'noopener noreferred' : undefined}>
+          <NavItemContents>
+            <Icon name={icon} />
+            <Label collapsed={collapsed}>{label}</Label>
+          </NavItemContents>
+        </NavigationMenuItemInside>
+      </NavigationMenuItemWrap>
+    </Tooltip>
+  );
+}
 
 export default NavigationMenuItem;

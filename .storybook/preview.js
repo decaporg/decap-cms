@@ -181,13 +181,15 @@ const StoryWrap = styled.div`
   background-color: ${({ theme }) => theme.color.surface};
 `;
 
-addDecorator(renderStory => (
+addDecorator(Story => (
   <UIProvider>
     <UIContext.Consumer>
       {({ darkMode, setDarkMode }) => (
         <ThemeWrapper darkMode={darkMode} setDarkMode={setDarkMode}>
           <GlobalStyles />
-          <StoryWrap>{renderStory()}</StoryWrap>
+          <StoryWrap>
+            <Story />
+          </StoryWrap>
         </ThemeWrapper>
       )}
     </UIContext.Consumer>
