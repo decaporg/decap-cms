@@ -4,6 +4,7 @@ import Tooltip from '../Tooltip';
 import Icon from '../Icon';
 import { ButtonGroup } from '../Button';
 import color from 'color';
+import { useUIContext } from '../hooks';
 
 const NavMenuItemWrap = styled.a`
   width: 100%;
@@ -13,9 +14,11 @@ const NavMenuItemWrap = styled.a`
   padding: 0 12px;
   cursor: pointer;
 `;
-const ExternalLinkIcon = styled(Icon)`
+export const ExternalLinkIcon = styled(Icon)`
   color: ${({ theme }) => theme.color.disabled};
 `;
+ExternalLinkIcon.defaultProps = { name: 'external-link', size: 'sm' };
+
 const NavMenuItemInside = styled.span`
   display: flex;
   align-items: center;
@@ -84,19 +87,18 @@ const Label = styled.span`
   opacity: ${({ collapsed }) => (collapsed ? '0' : '1')};
   transition: opacity 200ms;
 `;
-const NavItemContents = styled.span`
+export const NavItemContents = styled.span`
   display: flex;
-  width: 13.5rem;
-  min-width: 13.5rem;
   align-items: center;
+  width: 100%;
 `;
 
-ExternalLinkIcon.defaultProps = { name: 'external-link', size: 'sm' };
+const NavMenuItem = ({ icon, children, className, href, active, onClick }) => {
+  const { navCollapsed } = useUIContext();
 
-const NavMenuItem = ({ icon, label, className, collapsed, href, active, onClick }) => {
   return (
     <Tooltip
-      label={collapsed && label}
+      label={navCollapsed && children}
       anchorOrigin={{ y: 'center', x: 'right' }}
       transformOrigin={{ y: 'center', x: 'left' }}
       enterDelay={500}
@@ -112,7 +114,7 @@ const NavMenuItem = ({ icon, label, className, collapsed, href, active, onClick 
         <NavMenuItemInside active={active}>
           <NavItemContents>
             <Icon name={icon} />
-            <Label collapsed={collapsed}>{label}</Label>
+            <Label collapsed={navCollapsed}>{children}</Label>
             {href && <ExternalLinkIcon />}
           </NavItemContents>
         </NavMenuItemInside>

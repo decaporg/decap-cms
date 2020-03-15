@@ -3,13 +3,14 @@ import styled from '@emotion/styled';
 import color from 'color';
 import { Transition } from 'react-transition-group';
 
+import { ExternalLinkIcon } from './NavMenuItem';
+
 import Card from '../Card';
 import Icon from '../Icon';
-
 import LogoTile from '../LogoTile';
 import UserMenu from '../UserMenu';
-import NavMenuItem from '../NavMenu/NavMenuItem';
 import { Menu, MenuItem } from '../Menu';
+import { useUIContext } from '../hooks';
 
 const NavWrap = styled.div`
   height: 3.5rem;
@@ -165,12 +166,9 @@ const MenuContent = styled.div`
     }
   }}
 `;
-const NavTop = styled.div`
-  flex: 1;
-`;
-const NavBottom = styled.div``;
 
-const MobileNavMenu = ({ darkMode, setDarkMode }) => {
+const MobileNavMenu = ({ children }) => {
+  const { darkMode, setDarkMode } = useUIContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   return (
@@ -220,30 +218,13 @@ const MobileNavMenu = ({ darkMode, setDarkMode }) => {
               <LogoTile />
               <SiteNameWrap>
                 <SiteName>My Website</SiteName>
-                <Icon name="external-link" />
+                <ExternalLinkIcon />
               </SiteNameWrap>
               <UserMenuWrap>
                 <UserMenu darkMode={darkMode} setDarkMode={setDarkMode} />
               </UserMenuWrap>
             </ToolbarWrap>
-            <MenuContent state={state}>
-              <NavTop>
-                <NavMenuItem icon="edit-3" label="Posts" active />
-                <NavMenuItem icon="inbox" label="Post Categories" />
-                <NavMenuItem icon="file-text" label="Pages" />
-                <NavMenuItem icon="shopping-cart" label="Products" />
-                <NavMenuItem icon="package" label="Product Categories" />
-                <NavMenuItem icon="users" label="Authors" />
-                <NavMenuItem icon="calendar" label="Events" />
-                <NavMenuItem icon="image" label="Media" />
-              </NavTop>
-              <NavBottom>
-                <NavMenuItem icon="bar-chart" label="Analytics" externalLink />
-                <NavMenuItem icon="server" label="Product Categories" externalLink />
-                <NavMenuItem icon="github" label="GitHub Repository" externalLink />
-                <NavMenuItem icon="settings" label="Settings" />
-              </NavBottom>
-            </MenuContent>
+            <MenuContent state={state}>{children}</MenuContent>
           </MenuWrap>
         )}
       </Transition>

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { withKnobs, object } from '@storybook/addon-knobs';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 
-import NavMenu from '.';
+import { NavMenu, NavMenuGroup, NavMenuGroupLabel, NavMenuItem } from '.';
 
 export default {
   title: 'Components/NavMenu',
@@ -15,58 +15,107 @@ const Wrap = styled.div`
   background-color: ${({ theme }) => theme.color.background};
 `;
 
-const sections = [
-  {
-    items: [
-      { id: 'posts', icon: 'edit-3', label: 'Posts' },
-      { id: 'post-categories', icon: 'inbox', label: 'Post Cotegories' },
-      { id: 'pages', icon: 'file-text', label: 'Pages' },
-      { id: 'products', icon: 'shopping-cart', label: 'Products' },
-      { id: 'product-categories', icon: 'package', label: 'Products Categories' },
-      { id: 'authors', icon: 'users', label: 'Authors' },
-      { id: 'events', icon: 'calendar', label: 'Events' },
-    ],
-  },
-  {
-    items: [
-      { id: 'media', icon: 'image', label: 'Media' },
-      { id: 'workflow', icon: 'workflow', label: 'Workflow' },
-    ],
-  },
-  {
-    items: [
-      {
-        id: 'analytics',
-        label: 'Analytics',
-        href: 'https://app.netlify.com/my-website/analytics',
-        icon: 'bar-chart',
-      },
-      {
-        id: 'netlify',
-        label: 'Netlify',
-        href: 'https://app.netlify.com/sites/my-website',
-        icon: 'server',
-      },
-      {
-        id: 'github-repo',
-        label: 'Github Repository',
-        href: 'https://github.com/joebob/my-website',
-        icon: 'github',
-      },
-      { id: 'settings', label: 'Settings', icon: 'settings' },
-    ],
-  },
-];
-
 export const _NavMenu = () => {
-  const [activeItemId, setActiveItemId] = useState('posts');
+  const [activeItemId, setActiveItemId] = useState('dashboard');
+  const showGroupLabels = boolean('Show group labels', false);
+  const collapsable = boolean('collapsable', true);
+
   return (
     <Wrap>
-      <NavMenu
-        activeItem={activeItemId}
-        sections={object('Sections', sections)}
-        onItemClick={item => setActiveItemId(item.id)}
-      />
+      <NavMenu collapsable={collapsable}>
+        <NavMenuGroup>
+          {showGroupLabels && <NavMenuGroupLabel>Primary items</NavMenuGroupLabel>}
+          <NavMenuItem
+            active={activeItemId === 'dashboard'}
+            onClick={() => setActiveItemId('dashboard')}
+            icon="layout"
+          >
+            Dashboard
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'workflow'}
+            onClick={() => setActiveItemId('workflow')}
+            icon="workflow"
+          >
+            Workflow
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'media'}
+            onClick={() => setActiveItemId('media')}
+            icon="image"
+          >
+            Media
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'posts'}
+            onClick={() => setActiveItemId('posts')}
+            icon="edit-3"
+          >
+            Posts
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'post-categories'}
+            onClick={() => setActiveItemId('post-categories')}
+            icon="inbox"
+          >
+            Post Categories
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'pages'}
+            onClick={() => setActiveItemId('pages')}
+            icon="file-text"
+          >
+            Pages
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'products'}
+            onClick={() => setActiveItemId('products')}
+            icon="shopping-cart"
+          >
+            Products
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'product-categories'}
+            onClick={() => setActiveItemId('product-categories')}
+            icon="package"
+          >
+            Product Categories
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'authors'}
+            onClick={() => setActiveItemId('authors')}
+            icon="users"
+          >
+            Authors
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'events'}
+            onClick={() => setActiveItemId('events')}
+            icon="calendar"
+          >
+            Events
+          </NavMenuItem>
+        </NavMenuGroup>
+        <NavMenuGroup>
+          {showGroupLabels && <NavMenuGroupLabel>Secondary Items</NavMenuGroupLabel>}
+          <NavMenuItem href="https://app.netlify.com/my-website/analytics" icon="bar-chart">
+            Analytics
+          </NavMenuItem>
+          <NavMenuItem href="https://app.netlify.com/my-website/" icon="server">
+            Netlify
+          </NavMenuItem>
+          <NavMenuItem href="https://github.com/joebob/my-website" icon="github">
+            Github Repository
+          </NavMenuItem>
+          <NavMenuItem
+            active={activeItemId === 'settings'}
+            onClick={() => setActiveItemId('settings')}
+            icon="settings"
+          >
+            Settings
+          </NavMenuItem>
+        </NavMenuGroup>
+      </NavMenu>
     </Wrap>
   );
 };

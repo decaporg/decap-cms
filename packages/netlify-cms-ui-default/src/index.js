@@ -62,7 +62,6 @@ export * from './Menu';
 export { default as Modal } from './Modal';
 export * from './Modal';
 
-export { default as NavMenu } from './NavMenu';
 export * from './NavMenu';
 
 export { default as ParticleBackground } from './ParticleBackground';

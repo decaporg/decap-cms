@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Card from '../Card';
-import NavMenuItem from './NavMenuItem';
+import NavMenuGroupLabel from './NavMenuGroupLabel';
+import NavMenuItem, { NavItemContents } from './NavMenuItem';
 import MobileNavMenu from './MobileNavMenu';
 import { isWindowDown } from '../utils/responsive';
 import { useUIContext } from '../hooks';
@@ -19,15 +20,32 @@ const NavWrap = styled(Card)`
     cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
   overflow-y: auto;
+  ${NavMenuGroupLabel} {
+    margin-top: 0;
+    opacity: 1;
+    transition: ${({ collapsed }) => (collapsed ? '200ms' : '250ms')} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  ${({ collapsed }) =>
+    collapsed
+      ? `
+    ${NavMenuGroupLabel} {
+      opacity: 0;
+      margin-top: -1rem;
+    }
+  `
+      : ``}
+  ${NavItemContents} {
+    width: 13.5rem;
+    min-width: 13.5rem;
+  }
 `;
 NavWrap.defaultProps = { elevation: 'sm', rounded: false, direction: 'right' };
-const NavGroup = styled.div`
+
+const NavContent = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: ${({ last }) => (last ? 'flex-end' : 'flex-start')};
-  flex: ${({ last }) => (last ? '1' : '0')};
+  flex: 1;
 `;
-const NavBottom = styled.div``;
 const CondenseNavMenuItem = styled(NavMenuItem)`
   width: 3.5rem;
   & svg {
@@ -36,7 +54,7 @@ const CondenseNavMenuItem = styled(NavMenuItem)`
   }
 `;
 
-const NavMenu = ({ sections, activeItem, onItemClick }) => {
+const NavMenu = ({ children, collapsable }) => {
   const { navCollapsed: collapsed, setNavCollapsed: setCollapsed } = useUIContext();
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
   const handleResize = () => setIsMobile(isWindowDown('xs'));
@@ -47,44 +65,27 @@ const NavMenu = ({ sections, activeItem, onItemClick }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (isMobile) return <MobileNavMenu />;
+  if (isMobile) return <MobileNavMenu>{children}</MobileNavMenu>;
 
   return (
     <NavWrap collapsed={collapsed}>
-      {sections &&
-        sections.map((section, index) => (
-          <NavGroup key={index} last={index && index + 1 === sections.length}>
-            {section.items &&
-              section.items.map(item => (
-                <NavMenuItem
-                  key={item.id}
-                  active={activeItem === item.id}
-                  label={item.label}
-                  icon={item.icon}
-                  collapsed={collapsed}
-                  href={item.href}
-                  onClick={() => {
-                    item.onClick && item.onClick();
-                    onItemClick && onItemClick(item);
-                  }}
-                />
-              ))}
-          </NavGroup>
-        ))}
-      <NavBottom>
+      <NavContent>{children}</NavContent>
+      {collapsable && (
         <CondenseNavMenuItem
           icon="chevron-right"
           collapsed={collapsed}
           onClick={() => setCollapsed(!collapsed)}
         />
-      </NavBottom>
+      )}
     </NavWrap>
   );
 };
 
 NavMenu.propTypes = {
-  sections: PropTypes.array,
-  // onItemClick: PropTypes.function
+  collapsable: PropTypes.bool,
+};
+NavMenu.defaultProps = {
+  collapsable: true,
 };
 
 export default NavMenu;
