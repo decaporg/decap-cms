@@ -349,7 +349,7 @@ describe('Backend', () => {
         init: jest.fn(() => implementation),
         unpublishedEntry: jest.fn().mockResolvedValue(unpublishedEntryResult),
       };
-      const config = Map({});
+      const config = Map({ media_folder: 'static/images' });
 
       const backend = new Backend(implementation, { config, backendName: 'github' });
 
@@ -357,9 +357,15 @@ describe('Backend', () => {
         name: 'posts',
       });
 
+      const state = {
+        config,
+        integrations: Map({}),
+        mediaLibrary: Map({}),
+      };
+
       const slug = 'slug';
 
-      const result = await backend.unpublishedEntry(collection, slug);
+      const result = await backend.unpublishedEntry(state, collection, slug);
       expect(result).toEqual({
         collection: 'posts',
         slug: '',
@@ -370,7 +376,7 @@ describe('Backend', () => {
         label: null,
         metaData: {},
         isModification: true,
-        mediaFiles: [{ id: '1' }],
+        mediaFiles: [{ id: '1', draft: true }],
       });
     });
   });

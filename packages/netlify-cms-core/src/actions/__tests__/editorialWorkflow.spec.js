@@ -38,7 +38,7 @@ describe('editorialWorkflow actions', () => {
       const { createAssetProxy } = require('ValueObjects/AssetProxy');
 
       const assetProxy = { name: 'name', path: 'path' };
-      const entry = { mediaFiles: [{ file: { name: 'name' }, id: '1' }] };
+      const entry = { mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }] };
       const backend = {
         unpublishedEntry: jest.fn().mockResolvedValue(entry),
       };

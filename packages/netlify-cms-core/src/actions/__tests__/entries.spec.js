@@ -19,6 +19,13 @@ const mockStore = configureMockStore(middlewares);
 
 describe('entries', () => {
   describe('createEmptyDraft', () => {
+    const { currentBackend } = require('coreSrc/backend');
+    const backend = {
+      processEntry: jest.fn((_state, _collection, entry) => Promise.resolve(entry)),
+    };
+
+    currentBackend.mockReturnValue(backend);
+
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -39,7 +46,7 @@ describe('entries', () => {
             data: {},
             isModification: null,
             label: null,
-            mediaFiles: fromJS([]),
+            mediaFiles: [],
             metaData: null,
             partial: false,
             path: '',
@@ -68,7 +75,7 @@ describe('entries', () => {
             data: { title: 'title', boolean: true },
             isModification: null,
             label: null,
-            mediaFiles: fromJS([]),
+            mediaFiles: [],
             metaData: null,
             partial: false,
             path: '',
@@ -99,7 +106,7 @@ describe('entries', () => {
               data: { title: '&lt;script&gt;alert(&#039;hello&#039;)&lt;/script&gt;' },
               isModification: null,
               label: null,
-              mediaFiles: fromJS([]),
+              mediaFiles: [],
               metaData: null,
               partial: false,
               path: '',

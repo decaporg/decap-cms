@@ -271,25 +271,20 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {
-      const entry = (await backend.unpublishedEntry(collection, slug)) as EntryValue;
+      const entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
       const assetProxies = await Promise.all(
-        entry.mediaFiles.map(({ url, file, path }) =>
-          createAssetProxy({
-            path,
-            url,
-            file,
-          }),
-        ),
+        entry.mediaFiles
+          .filter(file => file.draft)
+          .map(({ url, file, path }) =>
+            createAssetProxy({
+              path,
+              url,
+              file,
+            }),
+          ),
       );
       dispatch(addAssets(assetProxies));
-
-      let mediaFiles: MediaFile[] = entry.mediaFiles.map(file => ({ ...file, draft: true }));
-      if (!collection.has('media_folder')) {
-        const libraryFiles = getState().mediaLibrary.get('files') || [];
-        mediaFiles = mediaFiles.concat(libraryFiles);
-      }
-
-      dispatch(unpublishedEntryLoaded(collection, { ...entry, mediaFiles }));
+      dispatch(unpublishedEntryLoaded(collection, entry));
       dispatch(createDraftFromEntry(entry));
     } catch (error) {
       if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {

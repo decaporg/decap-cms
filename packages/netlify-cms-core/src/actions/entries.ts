@@ -12,7 +12,7 @@ import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { addAssets, getAsset } from './media';
-import { Collection, EntryMap, MediaFile, State, EntryFields, EntryField } from '../types/redux';
+import { Collection, EntryMap, State, EntryFields, EntryField } from '../types/redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
@@ -524,13 +524,18 @@ export function createEmptyDraft(collection: Collection, search: string) {
     const fields = collection.get('fields', List());
     const dataFields = createEmptyDraftData(fields);
 
-    let mediaFiles = [] as MediaFile[];
+    const state = getState();
+    const backend = currentBackend(state.config);
+
     if (!collection.has('media_folder')) {
       await waitForMediaLibraryToLoad(dispatch, getState());
-      mediaFiles = getState().mediaLibrary.get('files');
     }
 
-    const newEntry = createEntry(collection.get('name'), '', '', { data: dataFields, mediaFiles });
+    let newEntry = createEntry(collection.get('name'), '', '', {
+      data: dataFields,
+      mediaFiles: [],
+    });
+    newEntry = await backend.processEntry(state, collection, newEntry);
     dispatch(emptyDraftCreated(newEntry));
   };
 }

@@ -40,15 +40,15 @@ const formatByName = (name, customDelimiter) =>
     'yaml-frontmatter': frontmatterYAML(customDelimiter),
   }[name]);
 
-export function resolveFormat(collectionOrEntity, entry) {
+export function resolveFormat(collection, entry) {
   // Check for custom delimiter
-  const frontmatter_delimiter = collectionOrEntity.get('frontmatter_delimiter');
+  const frontmatter_delimiter = collection.get('frontmatter_delimiter');
   const customDelimiter = List.isList(frontmatter_delimiter)
     ? frontmatter_delimiter.toArray()
     : frontmatter_delimiter;
 
   // If the format is specified in the collection, use that format.
-  const formatSpecification = collectionOrEntity.get('format');
+  const formatSpecification = collection.get('format');
   if (formatSpecification) {
     return formatByName(formatSpecification, customDelimiter);
   }
@@ -62,7 +62,7 @@ export function resolveFormat(collectionOrEntity, entry) {
 
   // If creating a new file, and an `extension` is specified in the
   //   collection config, infer the format from that extension.
-  const extension = collectionOrEntity.get('extension');
+  const extension = collection.get('extension');
   if (extension) {
     return get(extensionFormatters, extension);
   }
