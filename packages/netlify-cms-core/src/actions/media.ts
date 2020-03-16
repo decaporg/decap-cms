@@ -114,7 +114,7 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
     } else {
       if (error) {
         // on load error default back to original path
-        asset = createAssetProxy({ path, url: path });
+        asset = createAssetProxy({ path: resolvedPath, url: path });
         dispatch(addAsset(asset));
       } else {
         dispatch(loadAsset(resolvedPath));

@@ -105,9 +105,6 @@ const EntryCard = ({
     );
   }
 
-  const asset = getAsset(image, imageField);
-  const src = asset.toString();
-
   if (viewStyle === VIEW_STYLE_GRID) {
     return (
       <GridCard>
@@ -116,7 +113,7 @@ const EntryCard = ({
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>{summary}</CardHeading>
           </CardBody>
-          {image ? <CardImage src={src} /> : null}
+          {image ? <CardImage src={getAsset(image, imageField).toString()} /> : null}
         </GridCardLink>
       </GridCard>
     );

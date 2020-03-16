@@ -134,6 +134,7 @@ class WorkflowList extends React.Component {
     handleDelete: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     isOpenAuthoring: PropTypes.bool,
+    collections: ImmutablePropTypes.orderedMap,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -161,7 +162,7 @@ class WorkflowList extends React.Component {
 
   // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
-    const { isOpenAuthoring } = this.props;
+    const { isOpenAuthoring, collections, t } = this.props;
     if (!entries) return null;
 
     if (!column) {
@@ -202,35 +203,40 @@ class WorkflowList extends React.Component {
     return (
       <div>
         {entries.map(entry => {
-          const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format('MMMM D');
+          const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format(
+            t('workflow.workflow.dateFormat'),
+          );
           const slug = entry.get('slug');
           const editLink = `collections/${entry.getIn(['metaData', 'collection'])}/entries/${slug}`;
           const ownStatus = entry.getIn(['metaData', 'status']);
-          const collection = entry.getIn(['metaData', 'collection']);
+          const collectionName = entry.getIn(['metaData', 'collection']);
+          const collectionLabel = collections
+            ?.find(collection => collection.get('name') === collectionName)
+            ?.get('label');
           const isModification = entry.get('isModification');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
           return (
             <DragSource
               namespace={DNDNamespace}
-              key={`${collection}-${slug}`}
+              key={`${collectionName}-${slug}`}
               slug={slug}
-              collection={collection}
+              collection={collectionName}
               ownStatus={ownStatus}
             >
               {connect =>
                 connect(
                   <div>
                     <WorkflowCard
-                      collectionName={collection}
+                      collectionLabel={collectionLabel || collectionName}
                       title={entry.get('label') || entry.getIn(['data', 'title'])}
                       authorLastChange={entry.getIn(['metaData', 'user'])}
                       body={entry.getIn(['data', 'body'])}
                       isModification={isModification}
                       editLink={editLink}
                       timestamp={timestamp}
-                      onDelete={this.requestDelete.bind(this, collection, slug, ownStatus)}
+                      onDelete={this.requestDelete.bind(this, collectionName, slug, ownStatus)}
                       canPublish={canPublish}
-                      onPublish={this.requestPublish.bind(this, collection, slug, ownStatus)}
+                      onPublish={this.requestPublish.bind(this, collectionName, slug, ownStatus)}
                     />
                   </div>,
                 )

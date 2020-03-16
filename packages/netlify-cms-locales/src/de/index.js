@@ -133,6 +133,14 @@ const de = {
       unknownPreview: {
         noPreview: "Keine Vorschau für Widget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Überschrift 1',
+        headingTwo: 'Überschrift 2',
+        headingThree: 'Überschrift 3',
+        headingFour: 'Überschrift 4',
+        headingFive: 'Überschrift 5',
+        headingSix: 'Überschrift 6',
+      },
     },
   },
   mediaLibrary: {
@@ -199,6 +207,7 @@ const de = {
       newPost: 'Neuer Beitrag',
       description:
         '%{smart_count} Beitrag zur Überprüfung bereit, %{readyCount} bereit zur Veröffentlichung. |||| %{smart_count} Beiträge zur Überprüfung bereit, %{readyCount} bereit zur Veröffentlichung. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} von %{author}',

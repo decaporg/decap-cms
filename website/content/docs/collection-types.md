@@ -82,7 +82,7 @@ A `files` collection contains one or more uniquely configured files. Unlike item
 
 When configuring a `files` collection, configure each file in the collection separately, and list them under the `files` field of the collection. Each file has its own list of `fields` and a unique filepath specified in the `file` field (relative to the base of the repo).
 
-**Note:** Files listed in a file collection must already exist in the hosted repository branch set in your Netlify CMS [backend configuration](../authentication-backends/). Files must also have a valid value for the file type. For example, an empty file works as valid YAML, but a JSON file must have a non-empty value to be valid, such as an empty object.
+**Note:** Files listed in a file collection must already exist in the hosted repository branch set in your Netlify CMS [backend configuration](/docs/backends-overview). Files must also have a valid value for the file type. For example, an empty file works as valid YAML, but a JSON file must have a non-empty value to be valid, such as an empty object.
 
 Example:
 

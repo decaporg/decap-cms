@@ -10,6 +10,7 @@ describe('MediaLibraryCard', () => {
     onClick: jest.fn(),
     draftText: 'Draft',
     width: '100px',
+    height: '240px',
     margin: '10px',
     isViewableImage: true,
     loadDisplayURL: jest.fn(),

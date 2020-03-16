@@ -653,7 +653,7 @@ describe('github API', () => {
       await expect(api.rebaseSingleCommit(baseCommit, commit)).resolves.toBe(newCommit);
 
       expect(api.getDifferences).toHaveBeenCalledTimes(1);
-      expect(api.getDifferences).toHaveBeenCalledWith('parent_sha', 'sha', '/repos/owner/repo');
+      expect(api.getDifferences).toHaveBeenCalledWith('parent_sha', 'sha');
 
       expect(api.updateTree).toHaveBeenCalledTimes(1);
       expect(api.updateTree).toHaveBeenCalledWith('base_commit_sha', [

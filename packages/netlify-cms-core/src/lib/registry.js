@@ -113,7 +113,16 @@ export function registerWidget(name, control, preview) {
   }
 }
 export function getWidget(name) {
-  return registry.widgets[name];
+  const widget = registry.widgets[name];
+  if (!widget) {
+    const nameLowerCase = name.toLowerCase();
+    const hasLowerCase = !!registry.widgets[nameLowerCase];
+    const message = hasLowerCase
+      ? `Could not find widget '${name}'. Did you mean '${nameLowerCase}'?`
+      : `Could not find widget '${name}'. Please make sure the widget name is configured correctly or register it via 'registerwidget'.`;
+    throw new Error(message);
+  }
+  return widget;
 }
 export function getWidgets() {
   return produce(Object.entries(registry.widgets), draft => {

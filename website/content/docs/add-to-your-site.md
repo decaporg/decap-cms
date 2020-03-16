@@ -88,13 +88,13 @@ backend:
   branch: master # Branch to update (optional; defaults to master)
 ```
 
-_(For Bitbucket repositories, use the [Bitbucket backend](../authentication-backends/#bitbucket-backend) instructions instead.)_
+_(For Bitbucket repositories, use the [Bitbucket backend](/docs/bitbucket-backend) instructions instead.)_
 
 The configuration above specifies your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it defaults to `master`.
 
 ### Editorial Workflow
 
-**Note:** Editorial workflow works with GitHub repositories only. Support for other Git hosts is [coming soon](https://github.com/netlify/netlify-cms/issues/568).
+**Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
 By default, saving a post in the CMS interface pushes a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](../configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Netlify CMS `config.yml`:
 
@@ -222,7 +222,7 @@ collections:
 
 ## Authentication
 
-Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. We're using the [Netlify](https://www.netlify.com/) platform here because it's one of the quickest ways to get started, but you can learn about other authentication options in the [Authentication &amp; Backends](../authentication-backends) doc.
+Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. We're using the [Netlify](https://www.netlify.com/) platform here because it's one of the quickest ways to get started, but you can learn about other authentication options in the [Backends](/docs/backends-overview) doc.
 
 ### Setup on Netlify
 

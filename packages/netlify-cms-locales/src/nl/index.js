@@ -136,6 +136,14 @@ const nl = {
       unknownPreview: {
         noPreview: "Geen voorvertoning voor widget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -199,6 +207,7 @@ const nl = {
       newPost: 'Nieuw bericht',
       description:
         '%{smart_count} item wacht op beoordeling, %{readyCount} klaar om live te gaan. |||| %{smart_count} items wachten op beoordeling, %{readyCount} klaar om live te gaan. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} door %{author}',

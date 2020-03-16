@@ -1,7 +1,6 @@
 require('dotenv').config();
 import express from 'express';
-import morgan from 'morgan';
-import cors from 'cors';
+import { registerCommonMiddlewares } from './middlewares/common';
 import { registerMiddleware as registerLocalGit } from './middlewares/localGit';
 import { registerMiddleware as registerLocalFs } from './middlewares/localFs';
 
@@ -9,9 +8,7 @@ const app = express();
 const port = process.env.PORT || 8081;
 
 (async () => {
-  app.use(morgan('combined'));
-  app.use(cors());
-  app.use(express.json({ limit: '50mb' }));
+  registerCommonMiddlewares(app);
 
   try {
     const mode = process.env.MODE || 'fs';

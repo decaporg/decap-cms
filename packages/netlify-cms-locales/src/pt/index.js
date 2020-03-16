@@ -113,6 +113,14 @@ const pt = {
       unknownPreview: {
         noPreview: "Nenhuma pré-visualização para o widget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -178,6 +186,7 @@ const pt = {
       newPost: 'Nova Publicação',
       description:
         '%{smart_count} entrada aguardando revisão, %{readyCount} pronta para publicação. |||| %{smart_count} entradas aguardando revisão, %{readyCount} pronta para publicação.',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} por %{author}',
