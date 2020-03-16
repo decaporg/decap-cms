@@ -243,7 +243,7 @@ export default function remarkEscapeMarkdownEntities() {
      */
     if (has(node.data, 'shortcode')) return node;
 
-    const children = node.children && node.children.map(transform);
+    const children = node.children ? { children: node.children.map(transform) } : {};
 
     /**
      * Escape characters in text and html nodes only. We store a lot of normal
@@ -255,13 +255,13 @@ export default function remarkEscapeMarkdownEntities() {
        * common characters.
        */
       const value = index === 0 ? escapeAllChars(node.value) : escapeCommonChars(node.value);
-      return { ...node, value, children };
+      return { ...node, value, ...children };
     }
 
     /**
      * Always return nodes with recursively mapped children.
      */
-    return { ...node, children };
+    return { ...node, ...children };
   };
 
   return transform;
