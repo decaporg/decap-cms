@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import LogoTile from '../LogoTile';
 import Icon from '../Icon';
+import Card from '../Card';
 import { Button, IconButton } from '../Button';
 import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
 import { isWindowDown } from '../utils/responsive';
 import { useUIContext } from '../hooks';
 
-const AppBarWrap = styled.div`
+const AppBarWrap = styled(Card)`
   background-color: ${({ theme }) => theme.color.surface};
-  box-shadow: 0 2px 4px 0
-    ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(121, 130, 145, 0.2)')};
   height: 3.5rem;
   display: flex;
   position: fixed;
@@ -20,6 +19,7 @@ const AppBarWrap = styled.div`
   left: 0;
   z-index: 100;
 `;
+AppBarWrap.defaultProps = { rounded: false, elevation: 'xs' };
 const TitleWrap = styled.div`
   padding: 0.5rem 0;
   margin-right: 1rem;
@@ -52,6 +52,7 @@ BreadcrumbSeparator.defaultProps = {
 };
 const ActionsWrap = styled.div`
   padding: 0.5rem 1rem;
+  margin-left: 1rem;
   display: flex;
   align-items: center;
   ${({ noBorder, theme }) => (noBorder ? `` : `box-shadow: -1px 0 0 0 ${theme.color.border}`)};
@@ -69,16 +70,18 @@ const EndWrap = styled.div`
   align-items: center;
 `;
 
-const AppBar = ({ breadcrumbs, renderStartContent, renderEndContent }) => {
+const AppBar = ({ renderStart, renderEnd }) => {
   const [notifMenuAnchorEl, setNotifMenuAnchorEl] = useState(null);
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
-  const { pageTitle } = useUIContext();
+  const { pageTitle, breadcrumbs } = useUIContext();
   const handleResize = () => setIsMobile(isWindowDown('xs'));
 
   useEffect(() => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  console.log({ renderStart, renderEnd });
 
   return (
     <AppBarWrap>
@@ -106,10 +109,10 @@ const AppBar = ({ breadcrumbs, renderStartContent, renderEndContent }) => {
             </Breadcrumbs>
           )}
         </TitleWrap>
-        {renderStartContent && renderStartContent()}
+        {renderStart && renderStart()}
       </StartWrap>
       <EndWrap>
-        {renderEndContent && renderEndContent()}
+        {renderEnd && renderEnd()}
         {!isMobile && (
           <ActionsWrap>
             <Button icon="bell" onClick={e => setNotifMenuAnchorEl(e.currentTarget)} />

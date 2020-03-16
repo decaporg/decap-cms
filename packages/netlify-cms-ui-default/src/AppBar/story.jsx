@@ -29,16 +29,16 @@ export default {
 export const _AppBar = () => {
   const title = text('title', 'Post Title');
   const breadcrumbs = [{ label: 'My Website' }, { label: 'Posts' }];
-  const renderStartContent = boolean('renderStartContent', false);
-  const renderEndContent = boolean('renderEndContent', false);
+  const renderStart = boolean('renderStart', false);
+  const renderEnd = boolean('renderEnd', false);
 
   return (
     <Wrap>
       <AppBar
         title={title}
         breadcrumbs={object('breadcrumbs', breadcrumbs)}
-        renderStartContent={renderStartContent ? () => <StartContent /> : null}
-        renderEndContent={renderEndContent ? () => <EndContent /> : null}
+        renderStart={renderStart ? () => <StartContent /> : null}
+        renderEnd={renderEnd ? () => <EndContent /> : null}
       />
     </Wrap>
   );

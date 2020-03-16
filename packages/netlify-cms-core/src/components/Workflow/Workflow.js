@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
@@ -14,7 +14,7 @@ import {
   components,
   shadows,
 } from 'netlify-cms-ui-legacy';
-import { Card } from 'netlify-cms-ui-default';
+import { Button, Menu, MenuItem, useUIContext } from 'netlify-cms-ui-default';
 import { createNewEntry } from 'Actions/collections';
 import {
   loadUnpublishedEntries,
@@ -25,115 +25,141 @@ import {
 import { selectUnpublishedEntriesByStatus } from 'Reducers';
 import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
 import WorkflowList from './WorkflowList';
+import { CollectionsAppBarActions } from '../Collection/Collection';
 
 const WorkflowContainer = styled.div`
-  padding: ${lengths.pageMargin} 0;
-  height: 100vh;
+  padding: 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
-const WorkflowTop = styled(Card)`
-  ${components.cardTop};
+const WorkflowTop = styled.div`
+  border-bottom: 1px solid ${({ theme }) => theme.color.border};
+  margin: -1rem -1rem 0 -1rem;
+  padding: 1rem;
 `;
 
 const WorkflowTopRow = styled.div`
   display: flex;
-  justify-content: space-between;
-
-  span[role='button'] {
-    ${shadows.dropDeep};
-  }
+  align-items: flex-start;
 `;
 
+const WorkflowTopHeadingWrap = styled.div`
+  flex: 1;
+`;
 const WorkflowTopHeading = styled.h1`
   ${components.cardTopHeading};
+  line-height: 2rem;
+  letter-spacing: -0.25px;
 `;
 
 const WorkflowTopDescription = styled.p`
-  ${components.cardTopDescription};
+  color: ${({ theme }) => theme.color.lowEmphasis};
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
 `;
 
-class Workflow extends Component {
-  static propTypes = {
-    collections: ImmutablePropTypes.orderedMap,
-    isEditorialWorkflow: PropTypes.bool.isRequired,
-    isOpenAuthoring: PropTypes.bool,
-    isFetching: PropTypes.bool,
-    unpublishedEntries: ImmutablePropTypes.map,
-    loadUnpublishedEntries: PropTypes.func.isRequired,
-    updateUnpublishedEntryStatus: PropTypes.func.isRequired,
-    publishUnpublishedEntry: PropTypes.func.isRequired,
-    deleteUnpublishedEntry: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired,
-  };
+const Workflow = ({
+  loadUnpublishedEntries,
+  isEditorialWorkflow,
+  collections,
+  isOpenAuthoring,
+  isFetching,
+  unpublishedEntries,
+  updateUnpublishedEntryStatus,
+  publishUnpublishedEntry,
+  deleteUnpublishedEntry,
+  t,
+}) => {
+  const [createMenuAnchorEl, setCreateMenuAnchorEl] = useState();
+  const { setPageTitle, setBreadcrumbs, renderAppBarEnd } = useUIContext();
 
-  componentDidMount() {
-    const { loadUnpublishedEntries, isEditorialWorkflow, collections } = this.props;
+  useEffect(() => {
+    setPageTitle(null);
+    setBreadcrumbs([
+      {
+        label: 'My Website',
+        onClick: () => {
+          history.push('/');
+        },
+      },
+      { label: 'Workflow' },
+    ]);
+    renderAppBarEnd(() => <CollectionsAppBarActions collections={collections} t={t} />);
+
     if (isEditorialWorkflow) {
       loadUnpublishedEntries(collections);
     }
-  }
+  }, []);
 
-  render() {
-    const {
-      isEditorialWorkflow,
-      isOpenAuthoring,
-      isFetching,
-      unpublishedEntries,
-      updateUnpublishedEntryStatus,
-      publishUnpublishedEntry,
-      deleteUnpublishedEntry,
-      collections,
-      t,
-    } = this.props;
+  if (!isEditorialWorkflow) return null;
+  if (isFetching) return <Loader active>{t('workflow.workflow.loading')}</Loader>;
+  const reviewCount = unpublishedEntries.get('pending_review').size;
+  const readyCount = unpublishedEntries.get('pending_publish').size;
 
-    if (!isEditorialWorkflow) return null;
-    if (isFetching) return <Loader active>{t('workflow.workflow.loading')}</Loader>;
-    const reviewCount = unpublishedEntries.get('pending_review').size;
-    const readyCount = unpublishedEntries.get('pending_publish').size;
-
-    return (
-      <WorkflowContainer>
-        <WorkflowTop>
-          <WorkflowTopRow>
+  return (
+    <WorkflowContainer>
+      <WorkflowTop>
+        <WorkflowTopRow>
+          <WorkflowTopHeadingWrap>
             <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
-            <Dropdown
-              dropdownWidth="160px"
-              dropdownPosition="left"
-              dropdownTopOverlap="40px"
-              renderButton={() => (
-                <StyledDropdownButton>{t('workflow.workflow.newPost')}</StyledDropdownButton>
-              )}
-            >
-              {collections
-                .filter(collection => collection.get('create'))
-                .toList()
-                .map(collection => (
-                  <DropdownItem
-                    key={collection.get('name')}
-                    label={collection.get('label')}
-                    onClick={() => createNewEntry(collection.get('name'))}
-                  />
-                ))}
-            </Dropdown>
-          </WorkflowTopRow>
-          <WorkflowTopDescription>
-            {t('workflow.workflow.description', {
-              smart_count: reviewCount,
-              readyCount,
-            })}
-          </WorkflowTopDescription>
-        </WorkflowTop>
-        <WorkflowList
-          entries={unpublishedEntries}
-          handleChangeStatus={updateUnpublishedEntryStatus}
-          handlePublish={publishUnpublishedEntry}
-          handleDelete={deleteUnpublishedEntry}
-          isOpenAuthoring={isOpenAuthoring}
-        />
-      </WorkflowContainer>
-    );
-  }
-}
+            <WorkflowTopDescription>
+              {t('workflow.workflow.description', {
+                smart_count: reviewCount,
+                readyCount,
+              })}
+            </WorkflowTopDescription>
+          </WorkflowTopHeadingWrap>
+          <Button primary hasMenu onClick={e => setCreateMenuAnchorEl(e.currentTarget)}>
+            {t('workflow.workflow.newPost')}
+          </Button>
+          <Menu
+            open={!!createMenuAnchorEl}
+            anchorEl={createMenuAnchorEl}
+            onClose={() => setCreateMenuAnchorEl(null)}
+          >
+            {collections
+              .filter(collection => collection.get('create'))
+              .toList()
+              .map(collection => (
+                <MenuItem
+                  key={collection.get('name')}
+                  icon={collection.get('icon') || 'edit-3'}
+                  onClick={() => {
+                    setCreateMenuAnchorEl(null);
+                    createNewEntry(collection.get('name'));
+                  }}
+                >
+                  {collection.get('label')}
+                </MenuItem>
+              ))}
+          </Menu>
+        </WorkflowTopRow>
+      </WorkflowTop>
+      <WorkflowList
+        entries={unpublishedEntries}
+        handleChangeStatus={updateUnpublishedEntryStatus}
+        handlePublish={publishUnpublishedEntry}
+        handleDelete={deleteUnpublishedEntry}
+        isOpenAuthoring={isOpenAuthoring}
+      />
+    </WorkflowContainer>
+  );
+};
+
+Workflow.propTypes = {
+  collections: ImmutablePropTypes.orderedMap,
+  isEditorialWorkflow: PropTypes.bool.isRequired,
+  isOpenAuthoring: PropTypes.bool,
+  isFetching: PropTypes.bool,
+  unpublishedEntries: ImmutablePropTypes.map,
+  loadUnpublishedEntries: PropTypes.func.isRequired,
+  updateUnpublishedEntryStatus: PropTypes.func.isRequired,
+  publishUnpublishedEntry: PropTypes.func.isRequired,
+  deleteUnpublishedEntry: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+};
 
 function mapStateToProps(state) {
   const { collections, config, globalUI } = state;

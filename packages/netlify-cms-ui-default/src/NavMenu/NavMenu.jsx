@@ -39,7 +39,7 @@ const NavWrap = styled(Card)`
     min-width: 13.5rem;
   }
 `;
-NavWrap.defaultProps = { elevation: 'sm', rounded: false, direction: 'right' };
+NavWrap.defaultProps = { elevation: 'xs', rounded: false, direction: 'right' };
 
 const NavContent = styled.div`
   display: flex;

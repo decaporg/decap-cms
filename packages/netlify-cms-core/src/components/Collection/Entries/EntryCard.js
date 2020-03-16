@@ -11,7 +11,7 @@ import { keyToPathArray } from 'Lib/stringTemplate';
 import { selectIsLoadingAsset } from 'Reducers/medias';
 
 const ListCard = styled(Card)`
-  width: ${lengths.topCardWidth};
+  width: 100%;
   margin-left: 12px;
   margin-bottom: 16px;
   overflow: hidden;

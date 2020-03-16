@@ -1,76 +1,84 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { lengths } from 'netlify-cms-ui-legacy';
+import { useUIContext, Menu, MenuItem, ButtonGroup, Button } from 'netlify-cms-ui-default';
 import { getNewEntryUrl } from 'Lib/urlHelper';
-import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
+import { createNewEntry } from 'Actions/collections';
 
 const CollectionContainer = styled.div`
-  margin: ${lengths.pageMargin};
+  margin: 1rem;
 `;
 
-const CollectionMain = styled.main`
-  padding-left: 280px;
-`;
+const CollectionMain = styled.main``;
 
-class Collection extends React.Component {
-  static propTypes = {
-    searchTerm: PropTypes.string,
-    collectionName: PropTypes.string,
-    isSearchResults: PropTypes.bool,
-    collection: ImmutablePropTypes.map.isRequired,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
-  };
+const Collection = ({
+  collection,
+  collections,
+  collectionName,
+  isSearchResults,
+  searchTerm,
+  t,
+}) => {
+  const [viewStyle, setViewStyle] = useState(VIEW_STYLE_LIST);
+  const { setPageTitle, setBreadcrumbs, renderAppBarEnd } = useUIContext();
+  const renderEntriesCollection = () => (
+    <EntriesCollection collection={collection} viewStyle={viewStyle} />
+  );
+  const renderEntriesSearch = () => (
+    <EntriesSearch collections={collections} searchTerm={searchTerm} />
+  );
+  const handleChangeViewStyle = newViewStyle =>
+    viewStyle !== newViewStyle && setViewStyle(newViewStyle);
+  const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
 
-  state = {
-    viewStyle: VIEW_STYLE_LIST,
-  };
+  useEffect(() => {
+    setPageTitle(null);
+    setBreadcrumbs([
+      {
+        label: 'My Website',
+        onClick: () => {
+          history.push('/');
+        },
+      },
+      { label: collection.get('label') },
+    ]);
+    renderAppBarEnd(() => <CollectionsAppBarActions collections={collections} t={t} />);
+  }, [collection]);
 
-  renderEntriesCollection = () => {
-    const { collection } = this.props;
-    return <EntriesCollection collection={collection} viewStyle={this.state.viewStyle} />;
-  };
+  return (
+    <CollectionContainer>
+      <CollectionMain>
+        {isSearchResults ? null : (
+          <CollectionTop
+            collection={collection}
+            collectionLabel={collection.get('label')}
+            collectionLabelSingular={collection.get('label_singular')}
+            collectionDescription={collection.get('description')}
+            newEntryUrl={newEntryUrl}
+            viewStyle={viewStyle}
+            onChangeViewStyle={handleChangeViewStyle}
+          />
+        )}
+        {isSearchResults ? renderEntriesSearch() : renderEntriesCollection()}
+      </CollectionMain>
+    </CollectionContainer>
+  );
+};
 
-  renderEntriesSearch = () => {
-    const { searchTerm, collections } = this.props;
-    return <EntriesSearch collections={collections} searchTerm={searchTerm} />;
-  };
-
-  handleChangeViewStyle = viewStyle => {
-    if (this.state.viewStyle !== viewStyle) {
-      this.setState({ viewStyle });
-    }
-  };
-
-  render() {
-    const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
-    const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
-    return (
-      <CollectionContainer>
-        <Sidebar collections={collections} searchTerm={searchTerm} />
-        <CollectionMain>
-          {isSearchResults ? null : (
-            <CollectionTop
-              collectionLabel={collection.get('label')}
-              collectionLabelSingular={collection.get('label_singular')}
-              collectionDescription={collection.get('description')}
-              newEntryUrl={newEntryUrl}
-              viewStyle={this.state.viewStyle}
-              onChangeViewStyle={this.handleChangeViewStyle}
-            />
-          )}
-          {isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection()}
-        </CollectionMain>
-      </CollectionContainer>
-    );
-  }
-}
+Collection.propTypes = {
+  searchTerm: PropTypes.string,
+  collectionName: PropTypes.string,
+  isSearchResults: PropTypes.bool,
+  collection: ImmutablePropTypes.map.isRequired,
+  collections: ImmutablePropTypes.orderedMap.isRequired,
+};
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
@@ -79,5 +87,43 @@ function mapStateToProps(state, ownProps) {
   const collection = name ? collections.get(name) : collections.first();
   return { collection, collections, collectionName: name, isSearchResults, searchTerm };
 }
+
+export const CollectionsAppBarActions = ({ collections, t }) => {
+  const createableCollections = collections.filter(collection => collection.get('create')).toList();
+  const [createMenuAnchorEl, setCreateMenuAnchorEl] = useState();
+  const handleCreatePostClick = collectionName => {
+    setCreateMenuAnchorEl(null);
+    createNewEntry(collectionName);
+  };
+
+  return (
+    <>
+      {createableCollections.size > 0 && (
+        <>
+          <ButtonGroup>
+            <Button primary onClick={e => setCreateMenuAnchorEl(e.currentTarget)} hasMenu>
+              {t('app.header.quickAdd')}
+            </Button>
+          </ButtonGroup>
+          <Menu
+            anchorEl={createMenuAnchorEl}
+            open={!!createMenuAnchorEl}
+            onClose={() => setCreateMenuAnchorEl(null)}
+          >
+            {createableCollections.map(collection => (
+              <MenuItem
+                key={collection.get('name')}
+                icon={collection.get('icon') || 'edit-3'}
+                onClick={() => handleCreatePostClick(collection.get('name'))}
+              >
+                {collection.get('label_singular') || collection.get('label')}
+              </MenuItem>
+            ))}
+          </Menu>
+        </>
+      )}
+    </>
+  );
+};
 
 export default connect(mapStateToProps)(Collection);

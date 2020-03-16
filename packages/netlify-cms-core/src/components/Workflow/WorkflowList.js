@@ -11,97 +11,79 @@ import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
 import WorkflowCard from './WorkflowCard';
 
 const WorkflowListContainer = styled.div`
-  min-height: 60%;
+  flex: 1;
   display: grid;
   grid-template-columns: 33.3% 33.3% 33.3%;
 `;
 
 const WorkflowListContainerOpenAuthoring = styled.div`
-  min-height: 60%;
+  flex: 1;
   display: grid;
   grid-template-columns: 50% 50% 0%;
 `;
 
-const styles = {
-  columnPosition: idx =>
-    (idx === 0 &&
-      css`
-        margin-left: 0;
-      `) ||
-    (idx === 2 &&
-      css`
-        margin-right: 0;
-      `) ||
-    css`
-      &:before,
-      &:after {
-        content: '';
-        display: block;
-        position: absolute;
-        width: 2px;
-        height: 80%;
-        top: 76px;
-        background-color: ${colors.textFieldBorder};
-      }
-
-      &:before {
-        left: -23px;
-      }
-
-      &:after {
-        right: -23px;
-      }
-    `,
-  column: css`
-    margin: 0 20px;
-    transition: background-color 0.5s ease;
-    border: 2px dashed transparent;
-    border-radius: 4px;
-    position: relative;
-    height: 100%;
-  `,
-  columnHovered: css`
-    border-color: ${colors.active};
-  `,
-  hiddenColumn: css`
-    display: none;
-  `,
-  hiddenRightBorder: css`
+const ColumnList = styled.div`
+  margin: 0 1rem;
+  transition: background-color 0.5s ease;
+  border: 1px dotted transparent;
+  border-radius: 4px;
+  position: relative;
+  height: 100%;
+  ${({ theme, isHovered }) => (isHovered ? `border-color: ${theme.color.primary['500']};` : ``)}
+  ${({ hidden }) => (hidden ? `display: none;` : ``)}
+  ${({ hiddenRightBorder }) =>
+    hiddenRightBorder
+      ? `
     &:not(:first-child):not(:last-child) {
       &:after {
         display: none;
       }
     }
-  `,
-};
+  `
+      : ``}
+  ${({ theme, idx }) =>
+    idx === 0
+      ? `
+    margin-left: 0;
+  `
+      : idx === 2
+      ? `
+    margin-right: 0;
+  `
+      : `
+    &:before,
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      top: 0;
+      background-color: ${theme.color.border};
+    }
+    &:before {
+      left: -1rem;
+    }
 
-const ColumnHeader = styled.h2`
-  font-size: 20px;
-  font-weight: normal;
-  padding: 4px 14px;
-  border-radius: ${lengths.borderRadius};
-  margin-bottom: 28px;
+    &:after {
+      right: -1rem;
+    }
+  `}
+`;
 
-  ${props =>
-    props.name === 'draft' &&
-    css`
-      background-color: ${colors.statusDraftBackground};
-      color: ${colors.statusDraftText};
-    `}
+const ColumnHeader = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-  ${props =>
-    props.name === 'pending_review' &&
-    css`
-      background-color: ${colors.statusReviewBackground};
-      color: ${colors.statusReviewText};
-    `}
-
-  ${props =>
-    props.name === 'pending_publish' &&
-    css`
-      background-color: ${colors.statusReadyBackground};
-      color: ${colors.statusReadyText};
-    `}
+const ColumnTitle = styled.h2`
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.color.highEmphasis};
 `;
 
 const ColumnCount = styled.p`
@@ -109,7 +91,7 @@ const ColumnCount = styled.p`
   font-weight: 500;
   color: ${colors.text};
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 0;
 `;
 
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
@@ -174,25 +156,24 @@ class WorkflowList extends React.Component {
           {(connect, { isHovered }) =>
             connect(
               <div style={{ height: '100%' }}>
-                <div
-                  css={[
-                    styles.column,
-                    styles.columnPosition(idx),
-                    isHovered && styles.columnHovered,
-                    isOpenAuthoring && currColumn === 'pending_publish' && styles.hiddenColumn,
-                    isOpenAuthoring && currColumn === 'pending_review' && styles.hiddenRightBorder,
-                  ]}
+                <ColumnList
+                  idx={idx}
+                  hidden={isOpenAuthoring && currColumn === 'pending_publish'}
+                  hiddenRightBorder={isOpenAuthoring && currColumn === 'pending_review'}
+                  isHovered={isHovered}
                 >
-                  <ColumnHeader name={currColumn}>
-                    {getColumnHeaderText(currColumn, this.props.t)}
+                  <ColumnHeader>
+                    <ColumnTitle name={currColumn}>
+                      {getColumnHeaderText(currColumn, this.props.t)}
+                    </ColumnTitle>
+                    <ColumnCount>
+                      {this.props.t('workflow.workflowList.currentEntries', {
+                        smart_count: currEntries.size,
+                      })}
+                    </ColumnCount>
                   </ColumnHeader>
-                  <ColumnCount>
-                    {this.props.t('workflow.workflowList.currentEntries', {
-                      smart_count: currEntries.size,
-                    })}
-                  </ColumnCount>
                   {this.renderColumns(currEntries, currColumn)}
-                </div>
+                </ColumnList>
               </div>,
             )
           }

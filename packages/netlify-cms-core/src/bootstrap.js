@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { Route } from 'react-router-dom';
@@ -12,7 +12,14 @@ import { I18n } from 'react-polyglot';
 import { ThemeProvider } from 'emotion-theming';
 import { GlobalStyles as GlobalLegacyStyles } from 'netlify-cms-ui-legacy';
 import { ErrorBoundary } from 'UI';
-import { lightTheme, darkTheme, GlobalStyles } from 'netlify-cms-ui-default';
+import {
+  lightTheme,
+  darkTheme,
+  isWindowDown,
+  GlobalStyles,
+  UIContext,
+  UIProvider,
+} from 'netlify-cms-ui-default';
 import App from 'App/App';
 import 'EditorWidgets';
 import 'coreSrc/mediaLibrary';
@@ -83,19 +90,38 @@ function bootstrap(opts = {}) {
    */
   const Root = () => {
     const isDark = window && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
+    const handleResize = () => {
+      const vh = window.innerHeight * 0.01;
+
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+      setIsMobile(isWindowDown('xs'));
+    };
+
+    useEffect(() => {
+      window.addEventListener('resize', handleResize);
+      handleResize();
+
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
-      <>
-        <GlobalLegacyStyles />
-        <ThemeProvider
-          theme={isDark ? { darkMode: true, ...darkTheme } : { darkMode: false, ...lightTheme }}
-        >
-          <GlobalStyles />
-          <Provider store={store}>
-            <ConnectedTranslatedApp />
-          </Provider>
-        </ThemeProvider>
-      </>
+      <UIProvider>
+        <UIContext.Consumer>
+          {({ darkMode }) => (
+            <ThemeProvider
+              theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
+            >
+              <GlobalLegacyStyles />
+              <GlobalStyles />
+              <Provider store={store}>
+                <ConnectedTranslatedApp />
+              </Provider>
+            </ThemeProvider>
+          )}
+        </UIContext.Consumer>
+      </UIProvider>
     );
   };
 

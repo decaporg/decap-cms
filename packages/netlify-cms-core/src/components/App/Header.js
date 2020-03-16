@@ -98,14 +98,12 @@ const Header = ({
 }) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState();
   const handleCreatePostClick = collectionName => {
-    setMenuAnchorEl(null)
+    setMenuAnchorEl(null);
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
     }
   };
-  const createableCollections = collections
-    .filter(collection => collection.get('create'))
-    .toList();
+  const createableCollections = collections.filter(collection => collection.get('create')).toList();
   return (
     <AppHeader>
       <AppHeaderContent>
@@ -153,7 +151,10 @@ const Header = ({
                 onClose={() => setMenuAnchorEl(null)}
               >
                 {createableCollections.map(collection => (
-                  <MenuItem key={collection.get('name')} onClick={() => handleCreatePostClick(collection.get('name'))}>
+                  <MenuItem
+                    key={collection.get('name')}
+                    onClick={() => handleCreatePostClick(collection.get('name'))}
+                  >
                     {collection.get('label_singular') || collection.get('label')}
                   </MenuItem>
                 ))}
@@ -170,7 +171,7 @@ const Header = ({
       </AppHeaderContent>
     </AppHeader>
   );
-}
+};
 
 Header.propTypes = {
   user: ImmutablePropTypes.map.isRequired,
@@ -182,6 +183,6 @@ Header.propTypes = {
   displayUrl: PropTypes.string,
   isTestRepo: PropTypes.bool,
   t: PropTypes.func.isRequired,
-}
+};
 
 export default translate()(Header);

@@ -16,13 +16,14 @@ import { openMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
 import { Toast } from 'UI';
 import { Loader, colors } from 'netlify-cms-ui-legacy';
-
+import { withUIContext, NavMenu, AppBar, ToastContainer } from 'netlify-cms-ui-default';
 import history from 'Routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import Collection from 'Collection/Collection';
 import Workflow from 'Workflow/Workflow';
 import Editor from 'Editor/Editor';
 import NotFoundPage from './NotFoundPage';
+import Nav from './Nav';
 import Header from './Header';
 
 TopBarProgress.config({
@@ -35,9 +36,29 @@ TopBarProgress.config({
 });
 
 const AppMainContainer = styled.div`
-  min-width: 800px;
-  max-width: 1440px;
-  margin: 0 auto;
+  height: 100%;
+`;
+
+const AppOuter = styled.div`
+  padding-top: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+const AppBody = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    flex-direction: column-reverse;
+  }
+`;
+const AppContent = styled.div`
+  flex: 1;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
 `;
 
 const ErrorContainer = styled.div`
@@ -156,6 +177,8 @@ class App extends React.Component {
       openMediaLibrary,
       t,
       showMediaButton,
+      appBarStart,
+      appBarEnd,
     } = this.props;
 
     if (config === null) {
@@ -180,55 +203,61 @@ class App extends React.Component {
     return (
       <>
         <Notifs CustomComponent={Toast} />
-        <Header
-          user={user}
-          collections={collections}
-          onCreateEntryClick={createNewEntry}
-          onLogoutClick={logoutUser}
-          openMediaLibrary={openMediaLibrary}
-          hasWorkflow={hasWorkflow}
-          displayUrl={config.get('display_url')}
-          isTestRepo={config.getIn(['backend', 'name']) === 'test-repo'}
-          showMediaButton={showMediaButton}
-        />
-        <AppMainContainer>
-          {isFetching && <TopBarProgress />}
-          <Switch>
-            <Redirect exact from="/" to={defaultPath} />
-            <Redirect exact from="/search/" to={defaultPath} />
-            {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-            <RouteInCollection
-              exact
-              collections={collections}
-              path="/collections/:name"
-              render={props => <Collection {...props} />}
-            />
-            <RouteInCollection
-              path="/collections/:name/new"
-              collections={collections}
-              render={props => <Editor {...props} newRecord />}
-            />
-            <RouteInCollection
-              path="/collections/:name/entries/*"
-              collections={collections}
-              render={props => <Editor {...props} />}
-            />
-            <Route
-              path="/search/:searchTerm"
-              render={props => <Collection {...props} isSearchResults />}
-            />
-            <RouteInCollection
-              path="/edit/:name/:entryName"
-              collections={collections}
-              render={({ match }) => {
-                const { name, entryName } = match.params;
-                return <Redirect to={`/collections/${name}/entries/${entryName}`} />;
-              }}
-            />
-            <Route component={NotFoundPage} />
-          </Switch>
-          {useMediaLibrary ? <MediaLibrary /> : null}
-        </AppMainContainer>
+        <AppOuter>
+          <AppBar
+            renderStart={appBarStart}
+            renderEnd={appBarEnd}
+            renderActions={() => <div>Actions here</div>}
+          />
+          <AppBody>
+            <Nav collections={collections} />
+            <AppContent>
+              <AppMainContainer>
+                {isFetching && <TopBarProgress />}
+                <Switch>
+                  <Redirect exact from="/" to={defaultPath} />
+                  <Redirect exact from="/search/" to={defaultPath} />
+                  {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+                  <RouteInCollection
+                    exact
+                    collections={collections}
+                    t={t}
+                    path="/collections/:name"
+                    render={props => <Collection t={t} {...props} />}
+                  />
+                  <RouteInCollection
+                    path="/collections/:name/new"
+                    collections={collections}
+                    t={t}
+                    render={props => <Editor {...props} newRecord />}
+                  />
+                  <RouteInCollection
+                    path="/collections/:name/entries/*"
+                    collections={collections}
+                    t={t}
+                    render={props => <Editor {...props} />}
+                  />
+                  <Route
+                    path="/search/:searchTerm"
+                    render={props => <Collection {...props} isSearchResults />}
+                  />
+                  <Route path="/media" render={props => <MediaLibrary {...props} />} />
+                  <RouteInCollection
+                    path="/edit/:name/:entryName"
+                    collections={collections}
+                    render={({ match }) => {
+                      const { name, entryName } = match.params;
+                      return <Redirect to={`/collections/${name}/entries/${entryName}`} />;
+                    }}
+                  />
+                  <Route component={NotFoundPage} />
+                </Switch>
+                {useMediaLibrary ? <MediaLibrary /> : null}
+              </AppMainContainer>
+            </AppContent>
+          </AppBody>
+          <ToastContainer />
+        </AppOuter>
       </>
     );
   }
@@ -260,4 +289,6 @@ const mapDispatchToProps = {
   logoutUser,
 };
 
-export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(translate()(App)));
+export default hot(module)(
+  withUIContext(connect(mapStateToProps, mapDispatchToProps)(translate()(App))),
+);

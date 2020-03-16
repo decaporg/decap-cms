@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { lightTheme, darkTheme } from '../theme';
 import { ToastContainer } from '../Toast';
 import GlobalStyles from '../GlobalStyles';
-import NavMenu from '../NavMenu';
+import { NavMenu } from '../NavMenu';
 import AppBar from '../AppBar';
 import { UIContext, UIProvider } from '../UIContext';
 

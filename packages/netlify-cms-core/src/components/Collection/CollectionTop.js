@@ -4,42 +4,44 @@ import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import { components, colors } from 'netlify-cms-ui-legacy';
-import { Card, Button, IconButton, ButtonGroup } from 'netlify-cms-ui-default'
+import { Card, Button, Icon, IconButton, ButtonGroup } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
-const CollectionTopContainer = styled(Card)`
-  ${components.cardTop};
+const CollectionTopContainer = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const CollectionTopRow = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 0.5rem;
+  align-items: flex-start;
 `;
-
-const CollectionTopHeading = styled.h1`
+const CollectionTopHeader = styled.div`
+  flex: 1;
+`;
+const CollectionTopTitle = styled.h1`
   ${components.cardTopHeading};
+  line-height: 2rem;
+  letter-spacing: -0.25px;
 `;
 
 const CollectionTopDescription = styled.p`
-  ${components.cardTopDescription};
+  color: ${({ theme }) => theme.color.lowEmphasis};
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
 `;
-
-const ViewControls = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 24px;
+const ViewControls = styled(ButtonGroup)`
+  margin-left: 1rem;
+  margin-right: 1rem;
+  flex-wrap: nowrap;
 `;
-
-const ViewControlsText = styled.span`
-  font-size: 14px;
-  color: ${colors.text};
-  margin-right: 12px;
+const HeaderIcon = styled(Icon)`
+  vertical-align: sub;
+  margin-right: 0.5rem;
 `;
 
 const CollectionTop = ({
+  collection,
   collectionLabel,
   collectionLabelSingular,
   collectionDescription,
@@ -51,23 +53,16 @@ const CollectionTop = ({
   return (
     <CollectionTopContainer>
       <CollectionTopRow>
-        <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
-        {newEntryUrl ? (
-          <Link to={newEntryUrl}>
-            <Button icon="plus" primary to={newEntryUrl}>
-              {t('collection.collectionTop.newButton', {
-                collectionLabel: collectionLabelSingular || collectionLabel,
-              })}
-            </Button>
-          </Link>
-        ) : null}
-      </CollectionTopRow>
-      {collectionDescription ? (
-        <CollectionTopDescription>{collectionDescription}</CollectionTopDescription>
-      ) : null}
-      <ViewControls>
-        <ViewControlsText>{t('collection.collectionTop.viewAs')}:</ViewControlsText>
-        <ButtonGroup>
+        <CollectionTopHeader>
+          <CollectionTopTitle>
+            <HeaderIcon name={collection.get('icon') || 'edit-3'} size="lg" />
+            {collectionLabel}
+          </CollectionTopTitle>
+          {collectionDescription ? (
+            <CollectionTopDescription>{collectionDescription}</CollectionTopDescription>
+          ) : null}
+        </CollectionTopHeader>
+        <ViewControls>
           <IconButton
             icon="menu"
             active={viewStyle === VIEW_STYLE_LIST}
@@ -78,8 +73,17 @@ const CollectionTop = ({
             active={viewStyle === VIEW_STYLE_GRID}
             onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
           />
-        </ButtonGroup>
-      </ViewControls>
+        </ViewControls>
+        {newEntryUrl ? (
+          <Link to={newEntryUrl}>
+            <Button icon="plus" primary to={newEntryUrl}>
+              {t('collection.collectionTop.newButton', {
+                collectionLabel: collectionLabelSingular || collectionLabel,
+              })}
+            </Button>
+          </Link>
+        ) : null}
+      </CollectionTopRow>
     </CollectionTopContainer>
   );
 };

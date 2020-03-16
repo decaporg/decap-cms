@@ -68,6 +68,10 @@ const getGlobalStyles = theme => css`
     color: ${theme.color.primary['400']};
     text-decoration: none;
   }
+
+  #nc-root {
+    height: 100%;
+  }
 `;
 
 const GlobalStyles = ({ theme }) => <Global styles={getGlobalStyles(theme)} />;

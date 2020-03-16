@@ -10,22 +10,28 @@ export const UIProvider = ({ children }) => {
   );
   const [navCollapsed, setNavCollapsed] = useLocalStorageState('navCollapsed', false);
   const [pageTitle, setPageTitle] = useState();
-  const [appBarStart, setAppBarStart] = useState();
-  const [appBarEnd, setAppBarEnd] = useState();
+  const [breadcrumbs, setBreadcrumbs] = useState();
+  const [appBarStart, setAppBarStart] = useState(() => () => null);
+  const [appBarEnd, setAppBarEnd] = useState(() => () => null);
+
+  const renderAppBarStart = fn => setAppBarStart(() => fn);
+  const renderAppBarEnd = fn => setAppBarEnd(() => fn);
 
   return (
     <UIContext.Provider
       value={{
         appBarStart,
-        setAppBarStart,
+        renderAppBarStart,
         appBarEnd,
-        setAppBarEnd,
+        renderAppBarEnd,
         darkMode,
         setDarkMode,
         navCollapsed,
         setNavCollapsed,
         pageTitle,
         setPageTitle,
+        breadcrumbs,
+        setBreadcrumbs,
       }}
     >
       {children}

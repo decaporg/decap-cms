@@ -13,7 +13,7 @@ const shadow = ({ size = 'md', direction = 'down', inset = false, theme }) => {
     spread: `${
       size === 'xs' ? `0` : size === 'sm' ? `1` : size === 'md' ? `2` : size === 'lg' ? `4` : `0`
     }px`,
-    color: darkMode ? `rgba(0, 0, 0, 0.25)` : `rgba(14, 30, 37, 0.15)`,
+    color: darkMode ? `rgba(0, 0, 0, 0.25)` : `rgba(121, 130, 145, 0.15)`,
   };
   const ambientShadow = {
     distance: `${direction === 'up' || direction === 'left' ? `-` : ``}${
@@ -25,7 +25,7 @@ const shadow = ({ size = 'md', direction = 'down', inset = false, theme }) => {
     spread: `-${
       size === 'xs' ? `2` : size === 'sm' ? `4` : size === 'md' ? `8` : size === 'lg' ? `16` : `0`
     }px`,
-    color: darkMode ? `rgba(0, 0, 0, 0.25)` : `rgba(14, 30, 37, 0.15)`,
+    color: darkMode ? `rgba(0, 0, 0, 0.25)` : `rgba(121, 130, 145, 0.15)`,
   };
 
   return `${inset ? `inset` : ``} ${
