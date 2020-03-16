@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-import { AvatarButton } from '../Button';
-import { Menu, MenuItem } from '../Menu';
-import { useUIContext } from '../hooks';
+import { AvatarButton, Menu, MenuItem, useUIContext } from 'netlify-cms-ui-default';
 
-const UserMenu = ({ className }) => {
+const UserMenu = ({ className, onLogoutClick }) => {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
   const { darkMode, setDarkMode } = useUIContext();
-
-  const handleClose = () => {
-    setUserMenuAnchorEl(null);
-  };
 
   return (
     <>
@@ -30,7 +24,7 @@ const UserMenu = ({ className }) => {
           selected={darkMode}
           onClick={() => {
             setDarkMode(!darkMode);
-            handleClose();
+            setUserMenuAnchorEl(null);
           }}
         >
           Dark Mode
@@ -39,7 +33,7 @@ const UserMenu = ({ className }) => {
           icon="help-circle"
           onClick={() => {
             window.open('https://www.netlifycms.org/community/');
-            handleClose();
+            setUserMenuAnchorEl(null);
           }}
         >
           Help
@@ -48,7 +42,7 @@ const UserMenu = ({ className }) => {
           icon="file-text"
           onClick={() => {
             window.open('https://www.netlifycms.org/docs/');
-            handleClose();
+            setUserMenuAnchorEl(null);
           }}
         >
           Documentation
@@ -57,12 +51,18 @@ const UserMenu = ({ className }) => {
           icon="alert-triangle"
           onClick={() => {
             window.open('https://github.com/netlify/netlify-cms/issues');
-            handleClose();
+            setUserMenuAnchorEl(null);
           }}
         >
           Report an issue
         </MenuItem>
-        <MenuItem icon="log-out" onClick={handleClose}>
+        <MenuItem
+          icon="log-out"
+          onClick={() => {
+            setUserMenuAnchorEl(null);
+            onLogoutClick();
+          }}
+        >
           Log out
         </MenuItem>
       </Menu>

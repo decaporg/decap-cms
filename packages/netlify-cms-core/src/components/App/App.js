@@ -24,7 +24,8 @@ import Workflow from 'Workflow/Workflow';
 import Editor from 'Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Nav from './Nav';
-import Header from './Header';
+import UserMenu from './UserMenu';
+import NotifMenu from './NotifMenu';
 
 TopBarProgress.config({
   barColors: {
@@ -69,6 +70,9 @@ const ErrorCodeBlock = styled.pre`
   margin-left: 20px;
   font-size: 15px;
   line-height: 1.5;
+`;
+const StyledUserMenu = styled(UserMenu)`
+  margin-left: 0.75rem;
 `;
 
 const getDefaultPath = collections => {
@@ -207,7 +211,12 @@ class App extends React.Component {
           <AppBar
             renderStart={appBarStart}
             renderEnd={appBarEnd}
-            renderActions={() => <div>Actions here</div>}
+            renderActions={() => (
+              <>
+                <NotifMenu />
+                <StyledUserMenu onLogoutClick={logoutUser} />
+              </>
+            )}
           />
           <AppBody>
             <Nav collections={collections} />

@@ -57,9 +57,7 @@ const ActionsWrap = styled.div`
   align-items: center;
   ${({ noBorder, theme }) => (noBorder ? `` : `box-shadow: -1px 0 0 0 ${theme.color.border}`)};
 `;
-const StyledUserMenu = styled(UserMenu)`
-  margin-left: 0.5rem;
-`;
+
 const StartWrap = styled.div`
   flex: 1;
   display: flex;
@@ -70,8 +68,7 @@ const EndWrap = styled.div`
   align-items: center;
 `;
 
-const AppBar = ({ renderStart, renderEnd }) => {
-  const [notifMenuAnchorEl, setNotifMenuAnchorEl] = useState(null);
+const AppBar = ({ renderStart, renderEnd, renderActions }) => {
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
   const { pageTitle, breadcrumbs } = useUIContext();
   const handleResize = () => setIsMobile(isWindowDown('xs'));
@@ -113,20 +110,7 @@ const AppBar = ({ renderStart, renderEnd }) => {
       </StartWrap>
       <EndWrap>
         {renderEnd && renderEnd()}
-        {!isMobile && (
-          <ActionsWrap>
-            <Button icon="bell" onClick={e => setNotifMenuAnchorEl(e.currentTarget)} />
-            <Menu
-              anchorEl={notifMenuAnchorEl}
-              open={!!notifMenuAnchorEl}
-              onClose={() => setNotifMenuAnchorEl(null)}
-              anchorOrigin={{ y: 'bottom', x: 'right' }}
-            >
-              <MenuItem onClick={() => setNotifMenuAnchorEl(null)}>No new notifications</MenuItem>
-            </Menu>
-            <StyledUserMenu />
-          </ActionsWrap>
-        )}
+        {!isMobile && renderActions && <ActionsWrap>{renderActions()}</ActionsWrap>}
       </EndWrap>
     </AppBarWrap>
   );
