@@ -201,10 +201,10 @@ export function emptyDraftCreated(entry: EntryValue) {
 /*
  * Exported simple Action Creators
  */
-export function createDraftFromEntry(entry: EntryMap, metadata?: Map<string, unknown>) {
+export function createDraftFromEntry(entry: EntryValue) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
-    payload: { entry, metadata },
+    payload: { entry },
   };
 }
 
@@ -339,25 +339,25 @@ export function loadEntry(collection: Collection, slug: string) {
     const backend = currentBackend(state.config);
     await waitForMediaLibraryToLoad(dispatch, getState());
     dispatch(entryLoading(collection, slug));
-    return backend
-      .getEntry(getState(), collection, slug)
-      .then((loadedEntry: EntryValue) => {
-        return dispatch(entryLoaded(collection, loadedEntry));
-      })
-      .catch((error: Error) => {
-        console.error(error);
-        dispatch(
-          notifSend({
-            message: {
-              details: error.message,
-              key: 'ui.toast.onFailToLoadEntries',
-            },
-            kind: 'danger',
-            dismissAfter: 8000,
-          }),
-        );
-        dispatch(entryLoadError(error, collection, slug));
-      });
+
+    try {
+      const loadedEntry = await backend.getEntry(getState(), collection, slug);
+      dispatch(entryLoaded(collection, loadedEntry));
+      dispatch(createDraftFromEntry(loadedEntry));
+    } catch (error) {
+      console.error(error);
+      dispatch(
+        notifSend({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToLoadEntries',
+          },
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      dispatch(entryLoadError(error, collection, slug));
+    }
   };
 }
 

@@ -15,7 +15,7 @@ import {
 import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry, entryDeleted, getMediaAssets } from './entries';
+import { loadEntry, entryDeleted, getMediaAssets, createDraftFromEntry } from './entries';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
@@ -290,6 +290,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       }
 
       dispatch(unpublishedEntryLoaded(collection, { ...entry, mediaFiles }));
+      dispatch(createDraftFromEntry(entry));
     } catch (error) {
       if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
         dispatch(unpublishedEntryRedirected(collection, slug));
