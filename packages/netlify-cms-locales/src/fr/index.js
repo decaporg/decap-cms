@@ -108,6 +108,14 @@ const fr = {
       unknownPreview: {
         noPreview: "Pas d'aperçu pour le gadget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -171,6 +179,7 @@ const fr = {
       newPost: 'Nouvel article',
       description:
         '%{smart_count} entrée en attente de revue, %{readyCount} prête(s) à être publiée(s). |||| %{smart_count} entrées en attente de revue, %{readyCount} prête(s) à être publiée(s). ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} par %{author}',

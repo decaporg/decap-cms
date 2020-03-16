@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { render } from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { Route } from 'react-router-dom';
@@ -12,14 +12,7 @@ import { I18n } from 'react-polyglot';
 import { ThemeProvider } from 'emotion-theming';
 import { GlobalStyles as GlobalLegacyStyles } from 'netlify-cms-ui-legacy';
 import { ErrorBoundary } from 'UI';
-import {
-  lightTheme,
-  darkTheme,
-  isWindowDown,
-  GlobalStyles,
-  UIContext,
-  UIProvider,
-} from 'netlify-cms-ui-default';
+import { lightTheme, darkTheme, GlobalStyles, UIContext, UIProvider } from 'netlify-cms-ui-default';
 import App from 'App/App';
 import 'EditorWidgets';
 import 'coreSrc/mediaLibrary';
@@ -89,14 +82,10 @@ function bootstrap(opts = {}) {
    * Create connected root component.
    */
   const Root = () => {
-    const isDark = window && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
     const handleResize = () => {
       const vh = window.innerHeight * 0.01;
 
       document.documentElement.style.setProperty('--vh', `${vh}px`);
-
-      setIsMobile(isWindowDown('xs'));
     };
 
     useEffect(() => {

@@ -1,4 +1,3 @@
 export * from './localStorageState';
 
-export * from './uiContext'
-
+export * from './uiContext';

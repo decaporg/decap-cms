@@ -52,6 +52,7 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
 
 <div
     class="emotion-8 emotion-9"
+    height="240px"
     tabindex="-1"
     width="100px"
   >
@@ -122,6 +123,7 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
 
 <div
     class="emotion-6 emotion-7"
+    height="240px"
     tabindex="-1"
     width="100px"
   >
@@ -188,6 +190,7 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
 
 <div
     class="emotion-6 emotion-7"
+    height="240px"
     tabindex="-1"
     width="100px"
   >

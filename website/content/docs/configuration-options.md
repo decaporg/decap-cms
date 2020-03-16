@@ -20,7 +20,7 @@ You can find details about all configuration options below. Note that [YAML synt
 
 *This setting is required.*
 
-The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Authentication & Backends](../authentication-backends).
+The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Backends](/docs/backends-overview).
 
 **Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging.
 
@@ -30,7 +30,7 @@ By default, all entries created or edited in the Netlify CMS are committed direc
 
 The `publish_mode` option allows you to enable "Editorial Workflow" mode for more control over the content publishing phases. All unpublished entries will be arranged in a board according to their status, and they can be further reviewed and edited before going live.
 
-**Note:** Editorial workflow works with GitHub repositories only. Support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
+**Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
@@ -284,7 +284,7 @@ A string representing the path where content in this collection can be found on 
 
 Template tags are the same as those for [slug](#slug), with the following exceptions:
 
-* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the   case with [`slug` configuration](#slug)
+* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the case with [`slug` configuration](#slug))
 * The date based template tags, such as `{{year}}` and `{{month}}`, are pulled from a date field in your entry, and may require additional configuration - see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
@@ -358,7 +358,14 @@ This setting changes options for the editor view of the collection. It has one o
 
 ### `summary`
 
-This setting allows the customisation of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`. This option over-rides the default of `title` field and `identifier_field`.
+This setting allows the customization of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`. This option over-rides the default of `title` field and `identifier_field`.
+
+**Available template tags:**
+
+Template tags are the same as those for [slug](#slug), with the following additions:
+
+* `{{filename}}` The file name without the extension part.
+* `{{extension}}` The file extension.
 
 **Example**
 

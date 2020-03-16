@@ -1,1 +1,1 @@
-export * from './withUIContext'
+export * from './withUIContext';

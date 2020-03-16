@@ -8,7 +8,7 @@ const IMAGE_HEIGHT = 160;
 
 const Card = styled.div`
   width: ${props => props.width};
-  height: 240px;
+  height: ${props => props.height};
   margin: ${props => props.margin};
   border: ${borders.textField};
   border-color: ${props => props.isSelected && colors.active};
@@ -71,6 +71,7 @@ class MediaLibraryCard extends React.Component {
       onClick,
       draftText,
       width,
+      height,
       margin,
       isPrivate,
       type,
@@ -83,6 +84,7 @@ class MediaLibraryCard extends React.Component {
         isSelected={isSelected}
         onClick={onClick}
         width={width}
+        height={height}
         margin={margin}
         tabIndex="-1"
         isPrivate={isPrivate}
@@ -114,6 +116,7 @@ MediaLibraryCard.propTypes = {
   onClick: PropTypes.func.isRequired,
   draftText: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
+  height: PropTypes.string.isRequired,
   margin: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool,
   type: PropTypes.string,

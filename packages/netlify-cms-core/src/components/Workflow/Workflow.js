@@ -5,15 +5,7 @@ import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
-import {
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  Loader,
-  lengths,
-  components,
-  shadows,
-} from 'netlify-cms-ui-legacy';
+import { Loader, components } from 'netlify-cms-ui-legacy';
 import { Button, Menu, MenuItem, useUIContext } from 'netlify-cms-ui-default';
 import { createNewEntry } from 'Actions/collections';
 import {
@@ -143,6 +135,7 @@ const Workflow = ({
         handlePublish={publishUnpublishedEntry}
         handleDelete={deleteUnpublishedEntry}
         isOpenAuthoring={isOpenAuthoring}
+        collection={collections}
       />
     </WorkflowContainer>
   );

@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
-import { colors, lengths } from 'netlify-cms-ui-legacy';
+import { colors } from 'netlify-cms-ui-legacy';
 import { Card } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { summaryFormatter } from 'Lib/formatters';
@@ -106,9 +106,6 @@ const EntryCard = ({
     );
   }
 
-  const asset = getAsset(image, imageField);
-  const src = asset.toString();
-
   if (viewStyle === VIEW_STYLE_GRID) {
     return (
       <GridCard>
@@ -117,7 +114,7 @@ const EntryCard = ({
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>{summary}</CardHeading>
           </CardBody>
-          {image ? <CardImage src={src} /> : null}
+          {image ? <CardImage src={getAsset(image, imageField).toString()} /> : null}
         </GridCardLink>
       </GridCard>
     );

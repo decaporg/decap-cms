@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.3...netlify-cms-backend-github@2.10.0) (2020-03-12)
+
+
+### Bug Fixes
+
+* **backend-github:** don't create new commits on empty diff when rebasing ([#3411](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3411)) ([70de9f6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/70de9f6b4b89dd8e23205929033745572562e8fc))
+* update repo owner from GitHub API to match casing ([#3410](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3410)) ([c2e7a24](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/c2e7a24dc20dfea5b1289c5705095d2cf8b04c54))
+
+
+### Features
+
+* **backend-github:** add pagination ([#3379](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3379)) ([39f1307](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/39f1307e3a36447da8c9b3ca79b1d7db52ea1a19))
+
+
+
+
+
+## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.2...netlify-cms-backend-github@2.9.3) (2020-03-03)
+
+
+### Bug Fixes
+
+* **locale:** Remove hard coded string literals ([#3333](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3333)) ([7c45a3c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/7c45a3cda983be427864a56e58791565eb9232e2))
+* **open-authoring:** use origin repo when calling compare API ([#3363](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3363)) ([e40b81a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/e40b81a5647d45487d6ddf17245beddd354e0f39))
+
+
+
+
+
 ## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.9.1...netlify-cms-backend-github@2.9.2) (2020-02-27)
 
 **Note:** Version bump only for package netlify-cms-backend-github

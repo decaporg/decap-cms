@@ -4,7 +4,7 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { FileUploadButton } from 'UI';
 import { buttons, shadows } from 'netlify-cms-ui-legacy';
-import { Button, ButtonGroup } from 'netlify-cms-ui-default'
+import { Button, ButtonGroup } from 'netlify-cms-ui-default';
 
 const styles = {
   button: css`

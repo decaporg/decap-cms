@@ -17,7 +17,7 @@ const ja = {
     header: {
       content: 'コンテンツ',
       workflow: 'ワークフロー',
-      media: 'データ',
+      media: 'メディア',
       quickAdd: '新規作成',
     },
     app: {
@@ -49,7 +49,7 @@ const ja = {
   editor: {
     editorControl: {
       field: {
-        optional: 'オプショナル',
+        optional: '任意',
       },
     },
     editorControlPane: {
@@ -130,6 +130,14 @@ const ja = {
       unknownPreview: {
         noPreview: "'%{widget}'のウィジェットにはプレビューがありません。",
       },
+      headingOptions: {
+        headingOne: '見出し 1',
+        headingTwo: '見出し 2',
+        headingThree: '見出し 3',
+        headingFour: '見出し 4',
+        headingFive: '見出し 5',
+        headingSix: '見出し 6',
+      },
     },
   },
   mediaLibrary: {
@@ -193,6 +201,7 @@ const ja = {
       workflowHeading: 'ワークフロー',
       newPost: '新規作成',
       description: '%{smart_count}件がレビュー中、%{readyCount}件が準備完了です。',
+      dateFormat: 'M月D日',
     },
     workflowCard: {
       lastChange: '%{author}が%{date}に更新',

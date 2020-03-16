@@ -320,6 +320,7 @@ const components = {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    min-width: max-content;
 
     &:last-of-type {
       border-bottom: 0;

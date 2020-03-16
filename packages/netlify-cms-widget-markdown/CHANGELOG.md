@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.3...netlify-cms-widget-markdown@2.10.0) (2020-03-12)
+
+
+### Bug Fixes
+
+* ja locale labels ([#3367](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3367)) ([50837b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/50837b0068ac8972ce16cbf5f238aa5a2c5bd6e9))
+
+
+### Features
+
+* Configure included editor components per field, add optional minimal height ([#3299](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3299)) ([b7b4bcb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/b7b4bcb609fd90554c82bfd685f4af1b818083c1))
+
+
+
+
+
 ## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.9.2...netlify-cms-widget-markdown@2.9.3) (2020-02-19)
 
 

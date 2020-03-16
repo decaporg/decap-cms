@@ -2,6 +2,8 @@ menu:
   docs:
     - name: start
       title: Quick Start
+    - name: backends
+      title: Backends
     - name: features
       title: Features
     - name: reference

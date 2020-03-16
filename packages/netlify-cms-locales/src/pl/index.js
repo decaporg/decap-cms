@@ -127,6 +127,14 @@ const pl = {
       unknownPreview: {
         noPreview: "Brak podglądu dla widżetu '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -192,6 +200,7 @@ const pl = {
       newPost: 'Nowa pozycja',
       description:
         '%{smart_count} pozycja oczekuje na recenzję, %{readyCount} oczekuje na publikacje. |||| %{smart_count} pozycje oczekują na recenzję, %{readyCount} oczekuje na publikacje. |||| %{smart_count} pozycji oczekuje na recenzje, %{readyCount} oczekuje na publikacje. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} przez %{author}',
