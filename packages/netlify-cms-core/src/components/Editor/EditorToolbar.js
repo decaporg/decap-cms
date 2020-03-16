@@ -16,7 +16,7 @@ import {
   components,
   buttons,
 } from 'netlify-cms-ui-legacy';
-import { Button, ButtonGroup } from 'netlify-cms-ui-default'
+import { Button, ButtonGroup } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
@@ -51,12 +51,10 @@ const DropdownButton = styled(StyledDropdownButton)`
 const ToolbarContainer = styled.div`
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
     0 2px 54px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   min-width: 800px;
   z-index: 300;
+  color: ${({ theme }) => theme.color.mediumEmphasis};
   background-color: ${({ theme }) => theme.color.surface};
   height: 66px;
   display: flex;
@@ -260,7 +258,9 @@ class EditorToolbar extends React.Component {
     return (
       <div>
         {showDelete ? (
-          <Button type="danger" onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</Button>
+          <Button type="danger" onClick={onDelete}>
+            {t('editor.editorToolbar.deleteEntry')}
+          </Button>
         ) : null}
       </div>
     );

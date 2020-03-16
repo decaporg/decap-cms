@@ -7,6 +7,7 @@ import { lengths } from 'netlify-cms-ui-legacy';
 import { useUIContext, Menu, MenuItem, ButtonGroup, Button } from 'netlify-cms-ui-default';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import CollectionTop from './CollectionTop';
+import CollectionSearch from './CollectionSearch';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
@@ -49,7 +50,12 @@ const Collection = ({
       },
       { label: collection.get('label') },
     ]);
-    renderAppBarEnd(() => <CollectionsAppBarActions collections={collections} t={t} />);
+    renderAppBarEnd(() => (
+      <>
+        <CollectionSearch t={t} />
+        <CollectionsAppBarActions collections={collections} t={t} />
+      </>
+    ));
   }, [collection]);
 
   return (

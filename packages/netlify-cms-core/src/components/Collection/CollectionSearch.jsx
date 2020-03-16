@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Icon } from 'netlify-cms-ui-default';
-import { Card } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 0 12px;
-  position: relative;
+  position: fixed;
+  left: 33%;
+  width: 33%;
 
-  ${Icon} {
+  svg {
     position: absolute;
     top: 0;
     left: 6px;
@@ -25,13 +26,18 @@ const SearchContainer = styled.div`
 `;
 
 const SearchInput = styled.input`
-  background-color: ${({ theme }) => theme.color.background};
-  border-radius: 3px;
+  color: ${({ theme }) => theme.color.highEmphasis};
+  background-color: ${({ theme }) => theme.color.surfaceHighlight};
+  border-radius: 6px;
   font-size: 14px;
   padding: 10px 6px 10px 32px;
   width: 100%;
   position: relative;
   z-index: 1;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.color.disabled};
+  }
 
   &:focus {
     outline: none;

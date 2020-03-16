@@ -77,12 +77,8 @@ const EditorContainer = styled.div`
   width: 100%;
   min-width: 800px;
   height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   overflow: hidden;
-  padding-top: 66px;
-  background-color: ${colors.background};
+  background-color: ${({ theme }) => theme.color.background};
 `;
 
 const Editor = styled.div`

@@ -221,25 +221,22 @@ class App extends React.Component {
                   <RouteInCollection
                     exact
                     collections={collections}
-                    t={t}
                     path="/collections/:name"
                     render={props => <Collection t={t} {...props} />}
                   />
                   <RouteInCollection
                     path="/collections/:name/new"
                     collections={collections}
-                    t={t}
                     render={props => <Editor {...props} newRecord />}
                   />
                   <RouteInCollection
                     path="/collections/:name/entries/*"
                     collections={collections}
-                    t={t}
                     render={props => <Editor {...props} />}
                   />
                   <Route
                     path="/search/:searchTerm"
-                    render={props => <Collection {...props} isSearchResults />}
+                    render={props => <Collection t={t} {...props} isSearchResults />}
                   />
                   <Route path="/media" render={props => <MediaLibrary {...props} />} />
                   <RouteInCollection
