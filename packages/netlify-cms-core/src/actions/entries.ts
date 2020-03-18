@@ -333,7 +333,7 @@ export function deleteLocalBackup(collection: Collection, slug: string) {
  * Exported Thunk Action Creators
  */
 
-export function loadEntry(collection: Collection, slug: string) {
+export function loadEntry(collection: Collection, slug: string, createDraft = true) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
@@ -343,7 +343,10 @@ export function loadEntry(collection: Collection, slug: string) {
     try {
       const loadedEntry = await backend.getEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
-      dispatch(createDraftFromEntry(loadedEntry));
+
+      if (createDraft) {
+        dispatch(createDraftFromEntry(loadedEntry));
+      }
     } catch (error) {
       console.error(error);
       dispatch(
