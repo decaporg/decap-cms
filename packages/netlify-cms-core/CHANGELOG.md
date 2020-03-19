@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.22.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.22.0...netlify-cms-core@2.22.1) (2020-03-19)
+
+
+### Bug Fixes
+
+* **core:** custom widget validate bug in EditorControlPane ([#3435](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3435)) ([e81a35c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e81a35ccb8381c3132872f2d461134e1f4481080))
+* call createDraftFromEntry after entry is loaded instead in Editor ([#3418](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3418)) ([2409323](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2409323dba1abe8a670d18453369fd75c6e240fb))
+
+
+
+
+
 # [2.22.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.21.0...netlify-cms-core@2.22.0) (2020-03-12)
 
 
