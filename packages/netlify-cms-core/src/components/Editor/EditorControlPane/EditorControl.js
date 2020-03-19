@@ -270,7 +270,7 @@ const mapStateToProps = state => {
   const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
-  const entities = entries.get('entities')
+  const entities = entries.get('entities');
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
@@ -306,9 +306,9 @@ const mapDispatchToProps = dispatch => {
 
 function loadEntryWidget(collectionName, slug) {
   return (dispatch, getState) => {
-    const collection = getState().collections.get(collectionName)
-    dispatch(loadEntry(collection, slug, false))
-  }
+    const collection = getState().collections.get(collectionName);
+    dispatch(loadEntry(collection, slug, false));
+  };
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
