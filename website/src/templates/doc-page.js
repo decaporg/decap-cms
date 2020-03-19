@@ -48,7 +48,7 @@ export const DocsTemplate = ({
         {filename && <EditLink collection={`docs_${group}`} filename={filename} />}
         <h1>{title}</h1>
         <Markdown body={body} html={html} />
-        {showWidgets && <Widgets widgets={widgets} />}
+        {showWidgets && <Widgets widgets={widgets} location={location} />}
       </article>
     </SidebarLayout>
   </Container>

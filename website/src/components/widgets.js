@@ -21,13 +21,13 @@ const WidgetsContent = styled.div`
   border-radius: 4px;
 `;
 
-const Widgets = ({ widgets }) => {
+const Widgets = ({ widgets, location }) => {
   const initialLoadRef = useRef(true);
   const navRef = useRef(null);
   const [currentWidget, setWidget] = useState(null);
 
   useEffect(() => {
-    const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
+    const hash = location.hash ? location.hash.replace('#', '') : '';
 
     const widgetsContainHash = widgets.edges.some(w => w.node.frontmatter.title === hash);
 
@@ -40,7 +40,7 @@ const Widgets = ({ widgets }) => {
       setWidget(widgets.edges[0].node.frontmatter.title);
     }
     initialLoadRef.current = false;
-  }, [widgets, typeof window !== `undefined` && window.location.hash]);
+  }, [widgets, location.hash]);
 
   const handleWidgetChange = (event, title) => {
     event.preventDefault();
