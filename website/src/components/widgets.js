@@ -40,7 +40,7 @@ const Widgets = ({ widgets }) => {
       setWidget(widgets.edges[0].node.frontmatter.title);
     }
     initialLoadRef.current = false;
-  }, [widgets, window.location.hash]);
+  }, [widgets, typeof window !== `undefined` && window.location.hash]);
 
   const handleWidgetChange = (event, title) => {
     event.preventDefault();
