@@ -56,6 +56,7 @@ type BitBucketPullRequest = {
   id: number;
   title: string;
   state: BitBucketPullRequestState;
+  updated_on: string;
   summary: {
     raw: string;
   };
