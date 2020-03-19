@@ -255,7 +255,6 @@ export default class Widget extends Component {
       isEditorComponent,
       isNewEditorComponent,
       t,
-      entities,
     } = this.props;
     return React.createElement(controlComponent, {
       field,
@@ -297,7 +296,6 @@ export default class Widget extends Component {
       fieldsErrors,
       controlRef,
       t,
-      entities,
     });
   }
 }

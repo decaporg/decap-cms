@@ -9,7 +9,7 @@ import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { clearFieldErrors, loadEntry } from 'Actions/entries';
+import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
 import { addAsset, boundGetAsset } from 'Actions/media';
 import { selectIsLoadingAsset } from 'Reducers/medias';
 import { query, clearSearch } from 'Actions/search';
@@ -151,7 +151,6 @@ class EditorControl extends React.Component {
       isEditorComponent,
       isNewEditorComponent,
       t,
-      entities,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -251,7 +250,6 @@ class EditorControl extends React.Component {
               isEditorComponent={isEditorComponent}
               isNewEditorComponent={isNewEditorComponent}
               t={t}
-              entities={entities}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={!!errors}>
@@ -266,11 +264,14 @@ class EditorControl extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { collections, entryDraft, entries } = state;
+  const { collections, entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
-  const entities = entries.get('entities');
+
+  const loadEntry = (collectionName, slug) => {
+    return tryLoadEntry(state, collection, slug);
+  };
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
@@ -279,7 +280,7 @@ const mapStateToProps = state => {
     collection,
     entry,
     isLoadingAsset,
-    entities,
+    loadEntry,
   };
 };
 
@@ -294,7 +295,6 @@ const mapDispatchToProps = dispatch => {
       query,
       clearSearch,
       clearFieldErrors,
-      loadEntry: loadEntryWidget,
     },
     dispatch,
   );
@@ -303,13 +303,6 @@ const mapDispatchToProps = dispatch => {
     boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
   };
 };
-
-function loadEntryWidget(collectionName, slug) {
-  return (dispatch, getState) => {
-    const collection = getState().collections.get(collectionName);
-    dispatch(loadEntry(collection, slug, false));
-  };
-}
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
