@@ -562,7 +562,8 @@ export default class API {
     );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
-    return { branch, collection, slug, path, status, newFile, mediaFiles };
+    const timeStamp = mergeRequest.updated_at;
+    return { branch, collection, slug, path, status, newFile, mediaFiles, timeStamp };
   }
 
   async readUnpublishedBranchFile(contentKey: string) {
@@ -574,13 +575,14 @@ export default class API {
       status,
       newFile,
       mediaFiles,
+      timeStamp,
     } = await this.retrieveMetadata(contentKey);
 
     const fileData = (await this.readFile(path, null, { branch })) as string;
 
     return {
       slug,
-      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
+      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status, timeStamp },
       fileData,
       isModification: !newFile,
     };
