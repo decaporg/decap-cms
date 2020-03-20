@@ -56,6 +56,7 @@ type BitBucketPullRequest = {
   id: number;
   title: string;
   state: BitBucketPullRequestState;
+  updated_on: string;
   summary: {
     raw: string;
   };
@@ -561,7 +562,8 @@ export default class API {
     );
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label);
-    return { branch, collection, slug, path, status, newFile, mediaFiles };
+    const timeStamp = pullRequest.updated_on;
+    return { branch, collection, slug, path, status, newFile, mediaFiles, timeStamp };
   }
 
   async readUnpublishedBranchFile(contentKey: string) {
@@ -573,13 +575,14 @@ export default class API {
       status,
       newFile,
       mediaFiles,
+      timeStamp,
     } = await this.retrieveMetadata(contentKey);
 
     const fileData = (await this.readFile(path, null, { branch })) as string;
 
     return {
       slug,
-      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
+      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status, timeStamp },
       fileData,
       isModification: !newFile,
     };

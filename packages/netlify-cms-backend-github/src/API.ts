@@ -539,7 +539,8 @@ export default class API {
       }));
     const label = pullRequest.labels.find(l => isCMSLabel(l.name)) as { name: string };
     const status = labelToStatus(label.name);
-    return { branch, collection, slug, path, status, newFile, mediaFiles, pullRequest };
+    const timeStamp = pullRequest.updated_at;
+    return { branch, collection, slug, path, status, newFile, mediaFiles, timeStamp, pullRequest };
   }
 
   async readFile(
@@ -628,6 +629,7 @@ export default class API {
         status,
         newFile,
         mediaFiles,
+        timeStamp,
       } = await this.retrieveMetadata(contentKey);
 
       const repoURL = this.useOpenAuthoring
@@ -641,7 +643,13 @@ export default class API {
 
       return {
         slug,
-        metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
+        metaData: {
+          branch,
+          collection,
+          objects: { entry: { path, mediaFiles } },
+          status,
+          timeStamp,
+        },
         fileData,
         isModification: !newFile,
       };
