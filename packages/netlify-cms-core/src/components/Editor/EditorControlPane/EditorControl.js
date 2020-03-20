@@ -270,7 +270,7 @@ const mapStateToProps = state => {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
   const loadEntry = (collectionName, slug) => {
-    const targetCollection = collections.get(collectionName)
+    const targetCollection = collections.get(collectionName);
     return tryLoadEntry(state, targetCollection, slug);
   };
 
