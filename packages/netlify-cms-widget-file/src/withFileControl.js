@@ -7,6 +7,7 @@ import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-default';
+import { basename } from 'netlify-cms-lib-util';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -173,6 +174,14 @@ export default function withFileControl({ forImage } = {}) {
       e.preventDefault();
       this.props.onClearMediaControl(this.controlID);
       return this.props.onChange('');
+    };
+
+    getValidateValue = () => {
+      if (this.props.value) {
+        return basename(this.props.value);
+      }
+
+      return this.props.value;
     };
 
     renderFileLink = value => {

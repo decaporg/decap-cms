@@ -97,7 +97,7 @@ export default class Widget extends Component {
   };
 
   validate = (skipWrapped = false) => {
-    let value = this.props.value;
+    let value = this.innerWrappedControl?.getValidateValue?.() || this.props.value;
     // Convert list input widget value to string for validation test
     List.isList(value) && (value = value.join(','));
 
