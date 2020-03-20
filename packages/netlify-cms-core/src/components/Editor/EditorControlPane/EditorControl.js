@@ -269,9 +269,14 @@ const mapStateToProps = state => {
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
-  const loadEntry = (collectionName, slug) => {
+  const loadEntry = async (collectionName, slug) => {
     const targetCollection = collections.get(collectionName);
-    return tryLoadEntry(state, targetCollection, slug);
+    if (targetCollection) {
+      const loadedEntry = await tryLoadEntry(state, targetCollection, slug);
+      return loadedEntry;
+    } else {
+      throw new Error(`Can't find collection '${collectionName}'`);
+    }
   };
 
   return {
