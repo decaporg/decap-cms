@@ -335,13 +335,11 @@ export function deleteLocalBackup(collection: Collection, slug: string) {
 
 export function loadEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const state = getState();
-    const backend = currentBackend(state.config);
     await waitForMediaLibraryToLoad(dispatch, getState());
     dispatch(entryLoading(collection, slug));
 
     try {
-      const loadedEntry = await backend.getEntry(getState(), collection, slug);
+      const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
     } catch (error) {
@@ -359,6 +357,12 @@ export function loadEntry(collection: Collection, slug: string) {
       dispatch(entryLoadError(error, collection, slug));
     }
   };
+}
+
+export async function tryLoadEntry(state: State, collection: Collection, slug: string) {
+  const backend = currentBackend(state.config);
+  const loadedEntry = await backend.getEntry(state, collection, slug);
+  return loadedEntry;
 }
 
 const appendActions = fromJS({

@@ -9,7 +9,7 @@ import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { clearFieldErrors, loadEntry } from 'Actions/entries';
+import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
 import { addAsset, boundGetAsset } from 'Actions/media';
 import { selectIsLoadingAsset } from 'Reducers/medias';
 import { query, clearSearch } from 'Actions/search';
@@ -269,6 +269,16 @@ const mapStateToProps = state => {
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
+  const loadEntry = async (collectionName, slug) => {
+    const targetCollection = collections.get(collectionName);
+    if (targetCollection) {
+      const loadedEntry = await tryLoadEntry(state, targetCollection, slug);
+      return loadedEntry;
+    } else {
+      throw new Error(`Can't find collection '${collectionName}'`);
+    }
+  };
+
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
     isFetching: state.search.get('isFetching'),
@@ -276,6 +286,7 @@ const mapStateToProps = state => {
     collection,
     entry,
     isLoadingAsset,
+    loadEntry,
   };
 };
 
@@ -295,10 +306,6 @@ const mapDispatchToProps = dispatch => {
   );
   return {
     ...creators,
-    loadEntry: (collectionName, slug) => (dispatch, getState) => {
-      const collection = getState().collections.get(collectionName);
-      return loadEntry(collection, slug)(dispatch, getState);
-    },
     boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
   };
 };
