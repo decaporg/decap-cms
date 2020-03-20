@@ -36,9 +36,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: update yarn to latest version
-        run: |
-          sudo apt update && sudo apt install yarn
       - name: npm install, unit test and build
         run: |
           node --version
@@ -83,9 +80,6 @@ jobs:
         with:
           name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
           path: dev-test
-      - name: update yarn to latest version
-        run: |
-          sudo apt update && sudo apt install yarn
       - name: npm install and e2e test
         run: |
           node --version
@@ -124,9 +118,6 @@ jobs:
         with:
           name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
           path: dev-test
-      - name: update yarn to latest version
-        run: |
-          sudo apt update && sudo apt install yarn
       - name: npm install and e2e test
         run: |
           node --version
