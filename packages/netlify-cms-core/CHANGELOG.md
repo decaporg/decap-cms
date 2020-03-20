@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.22.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.22.1...netlify-cms-core@2.22.2) (2020-03-20)
+
+
+### Bug Fixes
+
+* **core:** pass loadEntry to widgets as utility function and not redux action ([#3439](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3439)) ([6d87655](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6d8765521ca2f1b679b388b88b5101206c8f64f9))
+
+
+
+
+
 ## [2.22.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.22.0...netlify-cms-core@2.22.1) (2020-03-19)
 
 

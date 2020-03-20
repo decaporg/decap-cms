@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.11.1...netlify-cms-backend-bitbucket@2.11.2) (2020-03-20)
+
+
+### Bug Fixes
+
+* missing workflow timestamp ([#3445](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/3445)) ([9616cdb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/9616cdb8bb0a564771e5755bcd3718a07f2e2072))
+
+
+
+
+
 ## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.11.0...netlify-cms-backend-bitbucket@2.11.1) (2020-03-03)
 
 

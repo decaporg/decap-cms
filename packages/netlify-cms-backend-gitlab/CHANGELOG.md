@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.8.1...netlify-cms-backend-gitlab@2.8.2) (2020-03-20)
+
+
+### Bug Fixes
+
+* missing workflow timestamp ([#3445](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/3445)) ([9616cdb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/9616cdb8bb0a564771e5755bcd3718a07f2e2072))
+
+
+
+
+
 ## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.8.0...netlify-cms-backend-gitlab@2.8.1) (2020-03-03)
 
 
