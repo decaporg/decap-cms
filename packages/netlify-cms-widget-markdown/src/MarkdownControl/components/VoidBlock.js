@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { css } from '@emotion/core';
+import { zIndex } from 'netlify-cms-ui-default';
 
 const InsertionPoint = props => (
   <div
@@ -8,7 +9,7 @@ const InsertionPoint = props => (
       height: 32px;
       cursor: text;
       position: relative;
-      z-index: 1;
+      z-index: ${zIndex.zIndex1};
       margin-top: -16px;
     `}
     {...props}

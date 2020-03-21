@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths } from 'netlify-cms-ui-default';
+import { colors, colorsRaw, components, lengths, zIndex } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 import { summaryFormatter } from 'Lib/formatters';
 import { keyToPathArray } from 'Lib/stringTemplate';
@@ -68,7 +68,7 @@ const CardBody = styled.div`
     content: '';
     position: absolute;
     display: block;
-    z-index: 1;
+    z-index: ${zIndex.zIndex1};
     bottom: 0;
     left: -20%;
     height: 140%;

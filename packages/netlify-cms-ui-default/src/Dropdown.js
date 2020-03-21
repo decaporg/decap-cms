@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
-import { buttons, components } from './styles';
+import { buttons, components, zIndex } from './styles';
 import Icon from './Icon';
 
 const StyledWrapper = styled(Wrapper)`
@@ -37,7 +37,7 @@ const DropdownList = styled.ul`
   top: 0;
   left: 0;
   min-width: 100%;
-  z-index: 2;
+  z-index: ${zIndex.zIndex2};
 
   ${props => css`
     width: ${props.width};

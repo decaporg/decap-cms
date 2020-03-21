@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Icon, buttons, shadows } from 'netlify-cms-ui-default';
+import { Icon, buttons, shadows, zIndex } from 'netlify-cms-ui-default';
 
 const StyledSettingsButton = styled.button`
   ${buttons.button};
@@ -8,7 +8,7 @@ const StyledSettingsButton = styled.button`
   ${shadows.drop};
   display: block;
   position: absolute;
-  z-index: 100;
+  z-index: ${zIndex.zIndex100};
   right: 8px;
   top: 8px;
   opacity: 0.8;

@@ -4,7 +4,14 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
 import SplitPane from 'react-split-pane';
-import { colors, colorsRaw, components, transitions, IconButton } from 'netlify-cms-ui-default';
+import {
+  colors,
+  colorsRaw,
+  components,
+  transitions,
+  IconButton,
+  zIndex,
+} from 'netlify-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
@@ -107,7 +114,7 @@ const ViewControls = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 299;
+  z-index: ${zIndex.zIndex299};
 `;
 
 class EditorInterface extends Component {

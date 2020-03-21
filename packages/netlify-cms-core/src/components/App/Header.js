@@ -14,6 +14,7 @@ import {
   lengths,
   shadows,
   buttons,
+  zIndex,
 } from 'netlify-cms-ui-default';
 import SettingsDropdown from 'UI/SettingsDropdown';
 
@@ -31,7 +32,7 @@ const AppHeader = props => (
       width: 100%;
       top: 0;
       background-color: ${colors.foreground};
-      z-index: 300;
+      z-index: ${zIndex.zIndex300};
       height: ${lengths.topBarHeight};
     `}
     {...props}

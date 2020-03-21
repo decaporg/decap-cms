@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors, colorsRaw, lengths } from 'netlify-cms-ui-default';
+import { Icon, components, colors, colorsRaw, lengths, zIndex } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 
 const styles = {
@@ -43,7 +43,7 @@ const SearchContainer = styled.div`
     position: absolute;
     top: 0;
     left: 6px;
-    z-index: 2;
+    z-index: ${zIndex.zIndex2};
     height: 100%;
     display: flex;
     align-items: center;
@@ -58,7 +58,7 @@ const SearchInput = styled.input`
   padding: 10px 6px 10px 32px;
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: ${zIndex.zIndex1};
 
   &:focus {
     outline: none;
