@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Button } from '../../Button';
 import Tree from '../../Tree';
+import { FieldContext } from '../../Field';
 import { Menu, MenuItem } from '../../Menu';
 
 const ListItem = styled.div`
@@ -42,7 +43,7 @@ const AddNewIconButton = styled(Button)`
   }
 `;
 
-const ListWidgetItem = ({
+const ListInputItem = ({
   itemExpanded,
   labelSingular,
   index,
@@ -155,7 +156,9 @@ const ListWidgetItem = ({
           </ListIconActions>
         )}
       >
-        {fields && fields(handleChange, index)}
+        <FieldContext.Provider value={{ inline: true }}>
+          {fields && fields(handleChange, index)}
+        </FieldContext.Provider>
       </Tree>
       {!last && (
         <AddNewHoverZone>
@@ -170,4 +173,4 @@ const ListWidgetItem = ({
   );
 };
 
-export default ListWidgetItem;
+export default ListInputItem;

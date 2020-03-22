@@ -4,7 +4,7 @@ import { sortableContainer, sortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import Field from '../../Field';
 import { Button } from '../../Button';
-import ListWidgetItem from './ListWidgetItem';
+import ListInputItem from './ListInputItem';
 import { TreeContentWrap } from '../../Tree/Tree';
 
 const Draggable = sortableElement(({ children }) => <>{children}</>);
@@ -19,10 +19,11 @@ const StyledButton = styled(Button)`
 `;
 const ActionWrap = styled.div`
   position: absolute;
-  top: 0;
+  top: -1rem;
   right: 0;
+  z-index: 1;
 `;
-const StyledListWidgetItem = styled(ListWidgetItem)`
+const StyledListInputItem = styled(ListInputItem)`
   &.dragging {
     background: ${({ theme }) => theme.color.elevatedSurface};
     box-shadow: 0 0 4px 1px
@@ -36,7 +37,7 @@ const StyledListWidgetItem = styled(ListWidgetItem)`
   }
 `;
 
-class ListWidget extends React.Component {
+class ListInput extends React.Component {
   state = { focus: false, items: [], expandedItems: [] };
 
   addListItem = (index, data = {}) => {
@@ -116,11 +117,11 @@ class ListWidget extends React.Component {
   };
 
   render() {
-    const { name, label, labelSingular, fields, className } = this.props;
+    const { name, label, labelSingular, fields, className, inline } = this.props;
     const { focus, items, expandedItems } = this.state;
 
     return (
-      <Field label={label} labelTarget={name} focus={focus} className={className}>
+      <Field label={label} labelTarget={name} focus={focus} className={className} inline={inline}>
         <ActionWrap>
           {items && items.length > 1 && (
             <Button
@@ -152,7 +153,7 @@ class ListWidget extends React.Component {
 
             return (
               <Draggable key={name + index} index={index}>
-                <StyledListWidgetItem
+                <StyledListInputItem
                   itemExpanded={itemExpanded}
                   labelSingular={labelSingular}
                   index={index}
@@ -179,4 +180,4 @@ class ListWidget extends React.Component {
   }
 }
 
-export default ListWidget;
+export default ListInput;

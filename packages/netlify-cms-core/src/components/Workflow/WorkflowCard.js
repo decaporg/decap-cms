@@ -41,7 +41,7 @@ const CardCollection = styled.div`
 
 const CardTitle = styled.h2`
   margin: 28px 0 0;
-  color: ${colors.textLead};
+  color: ${({ theme }) => theme.color.highEmphasis};
 `;
 
 const CardDateContainer = styled.div`
@@ -58,7 +58,7 @@ const CardBody = styled.p`
 `;
 
 const CardButtonContainer = styled.div`
-  background-color: ${colors.foreground};
+  background-color: ${({ theme }) => theme.color.elevatedSurface};
   position: absolute;
   bottom: 0;
   width: 100%;

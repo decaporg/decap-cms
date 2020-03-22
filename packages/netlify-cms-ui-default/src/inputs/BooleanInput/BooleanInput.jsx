@@ -2,7 +2,7 @@ import React from 'react';
 import Field from '../../Field';
 import ToggleSwitch from '../../ToggleSwitch';
 
-const BooleanWidget = ({ name, label, onChange, className, children, value }) => {
+const BooleanInput = ({ name, label, onChange, className, children, value, inline }) => {
   return (
     <Field
       label={label}
@@ -10,6 +10,7 @@ const BooleanWidget = ({ name, label, onChange, className, children, value }) =>
       control
       onClick={() => (value ? onChange(false) : onChange(true))}
       className={className}
+      inline={inline}
     >
       <ToggleSwitch
         onChange={() => (value && onChange ? onChange(false) : onChange(true))}
@@ -20,4 +21,4 @@ const BooleanWidget = ({ name, label, onChange, className, children, value }) =>
   );
 };
 
-export default BooleanWidget;
+export default BooleanInput;

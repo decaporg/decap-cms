@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import moment from 'moment';
 import { DatetimePicker } from 'rc-datetime-picker';
-import TextWidget from '../TextWidget';
+import TextInput from '../TextInput';
 import { IconButton } from '../../Button';
 import { Menu } from '../../Menu';
 import DatepickerStyles from './DatepickerStyles';
@@ -27,7 +27,7 @@ const StyledDatetimePicker = styled(DatetimePicker)`
   background-color: transparent;
 `;
 
-const DateWidget = ({ onChange, className, ...props }) => {
+const DateInput = ({ onChange, className, inline, ...props }) => {
   const [date, setDate] = useState(moment());
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -46,16 +46,17 @@ const DateWidget = ({ onChange, className, ...props }) => {
   return (
     <>
       <DatepickerStyles />
-      <TextWidget
+      <TextInput
         {...props}
         readOnly
         value={date && date.format('YYYY-MM-DD HH:mm')}
         onClick={handleOpenMenu}
         focused={!!anchorEl}
         className={className}
+        inline={inline}
       >
         <StyledIconButton icon="calendar" active={!!anchorEl} />
-      </TextWidget>
+      </TextInput>
       <StyledMenu
         anchorOrigin={{ x: 'right', y: 'bottom' }}
         transformOrigin={{ x: 'right', y: 'top' }}
@@ -74,4 +75,4 @@ const DateWidget = ({ onChange, className, ...props }) => {
     </>
   );
 };
-export default DateWidget;
+export default DateInput;

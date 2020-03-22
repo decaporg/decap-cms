@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import TextWidget from '../TextWidget';
+import TextInput from '../TextInput';
 import { IconButton } from '../../Button';
 import { Menu, MenuItem } from '../../Menu';
 
@@ -10,7 +10,7 @@ const StyledIconButton = styled(IconButton)`
   bottom: -0.5rem;
 `;
 
-const SelectWidget = ({
+const SelectInput = ({
   options,
   value,
   onChange,
@@ -39,7 +39,7 @@ const SelectWidget = ({
 
   return (
     <>
-      <TextWidget
+      <TextInput
         {...props}
         readOnly
         label={multiple ? label : labelSingular}
@@ -63,7 +63,7 @@ const SelectWidget = ({
           icon="chevron-down"
           active={!!anchorEl}
         />
-      </TextWidget>
+      </TextInput>
       {options && (
         <Menu
           anchorOrigin={{ x: 'center', y: 'bottom' }}
@@ -88,4 +88,4 @@ const SelectWidget = ({
   );
 };
 
-export default SelectWidget;
+export default SelectInput;

@@ -8,7 +8,7 @@ import {
   ButtonGroup,
   Logo,
   ParticleBackground,
-  TextWidget,
+  TextInput,
   Slide,
   Grow,
   isWindowDown,
@@ -91,7 +91,7 @@ const StyledForm = styled.form`
   width: 100%;
   appearance: none;
 `;
-const StyledTextWidget = styled(TextWidget)`
+const StyledTextInput = styled(TextInput)`
   margin: 0 -1.5rem;
   padding: 1rem 1.75rem;
   ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
@@ -319,19 +319,21 @@ const AuthenticationPage = ({ onLogin, inProgress, config, t, handleSubmit }) =>
                     handleSubmit;
                   }}
                 >
-                  <StyledTextWidget
+                  <StyledTextInput
                     label="Email"
                     icon="mail"
                     placeholder="Type email"
                     value={email}
+                    inline
                     onChange={email => setEmail(email)}
                   />
-                  <StyledTextWidget
+                  <StyledTextInput
                     password
                     label="Password"
                     icon="lock"
                     placeholder="Type password"
                     value={password}
+                    inline
                     onChange={password => setPassword(password)}
                   />
                   <ForgotPasswordLink>Forgot your password?</ForgotPasswordLink>

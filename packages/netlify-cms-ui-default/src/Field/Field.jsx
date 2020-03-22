@@ -2,6 +2,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import Label from '../Label';
 
+export const FieldContext = React.createContext();
+
 const FocusIndicator = styled.div`
   position: absolute;
   bottom: 0;
@@ -14,10 +16,15 @@ const FocusIndicator = styled.div`
   backface-visibility: hidden;
 `;
 const FieldWrap = styled.div`
-  padding: 1rem;
+  ${({ inline }) =>
+    inline
+      ? `
+    padding: 1rem;
+      `
+      : ``}
   position: relative;
-  box-shadow: ${({ theme, noBorder }) =>
-    noBorder ? `` : `inset 0 -1px 0 0 ${theme.color.border}`};
+  ${({ theme, noBorder, inline }) =>
+    inline && !noBorder ? `box-shadow: inset 0 -1px 0 0 ${theme.color.border};` : ``}
   &:hover ${FocusIndicator} {
     height: 2px;
   }
@@ -28,6 +35,19 @@ const FieldInside = styled.div`
   max-width: 800px;
   margin: 0 auto;
   position: relative;
+  ${({ inline, focus, theme }) =>
+    inline
+      ? ``
+      : `
+    padding: 1rem;
+    box-shadow: inset 0 0 0 ${focus ? 2 : 1}px ${
+          focus ? theme.color.primary['500'] : theme.color.border
+        };
+    border-radius: 8px;
+  `}
+`;
+const ChildrenWrap = styled.div`
+  position: relative;
 `;
 
 const StyledLabel = styled(Label)`
@@ -36,16 +56,50 @@ const StyledLabel = styled(Label)`
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)};
 `;
 
-const Field = ({ focus, labelTarget, label, children, control, onClick, className, noBorder }) => (
-  <FieldWrap focus={focus} control={control} className={className} noBorder={noBorder}>
-    <FieldInside focus={focus} control={control} onClick={onClick} clickable={!!onClick}>
-      <StyledLabel control={control} htmlFor={labelTarget} focus={focus} clickable={!!onClick}>
+const Field = ({
+  focus,
+  inline,
+  labelTarget,
+  label,
+  children,
+  control,
+  onClick,
+  className,
+  noBorder,
+  insideStyle,
+}) => (
+  <FieldWrap
+    focus={focus}
+    control={control}
+    inline={inline}
+    className={className}
+    noBorder={noBorder}
+  >
+    <FieldInside
+      focus={focus}
+      control={control}
+      inline={inline}
+      onClick={onClick}
+      clickable={!!onClick}
+      style={insideStyle}
+    >
+      <StyledLabel
+        control={control}
+        inline={inline}
+        htmlFor={labelTarget}
+        focus={focus}
+        clickable={!!onClick}
+      >
         {label}
       </StyledLabel>
-      {children}
+      <ChildrenWrap>{children}</ChildrenWrap>
     </FieldInside>
-    {!noBorder && <FocusIndicator focus={focus} />}
+    {!noBorder && inline && <FocusIndicator focus={focus} />}
   </FieldWrap>
 );
 
-export default Field;
+export const withFieldContext = Component => props => (
+  <FieldContext.Consumer>{context => <Component {...props} {...context} />}</FieldContext.Consumer>
+);
+
+export default withFieldContext(Field);

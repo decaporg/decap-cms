@@ -95,8 +95,8 @@ export * from './UIContext';
 export { default as UserMenu } from './UserMenu';
 export * from './UserMenu';
 
-export { default as TextWidget } from './widgets/TextWidget';
-export * from './widgets/TextWidget';
+export { default as TextInput } from './inputs/TextInput';
+export * from './inputs/TextInput';
 
 export { Slide, Grow, Fade } from './transitions';
 

@@ -1,44 +1,45 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { withKnobs } from '@storybook/addon-knobs';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 
-import ListWidget from '.';
-import TextWidget from '../TextWidget';
-import BooleanWidget from '../BooleanWidget';
+import ListInput from '.';
+import TextInput from '../TextInput';
+import BooleanInput from '../BooleanInput';
 
-const StyledListWidget = styled(ListWidget)`
+const StyledListInput = styled(ListInput)`
   width: 100%;
 `;
 
 export default {
-  title: 'Widgets/ListWidget',
+  title: 'Inputs/ListInput',
   decorators: [withKnobs],
 };
 
-export const _ListWidget = () => {
+export const _ListInput = () => {
   const [links, setLinks] = useState([]);
 
   return (
-    <StyledListWidget
+    <StyledListInput
       name="featureLinks"
       label="Links"
       labelSingular="Link"
       onChange={links => setLinks(links)}
+      inline={boolean('inline', false)}
       fields={(setListItemValue, linkIndex) => (
         <React.Fragment>
-          <TextWidget
+          <TextInput
             name="featureLinkText"
             label="Text"
             value={links[linkIndex] && links[linkIndex].text}
             onChange={text => setListItemValue({ text }, linkIndex)}
           />
-          <TextWidget
+          <TextInput
             name="featureLinkPath"
             label="Path"
             value={links[linkIndex] && links[linkIndex].path}
             onChange={path => setListItemValue({ path }, linkIndex)}
           />
-          <BooleanWidget
+          <BooleanInput
             name="newWindow"
             label="Open In New Window"
             value={links[linkIndex] && links[linkIndex].newWindow}
@@ -50,6 +51,6 @@ export const _ListWidget = () => {
   );
 };
 
-_ListWidget.story = {
-  name: 'ListItemWidget',
+_ListInput.story = {
+  name: 'ListItemInput',
 };

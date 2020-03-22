@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import Field from '../../Field';
+import Field, { FieldContext } from '../../Field';
 import Tree from '../../Tree';
 
 const StyledField = styled(Field)`
   padding: 0 0 0 1rem;
 `;
 
-const ObjectWidget = ({ label, onChange, fields, className }) => {
+const ObjectInput = ({ label, onChange, fields, inline, className }) => {
   const [expanded, setExpanded] = useState(true);
   const [data, setData] = useState();
   const [treeType, setTreeType] = useState();
@@ -19,7 +19,11 @@ const ObjectWidget = ({ label, onChange, fields, className }) => {
   };
 
   return (
-    <StyledField className={className}>
+    <StyledField
+      className={className}
+      inline={inline}
+      insideStyle={{ paddingTop: 0, paddingBottom: 0, paddingRight: 0 }}
+    >
       <Tree
         single
         onExpandToggle={() => setExpanded(!expanded)}
@@ -30,10 +34,12 @@ const ObjectWidget = ({ label, onChange, fields, className }) => {
         onHeaderMouseEnter={() => setTreeType('success')}
         onHeaderMouseLeave={() => setTreeType(null)}
       >
-        {fields && fields(handleChange)}
+        <FieldContext.Provider value={{ inline: true }}>
+          {fields && fields(handleChange)}
+        </FieldContext.Provider>
       </Tree>
     </StyledField>
   );
 };
 
-export default ObjectWidget;
+export default ObjectInput;

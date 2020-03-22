@@ -1,43 +1,44 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { withKnobs } from '@storybook/addon-knobs';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 
-import ObjectWidget from '.';
-import TextWidget from '../TextWidget';
-import BooleanWidget from '../BooleanWidget';
+import ObjectInput from '.';
+import TextInput from '../TextInput';
+import BooleanInput from '../BooleanInput';
 
-const StyledObjectWidget = styled(ObjectWidget)`
+const StyledObjectInput = styled(ObjectInput)`
   width: 100%;
 `;
 
 export default {
-  title: 'Widgets/ObjectWidget',
+  title: 'Inputs/ObjectInput',
   decorators: [withKnobs],
 };
 
-export const _ObjectWidget = () => {
+export const _ObjectInput = () => {
   const [link, setLink] = useState({});
 
   return (
-    <StyledObjectWidget
+    <StyledObjectInput
+      inline={boolean('inline', false)}
       name="links"
       label="Link"
       onChange={link => setLink(link)}
       fields={setObjectItemValue => (
         <React.Fragment>
-          <TextWidget
+          <TextInput
             name="featureLinkText"
             label="Text"
             value={link && link.text}
             onChange={text => setObjectItemValue({ text })}
           />
-          <TextWidget
+          <TextInput
             name="featureLinkPath"
             label="Path"
             value={link && link.path}
             onChange={path => setObjectItemValue({ path })}
           />
-          <BooleanWidget
+          <BooleanInput
             name="newWindow"
             label="Open In New Window"
             value={link && link.newWindow}
@@ -49,6 +50,6 @@ export const _ObjectWidget = () => {
   );
 };
 
-_ObjectWidget.story = {
-  name: 'ObjectItemWidget',
+_ObjectInput.story = {
+  name: 'ObjectItemInput',
 };

@@ -9,7 +9,9 @@ const StyledInput = styled.input`
   border: none;
   outline: none;
   width: calc(100% + 32px);
-  font-size: ${({ title }) => (title ? '1.5rem' : '1rem')};
+  font-size: ${({ title }) => (title ? '2rem' : '1rem')};
+  font-weight: ${({ title }) => (title ? 'bold' : 'normal')};
+  letter-spacing: ${({ title }) => (title ? '-0.5px' : '0')};
   line-height: 1rem;
   caret-color: ${({ theme }) => theme.color.primary['400']};
   margin: -2rem -1rem -1rem -1rem;
@@ -25,7 +27,7 @@ const InputIcon = styled(Icon)`
   right: 0;
 `;
 
-const TextWidget = ({
+const TextInput = ({
   name,
   label,
   icon,
@@ -39,6 +41,7 @@ const TextWidget = ({
   title,
   password,
   className,
+  inline,
 }) => {
   const [focus, setFocus] = useState();
 
@@ -49,6 +52,7 @@ const TextWidget = ({
       labelTarget={name}
       focus={focused || focus}
       className={className}
+      inline={inline}
     >
       <StyledInput
         clickable={readOnly && !!onClick}
@@ -71,4 +75,4 @@ const TextWidget = ({
   );
 };
 
-export default TextWidget;
+export default TextInput;

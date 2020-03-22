@@ -2,21 +2,21 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { withKnobs } from '@storybook/addon-knobs';
 
-import SelectWidget from '.';
+import SelectInput from '.';
 
-const StyledSelectWidget = styled(SelectWidget)`
+const StyledSelectInput = styled(SelectInput)`
   width: 100%;
 `;
 
 export default {
-  title: 'Widgets/SelectWidget',
+  title: 'Inputs/SelectInput',
   decorators: [withKnobs],
 };
 
-export const _SelectWidget = () => {
+export const _SelectInput = () => {
   const [category, setCategory] = useState();
   return (
-    <StyledSelectWidget
+    <StyledSelectInput
       name="category"
       label="Categories"
       labelSingular="Category"
@@ -38,6 +38,6 @@ export const _SelectWidget = () => {
   );
 };
 
-_SelectWidget.story = {
-  name: 'SelectWidget',
+_SelectInput.story = {
+  name: 'SelectInput',
 };
