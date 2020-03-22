@@ -109,6 +109,14 @@ const es = {
       unknownPreview: {
         noPreview: "No existe una vista previa para el widget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -172,6 +180,7 @@ const es = {
       newPost: 'Nuevo artículo',
       description:
         '%{smart_count} entrada esperando revisión, %{readyCount} lista para publicar |||| %{smart_count} entradas esperando revisión, %{readyCount} listas para publicar. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} por %{author}',

@@ -108,6 +108,14 @@ const uk = {
       unknownPreview: {
         noPreview: "Відсутній перегляд для '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -170,6 +178,7 @@ const uk = {
       workflowHeading: 'Редакція',
       newPost: 'Новий запис',
       description: '%{smart_count} записів очікують розгляду, %{readyCount} готові до публікації. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} від %{author}',

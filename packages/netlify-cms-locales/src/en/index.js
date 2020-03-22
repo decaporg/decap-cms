@@ -133,6 +133,14 @@ const en = {
       unknownPreview: {
         noPreview: "No preview for widget '%{widget}'.",
       },
+      headingOptions: {
+        headingOne: 'Heading 1',
+        headingTwo: 'Heading 2',
+        headingThree: 'Heading 3',
+        headingFour: 'Heading 4',
+        headingFive: 'Heading 5',
+        headingSix: 'Heading 6',
+      },
     },
   },
   mediaLibrary: {
@@ -201,6 +209,7 @@ const en = {
       newPost: 'New Post',
       description:
         '%{smart_count} entry waiting for review, %{readyCount} ready to go live. |||| %{smart_count} entries waiting for review, %{readyCount} ready to go live. ',
+      dateFormat: 'MMMM D',
     },
     workflowCard: {
       lastChange: '%{date} by %{author}',

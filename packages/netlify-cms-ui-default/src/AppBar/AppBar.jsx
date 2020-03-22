@@ -3,9 +3,7 @@ import styled from '@emotion/styled';
 import LogoTile from '../LogoTile';
 import Icon from '../Icon';
 import Card from '../Card';
-import { Button, IconButton } from '../Button';
-import UserMenu from '../UserMenu';
-import { Menu, MenuItem } from '../Menu';
+import { IconButton } from '../Button';
 import { isWindowDown } from '../utils/responsive';
 import { useUIContext } from '../hooks';
 

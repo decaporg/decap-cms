@@ -11,12 +11,11 @@ import TopBarProgress from 'react-topbar-progress-indicator';
 import { loadConfig } from 'Actions/config';
 import { loginUser, logoutUser } from 'Actions/auth';
 import { currentBackend } from 'coreSrc/backend';
-import { createNewEntry } from 'Actions/collections';
 import { openMediaLibrary } from 'Actions/mediaLibrary';
 import MediaLibrary from 'MediaLibrary/MediaLibrary';
 import { Toast } from 'UI';
 import { Loader, colors } from 'netlify-cms-ui-legacy';
-import { withUIContext, NavMenu, AppBar, ToastContainer } from 'netlify-cms-ui-default';
+import { withUIContext, AppBar, ToastContainer } from 'netlify-cms-ui-default';
 import history from 'Routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import Collection from 'Collection/Collection';
@@ -178,9 +177,7 @@ class App extends React.Component {
       isFetching,
       publishMode,
       useMediaLibrary,
-      openMediaLibrary,
       t,
-      showMediaButton,
       appBarStart,
       appBarEnd,
     } = this.props;

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
-import { lengths } from 'netlify-cms-ui-legacy';
 import { useUIContext, Menu, MenuItem, ButtonGroup, Button } from 'netlify-cms-ui-default';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import CollectionTop from './CollectionTop';

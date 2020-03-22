@@ -358,6 +358,19 @@ describe('formatters', () => {
 
       expect(summaryFormatter('{{title}}-{{year}}', entry, collection)).toBe('title-2020');
     });
+
+    it('should handle filename and extension variables', () => {
+      const { selectInferedField } = require('../../reducers/collections');
+      selectInferedField.mockReturnValue('date');
+
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      const entry = fromJS({ path: 'post.md', data: { date, title: 'title' } });
+      const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
+
+      expect(
+        summaryFormatter('{{title}}-{{year}}-{{filename}}.{{extension}}', entry, collection),
+      ).toBe('title-2020-post.md');
+    });
   });
 
   describe('folderFormatter', () => {

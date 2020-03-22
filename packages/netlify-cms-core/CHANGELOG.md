@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.22.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.21.0...netlify-cms-core@2.22.0) (2020-03-12)
+
+
+### Bug Fixes
+
+* **type-defs:** signature for CMS.registerWidget ([#3386](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3386)) ([9c0f618](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9c0f61814859f06759798601b05d80745e4197be))
+* cache assets using resolved path on error ([#3378](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3378)) ([f3fd43b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f3fd43b81928abaea99b50ee4223de3c0498cb71))
+* ja locale labels ([#3367](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3367)) ([50837b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/50837b0068ac8972ce16cbf5f238aa5a2c5bd6e9))
+* show better error for missing widgets ([#3377](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3377)) ([ff3b62d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ff3b62d12fc853fb3b712b7b33bf7064a6579a04))
+
+
+### Features
+
+* add media lib virtualization ([#3381](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3381)) ([92e7601](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/92e76011e7a9e8b5370088b0a2c065df66b5f7fb))
+* support filename and extension vars in summary ([#3375](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3375)) ([12444ca](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/12444ca761d5cd40d766847f117e55b0e0ca6e9e))
+
+
+
+
+
+# [2.21.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.20.1...netlify-cms-core@2.21.0) (2020-03-03)
+
+
+### Bug Fixes
+
+* consider variable types when traversing collection fields ([#3347](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3347)) ([961cde4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/961cde4ea523027a1367bbdb84adbc2843a79b57))
+* ensure draft changes ([#3306](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3306)) ([cf81f58](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/cf81f587cf517b2906e261e89090de984aad3ce3))
+
+
+### Features
+
+* populate new entry from URL params ([#3343](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3343)) ([e0b1246](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e0b124681093c6f1dff9b9ec0ffab835716e66b5))
+
+
+
+
+
 ## [2.20.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.20.0...netlify-cms-core@2.20.1) (2020-02-27)
 
 

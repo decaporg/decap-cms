@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.9.4...netlify-cms-locales@1.10.0) (2020-03-13)
+
+
+### Features
+
+* **catalan-translation:** add catalan translation ([#3412](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3412)) ([66baec4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/66baec4b8f6680d2d2d24e4a8297358d72266dc9))
+
+
+
+
+
+## [1.9.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.9.3...netlify-cms-locales@1.9.4) (2020-03-12)
+
+
+### Bug Fixes
+
+* **locale:** Translate headings into german ([#3382](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3382)) ([eb21723](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/eb2172379979764b493aa9d5c933018066868d12))
+* ja locale labels ([#3367](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3367)) ([50837b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/50837b0068ac8972ce16cbf5f238aa5a2c5bd6e9))
+
+
+
+
+
+## [1.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.9.2...netlify-cms-locales@1.9.3) (2020-03-03)
+
+
+### Bug Fixes
+
+* **locale:** Remove hard coded string literals ([#3333](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3333)) ([7c45a3c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/7c45a3cda983be427864a56e58791565eb9232e2))
+
+
+
+
+
 ## [1.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.9.1...netlify-cms-locales@1.9.2) (2020-02-22)
 
 

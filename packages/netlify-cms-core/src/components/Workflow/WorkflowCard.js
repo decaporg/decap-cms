@@ -118,7 +118,7 @@ const CardDate = translate()(({ t, date, author }) => {
 });
 
 const WorkflowCard = ({
-  collectionName,
+  collectionLabel,
   title,
   authorLastChange,
   body,
@@ -132,7 +132,7 @@ const WorkflowCard = ({
 }) => (
   <WorkflowCardContainer>
     <WorkflowLink to={editLink}>
-      <CardCollection>{collectionName}</CardCollection>
+      <CardCollection>{collectionLabel}</CardCollection>
       <CardTitle>{title}</CardTitle>
       {(timestamp || authorLastChange) && <CardDate date={timestamp} author={authorLastChange} />}
       <CardBody>{body}</CardBody>
@@ -153,7 +153,7 @@ const WorkflowCard = ({
 );
 
 WorkflowCard.propTypes = {
-  collectionName: PropTypes.string.isRequired,
+  collectionLabel: PropTypes.string.isRequired,
   title: PropTypes.string,
   authorLastChange: PropTypes.string,
   body: PropTypes.string,

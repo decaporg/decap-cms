@@ -3,8 +3,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { components, colors } from 'netlify-cms-ui-legacy';
-import { Card, Button, Icon, IconButton, ButtonGroup } from 'netlify-cms-ui-default';
+import { components } from 'netlify-cms-ui-legacy';
+import { Button, Icon, IconButton, ButtonGroup } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 const CollectionTopContainer = styled.div`
