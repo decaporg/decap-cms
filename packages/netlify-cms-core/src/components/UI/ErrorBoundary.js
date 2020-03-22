@@ -49,15 +49,20 @@ const buildIssueTemplate = ({ config }) => {
   return template;
 };
 
-const buildIssueUrl = ({ title, body }) => {
-  const params = new URLSearchParams();
-  params.append('title', truncate(title, { length: 100 }));
-  if (body) {
-    params.append('body', truncate(body, { length: 4000, omission: '\n...' }));
-  }
-  params.append('labels', 'type: bug');
+const buildIssueUrl = ({ title, config }) => {
+  try {
+    const body = buildIssueTemplate({ config });
 
-  return `${ISSUE_URL}${params.toString()}`;
+    const params = new URLSearchParams();
+    params.append('title', truncate(title, { length: 100 }));
+    params.append('body', truncate(body, { length: 4000, omission: '\n...' }));
+    params.append('labels', 'type: bug');
+
+    return `${ISSUE_URL}${params.toString()}`;
+  } catch (e) {
+    console.log(e);
+    return `${ISSUE_URL}template=bug_report.md`;
+  }
 };
 
 const ErrorBoundaryContainer = styled.div`
@@ -126,7 +131,6 @@ class ErrorBoundary extends React.Component {
     hasError: false,
     errorMessage: '',
     backup: '',
-    body: undefined,
   };
 
   static getDerivedStateFromError(error) {
@@ -137,9 +141,7 @@ class ErrorBoundary extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.showBackup) {
       return (
-        this.state.errorMessage !== nextState.errorMessage ||
-        this.state.backup !== nextState.backup ||
-        this.state.body !== nextState.body
+        this.state.errorMessage !== nextState.errorMessage || this.state.backup !== nextState.backup
       );
     }
     return true;
@@ -151,16 +153,10 @@ class ErrorBoundary extends React.Component {
       backup && console.log(backup);
       this.setState({ backup });
     }
-
-    try {
-      this.setState({ body: buildIssueTemplate({ config: this.props.config }) });
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   render() {
-    const { hasError, errorMessage, backup, body } = this.state;
+    const { hasError, errorMessage, backup } = this.state;
     const { showBackup, t } = this.props;
     if (!hasError) {
       return this.props.children;
@@ -171,7 +167,7 @@ class ErrorBoundary extends React.Component {
         <p>
           <span>{t('ui.errorBoundary.details')}</span>
           <a
-            href={buildIssueUrl({ title: errorMessage, body })}
+            href={buildIssueUrl({ title: errorMessage, config: this.props.config })}
             target="_blank"
             rel="noopener noreferrer"
           >
