@@ -1,12 +1,69 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
+import yaml from 'js-yaml';
+import { truncate } from 'lodash';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'netlify-cms-lib-util';
 import { buttons, colors } from 'netlify-cms-ui-default';
 
-const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?template=bug_report.md';
+const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?';
+const getIssueTemplate = ({ version, provider, browser, config }) => `
+**Describe the bug**
+
+**To Reproduce**
+
+**Expected behavior**
+
+**Screenshots**
+
+**Applicable Versions:**
+ - Netlify CMS version: \`${version}\`
+ - Git provider: \`${provider}\`
+ - Browser version: \`${browser}\`
+
+**CMS configuration**
+\`\`\`
+${config}
+\`\`\`
+
+**Additional context**
+`;
+
+const buildIssueTemplate = ({ config }) => {
+  let version = '';
+  if (typeof NETLIFY_CMS_VERSION === 'string') {
+    version = `netlify-cms@${NETLIFY_CMS_VERSION}`;
+  } else if (typeof NETLIFY_CMS_APP_VERSION === 'string') {
+    version = `netlify-cms-app@${NETLIFY_CMS_APP_VERSION}`;
+  }
+  const template = getIssueTemplate({
+    version,
+    provider: config.getIn(['backend', 'name']),
+    browser: navigator.userAgent,
+    config: yaml.safeDump(config.toJS()),
+  });
+
+  return template;
+};
+
+const buildIssueUrl = ({ title, config }) => {
+  try {
+    const body = buildIssueTemplate({ config });
+
+    const params = new URLSearchParams();
+    params.append('title', truncate(title, { length: 100 }));
+    params.append('body', truncate(body, { length: 4000, omission: '\n...' }));
+    params.append('labels', 'type: bug');
+
+    return `${ISSUE_URL}${params.toString()}`;
+  } catch (e) {
+    console.log(e);
+    return `${ISSUE_URL}template=bug_report.md`;
+  }
+};
 
 const ErrorBoundaryContainer = styled.div`
   padding: 40px;
@@ -67,6 +124,7 @@ class ErrorBoundary extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     t: PropTypes.func.isRequired,
+    config: ImmutablePropTypes.map.isRequired,
   };
 
   state = {
@@ -92,7 +150,7 @@ class ErrorBoundary extends React.Component {
   async componentDidUpdate() {
     if (this.props.showBackup) {
       const backup = await localForage.getItem('backup');
-      console.log(backup);
+      backup && console.log(backup);
       this.setState({ backup });
     }
   }
@@ -108,7 +166,11 @@ class ErrorBoundary extends React.Component {
         <h1>{t('ui.errorBoundary.title')}</h1>
         <p>
           <span>{t('ui.errorBoundary.details')}</span>
-          <a href={ISSUE_URL} target="_blank" rel="noopener noreferrer">
+          <a
+            href={buildIssueUrl({ title: errorMessage, config: this.props.config })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {t('ui.errorBoundary.reportIt')}
           </a>
         </p>
