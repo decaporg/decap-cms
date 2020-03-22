@@ -351,18 +351,15 @@ export const selectMediaFolder = (
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
   if (customFolder) {
-    const entryPath = entryMap?.get('path');
-    if (entryPath) {
-      const entryDir = dirname(entryPath);
-      const folder = evaluateFolder(name, config, collection!, entryMap, field);
+    const folder = evaluateFolder(name, config, collection!, entryMap, field);
+    if (folder.startsWith('/')) {
       // return absolute paths as is
-      if (folder.startsWith('/')) {
-        mediaFolder = join(folder);
-      } else {
-        mediaFolder = join(entryDir, folder as string);
-      }
+      mediaFolder = join(folder);
     } else {
-      mediaFolder = join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
+      const entryPath = entryMap?.get('path');
+      mediaFolder = entryPath
+        ? join(dirname(entryPath), folder)
+        : join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
     }
   }
 

@@ -8,15 +8,9 @@ import {
 } from '../entries';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import AssetProxy from '../../valueObjects/AssetProxy';
 
 jest.mock('coreSrc/backend');
-jest.mock('../media', () => {
-  const media = jest.requireActual('../media');
-  return {
-    ...media,
-    getAsset: jest.fn(),
-  };
-});
 jest.mock('netlify-cms-lib-util');
 jest.mock('../mediaLibrary');
 
@@ -25,6 +19,13 @@ const mockStore = configureMockStore(middlewares);
 
 describe('entries', () => {
   describe('createEmptyDraft', () => {
+    const { currentBackend } = require('coreSrc/backend');
+    const backend = {
+      processEntry: jest.fn((_state, _collection, entry) => Promise.resolve(entry)),
+    };
+
+    currentBackend.mockReturnValue(backend);
+
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -45,7 +46,7 @@ describe('entries', () => {
             data: {},
             isModification: null,
             label: null,
-            mediaFiles: fromJS([]),
+            mediaFiles: [],
             metaData: null,
             partial: false,
             path: '',
@@ -74,7 +75,7 @@ describe('entries', () => {
             data: { title: 'title', boolean: true },
             isModification: null,
             label: null,
-            mediaFiles: fromJS([]),
+            mediaFiles: [],
             metaData: null,
             partial: false,
             path: '',
@@ -105,7 +106,7 @@ describe('entries', () => {
               data: { title: '&lt;script&gt;alert(&#039;hello&#039;)&lt;/script&gt;' },
               isModification: null,
               label: null,
-              mediaFiles: fromJS([]),
+              mediaFiles: [],
               metaData: null,
               partial: false,
               path: '',
@@ -286,20 +287,11 @@ describe('entries', () => {
       jest.clearAllMocks();
     });
 
-    it('should map mediaFiles to assets', async () => {
-      const { getAsset } = require('../media');
+    it('should map mediaFiles to assets', () => {
       const mediaFiles = fromJS([{ path: 'path1' }, { path: 'path2', draft: true }]);
 
-      const asset = { path: 'path1' };
-
-      getAsset.mockReturnValue(() => asset);
-
-      const collection = Map();
       const entry = Map({ mediaFiles });
-      await expect(getMediaAssets({ entry, collection })).resolves.toEqual([asset]);
-
-      expect(getAsset).toHaveBeenCalledTimes(1);
-      expect(getAsset).toHaveBeenCalledWith({ collection, path: 'path2', entry });
+      expect(getMediaAssets({ entry })).toEqual([new AssetProxy({ path: 'path2' })]);
     });
   });
 });

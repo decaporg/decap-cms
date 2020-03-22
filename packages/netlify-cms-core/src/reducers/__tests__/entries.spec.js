@@ -142,7 +142,7 @@ describe('entries', () => {
             folder: 'src/docs/getting-started',
             media_folder: '/static/images/docs/getting-started',
           }),
-          fromJS({ path: 'src/docs/getting-started/with-github.md' }),
+          fromJS({}),
           undefined,
         ),
       ).toEqual('static/images/docs/getting-started');
@@ -184,7 +184,6 @@ describe('entries', () => {
       };
 
       const entry = fromJS({
-        path: 'src/docs/extending/overview.md',
         data: { title: 'Overview' },
       });
       const collection = fromJS({
