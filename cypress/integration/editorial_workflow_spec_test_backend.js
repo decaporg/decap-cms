@@ -23,6 +23,7 @@ import {
   duplicateEntry,
 } from '../utils/steps';
 import { setting1, setting2, workflowStatus, editorStatus, publishTypes } from '../utils/constants';
+import { fromJS } from 'immutable';
 
 const entry1 = {
   title: 'first title',
@@ -144,5 +145,66 @@ describe('Test Backend Editorial Workflow', () => {
     updateWorkflowStatusInEditor(editorStatus.ready);
     publishEntryInEditor(publishTypes.publishNow);
     duplicateEntry(entry1);
+  });
+
+  it('cannot publish when "publish" is false', () => {
+    cy.visit('/', {
+      onBeforeLoad: window => {
+        window.CMS_MANUAL_INIT = true;
+      },
+      onLoad: window => {
+        window.CMS.init({
+          config: fromJS({
+            backend: {
+              name: 'test-repo',
+            },
+            publish_mode: 'editorial_workflow',
+            load_config_file: false,
+            media_folder: 'assets/uploads',
+            collections: [
+              {
+                label: 'Posts',
+                name: 'post',
+                folder: '_posts',
+                label_singular: 'Post',
+                create: true,
+                publish: false,
+                fields: [
+                  { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' },
+                  {
+                    label: 'Publish Date',
+                    name: 'date',
+                    widget: 'datetime',
+                    dateFormat: 'YYYY-MM-DD',
+                    timeFormat: 'HH:mm',
+                    format: 'YYYY-MM-DD HH:mm',
+                  },
+                  {
+                    label: 'Cover Image',
+                    name: 'image',
+                    widget: 'image',
+                    required: false,
+                    tagname: '',
+                  },
+                  {
+                    label: 'Body',
+                    name: 'body',
+                    widget: 'markdown',
+                    hint: 'Main content goes here.',
+                  },
+                ],
+              },
+            ],
+          }),
+        });
+      },
+    });
+    cy.contains('button', 'Login').click();
+    createPost(entry1);
+    cy.contains('span', 'Publish').should('not.exist');
+    exitEditor();
+    goToWorkflow();
+    updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+    cy.contains('button', 'Publish new entry').should('not.exist');
   });
 });

@@ -126,6 +126,7 @@ const WorkflowCard = ({
   editLink,
   timestamp,
   onDelete,
+  allowPublish,
   canPublish,
   onPublish,
   t,
@@ -143,11 +144,13 @@ const WorkflowCard = ({
           ? t('workflow.workflowCard.deleteChanges')
           : t('workflow.workflowCard.deleteNewEntry')}
       </DeleteButton>
-      <PublishButton disabled={!canPublish} onClick={onPublish}>
-        {isModification
-          ? t('workflow.workflowCard.publishChanges')
-          : t('workflow.workflowCard.publishNewEntry')}
-      </PublishButton>
+      {allowPublish && (
+        <PublishButton disabled={!canPublish} onClick={onPublish}>
+          {isModification
+            ? t('workflow.workflowCard.publishChanges')
+            : t('workflow.workflowCard.publishNewEntry')}
+        </PublishButton>
+      )}
     </CardButtonContainer>
   </WorkflowCardContainer>
 );
@@ -161,6 +164,7 @@ WorkflowCard.propTypes = {
   editLink: PropTypes.string.isRequired,
   timestamp: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
+  allowPublish: PropTypes.bool.isRequired,
   canPublish: PropTypes.bool.isRequired,
   onPublish: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,

@@ -58,6 +58,10 @@ export function applyDefaults(config) {
       map.set(
         'collections',
         map.get('collections').map(collection => {
+          if (!collection.has('publish')) {
+            collection = collection.set('publish', true);
+          }
+
           const folder = collection.get('folder');
           if (folder) {
             if (collection.has('path') && !collection.has('media_folder')) {
