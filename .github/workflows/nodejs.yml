@@ -18,14 +18,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        node-version: [12.x]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -36,9 +36,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: update yarn to latest version
-        run: |
-          sudo apt update && sudo apt install yarn
       - name: npm install, unit test and build
         run: |
           node --version
@@ -53,25 +50,26 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - uses: actions/upload-artifact@master
         with:
-          name: dev-test-website-node-${{ matrix.node-version }}
+          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
           path: dev-test
 
   # non forked workflow (has access to build secrets)
   e2e-with-cypress-record:
     needs: build
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
         machine: [1, 2, 3, 4, 5, 6, 7, 8]
+        node-version: [12.x]
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 10.x
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 10.x
+          node-version: ${{ matrix.node-version }}
       - uses: actions/cache@v1
         with:
           path: ~/.cache/yarn
@@ -80,11 +78,8 @@ jobs:
             ${{ runner.os }}-yarn-
       - uses: actions/download-artifact@master
         with:
-          name: dev-test-website-node-10.x
+          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
           path: dev-test
-      - name: update yarn to latest version
-        run: |
-          sudo apt update && sudo apt install yarn
       - name: npm install and e2e test
         run: |
           node --version
@@ -101,14 +96,18 @@ jobs:
   e2e-no-cypress-record:
     needs: build
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 10.x
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 10.x
+          node-version: ${{ matrix.node-version }}
       - uses: actions/cache@v1
         with:
           path: ~/.cache/yarn
@@ -117,11 +116,8 @@ jobs:
             ${{ runner.os }}-yarn-
       - uses: actions/download-artifact@master
         with:
-          name: dev-test-website-node-10.x
+          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
           path: dev-test
-      - name: update yarn to latest version
-        run: |
-          sudo apt update && sudo apt install yarn
       - name: npm install and e2e test
         run: |
           node --version
