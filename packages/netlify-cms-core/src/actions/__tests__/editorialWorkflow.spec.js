@@ -98,6 +98,7 @@ describe('editorialWorkflow actions', () => {
       const backend = {
         publishUnpublishedEntry: jest.fn().mockResolvedValue(),
         getEntry: jest.fn().mockResolvedValue(entry),
+        getMedia: jest.fn().mockResolvedValue([]),
       };
 
       const store = mockStore({
@@ -117,7 +118,7 @@ describe('editorialWorkflow actions', () => {
 
       return store.dispatch(actions.publishUnpublishedEntry('posts', slug)).then(() => {
         const actions = store.getActions();
-        expect(actions).toHaveLength(7);
+        expect(actions).toHaveLength(8);
 
         expect(actions[0]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST',
@@ -147,21 +148,28 @@ describe('editorialWorkflow actions', () => {
           },
           optimist: { type: COMMIT, id: '000000000000000000000' },
         });
+
         expect(actions[4]).toEqual({
+          type: 'MEDIA_LOAD_SUCCESS',
+          payload: {
+            files: [],
+          },
+        });
+        expect(actions[5]).toEqual({
           type: 'ENTRY_REQUEST',
           payload: {
             slug,
             collection: 'posts',
           },
         });
-        expect(actions[5]).toEqual({
+        expect(actions[6]).toEqual({
           type: 'ENTRY_SUCCESS',
           payload: {
             entry,
             collection: 'posts',
           },
         });
-        expect(actions[6]).toEqual({
+        expect(actions[7]).toEqual({
           type: 'DRAFT_CREATE_FROM_ENTRY',
           payload: {
             entry,

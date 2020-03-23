@@ -183,7 +183,7 @@ export class PreviewPane extends React.Component {
   };
 
   render() {
-    const { entry, collection } = this.props;
+    const { entry, collection, config } = this.props;
 
     if (!entry || !entry.get('data')) {
       return null;
@@ -220,7 +220,7 @@ export class PreviewPane extends React.Component {
 `;
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary config={config}>
         <PreviewPaneFrame head={styleEls} initialContent={initialContent}>
           <EditorPreviewContent {...{ previewComponent, previewProps }} />
         </PreviewPaneFrame>
@@ -239,7 +239,7 @@ PreviewPane.propTypes = {
 
 const mapStateToProps = state => {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
-  return { isLoadingAsset };
+  return { isLoadingAsset, config: state.config };
 };
 
 const mapDispatchToProps = dispatch => {
