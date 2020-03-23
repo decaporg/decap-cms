@@ -91,8 +91,12 @@ const ErrorBoundaryContainer = styled.div`
   }
 
   a {
-    color: ${colors.text};
+    color: ${colors.active};
   }
+`;
+
+const PrivacyWarning = styled.span`
+  color: ${colors.text};
 `;
 
 const CopyButton = styled.button`
@@ -173,6 +177,16 @@ class ErrorBoundary extends React.Component {
           >
             {t('ui.errorBoundary.reportIt')}
           </a>
+        </p>
+        <p>
+          {t('ui.errorBoundary.privacyWarning')
+            .split('\n')
+            .map((item, index) => (
+              <>
+                <PrivacyWarning key={index}>{item}</PrivacyWarning>
+                <br />
+              </>
+            ))}
         </p>
         <hr />
         <h2>{t('ui.errorBoundary.detailsHeading')}</h2>

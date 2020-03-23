@@ -174,8 +174,10 @@ const en = {
     errorBoundary: {
       title: 'Error',
       details: "There's been an error - please ",
-      reportIt: 'report it.',
+      reportIt: 'open an issue on GitHub.',
       detailsHeading: 'Details',
+      privacyWarning:
+        'Opening an issue pre-populates it with the error message and debugging data.\nPlease verify the information is correct and remove sensitive data if exists.',
       recoveredEntry: {
         heading: 'Recovered document',
         warning: 'Please copy/paste this somewhere before navigating away!',
