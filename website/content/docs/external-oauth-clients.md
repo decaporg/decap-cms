@@ -15,6 +15,7 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@marksteele](https://github.com/marksteele)   | GitHub, GitHub Enterprise | Serverless              | [Repo](https://github.com/marksteele/netlify-serverless-oauth2-backend), [Blog](https://www.control-alt-del.org/blog/serverless-blog-howto/) |
 | [@Herohtar](https://github.com/Herohtar)       | GitHub, GitHub Enterprise | Firebase Cloud Function | [Repo](https://github.com/Herohtar/netlify-cms-oauth-firebase)                                                                               |
 | [@abcalderon3](https://github.com/abcalderon3) | GitHub, GitHub Enterprise | Google Cloud Function with Python | [Repo](https://github.com/abcalderon3/netlify-cms-oauth-client-cloud-function)                                                     |
-| [@TSV-Zorneding-1920](https://github.com/TSV-Zorneding-1920) | GitHub, GitHub Enterprise | PHP | [Repo](https://github.com/TSV-Zorneding-1920/netlify-cms-oauth-provider-php)   
+| [@TSV-Zorneding-1920](https://github.com/TSV-Zorneding-1920) | GitHub, GitHub Enterprise | PHP | [Repo](https://github.com/TSV-Zorneding-1920/netlify-cms-oauth-provider-php)
+| [@bericp1](https://github.com/bericp1)         | GitHub, GitHub Enterprise | Node.js, Zeit Now Serverless | [Repo](https://github.com/bericp1/netlify-cms-oauth-provider-node)                                                                      |
 
 Check each project's documentation for instructions on installation and usage.
