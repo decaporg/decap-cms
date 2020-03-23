@@ -301,6 +301,83 @@ class EditorToolbar extends React.Component {
     );
   };
 
+  renderNewEntryWorkflowPublishControls = ({ canCreate, canPublish }) => {
+    const { isPublishing, onPublish, onPublishAndNew, onPublishAndDuplicate, t } = this.props;
+
+    return canPublish ? (
+      <ToolbarDropdown
+        dropdownTopOverlap="40px"
+        dropdownWidth="150px"
+        renderButton={() => (
+          <PublishButton>
+            {isPublishing
+              ? t('editor.editorToolbar.publishing')
+              : t('editor.editorToolbar.publish')}
+          </PublishButton>
+        )}
+      >
+        <DropdownItem
+          label={t('editor.editorToolbar.publishNow')}
+          icon="arrow"
+          iconDirection="right"
+          onClick={onPublish}
+        />
+        {canCreate ? (
+          <>
+            <DropdownItem
+              label={t('editor.editorToolbar.publishAndCreateNew')}
+              icon="add"
+              onClick={onPublishAndNew}
+            />
+            <DropdownItem
+              label={t('editor.editorToolbar.publishAndDuplicate')}
+              icon="add"
+              onClick={onPublishAndDuplicate}
+            />
+          </>
+        ) : null}
+      </ToolbarDropdown>
+    ) : (
+      ''
+    );
+  };
+
+  renderExistingEntryWorkflowPublishControls = ({ canCreate, canPublish }) => {
+    const { unPublish, onDuplicate, isPersisting, t } = this.props;
+
+    return canPublish || canCreate ? (
+      <ToolbarDropdown
+        dropdownTopOverlap="40px"
+        dropdownWidth="150px"
+        renderButton={() => (
+          <PublishedToolbarButton>
+            {isPersisting
+              ? t('editor.editorToolbar.unpublishing')
+              : t('editor.editorToolbar.published')}
+          </PublishedToolbarButton>
+        )}
+      >
+        {canPublish && (
+          <DropdownItem
+            label={t('editor.editorToolbar.unpublish')}
+            icon="arrow"
+            iconDirection="right"
+            onClick={unPublish}
+          />
+        )}
+        {canCreate && (
+          <DropdownItem
+            label={t('editor.editorToolbar.duplicate')}
+            icon="add"
+            onClick={onDuplicate}
+          />
+        )}
+      </ToolbarDropdown>
+    ) : (
+      ''
+    );
+  };
+
   renderSimplePublishControls = () => {
     const {
       collection,
@@ -424,21 +501,16 @@ class EditorToolbar extends React.Component {
     const {
       collection,
       isUpdatingStatus,
-      isPublishing,
       onChangeStatus,
-      onPublish,
-      unPublish,
-      onDuplicate,
-      onPublishAndNew,
-      onPublishAndDuplicate,
       currentStatus,
       isNewEntry,
       useOpenAuthoring,
-      isPersisting,
       t,
     } = this.props;
 
     const canCreate = collection.get('create');
+    const canPublish = collection.get('publish') && !useOpenAuthoring;
+
     if (currentStatus) {
       return (
         <>
@@ -474,42 +546,7 @@ class EditorToolbar extends React.Component {
               />
             )}
           </ToolbarDropdown>
-          {useOpenAuthoring ? (
-            ''
-          ) : (
-            <ToolbarDropdown
-              dropdownTopOverlap="40px"
-              dropdownWidth="150px"
-              renderButton={() => (
-                <PublishButton>
-                  {isPublishing
-                    ? t('editor.editorToolbar.publishing')
-                    : t('editor.editorToolbar.publish')}
-                </PublishButton>
-              )}
-            >
-              <DropdownItem
-                label={t('editor.editorToolbar.publishNow')}
-                icon="arrow"
-                iconDirection="right"
-                onClick={onPublish}
-              />
-              {canCreate ? (
-                <>
-                  <DropdownItem
-                    label={t('editor.editorToolbar.publishAndCreateNew')}
-                    icon="add"
-                    onClick={onPublishAndNew}
-                  />
-                  <DropdownItem
-                    label={t('editor.editorToolbar.publishAndDuplicate')}
-                    icon="add"
-                    onClick={onPublishAndDuplicate}
-                  />
-                </>
-              ) : null}
-            </ToolbarDropdown>
-          )}
+          {this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
         </>
       );
     }
@@ -521,31 +558,7 @@ class EditorToolbar extends React.Component {
       return (
         <>
           {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          <ToolbarDropdown
-            dropdownTopOverlap="40px"
-            dropdownWidth="150px"
-            renderButton={() => (
-              <PublishedToolbarButton>
-                {isPersisting
-                  ? t('editor.editorToolbar.unpublishing')
-                  : t('editor.editorToolbar.published')}
-              </PublishedToolbarButton>
-            )}
-          >
-            <DropdownItem
-              label={t('editor.editorToolbar.unpublish')}
-              icon="arrow"
-              iconDirection="right"
-              onClick={unPublish}
-            />
-            {canCreate && (
-              <DropdownItem
-                label={t('editor.editorToolbar.duplicate')}
-                icon="add"
-                onClick={onDuplicate}
-              />
-            )}
-          </ToolbarDropdown>
+          {this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish })}
         </>
       );
     }

@@ -134,7 +134,7 @@ class WorkflowList extends React.Component {
     handleDelete: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     isOpenAuthoring: PropTypes.bool,
-    collections: ImmutablePropTypes.orderedMap,
+    collections: ImmutablePropTypes.orderedMap.isRequired,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -210,11 +210,15 @@ class WorkflowList extends React.Component {
           const editLink = `collections/${entry.getIn(['metaData', 'collection'])}/entries/${slug}`;
           const ownStatus = entry.getIn(['metaData', 'status']);
           const collectionName = entry.getIn(['metaData', 'collection']);
-          const collectionLabel = collections
-            ?.find(collection => collection.get('name') === collectionName)
-            ?.get('label');
+          const collection = collections.find(
+            collection => collection.get('name') === collectionName,
+          );
+          const collectionLabel = collection?.get('label');
           const isModification = entry.get('isModification');
+
+          const allowPublish = collection?.get('publish');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
+
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -235,6 +239,7 @@ class WorkflowList extends React.Component {
                       editLink={editLink}
                       timestamp={timestamp}
                       onDelete={this.requestDelete.bind(this, collectionName, slug, ownStatus)}
+                      allowPublish={allowPublish}
                       canPublish={canPublish}
                       onPublish={this.requestPublish.bind(this, collectionName, slug, ownStatus)}
                     />

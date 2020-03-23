@@ -152,5 +152,17 @@ describe('config', () => {
         );
       }).not.toThrowError();
     });
+
+    it('should throw if collection publish is not a boolean', () => {
+      expect(() => {
+        validateConfig(merge(validConfig, { collections: [{ publish: 'false' }] }));
+      }).toThrowError("'collections[0].publish' should be boolean");
+    });
+
+    it('should not throw if collection publish is a boolean', () => {
+      expect(() => {
+        validateConfig(merge(validConfig, { collections: [{ publish: false }] }));
+      }).not.toThrowError();
+    });
   });
 });
