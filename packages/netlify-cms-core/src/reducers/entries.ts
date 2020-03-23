@@ -57,8 +57,12 @@ const loadSort = once(() => {
   return Map();
 });
 
-const persistSort = (sort: Sort) => {
-  localStorage.setItem(storageSortKey, JSON.stringify(sort.toJS()));
+const persistSort = (sort: Sort | undefined) => {
+  if (sort) {
+    localStorage.setItem(storageSortKey, JSON.stringify(sort.toJS()));
+  } else {
+    localStorage.removeItem(storageSortKey);
+  }
 };
 
 const entries = (

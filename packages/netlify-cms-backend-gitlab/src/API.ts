@@ -24,9 +24,8 @@ import {
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
-import { Map, Set } from 'immutable';
+import { Map } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
-import { CursorStore } from 'netlify-cms-lib-util/src/Cursor';
 
 export const API_NAME = 'GitLab';
 
