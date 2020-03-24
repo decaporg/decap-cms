@@ -93,6 +93,14 @@ const resp = {
       id: 1,
     },
   },
+  branch: {
+    success: {
+      name: 'master',
+      commit: {
+        id: 1,
+      },
+    },
+  },
   project: {
     success: {
       permissions: {
@@ -188,6 +196,14 @@ describe('gitlab backend', () => {
       .get(expectedRepoUrl)
       .query(true)
       .reply(200, projectResponse || resp.project.success);
+  }
+
+  function interceptBranch(backend, { branch = 'master' } = {}) {
+    const api = mockApi(backend);
+    api
+      .get(`${expectedRepoUrl}/repository/branches/${encodeURIComponent(branch)}`)
+      .query(true)
+      .reply(200, resp.branch.success);
   }
 
   function parseQuery(uri) {
@@ -407,6 +423,7 @@ describe('gitlab backend', () => {
 
     it('returns all entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
+      interceptBranch(backend);
       tree.forEach(file => interceptFiles(backend, file.path));
 
       interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });

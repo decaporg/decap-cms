@@ -6,6 +6,7 @@ import {
   APIError,
   Cursor,
   ApiRequest,
+  ApiRequestObject,
   Entry,
   AssetProxy,
   PersistOptions,
@@ -22,6 +23,8 @@ import {
   PreviewState,
   parseContentKey,
   branchFromContentKey,
+  asyncLock,
+  AsyncLock,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
@@ -134,8 +137,12 @@ type GitLabRepo = {
 };
 
 type GitLabBranch = {
+  name: string;
   developers_can_push: boolean;
   developers_can_merge: boolean;
+  commit: {
+    id: string;
+  };
 };
 
 export const getMaxAccess = (groups: { group_access_level: number }[]) => {
@@ -157,6 +164,7 @@ export default class API {
   commitAuthor?: CommitAuthor;
   squashMerges: boolean;
   initialWorkflowStatus: string;
+  rateLimiter?: AsyncLock;
 
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://gitlab.com/api/v4';
@@ -171,19 +179,63 @@ export default class API {
   withAuthorizationHeaders = (req: ApiRequest) =>
     unsentRequest.withHeaders(this.token ? { Authorization: `Bearer ${this.token}` } : {}, req);
 
-  buildRequest = (req: ApiRequest) =>
-    flow([
+  buildRequest = (req: ApiRequest) => {
+    return flow([
       unsentRequest.withRoot(this.apiRoot),
       this.withAuthorizationHeaders,
       unsentRequest.withTimestamp,
     ])(req);
+  };
 
-  request = async (req: ApiRequest): Promise<Response> =>
-    flow([
-      this.buildRequest,
-      unsentRequest.performRequest,
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, API_NAME))),
-    ])(req);
+  buildPreflight = (req: ApiRequest) => {
+    return flow([unsentRequest.withRoot(this.apiRoot), unsentRequest.withTimestamp])(req);
+  };
+
+  handleRateLimit = (req: ApiRequest, response: Response) => {
+    if (response.status === 429) {
+      if (!this.rateLimiter) {
+        console.log(`Pausing requests due to rate limit`);
+        this.rateLimiter = asyncLock();
+        this.rateLimiter.acquire();
+        setTimeout(() => {
+          this.rateLimiter?.release();
+          this.rateLimiter = undefined;
+          console.log(`Done pausing requests`);
+        }, 1000);
+      }
+      return this.request(req);
+    }
+    return response;
+  };
+
+  request = async (req: ApiRequest, attempt = 1): Promise<Response> => {
+    if (this.rateLimiter) {
+      await this.rateLimiter.acquire();
+    }
+
+    try {
+      const builtRequest: ApiRequestObject = this.buildRequest(req);
+      const response: Response = await unsentRequest.performRequest(builtRequest);
+      return response;
+    } catch (err) {
+      if (attempt <= 3) {
+        if (!this.rateLimiter) {
+          console.log(`Pausing requests due to fetch failures`);
+
+          this.rateLimiter = asyncLock();
+          this.rateLimiter.acquire();
+          setTimeout(() => {
+            this.rateLimiter?.release();
+            this.rateLimiter = undefined;
+            console.log(`Done pausing requests`);
+          }, 1000 * attempt);
+        }
+        return this.request(req, attempt++);
+      } else {
+        throw new APIError(err.message, null, API_NAME);
+      }
+    }
+  };
 
   responseToJSON = responseParser({ format: 'json', apiName: API_NAME });
   responseToBlob = responseParser({ format: 'blob', apiName: API_NAME });
@@ -203,6 +255,7 @@ export default class API {
       shared_with_groups: sharedWithGroups,
       permissions,
     }: GitLabRepo = await this.requestJSON(this.repoURL);
+
     const { project_access: projectAccess, group_access: groupAccess } = permissions;
     if (projectAccess && projectAccess.access_level >= this.WRITE_ACCESS) {
       return true;
@@ -220,11 +273,13 @@ export default class API {
       // developer access
       if (maxAccess.group_access_level >= this.WRITE_ACCESS) {
         // check permissions to merge and push
-        const branch: GitLabBranch = await this.requestJSON(
-          `${this.repoURL}/repository/branches/${this.branch}`,
-        ).catch(() => ({}));
-        if (branch.developers_can_merge && branch.developers_can_push) {
-          return true;
+        try {
+          const branch = await this.getDefaultBranch();
+          if (branch.developers_can_merge && branch.developers_can_push) {
+            return true;
+          }
+        } catch (e) {
+          console.log('Failed getting default branch', e);
         }
       }
     }
@@ -486,11 +541,11 @@ export default class API {
     return mergeRequests[0];
   }
 
-  async getDifferences(to: string) {
+  async getDifferences(to: string, from = this.branch) {
     const result: { diffs: GitLabCommitDiff[] } = await this.requestJSON({
       url: `${this.repoURL}/repository/compare`,
       params: {
-        from: this.branch,
+        from,
         to,
       },
     });
@@ -687,6 +742,13 @@ export default class API {
         state_event: 'close',
       },
     });
+  }
+
+  async getDefaultBranch() {
+    const branch: GitLabBranch = await this.requestJSON(
+      `${this.repoURL}/repository/branches/${encodeURIComponent(this.branch)}`,
+    );
+    return branch;
   }
 
   async deleteBranch(branch: string) {

@@ -2,6 +2,8 @@ import API, { getMaxAccess } from '../API';
 
 global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
+jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
 describe('GitLab API', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -132,9 +134,14 @@ describe('GitLab API', () => {
         permissions: { project_access: null, group_access: null },
         shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 30 }],
       });
-      api.requestJSON.mockRejectedValue(new Error('Not Found'));
+
+      const error = new Error('Not Found');
+      api.requestJSON.mockRejectedValue(error);
 
       await expect(api.hasWriteAccess()).resolves.toBe(false);
+
+      expect(console.log).toHaveBeenCalledTimes(1);
+      expect(console.log).toHaveBeenCalledWith('Failed getting default branch', error);
     });
   });
 

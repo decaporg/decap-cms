@@ -77,16 +77,15 @@ export type Entry = E;
 export type UnpublishedEntryMediaFile = UEMF;
 export type PersistOptions = PO;
 export type AssetProxy = AP;
-export type ApiRequest =
-  | {
-      url: string;
-      params?: Record<string, string | boolean | number>;
-      method?: 'POST' | 'PUT' | 'DELETE' | 'HEAD';
-      headers?: Record<string, string>;
-      body?: string | FormData;
-      cache?: 'no-store';
-    }
-  | string;
+export type ApiRequestObject = {
+  url: string;
+  params?: Record<string, string | boolean | number>;
+  method?: 'POST' | 'PUT' | 'DELETE' | 'HEAD';
+  headers?: Record<string, string>;
+  body?: string | FormData;
+  cache?: 'no-store';
+};
+export type ApiRequest = ApiRequestObject | string;
 export type Config = C;
 export type FetchError = FE;
 export type PointerFile = PF;
