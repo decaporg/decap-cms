@@ -191,23 +191,6 @@ export default class API {
     return flow([unsentRequest.withRoot(this.apiRoot), unsentRequest.withTimestamp])(req);
   };
 
-  handleRateLimit = (req: ApiRequest, response: Response) => {
-    if (response.status === 429) {
-      if (!this.rateLimiter) {
-        console.log(`Pausing requests due to rate limit`);
-        this.rateLimiter = asyncLock();
-        this.rateLimiter.acquire();
-        setTimeout(() => {
-          this.rateLimiter?.release();
-          this.rateLimiter = undefined;
-          console.log(`Done pausing requests`);
-        }, 1000);
-      }
-      return this.request(req);
-    }
-    return response;
-  };
-
   request = async (req: ApiRequest, attempt = 1): Promise<Response> => {
     if (this.rateLimiter) {
       await this.rateLimiter.acquire();
