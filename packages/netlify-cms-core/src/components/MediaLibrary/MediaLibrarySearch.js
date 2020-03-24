@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Icon, lengths, colors } from 'netlify-cms-ui-default';
+import { Icon, lengths, colors, zIndex } from 'netlify-cms-ui-default';
 
 const SearchContainer = styled.div`
   height: 37px;
@@ -19,7 +19,7 @@ const SearchInput = styled.input`
   padding: 10px 6px 10px 32px;
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: ${zIndex.zIndex1};
 
   &:focus {
     outline: none;
@@ -31,7 +31,7 @@ const SearchIcon = styled(Icon)`
   position: absolute;
   top: 50%;
   left: 6px;
-  z-index: 2;
+  z-index: ${zIndex.zIndex2};
   transform: translate(0, -50%);
 `;
 

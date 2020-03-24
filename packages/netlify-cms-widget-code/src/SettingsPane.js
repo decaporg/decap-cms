@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import Select from 'react-select';
 import isHotkey from 'is-hotkey';
-import { text, shadows } from 'netlify-cms-ui-default';
+import { text, shadows, zIndex } from 'netlify-cms-ui-default';
 import SettingsButton from './SettingsButton';
 import languageSelectStyles from './languageSelectStyles';
 
@@ -10,7 +10,7 @@ const SettingsPaneContainer = styled.div`
   position: absolute;
   right: 0;
   width: 200px;
-  z-index: 10;
+  z-index: ${zIndex.zIndex10};
   height: 100%;
   background-color: #fff;
   overflow: hidden;

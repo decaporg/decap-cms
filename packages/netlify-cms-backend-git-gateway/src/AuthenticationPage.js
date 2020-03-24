@@ -9,6 +9,7 @@ import {
   colors,
   colorsRaw,
   lengths,
+  zIndex,
 } from 'netlify-cms-ui-default';
 
 const LoginButton = styled.button`
@@ -38,7 +39,7 @@ const AuthInput = styled.input`
   margin-top: 6px;
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: ${zIndex.zIndex1};
 
   &:focus {
     outline: none;

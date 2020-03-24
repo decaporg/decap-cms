@@ -380,6 +380,20 @@ const reactSelectStyles = {
   }),
 };
 
+const zIndex = {
+  zIndex0: 0,
+  zIndex1: 1,
+  zIndex2: 2,
+  zIndex10: 10,
+  zIndex100: 100,
+  zIndex200: 200,
+  zIndex299: 299,
+  zIndex300: 300,
+  zIndex1000: 1000,
+  zIndex10000: 10000,
+  zIndex99999: 99999,
+};
+
 const GlobalStyles = () => (
   <Global
     styles={css`
@@ -480,6 +494,7 @@ export {
   borders,
   transitions,
   effects,
+  zIndex,
   reactSelectStyles,
   GlobalStyles,
 };

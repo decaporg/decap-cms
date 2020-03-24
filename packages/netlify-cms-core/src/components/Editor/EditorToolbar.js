@@ -15,6 +15,7 @@ import {
   colors,
   components,
   buttons,
+  zIndex,
 } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import SettingsDropdown from 'UI/SettingsDropdown';
@@ -55,7 +56,7 @@ const ToolbarContainer = styled.div`
   left: 0;
   width: 100%;
   min-width: 800px;
-  z-index: 300;
+  z-index: ${zIndex.zIndex300};
   background-color: #fff;
   height: 66px;
   display: flex;
