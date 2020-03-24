@@ -57,7 +57,7 @@ const Entries = ({
 };
 
 Entries.propTypes = {
-  collections: ImmutablePropTypes.map.isRequired,
+  collections: ImmutablePropTypes.iterable.isRequired,
   entries: ImmutablePropTypes.list,
   page: PropTypes.number,
   isFetching: PropTypes.bool,
