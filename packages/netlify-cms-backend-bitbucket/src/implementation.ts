@@ -1,10 +1,9 @@
 import semaphore, { Semaphore } from 'semaphore';
-import { flow, trimStart } from 'lodash';
+import { trimStart, unionBy, sortBy } from 'lodash';
 import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   filterByPropExtension,
-  then,
   unsentRequest,
   basename,
   getBlobSHA,
@@ -36,13 +35,24 @@ import {
   blobToFileObj,
   contentKeyFromBranch,
   generateContentKey,
+  localForage,
 } from 'netlify-cms-lib-util';
-import NetlifyAuthenticator from 'netlify-cms-lib-auth';
+import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
 import { GitLfsClient } from './git-lfs-client';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
+const LOCAL_KEY = 'gh.local';
+
+const getLocalKey = (folder: string, extension: string, depth: number) => {
+  return `${LOCAL_KEY}.${folder}.${extension}.${depth}`;
+};
+
+type LocalTree = {
+  head: string;
+  files: { id: string; name: string; path: string }[];
+};
 
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
@@ -121,12 +131,11 @@ export default class BitbucketBackend implements Implementation {
     });
   }
 
-  requestFunction = (req: ApiRequest) =>
-    this.getToken()
-      .then(
-        token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req) as ApiRequest,
-      )
-      .then(unsentRequest.performRequest);
+  requestFunction = async (req: ApiRequest) => {
+    const token = await this.getToken();
+    const authorizedRequest = unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req);
+    return unsentRequest.performRequest(authorizedRequest);
+  };
 
   restoreUser(user: User) {
     return this.authenticate(user);
@@ -199,6 +208,7 @@ export default class BitbucketBackend implements Implementation {
         // eslint-disable-next-line @typescript-eslint/camelcase
         this.refreshToken = refresh_token;
         this.refreshedTokenPromise = undefined;
+
         // eslint-disable-next-line @typescript-eslint/camelcase
         this.updateUserCredentials({ token, refresh_token });
         return token;
@@ -225,28 +235,22 @@ export default class BitbucketBackend implements Implementation {
       ? await this.refreshedTokenPromise
       : this.token) as string;
 
-    return flow([
-      unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }) as (
-        req: ApiRequest,
-      ) => ApiRequest,
-      unsentRequest.performRequest,
-      then(async (res: Response) => {
-        if (res.status === 401) {
-          const json = await res.json().catch(() => null);
-          if (json && json.type === 'error' && /^access token expired/i.test(json.error.message)) {
-            const newToken = await this.getRefreshedAccessToken();
-            const reqWithNewToken = unsentRequest.withHeaders(
-              {
-                Authorization: `Bearer ${newToken}`,
-              },
-              req,
-            ) as ApiRequest;
-            return unsentRequest.performRequest(reqWithNewToken);
-          }
-        }
-        return res;
-      }),
-    ])(req);
+    const authorizedRequest = unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req);
+    const response: Response = await unsentRequest.performRequest(authorizedRequest);
+    if (response.status === 401) {
+      const json = await response.json().catch(() => null);
+      if (json && json.type === 'error' && /^access token expired/i.test(json.error.message)) {
+        const newToken = await this.getRefreshedAccessToken();
+        const reqWithNewToken = unsentRequest.withHeaders(
+          {
+            Authorization: `Bearer ${newToken}`,
+          },
+          req,
+        ) as ApiRequest;
+        return unsentRequest.performRequest(reqWithNewToken);
+      }
+    }
+    return response;
   };
 
   async entriesByFolder(folder: string, extension: string, depth: number) {
@@ -258,7 +262,12 @@ export default class BitbucketBackend implements Implementation {
         return filterByPropExtension(extension, 'path')(entries);
       });
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'BitBucket');
+    const head = await this.api!.defaultBranchCommitSha();
+    const readFile = (path: string, id: string | null | undefined) => {
+      return this.api!.readFile(path, id, { head }) as Promise<string>;
+    };
+
+    const files = await entriesByFolder(listFiles, readFile, API_NAME);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
@@ -266,16 +275,90 @@ export default class BitbucketBackend implements Implementation {
     return files;
   }
 
-  async allEntriesByFolder(folder: string, extension: string, depth: number) {
-    const listFiles = () =>
-      this.api!.listAllFiles(folder, depth).then(filterByPropExtension(extension, 'path'));
+  async persistLocalTree(localTree: LocalTree, folder: string, extension: string, depth: number) {
+    await localForage.setItem<LocalTree>(getLocalKey(folder, extension, depth), localTree);
+  }
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), 'BitBucket');
+  async listAllFiles(folder: string, extension: string, depth: number) {
+    const files = await this.api!.listAllFiles(folder, depth).then(
+      filterByPropExtension(extension, 'path'),
+    );
+    const head = await this.api!.defaultBranchCommitSha();
+    await this.persistLocalTree(
+      {
+        head,
+        files,
+      },
+      folder,
+      extension,
+      depth,
+    );
+    return files;
+  }
+
+  async getDiffFromLocalTree(head: string, localTree: LocalTree, extension: string) {
+    const diff = await this.api!.getDifferences(localTree.head);
+    const diffFiles = diff
+      .filter(d => !d.binary)
+      .map(d => ({
+        path: d.newPath,
+        name: basename(d.newPath),
+      }));
+    const filtered = filterByPropExtension(extension, 'path')(diffFiles);
+
+    const diffFilesWithIds = await Promise.all(
+      filtered.map(async file => {
+        const id = await this.api!.getFileId(head, file.path);
+        return { ...file, id };
+      }),
+    );
+
+    return diffFilesWithIds;
+  }
+
+  async allEntriesByFolder(folder: string, extension: string, depth: number) {
+    const head = await this.api!.defaultBranchCommitSha();
+
+    const listFiles = async () => {
+      const localTree = await localForage.getItem<LocalTree>(getLocalKey(folder, extension, depth));
+      if (localTree) {
+        const diff = await this.getDiffFromLocalTree(head, localTree, folder);
+        if (diff.length === 0) {
+          // return local copy
+          return localTree.files;
+        } else if (diff.length > 0 && diff.length < 1000) {
+          // refresh local copy
+          const identity = (file: { path: string }) => file.path;
+          const newCopy = sortBy(unionBy(diff, localTree.files, identity), identity);
+          await localForage.setItem<LocalTree>(getLocalKey(folder, extension, depth), {
+            head,
+            files: newCopy,
+          });
+          return newCopy;
+        } else {
+          // GitLab diff limit is 1000, so we have no choice but to get all files
+          return this.listAllFiles(folder, extension, depth);
+        }
+      } else {
+        return this.listAllFiles(folder, extension, depth);
+      }
+    };
+
+    const readFile = (path: string, id: string | null | undefined) => {
+      return this.api!.readFile(path, id, { head }) as Promise<string>;
+    };
+
+    const files = await entriesByFolder(listFiles, readFile, API_NAME);
     return files;
   }
 
   async entriesByFiles(files: ImplementationFile[]) {
-    return entriesByFiles(files, this.api!.readFile.bind(this.api!), 'BitBucket');
+    const head = await this.api!.defaultBranchCommitSha();
+    const readFile = (path: string, id: string | null | undefined) => {
+      return this.api!.readFile(path, id, { head }) as Promise<string>;
+    };
+
+    return entriesByFiles(files, readFile, API_NAME);
   }
 
   getEntry(path: string) {
@@ -406,10 +489,14 @@ export default class BitbucketBackend implements Implementation {
         entries = filterByPropExtension(extension as string, 'path')(entries);
         newCursor = newCursor.mergeMeta({ extension });
       }
+      const head = await this.api!.defaultBranchCommitSha();
       return {
         entries: await Promise.all(
           entries.map(file =>
-            this.api!.readFile(file.path, file.id).then(data => ({ file, data: data as string })),
+            this.api!.readFile(file.path, file.id, { head }).then(data => ({
+              file,
+              data: data as string,
+            })),
           ),
         ),
         cursor: newCursor,

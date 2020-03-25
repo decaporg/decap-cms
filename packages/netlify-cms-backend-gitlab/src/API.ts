@@ -6,7 +6,6 @@ import {
   APIError,
   Cursor,
   ApiRequest,
-  ApiRequestObject,
   Entry,
   AssetProxy,
   PersistOptions,
@@ -23,8 +22,7 @@ import {
   PreviewState,
   parseContentKey,
   branchFromContentKey,
-  asyncLock,
-  AsyncLock,
+  requestWithBackoff,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
@@ -164,7 +162,6 @@ export default class API {
   commitAuthor?: CommitAuthor;
   squashMerges: boolean;
   initialWorkflowStatus: string;
-  rateLimiter?: AsyncLock;
 
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://gitlab.com/api/v4';
@@ -187,36 +184,11 @@ export default class API {
     ])(req);
   };
 
-  buildPreflight = (req: ApiRequest) => {
-    return flow([unsentRequest.withRoot(this.apiRoot), unsentRequest.withTimestamp])(req);
-  };
-
-  request = async (req: ApiRequest, attempt = 1): Promise<Response> => {
-    if (this.rateLimiter) {
-      await this.rateLimiter.acquire();
-    }
-
+  request = async (req: ApiRequest): Promise<Response> => {
     try {
-      const builtRequest: ApiRequestObject = this.buildRequest(req);
-      const response: Response = await unsentRequest.performRequest(builtRequest);
-      return response;
+      return requestWithBackoff(this, req);
     } catch (err) {
-      if (attempt <= 3) {
-        if (!this.rateLimiter) {
-          console.log(`Pausing requests due to fetch failures`);
-
-          this.rateLimiter = asyncLock();
-          this.rateLimiter.acquire();
-          setTimeout(() => {
-            this.rateLimiter?.release();
-            this.rateLimiter = undefined;
-            console.log(`Done pausing requests`);
-          }, 1000 * attempt);
-        }
-        return this.request(req, attempt++);
-      } else {
-        throw new APIError(err.message, null, API_NAME);
-      }
+      throw new APIError(err.message, null, API_NAME);
     }
   };
 

@@ -24,6 +24,7 @@ import {
   FetchError,
   parseContentKey,
   branchFromContentKey,
+  requestWithBackoff,
 } from 'netlify-cms-lib-util';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
@@ -160,7 +161,12 @@ type BitBucketUser = {
   };
 };
 
-export const API_NAME = 'BitBucket';
+type BitBucketBranch = {
+  name: string;
+  target: { hash: string };
+};
+
+export const API_NAME = 'Bitbucket';
 
 const APPLICATION_JSON = 'application/json; charset=utf-8';
 
@@ -195,15 +201,17 @@ export default class API {
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
-  buildRequest = (req: ApiRequest) =>
-    flow([unsentRequest.withRoot(this.apiRoot), unsentRequest.withTimestamp])(req);
+  buildRequest = (req: ApiRequest) => {
+    return flow([unsentRequest.withRoot(this.apiRoot), unsentRequest.withTimestamp])(req);
+  };
 
-  request = (req: ApiRequest): Promise<Response> =>
-    flow([
-      this.buildRequest,
-      this.requestFunction,
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, API_NAME))),
-    ])(req);
+  request = (req: ApiRequest): Promise<Response> => {
+    try {
+      return requestWithBackoff(this, req);
+    } catch (err) {
+      throw new APIError(err.message, null, API_NAME);
+    }
+  };
 
   responseToJSON = responseParser({ format: 'json', apiName: API_NAME });
   responseToBlob = responseParser({ format: 'blob', apiName: API_NAME });
@@ -226,11 +234,21 @@ export default class API {
   branchCommitSha = async (branch: string) => {
     const {
       target: { hash: branchSha },
-    } = await this.requestJSON(`${this.repoURL}/refs/branches/${branch}`);
-    return branchSha as string;
+    }: BitBucketBranch = await this.requestJSON(`${this.repoURL}/refs/branches/${branch}`);
+
+    return branchSha;
+  };
+
+  defaultBranchCommitSha = () => {
+    return this.branchCommitSha(this.branch);
   };
 
   isFile = ({ type }: BitBucketFile) => type === 'commit_file';
+
+  getFileId = (commitHash: string, path: string) => {
+    return `${commitHash}/${path}`;
+  };
+
   processFile = (file: BitBucketFile) => ({
     id: file.id,
     type: file.type,
@@ -243,17 +261,17 @@ export default class API {
     // that will help with caching (though not as well as a normal
     // SHA, since it will change even if the individual file itself
     // doesn't.)
-    ...(file.commit && file.commit.hash ? { id: `${file.commit.hash}/${file.path}` } : {}),
+    ...(file.commit && file.commit.hash ? { id: this.getFileId(file.commit.hash, file.path) } : {}),
   });
   processFiles = (files: BitBucketFile[]) => files.filter(this.isFile).map(this.processFile);
 
   readFile = async (
     path: string,
     sha?: string | null,
-    { parseText = true, branch = this.branch } = {},
+    { parseText = true, branch = this.branch, head = '' } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
-      const node = await this.branchCommitSha(branch);
+      const node = head ? head : await this.branchCommitSha(branch);
       const content = await this.request({
         url: `${this.repoURL}/src/${node}/${path}`,
         cache: 'no-store',
@@ -284,13 +302,14 @@ export default class API {
     };
   };
 
-  listFiles = async (path: string, depth = 1) => {
+  listFiles = async (path: string, depth = 1, pagelen = 20) => {
     const node = await this.branchCommitSha(this.branch);
     const result: BitBucketSrcResult = await this.requestJSON({
       url: `${this.repoURL}/src/${node}/${path}`,
       params: {
         // eslint-disable-next-line @typescript-eslint/camelcase
         max_depth: depth,
+        pagelen,
       },
     }).catch(replace404WithEmptyResponse);
     const { entries, cursor } = this.getEntriesAndCursor(result);
@@ -318,7 +337,11 @@ export default class API {
     ])(cursor.data!.getIn(['links', action]));
 
   listAllFiles = async (path: string, depth = 1) => {
-    const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(path, depth);
+    const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(
+      path,
+      depth,
+      100,
+    );
     const entries = [...initialEntries];
     let currentCursor = initialCursor;
     while (currentCursor && currentCursor.actions!.has('next')) {
@@ -442,8 +465,10 @@ export default class API {
     });
 
     return parse(rawDiff).map(d => ({
+      oldPath: d.oldPath.replace(/b\//, ''),
       newPath: d.newPath.replace(/b\//, ''),
       binary: d.binary || /.svg$/.test(d.newPath),
+      status: d.status,
       newFile: d.status === 'added',
     }));
   }
@@ -496,19 +521,6 @@ export default class API {
       `${this.repoURL}/src`,
     );
   };
-
-  async isFileExists(path: string, branch: string) {
-    const fileExists = await this.readFile(path, null, { branch })
-      .then(() => true)
-      .catch(error => {
-        if (error instanceof APIError && error.status === 404) {
-          return false;
-        }
-        throw error;
-      });
-
-    return fileExists;
-  }
 
   async getPullRequests(sourceBranch?: string) {
     const sourceQuery = sourceBranch
