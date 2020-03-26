@@ -66,7 +66,7 @@ export const requestWithBackoff = async (
     }
     return response;
   } catch (err) {
-    if (attempt <= 3) {
+    if (attempt <= 5) {
       if (!api.rateLimiter) {
         console.log(`Pausing requests due to fetch failures:`, err.message);
 
@@ -78,7 +78,7 @@ export const requestWithBackoff = async (
           console.log(`Done pausing requests`);
         }, 1000 * attempt);
       }
-      return requestWithBackoff(api, req, attempt++);
+      return requestWithBackoff(api, req, attempt + 1);
     } else {
       throw err;
     }
