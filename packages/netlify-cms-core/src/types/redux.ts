@@ -153,6 +153,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
+  sortableFields: List<string>;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

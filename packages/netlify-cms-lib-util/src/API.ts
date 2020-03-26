@@ -110,6 +110,29 @@ export const readFile = async (
   return content;
 };
 
+export type FileMetadata = {
+  author: string;
+  updatedOn: string;
+};
+
+const getFileMetadataKey = (id: string) => `gh.${id}.meta`;
+
+export const readFileMetadata = async (
+  id: string,
+  fetchMetadata: () => Promise<FileMetadata>,
+  localForage: LocalForage,
+) => {
+  const key = getFileMetadataKey(id);
+  const cached = await localForage.getItem<FileMetadata>(key);
+  if (cached) {
+    return cached;
+  } else {
+    const metadata = await fetchMetadata();
+    await localForage.setItem<FileMetadata>(key, metadata);
+    return metadata;
+  }
+};
+
 /**
  * Keywords for inferring a status that will provide a deploy preview URL.
  */

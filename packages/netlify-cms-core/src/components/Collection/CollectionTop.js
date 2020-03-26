@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import { Icon, components, buttons, shadows, colors } from 'netlify-cms-ui-default';
-import { selectField } from 'Reducers/collections';
+import { selectSortableFields } from 'Reducers/collections';
 import { sortByField } from 'Actions/entries';
 import { selectEntriesSort } from 'Reducers/entries';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
@@ -218,12 +218,7 @@ const getCollectionProps = collection => {
   const collectionLabel = collection.get('label');
   const collectionLabelSingular = collection.get('label_singular');
   const collectionDescription = collection.get('description');
-  const collectionSortableFields = collection
-    .get('sortableFields')
-    .toJS()
-    .map(key => ({ key, field: selectField(collection, key)?.toJS() }))
-    .filter(item => !!item.field)
-    .map(item => ({ ...item.field, key: item.key }));
+  const collectionSortableFields = selectSortableFields(collection);
 
   return {
     collectionLabel,

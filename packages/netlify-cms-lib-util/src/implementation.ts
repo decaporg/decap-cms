@@ -1,6 +1,7 @@
 import semaphore, { Semaphore } from 'semaphore';
 import Cursor from './Cursor';
 import { AsyncLock } from './asyncLock';
+import { FileMetadata } from './API';
 
 export type DisplayURLObject = { id: string; path: string };
 
@@ -26,6 +27,7 @@ export interface ImplementationEntry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: string;
   file: { path: string; label?: string; id?: string | null };
+  fileMetadata?: FileMetadata;
   slug?: string;
   mediaFiles?: ImplementationMediaFile[];
   metaData?: { collection: string; status: string };
@@ -156,28 +158,40 @@ type ReadFile = (
   id: string | null | undefined,
   options: { parseText: boolean },
 ) => Promise<string | Blob>;
+
+type ReadFileMetadata = (path: string, id: string) => Promise<FileMetadata>;
+
 type ReadUnpublishedFile = (
   key: string,
 ) => Promise<{ metaData: Metadata; fileData: string; isModification: boolean; slug: string }>;
 
-const fetchFiles = async (files: ImplementationFile[], readFile: ReadFile, apiName: string) => {
+const fetchFiles = async (
+  files: ImplementationFile[],
+  readFile: ReadFile,
+  readFileMetadata: ReadFileMetadata,
+  apiName: string,
+) => {
   const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
   const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
   files.forEach(file => {
     promises.push(
       new Promise(resolve =>
-        sem.take(() =>
-          readFile(file.path, file.id, { parseText: true })
-            .then(data => {
-              resolve({ file, data: data as string });
-              sem.leave();
-            })
-            .catch((error = true) => {
-              sem.leave();
-              console.error(`failed to load file from ${apiName}: ${file.path}`);
-              resolve({ error });
-            }),
-        ),
+        sem.take(async () => {
+          try {
+            const [data, fileMetadata] = await Promise.all([
+              readFile(file.path, file.id, { parseText: true }),
+              file.id
+                ? readFileMetadata(file.path, file.id)
+                : Promise.resolve({ author: '', updatedOn: '' }),
+            ]);
+            resolve({ file, data: data as string, fileMetadata });
+            sem.leave();
+          } catch (error) {
+            sem.leave();
+            console.error(`failed to load file from ${apiName}: ${file.path}`);
+            resolve({ error: true });
+          }
+        }),
       ),
     );
   });
@@ -230,18 +244,20 @@ const fetchUnpublishedFiles = async (
 export const entriesByFolder = async (
   listFiles: () => Promise<ImplementationFile[]>,
   readFile: ReadFile,
+  readFileMetadata: ReadFileMetadata,
   apiName: string,
 ) => {
   const files = await listFiles();
-  return fetchFiles(files, readFile, apiName);
+  return fetchFiles(files, readFile, readFileMetadata, apiName);
 };
 
 export const entriesByFiles = async (
   files: ImplementationFile[],
   readFile: ReadFile,
+  readFileMetadata: ReadFileMetadata,
   apiName: string,
 ) => {
-  return fetchFiles(files, readFile, apiName);
+  return fetchFiles(files, readFile, readFileMetadata, apiName);
 };
 
 export const unpublishedEntries = async (

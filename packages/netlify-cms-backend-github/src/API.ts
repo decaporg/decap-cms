@@ -12,6 +12,7 @@ import {
   Entry as LibEntry,
   PersistOptions,
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   DEFAULT_PR_BODY,
@@ -578,6 +579,28 @@ export default class API {
     const fetchContent = () => this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
     const content = await readFile(sha, fetchContent, localForage, parseText);
     return content;
+  }
+
+  async readFileMetadata(path: string, sha: string) {
+    const fetchFileMetadata = async () => {
+      try {
+        const result: Octokit.ReposListCommitsResponse = await this.request(
+          `${this.repoURL}/commits`,
+          {
+            params: { path, sha: this.branch },
+          },
+        );
+        const { commit } = result[0];
+        return {
+          author: commit.committer.name || commit.committer.email,
+          updatedOn: commit.committer.date,
+        };
+      } catch (e) {
+        return { author: '', updatedOn: '' };
+      }
+    };
+    const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
+    return fileMetadata;
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {

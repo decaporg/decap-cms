@@ -40,6 +40,7 @@ import {
 } from './implementation';
 import {
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   isCMSLabel,
@@ -111,6 +112,7 @@ export const NetlifyCmsLibUtil = {
   getMediaDisplayURL,
   getMediaAsBlob,
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   isCMSLabel,
@@ -163,6 +165,7 @@ export {
   getMediaDisplayURL,
   getMediaAsBlob,
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   isCMSLabel,

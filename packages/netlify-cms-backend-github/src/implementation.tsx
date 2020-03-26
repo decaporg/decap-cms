@@ -328,7 +328,12 @@ export default class GitHub implements Implementation {
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }) as Promise<string>;
 
-    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
@@ -346,10 +351,16 @@ export default class GitHub implements Implementation {
         return filterByPropExtension(extension, 'path')(files);
       });
 
-    const readFile = (path: string, id: string | null | undefined) =>
-      this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+    const readFile = (path: string, id: string | null | undefined) => {
+      return this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+    };
 
-    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     return files;
   }
 
@@ -359,7 +370,7 @@ export default class GitHub implements Implementation {
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }).catch(() => '') as Promise<string>;
 
-    return entriesByFiles(files, readFile, 'GitHub');
+    return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), 'GitHub');
   }
 
   // Fetches a single entry.

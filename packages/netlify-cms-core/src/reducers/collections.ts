@@ -341,10 +341,34 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
 export const selectDefaultSortableFields = (collection: Collection) => {
   const defaultSortable = SORTABLE_FIELDS.map(type => {
     const field = selectInferedField(collection, type);
+    if (type === 'author' && !field) {
+      return 'commit_author';
+    } else if (type === 'date' && !field) {
+      return 'commit_date';
+    }
     return field;
   }).filter(Boolean);
 
   return defaultSortable as string[];
+};
+
+export const selectSortableFields = (collection: Collection) => {
+  const fields = collection
+    .get('sortableFields')
+    .toArray()
+    .map(key => {
+      const field = selectField(collection, key);
+      if (key === 'commit_author' && !field) {
+        return { key, field: { name: key, label: 'Author' } };
+      } else if (key === 'commit_date' && !field) {
+        return { key, field: { name: key, label: 'Date' } };
+      }
+      return { key, field: field?.toJS() };
+    })
+    .filter(item => !!item.field)
+    .map(item => ({ ...item.field, key: item.key }));
+
+  return fields;
 };
 
 export default collections;
