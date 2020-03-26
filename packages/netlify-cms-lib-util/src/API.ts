@@ -68,7 +68,13 @@ export const requestWithBackoff = async (
   } catch (err) {
     if (attempt <= 5) {
       if (!api.rateLimiter) {
-        console.log(`Pausing requests due to fetch failures:`, err.message);
+        const timeout = attempt * attempt;
+        console.log(
+          `Pausing requests for ${timeout} ${
+            attempt === 1 ? 'second' : 'seconds'
+          } due to fetch failures:`,
+          err.message,
+        );
 
         api.rateLimiter = asyncLock();
         api.rateLimiter.acquire();
@@ -76,7 +82,7 @@ export const requestWithBackoff = async (
           api.rateLimiter?.release();
           api.rateLimiter = undefined;
           console.log(`Done pausing requests`);
-        }, 1000 * attempt);
+        }, 1000 * timeout);
       }
       return requestWithBackoff(api, req, attempt + 1);
     } else {
