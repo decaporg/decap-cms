@@ -5,6 +5,7 @@ import { jsx, css } from '@emotion/core';
 import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
 import moment from 'moment';
+import { buttons } from 'netlify-cms-ui-default';
 
 export default class DateTimeControl extends React.Component {
   static propTypes = {
@@ -66,6 +67,7 @@ export default class DateTimeControl extends React.Component {
     moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
 
   handleChange = datetime => {
+    console.log(datetime);
     /**
      * Set the date only if it is valid.
      */
@@ -112,7 +114,7 @@ export default class DateTimeControl extends React.Component {
     return (
       <div
         css={css`
-          ${reactDateTimeStyles};
+          ${reactDateTimeStyles}
         `}
       >
         <DateTime
@@ -123,7 +125,23 @@ export default class DateTimeControl extends React.Component {
           onFocus={setActiveStyle}
           onBlur={this.onBlur}
           inputProps={{ className: classNameWrapper, id: forID }}
+          renderInput={this.renderInput}
         />
+        <div
+          css={css`
+          ${buttons.button}
+          ${buttons.default}
+          ${buttons.lightBlue}
+          margin-top: 10px;
+          width: fit-content;
+          min-width: 50px;
+        `}
+          onClick={() => {
+            this.handleChange(moment());
+          }}
+        >
+          Now
+        </div>
       </div>
     );
   }
