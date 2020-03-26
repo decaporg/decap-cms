@@ -9,7 +9,7 @@ const ThumbnailWrap = styled(Card)`
   overflow: hidden;
   position: relative;
   display: flex;
-  flex-direction: column;
+  ${({horizontal}) => horizontal ? `` : `flex-direction: column;`}
   ${({ selected, selectable, theme }) =>
     selectable
       ? `
@@ -49,28 +49,37 @@ const Content = styled.div`
   flex-direction: column;
   flex: 1;
   position: relative;
+  ${({selectable, hasPreview, horizontal}) => `margin-${horizontal ? 'left' : 'top'}: ${!hasPreview && selectable ? `2.5rem` : 0};`}
+  transition: 200ms;
 `;
 const PreviewWrap = styled.div`
   position: relative;
   ${({ previewBgColor }) => (previewBgColor ? `background-color: ${previewBgColor};` : ``)}
   overflow: hidden;
+  display: flex;
+  width: ${({ horizontal }) => horizontal ? `33.333%;` : `100%`};
 `;
 const Preview = styled.div`
-  ${({ previewAspectRatio }) =>
-    previewAspectRatio
+  ${({ horizontal, previewAspectRatio }) => horizontal ? `
+    display: flex;
+    width: 100%;
+  ` : `
+    ${previewAspectRatio
       ? typeof previewAspectRatio === 'string'
         ? `
           padding-top: ${(previewAspectRatio.split(':')[1] / previewAspectRatio.split(':')[0]) *
-            100}%;
+          100}%;
         `
         : Array.isArray(previewAspectRatio)
-        ? `
-          padding-top: ${(previewAspectRatio.split[1] / previewAspectRatio.split[0]) * 100}%;
-        `
+          ? `
+            padding-top: ${(previewAspectRatio.split[1] / previewAspectRatio.split[0]) * 100}%;
+          `
         : ``
       : ``}
-  width: 100%;
-  ${({ previewAspectRatio }) => (previewAspectRatio ? `height: 0;` : ``)}
+    width: 100%;
+    ${previewAspectRatio ? `height: 0;` : ``}
+  `}
+
   ${({ previewImgSrc }) => (previewImgSrc ? `background-image: url(${previewImgSrc});` : ``)}
   background-position: center center;
   background-size: cover;
@@ -87,7 +96,7 @@ const Preview = styled.div`
             : 0
         };`
       : ``}
-  transform: scale(${({ selected }) => (selected ? 1.1 : 1.01)});
+  ${({ selected, selectable }) => selectable ? `transform: scale(${(selected ? 1.1 : 1.01)});` : ``}
   transition: 200ms;
 `;
 const PreviewText = styled.div`
@@ -127,7 +136,7 @@ const Subtitle = styled.div`
   flex: 1;
   display: flex;
   align-items: flex-end;
-  margin-top: 2px;
+  margin-top: 6px;
 `;
 const FeaturedIcon = styled(Icon)`
   stroke: none;
@@ -182,6 +191,7 @@ const Thumbnail = ({
   description,
   subtitle,
   featured,
+  horizontal,
   selectable,
   selected,
   onSelect,
@@ -207,9 +217,9 @@ const Thumbnail = ({
   }, []);
 
   return (
-    <ThumbnailWrap selected={selected} selectable={selectable} {...props}>
+    <ThumbnailWrap selected={selected} selectable={selectable} horizontal={horizontal} {...props}>
       {(previewImgSrc || previewText) && (
-        <PreviewWrap previewBgColor={previewBgColor || theme.color.disabled}>
+        <PreviewWrap previewBgColor={previewBgColor || theme.color.disabled} horizontal={horizontal}>
           <Preview
             previewAspectRatio={previewAspectRatio}
             previewImgSrc={previewImgSrc}
@@ -217,13 +227,14 @@ const Thumbnail = ({
             previewImgOpacity={previewImgOpacity}
             selected={selected}
             selectable={selectable}
+            horizontal={horizontal}
           >
             {!previewAspectRatio && <img src={previewImgSrc} style={{ width: '100%' }} />}
           </Preview>
           {previewText && <PreviewText>{previewText}</PreviewText>}
         </PreviewWrap>
       )}
-      <Content>
+      <Content selectable={selectable} hasPreview={previewImgSrc || previewText} horizontal={horizontal}>
         {supertitle && <Supertitle>{supertitle}</Supertitle>}
         {title && <Title>{title}</Title>}
         {description && <Description>{description}</Description>}

@@ -40,6 +40,7 @@ const StoryThumbnail = ({
   featured,
   selectable,
   previewAspectRatio,
+  horizontal,
   width,
   height,
 }) => {
@@ -58,6 +59,7 @@ const StoryThumbnail = ({
       featured={featured}
       selectable={selectable}
       selected={selected}
+      horizontal={horizontal}
       onSelect={() => setSelected(!selected)}
       previewAspectRatio={previewAspectRatio}
       width={width}
@@ -84,6 +86,7 @@ const ThumbnailStory = ({ theme }) => {
   const featured = boolean('featured', true);
   const selectable = boolean('selectable', false);
   const previewAspectRatio = text('previewAspectRatio', '16:9');
+  const horizontal = boolean('horizontal', false);
   const width = text('width', '16rem');
   const height = text('height', '18rem');
 
@@ -100,6 +103,7 @@ const ThumbnailStory = ({ theme }) => {
       featured={featured}
       selectable={selectable}
       previewAspectRatio={previewAspectRatio}
+      horizontal={horizontal}
       width={width}
       height={height}
     />
@@ -113,9 +117,12 @@ export const _Thumbnail = () => (
   </Wrap>
 );
 
-export const _ThumbnailGrid = () => (
+export const _ThumbnailGrid = () => {
+  const horizontal = boolean('horizontal', false);
+
+  return (
   <Wrap>
-    <ThumbnailGrid>
+    <ThumbnailGrid horizontal={horizontal}>
       {mockData.map((thumb, i) => (
         <StoryThumbnail
           key={i}
@@ -128,11 +135,12 @@ export const _ThumbnailGrid = () => (
           selectable={true}
           previewAspectRatio={'16:9'}
           width={'auto'}
+          horizontal={horizontal}
         />
       ))}
     </ThumbnailGrid>
   </Wrap>
-);
+)};
 
 _ThumbnailGrid.story = {
   name: 'ThumbnailGrid',
