@@ -10,7 +10,7 @@ This tutorial guides you through the steps for adding Netlify CMS to a site that
 
 ## App File Structure
 
-A static `admin` folder contains all Netlify CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
+A static `admin` folder contains all Netlify CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for some of the most popular static site generators:
 
 | These generators ...                       | store static files in |
 | -------------------------------------------| --------------------- |
