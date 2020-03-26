@@ -3,7 +3,7 @@ import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
-import { INFERABLE_FIELDS, IDENTIFIER_FIELDS } from '../constants/fieldInference';
+import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
 import {
   CollectionsAction,
@@ -288,6 +288,7 @@ export const selectIdentifier = (collection: Collection) => {
     fieldNames.find(name => name?.toLowerCase().trim() === id.toLowerCase().trim()),
   );
 };
+
 export const selectInferedField = (collection: Collection, fieldName: string) => {
   if (fieldName === 'title' && collection.get('identifier_field')) {
     return selectIdentifier(collection);
@@ -335,6 +336,15 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
   }
 
   return null;
+};
+
+export const selectDefaultSortableFields = (collection: Collection) => {
+  const defaultSortable = SORTABLE_FIELDS.map(type => {
+    const field = selectInferedField(collection, type);
+    return field;
+  }).filter(Boolean);
+
+  return defaultSortable as string[];
 };
 
 export default collections;

@@ -4,6 +4,7 @@ import { trimStart, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
+import { selectDefaultSortableFields } from '../reducers/collections';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -85,7 +86,8 @@ export function applyDefaults(config) {
           }
 
           if (!collection.has('sortableFields')) {
-            collection = collection.set('sortableFields', fromJS([]));
+            const defaultSortable = selectDefaultSortableFields(collection);
+            collection = collection.set('sortableFields', fromJS(defaultSortable));
           }
 
           return collection;

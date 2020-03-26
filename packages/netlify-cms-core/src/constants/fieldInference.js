@@ -2,6 +2,8 @@ import React from 'react';
 
 export const IDENTIFIER_FIELDS = ['title', 'path'];
 
+export const SORTABLE_FIELDS = ['title', 'date', 'author', 'description'];
+
 export const INFERABLE_FIELDS = {
   title: {
     type: 'string',
