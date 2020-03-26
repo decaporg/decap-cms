@@ -200,6 +200,7 @@ const buttons = {
     padding: 0 24px 0 14px;
   `,
   small: css`
+    font-size: 13px;
     height: 23px;
     line-height: 23px;
   `,
