@@ -67,7 +67,6 @@ export default class DateTimeControl extends React.Component {
     moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
 
   handleChange = datetime => {
-    console.log(datetime);
     /**
      * Set the date only if it is valid.
      */
@@ -114,7 +113,7 @@ export default class DateTimeControl extends React.Component {
     return (
       <div
         css={css`
-          ${reactDateTimeStyles}
+          ${reactDateTimeStyles};
         `}
       >
         <DateTime
