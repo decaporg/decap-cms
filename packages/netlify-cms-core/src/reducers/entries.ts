@@ -1,4 +1,4 @@
-import { Map, List, fromJS } from 'immutable';
+import { Map, List, fromJS, OrderedMap } from 'immutable';
 import { dirname, join } from 'path';
 import {
   ENTRY_REQUEST,
@@ -32,11 +32,14 @@ import {
   EntriesSortRequestPayload,
   EntriesSortSuccessPayload,
   EntriesSortFailurePayload,
+  SortMap,
+  SortObject,
   Sort,
+  SortDirection,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once } from 'lodash';
+import { trim, once, sortBy, set } from 'lodash';
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -45,24 +48,53 @@ let page: number;
 let slug: string;
 
 const storageSortKey = 'netlify-cms.entries.sort';
+type StorageSortObject = SortObject & { index: number };
+type StorageSort = { [collection: string]: { [key: string]: StorageSortObject } };
+
 const loadSort = once(() => {
-  const sort = localStorage.getItem(storageSortKey);
-  if (sort) {
+  const sortString = localStorage.getItem(storageSortKey);
+  if (sortString) {
     try {
-      return fromJS(JSON.parse(sort));
+      const sort: StorageSort = JSON.parse(sortString);
+      let map = Map() as Sort;
+      Object.entries(sort).forEach(([collection, sort]) => {
+        let orderedMap = OrderedMap() as SortMap;
+        sortBy(Object.values(sort), ['index']).forEach(value => {
+          const { key, direction } = value;
+          orderedMap = orderedMap.set(key, fromJS({ key, direction }));
+        });
+        map = map.set(collection, orderedMap);
+      });
+      return map;
     } catch (e) {
-      return Map();
+      return Map() as Sort;
     }
   }
-  return Map();
+  return Map() as Sort;
 });
 
 const persistSort = (sort: Sort | undefined) => {
   if (sort) {
-    localStorage.setItem(storageSortKey, JSON.stringify(sort.toJS()));
+    const storageSort: StorageSort = {};
+    sort.keySeq().forEach(key => {
+      const collection = key as string;
+      const sortObjects = (sort
+        .get(collection)
+        .valueSeq()
+        .toJS() as SortObject[]).map((value, index) => ({ ...value, index }));
+
+      sortObjects.forEach(value => {
+        set(storageSort, [collection, value.key], value);
+      });
+    });
+    localStorage.setItem(storageSortKey, JSON.stringify(storageSort));
   } else {
     localStorage.removeItem(storageSortKey);
   }
+};
+
+const clearSort = () => {
+  localStorage.removeItem(storageSortKey);
 };
 
 const entries = (
@@ -94,7 +126,8 @@ const entries = (
         map.deleteIn(['sort', payload.collection]);
         map.setIn(['pages', payload.collection, 'isFetching'], true);
       });
-      persistSort(newState.get('sort'));
+
+      clearSort();
       return newState;
     }
 
@@ -163,25 +196,32 @@ const entries = (
       const payload = action.payload as EntriesSortRequestPayload;
       const { collection, key, direction } = payload;
       const newState = state.withMutations(map => {
-        map.updateIn(['sort', collection], (sort: Map<string, Map<string, string | boolean>>) => {
+        map.updateIn(['sort', collection], (sort: SortMap) => {
           if (!sort) {
-            return fromJS({ [key]: { key, direction, active: true } });
+            return OrderedMap({ [key]: Map({ key, direction }) });
           } else {
-            sort = sort.map(item => item!.set('active', false)).toMap();
-            sort = sort.set(key, fromJS({ key, direction, active: true }));
+            if (sort.has(key)) {
+              if (direction !== SortDirection.None) {
+                sort = sort.set(key, fromJS({ key, direction }));
+              } else {
+                sort = sort.delete(key);
+              }
+            } else {
+              sort = sort.set(key, fromJS({ key, direction }));
+            }
             return sort;
           }
         });
         map.setIn(['pages', collection, 'isFetching'], true);
         map.deleteIn(['pages', collection, 'page']);
       });
-      persistSort(newState.get('sort'));
+      persistSort(newState.get('sort') as Sort);
       return newState;
     }
 
     case SORT_ENTRIES_SUCCESS: {
       const payload = action.payload as EntriesSortSuccessPayload;
-      const { collection, key, direction, entries } = payload;
+      const { collection, entries } = payload;
       loadedEntries = entries;
       const newState = state.withMutations(map => {
         loadedEntries.forEach(entry =>
@@ -190,17 +230,7 @@ const entries = (
             fromJS(entry).set('isFetching', false),
           ),
         );
-        map.updateIn(['sort', collection], (sort: Map<string, Map<string, string | boolean>>) => {
-          if (!sort) {
-            return fromJS({ [key]: { key, direction, active: true } });
-          } else {
-            sort = sort.map(item => item!.set('active', false)).toMap();
-            sort = sort.set(key, fromJS({ key, direction, active: true }));
-            return sort;
-          }
-        });
         map.setIn(['pages', collection, 'isFetching'], false);
-
         const ids = List(loadedEntries.map(entry => entry.slug));
         map.setIn(
           ['pages', collection],
@@ -210,7 +240,7 @@ const entries = (
           }),
         );
       });
-      persistSort(newState.get('sort'));
+      persistSort(newState.get('sort') as Sort);
       return newState;
     }
 
@@ -221,7 +251,7 @@ const entries = (
         map.deleteIn(['sort', collection, key]);
         map.setIn(['pages', collection, 'isFetching'], false);
       });
-      persistSort(newState.get('sort'));
+      persistSort(newState.get('sort') as Sort);
       return newState;
     }
 
@@ -231,8 +261,18 @@ const entries = (
 };
 
 export const selectEntriesSort = (entries: Entries, collection: string) => {
-  const sort = entries.getIn(['sort', collection])?.toJS();
-  return sort;
+  const sort = entries.get('sort') as Sort | undefined;
+  return sort?.get(collection);
+};
+
+export const selectEntriesSortFields = (entries: Entries, collection: string) => {
+  const sort = selectEntriesSort(entries, collection);
+  const values =
+    sort
+      ?.valueSeq()
+      .filter(v => v?.get('direction') !== SortDirection.None)
+      .toArray() || [];
+  return values;
 };
 
 export const selectEntry = (state: Entries, collection: string, slug: string) =>
@@ -247,6 +287,14 @@ export const selectEntries = (state: Entries, collection: string) => {
     slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
 
   return entries;
+};
+
+export const selectEntriesLoaded = (state: Entries, collection: string) => {
+  return !!state.getIn(['pages', collection]);
+};
+
+export const selectIsFetching = (state: Entries, collection: string) => {
+  return state.getIn(['pages', collection, 'isFetching'], false);
 };
 
 const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';

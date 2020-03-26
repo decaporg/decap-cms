@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
-import { Map, List } from 'immutable';
+import { Map, List, OrderedMap } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
 import { MediaFile as BackendMediaFile } from '../backend';
 
@@ -58,20 +58,18 @@ export enum SortDirection {
   None = 'None',
 }
 
-type SortObject = {
-  [collection: string]: StaticallyTypedRecord<{
-    [key: string]: { key: string; direction: SortDirection; active: boolean };
-  }>;
-};
+export type SortObject = { key: string; direction: SortDirection };
 
-export type Sort = StaticallyTypedRecord<SortObject>;
+export type SortMap = OrderedMap<string, StaticallyTypedRecord<SortObject>>;
+
+export type Sort = Map<string, SortMap>;
 
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
   entities: Entities & EntitiesObject;
-  sort: Sort & SortObject;
+  sort: Sort;
 }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;

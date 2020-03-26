@@ -8,7 +8,7 @@ import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
-import { selectEntries } from 'Reducers';
+import { selectEntries, selectEntriesLoaded, selectIsFetching } from '../../../reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
 
@@ -66,9 +66,9 @@ function mapStateToProps(state, ownProps) {
   const { collection, viewStyle } = ownProps;
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
-  const entries = selectEntries(state, collection.get('name'));
-  const entriesLoaded = !!state.entries.getIn(['pages', collection.get('name')]);
-  const isFetching = state.entries.getIn(['pages', collection.get('name'), 'isFetching'], false);
+  const entries = selectEntries(state.entries, collection.get('name'));
+  const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
+  const isFetching = selectIsFetching(state.entries, collection.get('name'));
 
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();

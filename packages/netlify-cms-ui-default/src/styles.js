@@ -335,6 +335,11 @@ const components = {
       background-color: ${colors.activeBackground};
     }
   `,
+  viewControlsText: css`
+    font-size: 14px;
+    color: ${colors.text};
+    margin-right: 12px;
+  `,
 };
 
 const reactSelectStyles = {

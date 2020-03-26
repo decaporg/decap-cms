@@ -55,9 +55,7 @@ const ViewControlsSection = styled.div`
 `;
 
 const ViewControlsText = styled.span`
-  font-size: 14px;
-  color: ${colors.text};
-  margin-right: 12px;
+  ${components.viewControlsText};
 `;
 
 const ViewControlsButton = styled.button`
@@ -88,12 +86,10 @@ const SortButton = styled.button`
   ${buttons.button};
   color: ${props => (props.isActive ? colors.active : '#7b8290')};
   background-color: ${props => (props.isActive ? colors.activeBackground : 'none')};
-
   flex: 0 0 auto;
   font-family: inherit;
   display: inline-flex;
   align-items: center;
-
   ${Icon} {
     margin-right: 4px;
     color: ${props => (props.isActive ? colors.active : '#7b8290')};
@@ -109,6 +105,10 @@ const SortButton = styled.button`
   }
 `;
 
+const SortIndex = styled.span`
+  min-width: 20px;
+`;
+
 const SortList = styled.ul`
   display: flex;
   align-items: center;
@@ -117,10 +117,18 @@ const SortList = styled.ul`
 `;
 
 const SortControls = ({ t, fields, onSortClick, sort }) => {
-  const items = fields.map(f => {
-    const sortField = sort && sort[f.key];
-    const sortDirection = sortField?.direction;
-    const isActive = sortField?.active && sortDirection !== SortDirection.None;
+  const multipleActive =
+    sort
+      ?.valueSeq()
+      .toArray()
+      .filter(v => v.get('direction') !== SortDirection.None).length > 1;
+
+  const items = fields.map(field => {
+    const { key, label } = field;
+    const sortField = sort?.get(key);
+    const index = sort?.valueSeq().findIndex(v => v.get('key') === key);
+    const sortDirection = sortField?.get('direction');
+    const isActive = sortDirection && sortDirection !== SortDirection.None;
     let nextDirection;
     switch (sortDirection) {
       case SortDirection.Ascending:
@@ -134,14 +142,17 @@ const SortControls = ({ t, fields, onSortClick, sort }) => {
         break;
     }
 
+    const showIndex = isActive && multipleActive;
+
     return (
-      <SortButton key={f.key} onClick={() => onSortClick(f.key, nextDirection)} isActive={isActive}>
+      <SortButton key={key} onClick={() => onSortClick(key, nextDirection)} isActive={isActive}>
         {sortDirection === SortDirection.Descending ? (
-          <Icon type="chevron" direction="down" size="small" />
+          <Icon type="chevron" direction="down" size="xsmall"></Icon>
         ) : (
-          <Icon type="chevron" direction="up" size="small" />
+          <Icon type="chevron" direction="up" size="xsmall"></Icon>
         )}
-        {f.label}
+        {label}
+        <SortIndex>{showIndex ? ` (${index + 1})` : ''}</SortIndex>
       </SortButton>
     );
   });

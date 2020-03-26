@@ -1,5 +1,5 @@
 import { fromJS, List, Map, Set } from 'immutable';
-import { isEqual, sortBy } from 'lodash';
+import { isEqual, orderBy } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
@@ -25,8 +25,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
-import { keyToPathArray } from '../lib/stringTemplate';
-import { selectEntriesSort } from '../reducers/entries';
+import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
 
 const { notifSend } = notifActions;
 
@@ -147,6 +146,8 @@ export function sortByField(
     const state = getState();
     const backend = currentBackend(state.config);
 
+    // if we're already fetching we update the sort key, but skip loading entries
+    const isFetching = selectIsFetching(state.entries, collection.get('name'));
     dispatch({
       type: SORT_ENTRIES_REQUEST,
       payload: {
@@ -155,12 +156,19 @@ export function sortByField(
         direction,
       },
     });
+    if (isFetching) {
+      return;
+    }
+
     try {
       let entries = await backend.listAllEntries(collection);
-
-      if (direction !== SortDirection.None) {
-        entries = sortBy(entries, ['data', ...keyToPathArray(key)]);
-        entries = direction === SortDirection.Ascending ? entries : entries.reverse();
+      const sortFields = selectEntriesSortFields(getState().entries, collection.get('name'));
+      if (sortFields && sortFields.length > 0) {
+        const keys = sortFields.map(v => `data.${v.get('key')}`);
+        const orders = sortFields.map(v =>
+          v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
+        );
+        entries = orderBy(entries, keys, orders);
       }
 
       dispatch({
@@ -450,12 +458,10 @@ export function loadEntries(collection: Collection, page = 0) {
       return;
     }
     const state = getState();
-    const sort = selectEntriesSort(state.entries, collection.get('name'));
-    if (sort) {
-      const field = Object.values(sort).filter(v => v.active)[0];
-      if (field) {
-        return dispatch(sortByField(collection, field.key, field.direction));
-      }
+    const sortFields = selectEntriesSortFields(state.entries, collection.get('name'));
+    if (sortFields && sortFields.length > 0) {
+      const field = sortFields[0];
+      return dispatch(sortByField(collection, field.get('key'), field.get('direction')));
     }
 
     const backend = currentBackend(state.config);
