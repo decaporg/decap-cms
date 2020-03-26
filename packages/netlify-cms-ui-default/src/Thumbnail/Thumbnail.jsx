@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+import { withTheme } from 'emotion-theming';
+
 import Card from '../Card';
 import Icon from '../Icon';
 
@@ -8,33 +10,98 @@ const ThumbnailWrap = styled(Card)`
   position: relative;
   display: flex;
   flex-direction: column;
+  ${({ selected, selectable, theme }) =>
+    selectable
+      ? `
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: ${theme.color.success['500']};
+      opacity: ${selected ? 0.1 : 0};
+      border-radius: 6px;
+      pointer-events: none;
+      transition: 200ms;
+    }
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      box-shadow: inset 0 0 0 ${selected ? 2 : 0}px ${theme.color.success['500']};
+      border-radius: 6px;
+      pointer-events: none;
+      transition: 200ms;
+    }
+  `
+      : ``}
 `;
 const Content = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: column;
   flex: 1;
+  position: relative;
 `;
-const ImageWrap = styled.div`
-  ${({ imageAspectRatio }) =>
-    imageAspectRatio
-      ? typeof imageAspectRatio === 'string'
+const PreviewWrap = styled.div`
+  position: relative;
+  ${({ previewBgColor }) => (previewBgColor ? `background-color: ${previewBgColor};` : ``)}
+  overflow: hidden;
+`;
+const Preview = styled.div`
+  ${({ previewAspectRatio }) =>
+    previewAspectRatio
+      ? typeof previewAspectRatio === 'string'
         ? `
-          padding-top: ${(imageAspectRatio.split(':')[1] / imageAspectRatio.split(':')[0]) * 100}%;
+          padding-top: ${(previewAspectRatio.split(':')[1] / previewAspectRatio.split(':')[0]) *
+            100}%;
         `
-        : Array.isArray(imageAspectRatio)
+        : Array.isArray(previewAspectRatio)
         ? `
-          padding-top: ${(imageAspectRatio.split[1] / imageAspectRatio.split[0]) * 100}%;
+          padding-top: ${(previewAspectRatio.split[1] / previewAspectRatio.split[0]) * 100}%;
         `
         : ``
       : ``}
   width: 100%;
-  ${({ imageAspectRatio }) => (imageAspectRatio ? `height: 0;` : ``)}
-  ${({ imageSrc }) =>
-    imageSrc ? `background-image: url(${imageSrc});` : ``}
+  ${({ previewAspectRatio }) => (previewAspectRatio ? `height: 0;` : ``)}
+  ${({ previewImgSrc }) => (previewImgSrc ? `background-image: url(${previewImgSrc});` : ``)}
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+  ${({ previewImgSrc, previewImgLoaded, previewImgOpacity }) =>
+    previewImgSrc
+      ? `opacity: ${
+          previewImgLoaded
+            ? previewImgOpacity !== null &&
+              previewImgOpacity !== undefined &&
+              previewImgOpacity !== ''
+              ? previewImgOpacity
+              : 1
+            : 0
+        };`
+      : ``}
+  transform: scale(${({ selected }) => (selected ? 1.1 : 1.01)});
+  transition: 200ms;
+`;
+const PreviewText = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.color.highEmphasis};
+  font-size: 2rem;
+  font-weight: bold;
 `;
 const Supertitle = styled.div`
   color: ${({ theme }) => theme.color.lowEmphasis};
@@ -105,7 +172,11 @@ SelectIcon.defaultProps = {
 };
 
 const Thumbnail = ({
-  imageSrc,
+  previewImgSrc,
+  previewImgOpacity,
+  previewAspectRatio,
+  previewBgColor,
+  previewText,
   supertitle,
   title,
   description,
@@ -114,32 +185,62 @@ const Thumbnail = ({
   selectable,
   selected,
   onSelect,
-  imageAspectRatio,
+  theme,
   ...props
-}) => (
-  <ThumbnailWrap selected={selected} {...props}>
-    {imageSrc && (
-      <ImageWrap imageAspectRatio={imageAspectRatio} imageSrc={imageSrc}>
-        {!imageAspectRatio && <img src={imageSrc} style={{ width: '100%' }} />}
-      </ImageWrap>
-    )}
-    <Content>
-      {supertitle && <Supertitle>{supertitle}</Supertitle>}
-      {title && <Title>{title}</Title>}
-      {description && <Description>{description}</Description>}
-      {subtitle && <Subtitle>{subtitle}</Subtitle>}
-    </Content>
-    {featured && <FeaturedIcon />}
-    {selectable && (
-      <SelectToggle selected={selected} onClick={onSelect}>
-        <SelectIcon />
-      </SelectToggle>
-    )}
-  </ThumbnailWrap>
-);
+}) => {
+  const isCached = src => {
+    const img = new Image();
+    img.src = src;
 
-Thumbnail.defaultProps = {
-  imageAspectRatio: '16:9',
+    return img.complete;
+  };
+  const [previewImgLoaded, setPreviewImageLoaded] = useState(
+    previewImgSrc && isCached(previewImgSrc),
+  );
+
+  useEffect(() => {
+    if (previewImgSrc) {
+      const img = new Image();
+      img.onload = () => setPreviewImageLoaded(true);
+      img.src = previewImgSrc;
+    }
+  }, []);
+
+  return (
+    <ThumbnailWrap selected={selected} selectable={selectable} {...props}>
+      {(previewImgSrc || previewText) && (
+        <PreviewWrap previewBgColor={previewBgColor || theme.color.disabled}>
+          <Preview
+            previewAspectRatio={previewAspectRatio}
+            previewImgSrc={previewImgSrc}
+            previewImgLoaded={previewImgLoaded}
+            previewImgOpacity={previewImgOpacity}
+            selected={selected}
+            selectable={selectable}
+          >
+            {!previewAspectRatio && <img src={previewImgSrc} style={{ width: '100%' }} />}
+          </Preview>
+          {previewText && <PreviewText>{previewText}</PreviewText>}
+        </PreviewWrap>
+      )}
+      <Content>
+        {supertitle && <Supertitle>{supertitle}</Supertitle>}
+        {title && <Title>{title}</Title>}
+        {description && <Description>{description}</Description>}
+        {subtitle && <Subtitle>{subtitle}</Subtitle>}
+      </Content>
+      {featured && <FeaturedIcon />}
+      {selectable && (
+        <SelectToggle selected={selected} onClick={onSelect}>
+          <SelectIcon />
+        </SelectToggle>
+      )}
+    </ThumbnailWrap>
+  );
 };
 
-export default Thumbnail;
+Thumbnail.defaultProps = {
+  previewAspectRatio: '16:9',
+};
+
+export default withTheme(Thumbnail);
