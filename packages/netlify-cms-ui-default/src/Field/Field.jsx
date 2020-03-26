@@ -44,6 +44,7 @@ const FieldInside = styled.div`
           focus ? theme.color.primary['500'] : theme.color.border
         };
     border-radius: 8px;
+    transition: 0.2s;
   `}
 `;
 const ChildrenWrap = styled.div`

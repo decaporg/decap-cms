@@ -75,6 +75,7 @@ import Settings from './icons/Settings';
 import Share2 from './icons/Share2';
 import ShoppingCart from './icons/ShoppingCart';
 import Sidebar from './icons/Sidebar';
+import Star from './icons/Star';
 import Sun from './icons/Sun';
 import Trash2 from './icons/Trash2';
 import Underline from './icons/Underline';
@@ -164,6 +165,7 @@ export const iconComponents = {
   'share-2': Share2,
   'shopping-cart': ShoppingCart,
   'sidebar': Sidebar,
+  'star': Star,
   'sun': Sun,
   'trash-2': Trash2,
   'underline': Underline,
