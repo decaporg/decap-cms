@@ -133,3 +133,7 @@ export const _ThumbnailGrid = () => (
     </ThumbnailGrid>
   </Wrap>
 );
+
+_ThumbnailGrid.story = {
+  name: 'ThumbnailGrid',
+};
