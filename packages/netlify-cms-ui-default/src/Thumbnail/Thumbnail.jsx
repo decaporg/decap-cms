@@ -51,7 +51,8 @@ const ThumbnailWrap = styled(Card)`
     &:hover {
       z-index: 1;
       transform: translateY(-0.125rem);
-      box-shadow: ${theme.shadow({ size: 'lg', theme })}}
+      box-shadow: ${theme.shadow({ size: 'lg', theme })};
+      ${theme.darkMode ? `background-color: ${theme.color.surfaceHighlight};` : ``}
     }
   `
       : ``}
