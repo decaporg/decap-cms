@@ -9,7 +9,7 @@ const ThumbnailWrap = styled(Card)`
   overflow: hidden;
   position: relative;
   display: flex;
-  ${({horizontal}) => horizontal ? `` : `flex-direction: column;`}
+  ${({ horizontal }) => (horizontal ? `` : `flex-direction: column;`)}
   ${({ selected, selectable, theme }) =>
     selectable
       ? `
@@ -42,6 +42,19 @@ const ThumbnailWrap = styled(Card)`
     }
   `
       : ``}
+  ${({ clickable, selectable, theme }) =>
+    clickable && !selectable
+      ? `
+    cursor: pointer;
+    transition: 200ms;
+    transform: translateY(0);
+    &:hover {
+      z-index: 1;
+      transform: translateY(-0.125rem);
+      box-shadow: ${theme.shadow({ size: 'lg', theme })}}
+    }
+  `
+      : ``}
 `;
 const Content = styled.div`
   padding: 1rem;
@@ -49,38 +62,55 @@ const Content = styled.div`
   flex-direction: column;
   flex: 1;
   position: relative;
-  ${({selectable, hasPreview, horizontal}) => `margin-${horizontal ? 'left' : 'top'}: ${!hasPreview && selectable ? `2.5rem` : 0};`}
+  ${({ selectable, hasPreview, horizontal }) =>
+    `margin-${horizontal ? 'left' : 'top'}: ${!hasPreview && selectable ? `2.5rem` : 0};`}
   transition: 200ms;
+  ${({ featured }) =>
+    featured
+      ? `
+    & > *:last-child {
+      padding-right: 1.5rem;
+    }
+  `
+      : ``}
 `;
 const PreviewWrap = styled.div`
   position: relative;
   ${({ previewBgColor }) => (previewBgColor ? `background-color: ${previewBgColor};` : ``)}
   overflow: hidden;
   display: flex;
-  width: ${({ horizontal }) => horizontal ? `33.333%;` : `100%`};
+  width: ${({ horizontal }) => (horizontal ? `33.333%;` : `100%`)};
 `;
 const Preview = styled.div`
-  ${({ horizontal, previewAspectRatio }) => horizontal ? `
+  ${({ horizontal, previewAspectRatio }) =>
+    horizontal
+      ? `
     display: flex;
     width: 100%;
-  ` : `
-    ${previewAspectRatio
-      ? typeof previewAspectRatio === 'string'
-        ? `
+  `
+      : `
+    ${
+      previewAspectRatio
+        ? typeof previewAspectRatio === 'string'
+          ? `
           padding-top: ${(previewAspectRatio.split(':')[1] / previewAspectRatio.split(':')[0]) *
-          100}%;
+            100}%;
         `
-        : Array.isArray(previewAspectRatio)
+          : Array.isArray(previewAspectRatio)
           ? `
             padding-top: ${(previewAspectRatio.split[1] / previewAspectRatio.split[0]) * 100}%;
           `
+          : ``
         : ``
-      : ``}
+    }
     width: 100%;
     ${previewAspectRatio ? `height: 0;` : ``}
   `}
 
-  ${({ previewImgSrc }) => (previewImgSrc ? `background-image: url(${previewImgSrc});` : ``)}
+  ${({ previewImgSrc }) =>
+    previewImgSrc
+      ? `background-image: url(${previewImgSrc});`
+      : ``}
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -96,7 +126,8 @@ const Preview = styled.div`
             : 0
         };`
       : ``}
-  ${({ selected, selectable }) => selectable ? `transform: scale(${(selected ? 1.1 : 1.01)});` : ``}
+  ${({ selected, selectable }) =>
+    selectable ? `transform: scale(${selected ? 1.1 : 1.01});` : ``}
   transition: 200ms;
 `;
 const PreviewText = styled.div`
@@ -118,25 +149,63 @@ const Supertitle = styled.div`
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 6px;
+  ${({ maxLines }) =>
+    maxLines
+      ? `
+    display: -webkit-box;
+    -webkit-line-clamp: ${maxLines};
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  `
+      : ``}
 `;
 const Title = styled.div`
   font-size: 0.875rem;
   font-weight: bold;
   color: ${({ theme }) => theme.color.highEmphasis};
   margin-bottom: 6px;
+  ${({ maxLines }) =>
+    maxLines
+      ? `
+    display: -webkit-box;
+    -webkit-line-clamp: ${maxLines};
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  `
+      : ``}
 `;
 const Description = styled.div`
   font-size: 0.75rem;
   color: ${({ theme }) => theme.color.mediumEmphasis};
   margin-bottom: 6px;
+  ${({ maxLines }) =>
+    maxLines
+      ? `
+    display: -webkit-box;
+    -webkit-line-clamp: ${maxLines};
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  `
+      : ``}
 `;
 const Subtitle = styled.div`
   font-size: 0.625rem;
   color: ${({ theme }) => theme.color.lowEmphasis};
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  margin-top: 6px;
+  padding-top: 6px;
+  ${({ maxLines }) =>
+    maxLines
+      ? `
+    display: -webkit-box;
+    -webkit-line-clamp: ${maxLines};
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: auto;
+  `
+      : `
+    display: flex;
+    align-items: flex-end;
+    flex: 1;
+  `}
 `;
 const FeaturedIcon = styled(Icon)`
   stroke: none;
@@ -153,8 +222,8 @@ const SelectToggle = styled.div`
   width: 1.5rem;
   height: 1.5rem;
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 0.75rem;
+  left: 0.75rem;
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, ${({ selected }) => (selected ? 1 : 0.75)});
   border-radius: 0.75rem;
   background-color: ${({ selected, theme }) =>
@@ -195,6 +264,11 @@ const Thumbnail = ({
   selectable,
   selected,
   onSelect,
+  onClick,
+  supertitleMaxLines,
+  titleMaxLines,
+  descriptionMaxLines,
+  subtitleMaxLines,
   theme,
   ...props
 }) => {
@@ -217,9 +291,19 @@ const Thumbnail = ({
   }, []);
 
   return (
-    <ThumbnailWrap selected={selected} selectable={selectable} horizontal={horizontal} {...props}>
+    <ThumbnailWrap
+      selected={selected}
+      selectable={selectable}
+      horizontal={horizontal}
+      clickable={!!onClick}
+      onClick={onClick && onClick}
+      {...props}
+    >
       {(previewImgSrc || previewText) && (
-        <PreviewWrap previewBgColor={previewBgColor || theme.color.disabled} horizontal={horizontal}>
+        <PreviewWrap
+          previewBgColor={previewBgColor || theme.color.disabled}
+          horizontal={horizontal}
+        >
           <Preview
             previewAspectRatio={previewAspectRatio}
             previewImgSrc={previewImgSrc}
@@ -234,11 +318,16 @@ const Thumbnail = ({
           {previewText && <PreviewText>{previewText}</PreviewText>}
         </PreviewWrap>
       )}
-      <Content selectable={selectable} hasPreview={previewImgSrc || previewText} horizontal={horizontal}>
-        {supertitle && <Supertitle>{supertitle}</Supertitle>}
-        {title && <Title>{title}</Title>}
-        {description && <Description>{description}</Description>}
-        {subtitle && <Subtitle>{subtitle}</Subtitle>}
+      <Content
+        selectable={selectable}
+        hasPreview={previewImgSrc || previewText}
+        horizontal={horizontal}
+        featured={featured}
+      >
+        {supertitle && <Supertitle maxLines={supertitleMaxLines}>{supertitle}</Supertitle>}
+        {title && <Title maxLines={titleMaxLines}>{title}</Title>}
+        {description && <Description maxLines={descriptionMaxLines}>{description}</Description>}
+        {subtitle && <Subtitle maxLines={subtitleMaxLines}>{subtitle}</Subtitle>}
       </Content>
       {featured && <FeaturedIcon />}
       {selectable && (
@@ -252,6 +341,10 @@ const Thumbnail = ({
 
 Thumbnail.defaultProps = {
   previewAspectRatio: '16:9',
+  supertitleMaxLines: 1,
+  titleMaxLines: 3,
+  descriptionMaxLines: 3,
+  subtitleMaxLines: 1,
 };
 
 export default withTheme(Thumbnail);

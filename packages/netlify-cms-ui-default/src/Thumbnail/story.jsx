@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withKnobs, boolean, color, text } from '@storybook/addon-knobs';
+import { withKnobs, boolean, number, color, text } from '@storybook/addon-knobs';
 import styled from '@emotion/styled';
 import { withTheme } from 'emotion-theming';
 
@@ -41,8 +41,13 @@ const StoryThumbnail = ({
   selectable,
   previewAspectRatio,
   horizontal,
+  supertitleMaxLines,
+  titleMaxLines,
+  descriptionMaxLines,
+  subtitleMaxLines,
   width,
   height,
+  onClick,
 }) => {
   const [selected, setSelected] = useState(false);
 
@@ -60,10 +65,15 @@ const StoryThumbnail = ({
       selectable={selectable}
       selected={selected}
       horizontal={horizontal}
+      supertitleMaxLines={supertitleMaxLines}
+      titleMaxLines={titleMaxLines}
+      descriptionMaxLines={descriptionMaxLines}
+      subtitleMaxLines={subtitleMaxLines}
       onSelect={() => setSelected(!selected)}
       previewAspectRatio={previewAspectRatio}
       width={width}
       height={height}
+      onClick={onClick}
     />
   );
 };
@@ -87,8 +97,13 @@ const ThumbnailStory = ({ theme }) => {
   const selectable = boolean('selectable', false);
   const previewAspectRatio = text('previewAspectRatio', '16:9');
   const horizontal = boolean('horizontal', false);
+  const supertitleMaxLines = number('supertitleMaxLines', 1);
+  const titleMaxLines = number('titleMaxLines', 3);
+  const descriptionMaxLines = number('descriptionMaxLines', 3);
+  const subtitleMaxLines = number('subtitleMaxLines', 1);
   const width = text('width', '16rem');
   const height = text('height', '18rem');
+  const onClick = boolean('onClick', false);
 
   return (
     <StoryThumbnail
@@ -104,8 +119,13 @@ const ThumbnailStory = ({ theme }) => {
       selectable={selectable}
       previewAspectRatio={previewAspectRatio}
       horizontal={horizontal}
+      supertitleMaxLines={supertitleMaxLines}
+      titleMaxLines={titleMaxLines}
+      descriptionMaxLines={descriptionMaxLines}
+      subtitleMaxLines={subtitleMaxLines}
       width={width}
       height={height}
+      onClick={onClick && !selectable ? () => alert('You just clicked a thumbnail.') : null}
     />
   );
 };
@@ -119,28 +139,40 @@ export const _Thumbnail = () => (
 
 export const _ThumbnailGrid = () => {
   const horizontal = boolean('horizontal', false);
+  const supertitleMaxLines = number('supertitleMaxLines', 1);
+  const titleMaxLines = number('titleMaxLines', 3);
+  const descriptionMaxLines = number('descriptionMaxLines', 3);
+  const subtitleMaxLines = number('subtitleMaxLines', 1);
+  const selectable = boolean('selectable', false);
+  const onClick = boolean('onClick', false);
 
   return (
-  <Wrap>
-    <ThumbnailGrid horizontal={horizontal}>
-      {mockData.map((thumb, i) => (
-        <StoryThumbnail
-          key={i}
-          previewImgSrc={thumb.img}
-          supertitle={thumb.supertitle}
-          title={thumb.title}
-          description={thumb.description}
-          subtitle={thumb.subtitle}
-          featured={thumb.featured}
-          selectable={true}
-          previewAspectRatio={'16:9'}
-          width={'auto'}
-          horizontal={horizontal}
-        />
-      ))}
-    </ThumbnailGrid>
-  </Wrap>
-)};
+    <Wrap>
+      <ThumbnailGrid horizontal={horizontal}>
+        {mockData.map((thumb, i) => (
+          <StoryThumbnail
+            key={i}
+            previewImgSrc={thumb.img}
+            supertitle={thumb.supertitle}
+            title={thumb.title}
+            description={thumb.description}
+            subtitle={thumb.subtitle}
+            featured={thumb.featured}
+            selectable={selectable}
+            previewAspectRatio={'16:9'}
+            width={'auto'}
+            horizontal={horizontal}
+            supertitleMaxLines={supertitleMaxLines}
+            titleMaxLines={titleMaxLines}
+            descriptionMaxLines={descriptionMaxLines}
+            subtitleMaxLines={subtitleMaxLines}
+            onClick={onClick && !selectable ? () => alert('You just clicked a thumbnail.') : null}
+          />
+        ))}
+      </ThumbnailGrid>
+    </Wrap>
+  );
+};
 
 _ThumbnailGrid.story = {
   name: 'ThumbnailGrid',
