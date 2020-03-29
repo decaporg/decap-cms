@@ -116,7 +116,7 @@ SortIcon.defaultProps = {
 const TableRow = sortableElement(({ children, ...props }) => <TRow {...props}>{children}</TRow>);
 const TableBody = sortableContainer(({ children }) => <TBody>{children}</TBody>);
 
-const Table = ({ columns, data, selectable, renderMenu, onClick }) => {
+const Table = ({ columns, data, selectable, renderMenu, onClick, draggable }) => {
   const getCols = () => [
     ...(selectable
       ? [
@@ -233,6 +233,7 @@ const Table = ({ columns, data, selectable, renderMenu, onClick }) => {
               {...row.getRowProps()}
               clickable={!!onClick}
               onClick={onClick ? () => onClick(row.original) : null}
+              disabled={!draggable}
             >
               {row.cells.map((cell, cellIndex) => {
                 const [menuOpen, setMenuOpen] = useState();

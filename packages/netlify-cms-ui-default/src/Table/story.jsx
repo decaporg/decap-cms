@@ -54,18 +54,14 @@ export const _Table = () => {
       Cell({ row: { original: rowData } }) {
         return <>{rowData.featured && <FeaturedIcon />}</>;
       },
-      minWidth: 32,
       width: '32px',
-      maxWidth: 32,
     },
     {
       id: 'featuredImage',
       Cell({ row: { original: rowData } }) {
         return <FeaturedImage srcUrl={rowData.featuredImage.small} />;
       },
-      // minWidth: 56,
       width: '56px',
-      // maxWidth: 56,
     },
     {
       Header: 'Title',
@@ -106,12 +102,14 @@ export const _Table = () => {
     },
   ]);
   const onClick = boolean('onClick', true);
+  const draggable = boolean('draggable', true);
 
   return (
     <Wrap>
       <Table
         columns={columns}
         data={mockData}
+        draggable={draggable}
         onClick={onClick ? rowData => alert(`You just clicked table row ${rowData.id}.`) : null}
         renderMenu={({ rowData, anchorEl, closeMenu }) => (
           <Menu
