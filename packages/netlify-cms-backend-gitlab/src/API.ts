@@ -76,6 +76,8 @@ type GitLabCommitDiff = {
   new_path: string;
   old_path: string;
   new_file: boolean;
+  renamed_file: boolean;
+  deleted_file: boolean;
 };
 
 enum GitLabCommitStatuses {
@@ -533,6 +535,9 @@ export default class API {
   }
 
   async getDifferences(to: string, from = this.branch) {
+    if (to === from) {
+      return [];
+    }
     const result: { diffs: GitLabCommitDiff[] } = await this.requestJSON({
       url: `${this.repoURL}/repository/compare`,
       params: {
@@ -541,10 +546,23 @@ export default class API {
       },
     });
 
-    return result.diffs.map(d => ({
-      ...d,
-      binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
-    }));
+    return result.diffs.map(d => {
+      let status = 'modified';
+      if (d.new_file) {
+        status = 'added';
+      } else if (d.deleted_file) {
+        status = 'deleted';
+      } else if (d.renamed_file) {
+        status = 'renamed';
+      }
+      return {
+        status,
+        oldPath: d.old_path,
+        newPath: d.new_path,
+        newFile: d.new_file,
+        binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
+      };
+    });
   }
 
   async retrieveMetadata(contentKey: string) {
@@ -552,15 +570,15 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
-    const { old_path: path, new_file: newFile } = diff.find(d => !d.binary) as {
-      old_path: string;
-      new_file: boolean;
+    const { oldPath: path, newFile: newFile } = diff.find(d => !d.binary) as {
+      oldPath: string;
+      newFile: boolean;
     };
     const mediaFiles = await Promise.all(
       diff
-        .filter(d => d.old_path !== path)
+        .filter(d => d.oldPath !== path)
         .map(async d => {
-          const path = d.new_path;
+          const path = d.newPath;
           const id = await this.getFileId(path, branch);
           return { path, id };
         }),
@@ -667,8 +685,8 @@ export default class API {
 
       // mark files for deletion
       for (const diff of diffs) {
-        if (!items.some(item => item.path === diff.new_path)) {
-          items.push({ action: CommitAction.DELETE, path: diff.new_path });
+        if (!items.some(item => item.path === diff.newPath)) {
+          items.push({ action: CommitAction.DELETE, path: diff.newPath });
         }
       }
 

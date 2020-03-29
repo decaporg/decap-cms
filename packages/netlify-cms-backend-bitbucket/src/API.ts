@@ -491,21 +491,30 @@ export default class API {
     await this.addPullRequestComment(pullRequest, statusToLabel(status));
   }
 
-  async getDifferences(branch: string) {
+  async getDifferences(source: string, destination: string = this.branch) {
+    if (source === destination) {
+      return [];
+    }
     const rawDiff = await this.requestText({
-      url: `${this.repoURL}/diff/${branch}..${this.branch}`,
+      url: `${this.repoURL}/diff/${source}..${destination}`,
       params: {
         binary: false,
       },
     });
 
-    return parse(rawDiff).map(d => ({
-      oldPath: d.oldPath.replace(/b\//, ''),
-      newPath: d.newPath.replace(/b\//, ''),
-      binary: d.binary || /.svg$/.test(d.newPath),
-      status: d.status,
-      newFile: d.status === 'added',
-    }));
+    return parse(rawDiff).map(d => {
+      const oldPath = d.oldPath?.replace(/b\//, '') || '';
+      const newPath = d.newPath?.replace(/b\//, '') || '';
+      const path = newPath || (oldPath as string);
+      return {
+        oldPath,
+        newPath,
+        binary: d.binary || /.svg$/.test(path),
+        status: d.status,
+        newFile: d.status === 'added',
+        path,
+      };
+    });
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
@@ -530,7 +539,7 @@ export default class API {
       const toDelete: DeleteEntry[] = [];
       for (const diff of diffs) {
         if (!files.some(file => file.path === diff.newPath)) {
-          toDelete.push({ path: diff.newPath, delete: true });
+          toDelete.push({ path: diff.path, delete: true });
         }
       }
 

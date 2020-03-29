@@ -1,6 +1,6 @@
 import trimStart from 'lodash/trimStart';
 import semaphore, { Semaphore } from 'semaphore';
-import { trim, unionBy, sortBy } from 'lodash';
+import { trim } from 'lodash';
 import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
@@ -30,21 +30,13 @@ import {
   contentKeyFromBranch,
   generateContentKey,
   localForage,
+  allEntriesByFolder,
+  filterByExtension,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
-const LOCAL_KEY = 'gh.local';
-
-type LocalTree = {
-  head: string;
-  files: { id: string; name: string; path: string }[];
-};
-
-const getLocalKey = (folder: string, extension: string, depth: number) => {
-  return `${LOCAL_KEY}.${folder}.${extension}.${depth}`;
-};
 
 export default class GitLab implements Implementation {
   lock: AsyncLock;
@@ -147,7 +139,7 @@ export default class GitLab implements Implementation {
   ) {
     // gitlab paths include the root folder
     const fileFolder = trim(file.path.split(folder)[1] || '/', '/');
-    return file.name.endsWith('.' + extension) && fileFolder.split('/').length <= depth;
+    return filterByExtension(file, extension) && fileFolder.split('/').length <= depth;
   }
 
   async entriesByFolder(folder: string, extension: string, depth: number) {
@@ -171,85 +163,30 @@ export default class GitLab implements Implementation {
     return files;
   }
 
-  async persistLocalTree(localTree: LocalTree, folder: string, extension: string, depth: number) {
-    await localForage.setItem<LocalTree>(getLocalKey(folder, extension, depth), localTree);
-  }
-
   async listAllFiles(folder: string, extension: string, depth: number) {
     const files = await this.api!.listAllFiles(folder, depth > 1);
-    const branch = await this.api!.getDefaultBranch();
     const filtered = files.filter(file => this.filterFile(folder, file, extension, depth));
-    await this.persistLocalTree(
-      {
-        head: branch.commit.id,
-        files: filtered,
-      },
-      folder,
-      extension,
-      depth,
-    );
     return filtered;
   }
 
-  async getDiffFromLocalTree(
-    branch: { name: string; commit: { id: string } },
-    localTree: LocalTree,
-    folder: string,
-    extension: string,
-    depth: number,
-  ) {
-    const diff = await this.api!.getDifferences(branch.commit.id, localTree.head);
-    const diffFiles = diff
-      .filter(d => (d.old_path?.startsWith(folder) || d.new_path?.startsWith(folder)) && !d.binary)
-      .map(d => ({
-        path: d.new_path || d.old_path,
-        name: basename(d.new_path || d.old_path),
-      }))
-      .filter(file => this.filterFile(folder, file, extension, depth));
-
-    const diffFilesWithIds = await Promise.all(
-      diffFiles.map(async file => {
-        const id = await this.api!.getFileId(file.path, branch.name);
-        return { ...file, id };
-      }),
-    );
-
-    return diffFilesWithIds;
-  }
-
   async allEntriesByFolder(folder: string, extension: string, depth: number) {
-    const listFiles = async () => {
-      const localTree = await localForage.getItem<LocalTree>(getLocalKey(folder, extension, depth));
-      if (localTree) {
-        const branch = await this.api!.getDefaultBranch();
-        const diff = await this.getDiffFromLocalTree(branch, localTree, folder, extension, depth);
-        if (diff.length === 0) {
-          // return local copy
-          return localTree.files;
-        } else if (diff.length > 0 && diff.length < 1000) {
-          // refresh local copy
-          const identity = (file: { path: string }) => file.path;
-          const newCopy = sortBy(unionBy(diff, localTree.files, identity), identity);
-          await localForage.setItem<LocalTree>(getLocalKey(folder, extension, depth), {
-            head: branch.commit.id,
-            files: newCopy,
-          });
-          return newCopy;
-        } else {
-          // GitLab diff limit is 1000, so we have no choice but to get all files
-          return this.listAllFiles(folder, extension, depth);
-        }
-      } else {
-        return this.listAllFiles(folder, extension, depth);
-      }
-    };
-
-    const files = await entriesByFolder(
-      listFiles,
-      this.api!.readFile.bind(this.api!),
-      this.api!.readFileMetadata.bind(this.api),
-      API_NAME,
-    );
+    const files = await allEntriesByFolder({
+      listAllFiles: () => this.listAllFiles(folder, extension, depth),
+      readFile: this.api!.readFile.bind(this.api!),
+      readFileMetadata: this.api!.readFileMetadata.bind(this.api),
+      apiName: API_NAME,
+      branch: this.branch,
+      localForage,
+      folder,
+      extension,
+      depth,
+      getDefaultBranch: () =>
+        this.api!.getDefaultBranch().then(b => ({ name: b.name, sha: b.commit.id })),
+      getDifferences: (to, from) => this.api!.getDifferences(to, from),
+      getFileId: path => this.api!.getFileId(path, this.branch),
+      filterFile: file => this.filterFile(folder, file, extension, depth),
+      maxDiff: 1000, // GitLab max diff limit
+    });
     return files;
   }
 

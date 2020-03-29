@@ -20,7 +20,7 @@ import {
   getMediaDisplayURL,
   getMediaAsBlob,
   Credentials,
-  filterByPropExtension,
+  filterByExtension,
   Config,
   ImplementationFile,
   getPreviewStatus,
@@ -319,7 +319,7 @@ export default class GitHub implements Implementation {
         repoURL,
         depth,
       }).then(files => {
-        const filtered = filterByPropExtension(extension, 'path')(files);
+        const filtered = files.filter(file => filterByExtension(file, extension));
         const result = this.getCursorAndFiles(filtered, 1);
         cursor = result.cursor;
         return result.files;
@@ -347,9 +347,7 @@ export default class GitHub implements Implementation {
       this.api!.listFiles(folder, {
         repoURL,
         depth,
-      }).then(files => {
-        return filterByPropExtension(extension, 'path')(files);
-      });
+      }).then(files => files.filter(file => filterByExtension(file, extension)));
 
     const readFile = (path: string, id: string | null | undefined) => {
       return this.api!.readFile(path, id, { repoURL }) as Promise<string>;

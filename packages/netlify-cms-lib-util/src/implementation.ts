@@ -1,7 +1,9 @@
 import semaphore, { Semaphore } from 'semaphore';
+import { unionBy, sortBy } from 'lodash';
 import Cursor from './Cursor';
 import { AsyncLock } from './asyncLock';
 import { FileMetadata } from './API';
+import { basename } from './path';
 
 export type DisplayURLObject = { id: string; path: string };
 
@@ -320,4 +322,245 @@ export const runWithLock = async (lock: AsyncLock, func: Function, message: stri
   } finally {
     lock.release();
   }
+};
+
+const LOCAL_KEY = 'git.local';
+
+type LocalTree = {
+  head: string;
+  files: { id: string; name: string; path: string }[];
+};
+
+type GetKeyArgs = {
+  branch: string;
+  folder: string;
+  extension: string;
+  depth: number;
+};
+
+const getLocalKey = ({ branch, folder, extension, depth }: GetKeyArgs) => {
+  return `${LOCAL_KEY}.${branch}.${folder}.${extension}.${depth}`;
+};
+
+type PersistLocalTreeArgs = GetKeyArgs & {
+  localForage: LocalForage;
+  localTree: LocalTree;
+};
+
+type GetLocalTreeArgs = GetKeyArgs & {
+  localForage: LocalForage;
+};
+
+export const persistLocalTree = async ({
+  localForage,
+  localTree,
+  branch,
+  folder,
+  extension,
+  depth,
+}: PersistLocalTreeArgs) => {
+  await localForage.setItem<LocalTree>(
+    getLocalKey({ branch, folder, extension, depth }),
+    localTree,
+  );
+};
+
+export const getLocalTree = async ({
+  localForage,
+  branch,
+  folder,
+  extension,
+  depth,
+}: GetLocalTreeArgs) => {
+  const localTree = await localForage.getItem<LocalTree>(
+    getLocalKey({ branch, folder, extension, depth }),
+  );
+  return localTree;
+};
+
+type GetDiffFromLocalTreeMethods = {
+  getDifferences: (
+    to: string,
+    from: string,
+  ) => Promise<
+    {
+      oldPath: string;
+      newPath: string;
+      status: string;
+      binary: boolean;
+    }[]
+  >;
+  filterFile: (file: { path: string; name: string }) => boolean;
+  getFileId: (path: string) => Promise<string>;
+};
+
+type GetDiffFromLocalTreeArgs = GetDiffFromLocalTreeMethods & {
+  branch: { name: string; sha: string };
+  localTree: LocalTree;
+  folder: string;
+  extension: string;
+  depth: number;
+};
+
+const getDiffFromLocalTree = async ({
+  branch,
+  localTree,
+  folder,
+  getDifferences,
+  filterFile,
+  getFileId,
+}: GetDiffFromLocalTreeArgs) => {
+  const diff = await getDifferences(branch.sha, localTree.head);
+  const diffFiles = diff
+    .filter(d => (d.oldPath?.startsWith(folder) || d.newPath?.startsWith(folder)) && !d.binary)
+    .reduce((acc, d) => {
+      if (d.status === 'renamed') {
+        acc.push({
+          path: d.oldPath,
+          name: basename(d.newPath),
+          deleted: true,
+        });
+        acc.push({
+          path: d.newPath,
+          name: basename(d.newPath),
+          deleted: false,
+        });
+      } else if (d.status === 'deleted') {
+        acc.push({
+          path: d.oldPath,
+          name: basename(d.oldPath),
+          deleted: true,
+        });
+      } else {
+        acc.push({
+          path: d.newPath || d.oldPath,
+          name: basename(d.newPath || d.oldPath),
+          deleted: false,
+        });
+      }
+
+      return acc;
+    }, [] as { path: string; name: string; deleted: boolean }[])
+
+    .filter(filterFile);
+
+  const diffFilesWithIds = await Promise.all(
+    diffFiles.map(async file => {
+      if (!file.deleted) {
+        const id = await getFileId(file.path);
+        return { ...file, id };
+      } else {
+        return { ...file, id: '' };
+      }
+    }),
+  );
+
+  return diffFilesWithIds;
+};
+
+type AllEntriesByFolderArgs = GetKeyArgs &
+  GetDiffFromLocalTreeMethods & {
+    listAllFiles: (
+      folder: string,
+      extension: string,
+      depth: number,
+    ) => Promise<ImplementationFile[]>;
+    readFile: ReadFile;
+    readFileMetadata: ReadFileMetadata;
+    getDefaultBranch: () => Promise<{ name: string; sha: string }>;
+    apiName: string;
+    localForage: LocalForage;
+    maxDiff: number;
+  };
+
+export const allEntriesByFolder = async ({
+  listAllFiles,
+  readFile,
+  readFileMetadata,
+  apiName,
+  branch,
+  localForage,
+  folder,
+  extension,
+  depth,
+  getDefaultBranch,
+  getDifferences,
+  getFileId,
+  filterFile,
+  maxDiff,
+}: AllEntriesByFolderArgs) => {
+  const listAllFilesAndPersist = async () => {
+    const files = await listAllFiles(folder, extension, depth);
+    const branch = await getDefaultBranch();
+    await persistLocalTree({
+      localForage,
+      localTree: {
+        head: branch.sha,
+        files: files.map(f => ({ id: f.id!, path: f.path, name: basename(f.path) })),
+      },
+      branch: branch.name,
+      depth,
+      extension,
+      folder,
+    });
+    return files;
+  };
+
+  const listFiles = async () => {
+    const localTree = await getLocalTree({ localForage, branch, folder, extension, depth });
+    if (localTree) {
+      const branch = await getDefaultBranch();
+      const diff = await getDiffFromLocalTree({
+        branch,
+        localTree,
+        folder,
+        extension,
+        depth,
+        getDifferences,
+        getFileId,
+        filterFile,
+      }).catch(e => {
+        console.log('Failed getting diff from local tree:', e);
+        return null;
+      });
+      if (diff && diff.length === 0) {
+        // return local copy
+        return localTree.files;
+      } else if (diff && diff.length > 0 && diff.length < maxDiff) {
+        // refresh local copy
+        const identity = (file: { path: string }) => file.path;
+        const deleted = diff.reduce((acc, d) => {
+          acc[d.path] = d.deleted;
+          return acc;
+        }, {} as Record<string, boolean>);
+        const newCopy = sortBy(
+          unionBy(
+            diff.filter(d => !deleted[d.path]),
+            localTree.files.filter(f => !deleted[f.path]),
+            identity,
+          ),
+          identity,
+        );
+
+        await persistLocalTree({
+          localForage,
+          localTree: { head: branch.sha, files: newCopy },
+          branch: branch.name,
+          depth,
+          extension,
+          folder,
+        });
+
+        return newCopy;
+      } else {
+        // Maximum diff exceeded, so we have no choice but to get all files
+        return listAllFilesAndPersist();
+      }
+    } else {
+      return listAllFilesAndPersist();
+    }
+  };
+
+  const files = await listFiles();
+  return fetchFiles(files, readFile, readFileMetadata, apiName);
 };

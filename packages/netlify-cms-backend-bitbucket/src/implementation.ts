@@ -1,9 +1,9 @@
 import semaphore, { Semaphore } from 'semaphore';
-import { trimStart, unionBy, sortBy } from 'lodash';
+import { trimStart } from 'lodash';
 import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
-  filterByPropExtension,
+  filterByExtension,
   unsentRequest,
   basename,
   getBlobSHA,
@@ -36,6 +36,7 @@ import {
   contentKeyFromBranch,
   generateContentKey,
   localForage,
+  allEntriesByFolder,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -43,16 +44,6 @@ import API, { API_NAME } from './API';
 import { GitLfsClient } from './git-lfs-client';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
-const LOCAL_KEY = 'gh.local';
-
-const getLocalKey = (folder: string, extension: string, depth: number) => {
-  return `${LOCAL_KEY}.${folder}.${extension}.${depth}`;
-};
-
-type LocalTree = {
-  head: string;
-  files: { id: string; name: string; path: string }[];
-};
 
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
@@ -259,7 +250,7 @@ export default class BitbucketBackend implements Implementation {
     const listFiles = () =>
       this.api!.listFiles(folder, depth).then(({ entries, cursor: c }) => {
         cursor = c.mergeMeta({ extension });
-        return filterByPropExtension(extension, 'path')(entries);
+        return entries.filter(e => filterByExtension(e, extension));
       });
 
     const head = await this.api!.defaultBranchCommitSha();
@@ -280,85 +271,30 @@ export default class BitbucketBackend implements Implementation {
     return files;
   }
 
-  async persistLocalTree(localTree: LocalTree, folder: string, extension: string, depth: number) {
-    await localForage.setItem<LocalTree>(getLocalKey(folder, extension, depth), localTree);
-  }
-
   async listAllFiles(folder: string, extension: string, depth: number) {
-    const files = await this.api!.listAllFiles(folder, depth).then(
-      filterByPropExtension(extension, 'path'),
-    );
-    const head = await this.api!.defaultBranchCommitSha();
-    await this.persistLocalTree(
-      {
-        head,
-        files,
-      },
-      folder,
-      extension,
-      depth,
-    );
-    return files;
-  }
-
-  async getDiffFromLocalTree(head: string, localTree: LocalTree, extension: string) {
-    const diff = await this.api!.getDifferences(localTree.head);
-    const diffFiles = diff
-      .filter(d => !d.binary)
-      .map(d => ({
-        path: d.newPath,
-        name: basename(d.newPath),
-      }));
-    const filtered = filterByPropExtension(extension, 'path')(diffFiles);
-
-    const diffFilesWithIds = await Promise.all(
-      filtered.map(async file => {
-        const id = await this.api!.getFileId(head, file.path);
-        return { ...file, id };
-      }),
-    );
-
-    return diffFilesWithIds;
+    const files = await this.api!.listAllFiles(folder, depth);
+    const filtered = files.filter(file => filterByExtension(file, extension));
+    return filtered;
   }
 
   async allEntriesByFolder(folder: string, extension: string, depth: number) {
     const head = await this.api!.defaultBranchCommitSha();
-
-    const listFiles = async () => {
-      const localTree = await localForage.getItem<LocalTree>(getLocalKey(folder, extension, depth));
-      if (localTree) {
-        const diff = await this.getDiffFromLocalTree(head, localTree, folder);
-        if (diff.length === 0) {
-          // return local copy
-          return localTree.files;
-        } else if (diff.length > 0 && diff.length < 1000) {
-          // refresh local copy
-          const identity = (file: { path: string }) => file.path;
-          const newCopy = sortBy(unionBy(diff, localTree.files, identity), identity);
-          await localForage.setItem<LocalTree>(getLocalKey(folder, extension, depth), {
-            head,
-            files: newCopy,
-          });
-          return newCopy;
-        } else {
-          // GitLab diff limit is 1000, so we have no choice but to get all files
-          return this.listAllFiles(folder, extension, depth);
-        }
-      } else {
-        return this.listAllFiles(folder, extension, depth);
-      }
-    };
-
-    const readFile = (path: string, id: string | null | undefined) => {
-      return this.api!.readFile(path, id, { head }) as Promise<string>;
-    };
-
-    const files = await entriesByFolder(
-      listFiles,
-      readFile,
-      this.api!.readFileMetadata.bind(this.api),
-      API_NAME,
-    );
+    const files = await allEntriesByFolder({
+      listAllFiles: () => this.listAllFiles(folder, extension, depth),
+      readFile: this.api!.readFile.bind(this.api!),
+      readFileMetadata: this.api!.readFileMetadata.bind(this.api),
+      apiName: API_NAME,
+      branch: this.branch,
+      localForage,
+      folder,
+      extension,
+      depth,
+      getDefaultBranch: () => Promise.resolve({ name: this.branch, sha: head }),
+      getDifferences: (source, destination) => this.api!.getDifferences(source, destination),
+      getFileId: path => Promise.resolve(this.api!.getFileId(head, path)),
+      filterFile: file => filterByExtension(file, extension),
+      maxDiff: Number.MAX_SAFE_INTEGER, // Bitbucket errors when diff is too big instead of limiting the result
+    });
     return files;
   }
 
@@ -496,7 +432,7 @@ export default class BitbucketBackend implements Implementation {
     return this.api!.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => {
       const extension = cursor.meta?.get('extension');
       if (extension) {
-        entries = filterByPropExtension(extension as string, 'path')(entries);
+        entries = entries.filter(e => filterByExtension(e, extension));
         newCursor = newCursor.mergeMeta({ extension });
       }
       const head = await this.api!.defaultBranchCommitSha();
