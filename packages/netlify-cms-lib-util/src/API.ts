@@ -47,6 +47,21 @@ export type ApiRequestObject = {
 
 export type ApiRequest = ApiRequestObject | string;
 
+class RateLimitError extends Error {
+  resetSeconds: number;
+
+  constructor(message: string, resetSeconds: number) {
+    super(message);
+    if (resetSeconds < 0) {
+      this.resetSeconds = 1;
+    } else if (resetSeconds > 60 * 60) {
+      this.resetSeconds = 60 * 60;
+    } else {
+      this.resetSeconds = resetSeconds;
+    }
+  }
+}
+
 export const requestWithBackoff = async (
   api: API,
   req: ApiRequest,
@@ -61,21 +76,32 @@ export const requestWithBackoff = async (
     const requestFunction = api.requestFunction || unsentRequest.performRequest;
     const response: Response = await requestFunction(builtRequest);
     if (response.status === 429) {
+      // GitLab/Bitbucket too many requests
       const text = await response.text().catch(() => 'Too many requests');
       throw new Error(text);
+    } else if (response.status === 403) {
+      // GitHub too many requests
+      const { message } = await response.json().catch(() => ({ message: '' }));
+      if (message.match('API rate limit exceeded')) {
+        const now = new Date();
+        const nextWindow = response.headers.has('X-RateLimit-Reset')
+          ? new Date(parseInt(response.headers.get('X-RateLimit-Reset')!) * 1000)
+          : new Date(now.getTime() + 60 * 1000);
+
+        throw new RateLimitError(message, (nextWindow.getTime() - now.getTime()) / 1000);
+      }
     }
     return response;
   } catch (err) {
     if (attempt <= 5) {
       if (!api.rateLimiter) {
-        const timeout = attempt * attempt;
+        const timeout = err.resetSeconds || attempt * attempt;
         console.log(
           `Pausing requests for ${timeout} ${
             attempt === 1 ? 'second' : 'seconds'
           } due to fetch failures:`,
           err.message,
         );
-
         api.rateLimiter = asyncLock();
         api.rateLimiter.acquire();
         setTimeout(() => {
