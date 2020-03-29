@@ -8,6 +8,7 @@ import Icon from '../Icon';
 import { Menu, MenuItem } from '../Menu';
 
 const Title = styled.div`
+  color: ${({ theme }) => theme.color.highEmphasis};
   font-weight: bold;
 `;
 const Subtitle = styled.div`
@@ -44,9 +45,8 @@ FeaturedIcon.defaultProps = {
 };
 
 const mockData = getMockData('post', 32);
-export const _Table = () => {
-  console.log('mockData', mockData);
 
+export const _Table = () => {
   const columns = React.useMemo(() => [
     {
       id: 'featured',
@@ -111,6 +111,7 @@ export const _Table = () => {
         data={mockData}
         draggable={draggable}
         selectable={selectable}
+        onSelect={selected => console.log({ selected })}
         onClick={onClick ? rowData => alert(`You just clicked table row ${rowData.id}.`) : null}
         renderMenu={({ rowData, anchorEl, closeMenu }) => (
           <Menu
