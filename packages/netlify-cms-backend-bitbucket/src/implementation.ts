@@ -436,15 +436,18 @@ export default class BitbucketBackend implements Implementation {
         newCursor = newCursor.mergeMeta({ extension });
       }
       const head = await this.api!.defaultBranchCommitSha();
+      const readFile = (path: string, id: string | null | undefined) => {
+        return this.api!.readFile(path, id, { head }) as Promise<string>;
+      };
+      const entriesWithData = await entriesByFiles(
+        entries,
+        readFile,
+        this.api!.readFileMetadata.bind(this.api)!,
+        API_NAME,
+      );
+
       return {
-        entries: await Promise.all(
-          entries.map(file =>
-            this.api!.readFile(file.path, file.id, { head }).then(data => ({
-              file,
-              data: data as string,
-            })),
-          ),
-        ),
+        entries: entriesWithData,
         cursor: newCursor,
       };
     });

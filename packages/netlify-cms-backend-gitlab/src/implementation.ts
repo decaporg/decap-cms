@@ -288,12 +288,14 @@ export default class GitLab implements Implementation {
         entries = entries.filter(f => this.filterFile(folder, f, extension, depth));
         newCursor = newCursor.mergeMeta({ folder, extension, depth });
       }
+      const entriesWithData = await entriesByFiles(
+        entries,
+        this.api!.readFile.bind(this.api!),
+        this.api!.readFileMetadata.bind(this.api)!,
+        API_NAME,
+      );
       return {
-        entries: await Promise.all(
-          entries.map(file =>
-            this.api!.readFile(file.path, file.id).then(data => ({ file, data: data as string })),
-          ),
-        ),
+        entries: entriesWithData,
         cursor: newCursor,
       };
     });
