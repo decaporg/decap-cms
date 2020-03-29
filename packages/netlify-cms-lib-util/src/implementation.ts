@@ -417,7 +417,7 @@ const getDiffFromLocalTree = async ({
       if (d.status === 'renamed') {
         acc.push({
           path: d.oldPath,
-          name: basename(d.newPath),
+          name: basename(d.oldPath),
           deleted: true,
         });
         acc.push({
