@@ -132,10 +132,10 @@ const SortControls = ({ t, fields, onSortClick, sort }) => {
     let nextDirection;
     switch (sortDirection) {
       case SortDirection.Ascending:
-        nextDirection = isActive ? SortDirection.Descending : sortDirection;
+        nextDirection = SortDirection.Descending;
         break;
       case SortDirection.Descending:
-        nextDirection = isActive ? SortDirection.None : sortDirection;
+        nextDirection = SortDirection.None;
         break;
       default:
         nextDirection = SortDirection.Ascending;
