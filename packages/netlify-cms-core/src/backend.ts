@@ -273,7 +273,12 @@ export class Backend {
         collection.get('name'),
         selectEntrySlug(collection, loadedEntry.file.path),
         loadedEntry.file.path,
-        { raw: loadedEntry.data || '', label: loadedEntry.file.label },
+        {
+          raw: loadedEntry.data || '',
+          label: loadedEntry.file.label,
+          author: loadedEntry.file.author,
+          updatedOn: loadedEntry.file.updatedOn,
+        },
       ),
     );
     const formattedEntries = entries.map(this.entryWithFormat(collection));

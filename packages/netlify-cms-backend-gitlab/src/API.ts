@@ -23,6 +23,7 @@ import {
   parseContentKey,
   branchFromContentKey,
   requestWithBackoff,
+  readFileMetadata,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
@@ -143,6 +144,20 @@ type GitLabBranch = {
   };
 };
 
+type GitLabCommit = {
+  id: string;
+  short_id: string;
+  title: string;
+  author_name: string;
+  author_email: string;
+  authored_date: string;
+  committer_name: string;
+  committer_email: string;
+  committed_date: string;
+  created_at: string;
+  message: string;
+};
+
 export const getMaxAccess = (groups: { group_access_level: number }[]) => {
   return groups.reduce((previous, current) => {
     if (current.group_access_level > previous.group_access_level) {
@@ -258,6 +273,27 @@ export default class API {
     const content = await readFile(sha, fetchContent, localForage, parseText);
     return content;
   };
+
+  async readFileMetadata(path: string, sha: string) {
+    const fetchFileMetadata = async () => {
+      try {
+        const result: GitLabCommit[] = await this.requestJSON({
+          url: `${this.repoURL}/repository/commits`,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          params: { path, ref_name: this.branch },
+        });
+        const commit = result[0];
+        return {
+          author: commit.author_name || commit.author_email,
+          updatedOn: commit.authored_date,
+        };
+      } catch (e) {
+        return { author: '', updatedOn: '' };
+      }
+    };
+    const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
+    return fileMetadata;
+  }
 
   getCursorFromHeaders = (headers: Headers) => {
     const page = parseInt(headers.get('X-Page') as string, 10);

@@ -186,6 +186,7 @@ describe('Backend', () => {
 
       expect(result).toEqual({
         entry: {
+          author: '',
           mediaFiles: [],
           collection: 'posts',
           slug: 'slug',
@@ -196,6 +197,7 @@ describe('Backend', () => {
           label: null,
           metaData: null,
           isModification: null,
+          updatedOn: '',
         },
       });
       expect(localForage.getItem).toHaveBeenCalledTimes(1);
@@ -224,6 +226,7 @@ describe('Backend', () => {
 
       expect(result).toEqual({
         entry: {
+          author: '',
           mediaFiles: [{ id: '1' }],
           collection: 'posts',
           slug: 'slug',
@@ -234,6 +237,7 @@ describe('Backend', () => {
           label: null,
           metaData: null,
           isModification: null,
+          updatedOn: '',
         },
       });
       expect(localForage.getItem).toHaveBeenCalledTimes(1);
@@ -367,6 +371,7 @@ describe('Backend', () => {
 
       const result = await backend.unpublishedEntry(state, collection, slug);
       expect(result).toEqual({
+        author: '',
         collection: 'posts',
         slug: '',
         path: 'path',
@@ -377,6 +382,7 @@ describe('Backend', () => {
         metaData: {},
         isModification: true,
         mediaFiles: [{ id: '1', draft: true }],
+        updatedOn: '',
       });
     });
   });

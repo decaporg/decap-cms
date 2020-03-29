@@ -267,7 +267,12 @@ export default class BitbucketBackend implements Implementation {
       return this.api!.readFile(path, id, { head }) as Promise<string>;
     };
 
-    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
@@ -348,7 +353,12 @@ export default class BitbucketBackend implements Implementation {
       return this.api!.readFile(path, id, { head }) as Promise<string>;
     };
 
-    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     return files;
   }
 
@@ -358,7 +368,7 @@ export default class BitbucketBackend implements Implementation {
       return this.api!.readFile(path, id, { head }) as Promise<string>;
     };
 
-    return entriesByFiles(files, readFile, API_NAME);
+    return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
   getEntry(path: string) {

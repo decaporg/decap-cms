@@ -26,8 +26,7 @@ export interface UnpublishedEntryMediaFile {
 export interface ImplementationEntry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: string;
-  file: { path: string; label?: string; id?: string | null };
-  fileMetadata?: FileMetadata;
+  file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
   slug?: string;
   mediaFiles?: ImplementationMediaFile[];
   metaData?: { collection: string; status: string };
@@ -184,7 +183,7 @@ const fetchFiles = async (
                 ? readFileMetadata(file.path, file.id)
                 : Promise.resolve({ author: '', updatedOn: '' }),
             ]);
-            resolve({ file, data: data as string, fileMetadata });
+            resolve({ file: { ...file, ...fileMetadata }, data: data as string });
             sem.leave();
           } catch (error) {
             sem.leave();

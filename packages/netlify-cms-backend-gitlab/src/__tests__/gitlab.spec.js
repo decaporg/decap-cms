@@ -289,6 +289,17 @@ describe('gitlab backend', () => {
       .get(url)
       .query(true)
       .reply(200, mockRepo.files[path]);
+
+    api
+      .get(`${expectedRepoUrl}/repository/commits`)
+      .query(({ path }) => path === path)
+      .reply(200, [
+        {
+          author_name: 'author_name',
+          author_email: 'author_email',
+          authored_date: 'authored_date',
+        },
+      ]);
   }
 
   function sharedSetup() {

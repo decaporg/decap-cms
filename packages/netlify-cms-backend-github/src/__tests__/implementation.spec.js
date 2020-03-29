@@ -219,10 +219,12 @@ describe('github backend implementation', () => {
   describe('entriesByFolder', () => {
     const listFiles = jest.fn();
     const readFile = jest.fn();
+    const readFileMetadata = jest.fn(() => Promise.resolve({ author: '', updatedOn: '' }));
 
     const mockAPI = {
       listFiles,
       readFile,
+      readFileMetadata,
       originRepoURL: 'originRepoURL',
     };
 
@@ -245,7 +247,7 @@ describe('github backend implementation', () => {
 
       const expectedEntries = files
         .slice(0, 20)
-        .map(({ id, path }) => ({ data: id, file: { path, id } }));
+        .map(({ id, path }) => ({ data: id, file: { path, id, author: '', updatedOn: '' } }));
 
       const expectedCursor = Cursor.create({
         actions: ['next', 'last'],

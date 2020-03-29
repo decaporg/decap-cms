@@ -159,7 +159,12 @@ export default class GitLab implements Implementation {
         return files.filter(file => this.filterFile(folder, file, extension, depth));
       });
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      this.api!.readFile.bind(this.api!),
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
@@ -239,12 +244,22 @@ export default class GitLab implements Implementation {
       }
     };
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      this.api!.readFile.bind(this.api!),
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     return files;
   }
 
   entriesByFiles(files: ImplementationFile[]) {
-    return entriesByFiles(files, this.api!.readFile.bind(this.api!), API_NAME);
+    return entriesByFiles(
+      files,
+      this.api!.readFile.bind(this.api!),
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
   }
 
   // Fetches a single entry.

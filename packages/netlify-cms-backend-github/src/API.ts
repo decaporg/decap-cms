@@ -585,15 +585,15 @@ export default class API {
     const fetchFileMetadata = async () => {
       try {
         const result: Octokit.ReposListCommitsResponse = await this.request(
-          `${this.repoURL}/commits`,
+          `${this.originRepoURL}/commits`,
           {
             params: { path, sha: this.branch },
           },
         );
         const { commit } = result[0];
         return {
-          author: commit.committer.name || commit.committer.email,
-          updatedOn: commit.committer.date,
+          author: commit.author.name || commit.author.email,
+          updatedOn: commit.author.date,
         };
       } catch (e) {
         return { author: '', updatedOn: '' };

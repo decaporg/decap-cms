@@ -338,13 +338,16 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
   return null;
 };
 
+export const COMMIT_AUTHOR = 'commit_author';
+export const COMMIT_DATE = 'commit_date';
+
 export const selectDefaultSortableFields = (collection: Collection) => {
-  const defaultSortable = SORTABLE_FIELDS.map(type => {
+  const defaultSortable = SORTABLE_FIELDS.map((type: string) => {
     const field = selectInferedField(collection, type);
     if (type === 'author' && !field) {
-      return 'commit_author';
+      return COMMIT_AUTHOR;
     } else if (type === 'date' && !field) {
-      return 'commit_date';
+      return COMMIT_DATE;
     }
     return field;
   }).filter(Boolean);
@@ -358,17 +361,28 @@ export const selectSortableFields = (collection: Collection) => {
     .toArray()
     .map(key => {
       const field = selectField(collection, key);
-      if (key === 'commit_author' && !field) {
+      if (key === COMMIT_AUTHOR && !field) {
         return { key, field: { name: key, label: 'Author' } };
-      } else if (key === 'commit_date' && !field) {
-        return { key, field: { name: key, label: 'Date' } };
+      } else if (key === COMMIT_DATE && !field) {
+        return { key, field: { name: key, label: 'Updated on' } };
       }
+
       return { key, field: field?.toJS() };
     })
     .filter(item => !!item.field)
     .map(item => ({ ...item.field, key: item.key }));
 
   return fields;
+};
+
+export const selectSortDataPath = (collection: Collection, key: string) => {
+  if (key === COMMIT_AUTHOR || key === COMMIT_DATE) {
+    const field = selectField(collection, key);
+    if (!field) {
+      return key === COMMIT_AUTHOR ? 'author' : 'updatedOn';
+    }
+  }
+  return `data.${key}`;
 };
 
 export default collections;

@@ -25,6 +25,7 @@ import {
   parseContentKey,
   branchFromContentKey,
   requestWithBackoff,
+  readFileMetadata,
 } from 'netlify-cms-lib-util';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
@@ -166,6 +167,18 @@ type BitBucketBranch = {
   target: { hash: string };
 };
 
+type BitBucketCommit = {
+  hash: string;
+  author: {
+    raw: string;
+    user: {
+      display_name: string;
+      nickname: string;
+    };
+  };
+  date: string;
+};
+
 export const API_NAME = 'Bitbucket';
 
 const APPLICATION_JSON = 'application/json; charset=utf-8';
@@ -281,6 +294,28 @@ export default class API {
     const content = await readFile(sha, fetchContent, localForage, parseText);
     return content;
   };
+
+  async readFileMetadata(path: string, sha: string) {
+    const fetchFileMetadata = async () => {
+      try {
+        const { values }: { values: BitBucketCommit[] } = await this.requestJSON({
+          url: `${this.repoURL}/commits`,
+          params: { path, include: this.branch },
+        });
+        const commit = values[0];
+        return {
+          author: commit.author.user
+            ? commit.author.user.display_name || commit.author.user.nickname
+            : commit.author.raw,
+          updatedOn: commit.date,
+        };
+      } catch (e) {
+        return { author: '', updatedOn: '' };
+      }
+    };
+    const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
+    return fileMetadata;
+  }
 
   getEntriesAndCursor = (jsonResponse: BitBucketSrcResult) => {
     const {

@@ -7,7 +7,7 @@ import {
   SLUG_MISSING_REQUIRED_DATE,
   keyToPathArray,
 } from './stringTemplate';
-import { selectIdentifier } from '../reducers/collections';
+import { selectIdentifier, selectField, COMMIT_AUTHOR, COMMIT_DATE } from '../reducers/collections';
 import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
 import { stripIndent } from 'common-tags';
 import { basename, fileExtension } from 'netlify-cms-lib-util';
@@ -205,6 +205,13 @@ export const summaryFormatter = (
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
 
   entryData = addFileTemplateFields(entry.get('path'), entryData);
+  // allow commit information in summary template
+  if (entry.get('author') && !selectField(collection, COMMIT_AUTHOR)) {
+    entryData = entryData.set(COMMIT_AUTHOR, entry.get('author'));
+  }
+  if (entry.get('updatedOn') && !selectField(collection, COMMIT_DATE)) {
+    entryData = entryData.set(COMMIT_DATE, entry.get('updatedOn'));
+  }
   const summary = compileStringTemplate(summaryTemplate, date, identifier, entryData);
   return summary;
 };

@@ -357,7 +357,12 @@ export default class GitGateway implements Implementation {
       { parseText }: { parseText: boolean },
     ) => this.api!.readFile(path, id, { branch, parseText });
 
-    const items = await entriesByFiles([{ path, id }], readFile, 'Git-Gateway');
+    const items = await entriesByFiles(
+      [{ path, id }],
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      'Git-Gateway',
+    );
     const entry = items[0];
     const pointerFile = parsePointerFile(entry.data);
     if (!pointerFile.sha) {

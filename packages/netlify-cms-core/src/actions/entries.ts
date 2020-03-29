@@ -5,7 +5,7 @@ import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectFields, updateFieldByKey } from '../reducers/collections';
+import { selectFields, updateFieldByKey, selectSortDataPath } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
@@ -164,7 +164,7 @@ export function sortByField(
       let entries = await backend.listAllEntries(collection);
       const sortFields = selectEntriesSortFields(getState().entries, collection.get('name'));
       if (sortFields && sortFields.length > 0) {
-        const keys = sortFields.map(v => `data.${v.get('key')}`);
+        const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));
         const orders = sortFields.map(v =>
           v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
         );
