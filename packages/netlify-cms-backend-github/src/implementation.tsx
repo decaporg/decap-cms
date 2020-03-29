@@ -368,7 +368,7 @@ export default class GitHub implements Implementation {
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }).catch(() => '') as Promise<string>;
 
-    return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), 'GitHub');
+    return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
   // Fetches a single entry.
@@ -479,17 +479,20 @@ export default class GitHub implements Implementation {
       }
     }
 
+    const readFile = (path: string, id: string | null | undefined) =>
+      this.api!.readFile(path, id, { repoURL: this.api!.originRepoURL }).catch(() => '') as Promise<
+        string
+      >;
+
+    const entries = await entriesByFiles(
+      result.files,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
+
     return {
-      entries: await Promise.all(
-        result.files.map(file =>
-          this.api!.readFile(file.path, file.id, { repoURL: this.api!.originRepoURL }).then(
-            data => ({
-              file,
-              data: data as string,
-            }),
-          ),
-        ),
-      ),
+      entries,
       cursor: result.cursor,
     };
   }
