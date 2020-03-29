@@ -73,6 +73,10 @@ const loadSort = once(() => {
   return Map() as Sort;
 });
 
+const clearSort = () => {
+  localStorage.removeItem(storageSortKey);
+};
+
 const persistSort = (sort: Sort | undefined) => {
   if (sort) {
     const storageSort: StorageSort = {};
@@ -89,12 +93,8 @@ const persistSort = (sort: Sort | undefined) => {
     });
     localStorage.setItem(storageSortKey, JSON.stringify(storageSort));
   } else {
-    localStorage.removeItem(storageSortKey);
+    clearSort();
   }
-};
-
-const clearSort = () => {
-  localStorage.removeItem(storageSortKey);
 };
 
 const entries = (
@@ -240,7 +240,6 @@ const entries = (
           }),
         );
       });
-      persistSort(newState.get('sort') as Sort);
       return newState;
     }
 
