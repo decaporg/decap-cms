@@ -105,12 +105,14 @@ export const _Table = () => {
       width: '10%',
     },
   ]);
+  const onClick = boolean('onClick', true);
 
   return (
     <Wrap>
       <Table
         columns={columns}
         data={mockData}
+        onClick={onClick ? rowData => alert(`You just clicked table row ${rowData.id}.`) : null}
         renderMenu={({ rowData, anchorEl, closeMenu }) => (
           <Menu
             anchorEl={anchorEl}

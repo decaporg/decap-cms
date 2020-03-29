@@ -62,9 +62,15 @@ const TRow = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.color.border};
   transition-duration: 200ms;
   transition-property: background-color;
-  &:hover {
-    background-color: ${({ theme }) => theme.color.surface};
-  }
+  ${({ clickable, theme }) =>
+    clickable
+      ? `
+    cursor: pointer;
+    &:hover {
+      background-color: ${theme.color.surface};
+    }
+  `
+      : ``};
   &.dragging {
     transition: 0ms;
     background-color: ${({ theme }) => theme.color.elevatedSurface};
@@ -107,7 +113,7 @@ SortIcon.defaultProps = {
   size: 'sm',
 };
 
-const TableRow = sortableElement(({ children }) => <TRow>{children}</TRow>);
+const TableRow = sortableElement(({ children, ...props }) => <TRow {...props}>{children}</TRow>);
 const TableBody = sortableContainer(({ children }) => <TBody>{children}</TBody>);
 
 const Table = ({ columns, data, selectable, renderMenu, onClick }) => {
@@ -225,6 +231,7 @@ const Table = ({ columns, data, selectable, renderMenu, onClick }) => {
               key={i}
               index={i}
               {...row.getRowProps()}
+              clickable={!!onClick}
               onClick={onClick ? () => onClick(row.original) : null}
             >
               {row.cells.map((cell, cellIndex) => {
