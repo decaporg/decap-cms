@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { withTheme } from 'emotion-theming';
 
 import Thumbnail, { ThumbnailGrid } from '.';
-import mockData from './mockData';
+import getMockData from '../utils/getMockData';
 
 export default {
   title: 'Components/Thumbnail',
@@ -137,6 +137,8 @@ export const _Thumbnail = () => (
   </Wrap>
 );
 
+const mockData = getMockData('post', 128);
+
 export const _ThumbnailGrid = () => {
   const horizontal = boolean('horizontal', false);
   const supertitleMaxLines = number('supertitleMaxLines', 1);
@@ -152,11 +154,11 @@ export const _ThumbnailGrid = () => {
         {mockData.map((thumb, i) => (
           <StoryThumbnail
             key={i}
-            previewImgSrc={thumb.img}
-            supertitle={thumb.supertitle}
+            previewImgSrc={thumb.featuredImage.regular}
+            supertitle={thumb.status}
             title={thumb.title}
             description={thumb.description}
-            subtitle={thumb.subtitle}
+            subtitle={`${thumb.author} • ${thumb.dateCreated}`}
             featured={thumb.featured}
             selectable={selectable}
             previewAspectRatio={'16:9'}

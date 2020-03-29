@@ -111,3 +111,17 @@ export function getScrollbarSize() {
 
   return scrollbarSize;
 }
+
+export const randomRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+export const titleCase = string => {
+  var titleArr = string.toLowerCase().split(' ');
+
+  for (var i = 0; i < titleArr.length; i++) {
+    titleArr[i] = titleArr[i][0].toUpperCase() + titleArr[i].slice(1);
+  }
+
+  const title = titleArr.join(' ');
+
+  return title;
+};

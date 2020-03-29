@@ -48,8 +48,10 @@ const ThumbnailWrap = styled(Card)`
     cursor: pointer;
     transition: 200ms;
     transform: translateY(0);
+    z-index: 0;
+
     &:hover {
-      z-index: 1;
+      z-index: 10;
       transform: translateY(-0.125rem);
       box-shadow: ${theme.shadow({ size: 'lg', theme })};
       ${theme.darkMode ? `background-color: ${theme.color.surfaceHighlight};` : ``}
