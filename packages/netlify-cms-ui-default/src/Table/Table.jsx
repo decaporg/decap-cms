@@ -87,6 +87,9 @@ const TableCell = styled.div`
   font-size: 14px;
   padding: 0 0.5rem;
   color: ${({ theme }) => theme.color.mediumEmphasis};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   ${({ width }) => (width ? `width: ${width};` : ``)}
   ${({ width }) => (width === 'auto' ? `flex: 1;` : ``)}
 
@@ -122,11 +125,9 @@ const Table = ({ columns, data, selectable, renderMenu, onClick, draggable }) =>
       ? [
           {
             id: 'rowSelect',
-            // minWidth: 32,
-            width: '32px',
-            // maxWidth: 32,
+            width: '34px',
             Cell() {
-              return <input type="checkbox" />;
+              return <input type="checkbox" onClick={e => e.stopPropagation()} />;
             },
           },
         ]
@@ -135,7 +136,7 @@ const Table = ({ columns, data, selectable, renderMenu, onClick, draggable }) =>
     ...(renderMenu
       ? [
           {
-            id: 'rowSelect',
+            id: 'rowMenu',
             onlyShowOnRowHover: true,
             // minWidth: 48,
             width: '48px',
@@ -148,6 +149,7 @@ const Table = ({ columns, data, selectable, renderMenu, onClick, draggable }) =>
                   <IconButton
                     icon="more-vertical"
                     onClick={e => {
+                      e.stopPropagation();
                       setAnchorEl(e.currentTarget);
                       onMenuToggle(true);
                     }}

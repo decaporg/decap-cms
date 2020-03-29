@@ -43,9 +43,8 @@ FeaturedIcon.defaultProps = {
   name: 'star',
 };
 
+const mockData = getMockData('post', 32);
 export const _Table = () => {
-  const mockData = React.useMemo(() => getMockData('post', 32), []);
-
   console.log('mockData', mockData);
 
   const columns = React.useMemo(() => [
@@ -103,6 +102,7 @@ export const _Table = () => {
   ]);
   const onClick = boolean('onClick', true);
   const draggable = boolean('draggable', true);
+  const selectable = boolean('selectable', true);
 
   return (
     <Wrap>
@@ -110,6 +110,7 @@ export const _Table = () => {
         columns={columns}
         data={mockData}
         draggable={draggable}
+        selectable={selectable}
         onClick={onClick ? rowData => alert(`You just clicked table row ${rowData.id}.`) : null}
         renderMenu={({ rowData, anchorEl, closeMenu }) => (
           <Menu
@@ -121,7 +122,8 @@ export const _Table = () => {
           >
             <MenuItem
               icon="edit-3"
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 console.log(rowData);
                 alert(`Editing post ${rowData.id}.`);
                 closeMenu();
@@ -131,7 +133,8 @@ export const _Table = () => {
             </MenuItem>
             <MenuItem
               icon="copy"
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 alert(`Duplicating post ${rowData.id}.`);
                 closeMenu();
               }}
@@ -141,7 +144,8 @@ export const _Table = () => {
             <MenuItem
               icon="trash-2"
               type="danger"
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 alert(`Deleting post ${rowData.id}.`);
                 closeMenu();
               }}
