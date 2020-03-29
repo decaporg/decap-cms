@@ -269,11 +269,13 @@ describe('github backend implementation', () => {
   describe('traverseCursor', () => {
     const listFiles = jest.fn();
     const readFile = jest.fn((path, id) => Promise.resolve(`${id}`));
+    const readFileMetadata = jest.fn(() => Promise.resolve({}));
 
     const mockAPI = {
       listFiles,
       readFile,
       originRepoURL: 'originRepoURL',
+      readFileMetadata,
     };
 
     const files = [];
