@@ -184,6 +184,10 @@ export class Backend {
     return Promise.resolve(null);
   }
 
+  isGitBackend() {
+    return this.implementation.isGitBackend?.() || false;
+  }
+
   updateUserCredentials = (updatedCredentials: Credentials) => {
     const storedUser = this.authStore!.retrieve();
     if (storedUser && storedUser.backendName === this.backendName) {

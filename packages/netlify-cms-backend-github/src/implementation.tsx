@@ -104,6 +104,10 @@ export default class GitHub implements Implementation {
     this.lock = asyncLock();
   }
 
+  isGitBackend() {
+    return true;
+  }
+
   authComponent() {
     const wrappedAuthenticationPage = (props: Record<string, unknown>) => (
       <AuthenticationPage {...props} backend={this} />

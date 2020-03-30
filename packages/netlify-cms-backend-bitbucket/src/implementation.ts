@@ -107,6 +107,10 @@ export default class BitbucketBackend implements Implementation {
     this.lock = asyncLock();
   }
 
+  isGitBackend() {
+    return true;
+  }
+
   authComponent() {
     return AuthenticationPage;
   }

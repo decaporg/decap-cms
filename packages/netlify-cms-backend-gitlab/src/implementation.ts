@@ -83,6 +83,10 @@ export default class GitLab implements Implementation {
     this.lock = asyncLock();
   }
 
+  isGitBackend() {
+    return true;
+  }
+
   authComponent() {
     return AuthenticationPage;
   }

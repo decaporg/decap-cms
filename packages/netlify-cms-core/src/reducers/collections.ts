@@ -15,6 +15,7 @@ import {
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
 import { keyToPathArray } from '../lib/stringTemplate';
+import { Backend } from '../backend';
 
 const collections = (state = null, action: CollectionsAction) => {
   switch (action.type) {
@@ -341,12 +342,12 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
 export const COMMIT_AUTHOR = 'commit_author';
 export const COMMIT_DATE = 'commit_date';
 
-export const selectDefaultSortableFields = (collection: Collection) => {
+export const selectDefaultSortableFields = (collection: Collection, backend: Backend) => {
   const defaultSortable = SORTABLE_FIELDS.map((type: string) => {
     const field = selectInferedField(collection, type);
-    if (type === 'author' && !field) {
+    if (backend.isGitBackend() && type === 'author' && !field) {
       return COMMIT_AUTHOR;
-    } else if (type === 'date' && !field) {
+    } else if (backend.isGitBackend() && type === 'date' && !field) {
       return COMMIT_DATE;
     }
     return field;

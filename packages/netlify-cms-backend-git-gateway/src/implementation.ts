@@ -133,6 +133,10 @@ export default class GitGateway implements Implementation {
     this.backend = null;
   }
 
+  isGitBackend() {
+    return true;
+  }
+
   requestFunction = (req: ApiRequest) =>
     this.tokenPromise!()
       .then(
