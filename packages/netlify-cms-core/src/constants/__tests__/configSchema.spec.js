@@ -176,5 +176,11 @@ describe('config', () => {
         validateConfig(merge({}, validConfig, { collections: [{ sortableFields: ['title'] }] }));
       }).not.toThrow();
     });
+
+    it('should allow sortableFields to be a an empty array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ sortableFields: [] }] }));
+      }).not.toThrow();
+    });
   });
 });
