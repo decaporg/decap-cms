@@ -146,6 +146,11 @@ type GitLabBranch = {
   };
 };
 
+type GitLabCommitRef = {
+  type: string;
+  name: string;
+};
+
 type GitLabCommit = {
   id: string;
   short_id: string;
@@ -758,6 +763,16 @@ export default class API {
       `${this.repoURL}/repository/branches/${encodeURIComponent(this.branch)}`,
     );
     return branch;
+  }
+
+  async isShaExistsInBranch(branch: string, sha: string) {
+    const refs: GitLabCommitRef[] = await this.requestJSON({
+      url: `${this.repoURL}/repository/commits/${sha}/refs`,
+      params: {
+        type: 'branch',
+      },
+    });
+    return refs.some(r => r.name === branch);
   }
 
   async deleteBranch(branch: string) {

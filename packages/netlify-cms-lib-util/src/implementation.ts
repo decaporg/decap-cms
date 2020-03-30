@@ -468,6 +468,7 @@ type AllEntriesByFolderArgs = GetKeyArgs &
     readFile: ReadFile;
     readFileMetadata: ReadFileMetadata;
     getDefaultBranch: () => Promise<{ name: string; sha: string }>;
+    isShaExistsInBranch: (branch: string, sha: string) => Promise<boolean>;
     apiName: string;
     localForage: LocalForage;
     maxDiff: number;
@@ -484,6 +485,7 @@ export const allEntriesByFolder = async ({
   extension,
   depth,
   getDefaultBranch,
+  isShaExistsInBranch,
   getDifferences,
   getFileId,
   filterFile,
@@ -510,6 +512,14 @@ export const allEntriesByFolder = async ({
     const localTree = await getLocalTree({ localForage, branch, folder, extension, depth });
     if (localTree) {
       const branch = await getDefaultBranch();
+      // if the branch was forced pushed the local tree sha can be removed from the remote tree
+      const localTreeInBranch = await isShaExistsInBranch(branch.name, localTree.head);
+      if (!localTreeInBranch) {
+        console.log(
+          `Can't find local tree head '${localTree.head}' in branch '${branch.name}', rebuilding local tree`,
+        );
+        return listAllFilesAndPersist();
+      }
       const diff = await getDiffFromLocalTree({
         branch,
         localTree,
@@ -523,6 +533,7 @@ export const allEntriesByFolder = async ({
         console.log('Failed getting diff from local tree:', e);
         return null;
       });
+
       if (diff && diff.length === 0) {
         // return local copy
         return localTree.files;
@@ -554,6 +565,7 @@ export const allEntriesByFolder = async ({
         return newCopy;
       } else {
         // Maximum diff exceeded, so we have no choice but to get all files
+        console.log(`Maximum diff of '${maxDiff}' exceeded, rebuilding local tree`);
         return listAllFilesAndPersist();
       }
     } else {

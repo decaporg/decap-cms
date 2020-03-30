@@ -317,6 +317,18 @@ export default class API {
     return fileMetadata;
   }
 
+  async isShaExistsInBranch(branch: string, sha: string) {
+    const { values }: { values: BitBucketCommit[] } = await this.requestJSON({
+      url: `${this.repoURL}/commits`,
+      params: { include: branch, pagelen: 100 },
+    }).catch(e => {
+      console.log(`Failed getting commits for branch '${branch}'`, e);
+      return [];
+    });
+
+    return values.some(v => v.hash === sha);
+  }
+
   getEntriesAndCursor = (jsonResponse: BitBucketSrcResult) => {
     const {
       size: count,

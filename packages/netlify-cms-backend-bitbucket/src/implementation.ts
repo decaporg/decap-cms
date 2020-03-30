@@ -279,9 +279,14 @@ export default class BitbucketBackend implements Implementation {
 
   async allEntriesByFolder(folder: string, extension: string, depth: number) {
     const head = await this.api!.defaultBranchCommitSha();
+
+    const readFile = (path: string, id: string | null | undefined) => {
+      return this.api!.readFile(path, id, { head }) as Promise<string>;
+    };
+
     const files = await allEntriesByFolder({
       listAllFiles: () => this.listAllFiles(folder, extension, depth),
-      readFile: this.api!.readFile.bind(this.api!),
+      readFile,
       readFileMetadata: this.api!.readFileMetadata.bind(this.api),
       apiName: API_NAME,
       branch: this.branch,
@@ -290,6 +295,7 @@ export default class BitbucketBackend implements Implementation {
       extension,
       depth,
       getDefaultBranch: () => Promise.resolve({ name: this.branch, sha: head }),
+      isShaExistsInBranch: this.api!.isShaExistsInBranch.bind(this.api!),
       getDifferences: (source, destination) => this.api!.getDifferences(source, destination),
       getFileId: path => Promise.resolve(this.api!.getFileId(head, path)),
       filterFile: file => filterByExtension(file, extension),
