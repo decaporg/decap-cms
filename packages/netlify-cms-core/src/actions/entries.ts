@@ -161,7 +161,13 @@ export function sortByField(
     }
 
     try {
-      let entries = await backend.listAllEntries(collection);
+      const integration = selectIntegration(state, collection.get('name'), 'listEntries');
+      const provider: Backend = integration
+        ? getIntegrationProvider(state.integrations, backend.getToken, integration)
+        : backend;
+
+      let entries = await provider.listAllEntries(collection);
+
       const sortFields = selectEntriesSortFields(getState().entries, collection.get('name'));
       if (sortFields && sortFields.length > 0) {
         const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));
