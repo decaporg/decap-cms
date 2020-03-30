@@ -339,6 +339,7 @@ const components = {
     font-size: 14px;
     color: ${colors.text};
     margin-right: 12px;
+    white-space: nowrap;
   `,
 };
 

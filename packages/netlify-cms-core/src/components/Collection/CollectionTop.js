@@ -52,6 +52,7 @@ const ViewControlsSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  max-width: 500px;
 `;
 
 const ViewControlsText = styled.span`
@@ -112,8 +113,8 @@ const SortIndex = styled.span`
 const SortList = styled.ul`
   display: flex;
   align-items: center;
-  margin: 0;
   list-style: none;
+  overflow: scroll;
 `;
 
 const SortControls = ({ t, fields, onSortClick, sort }) => {
