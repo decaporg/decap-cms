@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.23.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.22.2...netlify-cms-core@2.23.0) (2020-03-30)
+
+
+### Bug Fixes
+
+* allow widgets to control value to be validated ([#3448](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3448)) ([ae1917c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ae1917c8181892a439d0828d98992788fb48d65c))
+* don't use getAsset for draft entries ([#3403](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3403)) ([45a1654](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/45a1654404ef7bd24dd2f04a4b3f896d1eef0b7d))
+* update error boundary about GitHub issue data ([#3471](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3471)) ([42d60a6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/42d60a644c58e01da72eb16c1cc20d93e0d70e13))
+
+
+### Features
+
+* add publish configuration option to collections ([#3467](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3467)) ([df33bc6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/df33bc64a996eedcb10835064a7cab8e7862e94d))
+
+
+
+
+
 ## [2.22.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.22.1...netlify-cms-core@2.22.2) (2020-03-20)
 
 

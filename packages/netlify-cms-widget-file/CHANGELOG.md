@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.6.2...netlify-cms-widget-file@2.6.3) (2020-03-30)
+
+
+### Bug Fixes
+
+* allow widgets to control value to be validated ([#3448](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/3448)) ([ae1917c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/ae1917c8181892a439d0828d98992788fb48d65c))
+
+
+
+
+
 ## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.6.1...netlify-cms-widget-file@2.6.2) (2020-02-14)
 
 **Note:** Version bump only for package netlify-cms-widget-file

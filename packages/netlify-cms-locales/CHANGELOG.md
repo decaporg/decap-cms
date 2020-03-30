@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.10.0...netlify-cms-locales@1.10.1) (2020-03-30)
+
+
+### Bug Fixes
+
+* **locale:** Fix czech locale ([#3493](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3493)) ([bae6a2b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/bae6a2b68aa5b5cd2cae5dc4f466ce2e4ea49ebc))
+* update error boundary about GitHub issue data ([#3471](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3471)) ([42d60a6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/42d60a644c58e01da72eb16c1cc20d93e0d70e13))
+
+
+
+
+
 # [1.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.9.4...netlify-cms-locales@1.10.0) (2020-03-13)
 
 

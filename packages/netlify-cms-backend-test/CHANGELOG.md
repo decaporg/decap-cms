@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.7.3...netlify-cms-backend-test@2.8.0) (2020-03-30)
+
+
+### Features
+
+* add publish configuration option to collections ([#3467](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/issues/3467)) ([df33bc6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/commit/df33bc64a996eedcb10835064a7cab8e7862e94d))
+
+
+
+
+
 ## [2.7.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.7.2...netlify-cms-backend-test@2.7.3) (2020-03-03)
 
 

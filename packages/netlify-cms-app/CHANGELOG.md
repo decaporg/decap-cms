@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.11.32...netlify-cms-app@2.12.0) (2020-03-30)
+
+
+### Features
+
+* expose CMS moment ([#3458](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/3458)) ([cd324b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/cd324b08f191925f271178a326d65a000167d130))
+
+
+
+
+
 ## [2.11.32](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.11.31...netlify-cms-app@2.11.32) (2020-03-20)
 
 **Note:** Version bump only for package netlify-cms-app
