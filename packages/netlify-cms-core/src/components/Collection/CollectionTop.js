@@ -214,11 +214,11 @@ const ViewStyleControls = ({ t, viewStyle, onChangeViewStyle }) => {
   );
 };
 
-const getCollectionProps = collection => {
+const getCollectionProps = (collection, t) => {
   const collectionLabel = collection.get('label');
   const collectionLabelSingular = collection.get('label_singular');
   const collectionDescription = collection.get('description');
-  const collectionSortableFields = selectSortableFields(collection);
+  const collectionSortableFields = selectSortableFields(collection, t);
 
   return {
     collectionLabel,
@@ -234,7 +234,7 @@ const CollectionTop = ({ collection, viewStyle, onChangeViewStyle, newEntryUrl, 
     collectionLabelSingular,
     collectionDescription,
     collectionSortableFields,
-  } = getCollectionProps(collection);
+  } = getCollectionProps(collection, t);
 
   const viewControls = [];
   if (collectionSortableFields.length > 0) {

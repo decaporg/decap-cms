@@ -355,16 +355,16 @@ export const selectDefaultSortableFields = (collection: Collection) => {
   return defaultSortable as string[];
 };
 
-export const selectSortableFields = (collection: Collection) => {
+export const selectSortableFields = (collection: Collection, t: (key: string) => string) => {
   const fields = collection
     .get('sortableFields')
     .toArray()
     .map(key => {
       const field = selectField(collection, key);
       if (key === COMMIT_AUTHOR && !field) {
-        return { key, field: { name: key, label: 'Author' } };
+        return { key, field: { name: key, label: t('collection.defaultFields.author.label') } };
       } else if (key === COMMIT_DATE && !field) {
-        return { key, field: { name: key, label: 'Updated on' } };
+        return { key, field: { name: key, label: t('collection.defaultFields.updatedOn.label') } };
       }
 
       return { key, field: field?.toJS() };

@@ -49,6 +49,14 @@ const en = {
       longerLoading: 'This might take several minutes',
       noEntries: 'No Entries',
     },
+    defaultFields: {
+      author: {
+        label: 'Author',
+      },
+      updatedOn: {
+        label: 'Updated On',
+      },
+    },
   },
   editor: {
     editorControl: {
