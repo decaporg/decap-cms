@@ -343,15 +343,19 @@ export const COMMIT_AUTHOR = 'commit_author';
 export const COMMIT_DATE = 'commit_date';
 
 export const selectDefaultSortableFields = (collection: Collection, backend: Backend) => {
-  const defaultSortable = SORTABLE_FIELDS.map((type: string) => {
+  let defaultSortable = SORTABLE_FIELDS.map((type: string) => {
     const field = selectInferedField(collection, type);
     if (backend.isGitBackend() && type === 'author' && !field) {
+      // default to commit author if not author field is found
       return COMMIT_AUTHOR;
-    } else if (backend.isGitBackend() && type === 'date' && !field) {
-      return COMMIT_DATE;
     }
     return field;
   }).filter(Boolean);
+
+  if (backend.isGitBackend()) {
+    // always have commit date by default
+    defaultSortable = [COMMIT_DATE, ...defaultSortable];
+  }
 
   return defaultSortable as string[];
 };
@@ -361,11 +365,12 @@ export const selectSortableFields = (collection: Collection, t: (key: string) =>
     .get('sortableFields')
     .toArray()
     .map(key => {
+      if (key === COMMIT_DATE) {
+        return { key, field: { name: key, label: t('collection.defaultFields.updatedOn.label') } };
+      }
       const field = selectField(collection, key);
       if (key === COMMIT_AUTHOR && !field) {
         return { key, field: { name: key, label: t('collection.defaultFields.author.label') } };
-      } else if (key === COMMIT_DATE && !field) {
-        return { key, field: { name: key, label: t('collection.defaultFields.updatedOn.label') } };
       }
 
       return { key, field: field?.toJS() };
@@ -377,13 +382,13 @@ export const selectSortableFields = (collection: Collection, t: (key: string) =>
 };
 
 export const selectSortDataPath = (collection: Collection, key: string) => {
-  if (key === COMMIT_AUTHOR || key === COMMIT_DATE) {
-    const field = selectField(collection, key);
-    if (!field) {
-      return key === COMMIT_AUTHOR ? 'author' : 'updatedOn';
-    }
+  if (key === COMMIT_DATE) {
+    return 'updatedOn';
+  } else if (key === COMMIT_AUTHOR && !selectField(collection, key)) {
+    return 'author';
+  } else {
+    return `data.${key}`;
   }
-  return `data.${key}`;
 };
 
 export default collections;
