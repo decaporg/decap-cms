@@ -64,18 +64,23 @@ export const responseParser = (options: {
   apiName: string;
 }) => (res: Response) => parseResponse(res, options);
 
-export const parseLinkHeader = flow([
-  linksString => linksString.split(','),
-  map((str: string) => str.trim().split(';')),
-  map(([linkStr, keyStr]) => [
-    keyStr.match(/rel="(.*?)"/)[1],
-    linkStr
-      .trim()
-      .match(/<(.*?)>/)[1]
-      .replace(/\+/g, '%20'),
-  ]),
-  fromPairs,
-]);
+export const parseLinkHeader = (header: string | null) => {
+  if (!header) {
+    return {};
+  }
+  return flow([
+    linksString => linksString.split(','),
+    map((str: string) => str.trim().split(';')),
+    map(([linkStr, keyStr]) => [
+      keyStr.match(/rel="(.*?)"/)[1],
+      linkStr
+        .trim()
+        .match(/<(.*?)>/)[1]
+        .replace(/\+/g, '%20'),
+    ]),
+    fromPairs,
+  ])(header);
+};
 
 export const getAllResponses = async (
   url: string,

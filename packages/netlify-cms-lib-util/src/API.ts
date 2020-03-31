@@ -32,7 +32,7 @@ export interface FetchError extends Error {
 
 interface API {
   rateLimiter?: AsyncLock;
-  buildRequest: (req: ApiRequest) => ApiRequest;
+  buildRequest: (req: ApiRequest) => ApiRequest | Promise<ApiRequest>;
   requestFunction?: (req: ApiRequest) => Promise<Response>;
 }
 
@@ -72,7 +72,7 @@ export const requestWithBackoff = async (
   }
 
   try {
-    const builtRequest = api.buildRequest(req);
+    const builtRequest = await api.buildRequest(req);
     const requestFunction = api.requestFunction || unsentRequest.performRequest;
     const response: Response = await requestFunction(builtRequest);
     if (response.status === 429) {

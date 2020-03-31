@@ -24,6 +24,7 @@ import {
   branchFromContentKey,
   requestWithBackoff,
   readFileMetadata,
+  FetchError,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
@@ -195,15 +196,19 @@ export default class API {
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
-  withAuthorizationHeaders = (req: ApiRequest) =>
-    unsentRequest.withHeaders(this.token ? { Authorization: `Bearer ${this.token}` } : {}, req);
+  withAuthorizationHeaders = (req: ApiRequest) => {
+    const withHeaders: ApiRequest = unsentRequest.withHeaders(
+      this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      req,
+    );
+    return Promise.resolve(withHeaders);
+  };
 
-  buildRequest = (req: ApiRequest) => {
-    return flow([
-      unsentRequest.withRoot(this.apiRoot),
-      this.withAuthorizationHeaders,
-      unsentRequest.withTimestamp,
-    ])(req);
+  buildRequest = async (req: ApiRequest) => {
+    const withRoot: ApiRequest = unsentRequest.withRoot(this.apiRoot)(req);
+    const withAuthorizationHeaders: ApiRequest = await this.withAuthorizationHeaders(withRoot);
+    const withTimestamp: ApiRequest = unsentRequest.withTimestamp(withAuthorizationHeaders);
+    return withTimestamp;
   };
 
   request = async (req: ApiRequest): Promise<Response> => {
@@ -307,7 +312,7 @@ export default class API {
     const pageCount = parseInt(headers.get('X-Total-Pages') as string, 10);
     const pageSize = parseInt(headers.get('X-Per-Page') as string, 10);
     const count = parseInt(headers.get('X-Total') as string, 10);
-    const links = parseLinkHeader(headers.get('Link') as string);
+    const links = parseLinkHeader(headers.get('Link'));
     const actions = Map(links)
       .keySeq()
       .flatMap(key =>
@@ -341,7 +346,17 @@ export default class API {
     flow([
       unsentRequest.withMethod('GET'),
       this.request,
-      p => Promise.all([p.then(this.getCursor), p.then(this.responseToJSON)]),
+      p =>
+        Promise.all([
+          p.then(this.getCursor),
+          p.then(this.responseToJSON).catch((e: FetchError) => {
+            if (e.status === 404) {
+              return [];
+            } else {
+              throw e;
+            }
+          }),
+        ]),
       then(([cursor, entries]: [Cursor, {}[]]) => ({ cursor, entries })),
     ])(req);
 
