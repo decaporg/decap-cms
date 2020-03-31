@@ -13,7 +13,7 @@ const ListCard = styled.li`
   ${components.card};
   width: ${lengths.topCardWidth};
   margin-left: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   overflow: hidden;
 `;
 

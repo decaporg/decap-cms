@@ -196,22 +196,8 @@ const entries = (
       const payload = action.payload as EntriesSortRequestPayload;
       const { collection, key, direction } = payload;
       const newState = state.withMutations(map => {
-        map.updateIn(['sort', collection], (sort: SortMap) => {
-          if (!sort) {
-            return OrderedMap({ [key]: Map({ key, direction }) });
-          } else {
-            if (sort.has(key)) {
-              if (direction !== SortDirection.None) {
-                sort = sort.set(key, fromJS({ key, direction }));
-              } else {
-                sort = sort.delete(key);
-              }
-            } else {
-              sort = sort.set(key, fromJS({ key, direction }));
-            }
-            return sort;
-          }
-        });
+        const sort = OrderedMap({ [key]: Map({ key, direction }) });
+        map.setIn(['sort', collection], sort);
         map.setIn(['pages', collection, 'isFetching'], true);
         map.deleteIn(['pages', collection, 'page']);
       });

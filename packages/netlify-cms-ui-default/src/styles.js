@@ -213,6 +213,10 @@ const buttons = {
       background-color: #555a65;
     }
   `,
+  grayText: css`
+    background-color: transparent;
+    color: ${colorsRaw.gray};
+  `,
   green: css`
     background-color: #aae31f;
     color: ${colorsRaw.green};
@@ -317,7 +321,7 @@ const components = {
     color: ${colorsRaw.gray};
     font-weight: 500;
     border-bottom: 1px solid #eaebf1;
-    padding: 10px 14px;
+    padding: 8px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;

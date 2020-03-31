@@ -3,12 +3,17 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
+import { translate } from 'react-polyglot';
 import { lengths } from 'netlify-cms-ui-default';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
+import CollectionControls from './CollectionControls';
+import { sortByField } from 'Actions/entries';
+import { selectSortableFields } from 'Reducers/collections';
+import { selectEntriesSort } from 'Reducers/entries';
 import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
 
 const CollectionContainer = styled.div`
@@ -26,6 +31,9 @@ class Collection extends React.Component {
     isSearchResults: PropTypes.bool,
     collection: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
+    sortableFields: PropTypes.array,
+    sort: ImmutablePropTypes.orderedMap,
+    onSortClick: PropTypes.func.isRequired,
   };
 
   state = {
@@ -49,19 +57,33 @@ class Collection extends React.Component {
   };
 
   render() {
-    const { collection, collections, collectionName, isSearchResults, searchTerm } = this.props;
+    const {
+      collection,
+      collections,
+      collectionName,
+      isSearchResults,
+      searchTerm,
+      sortableFields,
+      onSortClick,
+      sort,
+    } = this.props;
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
     return (
       <CollectionContainer>
         <Sidebar collections={collections} searchTerm={searchTerm} />
         <CollectionMain>
           {isSearchResults ? null : (
-            <CollectionTop
-              collection={collection}
-              newEntryUrl={newEntryUrl}
-              viewStyle={this.state.viewStyle}
-              onChangeViewStyle={this.handleChangeViewStyle}
-            />
+            <>
+              <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
+              <CollectionControls
+                collection={collection}
+                viewStyle={this.state.viewStyle}
+                onChangeViewStyle={this.handleChangeViewStyle}
+                sortableFields={sortableFields}
+                onSortClick={onSortClick}
+                sort={sort}
+              />
+            </>
           )}
           {isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection()}
         </CollectionMain>
@@ -72,9 +94,11 @@ class Collection extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
-  const { isSearchResults, match } = ownProps;
+  const { isSearchResults, match, t } = ownProps;
   const { name, searchTerm } = match.params;
   const collection = name ? collections.get(name) : collections.first();
+  const sort = selectEntriesSort(state.entries, collection.get('name'));
+  const sortableFields = selectSortableFields(collection, t);
 
   return {
     collection,
@@ -82,7 +106,24 @@ function mapStateToProps(state, ownProps) {
     collectionName: name,
     isSearchResults,
     searchTerm,
+    sort,
+    sortableFields,
   };
 }
 
-export default connect(mapStateToProps)(Collection);
+const mapDispatchToProps = {
+  sortByField,
+};
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  return {
+    ...stateProps,
+    ...ownProps,
+    onSortClick: (key, direction) =>
+      dispatchProps.sortByField(stateProps.collection, key, direction),
+  };
+};
+
+const ConnectedCollection = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Collection);
+
+export default translate()(ConnectedCollection);

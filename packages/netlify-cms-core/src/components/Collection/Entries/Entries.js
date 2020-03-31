@@ -3,7 +3,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { Loader, components, lengths } from 'netlify-cms-ui-default';
+import { Loader, lengths } from 'netlify-cms-ui-default';
 import EntryListing from './EntryListing';
 
 const PaginationMessage = styled.div`
@@ -13,7 +13,7 @@ const PaginationMessage = styled.div`
 `;
 
 const NoEntriesMessage = styled(PaginationMessage)`
-  ${components.card};
+  margin-top: 16px;
 `;
 
 const Entries = ({
