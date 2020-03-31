@@ -566,6 +566,10 @@ export default class API {
       },
     });
 
+    if (result.diffs.length >= 1000) {
+      throw new APIError('Diff limit reached', null, API_NAME);
+    }
+
     return result.diffs.map(d => {
       let status = 'modified';
       if (d.new_file) {

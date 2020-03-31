@@ -190,7 +190,6 @@ export default class GitLab implements Implementation {
       getDifferences: (to, from) => this.api!.getDifferences(to, from),
       getFileId: path => this.api!.getFileId(path, this.branch),
       filterFile: file => this.filterFile(folder, file, extension, depth),
-      maxDiff: 1000, // GitLab max diff limit
     });
     return files;
   }

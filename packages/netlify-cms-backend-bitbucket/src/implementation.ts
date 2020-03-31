@@ -303,7 +303,6 @@ export default class BitbucketBackend implements Implementation {
       getDifferences: (source, destination) => this.api!.getDifferences(source, destination),
       getFileId: path => Promise.resolve(this.api!.getFileId(head, path)),
       filterFile: file => filterByExtension(file, extension),
-      maxDiff: Number.MAX_SAFE_INTEGER, // Bitbucket errors when diff is too big instead of limiting the result
     });
     return files;
   }

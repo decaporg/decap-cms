@@ -473,7 +473,6 @@ type AllEntriesByFolderArgs = GetKeyArgs &
     isShaExistsInBranch: (branch: string, sha: string) => Promise<boolean>;
     apiName: string;
     localForage: LocalForage;
-    maxDiff: number;
   };
 
 export const allEntriesByFolder = async ({
@@ -491,7 +490,6 @@ export const allEntriesByFolder = async ({
   getDifferences,
   getFileId,
   filterFile,
-  maxDiff,
 }: AllEntriesByFolderArgs) => {
   const listAllFilesAndPersist = async () => {
     const files = await listAllFiles(folder, extension, depth);
@@ -536,10 +534,15 @@ export const allEntriesByFolder = async ({
         return null;
       });
 
-      if (diff && diff.length === 0) {
+      if (!diff) {
+        console.log(`Diff is null, rebuilding local tree`);
+        return listAllFilesAndPersist();
+      }
+
+      if (diff.length === 0) {
         // return local copy
         return localTree.files;
-      } else if (diff && diff.length > 0 && diff.length < maxDiff) {
+      } else {
         // refresh local copy
         const identity = (file: { path: string }) => file.path;
         const deleted = diff.reduce((acc, d) => {
@@ -565,10 +568,6 @@ export const allEntriesByFolder = async ({
         });
 
         return newCopy;
-      } else {
-        // Maximum diff exceeded, so we have no choice but to get all files
-        console.log(`Maximum diff of '${maxDiff}' exceeded, rebuilding local tree`);
-        return listAllFilesAndPersist();
       }
     } else {
       return listAllFilesAndPersist();
