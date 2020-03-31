@@ -213,7 +213,7 @@ export function draftDuplicateEntry(entry: EntryMap) {
     type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
     payload: createEntry(entry.get('collection'), '', '', {
       data: entry.get('data'),
-      mediaFiles: entry.get('mediaFiles'),
+      mediaFiles: entry.get('mediaFiles').toJS(),
     }),
   };
 }
