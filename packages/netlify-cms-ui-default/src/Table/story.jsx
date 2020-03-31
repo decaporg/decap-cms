@@ -44,62 +44,66 @@ FeaturedIcon.defaultProps = {
   name: 'star',
 };
 
-const mockData = getMockData('post', 32);
+const mockData = getMockData('post', 500);
 
 export const _Table = () => {
-  const columns = React.useMemo(() => [
-    {
-      id: 'featured',
-      Cell({ row: { original: rowData } }) {
-        return <>{rowData.featured && <FeaturedIcon />}</>;
+  const columns = React.useMemo(
+    () => [
+      {
+        id: 'featured',
+        Cell({ row: { original: rowData } }) {
+          return <>{rowData.featured && <FeaturedIcon />}</>;
+        },
+        width: '32px',
       },
-      width: '32px',
-    },
-    {
-      id: 'featuredImage',
-      Cell({ row: { original: rowData } }) {
-        return <FeaturedImage srcUrl={rowData.featuredImage.small} />;
+      {
+        id: 'featuredImage',
+        Cell({ row: { original: rowData } }) {
+          return <FeaturedImage srcUrl={rowData.featuredImage.small} />;
+        },
+        width: '56px',
       },
-      width: '56px',
-    },
-    {
-      Header: 'Title',
-      Cell({ row: { original: rowData } }) {
-        return (
-          <>
-            <Title>{rowData.title}</Title>
-            <Subtitle>{rowData.description}</Subtitle>
-          </>
-        );
+      {
+        Header: 'Title',
+        accessor: 'title',
+        Cell({ row: { original: rowData } }) {
+          return (
+            <>
+              <Title>{rowData.title}</Title>
+              <Subtitle>{rowData.description}</Subtitle>
+            </>
+          );
+        },
+        width: 'auto',
       },
-      width: 'auto',
-    },
-    {
-      Header: 'Category',
-      accessor: 'category',
-      width: '10%',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-      width: '10%',
-    },
-    {
-      Header: 'Date Modified',
-      accessor: 'dateModified',
-      width: '15%',
-    },
-    {
-      Header: 'Date Created',
-      accessor: 'dateCreated',
-      width: '15%',
-    },
-    {
-      Header: 'Author',
-      accessor: 'author',
-      width: '10%',
-    },
-  ]);
+      {
+        Header: 'Category',
+        accessor: 'category',
+        width: '10%',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+        width: '10%',
+      },
+      {
+        Header: 'Date Modified',
+        accessor: 'dateModified',
+        width: '15%',
+      },
+      {
+        Header: 'Date Created',
+        accessor: 'dateCreated',
+        width: '15%',
+      },
+      {
+        Header: 'Author',
+        accessor: 'author',
+        width: '10%',
+      },
+    ],
+    [],
+  );
   const onClick = boolean('onClick', true);
   const draggable = boolean('draggable', true);
   const selectable = boolean('selectable', true);

@@ -141,12 +141,19 @@ const mockData = getMockData('post', 128);
 
 export const _ThumbnailGrid = () => {
   const horizontal = boolean('horizontal', false);
+  const selectable = boolean('selectable', false);
+  const onClick = boolean('onClick', false);
+  const previewAspectRatio = text('previewAspectRatio', '16:9');
+  const previewImgSrc = boolean('previewImgSrc', true);
+  const supertitle = boolean('supertitle', true);
+  const title = boolean('title', true);
+  const description = boolean('description', true);
+  const subtitle = boolean('subtitle', true);
+  const featured = boolean('featured', true);
   const supertitleMaxLines = number('supertitleMaxLines', 1);
   const titleMaxLines = number('titleMaxLines', 3);
   const descriptionMaxLines = number('descriptionMaxLines', 3);
   const subtitleMaxLines = number('subtitleMaxLines', 1);
-  const selectable = boolean('selectable', false);
-  const onClick = boolean('onClick', false);
 
   return (
     <Wrap>
@@ -154,14 +161,14 @@ export const _ThumbnailGrid = () => {
         {mockData.map((thumb, i) => (
           <StoryThumbnail
             key={i}
-            previewImgSrc={thumb.featuredImage.regular}
-            supertitle={thumb.status}
-            title={thumb.title}
-            description={thumb.description}
-            subtitle={`${thumb.author} • ${thumb.dateCreated}`}
-            featured={thumb.featured}
+            previewImgSrc={previewImgSrc && thumb.featuredImage.regular}
+            supertitle={supertitle && thumb.status}
+            title={title && thumb.title}
+            description={description && thumb.description}
+            subtitle={subtitle && `${thumb.author} • ${thumb.dateCreated}`}
+            featured={featured && thumb.featured}
             selectable={selectable}
-            previewAspectRatio={'16:9'}
+            previewAspectRatio={previewAspectRatio}
             width={'auto'}
             horizontal={horizontal}
             supertitleMaxLines={supertitleMaxLines}

@@ -43,16 +43,14 @@ const ThumbnailWrap = styled(Card)`
   `
       : ``}
   ${({ clickable, selectable, theme }) =>
-    clickable && !selectable
+    clickable
       ? `
     cursor: pointer;
     transition: 200ms;
-    transform: translateY(0);
     z-index: 0;
 
     &:hover {
       z-index: 10;
-      transform: translateY(-0.125rem);
       box-shadow: ${theme.shadow({ size: 'lg', theme })};
       ${theme.darkMode ? `background-color: ${theme.color.surfaceHighlight};` : ``}
     }
@@ -63,6 +61,7 @@ const Content = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   flex: 1;
   position: relative;
   ${({ selectable, hasPreview, horizontal }) =>
@@ -152,6 +151,9 @@ const Supertitle = styled.div`
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 6px;
+  &:last-child {
+    margin: 0;
+  }
   ${({ maxLines }) =>
     maxLines
       ? `
@@ -167,6 +169,9 @@ const Title = styled.div`
   font-weight: bold;
   color: ${({ theme }) => theme.color.highEmphasis};
   margin-bottom: 6px;
+  &:last-child {
+    margin: 0;
+  }
   ${({ maxLines }) =>
     maxLines
       ? `
@@ -181,6 +186,9 @@ const Description = styled.div`
   font-size: 0.75rem;
   color: ${({ theme }) => theme.color.mediumEmphasis};
   margin-bottom: 6px;
+  &:last-child {
+    margin: 0;
+  }
   ${({ maxLines }) =>
     maxLines
       ? `
@@ -246,6 +254,7 @@ const SelectToggle = styled.div`
     stroke-width: 3px;
   }
 `;
+
 const SelectIcon = styled(Icon)``;
 SelectIcon.defaultProps = {
   name: 'check',
@@ -298,8 +307,8 @@ const Thumbnail = ({
       selected={selected}
       selectable={selectable}
       horizontal={horizontal}
-      clickable={!!onClick}
-      onClick={onClick && onClick}
+      clickable={!!onClick || selectable}
+      onClick={onClick ? (selectable ? onSelect : onClick) : selectable ? onSelect : null}
       {...props}
     >
       {(previewImgSrc || previewText) && (
@@ -321,17 +330,19 @@ const Thumbnail = ({
           {previewText && <PreviewText>{previewText}</PreviewText>}
         </PreviewWrap>
       )}
-      <Content
-        selectable={selectable}
-        hasPreview={previewImgSrc || previewText}
-        horizontal={horizontal}
-        featured={featured}
-      >
-        {supertitle && <Supertitle maxLines={supertitleMaxLines}>{supertitle}</Supertitle>}
-        {title && <Title maxLines={titleMaxLines}>{title}</Title>}
-        {description && <Description maxLines={descriptionMaxLines}>{description}</Description>}
-        {subtitle && <Subtitle maxLines={subtitleMaxLines}>{subtitle}</Subtitle>}
-      </Content>
+      {(supertitle || title || description || subtitle) && (
+        <Content
+          selectable={selectable}
+          hasPreview={previewImgSrc || previewText}
+          horizontal={horizontal}
+          featured={featured}
+        >
+          {supertitle && <Supertitle maxLines={supertitleMaxLines}>{supertitle}</Supertitle>}
+          {title && <Title maxLines={titleMaxLines}>{title}</Title>}
+          {description && <Description maxLines={descriptionMaxLines}>{description}</Description>}
+          {subtitle && <Subtitle maxLines={subtitleMaxLines}>{subtitle}</Subtitle>}
+        </Content>
+      )}
       {featured && <FeaturedIcon />}
       {selectable && (
         <SelectToggle selected={selected} onClick={onSelect}>

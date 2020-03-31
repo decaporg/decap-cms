@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { useTable, useSortBy, useFlexLayout, useRowSelect } from 'react-table';
 import { sortableContainer, sortableElement } from 'react-sortable-hoc';
+import { FixedSizeList as List } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import arrayMove from 'array-move';
 import color from 'color';
 
 import Icon from '../Icon';
 import { IconButton } from '../Button';
 
-const TableWrap = styled.div``;
+const TableWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
 const TableHeader = styled.div`
   position: sticky;
   top: 0;
@@ -51,8 +57,8 @@ const TableHeaderCell = styled.div`
   `}
 `;
 const TBody = styled.div`
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  flex: 1;
 `;
 const TRow = styled.div`
   display: flex;
@@ -148,7 +154,7 @@ const SelectToggleWrap = styled.label`
   border-radius: 0.75rem;
   background-color: ${({ checked, theme }) =>
     checked ? theme.color.success['500'] : `rgba(0, 0, 0, 0.05)`};
-  transition: 200ms;
+  transition: 150ms;
   cursor: pointer;
   color: white;
   &:hover {
@@ -170,7 +176,7 @@ const SelectToggleWrap = styled.label`
     position: absolute;
     top: 50%;
     left: 50%;
-    transition: 200ms;
+    transition: 150ms;
     transform: translate(-50%, -50%) scale(${({ checked }) => (checked ? 1 : 0)});
     stroke-width: 3px;
   }
@@ -193,7 +199,7 @@ const SelectToggle = ({ id, onClick, checked, indeterminate, ...props }) => {
       htmlFor={id}
     >
       <SelectIcon />
-      <input {...props} type="checkbox" id={id} style={{ display: 'none' }} />
+      <input {...props} type="checkbox" id={id} checked={checked} style={{ display: 'none' }} />
     </SelectToggleWrap>
   );
 };
@@ -257,9 +263,7 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
               {
                 id: 'rowMenu',
                 onlyShowOnRowHover: true,
-                // minWidth: 48,
                 width: '48px',
-                // maxWidth: 48,
                 Cell({ row: { original: rowData }, onMenuToggle }) {
                   const [anchorEl, setAnchorEl] = useState();
 
@@ -292,6 +296,7 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
   );
 
   useEffect(() => setSortedData(data), [data]);
+
   useEffect(() => onSelect(selectedFlatRows.map(row => row.original.id)), [selectedFlatRows]);
 
   const handleDrop = ({ oldIndex, newIndex }) =>
@@ -302,6 +307,43 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
         newIndex,
       ),
     );
+
+  const RenderRow = useCallback(
+    ({ index, style }) => {
+      const row = rows[index];
+
+      prepareRow(row);
+
+      return (
+        <TableRow
+          key={index}
+          index={index}
+          {...row.getRowProps()}
+          clickable={!!onClick}
+          onClick={onClick ? () => onClick(row.original) : null}
+          disabled={!draggable}
+          isSelected={row.isSelected}
+          style={style}
+        >
+          {row.cells.map((cell, cellIndex) => {
+            const [menuOpen, setMenuOpen] = useState();
+
+            return (
+              <TableCell
+                {...cell.getCellProps()}
+                key={cellIndex}
+                onlyShowOnRowHover={cell.column.onlyShowOnRowHover && !menuOpen}
+                width={cell.column.width}
+              >
+                {cell.render('Cell', { onMenuToggle: open => setMenuOpen(open) })}
+              </TableCell>
+            );
+          })}
+        </TableRow>
+      );
+    },
+    [prepareRow, rows],
+  );
 
   // Render the UI for your table
   return (
@@ -336,36 +378,22 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
         lockOffset="0%"
         onSortEnd={handleDrop}
       >
-        {rows.map((row, i) => {
-          prepareRow(row);
-
-          return (
-            <TableRow
-              key={i}
-              index={i}
-              {...row.getRowProps()}
-              clickable={!!onClick}
-              onClick={onClick ? () => onClick(row.original) : null}
-              disabled={!draggable}
-              isSelected={row.isSelected}
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              className="List"
+              height={height}
+              itemCount={rows.length}
+              itemSize={56}
+              width={width}
+              overscanCount={40}
+              itemData={rows}
+              itemKey={(index, data) => data[index].id}
             >
-              {row.cells.map((cell, cellIndex) => {
-                const [menuOpen, setMenuOpen] = useState();
-
-                return (
-                  <TableCell
-                    {...cell.getCellProps()}
-                    key={cellIndex}
-                    onlyShowOnRowHover={cell.column.onlyShowOnRowHover && !menuOpen}
-                    width={cell.column.width}
-                  >
-                    {cell.render('Cell', { onMenuToggle: open => setMenuOpen(open) })}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          );
-        })}
+              {RenderRow}
+            </List>
+          )}
+        </AutoSizer>
       </TableBody>
     </TableWrap>
   );
