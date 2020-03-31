@@ -205,6 +205,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `fields` (required): see detailed description below
 * `editor`: see detailed description below
 * `summary`: see detailed description below
+* `sortableFields`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -367,9 +368,26 @@ Template tags are the same as those for [slug](#slug), with the following additi
 
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
+* `{{commit_date}}` The file commit date on supported backends (git based backends).
+* `{{commit_author}}` The file author date on supported backends (git based backends).
 
 **Example**
 
 ```yaml
     summary: "Version: {{version}} - {{title}}"
+```
+
+### `sortableFields`
+
+An optional list of sort fields to show in the UI.
+
+Defaults to inferring `title`, `date`, `author` and `description` fields and will also show `Update On` sort field in git based backends.
+
+When `author` field can't be inferred commit author will be used.
+
+**Example**
+
+```yaml
+    # use dot notation for nested fields
+    sortableFields: ['commit_date', 'title', 'commit_author', 'language.en']
 ```
