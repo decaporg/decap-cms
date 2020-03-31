@@ -994,8 +994,8 @@ export default class API {
   }
 
   async getDifferences(from: string, to: string) {
-    const attempts = 10;
     // retry this as sometimes GitHub returns an initial 404 on cross repo compare
+    const attempts = this.useOpenAuthoring ? 10 : 1;
     for (let i = 1; i <= attempts; i++) {
       try {
         const result: Octokit.ReposCompareCommitsResponse = await this.request(
