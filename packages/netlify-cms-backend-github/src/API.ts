@@ -527,9 +527,25 @@ export default class API {
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files: diffs } = await this.getDifferences(this.branch, pullRequest.head.sha);
     // media files don't have a patch attribute, except svg files
-    const { path, newFile } = diffs
+    const matchingEntries = diffs
       .filter(d => d.patch && !d.filename.endsWith('.svg'))
-      .map(f => ({ path: f.filename, newFile: f.status === 'added' }))[0];
+      .map(f => ({ path: f.filename, newFile: f.status === 'added' }));
+
+    if (matchingEntries.length <= 0) {
+      console.error(
+        'Unable to locate entry from diff',
+        JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
+      );
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+    } else if (matchingEntries.length > 1) {
+      console.warn(
+        `Expected 1 matching entry from diff, but received '${matchingEntries.length}'`,
+        JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
+      );
+    }
+
+    const entry = matchingEntries[0];
+    const { path, newFile } = entry;
 
     const mediaFiles = diffs
       .filter(d => d.filename !== path)
@@ -659,19 +675,23 @@ export default class API {
   }
 
   filterOpenAuthoringBranches = async (branch: string) => {
-    const contentKey = contentKeyFromBranch(branch);
-    const { pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
-    const { state: currentState, merged_at: mergedAt } = pullRequest;
-    if (
-      pullRequest.number !== MOCK_PULL_REQUEST &&
-      currentState === PullRequestState.Closed &&
-      mergedAt
-    ) {
-      // pr was merged, delete entry
-      await this.deleteUnpublishedEntry(collection, slug);
+    try {
+      const contentKey = contentKeyFromBranch(branch);
+      const { pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
+      const { state: currentState, merged_at: mergedAt } = pullRequest;
+      if (
+        pullRequest.number !== MOCK_PULL_REQUEST &&
+        currentState === PullRequestState.Closed &&
+        mergedAt
+      ) {
+        // pr was merged, delete entry
+        await this.deleteUnpublishedEntry(collection, slug);
+        return { branch, filter: false };
+      } else {
+        return { branch, filter: true };
+      }
+    } catch (e) {
       return { branch, filter: false };
-    } else {
-      return { branch, filter: true };
     }
   };
 
@@ -974,8 +994,8 @@ export default class API {
   }
 
   async getDifferences(from: string, to: string) {
-    const attempts = 3;
     // retry this as sometimes GitHub returns an initial 404 on cross repo compare
+    const attempts = this.useOpenAuthoring ? 10 : 1;
     for (let i = 1; i <= attempts; i++) {
       try {
         const result: Octokit.ReposCompareCommitsResponse = await this.request(
@@ -984,9 +1004,10 @@ export default class API {
         return result;
       } catch (e) {
         if (i === attempts) {
+          console.warn(`Reached maximum number of attempts '${attempts}' for getDifferences`);
           throw e;
         }
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, i * 500));
       }
     }
     throw new APIError('Not Found', 404, API_NAME);
