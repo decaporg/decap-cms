@@ -994,7 +994,7 @@ export default class API {
   }
 
   async getDifferences(from: string, to: string) {
-    const attempts = 3;
+    const attempts = 10;
     // retry this as sometimes GitHub returns an initial 404 on cross repo compare
     for (let i = 1; i <= attempts; i++) {
       try {
@@ -1004,9 +1004,10 @@ export default class API {
         return result;
       } catch (e) {
         if (i === attempts) {
+          console.warn(`Reached maximum number of attempts '${attempts}' for getDifferences`);
           throw e;
         }
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, i * 500));
       }
     }
     throw new APIError('Not Found', 404, API_NAME);
