@@ -234,6 +234,37 @@ export const selectField = (collection: Collection, key: string) => {
   return field;
 };
 
+export const traverseFields = (
+  fields: List<EntryField>,
+  updater: (field: EntryField) => EntryField,
+  done = () => false,
+) => {
+  if (done()) {
+    return fields;
+  }
+  fields = fields
+    .map(f => {
+      const field = updater(f as EntryField);
+      if (done()) {
+        return field;
+      } else if (field.has('fields')) {
+        return field.set('fields', traverseFields(field.get('fields')!, updater, done));
+      } else if (field.has('field')) {
+        return field.set(
+          'field',
+          traverseFields(List([field.get('field')!]), updater, done).get(0),
+        );
+      } else if (field.has('types')) {
+        return field.set('types', traverseFields(field.get('types')!, updater, done));
+      } else {
+        return field;
+      }
+    })
+    .toList() as List<EntryField>;
+
+  return fields;
+};
+
 export const updateFieldByKey = (
   collection: Collection,
   key: string,
@@ -245,37 +276,19 @@ export const updateFieldByKey = (
   }
 
   let updated = false;
-
-  const traverseFields = (fields: List<EntryField>) => {
-    if (updated) {
-      // we can stop once the field is found
-      return fields;
+  const updateAndBreak = (f: EntryField) => {
+    const field = f as EntryField;
+    if (field === selected) {
+      updated = true;
+      return updater(field);
+    } else {
+      return field;
     }
-
-    fields = fields
-      .map(f => {
-        const field = f as EntryField;
-        if (field === selected) {
-          updated = true;
-          return updater(field);
-        } else if (field.has('fields')) {
-          return field.set('fields', traverseFields(field.get('fields')!));
-        } else if (field.has('field')) {
-          return field.set('field', traverseFields(List([field.get('field')!])).get(0));
-        } else if (field.has('types')) {
-          return field.set('types', traverseFields(field.get('types')!));
-        } else {
-          return field;
-        }
-      })
-      .toList() as List<EntryField>;
-
-    return fields;
   };
 
   collection = collection.set(
     'fields',
-    traverseFields(collection.get('fields', List<EntryField>())),
+    traverseFields(collection.get('fields', List<EntryField>()), updateAndBreak, () => updated),
   );
 
   return collection;
