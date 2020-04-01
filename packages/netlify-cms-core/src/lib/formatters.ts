@@ -115,7 +115,7 @@ export const slugFormatter = (
   if (!collection.has('path')) {
     return slug;
   } else {
-    const pathTemplate = collection.get('path') as string;
+    const pathTemplate = prepareSlug(collection.get('path') as string);
     return compileStringTemplate(pathTemplate, date, slug, entryData, (value: string) =>
       value === slug ? value : processSegment(value),
     );
