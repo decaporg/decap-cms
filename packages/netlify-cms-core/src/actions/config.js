@@ -5,7 +5,7 @@ import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
-import { currentBackend } from 'coreSrc/backend';
+import { resolveBackend } from 'coreSrc/backend';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -87,7 +87,7 @@ export function applyDefaults(config) {
           }
 
           if (!collection.has('sortableFields')) {
-            const backend = currentBackend(config);
+            const backend = resolveBackend(config);
             const defaultSortable = selectDefaultSortableFields(collection, backend);
             collection = collection.set('sortableFields', fromJS(defaultSortable));
           }

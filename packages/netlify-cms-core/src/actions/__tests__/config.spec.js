@@ -4,7 +4,7 @@ import { applyDefaults, detectProxyServer, handleLocalBackend } from '../config'
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.mock('coreSrc/backend', () => {
   return {
-    currentBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
+    resolveBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
   };
 });
 
