@@ -63,7 +63,16 @@ const TBody = styled.div`
 const TRow = styled.div`
   display: flex;
   justify-content: stretch;
-  height: 56px;
+  height: ${({ rowSize }) =>
+    rowSize === 'xs'
+      ? 32
+      : rowSize === 'sm'
+      ? 48
+      : rowSize === 'lg'
+      ? 64
+      : rowSize === 'xl'
+      ? 80
+      : 56}px;
   padding: 0 0.5rem;
   align-items: center;
   background-color: ${({ isSelected, theme }) =>
@@ -103,7 +112,7 @@ const TRow = styled.div`
   }
 `;
 const TableCell = styled.div`
-  font-size: 14px;
+  font-size: ${({ rowSize }) => (rowSize === 'xs' ? `0.75rem` : `0.875rem`)};
   padding: 0 0.5rem;
   color: ${({ theme }) => theme.color.mediumEmphasis};
   display: flex;
@@ -187,6 +196,8 @@ SelectIcon.defaultProps = {
   size: 'sm',
 };
 
+const TableCellInside = styled.div``;
+
 const SelectToggle = ({ id, onClick, checked, indeterminate, ...props }) => {
   return (
     <SelectToggleWrap
@@ -207,7 +218,16 @@ const SelectToggle = ({ id, onClick, checked, indeterminate, ...props }) => {
 const TableRow = sortableElement(({ children, ...props }) => <TRow {...props}>{children}</TRow>);
 const TableBody = sortableContainer(({ children }) => <TBody>{children}</TBody>);
 
-const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, draggable }) => {
+const Table = ({
+  columns,
+  data,
+  selectable,
+  onSelect,
+  renderMenu,
+  onClick,
+  draggable,
+  rowSize,
+}) => {
   const [sortedData, setSortedData] = useState(data);
   const {
     getTableProps,
@@ -309,10 +329,12 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
     );
 
   const RenderRow = useCallback(
-    ({ index, style }) => {
+    ({ index, style, ...rest }) => {
       const row = rows[index];
 
       prepareRow(row);
+
+      console.log(index, row);
 
       return (
         <TableRow
@@ -320,10 +342,17 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
           index={index}
           {...row.getRowProps()}
           clickable={!!onClick}
-          onClick={onClick ? () => onClick(row.original) : null}
+          onClick={
+            selectable
+              ? () => row.toggleRowSelected()
+              : onClick
+              ? () => onClick(row.original)
+              : null
+          }
           disabled={!draggable}
           isSelected={row.isSelected}
           style={style}
+          rowSize={rowSize}
         >
           {row.cells.map((cell, cellIndex) => {
             const [menuOpen, setMenuOpen] = useState();
@@ -334,8 +363,11 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
                 key={cellIndex}
                 onlyShowOnRowHover={cell.column.onlyShowOnRowHover && !menuOpen}
                 width={cell.column.width}
+                rowSize={rowSize}
               >
-                {cell.render('Cell', { onMenuToggle: open => setMenuOpen(open) })}
+                <TableCellInside>
+                  {cell.render('Cell', { onMenuToggle: open => setMenuOpen(open) })}
+                </TableCellInside>
               </TableCell>
             );
           })}
@@ -384,7 +416,17 @@ const Table = ({ columns, data, selectable, onSelect, renderMenu, onClick, dragg
               className="List"
               height={height}
               itemCount={rows.length}
-              itemSize={56}
+              itemSize={
+                rowSize === 'xs'
+                  ? 32
+                  : rowSize === 'sm'
+                  ? 48
+                  : rowSize === 'lg'
+                  ? 64
+                  : rowSize === 'xl'
+                  ? 80
+                  : 56
+              }
               width={width}
               overscanCount={40}
               itemData={rows}

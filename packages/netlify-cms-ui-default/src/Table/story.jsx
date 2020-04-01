@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
-import { withKnobs, boolean } from '@storybook/addon-knobs';
+import { withKnobs, boolean, select } from '@storybook/addon-knobs';
 import getMockData from '../utils/getMockData';
 
 import Table from '.';
@@ -31,8 +31,10 @@ const FeaturedImage = styled.div`
   background-size: cover;
   background-position: center center;
   bacnkground-repeat: no-repeat;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: ${({ size }) =>
+    size === 'xs' ? 1.5 : size === 'sm' ? 2 : size === 'lg' ? 3 : size === 'xl' ? 3.5 : 2.5}rem;
+  height: ${({ size }) =>
+    size === 'xs' ? 1.5 : size === 'sm' ? 2 : size === 'lg' ? 3 : size === 'xl' ? 3.5 : 2.5}rem;
   border-radius: 6px;
 `;
 const FeaturedIcon = styled(Icon)`
@@ -47,6 +49,15 @@ FeaturedIcon.defaultProps = {
 const mockData = getMockData('post', 500);
 
 export const _Table = () => {
+  const onClick = boolean('onClick', true);
+  const draggable = boolean('draggable', true);
+  const selectable = boolean('selectable', true);
+  const rowSize = select(
+    'size',
+    { xs: 'xs', sm: 'sm', 'md (default)': null, lg: 'lg', xl: 'xl' },
+    null,
+  );
+
   const columns = React.useMemo(
     () => [
       {
@@ -59,9 +70,19 @@ export const _Table = () => {
       {
         id: 'featuredImage',
         Cell({ row: { original: rowData } }) {
-          return <FeaturedImage srcUrl={rowData.featuredImage.small} />;
+          return <FeaturedImage size={rowSize} srcUrl={rowData.featuredImage.small} />;
         },
-        width: '56px',
+        width: `${((rowSize === 'xs'
+          ? 1.5
+          : rowSize === 'sm'
+          ? 2
+          : rowSize === 'lg'
+          ? 3
+          : rowSize === 'xl'
+          ? 3.5
+          : 2.5) +
+          1) *
+          16}px`,
       },
       {
         Header: 'Title',
@@ -70,7 +91,7 @@ export const _Table = () => {
           return (
             <>
               <Title>{rowData.title}</Title>
-              <Subtitle>{rowData.description}</Subtitle>
+              {rowSize !== 'xs' && rowSize !== 'sm' && <Subtitle>{rowData.description}</Subtitle>}
             </>
           );
         },
@@ -102,17 +123,15 @@ export const _Table = () => {
         width: '10%',
       },
     ],
-    [],
+    [rowSize],
   );
-  const onClick = boolean('onClick', true);
-  const draggable = boolean('draggable', true);
-  const selectable = boolean('selectable', true);
 
   return (
     <Wrap>
       <Table
         columns={columns}
         data={mockData}
+        rowSize={rowSize}
         draggable={draggable}
         selectable={selectable}
         onSelect={selected => console.log({ selected })}
