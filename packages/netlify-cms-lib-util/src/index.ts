@@ -6,7 +6,7 @@ import { isAbsolutePath, basename, fileExtensionWithSeparator, fileExtension } f
 import { onlySuccessfulPromises, flowAsync, then } from './promise';
 import unsentRequest from './unsentRequest';
 import {
-  filterByPropExtension,
+  filterByExtension,
   getAllResponses,
   parseLinkHeader,
   parseResponse,
@@ -37,9 +37,11 @@ import {
   Config as C,
   UnpublishedEntryMediaFile as UEMF,
   blobToFileObj,
+  allEntriesByFolder,
 } from './implementation';
 import {
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   isCMSLabel,
@@ -54,6 +56,8 @@ import {
   parseContentKey,
   branchFromContentKey,
   contentKeyFromBranch,
+  ApiRequest as AR,
+  requestWithBackoff,
 } from './API';
 import {
   createPointerFile,
@@ -77,16 +81,7 @@ export type Entry = E;
 export type UnpublishedEntryMediaFile = UEMF;
 export type PersistOptions = PO;
 export type AssetProxy = AP;
-export type ApiRequest =
-  | {
-      url: string;
-      params?: Record<string, string | boolean | number>;
-      method?: 'POST' | 'PUT' | 'DELETE' | 'HEAD';
-      headers?: Record<string, string>;
-      body?: string | FormData;
-      cache?: 'no-store';
-    }
-  | string;
+export type ApiRequest = AR;
 export type Config = C;
 export type FetchError = FE;
 export type PointerFile = PF;
@@ -105,7 +100,7 @@ export const NetlifyCmsLibUtil = {
   flowAsync,
   then,
   unsentRequest,
-  filterByPropExtension,
+  filterByExtension,
   parseLinkHeader,
   parseResponse,
   responseParser,
@@ -118,6 +113,7 @@ export const NetlifyCmsLibUtil = {
   getMediaDisplayURL,
   getMediaAsBlob,
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   isCMSLabel,
@@ -138,6 +134,8 @@ export const NetlifyCmsLibUtil = {
   branchFromContentKey,
   contentKeyFromBranch,
   blobToFileObj,
+  requestWithBackoff,
+  allEntriesByFolder,
 };
 export {
   APIError,
@@ -153,7 +151,7 @@ export {
   flowAsync,
   then,
   unsentRequest,
-  filterByPropExtension,
+  filterByExtension,
   parseLinkHeader,
   getAllResponses,
   parseResponse,
@@ -169,6 +167,7 @@ export {
   getMediaDisplayURL,
   getMediaAsBlob,
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   isCMSLabel,
@@ -189,4 +188,6 @@ export {
   branchFromContentKey,
   contentKeyFromBranch,
   blobToFileObj,
+  requestWithBackoff,
+  allEntriesByFolder,
 };

@@ -94,7 +94,7 @@ export class Loader extends React.Component {
       return (
         <LoaderText>
           <CSSTransition
-            classNames={{
+            className={{
               enter: styles.enter,
               enterActive: styles.enterActive,
               exit: styles.exit,

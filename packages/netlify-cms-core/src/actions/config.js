@@ -4,6 +4,8 @@ import { trimStart, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
+import { selectDefaultSortableFields } from '../reducers/collections';
+import { currentBackend } from 'coreSrc/backend';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -71,18 +73,26 @@ export function applyDefaults(config) {
             if (collection.has('media_folder') && !collection.has('public_folder')) {
               collection = collection.set('public_folder', collection.get('media_folder'));
             }
-            return collection.set('folder', trimStart(folder, '/'));
+            collection = collection.set('folder', trimStart(folder, '/'));
           }
 
           const files = collection.get('files');
           if (files) {
-            return collection.set(
+            collection = collection.set(
               'files',
               files.map(file => {
                 return file.set('file', trimStart(file.get('file'), '/'));
               }),
             );
           }
+
+          if (!collection.has('sortableFields')) {
+            const backend = currentBackend(config);
+            const defaultSortable = selectDefaultSortableFields(collection, backend);
+            collection = collection.set('sortableFields', fromJS(defaultSortable));
+          }
+
+          return collection;
         }),
       );
     });

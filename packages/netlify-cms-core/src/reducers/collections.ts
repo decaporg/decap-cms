@@ -3,7 +3,7 @@ import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
-import { INFERABLE_FIELDS, IDENTIFIER_FIELDS } from '../constants/fieldInference';
+import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
 import {
   CollectionsAction,
@@ -15,6 +15,7 @@ import {
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
 import { keyToPathArray } from '../lib/stringTemplate';
+import { Backend } from '../backend';
 
 const collections = (state = null, action: CollectionsAction) => {
   switch (action.type) {
@@ -288,6 +289,7 @@ export const selectIdentifier = (collection: Collection) => {
     fieldNames.find(name => name?.toLowerCase().trim() === id.toLowerCase().trim()),
   );
 };
+
 export const selectInferedField = (collection: Collection, fieldName: string) => {
   if (fieldName === 'title' && collection.get('identifier_field')) {
     return selectIdentifier(collection);
@@ -335,6 +337,58 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
   }
 
   return null;
+};
+
+export const COMMIT_AUTHOR = 'commit_author';
+export const COMMIT_DATE = 'commit_date';
+
+export const selectDefaultSortableFields = (collection: Collection, backend: Backend) => {
+  let defaultSortable = SORTABLE_FIELDS.map((type: string) => {
+    const field = selectInferedField(collection, type);
+    if (backend.isGitBackend() && type === 'author' && !field) {
+      // default to commit author if not author field is found
+      return COMMIT_AUTHOR;
+    }
+    return field;
+  }).filter(Boolean);
+
+  if (backend.isGitBackend()) {
+    // always have commit date by default
+    defaultSortable = [COMMIT_DATE, ...defaultSortable];
+  }
+
+  return defaultSortable as string[];
+};
+
+export const selectSortableFields = (collection: Collection, t: (key: string) => string) => {
+  const fields = collection
+    .get('sortableFields')
+    .toArray()
+    .map(key => {
+      if (key === COMMIT_DATE) {
+        return { key, field: { name: key, label: t('collection.defaultFields.updatedOn.label') } };
+      }
+      const field = selectField(collection, key);
+      if (key === COMMIT_AUTHOR && !field) {
+        return { key, field: { name: key, label: t('collection.defaultFields.author.label') } };
+      }
+
+      return { key, field: field?.toJS() };
+    })
+    .filter(item => !!item.field)
+    .map(item => ({ ...item.field, key: item.key }));
+
+  return fields;
+};
+
+export const selectSortDataPath = (collection: Collection, key: string) => {
+  if (key === COMMIT_DATE) {
+    return 'updatedOn';
+  } else if (key === COMMIT_AUTHOR && !selectField(collection, key)) {
+    return 'author';
+  } else {
+    return `data.${key}`;
+  }
 };
 
 export default collections;

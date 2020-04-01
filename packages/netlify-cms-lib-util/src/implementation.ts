@@ -1,6 +1,9 @@
 import semaphore, { Semaphore } from 'semaphore';
+import { unionBy, sortBy } from 'lodash';
 import Cursor from './Cursor';
 import { AsyncLock } from './asyncLock';
+import { FileMetadata } from './API';
+import { basename } from './path';
 
 export type DisplayURLObject = { id: string; path: string };
 
@@ -25,7 +28,7 @@ export interface UnpublishedEntryMediaFile {
 export interface ImplementationEntry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: string;
-  file: { path: string; label?: string; id?: string | null };
+  file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
   slug?: string;
   mediaFiles?: ImplementationMediaFile[];
   metaData?: { collection: string; status: string };
@@ -135,6 +138,8 @@ export interface Implementation {
     cursor: Cursor,
     action: string,
   ) => Promise<{ entries: ImplementationEntry[]; cursor: Cursor }>;
+
+  isGitBackend?: () => boolean;
 }
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
@@ -156,28 +161,40 @@ type ReadFile = (
   id: string | null | undefined,
   options: { parseText: boolean },
 ) => Promise<string | Blob>;
+
+type ReadFileMetadata = (path: string, id: string) => Promise<FileMetadata>;
+
 type ReadUnpublishedFile = (
   key: string,
 ) => Promise<{ metaData: Metadata; fileData: string; isModification: boolean; slug: string }>;
 
-const fetchFiles = async (files: ImplementationFile[], readFile: ReadFile, apiName: string) => {
+const fetchFiles = async (
+  files: ImplementationFile[],
+  readFile: ReadFile,
+  readFileMetadata: ReadFileMetadata,
+  apiName: string,
+) => {
   const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
   const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
   files.forEach(file => {
     promises.push(
       new Promise(resolve =>
-        sem.take(() =>
-          readFile(file.path, file.id, { parseText: true })
-            .then(data => {
-              resolve({ file, data: data as string });
-              sem.leave();
-            })
-            .catch((error = true) => {
-              sem.leave();
-              console.error(`failed to load file from ${apiName}: ${file.path}`);
-              resolve({ error });
-            }),
-        ),
+        sem.take(async () => {
+          try {
+            const [data, fileMetadata] = await Promise.all([
+              readFile(file.path, file.id, { parseText: true }),
+              file.id
+                ? readFileMetadata(file.path, file.id)
+                : Promise.resolve({ author: '', updatedOn: '' }),
+            ]);
+            resolve({ file: { ...file, ...fileMetadata }, data: data as string });
+            sem.leave();
+          } catch (error) {
+            sem.leave();
+            console.error(`failed to load file from ${apiName}: ${file.path}`);
+            resolve({ error: true });
+          }
+        }),
       ),
     );
   });
@@ -230,18 +247,20 @@ const fetchUnpublishedFiles = async (
 export const entriesByFolder = async (
   listFiles: () => Promise<ImplementationFile[]>,
   readFile: ReadFile,
+  readFileMetadata: ReadFileMetadata,
   apiName: string,
 ) => {
   const files = await listFiles();
-  return fetchFiles(files, readFile, apiName);
+  return fetchFiles(files, readFile, readFileMetadata, apiName);
 };
 
 export const entriesByFiles = async (
   files: ImplementationFile[],
   readFile: ReadFile,
+  readFileMetadata: ReadFileMetadata,
   apiName: string,
 ) => {
-  return fetchFiles(files, readFile, apiName);
+  return fetchFiles(files, readFile, readFileMetadata, apiName);
 };
 
 export const unpublishedEntries = async (
@@ -305,4 +324,256 @@ export const runWithLock = async (lock: AsyncLock, func: Function, message: stri
   } finally {
     lock.release();
   }
+};
+
+const LOCAL_KEY = 'git.local';
+
+type LocalTree = {
+  head: string;
+  files: { id: string; name: string; path: string }[];
+};
+
+type GetKeyArgs = {
+  branch: string;
+  folder: string;
+  extension: string;
+  depth: number;
+};
+
+const getLocalKey = ({ branch, folder, extension, depth }: GetKeyArgs) => {
+  return `${LOCAL_KEY}.${branch}.${folder}.${extension}.${depth}`;
+};
+
+type PersistLocalTreeArgs = GetKeyArgs & {
+  localForage: LocalForage;
+  localTree: LocalTree;
+};
+
+type GetLocalTreeArgs = GetKeyArgs & {
+  localForage: LocalForage;
+};
+
+export const persistLocalTree = async ({
+  localForage,
+  localTree,
+  branch,
+  folder,
+  extension,
+  depth,
+}: PersistLocalTreeArgs) => {
+  await localForage.setItem<LocalTree>(
+    getLocalKey({ branch, folder, extension, depth }),
+    localTree,
+  );
+};
+
+export const getLocalTree = async ({
+  localForage,
+  branch,
+  folder,
+  extension,
+  depth,
+}: GetLocalTreeArgs) => {
+  const localTree = await localForage.getItem<LocalTree>(
+    getLocalKey({ branch, folder, extension, depth }),
+  );
+  return localTree;
+};
+
+type GetDiffFromLocalTreeMethods = {
+  getDifferences: (
+    to: string,
+    from: string,
+  ) => Promise<
+    {
+      oldPath: string;
+      newPath: string;
+      status: string;
+      binary: boolean;
+    }[]
+  >;
+  filterFile: (file: { path: string; name: string }) => boolean;
+  getFileId: (path: string) => Promise<string>;
+};
+
+type GetDiffFromLocalTreeArgs = GetDiffFromLocalTreeMethods & {
+  branch: { name: string; sha: string };
+  localTree: LocalTree;
+  folder: string;
+  extension: string;
+  depth: number;
+};
+
+const getDiffFromLocalTree = async ({
+  branch,
+  localTree,
+  folder,
+  getDifferences,
+  filterFile,
+  getFileId,
+}: GetDiffFromLocalTreeArgs) => {
+  const diff = await getDifferences(branch.sha, localTree.head);
+  const diffFiles = diff
+    .filter(d => (d.oldPath?.startsWith(folder) || d.newPath?.startsWith(folder)) && !d.binary)
+    .reduce((acc, d) => {
+      if (d.status === 'renamed') {
+        acc.push({
+          path: d.oldPath,
+          name: basename(d.oldPath),
+          deleted: true,
+        });
+        acc.push({
+          path: d.newPath,
+          name: basename(d.newPath),
+          deleted: false,
+        });
+      } else if (d.status === 'deleted') {
+        acc.push({
+          path: d.oldPath,
+          name: basename(d.oldPath),
+          deleted: true,
+        });
+      } else {
+        acc.push({
+          path: d.newPath || d.oldPath,
+          name: basename(d.newPath || d.oldPath),
+          deleted: false,
+        });
+      }
+
+      return acc;
+    }, [] as { path: string; name: string; deleted: boolean }[])
+
+    .filter(filterFile);
+
+  const diffFilesWithIds = await Promise.all(
+    diffFiles.map(async file => {
+      if (!file.deleted) {
+        const id = await getFileId(file.path);
+        return { ...file, id };
+      } else {
+        return { ...file, id: '' };
+      }
+    }),
+  );
+
+  return diffFilesWithIds;
+};
+
+type AllEntriesByFolderArgs = GetKeyArgs &
+  GetDiffFromLocalTreeMethods & {
+    listAllFiles: (
+      folder: string,
+      extension: string,
+      depth: number,
+    ) => Promise<ImplementationFile[]>;
+    readFile: ReadFile;
+    readFileMetadata: ReadFileMetadata;
+    getDefaultBranch: () => Promise<{ name: string; sha: string }>;
+    isShaExistsInBranch: (branch: string, sha: string) => Promise<boolean>;
+    apiName: string;
+    localForage: LocalForage;
+  };
+
+export const allEntriesByFolder = async ({
+  listAllFiles,
+  readFile,
+  readFileMetadata,
+  apiName,
+  branch,
+  localForage,
+  folder,
+  extension,
+  depth,
+  getDefaultBranch,
+  isShaExistsInBranch,
+  getDifferences,
+  getFileId,
+  filterFile,
+}: AllEntriesByFolderArgs) => {
+  const listAllFilesAndPersist = async () => {
+    const files = await listAllFiles(folder, extension, depth);
+    const branch = await getDefaultBranch();
+    await persistLocalTree({
+      localForage,
+      localTree: {
+        head: branch.sha,
+        files: files.map(f => ({ id: f.id!, path: f.path, name: basename(f.path) })),
+      },
+      branch: branch.name,
+      depth,
+      extension,
+      folder,
+    });
+    return files;
+  };
+
+  const listFiles = async () => {
+    const localTree = await getLocalTree({ localForage, branch, folder, extension, depth });
+    if (localTree) {
+      const branch = await getDefaultBranch();
+      // if the branch was forced pushed the local tree sha can be removed from the remote tree
+      const localTreeInBranch = await isShaExistsInBranch(branch.name, localTree.head);
+      if (!localTreeInBranch) {
+        console.log(
+          `Can't find local tree head '${localTree.head}' in branch '${branch.name}', rebuilding local tree`,
+        );
+        return listAllFilesAndPersist();
+      }
+      const diff = await getDiffFromLocalTree({
+        branch,
+        localTree,
+        folder,
+        extension,
+        depth,
+        getDifferences,
+        getFileId,
+        filterFile,
+      }).catch(e => {
+        console.log('Failed getting diff from local tree:', e);
+        return null;
+      });
+
+      if (!diff) {
+        console.log(`Diff is null, rebuilding local tree`);
+        return listAllFilesAndPersist();
+      }
+
+      if (diff.length === 0) {
+        // return local copy
+        return localTree.files;
+      } else {
+        // refresh local copy
+        const identity = (file: { path: string }) => file.path;
+        const deleted = diff.reduce((acc, d) => {
+          acc[d.path] = d.deleted;
+          return acc;
+        }, {} as Record<string, boolean>);
+        const newCopy = sortBy(
+          unionBy(
+            diff.filter(d => !deleted[d.path]),
+            localTree.files.filter(f => !deleted[f.path]),
+            identity,
+          ),
+          identity,
+        );
+
+        await persistLocalTree({
+          localForage,
+          localTree: { head: branch.sha, files: newCopy },
+          branch: branch.name,
+          depth,
+          extension,
+          folder,
+        });
+
+        return newCopy;
+      }
+    } else {
+      return listAllFilesAndPersist();
+    }
+  };
+
+  const files = await listFiles();
+  return fetchFiles(files, readFile, readFileMetadata, apiName);
 };

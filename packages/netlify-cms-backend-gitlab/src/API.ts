@@ -22,11 +22,13 @@ import {
   PreviewState,
   parseContentKey,
   branchFromContentKey,
+  requestWithBackoff,
+  readFileMetadata,
+  FetchError,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
-import { Map, Set } from 'immutable';
+import { Map } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
-import { CursorStore } from 'netlify-cms-lib-util/src/Cursor';
 
 export const API_NAME = 'GitLab';
 
@@ -75,6 +77,8 @@ type GitLabCommitDiff = {
   new_path: string;
   old_path: string;
   new_file: boolean;
+  renamed_file: boolean;
+  deleted_file: boolean;
 };
 
 enum GitLabCommitStatuses {
@@ -135,8 +139,31 @@ type GitLabRepo = {
 };
 
 type GitLabBranch = {
+  name: string;
   developers_can_push: boolean;
   developers_can_merge: boolean;
+  commit: {
+    id: string;
+  };
+};
+
+type GitLabCommitRef = {
+  type: string;
+  name: string;
+};
+
+type GitLabCommit = {
+  id: string;
+  short_id: string;
+  title: string;
+  author_name: string;
+  author_email: string;
+  authored_date: string;
+  committer_name: string;
+  committer_email: string;
+  committed_date: string;
+  created_at: string;
+  message: string;
 };
 
 export const getMaxAccess = (groups: { group_access_level: number }[]) => {
@@ -169,22 +196,28 @@ export default class API {
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
-  withAuthorizationHeaders = (req: ApiRequest) =>
-    unsentRequest.withHeaders(this.token ? { Authorization: `Bearer ${this.token}` } : {}, req);
+  withAuthorizationHeaders = (req: ApiRequest) => {
+    const withHeaders: ApiRequest = unsentRequest.withHeaders(
+      this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      req,
+    );
+    return Promise.resolve(withHeaders);
+  };
 
-  buildRequest = (req: ApiRequest) =>
-    flow([
-      unsentRequest.withRoot(this.apiRoot),
-      this.withAuthorizationHeaders,
-      unsentRequest.withTimestamp,
-    ])(req);
+  buildRequest = async (req: ApiRequest) => {
+    const withRoot: ApiRequest = unsentRequest.withRoot(this.apiRoot)(req);
+    const withAuthorizationHeaders: ApiRequest = await this.withAuthorizationHeaders(withRoot);
+    const withTimestamp: ApiRequest = unsentRequest.withTimestamp(withAuthorizationHeaders);
+    return withTimestamp;
+  };
 
-  request = async (req: ApiRequest): Promise<Response> =>
-    flow([
-      this.buildRequest,
-      unsentRequest.performRequest,
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, API_NAME))),
-    ])(req);
+  request = async (req: ApiRequest): Promise<Response> => {
+    try {
+      return requestWithBackoff(this, req);
+    } catch (err) {
+      throw new APIError(err.message, null, API_NAME);
+    }
+  };
 
   responseToJSON = responseParser({ format: 'json', apiName: API_NAME });
   responseToBlob = responseParser({ format: 'blob', apiName: API_NAME });
@@ -204,6 +237,7 @@ export default class API {
       shared_with_groups: sharedWithGroups,
       permissions,
     }: GitLabRepo = await this.requestJSON(this.repoURL);
+
     const { project_access: projectAccess, group_access: groupAccess } = permissions;
     if (projectAccess && projectAccess.access_level >= this.WRITE_ACCESS) {
       return true;
@@ -221,11 +255,13 @@ export default class API {
       // developer access
       if (maxAccess.group_access_level >= this.WRITE_ACCESS) {
         // check permissions to merge and push
-        const branch: GitLabBranch = await this.requestJSON(
-          `${this.repoURL}/repository/branches/${this.branch}`,
-        ).catch(() => ({}));
-        if (branch.developers_can_merge && branch.developers_can_push) {
-          return true;
+        try {
+          const branch = await this.getDefaultBranch();
+          if (branch.developers_can_merge && branch.developers_can_push) {
+            return true;
+          }
+        } catch (e) {
+          console.log('Failed getting default branch', e);
         }
       }
     }
@@ -250,27 +286,46 @@ export default class API {
     return content;
   };
 
+  async readFileMetadata(path: string, sha: string) {
+    const fetchFileMetadata = async () => {
+      try {
+        const result: GitLabCommit[] = await this.requestJSON({
+          url: `${this.repoURL}/repository/commits`,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          params: { path, ref_name: this.branch },
+        });
+        const commit = result[0];
+        return {
+          author: commit.author_name || commit.author_email,
+          updatedOn: commit.authored_date,
+        };
+      } catch (e) {
+        return { author: '', updatedOn: '' };
+      }
+    };
+    const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
+    return fileMetadata;
+  }
+
   getCursorFromHeaders = (headers: Headers) => {
-    // indices and page counts are assumed to be zero-based, but the
-    // indices and page counts returned from GitLab are one-based
-    const index = parseInt(headers.get('X-Page') as string, 10) - 1;
-    const pageCount = parseInt(headers.get('X-Total-Pages') as string, 10) - 1;
+    const page = parseInt(headers.get('X-Page') as string, 10);
+    const pageCount = parseInt(headers.get('X-Total-Pages') as string, 10);
     const pageSize = parseInt(headers.get('X-Per-Page') as string, 10);
     const count = parseInt(headers.get('X-Total') as string, 10);
-    const links = parseLinkHeader(headers.get('Link') as string);
+    const links = parseLinkHeader(headers.get('Link'));
     const actions = Map(links)
       .keySeq()
       .flatMap(key =>
-        (key === 'prev' && index > 0) ||
-        (key === 'next' && index < pageCount) ||
-        (key === 'first' && index > 0) ||
-        (key === 'last' && index < pageCount)
+        (key === 'prev' && page > 1) ||
+        (key === 'next' && page < pageCount) ||
+        (key === 'first' && page > 1) ||
+        (key === 'last' && page < pageCount)
           ? [key]
           : [],
       );
     return Cursor.create({
       actions,
-      meta: { index, count, pageSize, pageCount },
+      meta: { page, count, pageSize, pageCount },
       data: { links },
     });
   };
@@ -291,56 +346,28 @@ export default class API {
     flow([
       unsentRequest.withMethod('GET'),
       this.request,
-      p => Promise.all([p.then(this.getCursor), p.then(this.responseToJSON)]),
+      p =>
+        Promise.all([
+          p.then(this.getCursor),
+          p.then(this.responseToJSON).catch((e: FetchError) => {
+            if (e.status === 404) {
+              return [];
+            } else {
+              throw e;
+            }
+          }),
+        ]),
       then(([cursor, entries]: [Cursor, {}[]]) => ({ cursor, entries })),
     ])(req);
 
-  reversableActions = Map({
-    first: 'last',
-    last: 'first',
-    next: 'prev',
-    prev: 'next',
-  });
-
-  reverseCursor = (cursor: Cursor) => {
-    const pageCount = cursor.meta!.get('pageCount', 0) as number;
-    const currentIndex = cursor.meta!.get('index', 0) as number;
-    const newIndex = pageCount - currentIndex;
-
-    const links = cursor.data!.get('links', Map()) as Map<string, string>;
-    const reversedLinks = links.mapEntries(tuple => {
-      const [k, v] = tuple as string[];
-      return [this.reversableActions.get(k) || k, v];
-    });
-
-    const reversedActions = cursor.actions!.map(
-      action => this.reversableActions.get(action as string) || (action as string),
-    );
-
-    return cursor.updateStore((store: CursorStore) =>
-      store!
-        .setIn(['meta', 'index'], newIndex)
-        .setIn(['data', 'links'], reversedLinks)
-        .set('actions', (reversedActions as unknown) as Set<string>),
-    );
-  };
-
-  // The exported listFiles and traverseCursor reverse the direction
-  // of the cursors, since GitLab's pagination sorts the opposite way
-  // we want to sort by default (it sorts by filename _descending_,
-  // while the CMS defaults to sorting by filename _ascending_, at
-  // least in the current GitHub backend). This should eventually be
-  // refactored.
   listFiles = async (path: string, recursive = false) => {
-    const firstPageCursor = await this.fetchCursor({
+    const { entries, cursor } = await this.fetchCursorAndEntries({
       url: `${this.repoURL}/repository/tree`,
       params: { path, ref: this.branch, recursive },
     });
-    const lastPageLink = firstPageCursor.data.getIn(['links', 'last']);
-    const { entries, cursor } = await this.fetchCursorAndEntries(lastPageLink);
     return {
-      files: entries.filter(({ type }) => type === 'blob').reverse(),
-      cursor: this.reverseCursor(cursor),
+      files: entries.filter(({ type }) => type === 'blob'),
+      cursor,
     };
   };
 
@@ -348,8 +375,8 @@ export default class API {
     const link = cursor.data!.getIn(['links', action]);
     const { entries, cursor: newCursor } = await this.fetchCursorAndEntries(link);
     return {
-      entries: entries.filter(({ type }) => type === 'blob').reverse(),
-      cursor: this.reverseCursor(newCursor),
+      entries: entries.filter(({ type }) => type === 'blob'),
+      cursor: newCursor,
     };
   };
 
@@ -527,19 +554,39 @@ export default class API {
     return mergeRequests[0];
   }
 
-  async getDifferences(to: string) {
+  async getDifferences(to: string, from = this.branch) {
+    if (to === from) {
+      return [];
+    }
     const result: { diffs: GitLabCommitDiff[] } = await this.requestJSON({
       url: `${this.repoURL}/repository/compare`,
       params: {
-        from: this.branch,
+        from,
         to,
       },
     });
 
-    return result.diffs.map(d => ({
-      ...d,
-      binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
-    }));
+    if (result.diffs.length >= 1000) {
+      throw new APIError('Diff limit reached', null, API_NAME);
+    }
+
+    return result.diffs.map(d => {
+      let status = 'modified';
+      if (d.new_file) {
+        status = 'added';
+      } else if (d.deleted_file) {
+        status = 'deleted';
+      } else if (d.renamed_file) {
+        status = 'renamed';
+      }
+      return {
+        status,
+        oldPath: d.old_path,
+        newPath: d.new_path,
+        newFile: d.new_file,
+        binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
+      };
+    });
   }
 
   async retrieveMetadata(contentKey: string) {
@@ -547,15 +594,15 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
-    const { old_path: path, new_file: newFile } = diff.find(d => !d.binary) as {
-      old_path: string;
-      new_file: boolean;
+    const { oldPath: path, newFile: newFile } = diff.find(d => !d.binary) as {
+      oldPath: string;
+      newFile: boolean;
     };
     const mediaFiles = await Promise.all(
       diff
-        .filter(d => d.old_path !== path)
+        .filter(d => d.oldPath !== path)
         .map(async d => {
-          const path = d.new_path;
+          const path = d.newPath;
           const id = await this.getFileId(path, branch);
           return { path, id };
         }),
@@ -662,8 +709,8 @@ export default class API {
 
       // mark files for deletion
       for (const diff of diffs) {
-        if (!items.some(item => item.path === diff.new_path)) {
-          items.push({ action: CommitAction.DELETE, path: diff.new_path });
+        if (!items.some(item => item.path === diff.newPath)) {
+          items.push({ action: CommitAction.DELETE, path: diff.newPath });
         }
       }
 
@@ -728,6 +775,23 @@ export default class API {
         state_event: 'close',
       },
     });
+  }
+
+  async getDefaultBranch() {
+    const branch: GitLabBranch = await this.requestJSON(
+      `${this.repoURL}/repository/branches/${encodeURIComponent(this.branch)}`,
+    );
+    return branch;
+  }
+
+  async isShaExistsInBranch(branch: string, sha: string) {
+    const refs: GitLabCommitRef[] = await this.requestJSON({
+      url: `${this.repoURL}/repository/commits/${sha}/refs`,
+      params: {
+        type: 'branch',
+      },
+    });
+    return refs.some(r => r.name === branch);
   }
 
   async deleteBranch(branch: string) {

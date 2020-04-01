@@ -97,6 +97,10 @@ export default class TestBackend implements Implementation {
     this.options = options;
   }
 
+  isGitBackend() {
+    return false;
+  }
+
   authComponent() {
     return AuthenticationPage;
   }

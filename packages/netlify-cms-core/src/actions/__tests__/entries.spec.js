@@ -42,6 +42,7 @@ describe('entries', () => {
 
         expect(actions[0]).toEqual({
           payload: {
+            author: '',
             collection: undefined,
             data: {},
             isModification: null,
@@ -52,6 +53,7 @@ describe('entries', () => {
             path: '',
             raw: '',
             slug: '',
+            updatedOn: '',
           },
           type: 'DRAFT_CREATE_EMPTY',
         });
@@ -71,6 +73,7 @@ describe('entries', () => {
 
         expect(actions[0]).toEqual({
           payload: {
+            author: '',
             collection: undefined,
             data: { title: 'title', boolean: true },
             isModification: null,
@@ -81,6 +84,7 @@ describe('entries', () => {
             path: '',
             raw: '',
             slug: '',
+            updatedOn: '',
           },
           type: 'DRAFT_CREATE_EMPTY',
         });
@@ -102,6 +106,7 @@ describe('entries', () => {
 
           expect(actions[0]).toEqual({
             payload: {
+              author: '',
               collection: undefined,
               data: { title: '&lt;script&gt;alert(&#039;hello&#039;)&lt;/script&gt;' },
               isModification: null,
@@ -112,6 +117,7 @@ describe('entries', () => {
               path: '',
               raw: '',
               slug: '',
+              updatedOn: '',
             },
             type: 'DRAFT_CREATE_EMPTY',
           });

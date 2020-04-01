@@ -135,6 +135,12 @@ const getConfigSchema = () => ({
             },
           },
           fields: fieldsConfig,
+          sortableFields: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
         },
         required: ['name', 'label'],
         oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],

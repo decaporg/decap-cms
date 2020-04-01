@@ -1,22 +1,31 @@
 import { fromJS, List, Map, Set } from 'immutable';
-import { isEqual } from 'lodash';
+import { isEqual, orderBy } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectFields, updateFieldByKey } from '../reducers/collections';
+import { selectFields, updateFieldByKey, selectSortDataPath } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { addAssets, getAsset } from './media';
-import { Collection, EntryMap, State, EntryFields, EntryField } from '../types/redux';
+import {
+  Collection,
+  EntryMap,
+  State,
+  EntryFields,
+  EntryField,
+  SortDirection,
+} from '../types/redux';
+
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
+import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
 
 const { notifSend } = notifActions;
 
@@ -30,6 +39,10 @@ export const ENTRY_FAILURE = 'ENTRY_FAILURE';
 export const ENTRIES_REQUEST = 'ENTRIES_REQUEST';
 export const ENTRIES_SUCCESS = 'ENTRIES_SUCCESS';
 export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
+
+export const SORT_ENTRIES_REQUEST = 'SORT_ENTRIES_REQUEST';
+export const SORT_ENTRIES_SUCCESS = 'SORT_ENTRIES_SUCCESS';
+export const SORT_ENTRIES_FAILURE = 'SORT_ENTRIES_FAILURE';
 
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
@@ -121,6 +134,69 @@ export function entriesFailed(collection: Collection, error: Error) {
     error: 'Failed to load entries',
     payload: error.toString(),
     meta: { collection: collection.get('name') },
+  };
+}
+
+export function sortByField(
+  collection: Collection,
+  key: string,
+  direction: SortDirection = SortDirection.Ascending,
+) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+
+    // if we're already fetching we update the sort key, but skip loading entries
+    const isFetching = selectIsFetching(state.entries, collection.get('name'));
+    dispatch({
+      type: SORT_ENTRIES_REQUEST,
+      payload: {
+        collection: collection.get('name'),
+        key,
+        direction,
+      },
+    });
+    if (isFetching) {
+      return;
+    }
+
+    try {
+      const integration = selectIntegration(state, collection.get('name'), 'listEntries');
+      const provider: Backend = integration
+        ? getIntegrationProvider(state.integrations, backend.getToken, integration)
+        : backend;
+
+      let entries = await provider.listAllEntries(collection);
+
+      const sortFields = selectEntriesSortFields(getState().entries, collection.get('name'));
+      if (sortFields && sortFields.length > 0) {
+        const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));
+        const orders = sortFields.map(v =>
+          v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
+        );
+        entries = orderBy(entries, keys, orders);
+      }
+
+      dispatch({
+        type: SORT_ENTRIES_SUCCESS,
+        payload: {
+          collection: collection.get('name'),
+          key,
+          direction,
+          entries,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: SORT_ENTRIES_FAILURE,
+        payload: {
+          collection: collection.get('name'),
+          key,
+          direction,
+          error,
+        },
+      });
+    }
   };
 }
 
@@ -383,11 +459,17 @@ const addAppendActionsToCursor = (cursor: Cursor) => {
 };
 
 export function loadEntries(collection: Collection, page = 0) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (collection.get('isFetching')) {
       return;
     }
     const state = getState();
+    const sortFields = selectEntriesSortFields(state.entries, collection.get('name'));
+    if (sortFields && sortFields.length > 0) {
+      const field = sortFields[0];
+      return dispatch(sortByField(collection, field.get('key'), field.get('direction')));
+    }
+
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration
@@ -395,11 +477,15 @@ export function loadEntries(collection: Collection, page = 0) {
       : backend;
     const append = !!(page && !isNaN(page) && page > 0);
     dispatch(entriesLoading(collection));
-    provider
-      .listEntries(collection, page)
-      .then((response: { cursor: typeof Cursor }) => ({
-        ...response,
 
+    try {
+      let response: {
+        cursor: Cursor;
+        pagination: number;
+        entries: EntryValue[];
+      } = await provider.listEntries(collection, page);
+      response = {
+        ...response,
         // The only existing backend using the pagination system is the
         // Algolia integration, which is also the only integration used
         // to list entries. Thus, this checking for an integration can
@@ -413,33 +499,32 @@ export function loadEntries(collection: Collection, page = 0) {
               data: { nextPage: page + 1 },
             })
           : Cursor.create(response.cursor),
-      }))
-      .then((response: { cursor: Cursor; pagination: number; entries: EntryValue[] }) =>
-        dispatch(
-          entriesLoaded(
-            collection,
-            response.cursor.meta!.get('usingOldPaginationAPI')
-              ? response.entries.reverse()
-              : response.entries,
-            response.pagination,
-            addAppendActionsToCursor(response.cursor),
-            append,
-          ),
+      };
+
+      dispatch(
+        entriesLoaded(
+          collection,
+          response.cursor.meta!.get('usingOldPaginationAPI')
+            ? response.entries.reverse()
+            : response.entries,
+          response.pagination,
+          addAppendActionsToCursor(response.cursor),
+          append,
         ),
-      )
-      .catch((err: Error) => {
-        dispatch(
-          notifSend({
-            message: {
-              details: err,
-              key: 'ui.toast.onFailToLoadEntries',
-            },
-            kind: 'danger',
-            dismissAfter: 8000,
-          }),
-        );
-        return Promise.reject(dispatch(entriesFailed(collection, err)));
-      });
+      );
+    } catch (err) {
+      dispatch(
+        notifSend({
+          message: {
+            details: err,
+            key: 'ui.toast.onFailToLoadEntries',
+          },
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      return Promise.reject(dispatch(entriesFailed(collection, err)));
+    }
   };
 }
 
@@ -473,10 +558,10 @@ export function traverseCollectionCursor(collection: Collection, action: string)
     try {
       dispatch(entriesLoading(collection));
       const { entries, cursor: newCursor } = await traverseCursor(backend, cursor, realAction);
-      // Pass null for the old pagination argument - this will
-      // eventually be removed.
+
+      const pagination = newCursor.meta?.get('page');
       return dispatch(
-        entriesLoaded(collection, entries, null, addAppendActionsToCursor(newCursor), append),
+        entriesLoaded(collection, entries, pagination, addAppendActionsToCursor(newCursor), append),
       );
     } catch (err) {
       console.error(err);
@@ -484,7 +569,7 @@ export function traverseCollectionCursor(collection: Collection, action: string)
         notifSend({
           message: {
             details: err,
-            key: 'ui.toast.onFailToPersist',
+            key: 'ui.toast.onFailToLoadEntries',
           },
           kind: 'danger',
           dismissAfter: 8000,

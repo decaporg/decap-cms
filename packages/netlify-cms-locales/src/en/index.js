@@ -37,13 +37,25 @@ const en = {
       searchAll: 'Search all',
     },
     collectionTop: {
+      sortBy: 'Sort by',
       viewAs: 'View as',
       newButton: 'New %{collectionLabel}',
+      ascending: 'Ascending',
+      descending: 'Descending',
     },
     entries: {
-      loadingEntries: 'Loading Entries',
-      cachingEntries: 'Caching Entries',
+      loadingEntries: 'Loading Entries...',
+      cachingEntries: 'Caching Entries...',
       longerLoading: 'This might take several minutes',
+      noEntries: 'No Entries',
+    },
+    defaultFields: {
+      author: {
+        label: 'Author',
+      },
+      updatedOn: {
+        label: 'Updated On',
+      },
     },
   },
   editor: {

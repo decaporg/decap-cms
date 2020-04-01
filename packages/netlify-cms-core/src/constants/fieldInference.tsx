@@ -2,12 +2,14 @@ import React from 'react';
 
 export const IDENTIFIER_FIELDS = ['title', 'path'];
 
+export const SORTABLE_FIELDS = ['title', 'date', 'author', 'description'];
+
 export const INFERABLE_FIELDS = {
   title: {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['title', 'name', 'label', 'headline', 'header'],
-    defaultPreview: value => <h1>{value}</h1>, // eslint-disable-line react/display-name
+    defaultPreview: (value: React.ReactNode) => <h1>{value}</h1>, // eslint-disable-line react/display-name
     fallbackToFirstField: true,
     showError: true,
   },
@@ -15,7 +17,7 @@ export const INFERABLE_FIELDS = {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['short_title', 'shortTitle', 'short'],
-    defaultPreview: value => <h2>{value}</h2>, // eslint-disable-line react/display-name
+    defaultPreview: (value: React.ReactNode) => <h2>{value}</h2>, // eslint-disable-line react/display-name
     fallbackToFirstField: false,
     showError: false,
   },
@@ -23,7 +25,7 @@ export const INFERABLE_FIELDS = {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['author', 'name', 'by', 'byline', 'owner'],
-    defaultPreview: value => <strong>{value}</strong>, // eslint-disable-line react/display-name
+    defaultPreview: (value: React.ReactNode) => <strong>{value}</strong>, // eslint-disable-line react/display-name
     fallbackToFirstField: false,
     showError: false,
   },
@@ -31,7 +33,7 @@ export const INFERABLE_FIELDS = {
     type: 'datetime',
     secondaryTypes: ['date'],
     synonyms: ['date', 'publishDate', 'publish_date'],
-    defaultPreview: value => value,
+    defaultPreview: (value: React.ReactNode) => value,
     fallbackToFirstField: false,
     showError: false,
   },
@@ -51,7 +53,7 @@ export const INFERABLE_FIELDS = {
       'bio',
       'summary',
     ],
-    defaultPreview: value => value,
+    defaultPreview: (value: React.ReactNode) => value,
     fallbackToFirstField: false,
     showError: false,
   },
@@ -69,7 +71,7 @@ export const INFERABLE_FIELDS = {
       'hero',
       'logo',
     ],
-    defaultPreview: value => value,
+    defaultPreview: (value: React.ReactNode) => value,
     fallbackToFirstField: false,
     showError: false,
   },

@@ -1,6 +1,10 @@
-import { currentBackend } from 'coreSrc/backend';
-import { getIntegrationProvider } from 'Integrations';
-import { selectIntegration } from 'Reducers';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { State } from '../types/redux';
+import { currentBackend } from '../backend';
+import { getIntegrationProvider } from '../integrations';
+import { selectIntegration } from '../reducers';
+import { EntryValue } from '../valueObjects/Entry';
 
 /*
  * Constant Declarations
@@ -19,14 +23,14 @@ export const SEARCH_CLEAR = 'SEARCH_CLEAR';
  * Simple Action Creators (Internal)
  * We still need to export them for tests
  */
-export function searchingEntries(searchTerm) {
+export function searchingEntries(searchTerm: string, page: number) {
   return {
     type: SEARCH_ENTRIES_REQUEST,
-    payload: { searchTerm },
+    payload: { searchTerm, page },
   };
 }
 
-export function searchSuccess(searchTerm, entries, page) {
+export function searchSuccess(searchTerm: string, entries: EntryValue[], page: number) {
   return {
     type: SEARCH_ENTRIES_SUCCESS,
     payload: {
@@ -37,7 +41,7 @@ export function searchSuccess(searchTerm, entries, page) {
   };
 }
 
-export function searchFailure(searchTerm, error) {
+export function searchFailure(searchTerm: string, error: Error) {
   return {
     type: SEARCH_ENTRIES_FAILURE,
     payload: {
@@ -47,7 +51,12 @@ export function searchFailure(searchTerm, error) {
   };
 }
 
-export function querying(namespace, collection, searchFields, searchTerm) {
+export function querying(
+  namespace: string,
+  collection: string,
+  searchFields: string[],
+  searchTerm: string,
+) {
   return {
     type: QUERY_REQUEST,
     payload: {
@@ -59,7 +68,18 @@ export function querying(namespace, collection, searchFields, searchTerm) {
   };
 }
 
-export function querySuccess(namespace, collection, searchFields, searchTerm, response) {
+type Response = {
+  entries: EntryValue[];
+  pagination: number;
+};
+
+export function querySuccess(
+  namespace: string,
+  collection: string,
+  searchFields: string[],
+  searchTerm: string,
+  response: Response,
+) {
   return {
     type: QUERY_SUCCESS,
     payload: {
@@ -72,7 +92,13 @@ export function querySuccess(namespace, collection, searchFields, searchTerm, re
   };
 }
 
-export function queryFailure(namespace, collection, searchFields, searchTerm, error) {
+export function queryFailure(
+  namespace: string,
+  collection: string,
+  searchFields: string[],
+  searchTerm: string,
+  error: Error,
+) {
   return {
     type: QUERY_FAILURE,
     payload: {
@@ -98,17 +124,27 @@ export function clearSearch() {
  */
 
 // SearchEntries will search for complete entries in all collections.
-export function searchEntries(searchTerm, page = 0) {
-  return (dispatch, getState) => {
-    dispatch(searchingEntries(searchTerm));
-
+export function searchEntries(searchTerm: string, page = 0) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
+    const { search } = state;
     const backend = currentBackend(state.config);
     const allCollections = state.collections.keySeq().toArray();
     const collections = allCollections.filter(collection =>
-      selectIntegration(state, collection, 'search'),
+      selectIntegration(state, collection as string, 'search'),
     );
-    const integration = selectIntegration(state, collections[0], 'search');
+    const integration = selectIntegration(state, collections[0] as string, 'search');
+
+    // avoid duplicate searches
+    if (
+      search.get('isFetching') === true &&
+      search.get('term') === searchTerm &&
+      // if an integration doesn't exist, 'page' is not used
+      (search.get('page') === page || !integration)
+    ) {
+      return;
+    }
+    dispatch(searchingEntries(searchTerm, page));
 
     const searchPromise = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration).search(
@@ -119,16 +155,22 @@ export function searchEntries(searchTerm, page = 0) {
       : backend.search(state.collections.valueSeq().toArray(), searchTerm);
 
     return searchPromise.then(
-      response => dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
-      error => dispatch(searchFailure(searchTerm, error)),
+      (response: Response) =>
+        dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
+      (error: Error) => dispatch(searchFailure(searchTerm, error)),
     );
   };
 }
 
 // Instead of searching for complete entries, query will search for specific fields
 // in specific collections and return raw data (no entries).
-export function query(namespace, collectionName, searchFields, searchTerm) {
-  return (dispatch, getState) => {
+export function query(
+  namespace: string,
+  collectionName: string,
+  searchFields: string[],
+  searchTerm: string,
+) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     dispatch(querying(namespace, collectionName, searchFields, searchTerm));
 
     const state = getState();
@@ -147,9 +189,10 @@ export function query(namespace, collectionName, searchFields, searchTerm) {
       : backend.query(collection, searchFields, searchTerm);
 
     return queryPromise.then(
-      response =>
+      (response: Response) =>
         dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response)),
-      error => dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error)),
+      (error: Error) =>
+        dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error)),
     );
   };
 }

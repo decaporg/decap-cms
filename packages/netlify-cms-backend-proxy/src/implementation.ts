@@ -58,6 +58,10 @@ export default class ProxyBackend implements Implementation {
     this.options = options;
   }
 
+  isGitBackend() {
+    return false;
+  }
+
   authComponent() {
     return AuthenticationPage;
   }

@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
-import { Map, List } from 'immutable';
+import { Map, List, OrderedMap } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
 import { MediaFile as BackendMediaFile } from '../backend';
 
@@ -52,11 +52,24 @@ type Pages = StaticallyTypedRecord<PagesObject>;
 
 type EntitiesObject = { [key: string]: EntryMap };
 
+export enum SortDirection {
+  Ascending = 'Ascending',
+  Descending = 'Descending',
+  None = 'None',
+}
+
+export type SortObject = { key: string; direction: SortDirection };
+
+export type SortMap = OrderedMap<string, StaticallyTypedRecord<SortObject>>;
+
+export type Sort = Map<string, SortMap>;
+
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
   entities: Entities & EntitiesObject;
+  sort: Sort;
 }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;
@@ -76,6 +89,8 @@ export type EntryObject = {
   mediaFiles: List<MediaFileMap>;
   newRecord: boolean;
   metaData: { status: string };
+  author?: string;
+  updatedOn?: string;
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
@@ -140,6 +155,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
+  sortableFields: List<string>;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
@@ -201,7 +217,12 @@ interface SearchItem {
   slug: string;
 }
 
-export type Search = StaticallyTypedRecord<{ entryIds?: SearchItem[] }>;
+export type Search = StaticallyTypedRecord<{
+  entryIds?: SearchItem[];
+  isFetching: boolean;
+  term: string | null;
+  page: number;
+}>;
 
 export type Cursors = StaticallyTypedRecord<{}>;
 
@@ -268,6 +289,18 @@ export interface EntriesSuccessPayload extends EntryPayload {
   entries: EntryObject[];
   append: boolean;
   page: number;
+}
+export interface EntriesSortRequestPayload extends EntryPayload {
+  key: string;
+  direction: string;
+}
+
+export interface EntriesSortSuccessPayload extends EntriesSortRequestPayload {
+  entries: EntryObject[];
+}
+
+export interface EntriesSortFailurePayload extends EntriesSortRequestPayload {
+  error: Error;
 }
 
 export interface EntriesAction extends Action<string> {

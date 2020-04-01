@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { Icon, components, buttons, shadows, colors } from 'netlify-cms-ui-default';
-import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
+import { components, buttons, shadows } from 'netlify-cms-ui-default';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};
+  margin-bottom: 22px;
 `;
 
 const CollectionTopRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
 `;
 
 const CollectionTopHeading = styled.h1`
@@ -32,47 +32,27 @@ const CollectionTopNewButton = styled(Link)`
 
 const CollectionTopDescription = styled.p`
   ${components.cardTopDescription};
+  margin-bottom: 0;
 `;
 
-const ViewControls = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 24px;
-`;
+const getCollectionProps = collection => {
+  const collectionLabel = collection.get('label');
+  const collectionLabelSingular = collection.get('label_singular');
+  const collectionDescription = collection.get('description');
 
-const ViewControlsText = styled.span`
-  font-size: 14px;
-  color: ${colors.text};
-  margin-right: 12px;
-`;
+  return {
+    collectionLabel,
+    collectionLabelSingular,
+    collectionDescription,
+  };
+};
 
-const ViewControlsButton = styled.button`
-  ${buttons.button};
-  color: ${props => (props.isActive ? colors.active : '#b3b9c4')};
-  background-color: transparent;
-  display: block;
-  padding: 0;
-  margin: 0 4px;
+const CollectionTop = ({ collection, newEntryUrl, t }) => {
+  const { collectionLabel, collectionLabelSingular, collectionDescription } = getCollectionProps(
+    collection,
+    t,
+  );
 
-  &:last-child {
-    margin-right: 0;
-  }
-
-  ${Icon} {
-    display: block;
-  }
-`;
-
-const CollectionTop = ({
-  collectionLabel,
-  collectionLabelSingular,
-  collectionDescription,
-  viewStyle,
-  onChangeViewStyle,
-  newEntryUrl,
-  t,
-}) => {
   return (
     <CollectionTopContainer>
       <CollectionTopRow>
@@ -88,31 +68,12 @@ const CollectionTop = ({
       {collectionDescription ? (
         <CollectionTopDescription>{collectionDescription}</CollectionTopDescription>
       ) : null}
-      <ViewControls>
-        <ViewControlsText>{t('collection.collectionTop.viewAs')}:</ViewControlsText>
-        <ViewControlsButton
-          isActive={viewStyle === VIEW_STYLE_LIST}
-          onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
-        >
-          <Icon type="list" />
-        </ViewControlsButton>
-        <ViewControlsButton
-          isActive={viewStyle === VIEW_STYLE_GRID}
-          onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
-        >
-          <Icon type="grid" />
-        </ViewControlsButton>
-      </ViewControls>
     </CollectionTopContainer>
   );
 };
 
 CollectionTop.propTypes = {
-  collectionLabel: PropTypes.string.isRequired,
-  collectionLabelSingular: PropTypes.string,
-  collectionDescription: PropTypes.string,
-  viewStyle: PropTypes.oneOf([VIEW_STYLE_LIST, VIEW_STYLE_GRID]).isRequired,
-  onChangeViewStyle: PropTypes.func.isRequired,
+  collection: ImmutablePropTypes.map.isRequired,
   newEntryUrl: PropTypes.string,
   t: PropTypes.func.isRequired,
 };

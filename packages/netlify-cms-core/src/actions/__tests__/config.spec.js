@@ -2,6 +2,11 @@ import { fromJS } from 'immutable';
 import { applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
+jest.mock('coreSrc/backend', () => {
+  return {
+    currentBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
+  };
+});
 
 describe('config', () => {
   describe('applyDefaults', () => {

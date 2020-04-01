@@ -12,6 +12,7 @@ import {
   Entry as LibEntry,
   PersistOptions,
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   DEFAULT_PR_BODY,
@@ -24,6 +25,9 @@ import {
   labelToStatus,
   statusToLabel,
   contentKeyFromBranch,
+  requestWithBackoff,
+  unsentRequest,
+  ApiRequest,
 } from 'netlify-cms-lib-util';
 import { Octokit } from '@octokit/rest';
 
@@ -276,21 +280,31 @@ export default class API {
     throw new APIError(error.message, responseStatus, API_NAME);
   }
 
+  buildRequest(req: ApiRequest) {
+    return req;
+  }
+
   async request(
     path: string,
     options: Options = {},
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     parser = (response: Response) => this.parseResponse(response),
   ) {
     const headers = await this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    let responseStatus: number;
-    return fetch(url, { ...options, headers })
-      .then(response => {
-        responseStatus = response.status;
-        return parser(response);
-      })
-      .catch(error => this.handleRequestError(error, responseStatus));
+    let responseStatus = 500;
+
+    try {
+      const req = (unsentRequest.fromFetchArguments(url, {
+        ...options,
+        headers,
+      }) as unknown) as ApiRequest;
+      const response = await requestWithBackoff(this, req);
+      responseStatus = response.status;
+      const parsedResponse = await parser(response);
+      return parsedResponse;
+    } catch (error) {
+      return this.handleRequestError(error, responseStatus);
+    }
   }
 
   nextUrlProcessor() {
@@ -578,6 +592,28 @@ export default class API {
     const fetchContent = () => this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
     const content = await readFile(sha, fetchContent, localForage, parseText);
     return content;
+  }
+
+  async readFileMetadata(path: string, sha: string) {
+    const fetchFileMetadata = async () => {
+      try {
+        const result: Octokit.ReposListCommitsResponse = await this.request(
+          `${this.originRepoURL}/commits`,
+          {
+            params: { path, sha: this.branch },
+          },
+        );
+        const { commit } = result[0];
+        return {
+          author: commit.author.name || commit.author.email,
+          updatedOn: commit.author.date,
+        };
+      } catch (e) {
+        return { author: '', updatedOn: '' };
+      }
+    };
+    const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
+    return fileMetadata;
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
