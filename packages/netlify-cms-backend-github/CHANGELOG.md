@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.10.1...netlify-cms-backend-github@2.10.2) (2020-04-01)
+
+
+### Bug Fixes
+
+* **open-authoring:** prevent workflow view from breaking on entry error ([#3508](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3508)) ([cbb3927](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/cbb39271012fc3beecfdf180e573e343ee48fe26))
+
+
+
+
+
 ## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.10.0...netlify-cms-backend-github@2.10.1) (2020-03-20)
 
 

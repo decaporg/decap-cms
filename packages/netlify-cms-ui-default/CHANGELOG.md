@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.4...netlify-cms-ui-default@2.9.5) (2020-04-01)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
 ## [2.9.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.3...netlify-cms-ui-default@2.9.4) (2020-03-30)
 
 **Note:** Version bump only for package netlify-cms-ui-default
