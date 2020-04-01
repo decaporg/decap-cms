@@ -42,6 +42,14 @@ import {
 import {
   readFile,
   readFileMetadata,
+  isPreviewContext,
+  getPreviewStatus,
+  PreviewState,
+  FetchError as FE,
+  ApiRequest as AR,
+  requestWithBackoff,
+} from './API';
+import {
   CMS_BRANCH_PREFIX,
   generateContentKey,
   isCMSLabel,
@@ -49,16 +57,10 @@ import {
   statusToLabel,
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
-  isPreviewContext,
-  getPreviewStatus,
-  PreviewState,
-  FetchError as FE,
   parseContentKey,
   branchFromContentKey,
   contentKeyFromBranch,
-  ApiRequest as AR,
-  requestWithBackoff,
-} from './API';
+} from './APIUtils';
 import {
   createPointerFile,
   getLargeMediaFilteredMediaFiles,
