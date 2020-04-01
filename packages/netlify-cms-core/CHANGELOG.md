@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.23.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.2...netlify-cms-core@2.23.3) (2020-04-01)
+
+
+### Bug Fixes
+
+* sanitize dots in path collection config ([#3518](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3518)) ([601175c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/601175c6a146139718b3aba430deafe899896cae))
+* set default public_folder on files and fields ([#3519](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3519)) ([1a577b8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1a577b8e2740a5e12a4c7cb543ed4e78312fc4b3))
+* stop collection view controls from overflowing ([#3521](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3521)) ([c2425b4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c2425b44e86b5addaa4876ecee0e33dfa387c6f5))
+
+
+
+
+
 ## [2.23.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.1...netlify-cms-core@2.23.2) (2020-04-01)
 
 
