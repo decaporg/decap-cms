@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-bitbucket",
   "description": "Bitbucket backend for Netlify CMS",
-  "version": "2.11.3",
+  "version": "2.11.4",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",

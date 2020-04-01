@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.23.3 (2020-04-01)
+
+
+### Bug Fixes
+
+* set default public_folder on files and fields ([#3519](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3519)) ([1a577b8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1a577b8e2740a5e12a4c7cb543ed4e78312fc4b3))
+
+
+
+
+
 ## [2.23.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.1...netlify-cms-core@2.23.2) (2020-04-01)
 
 

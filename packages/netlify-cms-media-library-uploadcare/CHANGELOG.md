@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.5.6 (2020-04-01)
+
+
+### Bug Fixes
+
+* set default public_folder on files and fields ([#3519](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/issues/3519)) ([1a577b8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/commit/1a577b8e2740a5e12a4c7cb543ed4e78312fc4b3))
+
+
+
+
+
 ## [0.5.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.5.4...netlify-cms-media-library-uploadcare@0.5.5) (2019-11-07)
 
 **Note:** Version bump only for package netlify-cms-media-library-uploadcare

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.5 (2020-04-01)
+
+
+### Bug Fixes
+
+* set default public_folder on files and fields ([#3519](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/3519)) ([1a577b8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/1a577b8e2740a5e12a4c7cb543ed4e78312fc4b3))
+
+
+
+
+
 ## [1.2.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.2.3...netlify-cms-proxy-server@1.2.4) (2020-04-01)
 
 

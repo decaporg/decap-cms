@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.8.2 (2020-04-01)
+
+
+### Bug Fixes
+
+* set default public_folder on files and fields ([#3519](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/issues/3519)) ([1a577b8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/commit/1a577b8e2740a5e12a4c7cb543ed4e78312fc4b3))
+
+
+
+
+
 ## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.8.0...netlify-cms-backend-test@2.8.1) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-backend-test

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.2.4 (2020-04-01)
+
+
+### Bug Fixes
+
+* set default public_folder on files and fields ([#3519](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/issues/3519)) ([1a577b8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/commit/1a577b8e2740a5e12a4c7cb543ed4e78312fc4b3))
+
+
+
+
+
 ## [2.2.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/compare/netlify-cms-widget-string@2.2.2...netlify-cms-widget-string@2.2.3) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-widget-string
