@@ -712,16 +712,15 @@ export default class API {
 
   filterOpenAuthoringBranches = async (branch: string) => {
     try {
-      const contentKey = contentKeyFromBranch(branch);
-      const { pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
+      const pullRequest = await this.getBranchPullRequest(branch);
       const { state: currentState, merged_at: mergedAt } = pullRequest;
       if (
         pullRequest.number !== MOCK_PULL_REQUEST &&
         currentState === PullRequestState.Closed &&
         mergedAt
       ) {
-        // pr was merged, delete entry
-        await this.deleteUnpublishedEntry(collection, slug);
+        // pr was merged, delete branch
+        await this.deleteBranch(branch);
         return { branch, filter: false };
       } else {
         return { branch, filter: true };
