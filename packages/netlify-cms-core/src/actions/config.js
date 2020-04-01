@@ -39,7 +39,7 @@ export function applyDefaults(config) {
 
       // Use media_folder as default public_folder.
       const defaultPublicFolder = `/${trimStart(map.get('media_folder'), '/')}`;
-      if (!map.get('public_folder')) {
+      if (!map.has('public_folder')) {
         map.set('public_folder', defaultPublicFolder);
       }
 
