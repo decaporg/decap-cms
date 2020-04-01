@@ -4,7 +4,7 @@ import { trimStart, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
-import { selectDefaultSortableFields } from '../reducers/collections';
+import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
@@ -22,6 +22,13 @@ const getConfigUrl = () => {
     return link;
   }
   return 'config.yml';
+};
+
+const setDefaultPublicFolder = map => {
+  if (map.has('media_folder') && !map.has('public_folder')) {
+    map = map.set('public_folder', map.get('media_folder'));
+  }
+  return map;
 };
 
 const defaults = {
@@ -70,9 +77,11 @@ export function applyDefaults(config) {
               // default value for media folder when using the path config
               collection = collection.set('media_folder', '');
             }
-            if (collection.has('media_folder') && !collection.has('public_folder')) {
-              collection = collection.set('public_folder', collection.get('media_folder'));
-            }
+            collection = setDefaultPublicFolder(collection);
+            collection = collection.set(
+              'fields',
+              traverseFields(collection.get('fields'), setDefaultPublicFolder),
+            );
             collection = collection.set('folder', trimStart(folder, '/'));
           }
 
@@ -81,7 +90,13 @@ export function applyDefaults(config) {
             collection = collection.set(
               'files',
               files.map(file => {
-                return file.set('file', trimStart(file.get('file'), '/'));
+                file = file.set('file', trimStart(file.get('file'), '/'));
+                file = setDefaultPublicFolder(file);
+                file = file.set(
+                  'fields',
+                  traverseFields(file.get('fields'), setDefaultPublicFolder),
+                );
+                return file;
               }),
             );
           }

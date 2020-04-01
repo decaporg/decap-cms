@@ -110,7 +110,7 @@ describe('config', () => {
         expect(
           applyDefaults(
             fromJS({
-              collections: [{ folder: '/foo' }],
+              collections: [{ folder: '/foo', fields: [{ name: 'title', widget: 'string' }] }],
             }),
           ).getIn(['collections', 0, 'folder']),
         ).toEqual('foo');
@@ -120,18 +120,26 @@ describe('config', () => {
         expect(
           applyDefaults(
             fromJS({
-              collections: [{ files: [{ file: '/foo' }] }],
+              collections: [
+                { files: [{ file: '/foo', fields: [{ name: 'title', widget: 'string' }] }] },
+              ],
             }),
           ).getIn(['collections', 0, 'files', 0, 'file']),
         ).toEqual('foo');
       });
 
       describe('public_folder and media_folder', () => {
-        it('should set collection public_folder collection based on media_folder if not set', () => {
+        it('should set collection public_folder based on media_folder if not set', () => {
           expect(
             applyDefaults(
               fromJS({
-                collections: [{ folder: 'foo', media_folder: 'static/images/docs' }],
+                collections: [
+                  {
+                    folder: 'foo',
+                    media_folder: 'static/images/docs',
+                    fields: [{ name: 'title', widget: 'string' }],
+                  },
+                ],
               }),
             ).getIn(['collections', 0, 'public_folder']),
           ).toEqual('static/images/docs');
@@ -146,6 +154,7 @@ describe('config', () => {
                     folder: 'foo',
                     media_folder: 'static/images/docs',
                     public_folder: 'images/docs',
+                    fields: [{ name: 'title', widget: 'string' }],
                   },
                 ],
               }),
@@ -156,11 +165,139 @@ describe('config', () => {
         it("should set collection media_folder and public_folder to an empty string when collection path exists, but collection media_folder doesn't", () => {
           const result = applyDefaults(
             fromJS({
-              collections: [{ folder: 'foo', path: '{{slug}}/index' }],
+              collections: [
+                {
+                  folder: 'foo',
+                  path: '{{slug}}/index',
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
             }),
           );
           expect(result.getIn(['collections', 0, 'media_folder'])).toEqual('');
           expect(result.getIn(['collections', 0, 'public_folder'])).toEqual('');
+        });
+
+        it('should set file public_folder based on media_folder if not set', () => {
+          expect(
+            applyDefaults(
+              fromJS({
+                collections: [
+                  {
+                    files: [
+                      {
+                        file: 'foo',
+                        media_folder: 'static/images/docs',
+                        fields: [{ name: 'title', widget: 'string' }],
+                      },
+                    ],
+                  },
+                ],
+              }),
+            ).getIn(['collections', 0, 'files', 0, 'public_folder']),
+          ).toEqual('static/images/docs');
+        });
+
+        it('should not overwrite file public_folder if set', () => {
+          expect(
+            applyDefaults(
+              fromJS({
+                collections: [
+                  {
+                    files: [
+                      {
+                        file: 'foo',
+                        media_folder: 'static/images/docs',
+                        public_folder: 'images/docs',
+                        fields: [{ name: 'title', widget: 'string' }],
+                      },
+                    ],
+                  },
+                ],
+              }),
+            ).getIn(['collections', 0, 'files', 0, 'public_folder']),
+          ).toEqual('images/docs');
+        });
+
+        it('should set nested field public_folder based on media_folder if not set', () => {
+          const config = applyDefaults(
+            fromJS({
+              collections: [
+                {
+                  folder: 'foo',
+                  path: '{{slug}}/index',
+                  fields: [
+                    {
+                      name: 'title',
+                      widget: 'string',
+                      media_folder: 'collection/static/images/docs',
+                    },
+                  ],
+                },
+                {
+                  files: [
+                    {
+                      file: 'foo',
+                      fields: [
+                        {
+                          name: 'title',
+                          widget: 'string',
+                          media_folder: 'file/static/images/docs',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          );
+          expect(config.getIn(['collections', 0, 'fields', 0, 'public_folder'])).toEqual(
+            'collection/static/images/docs',
+          );
+          expect(
+            config.getIn(['collections', 1, 'files', 0, 'fields', 0, 'public_folder']),
+          ).toEqual('file/static/images/docs');
+        });
+
+        it('should not overwrite nested field public_folder if set', () => {
+          const config = applyDefaults(
+            fromJS({
+              collections: [
+                {
+                  folder: 'foo',
+                  path: '{{slug}}/index',
+                  fields: [
+                    {
+                      name: 'title',
+                      widget: 'string',
+                      media_folder: 'collection/static/images/docs',
+                      public_folder: 'collection/public_folder',
+                    },
+                  ],
+                },
+                {
+                  files: [
+                    {
+                      file: 'foo',
+                      fields: [
+                        {
+                          name: 'title',
+                          widget: 'string',
+                          public_folder: 'file/public_folder',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          );
+          expect(config.getIn(['collections', 0, 'fields', 0, 'public_folder'])).toEqual(
+            'collection/public_folder',
+          );
+          expect(
+            config.getIn(['collections', 1, 'files', 0, 'fields', 0, 'public_folder']),
+          ).toEqual('file/public_folder');
         });
       });
 
@@ -169,7 +306,13 @@ describe('config', () => {
           expect(
             applyDefaults(
               fromJS({
-                collections: [{ folder: 'foo', media_folder: 'static/images/docs' }],
+                collections: [
+                  {
+                    folder: 'foo',
+                    media_folder: 'static/images/docs',
+                    fields: [{ name: 'title', widget: 'string' }],
+                  },
+                ],
               }),
             ).getIn(['collections', 0, 'publish']),
           ).toEqual(true);
@@ -180,7 +323,12 @@ describe('config', () => {
             applyDefaults(
               fromJS({
                 collections: [
-                  { folder: 'foo', media_folder: 'static/images/docs', publish: false },
+                  {
+                    folder: 'foo',
+                    media_folder: 'static/images/docs',
+                    publish: false,
+                    fields: [{ name: 'title', widget: 'string' }],
+                  },
                 ],
               }),
             ).getIn(['collections', 0, 'publish']),
