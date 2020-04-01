@@ -129,7 +129,7 @@ describe('config', () => {
       });
 
       describe('public_folder and media_folder', () => {
-        it('should set collection public_folder collection based on media_folder if not set', () => {
+        it('should set collection public_folder based on media_folder if not set', () => {
           expect(
             applyDefaults(
               fromJS({
@@ -178,7 +178,7 @@ describe('config', () => {
           expect(result.getIn(['collections', 0, 'public_folder'])).toEqual('');
         });
 
-        it('should set file public_folder collection based on media_folder if not set', () => {
+        it('should set file public_folder based on media_folder if not set', () => {
           expect(
             applyDefaults(
               fromJS({
