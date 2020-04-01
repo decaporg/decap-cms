@@ -57,6 +57,16 @@ describe('config', () => {
             }),
           ).get('public_folder'),
         ).toEqual('/publib/path');
+        expect(
+          applyDefaults(
+            fromJS({
+              foo: 'bar',
+              media_folder: 'path/to/media',
+              public_folder: '',
+              collections: [],
+            }),
+          ).get('public_folder'),
+        ).toEqual('');
       });
     });
 
