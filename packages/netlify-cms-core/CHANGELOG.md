@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.23.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.1...netlify-cms-core@2.23.2) (2020-04-01)
+
+
+### Bug Fixes
+
+* don't override empty public folder ([#3513](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3513)) ([a1bf86e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a1bf86e8566dfad123926339b16d9a16a4bfd77a))
+* use resolveBackend instead of currentBackend ([#3514](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3514)) ([ea41b98](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ea41b98324c61891d639df93cbf26148d6a93db6))
+
+
+
+
+
 ## [2.23.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.0...netlify-cms-core@2.23.1) (2020-04-01)
 
 

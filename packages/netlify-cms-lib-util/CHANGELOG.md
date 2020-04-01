@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.9.1...netlify-cms-lib-util@2.9.2) (2020-04-01)
+
+
+### Bug Fixes
+
+* move common api functions to a separate file ([#3511](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/3511)) ([49098de](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/49098de27f053e51aa3d936d09adae3a7186c6ae))
+
+
+
+
+
 ## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.9.0...netlify-cms-lib-util@2.9.1) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-lib-util

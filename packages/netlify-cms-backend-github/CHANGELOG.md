@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.10.2...netlify-cms-backend-github@2.10.3) (2020-04-01)
+
+
+### Bug Fixes
+
+* **open-authoring:** properly delete open authoring branches ([#3512](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/3512)) ([cc89aa5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/cc89aa5c430a6bee51483cda91d0f92e7437f29e))
+
+
+
+
+
 ## [2.10.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.10.1...netlify-cms-backend-github@2.10.2) (2020-04-01)
 
 
