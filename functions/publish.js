@@ -33,7 +33,20 @@ const verifySignature = event => {
 
 exports.handler = async function(event) {
   try {
-    console.log(JSON.stringify(event, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          event,
+          env: {
+            PUBLISH_COMMAND: process.env.PUBLISH_COMMAND,
+            ALLOWED_USERS: process.env.ALLOWED_USERS,
+            GITHUB_REPO: process.env.GITHUB_REPO,
+          },
+        },
+        null,
+        2,
+      ),
+    );
     verifySignature(event);
 
     const params = new URLSearchParams(event.body);
