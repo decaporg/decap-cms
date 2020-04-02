@@ -93,7 +93,7 @@ export default class ProxyBackend implements Implementation {
     if (response.ok) {
       return json;
     } else {
-      throw new APIError(json.message, response.status, 'Proxy');
+      throw new APIError(json.error, response.status, 'Proxy');
     }
   }
 
