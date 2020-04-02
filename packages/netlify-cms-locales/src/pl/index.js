@@ -44,8 +44,8 @@ const pl = {
       descending: 'Malejąco',
     },
     entries: {
-      loadingEntries: 'Ładowanie pozycji',
-      cachingEntries: 'Ładowanie pozycji do pamięci podręcznej',
+      loadingEntries: 'Ładowanie pozycji...',
+      cachingEntries: 'Ładowanie pozycji do pamięci podręcznej...',
       longerLoading: 'To może zająć kilka minut',
       noEntries: 'Brak pozycji',
     },
@@ -102,7 +102,7 @@ const pl = {
       unpublish: 'Cofnij publikację',
       duplicate: 'Zduplikuj',
       unpublishing: 'Cofanie publikacji...',
-      publishAndCreateNew: 'Opublikuj i dodaj',
+      publishAndCreateNew: 'Opublikuj i dodaj nowy',
       publishAndDuplicate: 'Opublikuj i zduplikuj',
       deleteUnpublishedChanges: 'Usuń nieopublikowane zmiany',
       deleteUnpublishedEntry: 'Usuń nieopublikowaną pozycję',
@@ -126,7 +126,7 @@ const pl = {
     },
     editorWidgets: {
       markdown: {
-        //richText: 'Edytor wizualny' - I'm not sure about that
+        richText: 'Tekst sformatowany'
         markdown: 'Markdown',
       },
       image: {
