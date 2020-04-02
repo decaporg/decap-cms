@@ -7,7 +7,7 @@ const DatePreview = ({ value }) => (
 );
 
 DatePreview.propTypes = {
-  value: PropTypes.object,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
 
 export default DatePreview;

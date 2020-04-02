@@ -43,7 +43,7 @@ const buildIssueTemplate = ({ config }) => {
     version,
     provider: config.getIn(['backend', 'name']),
     browser: navigator.userAgent,
-    config: yaml.safeDump(config.toJS()),
+    config: yaml.stringify(config.toJS()),
   });
 
   return template;
