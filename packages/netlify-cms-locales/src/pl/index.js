@@ -80,7 +80,8 @@ const pl = {
     },
     editor: {
       onLeavePage: 'Czy na pewno chcesz opuścić tę stronę?',
-      onUpdatingWithUnsavedChanges: 'Masz niezapisane zmiany, proszę zapisz je przed aktualizacją statusu.',
+      onUpdatingWithUnsavedChanges:
+        'Masz niezapisane zmiany, proszę zapisz je przed aktualizacją statusu.',
       onPublishingNotReady: 'Proszę zaktualizować status do "Gotowe" przed publikacją.',
       onPublishingWithUnsavedChanges: 'Masz niezapisane zmiany, proszę zapisz je przed publikacją.',
       onPublishing: 'Czy na pewno chcesz opublikować tę pozycję?',
@@ -189,7 +190,7 @@ const pl = {
       reportIt: 'zgłoś to.',
       detailsHeading: 'Szczegóły',
       privacyWarning:
-		'Nowe zgłoszenie zostanie wstępnie wypełnione danymi o błędzie.\nZweryfikuj czy dane są poprawne i usuń wrażliwe informacje jeśli takie zostały dodane.',
+        'Nowe zgłoszenie zostanie wstępnie wypełnione danymi o błędzie.\nZweryfikuj czy dane są poprawne i usuń wrażliwe informacje jeśli takie zostały dodane.',
       recoveredEntry: {
         heading: 'Odzyskany dokument',
         warning: 'Proszę skopiuj/wklej to gdzieś zanim opuścisz tę stronę!',
@@ -242,7 +243,8 @@ const pl = {
       draftHeader: 'Wersje robocze',
       inReviewHeader: 'W recenzji',
       readyHeader: 'Gotowe do publikacji',
-      currentEntries: '%{smart_count} pozycja |||| %{smart_count} pozycje |||| %{smart_count} pozycji',
+      currentEntries:
+        '%{smart_count} pozycja |||| %{smart_count} pozycje |||| %{smart_count} pozycji',
     },
   },
 };
