@@ -7,7 +7,8 @@ const addComments = (items, comments, prefix = '') => {
       const itemKey = item.key.toString();
       const key = prefix ? `${prefix}.${itemKey}` : itemKey;
       if (comments[key]) {
-        item.commentBefore = ` ${comments[key]}`;
+        const value = comments[key].split('\\n').join('\n ');
+        item.commentBefore = ` ${value}`;
       }
       if (Array.isArray(item.value?.items)) {
         addComments(item.value.items, comments, key);

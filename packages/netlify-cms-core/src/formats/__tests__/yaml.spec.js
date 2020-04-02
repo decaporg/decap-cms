@@ -114,6 +114,10 @@ list:
       );
 
       expect(result).toEqual(expected);
+
+      expect(yaml.toFile({ a: 'a' }, [], { a: 'line 1\\nline 2' })).toEqual(
+        '# line 1\n# line 2\na: a\n',
+      );
     });
   });
 });
