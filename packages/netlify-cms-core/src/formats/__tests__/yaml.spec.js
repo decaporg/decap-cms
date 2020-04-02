@@ -5,6 +5,17 @@ describe('yaml', () => {
   describe('fromFile', () => {
     test('loads valid yaml', () => {
       expect(yaml.fromFile('[]')).toEqual([]);
+
+      const result = yaml.fromFile(stripIndent`
+      date: '2020-04-02T16:08:03.327Z'
+      boolean: true
+      number: 1
+      `);
+      expect(result).toEqual({
+        date: '2020-04-02T16:08:03.327Z',
+        boolean: true,
+        number: 1,
+      });
       expect(yaml.fromFile('# Comment a\na: a\nb:\n  # Comment c\n  c:\n    d: d\n')).toEqual({
         a: 'a',
         b: { c: { d: 'd' } },
@@ -18,7 +29,7 @@ describe('yaml', () => {
       # image comment
       image: /media/netlify.png
       # date comment
-      date: 2020-04-02T13:27:48.617Z
+      date: '2020-04-02T13:27:48.617Z'
       # object comment
       object:
         # object_title comment
@@ -50,6 +61,13 @@ describe('yaml', () => {
   describe('toFile', () => {
     test('outputs valid yaml', () => {
       expect(yaml.toFile([])).toEqual('[]\n');
+
+      // we switched from js-yaml to yaml, this expected result if from js-yaml
+      //     expect({ date: '2020-04-02T16:08:03.327Z', boolean: true, number: 1 }).toEqual(`title: title
+      // date: '2020-04-02T16:08:03.327Z'
+      // boolean: true
+      // number: 1
+      //     `);
     });
 
     test('should sort keys', () => {
