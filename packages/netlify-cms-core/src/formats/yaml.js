@@ -17,12 +17,14 @@ const addComments = (items, comments, prefix = '') => {
   });
 };
 
+const options = { version: '1.1' };
+
 export default {
   fromFile(content) {
     if (content && content.trim().endsWith('---')) {
       content = content.trim().slice(0, -3);
     }
-    return yaml.parse(content);
+    return yaml.parse(content, options);
   },
 
   toFile(data, sortedKeys = [], comments = {}) {
@@ -31,7 +33,7 @@ export default {
     addComments(contents.items, comments);
 
     contents.items.sort(sortKeys(sortedKeys, item => item.key?.toString()));
-    const doc = new yaml.Document();
+    const doc = new yaml.Document(options);
     doc.contents = contents;
 
     return doc.toString();
