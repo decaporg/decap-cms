@@ -80,8 +80,7 @@ const pl = {
     },
     editor: {
       onLeavePage: 'Czy na pewno chcesz opuścić tę stronę?',
-      onUpdatingWithUnsavedChanges:
-        'Masz niezapisane zmiany, proszę zapisz je przed aktualizacją statusu.',
+      onUpdatingWithUnsavedChanges: 'Masz niezapisane zmiany, proszę zapisz je przed aktualizacją statusu.',
       onPublishingNotReady: 'Proszę zaktualizować status do "Gotowe" przed publikacją.',
       onPublishingWithUnsavedChanges: 'Masz niezapisane zmiany, proszę zapisz je przed publikacją.',
       onPublishing: 'Czy na pewno chcesz opublikować tę pozycję?',
@@ -100,8 +99,8 @@ const pl = {
       publishing: 'Publikowanie...',
       publish: 'Opublikuj',
       published: 'Opublikowane',
-      duplicate: 'Zduplikuj',
       unpublish: 'Cofnij publikację',
+      duplicate: 'Zduplikuj',
       unpublishing: 'Cofanie publikacji...',
       publishAndCreateNew: 'Opublikuj i dodaj',
       publishAndDuplicate: 'Opublikuj i zduplikuj',
@@ -243,8 +242,7 @@ const pl = {
       draftHeader: 'Wersje robocze',
       inReviewHeader: 'W recenzji',
       readyHeader: 'Gotowe do publikacji',
-      currentEntries:
-        '%{smart_count} pozycja |||| %{smart_count} pozycje |||| %{smart_count} pozycji',
+      currentEntries: '%{smart_count} pozycja |||| %{smart_count} pozycje |||| %{smart_count} pozycji',
     },
   },
 };
