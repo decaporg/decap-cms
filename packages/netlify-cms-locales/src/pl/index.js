@@ -181,7 +181,7 @@ const pl = {
   },
   ui: {
     default: {
-      goBackToSite: 'Wróć dostrony',
+      goBackToSite: 'Wróć do strony',
     },
     errorBoundary: {
       title: 'Błąd',
