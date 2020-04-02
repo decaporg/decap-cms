@@ -29,7 +29,7 @@ export default {
 
     addComments(contents.items, comments);
 
-    contents.items.sort(sortKeys(sortedKeys, item => item.key.toString()));
+    contents.items.sort(sortKeys(sortedKeys, item => item.key?.toString()));
     const doc = new yaml.Document();
     doc.contents = contents;
 
