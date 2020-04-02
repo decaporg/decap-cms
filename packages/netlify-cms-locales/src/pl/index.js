@@ -10,7 +10,7 @@ const pl = {
       email: 'Wprowadź swój adres email',
       password: 'Wprowadź swoje hasło',
       identitySettings:
-        'Brak dostępu do ustawień tożsamości. Jeśli używasza backend'u git-gateway upewnij się, że usługa tożsamośći (Identity service) oraz Git Gateway są włączone.',
+        'Brak dostępu do ustawień tożsamości. Jeśli używasza backendu git-gateway upewnij się, że usługa tożsamośći (Identity service) oraz Git Gateway są włączone.',
     },
   },
   app: {
@@ -126,7 +126,7 @@ const pl = {
     },
     editorWidgets: {
       markdown: {
-        richText: 'Tekst sformatowany'
+        richText: 'Tekst sformatowany',
         markdown: 'Markdown',
       },
       image: {
