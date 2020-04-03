@@ -1,7 +1,7 @@
 ---
 title: Jekyll
-weight: 20
 group: guides
+weight: 20
 ---
 
 ## Introduction
@@ -92,12 +92,12 @@ A few things to note.
 - The `layout` field default is set to `post` so Jekyll knows to use `_layouts/post.html` when it renders a post. This field is hidden because we want all posts to use the same layout.
 - The `date` and `title` field will be used by the `slug` - as noted above, Jekyll relies on the filename to determine a post's publish date, but Netlify CMS does not pull date information from the filename and requires a frontmatter `date` field. **Note** Changing the `date` or `title` fields in Netlify CMS will not update the filename. This has a few implications...
   - If you change the `date` or `title` fields in Netlify CMS, Jekyll won't notice
-  - You don't neccassarily need to change the `date` and `title` fields for existing posts, but if you don't the filenames and frontmatter will disagree in a way that might be confusing
+  - You don't necessarily need to change the `date` and `title` fields for existing posts, but if you don't the filenames and frontmatter will disagree in a way that might be confusing
   - If you want to avoid these issues, use a regular Jekyll collection instead of the special `_posts` directory
 
 ### Author Collection
 
-In addition to `_posts`, the Jekyll tutorial blog includes a collection of authors in the `_authors` directory. Before we can configure Netlify CMS to work with the `authors` collection, we'll need to make a couple tweeks to our Jekyll blog. Here's the front matter for one of the authors.
+In addition to `_posts`, the Jekyll tutorial blog includes a collection of authors in the `_authors` directory. Before we can configure Netlify CMS to work with the `authors` collection, we'll need to make a couple tweaks to our Jekyll blog. Here's the front matter for one of the authors.
 
 ```yaml
 short_name: jill
