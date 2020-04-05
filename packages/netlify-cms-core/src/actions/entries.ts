@@ -23,6 +23,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
+import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
 
 const { notifSend } = notifActions;
@@ -326,6 +327,17 @@ export function addDraftEntryMediaFile(file: ImplementationMediaFile) {
 
 export function removeDraftEntryMediaFile({ id }: { id: string }) {
   return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: { id } };
+}
+
+export function createDraftDuplicateFromEntry(entry: EntryMap) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
+    dispatch(
+      waitUntil({
+        predicate: ({ type }) => type === DRAFT_CREATE_EMPTY,
+        run: () => dispatch(draftDuplicateEntry(entry)),
+      }),
+    );
+  };
 }
 
 /*
