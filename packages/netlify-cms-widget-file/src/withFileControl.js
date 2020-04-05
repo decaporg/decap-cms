@@ -94,7 +94,11 @@ export default function withFileControl({ forImage } = {}) {
       onClearMediaControl: PropTypes.func.isRequired,
       onRemoveMediaControl: PropTypes.func.isRequired,
       classNameWrapper: PropTypes.string.isRequired,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+      value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+        ImmutablePropTypes.listOf(PropTypes.string),
+      ]),
       t: PropTypes.func.isRequired,
     };
 
@@ -177,11 +181,12 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     getValidateValue = () => {
-      if (this.props.value) {
-        return basename(this.props.value);
+      const { value } = this.props;
+      if (value) {
+        return isMultiple(value) ? value.map(v => basename(v)) : basename(value);
       }
 
-      return this.props.value;
+      return value;
     };
 
     renderFileLink = value => {
