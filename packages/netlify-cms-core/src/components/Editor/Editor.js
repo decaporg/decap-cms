@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { debounce } from 'lodash';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Loader } from 'netlify-cms-ui-default';
 import { translate } from 'react-polyglot';
 import history from 'Routing/history';
+import { addToHistory } from '../../actions/history';
 import { logoutUser } from 'Actions/auth';
 import {
   loadEntry,
@@ -153,6 +155,10 @@ export class Editor extends React.Component {
     }
   }
 
+  addToHistory = debounce(function(collection, entry) {
+    this.props.addToHistory(collection, entry);
+  }, 1000);
+
   componentDidUpdate(prevProps) {
     /**
      * If the old slug is empty and the new slug is not, a new entry was just
@@ -163,6 +169,10 @@ export class Editor extends React.Component {
     if (!prevProps.slug && newSlug && this.props.newEntry) {
       navigateToEntry(prevProps.collection.get('name'), newSlug);
       this.props.loadEntry(this.props.collection, newSlug);
+    }
+
+    if (this.props.entryDraft && this.props.entryDraft.get('entry')) {
+      this.addToHistory(this.props.collection, this.props.entryDraft.get('entry'));
     }
 
     if (prevProps.entry === this.props.entry) return;
@@ -436,6 +446,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 const mapDispatchToProps = {
+  addToHistory,
   changeDraftField,
   changeDraftFieldValidation,
   loadEntry,

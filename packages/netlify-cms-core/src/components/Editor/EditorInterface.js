@@ -16,7 +16,10 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
+import EditorHistory from './EditorHistory';
 
+const HISTORY_VISIBLE = 'cms.history-visible';
+const HISTORY_PANE_POSITION = 'cms.history-pane-position';
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const SPLIT_PANE_POSITION = 'cms.split-pane-position';
@@ -104,6 +107,13 @@ const PreviewPaneContainer = styled.div`
   pointer-events: ${props => (props.blockEntry ? 'none' : 'auto')};
 `;
 
+const HistoryContainer = styled.div`
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  pointer-events: ${props => (props.blockEntry ? 'none' : 'auto')};
+`;
+
 const ControlPaneContainer = styled(PreviewPaneContainer)`
   padding: 0 16px;
   position: relative;
@@ -120,6 +130,7 @@ const ViewControls = styled.div`
 class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
+    historyVisible: localStorage.getItem(HISTORY_VISIBLE) !== 'false',
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
   };
@@ -148,6 +159,12 @@ class EditorInterface extends Component {
     const newPreviewVisible = !this.state.previewVisible;
     this.setState({ previewVisible: newPreviewVisible });
     localStorage.setItem(PREVIEW_VISIBLE, newPreviewVisible);
+  };
+
+  handleToggleHistory = () => {
+    const newHistoryVisible = !this.state.historyVisible;
+    this.setState({ historyVisible: newHistoryVisible });
+    localStorage.setItem(HISTORY_VISIBLE, newHistoryVisible);
   };
 
   handleToggleScrollSync = () => {
@@ -187,23 +204,38 @@ class EditorInterface extends Component {
       draftKey,
     } = this.props;
 
-    const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
+    const { historyVisible, previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
 
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
 
-    const editor = (
+    const editorControlPane = (
+      <EditorControlPane
+        collection={collection}
+        entry={entry}
+        fields={fields}
+        fieldsMetaData={fieldsMetaData}
+        fieldsErrors={fieldsErrors}
+        onChange={onChange}
+        onValidate={onValidate}
+        ref={c => (this.controlPaneRef = c)}
+      />
+    );
+
+    const editor = historyVisible ? (
       <ControlPaneContainer blockEntry={showEventBlocker}>
-        <EditorControlPane
-          collection={collection}
-          entry={entry}
-          fields={fields}
-          fieldsMetaData={fieldsMetaData}
-          fieldsErrors={fieldsErrors}
-          onChange={onChange}
-          onValidate={onValidate}
-          ref={c => (this.controlPaneRef = c)}
-        />
+        <StyledSplitPane
+          maxSize={-100}
+          defaultSize={parseInt(localStorage.getItem(HISTORY_PANE_POSITION), 10) || '20%'}
+          onChange={size => localStorage.setItem(HISTORY_PANE_POSITION, size)}
+        >
+          <HistoryContainer>
+            <EditorHistory collection={collection} entry={entry} hasChanged={hasChanged} />
+          </HistoryContainer>
+          {editorControlPane}
+        </StyledSplitPane>
       </ControlPaneContainer>
+    ) : (
+      <ControlPaneContainer blockEntry={showEventBlocker}>{editorControlPane}</ControlPaneContainer>
     );
 
     const editorWithPreview = (
@@ -266,6 +298,13 @@ class EditorInterface extends Component {
         />
         <Editor key={draftKey}>
           <ViewControls>
+            <EditorToggle
+              isActive={historyVisible}
+              onClick={this.handleToggleHistory}
+              size="large"
+              type="list"
+              title="Toggle history"
+            />
             {collectionPreviewEnabled && (
               <EditorToggle
                 isActive={previewVisible}
@@ -285,6 +324,7 @@ class EditorInterface extends Component {
               />
             )}
           </ViewControls>
+
           {collectionPreviewEnabled && this.state.previewVisible ? (
             editorWithPreview
           ) : (

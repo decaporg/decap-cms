@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { ThunkDispatch } from 'redux-thunk';
-import { Map, List } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend } from '../backend';
 import {
@@ -21,9 +21,18 @@ import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
 
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { Collection, EntryMap, State, Collections, EntryDraft, MediaFile } from '../types/redux';
+import {
+  Collection,
+  EntryMap,
+  State,
+  Collections,
+  EntryDraft,
+  MediaFile,
+  HistoryItemOrigin,
+} from '../types/redux';
 import { AnyAction } from 'redux';
 import { EntryValue } from '../valueObjects/Entry';
+import { addToHistory } from './history';
 
 const { notifSend } = notifActions;
 
@@ -286,6 +295,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       dispatch(addAssets(assetProxies));
       dispatch(unpublishedEntryLoaded(collection, entry));
       dispatch(createDraftFromEntry(entry));
+      dispatch(addToHistory(collection, fromJS(entry), HistoryItemOrigin.Remote));
     } catch (error) {
       if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
         dispatch(unpublishedEntryRedirected(collection, slug));

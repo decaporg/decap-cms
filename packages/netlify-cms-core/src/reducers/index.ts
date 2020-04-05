@@ -11,6 +11,7 @@ import medias from './medias';
 import mediaLibrary from './mediaLibrary';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
+import history from './history';
 import { Status } from '../constants/publishModes';
 import { State } from '../types/redux';
 
@@ -28,6 +29,7 @@ const reducers = {
   mediaLibrary,
   deploys,
   globalUI,
+  history,
 };
 
 export default reducers;

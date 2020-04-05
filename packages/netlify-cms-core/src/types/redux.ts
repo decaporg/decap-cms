@@ -91,6 +91,7 @@ export type EntryObject = {
   metaData: { status: string };
   author?: string;
   updatedOn?: string;
+  raw: string;
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
@@ -226,6 +227,27 @@ export type Search = StaticallyTypedRecord<{
 
 export type Cursors = StaticallyTypedRecord<{}>;
 
+export enum HistoryItemOrigin {
+  Local = 'local',
+  Remote = 'remote',
+}
+
+export type HistoryItem = {
+  id: string;
+  raw: string;
+  timestamp: number;
+  path: string;
+  slug: string;
+  collection: string;
+  origin: HistoryItemOrigin;
+};
+
+export type EntryHistory = { items: HistoryItem[] };
+
+export type EntryHistoryState = (EntryHistory & { error?: Error; isFetching: boolean }) | undefined;
+
+export type HistoryState = Record<string, EntryHistoryState>;
+
 export interface State {
   config: Config;
   cursors: Cursors;
@@ -238,6 +260,7 @@ export interface State {
   medias: Medias;
   mediaLibrary: MediaLibrary;
   search: Search;
+  history: HistoryState;
 }
 
 export interface MediasAction extends Action<string> {
@@ -359,4 +382,8 @@ export interface MediaLibraryAction extends Action<string> {
   } & {
     file: { id: string; key: string; privateUpload: boolean };
   } & { key: string } & { url: string } & { err: Error };
+}
+
+export interface HistoryAction extends Action<string> {
+  payload: { collection: string; slug: string; history?: EntryHistory; error?: Error };
 }

@@ -18,6 +18,7 @@ import {
   EntryFields,
   EntryField,
   SortDirection,
+  HistoryItemOrigin,
 } from '../types/redux';
 
 import { ThunkDispatch } from 'redux-thunk';
@@ -25,6 +26,7 @@ import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
+import { addToHistory } from './history';
 
 const { notifSend } = notifActions;
 
@@ -353,6 +355,7 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
+      dispatch(addToHistory(collection, fromJS(loadedEntry), HistoryItemOrigin.Remote));
     } catch (error) {
       console.error(error);
       dispatch(
