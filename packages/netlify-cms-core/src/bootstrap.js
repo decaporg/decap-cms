@@ -21,7 +21,7 @@ const ROOT_ID = 'nc-root';
 const TranslatedApp = ({ locale, config }) => {
   return (
     <I18n locale={locale} messages={getPhrases(locale)}>
-      <ErrorBoundary showBackup config={config}>
+      <ErrorBoundary config={config}>
         <ConnectedRouter history={history}>
           <Route component={App} />
         </ConnectedRouter>

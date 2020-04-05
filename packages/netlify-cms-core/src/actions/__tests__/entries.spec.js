@@ -1,11 +1,5 @@
 import { fromJS, Map } from 'immutable';
-import {
-  createEmptyDraft,
-  createEmptyDraftData,
-  retrieveLocalBackup,
-  persistLocalBackup,
-  getMediaAssets,
-} from '../entries';
+import { createEmptyDraft, createEmptyDraftData, getMediaAssets } from '../entries';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import AssetProxy from '../../valueObjects/AssetProxy';
@@ -205,86 +199,6 @@ describe('entries', () => {
         },
       ]);
       expect(createEmptyDraftData(fields)).toEqual({});
-    });
-  });
-
-  describe('persistLocalBackup', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should persist local backup with media files', () => {
-      const { currentBackend } = require('coreSrc/backend');
-
-      const backend = {
-        persistLocalDraftBackup: jest.fn(() => Promise.resolve()),
-      };
-
-      const store = mockStore({
-        config: Map(),
-      });
-
-      currentBackend.mockReturnValue(backend);
-
-      const collection = Map();
-      const mediaFiles = [{ path: 'static/media/image.png' }];
-      const entry = fromJS({ mediaFiles });
-
-      return store.dispatch(persistLocalBackup(entry, collection)).then(() => {
-        const actions = store.getActions();
-        expect(actions).toHaveLength(0);
-
-        expect(backend.persistLocalDraftBackup).toHaveBeenCalledTimes(1);
-        expect(backend.persistLocalDraftBackup).toHaveBeenCalledWith(entry, collection);
-      });
-    });
-  });
-
-  describe('retrieveLocalBackup', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should retrieve media files with local backup', () => {
-      const { currentBackend } = require('coreSrc/backend');
-      const { createAssetProxy } = require('../../valueObjects/AssetProxy');
-
-      const backend = {
-        getLocalDraftBackup: jest.fn((...args) => args),
-      };
-
-      const store = mockStore({
-        config: Map(),
-      });
-
-      currentBackend.mockReturnValue(backend);
-
-      const collection = Map({
-        name: 'collection',
-      });
-      const slug = 'slug';
-
-      const file = new File([], 'image.png');
-      const mediaFiles = [{ path: 'static/media/image.png', url: 'url', file }];
-      const asset = createAssetProxy(mediaFiles[0]);
-      const entry = { mediaFiles };
-
-      backend.getLocalDraftBackup.mockReturnValue({ entry });
-
-      return store.dispatch(retrieveLocalBackup(collection, slug)).then(() => {
-        const actions = store.getActions();
-
-        expect(actions).toHaveLength(2);
-
-        expect(actions[0]).toEqual({
-          type: 'ADD_ASSETS',
-          payload: [asset],
-        });
-        expect(actions[1]).toEqual({
-          type: 'DRAFT_LOCAL_BACKUP_RETRIEVED',
-          payload: { entry },
-        });
-      });
     });
   });
 

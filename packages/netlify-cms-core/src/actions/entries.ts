@@ -9,9 +9,8 @@ import { selectFields, updateFieldByKey, selectSortDataPath } from '../reducers/
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
-import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { addAssets, getAsset } from './media';
 import {
   Collection,
   EntryMap,
@@ -24,7 +23,6 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
-import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
 
 const { notifSend } = notifActions;
@@ -50,8 +48,6 @@ export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
 export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
-export const DRAFT_LOCAL_BACKUP_RETRIEVED = 'DRAFT_LOCAL_BACKUP_RETRIEVED';
-export const DRAFT_CREATE_FROM_LOCAL_BACKUP = 'DRAFT_CREATE_FROM_LOCAL_BACKUP';
 export const DRAFT_CREATE_DUPLICATE_FROM_ENTRY = 'DRAFT_CREATE_DUPLICATE_FROM_ENTRY';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
@@ -324,88 +320,12 @@ export function clearFieldErrors() {
   return { type: DRAFT_CLEAR_ERRORS };
 }
 
-export function localBackupRetrieved(entry: EntryValue) {
-  return {
-    type: DRAFT_LOCAL_BACKUP_RETRIEVED,
-    payload: { entry },
-  };
-}
-
-export function loadLocalBackup() {
-  return {
-    type: DRAFT_CREATE_FROM_LOCAL_BACKUP,
-  };
-}
-
 export function addDraftEntryMediaFile(file: ImplementationMediaFile) {
   return { type: ADD_DRAFT_ENTRY_MEDIA_FILE, payload: file };
 }
 
 export function removeDraftEntryMediaFile({ id }: { id: string }) {
   return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: { id } };
-}
-
-export function persistLocalBackup(entry: EntryMap, collection: Collection) {
-  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const state = getState();
-    const backend = currentBackend(state.config);
-
-    return backend.persistLocalDraftBackup(entry, collection);
-  };
-}
-
-export function createDraftDuplicateFromEntry(entry: EntryMap) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
-    dispatch(
-      waitUntil({
-        predicate: ({ type }) => type === DRAFT_CREATE_EMPTY,
-        run: () => dispatch(draftDuplicateEntry(entry)),
-      }),
-    );
-  };
-}
-
-export function retrieveLocalBackup(collection: Collection, slug: string) {
-  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const state = getState();
-    const backend = currentBackend(state.config);
-    const { entry } = await backend.getLocalDraftBackup(collection, slug);
-
-    if (entry) {
-      // load assets from backup
-      const mediaFiles = entry.mediaFiles || [];
-      const assetProxies: AssetProxy[] = await Promise.all(
-        mediaFiles.map(file => {
-          if (file.file || file.url) {
-            return createAssetProxy({
-              path: file.path,
-              file: file.file,
-              url: file.url,
-              field: file.field,
-            });
-          } else {
-            return getAsset({
-              collection,
-              entry: fromJS(entry),
-              path: file.path,
-              field: file.field,
-            })(dispatch, getState);
-          }
-        }),
-      );
-      dispatch(addAssets(assetProxies));
-
-      return dispatch(localBackupRetrieved(entry));
-    }
-  };
-}
-
-export function deleteLocalBackup(collection: Collection, slug: string) {
-  return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const state = getState();
-    const backend = currentBackend(state.config);
-    return backend.deleteLocalDraftBackup(collection, slug);
-  };
 }
 
 /*

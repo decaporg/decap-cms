@@ -20,7 +20,6 @@ import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import {
-  localForage,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   EditorialWorkflowError,
@@ -31,7 +30,6 @@ import {
   User,
   getPathDepth,
   Config as ImplementationConfig,
-  blobToFileObj,
 } from 'netlify-cms-lib-util';
 import { status } from './constants/publishModes';
 import { extractTemplateVars, dateParsers } from './lib/stringTemplate';
@@ -64,15 +62,6 @@ export class LocalStorageAuthStore {
   logout() {
     window.localStorage.removeItem(this.storageKey);
   }
-}
-
-function getEntryBackupKey(collectionName?: string, slug?: string) {
-  const baseKey = 'backup';
-  if (!collectionName) {
-    return baseKey;
-  }
-  const suffix = slug ? `.${slug}` : '';
-  return `${baseKey}.${collectionName}${suffix}`;
 }
 
 const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
@@ -116,12 +105,6 @@ export interface MediaFile {
   field?: EntryField;
 }
 
-interface BackupEntry {
-  raw: string;
-  path: string;
-  mediaFiles: MediaFile[];
-}
-
 interface PersistArgs {
   config: Config;
   collection: Collection;
@@ -153,8 +136,6 @@ export class Backend {
     implementation: Implementation,
     { backendName, authStore = null, config }: BackendOptions = {},
   ) {
-    // We can't reliably run this on exit, so we do cleanup on load.
-    this.deleteAnonymousBackup();
     this.config = config as Config;
     this.implementation = implementation.init(this.config.toJS(), {
       useWorkflow: selectUseWorkflow(this.config),
@@ -434,72 +415,6 @@ export class Backend {
         }),
       }),
     );
-  }
-
-  async getLocalDraftBackup(collection: Collection, slug: string) {
-    const key = getEntryBackupKey(collection.get('name'), slug);
-    const backup = await localForage.getItem<BackupEntry>(key);
-    if (!backup || !backup.raw.trim()) {
-      return {};
-    }
-    const { raw, path } = backup;
-    let { mediaFiles = [] } = backup;
-
-    mediaFiles = mediaFiles.map(file => {
-      // de-serialize the file object
-      if (file.file) {
-        return { ...file, url: URL.createObjectURL(file.file) };
-      }
-      return file;
-    });
-
-    const label = selectFileEntryLabel(collection, slug);
-    const entry: EntryValue = this.entryWithFormat(collection)(
-      createEntry(collection.get('name'), slug, path, { raw, label, mediaFiles }),
-    );
-
-    return { entry };
-  }
-
-  async persistLocalDraftBackup(entry: EntryMap, collection: Collection) {
-    const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
-    const raw = this.entryToRaw(collection, entry);
-    if (!raw.trim()) {
-      return;
-    }
-
-    const mediaFiles = await Promise.all<MediaFile>(
-      entry
-        .get('mediaFiles')
-        .toJS()
-        .map(async (file: MediaFile) => {
-          // make sure to serialize the file
-          if (file.url?.startsWith('blob:')) {
-            const blob = await fetch(file.url as string).then(res => res.blob());
-            return { ...file, file: blobToFileObj(file.name, blob) };
-          }
-          return file;
-        }),
-    );
-
-    await localForage.setItem<BackupEntry>(key, {
-      raw,
-      path: entry.get('path'),
-      mediaFiles,
-    });
-    return localForage.setItem(getEntryBackupKey(), raw);
-  }
-
-  async deleteLocalDraftBackup(collection: Collection, slug: string) {
-    const key = getEntryBackupKey(collection.get('name'), slug);
-    await localForage.removeItem(key);
-    return this.deleteAnonymousBackup();
-  }
-
-  // Unnamed backup for use in the global error boundary, should always be
-  // deleted on cms load.
-  deleteAnonymousBackup() {
-    return localForage.removeItem(getEntryBackupKey());
   }
 
   async getEntry(state: State, collection: Collection, slug: string) {

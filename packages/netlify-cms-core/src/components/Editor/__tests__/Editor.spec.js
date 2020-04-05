@@ -46,9 +46,6 @@ describe('Editor', () => {
     loadDeployPreview: jest.fn(),
     user: fromJS({}),
     t: jest.fn(key => key),
-    localBackup: fromJS({}),
-    retrieveLocalBackup: jest.fn(),
-    persistLocalBackup: jest.fn(),
     location: { search: '?title=title' },
   };
 
@@ -88,19 +85,6 @@ describe('Editor', () => {
       />,
     );
     expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('should call retrieveLocalBackup on mount', () => {
-    render(
-      <Editor
-        {...props}
-        entryDraft={fromJS({ entry: { slug: 'slug' } })}
-        entry={fromJS({ isFetching: false })}
-      />,
-    );
-
-    expect(props.retrieveLocalBackup).toHaveBeenCalledTimes(1);
-    expect(props.retrieveLocalBackup).toHaveBeenCalledWith(props.collection, props.slug);
   });
 
   it('should create new draft on new entry when mounting', () => {
@@ -158,60 +142,5 @@ describe('Editor', () => {
     );
 
     expect(props.loadEntries).toHaveBeenCalledTimes(0);
-  });
-
-  it('should flush debounce createBackup, discard draft and remove exit blocker on umount', () => {
-    window.removeEventListener = jest.fn();
-    const debounce = require('lodash/debounce');
-
-    const flush = debounce({}).flush;
-    const { unmount } = render(
-      <Editor
-        {...props}
-        entryDraft={fromJS({ entry: { slug: 'slug' }, hasChanged: true })}
-        entry={fromJS({ isFetching: false })}
-      />,
-    );
-
-    jest.clearAllMocks();
-    unmount();
-
-    expect(flush).toHaveBeenCalledTimes(1);
-    expect(props.discardDraft).toHaveBeenCalledTimes(1);
-    expect(window.removeEventListener).toHaveBeenCalledWith('beforeunload', expect.any(Function));
-
-    const callback = window.removeEventListener.mock.calls.find(
-      call => call[0] === 'beforeunload',
-    )[1];
-
-    const event = {};
-    callback(event);
-    expect(event).toEqual({ returnValue: 'editor.editor.onLeavePage' });
-  });
-
-  it('should persist backup when changed', () => {
-    const { rerender } = render(
-      <Editor
-        {...props}
-        entryDraft={fromJS({ entry: {} })}
-        entry={fromJS({ isFetching: false })}
-      />,
-    );
-
-    jest.clearAllMocks();
-    rerender(
-      <Editor
-        {...props}
-        entryDraft={fromJS({ entry: { mediaFiles: [{ id: '1' }] } })}
-        entry={fromJS({ isFetching: false, data: {} })}
-        hasChanged={true}
-      />,
-    );
-
-    expect(props.persistLocalBackup).toHaveBeenCalledTimes(1);
-    expect(props.persistLocalBackup).toHaveBeenCalledWith(
-      fromJS({ mediaFiles: [{ id: '1' }] }),
-      props.collection,
-    );
   });
 });

@@ -7,8 +7,6 @@ import {
   DRAFT_CHANGE_FIELD,
   DRAFT_VALIDATION_ERRORS,
   DRAFT_CLEAR_ERRORS,
-  DRAFT_LOCAL_BACKUP_RETRIEVED,
-  DRAFT_CREATE_FROM_LOCAL_BACKUP,
   DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
@@ -53,19 +51,6 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('hasChanged', false);
         state.set('key', uuid());
       });
-    case DRAFT_CREATE_FROM_LOCAL_BACKUP:
-      // Local Backup
-      return state.withMutations(state => {
-        const backupDraftEntry = state.get('localBackup');
-        const backupEntry = backupDraftEntry.get('entry');
-        state.delete('localBackup');
-        state.set('entry', backupEntry);
-        state.setIn(['entry', 'newRecord'], !backupEntry.get('path'));
-        state.set('fieldsMetaData', Map());
-        state.set('fieldsErrors', Map());
-        state.set('hasChanged', true);
-        state.set('key', uuid());
-      });
     case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
       // Duplicate Entry
       return state.withMutations(state => {
@@ -78,13 +63,6 @@ const entryDraftReducer = (state = Map(), action) => {
       });
     case DRAFT_DISCARD:
       return initialState;
-    case DRAFT_LOCAL_BACKUP_RETRIEVED: {
-      const { entry } = action.payload;
-      const newState = new Map({
-        entry: fromJS(entry),
-      });
-      return state.set('localBackup', newState);
-    }
     case DRAFT_CHANGE_FIELD: {
       return state.withMutations(state => {
         state.setIn(['entry', 'data', action.payload.field], action.payload.value);

@@ -151,47 +151,4 @@ describe('entryDraft reducer', () => {
       });
     });
   });
-
-  describe('DRAFT_CREATE_FROM_LOCAL_BACKUP', () => {
-    it('should create draft from local backup', () => {
-      const localBackup = Map({ entry: fromJS({ ...entry, mediaFiles: [{ id: '1' }] }) });
-
-      const actualState = reducer(initialState.set('localBackup', localBackup), {
-        type: actions.DRAFT_CREATE_FROM_LOCAL_BACKUP,
-      });
-      expect(actualState.toJS()).toEqual({
-        entry: {
-          ...entry,
-          mediaFiles: [{ id: '1' }],
-          newRecord: false,
-        },
-        fieldsMetaData: {},
-        fieldsErrors: {},
-        hasChanged: true,
-        key: '1',
-      });
-    });
-  });
-
-  describe('DRAFT_LOCAL_BACKUP_RETRIEVED', () => {
-    it('should set local backup', () => {
-      const mediaFiles = [{ id: '1' }];
-
-      const actualState = reducer(
-        initialState,
-        actions.localBackupRetrieved({ ...entry, mediaFiles }),
-      );
-
-      expect(actualState.toJS()).toEqual({
-        entry: {},
-        fieldsMetaData: {},
-        fieldsErrors: {},
-        hasChanged: false,
-        localBackup: {
-          entry: { ...entry, mediaFiles: [{ id: '1' }] },
-        },
-        key: '',
-      });
-    });
-  });
 });
