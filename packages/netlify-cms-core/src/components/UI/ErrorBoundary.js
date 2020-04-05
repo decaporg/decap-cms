@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
-import yaml from 'js-yaml';
+import yaml from 'yaml';
 import { truncate } from 'lodash';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'netlify-cms-lib-util';
@@ -124,7 +124,7 @@ const RecoveredEntry = ({ entry, t }) => {
   );
 };
 
-class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     t: PropTypes.func.isRequired,
@@ -174,6 +174,7 @@ class ErrorBoundary extends React.Component {
             href={buildIssueUrl({ title: errorMessage, config: this.props.config })}
             target="_blank"
             rel="noopener noreferrer"
+            data-testid="issue-url"
           >
             {t('ui.errorBoundary.reportIt')}
           </a>
