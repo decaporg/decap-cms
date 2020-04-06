@@ -1,13 +1,14 @@
 ---
 title: Examples
-weight: 110
 group: start
+weight: 110
 ---
 
 Do you have a great, open source example? Submit a pull request to this page!
 
 Example | Tools | Type | Source | More info |
 --- | --- | --- | --- | ---
+[Delog - JAMStack Blog with Netlify CMS](https://delog-w3layouts.netlify.com/) | Gatsby, Netlify-CMS | demo | [W3Layouts/gatsby-starter-delog](https://github.com/W3Layouts/gatsby-starter-delog) | [blog post](https://w3layouts.com/articles/delog-gatsby-starter-netlify-cms/)
 [Gatsby & Netlify CMS Meetup Group Template](https://github.com/robertcoopercode/gatsby-netlify-cms) | Gatsby | demo | [robertcoopercode/gatsby-netlify-cms](https://github.com/robertcoopercode/gatsby-netlify-cms) | [blog post](https://blog.logrocket.com/gatsby-netlify-cms-a-perfect-pairing-d50d59d16f67)
 [This Developing Journey](https://briandouglas.me) | middleman | blog | [bdougie/blog](https://github.com/bdougie/blog) | [blog post](https://www.netlify.com/blog/2017/04/20/creating-a-blog-with-middleman-and-netlify-cms/)
 [JAMstack Recipes](https://jamstack-cms.netlify.com) | Hugo, Azure | demo | [hlaueriksson/jamstack-cms](https://github.com/hlaueriksson/jamstack-cms) | [blog post](http://conductofcode.io/post/managing-content-for-a-jamstack-site-with-netlify-cms/)
