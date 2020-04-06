@@ -8,7 +8,6 @@ Do you have a great, open source example? Submit a pull request to this page!
 
 Example | Tools | Type | Source | More info |
 --- | --- | --- | --- | ---
-[Delog - JAMStack Blog with Netlify CMS](https://delog-w3layouts.netlify.com/) | Gatsby, Netlify-CMS | demo | [W3Layouts/gatsby-starter-delog](https://github.com/W3Layouts/gatsby-starter-delog) | [blog post](https://w3layouts.com/articles/delog-gatsby-starter-netlify-cms/)
 [Gatsby & Netlify CMS Meetup Group Template](https://github.com/robertcoopercode/gatsby-netlify-cms) | Gatsby | demo | [robertcoopercode/gatsby-netlify-cms](https://github.com/robertcoopercode/gatsby-netlify-cms) | [blog post](https://blog.logrocket.com/gatsby-netlify-cms-a-perfect-pairing-d50d59d16f67)
 [This Developing Journey](https://briandouglas.me) | middleman | blog | [bdougie/blog](https://github.com/bdougie/blog) | [blog post](https://www.netlify.com/blog/2017/04/20/creating-a-blog-with-middleman-and-netlify-cms/)
 [JAMstack Recipes](https://jamstack-cms.netlify.com) | Hugo, Azure | demo | [hlaueriksson/jamstack-cms](https://github.com/hlaueriksson/jamstack-cms) | [blog post](http://conductofcode.io/post/managing-content-for-a-jamstack-site-with-netlify-cms/)
@@ -26,3 +25,4 @@ Example | Tools | Type | Source | More info |
 [Jigsaw Blog Starter Template Demo](https://jigsaw-blog-netlify-netlifycms-template.netlify.com/) | Jigsaw | demo | [erickpatrick/jigsaw-blog-netlify-netlifycms-template](https://github.com/erickpatrick/jigsaw-blog-netlify-netlifycms-template) | [blog post](https://www.erickpatrick.net/blog/augmenting-tightenco-jigsaw-with-netlifycms/)
 [Nuxt & NetlifyCMS Boilerplate](https://nuxt-netlifycms-boilerplate.netlify.com/) | Vue, Nuxt | demo | [tylermercer/nuxt-netlifycms-boilerplate](https://github.com/tylermercer/nuxt-netlifycms-boilerplate) | [read me](https://github.com/tylermercer/nuxt-netlifycms-boilerplate)
 [Next.js demo](https://netlifycms-nextjs.netlify.com) | Next.js | blog | [masives/netlifycms-nextjs](https://github.com/masives/netlifycms-nextjs) | [read me](https://github.com/masives/netlifycms-nextjs)
+[Delog - JAMStack Blog with Netlify CMS](https://delog-w3layouts.netlify.com/) | Gatsby, Netlify-CMS | demo | [W3Layouts/gatsby-starter-delog](https://github.com/W3Layouts/gatsby-starter-delog) | [blog post](https://w3layouts.com/articles/delog-gatsby-starter-netlify-cms/)
