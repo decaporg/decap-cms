@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.10.2...netlify-cms-locales@1.10.3) (2020-04-06)
+
+**Note:** Version bump only for package netlify-cms-locales
+
+
+
+
+
 ## [1.10.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.10.1...netlify-cms-locales@1.10.2) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-locales

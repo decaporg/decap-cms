@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.23.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.3...netlify-cms-core@2.23.4) (2020-04-06)
+
+
+### Bug Fixes
+
+* missing widgets ([#3541](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3541)) ([6933bf6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6933bf6ee1acbbefb2cc7840a8aef6accc2d455b))
+
+
+
+
+
 ## [2.23.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.2...netlify-cms-core@2.23.3) (2020-04-01)
 
 

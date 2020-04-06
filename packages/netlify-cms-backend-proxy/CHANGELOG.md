@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.5...netlify-cms-backend-proxy@1.0.6) (2020-04-06)
+
+
+### Bug Fixes
+
+* **backend-proxy:** fix error reporting ([#3527](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3527)) ([f94dea3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/f94dea386ce89f0f92744d0c4196416706999ea0))
+
+
+
+
+
 ## [1.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.4...netlify-cms-backend-proxy@1.0.5) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
