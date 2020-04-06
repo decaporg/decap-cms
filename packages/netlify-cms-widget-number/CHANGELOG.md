@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.3.6 (2020-04-06)
+
+**Note:** Version bump only for package netlify-cms-widget-number
+
+
+
+
+
 ## [2.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.4...netlify-cms-widget-number@2.3.5) (2019-11-07)
 
 
