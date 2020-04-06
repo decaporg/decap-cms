@@ -2,6 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
 import {
   DRAFT_CREATE_FROM_ENTRY,
+  DRAFT_CREATE_FROM_HISTORY,
   DRAFT_CREATE_EMPTY,
   DRAFT_DISCARD,
   DRAFT_CHANGE_FIELD,
@@ -39,6 +40,17 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
+        state.set('key', uuid());
+      });
+    case DRAFT_CREATE_FROM_HISTORY:
+      return state.withMutations(state => {
+        const newDraft = fromJS(action.payload.newEntry);
+        const newRecord = state.getIn(['entry', 'newRecord']);
+        state.set('entry', newDraft);
+        state.setIn(['entry', 'newRecord'], newRecord);
+        state.set('fieldsMetaData', Map());
+        state.set('fieldsErrors', Map());
+        state.set('hasChanged', !newDraft.get('data').equals(action.payload.entry.get('data')));
         state.set('key', uuid());
       });
     case DRAFT_CREATE_EMPTY:

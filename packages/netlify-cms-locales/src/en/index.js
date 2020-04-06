@@ -154,6 +154,11 @@ const en = {
         headingSix: 'Heading 6',
       },
     },
+    editorHistory: {
+      heading: 'History',
+      reloadEntryButtonTitle: 'Reload entry',
+      deleteItemButtonTitle: 'Delete Item',
+    },
   },
   mediaLibrary: {
     mediaLibraryCard: {

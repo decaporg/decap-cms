@@ -171,7 +171,7 @@ export class Editor extends React.Component {
       this.props.loadEntry(this.props.collection, newSlug);
     }
 
-    if (this.props.entryDraft && this.props.entryDraft.get('entry')) {
+    if (this.props.entryDraft && this.props.entryDraft.get('entry') && this.props.hasChanged) {
       this.addToHistory(this.props.collection, this.props.entryDraft.get('entry'));
     }
 

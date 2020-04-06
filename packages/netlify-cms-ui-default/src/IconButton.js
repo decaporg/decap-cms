@@ -4,6 +4,7 @@ import Icon from './Icon';
 import { buttons, colors, colorsRaw, shadows } from './styles';
 
 const sizes = {
+  tiny: '18px',
   small: '28px',
   large: '40px',
 };

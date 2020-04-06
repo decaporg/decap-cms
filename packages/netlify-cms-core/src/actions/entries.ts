@@ -46,6 +46,7 @@ export const SORT_ENTRIES_SUCCESS = 'SORT_ENTRIES_SUCCESS';
 export const SORT_ENTRIES_FAILURE = 'SORT_ENTRIES_FAILURE';
 
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
+export const DRAFT_CREATE_FROM_HISTORY = 'DRAFT_CREATE_FROM_HISTORY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
@@ -280,6 +281,13 @@ export function createDraftFromEntry(entry: EntryValue) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
     payload: { entry },
+  };
+}
+
+export function createDraftFromHistory(entry: EntryMap, newEntry: EntryValue) {
+  return {
+    type: DRAFT_CREATE_FROM_HISTORY,
+    payload: { entry, newEntry },
   };
 }
 

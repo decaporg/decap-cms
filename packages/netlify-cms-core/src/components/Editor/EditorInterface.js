@@ -130,7 +130,7 @@ const ViewControls = styled.div`
 class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
-    historyVisible: localStorage.getItem(HISTORY_VISIBLE) !== 'false',
+    historyVisible: localStorage.getItem(HISTORY_VISIBLE) === 'true',
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
   };
@@ -229,7 +229,7 @@ class EditorInterface extends Component {
           onChange={size => localStorage.setItem(HISTORY_PANE_POSITION, size)}
         >
           <HistoryContainer>
-            <EditorHistory collection={collection} entry={entry} hasChanged={hasChanged} />
+            <EditorHistory collection={collection} draft={entry} hasChanged={hasChanged} />
           </HistoryContainer>
           {editorControlPane}
         </StyledSplitPane>
@@ -302,7 +302,7 @@ class EditorInterface extends Component {
               isActive={historyVisible}
               onClick={this.handleToggleHistory}
               size="large"
-              type="list"
+              type="clock"
               title="Toggle history"
             />
             {collectionPreviewEnabled && (

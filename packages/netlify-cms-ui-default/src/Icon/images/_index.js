@@ -7,6 +7,7 @@ import iconCheck from './check.svg';
 import iconChevron from './chevron.svg';
 import iconChevronDouble from './chevron-double.svg';
 import iconCircle from './circle.svg';
+import iconClock from './clock.svg';
 import iconClose from './close.svg';
 import iconCode from './code.svg';
 import iconCodeBlock from './code-block.svg';
@@ -57,6 +58,7 @@ const images = {
   'chevron-double': iconChevronDouble,
   circle: iconCircle,
   close: iconClose,
+  clock: iconClock,
   code: iconCode,
   'code-block': iconCodeBlock,
   'drag-handle': iconDragHandle,
