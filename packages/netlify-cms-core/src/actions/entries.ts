@@ -284,7 +284,7 @@ export function createDraftFromEntry(entry: EntryValue) {
   };
 }
 
-export function createDraftFromHistory(entry: EntryMap, newEntry: EntryValue) {
+export function createDraftFromHistory(entry: EntryMap | undefined, newEntry: EntryValue) {
   return {
     type: DRAFT_CREATE_FROM_HISTORY,
     payload: { entry, newEntry },

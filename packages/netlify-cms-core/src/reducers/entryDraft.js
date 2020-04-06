@@ -50,7 +50,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], newRecord);
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('hasChanged', !newDraft.get('data').equals(action.payload.entry.get('data')));
+        state.set('hasChanged', !newDraft.get('data').equals(action.payload.entry?.get('data')));
         state.set('key', uuid());
       });
     case DRAFT_CREATE_EMPTY:

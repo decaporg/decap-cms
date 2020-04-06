@@ -88,15 +88,13 @@ export class EditorHistory extends React.Component {
   }
 
   loadHistoryItem(item) {
-    const { collection, entry, draft } = this.props;
-    this.props.loadHistoryItem(collection, entry || draft, item);
+    const { collection, entry } = this.props;
+    this.props.loadHistoryItem(collection, entry, item);
   }
 
   restoreEntry() {
     const { entry } = this.props;
-    if (entry) {
-      this.props.createDraftFromEntry(entry);
-    }
+    this.props.createDraftFromEntry(entry);
   }
 
   removeHistoryItem(item) {
@@ -105,20 +103,22 @@ export class EditorHistory extends React.Component {
   }
 
   render() {
-    const { entryHistory, t } = this.props;
+    const { entryHistory, t, entry } = this.props;
 
     return (
       <HistoryList>
         <HeadingContainer>
           <Heading>{t('editor.editorHistory.heading')}</Heading>
-          <ButtonContainer>
-            <StyledIconButton
-              onClick={() => this.restoreEntry()}
-              size="tiny"
-              type="refresh"
-              title={t('editor.editorHistory.reloadEntryButtonTitle')}
-            />
-          </ButtonContainer>
+          {entry && (
+            <ButtonContainer>
+              <StyledIconButton
+                onClick={() => this.restoreEntry()}
+                size="tiny"
+                type="refresh"
+                title={t('editor.editorHistory.reloadEntryButtonTitle')}
+              />
+            </ButtonContainer>
+          )}
         </HeadingContainer>
         {entryHistory.items.map(item => {
           return (

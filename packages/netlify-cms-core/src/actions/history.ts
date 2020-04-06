@@ -255,10 +255,14 @@ export function addToHistory(
   };
 }
 
-export function loadHistoryItem(collection: Collection, entry: EntryMap, item: HistoryItem) {
+export function loadHistoryItem(
+  collection: Collection,
+  entry: EntryMap | undefined,
+  item: HistoryItem,
+) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const collectionName = collection.get('name');
-    const slug = entry.get('slug') || '';
+    const slug = entry?.get('slug') || '';
 
     try {
       const state = getState();
