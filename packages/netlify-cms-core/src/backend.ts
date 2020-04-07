@@ -14,6 +14,7 @@ import {
   selectFolderEntryExtension,
   selectInferedField,
   selectMediaFolders,
+  selectFieldsComments,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -896,7 +897,8 @@ export class Backend {
   entryToRaw(collection: Collection, entry: EntryMap): string {
     const format = resolveFormat(collection, entry.toJS());
     const fieldsOrder = this.fieldsOrder(collection, entry);
-    return format && format.toFile(entry.get('data').toJS(), fieldsOrder);
+    const fieldsComments = selectFieldsComments(collection, entry);
+    return format && format.toFile(entry.get('data').toJS(), fieldsOrder, fieldsComments);
   }
 
   fieldsOrder(collection: Collection, entry: EntryMap) {

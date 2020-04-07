@@ -404,4 +404,24 @@ export const selectSortDataPath = (collection: Collection, key: string) => {
   }
 };
 
+export const selectFieldsComments = (collection: Collection, entryMap: EntryMap) => {
+  let fields: EntryField[] = [];
+  if (collection.has('folder')) {
+    fields = collection.get('fields').toArray();
+  } else if (collection.has('files')) {
+    const file = collection.get('files')!.find(f => f?.get('name') === entryMap.get('slug'));
+    fields = file.get('fields').toArray();
+  }
+  const comments: Record<string, string> = {};
+  const names = getFieldsNames(fields);
+  names.forEach(name => {
+    const field = selectField(collection, name);
+    if (field?.has('comment')) {
+      comments[name] = field.get('comment')!;
+    }
+  });
+
+  return comments;
+};
+
 export default collections;

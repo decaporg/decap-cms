@@ -1,4 +1,4 @@
-import yaml from 'js-yaml';
+import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
 import { trimStart, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
@@ -119,7 +119,7 @@ function mergePreloadedConfig(preloadedConfig, loadedConfig) {
 }
 
 function parseConfig(data) {
-  const config = yaml.safeLoad(data);
+  const config = yaml.parse(data);
   if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
     Object.keys(config[CMS_ENV]).forEach(key => {
       config[key] = config[CMS_ENV][key];

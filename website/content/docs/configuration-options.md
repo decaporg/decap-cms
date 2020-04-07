@@ -329,6 +329,7 @@ The `fields` option maps editor UI widgets to field-value pairs in the saved fil
 * `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type). Please note that field default value only works for folder collection type.
 * `required`: specify as `false` to make a field optional; defaults to `true`
 * `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
+* `comment`: optional comment to add before the field (only supported for `yaml`)
 
 In files with frontmatter, one field should be named `body`. This special field represents the section of the document (usually markdown) that comes after the frontmatter.
 
@@ -343,6 +344,7 @@ fields:
   - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
   - {label: "Featured Image", name: "thumbnail", widget: "image", required: false}
   - {label: "Body", name: "body", widget: "markdown"}
+    comment: 'This is a multiline\ncomment'
 ```
 
 ### `editor`
