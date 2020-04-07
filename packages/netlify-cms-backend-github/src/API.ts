@@ -535,30 +535,68 @@ export default class API {
     }
   }
 
-  async retrieveMetadata(contentKey: string) {
-    const { collection, slug } = this.parseContentKey(contentKey);
-    const branch = branchFromContentKey(contentKey);
-    const pullRequest = await this.getBranchPullRequest(branch);
-    const { files: diffs } = await this.getDifferences(this.branch, pullRequest.head.sha);
+  async getPullRequestCommits(number: number) {
+    if (number === MOCK_PULL_REQUEST) {
+      return [];
+    }
+    try {
+      const commits: Octokit.PullsListCommitsResponseItem[] = await this.request(
+        `${this.originRepoURL}/pulls/${number}/commits`,
+      );
+      return commits;
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
+  }
+
+  matchingEntriesFromDiffs(diffs: Octokit.ReposCompareCommitsResponseFilesItem[]) {
     // media files don't have a patch attribute, except svg files
     const matchingEntries = diffs
       .filter(d => d.patch && !d.filename.endsWith('.svg'))
       .map(f => ({ path: f.filename, newFile: f.status === 'added' }));
 
+    return matchingEntries;
+  }
+
+  async retrieveMetadata(contentKey: string) {
+    const { collection, slug } = this.parseContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const { files: diffs } = await this.getDifferences(this.branch, pullRequest.head.sha);
+    const matchingEntries = this.matchingEntriesFromDiffs(diffs);
+    let entry = matchingEntries[0];
     if (matchingEntries.length <= 0) {
-      console.error(
-        'Unable to locate entry from diff',
-        JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
-      );
-      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      // this can happen if there is an empty diff for some reason
+      // we traverse the commits history to infer the entry
+      const commits = await this.getPullRequestCommits(pullRequest.number);
+      for (const commit of commits) {
+        const { files: diffs } = await this.getDifferences(this.branch, commit.sha);
+        const matchingEntries = this.matchingEntriesFromDiffs(diffs);
+        entry = matchingEntries[0];
+        if (entry) {
+          break;
+        }
+      }
+      if (!entry) {
+        console.error(
+          'Unable to locate entry from diff',
+          JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
+        );
+        throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      }
     } else if (matchingEntries.length > 1) {
-      console.warn(
-        `Expected 1 matching entry from diff, but received '${matchingEntries.length}'`,
-        JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
-      );
+      // this only works for folder collections
+      const entryBySlug = matchingEntries.filter(e => e.path.includes(slug))[0];
+      entry = entryBySlug || entry;
+      if (!entryBySlug) {
+        console.warn(
+          `Expected 1 matching entry from diff, but received '${matchingEntries.length}'. Matched '${entry.path}'`,
+          JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
+        );
+      }
     }
 
-    const entry = matchingEntries[0];
     const { path, newFile } = entry;
 
     const mediaFiles = diffs
