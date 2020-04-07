@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.24.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.4...netlify-cms-core@2.24.0) (2020-04-07)
+
+
+### Features
+
+* **yaml:** support comments ([#3529](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3529)) ([4afbbdd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/4afbbdd8a99241d239f28c5be544bb0ca77e345b))
+
+
+
+
+
 ## [2.23.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.3...netlify-cms-core@2.23.4) (2020-04-06)
 
 

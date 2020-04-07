@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.10.2...netlify-cms-widget-markdown@2.11.0) (2020-04-07)
+
+
+### Features
+
+* **yaml:** support comments ([#3529](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3529)) ([4afbbdd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/4afbbdd8a99241d239f28c5be544bb0ca77e345b))
+
+
+
+
+
 ## [2.10.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.10.1...netlify-cms-widget-markdown@2.10.2) (2020-03-30)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown
