@@ -218,6 +218,7 @@ class EditorInterface extends Component {
         onChange={onChange}
         onValidate={onValidate}
         ref={c => (this.controlPaneRef = c)}
+        draftKey={draftKey}
       />
     );
 
@@ -296,7 +297,7 @@ class EditorInterface extends Component {
           loadDeployPreview={loadDeployPreview}
           deployPreview={deployPreview}
         />
-        <Editor key={draftKey}>
+        <Editor>
           <ViewControls>
             <EditorToggle
               isActive={historyVisible}

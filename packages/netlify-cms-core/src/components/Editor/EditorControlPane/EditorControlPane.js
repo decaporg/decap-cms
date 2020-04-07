@@ -38,6 +38,7 @@ export default class ControlPane extends React.Component {
       fieldsErrors,
       onChange,
       onValidate,
+      draftKey,
     } = this.props;
 
     if (!collection || !fields) {
@@ -53,7 +54,7 @@ export default class ControlPane extends React.Component {
         {fields.map((field, i) =>
           field.get('widget') === 'hidden' ? null : (
             <EditorControl
-              key={i}
+              key={`${draftKey}-${i}`}
               field={field}
               value={entry.getIn(['data', field.get('name')])}
               fieldsMetaData={fieldsMetaData}
@@ -78,4 +79,5 @@ ControlPane.propTypes = {
   fieldsErrors: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
+  draftKey: PropTypes.string.isRequired,
 };
