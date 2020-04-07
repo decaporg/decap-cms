@@ -127,16 +127,16 @@ export default class DateTimeControl extends React.Component {
           renderInput={this.renderInput}
         />
         <div
-        css={css`
-          padding-right: 20px;
-          position: absolute;
-          right: 20px;
-          transform: translateY(-40px);
-          width: fit-content;
-          z-index: 1;
-        `}
+          css={css`
+            padding-right: 20px;
+            position: absolute;
+            right: 20px;
+            transform: translateY(-40px);
+            width: fit-content;
+            z-index: 1;
+          `}
         >
-          <div
+          <button
             css={css`
               ${buttons.button}
               ${buttons.default}
@@ -148,7 +148,7 @@ export default class DateTimeControl extends React.Component {
             }}
           >
             Now
-          </div>
+          </button>
         </div>
       </div>
     );
