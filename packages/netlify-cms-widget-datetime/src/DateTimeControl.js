@@ -127,20 +127,28 @@ export default class DateTimeControl extends React.Component {
           renderInput={this.renderInput}
         />
         <div
-          css={css`
-          ${buttons.button}
-          ${buttons.default}
-          ${buttons.lightBlue}
-          ${buttons.small}
-          margin-top: 10px;
+        css={css`
+          padding-right: 20px;
+          position: absolute;
+          right: 20px;
+          transform: translateY(-40px);
           width: fit-content;
-          min-width: 50px;
+          z-index: 1;
         `}
-          onClick={() => {
-            this.handleChange(moment());
-          }}
         >
-          Now
+          <div
+            css={css`
+              ${buttons.button}
+              ${buttons.default}
+              ${buttons.lightBlue}
+              ${buttons.small}
+          `}
+            onClick={() => {
+              this.handleChange(moment());
+            }}
+          >
+            Now
+          </div>
         </div>
       </div>
     );
