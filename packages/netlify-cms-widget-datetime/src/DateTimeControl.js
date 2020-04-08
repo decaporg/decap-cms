@@ -128,7 +128,7 @@ export default class DateTimeControl extends React.Component {
         />
         <div
           css={css`
-            padding-right: 20px;
+            margin-right: 20px;
             position: absolute;
             right: 20px;
             transform: translateY(-40px);
