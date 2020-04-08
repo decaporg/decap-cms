@@ -177,7 +177,6 @@ export class Editor extends React.Component {
     const newSlug = this.props.entryDraft && this.props.entryDraft.getIn(['entry', 'slug']);
     if (!prevProps.slug && newSlug && this.props.newEntry) {
       navigateToEntry(prevProps.collection.get('name'), newSlug);
-      this.props.loadEntry(this.props.collection, newSlug);
     }
 
     if (!prevProps.localBackup && this.props.localBackup) {
