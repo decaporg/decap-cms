@@ -762,6 +762,7 @@ export function persistEntry(collection: Collection) {
           dispatch(loadMedia());
         }
         dispatch(entryPersisted(collection, serializedEntry, slug));
+        if (serializedEntry.get('newRecord')) return dispatch(loadEntry(collection, slug));
       })
       .catch((error: Error) => {
         console.error(error);

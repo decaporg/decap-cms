@@ -406,6 +406,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         }),
       );
       dispatch(unpublishedEntryPersisted(collection, transactionID, newSlug));
+      if (!existingUnpublishedEntry) return dispatch(loadUnpublishedEntry(collection, newSlug));
     } catch (error) {
       dispatch(
         notifSend({
