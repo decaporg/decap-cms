@@ -7,12 +7,12 @@ describe('yaml', () => {
       expect(yaml.fromFile('[]')).toEqual([]);
 
       const result = yaml.fromFile(stripIndent`
-      date: '2020-04-02T16:08:03.327Z'
+      date: 2020-04-02T16:08:03.327Z
       boolean: true
       number: 1
       `);
       expect(result).toEqual({
-        date: '2020-04-02T16:08:03.327Z',
+        date: new Date('2020-04-02T16:08:03.327Z'),
         boolean: true,
         number: 1,
       });
@@ -29,7 +29,7 @@ describe('yaml', () => {
       # image comment
       image: /media/netlify.png
       # date comment
-      date: '2020-04-02T13:27:48.617Z'
+      date: 2020-04-02T13:27:48.617Z
       # object comment
       object:
         # object_title comment
@@ -48,7 +48,7 @@ describe('yaml', () => {
           object_title: 'object_title',
           object_list: [{ object_list_item_1: '1', object_list_item_2: '2' }],
         },
-        date: '2020-04-02T13:27:48.617Z',
+        date: new Date('2020-04-02T13:27:48.617Z'),
         image: '/media/netlify.png',
         title: 'title',
         template: 'post',
@@ -85,7 +85,7 @@ title: title
 # image comment
 image: /media/netlify.png
 # date comment
-date: "2020-04-02T13:27:48.617Z"
+date: 2020-04-02T13:27:48.617Z
 # object comment
 object:
   # object_title comment
@@ -106,7 +106,7 @@ list:
             object_title: 'object_title',
             object_list: [{ object_list_item_1: '1', object_list_item_2: '2' }],
           },
-          date: '2020-04-02T13:27:48.617Z',
+          date: new Date('2020-04-02T13:27:48.617Z'),
           image: '/media/netlify.png',
           title: 'title',
           template: 'post',
