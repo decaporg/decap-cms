@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.24.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.0...netlify-cms-core@2.24.1) (2020-04-09)
+
+
+### Bug Fixes
+
+* allow unlimited alias count ([#3570](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3570)) ([bfb2e2b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/bfb2e2bc574d9b356aa14ffb3b6eb7eca285c73a))
+* duplicate entry ([#3563](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3563)) ([1d88b15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1d88b15de54d62d1d8d40a0391e9fc640af2ca97))
+* pass prettyErrors to yaml when parsing config ([#3571](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3571)) ([0d59642](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0d59642e64e9341b3ac73ede4cfb0e4ba2980faa))
+* use v1.1 schema only when parsing ([#3569](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3569)) ([0761ffa](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0761ffa3f29c29a7b0c7cf56fdb38342bf25ff0e))
+
+
+
+
+
 # [2.24.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.23.4...netlify-cms-core@2.24.0) (2020-04-07)
 
 
