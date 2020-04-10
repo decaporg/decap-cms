@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.24.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.1...netlify-cms-core@2.24.2) (2020-04-10)
+
+
+### Bug Fixes
+
+* enable merge option for yaml parser ([#3577](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3577)) ([b8eeab2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b8eeab2e35a51cb8128d2a0df23d8ecd489208cd))
+
+
+
+
+
 ## [2.24.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.0...netlify-cms-core@2.24.1) (2020-04-09)
 
 
