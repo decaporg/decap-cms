@@ -9,6 +9,7 @@ import { colors, lengths } from 'netlify-cms-ui-default';
 import { status } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
 import WorkflowCard from './WorkflowCard';
+import { selectEntryCollectionTitle } from 'Reducers/collections';
 
 const WorkflowListContainer = styled.div`
   min-height: 60%;
@@ -232,7 +233,7 @@ class WorkflowList extends React.Component {
                   <div>
                     <WorkflowCard
                       collectionLabel={collectionLabel || collectionName}
-                      title={entry.get('label') || entry.getIn(['data', 'title'])}
+                      title={selectEntryCollectionTitle(collection, entry)}
                       authorLastChange={entry.getIn(['metaData', 'user'])}
                       body={entry.getIn(['data', 'body'])}
                       isModification={isModification}
