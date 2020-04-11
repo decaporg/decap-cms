@@ -38,7 +38,7 @@ const DropdownList = styled.ul`
   top: 0;
   left: 0;
   min-width: 100%;
-  z-index: ${zIndex.zIndex2};
+  z-index: ${zIndex.zIndex299};
 
   ${props => css`
     width: ${props.width};
