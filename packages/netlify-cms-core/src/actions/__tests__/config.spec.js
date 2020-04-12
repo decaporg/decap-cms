@@ -1,5 +1,6 @@
 import { fromJS } from 'immutable';
-import { applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
+import { stripIndent } from 'common-tags';
+import { parseConfig, applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.mock('coreSrc/backend', () => {
@@ -9,6 +10,82 @@ jest.mock('coreSrc/backend', () => {
 });
 
 describe('config', () => {
+  describe('parseConfig', () => {
+    it('can parse simple yaml config', () => {
+      const file = stripIndent`
+        backend:
+          name: test-repo
+        media_folder: static/images
+      `;
+
+      expect(parseConfig(file)).toEqual({
+        backend: { name: 'test-repo' },
+        media_folder: 'static/images',
+      });
+    });
+
+    it('should merge yaml aliases', () => {
+      const file = stripIndent`
+      backend:
+        name: github
+        repo: netlify/netlify-cms
+        squash_merges: true
+        open_authoring: true
+      local_backend: true
+      site_url: https://www.netlifycms.org
+      publish_mode: editorial_workflow
+      media_folder: website/static/img
+      public_folder: img
+      docs_collection: &docs_collection
+        folder: website/content/docs
+        create: true
+        preview_path: 'docs/{{slug}}'
+        fields:
+          - { label: Title, name: title }
+          - { label: Body, name: body, widget: markdown }
+      collections:
+        - <<: *docs_collection
+          name: docs_start
+          label: 'Docs: Quick Start'
+      `;
+
+      expect(parseConfig(file)).toEqual({
+        backend: {
+          name: 'github',
+          repo: 'netlify/netlify-cms',
+          squash_merges: true,
+          open_authoring: true,
+        },
+        local_backend: true,
+        site_url: 'https://www.netlifycms.org',
+        publish_mode: 'editorial_workflow',
+        media_folder: 'website/static/img',
+        public_folder: 'img',
+        docs_collection: {
+          folder: 'website/content/docs',
+          create: true,
+          preview_path: 'docs/{{slug}}',
+          fields: [
+            { label: 'Title', name: 'title' },
+            { label: 'Body', name: 'body', widget: 'markdown' },
+          ],
+        },
+        collections: [
+          {
+            folder: 'website/content/docs',
+            create: true,
+            preview_path: 'docs/{{slug}}',
+            fields: [
+              { label: 'Title', name: 'title' },
+              { label: 'Body', name: 'body', widget: 'markdown' },
+            ],
+            name: 'docs_start',
+            label: 'Docs: Quick Start',
+          },
+        ],
+      });
+    });
+  });
   describe('applyDefaults', () => {
     describe('publish_mode', () => {
       it('should set publish_mode if not set', () => {

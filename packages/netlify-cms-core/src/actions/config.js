@@ -118,7 +118,7 @@ function mergePreloadedConfig(preloadedConfig, loadedConfig) {
   return preloadedConfig ? preloadedConfig.mergeDeep(map) : map;
 }
 
-function parseConfig(data) {
+export function parseConfig(data) {
   const config = yaml.parse(data, { maxAliasCount: -1, prettyErrors: true, merge: true });
   if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
     Object.keys(config[CMS_ENV]).forEach(key => {
