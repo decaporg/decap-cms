@@ -177,6 +177,24 @@ describe('Frontmatter', () => {
         }),
       ).toEqual('withLineBreak\n');
     });
+
+    it('should keep field types', () => {
+      const frontmatter = frontmatterYAML();
+      const file = frontmatter.toFile({
+        number: 1,
+        string: 'Hello World!',
+        date: new Date('2020-01-01'),
+        array: ['1', new Date('2020-01-01')],
+        body: 'Content',
+      });
+      expect(frontmatter.fromFile(file)).toEqual({
+        number: 1,
+        string: 'Hello World!',
+        date: new Date('2020-01-01'),
+        array: ['1', new Date('2020-01-01')],
+        body: 'Content',
+      });
+    });
   });
 
   describe('toml', () => {
@@ -262,6 +280,25 @@ describe('Frontmatter', () => {
           'On another line',
         ].join('\n'),
       );
+    });
+
+    it('should keep field types', () => {
+      const frontmatter = frontmatterTOML();
+      const file = frontmatter.toFile({
+        number: 1,
+        string: 'Hello World!',
+        date: new Date('2020-01-01'),
+        // in toml arrays must contain the same type
+        array: ['1', new Date('2020-01-01').toISOString()],
+        body: 'Content',
+      });
+      expect(frontmatter.fromFile(file)).toEqual({
+        number: 1,
+        string: 'Hello World!',
+        date: new Date('2020-01-01'),
+        array: ['1', new Date('2020-01-01').toISOString()],
+        body: 'Content',
+      });
     });
   });
 
@@ -356,6 +393,25 @@ describe('Frontmatter', () => {
           'On another line',
         ].join('\n'),
       );
+    });
+
+    it('should keep field types', () => {
+      const frontmatter = frontmatterJSON();
+      const file = frontmatter.toFile({
+        number: 1,
+        string: 'Hello World!',
+        // no way to represent date in JSON
+        date: new Date('2020-01-01').toISOString(),
+        array: ['1', new Date('2020-01-01').toISOString()],
+        body: 'Content',
+      });
+      expect(frontmatter.fromFile(file)).toEqual({
+        number: 1,
+        string: 'Hello World!',
+        date: new Date('2020-01-01').toISOString(),
+        array: ['1', new Date('2020-01-01').toISOString()],
+        body: 'Content',
+      });
     });
   });
 });
