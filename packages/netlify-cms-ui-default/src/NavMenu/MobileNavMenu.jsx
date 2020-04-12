@@ -34,13 +34,13 @@ const NavIconButtonWrap = styled.button`
   position: relative;
   background-color: ${({ active, theme }) =>
     active
-      ? color(theme.color.success['500'])
+      ? color(theme.color.success['900'])
           .alpha(0.2)
           .string()
       : 'transparent'};
   border: 0;
   border-radius: 6px;
-  color: ${({ active, theme }) => (active ? theme.color.primary['500'] : theme.color.highEmphasis)};
+  color: ${({ active, theme }) => (active ? theme.color.success['900'] : theme.color.highEmphasis)};
   overflow: hidden;
   outline: none;
   cursor: pointer;

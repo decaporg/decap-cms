@@ -25,10 +25,10 @@ const NavMenuItemInside = styled.span`
   width: 100%;
   overflow: hidden;
   color: ${({ theme, active }) =>
-    active ? theme.color.success['500'] : theme.color.mediumEmphasis};
+    active ? theme.color.success['900'] : theme.color.mediumEmphasis};
   background-color: ${({ theme, active }) =>
     active
-      ? color(theme.color.success['500'])
+      ? color(theme.color.success['900'])
           .alpha(0.1)
           .string()
       : `transparent`};
@@ -39,10 +39,10 @@ const NavMenuItemInside = styled.span`
   transition: 200ms;
   ${NavMenuItemWrap}:hover & {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['500'] : theme.color.highEmphasis};
+      active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['500'])
+        ? color(theme.color.success['900'])
             .alpha(0.1)
             .string()
         : color(theme.color.highEmphasis)
@@ -57,10 +57,10 @@ const NavMenuItemInside = styled.span`
   }
   ${NavMenuItemWrap}:active & {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['500'] : theme.color.highEmphasis};
+      active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['500'])
+        ? color(theme.color.success['900'])
             .alpha(0.1)
             .string()
         : color(theme.color.highEmphasis)

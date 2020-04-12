@@ -28,7 +28,7 @@ const ColumnList = styled.div`
   border-radius: 4px;
   position: relative;
   height: 100%;
-  ${({ theme, isHovered }) => (isHovered ? `border-color: ${theme.color.primary['500']};` : ``)}
+  ${({ theme, isHovered }) => (isHovered ? `border-color: ${theme.color.primary['900']};` : ``)}
   ${({ hidden }) => (hidden ? `display: none;` : ``)}
   ${({ hiddenRightBorder }) =>
     hiddenRightBorder

@@ -23,16 +23,16 @@ export const StyledButton = styled.button`
         ? 'transparent'
         : primary
         ? type === 'success'
-          ? theme.color.success['500']
+          ? theme.color.success['900']
           : type === 'danger'
-          ? theme.color.danger['500']
+          ? theme.color.danger['900']
           : theme.color.neutral[theme.darkMode ? '800' : '800']
         : type === 'success'
-        ? color(theme.color.success['500'])
+        ? color(theme.color.success['900'])
             .alpha(0.2)
             .string()
         : type === 'danger'
-        ? color(theme.color.danger['500'])
+        ? color(theme.color.danger['900'])
             .alpha(0.2)
             .string()
         : color(theme.color.neutral['700'])
@@ -58,16 +58,16 @@ export const StyledButton = styled.button`
                 ? 'rgba(0,0,0,0.15)'
                 : primary
                 ? type === 'success'
-                  ? theme.color.success['400']
+                  ? theme.color.success['800']
                   : type === 'danger'
-                  ? theme.color.danger['400']
+                  ? theme.color.danger['800']
                   : theme.color.neutral['700']
                 : type === 'success'
-                ? color(theme.color.success['500'])
+                ? color(theme.color.success['900'])
                     .alpha(theme.darkMode ? 0.35 : 0.1)
                     .string()
                 : type === 'danger'
-                ? color(theme.color.danger['500'])
+                ? color(theme.color.danger['900'])
                     .alpha(theme.darkMode ? 0.35 : 0.1)
                     .string()
                 : color(theme.color.neutral['700'])
@@ -80,16 +80,16 @@ export const StyledButton = styled.button`
             background-color: ${
               primary
                 ? type === 'success'
-                  ? theme.color.success['400']
+                  ? theme.color.success['800']
                   : type === 'danger'
-                  ? theme.color.danger['400']
+                  ? theme.color.danger['800']
                   : theme.color.neutral['700']
                 : type === 'success'
-                ? color(theme.color.success['500'])
+                ? color(theme.color.success['900'])
                     .alpha(theme.darkMode ? 0.35 : 0.1)
                     .string()
                 : type === 'danger'
-                ? color(theme.color.danger['500'])
+                ? color(theme.color.danger['900'])
                     .alpha(theme.darkMode ? 0.35 : 0.1)
                     .string()
                 : color(theme.color.neutral['700'])
@@ -102,16 +102,16 @@ export const StyledButton = styled.button`
             background-color: ${
               primary
                 ? type === 'success'
-                  ? theme.color.success['600']
+                  ? theme.color.success['1000']
                   : type === 'danger'
-                  ? theme.color.danger['600']
+                  ? theme.color.danger['1000']
                   : theme.color.neutral['900']
                 : type === 'success'
                 ? color(theme.color.success['500'])
                     .alpha(theme.darkMode ? 0.1 : 0.35)
                     .string()
                 : type === 'danger'
-                ? color(theme.color.danger['500'])
+                ? color(theme.color.danger['900'])
                     .alpha(theme.darkMode ? 0.1 : 0.35)
                     .string()
                 : color(theme.color.neutral['700'])
@@ -139,7 +139,7 @@ export const StyledButton = styled.button`
               background-color: transparent;
             }
             &:hover {
-              color: ${type === 'danger' ? theme.color.danger['500'] : theme.color.primary['500']}
+              color: ${type === 'danger' ? theme.color.danger['900'] : theme.color.primary['900']}
             }
         `
       : ''}

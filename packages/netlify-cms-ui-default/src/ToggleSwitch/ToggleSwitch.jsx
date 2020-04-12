@@ -7,7 +7,7 @@ const ToggleSwitchInput = styled.div`
   border-radius: 100px;
   position: relative;
   background-color: ${({ theme, checked }) =>
-    checked ? theme.color.success['400'] : theme.color.neutral[theme.darkMode ? '1000' : '300']};
+    checked ? theme.color.success['900'] : theme.color.neutral[theme.darkMode ? '1000' : '300']};
   transition: 0.25s;
   cursor: pointer;
   &:after {

@@ -76,7 +76,7 @@ const Content = styled.div`
 const IconWrap = styled.div`
   background-color: ${({ type, theme }) => {
     if (type === TYPE.SUCCESS)
-      return color(theme.color.success['500'])
+      return color(theme.color.success['900'])
         .alpha(0.2)
         .string();
     if (type === TYPE.WARNING)
@@ -84,7 +84,7 @@ const IconWrap = styled.div`
         .alpha(0.2)
         .string();
     if (type === TYPE.ERROR)
-      return color(theme.color.danger['500'])
+      return color(theme.color.danger['900'])
         .alpha(0.2)
         .string();
     return color(theme.color.neutral['700'])
@@ -92,9 +92,9 @@ const IconWrap = styled.div`
       .string();
   }};
   color: ${({ type, theme }) => {
-    if (type === TYPE.SUCCESS) return theme.color.success[500];
+    if (type === TYPE.SUCCESS) return theme.color.success[900];
     if (type === TYPE.WARNING) return '#FFB81C';
-    if (type === TYPE.ERROR) return theme.color.danger[500];
+    if (type === TYPE.ERROR) return theme.color.danger[900];
     return theme.color.mediumEmphasis;
   }};
   display: flex;

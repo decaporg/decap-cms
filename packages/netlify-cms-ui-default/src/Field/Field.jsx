@@ -10,7 +10,7 @@ const FocusIndicator = styled.div`
   left: 0;
   right: 0;
   height: ${({ focus }) => (focus ? 2 : 1)}px;
-  background-color: ${({ theme }) => theme.color.primary['400']};
+  background-color: ${({ theme }) => theme.color.primary['800']};
   transition: 0.2s;
   transform: scaleX(${({ focus }) => (focus ? 1 : 0)});
   backface-visibility: hidden;
@@ -41,7 +41,7 @@ const FieldInside = styled.div`
       : `
     padding: 1rem;
     box-shadow: inset 0 0 0 ${focus ? 2 : 1}px ${
-          focus ? theme.color.primary['500'] : theme.color.border
+          focus ? theme.color.primary['900'] : theme.color.border
         };
     border-radius: 8px;
     transition: 0.2s;

@@ -41,7 +41,7 @@ const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    box-shadow: inset 0 0 0 2px ${({ theme }) => theme.color.primary['500']};
+    box-shadow: inset 0 0 0 2px ${({ theme }) => theme.color.primary['900']};
   }
 `;
 

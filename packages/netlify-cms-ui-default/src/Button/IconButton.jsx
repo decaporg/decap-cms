@@ -6,10 +6,10 @@ import color from 'color';
 
 const IconButtonWrap = styled.button`
   color: ${({ theme, active }) =>
-    active ? theme.color.success['500'] : theme.color.mediumEmphasis};
+    active ? theme.color.success['900'] : theme.color.mediumEmphasis};
   background-color: ${({ theme, active }) =>
     active
-      ? color(theme.color.success['500'])
+      ? color(theme.color.success['900'])
           .alpha(0.1)
           .string()
       : `transparent`};
@@ -27,10 +27,10 @@ const IconButtonWrap = styled.button`
   &:hover,
   &:focus {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['500'] : theme.color.highEmphasis};
+      active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['500'])
+        ? color(theme.color.success['900'])
             .alpha(0.2)
             .string()
         : color(theme.color.highEmphasis)
@@ -39,10 +39,10 @@ const IconButtonWrap = styled.button`
   }
   &:active {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['500'] : theme.color.highEmphasis};
+      active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['500'])
+        ? color(theme.color.success['900'])
             .alpha(0.3)
             .string()
         : color(theme.color.highEmphasis)

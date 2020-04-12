@@ -64,9 +64,9 @@ export const TreeContentWrap = styled(animated.div)`
   box-shadow: inset 0 -1px 0 0 ${({ theme }) => theme.color.border},
     ${({ theme, type }) =>
       type === 'danger'
-        ? `inset 2px 0 0 0 ${theme.color.danger['500']}`
+        ? `inset 2px 0 0 0 ${theme.color.danger['900']}`
         : type === 'success'
-        ? `inset 2px 0 0 0 ${theme.color.success['500']}`
+        ? `inset 2px 0 0 0 ${theme.color.success['900']}`
         : `inset 1px 0 0 0 ${theme.color.border}`};
   overflow: hidden;
   transition: 200ms;

@@ -73,8 +73,8 @@ addParameters({
     // Override the default dark theme
     dark: {
       ...themes.dark,
-      colorPrimary: darkTheme.color.primary['500'],
-      colorSecondary: darkTheme.color.primary['500'],
+      colorPrimary: darkTheme.color.primary['900'],
+      colorSecondary: darkTheme.color.primary['900'],
 
       // UI
       appBg: darkTheme.color.background,
@@ -107,8 +107,8 @@ addParameters({
     // Override the default light theme
     light: {
       ...themes.normal,
-      colorPrimary: lightTheme.color.primary['500'],
-      colorSecondary: lightTheme.color.primary['500'],
+      colorPrimary: lightTheme.color.primary['900'],
+      colorSecondary: lightTheme.color.primary['900'],
 
       // UI
       appBg: lightTheme.color.background,

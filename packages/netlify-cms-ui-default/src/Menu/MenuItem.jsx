@@ -15,9 +15,9 @@ export const MenuItemWrap = styled.div`
   border-radius: 4px;
   color: ${({ theme, type }) =>
     type === 'danger'
-      ? theme.color.danger[theme.darkMode ? '300' : '700']
+      ? theme.color.danger[theme.darkMode ? '300' : '1400']
       : type === 'success'
-      ? theme.color.success[theme.darkMode ? '300' : '700']
+      ? theme.color.success[theme.darkMode ? '300' : '1400']
       : theme.color.highEmphasis};
   cursor: pointer;
   &:hover {
@@ -25,19 +25,19 @@ export const MenuItemWrap = styled.div`
     ${({ theme, type }) =>
       type === 'danger'
         ? `
-      background-color: ${color(theme.color.danger['500'])
+      background-color: ${color(theme.color.danger['900'])
         .alpha(0.2)
         .string()};
-      color: ${theme.color.danger[theme.darkMode ? '300' : '700']};
+      color: ${theme.color.danger[theme.darkMode ? '300' : '1400']};
     `
         : ``}
     ${({ theme, type }) =>
       type === 'success'
         ? `
-        background-color: ${color(theme.color.success['500'])
+        background-color: ${color(theme.color.success['900'])
           .alpha(0.2)
           .string()};
-      color: ${theme.color.success[theme.darkMode ? '300' : '700']};
+      color: ${theme.color.success[theme.darkMode ? '300' : '1400']};
     `
         : ``}
   }

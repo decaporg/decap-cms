@@ -24,9 +24,9 @@ const countdownAnimation = keyframes`
 
 const ProgressIndicator = styled.div`
   background-color: ${({ type, theme }) => {
-    if (type === TYPE.SUCCESS) return theme.color.success[500];
+    if (type === TYPE.SUCCESS) return theme.color.success[900];
     if (type === TYPE.WARNING) return '#FFB81C';
-    if (type === TYPE.ERROR) return theme.color.danger[500];
+    if (type === TYPE.ERROR) return theme.color.danger[900];
     return theme.color.mediumEmphasis;
   }};
   height: 100%;

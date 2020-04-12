@@ -77,7 +77,7 @@ const TRow = styled.div`
   align-items: center;
   background-color: ${({ isSelected, theme }) =>
     isSelected
-      ? color(theme.color.success['500'])
+      ? color(theme.color.success['900'])
           .alpha(theme.darkMode ? 0.1 : 0.15)
           .string()
       : 'transparent'};
@@ -91,7 +91,7 @@ const TRow = styled.div`
     &:hover {
       background-color: ${
         isSelected
-          ? color(theme.color.success['500'])
+          ? color(theme.color.success['900'])
               .alpha(theme.darkMode ? 0.15 : 0.05)
               .string()
           : theme.color.surface
@@ -155,27 +155,27 @@ const SelectToggleWrap = styled.label`
         theme.darkMode
           ? theme.color.highEmphasis
           : checked
-          ? theme.color.success[600]
+          ? theme.color.success[1000]
           : theme.color.lowEmphasis,
       )
         .alpha(checked ? 1 : 0.75)
         .string()};
   border-radius: 0.75rem;
   background-color: ${({ checked, theme }) =>
-    checked ? theme.color.success['500'] : `rgba(0, 0, 0, 0.05)`};
+    checked ? theme.color.success['900'] : `rgba(0, 0, 0, 0.05)`};
   transition: 150ms;
   cursor: pointer;
   color: white;
   &:hover {
     background-color: ${({ checked, theme }) =>
-      checked ? theme.color.success['500'] : `rgba(0, 0, 0, 0.1)`};
+      checked ? theme.color.success['900'] : `rgba(0, 0, 0, 0.1)`};
     box-shadow: inset 0 0 0 2px
       ${({ checked, theme }) =>
         color(
           theme.darkMode
             ? theme.color.highEmphasis
             : checked
-            ? theme.color.success[600]
+            ? theme.color.success[1000]
             : theme.color.lowEmphasis,
         )
           .alpha(checked ? 1 : 0.75)
@@ -273,7 +273,7 @@ const Table = ({
                     </div>
                   );
                 },
-                width: '48px',
+                width: '36px',
               },
             ]
           : []),
@@ -283,7 +283,7 @@ const Table = ({
               {
                 id: 'rowMenu',
                 onlyShowOnRowHover: true,
-                width: '48px',
+                width: rowSize === 'xs' ? '24px' : '48px',
                 Cell({ row: { original: rowData }, onMenuToggle }) {
                   const [anchorEl, setAnchorEl] = useState();
 
@@ -291,6 +291,7 @@ const Table = ({
                     <>
                       <IconButton
                         icon="more-vertical"
+                        size={rowSize === 'xs' && 'sm'}
                         onClick={e => {
                           e.stopPropagation();
                           setAnchorEl(e.currentTarget);

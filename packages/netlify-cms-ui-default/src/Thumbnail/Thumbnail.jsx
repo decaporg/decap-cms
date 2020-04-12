@@ -21,7 +21,7 @@ const ThumbnailWrap = styled(Card)`
       right: 0;
       bottom: 0;
       left: 0;
-      background-color: ${theme.color.success['500']};
+      background-color: ${theme.color.success['900']};
       opacity: ${selected ? 0.1 : 0};
       border-radius: 6px;
       pointer-events: none;
@@ -35,7 +35,7 @@ const ThumbnailWrap = styled(Card)`
       right: 0;
       bottom: 0;
       left: 0;
-      box-shadow: inset 0 0 0 ${selected ? 2 : 0}px ${theme.color.success['500']};
+      box-shadow: inset 0 0 0 ${selected ? 2 : 0}px ${theme.color.success['900']};
       border-radius: 6px;
       pointer-events: none;
       transition: 200ms;
@@ -238,7 +238,7 @@ const SelectToggle = styled.div`
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, ${({ selected }) => (selected ? 1 : 0.75)});
   border-radius: 0.75rem;
   background-color: ${({ selected, theme }) =>
-    selected ? theme.color.success['500'] : `rgba(0, 0, 0, 0.1)`};
+    selected ? theme.color.success['900'] : `rgba(0, 0, 0, 0.1)`};
   transition: 200ms;
   cursor: pointer;
   color: white;

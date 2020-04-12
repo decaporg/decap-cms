@@ -66,7 +66,7 @@ const getDatepickerStyles = theme => css`
     flex-wrap: wrap;
   }
   .datetime-picker .calendar table thead th {
-    color: ${theme.color.primary['500']};
+    color: ${theme.color.primary['900']};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,12 +115,12 @@ const getDatepickerStyles = theme => css`
     font-weight: 400;
   }
   .datetime-picker .calendar table tbody tr td.selected {
-    background-color: ${theme.color.primary['500']};
+    background-color: ${theme.color.primary['900']};
     color: #fff;
     font-weight: 400;
   }
   .datetime-picker .calendar table tbody tr td.selected:hover {
-    background-color: ${theme.color.primary['400']};
+    background-color: ${theme.color.primary['800']};
     color: #fff;
   }
   .datetime-picker .calendar table tbody tr td.selected.start {
@@ -306,11 +306,11 @@ const getDatepickerStyles = theme => css`
     background-image: linear-gradient(90deg, ${theme.color.disabled}, ${theme.color.disabled});
   }
   .datetime-picker .time .sliders .slider .handle {
-    background-color: ${theme.color.primary[500]};
+    background-color: ${theme.color.primary['900']};
     border: none;
     border-radius: 32px;
     &:active {
-      background-color: ${theme.color.primary[700]};
+      background-color: ${theme.color.primary['1400']};
     }
   }
 `;

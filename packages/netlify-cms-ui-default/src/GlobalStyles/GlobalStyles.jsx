@@ -15,10 +15,10 @@ const getGlobalStyles = theme => css`
   }
 
   *::selection {
-    background-color: ${color(theme.color.success['500'])
+    background-color: ${color(theme.color.success['900'])
       .alpha(0.3)
       .string()};
-    color: ${theme.color.success[theme.darkMode ? '200' : '800']};
+    color: ${theme.color.success[theme.darkMode ? '200' : '1500']};
   }
 
   html,
@@ -65,7 +65,7 @@ const getGlobalStyles = theme => css`
   }
 
   a {
-    color: ${theme.color.primary['400']};
+    color: ${theme.color.primary['1500']};
     text-decoration: none;
   }
 

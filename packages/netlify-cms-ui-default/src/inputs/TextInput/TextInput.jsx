@@ -13,7 +13,7 @@ const StyledInput = styled.input`
   font-weight: ${({ title }) => (title ? 'bold' : 'normal')};
   letter-spacing: ${({ title }) => (title ? '-0.5px' : '0')};
   line-height: 1rem;
-  caret-color: ${({ theme }) => theme.color.primary['400']};
+  caret-color: ${({ theme }) => theme.color.primary['800']};
   margin: -2rem -1rem -1rem -1rem;
   padding: 2rem 1rem 1rem 1rem;
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)} ::placeholder {

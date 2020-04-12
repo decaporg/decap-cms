@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const Label = styled.label`
-  color: ${({ theme, focus }) => (focus ? theme.color.primary['400'] : theme.color.lowEmphasis)};
+  color: ${({ theme, focus }) => (focus ? theme.color.primary['800'] : theme.color.lowEmphasis)};
   font-size: 12px;
   font-weight: bold;
   letter-spacing: -0.5px;
