@@ -49,26 +49,23 @@ const ensureRequestArg = func => req => func(maybeRequestArg(req));
 const ensureRequestArg2 = func => (arg, req) => func(arg, maybeRequestArg(req));
 
 // This actually performs the built request object
-const performRequest = ensureRequestArg(req => fetch(...toFetchArguments(req)));
+const performRequest = ensureRequestArg(req => {
+  const args = toFetchArguments(req);
+  return fetch(...args);
+});
 
 // Each of the following functions takes options and returns another
-// function that performs the requested action on a request. They each
-// default to containing an empty object, so you can simply call them
-// without arguments to generate a request with only those properties.
+// function that performs the requested action on a request.
 const getCurriedRequestProcessor = flow([ensureRequestArg2, curry]);
-const getPropSetFunctions = path => [
-  getCurriedRequestProcessor((val, req) => req.setIn(path, val)),
-  getCurriedRequestProcessor((val, req) => (req.getIn(path) ? req : req.setIn(path, val))),
-];
-const getPropMergeFunctions = path => [
-  getCurriedRequestProcessor((obj, req) => req.updateIn(path, (p = Map()) => p.merge(obj))),
-  getCurriedRequestProcessor((obj, req) => req.updateIn(path, (p = Map()) => Map(obj).merge(p))),
-];
+const getPropSetFunction = path => getCurriedRequestProcessor((val, req) => req.setIn(path, val));
+const getPropMergeFunction = path =>
+  getCurriedRequestProcessor((obj, req) => req.updateIn(path, (p = Map()) => p.merge(obj)));
 
-const [withMethod, withDefaultMethod] = getPropSetFunctions(['method']);
-const [withBody, withDefaultBody] = getPropSetFunctions(['body']);
-const [withParams, withDefaultParams] = getPropMergeFunctions(['params']);
-const [withHeaders, withDefaultHeaders] = getPropMergeFunctions(['headers']);
+const withMethod = getPropSetFunction(['method']);
+const withBody = getPropSetFunction(['body']);
+const withNoCache = getPropSetFunction(['cache'])('no-cache');
+const withParams = getPropMergeFunction(['params']);
+const withHeaders = getPropMergeFunction(['headers']);
 
 // withRoot sets a root URL, unless the URL is already absolute
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
@@ -83,24 +80,15 @@ const withRoot = getCurriedRequestProcessor((root, req) =>
   }),
 );
 
-// withTimestamp needs no argument and has to run as late as possible,
-// so it calls `withParams` only when it's actually called with a
-// request.
-const withTimestamp = ensureRequestArg(req => withParams({ ts: new Date().getTime() }, req));
-
 export default {
   toURL,
   fromURL,
   fromFetchArguments,
   performRequest,
   withMethod,
-  withDefaultMethod,
   withBody,
-  withDefaultBody,
   withHeaders,
-  withDefaultHeaders,
   withParams,
-  withDefaultParams,
   withRoot,
-  withTimestamp,
+  withNoCache,
 };

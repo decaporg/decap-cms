@@ -93,7 +93,6 @@ describe('github API', () => {
     beforeEach(() => {
       const fetch = jest.fn();
       global.fetch = fetch;
-      global.Date = jest.fn(() => ({ getTime: () => 1000 }));
     });
 
     afterEach(() => {
@@ -112,7 +111,8 @@ describe('github API', () => {
       const result = await api.request('/some-path');
       expect(result).toEqual('some response');
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path?ts=1000', {
+      expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path', {
+        cache: 'no-cache',
         headers: {
           Authorization: 'token token',
           'Content-Type': 'application/json; charset=utf-8',
@@ -157,7 +157,8 @@ describe('github API', () => {
       const result = await api.request('/some-path');
       expect(result).toEqual('some response');
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path?ts=1000', {
+      expect(fetch).toHaveBeenCalledWith('https://api.github.com/some-path', {
+        cache: 'no-cache',
         headers: {
           Authorization: 'promise-token',
           'Content-Type': 'application/json; charset=utf-8',

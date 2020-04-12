@@ -21,7 +21,17 @@ const retrieveRecordedExpectations = async () => {
       .then(resolve, reject);
   });
 
-  let recorded = await promise;
+  let timeout;
+  const timeoutPromise = new Promise(resolve => {
+    timeout = setTimeout(() => {
+      console.warn('retrieveRecordedExpectations timeout');
+      resolve([]);
+    }, 3000);
+  });
+
+  let recorded = await Promise.race([promise, timeoutPromise]);
+  clearTimeout(timeout);
+
   recorded = recorded.filter(({ httpRequest }) => {
     const { Host = [] } = httpRequest.headers;
 

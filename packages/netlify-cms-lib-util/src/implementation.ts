@@ -162,7 +162,7 @@ type ReadFile = (
   options: { parseText: boolean },
 ) => Promise<string | Blob>;
 
-type ReadFileMetadata = (path: string, id: string) => Promise<FileMetadata>;
+type ReadFileMetadata = (path: string, id: string | null | undefined) => Promise<FileMetadata>;
 
 type ReadUnpublishedFile = (
   key: string,
@@ -183,9 +183,7 @@ const fetchFiles = async (
           try {
             const [data, fileMetadata] = await Promise.all([
               readFile(file.path, file.id, { parseText: true }),
-              file.id
-                ? readFileMetadata(file.path, file.id)
-                : Promise.resolve({ author: '', updatedOn: '' }),
+              readFileMetadata(file.path, file.id),
             ]);
             resolve({ file: { ...file, ...fileMetadata }, data: data as string });
             sem.leave();
