@@ -189,12 +189,16 @@ const SizedIcon = ({ size, className, ...props }) => (
     {...props}
     className={className}
     size={
-      size === 'lg'
-        ? '24'
+      size === 'xs'
+        ? '12'
         : size === 'sm'
         ? '16'
         : size === null || size === undefined || size === 'md'
         ? '20'
+        : size === 'lg'
+        ? '24'
+        : size === 'xl'
+        ? '32'
         : size
     }
   />

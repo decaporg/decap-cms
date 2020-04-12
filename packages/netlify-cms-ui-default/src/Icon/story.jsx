@@ -16,7 +16,7 @@ export default {
 export const _Icon = () => {
   return (
     <StyledIcon
-      size={select('size', { md: null, lg: 'lg' }, null)}
+      size={select('size', { xs: 'xs', sm: 'sm', md: null, lg: 'lg', xl: 'xl' }, null)}
       name={select(
         'name',
         {

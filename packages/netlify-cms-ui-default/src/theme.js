@@ -36,10 +36,6 @@ export const lightTheme = {
   shadow,
   color: {
     ...color,
-    primary: color.turquoise,
-    secondary: color.turquoise,
-    danger: color.red,
-    success: color.turquoise,
     text: color.neutral['800'],
     label: color.neutral['500'],
     alternateBackground: color.neutral['50'],
@@ -66,11 +62,6 @@ export const darkTheme = {
   shadow,
   color: {
     ...color,
-    responsive,
-    primary: color.turquoise,
-    secondary: color.turquoise,
-    danger: color.red,
-    success: color.turquoise,
     text: color.neutral['100'],
     label: color.neutral['500'],
     alternateBackground: color.neutral['1600'],
