@@ -11,6 +11,7 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 require('dotenv').config();
+const { merge } = require('lodash');
 const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
 
 const {
@@ -35,7 +36,7 @@ const {
 } = require('./bitbucket');
 const { setupProxy, teardownProxy, setupProxyTest, teardownProxyTest } = require('./proxy');
 
-const { copyBackendFiles, switchVersion } = require('../utils/config');
+const { copyBackendFiles, switchVersion, updateConfig } = require('../utils/config');
 
 module.exports = async (on, config) => {
   // `on` is used to hook into various events Cypress emits
@@ -160,6 +161,13 @@ module.exports = async (on, config) => {
       console.log(`Switching CMS to version '${version}'`);
 
       await switchVersion(version);
+
+      return null;
+    },
+    async updateConfig(config) {
+      await updateConfig(current => {
+        merge(current, config);
+      });
 
       return null;
     },
