@@ -15,6 +15,7 @@ import {
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
 import { keyToPathArray } from '../lib/stringTemplate';
+import { summaryFormatter } from '../lib/formatters';
 import { Backend } from '../backend';
 
 const collections = (state = null, action: CollectionsAction) => {
@@ -100,9 +101,8 @@ const selectors = {
       return file && file.get('name');
     },
     entryLabel(collection: Collection, slug: string) {
-      const path = this.entryPath(collection, slug);
-      const files = collection.get('files');
-      return files && files.find(f => f?.get('file') === path).get('label');
+      const file = this.fileForEntry(collection, slug);
+      return file && file.get('label');
     },
     allowNewEntries() {
       return false;
@@ -350,6 +350,23 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
   }
 
   return null;
+};
+
+export const selectEntryCollectionTitle = (collection: Collection, entry: EntryMap) => {
+  // prefer formatted summary over everything else
+  const summaryTemplate = collection.get('summary');
+  if (summaryTemplate) return summaryFormatter(summaryTemplate, entry, collection);
+
+  // if the collection is a file collection return the label of the entry
+  if (collection.get('type') == FILES) {
+    const label = selectFileEntryLabel(collection, entry.get('slug'));
+    if (label) return label;
+  }
+
+  // try to infer a title field from the entry data
+  const entryData = entry.get('data');
+  const titleField = selectInferedField(collection, 'title');
+  return titleField && entryData.getIn(keyToPathArray(titleField));
 };
 
 export const COMMIT_AUTHOR = 'commit_author';

@@ -5,9 +5,8 @@ import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
 import { colors, colorsRaw, components, lengths, zIndex } from 'netlify-cms-ui-default';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { summaryFormatter } from 'Lib/formatters';
-import { keyToPathArray } from 'Lib/stringTemplate';
 import { selectIsLoadingAsset } from 'Reducers/medias';
+import { selectEntryCollectionTitle } from 'Reducers/collections';
 
 const ListCard = styled.li`
   ${components.card};
@@ -122,15 +121,8 @@ const EntryCard = ({
 
 const mapStateToProps = (state, ownProps) => {
   const { entry, inferedFields, collection } = ownProps;
-  const label = entry.get('label');
   const entryData = entry.get('data');
-  const defaultTitle =
-    label ||
-    (inferedFields.titleField && entryData.getIn(keyToPathArray(inferedFields.titleField)));
-  const summaryTemplate = collection.get('summary');
-  const summary = summaryTemplate
-    ? summaryFormatter(summaryTemplate, entry, collection)
-    : defaultTitle;
+  const summary = selectEntryCollectionTitle(collection, entry);
 
   let image = entryData.get(inferedFields.imageField);
   if (image) {
