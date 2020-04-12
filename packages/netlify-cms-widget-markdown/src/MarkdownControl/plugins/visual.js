@@ -37,7 +37,7 @@ const plugins = ({ getAsset, resolveWidget }) => [
   CommandsAndQueries({ defaultType }),
   QuoteBlock({ defaultType, type: 'quote' }),
   ListPlugin({ defaultType, unorderedListType: 'bulleted-list', orderedListType: 'numbered-list' }),
-  Link({ type: 'link', key: 'k' }),
+  Link({ type: 'link' }),
   LineBreak(),
   BreakToDefaultBlock({ defaultType }),
   CloseBlock({ defaultType }),
