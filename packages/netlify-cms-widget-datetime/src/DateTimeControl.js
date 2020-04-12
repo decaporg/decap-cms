@@ -107,7 +107,7 @@ export default class DateTimeControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle } = this.props;
+    const { forID, value, classNameWrapper, setActiveStyle, t } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
 
     return (
@@ -125,7 +125,6 @@ export default class DateTimeControl extends React.Component {
           onFocus={setActiveStyle}
           onBlur={this.onBlur}
           inputProps={{ className: classNameWrapper, id: forID }}
-          renderInput={this.renderInput}
         />
         <div
           css={css`
@@ -147,7 +146,7 @@ export default class DateTimeControl extends React.Component {
               this.handleChange(moment());
             }}
           >
-            Now
+            {t('editor.editorWidgets.datetime.now')}
           </button>
         </div>
       </div>

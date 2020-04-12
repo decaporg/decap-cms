@@ -141,6 +141,9 @@ const en = {
         headingFive: 'Heading 5',
         headingSix: 'Heading 6',
       },
+      datetime: {
+        now: 'Now',
+      },
     },
   },
   mediaLibrary: {
