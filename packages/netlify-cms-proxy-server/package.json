@@ -48,7 +48,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": ">=v10.19.0"
+    "node": ">=v10.20.1"
   },
   "bin": {
     "netlify-cms-proxy-server": "./dist/index.js"
