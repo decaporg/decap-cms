@@ -205,12 +205,11 @@ function populateEntry(entry, onDone = flushClockAndSave) {
     if (key === 'body') {
       cy.getMarkdownEditor()
         .click()
-        .clear()
-        .type(value);
+        .clear({ force: true })
+        .type(value, { force: true });
     } else {
-      cy.get(`[id^="${key}-field"]`)
-        .clear()
-        .type(value);
+      cy.get(`[id^="${key}-field"]`).clear({ force: true });
+      cy.get(`[id^="${key}-field"]`).type(value, { force: true });
     }
   }
 
@@ -231,7 +230,7 @@ function createPostAndExit(entry) {
   exitEditor();
 }
 
-function publishEntry() {
+function publishEntry({ createNew = false, duplicate = false } = {}) {
   cy.clock().then(clock => {
     // some input fields are de-bounced thus require advancing the clock
     if (clock) {
@@ -242,21 +241,89 @@ function publishEntry() {
       cy.wait(500);
     }
 
-    cy.contains('[role="button"]', 'Publish').as('publishButton');
-    cy.get('@publishButton')
-      .parent()
-      .within(() => {
-        cy.get('@publishButton').click();
-        cy.contains('[role="menuitem"] span', 'Publish now').click();
-      });
+    if (createNew) {
+      selectDropdownItem('Publish', 'Publish and create new');
+    } else if (duplicate) {
+      selectDropdownItem('Publish', 'Publish and duplicate');
+    } else {
+      selectDropdownItem('Publish', 'Publish now');
+    }
+
     assertNotification(notifications.saved);
   });
 }
 
 function createPostAndPublish(entry) {
-  cy.contains('a', 'New Post').click();
+  newPost();
   populateEntry(entry, publishEntry);
   exitEditor();
+}
+
+function createPostPublishAndCreateNew(entry) {
+  newPost();
+  populateEntry(entry, () => publishEntry({ createNew: true }));
+  cy.url().should('eq', `http://localhost:8080/#/collections/posts/new`);
+  cy.get('[id^="title-field"]').should('have.value', '');
+
+  exitEditor();
+}
+
+function createPostPublishAndDuplicate(entry) {
+  newPost();
+  populateEntry(entry, () => publishEntry({ duplicate: true }));
+  cy.url().should('eq', `http://localhost:8080/#/collections/posts/new`);
+  cy.get('[id^="title-field"]').should('have.value', entry.title);
+
+  exitEditor();
+}
+
+function editPostAndPublish(entry1, entry2) {
+  goToEntry(entry1);
+  cy.contains('button', 'Delete entry');
+  cy.contains('span', 'Published');
+
+  populateEntry(entry2, publishEntry);
+  // existing entry slug should remain the same after save
+  cy.url().should(
+    'eq',
+    `http://localhost:8080/#/collections/posts/entries/1970-01-01-${entry1.title
+      .toLowerCase()
+      .replace(/\s/, '-')}`,
+  );
+}
+
+function editPostPublishAndCreateNew(entry1, entry2) {
+  goToEntry(entry1);
+  cy.contains('button', 'Delete entry');
+  cy.contains('span', 'Published');
+
+  populateEntry(entry2, () => publishEntry({ createNew: true }));
+  cy.url().should('eq', `http://localhost:8080/#/collections/posts/new`);
+  cy.get('[id^="title-field"]').should('have.value', '');
+}
+
+function editPostPublishAndDuplicate(entry1, entry2) {
+  goToEntry(entry1);
+  cy.contains('button', 'Delete entry');
+  cy.contains('span', 'Published');
+
+  populateEntry(entry2, () => publishEntry({ duplicate: true }));
+  cy.url().should('eq', `http://localhost:8080/#/collections/posts/new`);
+  cy.get('[id^="title-field"]').should('have.value', entry2.title);
+}
+
+function duplicatePostAndPublish(entry1) {
+  goToEntry(entry1);
+  cy.contains('button', 'Delete entry');
+  selectDropdownItem('Published', 'Duplicate');
+  publishEntry();
+
+  cy.url().should(
+    'eq',
+    `http://localhost:8080/#/collections/posts/entries/1970-01-01-${entry1.title
+      .toLowerCase()
+      .replace(/\s/, '-')}-1`,
+  );
 }
 
 function updateExistingPostAndExit(fromEntry, toEntry) {
@@ -393,4 +460,11 @@ module.exports = {
   newPost,
   populateEntry,
   goToEntry,
+  publishEntry,
+  createPostPublishAndCreateNew,
+  createPostPublishAndDuplicate,
+  editPostAndPublish,
+  editPostPublishAndCreateNew,
+  editPostPublishAndDuplicate,
+  duplicatePostAndPublish,
 };

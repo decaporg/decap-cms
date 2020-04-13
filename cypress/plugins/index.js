@@ -35,7 +35,7 @@ const {
   teardownBitBucketTest,
 } = require('./bitbucket');
 const { setupProxy, teardownProxy, setupProxyTest, teardownProxyTest } = require('./proxy');
-
+const { setupTestBackend } = require('./testBackend');
 const { copyBackendFiles, switchVersion, updateConfig } = require('../utils/config');
 
 module.exports = async (on, config) => {
@@ -61,6 +61,9 @@ module.exports = async (on, config) => {
           break;
         case 'proxy':
           result = await setupProxy(options);
+          break;
+        case 'test':
+          result = await setupTestBackend(options);
           break;
       }
 
