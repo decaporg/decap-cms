@@ -169,6 +169,20 @@ function publishEntryInEditor(publishType) {
   assertNotification(notifications.published);
 }
 
+function publishAndCreateNewEntryInEditor() {
+  selectDropdownItem('Publish', publishTypes.publishAndCreateNew);
+  assertNotification(notifications.published);
+  cy.url().should('eq', `http://localhost:8080/#/collections/posts/new`);
+  cy.get('[id^="title-field"]').should('have.value', '');
+}
+
+function publishAndDuplicateEntryInEditor(entry) {
+  selectDropdownItem('Publish', publishTypes.publishAndDuplicate);
+  assertNotification(notifications.published);
+  cy.url().should('eq', `http://localhost:8080/#/collections/posts/new`);
+  cy.get('[id^="title-field"]').should('have.value', entry.title);
+}
+
 function selectDropdownItem(label, item) {
   cy.contains('[role="button"]', label).as('dropDownButton');
   cy.get('@dropDownButton')
@@ -242,11 +256,11 @@ function publishEntry({ createNew = false, duplicate = false } = {}) {
     }
 
     if (createNew) {
-      selectDropdownItem('Publish', 'Publish and create new');
+      selectDropdownItem('Publish', publishTypes.publishAndCreateNew);
     } else if (duplicate) {
-      selectDropdownItem('Publish', 'Publish and duplicate');
+      selectDropdownItem('Publish', publishTypes.publishAndDuplicate);
     } else {
-      selectDropdownItem('Publish', 'Publish now');
+      selectDropdownItem('Publish', publishTypes.publishNow);
     }
 
     assertNotification(notifications.saved);
@@ -467,4 +481,6 @@ module.exports = {
   editPostPublishAndCreateNew,
   editPostPublishAndDuplicate,
   duplicatePostAndPublish,
+  publishAndCreateNewEntryInEditor,
+  publishAndDuplicateEntryInEditor,
 };

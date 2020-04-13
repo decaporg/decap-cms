@@ -23,6 +23,8 @@ import {
   duplicateEntry,
   goToEntry,
   populateEntry,
+  publishAndCreateNewEntryInEditor,
+  publishAndDuplicateEntryInEditor,
 } from '../utils/steps';
 import { setting1, setting2, workflowStatus, editorStatus, publishTypes } from '../utils/constants';
 
@@ -188,5 +190,20 @@ describe('Test Backend Editorial Workflow', () => {
     goToWorkflow();
     updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
     cy.contains('button', 'Publish new entry').should('not.exist');
+  });
+
+  it.only('can create a new entry, publish and create new', () => {
+    login();
+    createPost(entry1);
+    updateWorkflowStatusInEditor(editorStatus.ready);
+
+    publishAndCreateNewEntryInEditor(entry1);
+  });
+
+  it.only('can create a new entry, publish and duplicate', () => {
+    login();
+    createPost(entry1);
+    updateWorkflowStatusInEditor(editorStatus.ready);
+    publishAndDuplicateEntryInEditor(entry1);
   });
 });
