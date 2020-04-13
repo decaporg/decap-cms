@@ -21,6 +21,8 @@ import {
   unpublishEntry,
   publishEntryInEditor,
   duplicateEntry,
+  goToEntry,
+  populateEntry,
 } from '../utils/steps';
 import { setting1, setting2, workflowStatus, editorStatus, publishTypes } from '../utils/constants';
 
@@ -53,7 +55,17 @@ describe('Test Backend Editorial Workflow', () => {
 
   it('can create an entry', () => {
     login();
-    createPostAndExit(entry1);
+    createPost(entry1);
+
+    // new entry should show 'Delete unpublished entry'
+    cy.contains('button', 'Delete unpublished entry');
+    cy.url().should(
+      'eq',
+      `http://localhost:8080/#/collections/posts/entries/1970-01-01-${entry1.title
+        .toLowerCase()
+        .replace(/\s/, '-')}`,
+    );
+    exitEditor();
   });
 
   it('can validate object fields', () => {
@@ -77,6 +89,27 @@ describe('Test Backend Editorial Workflow', () => {
     goToWorkflow();
     updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
     publishWorkflowEntry(entry1);
+  });
+
+  it('can update an entry', () => {
+    login();
+    createPostAndExit(entry1);
+    goToWorkflow();
+    updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+    publishWorkflowEntry(entry1);
+
+    goToEntry(entry1);
+    populateEntry(entry2);
+    // existing entry should show 'Delete unpublished changes'
+    cy.contains('button', 'Delete unpublished changes');
+    // existing entry slug should remain the same after save'
+    cy.url().should(
+      'eq',
+      `http://localhost:8080/#/collections/posts/entries/1970-01-01-${entry1.title
+        .toLowerCase()
+        .replace(/\s/, '-')}`,
+    );
+    exitEditor();
   });
 
   it('can change workflow status', () => {
