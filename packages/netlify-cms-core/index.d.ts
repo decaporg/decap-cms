@@ -204,7 +204,7 @@ declare module 'netlify-cms-core' {
     registerLocale: (locale: string, phrases: CmsLocalePhrases) => void;
     registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
     registerPreviewStyle: (filePath: string, options?: PreviewStyleOptions) => void;
-    registerPreviewTemplate: (name: string, component: ComponentType) => void;
+    registerPreviewTemplate: (name: string, component: ComponentType<P>) => void;
     registerWidget: (
       widget: string | CmsWidgetParam,
       control?: ComponentType,
