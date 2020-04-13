@@ -291,7 +291,7 @@ const Table = ({
                     <>
                       <IconButton
                         icon="more-vertical"
-                        size={rowSize === 'xs' && 'sm'}
+                        size={rowSize === 'xs' ? 'sm' : 'md'}
                         onClick={e => {
                           e.stopPropagation();
                           setAnchorEl(e.currentTarget);

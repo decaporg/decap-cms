@@ -12,22 +12,22 @@ export default {
 };
 
 export const _Tag = () => {
-  const onClick = boolean('onClick', false);
-  const onDelete = boolean('onDelete', false);
   const children = text('children', 'Published');
   const availableColors = Object.keys(color).reduce(
     (acc, color) => ({ ...acc, [color]: color }),
     {},
   );
   const colorKnob = select('color', availableColors, 'neutral');
+  const onClick = boolean('onClick', false);
+  const onDelete = boolean('onDelete', false);
+  const hasMenu = boolean('hasMenu', false);
 
   return (
     <TagGroup>
       <Tag
-        size={select('size', { sm: 'sm', 'md (default)': null, lg: 'lg' }, null)}
         color={colorKnob}
         onClick={onClick ? () => alert('Tag clicked.') : null}
-        hasMenu={boolean('hasMenu', false)}
+        hasMenu={hasMenu}
         onDelete={onDelete ? () => alert('Deleted tag') : null}
       >
         {children}

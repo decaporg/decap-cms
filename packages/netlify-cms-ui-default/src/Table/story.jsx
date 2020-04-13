@@ -6,6 +6,7 @@ import getMockData from '../utils/getMockData';
 import Table from '.';
 import Icon from '../Icon';
 import { Menu, MenuItem } from '../Menu';
+import { Tag } from '../Tag';
 
 const Title = styled.div`
   color: ${({ theme }) => theme.color.highEmphasis};
@@ -106,6 +107,75 @@ export const _Table = () => {
         Header: 'Status',
         accessor: 'status',
         width: '10%',
+        Cell({ row: { original: rowData } }) {
+          const [menuAnchorEl, setMenuAnchorEl] = useState();
+          const [status, setStatus] = useState(rowData.status);
+
+          return (
+            <>
+              <Tag
+                onClick={e => {
+                  e.stopPropagation();
+                  setMenuAnchorEl(e.currentTarget);
+                }}
+                hasMenu
+                color={
+                  status === 'Published'
+                    ? 'turquoise'
+                    : status === 'In Review'
+                    ? 'yellow'
+                    : status === 'Draft'
+                    ? 'pink'
+                    : null
+                }
+              >
+                {status}
+              </Tag>
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={!!menuAnchorEl}
+                onClose={e => {
+                  e.stopPropagation();
+                  setMenuAnchorEl(null);
+                }}
+              >
+                <MenuItem
+                  icon="edit-3"
+                  selected={status === 'Draft'}
+                  onClick={e => {
+                    e.stopPropagation();
+                    setStatus('Draft');
+                    setMenuAnchorEl(null);
+                  }}
+                >
+                  Draft
+                </MenuItem>
+                <MenuItem
+                  icon="inbox"
+                  selected={status === 'In Review'}
+                  onClick={e => {
+                    e.stopPropagation();
+                    setStatus('In Review');
+                    setMenuAnchorEl(null);
+                  }}
+                >
+                  In Review
+                </MenuItem>
+                <MenuItem
+                  icon="radio"
+                  selected={status === 'Published'}
+                  onClick={e => {
+                    e.stopPropagation();
+                    setStatus('Published');
+                    setMenuAnchorEl(null);
+                  }}
+                >
+                  Published
+                </MenuItem>
+              </Menu>
+            </>
+          );
+        },
       },
       {
         Header: 'Date Modified',

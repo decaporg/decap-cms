@@ -12,7 +12,7 @@ const TagWrap = styled.div`
     Color(theme.color[color][color === 'neutral' ? 600 : 900])
       .alpha(0.15)
       .string()};
-  box-shadow: 0 0 0 1.5px
+  box-shadow: inset 0 0 0 1.5px
     ${({ color, theme }) => theme.color[color][color === 'neutral' ? 600 : 900]};
   color: ${({ color, theme }) => theme.color[color][color === 'neutral' ? 600 : 900]};
   font-size: 0.75rem;
@@ -26,11 +26,6 @@ const TagWrap = styled.div`
   ${TagGroup} & {
     margin: 4px;
   }
-  ${({ hasMenu }) =>
-    hasMenu
-      ? `
-        `
-      : ``}
   ${({ onClick, color, theme }) =>
     onClick
       ? `
@@ -72,7 +67,7 @@ const DeleteButton = styled(Icon)`
 DeleteButton.defaultProps = { name: 'x', size: 'xs' };
 
 const Tag = ({ color, children, onClick, hasMenu, onDelete }) => (
-  <TagWrap color={color} onClick={onClick} hasMenu={hasMenu}>
+  <TagWrap color={color} onClick={onClick}>
     {children}
     {hasMenu && <Caret />}
     {onDelete && (
