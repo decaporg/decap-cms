@@ -27,9 +27,6 @@ const ca = {
       loadingConfig: 'Carregant configuració....',
       waitingBackend: 'Esperant al servidor...',
     },
-    notFoundPage: {
-      header: 'No trobat',
-    },
   },
   collection: {
     sidebar: {

@@ -27,9 +27,6 @@ const nl = {
       loadingConfig: 'Configuatie laden...',
       waitingBackend: 'Wachten op server...',
     },
-    notFoundPage: {
-      header: 'Niet gevonden',
-    },
   },
   collection: {
     sidebar: {

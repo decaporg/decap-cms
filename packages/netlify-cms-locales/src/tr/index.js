@@ -27,9 +27,6 @@ const tr = {
       loadingConfig: 'Yapılandırma yükleniyor...',
       waitingBackend: 'Arka uç bekleniyor...',
     },
-    notFoundPage: {
-      header: 'Bulunamadı',
-    },
   },
   collection: {
     sidebar: {

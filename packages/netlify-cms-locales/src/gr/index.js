@@ -27,9 +27,6 @@ const gr = {
       loadingConfig: 'Φόρτωση ρύθμισης παραμέτρων...',
       waitingBackend: 'Αναμονή για παρασκηνιακό...',
     },
-    notFoundPage: {
-      header: 'Δεν βρέθηκε',
-    },
   },
   collection: {
     sidebar: {

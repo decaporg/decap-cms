@@ -22,9 +22,6 @@ describe('defaultPhrases', () => {
             loadingConfig: 'Loading configuration...',
             waitingBackend: 'Waiting for backend...',
           },
-          notFoundPage: {
-            header: 'Not Found',
-          },
         },
         collection: {
           sidebar: {
@@ -67,9 +64,6 @@ describe('defaultPhrases', () => {
           checkConfigYml: 'Check your config.yml file.',
           loadingConfig: 'Loading configuration...',
           waitingBackend: 'Waiting for backend...',
-        },
-        notFoundPage: {
-          header: 'Not Found',
         },
       },
       collection: {

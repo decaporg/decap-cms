@@ -13,9 +13,6 @@ const pt = {
       loadingConfig: 'Carregando configuração...',
       waitingBackend: 'Aguardando o backend...',
     },
-    notFoundPage: {
-      header: 'Não Encontrado',
-    },
   },
   collection: {
     sidebar: {

@@ -27,9 +27,6 @@ const ja = {
       loadingConfig: '設定を読み込んでいます...',
       waitingBackend: 'バックエンドの応答を待機しています...',
     },
-    notFoundPage: {
-      header: 'ページが見つかりません',
-    },
   },
   collection: {
     sidebar: {

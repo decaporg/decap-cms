@@ -13,9 +13,6 @@ const fr = {
       loadingConfig: 'Chargement de la configuration...',
       waitingBackend: 'En attente du serveur...',
     },
-    notFoundPage: {
-      header: 'Introuvable',
-    },
   },
   collection: {
     sidebar: {

@@ -13,9 +13,6 @@ const uk = {
       loadingConfig: 'Завантаження конфігурації...',
       waitingBackend: 'Очікування серверу...',
     },
-    notFoundPage: {
-      header: 'Сторінку не знайдено ',
-    },
   },
   collection: {
     sidebar: {

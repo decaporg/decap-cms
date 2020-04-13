@@ -21,7 +21,6 @@ import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
 import Collection from 'Collection/Collection';
 import Workflow from 'Workflow/Workflow';
 import Editor from 'Editor/Editor';
-import NotFoundPage from './NotFoundPage';
 import Header from './Header';
 
 TopBarProgress.config({
@@ -193,8 +192,6 @@ class App extends React.Component {
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
           <Switch>
-            <Redirect exact from="/" to={defaultPath} />
-            <Redirect exact from="/search/" to={defaultPath} />
             {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
             <RouteInCollection
               exact
@@ -224,7 +221,7 @@ class App extends React.Component {
                 return <Redirect to={`/collections/${name}/entries/${entryName}`} />;
               }}
             />
-            <Route component={NotFoundPage} />
+            <Redirect from="/" to={defaultPath} />
           </Switch>
           {useMediaLibrary ? <MediaLibrary /> : null}
         </AppMainContainer>

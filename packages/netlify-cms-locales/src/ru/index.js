@@ -13,9 +13,6 @@ const ru = {
       loadingConfig: 'Загрузка конфигурации…',
       waitingBackend: 'Ожидание ответа от бэкенда…',
     },
-    notFoundPage: {
-      header: 'Не найден',
-    },
   },
   collection: {
     sidebar: {

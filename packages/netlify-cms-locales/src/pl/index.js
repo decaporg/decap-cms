@@ -27,9 +27,6 @@ const pl = {
       loadingConfig: 'Ładowanie konfiguracji...',
       waitingBackend: 'Oczekiwanie na backend...',
     },
-    notFoundPage: {
-      header: 'Nie znaleziono',
-    },
   },
   collection: {
     sidebar: {

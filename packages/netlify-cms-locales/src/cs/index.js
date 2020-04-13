@@ -28,9 +28,6 @@ const cs = {
       loadingConfig: 'Načítání konfigurace…',
       waitingBackend: 'Čekání na server…',
     },
-    notFoundPage: {
-      header: 'Nenalezeno',
-    },
   },
   collection: {
     sidebar: {

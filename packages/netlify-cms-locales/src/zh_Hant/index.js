@@ -27,9 +27,6 @@ const zh_Hant = {
       loadingConfig: '正在載入設定...',
       waitingBackend: '正在等待後端資料連接...',
     },
-    notFoundPage: {
-      header: '找不到頁面',
-    },
   },
   collection: {
     sidebar: {

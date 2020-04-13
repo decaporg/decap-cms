@@ -27,9 +27,6 @@ const it = {
       loadingConfig: 'Caricando la configurazione...',
       waitingBackend: 'Attendi il backend...',
     },
-    notFoundPage: {
-      header: 'Non trovato',
-    },
   },
   collection: {
     sidebar: {

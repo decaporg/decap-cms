@@ -13,9 +13,6 @@ const hu = {
       loadingConfig: 'Konfiguráció betöltése...',
       waitingBackend: 'Várakozás hattérrendszerekre...',
     },
-    notFoundPage: {
-      header: 'Nincs találat',
-    },
   },
   collection: {
     sidebar: {
