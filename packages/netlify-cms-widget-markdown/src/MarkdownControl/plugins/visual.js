@@ -12,7 +12,7 @@ import Link from './Link';
 import ForceInsert from './ForceInsert';
 import Shortcode from './Shortcode';
 import { SLATE_DEFAULT_BLOCK_TYPE as defaultType } from '../../types';
-import Hotkey from './Hotkey';
+import Hotkey, { HOT_KEY_MAP } from './Hotkey';
 
 const plugins = ({ getAsset, resolveWidget }) => [
   {
@@ -23,17 +23,17 @@ const plugins = ({ getAsset, resolveWidget }) => [
       next();
     },
   },
-  Hotkey('b', e => e.toggleMark('bold')),
-  Hotkey('shift+c', e => e.toggleMark('code')),
-  Hotkey('i', e => e.toggleMark('italic')),
-  Hotkey('shift+s', e => e.toggleMark('strikethrough')),
-  Hotkey('1', e => e.toggleBlock('heading-one')),
-  Hotkey('2', e => e.toggleBlock('heading-two')),
-  Hotkey('3', e => e.toggleBlock('heading-three')),
-  Hotkey('4', e => e.toggleBlock('heading-four')),
-  Hotkey('5', e => e.toggleBlock('heading-five')),
-  Hotkey('6', e => e.toggleBlock('heading-six')),
-  Hotkey('k', e => e.toggleLink(() => window.prompt('Enter the URL of the link'))),
+  Hotkey(HOT_KEY_MAP['bold'], e => e.toggleMark('bold')),
+  Hotkey(HOT_KEY_MAP['code'], e => e.toggleMark('code')),
+  Hotkey(HOT_KEY_MAP['italic'], e => e.toggleMark('italic')),
+  Hotkey(HOT_KEY_MAP['strikethrough'], e => e.toggleMark('strikethrough')),
+  Hotkey(HOT_KEY_MAP['heading-one'], e => e.toggleBlock('heading-one')),
+  Hotkey(HOT_KEY_MAP['heading-two'], e => e.toggleBlock('heading-two')),
+  Hotkey(HOT_KEY_MAP['heading-three'], e => e.toggleBlock('heading-three')),
+  Hotkey(HOT_KEY_MAP['heading-four'], e => e.toggleBlock('heading-four')),
+  Hotkey(HOT_KEY_MAP['heading-five'], e => e.toggleBlock('heading-five')),
+  Hotkey(HOT_KEY_MAP['heading-six'], e => e.toggleBlock('heading-six')),
+  Hotkey(HOT_KEY_MAP['link'], e => e.toggleLink(() => window.prompt('Enter the URL of the link'))),
   CommandsAndQueries({ defaultType }),
   QuoteBlock({ defaultType, type: 'quote' }),
   ListPlugin({ defaultType, unorderedListType: 'bulleted-list', orderedListType: 'numbered-list' }),

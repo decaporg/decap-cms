@@ -19,6 +19,19 @@ const notifications = {
     },
   },
 };
+const HOT_KEY_MAP = {
+  'bold': 'mod+b',
+  'code': 'mod+shift+c',
+  'italic': 'mod+i',
+  'strikethrough': 'mod+shift+s',
+  'heading-one': 'mod+1',
+  'heading-two': 'mod+2',
+  'heading-three': 'mod+3',
+  'heading-four': 'mod+4',
+  'heading-five': 'mod+5',
+  'heading-six': 'mod+6',
+  'link': 'mod+k',
+};
 
 module.exports = {
   workflowStatus,
@@ -27,4 +40,5 @@ module.exports = {
   setting2,
   notifications,
   publishTypes,
+  HOT_KEY_MAP
 };
