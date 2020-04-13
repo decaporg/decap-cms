@@ -2,6 +2,7 @@ import '../utils/dismiss-local-backup';
 import {HOT_KEY_MAP} from "../utils/constants";
 const headingNumberToWord = ['', 'one', 'two', 'three', 'four', 'five', 'six'];
 const replaceMod = (str) => str.replace(/mod\+/g, '{meta}').replace(/shift\+/g, '{shift}');
+const typeOptions = {force: true};
 
 describe('Markdown widget', () => {
   describe('hot keys', () => {
@@ -15,7 +16,7 @@ describe('Markdown widget', () => {
     beforeEach(() => {
       cy.clearMarkdownEditorContent();
       cy.focused()
-        .type('foo')
+        .type('foo', typeOptions)
         .setSelection('foo').as('selection');
     });
 
@@ -26,50 +27,50 @@ describe('Markdown widget', () => {
     describe('bold', () => {
       it('pressing mod+b bolds the text', () => {
         cy.get('@selection')
-          .type(replaceMod(HOT_KEY_MAP['bold']))
+          .type(replaceMod(HOT_KEY_MAP['bold']), typeOptions)
           .confirmMarkdownEditorContent(`
             <p>
               <strong>foo</strong>
             </p>
           `)
-          .type(replaceMod(HOT_KEY_MAP['bold']));
+          .type(replaceMod(HOT_KEY_MAP['bold'])), typeOptions;
       });
     });
 
     describe('italic', () => {
       it('pressing mod+i italicizes the text', () => {
         cy.get('@selection')
-          .type(replaceMod(HOT_KEY_MAP['italic']))
+          .type(replaceMod(HOT_KEY_MAP['italic']), typeOptions)
           .confirmMarkdownEditorContent(`
             <p>
               <em>foo</em>
             </p>
           `)
-          .type(replaceMod(HOT_KEY_MAP['italic']));
+          .type(replaceMod(HOT_KEY_MAP['italic'])), typeOptions;
       });
     });
 
     describe('strikethrough', () => {
       it('pressing mod+shift+s displays a strike through the text', () => {
         cy.get('@selection')
-          .type(replaceMod(HOT_KEY_MAP['strikethrough']))
+          .type(replaceMod(HOT_KEY_MAP['strikethrough']), typeOptions)
           .confirmMarkdownEditorContent(`
             <p>
               <s>foo</s>
             </p>
-          `).type(replaceMod(HOT_KEY_MAP['strikethrough']));
+          `).type(replaceMod(HOT_KEY_MAP['strikethrough'])), typeOptions;
       });
     });
 
     describe('code', () => {
       it('pressing mod+shift+c displays a code block around the text', () => {
         cy.get('@selection')
-          .type(replaceMod(HOT_KEY_MAP['code']))
+          .type(replaceMod(HOT_KEY_MAP['code']), typeOptions)
           .confirmMarkdownEditorContent(`
             <p>
               <code>foo</code>
             </p>
-          `).type(replaceMod(HOT_KEY_MAP['code']));
+          `).type(replaceMod(HOT_KEY_MAP['code'])), typeOptions;
       });
     });
 
@@ -81,9 +82,9 @@ describe('Markdown widget', () => {
       });
       it('pressing mod+k transforms the text to a link', () => {
         cy.get('@selection')
-          .type(replaceMod(HOT_KEY_MAP['link']))
+          .type(replaceMod(HOT_KEY_MAP['link']), typeOptions)
           .confirmMarkdownEditorContent('<p><a>foo</a></p>')
-          .type(replaceMod(HOT_KEY_MAP['link']));
+          .type(replaceMod(HOT_KEY_MAP['link'])), typeOptions;
       });
     });
 
@@ -91,9 +92,9 @@ describe('Markdown widget', () => {
       for (let i = 1; i <= 6; i++) {
         it(`pressing mod+${i} transforms the text to a heading`, () => {
             cy.get('@selection')
-              .type(replaceMod(HOT_KEY_MAP[`heading-${headingNumberToWord[i]}`]))
+              .type(replaceMod(HOT_KEY_MAP[`heading-${headingNumberToWord[i]}`]), typeOptions)
               .confirmMarkdownEditorContent(`<h${i}>foo</h${i}>`)
-              .type(replaceMod(HOT_KEY_MAP[`heading-${headingNumberToWord[i]}`]))
+              .type(replaceMod(HOT_KEY_MAP[`heading-${headingNumberToWord[i]}`]), typeOptions)
         });
       }
     });
