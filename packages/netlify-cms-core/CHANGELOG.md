@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.24.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.2...netlify-cms-core@2.24.3) (2020-04-14)
+
+
+### Bug Fixes
+
+* **type-defs:**  add string type to EditorComponentData id property ([#3602](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3602)) ([1a60e6d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1a60e6d7fde3c282df23487cd1f7479b0b848873))
+* add missing generic type to registerPreviewTemplate ([#3597](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3597)) ([36ae69c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/36ae69c96eded5f4af4a9bd63e319f64b62b0e63))
+* unify the title used in entry cards and workflow cards ([#3573](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3573)) ([#3575](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3575)) ([625a998](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/625a9980f1c113cb8e5159e42bfddfe94a0d6188))
+
+
+
+
+
 ## [2.24.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.1...netlify-cms-core@2.24.2) (2020-04-10)
 
 

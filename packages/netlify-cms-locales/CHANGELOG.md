@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.10.3...netlify-cms-locales@1.11.0) (2020-04-14)
+
+
+### Features
+
+* **widget-datetime:** add now to datepicker ([#3484](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3484)) ([79b8469](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/79b8469337dade3bd7472b3f42b826efc7e0987d))
+
+
+
+
+
 ## [1.10.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.10.2...netlify-cms-locales@1.10.3) (2020-04-06)
 
 **Note:** Version bump only for package netlify-cms-locales

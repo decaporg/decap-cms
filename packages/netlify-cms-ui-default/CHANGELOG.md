@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.5...netlify-cms-ui-default@2.10.0) (2020-04-14)
+
+
+### Bug Fixes
+
+* increase DropdownList z-index ([#3579](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/3579)) ([7fcdaef](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/7fcdaef1c92c65d981ac2ebc1077d8da0c3ca285))
+
+
+### Features
+
+* **widget-datetime:** add now to datepicker ([#3484](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/3484)) ([79b8469](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/79b8469337dade3bd7472b3f42b826efc7e0987d))
+
+
+
+
+
 ## [2.9.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.9.4...netlify-cms-ui-default@2.9.5) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-ui-default
