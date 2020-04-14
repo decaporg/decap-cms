@@ -117,7 +117,7 @@ declare module 'netlify-cms-core' {
   }
 
   export interface EditorComponentData {
-    id: number;
+    id: number | string;
   }
 
   export interface EditorComponentOptions {
