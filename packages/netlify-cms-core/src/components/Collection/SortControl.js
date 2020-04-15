@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { buttons, Dropdown, DropdownItem, StyledDropdownButton } from 'netlify-cms-ui-default';
+import { buttons, Dropdown, DropdownItem, StyledDropdownButton } from 'netlify-cms-ui-legacy';
 import { SortDirection } from '../../types/redux';
 
 const SortButton = styled(StyledDropdownButton)`

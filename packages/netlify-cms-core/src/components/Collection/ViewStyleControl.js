@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Icon, buttons, colors } from 'netlify-cms-ui-default';
+import { Icon, buttons, colors } from 'netlify-cms-ui-legacy';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
 
 const ViewControlsSection = styled.div`

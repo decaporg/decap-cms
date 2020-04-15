@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
-import { lengths } from 'netlify-cms-ui-default';
+import { lengths } from 'netlify-cms-ui-legacy';
 
 const CollectionControlsContainer = styled.div`
   display: flex;
