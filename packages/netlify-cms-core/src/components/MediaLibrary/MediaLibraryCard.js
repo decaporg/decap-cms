@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { colors, borders, lengths, shadows, effects } from 'netlify-cms-ui-default';
+import { buttons, colors, borders, lengths, shadows, effects } from 'netlify-cms-ui-default';
 
 const IMAGE_HEIGHT = 160;
 
@@ -62,6 +62,57 @@ const DraftText = styled.p`
   border-radius: ${lengths.borderRadius} 0px ${lengths.borderRadius} 0;
 `;
 
+const FileDownloadButton = ({ className, url }) => (
+  <label className={`nc-fileDownloadButton ${className || ''}`}>
+    <a href={url} download>
+      <span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </span>
+    </a>
+  </label>
+);
+
+FileDownloadButton.propTypes = {
+  className: PropTypes.string,
+  url: PropTypes.string.isRequired,
+};
+
+const StyledFileDownloadButton = styled(FileDownloadButton)`
+  ${buttons.button};
+  ${buttons.default};
+  ${buttons.gray};
+  ${shadows.dropMain};
+  margin: 0;
+  padding: 0;
+  width: 36px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  a {
+    color: inherit;
+    cursor: pointer;
+  }
+`;
+
 class MediaLibraryCard extends React.Component {
   render() {
     const {
@@ -89,6 +140,7 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
+        <StyledFileDownloadButton url={url} />
         <CardImageWrapper>
           {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
           {url && isViewableImage ? (
