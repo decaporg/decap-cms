@@ -195,6 +195,12 @@ class App extends React.Component {
           <Switch>
             <Redirect exact from="/" to={defaultPath} />
             <Redirect exact from="/search/" to={defaultPath} />
+            <Redirect
+              // This happens on Identity + Invite Only + External Provider email not matching
+              // the registered user
+              from="/error=access_denied&error_description=Signups+not+allowed+for+this+instance"
+              to={defaultPath}
+            />
             {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
             <RouteInCollection
               exact
