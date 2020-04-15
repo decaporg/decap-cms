@@ -42,7 +42,7 @@ export default class ObjectControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: false,
+      collapsed: props.field.get('collapsed', false),
     };
   }
 
