@@ -187,6 +187,7 @@ describe('Test Backend Editorial Workflow', () => {
 
   it('cannot publish when "publish" is false', () => {
     cy.task('updateConfig', { collections: [{ publish: false }] });
+    cy.reload();
     login();
     createPost(entry1);
     cy.contains('span', 'Publish').should('not.exist');
