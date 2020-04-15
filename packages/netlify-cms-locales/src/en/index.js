@@ -176,7 +176,7 @@ const en = {
       mediaAssets: 'Media assets',
       search: 'Search...',
       uploading: 'Uploading...',
-      uploadNew: 'Upload new',
+      uploadNew: 'Upload',
       deleting: 'Deleting...',
       deleteSelected: 'Delete selected',
       chooseSelected: 'Choose selected',
