@@ -1,7 +1,9 @@
 import '../utils/dismiss-local-backup';
 import {HOT_KEY_MAP} from "../utils/constants";
 const headingNumberToWord = ['', 'one', 'two', 'three', 'four', 'five', 'six'];
-const replaceMod = (str) => str.replace(/mod\+/g, '{meta}').replace(/shift\+/g, '{shift}');
+const isMac = Cypress.platform === 'darwin';
+const modifierKey = isMac ? '{meta}' : '{ctrl}';
+const replaceMod = (str) => str.replace(/mod\+/g, modifierKey).replace(/shift\+/g, '{shift}');
 
 describe('Markdown widget', () => {
   describe('hot keys', () => {
