@@ -281,6 +281,21 @@ describe('formatters', () => {
         ),
       ).toBe('sub_dir/2020/2020-01-01-post-title.en');
     });
+
+    it(`should replace '.' in path with -`, () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        slugFormatter(
+          Map({
+            slug: '{{slug}}.en',
+            path: '../dir/{{slug}}',
+          }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+        ),
+      ).toBe('--/dir/post-title.en');
+    });
   });
 
   describe('previewUrlFormatter', () => {

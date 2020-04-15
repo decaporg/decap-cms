@@ -25,7 +25,6 @@ describe('Editor', () => {
     changeDraftField: jest.fn(),
     changeDraftFieldValidation: jest.fn(),
     collection: fromJS({ name: 'posts' }),
-    createDraftFromEntry: jest.fn(),
     createDraftDuplicateFromEntry: jest.fn(),
     createEmptyDraft: jest.fn(),
     discardDraft: jest.fn(),
@@ -213,34 +212,6 @@ describe('Editor', () => {
     expect(props.persistLocalBackup).toHaveBeenCalledWith(
       fromJS({ mediaFiles: [{ id: '1' }] }),
       props.collection,
-    );
-  });
-
-  it('should create draft from entry when done fetching', () => {
-    const { rerender } = render(
-      <Editor
-        {...props}
-        entryDraft={fromJS({ entry: {} })}
-        entry={fromJS({ isFetching: false, mediaFiles: [] })}
-      />,
-    );
-
-    jest.clearAllMocks();
-    rerender(
-      <Editor
-        {...props}
-        entryDraft={fromJS({
-          entry: {},
-          fieldsMetaData: {},
-        })}
-        entry={fromJS({ isFetching: false, mediaFiles: [{ id: '1' }], data: {} })}
-      />,
-    );
-
-    expect(props.createDraftFromEntry).toHaveBeenCalledTimes(1);
-    expect(props.createDraftFromEntry).toHaveBeenCalledWith(
-      fromJS({ isFetching: false, data: {}, mediaFiles: [{ id: '1' }] }),
-      fromJS({}),
     );
   });
 });

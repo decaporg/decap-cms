@@ -200,6 +200,7 @@ const buttons = {
     padding: 0 24px 0 14px;
   `,
   small: css`
+    font-size: 13px;
     height: 23px;
     line-height: 23px;
   `,
@@ -212,6 +213,10 @@ const buttons = {
       color: ${colorsRaw.white};
       background-color: #555a65;
     }
+  `,
+  grayText: css`
+    background-color: transparent;
+    color: ${colorsRaw.gray};
   `,
   green: css`
     background-color: #aae31f;
@@ -317,7 +322,7 @@ const components = {
     color: ${colorsRaw.gray};
     font-weight: 500;
     border-bottom: 1px solid #eaebf1;
-    padding: 10px 14px;
+    padding: 8px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -334,6 +339,12 @@ const components = {
       color: ${colors.active};
       background-color: ${colors.activeBackground};
     }
+  `,
+  viewControlsText: css`
+    font-size: 14px;
+    color: ${colors.text};
+    margin-right: 12px;
+    white-space: nowrap;
   `,
 };
 
@@ -378,6 +389,20 @@ const reactSelectStyles = {
       backgroundColor: colors.errorBackground,
     },
   }),
+};
+
+const zIndex = {
+  zIndex0: 0,
+  zIndex1: 1,
+  zIndex2: 2,
+  zIndex10: 10,
+  zIndex100: 100,
+  zIndex200: 200,
+  zIndex299: 299,
+  zIndex300: 300,
+  zIndex1000: 1000,
+  zIndex10000: 10000,
+  zIndex99999: 99999,
 };
 
 const GlobalStyles = () => (
@@ -480,6 +505,7 @@ export {
   borders,
   transitions,
   effects,
+  zIndex,
   reactSelectStyles,
   GlobalStyles,
 };

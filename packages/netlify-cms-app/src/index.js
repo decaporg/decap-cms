@@ -1,4 +1,5 @@
 import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
+import moment from 'moment';
 import './extensions.js';
 
 // Log version
@@ -10,5 +11,6 @@ if (typeof window !== 'undefined') {
 
 export const NetlifyCmsApp = {
   ...CMS,
+  moment,
 };
 export default CMS;

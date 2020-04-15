@@ -19,7 +19,7 @@ export default class ControlPane extends React.Component {
     const name = field.get('name');
 
     this.componentValidate[name] =
-      wrappedControl.innerWrappedControl.validate || wrappedControl.validate;
+      wrappedControl.innerWrappedControl?.validate || wrappedControl.validate;
   }
 
   validate = () => {

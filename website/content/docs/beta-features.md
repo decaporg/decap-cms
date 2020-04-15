@@ -79,9 +79,9 @@ By default the CMS stores folder collection content under the folder specified i
 
 For example configuring `folder: posts` for a collection will save the content under `posts/post-title.md`.
 
-You can now specify a `path` template (similar to the `slug` template) to control the content destination.
+You can now specify an additional `path` template (similar to the `slug` template) to control the content destination.
 
-This allows saving content in subfolders, e.g. configuring `path: '{{year}}/{{slug}}'` will save the content under `2019/post-title.md`.
+This allows saving content in subfolders, e.g. configuring `path: '{{year}}/{{slug}}'` will save the content under `posts/2019/post-title.md`.
 
 ## Folder Collections Media and Public Folder
 

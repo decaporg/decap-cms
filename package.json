@@ -48,7 +48,7 @@
     "publish:version": "lerna version --no-push",
     "publish:push": "run-s publish:push-git publish:from-git",
     "publish:push-git": "git push --follow-tags",
-    "publish:push-git:ci": "git push \"https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git\" --follow-tags",
+    "publish:push-git:ci": "git push \"https://$GITHUB_ACTOR:$PUSH_TOKEN@github.com/$GITHUB_REPOSITORY.git\" --follow-tags",
     "publish:from-git": "lerna publish from-git --pre-dist-tag beta",
     "publish:dry-run": "run-s \"publish:version --no-git-tag-version\"",
     "publish:prerelease": "run-s publish:prerelease:before-manual-version publish:after-manual-version",

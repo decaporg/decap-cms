@@ -10,6 +10,8 @@ interface Options {
   metaData?: unknown | null;
   isModification?: boolean | null;
   mediaFiles?: MediaFile[] | null;
+  author?: string;
+  updatedOn?: string;
 }
 
 export interface EntryValue {
@@ -24,6 +26,8 @@ export interface EntryValue {
   metaData: unknown | null;
   isModification: boolean | null;
   mediaFiles: MediaFile[];
+  author: string;
+  updatedOn: string;
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
@@ -38,6 +42,8 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     metaData: options.metaData || null,
     isModification: isBoolean(options.isModification) ? options.isModification : null,
     mediaFiles: options.mediaFiles || [],
+    author: options.author || '',
+    updatedOn: options.updatedOn || '',
   };
 
   return returnObj;

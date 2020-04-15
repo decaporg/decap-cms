@@ -198,6 +198,7 @@ function createMediaFileFromAsset({
     name: basename(assetProxy.path),
     displayURL: assetProxy.url,
     draft,
+    file,
     size: file.size,
     url: assetProxy.url,
     path: assetProxy.path,

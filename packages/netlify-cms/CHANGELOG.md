@@ -3,6 +3,102 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.44](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.43...netlify-cms@2.10.44) (2020-04-14)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.43](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.42...netlify-cms@2.10.43) (2020-04-10)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.42](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.41...netlify-cms@2.10.42) (2020-04-09)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.41](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.40...netlify-cms@2.10.41) (2020-04-07)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.40](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.39...netlify-cms@2.10.40) (2020-04-06)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.39](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.38...netlify-cms@2.10.39) (2020-04-01)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.38](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.37...netlify-cms@2.10.38) (2020-04-01)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.37](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.36...netlify-cms@2.10.37) (2020-04-01)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.36](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.35...netlify-cms@2.10.36) (2020-03-30)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.35](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.34...netlify-cms@2.10.35) (2020-03-20)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.34](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.33...netlify-cms@2.10.34) (2020-03-19)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.33](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.32...netlify-cms@2.10.33) (2020-03-19)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
 ## [2.10.32](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.31...netlify-cms@2.10.32) (2020-03-13)
 
 **Note:** Version bump only for package netlify-cms

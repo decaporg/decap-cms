@@ -21,11 +21,12 @@ import {
   borders,
   transitions,
   effects,
+  zIndex,
   reactSelectStyles,
   GlobalStyles,
 } from './styles';
 
-export const NetlifyCmsUiDefault = {
+export const NetlifyCmsUiLegacy = {
   Dropdown,
   DropdownItem,
   DropdownButton,
@@ -53,6 +54,7 @@ export const NetlifyCmsUiDefault = {
   borders,
   transitions,
   effects,
+  zIndex,
   reactSelectStyles,
   GlobalStyles,
 };
@@ -84,6 +86,7 @@ export {
   borders,
   transitions,
   effects,
+  zIndex,
   reactSelectStyles,
   GlobalStyles,
   GoBackButton,

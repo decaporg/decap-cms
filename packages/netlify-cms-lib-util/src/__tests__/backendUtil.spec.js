@@ -1,9 +1,4 @@
-import {
-  parseLinkHeader,
-  getAllResponses,
-  getPathDepth,
-  filterByPropExtension,
-} from '../backendUtil';
+import { parseLinkHeader, getAllResponses, getPathDepth, filterByExtension } from '../backendUtil';
 import { oneLine } from 'common-tags';
 import nock from 'nock';
 
@@ -85,13 +80,14 @@ describe('getPathDepth', () => {
   });
 });
 
-describe('filterByPropExtension', () => {
-  it('should return filtered array based on extension', () => {
-    expect(
-      filterByPropExtension('.html.md', 'path')([{ path: 'file.html.md' }, { path: 'file.json' }]),
-    ).toEqual([{ path: 'file.html.md' }]);
-    expect(
-      filterByPropExtension('html.md', 'path')([{ path: 'file.html.md' }, { path: 'file.json' }]),
-    ).toEqual([{ path: 'file.html.md' }]);
+describe('filterByExtension', () => {
+  it('should return true when extension matches', () => {
+    expect(filterByExtension({ path: 'file.html.md' }, '.html.md')).toBe(true);
+    expect(filterByExtension({ path: 'file.html.md' }, 'html.md')).toBe(true);
+  });
+
+  it("should return false when extension doesn't match", () => {
+    expect(filterByExtension({ path: 'file.json' }, '.html.md')).toBe(false);
+    expect(filterByExtension({ path: 'file.json' }, 'html.md')).toBe(false);
   });
 });

@@ -1,9 +1,91 @@
 import { fromJS } from 'immutable';
-import { applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
+import { stripIndent } from 'common-tags';
+import { parseConfig, applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
+jest.mock('coreSrc/backend', () => {
+  return {
+    resolveBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
+  };
+});
 
 describe('config', () => {
+  describe('parseConfig', () => {
+    it('can parse simple yaml config', () => {
+      const file = stripIndent`
+        backend:
+          name: test-repo
+        media_folder: static/images
+      `;
+
+      expect(parseConfig(file)).toEqual({
+        backend: { name: 'test-repo' },
+        media_folder: 'static/images',
+      });
+    });
+
+    it('should merge yaml aliases', () => {
+      const file = stripIndent`
+      backend:
+        name: github
+        repo: netlify/netlify-cms
+        squash_merges: true
+        open_authoring: true
+      local_backend: true
+      site_url: https://www.netlifycms.org
+      publish_mode: editorial_workflow
+      media_folder: website/static/img
+      public_folder: img
+      docs_collection: &docs_collection
+        folder: website/content/docs
+        create: true
+        preview_path: 'docs/{{slug}}'
+        fields:
+          - { label: Title, name: title }
+          - { label: Body, name: body, widget: markdown }
+      collections:
+        - <<: *docs_collection
+          name: docs_start
+          label: 'Docs: Quick Start'
+      `;
+
+      expect(parseConfig(file)).toEqual({
+        backend: {
+          name: 'github',
+          repo: 'netlify/netlify-cms',
+          squash_merges: true,
+          open_authoring: true,
+        },
+        local_backend: true,
+        site_url: 'https://www.netlifycms.org',
+        publish_mode: 'editorial_workflow',
+        media_folder: 'website/static/img',
+        public_folder: 'img',
+        docs_collection: {
+          folder: 'website/content/docs',
+          create: true,
+          preview_path: 'docs/{{slug}}',
+          fields: [
+            { label: 'Title', name: 'title' },
+            { label: 'Body', name: 'body', widget: 'markdown' },
+          ],
+        },
+        collections: [
+          {
+            folder: 'website/content/docs',
+            create: true,
+            preview_path: 'docs/{{slug}}',
+            fields: [
+              { label: 'Title', name: 'title' },
+              { label: 'Body', name: 'body', widget: 'markdown' },
+            ],
+            name: 'docs_start',
+            label: 'Docs: Quick Start',
+          },
+        ],
+      });
+    });
+  });
   describe('applyDefaults', () => {
     describe('publish_mode', () => {
       it('should set publish_mode if not set', () => {
@@ -52,6 +134,51 @@ describe('config', () => {
             }),
           ).get('public_folder'),
         ).toEqual('/publib/path');
+        expect(
+          applyDefaults(
+            fromJS({
+              foo: 'bar',
+              media_folder: 'path/to/media',
+              public_folder: '',
+              collections: [],
+            }),
+          ).get('public_folder'),
+        ).toEqual('');
+      });
+    });
+
+    describe('slug', () => {
+      it('should set default slug config if not set', () => {
+        expect(applyDefaults(fromJS({ collections: [] })).get('slug')).toEqual(
+          fromJS({ encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' }),
+        );
+      });
+
+      it('should not overwrite slug encoding if set', () => {
+        expect(
+          applyDefaults(fromJS({ collections: [], slug: { encoding: 'ascii' } })).getIn([
+            'slug',
+            'encoding',
+          ]),
+        ).toEqual('ascii');
+      });
+
+      it('should not overwrite slug clean_accents if set', () => {
+        expect(
+          applyDefaults(fromJS({ collections: [], slug: { clean_accents: true } })).getIn([
+            'slug',
+            'clean_accents',
+          ]),
+        ).toEqual(true);
+      });
+
+      it('should not overwrite slug sanitize_replacement if set', () => {
+        expect(
+          applyDefaults(fromJS({ collections: [], slug: { sanitize_replacement: '_' } })).getIn([
+            'slug',
+            'sanitize_replacement',
+          ]),
+        ).toEqual('_');
       });
     });
 
@@ -60,74 +187,39 @@ describe('config', () => {
         expect(
           applyDefaults(
             fromJS({
-              collections: [{ folder: '/foo' }],
+              collections: [{ folder: '/foo', fields: [{ name: 'title', widget: 'string' }] }],
             }),
-          ).get('collections'),
-        ).toEqual(fromJS([{ folder: 'foo' }]));
+          ).getIn(['collections', 0, 'folder']),
+        ).toEqual('foo');
       });
 
       it('should strip leading slashes from collection files', () => {
         expect(
           applyDefaults(
             fromJS({
-              collections: [{ files: [{ file: '/foo' }] }],
+              collections: [
+                { files: [{ file: '/foo', fields: [{ name: 'title', widget: 'string' }] }] },
+              ],
             }),
-          ).get('collections'),
-        ).toEqual(fromJS([{ files: [{ file: 'foo' }] }]));
-      });
-
-      describe('slug', () => {
-        it('should set default slug config if not set', () => {
-          expect(applyDefaults(fromJS({ collections: [] })).get('slug')).toEqual(
-            fromJS({ encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' }),
-          );
-        });
-
-        it('should not overwrite slug encoding if set', () => {
-          expect(
-            applyDefaults(fromJS({ collections: [], slug: { encoding: 'ascii' } })).getIn([
-              'slug',
-              'encoding',
-            ]),
-          ).toEqual('ascii');
-        });
-
-        it('should not overwrite slug clean_accents if set', () => {
-          expect(
-            applyDefaults(fromJS({ collections: [], slug: { clean_accents: true } })).getIn([
-              'slug',
-              'clean_accents',
-            ]),
-          ).toEqual(true);
-        });
-
-        it('should not overwrite slug sanitize_replacement if set', () => {
-          expect(
-            applyDefaults(fromJS({ collections: [], slug: { sanitize_replacement: '_' } })).getIn([
-              'slug',
-              'sanitize_replacement',
-            ]),
-          ).toEqual('_');
-        });
+          ).getIn(['collections', 0, 'files', 0, 'file']),
+        ).toEqual('foo');
       });
 
       describe('public_folder and media_folder', () => {
-        it('should set collection public_folder collection based on media_folder if not set', () => {
+        it('should set collection public_folder based on media_folder if not set', () => {
           expect(
             applyDefaults(
               fromJS({
-                collections: [{ folder: 'foo', media_folder: 'static/images/docs' }],
+                collections: [
+                  {
+                    folder: 'foo',
+                    media_folder: 'static/images/docs',
+                    fields: [{ name: 'title', widget: 'string' }],
+                  },
+                ],
               }),
-            ).get('collections'),
-          ).toEqual(
-            fromJS([
-              {
-                folder: 'foo',
-                media_folder: 'static/images/docs',
-                public_folder: 'static/images/docs',
-              },
-            ]),
-          );
+            ).getIn(['collections', 0, 'public_folder']),
+          ).toEqual('static/images/docs');
         });
 
         it('should not overwrite collection public_folder if set', () => {
@@ -139,33 +231,185 @@ describe('config', () => {
                     folder: 'foo',
                     media_folder: 'static/images/docs',
                     public_folder: 'images/docs',
+                    fields: [{ name: 'title', widget: 'string' }],
                   },
                 ],
               }),
-            ).get('collections'),
-          ).toEqual(
-            fromJS([
-              {
-                folder: 'foo',
-                media_folder: 'static/images/docs',
-                public_folder: 'images/docs',
-              },
-            ]),
-          );
+            ).getIn(['collections', 0, 'public_folder']),
+          ).toEqual('images/docs');
         });
 
         it("should set collection media_folder and public_folder to an empty string when collection path exists, but collection media_folder doesn't", () => {
+          const result = applyDefaults(
+            fromJS({
+              collections: [
+                {
+                  folder: 'foo',
+                  path: '{{slug}}/index',
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }),
+          );
+          expect(result.getIn(['collections', 0, 'media_folder'])).toEqual('');
+          expect(result.getIn(['collections', 0, 'public_folder'])).toEqual('');
+        });
+
+        it('should set file public_folder based on media_folder if not set', () => {
           expect(
             applyDefaults(
               fromJS({
-                collections: [{ folder: 'foo', path: '{{slug}}/index' }],
+                collections: [
+                  {
+                    files: [
+                      {
+                        file: 'foo',
+                        media_folder: 'static/images/docs',
+                        fields: [{ name: 'title', widget: 'string' }],
+                      },
+                    ],
+                  },
+                ],
               }),
-            ).get('collections'),
-          ).toEqual(
-            fromJS([
-              { folder: 'foo', path: '{{slug}}/index', media_folder: '', public_folder: '' },
-            ]),
+            ).getIn(['collections', 0, 'files', 0, 'public_folder']),
+          ).toEqual('static/images/docs');
+        });
+
+        it('should not overwrite file public_folder if set', () => {
+          expect(
+            applyDefaults(
+              fromJS({
+                collections: [
+                  {
+                    files: [
+                      {
+                        file: 'foo',
+                        media_folder: 'static/images/docs',
+                        public_folder: 'images/docs',
+                        fields: [{ name: 'title', widget: 'string' }],
+                      },
+                    ],
+                  },
+                ],
+              }),
+            ).getIn(['collections', 0, 'files', 0, 'public_folder']),
+          ).toEqual('images/docs');
+        });
+
+        it('should set nested field public_folder based on media_folder if not set', () => {
+          const config = applyDefaults(
+            fromJS({
+              collections: [
+                {
+                  folder: 'foo',
+                  path: '{{slug}}/index',
+                  fields: [
+                    {
+                      name: 'title',
+                      widget: 'string',
+                      media_folder: 'collection/static/images/docs',
+                    },
+                  ],
+                },
+                {
+                  files: [
+                    {
+                      file: 'foo',
+                      fields: [
+                        {
+                          name: 'title',
+                          widget: 'string',
+                          media_folder: 'file/static/images/docs',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
           );
+          expect(config.getIn(['collections', 0, 'fields', 0, 'public_folder'])).toEqual(
+            'collection/static/images/docs',
+          );
+          expect(
+            config.getIn(['collections', 1, 'files', 0, 'fields', 0, 'public_folder']),
+          ).toEqual('file/static/images/docs');
+        });
+
+        it('should not overwrite nested field public_folder if set', () => {
+          const config = applyDefaults(
+            fromJS({
+              collections: [
+                {
+                  folder: 'foo',
+                  path: '{{slug}}/index',
+                  fields: [
+                    {
+                      name: 'title',
+                      widget: 'string',
+                      media_folder: 'collection/static/images/docs',
+                      public_folder: 'collection/public_folder',
+                    },
+                  ],
+                },
+                {
+                  files: [
+                    {
+                      file: 'foo',
+                      fields: [
+                        {
+                          name: 'title',
+                          widget: 'string',
+                          public_folder: 'file/public_folder',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          );
+          expect(config.getIn(['collections', 0, 'fields', 0, 'public_folder'])).toEqual(
+            'collection/public_folder',
+          );
+          expect(
+            config.getIn(['collections', 1, 'files', 0, 'fields', 0, 'public_folder']),
+          ).toEqual('file/public_folder');
+        });
+      });
+
+      describe('publish', () => {
+        it('should set publish to true if not set', () => {
+          expect(
+            applyDefaults(
+              fromJS({
+                collections: [
+                  {
+                    folder: 'foo',
+                    media_folder: 'static/images/docs',
+                    fields: [{ name: 'title', widget: 'string' }],
+                  },
+                ],
+              }),
+            ).getIn(['collections', 0, 'publish']),
+          ).toEqual(true);
+        });
+
+        it('should not override existing publish config', () => {
+          expect(
+            applyDefaults(
+              fromJS({
+                collections: [
+                  {
+                    folder: 'foo',
+                    media_folder: 'static/images/docs',
+                    publish: false,
+                    fields: [{ name: 'title', widget: 'string' }],
+                  },
+                ],
+              }),
+            ).getIn(['collections', 0, 'publish']),
+          ).toEqual(false);
         });
       });
     });

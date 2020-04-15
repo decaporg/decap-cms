@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import CSSTransition from 'react-transition-group/CSSTransition';
-import { colors } from './styles';
+import { colors, zIndex } from './styles';
 
 const styles = {
   disabled: css`
@@ -94,7 +94,7 @@ export class Loader extends React.Component {
       return (
         <LoaderText>
           <CSSTransition
-            classNames={{
+            className={{
               enter: styles.enter,
               enterActive: styles.enterActive,
               exit: styles.exit,
@@ -122,7 +122,7 @@ const StyledLoader = styled(Loader)`
   left: 50%;
   margin: 0px;
   text-align: center;
-  z-index: 1000;
+  z-index: ${zIndex.zIndex1000};
   transform: translateX(-50%) translateY(-50%);
 
   &:before,

@@ -36,12 +36,9 @@ const entryDraftReducer = (state = Map(), action) => {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
       return state.withMutations(state => {
-        state.set('entry', action.payload.entry);
+        state.set('entry', fromJS(action.payload.entry));
         state.setIn(['entry', 'newRecord'], false);
-        // An existing entry may already have metadata. If we surfed away and back to its
-        // editor page, the metadata will have been fetched already, so we shouldn't
-        // clear it as to not break relation lists.
-        state.set('fieldsMetaData', action.payload.metadata || Map());
+        state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
         state.set('key', uuid());

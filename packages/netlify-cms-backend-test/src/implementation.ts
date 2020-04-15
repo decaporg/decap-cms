@@ -1,4 +1,4 @@
-import { attempt, isError, take, unset } from 'lodash';
+import { attempt, isError, take, unset, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 import {
   EditorialWorkflowError,
@@ -95,6 +95,10 @@ export default class TestBackend implements Implementation {
   constructor(_config: Config, options = {}) {
     this.assets = [];
     this.options = options;
+  }
+
+  isGitBackend() {
+    return false;
   }
 
   authComponent() {
@@ -243,6 +247,7 @@ export default class TestBackend implements Implementation {
           },
           slug,
           mediaFiles: assetProxies.map(this.normalizeAsset),
+          isModification: !isEmpty(getFile(path)),
         };
         unpubStore.push(unpubEntry);
       }
