@@ -173,6 +173,7 @@ collections: # A list of collections the CMS should be able to edit
               - label: 'List'
                 name: 'list'
                 widget: 'list'
+                minimize_collapsed: true
                 fields:
                   - label: 'Related Post'
                     name: 'post'

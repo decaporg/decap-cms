@@ -120,6 +120,7 @@ export default class ListControl extends React.Component {
     const keys = value && Array.from({ length: value.size }, () => uuid());
 
     this.state = {
+      collapsed: allItemsCollapsed,
       itemsCollapsed: List(itemsCollapsed),
       value: valueToString(value),
       keys: List(keys),
@@ -320,10 +321,22 @@ export default class ListControl extends React.Component {
 
   handleCollapseAllToggle = e => {
     e.preventDefault();
-    const { value } = this.props;
-    const { itemsCollapsed } = this.state;
+    const { value, field } = this.props;
+    const { itemsCollapsed, collapsed } = this.state;
+    const minimizeCollapsedItems = field.get('minimize_collapsed', false);
+    const allItemsCollapsedByDefault = field.get('collapsed', true);
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
-    this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
+
+    if (!minimizeCollapsedItems) {
+      this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
+    } else {
+      let updatedItemsCollapsed = itemsCollapsed;
+      // Only allow collapsing all items in this mode but not opening all at once
+      if (!collapsed || !allItemsCollapsedByDefault) {
+        updatedItemsCollapsed = List(Array(value.size).fill(!collapsed));
+      }
+      this.setState({ collapsed: !collapsed, itemsCollapsed: updatedItemsCollapsed });
+    }
   };
 
   objectLabel(item) {
@@ -473,11 +486,14 @@ export default class ListControl extends React.Component {
 
   renderListControl() {
     const { value, forID, field, classNameWrapper } = this.props;
-    const { itemsCollapsed } = this.state;
+    const { itemsCollapsed, collapsed } = this.state;
     const items = value || List();
     const label = field.get('label', field.get('name'));
     const labelSingular = field.get('label_singular') || field.get('label', field.get('name'));
     const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
+    const minimizeCollapsedItems = field.get('minimize_collapsed', false);
+    const allItemsCollapsed = itemsCollapsed.every(val => val === true);
+    const selfCollapsed = allItemsCollapsed && (collapsed || !minimizeCollapsedItems);
 
     return (
       <ClassNames>
@@ -499,15 +515,17 @@ export default class ListControl extends React.Component {
               heading={`${items.size} ${listLabel}`}
               label={labelSingular.toLowerCase()}
               onCollapseToggle={this.handleCollapseAllToggle}
-              collapsed={itemsCollapsed.every(val => val === true)}
+              collapsed={selfCollapsed}
             />
-            <SortableList
-              items={items}
-              renderItem={this.renderItem}
-              onSortEnd={this.onSortEnd}
-              useDragHandle
-              lockAxis="y"
-            />
+            {(!selfCollapsed || !minimizeCollapsedItems) && (
+              <SortableList
+                items={items}
+                renderItem={this.renderItem}
+                onSortEnd={this.onSortEnd}
+                useDragHandle
+                lockAxis="y"
+              />
+            )}
           </div>
         )}
       </ClassNames>
