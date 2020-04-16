@@ -9,7 +9,7 @@ import {
   CMS_BRANCH_PREFIX,
   statusToLabel,
   labelToStatus,
-} from 'netlify-cms-lib-util/src/API';
+} from 'netlify-cms-lib-util/src/APIUtils';
 
 import { defaultSchema, joi } from '../joi';
 import {

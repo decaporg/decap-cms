@@ -14,6 +14,7 @@ import {
   selectFolderEntryExtension,
   selectInferedField,
   selectMediaFolders,
+  selectFieldsComments,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -184,6 +185,10 @@ export class Backend {
     return Promise.resolve(null);
   }
 
+  isGitBackend() {
+    return this.implementation.isGitBackend?.() || false;
+  }
+
   updateUserCredentials = (updatedCredentials: Credentials) => {
     const storedUser = this.authStore!.retrieve();
     if (storedUser && storedUser.backendName === this.backendName) {
@@ -273,7 +278,12 @@ export class Backend {
         collection.get('name'),
         selectEntrySlug(collection, loadedEntry.file.path),
         loadedEntry.file.path,
-        { raw: loadedEntry.data || '', label: loadedEntry.file.label },
+        {
+          raw: loadedEntry.data || '',
+          label: loadedEntry.file.label,
+          author: loadedEntry.file.author,
+          updatedOn: loadedEntry.file.updatedOn,
+        },
       ),
     );
     const formattedEntries = entries.map(this.entryWithFormat(collection));
@@ -284,7 +294,7 @@ export class Backend {
     return filteredEntries;
   }
 
-  listEntries(collection: Collection) {
+  async listEntries(collection: Collection) {
     const extension = selectFolderEntryExtension(collection);
     let listMethod: () => Promise<ImplementationEntry[]>;
     const collectionType = collection.get('type');
@@ -307,20 +317,23 @@ export class Backend {
     } else {
       throw new Error(`Unknown collection type: ${collectionType}`);
     }
-    return listMethod().then((loadedEntries: ImplementationEntry[]) => ({
-      entries: this.processEntries(loadedEntries, collection),
-      /*
+    const loadedEntries = await listMethod();
+    /*
           Wrap cursors so we can tell which collection the cursor is
           from. This is done to prevent traverseCursor from requiring a
           `collection` argument.
         */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      cursor: Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
-        cursorType: 'collectionEntries',
-        collection,
-      }),
-    }));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    const cursor = Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
+      cursorType: 'collectionEntries',
+      collection,
+    });
+    return {
+      entries: this.processEntries(loadedEntries, collection),
+      pagination: cursor.meta?.get('page'),
+      cursor,
+    };
   }
 
   // The same as listEntries, except that if a cursor with the "next"
@@ -494,27 +507,16 @@ export class Backend {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
 
-    const integration = selectIntegration(state.integrations, null, 'assetStore');
-
     const loadedEntry = await this.implementation.getEntry(path);
-    const entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+    let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
       raw: loadedEntry.data,
       label,
       mediaFiles: [],
     });
 
-    const entryWithFormat = this.entryWithFormat(collection)(entry);
-    const mediaFolders = selectMediaFolders(state, collection, fromJS(entryWithFormat));
-    if (mediaFolders.length > 0 && !integration) {
-      entry.mediaFiles = [];
-      for (const folder of mediaFolders) {
-        entry.mediaFiles = [...entry.mediaFiles, ...(await this.implementation.getMedia(folder))];
-      }
-    } else {
-      entry.mediaFiles = state.mediaLibrary.get('files') || [];
-    }
-
-    return entryWithFormat;
+    entry = this.entryWithFormat(collection)(entry);
+    entry = await this.processEntry(state, collection, entry);
+    return entry;
   }
 
   getMedia() {
@@ -536,9 +538,9 @@ export class Backend {
     return Promise.reject(err);
   }
 
-  entryWithFormat(collectionOrEntity: unknown) {
+  entryWithFormat(collection: Collection) {
     return (entry: EntryValue): EntryValue => {
-      const format = resolveFormat(collectionOrEntity, entry);
+      const format = resolveFormat(collection, entry);
       if (entry && entry.raw !== undefined) {
         const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
         if (isError(data)) console.error(data);
@@ -579,18 +581,37 @@ export class Backend {
       }));
   }
 
-  unpublishedEntry(collection: Collection, slug: string) {
-    return this.implementation!.unpublishedEntry!(collection.get('name') as string, slug)
-      .then(loadedEntry => {
-        const entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
-          raw: loadedEntry.data,
-          isModification: loadedEntry.isModification,
-          metaData: loadedEntry.metaData,
-          mediaFiles: loadedEntry.mediaFiles,
-        });
-        return entry;
-      })
-      .then(this.entryWithFormat(collection));
+  async processEntry(state: State, collection: Collection, entry: EntryValue) {
+    const integration = selectIntegration(state.integrations, null, 'assetStore');
+    const mediaFolders = selectMediaFolders(state, collection, fromJS(entry));
+    if (mediaFolders.length > 0 && !integration) {
+      const files = await Promise.all(
+        mediaFolders.map(folder => this.implementation.getMedia(folder)),
+      );
+      entry.mediaFiles = entry.mediaFiles.concat(...files);
+    } else {
+      entry.mediaFiles = entry.mediaFiles.concat(state.mediaLibrary.get('files') || []);
+    }
+
+    return entry;
+  }
+
+  async unpublishedEntry(state: State, collection: Collection, slug: string) {
+    const loadedEntry = await this.implementation!.unpublishedEntry!(
+      collection.get('name') as string,
+      slug,
+    );
+
+    let entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
+      raw: loadedEntry.data,
+      isModification: loadedEntry.isModification,
+      metaData: loadedEntry.metaData,
+      mediaFiles: loadedEntry.mediaFiles?.map(file => ({ ...file, draft: true })) || [],
+    });
+
+    entry = this.entryWithFormat(collection)(entry);
+    entry = await this.processEntry(state, collection, entry);
+    return entry;
   }
 
   /**
@@ -876,7 +897,8 @@ export class Backend {
   entryToRaw(collection: Collection, entry: EntryMap): string {
     const format = resolveFormat(collection, entry.toJS());
     const fieldsOrder = this.fieldsOrder(collection, entry);
-    return format && format.toFile(entry.get('data').toJS(), fieldsOrder);
+    const fieldsComments = selectFieldsComments(collection, entry);
+    return format && format.toFile(entry.get('data').toJS(), fieldsOrder, fieldsComments);
   }
 
   fieldsOrder(collection: Collection, entry: EntryMap) {

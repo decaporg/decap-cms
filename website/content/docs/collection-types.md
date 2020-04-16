@@ -61,6 +61,7 @@ collections:
   - label: "Blog in English"
     name: "english_posts"
     folder: "_posts"
+    create: true
     filter: {field: "language", value: "en"}
     fields:
       - {label: "Language", name: "language", widget: "select", options: ["en", "es"]}
@@ -69,6 +70,7 @@ collections:
   - label: "Blog en Español"
     name: "spanish_posts"
     folder: "_posts"
+    create: true
     filter: {field: "language", value: "es"}
     fields:
       - {label: "Lenguaje", name: "language", widget: "select", options: ["en", "es"]}

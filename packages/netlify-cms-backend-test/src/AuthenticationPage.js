@@ -119,6 +119,12 @@ const LoginButtonGroup = styled(StyledButtonGroup)`
 const LoginButton = styled(Button)`
   position: relative;
   width: calc(100% - 0.5rem);
+  & svg {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    margin: 0;
+  }
   ${({ color }) =>
     color
       ? `
@@ -138,12 +144,6 @@ const LoginButton = styled(Button)`
     }
   `
       : ``}
-  & svg {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    margin: 0;
-  }
 `;
 LoginButton.defaultProps = { size: 'lg' };
 const BackButton = styled(IconButton)`
@@ -199,7 +199,6 @@ const DialogFooter = styled.footer`
   font-size: 0.75rem;
   ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
     position: static;
-    padding: 0;
     width: calc(100% + 2rem);
     border-top: 1px solid ${({ theme }) => theme.color.border};
     padding: 1rem 1rem 0;

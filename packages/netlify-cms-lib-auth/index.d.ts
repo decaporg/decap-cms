@@ -7,5 +7,5 @@ declare module 'netlify-cms-lib-auth' {
       refresh_token: string;
     }) => Promise<{ token: string; refresh_token: string }>;
   }
-  export default NetlifyAuthenticator;
+  export { NetlifyAuthenticator };
 }

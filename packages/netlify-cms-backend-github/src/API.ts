@@ -12,6 +12,7 @@ import {
   Entry as LibEntry,
   PersistOptions,
   readFile,
+  readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   DEFAULT_PR_BODY,
@@ -24,6 +25,9 @@ import {
   labelToStatus,
   statusToLabel,
   contentKeyFromBranch,
+  requestWithBackoff,
+  unsentRequest,
+  ApiRequest,
 } from 'netlify-cms-lib-util';
 import { Octokit } from '@octokit/rest';
 
@@ -276,21 +280,31 @@ export default class API {
     throw new APIError(error.message, responseStatus, API_NAME);
   }
 
+  buildRequest(req: ApiRequest) {
+    return req;
+  }
+
   async request(
     path: string,
     options: Options = {},
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     parser = (response: Response) => this.parseResponse(response),
   ) {
     const headers = await this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    let responseStatus: number;
-    return fetch(url, { ...options, headers })
-      .then(response => {
-        responseStatus = response.status;
-        return parser(response);
-      })
-      .catch(error => this.handleRequestError(error, responseStatus));
+    let responseStatus = 500;
+
+    try {
+      const req = (unsentRequest.fromFetchArguments(url, {
+        ...options,
+        headers,
+      }) as unknown) as ApiRequest;
+      const response = await requestWithBackoff(this, req);
+      responseStatus = response.status;
+      const parsedResponse = await parser(response);
+      return parsedResponse;
+    } catch (error) {
+      return this.handleRequestError(error, responseStatus);
+    }
   }
 
   nextUrlProcessor() {
@@ -521,15 +535,69 @@ export default class API {
     }
   }
 
+  async getPullRequestCommits(number: number) {
+    if (number === MOCK_PULL_REQUEST) {
+      return [];
+    }
+    try {
+      const commits: Octokit.PullsListCommitsResponseItem[] = await this.request(
+        `${this.originRepoURL}/pulls/${number}/commits`,
+      );
+      return commits;
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
+  }
+
+  matchingEntriesFromDiffs(diffs: Octokit.ReposCompareCommitsResponseFilesItem[]) {
+    // media files don't have a patch attribute, except svg files
+    const matchingEntries = diffs
+      .filter(d => d.patch && !d.filename.endsWith('.svg'))
+      .map(f => ({ path: f.filename, newFile: f.status === 'added' }));
+
+    return matchingEntries;
+  }
+
   async retrieveMetadata(contentKey: string) {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files: diffs } = await this.getDifferences(this.branch, pullRequest.head.sha);
-    // media files don't have a patch attribute, except svg files
-    const { path, newFile } = diffs
-      .filter(d => d.patch && !d.filename.endsWith('.svg'))
-      .map(f => ({ path: f.filename, newFile: f.status === 'added' }))[0];
+    const matchingEntries = this.matchingEntriesFromDiffs(diffs);
+    let entry = matchingEntries[0];
+    if (matchingEntries.length <= 0) {
+      // this can happen if there is an empty diff for some reason
+      // we traverse the commits history to infer the entry
+      const commits = await this.getPullRequestCommits(pullRequest.number);
+      for (const commit of commits) {
+        const { files: diffs } = await this.getDifferences(this.branch, commit.sha);
+        const matchingEntries = this.matchingEntriesFromDiffs(diffs);
+        entry = matchingEntries[0];
+        if (entry) {
+          break;
+        }
+      }
+      if (!entry) {
+        console.error(
+          'Unable to locate entry from diff',
+          JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
+        );
+        throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      }
+    } else if (matchingEntries.length > 1) {
+      // this only works for folder collections
+      const entryBySlug = matchingEntries.filter(e => e.path.includes(slug))[0];
+      entry = entryBySlug || entry;
+      if (!entryBySlug) {
+        console.warn(
+          `Expected 1 matching entry from diff, but received '${matchingEntries.length}'. Matched '${entry.path}'`,
+          JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
+        );
+      }
+    }
+
+    const { path, newFile } = entry;
 
     const mediaFiles = diffs
       .filter(d => d.filename !== path)
@@ -539,7 +607,8 @@ export default class API {
       }));
     const label = pullRequest.labels.find(l => isCMSLabel(l.name)) as { name: string };
     const status = labelToStatus(label.name);
-    return { branch, collection, slug, path, status, newFile, mediaFiles, pullRequest };
+    const timeStamp = pullRequest.updated_at;
+    return { branch, collection, slug, path, status, newFile, mediaFiles, timeStamp, pullRequest };
   }
 
   async readFile(
@@ -561,6 +630,28 @@ export default class API {
     const fetchContent = () => this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
     const content = await readFile(sha, fetchContent, localForage, parseText);
     return content;
+  }
+
+  async readFileMetadata(path: string, sha: string) {
+    const fetchFileMetadata = async () => {
+      try {
+        const result: Octokit.ReposListCommitsResponse = await this.request(
+          `${this.originRepoURL}/commits`,
+          {
+            params: { path, sha: this.branch },
+          },
+        );
+        const { commit } = result[0];
+        return {
+          author: commit.author.name || commit.author.email,
+          updatedOn: commit.author.date,
+        };
+      } catch (e) {
+        return { author: '', updatedOn: '' };
+      }
+    };
+    const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
+    return fileMetadata;
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
@@ -628,6 +719,7 @@ export default class API {
         status,
         newFile,
         mediaFiles,
+        timeStamp,
       } = await this.retrieveMetadata(contentKey);
 
       const repoURL = this.useOpenAuthoring
@@ -641,7 +733,13 @@ export default class API {
 
       return {
         slug,
-        metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
+        metaData: {
+          branch,
+          collection,
+          objects: { entry: { path, mediaFiles } },
+          status,
+          timeStamp,
+        },
         fileData,
         isModification: !newFile,
       };
@@ -651,19 +749,22 @@ export default class API {
   }
 
   filterOpenAuthoringBranches = async (branch: string) => {
-    const contentKey = contentKeyFromBranch(branch);
-    const { pullRequest, collection, slug } = await this.retrieveMetadata(contentKey);
-    const { state: currentState, merged_at: mergedAt } = pullRequest;
-    if (
-      pullRequest.number !== MOCK_PULL_REQUEST &&
-      currentState === PullRequestState.Closed &&
-      mergedAt
-    ) {
-      // pr was merged, delete entry
-      await this.deleteUnpublishedEntry(collection, slug);
+    try {
+      const pullRequest = await this.getBranchPullRequest(branch);
+      const { state: currentState, merged_at: mergedAt } = pullRequest;
+      if (
+        pullRequest.number !== MOCK_PULL_REQUEST &&
+        currentState === PullRequestState.Closed &&
+        mergedAt
+      ) {
+        // pr was merged, delete branch
+        await this.deleteBranch(branch);
+        return { branch, filter: false };
+      } else {
+        return { branch, filter: true };
+      }
+    } catch (e) {
       return { branch, filter: false };
-    } else {
-      return { branch, filter: true };
     }
   };
 
@@ -966,8 +1067,8 @@ export default class API {
   }
 
   async getDifferences(from: string, to: string) {
-    const attempts = 3;
     // retry this as sometimes GitHub returns an initial 404 on cross repo compare
+    const attempts = this.useOpenAuthoring ? 10 : 1;
     for (let i = 1; i <= attempts; i++) {
       try {
         const result: Octokit.ReposCompareCommitsResponse = await this.request(
@@ -976,9 +1077,10 @@ export default class API {
         return result;
       } catch (e) {
         if (i === attempts) {
+          console.warn(`Reached maximum number of attempts '${attempts}' for getDifferences`);
           throw e;
         }
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, i * 500));
       }
     }
     throw new APIError('Not Found', 404, API_NAME);

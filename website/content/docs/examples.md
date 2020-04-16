@@ -1,7 +1,7 @@
 ---
 title: Examples
-weight: 110
 group: start
+weight: 110
 ---
 
 Do you have a great, open source example? Submit a pull request to this page!
@@ -25,3 +25,4 @@ Example | Tools | Type | Source | More info |
 [Jigsaw Blog Starter Template Demo](https://jigsaw-blog-netlify-netlifycms-template.netlify.com/) | Jigsaw | demo | [erickpatrick/jigsaw-blog-netlify-netlifycms-template](https://github.com/erickpatrick/jigsaw-blog-netlify-netlifycms-template) | [blog post](https://www.erickpatrick.net/blog/augmenting-tightenco-jigsaw-with-netlifycms/)
 [Nuxt & NetlifyCMS Boilerplate](https://nuxt-netlifycms-boilerplate.netlify.com/) | Vue, Nuxt | demo | [tylermercer/nuxt-netlifycms-boilerplate](https://github.com/tylermercer/nuxt-netlifycms-boilerplate) | [read me](https://github.com/tylermercer/nuxt-netlifycms-boilerplate)
 [Next.js demo](https://netlifycms-nextjs.netlify.com) | Next.js | blog | [masives/netlifycms-nextjs](https://github.com/masives/netlifycms-nextjs) | [read me](https://github.com/masives/netlifycms-nextjs)
+[Delog - JAMStack Blog with Netlify CMS](https://delog-w3layouts.netlify.com/) | Gatsby, Netlify-CMS | demo | [W3Layouts/gatsby-starter-delog](https://github.com/W3Layouts/gatsby-starter-delog) | [blog post](https://w3layouts.com/articles/delog-gatsby-starter-netlify-cms/)

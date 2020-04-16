@@ -10,6 +10,7 @@ The object widget allows you to group multiple widgets together, nested under a 
 - **Data type:** list of child widget values
 - **Options:**
   - `default`: you can set defaults within each sub-field's configuration
+  - `collapsed`: if added and labeled `true`, the widget's content is collapsed by default
   - `fields`: (**required**) a nested list of widget fields to include in your widget
 - **Example:**
     ```yaml
@@ -27,6 +28,7 @@ The object widget allows you to group multiple widgets together, nested under a 
         - label: "Address"
           name: "address"
           widget: "object"
+          collapsed: true
           fields: 
             - {label: "Street Address", name: "street", widget: "string"}
             - {label: "City", name: "city", widget: "string"}

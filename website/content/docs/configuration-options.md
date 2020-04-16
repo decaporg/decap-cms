@@ -194,6 +194,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `files` or `folder` (requires one of these): specifies the collection type and location; details in [Collection Types](../collection-types)
 * `filter`: optional filter for `folder` collections; details in [Collection Types](../collection-types)
 * `create`: for `folder` collections only; `true` allows users to create new items in the collection; defaults to `false`
+* `publish`: for `publish_mode: editorial_workflow` only; `false` hides UI publishing controls for a collection; defaults to `true`
 * `delete`: `false` prevents users from deleting items in a collection; defaults to `true`
 * `extension`: see detailed description below
 * `format`: see detailed description below
@@ -204,6 +205,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `fields` (required): see detailed description below
 * `editor`: see detailed description below
 * `summary`: see detailed description below
+* `sortableFields`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -327,6 +329,7 @@ The `fields` option maps editor UI widgets to field-value pairs in the saved fil
 * `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type). Please note that field default value only works for folder collection type.
 * `required`: specify as `false` to make a field optional; defaults to `true`
 * `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
+* `comment`: optional comment to add before the field (only supported for `yaml`)
 
 In files with frontmatter, one field should be named `body`. This special field represents the section of the document (usually markdown) that comes after the frontmatter.
 
@@ -341,6 +344,7 @@ fields:
   - {label: "Layout", name: "layout", widget: "hidden", default: "blog"}
   - {label: "Featured Image", name: "thumbnail", widget: "image", required: false}
   - {label: "Body", name: "body", widget: "markdown"}
+    comment: 'This is a multiline\ncomment'
 ```
 
 ### `editor`
@@ -366,9 +370,26 @@ Template tags are the same as those for [slug](#slug), with the following additi
 
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
+* `{{commit_date}}` The file commit date on supported backends (git based backends).
+* `{{commit_author}}` The file author date on supported backends (git based backends).
 
 **Example**
 
 ```yaml
     summary: "Version: {{version}} - {{title}}"
+```
+
+### `sortableFields`
+
+An optional list of sort fields to show in the UI.
+
+Defaults to inferring `title`, `date`, `author` and `description` fields and will also show `Update On` sort field in git based backends.
+
+When `author` field can't be inferred commit author will be used.
+
+**Example**
+
+```yaml
+    # use dot notation for nested fields
+    sortableFields: ['commit_date', 'title', 'commit_author', 'language.en']
 ```

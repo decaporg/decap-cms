@@ -25,6 +25,10 @@ const NavWrap = styled(Card)`
     opacity: 1;
     transition: ${({ collapsed }) => (collapsed ? '200ms' : '250ms')} cubic-bezier(0.4, 0, 0.2, 1);
   }
+  ${NavItemContents} {
+    width: 13.5rem;
+    min-width: 13.5rem;
+  }
   ${({ collapsed }) =>
     collapsed
       ? `
@@ -34,10 +38,6 @@ const NavWrap = styled(Card)`
     }
   `
       : ``}
-  ${NavItemContents} {
-    width: 13.5rem;
-    min-width: 13.5rem;
-  }
 `;
 NavWrap.defaultProps = { elevation: 'xs', rounded: false, direction: 'right' };
 

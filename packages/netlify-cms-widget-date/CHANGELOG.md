@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.4.0...netlify-cms-widget-date@2.5.0) (2020-04-07)
+
+
+### Features
+
+* **yaml:** support comments ([#3529](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/3529)) ([4afbbdd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/4afbbdd8a99241d239f28c5be544bb0ca77e345b))
+
+
+
+
+
 # [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.3.5...netlify-cms-widget-date@2.4.0) (2019-12-16)
 
 

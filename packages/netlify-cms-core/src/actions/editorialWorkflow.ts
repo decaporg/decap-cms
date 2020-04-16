@@ -15,7 +15,7 @@ import {
 import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry, entryDeleted, getMediaAssets } from './entries';
+import { loadEntry, entryDeleted, getMediaAssets, createDraftFromEntry } from './entries';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
@@ -271,25 +271,21 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {
-      const entry = (await backend.unpublishedEntry(collection, slug)) as EntryValue;
+      const entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
       const assetProxies = await Promise.all(
-        entry.mediaFiles.map(({ url, file, path }) =>
-          createAssetProxy({
-            path,
-            url,
-            file,
-          }),
-        ),
+        entry.mediaFiles
+          .filter(file => file.draft)
+          .map(({ url, file, path }) =>
+            createAssetProxy({
+              path,
+              url,
+              file,
+            }),
+          ),
       );
       dispatch(addAssets(assetProxies));
-
-      let mediaFiles: MediaFile[] = entry.mediaFiles.map(file => ({ ...file, draft: true }));
-      if (!collection.has('media_folder')) {
-        const libraryFiles = getState().mediaLibrary.get('files') || [];
-        mediaFiles = mediaFiles.concat(libraryFiles);
-      }
-
-      dispatch(unpublishedEntryLoaded(collection, { ...entry, mediaFiles }));
+      dispatch(unpublishedEntryLoaded(collection, entry));
+      dispatch(createDraftFromEntry(entry));
     } catch (error) {
       if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
         dispatch(unpublishedEntryRedirected(collection, slug));
@@ -374,10 +370,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const backend = currentBackend(state.config);
     const transactionID = uuid();
     const entry = entryDraft.get('entry');
-    const assetProxies = await getMediaAssets({
-      getState,
-      dispatch,
-      collection,
+    const assetProxies = getMediaAssets({
       entry,
     });
 
@@ -413,6 +406,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         }),
       );
       dispatch(unpublishedEntryPersisted(collection, transactionID, newSlug));
+      if (!existingUnpublishedEntry) return dispatch(loadUnpublishedEntry(collection, newSlug));
     } catch (error) {
       dispatch(
         notifSend({

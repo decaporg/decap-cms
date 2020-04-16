@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 import WidgetDoc from './widget-doc';
@@ -21,20 +21,26 @@ const WidgetsContent = styled.div`
   border-radius: 4px;
 `;
 
-const Widgets = ({ widgets }) => {
+const Widgets = ({ widgets, location }) => {
+  const initialLoadRef = useRef(true);
+  const navRef = useRef(null);
   const [currentWidget, setWidget] = useState(null);
 
   useEffect(() => {
-    const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
+    const hash = location.hash ? location.hash.replace('#', '') : '';
 
     const widgetsContainHash = widgets.edges.some(w => w.node.frontmatter.title === hash);
 
     if (widgetsContainHash) {
-      return setWidget(hash);
+      setWidget(hash);
+      if (initialLoadRef.current) {
+        navRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      setWidget(widgets.edges[0].node.frontmatter.title);
     }
-
-    setWidget(widgets.edges[0].node.frontmatter.title);
-  }, []);
+    initialLoadRef.current = false;
+  }, [widgets, location.hash]);
 
   const handleWidgetChange = (event, title) => {
     event.preventDefault();
@@ -46,7 +52,7 @@ const Widgets = ({ widgets }) => {
 
   return (
     <section>
-      <WidgetsNav>
+      <WidgetsNav ref={navRef}>
         {widgets.edges.map(({ node }) => {
           const { label, title } = node.frontmatter;
           return (

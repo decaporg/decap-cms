@@ -1,4 +1,10 @@
 updates:
+  - date: 2020-03-19T18:39:47.538Z
+    version: 2.10.33
+    description: Bugfixes
+  - date: 2020-03-13T18:39:27.187Z
+    version: 2.10.32
+    description: Add Catalan UI translation
   - date: 2020-03-12T20:58:33.994Z
     version: 2.10.31
     description: 'Lazy loading for large directories in GitHub, bugfixes'

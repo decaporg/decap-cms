@@ -20,7 +20,7 @@ import {
   getMediaDisplayURL,
   getMediaAsBlob,
   Credentials,
-  filterByPropExtension,
+  filterByExtension,
   Config,
   ImplementationFile,
   getPreviewStatus,
@@ -102,6 +102,10 @@ export default class GitHub implements Implementation {
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
+  }
+
+  isGitBackend() {
+    return true;
   }
 
   authComponent() {
@@ -319,7 +323,7 @@ export default class GitHub implements Implementation {
         repoURL,
         depth,
       }).then(files => {
-        const filtered = filterByPropExtension(extension, 'path')(files);
+        const filtered = files.filter(file => filterByExtension(file, extension));
         const result = this.getCursorAndFiles(filtered, 1);
         cursor = result.cursor;
         return result.files;
@@ -328,7 +332,12 @@ export default class GitHub implements Implementation {
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }) as Promise<string>;
 
-    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
@@ -342,14 +351,18 @@ export default class GitHub implements Implementation {
       this.api!.listFiles(folder, {
         repoURL,
         depth,
-      }).then(files => {
-        return filterByPropExtension(extension, 'path')(files);
-      });
+      }).then(files => files.filter(file => filterByExtension(file, extension)));
 
-    const readFile = (path: string, id: string | null | undefined) =>
-      this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+    const readFile = (path: string, id: string | null | undefined) => {
+      return this.api!.readFile(path, id, { repoURL }) as Promise<string>;
+    };
 
-    const files = await entriesByFolder(listFiles, readFile, API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     return files;
   }
 
@@ -359,7 +372,7 @@ export default class GitHub implements Implementation {
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }).catch(() => '') as Promise<string>;
 
-    return entriesByFiles(files, readFile, 'GitHub');
+    return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
   // Fetches a single entry.
@@ -470,17 +483,20 @@ export default class GitHub implements Implementation {
       }
     }
 
+    const readFile = (path: string, id: string | null | undefined) =>
+      this.api!.readFile(path, id, { repoURL: this.api!.originRepoURL }).catch(() => '') as Promise<
+        string
+      >;
+
+    const entries = await entriesByFiles(
+      result.files,
+      readFile,
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
+
     return {
-      entries: await Promise.all(
-        result.files.map(file =>
-          this.api!.readFile(file.path, file.id, { repoURL: this.api!.originRepoURL }).then(
-            data => ({
-              file,
-              data: data as string,
-            }),
-          ),
-        ),
-      ),
+      entries,
       cursor: result.cursor,
     };
   }

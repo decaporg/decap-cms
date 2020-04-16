@@ -186,6 +186,7 @@ describe('Backend', () => {
 
       expect(result).toEqual({
         entry: {
+          author: '',
           mediaFiles: [],
           collection: 'posts',
           slug: 'slug',
@@ -196,6 +197,7 @@ describe('Backend', () => {
           label: null,
           metaData: null,
           isModification: null,
+          updatedOn: '',
         },
       });
       expect(localForage.getItem).toHaveBeenCalledTimes(1);
@@ -224,6 +226,7 @@ describe('Backend', () => {
 
       expect(result).toEqual({
         entry: {
+          author: '',
           mediaFiles: [{ id: '1' }],
           collection: 'posts',
           slug: 'slug',
@@ -234,6 +237,7 @@ describe('Backend', () => {
           label: null,
           metaData: null,
           isModification: null,
+          updatedOn: '',
         },
       });
       expect(localForage.getItem).toHaveBeenCalledTimes(1);
@@ -349,7 +353,7 @@ describe('Backend', () => {
         init: jest.fn(() => implementation),
         unpublishedEntry: jest.fn().mockResolvedValue(unpublishedEntryResult),
       };
-      const config = Map({});
+      const config = Map({ media_folder: 'static/images' });
 
       const backend = new Backend(implementation, { config, backendName: 'github' });
 
@@ -357,10 +361,17 @@ describe('Backend', () => {
         name: 'posts',
       });
 
+      const state = {
+        config,
+        integrations: Map({}),
+        mediaLibrary: Map({}),
+      };
+
       const slug = 'slug';
 
-      const result = await backend.unpublishedEntry(collection, slug);
+      const result = await backend.unpublishedEntry(state, collection, slug);
       expect(result).toEqual({
+        author: '',
         collection: 'posts',
         slug: '',
         path: 'path',
@@ -370,7 +381,8 @@ describe('Backend', () => {
         label: null,
         metaData: {},
         isModification: true,
-        mediaFiles: [{ id: '1' }],
+        mediaFiles: [{ id: '1', draft: true }],
+        updatedOn: '',
       });
     });
   });

@@ -53,7 +53,7 @@ const DialogWrap = styled(Card)`
   )
     return 8;
   return 0;
-}}px;’
+}}px;
 `;
 
 // const DialogWrap = styled.div`
@@ -159,6 +159,13 @@ const DialogActions = styled.div`
   /* border-top: 1px solid ${({ theme }) => theme.color.border}; */
   display: flex;
   justify-content: flex-end;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    padding: 0 1rem 1.25rem 1rem;
+    & ${StyledButton} {
+      padding: 10px;
+      font-size: 1rem;
+    }
+  }
   ${({ isMobile }) =>
     isMobile
       ? `
@@ -172,13 +179,6 @@ const DialogActions = styled.div`
     }
   `
       : ``}
-  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
-    padding: 0 1rem 1.25rem 1rem;
-    & ${StyledButton} {
-      padding: 10px;
-      font-size: 1rem;
-    }
-  }
 `;
 
 class Dialog extends React.Component {

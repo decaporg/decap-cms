@@ -1,7 +1,5 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, select, text } from '@storybook/addon-knobs';
-import { withTheme } from 'emotion-theming';
 
 import { Tag, TagGroup } from '.';
 import color from '../utils/color';

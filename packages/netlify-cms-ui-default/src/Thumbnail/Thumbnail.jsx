@@ -42,7 +42,7 @@ const ThumbnailWrap = styled(Card)`
     }
   `
       : ``}
-  ${({ clickable, selectable, theme }) =>
+  ${({ clickable, theme }) =>
     clickable
       ? `
     cursor: pointer;
