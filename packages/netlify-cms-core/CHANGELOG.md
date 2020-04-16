@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.24.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.3...netlify-cms-core@2.24.4) (2020-04-16)
+
+
+### Bug Fixes
+
+* redirect to default path after login success if url has prev error ([#3599](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3599)) ([bb0a7e9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/bb0a7e96d82d950735eafce3017460caf0fd6d0c))
+
+
+
+
+
 ## [2.24.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.2...netlify-cms-core@2.24.3) (2020-04-14)
 
 

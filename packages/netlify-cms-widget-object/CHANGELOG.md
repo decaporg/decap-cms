@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.3.1...netlify-cms-widget-object@2.4.0) (2020-04-16)
+
+
+### Features
+
+* **widget-object:** add collapsed option to collapse object by default ([#3606](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/3606)) ([9f17363](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/commit/9f17363beee718ac6102cecfa965d631e4675090))
+
+
+
+
+
 ## [2.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.3.0...netlify-cms-widget-object@2.3.1) (2020-01-07)
 
 
