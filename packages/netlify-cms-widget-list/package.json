@@ -29,6 +29,7 @@
     "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
+    "netlify-cms-core": "^2.24.3",
     "netlify-cms-ui-default": "^2.6.0",
     "netlify-cms-widget-object": "^2.2.0",
     "prop-types": "^15.7.2",
