@@ -51,6 +51,10 @@ describe('Test Backend Editorial Workflow', () => {
     cy.task('setupBackend', { backend: 'test' });
   });
 
+  beforeEach(() => {
+    cy.task('updateConfig', { collections: [{ publish: true }] });
+  });
+
   it('successfully loads', () => {
     login();
   });
@@ -192,7 +196,7 @@ describe('Test Backend Editorial Workflow', () => {
     cy.contains('button', 'Publish new entry').should('not.exist');
   });
 
-  it.only('can create a new entry, publish and create new', () => {
+  it('can create a new entry, publish and create new', () => {
     login();
     createPost(entry1);
     updateWorkflowStatusInEditor(editorStatus.ready);
@@ -200,7 +204,7 @@ describe('Test Backend Editorial Workflow', () => {
     publishAndCreateNewEntryInEditor(entry1);
   });
 
-  it.only('can create a new entry, publish and duplicate', () => {
+  it('can create a new entry, publish and duplicate', () => {
     login();
     createPost(entry1);
     updateWorkflowStatusInEditor(editorStatus.ready);
