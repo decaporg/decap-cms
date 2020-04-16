@@ -321,10 +321,9 @@ export default class ListControl extends React.Component {
     return (value || `No ${labelField.get('name')}`).toString();
   }
 
-  onSortEnd = ({ oldIndex, newIndex }) => {
+  onSortEnd = ({ oldIndex, newIndex, nodes: { length: listCount } }) => {
     const { value, clearFieldErrors } = this.props;
     const { itemsCollapsed, keys } = this.state;
-    const oldValidationsCount = this.validations.length;
 
     // Update value
     const item = value.get(oldIndex);
@@ -336,12 +335,12 @@ export default class ListControl extends React.Component {
     const updatedItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
 
     // Reset item to ensure updated state
-    const updatedKeys = keys.set(oldIndex, uuid()).set(newIndex, uuid());
+    const updatedKeys = keys.update(() => fromJS(Array.from({ length: listCount }, () => uuid())));
     this.setState({ itemsCollapsed: updatedItemsCollapsed, keys: updatedKeys });
 
     //clear error fields and remove old validations
     clearFieldErrors();
-    this.validations.splice(0, oldValidationsCount);
+    this.validations.splice(0, listCount);
   };
 
   // eslint-disable-next-line react/display-name
