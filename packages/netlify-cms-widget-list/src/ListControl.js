@@ -411,6 +411,7 @@ export default class ListControl extends React.Component {
               ref={this.processControlRef}
               controlRef={controlRef}
               validationKey={key}
+              collapsed={collapsed}
             />
           )}
         </ClassNames>
