@@ -113,7 +113,7 @@ export default class ObjectControl extends React.Component {
 
   render() {
     const { field, forID, classNameWrapper, forList } = this.props;
-    const { collapsed } = this.state;
+    const collapsed = forList ? this.props.collapsed : this.state.collapsed;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
 
