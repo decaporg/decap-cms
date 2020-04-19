@@ -107,11 +107,12 @@ export default class ListControl extends React.Component {
     const { field, value } = props;
     const allItemsCollapsed = field.get('collapsed', true);
     const itemsCollapsed = value && Array(value.size).fill(allItemsCollapsed);
+    const keys = value && Array.from({ length: value.size }, () => uuid());
 
     this.state = {
       itemsCollapsed: List(itemsCollapsed),
       value: valueToString(value),
-      keys: List(),
+      keys: List(keys),
     };
   }
 
@@ -172,7 +173,10 @@ export default class ListControl extends React.Component {
       this.getValueType() === valueTypes.SINGLE
         ? this.singleDefault()
         : fromJS(this.multipleDefault(field.get('fields')));
-    this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
+    this.setState({
+      itemsCollapsed: this.state.itemsCollapsed.push(false),
+      keys: this.state.keys.push(uuid()),
+    });
     onChange((value || List()).push(parsedValue));
   };
 
@@ -187,7 +191,10 @@ export default class ListControl extends React.Component {
   handleAddType = (type, typeKey) => {
     const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
-    this.setState({ itemsCollapsed: this.state.itemsCollapsed.push(false) });
+    this.setState({
+      itemsCollapsed: this.state.itemsCollapsed.push(false),
+      keys: this.state.keys.push(uuid()),
+    });
     onChange((value || List()).push(parsedValue));
   };
 
@@ -227,13 +234,17 @@ export default class ListControl extends React.Component {
 
   processControlRef = ref => {
     if (!ref) return;
-    this.validations.push(ref.validate);
+    const {
+      validate,
+      props: { validationKey: key },
+    } = ref;
+    this.validations.push({ key, validate });
   };
 
   validate = () => {
     if (this.getValueType()) {
-      this.validations.forEach(validateListItem => {
-        validateListItem();
+      this.validations.forEach(item => {
+        item.validate();
       });
     } else {
       this.props.validate();
@@ -265,12 +276,13 @@ export default class ListControl extends React.Component {
     };
   }
 
-  handleRemove = (index, event) => {
+  handleRemove = (index, key, event) => {
     event.preventDefault();
-    const { itemsCollapsed } = this.state;
+    const { itemsCollapsed, keys } = this.state;
     const { value, metadata, onChange, field, clearFieldErrors } = this.props;
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
+    const validations = this.validations;
 
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
     const parsedMetadata =
@@ -278,17 +290,14 @@ export default class ListControl extends React.Component {
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
         : metadata;
 
-    // Removed item object index is the last item in the list
-    const removedItemIndex = value.count() - 1;
-
-    this.setState({ itemsCollapsed: itemsCollapsed.delete(index) });
+    this.setState({ itemsCollapsed: itemsCollapsed.delete(index), keys: keys.delete(index) });
 
     onChange(value.remove(index), parsedMetadata);
     clearFieldErrors();
 
     // Remove deleted item object validation
-    if (this.validations) {
-      this.validations.splice(removedItemIndex, 1);
+    if (validations) {
+      this.validations = validations.filter(item => item.key !== key);
     }
   };
 
@@ -322,7 +331,7 @@ export default class ListControl extends React.Component {
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { value } = this.props;
+    const { value, clearFieldErrors } = this.props;
     const { itemsCollapsed, keys } = this.state;
 
     // Update value
@@ -337,6 +346,10 @@ export default class ListControl extends React.Component {
     // Reset item to ensure updated state
     const updatedKeys = keys.set(oldIndex, uuid()).set(newIndex, uuid());
     this.setState({ itemsCollapsed: updatedItemsCollapsed, keys: updatedKeys });
+
+    //clear error fields and remove old validations
+    clearFieldErrors();
+    this.validations = this.validations.filter(item => updatedKeys.includes(item.key));
   };
 
   // eslint-disable-next-line react/display-name
@@ -354,7 +367,7 @@ export default class ListControl extends React.Component {
 
     const { itemsCollapsed, keys } = this.state;
     const collapsed = itemsCollapsed.get(index);
-    const key = keys.get(index) || `item-${index}`;
+    const key = keys.get(index);
     let field = this.props.field;
 
     if (this.getValueType() === valueTypes.MIXED) {
@@ -373,7 +386,7 @@ export default class ListControl extends React.Component {
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-          onRemove={partial(this.handleRemove, index)}
+          onRemove={partial(this.handleRemove, index, key)}
           dragHandleHOC={SortableHandle}
         />
         <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
@@ -397,6 +410,7 @@ export default class ListControl extends React.Component {
               fieldsErrors={fieldsErrors}
               ref={this.processControlRef}
               controlRef={controlRef}
+              validationKey={key}
             />
           )}
         </ClassNames>
@@ -407,15 +421,16 @@ export default class ListControl extends React.Component {
   renderErroneousTypedItem(index, item) {
     const field = this.props.field;
     const errorMessage = getErrorMessageForTypedFieldAndValue(field, item);
+    const key = `item-${index}`;
     return (
       <SortableListItem
         css={[styles.listControlItem, styles.listControlItemCollapsed]}
         index={index}
-        key={`item-${index}`}
+        key={key}
       >
         <StyledListItemTopBar
           onCollapseToggle={null}
-          onRemove={partial(this.handleRemove, index)}
+          onRemove={partial(this.handleRemove, index, key)}
           dragHandleHOC={SortableHandle}
         />
         <NestedObjectLabel collapsed={true} error={true}>
