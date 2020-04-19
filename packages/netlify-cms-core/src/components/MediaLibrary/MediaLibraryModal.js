@@ -142,14 +142,14 @@ const MediaLibraryModal = ({
           uploadButtonLabel={
             isPersisting
               ? t('mediaLibrary.mediaLibraryModal.uploading')
-              : t('mediaLibrary.mediaLibraryModal.uploadNew')
+              : t('mediaLibrary.mediaLibraryModal.upload')
           }
           deleteButtonLabel={
             isDeleting
               ? t('mediaLibrary.mediaLibraryModal.deleting')
               : t('mediaLibrary.mediaLibraryModal.deleteSelected')
           }
-          downloadButtonLabel="Download"
+          downloadButtonLabel={t('mediaLibrary.mediaLibraryModal.download')}
           insertButtonLabel={t('mediaLibrary.mediaLibraryModal.chooseSelected')}
           uploadEnabled={!shouldShowButtonLoader}
           deleteEnabled={!shouldShowButtonLoader && hasSelection}

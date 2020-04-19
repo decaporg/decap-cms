@@ -215,13 +215,13 @@ class MediaLibrary extends React.Component {
    */
   handleDownload = () => {
     const { selectedFile } = this.state;
-    console.log(selectedFile);
-    if (!selectedFile.url) {
+    const { displayURLs } = this.props;
+    const url = displayURLs.getIn([selectedFile.id, 'url']) || selectedFile.url;
+    if (!url) {
       return;
     }
 
     const filename = selectedFile.name;
-    const url = selectedFile.url;
 
     const element = document.createElement('a');
     element.setAttribute('href', url);
