@@ -299,7 +299,7 @@ export function entriesPersisted(collection: Collection, entries: EntryValue[]) 
 
 export function entriesPersistFail(collection: Collection, error: Error) {
   return {
-    type: ENTRIES_FAILURE,
+    type: ENTRIES_PERSIST_FAILURE,
     error: 'Failed to persist entries',
     payload: {
       collection: collection.get('name'),

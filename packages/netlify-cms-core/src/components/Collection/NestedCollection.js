@@ -1,7 +1,7 @@
 import React from 'react';
 import { List } from 'immutable';
 import { css } from '@emotion/core';
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import { connect } from 'react-redux';
 import { join } from 'path';
 import { persistEntries } from '../../actions/entries';
@@ -47,12 +47,15 @@ const getTreeData = (collection, entries) => {
 };
 
 const getEntriesData = (collection, treeData) => {
-  const rootId = getRootId(collection);
+  const parentKey = collection.get('nested');
   return (
     getFlatDataFromTree({ treeData, getNodeKey: getKey })
+      .filter(({ parentNode }) => parentNode)
       // eslint-disable-next-line no-unused-vars
-      .map(({ node: { title, children, ...rest } }) => rest)
-      .filter(node => node.path !== rootId)
+      .map(({ node: { title, children, ...rest }, parentNode: { path: parent } }) => {
+        const newNode = rest;
+        return set(newNode, ['data', parentKey], parent);
+      })
   );
 };
 
