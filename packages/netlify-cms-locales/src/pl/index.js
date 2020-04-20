@@ -174,7 +174,7 @@ const pl = {
       mediaAssets: 'Zasoby multimedialne',
       search: 'Szukaj...',
       uploading: 'Przesyłanie...',
-      uploadNew: 'Prześlij nowe',
+      upload: 'Prześlij nowe',
       deleting: 'Usuwanie...',
       deleteSelected: 'Usuń zaznaczone',
       chooseSelected: 'Wybierz zaznaczone',

@@ -135,7 +135,7 @@ const uk = {
       mediaAssets: 'Медіа матеріали',
       search: 'Пошук...',
       uploading: 'Завантаження...',
-      uploadNew: 'Завантажити',
+      upload: 'Завантажити',
       deleting: 'Видалення...',
       deleteSelected: 'Видалити обране',
       chooseSelected: 'Додати обране',

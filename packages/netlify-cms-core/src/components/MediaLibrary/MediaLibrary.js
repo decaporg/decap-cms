@@ -210,6 +210,36 @@ class MediaLibrary extends React.Component {
     });
   };
 
+  /**
+   * Downloads the selected file.
+   */
+  handleDownload = () => {
+    const { selectedFile } = this.state;
+    const { displayURLs } = this.props;
+    const url = displayURLs.getIn([selectedFile.id, 'url']) || selectedFile.url;
+    if (!url) {
+      return;
+    }
+
+    const filename = selectedFile.name;
+
+    const element = document.createElement('a');
+    element.setAttribute('href', url);
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+    this.setState({ selectedFile: {} });
+  };
+
+  /**
+   *
+   */
+
   handleLoadMore = () => {
     const { loadMedia, dynamicSearchQuery, page, privateUpload } = this.props;
     loadMedia({ query: dynamicSearchQuery, page: page + 1, privateUpload });
@@ -302,6 +332,7 @@ class MediaLibrary extends React.Component {
         handlePersist={this.handlePersist}
         handleDelete={this.handleDelete}
         handleInsert={this.handleInsert}
+        handleDownload={this.handleDownload}
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}

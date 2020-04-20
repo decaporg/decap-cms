@@ -141,7 +141,7 @@ const hu = {
       mediaAssets: 'Média tartalmak',
       search: 'Keresés...',
       uploading: 'Feltöltés...',
-      uploadNew: 'Új feltöltés',
+      upload: 'Új feltöltés',
       deleting: 'Törlés...',
       deleteSelected: 'Kijelöltek törlése',
       chooseSelected: 'Kijelöl',

@@ -180,7 +180,7 @@ const es = {
       mediaAssets: 'Archivos multimedia',
       search: 'Buscar...',
       uploading: 'Subiendo...',
-      uploadNew: 'Subir nuevo',
+      upload: 'Subir nuevo',
       deleting: 'Eliminando...',
       deleteSelected: 'Eliminar selección',
       chooseSelected: 'Confirmar selección',

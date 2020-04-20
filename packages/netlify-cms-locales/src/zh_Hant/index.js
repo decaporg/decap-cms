@@ -152,7 +152,7 @@ const zh_Hant = {
       mediaAssets: '媒體資產',
       search: '搜尋中...',
       uploading: '上傳中...',
-      uploadNew: '上傳新內容',
+      upload: '上傳新內容',
       deleting: '刪除中...',
       deleteSelected: '刪除已選擇的項目',
       chooseSelected: '選擇已選擇的項目',

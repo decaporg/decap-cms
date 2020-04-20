@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { FileUploadButton } from 'UI';
-import { buttons, shadows, zIndex } from 'netlify-cms-ui-default';
+import { buttons, colors, colorsRaw, shadows, zIndex } from 'netlify-cms-ui-default';
 
 const styles = {
   button: css`
@@ -61,6 +61,24 @@ const InsertButton = styled.button`
   ${buttons.green};
 `;
 
+const DownloadButton = styled.button`
+  ${styles.button};
+  background-color: ${colors.button};
+  color: ${colors.buttonText};
+
+  ${props =>
+    props.focused === true &&
+    css`
+      &:focus,
+      &:hover {
+        color: ${colorsRaw.white};
+        background-color: #555a65;
+      }
+    `}
+`;
+
+const UpperActionsContainer = styled.div``;
+
 const LowerActionsContainer = styled.div`
   margin-top: 30px;
 `;
@@ -69,22 +87,30 @@ const MediaLibraryActions = ({
   uploadButtonLabel,
   deleteButtonLabel,
   insertButtonLabel,
+  downloadButtonLabel,
   uploadEnabled,
   deleteEnabled,
   insertEnabled,
+  downloadEnabled,
   insertVisible,
   imagesOnly,
   onPersist,
   onDelete,
   onInsert,
+  onDownload,
 }) => (
   <ActionsContainer>
-    <StyledUploadButton
-      label={uploadButtonLabel}
-      imagesOnly={imagesOnly}
-      onChange={onPersist}
-      disabled={!uploadEnabled}
-    />
+    <UpperActionsContainer>
+      <DownloadButton onClick={onDownload} disabled={!downloadEnabled} focused={downloadEnabled}>
+        {downloadButtonLabel}
+      </DownloadButton>
+      <StyledUploadButton
+        label={uploadButtonLabel}
+        imagesOnly={imagesOnly}
+        onChange={onPersist}
+        disabled={!uploadEnabled}
+      />
+    </UpperActionsContainer>
     <LowerActionsContainer>
       <DeleteButton onClick={onDelete} disabled={!deleteEnabled}>
         {deleteButtonLabel}
@@ -102,14 +128,17 @@ MediaLibraryActions.propTypes = {
   uploadButtonLabel: PropTypes.string.isRequired,
   deleteButtonLabel: PropTypes.string.isRequired,
   insertButtonLabel: PropTypes.string.isRequired,
+  downloadButtonLabel: PropTypes.string.isRequired,
   uploadEnabled: PropTypes.bool,
   deleteEnabled: PropTypes.bool,
   insertEnabled: PropTypes.bool,
   insertVisible: PropTypes.bool,
+  downloadEnabled: PropTypes.bool,
   imagesOnly: PropTypes.bool,
   onPersist: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onInsert: PropTypes.func.isRequired,
+  onDownload: PropTypes.func.isRequired,
 };
 
 export default MediaLibraryActions;

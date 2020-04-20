@@ -164,7 +164,7 @@ const nl = {
       mediaAssets: 'Media',
       search: 'Zoeken...',
       uploading: 'Uploaden...',
-      uploadNew: 'Nieuwe uploaden',
+      upload: 'Nieuwe uploaden',
       deleting: 'Verwijderen...',
       deleteSelected: 'Verwijder selectie',
       chooseSelected: 'Gebruik selectie',

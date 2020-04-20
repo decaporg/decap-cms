@@ -153,7 +153,7 @@ const cs = {
       mediaAssets: 'Média',
       search: 'Hledat…',
       uploading: 'Nahrávání…',
-      uploadNew: 'Nahrát nový',
+      upload: 'Nahrát nový',
       deleting: 'Vymazávání…',
       deleteSelected: 'Smazat označené',
       chooseSelected: 'Vybrat označené',

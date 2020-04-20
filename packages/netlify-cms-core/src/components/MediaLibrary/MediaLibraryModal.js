@@ -92,6 +92,7 @@ const MediaLibraryModal = ({
   handlePersist,
   handleDelete,
   handleInsert,
+  handleDownload,
   setScrollContainerRef,
   handleAssetClick,
   handleLoadMore,
@@ -141,22 +142,25 @@ const MediaLibraryModal = ({
           uploadButtonLabel={
             isPersisting
               ? t('mediaLibrary.mediaLibraryModal.uploading')
-              : t('mediaLibrary.mediaLibraryModal.uploadNew')
+              : t('mediaLibrary.mediaLibraryModal.upload')
           }
           deleteButtonLabel={
             isDeleting
               ? t('mediaLibrary.mediaLibraryModal.deleting')
               : t('mediaLibrary.mediaLibraryModal.deleteSelected')
           }
+          downloadButtonLabel={t('mediaLibrary.mediaLibraryModal.download')}
           insertButtonLabel={t('mediaLibrary.mediaLibraryModal.chooseSelected')}
           uploadEnabled={!shouldShowButtonLoader}
           deleteEnabled={!shouldShowButtonLoader && hasSelection}
           insertEnabled={hasSelection}
+          downloadEnabled={hasSelection}
           insertVisible={canInsert}
           imagesOnly={forImage}
           onPersist={handlePersist}
           onDelete={handleDelete}
           onInsert={handleInsert}
+          onDownload={handleDownload}
         />
       </LibraryTop>
       {!shouldShowEmptyMessage ? null : (

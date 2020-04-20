@@ -139,7 +139,7 @@ const ru = {
       mediaAssets: 'Медиаресурсы',
       search: 'Идёт поиск…',
       uploading: 'Загрузка…',
-      uploadNew: 'Загрузить новый',
+      upload: 'Загрузить новый',
       deleting: 'Удаление…',
       deleteSelected: 'Удалить помеченные',
       chooseSelected: 'Выбрать помеченные',

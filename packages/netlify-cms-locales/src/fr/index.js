@@ -135,7 +135,7 @@ const fr = {
       mediaAssets: 'Ressources',
       search: 'Recherche...',
       uploading: 'Téléversement...',
-      uploadNew: 'Téléverser une nouvelle ressource',
+      upload: 'Téléverser une nouvelle ressource',
       deleting: 'Suppression...',
       deleteSelected: 'Supprimer les éléments sélectionnés',
       chooseSelected: 'Choisir les éléments sélectionnés',

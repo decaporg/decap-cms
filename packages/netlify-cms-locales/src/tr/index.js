@@ -162,7 +162,7 @@ const tr = {
       mediaAssets: 'Medya dosyaları',
       search: 'Ara...',
       uploading: 'Yükleniyor...',
-      uploadNew: 'Yeni yükle',
+      upload: 'Yeni yükle',
       deleting: 'Siliniyor...',
       deleteSelected: 'Silme seçildi',
       chooseSelected: 'Seç',

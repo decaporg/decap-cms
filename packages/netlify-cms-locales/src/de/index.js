@@ -161,7 +161,7 @@ const de = {
       mediaAssets: 'Medien',
       search: 'Suchen...',
       uploading: 'Hochladen...',
-      uploadNew: 'Hochladen',
+      upload: 'Hochladen',
       deleting: 'Löschen...',
       deleteSelected: 'Ausgewähltes Element löschen',
       chooseSelected: 'Ausgewähltes Element verwenden',

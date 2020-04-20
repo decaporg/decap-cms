@@ -159,7 +159,7 @@ const gr = {
       mediaAssets: 'Αρχεία πολυμέσων',
       search: 'Αναζήτηση...',
       uploading: 'Φόρτωμα...',
-      uploadNew: 'Ανεβάστε νέα',
+      upload: 'Ανεβάστε νέα',
       deleting: 'Διαγραφή...',
       deleteSelected: 'Διαγραφή επιλεγμένου',
       chooseSelected: 'Επιλέξτε επιλεγμένο',

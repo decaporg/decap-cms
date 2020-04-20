@@ -140,7 +140,7 @@ const pt = {
       mediaAssets: 'Recursos de mídia',
       search: 'Pesquisar...',
       uploading: 'Enviando...',
-      uploadNew: 'Enviar novo',
+      upload: 'Enviar novo',
       deleting: 'Deletando...',
       deleteSelected: 'Excluir selecionado',
       chooseSelected: 'Escolher selecionado',

@@ -156,7 +156,7 @@ const it = {
       mediaAssets: 'Media assets',
       search: 'Cerca...',
       uploading: 'Uploading...',
-      uploadNew: 'Upload new',
+      upload: 'Upload',
       deleting: 'Deleting...',
       deleteSelected: 'Cancella selezionato',
       chooseSelected: 'Prendi selezionato',

@@ -157,7 +157,7 @@ const ja = {
       mediaAssets: 'データ',
       search: '検索',
       uploading: 'アップロード中...',
-      uploadNew: 'アップロードする',
+      upload: 'アップロードする',
       deleting: '削除中...',
       deleteSelected: '削除する',
       chooseSelected: '選択する',
