@@ -170,6 +170,7 @@ type CollectionObject = {
   label: string;
   sortableFields: List<string>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
+  nested?: string;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

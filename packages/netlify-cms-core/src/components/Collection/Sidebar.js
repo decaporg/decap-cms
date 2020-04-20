@@ -8,6 +8,7 @@ import { NavLink } from 'react-router-dom';
 import { Icon, components, colors } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 import CollectionSearch from './CollectionSearch';
+import NestedCollection from './NestedCollection';
 
 const styles = {
   sidebarNavLinkActive: css`
@@ -78,6 +79,13 @@ class Sidebar extends React.Component {
 
   renderLink = collection => {
     const collectionName = collection.get('name');
+    if (collection.has('nested')) {
+      return (
+        <li key={collectionName}>
+          <NestedCollection collection={collection} />
+        </li>
+      );
+    }
     return (
       <li key={collectionName}>
         <SidebarNavLink to={`/collections/${collectionName}`} activeClassName="sidebar-active">

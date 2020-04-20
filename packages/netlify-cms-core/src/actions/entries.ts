@@ -520,7 +520,10 @@ export function loadEntries(collection: Collection, page = 0) {
         cursor: Cursor;
         pagination: number;
         entries: EntryValue[];
-      } = await provider.listEntries(collection, page);
+      } = await (collection.has('nested')
+        ? // nested collections require all entries to construct the tree
+          provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
+        : provider.listEntries(collection, page));
       response = {
         ...response,
         // The only existing backend using the pagination system is the

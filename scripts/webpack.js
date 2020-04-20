@@ -23,7 +23,13 @@ const rules = () => ({
   css: () => [
     {
       test: /\.css$/,
-      include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(moduleNameToPath),
+      include: [
+        'ol',
+        'redux-notifications',
+        'react-datetime',
+        'codemirror',
+        'react-sortable-tree',
+      ].map(moduleNameToPath),
       use: ['to-string-loader', 'css-loader'],
     },
   ],
