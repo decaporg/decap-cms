@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.11.0...netlify-cms-locales@1.12.0) (2020-04-20)
+
+
+### Bug Fixes
+
+* **locale:** add missing translation strings for 'es' locale ([#3626](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3626)) ([f88c83b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/f88c83b97a18d9094240b688739d8b2909f19b0c))
+
+
+### Features
+
+* add-download-button closes [#3429](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3429) ([#3609](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3609)) ([cf25260](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/cf252605ad8fee6f3d307302dc50759813ee765c))
+
+
+
+
+
 # [1.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.10.3...netlify-cms-locales@1.11.0) (2020-04-14)
 
 

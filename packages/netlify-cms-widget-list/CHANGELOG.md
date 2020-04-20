@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.3...netlify-cms-widget-list@2.4.4) (2020-04-20)
+
+
+### Bug Fixes
+
+* list widget item collapse toggle ([#3623](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/3623)) ([3a666e2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/3a666e26b507f16767d0dafb82cd8a030424eec3))
+* list widget validation after sort ([#3611](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/3611)) ([3d0856e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/3d0856ea884f5acdceb23ea09e39fb67b0c902a9))
+
+
+
+
+
 ## [2.4.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.2...netlify-cms-widget-list@2.4.3) (2020-02-14)
 
 

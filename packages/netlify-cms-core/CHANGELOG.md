@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.25.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.4...netlify-cms-core@2.25.0) (2020-04-20)
+
+
+### Bug Fixes
+
+* **types:** instead of the inferred {}, allow any kind of props ([#3638](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3638)) ([3f72f43](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/3f72f438a1e2ad1111780208af69bf172becd277))
+
+
+### Features
+
+* add-download-button closes [#3429](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3429) ([#3609](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3609)) ([cf25260](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/cf252605ad8fee6f3d307302dc50759813ee765c))
+
+
+
+
+
 ## [2.24.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.3...netlify-cms-core@2.24.4) (2020-04-16)
 
 
