@@ -146,14 +146,14 @@ declare module 'netlify-cms-core' {
 
   export interface CmsWidgetParam {
     name: string;
-    controlComponent: ComponentType;
-    previewComponent?: ComponentType;
+    controlComponent: ComponentType<any>;
+    previewComponent?: ComponentType<any>;
     globalStyles: any;
   }
 
   export interface CmsWidget {
-    control: ComponentType;
-    preview?: ComponentType;
+    control: ComponentType<any>;
+    preview?: ComponentType<any>;
     globalStyles?: any;
   }
 
@@ -173,13 +173,13 @@ declare module 'netlify-cms-core' {
       [name: string]: CmsRegistryBackend;
     };
     templates: {
-      [name: string]: ComponentType;
+      [name: string]: ComponentType<any>;
     };
     previewStyles: PreviewStyle[];
     widgets: {
       [name: string]: CmsWidget;
     };
-    editorComponents: Map<string, ComponentType>;
+    editorComponents: Map<string, ComponentType<any>>;
     widgetValueSerializers: {
       [name: string]: CmsWidgetValueSerializer;
     };
@@ -191,11 +191,11 @@ declare module 'netlify-cms-core' {
 
   export interface CMS {
     getBackend: (name: string) => CmsRegistryBackend | undefined;
-    getEditorComponents: () => Map<string, ComponentType>;
+    getEditorComponents: () => Map<string, ComponentType<any>>;
     getLocale: (locale: string) => CmsLocalePhrases | undefined;
     getMediaLibrary: (name: string) => CmsMediaLibrary | undefined;
     getPreviewStyles: () => PreviewStyle[];
-    getPreviewTemplate: (name: string) => ComponentType | undefined;
+    getPreviewTemplate: (name: string) => ComponentType<any> | undefined;
     getWidget: (name: string) => CmsWidget | undefined;
     getWidgetValueSerializer: (widgetName: string) => CmsWidgetValueSerializer | undefined;
     init: (options?: InitOptions) => void;
@@ -204,11 +204,11 @@ declare module 'netlify-cms-core' {
     registerLocale: (locale: string, phrases: CmsLocalePhrases) => void;
     registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
     registerPreviewStyle: (filePath: string, options?: PreviewStyleOptions) => void;
-    registerPreviewTemplate: (name: string, component: ComponentType<P>) => void;
+    registerPreviewTemplate: (name: string, component: ComponentType<any>) => void;
     registerWidget: (
       widget: string | CmsWidgetParam,
-      control?: ComponentType,
-      preview?: ComponentType,
+      control?: ComponentType<any>,
+      preview?: ComponentType<any>,
     ) => void;
     registerWidgetValueSerializer: (
       widgetName: string,
