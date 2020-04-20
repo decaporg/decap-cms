@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import theme from '../theme';
 
 const StyledMarkdown = styled.div`
-  > :first-child {
+  > :first-of-type {
     margin-top: 0;
   }
   > :last-child {
@@ -81,7 +81,7 @@ const StyledMarkdown = styled.div`
   }
 
   tbody tr {
-    &:nth-child(odd) {
+    &:nth-of-type(odd) {
       background: #fdfdfd;
     }
   }

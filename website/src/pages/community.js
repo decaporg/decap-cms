@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 
 import Layout from '../components/layout';
@@ -20,6 +20,7 @@ export const pageQuery = graphql`
   query communityPage {
     markdownRemark(fileAbsolutePath: { regex: "/community/" }) {
       frontmatter {
+        title
         headline
         subhead
         sections {
