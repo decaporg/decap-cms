@@ -23,12 +23,12 @@ const rowContents = css`
 const getRootId = collection => `NETLIFY_CMS_${collection.get('name').toUpperCase()}_ID`;
 const getKey = node => node.path;
 
-const getTreeData = (collection, entries) => {
+const getTreeData = (collection, entries, expanded) => {
   const parentKey = collection.get('nested');
   const rootKey = 'NETLIFY_CMS_ROOT_COLLECTION';
   const rootId = getRootId(collection);
   const flatData = [
-    { title: collection.get('label'), data: { parent: rootKey }, path: rootId, expanded: true },
+    { title: collection.get('label'), data: { parent: rootKey }, path: rootId, expanded },
     ...entries.toJS().map(e => ({ ...e, title: e.slug })),
   ];
   const treeData = getTreeFromFlatData({
@@ -67,6 +67,8 @@ class NestedCollection extends React.Component {
     entries: ImmutablePropTypes.list.isRequired,
   };
 
+  state = { expanded: false };
+
   constructor(props) {
     super(props);
   }
@@ -75,6 +77,7 @@ class NestedCollection extends React.Component {
     const { collection, updateEntries } = this.props;
     const entriesData = getEntriesData(collection, treeData);
     updateEntries(this.props.collection, entriesData);
+    this.setState({ expanded: treeData[0].expanded });
   };
 
   onMoveNode = ({ treeData }) => {
@@ -86,7 +89,7 @@ class NestedCollection extends React.Component {
   render() {
     const { collection, entries } = this.props;
 
-    const treeData = getTreeData(collection, entries);
+    const treeData = getTreeData(collection, entries, this.state.expanded);
 
     const rowHeight = 40;
     const height = getVisibleNodeCount({ treeData }) * rowHeight;
