@@ -136,7 +136,6 @@ const uk = {
       search: 'Пошук...',
       uploading: 'Завантаження...',
       upload: 'Завантажити',
-      download: 'Завантажити',
       deleting: 'Видалення...',
       deleteSelected: 'Видалити обране',
       chooseSelected: 'Додати обране',

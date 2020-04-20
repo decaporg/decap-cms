@@ -162,7 +162,6 @@ const de = {
       search: 'Suchen...',
       uploading: 'Hochladen...',
       upload: 'Hochladen',
-      download: 'Herunterladen',
       deleting: 'Löschen...',
       deleteSelected: 'Ausgewähltes Element löschen',
       chooseSelected: 'Ausgewähltes Element verwenden',

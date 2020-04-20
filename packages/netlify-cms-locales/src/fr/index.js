@@ -136,7 +136,6 @@ const fr = {
       search: 'Recherche...',
       uploading: 'Téléversement...',
       upload: 'Téléverser une nouvelle ressource',
-      download: 'Télécharger',
       deleting: 'Suppression...',
       deleteSelected: 'Supprimer les éléments sélectionnés',
       chooseSelected: 'Choisir les éléments sélectionnés',

@@ -142,7 +142,6 @@ const hu = {
       search: 'Keresés...',
       uploading: 'Feltöltés...',
       upload: 'Új feltöltés',
-      download: 'Letöltés',
       deleting: 'Törlés...',
       deleteSelected: 'Kijelöltek törlése',
       chooseSelected: 'Kijelöl',

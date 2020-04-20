@@ -157,7 +157,6 @@ const it = {
       search: 'Cerca...',
       uploading: 'Uploading...',
       upload: 'Upload',
-      download: 'Download',
       deleting: 'Deleting...',
       deleteSelected: 'Cancella selezionato',
       chooseSelected: 'Prendi selezionato',

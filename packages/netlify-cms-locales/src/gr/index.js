@@ -160,7 +160,6 @@ const gr = {
       search: 'Αναζήτηση...',
       uploading: 'Φόρτωμα...',
       upload: 'Ανεβάστε νέα',
-      download: 'Κατεβάστε',
       deleting: 'Διαγραφή...',
       deleteSelected: 'Διαγραφή επιλεγμένου',
       chooseSelected: 'Επιλέξτε επιλεγμένο',

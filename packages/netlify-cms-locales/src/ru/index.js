@@ -140,7 +140,6 @@ const ru = {
       search: 'Идёт поиск…',
       uploading: 'Загрузка…',
       upload: 'Загрузить новый',
-      download: 'Скачать',
       deleting: 'Удаление…',
       deleteSelected: 'Удалить помеченные',
       chooseSelected: 'Выбрать помеченные',

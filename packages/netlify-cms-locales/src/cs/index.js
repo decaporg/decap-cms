@@ -154,7 +154,6 @@ const cs = {
       search: 'Hledat…',
       uploading: 'Nahrávání…',
       upload: 'Nahrát nový',
-      download: 'Stažení',
       deleting: 'Vymazávání…',
       deleteSelected: 'Smazat označené',
       chooseSelected: 'Vybrat označené',

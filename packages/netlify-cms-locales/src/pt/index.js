@@ -141,7 +141,6 @@ const pt = {
       search: 'Pesquisar...',
       uploading: 'Enviando...',
       upload: 'Enviar novo',
-      download: 'Baixar',
       deleting: 'Deletando...',
       deleteSelected: 'Excluir selecionado',
       chooseSelected: 'Escolher selecionado',

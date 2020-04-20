@@ -175,7 +175,6 @@ const pl = {
       search: 'Szukaj...',
       uploading: 'Przesyłanie...',
       upload: 'Prześlij nowe',
-      download: 'Pobieranie',
       deleting: 'Usuwanie...',
       deleteSelected: 'Usuń zaznaczone',
       chooseSelected: 'Wybierz zaznaczone',

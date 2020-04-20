@@ -163,7 +163,6 @@ const tr = {
       search: 'Ara...',
       uploading: 'Yükleniyor...',
       upload: 'Yeni yükle',
-      download: 'İndir',
       deleting: 'Siliniyor...',
       deleteSelected: 'Silme seçildi',
       chooseSelected: 'Seç',

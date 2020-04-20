@@ -153,7 +153,6 @@ const zh_Hant = {
       search: '搜尋中...',
       uploading: '上傳中...',
       upload: '上傳新內容',
-      download: '下載',
       deleting: '刪除中...',
       deleteSelected: '刪除已選擇的項目',
       chooseSelected: '選擇已選擇的項目',

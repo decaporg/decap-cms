@@ -165,7 +165,6 @@ const nl = {
       search: 'Zoeken...',
       uploading: 'Uploaden...',
       upload: 'Nieuwe uploaden',
-      download: 'Downloaden',
       deleting: 'Verwijderen...',
       deleteSelected: 'Verwijder selectie',
       chooseSelected: 'Gebruik selectie',

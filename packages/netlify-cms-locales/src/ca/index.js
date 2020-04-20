@@ -165,7 +165,6 @@ const ca = {
       search: 'Buscar...',
       uploading: 'Penjant...',
       upload: 'Penjar de nuevo',
-      download: 'Descarregar',
       deleting: 'Eliminant...',
       deleteSelected: 'Eliminar selecció',
       chooseSelected: 'Confirmar selecció',

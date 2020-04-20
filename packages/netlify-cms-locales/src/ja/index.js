@@ -158,7 +158,6 @@ const ja = {
       search: '検索',
       uploading: 'アップロード中...',
       upload: 'アップロードする',
-      download: 'ダウンロード',
       deleting: '削除中...',
       deleteSelected: '削除する',
       chooseSelected: '選択する',
