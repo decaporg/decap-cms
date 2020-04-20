@@ -3,7 +3,7 @@ title: datetime
 label: "DateTime"
 ---
 
-The datetime widget translates a datetime picker to a datetime string. For saving the date only, use the date widget.
+The datetime widget translates a datetime picker to a datetime string.
 
 - **Name:** `datetime`
 - **UI:** datetime picker
