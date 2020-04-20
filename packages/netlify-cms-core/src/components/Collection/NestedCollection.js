@@ -4,12 +4,14 @@ import { css } from '@emotion/core';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { join } from 'path';
+import { persistEntries } from '../../actions/entries';
 import { selectEntries } from '../../reducers/entries';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import reactSortableTreeStyles from 'react-sortable-tree/style.css';
 import SortableTree, {
   getTreeFromFlatData,
   getVisibleNodeCount,
+  getFlatDataFromTree,
 } from 'react-sortable-tree/dist/index.esm.js';
 
 const rowContents = css`
@@ -18,17 +20,20 @@ const rowContents = css`
   }
 `;
 
+const getRootId = collection => `NETLIFY_CMS_${collection.get('name').toUpperCase()}_ID`;
+const getKey = node => node.path;
+
 const getTreeData = (collection, entries) => {
   const parentKey = collection.get('nested');
   const rootKey = 'NETLIFY_CMS_ROOT_COLLECTION';
-  const rootId = `NETLIFY_CMS_${collection.get('name').toUpperCase()}_ID`;
+  const rootId = getRootId(collection);
   const flatData = [
-    { title: collection.get('label'), data: { parent: rootKey }, path: rootId },
+    { title: collection.get('label'), data: { parent: rootKey }, path: rootId, expanded: true },
     ...entries.toJS().map(e => ({ ...e, title: e.slug })),
   ];
   const treeData = getTreeFromFlatData({
     flatData,
-    getKey: item => item.path,
+    getKey,
     getParentKey: item => {
       const parent = get(item, ['data', parentKey]);
       if (parent) {
@@ -41,37 +46,36 @@ const getTreeData = (collection, entries) => {
   return treeData;
 };
 
+const getEntriesData = (collection, treeData) => {
+  const rootId = getRootId(collection);
+  return (
+    getFlatDataFromTree({ treeData, getNodeKey: getKey })
+      // eslint-disable-next-line no-unused-vars
+      .map(({ node: { title, children, ...rest } }) => rest)
+      .filter(node => node.path !== rootId)
+  );
+};
+
 class NestedCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list.isRequired,
   };
 
-  state = { treeData: [] };
-
   constructor(props) {
     super(props);
-    this.state = {
-      treeData: getTreeData(this.props.collection, this.props.entries),
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.collection !== prevProps.collection ||
-      this.props.entries !== prevProps.entries
-    ) {
-      const treeData = getTreeData(this.props.collection, this.props.entries);
-      this.setState({ treeData });
-    }
   }
 
   onChange = treeData => {
-    this.setState({ treeData });
+    const { collection, persistEntries } = this.props;
+    const entriesData = getEntriesData(collection, treeData);
+    persistEntries(this.props.collection, entriesData);
   };
 
   render() {
-    const { treeData } = this.state;
+    const { collection, entries } = this.props;
+
+    const treeData = getTreeData(collection, entries);
 
     const rowHeight = 40;
     const height = getVisibleNodeCount({ treeData }) * rowHeight;
@@ -87,7 +91,7 @@ class NestedCollection extends React.Component {
           treeData={treeData}
           rowHeight={rowHeight}
           onChange={this.onChange}
-          getNodeKey={({ node }) => node.path}
+          getNodeKey={({ node }) => getKey(node)}
           canDrag={({ node }) => node.path !== treeData[0].path}
           canDrop={({ nextParent }) => nextParent !== null}
           isVirtualized={false}
@@ -103,4 +107,8 @@ function mapStateToProps(state, ownProps) {
   return { entries };
 }
 
-export default connect(mapStateToProps)(NestedCollection);
+const mapDispatchToProps = {
+  persistEntries,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NestedCollection);

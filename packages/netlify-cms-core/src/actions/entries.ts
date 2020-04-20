@@ -63,6 +63,10 @@ export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
 export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 
+export const ENTRIES_PERSIST_REQUEST = 'ENTRIES_PERSIST_REQUEST';
+export const ENTRIES_PERSIST_SUCCESS = 'ENTRIES_PERSIST_SUCCESS';
+export const ENTRIES_PERSIST_FAILURE = 'ENTRIES_PERSIST_FAILURE';
+
 export const ENTRY_DELETE_REQUEST = 'ENTRY_DELETE_REQUEST';
 export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
 export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
@@ -269,6 +273,36 @@ export function entryPersistFail(collection: Collection, entry: EntryMap, error:
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
+      error: error.toString(),
+    },
+  };
+}
+
+export function entriesPersisting(collection: Collection) {
+  return {
+    type: ENTRIES_PERSIST_REQUEST,
+    payload: {
+      collection: collection.get('name'),
+    },
+  };
+}
+
+export function entriesPersisted(collection: Collection, entries: EntryValue[]) {
+  return {
+    type: ENTRIES_PERSIST_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      entries,
+    },
+  };
+}
+
+export function entriesPersistFail(collection: Collection, error: Error) {
+  return {
+    type: ENTRIES_FAILURE,
+    error: 'Failed to persist entries',
+    payload: {
+      collection: collection.get('name'),
       error: error.toString(),
     },
   };
@@ -853,5 +887,16 @@ export function deleteEntry(collection: Collection, slug: string) {
         console.error(error);
         return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
+  };
+}
+
+export function persistEntries(collection: Collection, entries: EntryValue[]) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    try {
+      dispatch(entriesPersisting(collection));
+      dispatch(entriesPersisted(collection, entries));
+    } catch (error) {
+      dispatch(entriesPersistFail(collection, error));
+    }
   };
 }
