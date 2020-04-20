@@ -66,6 +66,7 @@ export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 export const ENTRIES_PERSIST_REQUEST = 'ENTRIES_PERSIST_REQUEST';
 export const ENTRIES_PERSIST_SUCCESS = 'ENTRIES_PERSIST_SUCCESS';
 export const ENTRIES_PERSIST_FAILURE = 'ENTRIES_PERSIST_FAILURE';
+export const ENTRIES_UPDATE_SUCCESS = 'ENTRIES_UPDATE_SUCCESS';
 
 export const ENTRY_DELETE_REQUEST = 'ENTRY_DELETE_REQUEST';
 export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
@@ -890,10 +891,29 @@ export function deleteEntry(collection: Collection, slug: string) {
   };
 }
 
-export function persistEntries(collection: Collection, entries: EntryValue[]) {
+export function updateEntries(collection: Collection, entries: EntryValue[]) {
+  return {
+    type: ENTRIES_UPDATE_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      entries,
+    },
+  };
+}
+
+export function persistEntries(collection: Collection, entries: EntryValue[], local: boolean) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     try {
       dispatch(entriesPersisting(collection));
+      dispatch(
+        notifSend({
+          message: {
+            key: 'ui.toast.entriesSaved',
+          },
+          kind: 'success',
+          dismissAfter: 4000,
+        }),
+      );
       dispatch(entriesPersisted(collection, entries));
     } catch (error) {
       dispatch(entriesPersistFail(collection, error));

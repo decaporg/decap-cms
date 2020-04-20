@@ -15,6 +15,7 @@ import {
   FILTER_ENTRIES_SUCCESS,
   FILTER_ENTRIES_FAILURE,
   ENTRIES_PERSIST_SUCCESS,
+  ENTRIES_UPDATE_SUCCESS,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {

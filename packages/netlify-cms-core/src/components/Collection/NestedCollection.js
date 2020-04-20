@@ -4,7 +4,7 @@ import { css } from '@emotion/core';
 import { get, set } from 'lodash';
 import { connect } from 'react-redux';
 import { join } from 'path';
-import { persistEntries } from '../../actions/entries';
+import { updateEntries, persistEntries } from '../../actions/entries';
 import { selectEntries } from '../../reducers/entries';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import reactSortableTreeStyles from 'react-sortable-tree/style.css';
@@ -48,13 +48,15 @@ const getTreeData = (collection, entries) => {
 
 const getEntriesData = (collection, treeData) => {
   const parentKey = collection.get('nested');
+  const rootId = getRootId(collection);
   return (
     getFlatDataFromTree({ treeData, getNodeKey: getKey })
       .filter(({ parentNode }) => parentNode)
       // eslint-disable-next-line no-unused-vars
       .map(({ node: { title, children, ...rest }, parentNode: { path: parent } }) => {
-        const newNode = rest;
-        return set(newNode, ['data', parentKey], parent);
+        const newParent = parent === rootId ? undefined : parent;
+        const newNode = set(rest, ['data', parentKey], newParent);
+        return newNode;
       })
   );
 };
@@ -70,6 +72,12 @@ class NestedCollection extends React.Component {
   }
 
   onChange = treeData => {
+    const { collection, updateEntries } = this.props;
+    const entriesData = getEntriesData(collection, treeData);
+    updateEntries(this.props.collection, entriesData);
+  };
+
+  onMoveNode = ({ treeData }) => {
     const { collection, persistEntries } = this.props;
     const entriesData = getEntriesData(collection, treeData);
     persistEntries(this.props.collection, entriesData);
@@ -94,6 +102,7 @@ class NestedCollection extends React.Component {
           treeData={treeData}
           rowHeight={rowHeight}
           onChange={this.onChange}
+          onMoveNode={this.onMoveNode}
           getNodeKey={({ node }) => getKey(node)}
           canDrag={({ node }) => node.path !== treeData[0].path}
           canDrop={({ nextParent }) => nextParent !== null}
@@ -111,6 +120,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 const mapDispatchToProps = {
+  updateEntries,
   persistEntries,
 };
 
