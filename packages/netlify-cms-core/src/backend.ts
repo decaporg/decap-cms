@@ -493,8 +493,8 @@ export class Backend {
 
   async deleteLocalDraftBackup(collection: Collection, slug: string) {
     await localForage.removeItem(getEntryBackupKey(collection.get('name'), slug));
-    // delete new entry backup
-    await localForage.removeItem(getEntryBackupKey(collection.get('name')));
+    // delete new entry backup if not deleted
+    slug && (await localForage.removeItem(getEntryBackupKey(collection.get('name'))));
     return this.deleteAnonymousBackup();
   }
 
