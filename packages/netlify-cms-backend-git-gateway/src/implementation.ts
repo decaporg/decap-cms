@@ -313,7 +313,9 @@ export default class GitGateway implements Implementation {
     const netlifyLargeMediaEnabledPromise = this.api!.readFile('.lfsconfig')
       .then(config => ini.decode<{ lfs: { url: string } }>(config as string))
       .then(({ lfs: { url } }) => new URL(url))
-      .then(lfsURL => ({ enabled: lfsURL.hostname.endsWith('netlify.com') }))
+      .then(lfsURL => ({
+        enabled: lfsURL.hostname.endsWith('netlify.com') || lfsURL.hostname.endsWith('netlify.app'),
+      }))
       .catch((err: Error) => ({ enabled: false, err }));
 
     const lfsPatternsPromise = this.api!.readFile('.gitattributes')
