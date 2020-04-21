@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.10.4...netlify-cms-backend-github@2.10.5) (2020-04-21)
+
+**Note:** Version bump only for package netlify-cms-backend-github
+
+
+
+
+
 ## [2.10.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.10.3...netlify-cms-backend-github@2.10.4) (2020-04-07)
 
 
