@@ -119,19 +119,21 @@ export type FileMetadata = {
 const getFileMetadataKey = (id: string) => `gh.${id}.meta`;
 
 export const readFileMetadata = async (
-  id: string,
+  id: string | null | undefined,
   fetchMetadata: () => Promise<FileMetadata>,
   localForage: LocalForage,
 ) => {
-  const key = getFileMetadataKey(id);
-  const cached = await localForage.getItem<FileMetadata>(key);
+  const key = id ? getFileMetadataKey(id) : null;
+  const cached = key && (await localForage.getItem<FileMetadata>(key));
   if (cached) {
     return cached;
-  } else {
-    const metadata = await fetchMetadata();
-    await localForage.setItem<FileMetadata>(key, metadata);
-    return metadata;
   }
+
+  const metadata = await fetchMetadata();
+  if (key) {
+    await localForage.setItem<FileMetadata>(key, metadata);
+  }
+  return metadata;
 };
 
 /**

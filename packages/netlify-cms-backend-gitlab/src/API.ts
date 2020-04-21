@@ -197,7 +197,7 @@ export default class API {
   }
 
   withAuthorizationHeaders = (req: ApiRequest) => {
-    const withHeaders: ApiRequest = unsentRequest.withHeaders(
+    const withHeaders = unsentRequest.withHeaders(
       this.token ? { Authorization: `Bearer ${this.token}` } : {},
       req,
     );
@@ -206,9 +206,14 @@ export default class API {
 
   buildRequest = async (req: ApiRequest) => {
     const withRoot: ApiRequest = unsentRequest.withRoot(this.apiRoot)(req);
-    const withAuthorizationHeaders: ApiRequest = await this.withAuthorizationHeaders(withRoot);
-    const withTimestamp: ApiRequest = unsentRequest.withTimestamp(withAuthorizationHeaders);
-    return withTimestamp;
+    const withAuthorizationHeaders = await this.withAuthorizationHeaders(withRoot);
+
+    if (withAuthorizationHeaders.has('cache')) {
+      return withAuthorizationHeaders;
+    } else {
+      const withNoCache: ApiRequest = unsentRequest.withNoCache(withAuthorizationHeaders);
+      return withNoCache;
+    }
   };
 
   request = async (req: ApiRequest): Promise<Response> => {
@@ -286,7 +291,7 @@ export default class API {
     return content;
   };
 
-  async readFileMetadata(path: string, sha: string) {
+  async readFileMetadata(path: string, sha: string | null | undefined) {
     const fetchFileMetadata = async () => {
       try {
         const result: GitLabCommit[] = await this.requestJSON({
@@ -520,7 +525,6 @@ export default class API {
       method: 'HEAD',
       url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}`,
       params: { ref: branch },
-      cache: 'no-store',
     });
 
     const blobId = request.headers.get('X-Gitlab-Blob-Id') as string;
@@ -532,7 +536,6 @@ export default class API {
       method: 'HEAD',
       url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}`,
       params: { ref: branch },
-      cache: 'no-store',
     })
       .then(() => true)
       .catch(error => {

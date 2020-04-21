@@ -11,7 +11,6 @@ import {
   AssetProxy,
   Entry as LibEntry,
   PersistOptions,
-  readFile,
   readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
@@ -249,8 +248,7 @@ export default class API {
   }
 
   urlFor(path: string, options: Options) {
-    const cacheBuster = new Date().getTime();
-    const params = [`ts=${cacheBuster}`];
+    const params = [];
     if (options.params) {
       for (const key in options.params) {
         params.push(`${key}=${encodeURIComponent(options.params[key] as string)}`);
@@ -289,6 +287,7 @@ export default class API {
     options: Options = {},
     parser = (response: Response) => this.parseResponse(response),
   ) {
+    options = { cache: 'no-cache', ...options };
     const headers = await this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
     let responseStatus = 500;
@@ -312,6 +311,7 @@ export default class API {
   }
 
   async requestAllPages<T>(url: string, options: Options = {}) {
+    options = { cache: 'no-cache', ...options };
     const headers = await this.requestHeaders(options.headers || {});
     const processedURL = this.urlFor(url, options);
     const allResponses = await getAllResponses(
@@ -344,9 +344,7 @@ export default class API {
   }
 
   checkMetadataRef() {
-    return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms`, {
-      cache: 'no-store',
-    })
+    return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms`)
       .then(response => response.object)
       .catch(() => {
         // Meta ref doesn't exist
@@ -432,7 +430,6 @@ export default class API {
     const metadataRequestOptions = {
       params: { ref: 'refs/meta/_netlify_cms' },
       headers: { Accept: 'application/vnd.github.v3.raw' },
-      cache: 'no-store' as RequestCache,
     };
 
     const errorHandler = (err: Error) => {
@@ -627,12 +624,11 @@ export default class API {
     if (!sha) {
       sha = await this.getFileSha(path, { repoURL, branch });
     }
-    const fetchContent = () => this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
-    const content = await readFile(sha, fetchContent, localForage, parseText);
+    const content = await this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
     return content;
   }
 
-  async readFileMetadata(path: string, sha: string) {
+  async readFileMetadata(path: string, sha: string | null | undefined) {
     const fetchFileMetadata = async () => {
       try {
         const result: Octokit.ReposListCommitsResponse = await this.request(
@@ -655,7 +651,9 @@ export default class API {
   }
 
   async fetchBlobContent({ sha, repoURL, parseText }: BlobArgs) {
-    const result: Octokit.GitGetBlobResponse = await this.request(`${repoURL}/git/blobs/${sha}`);
+    const result: Octokit.GitGetBlobResponse = await this.request(`${repoURL}/git/blobs/${sha}`, {
+      cache: 'force-cache',
+    });
 
     if (parseText) {
       // treat content as a utf-8 string
@@ -969,9 +967,7 @@ export default class API {
     const fileDataPath = encodeURIComponent(directory);
     const fileDataURL = `${repoURL}/git/trees/${branch}:${fileDataPath}`;
 
-    const result: Octokit.GitGetTreeResponse = await this.request(fileDataURL, {
-      cache: 'no-store',
-    });
+    const result: Octokit.GitGetTreeResponse = await this.request(fileDataURL);
     const file = result.tree.find(file => file.path === filename);
     if (file) {
       return file.sha;

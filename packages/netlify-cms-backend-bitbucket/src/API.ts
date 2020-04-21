@@ -215,7 +215,13 @@ export default class API {
   }
 
   buildRequest = (req: ApiRequest) => {
-    return flow([unsentRequest.withRoot(this.apiRoot), unsentRequest.withTimestamp])(req);
+    const withRoot = unsentRequest.withRoot(this.apiRoot)(req);
+    if (withRoot.has('cache')) {
+      return withRoot;
+    } else {
+      const withNoCache = unsentRequest.withNoCache(withRoot);
+      return withNoCache;
+    }
   };
 
   request = (req: ApiRequest): Promise<Response> => {
@@ -295,7 +301,7 @@ export default class API {
     return content;
   };
 
-  async readFileMetadata(path: string, sha: string) {
+  async readFileMetadata(path: string, sha: string | null | undefined) {
     const fetchFileMetadata = async () => {
       try {
         const { values }: { values: BitBucketCommit[] } = await this.requestJSON({
