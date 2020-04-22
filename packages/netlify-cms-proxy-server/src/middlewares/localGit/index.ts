@@ -27,6 +27,7 @@ import {
   UpdateUnpublishedEntryStatusParams,
   Entry,
   GetMediaFileParams,
+  MoveEntryParams,
 } from '../types';
 // eslint-disable-next-line import/default
 import simpleGit from 'simple-git/promise';
@@ -175,6 +176,11 @@ const isBranchExists = async (git: simpleGit.SimpleGit, branch: string) => {
   return branchExists;
 };
 
+const move = async (git: simpleGit.SimpleGit, from: string, to: string, commitMessage: string) => {
+  await git.mv(from, to);
+  await commit(git, commitMessage, [to]);
+};
+
 export const validateRepo = async ({ repoPath }: Options) => {
   const git = simpleGit(repoPath).silent(false);
   const isRepo = await git.checkIsRepo();
@@ -290,7 +296,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
         case 'persistEntry': {
           const { entry, assets, options } = body.params as PersistEntryParams;
           if (!options.useWorkflow) {
-            runOnBranch(git, branch, async () => {
+            await runOnBranch(git, branch, async () => {
               await commitEntry(git, repoPath, entry, assets, options.commitMessage);
             });
           } else {
@@ -402,6 +408,14 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
         }
         case 'getDeployPreview': {
           res.json(null);
+          break;
+        }
+        case 'moveEntry': {
+          const { from, to, commitMessage } = body.params as MoveEntryParams;
+          await runOnBranch(git, branch, async () => {
+            await move(git, from, to, commitMessage);
+          });
+          res.json({ message: `Moved entry from '${from}' to '${to}'` });
           break;
         }
         default: {

@@ -83,9 +83,6 @@ export function applyDefaults(config) {
               traverseFields(collection.get('fields'), setDefaultPublicFolder),
             );
             collection = collection.set('folder', trimStart(folder, '/'));
-            if (collection.get('nested') === true) {
-              collection = collection.set('nested', 'parent');
-            }
           }
 
           const files = collection.get('files');

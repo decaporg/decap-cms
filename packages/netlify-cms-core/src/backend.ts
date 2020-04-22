@@ -334,12 +334,17 @@ export class Backend {
     let listMethod: () => Promise<ImplementationEntry[]>;
     const collectionType = collection.get('type');
     if (collectionType === FOLDER) {
-      listMethod = () =>
-        this.implementation.entriesByFolder(
+      listMethod = () => {
+        const depth =
+          collection.get('nested')?.get('depth') ||
+          getPathDepth(collection.get('path', '') as string);
+
+        return this.implementation.entriesByFolder(
           collection.get('folder') as string,
           extension,
-          getPathDepth(collection.get('path', '') as string),
+          depth,
         );
+      };
     } else if (collectionType === FILES) {
       const files = collection
         .get('files')!
@@ -379,12 +384,12 @@ export class Backend {
   async listAllEntries(collection: Collection) {
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const extension = selectFolderEntryExtension(collection);
+      const depth =
+        collection.get('nested')?.get('depth') ||
+        getPathDepth(collection.get('path', '') as string);
+
       return this.implementation
-        .allEntriesByFolder(
-          collection.get('folder') as string,
-          extension,
-          getPathDepth(collection.get('path', '') as string),
-        )
+        .allEntriesByFolder(collection.get('folder') as string, extension, depth)
         .then(entries => this.processEntries(entries, collection));
     }
 
@@ -975,6 +980,10 @@ export class Backend {
       }
       return fieldValue === filterRule.get('value');
     });
+  }
+
+  async moveEntries(from: string, to: string) {
+    await this.implementation!.moveEntries(from, to, 'Moving entries');
   }
 }
 

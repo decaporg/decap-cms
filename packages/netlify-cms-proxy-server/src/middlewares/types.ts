@@ -68,3 +68,9 @@ export type DeleteFileParams = {
     commitMessage: string;
   };
 };
+
+export type MoveEntryParams = {
+  from: string;
+  to: string;
+  commitMessage: string;
+};

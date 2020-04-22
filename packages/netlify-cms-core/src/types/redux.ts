@@ -145,6 +145,9 @@ export type ViewFilter = {
   pattern: string;
   id: string;
 };
+type NestedObject = { depth: number };
+
+type Nested = StaticallyTypedRecord<NestedObject>;
 
 type CollectionObject = {
   name: string;
@@ -170,7 +173,7 @@ type CollectionObject = {
   label: string;
   sortableFields: List<string>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
-  nested?: string;
+  nested?: Nested;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
@@ -333,7 +336,7 @@ export interface EntriesFilterFailurePayload {
   error: Error;
 }
 
-export interface EntriesPersistSuccessPayload extends EntryPayload {
+export interface EntriesMoveSuccessPayload extends EntryPayload {
   entries: EntryObject[];
 }
 

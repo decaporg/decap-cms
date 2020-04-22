@@ -222,4 +222,11 @@ export default class ProxyBackend implements Implementation {
       params: { branch: this.branch, collection, slug },
     });
   }
+
+  moveEntries(from: string, to: string, commitMessage: string) {
+    return this.request({
+      action: 'moveEntries',
+      params: { branch: this.branch, from, to, commitMessage },
+    });
+  }
 }

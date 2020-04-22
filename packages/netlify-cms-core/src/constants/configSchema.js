@@ -184,12 +184,12 @@ const getConfigSchema = () => ({
           },
           view_filters: viewFilters,
           nested: {
-            oneOf: [
-              { type: 'boolean' },
-              {
-                type: 'string',
-              },
-            ],
+            type: 'object',
+            properties: {
+              depth: { type: 'number', minimum: 1, maximum: 1000 },
+              summary: { type: 'string' },
+            },
+            required: ['depth'],
           },
         },
         required: ['name', 'label'],

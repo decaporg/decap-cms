@@ -14,8 +14,6 @@ import {
   FILTER_ENTRIES_REQUEST,
   FILTER_ENTRIES_SUCCESS,
   FILTER_ENTRIES_FAILURE,
-  ENTRIES_PERSIST_SUCCESS,
-  ENTRIES_UPDATE_SUCCESS,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
@@ -44,7 +42,6 @@ import {
   FilterMap,
   EntriesFilterRequestPayload,
   EntriesFilterFailurePayload,
-  EntriesPersistSuccessPayload,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';

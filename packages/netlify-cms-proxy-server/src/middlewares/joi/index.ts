@@ -17,6 +17,7 @@ const allowedActions = [
   'persistMedia',
   'deleteFile',
   'getDeployPreview',
+  'moveEntry',
 ];
 
 const requiredString = Joi.string().required();
@@ -171,6 +172,16 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
           .keys({
             collection,
             slug,
+          })
+          .required(),
+      },
+      {
+        is: 'moveEntry',
+        then: defaultParams
+          .keys({
+            from: path,
+            to: path,
+            commitMessage: requiredString,
           })
           .required(),
       },
