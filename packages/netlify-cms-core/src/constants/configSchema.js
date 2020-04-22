@@ -118,7 +118,7 @@ const getConfigSchema = () => ({
           preview_path_date_field: { type: 'string' },
           create: { type: 'boolean' },
           publish: { type: 'boolean' },
-          hidden: { type: 'boolean' },
+          hide: { type: 'boolean' },
           editor: {
             type: 'object',
             properties: {

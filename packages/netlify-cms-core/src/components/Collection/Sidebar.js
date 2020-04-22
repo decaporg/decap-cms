@@ -136,7 +136,7 @@ class Sidebar extends React.Component {
         <SidebarNavList>
           {collections
             .toList()
-            .filter(collection => collection.get('hidden') !== true)
+            .filter(collection => collection.get('hide') !== true)
             .map(this.renderLink)}
         </SidebarNavList>
       </SidebarContainer>
