@@ -981,10 +981,6 @@ export class Backend {
       return fieldValue === filterRule.get('value');
     });
   }
-
-  async moveEntries(from: string, to: string) {
-    await this.implementation!.moveEntries(from, to, 'Moving entries');
-  }
 }
 
 export function resolveBackend(config: Config) {

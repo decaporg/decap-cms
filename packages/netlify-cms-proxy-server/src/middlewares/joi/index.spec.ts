@@ -26,7 +26,7 @@ describe('defaultSchema', () => {
 
     assetFailure(
       schema.validate({ action: 'unknown', params: {} }),
-      '"action" must be one of [info, entriesByFolder, entriesByFiles, getEntry, unpublishedEntries, unpublishedEntry, deleteUnpublishedEntry, persistEntry, updateUnpublishedEntryStatus, publishUnpublishedEntry, getMedia, getMediaFile, persistMedia, deleteFile, getDeployPreview, moveEntry]',
+      '"action" must be one of [info, entriesByFolder, entriesByFiles, getEntry, unpublishedEntries, unpublishedEntry, deleteUnpublishedEntry, persistEntry, updateUnpublishedEntryStatus, publishUnpublishedEntry, getMedia, getMediaFile, persistMedia, deleteFile, getDeployPreview]',
     );
   });
 
@@ -468,38 +468,6 @@ describe('defaultSchema', () => {
       const { error } = schema.validate({
         action: 'getDeployPreview',
         params: { ...defaultParams, collection: 'collection', slug: 'slug' },
-      });
-
-      expect(error).toBeUndefined();
-    });
-  });
-
-  describe('moveEntry', () => {
-    it('should fail on invalid params', () => {
-      const schema = defaultSchema();
-
-      assetFailure(
-        schema.validate({ action: 'moveEntry', params: { ...defaultParams } }),
-        '"params.from" is required',
-      );
-      assetFailure(
-        schema.validate({ action: 'moveEntry', params: { ...defaultParams, from: 'source' } }),
-        '"params.to" is required',
-      );
-      assetFailure(
-        schema.validate({
-          action: 'moveEntry',
-          params: { ...defaultParams, from: 'source', to: 'dest' },
-        }),
-        '"params.commitMessage" is required',
-      );
-    });
-
-    it('should pass on valid params', () => {
-      const schema = defaultSchema();
-      const { error } = schema.validate({
-        action: 'moveEntry',
-        params: { ...defaultParams, from: 'source', to: 'dest', commitMessage: 'moving stuff' },
       });
 
       expect(error).toBeUndefined();

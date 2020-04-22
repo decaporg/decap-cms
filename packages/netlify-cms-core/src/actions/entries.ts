@@ -63,10 +63,6 @@ export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
 export const ENTRY_PERSIST_FAILURE = 'ENTRY_PERSIST_FAILURE';
 
-export const ENTRIES_MOVE_REQUEST = 'ENTRIES_MOVE_REQUEST';
-export const ENTRIES_MOVE_SUCCESS = 'ENTRIES_MOVE_SUCCESS';
-export const ENTRIES_MOVE_FAILURE = 'ENTRIES_MOVE_FAILURE';
-
 export const ENTRY_DELETE_REQUEST = 'ENTRY_DELETE_REQUEST';
 export const ENTRY_DELETE_SUCCESS = 'ENTRY_DELETE_SUCCESS';
 export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
@@ -273,35 +269,6 @@ export function entryPersistFail(collection: Collection, entry: EntryMap, error:
     payload: {
       collectionName: collection.get('name'),
       entrySlug: entry.get('slug'),
-      error: error.toString(),
-    },
-  };
-}
-
-export function entriesMoving(collection: Collection) {
-  return {
-    type: ENTRIES_MOVE_REQUEST,
-    payload: {
-      collection: collection.get('name'),
-    },
-  };
-}
-
-export function entriesMoved(collection: Collection) {
-  return {
-    type: ENTRIES_MOVE_SUCCESS,
-    payload: {
-      collection: collection.get('name'),
-    },
-  };
-}
-
-export function entriesMoveFail(collection: Collection, error: Error) {
-  return {
-    type: ENTRIES_MOVE_FAILURE,
-    error: 'Failed to move entries',
-    payload: {
-      collection: collection.get('name'),
       error: error.toString(),
     },
   };
@@ -886,30 +853,5 @@ export function deleteEntry(collection: Collection, slug: string) {
         console.error(error);
         return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
-  };
-}
-
-export function moveEntries(collection: Collection, from: string, to: string) {
-  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    try {
-      dispatch(entriesMoving(collection));
-
-      const state = getState();
-      const backend = currentBackend(state.config);
-
-      await backend.moveEntries(from, to);
-      dispatch(
-        notifSend({
-          message: {
-            key: 'ui.toast.entriesMoved',
-          },
-          kind: 'success',
-          dismissAfter: 4000,
-        }),
-      );
-      dispatch(entriesMoved(collection));
-    } catch (error) {
-      dispatch(entriesMoveFail(collection, error));
-    }
   };
 }

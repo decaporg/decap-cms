@@ -140,8 +140,6 @@ export interface Implementation {
     action: string,
   ) => Promise<{ entries: ImplementationEntry[]; cursor: Cursor }>;
 
-  moveEntries: (from: string, to: string, commitMessage: string) => Promise<void>;
-
   isGitBackend?: () => boolean;
   status: () => Promise<{
     auth: { status: boolean };

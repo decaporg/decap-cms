@@ -1,19 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { List } from 'immutable';
 import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { dirname, sep } from 'path';
-import { moveEntries } from '../../actions/entries';
+import { addFileTemplateFields } from '../../lib/formatters';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 import { selectEntries } from '../../reducers/entries';
+import { Icon, colors } from 'netlify-cms-ui-default';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import reactSortableTreeStyles from 'react-sortable-tree/style.css';
 import SortableTree, {
   getTreeFromFlatData,
   getFlatDataFromTree,
   getVisibleNodeCount,
-  changeNodeAtPath,
 } from 'react-sortable-tree/dist/index.esm.js';
 
 const rowContents = css`
@@ -24,6 +25,28 @@ const rowContents = css`
 
 const getKey = node => node.path;
 const getNodeKey = ({ node }) => getKey(node);
+
+const TreeNavLink = styled(NavLink)`
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  align-items: center;
+  border-left: 2px solid #fff;
+
+  ${Icon} {
+    margin-right: 8px;
+  }
+
+  ${props => css`
+    &:hover,
+    &:active,
+    &.${props.activeClassName} {
+      color: ${colors.active};
+      background-color: ${colors.activeBackground};
+      border-left-color: #4863c6;
+    }
+  `};
+`;
 
 const getTreeData = (collection, entries, expanded = {}) => {
   const rootKey = 'NETLIFY_CMS_ROOT_COLLECTION';
@@ -60,7 +83,11 @@ const getTreeData = (collection, entries, expanded = {}) => {
       expanded: expanded[key],
     })),
     ...entriesObj.map((e, index) => {
-      const entryMap = entries.get(index);
+      let entryMap = entries.get(index);
+      entryMap = entryMap.set(
+        'data',
+        addFileTemplateFields(entryMap.get('path'), entryMap.get('data')),
+      );
       const title = selectEntryCollectionTitle(collection, entryMap);
       return {
         ...e,
@@ -89,7 +116,6 @@ class NestedCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list.isRequired,
-    moveEntries: PropTypes.func.isRequired,
   };
 
   state = { treeData: [] };
@@ -120,31 +146,13 @@ class NestedCollection extends React.Component {
     }
   }
 
-  onChange = () => {
-    // do nothing as we handle state in onVisibilityToggle and onMoveNode
-  };
-
-  onVisibilityToggle = ({ node, expanded, path }) => {
-    const { treeData } = this.state;
-    this.setState({
-      treeData: changeNodeAtPath({
-        treeData,
-        getNodeKey,
-        path,
-        newNode: { ...node, expanded },
-        ignoreCollapsed: false,
-      }),
-    });
-  };
-
-  onMoveNode = ({ node, nextParentNode }) => {
-    const from = node.path;
-    const to = nextParentNode.path;
-    this.props.moveEntries(this.props.collection, from, to);
+  onChange = treeData => {
+    this.setState({ treeData });
   };
 
   render() {
     const { treeData } = this.state;
+    const { collection } = this.props;
     const rowHeight = 40;
     const height = getVisibleNodeCount({ treeData }) * rowHeight;
     return (
@@ -159,12 +167,20 @@ class NestedCollection extends React.Component {
           treeData={treeData}
           rowHeight={rowHeight}
           onChange={this.onChange}
-          onVisibilityToggle={this.onVisibilityToggle}
-          onMoveNode={this.onMoveNode}
+          generateNodeProps={({ node }) => ({
+            buttons: [
+              <TreeNavLink
+                exact
+                key={node.path}
+                to={`/collections/${collection.get('name')}/filter/path=${node.path}`}
+                activeClassName="sidebar-active"
+              >
+                <Icon type="list" size="small" />
+              </TreeNavLink>,
+            ],
+          })}
           getNodeKey={getNodeKey}
-          canDrag={({ node }) => node.path !== treeData[0].path}
-          canDrop={({ nextParent }) => nextParent !== null && nextParent.isDir}
-          isVirtualized={false}
+          canDrag={() => false}
         />
       </div>
     );
@@ -177,8 +193,4 @@ function mapStateToProps(state, ownProps) {
   return { entries };
 }
 
-const mapDispatchToProps = {
-  moveEntries,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NestedCollection);
+export default connect(mapStateToProps, null)(NestedCollection);

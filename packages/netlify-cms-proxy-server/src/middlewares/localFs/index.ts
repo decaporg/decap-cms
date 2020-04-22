@@ -11,7 +11,6 @@ import {
   GetMediaFileParams,
   PersistMediaParams,
   DeleteFileParams,
-  MoveEntryParams,
 } from '../types';
 import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
@@ -102,12 +101,6 @@ export const localFsMiddleware = ({ repoPath }: Options) => {
         }
         case 'getDeployPreview': {
           res.json(null);
-          break;
-        }
-        case 'moveEntry': {
-          const { from, to } = body.params as MoveEntryParams;
-          await move(path.join(repoPath, from), path.join(repoPath, to));
-          res.json({ message: `Moved entry from '${from}' to '${to}'` });
           break;
         }
         default: {

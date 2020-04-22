@@ -27,7 +27,6 @@ import {
   UpdateUnpublishedEntryStatusParams,
   Entry,
   GetMediaFileParams,
-  MoveEntryParams,
 } from '../types';
 // eslint-disable-next-line import/default
 import simpleGit from 'simple-git/promise';
@@ -408,14 +407,6 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
         }
         case 'getDeployPreview': {
           res.json(null);
-          break;
-        }
-        case 'moveEntry': {
-          const { from, to, commitMessage } = body.params as MoveEntryParams;
-          await runOnBranch(git, branch, async () => {
-            await move(git, from, to, commitMessage);
-          });
-          res.json({ message: `Moved entry from '${from}' to '${to}'` });
           break;
         }
         default: {
