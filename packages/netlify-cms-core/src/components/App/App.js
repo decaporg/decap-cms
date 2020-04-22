@@ -50,12 +50,9 @@ const ErrorCodeBlock = styled.pre`
 `;
 
 const getDefaultPath = collections => {
-  const first = collections
-    .toList()
-    .filter(collection => collection.get('hide') !== true)
-    .first();
+  const first = collections.filter(collection => collection.get('hide') !== true).first();
   if (first) {
-    return `/collections/${first?.get('name')}`;
+    return `/collections/${first.get('name')}`;
   } else {
     throw new Error('Could not find a non hidden collection');
   }
