@@ -175,11 +175,6 @@ const isBranchExists = async (git: simpleGit.SimpleGit, branch: string) => {
   return branchExists;
 };
 
-const move = async (git: simpleGit.SimpleGit, from: string, to: string, commitMessage: string) => {
-  await git.mv(from, to);
-  await commit(git, commitMessage, [to]);
-};
-
 export const validateRepo = async ({ repoPath }: Options) => {
   const git = simpleGit(repoPath).silent(false);
   const isRepo = await git.checkIsRepo();

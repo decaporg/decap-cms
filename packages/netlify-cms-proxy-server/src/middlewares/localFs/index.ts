@@ -12,7 +12,7 @@ import {
   PersistMediaParams,
   DeleteFileParams,
 } from '../types';
-import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
+import { listRepoFiles, deleteFile, writeFile } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
 type Options = {

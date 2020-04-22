@@ -40,7 +40,3 @@ export const writeFile = async (filePath: string, content: Buffer | string) => {
 export const deleteFile = async (repoPath: string, filePath: string) => {
   await fs.unlink(path.join(repoPath, filePath));
 };
-
-export const move = async (from: string, to: string) => {
-  await fs.rename(from, to);
-};
