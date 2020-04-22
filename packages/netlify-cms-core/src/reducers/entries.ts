@@ -123,11 +123,9 @@ const entries = (
     case ENTRIES_REQUEST: {
       const payload = action.payload as EntriesRequestPayload;
       const newState = state.withMutations(map => {
-        map.deleteIn(['sort', payload.collection]);
         map.setIn(['pages', payload.collection, 'isFetching'], true);
       });
 
-      clearSort();
       return newState;
     }
 
