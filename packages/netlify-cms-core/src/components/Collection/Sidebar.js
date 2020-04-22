@@ -133,7 +133,12 @@ class Sidebar extends React.Component {
             value={query}
           />
         </SearchContainer>
-        <SidebarNavList>{collections.toList().map(this.renderLink)}</SidebarNavList>
+        <SidebarNavList>
+          {collections
+            .toList()
+            .filter(collection => collection.get('hide') !== true)
+            .map(this.renderLink)}
+        </SidebarNavList>
       </SidebarContainer>
     );
   }
