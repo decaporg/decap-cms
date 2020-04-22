@@ -124,14 +124,14 @@ const escapePatterns = [
   /(`+)[^`]*(\1)/g,
 
   /**
-   * Links, Images, References, and Footnotes
+   * Links and Images
    *
-   * Match strings surrounded by brackets. This could be improved to
-   * specifically match only the exact syntax of each covered entity, but
-   * doing so through current approach would incur a considerable performance
-   * penalty.
+   * Match strings surrounded by square brackets, except when the opening
+   * bracket is followed by a caret. This could be improved to specifically
+   * match only the exact syntax of each covered entity, but doing so through
+   * current approach would incur a considerable performance penalty.
    */
-  /(\[)[^\]]*]/g,
+  /(\[(?!\^)+)[^\]]*]/g,
 ];
 
 /**
