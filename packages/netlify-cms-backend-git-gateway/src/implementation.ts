@@ -204,6 +204,8 @@ export default class GitGateway implements Implementation {
   authenticate(credentials: Credentials) {
     const user = credentials as NetlifyUser;
     this.tokenPromise = user.jwt.bind(user);
+    const controller: AbortController = new AbortController();
+    const signal: AbortSignal = controller.signal
     return this.tokenPromise!().then(async token => {
       if (!this.backendType) {
         const {
@@ -213,6 +215,7 @@ export default class GitGateway implements Implementation {
           roles,
         } = await fetch(`${this.gatewayUrl}/settings`, {
           headers: { Authorization: `Bearer ${token}` },
+          signal
         }).then(async res => {
           const contentType = res.headers.get('Content-Type') || '';
           if (!contentType.includes('application/json') && !contentType.includes('text/json')) {
@@ -222,6 +225,7 @@ export default class GitGateway implements Implementation {
               'Git Gateway',
             );
           }
+          setTimeout(() => controller.abort(), 60000)
 
           const body = await res.json();
 
@@ -402,7 +406,7 @@ export default class GitGateway implements Implementation {
           patterns,
           transformImages: this.transformImages
             ? // eslint-disable-next-line @typescript-eslint/camelcase
-              { nf_resize: 'fit', w: 560, h: 320 }
+            { nf_resize: 'fit', w: 560, h: 320 }
             : false,
         });
       },

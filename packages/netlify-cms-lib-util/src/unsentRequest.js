@@ -48,10 +48,15 @@ const maybeRequestArg = req => {
 const ensureRequestArg = func => req => func(maybeRequestArg(req));
 const ensureRequestArg2 = func => (arg, req) => func(arg, maybeRequestArg(req));
 
+// This is a abort controller for requests.
+const controller = new AbortController()
+const signal = controller.signal
+
 // This actually performs the built request object
 const performRequest = ensureRequestArg(req => {
   const args = toFetchArguments(req);
-  return fetch(...args);
+  setTimeout(() => controller.abort(), 60000)
+  return fetch(...args, { signal });
 });
 
 // Each of the following functions takes options and returns another
