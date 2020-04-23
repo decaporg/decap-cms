@@ -116,6 +116,7 @@ class EditorControl extends React.Component {
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     parentIds: PropTypes.arrayOf(PropTypes.string),
+    entry: ImmutablePropTypes.map.isRequired,
   };
 
   static defaultProps = {
@@ -292,7 +293,6 @@ class EditorControl extends React.Component {
 
 const mapStateToProps = state => {
   const { collections, entryDraft } = state;
-  const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
@@ -312,7 +312,6 @@ const mapStateToProps = state => {
     queryHits: state.search.get('queryHits'),
     config: state.config,
     collection,
-    entry,
     isLoadingAsset,
     loadEntry,
   };

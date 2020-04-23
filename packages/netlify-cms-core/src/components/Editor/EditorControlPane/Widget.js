@@ -59,6 +59,7 @@ export default class Widget extends Component {
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
+    entry: ImmutablePropTypes.map.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -262,6 +263,7 @@ export default class Widget extends Component {
       isNewEditorComponent,
       parentIds,
       t,
+      entry,
     } = this.props;
     return React.createElement(controlComponent, {
       entry,
@@ -307,6 +309,7 @@ export default class Widget extends Component {
       controlRef,
       parentIds,
       t,
+      entry,
     });
   }
 }

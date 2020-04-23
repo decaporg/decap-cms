@@ -62,6 +62,7 @@ export default class ControlPane extends React.Component {
               onValidate={onValidate}
               processControlRef={this.controlRef.bind(this)}
               controlRef={this.controlRef}
+              entry={entry}
             />
           ),
         )}

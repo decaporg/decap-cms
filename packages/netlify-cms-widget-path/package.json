@@ -1,0 +1,28 @@
+{
+  "name": "netlify-cms-widget-path",
+  "description": "Widget for editing an entry path in Netlify CMS.",
+  "version": "2.2.3",
+  "homepage": "https://www.netlifycms.org/docs/widgets/#path",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-path",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-widget-path.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "path"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "peerDependencies": {
+    "netlify-cms-ui-default": "^2.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
+}
