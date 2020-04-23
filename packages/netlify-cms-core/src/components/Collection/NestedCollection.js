@@ -9,28 +9,20 @@ import { addFileTemplateFields } from '../../lib/formatters';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 import { selectEntries } from '../../reducers/entries';
 import { Icon, colors } from 'netlify-cms-ui-default';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import reactSortableTreeStyles from 'react-sortable-tree/style.css';
-import SortableTree, {
-  getTreeFromFlatData,
-  getFlatDataFromTree,
-  getVisibleNodeCount,
-} from 'react-sortable-tree/dist/index.esm.js';
 
-const rowContents = css`
-  .rst__rowContents {
-    min-width: 40px;
-  }
+const StyledDiv = styled.div`
+  display: flex;
 `;
-
-const getKey = node => node.path;
-const getNodeKey = ({ node }) => getKey(node);
 
 const TreeNavLink = styled(NavLink)`
   display: flex;
   font-size: 14px;
   font-weight: 500;
   align-items: center;
+  padding: 8px;
+  padding-left: ${props => props.depth * 20 + 12}px;
   border-left: 2px solid #fff;
 
   ${Icon} {
@@ -48,8 +40,60 @@ const TreeNavLink = styled(NavLink)`
   `};
 `;
 
+const TreeNode = props => {
+  const { collection, treeData, depth = 0, onToggle } = props;
+  const collectionName = collection.get('name');
+
+  return treeData.map(node => {
+    return (
+      <React.Fragment key={node.path}>
+        <TreeNavLink
+          exact
+          to={`/collections/${collectionName}/filter/path=${node.path}`}
+          activeClassName="sidebar-active"
+          onClick={() => onToggle({ node, expanded: !node.expanded })}
+          depth={depth}
+        >
+          {node.isDir && <Icon type={depth === 0 ? 'write' : 'folder'} />}
+          <StyledDiv>
+            {node.title}
+            {node.children.length > 0 ? (
+              <Icon type="chevron" size="small" direction={node.expanded ? 'down' : 'right'} />
+            ) : null}
+          </StyledDiv>
+        </TreeNavLink>
+        {node.expanded && (
+          <TreeNode
+            collection={collection}
+            depth={depth + 1}
+            treeData={node.children}
+            onToggle={onToggle}
+          />
+        )}
+      </React.Fragment>
+    );
+  });
+};
+
+TreeNode.propTypes = {
+  collection: ImmutablePropTypes.map.isRequired,
+  depth: PropTypes.number,
+  treeData: PropTypes.array.isRequired,
+  onToggle: PropTypes.func.isRequired,
+};
+
+const walk = (treeData, callback) => {
+  const traverse = children => {
+    for (const child of children) {
+      callback(child);
+      traverse(child.children);
+    }
+  };
+
+  return traverse(treeData);
+};
+
 const getTreeData = (collection, entries, expanded = {}) => {
-  const rootKey = 'NETLIFY_CMS_ROOT_COLLECTION';
   const rootFolder = collection.get('folder');
   const entriesObj = entries.toJS();
 
@@ -98,18 +142,50 @@ const getTreeData = (collection, entries, expanded = {}) => {
     }),
   ];
 
-  const treeData = getTreeFromFlatData({
-    flatData,
-    getKey,
-    getParentKey: item => {
-      if (item.path === rootFolder) {
-        return rootKey;
-      }
-      return dirname(item.path);
-    },
-    rootKey,
-  });
+  const parentsToChildren = flatData.reduce((acc, node) => {
+    const parent = dirname(node.path);
+    if (acc[parent]) {
+      acc[parent].push(node);
+    } else {
+      acc[parent] = [node];
+    }
+    return acc;
+  }, {});
+
+  const reducer = (acc, value) => {
+    const node = value;
+    let children = [];
+    if (parentsToChildren[node.path]) {
+      children = parentsToChildren[node.path].reduce(reducer, []);
+    }
+
+    acc.push({ ...node, children });
+    return acc;
+  };
+
+  const treeData = parentsToChildren[dirname(rootFolder)].reduce(reducer, []);
   return treeData;
+};
+
+const updateNode = (collection, treeData, node, callback) => {
+  let stop = false;
+
+  const updater = nodes => {
+    if (stop) {
+      return nodes;
+    }
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].path === node.path) {
+        nodes[i] = callback(node);
+        stop = true;
+        return nodes;
+      }
+    }
+    nodes.forEach(node => updater(node.children));
+    return nodes;
+  };
+
+  return updater([...treeData]);
 };
 
 class NestedCollection extends React.Component {
@@ -130,60 +206,31 @@ class NestedCollection extends React.Component {
   componentDidUpdate(prevProps) {
     const { collection, entries } = this.props;
     if (collection !== prevProps.collection || entries !== prevProps.entries) {
-      const flatData = getFlatDataFromTree({
-        treeData: this.state.treeData,
-        getNodeKey,
-        ignoreCollapsed: true,
+      const expanded = {};
+      walk(this.state.treeData, node => {
+        if (node.expanded) {
+          expanded[node.path] = true;
+        }
       });
-
-      const expanded = flatData.reduce((acc, { node }) => {
-        acc[node.path] = node.expanded;
-        return acc;
-      }, {});
       const treeData = getTreeData(collection, entries, expanded);
-
       this.setState({ treeData });
     }
   }
 
-  onChange = treeData => {
+  onToggle = ({ node, expanded }) => {
+    const treeData = updateNode(this.props.collection, this.state.treeData, node, node => ({
+      ...node,
+      expanded,
+    }));
+
     this.setState({ treeData });
   };
 
   render() {
     const { treeData } = this.state;
     const { collection } = this.props;
-    const rowHeight = 40;
-    const height = getVisibleNodeCount({ treeData }) * rowHeight;
-    return (
-      <div
-        css={css`
-          ${reactSortableTreeStyles}
-          height: ${height}px;
-          ${rowContents}
-        `}
-      >
-        <SortableTree
-          treeData={treeData}
-          rowHeight={rowHeight}
-          onChange={this.onChange}
-          generateNodeProps={({ node }) => ({
-            buttons: [
-              <TreeNavLink
-                exact
-                key={node.path}
-                to={`/collections/${collection.get('name')}/filter/path=${node.path}`}
-                activeClassName="sidebar-active"
-              >
-                <Icon type="list" size="small" />
-              </TreeNavLink>,
-            ],
-          })}
-          getNodeKey={getNodeKey}
-          canDrag={() => false}
-        />
-      </div>
-    );
+
+    return <TreeNode collection={collection} treeData={treeData} onToggle={this.onToggle} />;
   }
 }
 
