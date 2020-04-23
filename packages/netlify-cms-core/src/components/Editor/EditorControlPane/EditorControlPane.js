@@ -63,6 +63,7 @@ export default class ControlPane extends React.Component {
               processControlRef={this.controlRef.bind(this)}
               controlRef={this.controlRef}
               entry={entry}
+              collection={collection}
             />
           ),
         )}

@@ -264,6 +264,7 @@ export default class Widget extends Component {
       parentIds,
       t,
       entry,
+      collection,
     } = this.props;
     return React.createElement(controlComponent, {
       entry,
@@ -310,6 +311,7 @@ export default class Widget extends Component {
       parentIds,
       t,
       entry,
+      collection,
     });
   }
 }

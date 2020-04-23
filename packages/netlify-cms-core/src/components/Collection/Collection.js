@@ -89,11 +89,16 @@ class Collection extends React.Component {
       onSortClick,
       sort,
       viewFilters,
+      filterTerm,
       t,
       onFilterClick,
       filter,
     } = this.props;
-    const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
+
+    let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
+    if (newEntryUrl && filterTerm) {
+      newEntryUrl = `${newEntryUrl}?${filterTerm}`;
+    }
 
     const searchResultKey =
       'collection.collectionTop.searchResults' + (isSingleSearchResult ? 'InCollection' : '');

@@ -117,6 +117,7 @@ class EditorControl extends React.Component {
     isNewEditorComponent: PropTypes.bool,
     parentIds: PropTypes.arrayOf(PropTypes.string),
     entry: ImmutablePropTypes.map.isRequired,
+    collection: ImmutablePropTypes.map.isRequired,
   };
 
   static defaultProps = {
@@ -292,8 +293,7 @@ class EditorControl extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { collections, entryDraft } = state;
-  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+  const { collections } = state;
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
   const loadEntry = async (collectionName, slug) => {
@@ -311,7 +311,6 @@ const mapStateToProps = state => {
     isFetching: state.search.get('isFetching'),
     queryHits: state.search.get('queryHits'),
     config: state.config,
-    collection,
     isLoadingAsset,
     loadEntry,
   };
@@ -342,7 +341,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entry),
+    boundGetAsset: dispatchProps.boundGetAsset(ownProps.collection, stateProps.entry),
   };
 };
 

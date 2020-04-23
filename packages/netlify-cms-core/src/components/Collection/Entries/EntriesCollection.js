@@ -70,7 +70,9 @@ function mapStateToProps(state, ownProps) {
   if (filterTerm) {
     const params = new URLSearchParams(filterTerm);
     const path = params.get('path');
-    entries = entries.filter(f => f.get('path').startsWith(path));
+    if (path) {
+      entries = entries.filter(f => f.get('path').startsWith(path));
+    }
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
   const isFetching = selectIsFetching(state.entries, collection.get('name'));

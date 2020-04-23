@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 export default class PathControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
-    value: PropTypes.node,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
+    entry: ImmutablePropTypes.map.isRequired,
+    collection: ImmutablePropTypes.map.isRequired,
+    metadata: ImmutablePropTypes.map,
   };
 
   onChange = e => {
@@ -21,17 +24,34 @@ export default class PathControl extends React.Component {
     return true;
   }
 
-  render() {
-    const {
-      forID,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-      entry,
-      metadata,
-    } = this.props;
+  getPath() {
+    const { entry, metadata, collection, value } = this.props;
+    if (value) {
+      return value;
+    }
+    if (metadata) {
+      return metadata.get('path');
+    }
+    return entry?.get('path') || collection.get('folder');
+  }
 
-    const value = metadata?.get('path') || entry?.get('path') || '';
+  isValid = () => {
+    const folder = this.props.collection.get('folder');
+    const path = this.getPath();
+    if (!path.startsWith(folder)) {
+      return { error: { message: `${path} must be a prefix of ${folder}` } };
+    }
+    return true;
+  };
+
+  getValidateValue = () => {
+    return this.getPath();
+  };
+
+  render() {
+    const { forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+
+    const value = this.getPath();
 
     return (
       <input

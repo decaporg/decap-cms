@@ -23,6 +23,7 @@
   "peerDependencies": {
     "netlify-cms-ui-default": "^2.6.0",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4",
+    "react-immutable-proptypes": "^2.1.0"
   }
 }
