@@ -18,7 +18,8 @@
       "netlify-cms-backend-github": ["packages/netlify-cms-backend-github/src"],
       "netlify-cms-backend-gitlab": ["packages/netlify-cms-backend-gitlab/src"],
       "netlify-cms-backend-bitbucket": ["packages/netlify-cms-backend-bitbucket/src"],
-      "netlify-cms-lib-util": ["packages/netlify-cms-lib-util/src"]
+      "netlify-cms-lib-util": ["packages/netlify-cms-lib-util/src"],
+      "netlify-cms-lib-widgets": ["packages/netlify-cms-lib-widgets/src"]
     }
   },
   "include": ["**/src/**/*"],

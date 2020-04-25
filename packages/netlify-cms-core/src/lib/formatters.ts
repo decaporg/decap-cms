@@ -6,11 +6,11 @@ import {
   parseDateFromEntry,
   SLUG_MISSING_REQUIRED_DATE,
   keyToPathArray,
+  addFileTemplateFields,
 } from './stringTemplate';
 import { selectIdentifier, selectField, COMMIT_AUTHOR, COMMIT_DATE } from '../reducers/collections';
 import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
 import { stripIndent } from 'common-tags';
-import { basename, fileExtension } from 'netlify-cms-lib-util';
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -120,21 +120,6 @@ export const slugFormatter = (
       value === slug ? value : processSegment(value),
     );
   }
-};
-
-const addFileTemplateFields = (entryPath: string, fields: Map<string, string>) => {
-  if (!entryPath) {
-    return fields;
-  }
-
-  const extension = fileExtension(entryPath);
-  const filename = basename(entryPath, `.${extension}`);
-  fields = fields.withMutations(map => {
-    map.set('filename', filename);
-    map.set('extension', extension);
-  });
-
-  return fields;
 };
 
 export const previewUrlFormatter = (

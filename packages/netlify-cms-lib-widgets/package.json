@@ -1,0 +1,23 @@
+{
+  "name": "netlify-cms-lib-widgets",
+  "description": "Shared utilities for Netlify CMS.",
+  "version": "1.0.0",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-lib-widgets.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify-cms"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "immutable": "^3.7.6"
+  }
+}
