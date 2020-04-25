@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq } from 'lodash';
+import { attempt, flatten, isError, uniq, trim } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -34,6 +34,7 @@ import {
   Config as ImplementationConfig,
   blobToFileObj,
 } from 'netlify-cms-lib-util';
+import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import {
@@ -285,9 +286,17 @@ export class Backend {
     entryData: Map<string, unknown>,
     config: Config,
     usedSlugs: List<string>,
+    customPath: string | undefined,
   ) {
     const slugConfig = config.get('slug');
-    const slug: string = slugFormatter(collection, entryData, slugConfig);
+    let slug: string;
+    if (customPath) {
+      const folderPath = collection.get('folder', '') as string;
+      const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
+      slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
+    } else {
+      slug = slugFormatter(collection, entryData, slugConfig);
+    }
     let i = 1;
     let uniqueSlug = slug;
 
@@ -747,7 +756,11 @@ export class Backend {
       path: string;
       slug: string;
       raw: string;
+      newPath?: string;
     };
+
+    const fieldsMetaData = entryDraft.get('fieldsMetaData');
+    const customPath = fieldsMetaData?.getIn(['path', 'path']);
 
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
@@ -758,9 +771,9 @@ export class Backend {
         entryDraft.getIn(['entry', 'data']),
         config,
         usedSlugs,
+        customPath,
       );
-      const path = selectEntryPath(collection, slug) as string;
-
+      const path = customPath || (selectEntryPath(collection, slug) as string);
       entryObj = {
         path,
         slug,
@@ -786,6 +799,7 @@ export class Backend {
         path,
         slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
+        newPath: customPath,
       };
     }
 

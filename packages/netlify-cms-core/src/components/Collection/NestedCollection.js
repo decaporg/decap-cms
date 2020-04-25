@@ -27,6 +27,7 @@ const TreeNavLink = styled(NavLink)`
 
   ${Icon} {
     margin-right: 8px;
+    flex-shrink: 0;
   }
 
   ${props => css`
@@ -54,7 +55,7 @@ const TreeNode = props => {
           onClick={() => onToggle({ node, expanded: !node.expanded })}
           depth={depth}
         >
-          {node.isDir && <Icon type={depth === 0 ? 'write' : 'folder'} />}
+          <Icon type={depth === 0 || !node.isDir ? 'write' : 'folder'} />
           <StyledDiv>
             {node.title}
             {node.children.length > 0 ? (

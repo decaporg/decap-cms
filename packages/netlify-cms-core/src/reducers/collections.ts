@@ -67,10 +67,11 @@ const selectors = {
     },
     entrySlug(collection: Collection, path: string) {
       const folder = (collection.get('folder') as string).replace(/\/$/, '');
-      const slug = path
-        .split(folder + '/')
-        .pop()
-        ?.replace(new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`), '');
+      const lastPathPart = path.split(folder + '/').pop();
+      const slug = lastPathPart!.replace(
+        new RegExp(`\\.${escapeRegExp(this.entryExtension(collection))}$`),
+        '',
+      );
 
       return slug;
     },

@@ -107,6 +107,7 @@ export type FieldsErrors = StaticallyTypedRecord<{ [field: string]: { type: stri
 export type EntryDraft = StaticallyTypedRecord<{
   entry: Entry;
   fieldsErrors: FieldsErrors;
+  fieldsMetaData?: Map<string, Map<string, string>>;
 }>;
 
 export type EntryField = StaticallyTypedRecord<{

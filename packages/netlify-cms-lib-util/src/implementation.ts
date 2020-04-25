@@ -48,7 +48,7 @@ export type AssetProxy = {
   toBase64?: () => Promise<string>;
 };
 
-export type Entry = { path: string; slug: string; raw: string };
+export type Entry = { path: string; slug: string; raw: string; newPath?: string };
 
 export type PersistOptions = {
   newEntry?: boolean;
