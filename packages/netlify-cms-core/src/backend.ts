@@ -84,7 +84,15 @@ const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
       f = f[nestedFields[i]];
       if (!f) break;
     }
-    return f ? `${acc} ${f}` : acc;
+
+    if (f) {
+      return `${acc} ${f}`;
+    } else if (entry[nestedFields[0] as keyof EntryValue]) {
+      // allows searching using entry.slug/entry.path etc.
+      return `${acc} ${entry[nestedFields[0] as keyof EntryValue]}`;
+    } else {
+      return acc;
+    }
   }, '');
 
 const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) => {
