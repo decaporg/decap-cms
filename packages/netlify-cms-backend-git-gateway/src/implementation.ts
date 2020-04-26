@@ -35,7 +35,12 @@ import { getClient, Client } from './netlify-lfs-client';
 
 declare global {
   interface Window {
-    netlifyIdentity?: { gotrue: GoTrue; logout: () => void };
+    netlifyIdentity?: {
+      gotrue: GoTrue;
+      logout: () => void;
+      on: (event: string, args: unknown) => void;
+      init: () => void;
+    };
   }
 }
 
@@ -69,6 +74,27 @@ function getEndpoint(endpoint: string, netlifySiteURL: string | null) {
   return endpoint;
 }
 
+// wait for identity widget to initialize
+// force init on timeout
+let initPromise = Promise.resolve() as Promise<unknown>;
+if (window.netlifyIdentity) {
+  let initialized = false;
+  initPromise = Promise.race([
+    new Promise(resolve => {
+      window.netlifyIdentity!.on('init', () => {
+        initialized = true;
+        resolve();
+      });
+    }),
+    new Promise(resolve => setTimeout(resolve, 2500)).then(() => {
+      if (!initialized) {
+        console.log('Manually initializing identity widget');
+        window.netlifyIdentity!.init();
+      }
+    }),
+  ]);
+}
+
 interface NetlifyUser extends Credentials {
   jwt: () => Promise<string>;
   email: string;
@@ -85,7 +111,8 @@ export default class GitGateway implements Implementation {
   gatewayUrl: string;
   netlifyLargeMediaURL: string;
   backendType: string | null;
-  authClient: GoTrue;
+  apiUrl: string;
+  authClient?: GoTrue;
   backend: GitHubBackend | GitLabBackend | BitbucketBackend | null;
   acceptRoles?: string[];
   tokenPromise?: () => Promise<string>;
@@ -110,7 +137,7 @@ export default class GitGateway implements Implementation {
     this.transformImages = config.backend.use_large_media_transforms_in_media_library || true;
 
     const netlifySiteURL = localStorage.getItem('netlifySiteURL');
-    const APIUrl = getEndpoint(config.backend.identity_url || defaults.identity, netlifySiteURL);
+    this.apiUrl = getEndpoint(config.backend.identity_url || defaults.identity, netlifySiteURL);
     this.gatewayUrl = getEndpoint(config.backend.gateway_url || defaults.gateway, netlifySiteURL);
     this.netlifyLargeMediaURL = getEndpoint(
       config.backend.large_media_url || defaults.largeMedia,
@@ -125,16 +152,24 @@ export default class GitGateway implements Implementation {
       this.backendType = null;
     }
 
-    this.authClient = window.netlifyIdentity
-      ? window.netlifyIdentity.gotrue
-      : new GoTrue({ APIUrl });
-    AuthenticationPage.authClient = this.authClient;
-
     this.backend = null;
+    AuthenticationPage.authClient = () => this.getAuthClient();
   }
 
   isGitBackend() {
     return true;
+  }
+
+  async getAuthClient() {
+    if (this.authClient) {
+      return this.authClient;
+    }
+    await initPromise;
+    const authClient = window.netlifyIdentity
+      ? window.netlifyIdentity.gotrue
+      : new GoTrue({ APIUrl: this.apiUrl });
+    this.authClient = authClient;
+    return authClient;
   }
 
   requestFunction = (req: ApiRequest) =>
@@ -233,8 +268,9 @@ export default class GitGateway implements Implementation {
       return { name: userData.name, login: userData.email } as User;
     });
   }
-  restoreUser() {
-    const user = this.authClient && this.authClient.currentUser();
+  async restoreUser() {
+    const client = await this.getAuthClient();
+    const user = client.currentUser();
     if (!user) return Promise.reject();
     return this.authenticate(user as Credentials);
   }
@@ -242,12 +278,15 @@ export default class GitGateway implements Implementation {
     return AuthenticationPage;
   }
 
-  logout() {
+  async logout() {
     if (window.netlifyIdentity) {
       return window.netlifyIdentity.logout();
     }
-    const user = this.authClient.currentUser();
-    return user && user.logout();
+    const client = await this.getAuthClient();
+    const user = client.currentUser();
+    if (user) {
+      return user.logout();
+    }
   }
   getToken() {
     return this.tokenPromise!();
