@@ -18,6 +18,7 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "immutable": "^3.7.6"
+    "immutable": "^3.7.6",
+    "moment": "^2.24.0"
   }
 }

@@ -35,7 +35,7 @@ import {
   blobToFileObj,
 } from 'netlify-cms-lib-util';
 import { status } from './constants/publishModes';
-import { extractTemplateVars, dateParsers } from './lib/stringTemplate';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 import {
   Collection,
   EntryMap,
@@ -49,6 +49,8 @@ import {
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
+
+const { extractTemplateVars, dateParsers } = stringTemplate;
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';

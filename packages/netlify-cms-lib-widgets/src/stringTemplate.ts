@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { Map } from 'immutable';
 import { basename, extname } from 'path';
 
@@ -18,6 +19,18 @@ export const dateParsers: Record<string, (date: Date) => string> = {
   minute: (date: Date) => formatDate(date.getUTCMinutes()),
   second: (date: Date) => formatDate(date.getUTCSeconds()),
 };
+
+export function parseDateFromEntry(entry: Map<string, unknown>, dateFieldName?: string | null) {
+  if (!dateFieldName) {
+    return;
+  }
+
+  const dateValue = entry.getIn(['data', dateFieldName]);
+  const dateMoment = dateValue && moment(dateValue);
+  if (dateMoment && dateMoment.isValid()) {
+    return dateMoment.toDate();
+  }
+}
 
 export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
 
@@ -54,7 +67,11 @@ function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
     return;
   }
   const fieldName = key.substring(FIELD_PREFIX.length);
-  return data.getIn(keyToPathArray(fieldName), '') as string;
+  const value = data.getIn(keyToPathArray(fieldName));
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value);
+  }
+  return value;
 }
 
 export function compileStringTemplate(

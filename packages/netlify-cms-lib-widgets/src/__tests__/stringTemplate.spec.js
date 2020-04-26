@@ -25,29 +25,24 @@ describe('stringTemplate', () => {
   });
 
   describe('parseDateFromEntry', () => {
-    it('should infer date field and return entry date', () => {
+    it('should return date based on dateFieldName', () => {
       const date = new Date().toISOString();
-      const entry = fromJS({ data: { date } });
-      const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
-      expect(parseDateFromEntry(entry, collection).toISOString()).toBe(date);
+      const dateFieldName = 'dateFieldName';
+      const entry = fromJS({ data: { dateFieldName: date } });
+      expect(parseDateFromEntry(entry, dateFieldName).toISOString()).toBe(date);
     });
 
-    it('should use supplied date field and return entry date', () => {
-      const date = new Date().toISOString();
-      const entry = fromJS({ data: { preview_date: date } });
-      expect(parseDateFromEntry(entry, null, 'preview_date').toISOString()).toBe(date);
-    });
-
-    it('should return undefined on non existing date', () => {
+    it('should return undefined on empty dateFieldName', () => {
       const entry = fromJS({ data: {} });
-      const collection = fromJS({ fields: [{}] });
-      expect(parseDateFromEntry(entry, collection)).toBeUndefined();
+      expect(parseDateFromEntry(entry, '')).toBeUndefined();
+      expect(parseDateFromEntry(entry, null)).toBeUndefined();
+      expect(parseDateFromEntry(entry, undefined)).toBeUndefined();
     });
 
     it('should return undefined on invalid date', () => {
       const entry = fromJS({ data: { date: '' } });
-      const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
-      expect(parseDateFromEntry(entry, collection)).toBeUndefined();
+      const dateFieldName = 'date';
+      expect(parseDateFromEntry(entry, dateFieldName)).toBeUndefined();
     });
   });
 
