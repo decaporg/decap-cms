@@ -78,7 +78,7 @@ function getEntryBackupKey(collectionName?: string, slug?: string) {
   return `${baseKey}.${collectionName}${suffix}`;
 }
 
-const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
+export const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
   searchFields.reduce((acc, field) => {
     const nestedFields = field.split('.');
     let f = entry.data;

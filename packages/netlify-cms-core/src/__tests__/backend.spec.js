@@ -1,4 +1,4 @@
-import { resolveBackend, Backend } from '../backend';
+import { resolveBackend, Backend, extractSearchFields } from '../backend';
 import registry from 'Lib/registry';
 import { FOLDER } from 'Constants/collectionTypes';
 import { Map, List, fromJS } from 'immutable';
@@ -464,6 +464,32 @@ describe('Backend', () => {
       await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
         'sub_dir/some-post-title-1',
       );
+    });
+  });
+
+  describe('extractSearchFields', () => {
+    it('should extract slug', () => {
+      expect(extractSearchFields(['slug'])({ slug: 'entry-slug', data: {} })).toEqual(
+        ' entry-slug',
+      );
+    });
+
+    it('should extract path', () => {
+      expect(extractSearchFields(['path'])({ path: 'entry-path', data: {} })).toEqual(
+        ' entry-path',
+      );
+    });
+
+    it('should extract fields', () => {
+      expect(
+        extractSearchFields(['title', 'order'])({ data: { title: 'Entry Title', order: 5 } }),
+      ).toEqual(' Entry Title 5');
+    });
+
+    it('should extract nested fields', () => {
+      expect(
+        extractSearchFields(['nested.title'])({ data: { nested: { title: 'nested title' } } }),
+      ).toEqual(' nested title');
     });
   });
 });
