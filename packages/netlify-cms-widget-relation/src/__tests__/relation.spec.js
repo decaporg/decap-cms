@@ -43,7 +43,8 @@ const generateHits = length => {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
     const slug = `post-number-${idx + 1}`;
-    return { collection: 'posts', data: { title, slug } };
+    const path = `posts/${slug}.md`;
+    return { collection: 'posts', data: { title, slug }, slug, path };
   });
 
   return [
@@ -244,6 +245,31 @@ describe('Relation widget', () => {
       expect(
         getAllByText('Deeply nested post post-deeply-nested Deeply nested field'),
       ).toHaveLength(1);
+    });
+  });
+
+  it('should handle string templates', async () => {
+    const stringTemplateConfig = {
+      name: 'post',
+      collection: 'posts',
+      displayFields: ['{{slug}}', '{{filename}}', '{{extension}}'],
+      searchFields: ['slug'],
+      valueField: '{{slug}}',
+    };
+
+    const field = fromJS(stringTemplateConfig);
+    const { getByText, input, onChangeSpy } = setup({ field });
+    const value = 'post-number-1';
+    const label = 'post-number-1 post-number-1 md';
+    const metadata = {
+      post: { posts: { 'post-number-1': { title: 'Post # 1', slug: 'post-number-1' } } },
+    };
+
+    await wait(() => {
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText(label));
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
     });
   });
 

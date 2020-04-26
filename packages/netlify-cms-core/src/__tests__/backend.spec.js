@@ -492,4 +492,155 @@ describe('Backend', () => {
       ).toEqual(' nested title');
     });
   });
+
+  describe('search/query', () => {
+    const collections = [
+      fromJS({
+        name: 'posts',
+        folder: 'posts',
+        fields: [
+          { name: 'title', widget: 'string' },
+          { name: 'short_title', widget: 'string' },
+          { name: 'author', widget: 'string' },
+          { name: 'description', widget: 'string' },
+          { name: 'nested', widget: 'object', fields: { name: 'title', widget: 'string' } },
+        ],
+      }),
+      fromJS({
+        name: 'pages',
+        folder: 'pages',
+        fields: [
+          { name: 'title', widget: 'string' },
+          { name: 'short_title', widget: 'string' },
+          { name: 'author', widget: 'string' },
+          { name: 'description', widget: 'string' },
+          { name: 'nested', widget: 'object', fields: { name: 'title', widget: 'string' } },
+        ],
+      }),
+    ];
+
+    const posts = [
+      {
+        path: 'posts/find-me.md',
+        slug: 'find-me',
+        data: {
+          title: 'find me by title',
+          short_title: 'find me by short title',
+          author: 'find me by author',
+          description: 'find me by description',
+          nested: { title: 'find me by nested title' },
+        },
+      },
+      { path: 'posts/not-me.md', slug: 'not-me', data: { title: 'not me' } },
+    ];
+
+    const pages = [
+      {
+        path: 'pages/find-me.md',
+        slug: 'find-me',
+        data: {
+          title: 'find me by title',
+          short_title: 'find me by short title',
+          author: 'find me by author',
+          description: 'find me by description',
+          nested: { title: 'find me by nested title' },
+        },
+      },
+      { path: 'pages/not-me.md', slug: 'not-me', data: { title: 'not me' } },
+    ];
+
+    const implementation = {
+      init: jest.fn(() => implementation),
+    };
+    const config = Map({});
+
+    let backend;
+    beforeEach(() => {
+      backend = new Backend(implementation, { config, backendName: 'github' });
+      backend.listAllEntries = jest.fn(collection => {
+        if (collection.get('name') === 'posts') {
+          return Promise.resolve(posts);
+        }
+        if (collection.get('name') === 'pages') {
+          return Promise.resolve(pages);
+        }
+        return Promise.resolve([]);
+      });
+    });
+
+    it('should search collections by title', async () => {
+      const results = await backend.search(collections, 'find me by title');
+
+      expect(results).toEqual({
+        entries: [posts[0], pages[0]],
+      });
+    });
+
+    it('should search collections by short title', async () => {
+      const results = await backend.search(collections, 'find me by short title');
+
+      expect(results).toEqual({
+        entries: [posts[0], pages[0]],
+      });
+    });
+
+    it('should search collections by author', async () => {
+      const results = await backend.search(collections, 'find me by author');
+
+      expect(results).toEqual({
+        entries: [posts[0], pages[0]],
+      });
+    });
+
+    it('should search collections by summary description', async () => {
+      const results = await backend.search(
+        collections.map(c => c.set('summary', '{{description}}')),
+        'find me by description',
+      );
+
+      expect(results).toEqual({
+        entries: [posts[0], pages[0]],
+      });
+    });
+
+    it('should query collections by title', async () => {
+      const results = await backend.query(collections[0], ['title'], 'find me by title');
+
+      expect(results).toEqual({
+        hits: [posts[0]],
+        query: 'find me by title',
+      });
+    });
+
+    it('should query collections by slug', async () => {
+      const results = await backend.query(collections[0], ['slug'], 'find-me');
+
+      expect(results).toEqual({
+        hits: [posts[0]],
+        query: 'find-me',
+      });
+    });
+
+    it('should query collections by path', async () => {
+      const results = await backend.query(collections[0], ['path'], 'posts/find-me.md');
+
+      expect(results).toEqual({
+        hits: [posts[0]],
+        query: 'posts/find-me.md',
+      });
+    });
+
+    it('should query collections by nested field', async () => {
+      const results = await backend.query(
+        collections[0],
+        ['nested.title'],
+        'find me by nested title',
+      );
+
+      expect(results).toEqual({
+        hits: [posts[0]],
+        query: 'find me by nested title',
+      });
+    });
+  });
 });
