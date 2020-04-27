@@ -95,7 +95,12 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         is: 'persistEntry',
         then: defaultParams
           .keys({
-            entry: Joi.object({ slug: requiredString, path, raw: requiredString }).required(),
+            entry: Joi.object({
+              slug: requiredString,
+              path,
+              raw: requiredString,
+              newPath: path.optional(),
+            }).required(),
             assets: Joi.array()
               .items(asset)
               .required(),

@@ -12,7 +12,7 @@ import {
   PersistMediaParams,
   DeleteFileParams,
 } from '../types';
-import { listRepoFiles, deleteFile, writeFile } from '../utils/fs';
+import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
 type Options = {
@@ -67,6 +67,9 @@ export const localFsMiddleware = ({ repoPath }: Options) => {
               writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding)),
             ),
           );
+          if (entry.newPath) {
+            await move(path.join(repoPath, entry.path), path.join(repoPath, entry.newPath));
+          }
           res.json({ message: 'entry persisted' });
           break;
         }

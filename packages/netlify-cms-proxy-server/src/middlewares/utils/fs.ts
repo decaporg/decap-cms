@@ -40,3 +40,20 @@ export const writeFile = async (filePath: string, content: Buffer | string) => {
 export const deleteFile = async (repoPath: string, filePath: string) => {
   await fs.unlink(path.join(repoPath, filePath));
 };
+
+const moveFile = async (from: string, to: string) => {
+  await fs.mkdir(path.dirname(to), { recursive: true });
+  console.log({ from, to });
+  await fs.rename(from, to);
+};
+
+export const move = async (from: string, to: string) => {
+  // move file
+  await moveFile(from, to);
+
+  // move children
+  const sourceDir = path.dirname(from);
+  const destDir = path.dirname(to);
+  const allFiles = await listFiles(sourceDir, '', 100);
+  await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
+};
