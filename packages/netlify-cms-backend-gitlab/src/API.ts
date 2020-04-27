@@ -29,7 +29,8 @@ import {
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
-import { flow, partial, result, trimStart } from 'lodash';
+import { flow, partial, result, trimStart, sortBy } from 'lodash';
+import { dirname } from 'path';
 
 export const API_NAME = 'GitLab';
 
@@ -388,14 +389,14 @@ export default class API {
     };
   };
 
-  listAllFiles = async (path: string, recursive = false) => {
+  listAllFiles = async (path: string, recursive = false, branch = this.branch) => {
     const entries = [];
     // eslint-disable-next-line prefer-const
     let { cursor, entries: initialEntries } = await this.fetchCursorAndEntries({
       url: `${this.repoURL}/repository/tree`,
       // Get the maximum number of entries per page
       // eslint-disable-next-line @typescript-eslint/camelcase
-      params: { path, ref: this.branch, per_page: 100, recursive },
+      params: { path, ref: branch, per_page: 100, recursive },
     });
     entries.push(...initialEntries);
     while (cursor && cursor.actions!.has('next')) {
@@ -463,21 +464,49 @@ export default class API {
     }
   }
 
-  async getCommitItems(files: (Entry | AssetProxy)[], branch: string) {
-    const items = await Promise.all(
+  async getCommitItems(files: { path: string; newPath?: string }[], branch: string) {
+    const items: CommitItem[] = await Promise.all(
       files.map(async file => {
         const [base64Content, fileExists] = await Promise.all([
           result(file, 'toBase64', partial(this.toBase64, (file as Entry).raw)),
           this.isFileExists(file.path, branch),
         ]);
+
+        let action = CommitAction.CREATE;
+        let path = trimStart(file.path, '/');
+        let oldPath = undefined;
+        if (fileExists) {
+          action = file.newPath ? CommitAction.MOVE : CommitAction.UPDATE;
+          oldPath = file.newPath && path;
+          path = file.newPath ? trimStart(file.newPath, '/') : path;
+        }
+
         return {
-          action: fileExists ? CommitAction.UPDATE : CommitAction.CREATE,
+          action,
           base64Content,
-          path: trimStart(file.path, '/'),
+          path,
+          oldPath,
         };
       }),
     );
-    return items as CommitItem[];
+
+    // move children
+    for (const item of items.filter(i => i.oldPath && i.action === CommitAction.MOVE)) {
+      const sourceDir = dirname(item.oldPath as string);
+      const destDir = dirname(item.path);
+      const children = await this.listAllFiles(sourceDir, true, branch);
+      children
+        .filter(f => f.path !== item.oldPath)
+        .forEach(file => {
+          items.push({
+            action: CommitAction.MOVE,
+            path: file.path.replace(sourceDir, destDir),
+            oldPath: file.path,
+          });
+        });
+    }
+
+    return items;
   }
 
   async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
@@ -625,10 +654,11 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diff = await this.getDifferences(mergeRequest.sha);
-    const { oldPath: path, newFile: newFile } = diff.find(d => !d.binary) as {
-      oldPath: string;
-      newFile: boolean;
-    };
+    const nonBinaryFiles = sortBy(
+      diff.filter(d => !d.binary).map(d => ({ path: d.newPath || d.oldPath, newFile: d.newFile })),
+      (d: { path: string }) => d.path,
+    );
+    const { path, newFile: newFile } = nonBinaryFiles[0];
     const mediaFiles = await Promise.all(
       diff
         .filter(d => d.oldPath !== path)

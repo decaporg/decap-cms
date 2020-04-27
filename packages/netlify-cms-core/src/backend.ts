@@ -104,6 +104,13 @@ const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
   return 0;
 };
 
+const slugFromCustomPath = (collection: Collection, customPath: string) => {
+  const folderPath = collection.get('folder', '') as string;
+  const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
+  const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
+  return slug;
+};
+
 interface AuthStore {
   retrieve: () => User;
   store: (user: User) => void;
@@ -291,9 +298,7 @@ export class Backend {
     const slugConfig = config.get('slug');
     let slug: string;
     if (customPath) {
-      const folderPath = collection.get('folder', '') as string;
-      const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
-      slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
+      slug = slugFromCustomPath(collection, customPath);
     } else {
       slug = slugFormatter(collection, entryData, slugConfig);
     }
