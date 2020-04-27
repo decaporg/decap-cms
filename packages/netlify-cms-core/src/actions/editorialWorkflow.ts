@@ -24,6 +24,7 @@ import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { Collection, EntryMap, State, Collections, EntryDraft, MediaFile } from '../types/redux';
 import { AnyAction } from 'redux';
 import { EntryValue } from '../valueObjects/Entry';
+import { navigateToEntry } from '../routing/history';
 
 const { notifSend } = notifActions;
 
@@ -406,7 +407,12 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         }),
       );
       dispatch(unpublishedEntryPersisted(collection, transactionID, newSlug));
-      if (!existingUnpublishedEntry) return dispatch(loadUnpublishedEntry(collection, newSlug));
+      if (!existingUnpublishedEntry) {
+        dispatch(loadUnpublishedEntry(collection, newSlug));
+      }
+      if (entry.get('slug') !== newSlug) {
+        navigateToEntry(collection.get('name'), newSlug);
+      }
     } catch (error) {
       dispatch(
         notifSend({

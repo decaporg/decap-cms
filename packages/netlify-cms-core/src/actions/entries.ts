@@ -27,6 +27,7 @@ import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
+import { navigateToEntry } from '../routing/history';
 
 const { notifSend } = notifActions;
 
@@ -794,7 +795,7 @@ export function persistEntry(collection: Collection) {
         assetProxies,
         usedSlugs,
       })
-      .then((slug: string) => {
+      .then((newSlug: string) => {
         dispatch(
           notifSend({
             message: {
@@ -808,8 +809,14 @@ export function persistEntry(collection: Collection) {
         if (assetProxies.length > 0) {
           dispatch(loadMedia());
         }
-        dispatch(entryPersisted(collection, serializedEntry, slug));
-        if (serializedEntry.get('newRecord')) return dispatch(loadEntry(collection, slug));
+        dispatch(entryPersisted(collection, serializedEntry, newSlug));
+        if (collection.has('nested')) {
+          dispatch(loadEntries(collection));
+        }
+        if (entry.get('slug') !== newSlug) {
+          dispatch(loadEntry(collection, newSlug));
+          navigateToEntry(collection.get('name'), newSlug);
+        }
       })
       .catch((error: Error) => {
         console.error(error);

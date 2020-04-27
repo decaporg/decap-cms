@@ -762,6 +762,7 @@ export class Backend {
       slug: string;
       raw: string;
       newPath?: string;
+      oldSlug?: string;
     };
 
     const fieldsMetaData = entryDraft.get('fieldsMetaData');
@@ -798,11 +799,11 @@ export class Backend {
         asset.path = newPath;
       });
     } else {
-      const path = entryDraft.getIn(['entry', 'path']);
-      const slug = entryDraft.getIn(['entry', 'slug']);
       entryObj = {
-        path,
-        slug,
+        path: entryDraft.getIn(['entry', 'path']),
+        slug: customPath
+          ? slugFromCustomPath(collection, customPath)
+          : entryDraft.getIn(['entry', 'slug']),
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
         newPath: customPath,
       };
