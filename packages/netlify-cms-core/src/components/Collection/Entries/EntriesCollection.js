@@ -71,7 +71,14 @@ function mapStateToProps(state, ownProps) {
     const params = new URLSearchParams(filterTerm);
     const path = params.get('path');
     if (path) {
-      entries = entries.filter(f => f.get('path').startsWith(path));
+      entries = entries.filter(f => {
+        const entryPath = f.get('path');
+        if (!entryPath.startsWith(path)) {
+          return false;
+        }
+        const trimmed = entryPath.substring(path.length + 1);
+        return trimmed.split('/').length <= 2;
+      });
     }
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
