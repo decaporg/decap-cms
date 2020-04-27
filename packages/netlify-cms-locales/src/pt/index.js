@@ -3,15 +3,15 @@ const pt = {
     header: {
       content: 'Conteúdos',
       workflow: 'Fluxo de Trabalho',
-      media: 'Media',
+      media: 'Mídia',
       quickAdd: 'Adição rápida',
     },
     app: {
-      errorHeader: 'Erro ao carregar a confuguração do CMS',
+      errorHeader: 'Erro ao carregar a configuração do CMS',
       configErrors: 'Erros de configuração',
       checkConfigYml: 'Verifique o arquivo config.yml.',
       loadingConfig: 'Carregando configuração...',
-      waitingBackend: 'Aguardando o backend...',
+      waitingBackend: 'Aguardando o back-end...',
     },
     notFoundPage: {
       header: 'Não Encontrado',
@@ -40,16 +40,16 @@ const pt = {
     },
     editorControlPane: {
       widget: {
-        required: '%{fieldLabel} é requerido(a).',
+        required: '%{fieldLabel} é obrigatório.',
         regexPattern: '%{fieldLabel} não corresponde com o padrão: %{pattern}.',
         processing: '%{fieldLabel} está processando.',
         range: '%{fieldLabel} deve estar entre %{minValue} e %{maxValue}.',
         min: '%{fieldLabel} deve ser, no mínimo, %{minValue}.',
-        max: '%{fieldLabel} deve ser igual ou menos que %{maxValue}.',
+        max: '%{fieldLabel} deve ser igual ou menor que %{maxValue}.',
       },
     },
     editor: {
-      onLeavePage: 'Tem certeza que deseja sair dessa página?',
+      onLeavePage: 'Tem certeza que deseja sair desta página?',
       onUpdatingWithUnsavedChanges:
         'Há mudanças não salvas. Por favor, salve-as antes de atualizar o status.',
       onPublishingNotReady: 'Por favor, altere o status para "Pronto" antes de publicar.',
@@ -82,11 +82,11 @@ const pt = {
       deleteEntry: 'Excluir entrada',
       saving: 'Salvando...',
       save: 'Salvar',
-      deleting: 'Deletando...',
+      deleting: 'Excluindo...',
       updating: 'Atualizando...',
       setStatus: 'Definir status',
       backCollection: ' Escrevendo na coleção %{collectionLabel}',
-      unsavedChanges: 'Alterções não salvas',
+      unsavedChanges: 'Alterações não salvas',
       changesSaved: 'Alterações salvas',
       draft: 'Rascunho',
       inReview: 'Em revisão',
@@ -141,7 +141,7 @@ const pt = {
       search: 'Pesquisar...',
       uploading: 'Enviando...',
       upload: 'Enviar novo',
-      deleting: 'Deletando...',
+      deleting: 'Excluindo...',
       deleteSelected: 'Excluir selecionado',
       chooseSelected: 'Escolher selecionado',
     },
@@ -150,7 +150,7 @@ const pt = {
     errorBoundary: {
       title: 'Erro',
       details: 'Ocorreu um erro - por favor ',
-      reportIt: 'rekate-o.',
+      reportIt: 'relatar.',
       detailsHeading: 'Detalhes',
       recoveredEntry: {
         heading: 'Documento recuperado',
