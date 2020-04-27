@@ -37,13 +37,25 @@ const ja = {
       searchAll: '検索',
     },
     collectionTop: {
+      sortBy: 'ソート',
       viewAs: '表示モード',
       newButton: '%{collectionLabel}を作成',
+      ascending: '昇順',
+      descending: '降順',
     },
     entries: {
       loadingEntries: 'エントリを読み込み中',
       cachingEntries: 'エントリをキャッシュ中',
       longerLoading: '少々お待ちください',
+      noEntries: 'エントリがありません',
+    },
+    defaultFields: {
+      author: {
+        label: '作成者',
+      },
+      updatedOn: {
+        label: '最終更新',
+      },
     },
   },
   editor: {
@@ -60,6 +72,10 @@ const ja = {
         range: '%{fieldLabel}は%{minValue}から%{maxValue}まで入力可能です。',
         min: '%{fieldLabel}の最小値は%{minValue}です。',
         max: '%{fieldLabel}の最大値は%{maxValue}です。',
+        rangeCount: '%{fieldLabel}は%{minCount}個から%{maxCount}個まで選択してください。',
+        rangeCountExact: '%{fieldLabel}はちょうど%{count}個選択してください。',
+        minCount: '%{fieldLabel}は%{minCount}個以上選択してください。',
+        maxCount: '%{fieldLabel}は%{maxCount}個以下選択してください。',
       },
     },
     editor: {
@@ -138,6 +154,9 @@ const ja = {
         headingFive: '見出し 5',
         headingSix: '見出し 6',
       },
+      datetime: {
+        now: '現時刻',
+      },
     },
   },
   mediaLibrary: {
@@ -146,6 +165,7 @@ const ja = {
     },
     mediaLibrary: {
       onDelete: '選択しているデータを削除しますか？',
+      fileTooLarge: 'ファイルサイズが大きすぎます。\n%{size} kB 以下にしてください。',
     },
     mediaLibraryModal: {
       loading: '読込中...',
@@ -154,25 +174,31 @@ const ja = {
       noImagesFound: 'データがありません。',
       private: 'プライベート',
       images: '画像',
-      mediaAssets: 'データ',
+      mediaAssets: 'メディア',
       search: '検索',
       uploading: 'アップロード中...',
       upload: 'アップロードする',
+      download: 'ダウンロードする',
       deleting: '削除中...',
       deleteSelected: '削除する',
       chooseSelected: '選択する',
     },
   },
   ui: {
+    default: {
+      goBackToSite: 'サイトに戻る',
+    },
     errorBoundary: {
       title: 'エラー',
       details: 'エラーが発生しました。',
       reportIt: 'レポートする',
       detailsHeading: '詳細',
+      privacyWarning:
+        'エラーメッセージとデバッグのデータがレポートする前に表示されます。\n情報が正しいことを確認し、機密データが存在する場合は削除してください。',
       recoveredEntry: {
         heading: '復旧したエントリ',
         warning: '必要あれば、このページから遷移する前にコピーしてください。',
-        copyButtonLabel: 'クリップボードにコピー',
+        copyButtonLabel: 'コピーする',
       },
     },
     settingsDropdown: {
