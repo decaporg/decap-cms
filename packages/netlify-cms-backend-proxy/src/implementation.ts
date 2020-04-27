@@ -46,6 +46,7 @@ export default class ProxyBackend implements Implementation {
   mediaFolder: string;
   options: { initialWorkflowStatus?: string };
   branch: string;
+  controller: AbortController;
 
   constructor(config: Config, options = {}) {
     if (!config.backend.proxy_url) {
@@ -56,6 +57,7 @@ export default class ProxyBackend implements Implementation {
     this.proxyUrl = config.backend.proxy_url;
     this.mediaFolder = config.media_folder;
     this.options = options;
+    this.controller = new AbortController();
   }
 
   isGitBackend() {
@@ -87,9 +89,11 @@ export default class ProxyBackend implements Implementation {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({ branch: this.branch, ...payload }),
+      signal: this.controller.signal,
     });
 
     const json = await response.json();
+    setTimeout(() => this.controller.abort(), 60000);
     if (response.ok) {
       return json;
     } else {
