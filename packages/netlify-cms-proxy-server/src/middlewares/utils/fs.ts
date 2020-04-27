@@ -43,7 +43,6 @@ export const deleteFile = async (repoPath: string, filePath: string) => {
 
 const moveFile = async (from: string, to: string) => {
   await fs.mkdir(path.dirname(to), { recursive: true });
-  console.log({ from, to });
   await fs.rename(from, to);
 };
 
