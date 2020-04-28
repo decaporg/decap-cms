@@ -70,19 +70,16 @@ class Sidebar extends React.Component {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     collection: ImmutablePropTypes.map,
     searchTerm: PropTypes.string,
+    filterTerm: PropTypes.string,
     t: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    searchTerm: '',
-  };
-
-  renderLink = collection => {
+  renderLink = (collection, filterTerm) => {
     const collectionName = collection.get('name');
     if (collection.has('nested')) {
       return (
         <li key={collectionName}>
-          <NestedCollection collection={collection} />
+          <NestedCollection collection={collection} filterTerm={filterTerm} />
         </li>
       );
     }
@@ -97,7 +94,8 @@ class Sidebar extends React.Component {
   };
 
   render() {
-    const { collections, collection, searchTerm, t } = this.props;
+    const { collections, collection, searchTerm, t, filterTerm } = this.props;
+
     return (
       <SidebarContainer>
         <SidebarHeading>{t('collection.sidebar.collections')}</SidebarHeading>
@@ -111,7 +109,7 @@ class Sidebar extends React.Component {
           {collections
             .toList()
             .filter(collection => collection.get('hide') !== true)
-            .map(this.renderLink)}
+            .map(collection => this.renderLink(collection, filterTerm))}
         </SidebarNavList>
       </SidebarContainer>
     );

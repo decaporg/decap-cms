@@ -11,6 +11,7 @@ import {
 import { selectEntries, selectEntriesLoaded, selectIsFetching } from '../../../reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
+import { getFilterPath } from '../../../routing/helpers';
 
 class EntriesCollection extends React.Component {
   static propTypes = {
@@ -67,19 +68,21 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   let entries = selectEntries(state.entries, collection);
-  if (filterTerm) {
-    const params = new URLSearchParams(filterTerm);
-    const path = params.get('path');
-    if (path) {
-      entries = entries.filter(f => {
-        const entryPath = f.get('path');
-        if (!entryPath.startsWith(path)) {
-          return false;
-        }
-        const trimmed = entryPath.substring(path.length + 1);
-        return trimmed.split('/').length <= 2;
-      });
-    }
+
+  if (filterTerm !== undefined) {
+    const path = getFilterPath(filterTerm);
+    const collectionFolder = collection.get('folder');
+    entries = entries.filter(e => {
+      const entryPath = e.get('path').substring(collectionFolder.length + 1);
+      if (!entryPath.startsWith(path)) {
+        return false;
+      }
+
+      // only show immediate children
+      const trimmed = entryPath.substring(path.length + 1);
+
+      return trimmed.split('/').length <= 2;
+    });
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
   const isFetching = selectIsFetching(state.entries, collection.get('name'));

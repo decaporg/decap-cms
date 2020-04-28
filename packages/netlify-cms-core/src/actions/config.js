@@ -1,6 +1,6 @@
 import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
-import { trimStart, get, isPlainObject } from 'lodash';
+import { trimStart, trim, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
@@ -82,7 +82,7 @@ export function applyDefaults(config) {
               'fields',
               traverseFields(collection.get('fields'), setDefaultPublicFolder),
             );
-            collection = collection.set('folder', trimStart(folder, '/'));
+            collection = collection.set('folder', trim(folder, '/'));
           }
 
           const files = collection.get('files');

@@ -766,7 +766,9 @@ export class Backend {
     };
 
     const fieldsMetaData = entryDraft.get('fieldsMetaData');
-    const customPath = fieldsMetaData?.getIn(['path', 'path']);
+    const customPath =
+      fieldsMetaData?.getIn(['path', 'path']) &&
+      join(collection.get('folder') as string, fieldsMetaData.getIn(['path', 'path']));
 
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {

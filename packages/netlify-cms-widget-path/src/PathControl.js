@@ -32,17 +32,8 @@ export default class PathControl extends React.Component {
     if (metadata) {
       return metadata.get('path');
     }
-    return entry?.get('path') || collection.get('folder');
+    return entry?.get('path').substring(collection.get('folder').length + 1) || '';
   }
-
-  isValid = () => {
-    const folder = this.props.collection.get('folder');
-    const path = this.getPath();
-    if (!path.startsWith(folder)) {
-      return { error: { message: `${path} must be a prefix of ${folder}` } };
-    }
-    return true;
-  };
 
   getValidateValue = () => {
     return this.getPath();

@@ -11,6 +11,7 @@ import { selectEntries } from '../../reducers/entries';
 import { Icon, colors } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { getFilterPath } from '../../routing/helpers';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -50,7 +51,7 @@ const TreeNode = props => {
       <React.Fragment key={node.path}>
         <TreeNavLink
           exact
-          to={`/collections/${collectionName}/filter/path=${node.path}`}
+          to={`/collections/${collectionName}/filter${node.path}`}
           activeClassName="sidebar-active"
           onClick={() => onToggle({ node, expanded: !node.expanded })}
           depth={depth}
@@ -94,9 +95,12 @@ const walk = (treeData, callback) => {
   return traverse(treeData);
 };
 
-const getTreeData = (collection, entries, expanded = {}) => {
-  const rootFolder = collection.get('folder');
-  const entriesObj = entries.toJS();
+const getTreeData = (collection, entries) => {
+  const collectionFolder = collection.get('folder');
+  const rootFolder = '/';
+  const entriesObj = entries
+    .toJS()
+    .map(e => ({ ...e, path: e.path.substring(collectionFolder.length) }));
 
   const dirs = entriesObj.reduce((acc, entry) => {
     let dir = dirname(entry.path);
@@ -119,13 +123,11 @@ const getTreeData = (collection, entries, expanded = {}) => {
       title: collection.get('label'),
       path: rootFolder,
       isDir: true,
-      expanded: expanded[rootFolder],
     },
     ...Object.entries(dirs).map(([key, value]) => ({
       title: value,
       path: key,
       isDir: true,
-      expanded: expanded[key],
     })),
     ...entriesObj.map((e, index) => {
       let entryMap = entries.get(index);
@@ -138,13 +140,12 @@ const getTreeData = (collection, entries, expanded = {}) => {
         ...e,
         title,
         isDir: false,
-        expanded: expanded[e.path],
       };
     }),
   ];
 
   const parentsToChildren = flatData.reduce((acc, node) => {
-    const parent = dirname(node.path);
+    const parent = node.path === rootFolder ? '' : dirname(node.path);
     if (acc[parent]) {
       acc[parent].push(node);
     } else {
@@ -164,7 +165,7 @@ const getTreeData = (collection, entries, expanded = {}) => {
     return acc;
   };
 
-  const treeData = parentsToChildren[dirname(rootFolder)].reduce(reducer, []);
+  const treeData = parentsToChildren[''].reduce(reducer, []);
   return treeData;
 };
 
@@ -193,19 +194,20 @@ class NestedCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list.isRequired,
+    filterTerm: PropTypes.string,
   };
-
-  state = { treeData: [] };
 
   constructor(props) {
     super(props);
     this.state = {
       treeData: getTreeData(this.props.collection, this.props.entries),
+      selected: null,
+      useFilter: true,
     };
   }
 
   componentDidUpdate(prevProps) {
-    const { collection, entries } = this.props;
+    const { collection, entries, filterTerm } = this.props;
     if (collection !== prevProps.collection || entries !== prevProps.entries) {
       const expanded = {};
       walk(this.state.treeData, node => {
@@ -213,18 +215,29 @@ class NestedCollection extends React.Component {
           expanded[node.path] = true;
         }
       });
-      const treeData = getTreeData(collection, entries, expanded);
+      const treeData = getTreeData(collection, entries);
+
+      const path = `/${getFilterPath(filterTerm)}`;
+      walk(treeData, node => {
+        if (expanded[node.path] || (this.state.useFilter && path.startsWith(node.path))) {
+          node.expanded = true;
+        }
+      });
       this.setState({ treeData });
     }
   }
 
   onToggle = ({ node, expanded }) => {
-    const treeData = updateNode(this.props.collection, this.state.treeData, node, node => ({
-      ...node,
-      expanded,
-    }));
-
-    this.setState({ treeData });
+    if (!this.state.selected || this.state.selected.path === node.path || expanded) {
+      const treeData = updateNode(this.props.collection, this.state.treeData, node, node => ({
+        ...node,
+        expanded,
+      }));
+      this.setState({ treeData, selected: node, useFilter: false });
+    } else {
+      // don't collapse non selected nodes when clicked
+      this.setState({ selected: node, useFilter: false });
+    }
   };
 
   render() {

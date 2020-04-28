@@ -15,6 +15,7 @@ import { sortByField, filterByField } from '../../actions/entries';
 import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
 import { selectEntriesSort, selectEntriesFilter } from '../../reducers/entries';
 import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
+import { getFilterPath } from '../../routing/helpers';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -97,7 +98,11 @@ class Collection extends React.Component {
 
     let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
     if (newEntryUrl && filterTerm) {
-      newEntryUrl = `${newEntryUrl}?${filterTerm}`;
+      newEntryUrl = getNewEntryUrl(collectionName);
+      const path = getFilterPath(filterTerm);
+      if (path) {
+        newEntryUrl = `${newEntryUrl}?path=${path}`;
+      }
     }
 
     const searchResultKey =
@@ -143,7 +148,12 @@ class Collection extends React.Component {
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
   const { isSearchResults, match, t } = ownProps;
-  const { name, searchTerm, filterTerm } = match.params;
+  const { name, searchTerm } = match.params;
+  let filterTerm = undefined;
+  if ('filterTerm' in match.params) {
+    // handle root filterTerm (e.g. /filter/)
+    filterTerm = match.params.filterTerm || '';
+  }
   const collection = name ? collections.get(name) : collections.first();
   const sort = selectEntriesSort(state.entries, collection.get('name'));
   const sortableFields = selectSortableFields(collection, t);
