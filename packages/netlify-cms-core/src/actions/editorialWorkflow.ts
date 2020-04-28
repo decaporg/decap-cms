@@ -5,17 +5,24 @@ import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { ThunkDispatch } from 'redux-thunk';
 import { Map, List } from 'immutable';
 import { serializeValues } from '../lib/serializeEntryValues';
-import { currentBackend } from '../backend';
+import { currentBackend, slugFromCustomPath } from '../backend';
 import {
   selectPublishedSlugs,
   selectUnpublishedSlugs,
   selectEntry,
   selectUnpublishedEntry,
 } from '../reducers';
+import { selectEditingDraft } from '../reducers/entries';
 import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
-import { loadEntry, entryDeleted, getMediaAssets, createDraftFromEntry } from './entries';
+import {
+  loadEntry,
+  entryDeleted,
+  getMediaAssets,
+  createDraftFromEntry,
+  loadEntries,
+} from './entries';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
@@ -407,10 +414,8 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         }),
       );
       dispatch(unpublishedEntryPersisted(collection, transactionID, newSlug));
-      if (!existingUnpublishedEntry) {
-        dispatch(loadUnpublishedEntry(collection, newSlug));
-      }
       if (entry.get('slug') !== newSlug) {
+        dispatch(loadUnpublishedEntry(collection, newSlug));
         navigateToEntry(collection.get('name'), newSlug);
       }
     } catch (error) {
@@ -512,40 +517,47 @@ export function deleteUnpublishedEntry(collection: string, slug: string) {
   };
 }
 
-export function publishUnpublishedEntry(collection: string, slug: string) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+export function publishUnpublishedEntry(collectionName: string, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const collections = state.collections;
     const backend = currentBackend(state.config);
     const transactionID = uuid();
-    const entry = selectUnpublishedEntry(state, collection, slug);
-    dispatch(unpublishedEntryPublishRequest(collection, slug, transactionID));
-    return backend
-      .publishUnpublishedEntry(entry)
-      .then(() => {
-        // re-load media after entry was published
-        dispatch(loadMedia());
-        dispatch(
-          notifSend({
-            message: { key: 'ui.toast.entryPublished' },
-            kind: 'success',
-            dismissAfter: 4000,
-          }),
-        );
-
-        dispatch(unpublishedEntryPublished(collection, slug, transactionID));
-        return dispatch(loadEntry(collections.get(collection), slug));
-      })
-      .catch((error: Error) => {
-        dispatch(
-          notifSend({
-            message: { key: 'ui.toast.onFailToPublishEntry', details: error },
-            kind: 'danger',
-            dismissAfter: 8000,
-          }),
-        );
-        dispatch(unpublishedEntryPublishError(collection, slug, transactionID));
-      });
+    const entry = selectUnpublishedEntry(state, collectionName, slug);
+    dispatch(unpublishedEntryPublishRequest(collectionName, slug, transactionID));
+    try {
+      await backend.publishUnpublishedEntry(entry);
+      // re-load media after entry was published
+      dispatch(loadMedia());
+      dispatch(
+        notifSend({
+          message: { key: 'ui.toast.entryPublished' },
+          kind: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+      dispatch(unpublishedEntryPublished(collectionName, slug, transactionID));
+      const collection = collections.get(collectionName);
+      if (collection.has('nested')) {
+        dispatch(loadEntries(collection));
+        const newSlug = slugFromCustomPath(collection, entry.get('path'));
+        loadEntry(collection, newSlug);
+        if (slug !== newSlug && selectEditingDraft(state.entryDraft)) {
+          navigateToEntry(collection.get('name'), newSlug);
+        }
+      } else {
+        return dispatch(loadEntry(collection, slug));
+      }
+    } catch (error) {
+      dispatch(
+        notifSend({
+          message: { key: 'ui.toast.onFailToPublishEntry', details: error },
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      dispatch(unpublishedEntryPublishError(collectionName, slug, transactionID));
+    }
   };
 }
 

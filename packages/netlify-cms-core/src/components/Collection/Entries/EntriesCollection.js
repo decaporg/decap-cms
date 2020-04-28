@@ -69,7 +69,7 @@ function mapStateToProps(state, ownProps) {
 
   let entries = selectEntries(state.entries, collection);
 
-  if (filterTerm !== undefined) {
+  if (filterTerm) {
     const path = getFilterPath(filterTerm);
     const collectionFolder = collection.get('folder');
     entries = entries.filter(e => {

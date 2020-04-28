@@ -104,11 +104,19 @@ const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
   return 0;
 };
 
-const slugFromCustomPath = (collection: Collection, customPath: string) => {
+export const slugFromCustomPath = (collection: Collection, customPath: string) => {
   const folderPath = collection.get('folder', '') as string;
   const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
   const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
   return slug;
+};
+
+export const getCustomPath = (collection: Collection, entryDraft: EntryDraft) => {
+  const fieldsMetaData = entryDraft.get('fieldsMetaData');
+  const customPath =
+    fieldsMetaData?.getIn(['path', 'path']) &&
+    join(collection.get('folder') as string, fieldsMetaData.getIn(['path', 'path']));
+  return customPath;
 };
 
 interface AuthStore {
@@ -765,10 +773,7 @@ export class Backend {
       oldSlug?: string;
     };
 
-    const fieldsMetaData = entryDraft.get('fieldsMetaData');
-    const customPath =
-      fieldsMetaData?.getIn(['path', 'path']) &&
-      join(collection.get('folder') as string, fieldsMetaData.getIn(['path', 'path']));
+    const customPath = getCustomPath(collection, entryDraft);
 
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
@@ -803,9 +808,7 @@ export class Backend {
     } else {
       entryObj = {
         path: entryDraft.getIn(['entry', 'path']),
-        slug: customPath
-          ? slugFromCustomPath(collection, customPath)
-          : entryDraft.getIn(['entry', 'slug']),
+        slug: entryDraft.getIn(['entry', 'slug']),
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
         newPath: customPath,
       };

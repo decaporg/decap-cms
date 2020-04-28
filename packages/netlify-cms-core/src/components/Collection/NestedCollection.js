@@ -47,11 +47,15 @@ const TreeNode = props => {
   const collectionName = collection.get('name');
 
   return treeData.map(node => {
+    let to = `/collections/${collectionName}`;
+    if (depth > 0) {
+      to = `${to}/filter${node.path}`;
+    }
     return (
       <React.Fragment key={node.path}>
         <TreeNavLink
           exact
-          to={`/collections/${collectionName}/filter${node.path}`}
+          to={to}
           activeClassName="sidebar-active"
           onClick={() => onToggle({ node, expanded: !node.expanded })}
           depth={depth}
