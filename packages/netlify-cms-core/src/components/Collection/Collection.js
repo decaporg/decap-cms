@@ -34,7 +34,7 @@ const SearchResultHeading = styled.h1`
   ${components.cardTopHeading};
 `;
 
-class Collection extends React.Component {
+export class Collection extends React.Component {
   static propTypes = {
     searchTerm: PropTypes.string,
     collectionName: PropTypes.string,
