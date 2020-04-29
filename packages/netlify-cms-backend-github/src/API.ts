@@ -1045,9 +1045,12 @@ export default class API {
       }
     } else {
       // Entry is already on editorial review workflow - commit to existing branch
-      const { files } = await this.getDifferences(this.branch, await this.getHeadReference(branch));
+      const { files: diffFiles } = await this.getDifferences(
+        this.branch,
+        await this.getHeadReference(branch),
+      );
 
-      const diffs = files.map(diffFromFile);
+      const diffs = diffFiles.map(diffFromFile);
 
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
@@ -1059,7 +1062,7 @@ export default class API {
 
       // rebase the branch before applying new changes
       const rebasedHead = await this.rebaseBranch(branch);
-      const treeFiles = mediaFilesToRemove.concat(diffs);
+      const treeFiles = mediaFilesToRemove.concat(files);
       const changeTree = await this.updateTree(rebasedHead.sha, treeFiles);
       const commit = await this.commit(options.commitMessage, changeTree);
 
