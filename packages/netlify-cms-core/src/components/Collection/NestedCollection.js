@@ -59,6 +59,7 @@ const TreeNode = props => {
           activeClassName="sidebar-active"
           onClick={() => onToggle({ node, expanded: !node.expanded })}
           depth={depth}
+          data-testid={node.path}
         >
           <Icon type={depth === 0 || !node.isDir ? 'write' : 'folder'} />
           <StyledDiv>
@@ -88,7 +89,7 @@ TreeNode.propTypes = {
   onToggle: PropTypes.func.isRequired,
 };
 
-const walk = (treeData, callback) => {
+export const walk = (treeData, callback) => {
   const traverse = children => {
     for (const child of children) {
       callback(child);
@@ -99,7 +100,7 @@ const walk = (treeData, callback) => {
   return traverse(treeData);
 };
 
-const getTreeData = (collection, entries) => {
+export const getTreeData = (collection, entries) => {
   const collectionFolder = collection.get('folder');
   const rootFolder = '/';
   const entriesObj = entries
@@ -170,10 +171,11 @@ const getTreeData = (collection, entries) => {
   };
 
   const treeData = parentsToChildren[''].reduce(reducer, []);
+
   return treeData;
 };
 
-const updateNode = (collection, treeData, node, callback) => {
+export const updateNode = (treeData, node, callback) => {
   let stop = false;
 
   const updater = nodes => {
@@ -194,7 +196,7 @@ const updateNode = (collection, treeData, node, callback) => {
   return updater([...treeData]);
 };
 
-class NestedCollection extends React.Component {
+export class NestedCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list.isRequired,
@@ -212,7 +214,11 @@ class NestedCollection extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { collection, entries, filterTerm } = this.props;
-    if (collection !== prevProps.collection || entries !== prevProps.entries) {
+    if (
+      collection !== prevProps.collection ||
+      entries !== prevProps.entries ||
+      filterTerm !== prevProps.filterTerm
+    ) {
       const expanded = {};
       walk(this.state.treeData, node => {
         if (node.expanded) {
@@ -233,7 +239,7 @@ class NestedCollection extends React.Component {
 
   onToggle = ({ node, expanded }) => {
     if (!this.state.selected || this.state.selected.path === node.path || expanded) {
-      const treeData = updateNode(this.props.collection, this.state.treeData, node, node => ({
+      const treeData = updateNode(this.state.treeData, node, node => ({
         ...node,
         expanded,
       }));
