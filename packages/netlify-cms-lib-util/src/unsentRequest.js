@@ -55,7 +55,9 @@ const signal = controller.signal;
 // This actually performs the built request object
 const performRequest = ensureRequestArg(req => {
   const args = toFetchArguments(req);
-  setTimeout(() => controller.abort(), 60000);
+  if (window.AbortController) {
+    setTimeout(controller.abort(), 60000);
+  }
   return fetch(...args, { signal });
 });
 

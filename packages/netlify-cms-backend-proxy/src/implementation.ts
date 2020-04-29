@@ -93,7 +93,11 @@ export default class ProxyBackend implements Implementation {
     });
 
     const json = await response.json();
-    setTimeout(() => this.controller.abort(), 60000);
+
+    if (window.AbortController) {
+      setTimeout(() => this.controller.abort(), 60000);
+    }
+
     if (response.ok) {
       return json;
     } else {

@@ -225,7 +225,9 @@ export default class GitGateway implements Implementation {
               'Git Gateway',
             );
           }
-          setTimeout(() => controller.abort(), 60000);
+          if (window.AbortController) {
+            setTimeout(() => controller.abort(), 60000);
+          }
 
           const body = await res.json();
 
