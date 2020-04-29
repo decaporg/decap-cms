@@ -69,7 +69,7 @@ function mapStateToProps(state, ownProps) {
 
   let entries = selectEntries(state.entries, collection);
 
-  if (filterTerm) {
+  if (collection.has('nested')) {
     const path = getFilterPath(filterTerm);
     const collectionFolder = collection.get('folder');
     entries = entries.filter(e => {
