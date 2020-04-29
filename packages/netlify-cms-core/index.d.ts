@@ -83,6 +83,12 @@ declare module 'netlify-cms-core' {
     name: CmsBackendType;
     auth_scope?: CmsAuthScope;
     open_authoring?: boolean;
+    repo?: string;
+    branch?: string;
+    api_root?: string;
+    site_domain?: string;
+    base_url?: string;
+    auth_endpoint?: string;
   }
 
   export interface CmsSlug {
