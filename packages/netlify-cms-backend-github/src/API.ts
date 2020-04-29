@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 import semaphore, { Semaphore } from 'semaphore';
-import { initial, last, partial, result, trimStart, trim } from 'lodash';
+import { initial, last, partial, result, trimStart, trim, sortBy } from 'lodash';
 import { oneLine } from 'common-tags';
 import {
   getAllResponses,
@@ -29,6 +29,7 @@ import {
   ApiRequest,
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
+import { dirname } from 'path';
 import { Octokit } from '@octokit/rest';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
@@ -574,7 +575,7 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
-    const diffs = files.map(diffFromFile);
+    const diffs = sortBy(files.map(diffFromFile), d => d.path.length);
     const matchingEntries = diffs.filter(d => d.binary);
     let entry = matchingEntries[0];
     if (matchingEntries.length <= 0) {
@@ -583,7 +584,7 @@ export default class API {
       const commits = await this.getPullRequestCommits(pullRequest.number);
       for (const commit of commits) {
         const { files } = await this.getDifferences(this.branch, commit.sha);
-        const diffs = files.map(diffFromFile);
+        const diffs = sortBy(files.map(diffFromFile), d => d.path.length);
         const matchingEntries = diffs.filter(d => d.binary);
         entry = matchingEntries[0];
         if (entry) {
@@ -1430,13 +1431,50 @@ export default class API {
     );
   }
 
-  async updateTree(baseSha: string, files: { path: string; sha: string | null }[]) {
-    const tree: TreeEntry[] = files.map(file => ({
-      path: trimStart(file.path, '/'),
-      mode: '100644',
-      type: 'blob',
-      sha: file.sha,
-    }));
+  async updateTree(
+    baseSha: string,
+    files: { path: string; sha: string | null; newPath?: string }[],
+    branch = this.branch,
+  ) {
+    const toMove: { from: string; to: string }[] = [];
+    const tree = files.reduce((acc, file) => {
+      const entry = {
+        path: trimStart(file.path, '/'),
+        mode: '100644',
+        type: 'blob',
+        sha: file.sha,
+      } as TreeEntry;
+
+      if (file.newPath) {
+        toMove.push({ from: file.path, to: file.newPath });
+      } else {
+        acc.push(entry);
+      }
+
+      return acc;
+    }, [] as TreeEntry[]);
+
+    for (const { from, to } of toMove) {
+      const sourceDir = dirname(from);
+      const destDir = dirname(to);
+      const files = await this.listFiles(sourceDir, { branch, depth: 100 });
+      for (const file of files) {
+        // delete current path
+        tree.push({
+          path: file.path,
+          mode: '100644',
+          type: 'blob',
+          sha: null,
+        });
+        // create in new path
+        tree.push({
+          path: file.path.replace(sourceDir, destDir),
+          mode: '100644',
+          type: 'blob',
+          sha: file.id,
+        });
+      }
+    }
 
     const newTree = await this.createTree(baseSha, tree);
     return { ...newTree, parentSha: baseSha };

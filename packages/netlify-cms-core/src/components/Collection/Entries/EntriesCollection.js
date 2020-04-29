@@ -79,7 +79,7 @@ function mapStateToProps(state, ownProps) {
       }
 
       // only show immediate children
-      const trimmed = entryPath.substring(path.length);
+      const trimmed = entryPath.substring(path.length + 1);
       return trimmed.split('/').length <= 2;
     });
   }
