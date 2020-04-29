@@ -47,10 +47,16 @@ const TreeNode = props => {
   const collectionName = collection.get('name');
 
   return treeData.map(node => {
+    if (!node.isDir) {
+      return null;
+    }
     let to = `/collections/${collectionName}`;
     if (depth > 0) {
       to = `${to}/filter${node.path}`;
     }
+    const title =
+      depth > 0 ? node.children.find(c => !c.isDir && c.title)?.title || node.title : node.title;
+    const leaf = node.children.length <= 1;
     return (
       <React.Fragment key={node.path}>
         <TreeNavLink
@@ -61,15 +67,15 @@ const TreeNode = props => {
           depth={depth}
           data-testid={node.path}
         >
-          <Icon type={depth === 0 || !node.isDir ? 'write' : 'folder'} />
+          <Icon type="write" />
           <StyledDiv>
-            {node.title}
-            {node.children.length > 0 ? (
+            {title}
+            {leaf ? null : (
               <Icon type="chevron" size="small" direction={node.expanded ? 'down' : 'right'} />
-            ) : null}
+            )}
           </StyledDiv>
         </TreeNavLink>
-        {node.expanded && (
+        {node.expanded && !leaf && (
           <TreeNode
             collection={collection}
             depth={depth + 1}
