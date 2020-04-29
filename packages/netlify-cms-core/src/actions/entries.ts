@@ -653,23 +653,19 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
       const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some(e => isEqual(val, e));
 
       if (List.isList(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(subfields as EntryFields)]
+        const subDefaultValue = list ? []
           : createEmptyDraftData(subfields as EntryFields);
         if (!isEmptyDefaultValue(subDefaultValue)) {
           acc[name] = subDefaultValue;
         }
-        return acc;
       }
 
       if (Map.isMap(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(List([subfields as EntryField]), false)]
+        const subDefaultValue = list ? []
           : createEmptyDraftData(List([subfields as EntryField]));
         if (!isEmptyDefaultValue(subDefaultValue)) {
           acc[name] = subDefaultValue;
         }
-        return acc;
       }
 
       if (defaultValue !== null) {
