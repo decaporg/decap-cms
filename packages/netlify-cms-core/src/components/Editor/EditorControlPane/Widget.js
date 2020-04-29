@@ -219,6 +219,9 @@ export default class Widget extends Component {
   render() {
     const {
       controlComponent,
+      entry,
+      collection,
+      config,
       field,
       value,
       mediaPaths,
@@ -257,6 +260,9 @@ export default class Widget extends Component {
       t,
     } = this.props;
     return React.createElement(controlComponent, {
+      entry,
+      collection,
+      config,
       field,
       value,
       mediaPaths,
