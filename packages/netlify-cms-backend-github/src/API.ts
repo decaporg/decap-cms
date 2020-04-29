@@ -154,6 +154,23 @@ const getTreeFiles = (files: GitHubCompareFiles) => {
   return treeFiles;
 };
 
+type Diff = {
+  binary: boolean;
+  path: string;
+  newFile: boolean;
+  sha: string;
+};
+
+const diffFromFile = (diff: Octokit.ReposCompareCommitsResponseFilesItem): Diff => {
+  return {
+    // binary files don't have a patch attribute
+    binary: !diff.patch || diff.filename.endsWith('.svg'),
+    path: diff.filename,
+    newFile: diff.status === 'added',
+    sha: diff.sha,
+  };
+};
+
 let migrationNotified = false;
 
 export default class API {
@@ -552,29 +569,22 @@ export default class API {
     }
   }
 
-  matchingEntriesFromDiffs(diffs: Octokit.ReposCompareCommitsResponseFilesItem[]) {
-    // media files don't have a patch attribute, except svg files
-    const matchingEntries = diffs
-      .filter(d => d.patch && !d.filename.endsWith('.svg'))
-      .map(f => ({ path: f.filename, newFile: f.status === 'added' }));
-
-    return matchingEntries;
-  }
-
   async retrieveMetadata(contentKey: string) {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-    const { files: diffs } = await this.getDifferences(this.branch, pullRequest.head.sha);
-    const matchingEntries = this.matchingEntriesFromDiffs(diffs);
+    const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
+    const diffs = files.map(diffFromFile);
+    const matchingEntries = diffs.filter(d => d.binary);
     let entry = matchingEntries[0];
     if (matchingEntries.length <= 0) {
       // this can happen if there is an empty diff for some reason
       // we traverse the commits history to infer the entry
       const commits = await this.getPullRequestCommits(pullRequest.number);
       for (const commit of commits) {
-        const { files: diffs } = await this.getDifferences(this.branch, commit.sha);
-        const matchingEntries = this.matchingEntriesFromDiffs(diffs);
+        const { files } = await this.getDifferences(this.branch, commit.sha);
+        const diffs = files.map(diffFromFile);
+        const matchingEntries = diffs.filter(d => d.binary);
         entry = matchingEntries[0];
         if (entry) {
           break;
@@ -587,23 +597,13 @@ export default class API {
         );
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
-    } else if (matchingEntries.length > 1) {
-      // this only works for folder collections
-      const entryBySlug = matchingEntries.filter(e => e.path.includes(slug))[0];
-      entry = entryBySlug || entry;
-      if (!entryBySlug) {
-        console.warn(
-          `Expected 1 matching entry from diff, but received '${matchingEntries.length}'. Matched '${entry.path}'`,
-          JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
-        );
-      }
     }
 
     const { path, newFile } = entry;
 
     const mediaFiles = diffs
-      .filter(d => d.filename !== path)
-      .map(({ filename: path, sha: id }) => ({
+      .filter(d => d.binary)
+      .map(({ path, sha: id }) => ({
         path,
         id,
       }));
@@ -1044,22 +1044,21 @@ export default class API {
       }
     } else {
       // Entry is already on editorial review workflow - commit to existing branch
-      const { files: diffs } = await this.getDifferences(
-        this.branch,
-        await this.getHeadReference(branch),
-      );
+      const { files } = await this.getDifferences(this.branch, await this.getHeadReference(branch));
+
+      const diffs = files.map(diffFromFile);
 
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
-      for (const diff of diffs) {
-        if (!mediaFilesList.some(file => file.path === diff.filename)) {
-          mediaFilesToRemove.push({ path: diff.filename, sha: null });
+      for (const diff of diffs.filter(d => d.binary)) {
+        if (!mediaFilesList.some(file => file.path === diff.path)) {
+          mediaFilesToRemove.push({ path: diff.path, sha: null });
         }
       }
 
       // rebase the branch before applying new changes
       const rebasedHead = await this.rebaseBranch(branch);
-      const treeFiles = mediaFilesToRemove.concat(files);
+      const treeFiles = mediaFilesToRemove.concat(diffs);
       const changeTree = await this.updateTree(rebasedHead.sha, treeFiles);
       const commit = await this.commit(options.commitMessage, changeTree);
 

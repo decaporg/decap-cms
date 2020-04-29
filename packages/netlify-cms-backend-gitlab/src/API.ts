@@ -521,13 +521,6 @@ export default class API {
     }
   }
 
-  moveFile(from: string, to: string, commitMessage: string) {
-    const items = [{ action: CommitAction.MOVE, path: to, oldPath: from }];
-    return this.uploadAndCommit(items, {
-      commitMessage,
-    });
-  }
-
   deleteFile = (path: string, commitMessage: string) => {
     const branch = this.branch;
     // eslint-disable-next-line @typescript-eslint/camelcase
