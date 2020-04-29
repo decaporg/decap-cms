@@ -13,7 +13,7 @@ import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
 import { getFilterPath } from '../../../routing/helpers';
 
-class EntriesCollection extends React.Component {
+export class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     page: PropTypes.number,
@@ -79,8 +79,7 @@ function mapStateToProps(state, ownProps) {
       }
 
       // only show immediate children
-      const trimmed = entryPath.substring(path.length + 1);
-
+      const trimmed = entryPath.substring(path.length);
       return trimmed.split('/').length <= 2;
     });
   }

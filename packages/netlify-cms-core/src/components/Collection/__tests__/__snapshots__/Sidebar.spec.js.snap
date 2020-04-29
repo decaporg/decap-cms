@@ -1,0 +1,353 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sidebar should render nested collection with filterTerm 1`] = `
+<DocumentFragment>
+  .emotion-8 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1);
+  border-radius: 5px;
+  background-color: #fff;
+  width: 250px;
+  padding: 8px 0 12px;
+  position: fixed;
+  max-height: calc(100vh - 112px);
+  overflow: auto;
+}
+
+.emotion-0 {
+  font-size: 23px;
+  font-weight: 600;
+  padding: 0;
+  margin: 18px 12px 12px;
+  color: #313d3e;
+}
+
+.emotion-4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin: 0 12px;
+  position: relative;
+}
+
+.emotion-4 mocked-icon {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  z-index: 2;
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.emotion-2 {
+  background-color: #eff0f4;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 10px 6px 10px 32px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.emotion-2:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #3a69c7;
+}
+
+.emotion-6 {
+  margin: 16px 0 0;
+  list-style: none;
+}
+
+<aside
+    class="emotion-8 emotion-9"
+  >
+    <h2
+      class="emotion-0 emotion-1"
+    >
+      collection.sidebar.collections
+    </h2>
+    <div
+      class="emotion-4 emotion-5"
+    >
+      <mocked-icon
+        size="small"
+        type="search"
+      />
+      <input
+        class="emotion-2 emotion-3"
+        placeholder="collection.sidebar.searchAll"
+        value=""
+      />
+    </div>
+    <ul
+      class="emotion-6 emotion-7"
+    >
+      <li>
+        <nested-collection
+          collection="Map { \\"name\\": \\"posts\\", \\"label\\": \\"Posts\\", \\"nested\\": Map { \\"depth\\": 10 } }"
+          data-testid="posts"
+          filterterm="dir1/dir2"
+        />
+      </li>
+    </ul>
+  </aside>
+</DocumentFragment>
+`;
+
+exports[`Sidebar should render sidebar with a nested collection 1`] = `
+<DocumentFragment>
+  .emotion-8 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1);
+  border-radius: 5px;
+  background-color: #fff;
+  width: 250px;
+  padding: 8px 0 12px;
+  position: fixed;
+  max-height: calc(100vh - 112px);
+  overflow: auto;
+}
+
+.emotion-0 {
+  font-size: 23px;
+  font-weight: 600;
+  padding: 0;
+  margin: 18px 12px 12px;
+  color: #313d3e;
+}
+
+.emotion-4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin: 0 12px;
+  position: relative;
+}
+
+.emotion-4 mocked-icon {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  z-index: 2;
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.emotion-2 {
+  background-color: #eff0f4;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 10px 6px 10px 32px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.emotion-2:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #3a69c7;
+}
+
+.emotion-6 {
+  margin: 16px 0 0;
+  list-style: none;
+}
+
+<aside
+    class="emotion-8 emotion-9"
+  >
+    <h2
+      class="emotion-0 emotion-1"
+    >
+      collection.sidebar.collections
+    </h2>
+    <div
+      class="emotion-4 emotion-5"
+    >
+      <mocked-icon
+        size="small"
+        type="search"
+      />
+      <input
+        class="emotion-2 emotion-3"
+        placeholder="collection.sidebar.searchAll"
+        value=""
+      />
+    </div>
+    <ul
+      class="emotion-6 emotion-7"
+    >
+      <li>
+        <nested-collection
+          collection="Map { \\"name\\": \\"posts\\", \\"label\\": \\"Posts\\", \\"nested\\": Map { \\"depth\\": 10 } }"
+          data-testid="posts"
+        />
+      </li>
+    </ul>
+  </aside>
+</DocumentFragment>
+`;
+
+exports[`Sidebar should render sidebar with a simple collection 1`] = `
+<DocumentFragment>
+  .emotion-10 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1);
+  border-radius: 5px;
+  background-color: #fff;
+  width: 250px;
+  padding: 8px 0 12px;
+  position: fixed;
+  max-height: calc(100vh - 112px);
+  overflow: auto;
+}
+
+.emotion-0 {
+  font-size: 23px;
+  font-weight: 600;
+  padding: 0;
+  margin: 18px 12px 12px;
+  color: #313d3e;
+}
+
+.emotion-4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin: 0 12px;
+  position: relative;
+}
+
+.emotion-4 mocked-icon {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  z-index: 2;
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.emotion-2 {
+  background-color: #eff0f4;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 10px 6px 10px 32px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.emotion-2:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #3a69c7;
+}
+
+.emotion-8 {
+  margin: 16px 0 0;
+  list-style: none;
+}
+
+.emotion-6 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 8px 12px;
+  border-left: 2px solid #fff;
+}
+
+.emotion-6 mocked-icon {
+  margin-right: 8px;
+}
+
+.emotion-6:hover,
+.emotion-6:active,
+.emotion-6.sidebar-active {
+  color: #3a69c7;
+  background-color: #e8f5fe;
+  border-left-color: #4863c6;
+}
+
+<aside
+    class="emotion-10 emotion-11"
+  >
+    <h2
+      class="emotion-0 emotion-1"
+    >
+      collection.sidebar.collections
+    </h2>
+    <div
+      class="emotion-4 emotion-5"
+    >
+      <mocked-icon
+        size="small"
+        type="search"
+      />
+      <input
+        class="emotion-2 emotion-3"
+        placeholder="collection.sidebar.searchAll"
+        value=""
+      />
+    </div>
+    <ul
+      class="emotion-8 emotion-9"
+    >
+      <li>
+        <a
+          class="emotion-6 emotion-7"
+          data-testid="posts"
+          href="/collections/posts"
+        >
+          <mocked-icon
+            type="write"
+          />
+          Posts
+        </a>
+      </li>
+    </ul>
+  </aside>
+</DocumentFragment>
+`;
