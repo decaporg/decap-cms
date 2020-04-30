@@ -388,6 +388,7 @@ export default class ListControl extends React.Component {
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
           onRemove={partial(this.handleRemove, index, key)}
           dragHandleHOC={SortableHandle}
+          data-testid={`styled-list-item-top-bar-${key}`}
         />
         <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
         <ClassNames>
@@ -412,6 +413,7 @@ export default class ListControl extends React.Component {
               controlRef={controlRef}
               validationKey={key}
               collapsed={collapsed}
+              data-testid={`object-control-${key}`}
             />
           )}
         </ClassNames>
