@@ -126,6 +126,9 @@ class EditorControl extends React.Component {
   render() {
     const {
       value,
+      entry,
+      collection,
+      config,
       field,
       fieldsMetaData,
       fieldsErrors,
@@ -217,6 +220,9 @@ class EditorControl extends React.Component {
                 ${styleStrings.labelActive};
               `}
               controlComponent={widget.control}
+              entry={entry}
+              collection={collection}
+              config={config}
               field={field}
               uniqueFieldId={this.uniqueFieldId}
               value={value}
@@ -283,6 +289,7 @@ const mapStateToProps = state => {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
     isFetching: state.search.get('isFetching'),
     queryHits: state.search.get('queryHits'),
+    config: state.config,
     collection,
     entry,
     isLoadingAsset,
