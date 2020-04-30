@@ -125,7 +125,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     this.setState({ ...this.state, [name]: e.target.value });
   };
 
-  handleLogin = e => {
+  handleLogin = async e => {
     e.preventDefault();
 
     const { email, password } = this.state;
@@ -143,17 +143,16 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       return;
     }
 
-    GitGatewayAuthenticationPage.authClient
-      .login(this.state.email, this.state.password, true)
-      .then(user => {
-        this.props.onLogin(user);
-      })
-      .catch(error => {
-        this.setState({
-          errors: { server: error.description || error.msg || error },
-          loggingIn: false,
-        });
+    try {
+      const client = await GitGatewayAuthenticationPage.authClient();
+      const user = await client.login(this.state.email, this.state.password, true);
+      this.props.onLogin(user);
+    } catch (error) {
+      this.setState({
+        errors: { server: error.description || error.msg || error },
+        loggingIn: false,
       });
+    }
   };
 
   render() {
