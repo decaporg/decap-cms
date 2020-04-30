@@ -125,7 +125,7 @@ describe('entries', () => {
     });
   });
   describe('createEmptyDraftData', () => {
-    it('should set default value for list field widget', () => {
+    it('should set an empty list for list field widget', () => {
       const fields = fromJS([
         {
           name: 'images',
@@ -133,10 +133,10 @@ describe('entries', () => {
           field: { name: 'url', widget: 'text', default: 'https://image.png' },
         },
       ]);
-      expect(createEmptyDraftData(fields)).toEqual({ images: ['https://image.png'] });
+      expect(createEmptyDraftData(fields)).toEqual({ images: [] });
     });
 
-    it('should set default values for list fields widget', () => {
+    it('should set an empty list for list fields widget', () => {
       const fields = fromJS([
         {
           name: 'images',
@@ -147,12 +147,10 @@ describe('entries', () => {
           ],
         },
       ]);
-      expect(createEmptyDraftData(fields)).toEqual({
-        images: [{ title: 'default image', url: 'https://image.png' }],
-      });
+      expect(createEmptyDraftData(fields)).toEqual({ images: [] });
     });
 
-    it('should not set empty value for list fields widget', () => {
+    it('should set an empty list for list fields widget', () => {
       const fields = fromJS([
         {
           name: 'images',
@@ -163,7 +161,7 @@ describe('entries', () => {
           ],
         },
       ]);
-      expect(createEmptyDraftData(fields)).toEqual({});
+      expect(createEmptyDraftData(fields)).toEqual({ images: [] });
     });
 
     it('should set default value for object field widget', () => {
