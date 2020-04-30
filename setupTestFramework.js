@@ -4,6 +4,13 @@ import fetch from 'node-fetch';
 import * as emotion from 'emotion';
 import { createSerializer } from 'jest-emotion';
 
+jest.mock('path', () => {
+  const actual = jest.requireActual('path');
+  return {
+    ...actual.posix,
+  };
+});
+
 window.fetch = fetch;
 window.URL.createObjectURL = jest.fn();
 expect.addSnapshotSerializer(createSerializer(emotion));
