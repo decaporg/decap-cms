@@ -5,6 +5,7 @@ import { Async as AsyncSelect } from 'react-select';
 import { find, isEmpty, last, debounce } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 
 function optionToString(option) {
   return option && option.value ? option.value : '';
@@ -72,7 +73,7 @@ export default class RelationControl extends React.Component {
       if (value) {
         const listValue = List.isList(value) ? value : List([value]);
         listValue.forEach(val => {
-          const hit = hits.find(i => this.parseNestedFields(i.data, valueField) === val);
+          const hit = hits.find(hit => this.parseNestedFields(hit, valueField) === val);
           if (hit) {
             onChange(value, {
               [field.get('name')]: {
@@ -113,17 +114,15 @@ export default class RelationControl extends React.Component {
     }
   };
 
-  parseNestedFields = (targetObject, field) => {
-    const nestedField = field.split('.');
-    let f = targetObject;
-    for (let i = 0; i < nestedField.length; i++) {
-      f = f[nestedField[i]];
-      if (!f) break;
+  parseNestedFields = (hit, field) => {
+    const templateVars = stringTemplate.extractTemplateVars(field);
+    // wrap non template fields with a template
+    if (templateVars.length <= 0) {
+      field = `{{fields.${field}}}`;
     }
-    if (typeof f === 'object' && f !== null) {
-      return JSON.stringify(f);
-    }
-    return f;
+    const data = stringTemplate.addFileTemplateFields(hit.path, fromJS(hit.data));
+    const value = stringTemplate.compileStringTemplate(field, null, hit.slug, data);
+    return value;
   };
 
   parseHitOptions = hits => {
@@ -136,14 +135,14 @@ export default class RelationControl extends React.Component {
       if (List.isList(displayField)) {
         labelReturn = displayField
           .toJS()
-          .map(key => this.parseNestedFields(hit.data, key))
+          .map(key => this.parseNestedFields(hit, key))
           .join(' ');
       } else {
-        labelReturn = this.parseNestedFields(hit.data, displayField);
+        labelReturn = this.parseNestedFields(hit, displayField);
       }
       return {
         data: hit.data,
-        value: this.parseNestedFields(hit.data, valueField),
+        value: this.parseNestedFields(hit, valueField),
         label: labelReturn,
       };
     });

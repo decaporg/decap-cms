@@ -14,9 +14,11 @@ import {
   EntryMap,
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
-import { keyToPathArray } from '../lib/stringTemplate';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { summaryFormatter } from '../lib/formatters';
 import { Backend } from '../backend';
+
+const { keyToPathArray } = stringTemplate;
 
 const collections = (state = null, action: CollectionsAction) => {
   switch (action.type) {

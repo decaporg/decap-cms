@@ -35,7 +35,7 @@ import {
   blobToFileObj,
 } from 'netlify-cms-lib-util';
 import { status } from './constants/publishModes';
-import { extractTemplateVars, dateParsers } from './lib/stringTemplate';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 import {
   Collection,
   EntryMap,
@@ -49,6 +49,8 @@ import {
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
+
+const { extractTemplateVars, dateParsers } = stringTemplate;
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -76,7 +78,7 @@ function getEntryBackupKey(collectionName?: string, slug?: string) {
   return `${baseKey}.${collectionName}${suffix}`;
 }
 
-const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
+export const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
   searchFields.reduce((acc, field) => {
     const nestedFields = field.split('.');
     let f = entry.data;
@@ -84,7 +86,15 @@ const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
       f = f[nestedFields[i]];
       if (!f) break;
     }
-    return f ? `${acc} ${f}` : acc;
+
+    if (f) {
+      return `${acc} ${f}`;
+    } else if (entry[nestedFields[0] as keyof EntryValue]) {
+      // allows searching using entry.slug/entry.path etc.
+      return `${acc} ${entry[nestedFields[0] as keyof EntryValue]}`;
+    } else {
+      return acc;
+    }
   }, '');
 
 const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) => {

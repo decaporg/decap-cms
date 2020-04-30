@@ -309,20 +309,39 @@ describe('formatters', () => {
       );
     });
 
-    it('should return preview url based on preview_path', () => {
+    it('should return preview url based on preview_path and preview_path_date_field', () => {
       const date = new Date('2020-01-02T13:28:27.679Z');
       expect(
         previewUrlFormatter(
           'https://www.example.com',
           Map({
             preview_path: '{{year}}/{{slug}}/{{title}}/{{fields.slug}}',
-            preview_path_date_field: 'date',
+            preview_path_date_field: 'customDateField',
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ customDateField: date, slug: 'entrySlug', title: 'title' }) }),
+        ),
+      ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
+    });
+
+    it('should infer date field when preview_path_date_field is not configured', () => {
+      const { selectInferedField } = require('../../reducers/collections');
+      selectInferedField.mockReturnValue('date');
+
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          fromJS({
+            name: 'posts',
+            preview_path: '{{year}}/{{month}}/{{slug}}/{{title}}/{{fields.slug}}',
           }),
           'backendSlug',
           slugConfig,
           Map({ data: Map({ date, slug: 'entrySlug', title: 'title' }) }),
         ),
-      ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
+      ).toBe('https://www.example.com/2020/01/backendslug/title/entryslug');
     });
 
     it('should compile filename and extension template values', () => {

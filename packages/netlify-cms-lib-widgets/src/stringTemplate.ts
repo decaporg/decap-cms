@@ -1,7 +1,10 @@
 import moment from 'moment';
 import { Map } from 'immutable';
-import { selectInferedField } from '../reducers/collections';
-import { EntryMap, Collection } from '../types/redux';
+import { basename, extname } from 'path';
+
+const FIELD_PREFIX = 'fields.';
+const templateContentPattern = '[^}{]+';
+const templateVariablePattern = `{{(${templateContentPattern})}}`;
 
 // prepends a Zero if the date has only 1 digit
 function formatDate(date: number) {
@@ -17,11 +20,19 @@ export const dateParsers: Record<string, (date: Date) => string> = {
   second: (date: Date) => formatDate(date.getUTCSeconds()),
 };
 
-export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
+export function parseDateFromEntry(entry: Map<string, unknown>, dateFieldName?: string | null) {
+  if (!dateFieldName) {
+    return;
+  }
 
-const FIELD_PREFIX = 'fields.';
-const templateContentPattern = '[^}{]+';
-const templateVariablePattern = `{{(${templateContentPattern})}}`;
+  const dateValue = entry.getIn(['data', dateFieldName]);
+  const dateMoment = dateValue && moment(dateValue);
+  if (dateMoment && dateMoment.isValid()) {
+    return dateMoment.toDate();
+  }
+}
+
+export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
 
 export const keyToPathArray = (key?: string) => {
   if (!key) {
@@ -56,20 +67,11 @@ function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
     return;
   }
   const fieldName = key.substring(FIELD_PREFIX.length);
-  return data.getIn(keyToPathArray(fieldName), '') as string;
-}
-
-export function parseDateFromEntry(entry: EntryMap, collection: Collection, fieldName?: string) {
-  const dateFieldName = fieldName || selectInferedField(collection, 'date');
-  if (!dateFieldName) {
-    return;
+  const value = data.getIn(keyToPathArray(fieldName));
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value);
   }
-
-  const dateValue = entry.getIn(['data', dateFieldName]);
-  const dateMoment = dateValue && moment(dateValue);
-  if (dateMoment && dateMoment.isValid()) {
-    return dateMoment.toDate();
-  }
+  return value;
 }
 
 export function compileStringTemplate(
@@ -130,3 +132,18 @@ export function extractTemplateVars(template: string) {
     return match ? match[0] : '';
   });
 }
+
+export const addFileTemplateFields = (entryPath: string, fields: Map<string, string>) => {
+  if (!entryPath) {
+    return fields;
+  }
+
+  const extension = extname(entryPath);
+  const filename = basename(entryPath, extension);
+  fields = fields.withMutations(map => {
+    map.set('filename', filename);
+    map.set('extension', extension === '' ? extension : extension.substr(1));
+  });
+
+  return fields;
+};

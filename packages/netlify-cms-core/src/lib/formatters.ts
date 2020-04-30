@@ -1,16 +1,24 @@
 import { Map } from 'immutable';
 import { flow, partialRight, trimEnd, trimStart } from 'lodash';
 import { sanitizeSlug } from './urlHelper';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 import {
+  selectIdentifier,
+  selectField,
+  COMMIT_AUTHOR,
+  COMMIT_DATE,
+  selectInferedField,
+} from '../reducers/collections';
+import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
+import { stripIndent } from 'common-tags';
+
+const {
   compileStringTemplate,
   parseDateFromEntry,
   SLUG_MISSING_REQUIRED_DATE,
   keyToPathArray,
-} from './stringTemplate';
-import { selectIdentifier, selectField, COMMIT_AUTHOR, COMMIT_DATE } from '../reducers/collections';
-import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
-import { stripIndent } from 'common-tags';
-import { basename, fileExtension } from 'netlify-cms-lib-util';
+  addFileTemplateFields,
+} = stringTemplate;
 
 const commitMessageTemplates = Map({
   create: 'Create {{collection}} “{{slug}}”',
@@ -122,21 +130,6 @@ export const slugFormatter = (
   }
 };
 
-const addFileTemplateFields = (entryPath: string, fields: Map<string, string>) => {
-  if (!entryPath) {
-    return fields;
-  }
-
-  const extension = fileExtension(entryPath);
-  const filename = basename(entryPath, `.${extension}`);
-  fields = fields.withMutations(map => {
-    map.set('filename', filename);
-    map.set('extension', extension);
-  });
-
-  return fields;
-};
-
 export const previewUrlFormatter = (
   baseUrl: string,
   collection: Collection,
@@ -168,7 +161,9 @@ export const previewUrlFormatter = (
   const pathTemplate = collection.get('preview_path') as string;
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields);
-  const date = parseDateFromEntry(entry, collection, collection.get('preview_path_date_field'));
+  const dateFieldName =
+    collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
+  const date = parseDateFromEntry((entry as unknown) as Map<string, unknown>, dateFieldName);
 
   // Prepare and sanitize slug variables only, leave the rest of the
   // `preview_path` template as is.
@@ -201,7 +196,11 @@ export const summaryFormatter = (
   collection: Collection,
 ) => {
   let entryData = entry.get('data');
-  const date = parseDateFromEntry(entry, collection) || null;
+  const date =
+    parseDateFromEntry(
+      (entry as unknown) as Map<string, unknown>,
+      selectInferedField(collection, 'date'),
+    ) || null;
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
 
   entryData = addFileTemplateFields(entry.get('path'), entryData);
@@ -231,7 +230,11 @@ export const folderFormatter = (
   let fields = (entry.get('data') as Map<string, string>).set(folderKey, defaultFolder);
   fields = addFileTemplateFields(entry.get('path'), fields);
 
-  const date = parseDateFromEntry(entry, collection) || null;
+  const date =
+    parseDateFromEntry(
+      (entry as unknown) as Map<string, unknown>,
+      selectInferedField(collection, 'date'),
+    ) || null;
   const identifier = fields.getIn(keyToPathArray(selectIdentifier(collection) as string));
   const processSegment = getProcessSegment(slugConfig);
 
