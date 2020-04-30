@@ -136,34 +136,6 @@ describe('entries', () => {
       expect(createEmptyDraftData(fields)).toEqual({ images: [] });
     });
 
-    it('should set an empty list for list fields widget', () => {
-      const fields = fromJS([
-        {
-          name: 'images',
-          widget: 'list',
-          fields: [
-            { name: 'title', widget: 'text', default: 'default image' },
-            { name: 'url', widget: 'text', default: 'https://image.png' },
-          ],
-        },
-      ]);
-      expect(createEmptyDraftData(fields)).toEqual({ images: [] });
-    });
-
-    it('should set an empty list for list fields widget', () => {
-      const fields = fromJS([
-        {
-          name: 'images',
-          widget: 'list',
-          fields: [
-            { name: 'title', widget: 'text' },
-            { name: 'url', widget: 'text' },
-          ],
-        },
-      ]);
-      expect(createEmptyDraftData(fields)).toEqual({ images: [] });
-    });
-
     it('should set default value for object field widget', () => {
       const fields = fromJS([
         {
