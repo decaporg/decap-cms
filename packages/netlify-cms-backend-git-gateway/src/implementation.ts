@@ -33,14 +33,16 @@ import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
 import { getClient, Client } from './netlify-lfs-client';
 
+type NetlifyIdentity = {
+  logout: () => void;
+  currentUser: () => User & { logout: () => void };
+  on: (event: string, args: unknown) => void;
+  init: () => void;
+};
+
 declare global {
   interface Window {
-    netlifyIdentity?: {
-      gotrue: GoTrue;
-      logout: () => void;
-      on: (event: string, args: unknown) => void;
-      init: () => void;
-    };
+    netlifyIdentity?: NetlifyIdentity;
   }
 }
 
@@ -81,7 +83,7 @@ if (window.netlifyIdentity) {
   let initialized = false;
   initPromise = Promise.race([
     new Promise(resolve => {
-      window.netlifyIdentity!.on('init', () => {
+      window.netlifyIdentity?.on('init', () => {
         initialized = true;
         resolve();
       });
@@ -89,7 +91,7 @@ if (window.netlifyIdentity) {
     new Promise(resolve => setTimeout(resolve, 2500)).then(() => {
       if (!initialized) {
         console.log('Manually initializing identity widget');
-        window.netlifyIdentity!.init();
+        window.netlifyIdentity?.init();
       }
     }),
   ]);
@@ -112,7 +114,7 @@ export default class GitGateway implements Implementation {
   netlifyLargeMediaURL: string;
   backendType: string | null;
   apiUrl: string;
-  authClient?: GoTrue;
+  authClient?: NetlifyIdentity | GoTrue;
   backend: GitHubBackend | GitLabBackend | BitbucketBackend | null;
   acceptRoles?: string[];
   tokenPromise?: () => Promise<string>;
@@ -166,7 +168,7 @@ export default class GitGateway implements Implementation {
     }
     await initPromise;
     const authClient = window.netlifyIdentity
-      ? window.netlifyIdentity.gotrue
+      ? window.netlifyIdentity
       : new GoTrue({ APIUrl: this.apiUrl });
     this.authClient = authClient;
     return authClient;
@@ -279,9 +281,6 @@ export default class GitGateway implements Implementation {
   }
 
   async logout() {
-    if (window.netlifyIdentity) {
-      return window.netlifyIdentity.logout();
-    }
     const client = await this.getAuthClient();
     const user = client.currentUser();
     if (user) {
