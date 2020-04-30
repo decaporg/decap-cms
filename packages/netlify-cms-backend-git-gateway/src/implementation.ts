@@ -35,9 +35,15 @@ import { getClient, Client } from './netlify-lfs-client';
 
 type NetlifyIdentity = {
   logout: () => void;
-  currentUser: () => User & { logout: () => void };
+  currentUser: () => User;
   on: (event: string, args: unknown) => void;
   init: () => void;
+};
+
+type AuthClient = {
+  logout: () => void;
+  currentUser: () => unknown;
+  login?(email: string, password: string, remember?: boolean): Promise<unknown>;
 };
 
 declare global {
@@ -114,7 +120,7 @@ export default class GitGateway implements Implementation {
   netlifyLargeMediaURL: string;
   backendType: string | null;
   apiUrl: string;
-  authClient?: NetlifyIdentity | GoTrue;
+  authClient?: AuthClient;
   backend: GitHubBackend | GitLabBackend | BitbucketBackend | null;
   acceptRoles?: string[];
   tokenPromise?: () => Promise<string>;
@@ -167,11 +173,25 @@ export default class GitGateway implements Implementation {
       return this.authClient;
     }
     await initPromise;
-    const authClient = window.netlifyIdentity
-      ? window.netlifyIdentity
-      : new GoTrue({ APIUrl: this.apiUrl });
-    this.authClient = authClient;
-    return authClient;
+    if (window.netlifyIdentity) {
+      this.authClient = {
+        logout: () => window.netlifyIdentity?.logout(),
+        currentUser: () => window.netlifyIdentity?.currentUser(),
+      };
+    } else {
+      const goTrue = new GoTrue({ APIUrl: this.apiUrl });
+      this.authClient = {
+        logout: () => {
+          const user = goTrue.currentUser();
+          if (user) {
+            return user.logout();
+          }
+        },
+        currentUser: () => goTrue.currentUser(),
+        login: goTrue.login.bind(goTrue),
+      };
+    }
+    return this.authClient;
   }
 
   requestFunction = (req: ApiRequest) =>
@@ -282,10 +302,7 @@ export default class GitGateway implements Implementation {
 
   async logout() {
     const client = await this.getAuthClient();
-    const user = client.currentUser();
-    if (user) {
-      return user.logout();
-    }
+    return client.logout();
   }
   getToken() {
     return this.tokenPromise!();
