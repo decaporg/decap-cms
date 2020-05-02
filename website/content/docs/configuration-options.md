@@ -32,7 +32,7 @@ The `publish_mode` option allows you to enable "Editorial Workflow" mode for mor
 
 **Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
-You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
+You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file (for the admin pages, usually in the \`/admin\` folder, not the whole site):
 
 ```yaml
 publish_mode: editorial_workflow
@@ -156,8 +156,7 @@ show_preview_links: false
 
 ## Slug Type
 
-The `slug` option allows you to change how filenames for entries are created and sanitized.
-It also applies to filenames of media inserted via the default media library.  
+The `slug` option allows you to change how filenames for entries are created and sanitized. It also applies to filenames of media inserted via the default media library.\
 For modifying the actual data in a slug, see the per-collection option below.
 
 `slug` accepts multiple options:
