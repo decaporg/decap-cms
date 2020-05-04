@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.12.0...netlify-cms-locales@1.13.0) (2020-05-04)
+
+
+### Bug Fixes
+
+* locale japanese ([#3668](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3668)) ([5b1353d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/5b1353d75580ffd5968f2ed5f1978864bdf13e54))
+
+
+### Features
+
+* **locale:** update PT language ([#3669](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3669)) ([b5a242e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/b5a242ec8ed627e7f5e2ce8af454dd1dda1f71cc))
+
+
+
+
+
 # [1.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.11.0...netlify-cms-locales@1.12.0) (2020-04-20)
 
 

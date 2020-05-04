@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.5.2...netlify-cms-widget-relation@2.6.0) (2020-05-04)
+
+
+### Features
+
+* **widget-relation:** string templates support ([#3659](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/3659)) ([213ae86](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/213ae86b54d02f5fc79fe11113507587ed062ff2))
+
+
+
+
+
 ## [2.5.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.5.1...netlify-cms-widget-relation@2.5.2) (2020-02-14)
 
 

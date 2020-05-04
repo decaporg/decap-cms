@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.26.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.25.0...netlify-cms-core@2.26.0) (2020-05-04)
+
+
+### Bug Fixes
+
+* sidebar icon shrinking when label wraps ([#3653](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3653)) ([a9d0699](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a9d0699a82a25d79dd99af4f1ed9643ce7bba220))
+* support common backend configuration options from docs in ts types ([#3674](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3674)) ([2580251](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/25802512087854e23333837d48a284832d9d50b2))
+* **sort:** don't clear sort data on entries request ([#3648](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3648)) ([cf57284](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/cf57284f40141712e3265992bdf6966a5c81f838))
+
+
+### Features
+
+* **widget-relation:** string templates support ([#3659](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3659)) ([213ae86](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/213ae86b54d02f5fc79fe11113507587ed062ff2))
+* add entry, collection and config prop to control widget ([#3672](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3672)) ([3e5ff71](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/3e5ff7184604fd1f18a01c7223d0dc5d199f0eac))
+* add hide property to collections ([#3618](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3618)) ([#3643](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3643)) ([88b6c63](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/88b6c633afb4ba50fe46c0fef753bd209f832e67))
+
+
+
+
+
 # [2.25.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.24.4...netlify-cms-core@2.25.0) (2020-04-20)
 
 
