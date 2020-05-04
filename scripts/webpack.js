@@ -116,6 +116,9 @@ const baseConfig = ({ target = isProduction ? 'umd' : 'umddir' } = {}) => ({
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
+    alias: {
+      moment$: 'moment/moment.js',
+    },
   },
   plugins: Object.values(plugins()).map(plugin => plugin()),
   devtool: isTest ? '' : 'source-map',
