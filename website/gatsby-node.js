@@ -49,7 +49,7 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 };
 
-const pad = n => (n >= 10 ? n : `0${n}`);
+const pad = (n) => (n >= 10 ? n : `0${n}`);
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -88,4 +88,15 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       value: relativePath,
     });
   }
+};
+
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.json'],
+      alias: {
+        moment$: 'moment/moment.js',
+      },
+    },
+  });
 };
