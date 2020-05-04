@@ -5,13 +5,15 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { dirname, sep } from 'path';
-import { addFileTemplateFields } from '../../lib/formatters';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 import { selectEntries } from '../../reducers/entries';
 import { Icon, colors } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { getFilterPath } from '../../routing/helpers';
+
+const { addFileTemplateFields } = stringTemplate;
 
 const StyledDiv = styled.div`
   display: flex;
