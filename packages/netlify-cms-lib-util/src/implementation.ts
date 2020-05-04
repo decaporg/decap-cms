@@ -26,13 +26,16 @@ export interface UnpublishedEntryMediaFile {
 }
 
 export interface ImplementationEntry {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: string;
   file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
-  slug?: string;
-  mediaFiles?: ImplementationMediaFile[];
-  metaData?: { collection: string; status: string };
-  isModification?: boolean;
+}
+
+export interface UnpublishedEntry {
+  slug: string;
+  collection: string;
+  status: string;
+  files: { id: string; path: string; newFile: boolean }[];
+  timestamp: string;
 }
 
 export interface Map {
@@ -116,8 +119,24 @@ export interface Implementation {
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFile: (path: string, commitMessage: string) => Promise<void>;
 
-  unpublishedEntries: () => Promise<ImplementationEntry[]>;
-  unpublishedEntry: (collection: string, slug: string) => Promise<ImplementationEntry>;
+  unpublishedEntries: () => Promise<string[]>;
+  unpublishedEntry: (args: {
+    id?: string;
+    collection?: string;
+    slug?: string;
+  }) => Promise<UnpublishedEntry>;
+  unpublishedEntryDataFile: (
+    collection: string,
+    slug: string,
+    path: string,
+    id: string,
+  ) => Promise<string>;
+  unpublishedEntryMediaFile: (
+    collection: string,
+    slug: string,
+    path: string,
+    id: string,
+  ) => Promise<ImplementationMediaFile>;
   updateUnpublishedEntryStatus: (
     collection: string,
     slug: string,
@@ -155,12 +174,6 @@ export type ImplementationFile = {
   path: string;
 };
 
-type Metadata = {
-  objects: { entry: { path: string } };
-  collection: string;
-  status: string;
-};
-
 type ReadFile = (
   path: string,
   id: string | null | undefined,
@@ -168,10 +181,6 @@ type ReadFile = (
 ) => Promise<string | Blob>;
 
 type ReadFileMetadata = (path: string, id: string | null | undefined) => Promise<FileMetadata>;
-
-type ReadUnpublishedFile = (
-  key: string,
-) => Promise<{ metaData: Metadata; fileData: string; isModification: boolean; slug: string }>;
 
 const fetchFiles = async (
   files: ImplementationFile[],
@@ -206,47 +215,6 @@ const fetchFiles = async (
   ) as Promise<ImplementationEntry[]>;
 };
 
-const fetchUnpublishedFiles = async (
-  keys: string[],
-  readUnpublishedFile: ReadUnpublishedFile,
-  apiName: string,
-) => {
-  const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-  const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
-  keys.forEach(key => {
-    promises.push(
-      new Promise(resolve =>
-        sem.take(() =>
-          readUnpublishedFile(key)
-            .then(data => {
-              if (data === null || data === undefined) {
-                resolve({ error: true });
-                sem.leave();
-              } else {
-                resolve({
-                  slug: data.slug,
-                  file: { path: data.metaData.objects.entry.path, id: null },
-                  data: data.fileData,
-                  metaData: data.metaData,
-                  isModification: data.isModification,
-                });
-                sem.leave();
-              }
-            })
-            .catch((error = true) => {
-              sem.leave();
-              console.error(`failed to load file from ${apiName}: ${key}`);
-              resolve({ error });
-            }),
-        ),
-      ),
-    );
-  });
-  return Promise.all(promises).then(loadedEntries =>
-    loadedEntries.filter(loadedEntry => !(loadedEntry as { error: boolean }).error),
-  ) as Promise<ImplementationEntry[]>;
-};
-
 export const entriesByFolder = async (
   listFiles: () => Promise<ImplementationFile[]>,
   readFile: ReadFile,
@@ -266,15 +234,10 @@ export const entriesByFiles = async (
   return fetchFiles(files, readFile, readFileMetadata, apiName);
 };
 
-export const unpublishedEntries = async (
-  listEntriesKeys: () => Promise<string[]>,
-  readUnpublishedFile: ReadUnpublishedFile,
-  apiName: string,
-) => {
+export const unpublishedEntries = async (listEntriesKeys: () => Promise<string[]>) => {
   try {
     const keys = await listEntriesKeys();
-    const entries = await fetchUnpublishedFiles(keys, readUnpublishedFile, apiName);
-    return entries;
+    return keys;
   } catch (error) {
     if (error.message === 'Not Found') {
       return Promise.resolve([]);

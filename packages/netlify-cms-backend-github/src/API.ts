@@ -156,7 +156,6 @@ const getTreeFiles = (files: GitHubCompareFiles) => {
 };
 
 type Diff = {
-  binary: boolean;
   path: string;
   newFile: boolean;
   sha: string;
@@ -164,8 +163,6 @@ type Diff = {
 
 const diffFromFile = (diff: Octokit.ReposCompareCommitsResponseFilesItem): Diff => {
   return {
-    // binary files don't have a patch attribute
-    binary: !diff.patch || diff.filename.endsWith('.svg'),
     path: diff.filename,
     newFile: diff.status === 'added',
     sha: diff.sha,
@@ -570,48 +567,16 @@ export default class API {
     }
   }
 
-  async retrieveMetadata(contentKey: string) {
+  async retrieveUnpublishedEntryData(contentKey: string) {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
     const diffs = sortBy(files.map(diffFromFile), d => d.path.length);
-    const matchingEntries = diffs.filter(d => d.binary);
-    let entry = matchingEntries[0];
-    if (matchingEntries.length <= 0) {
-      // this can happen if there is an empty diff for some reason
-      // we traverse the commits history to infer the entry
-      const commits = await this.getPullRequestCommits(pullRequest.number);
-      for (const commit of commits) {
-        const { files } = await this.getDifferences(this.branch, commit.sha);
-        const diffs = sortBy(files.map(diffFromFile), d => d.path.length);
-        const matchingEntries = diffs.filter(d => d.binary);
-        entry = matchingEntries[0];
-        if (entry) {
-          break;
-        }
-      }
-      if (!entry) {
-        console.error(
-          'Unable to locate entry from diff',
-          JSON.stringify({ branch, pullRequest, diffs, matchingEntries }),
-        );
-        throw new EditorialWorkflowError('content is not under editorial workflow', true);
-      }
-    }
-
-    const { path, newFile } = entry;
-
-    const mediaFiles = diffs
-      .filter(d => d.binary)
-      .map(({ path, sha: id }) => ({
-        path,
-        id,
-      }));
     const label = pullRequest.labels.find(l => isCMSLabel(l.name)) as { name: string };
     const status = labelToStatus(label.name);
-    const timeStamp = pullRequest.updated_at;
-    return { branch, collection, slug, path, status, newFile, mediaFiles, timeStamp, pullRequest };
+    const timestamp = pullRequest.updated_at;
+    return { collection, slug, status, files: diffs.map(d => ({ ...d, id: d.sha })), timestamp };
   }
 
   async readFile(
@@ -710,45 +675,6 @@ export default class API {
       } else {
         throw err;
       }
-    }
-  }
-
-  async readUnpublishedBranchFile(contentKey: string) {
-    try {
-      const {
-        branch,
-        collection,
-        slug,
-        path,
-        status,
-        newFile,
-        mediaFiles,
-        timeStamp,
-      } = await this.retrieveMetadata(contentKey);
-
-      const repoURL = this.useOpenAuthoring
-        ? `/repos/${contentKey
-            .split('/')
-            .slice(0, 2)
-            .join('/')}`
-        : this.repoURL;
-
-      const fileData = (await this.readFile(path, null, { branch, repoURL })) as string;
-
-      return {
-        slug,
-        metaData: {
-          branch,
-          collection,
-          objects: { entry: { path, mediaFiles } },
-          status,
-          timeStamp,
-        },
-        fileData,
-        isModification: !newFile,
-      };
-    } catch (e) {
-      throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
   }
 
@@ -1054,7 +980,7 @@ export default class API {
 
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
-      for (const diff of diffs.filter(d => d.binary)) {
+      for (const diff of diffs) {
         if (!mediaFilesList.some(file => file.path === diff.path)) {
           mediaFilesToRemove.push({ path: diff.path, sha: null });
         }

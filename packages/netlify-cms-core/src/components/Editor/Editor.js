@@ -438,7 +438,7 @@ function mapStateToProps(state, ownProps) {
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unPublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
   const publishedEntry = selectEntry(state, collectionName, slug);
-  const currentStatus = unPublishedEntry && unPublishedEntry.getIn(['metaData', 'status']);
+  const currentStatus = unPublishedEntry && unPublishedEntry.get('status');
   const deployPreview = selectDeployPreview(state, collectionName, slug);
   const localBackup = entryDraft.get('localBackup');
   const draftKey = entryDraft.get('key');

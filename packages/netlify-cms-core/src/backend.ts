@@ -50,6 +50,7 @@ import {
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
+import { UnpublishedEntry } from 'netlify-cms-lib-util/src/implementation';
 
 const { extractTemplateVars, dateParsers } = stringTemplate;
 
@@ -277,12 +278,14 @@ export class Backend {
   async entryExist(collection: Collection, path: string, slug: string, useWorkflow: boolean) {
     const unpublishedEntry =
       useWorkflow &&
-      (await this.implementation.unpublishedEntry(collection.get('name'), slug).catch(error => {
-        if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
-          return Promise.resolve(false);
-        }
-        return Promise.reject(error);
-      }));
+      (await this.implementation
+        .unpublishedEntry({ collection: collection.get('name'), slug })
+        .catch(error => {
+          if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+            return Promise.resolve(false);
+          }
+          return Promise.reject(error);
+        }));
 
     if (unpublishedEntry) return unpublishedEntry;
 
@@ -613,35 +616,68 @@ export class Backend {
     };
   }
 
-  unpublishedEntries(collections: Collections) {
-    return this.implementation.unpublishedEntries!()
-      .then(entries =>
-        entries.map(loadedEntry => {
-          const collectionName = loadedEntry.metaData!.collection;
+  async processUnpublishedEntry(
+    collection: Collection,
+    entryData: UnpublishedEntry,
+    withMediaFiles: boolean,
+  ) {
+    const { slug } = entryData;
+    const extension = selectFolderEntryExtension(collection);
+    const dataFiles = entryData.files.filter(f => f.path.endsWith(extension));
+    const entryFile = dataFiles[0];
+    const data = await this.implementation.unpublishedEntryDataFile(
+      collection.get('name'),
+      entryData.slug,
+      entryFile.path,
+      entryFile.id,
+    );
+    const mediaFiles: MediaFile[] = [];
+    if (withMediaFiles) {
+      const nonDataFiles = entryData.files.filter(f => !f.path.endsWith(extension));
+      const files = await Promise.all(
+        nonDataFiles.map(f =>
+          this.implementation!.unpublishedEntryMediaFile(
+            collection.get('name'),
+            slug,
+            f.path,
+            f.id,
+          ),
+        ),
+      );
+      mediaFiles.push(...files);
+    }
+    const entry = createEntry(collection.get('name'), slug, entryFile.path, {
+      raw: data,
+      isModification: entryFile.newFile,
+      label: collection && selectFileEntryLabel(collection, slug),
+      mediaFiles,
+      updatedOn: entryData.timestamp,
+      status: entryData.status,
+    });
+
+    const entryWithFormat = this.entryWithFormat(collection)(entry);
+    return entryWithFormat;
+  }
+
+  async unpublishedEntries(collections: Collections) {
+    const ids = await this.implementation.unpublishedEntries!();
+    const entries = (
+      await Promise.all(
+        ids.map(async id => {
+          const entryData = await this.implementation.unpublishedEntry({ id });
+          const collectionName = entryData.collection;
           const collection = collections.find(c => c.get('name') === collectionName);
-          const entry = createEntry(collectionName, loadedEntry.slug, loadedEntry.file.path, {
-            raw: loadedEntry.data,
-            isModification: loadedEntry.isModification,
-            label: collection && selectFileEntryLabel(collection, loadedEntry.slug!),
-          });
-          entry.metaData = loadedEntry.metaData;
+          if (!collection) {
+            console.warn(`Missing collection '${collectionName}' for unpublished entry '${id}'`);
+            return null;
+          }
+          const entry = await this.processUnpublishedEntry(collection, entryData, false);
           return entry;
         }),
       )
-      .then(entries => ({
-        pagination: 0,
-        entries: entries.reduce((acc, entry) => {
-          const collection = collections.get(entry.collection);
-          if (collection) {
-            acc.push(this.entryWithFormat(collection)(entry) as EntryValue);
-          } else {
-            console.warn(
-              `Missing collection '${entry.collection}' for entry with path '${entry.path}'`,
-            );
-          }
-          return acc;
-        }, [] as EntryValue[]),
-      }));
+    ).filter(Boolean) as EntryValue[];
+
+    return { pagination: 0, entries };
   }
 
   async processEntry(state: State, collection: Collection, entry: EntryValue) {
@@ -660,19 +696,12 @@ export class Backend {
   }
 
   async unpublishedEntry(state: State, collection: Collection, slug: string) {
-    const loadedEntry = await this.implementation!.unpublishedEntry!(
-      collection.get('name') as string,
+    const entryData = await this.implementation!.unpublishedEntry!({
+      collection: collection.get('name') as string,
       slug,
-    );
-
-    let entry = createEntry(collection.get('name'), loadedEntry.slug, loadedEntry.file.path, {
-      raw: loadedEntry.data,
-      isModification: loadedEntry.isModification,
-      metaData: loadedEntry.metaData,
-      mediaFiles: loadedEntry.mediaFiles?.map(file => ({ ...file, draft: true })) || [],
     });
 
-    entry = this.entryWithFormat(collection)(entry);
+    let entry = await this.processUnpublishedEntry(collection, entryData, true);
     entry = await this.processEntry(state, collection, entry);
     return entry;
   }

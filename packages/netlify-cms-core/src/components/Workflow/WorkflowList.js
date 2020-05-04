@@ -204,13 +204,13 @@ class WorkflowList extends React.Component {
     return (
       <div>
         {entries.map(entry => {
-          const timestamp = moment(entry.getIn(['metaData', 'timeStamp'])).format(
+          const timestamp = moment(entry.get('timestamp')).format(
             t('workflow.workflow.dateFormat'),
           );
           const slug = entry.get('slug');
-          const editLink = `collections/${entry.getIn(['metaData', 'collection'])}/entries/${slug}`;
-          const ownStatus = entry.getIn(['metaData', 'status']);
-          const collectionName = entry.getIn(['metaData', 'collection']);
+          const collectionName = entry.get('collection');
+          const editLink = `collections/${collectionName}/entries/${slug}`;
+          const ownStatus = entry.get('status');
           const collection = collections.find(
             collection => collection.get('name') === collectionName,
           );
