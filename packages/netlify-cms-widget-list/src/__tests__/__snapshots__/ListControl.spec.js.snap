@@ -168,6 +168,7 @@ exports[`ListControl should render list with nested object 1`] = `
       >
         <button
           class="emotion-3 emotion-4"
+          data-testid="expand-button"
         >
           <span
             class="emotion-0 emotion-1 emotion-2"
@@ -414,6 +415,7 @@ exports[`ListControl should render list with nested object with collapse = false
       >
         <button
           class="emotion-3 emotion-4"
+          data-testid="expand-button"
         >
           <span
             class="emotion-0 emotion-1 emotion-2"
