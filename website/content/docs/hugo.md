@@ -3,7 +3,6 @@ title: Hugo
 group: guides
 weight: 20
 ---
-
 ## Introduction
 
 This guide will walk you through how to integrate Netlify CMS with Hugo. This is a good place to start if you want to learn from the ground up how these two tools work together. If you want to get up-and-running quicker, you can use one of the pre-existing and amazing [starter templates](/docs/start-with-a-template/)!
@@ -164,7 +163,7 @@ In your `layouts/index.html` file, you'll create an unordered list element and u
   <ul>
     {{ range (where .Pages "Section" "blog") }}
     <li>
-      <a href="{{ .Permalink }}">
+      <a href="{{ .RelPermalink }}">
         {{ .Title }}
       </a>
     </li>
@@ -173,7 +172,7 @@ In your `layouts/index.html` file, you'll create an unordered list element and u
 </body>
 ```
 
-That link won't work just right just yet. You'll need to make a single page layout for blog posts, so Hugo can create a page for the `.Permalink` to link to.
+That link won't work just right just yet. You'll need to make a single page layout for blog posts, so Hugo can create a page for the `.RelPermalink` to link to.
 
 ### Creating a single page post layout
 
