@@ -50,7 +50,14 @@ export default class DateControl extends React.Component {
     };
   }
 
+  getDefaultValue() {
+    const { field } = this.props;
+    const defaultValue = field.get('default');
+    return defaultValue;
+  }
+
   formats = this.getFormats();
+  defaultValue = this.getDefaultValue();
 
   componentDidMount() {
     warnDeprecated();
@@ -62,7 +69,7 @@ export default class DateControl extends React.Component {
      */
     if (!value && value !== '') {
       setTimeout(() => {
-        this.handleChange(new Date());
+        this.handleChange(this.defaultValue === undefined ? new Date() : this.defaultValue);
       }, 0);
     }
   }
