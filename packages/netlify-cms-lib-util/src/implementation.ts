@@ -34,7 +34,7 @@ export interface UnpublishedEntry {
   slug: string;
   collection: string;
   status: string;
-  files: { id: string; path: string; newFile: boolean }[];
+  diffs: { id: string; path: string; newFile: boolean }[];
   timestamp: string;
 }
 
@@ -355,7 +355,6 @@ type GetDiffFromLocalTreeMethods = {
       oldPath: string;
       newPath: string;
       status: string;
-      binary: boolean;
     }[]
   >;
   filterFile: (file: { path: string; name: string }) => boolean;
@@ -380,7 +379,7 @@ const getDiffFromLocalTree = async ({
 }: GetDiffFromLocalTreeArgs) => {
   const diff = await getDifferences(branch.sha, localTree.head);
   const diffFiles = diff
-    .filter(d => (d.oldPath?.startsWith(folder) || d.newPath?.startsWith(folder)) && !d.binary)
+    .filter(d => d.oldPath?.startsWith(folder) || d.newPath?.startsWith(folder))
     .reduce((acc, d) => {
       if (d.status === 'renamed') {
         acc.push({

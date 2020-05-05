@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq, trim } from 'lodash';
+import { attempt, flatten, isError, uniq, trim, sortBy } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -623,17 +623,35 @@ export class Backend {
   ) {
     const { slug } = entryData;
     const extension = selectFolderEntryExtension(collection);
-    const dataFiles = entryData.files.filter(f => f.path.endsWith(extension));
-    const entryFile = dataFiles[0];
-    const data = await this.implementation.unpublishedEntryDataFile(
-      collection.get('name'),
-      entryData.slug,
-      entryFile.path,
-      entryFile.id,
+    const dataFiles = sortBy(
+      entryData.diffs.filter(d => d.path.endsWith(extension)),
+      f => f.path.length,
     );
+    // if the unpublished entry has no diffs, return the original
+    let data = '';
+    let newFile = false;
+    let path = slug;
+    if (dataFiles.length <= 0) {
+      const loadedEntry = await this.implementation.getEntry(
+        selectEntryPath(collection, slug) as string,
+      );
+      data = loadedEntry.data;
+      path = loadedEntry.file.path;
+    } else {
+      const entryFile = dataFiles[0];
+      data = await this.implementation.unpublishedEntryDataFile(
+        collection.get('name'),
+        entryData.slug,
+        entryFile.path,
+        entryFile.id,
+      );
+      newFile = entryFile.newFile;
+      path = entryFile.path;
+    }
+
     const mediaFiles: MediaFile[] = [];
     if (withMediaFiles) {
-      const nonDataFiles = entryData.files.filter(f => !f.path.endsWith(extension));
+      const nonDataFiles = entryData.diffs.filter(d => !d.path.endsWith(extension));
       const files = await Promise.all(
         nonDataFiles.map(f =>
           this.implementation!.unpublishedEntryMediaFile(
@@ -644,11 +662,11 @@ export class Backend {
           ),
         ),
       );
-      mediaFiles.push(...files);
+      mediaFiles.push(...files.map(f => ({ ...f, draft: true })));
     }
-    const entry = createEntry(collection.get('name'), slug, entryFile.path, {
+    const entry = createEntry(collection.get('name'), slug, path, {
       raw: data,
-      isModification: entryFile.newFile,
+      isModification: newFile,
       label: collection && selectFileEntryLabel(collection, slug),
       mediaFiles,
       updatedOn: entryData.timestamp,

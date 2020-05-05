@@ -38,6 +38,7 @@ import {
   localForage,
   allEntriesByFolder,
   AccessTokenError,
+  branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -299,7 +300,7 @@ export default class BitbucketBackend implements Implementation {
     let cursor: Cursor;
 
     const listFiles = () =>
-      this.api!.listFiles(folder, depth).then(({ entries, cursor: c }) => {
+      this.api!.listFiles(folder, depth, 20, this.branch).then(({ entries, cursor: c }) => {
         cursor = c.mergeMeta({ extension });
         return entries.filter(e => filterByExtension(e, extension));
       });
@@ -323,7 +324,7 @@ export default class BitbucketBackend implements Implementation {
   }
 
   async listAllFiles(folder: string, extension: string, depth: number) {
-    const files = await this.api!.listAllFiles(folder, depth);
+    const files = await this.api!.listAllFiles(folder, depth, this.branch);
     const filtered = files.filter(file => filterByExtension(file, extension));
     return filtered;
   }
@@ -371,7 +372,7 @@ export default class BitbucketBackend implements Implementation {
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
-    return this.api!.listAllFiles(mediaFolder).then(files =>
+    return this.api!.listAllFiles(mediaFolder, 1, this.branch).then(files =>
       files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
     );
   }
@@ -530,49 +531,53 @@ export default class BitbucketBackend implements Implementation {
     });
   }
 
-  async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
-    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(branch, file)));
-
-    return mediaFiles;
-  }
-
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
         branches.map(branch => contentKeyFromBranch(branch)),
       );
 
-    const readUnpublishedBranchFile = (contentKey: string) =>
-      this.api!.readUnpublishedBranchFile(contentKey);
-
-    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, API_NAME);
+    const ids = await unpublishedEntries(listEntriesKeys);
+    return ids;
   }
 
-  async unpublishedEntry(
-    collection: string,
-    slug: string,
-    {
-      loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
-        this.loadEntryMediaFiles(branch, files),
-    } = {},
-  ) {
+  async unpublishedEntry({
+    id,
+    collection,
+    slug,
+  }: {
+    id?: string;
+    collection?: string;
+    slug?: string;
+  }) {
+    if (id) {
+      const data = await this.api!.retrieveUnpublishedEntryData(id);
+      return data;
+    } else if (collection && slug) {
+      const entryId = generateContentKey(collection, slug);
+      const data = await this.api!.retrieveUnpublishedEntryData(entryId);
+      return data;
+    } else {
+      throw new Error('Missing unpublished entry id or collection and slug');
+    }
+  }
+
+  getBranch(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
-    const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const mediaFiles = await loadEntryMediaFiles(
-      data.metaData.branch,
-      // TODO: fix this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      data.metaData.objects.entry.mediaFiles,
-    );
-    return {
-      slug,
-      file: { path: data.metaData.objects.entry.path, id: null },
-      data: data.fileData as string,
-      metaData: data.metaData,
-      mediaFiles,
-      isModification: data.isModification,
-    };
+    const branch = branchFromContentKey(contentKey);
+    return branch;
+  }
+
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+    const branch = this.getBranch(collection, slug);
+    const data = (await this.api!.readFile(path, id, { branch })) as string;
+    return data;
+  }
+
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+    const branch = this.getBranch(collection, slug);
+    const mediaFile = await this.loadMediaFile(branch, { path, id });
+    return mediaFile;
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {

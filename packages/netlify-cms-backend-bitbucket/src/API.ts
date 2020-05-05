@@ -28,6 +28,7 @@ import {
   readFileMetadata,
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
+import { dirname } from 'path';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
 
@@ -364,8 +365,8 @@ export default class API {
     };
   };
 
-  listFiles = async (path: string, depth = 1, pagelen = 20) => {
-    const node = await this.branchCommitSha(this.branch);
+  listFiles = async (path: string, depth = 1, pagelen: number, branch: string) => {
+    const node = await this.branchCommitSha(branch);
     const result: BitBucketSrcResult = await this.requestJSON({
       url: `${this.repoURL}/src/${node}/${path}`,
       params: {
@@ -398,11 +399,12 @@ export default class API {
       })),
     ])(cursor.data!.getIn(['links', action]));
 
-  listAllFiles = async (path: string, depth = 1) => {
+  listAllFiles = async (path: string, depth: number, branch: string) => {
     const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(
       path,
       depth,
       100,
+      branch,
     );
     const entries = [...initialEntries];
     let currentCursor = initialCursor;
@@ -418,7 +420,7 @@ export default class API {
   };
 
   async uploadFiles(
-    files: (Entry | AssetProxy | DeleteEntry)[],
+    files: { path: string; newPath?: string; delete?: boolean }[],
     {
       commitMessage,
       branch,
@@ -426,10 +428,14 @@ export default class API {
     }: { commitMessage: string; branch: string; parentSha?: string },
   ) {
     const formData = new FormData();
+    const toMove: { from: string; to: string; contentBlob: Blob }[] = [];
     files.forEach(file => {
-      if ((file as DeleteEntry).delete) {
+      if (file.delete) {
         // delete the file
         formData.append('files', file.path);
+      } else if (file.newPath) {
+        const contentBlob = get(file, 'fileObj', new Blob([(file as Entry).raw]));
+        toMove.push({ from: file.path, to: file.newPath, contentBlob });
       } else {
         // add/modify the file
         const contentBlob = get(file, 'fileObj', new Blob([(file as Entry).raw]));
@@ -437,6 +443,26 @@ export default class API {
         formData.append(file.path, contentBlob, basename(file.path));
       }
     });
+    for (const { from, to, contentBlob } of toMove) {
+      const sourceDir = dirname(from);
+      const destDir = dirname(to);
+      const filesBranch = parentSha ? this.branch : branch;
+      const files = await this.listAllFiles(sourceDir, 100, filesBranch);
+      for (const file of files) {
+        // delete current path
+        formData.append('files', file.path);
+        // create in new path
+        const content =
+          file.path === from
+            ? contentBlob
+            : await this.readFile(file.path, null, {
+                branch: filesBranch,
+                parseText: false,
+              });
+        formData.append(file.path.replace(sourceDir, destDir), content, basename(file.path));
+      }
+    }
+
     if (commitMessage) {
       formData.append('message', commitMessage);
     }
@@ -545,7 +571,6 @@ export default class API {
       return {
         oldPath,
         newPath,
-        binary: d.binary || /.svg$/.test(path),
         status: d.status,
         newFile: d.status === 'added',
         path,
@@ -574,7 +599,7 @@ export default class API {
       const diffs = await this.getDifferences(branch);
       const toDelete: DeleteEntry[] = [];
       for (const diff of diffs) {
-        if (!files.some(file => file.path === diff.newPath)) {
+        if (!files.some(file => file.path === diff.path)) {
           toDelete.push({ path: diff.path, delete: true });
         }
       }
@@ -637,47 +662,6 @@ export default class API {
     return pullRequests[0];
   }
 
-  async retrieveMetadata(contentKey: string) {
-    const { collection, slug } = parseContentKey(contentKey);
-    const branch = branchFromContentKey(contentKey);
-    const pullRequest = await this.getBranchPullRequest(branch);
-    const diff = await this.getDifferences(branch);
-    const { newPath: path, newFile } = diff.find(d => !d.binary) as {
-      newPath: string;
-      newFile: boolean;
-    };
-    // TODO: get real file id
-    const mediaFiles = await Promise.all(
-      diff.filter(d => d.newPath !== path).map(d => ({ path: d.newPath, id: null })),
-    );
-    const label = await this.getPullRequestLabel(pullRequest.id);
-    const status = labelToStatus(label);
-    const timeStamp = pullRequest.updated_on;
-    return { branch, collection, slug, path, status, newFile, mediaFiles, timeStamp };
-  }
-
-  async readUnpublishedBranchFile(contentKey: string) {
-    const {
-      branch,
-      collection,
-      slug,
-      path,
-      status,
-      newFile,
-      mediaFiles,
-      timeStamp,
-    } = await this.retrieveMetadata(contentKey);
-
-    const fileData = (await this.readFile(path, null, { branch })) as string;
-
-    return {
-      slug,
-      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status, timeStamp },
-      fileData,
-      isModification: !newFile,
-    };
-  }
-
   async listUnpublishedBranches() {
     console.log(
       '%c Checking for Unpublished entries',
@@ -688,6 +672,24 @@ export default class API {
     const branches = pullRequests.map(mr => mr.source.branch.name);
 
     return branches;
+  }
+
+  async retrieveUnpublishedEntryData(contentKey: string) {
+    const { collection, slug } = parseContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const diffs = await this.getDifferences(branch);
+    const label = await this.getPullRequestLabel(pullRequest.id);
+    const status = labelToStatus(label);
+    const timestamp = pullRequest.updated_on;
+    return {
+      collection,
+      slug,
+      status,
+      // TODO: get real id
+      diffs: diffs.map(d => ({ path: d.path, newFile: d.newFile, id: '' })),
+      timestamp,
+    };
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {

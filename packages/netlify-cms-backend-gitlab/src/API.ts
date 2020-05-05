@@ -29,7 +29,7 @@ import {
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
-import { flow, partial, result, trimStart, sortBy } from 'lodash';
+import { flow, partial, result, trimStart } from 'lodash';
 import { dirname } from 'path';
 
 export const API_NAME = 'GitLab';
@@ -637,56 +637,33 @@ export default class API {
         oldPath: d.old_path,
         newPath: d.new_path,
         newFile: d.new_file,
-        binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
+        path: d.new_path || d.old_path,
       };
     });
   }
 
-  async retrieveMetadata(contentKey: string) {
+  async retrieveUnpublishedEntryData(contentKey: string) {
     const { collection, slug } = parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
-    const diff = await this.getDifferences(mergeRequest.sha);
-    const nonBinaryFiles = diff
-      .filter(d => !d.binary)
-      .map(d => ({ path: d.newPath || d.oldPath, newFile: d.newFile }));
-
-    const sortedByPath = sortBy(nonBinaryFiles, f => f.path.length);
-    const { path, newFile: newFile } = sortedByPath[0];
-    const mediaFiles = await Promise.all(
-      diff
-        .filter(d => d.binary)
-        .map(async d => {
-          const path = d.newPath;
-          const id = await this.getFileId(path, branch);
-          return { path, id };
-        }),
+    const diffs = await this.getDifferences(mergeRequest.sha);
+    const diffsWithIds = await Promise.all(
+      diffs.map(async d => {
+        const { path, newFile } = d;
+        const id = await this.getFileId(path, branch);
+        return { id, path, newFile };
+      }),
     );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
-    const timeStamp = mergeRequest.updated_at;
-    return { branch, collection, slug, path, status, newFile, mediaFiles, timeStamp };
-  }
-
-  async readUnpublishedBranchFile(contentKey: string) {
-    const {
+    const timestamp = mergeRequest.updated_at;
+    return {
       branch,
       collection,
       slug,
-      path,
       status,
-      newFile,
-      mediaFiles,
-      timeStamp,
-    } = await this.retrieveMetadata(contentKey);
-
-    const fileData = (await this.readFile(path, null, { branch })) as string;
-
-    return {
-      slug,
-      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status, timeStamp },
-      fileData,
-      isModification: !newFile,
+      diffs: diffsWithIds,
+      timestamp,
     };
   }
 
@@ -763,8 +740,8 @@ export default class API {
       ]);
 
       // mark files for deletion
-      for (const diff of diffs.filter(d => d.binary)) {
-        if (!items.some(item => item.path === diff.newPath)) {
+      for (const diff of diffs) {
+        if (!items.some(item => item.path === diff.path)) {
           items.push({ action: CommitAction.DELETE, path: diff.newPath });
         }
       }

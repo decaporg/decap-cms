@@ -568,13 +568,14 @@ export default class GitHub implements Implementation {
     });
   }
 
-  unpublishedEntries() {
+  async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
         branches.map(branch => contentKeyFromBranch(branch)),
       );
 
-    return unpublishedEntries(listEntriesKeys);
+    const ids = await unpublishedEntries(listEntriesKeys);
+    return ids;
   }
 
   async unpublishedEntry({
@@ -598,16 +599,20 @@ export default class GitHub implements Implementation {
     }
   }
 
-  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+  getBranch(collection: string, slug: string) {
     const contentKey = this.api!.generateContentKey(collection, slug);
     const branch = branchFromContentKey(contentKey);
+    return branch;
+  }
+
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+    const branch = this.getBranch(collection, slug);
     const data = (await this.api!.readFile(path, id, { branch })) as string;
     return data;
   }
 
   async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
-    const contentKey = this.api!.generateContentKey(collection, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.getBranch(collection, slug);
     const mediaFile = await this.loadMediaFile(branch, { path, id });
     return mediaFile;
   }

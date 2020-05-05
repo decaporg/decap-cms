@@ -10,33 +10,57 @@ import {
   ImplementationEntry,
   AssetProxy,
   PersistOptions,
-  ImplementationMediaFile,
   User,
   Config,
   ImplementationFile,
 } from 'netlify-cms-lib-util';
+import { extname } from 'path';
 import AuthenticationPage from './AuthenticationPage';
 
-type RepoFile = { file?: { path: string }; content: string };
+type RepoFile = { path: string; content: string | AssetProxy };
 type RepoTree = { [key: string]: RepoFile | RepoTree };
+
+type UnpublishedRepoEntry = {
+  slug: string;
+  collection: string;
+  status: string;
+  diffs: { id: string; path: string; newFile: boolean; status: string }[];
+  timestamp: string;
+  tree: RepoTree;
+};
 
 declare global {
   interface Window {
     repoFiles: RepoTree;
-    repoFilesUnpublished: ImplementationEntry[];
+    repoFilesUnpublished: { [key: string]: UnpublishedRepoEntry };
   }
 }
 
 window.repoFiles = window.repoFiles || {};
 window.repoFilesUnpublished = window.repoFilesUnpublished || [];
 
-function getFile(path: string) {
+function getFile(path: string, tree: RepoTree) {
   const segments = path.split('/');
-  let obj: RepoTree = window.repoFiles;
+  let obj: RepoTree = tree;
   while (obj && segments.length) {
     obj = obj[segments.shift() as string] as RepoTree;
   }
   return ((obj as unknown) as RepoFile) || {};
+}
+
+function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
+  const segments = path.split('/');
+  let obj = tree;
+  while (segments.length > 1) {
+    const segment = segments.shift() as string;
+    obj[segment] = obj[segment] || {};
+    obj = obj[segment] as RepoTree;
+  }
+  (obj[segments.shift() as string] as RepoFile) = { path, content };
+}
+
+function deleteFile(path: string, tree: RepoTree) {
+  unset(tree, path.split('/'));
 }
 
 const pageSize = 10;
@@ -60,12 +84,12 @@ const getCursor = (
   });
 };
 
-export const getFolderEntries = (
+export const getFolderFiles = (
   tree: RepoTree,
   folder: string,
   extension: string,
   depth: number,
-  files = [] as ImplementationEntry[],
+  files = [] as RepoFile[],
   path = folder,
 ) => {
   if (depth <= 0) {
@@ -73,15 +97,14 @@ export const getFolderEntries = (
   }
 
   Object.keys(tree[folder] || {}).forEach(key => {
-    if (key.endsWith(`.${extension}`)) {
+    if (extname(key)) {
       const file = (tree[folder] as RepoTree)[key] as RepoFile;
-      files.unshift({
-        file: { path: `${path}/${key}`, id: null },
-        data: file.content,
-      });
+      if (!extension || file.path.endsWith(`.${extension}`)) {
+        files.unshift({ content: file.content, path: file.path });
+      }
     } else {
       const subTree = tree[folder] as RepoTree;
-      return getFolderEntries(subTree, key, extension, depth - 1, files, `${path}/${key}`);
+      return getFolderFiles(subTree, key, extension, depth - 1, files, `${path}/${key}`);
     }
   });
 
@@ -89,12 +112,12 @@ export const getFolderEntries = (
 };
 
 export default class TestBackend implements Implementation {
-  assets: ImplementationMediaFile[];
+  mediaFolder: string;
   options: { initialWorkflowStatus?: string };
 
-  constructor(_config: Config, options = {}) {
-    this.assets = [];
+  constructor(config: Config, options = {}) {
     this.options = options;
+    this.mediaFolder = config.media_folder;
   }
 
   isGitBackend() {
@@ -149,14 +172,22 @@ export default class TestBackend implements Implementation {
       return 0;
     })();
     // TODO: stop assuming cursors are for collections
-    const allEntries = getFolderEntries(window.repoFiles, folder, extension, depth);
+    const allFiles = getFolderFiles(window.repoFiles, folder, extension, depth);
+    const allEntries = allFiles.map(f => ({
+      data: f.content as string,
+      file: { path: f.path, id: f.path },
+    }));
     const entries = allEntries.slice(newIndex * pageSize, newIndex * pageSize + pageSize);
     const newCursor = getCursor(folder, extension, allEntries, newIndex, depth);
     return Promise.resolve({ entries, cursor: newCursor });
   }
 
   entriesByFolder(folder: string, extension: string, depth: number) {
-    const entries = folder ? getFolderEntries(window.repoFiles, folder, extension, depth) : [];
+    const files = folder ? getFolderFiles(window.repoFiles, folder, extension, depth) : [];
+    const entries = files.map(f => ({
+      data: f.content as string,
+      file: { path: f.path, id: f.path },
+    }));
     const cursor = getCursor(folder, extension, entries, 0, depth);
     const ret = take(entries, pageSize);
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -169,7 +200,7 @@ export default class TestBackend implements Implementation {
     return Promise.all(
       files.map(file => ({
         file,
-        data: getFile(file.path).content,
+        data: getFile(file.path, window.repoFiles).content as string,
       })),
     );
   }
@@ -177,133 +208,157 @@ export default class TestBackend implements Implementation {
   getEntry(path: string) {
     return Promise.resolve({
       file: { path, id: null },
-      data: getFile(path).content,
+      data: getFile(path, window.repoFiles).content as string,
     });
   }
 
   unpublishedEntries() {
-    return Promise.resolve(window.repoFilesUnpublished);
+    return Promise.resolve(Object.keys(window.repoFilesUnpublished));
   }
 
-  getMediaFiles(entry: ImplementationEntry) {
-    const mediaFiles = entry.mediaFiles!.map(file => ({
-      ...file,
-      ...this.normalizeAsset(file),
-      file: file.file as File,
-    }));
-    return mediaFiles;
-  }
-
-  unpublishedEntry(collection: string, slug: string) {
-    const entry = window.repoFilesUnpublished.find(
-      e => e.metaData!.collection === collection && e.slug === slug,
-    );
+  unpublishedEntry({ id, collection, slug }: { id?: string; collection?: string; slug?: string }) {
+    if (id) {
+      const parts = id.split('/');
+      collection = parts[0];
+      slug = parts[1];
+    }
+    const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
     if (!entry) {
       return Promise.reject(
         new EditorialWorkflowError('content is not under editorial workflow', true),
       );
     }
-    entry.mediaFiles = this.getMediaFiles(entry);
 
     return Promise.resolve(entry);
   }
 
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string) {
+    const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
+    const file = getFile(path, entry.tree);
+    return file.content as string;
+  }
+
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string) {
+    const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
+    const file = getFile(path, entry.tree);
+    return this.normalizeAsset(file.content as AssetProxy);
+  }
+
   deleteUnpublishedEntry(collection: string, slug: string) {
-    const unpubStore = window.repoFilesUnpublished;
-    const existingEntryIndex = unpubStore.findIndex(
-      e => e.metaData!.collection === collection && e.slug === slug,
-    );
-    unpubStore.splice(existingEntryIndex, 1);
+    delete window.repoFilesUnpublished[`${collection}/${slug}`];
     return Promise.resolve();
   }
 
+  async addOrUpdateUnpublishedEntry(
+    key: string,
+    path: string,
+    content: string,
+    assetProxies: AssetProxy[],
+    slug: string,
+    collection: string,
+    status: string,
+  ) {
+    const tree: RepoTree = {};
+    writeFile(path, content, tree);
+    const diffs = [];
+    diffs.push({
+      id: path,
+      path,
+      newFile: !isEmpty(getFile(path, window.repoFiles)),
+      status: 'added',
+    });
+    assetProxies.forEach(a => {
+      writeFile(a.path, a, tree);
+      const asset = this.normalizeAsset(a);
+      diffs.push({
+        id: asset.id,
+        path: asset.path,
+        newFile: true,
+        status: 'added',
+      });
+    });
+    window.repoFilesUnpublished[key] = {
+      slug,
+      collection,
+      status,
+      diffs,
+      timestamp: new Date().toISOString(),
+      tree,
+    };
+  }
+
   async persistEntry(
-    { path, raw, slug }: Entry,
+    { path, raw, slug, newPath }: Entry,
     assetProxies: AssetProxy[],
     options: PersistOptions,
   ) {
     if (options.useWorkflow) {
-      const unpubStore = window.repoFilesUnpublished;
-
-      const existingEntryIndex = unpubStore.findIndex(e => e.file.path === path);
-      if (existingEntryIndex >= 0) {
-        const unpubEntry = {
-          ...unpubStore[existingEntryIndex],
-          data: raw,
-          mediaFiles: assetProxies.map(this.normalizeAsset),
-        };
-
-        unpubStore.splice(existingEntryIndex, 1, unpubEntry);
-      } else {
-        const unpubEntry = {
-          data: raw,
-          file: {
-            path,
-            id: null,
-          },
-          metaData: {
-            collection: options.collectionName as string,
-            status: (options.status || this.options.initialWorkflowStatus) as string,
-          },
+      const key = `${options.collectionName}/${slug}`;
+      const currentEntry = window.repoFilesUnpublished[key];
+      if (currentEntry) {
+        this.addOrUpdateUnpublishedEntry(
+          key,
+          newPath || path,
+          raw,
+          assetProxies,
           slug,
-          mediaFiles: assetProxies.map(this.normalizeAsset),
-          isModification: !isEmpty(getFile(path)),
-        };
-        unpubStore.push(unpubEntry);
+          options.collectionName as string,
+          currentEntry.status,
+        );
+      } else {
+        this.addOrUpdateUnpublishedEntry(
+          key,
+          newPath || path,
+          raw,
+          assetProxies,
+          slug,
+          options.collectionName as string,
+          (options.status || this.options.initialWorkflowStatus) as string,
+        );
       }
       return Promise.resolve();
     }
 
-    const newEntry = options.newEntry || false;
-
-    const segments = path.split('/');
-    const entry = newEntry ? { content: raw } : { ...getFile(path), content: raw };
-
-    let obj = window.repoFiles;
-    while (segments.length > 1) {
-      const segment = segments.shift() as string;
-      obj[segment] = obj[segment] || {};
-      obj = obj[segment] as RepoTree;
-    }
-    (obj[segments.shift() as string] as RepoFile) = entry;
-
-    await Promise.all(assetProxies.map(file => this.persistMedia(file)));
+    writeFile(path, raw, window.repoFiles);
+    assetProxies.forEach(a => {
+      writeFile(a.path, raw, window.repoFiles);
+    });
     return Promise.resolve();
   }
 
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    const unpubStore = window.repoFilesUnpublished;
-    const entryIndex = unpubStore.findIndex(
-      e => e.metaData!.collection === collection && e.slug === slug,
-    );
-    unpubStore[entryIndex]!.metaData!.status = newStatus;
+    window.repoFilesUnpublished[`${collection}/${slug}`].status = newStatus;
     return Promise.resolve();
   }
 
-  async publishUnpublishedEntry(collection: string, slug: string) {
-    const unpubStore = window.repoFilesUnpublished;
-    const unpubEntryIndex = unpubStore.findIndex(
-      e => e.metaData!.collection === collection && e.slug === slug,
-    );
-    const unpubEntry = unpubStore[unpubEntryIndex];
-    const entry = {
-      raw: unpubEntry.data,
-      slug: unpubEntry.slug as string,
-      path: unpubEntry.file.path,
-    };
-    unpubStore.splice(unpubEntryIndex, 1);
+  publishUnpublishedEntry(collection: string, slug: string) {
+    const key = `${collection}/${slug}`;
+    const unpubEntry = window.repoFilesUnpublished[key];
 
-    await this.persistEntry(entry, unpubEntry.mediaFiles!, { commitMessage: '' });
+    delete window.repoFilesUnpublished[key];
+
+    const files = [] as RepoFile[];
+    Object.keys(unpubEntry.tree).forEach(folder => {
+      files.push(...getFolderFiles(unpubEntry.tree, folder, '', 100));
+    });
+
+    files.forEach(f => {
+      writeFile(f.path, f.content, window.repoFiles);
+    });
+
+    return Promise.resolve();
   }
 
-  getMedia() {
-    return Promise.resolve(this.assets);
+  getMedia(mediaFolder = this.mediaFolder) {
+    const files = getFolderFiles(window.repoFiles, mediaFolder, '', 100);
+    const assets = files.map(f => this.normalizeAsset(f.content as AssetProxy));
+    return Promise.resolve(assets);
   }
 
   async getMediaFile(path: string) {
-    const asset = this.assets.find(asset => asset.path === path) as ImplementationMediaFile;
+    const asset = getFile(path, window.repoFiles).content as AssetProxy;
 
-    const url = asset.url as string;
+    const url = asset.toString();
     const name = basename(path);
     const blob = await fetch(url).then(res => res.blob());
     const fileObj = new File([blob], name);
@@ -340,18 +395,13 @@ export default class TestBackend implements Implementation {
   persistMedia(assetProxy: AssetProxy) {
     const normalizedAsset = this.normalizeAsset(assetProxy);
 
-    this.assets.push(normalizedAsset);
+    writeFile(assetProxy.path, assetProxy, window.repoFiles);
 
     return Promise.resolve(normalizedAsset);
   }
 
   deleteFile(path: string) {
-    const assetIndex = this.assets.findIndex(asset => asset.path === path);
-    if (assetIndex > -1) {
-      this.assets.splice(assetIndex, 1);
-    } else {
-      unset(window.repoFiles, path.split('/'));
-    }
+    deleteFile(path, window.repoFiles);
 
     return Promise.resolve();
   }
