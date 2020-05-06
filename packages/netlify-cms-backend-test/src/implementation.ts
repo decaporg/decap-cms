@@ -14,7 +14,7 @@ import {
   Config,
   ImplementationFile,
 } from 'netlify-cms-lib-util';
-import { extname } from 'path';
+import { extname, dirname } from 'path';
 import AuthenticationPage from './AuthenticationPage';
 
 type RepoFile = { path: string; content: string | AssetProxy };
@@ -24,9 +24,15 @@ type UnpublishedRepoEntry = {
   slug: string;
   collection: string;
   status: string;
-  diffs: { id: string; path: string; newFile: boolean; status: string }[];
+  diffs: {
+    id: string;
+    originalPath?: string;
+    path: string;
+    newFile: boolean;
+    status: string;
+    content: string | AssetProxy;
+  }[];
   timestamp: string;
-  tree: RepoTree;
 };
 
 declare global {
@@ -56,7 +62,7 @@ function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
     obj[segment] = obj[segment] || {};
     obj = obj[segment] as RepoTree;
   }
-  (obj[segments.shift() as string] as RepoFile) = { path, content };
+  (obj[segments.shift() as string] as RepoFile) = { content, path };
 }
 
 function deleteFile(path: string, tree: RepoTree) {
@@ -99,8 +105,8 @@ export const getFolderFiles = (
   Object.keys(tree[folder] || {}).forEach(key => {
     if (extname(key)) {
       const file = (tree[folder] as RepoTree)[key] as RepoFile;
-      if (!extension || file.path.endsWith(`.${extension}`)) {
-        files.unshift({ content: file.content, path: file.path });
+      if (!extension || key.endsWith(`.${extension}`)) {
+        files.unshift({ content: file.content, path: `${path}/${key}` });
       }
     } else {
       const subTree = tree[folder] as RepoTree;
@@ -234,14 +240,14 @@ export default class TestBackend implements Implementation {
 
   async unpublishedEntryDataFile(collection: string, slug: string, path: string) {
     const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
-    const file = getFile(path, entry.tree);
-    return file.content as string;
+    const file = entry.diffs.find(d => d.path === path);
+    return file?.content as string;
   }
 
   async unpublishedEntryMediaFile(collection: string, slug: string, path: string) {
     const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
-    const file = getFile(path, entry.tree);
-    return this.normalizeAsset(file.content as AssetProxy);
+    const file = entry.diffs.find(d => d.path === path);
+    return this.normalizeAsset(file?.content as AssetProxy);
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {
@@ -252,29 +258,32 @@ export default class TestBackend implements Implementation {
   async addOrUpdateUnpublishedEntry(
     key: string,
     path: string,
-    content: string,
+    newPath: string | undefined,
+    raw: string,
     assetProxies: AssetProxy[],
     slug: string,
     collection: string,
     status: string,
   ) {
-    const tree: RepoTree = {};
-    writeFile(path, content, tree);
+    const currentDataFile = window.repoFilesUnpublished[key]?.diffs.find(d => d.path === path);
+    const originalPath = currentDataFile ? currentDataFile.originalPath : path;
     const diffs = [];
     diffs.push({
-      id: path,
-      path,
-      newFile: !isEmpty(getFile(path, window.repoFiles)),
+      originalPath,
+      id: newPath || path,
+      path: newPath || path,
+      newFile: isEmpty(getFile(originalPath as string, window.repoFiles)),
       status: 'added',
+      content: raw,
     });
     assetProxies.forEach(a => {
-      writeFile(a.path, a, tree);
       const asset = this.normalizeAsset(a);
       diffs.push({
         id: asset.id,
         path: asset.path,
         newFile: true,
         status: 'added',
+        content: asset,
       });
     });
     window.repoFilesUnpublished[key] = {
@@ -283,7 +292,6 @@ export default class TestBackend implements Implementation {
       status,
       diffs,
       timestamp: new Date().toISOString(),
-      tree,
     };
   }
 
@@ -298,7 +306,8 @@ export default class TestBackend implements Implementation {
       if (currentEntry) {
         this.addOrUpdateUnpublishedEntry(
           key,
-          newPath || path,
+          path,
+          newPath,
           raw,
           assetProxies,
           slug,
@@ -308,7 +317,8 @@ export default class TestBackend implements Implementation {
       } else {
         this.addOrUpdateUnpublishedEntry(
           key,
-          newPath || path,
+          path,
+          newPath,
           raw,
           assetProxies,
           slug,
@@ -337,13 +347,21 @@ export default class TestBackend implements Implementation {
 
     delete window.repoFilesUnpublished[key];
 
-    const files = [] as RepoFile[];
-    Object.keys(unpubEntry.tree).forEach(folder => {
-      files.push(...getFolderFiles(unpubEntry.tree, folder, '', 100));
-    });
-
-    files.forEach(f => {
-      writeFile(f.path, f.content, window.repoFiles);
+    const tree = window.repoFiles;
+    unpubEntry.diffs.forEach(d => {
+      if (d.originalPath && !d.newFile) {
+        const originalPath = d.originalPath;
+        const sourceDir = dirname(originalPath);
+        const destDir = dirname(d.path);
+        const toMove = getFolderFiles(tree, originalPath.split('/')[0], '', 100).filter(f =>
+          f.path.startsWith(sourceDir),
+        );
+        toMove.forEach(f => {
+          deleteFile(f.path, tree);
+          writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
+        });
+      }
+      writeFile(d.path, d.content, tree);
     });
 
     return Promise.resolve();

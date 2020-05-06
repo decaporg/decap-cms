@@ -247,3 +247,16 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+  - name: pages # a nested collection
+    label: Pages
+    label_singular: 'Page'
+    folder: _pages
+    create: true
+    nested: { depth: 100 }
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Path
+        name: path
+        widget: path
