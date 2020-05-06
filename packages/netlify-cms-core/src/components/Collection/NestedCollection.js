@@ -58,7 +58,7 @@ const TreeNode = props => {
     }
     const title =
       depth > 0 ? node.children.find(c => !c.isDir && c.title)?.title || node.title : node.title;
-    const leaf = node.children.length <= 1 && !node.children[0]?.isDir;
+    const leaf = node.children.length <= 1 && !node.children[0]?.isDir && depth > 0;
     return (
       <React.Fragment key={node.path}>
         <TreeNavLink

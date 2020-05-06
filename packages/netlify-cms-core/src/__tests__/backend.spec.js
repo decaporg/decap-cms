@@ -5,7 +5,6 @@ import { Map, List, fromJS } from 'immutable';
 
 jest.mock('Lib/registry');
 jest.mock('netlify-cms-lib-util');
-jest.mock('Formats/formats');
 jest.mock('../lib/urlHelper');
 
 describe('Backend', () => {
@@ -179,7 +178,7 @@ describe('Backend', () => {
       const slug = 'slug';
 
       localForage.getItem.mockReturnValue({
-        raw: 'content',
+        raw: '---\ntitle: "Hello World"\n---\n',
       });
 
       const result = await backend.getLocalDraftBackup(collection, slug);
@@ -192,11 +191,11 @@ describe('Backend', () => {
           slug: 'slug',
           path: '',
           partial: false,
-          raw: 'content',
-          data: {},
+          raw: '---\ntitle: "Hello World"\n---\n',
+          data: { title: 'Hello World' },
           label: null,
-          metaData: null,
           isModification: null,
+          status: '',
           updatedOn: '',
         },
       });
@@ -218,7 +217,7 @@ describe('Backend', () => {
       const slug = 'slug';
 
       localForage.getItem.mockReturnValue({
-        raw: 'content',
+        raw: '---\ntitle: "Hello World"\n---\n',
         mediaFiles: [{ id: '1' }],
       });
 
@@ -232,11 +231,11 @@ describe('Backend', () => {
           slug: 'slug',
           path: '',
           partial: false,
-          raw: 'content',
-          data: {},
+          raw: '---\ntitle: "Hello World"\n---\n',
+          data: { title: 'Hello World' },
           label: null,
-          metaData: null,
           isModification: null,
+          status: '',
           updatedOn: '',
         },
       });
@@ -343,15 +342,15 @@ describe('Backend', () => {
   describe('unpublishedEntry', () => {
     it('should return unpublished entry', async () => {
       const unpublishedEntryResult = {
-        file: { path: 'path' },
-        isModification: true,
-        metaData: {},
-        mediaFiles: [{ id: '1' }],
-        data: 'content',
+        diffs: [{ path: 'index.md', newFile: true }, { path: 'netlify.png' }],
       };
       const implementation = {
         init: jest.fn(() => implementation),
         unpublishedEntry: jest.fn().mockResolvedValue(unpublishedEntryResult),
+        unpublishedEntryDataFile: jest
+          .fn()
+          .mockResolvedValueOnce('---\ntitle: "Hello World"\n---\n'),
+        unpublishedEntryMediaFile: jest.fn().mockResolvedValueOnce({ id: '1' }),
       };
       const config = Map({ media_folder: 'static/images' });
 
@@ -374,14 +373,14 @@ describe('Backend', () => {
         author: '',
         collection: 'posts',
         slug: '',
-        path: 'path',
+        path: 'index.md',
         partial: false,
-        raw: 'content',
-        data: {},
+        raw: '---\ntitle: "Hello World"\n---\n',
+        data: { title: 'Hello World' },
         label: null,
-        metaData: {},
         isModification: true,
         mediaFiles: [{ id: '1', draft: true }],
+        status: '',
         updatedOn: '',
       });
     });

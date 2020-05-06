@@ -159,6 +159,7 @@ type Diff = {
   path: string;
   newFile: boolean;
   sha: string;
+  binary: boolean;
 };
 
 const diffFromFile = (diff: Octokit.ReposCompareCommitsResponseFilesItem): Diff => {
@@ -166,6 +167,9 @@ const diffFromFile = (diff: Octokit.ReposCompareCommitsResponseFilesItem): Diff 
     path: diff.filename,
     newFile: diff.status === 'added',
     sha: diff.sha,
+    // media files diffs don't have a patch attribute, except svg files
+    // renamed files don't have a patch attribute too
+    binary: (diff.status !== 'renamed' && !diff.patch) || diff.filename.endsWith('.svg'),
   };
 };
 
@@ -983,10 +987,9 @@ export default class API {
       );
 
       const diffs = diffFiles.map(diffFromFile);
-
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
-      for (const diff of diffs) {
+      for (const diff of diffs.filter(d => d.binary)) {
         if (!mediaFilesList.some(file => file.path === diff.path)) {
           mediaFilesToRemove.push({ path: diff.path, sha: null });
         }
@@ -1349,21 +1352,21 @@ export default class API {
     return Promise.resolve(Base64.encode(str));
   }
 
-  uploadBlob(item: { raw?: string; sha?: string; toBase64?: () => Promise<string> }) {
-    const content = result(item, 'toBase64', partial(this.toBase64, item.raw as string));
-
-    return content.then(contentBase64 =>
-      this.request(`${this.repoURL}/git/blobs`, {
-        method: 'POST',
-        body: JSON.stringify({
-          content: contentBase64,
-          encoding: 'base64',
-        }),
-      }).then(response => {
-        item.sha = response.sha;
-        return item;
-      }),
+  async uploadBlob(item: { raw?: string; sha?: string; toBase64?: () => Promise<string> }) {
+    const contentBase64 = await result(
+      item,
+      'toBase64',
+      partial(this.toBase64, item.raw as string),
     );
+    const response = await this.request(`${this.repoURL}/git/blobs`, {
+      method: 'POST',
+      body: JSON.stringify({
+        content: contentBase64,
+        encoding: 'base64',
+      }),
+    });
+    item.sha = response.sha;
+    return item;
   }
 
   async updateTree(

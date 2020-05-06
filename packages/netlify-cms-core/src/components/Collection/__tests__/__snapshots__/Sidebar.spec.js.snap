@@ -301,6 +301,9 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
 
 .emotion-6 mocked-icon {
   margin-right: 8px;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
 }
 
 .emotion-6:hover,

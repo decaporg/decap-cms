@@ -428,7 +428,9 @@ export default class API {
       file_path: item.path,
       // eslint-disable-next-line @typescript-eslint/camelcase
       ...(item.oldPath ? { previous_path: item.oldPath } : {}),
-      ...(item.base64Content ? { content: item.base64Content, encoding: 'base64' } : {}),
+      ...(item.base64Content !== undefined
+        ? { content: item.base64Content, encoding: 'base64' }
+        : {}),
     }));
 
     const commitParams: CommitsParams = {
@@ -638,6 +640,7 @@ export default class API {
         newPath: d.new_path,
         newFile: d.new_file,
         path: d.new_path || d.old_path,
+        binary: d.diff.startsWith('Binary') || /.svg$/.test(d.new_path),
       };
     });
   }
@@ -737,9 +740,8 @@ export default class API {
         this.getCommitItems(files, branch),
         this.getDifferences(branch),
       ]);
-
       // mark files for deletion
-      for (const diff of diffs) {
+      for (const diff of diffs.filter(d => d.binary)) {
         if (!items.some(item => item.path === diff.path)) {
           items.push({ action: CommitAction.DELETE, path: diff.newPath });
         }

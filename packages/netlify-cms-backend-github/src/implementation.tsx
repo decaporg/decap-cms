@@ -547,25 +547,24 @@ export default class GitHub implements Implementation {
     };
   }
 
-  loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
+  async loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
     const readFile = (
       path: string,
       id: string | null | undefined,
       { parseText }: { parseText: boolean },
     ) => this.api!.readFile(path, id, { branch, parseText });
 
-    return getMediaAsBlob(file.path, file.id, readFile).then(blob => {
-      const name = basename(file.path);
-      const fileObj = blobToFileObj(name, blob);
-      return {
-        id: file.id,
-        displayURL: URL.createObjectURL(fileObj),
-        path: file.path,
-        name,
-        size: fileObj.size,
-        file: fileObj,
-      };
-    });
+    const blob = await getMediaAsBlob(file.path, file.id, readFile);
+    const name = basename(file.path);
+    const fileObj = blobToFileObj(name, blob);
+    return {
+      id: file.id,
+      displayURL: URL.createObjectURL(fileObj),
+      path: file.path,
+      name,
+      size: fileObj.size,
+      file: fileObj,
+    };
   }
 
   async unpublishedEntries() {

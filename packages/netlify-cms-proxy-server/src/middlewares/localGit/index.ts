@@ -136,9 +136,9 @@ const getDiffs = async (git: simpleGit.SimpleGit, source: string, dest: string) 
       newFile: d.status === 'added',
       path,
       id: path,
+      binary: d.binary || /.svg$/.test(path),
     };
   });
-  console.log(JSON.stringify(diffs));
   return diffs;
 };
 
@@ -292,7 +292,9 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
               await rebase(git, branch);
               const diffs = await getDiffs(git, branch, cmsBranch);
               // delete media files that have been removed from the entry
-              const toDelete = diffs.filter(f => !assets.map(a => a.path).includes(f.path));
+              const toDelete = diffs.filter(
+                d => d.binary && !assets.map(a => a.path).includes(d.path),
+              );
               await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
               await commitEntry(git, repoPath, entry, assets, options.commitMessage);
 

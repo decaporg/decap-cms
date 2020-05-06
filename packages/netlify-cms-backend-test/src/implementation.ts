@@ -303,29 +303,18 @@ export default class TestBackend implements Implementation {
     if (options.useWorkflow) {
       const key = `${options.collectionName}/${slug}`;
       const currentEntry = window.repoFilesUnpublished[key];
-      if (currentEntry) {
-        this.addOrUpdateUnpublishedEntry(
-          key,
-          path,
-          newPath,
-          raw,
-          assetProxies,
-          slug,
-          options.collectionName as string,
-          currentEntry.status,
-        );
-      } else {
-        this.addOrUpdateUnpublishedEntry(
-          key,
-          path,
-          newPath,
-          raw,
-          assetProxies,
-          slug,
-          options.collectionName as string,
-          (options.status || this.options.initialWorkflowStatus) as string,
-        );
-      }
+      const status =
+        currentEntry?.status || options.status || (this.options.initialWorkflowStatus as string);
+      this.addOrUpdateUnpublishedEntry(
+        key,
+        path,
+        newPath,
+        raw,
+        assetProxies,
+        slug,
+        options.collectionName as string,
+        status,
+      );
       return Promise.resolve();
     }
 
