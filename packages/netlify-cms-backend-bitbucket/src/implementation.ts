@@ -23,7 +23,6 @@ import {
   Config,
   ImplementationFile,
   unpublishedEntries,
-  UnpublishedEntryMediaFile,
   runWithLock,
   AsyncLock,
   asyncLock,
@@ -510,25 +509,26 @@ export default class BitbucketBackend implements Implementation {
     });
   }
 
-  loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
-    const readFile = (
+  async loadMediaFile(path: string, id: string, { branch }: { branch: string }) {
+    const readFile = async (
       path: string,
       id: string | null | undefined,
       { parseText }: { parseText: boolean },
-    ) => this.api!.readFile(path, id, { branch, parseText });
-
-    return getMediaAsBlob(file.path, null, readFile).then(blob => {
-      const name = basename(file.path);
-      const fileObj = blobToFileObj(name, blob);
-      return {
-        id: file.path,
-        displayURL: URL.createObjectURL(fileObj),
-        path: file.path,
-        name,
-        size: fileObj.size,
-        file: fileObj,
-      };
-    });
+    ) => {
+      const content = await this.api!.readFile(path, id, { branch, parseText });
+      return content;
+    };
+    const blob = await getMediaAsBlob(path, id, readFile);
+    const name = basename(path);
+    const fileObj = blobToFileObj(name, blob);
+    return {
+      id: path,
+      displayURL: URL.createObjectURL(fileObj),
+      path,
+      name,
+      size: fileObj.size,
+      file: fileObj,
+    };
   }
 
   async unpublishedEntries() {
@@ -576,7 +576,7 @@ export default class BitbucketBackend implements Implementation {
 
   async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
     const branch = this.getBranch(collection, slug);
-    const mediaFile = await this.loadMediaFile(branch, { path, id });
+    const mediaFile = await this.loadMediaFile(path, id, { branch });
     return mediaFile;
   }
 

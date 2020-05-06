@@ -8,6 +8,8 @@ const allowedActions = [
   'getEntry',
   'unpublishedEntries',
   'unpublishedEntry',
+  'unpublishedEntryDataFile',
+  'unpublishedEntryMediaFile',
   'deleteUnpublishedEntry',
   'persistEntry',
   'updateUnpublishedEntryStatus',
@@ -77,8 +79,31 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         is: 'unpublishedEntry',
         then: defaultParams
           .keys({
+            id: Joi.string().optional(),
+            collection: Joi.string().optional(),
+            slug: Joi.string().optional(),
+          })
+          .required(),
+      },
+      {
+        is: 'unpublishedEntryDataFile',
+        then: defaultParams
+          .keys({
             collection,
             slug,
+            id: requiredString,
+            path: requiredString,
+          })
+          .required(),
+      },
+      {
+        is: 'unpublishedEntryMediaFile',
+        then: defaultParams
+          .keys({
+            collection,
+            slug,
+            id: requiredString,
+            path: requiredString,
           })
           .required(),
       },

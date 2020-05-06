@@ -564,18 +564,21 @@ export default class API {
       },
     });
 
-    return parse(rawDiff).map(d => {
-      const oldPath = d.oldPath?.replace(/b\//, '') || '';
-      const newPath = d.newPath?.replace(/b\//, '') || '';
-      const path = newPath || (oldPath as string);
-      return {
-        oldPath,
-        newPath,
-        status: d.status,
-        newFile: d.status === 'added',
-        path,
-      };
-    });
+    const diffs = parse(rawDiff)
+      .filter(d => d.status !== 'deleted')
+      .map(d => {
+        const oldPath = d.oldPath?.replace(/b\//, '') || '';
+        const newPath = d.newPath?.replace(/b\//, '') || '';
+        const path = newPath || (oldPath as string);
+        return {
+          oldPath,
+          newPath,
+          status: d.status,
+          newFile: d.status === 'added',
+          path,
+        };
+      });
+    return diffs;
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {

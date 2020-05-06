@@ -17,6 +17,26 @@ export type GetEntryParams = {
 };
 
 export type UnpublishedEntryParams = {
+  id?: string;
+  collection?: string;
+  slug?: string;
+};
+
+export type UnpublishedEntryDataFileParams = {
+  collection: string;
+  slug: string;
+  id: string;
+  path: string;
+};
+
+export type UnpublishedEntryMediaFileParams = {
+  collection: string;
+  slug: string;
+  id: string;
+  path: string;
+};
+
+export type DeleteEntryParams = {
   collection: string;
   slug: string;
 };

@@ -2,15 +2,15 @@ import express from 'express';
 import path from 'path';
 import { promises as fs } from 'fs';
 import {
-  parseContentKey,
   branchFromContentKey,
   generateContentKey,
   contentKeyFromBranch,
   CMS_BRANCH_PREFIX,
   statusToLabel,
   labelToStatus,
+  parseContentKey,
 } from 'netlify-cms-lib-util/src/APIUtils';
-
+import { parse } from 'what-the-diff';
 import { defaultSchema, joi } from '../joi';
 import {
   EntriesByFolderParams,
@@ -27,16 +27,19 @@ import {
   UpdateUnpublishedEntryStatusParams,
   Entry,
   GetMediaFileParams,
+  DeleteEntryParams,
+  UnpublishedEntryDataFileParams,
+  UnpublishedEntryMediaFileParams,
 } from '../types';
 // eslint-disable-next-line import/default
 import simpleGit from 'simple-git/promise';
 import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, writeFile } from '../utils/fs';
+import { listRepoFiles, writeFile, move } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
-const commit = async (git: simpleGit.SimpleGit, commitMessage: string, files: string[]) => {
-  await git.add(files);
-  await git.commit(commitMessage, files, {
+const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
+  await git.add('.');
+  await git.commit(commitMessage, undefined, {
     '--no-verify': true,
     '--no-gpg-sign': true,
   });
@@ -62,67 +65,8 @@ const runOnBranch = async <T>(git: simpleGit.SimpleGit, branch: string, func: ()
 
 const branchDescription = (branch: string) => `branch.${branch}.description`;
 
-const getEntryDataFromDiff = async (git: simpleGit.SimpleGit, branch: string, diff: string[]) => {
-  const contentKey = contentKeyFromBranch(branch);
-  const { collection, slug } = parseContentKey(contentKey);
-  const path = diff.find(d => d.includes(slug)) as string;
-  const mediaFiles = diff.filter(d => d !== path);
-  const label = await git.raw(['config', branchDescription(branch)]);
-  const status = label && labelToStatus(label.trim());
-
-  return {
-    slug,
-    metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
-  };
-};
-
 type Options = {
   repoPath: string;
-};
-
-const entriesFromDiffs = async (
-  git: simpleGit.SimpleGit,
-  branch: string,
-  repoPath: string,
-  cmsBranches: string[],
-  diffs: simpleGit.DiffResult[],
-) => {
-  const entries = [];
-  for (let i = 0; i < diffs.length; i++) {
-    const cmsBranch = cmsBranches[i];
-    const diff = diffs[i];
-    const data = await getEntryDataFromDiff(
-      git,
-      cmsBranch,
-      diff.files.map(f => f.file),
-    );
-    const entryPath = data.metaData.objects.entry.path;
-    const [entry] = await runOnBranch(git, cmsBranch, () =>
-      entriesFromFiles(repoPath, [{ path: entryPath }]),
-    );
-
-    const rawDiff = await git.diff([branch, cmsBranch, '--', entryPath]);
-    entries.push({
-      ...data,
-      ...entry,
-      isModification: !rawDiff.includes('new file'),
-    });
-  }
-
-  return entries;
-};
-
-const getEntryMediaFiles = async (
-  git: simpleGit.SimpleGit,
-  repoPath: string,
-  cmsBranch: string,
-  files: string[],
-) => {
-  const mediaFiles = await runOnBranch(git, cmsBranch, async () => {
-    const serializedFiles = await Promise.all(files.map(file => readMediaFile(repoPath, file)));
-    return serializedFiles;
-  });
-  return mediaFiles;
 };
 
 const commitEntry = async (
@@ -138,8 +82,12 @@ const commitEntry = async (
   await Promise.all(
     assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
   );
+  if (entry.newPath) {
+    await move(path.join(repoPath, entry.path), path.join(repoPath, entry.newPath));
+  }
+
   // commits files
-  await commit(git, commitMessage, [entry.path, ...assets.map(a => a.path)]);
+  await commit(git, commitMessage);
 };
 
 const rebase = async (git: simpleGit.SimpleGit, branch: string) => {
@@ -173,6 +121,25 @@ const merge = async (git: simpleGit.SimpleGit, from: string, to: string) => {
 const isBranchExists = async (git: simpleGit.SimpleGit, branch: string) => {
   const branchExists = await git.branchLocal().then(({ all }) => all.includes(branch));
   return branchExists;
+};
+
+const getDiffs = async (git: simpleGit.SimpleGit, source: string, dest: string) => {
+  const rawDiff = await git.diff([source, dest]);
+  const diffs = parse(rawDiff).map(d => {
+    const oldPath = d.oldPath?.replace(/b\//, '') || '';
+    const newPath = d.newPath?.replace(/b\//, '') || '';
+    const path = newPath || (oldPath as string);
+    return {
+      oldPath,
+      newPath,
+      status: d.status,
+      newFile: d.status === 'added',
+      path,
+      id: path,
+    };
+  });
+  console.log(JSON.stringify(diffs));
+  return diffs;
 };
 
 export const validateRepo = async ({ repoPath }: Options) => {
@@ -247,36 +214,53 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
           const cmsBranches = await git
             .branchLocal()
             .then(result => result.all.filter(b => b.startsWith(`${CMS_BRANCH_PREFIX}/`)));
-
-          const diffs = await Promise.all(
-            cmsBranches.map(cmsBranch => git.diffSummary([branch, cmsBranch])),
-          );
-          const entries = await entriesFromDiffs(git, branch, repoPath, cmsBranches, diffs);
-          res.json(entries);
+          res.json(cmsBranches.map(contentKeyFromBranch));
           break;
         }
         case 'unpublishedEntry': {
-          const { collection, slug } = body.params as UnpublishedEntryParams;
-          const contentKey = generateContentKey(collection, slug);
+          let { id, collection, slug } = body.params as UnpublishedEntryParams;
+          if (id) {
+            ({ collection, slug } = parseContentKey(id));
+          }
+          const contentKey = generateContentKey(collection as string, slug as string);
           const cmsBranch = branchFromContentKey(contentKey);
           const branchExists = await isBranchExists(git, cmsBranch);
           if (branchExists) {
-            const diff = await git.diffSummary([branch, cmsBranch]);
-            const [entry] = await entriesFromDiffs(git, branch, repoPath, [cmsBranch], [diff]);
-            const mediaFiles = await getEntryMediaFiles(
-              git,
-              repoPath,
-              cmsBranch,
-              entry.metaData.objects.entry.mediaFiles,
-            );
-            res.json({ ...entry, mediaFiles });
+            const diffs = await getDiffs(git, branch, cmsBranch);
+            const label = await git.raw(['config', branchDescription(cmsBranch)]);
+            const status = label && labelToStatus(label.trim());
+            const unpublishedEntry = {
+              collection,
+              slug,
+              status,
+              diffs,
+            };
+            res.json(unpublishedEntry);
           } else {
             return res.status(404).json({ message: 'Not Found' });
           }
           break;
         }
+        case 'unpublishedEntryDataFile': {
+          const { path, collection, slug } = body.params as UnpublishedEntryDataFileParams;
+          const contentKey = generateContentKey(collection as string, slug as string);
+          const cmsBranch = branchFromContentKey(contentKey);
+          const [entry] = await runOnBranch(git, cmsBranch, () =>
+            entriesFromFiles(repoPath, [{ path }]),
+          );
+          res.json({ data: entry.data });
+          break;
+        }
+        case 'unpublishedEntryMediaFile': {
+          const { path, collection, slug } = body.params as UnpublishedEntryMediaFileParams;
+          const contentKey = generateContentKey(collection as string, slug as string);
+          const cmsBranch = branchFromContentKey(contentKey);
+          const file = await runOnBranch(git, cmsBranch, () => readMediaFile(repoPath, path));
+          res.json(file);
+          break;
+        }
         case 'deleteUnpublishedEntry': {
-          const { collection, slug } = body.params as UnpublishedEntryParams;
+          const { collection, slug } = body.params as DeleteEntryParams;
           const contentKey = generateContentKey(collection, slug);
           const cmsBranch = branchFromContentKey(contentKey);
           const currentBranch = await getCurrentBranch(git);
@@ -306,27 +290,16 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
                 await git.checkoutLocalBranch(cmsBranch);
               }
               await rebase(git, branch);
-              const diff = await git.diffSummary([branch, cmsBranch]);
-              const data = await getEntryDataFromDiff(
-                git,
-                branch,
-                diff.files.map(f => f.file),
-              );
+              const diffs = await getDiffs(git, branch, cmsBranch);
               // delete media files that have been removed from the entry
-              const toDelete = data.metaData.objects.entry.mediaFiles.filter(
-                f => !assets.map(a => a.path).includes(f),
-              );
-              await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f))));
+              const toDelete = diffs.filter(f => !assets.map(a => a.path).includes(f.path));
+              await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
               await commitEntry(git, repoPath, entry, assets, options.commitMessage);
 
               // add status for new entries
-              if (!data.metaData.status) {
+              if (!branchExists) {
                 const description = statusToLabel(options.status);
                 await git.addConfig(branchDescription(cmsBranch), description);
-              }
-              // set path for new entries
-              if (!data.metaData.objects.entry.path) {
-                data.metaData.objects.entry.path = entry.path;
               }
             });
           }
@@ -382,7 +355,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
               path.join(repoPath, asset.path),
               Buffer.from(asset.content, asset.encoding),
             );
-            await commit(git, commitMessage, [asset.path]);
+            await commit(git, commitMessage);
             return readMediaFile(repoPath, asset.path);
           });
           res.json(file);
@@ -395,7 +368,7 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
           } = body.params as DeleteFileParams;
           await runOnBranch(git, branch, async () => {
             await fs.unlink(path.join(repoPath, filePath));
-            await commit(git, commitMessage, [filePath]);
+            await commit(git, commitMessage);
           });
           res.json({ message: `deleted file ${filePath}` });
           break;
