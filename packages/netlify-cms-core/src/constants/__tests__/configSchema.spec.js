@@ -316,5 +316,47 @@ describe('config', () => {
         }).not.toThrow();
       });
     });
+
+    it('should throw if collection meta is not a plain object', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ meta: [] }] }));
+      }).toThrowError("'collections[0].meta' should be object");
+    });
+
+    it('should throw if collection meta is an empty object', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ meta: {} }] }));
+      }).toThrowError("'collections[0].meta' should NOT have fewer than 1 properties");
+    });
+
+    it('should throw if collection meta is an empty object', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ meta: { path: {} } }] }));
+      }).toThrowError("'collections[0].meta.path' should have required property 'label'");
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, { collections: [{ meta: { path: { label: 'Label' } } }] }),
+        );
+      }).toThrowError("'collections[0].meta.path' should have required property 'widget'");
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ meta: { path: { label: 'Label', widget: 'widget' } } }],
+          }),
+        );
+      }).toThrowError("'collections[0].meta.path' should have required property 'index_file'");
+    });
+
+    it('should allow collection meta to have a path configuration', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [
+              { meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } } },
+            ],
+          }),
+        );
+      }).not.toThrow();
+    });
   });
 });
