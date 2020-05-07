@@ -392,6 +392,11 @@ exports[`NestedCollection should render correctly with no entries 1`] = `
       class="emotion-0 emotion-1"
     >
       Pages
+      <mocked-icon
+        direction="right"
+        size="small"
+        type="chevron"
+      />
     </div>
   </a>
 </DocumentFragment>

@@ -176,7 +176,8 @@ const prepareMetaPath = (path: string, collection: Collection) => {
   if (!collection.has('folder')) {
     return path;
   }
-  return dirname(path.substring(collection.get('folder')!.length + 1));
+  const dir = dirname(path);
+  return dir.substr(collection.get('folder')!.length + 1);
 };
 
 export class Backend {

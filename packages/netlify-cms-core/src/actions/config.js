@@ -90,6 +90,7 @@ export function applyDefaults(config) {
                 const field = value.withMutations(map => {
                   map.set('name', key);
                   map.set('meta', true);
+                  map.set('required', true);
                 });
                 metaFields.push(field);
               });

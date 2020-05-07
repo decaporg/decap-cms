@@ -193,6 +193,7 @@ describe('Backend', () => {
           partial: false,
           raw: '---\ntitle: "Hello World"\n---\n',
           data: { title: 'Hello World' },
+          meta: {},
           label: null,
           isModification: null,
           status: '',
@@ -233,6 +234,7 @@ describe('Backend', () => {
           partial: false,
           raw: '---\ntitle: "Hello World"\n---\n',
           data: { title: 'Hello World' },
+          meta: {},
           label: null,
           isModification: null,
           status: '',
@@ -342,7 +344,7 @@ describe('Backend', () => {
   describe('unpublishedEntry', () => {
     it('should return unpublished entry', async () => {
       const unpublishedEntryResult = {
-        diffs: [{ path: 'index.md', newFile: true }, { path: 'netlify.png' }],
+        diffs: [{ path: 'src/posts/index.md', newFile: true }, { path: 'netlify.png' }],
       };
       const implementation = {
         init: jest.fn(() => implementation),
@@ -356,8 +358,10 @@ describe('Backend', () => {
 
       const backend = new Backend(implementation, { config, backendName: 'github' });
 
-      const collection = Map({
+      const collection = fromJS({
         name: 'posts',
+        folder: 'src/posts',
+        fields: [],
       });
 
       const state = {
@@ -373,10 +377,11 @@ describe('Backend', () => {
         author: '',
         collection: 'posts',
         slug: '',
-        path: 'index.md',
+        path: 'src/posts/index.md',
         partial: false,
         raw: '---\ntitle: "Hello World"\n---\n',
         data: { title: 'Hello World' },
+        meta: { path: '' },
         label: null,
         isModification: true,
         mediaFiles: [{ id: '1', draft: true }],
