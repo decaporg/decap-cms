@@ -101,6 +101,8 @@ export function applyDefaults(config) {
 
           const files = collection.get('files');
           if (files) {
+            collection = collection.delete('nested');
+            collection = collection.delete('meta');
             collection = collection.set(
               'files',
               files.map(file => {

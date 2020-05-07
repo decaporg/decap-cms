@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq, trim, sortBy } from 'lodash';
+import { attempt, flatten, isError, uniq, trim, sortBy, get } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -115,7 +115,10 @@ export const slugFromCustomPath = (collection: Collection, customPath: string) =
 export const getCustomPath = (collection: Collection, entryDraft: EntryDraft) => {
   const meta = entryDraft.getIn(['entry', 'meta']);
   const path = meta && meta.get('path');
-  const customPath = path && join(collection.get('folder') as string, path);
+  const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
+  const extension = selectFolderEntryExtension(collection);
+  const customPath =
+    path && join(collection.get('folder') as string, path, `${indexFile}.${extension}`);
   return customPath;
 };
 
@@ -169,11 +172,11 @@ type Implementation = BackendImplementation & {
   init: (config: ImplementationConfig, options: ImplementationInitOptions) => Implementation;
 };
 
-const trimFolderPath = (path: string, collection: Collection) => {
+const prepareMetaPath = (path: string, collection: Collection) => {
   if (!collection.has('folder')) {
     return path;
   }
-  return path.substring(collection.get('folder')!.length + 1);
+  return dirname(path.substring(collection.get('folder')!.length + 1));
 };
 
 export class Backend {
@@ -531,7 +534,7 @@ export class Backend {
         raw,
         label,
         mediaFiles,
-        meta: { path: trimFolderPath(path, collection) },
+        meta: { path: prepareMetaPath(path, collection) },
       }),
     );
 
@@ -589,7 +592,7 @@ export class Backend {
       raw: loadedEntry.data,
       label,
       mediaFiles: [],
-      meta: { path: trimFolderPath(loadedEntry.file.path, collection) },
+      meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
     });
 
     entry = this.entryWithFormat(collection)(entry);
@@ -683,7 +686,7 @@ export class Backend {
       mediaFiles,
       updatedOn: entryData.timestamp,
       status: entryData.status,
-      meta: { path: trimFolderPath(path, collection) },
+      meta: { path: prepareMetaPath(path, collection) },
     });
 
     const entryWithFormat = this.entryWithFormat(collection)(entry);
