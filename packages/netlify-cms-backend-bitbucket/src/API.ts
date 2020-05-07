@@ -449,6 +449,10 @@ export default class API {
       const filesBranch = parentSha ? this.branch : branch;
       const files = await this.listAllFiles(sourceDir, 100, filesBranch);
       for (const file of files) {
+        // to move a file in Bitbucket we need to delete the old path
+        // and upload the file content to the new path
+        // NOTE: this is very wasteful, and also the Bitbucket `diff` API
+        // reports these files as deleted+added instead of renamed
         // delete current path
         formData.append('files', file.path);
         // create in new path
@@ -564,21 +568,19 @@ export default class API {
       },
     });
 
-    const diffs = parse(rawDiff)
-      .filter(d => d.status !== 'deleted')
-      .map(d => {
-        const oldPath = d.oldPath?.replace(/b\//, '') || '';
-        const newPath = d.newPath?.replace(/b\//, '') || '';
-        const path = newPath || (oldPath as string);
-        return {
-          oldPath,
-          newPath,
-          status: d.status,
-          newFile: d.status === 'added',
-          path,
-          binary: d.binary || /.svg$/.test(path),
-        };
-      });
+    const diffs = parse(rawDiff).map(d => {
+      const oldPath = d.oldPath?.replace(/b\//, '') || '';
+      const newPath = d.newPath?.replace(/b\//, '') || '';
+      const path = newPath || (oldPath as string);
+      return {
+        oldPath,
+        newPath,
+        status: d.status,
+        newFile: d.status === 'added',
+        path,
+        binary: d.binary || /.svg$/.test(path),
+      };
+    });
     return diffs;
   }
 
@@ -602,7 +604,7 @@ export default class API {
       // mark files for deletion
       const diffs = await this.getDifferences(branch);
       const toDelete: DeleteEntry[] = [];
-      for (const diff of diffs.filter(d => d.binary)) {
+      for (const diff of diffs.filter(d => d.binary && d.status !== 'deleted')) {
         if (!files.some(file => file.path === diff.path)) {
           toDelete.push({ path: diff.path, delete: true });
         }
@@ -691,7 +693,9 @@ export default class API {
       slug,
       status,
       // TODO: get real id
-      diffs: diffs.map(d => ({ path: d.path, newFile: d.newFile, id: '' })),
+      diffs: diffs
+        .filter(d => d.status !== 'deleted')
+        .map(d => ({ path: d.path, newFile: d.newFile, id: '' })),
       timestamp,
     };
   }
