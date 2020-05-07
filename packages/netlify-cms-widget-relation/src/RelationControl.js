@@ -165,7 +165,8 @@ export default class RelationControl extends React.Component {
         }))
       } else {
         // handle object list
-        options = this.parseHitOptions(data[fieldName])
+        const hits = options.map(item => ({ data: item }))
+        options = this.parseHitOptions(hits)
       }
 
       if (!this.allOptions) {
