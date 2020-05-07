@@ -148,13 +148,41 @@ export default class RelationControl extends React.Component {
     });
   };
 
+  loadFileOptions = debounce((term, callback) => {
+    const { field, loadEntry } = this.props;
+    const target = field.get('collection');
+    const [ collection, fileName, fieldName ] = target.split('.')
+
+    loadEntry(collection, fileName).then(({ data }) => {
+      let options = data[fieldName] || []
+
+      // handle simple array of string (from a simple list)
+      if (options.every(item => typeof item === 'string')) {
+        options = options.map(item => ({
+          data: item,
+          value: item,
+          label: item,
+        }))
+      } else {
+        // handle object list
+        options = this.parseHitOptions(data[fieldName])
+      }
+
+      if (!this.allOptions) {
+        this.allOptions = options
+      };
+
+      callback(options);
+    })
+  }, 500)
+
   loadOptions = debounce((term, callback) => {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
     const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
-
+    
     query(forID, collection, searchFieldsArray, term).then(({ payload }) => {
       let options =
         payload.response && payload.response.hits
@@ -183,10 +211,18 @@ export default class RelationControl extends React.Component {
       setInactiveStyle,
       queryHits,
     } = this.props;
+    const isFileCollection = field.get('collection').includes('.');
     const isMultiple = field.get('multiple', false);
     const isClearable = !field.get('required', true) || isMultiple;
 
-    const hits = queryHits.get(forID, []);
+    let hits = [];
+    let loadOptions;
+    if (isFileCollection) {
+      loadOptions = this.loadFileOptions;
+    } else {
+      hits = queryHits.get(forID, []);
+      loadOptions = this.loadOptions;
+    }
     const options = this.allOptions || this.parseHitOptions(hits);
     const selectedValue = getSelectedValue({
       options,
@@ -199,7 +235,7 @@ export default class RelationControl extends React.Component {
         value={selectedValue}
         inputId={forID}
         defaultOptions
-        loadOptions={this.loadOptions}
+        loadOptions={loadOptions}
         onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
