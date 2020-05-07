@@ -151,10 +151,10 @@ export default class RelationControl extends React.Component {
   loadFileOptions = debounce((term, callback) => {
     const { field, loadEntry } = this.props;
     const target = field.get('collection');
-    const [ collection, fileName, fieldName ] = target.split('.')
+    const [collection, fileName, fieldName] = target.split('.');
 
     loadEntry(collection, fileName).then(({ data }) => {
-      let options = data[fieldName] || []
+      let options = data[fieldName] || [];
 
       // handle simple array of string (from a simple list)
       if (options.every(item => typeof item === 'string')) {
@@ -162,20 +162,20 @@ export default class RelationControl extends React.Component {
           data: item,
           value: item,
           label: item,
-        }))
+        }));
       } else {
         // handle object list
-        const hits = options.map(item => ({ data: item }))
-        options = this.parseHitOptions(hits)
+        const hits = options.map(item => ({ data: item }));
+        options = this.parseHitOptions(hits);
       }
 
       if (!this.allOptions) {
-        this.allOptions = options
-      };
+        this.allOptions = options;
+      }
 
       callback(options);
-    })
-  }, 500)
+    });
+  }, 500);
 
   loadOptions = debounce((term, callback) => {
     const { field, query, forID } = this.props;
@@ -183,7 +183,7 @@ export default class RelationControl extends React.Component {
     const searchFields = field.get('searchFields');
     const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
-    
+
     query(forID, collection, searchFieldsArray, term).then(({ payload }) => {
       let options =
         payload.response && payload.response.hits

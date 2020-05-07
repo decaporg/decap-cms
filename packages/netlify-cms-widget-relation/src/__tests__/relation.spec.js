@@ -113,20 +113,26 @@ class RelationController extends React.Component {
   });
 
   loadEntry = jest.fn(() => {
-    return Promise.resolve({ data: {
-      simpleList: ['cat-one', 'cat-two', 'cat-three'],
-      objectList: [{
-        id: 'a',
-        name: 'name-A',
-      }, {
-        id: 'b',
-        name: 'name-B',
-      }, {
-        id: 'c',
-        name: 'name-C',
-      }]
-    } })
-  })
+    return Promise.resolve({
+      data: {
+        simpleList: ['cat-one', 'cat-two', 'cat-three'],
+        objectList: [
+          {
+            id: 'a',
+            name: 'name-A',
+          },
+          {
+            id: 'b',
+            name: 'name-B',
+          },
+          {
+            id: 'c',
+            name: 'name-C',
+          },
+        ],
+      },
+    });
+  });
 
   render() {
     return this.props.children({
@@ -148,7 +154,12 @@ function setup({ field, value }) {
   const helpers = render(
     <RelationController value={value}>
       {({ handleOnChange, value, query, queryHits, setQueryHits, loadEntry }) => {
-        renderArgs = { value, onChangeSpy: handleOnChange, setQueryHitsSpy: setQueryHits, loadEntrySpy: loadEntry };
+        renderArgs = {
+          value,
+          onChangeSpy: handleOnChange,
+          setQueryHitsSpy: setQueryHits,
+          loadEntrySpy: loadEntry,
+        };
         return (
           <RelationControl
             field={field}
@@ -339,7 +350,6 @@ describe('Relation widget', () => {
   });
 
   describe('with file collection', () => {
-    
     const simpleListFieldConfig = {
       name: 'post',
       collection: 'file.fileName.simpleList',
@@ -353,15 +363,15 @@ describe('Relation widget', () => {
     };
 
     it('should list content of a simple list', async () => {
-        const field = fromJS(simpleListFieldConfig);
-        const { getAllByText, input } = setup({ field });
-        fireEvent.keyDown(input, { key: 'ArrowDown' });
-    
-        await wait(() => {
-          expect(getAllByText(/cat/)).toHaveLength(3);
-        });
+      const field = fromJS(simpleListFieldConfig);
+      const { getAllByText, input } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await wait(() => {
+        expect(getAllByText(/cat/)).toHaveLength(3);
+      });
     });
-    
+
     it('should list the displayFields', async () => {
       const field = fromJS(objectListFieldConfig);
       const { getAllByText, input } = setup({ field });
@@ -369,7 +379,7 @@ describe('Relation widget', () => {
 
       await wait(() => {
         expect(getAllByText(/name/)).toHaveLength(3);
-      })
-    })
+      });
+    });
   });
 });
