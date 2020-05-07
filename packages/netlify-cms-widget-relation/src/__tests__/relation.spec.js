@@ -112,6 +112,12 @@ class RelationController extends React.Component {
     return Promise.resolve({ payload: { response: { hits: queryHits } } });
   });
 
+  loadEntry = jest.fn(() => {
+    return Promise.resolve({ data: {
+      categories: ['cat-one', 'cat-two', 'cat-three'],
+    } })
+  })
+
   render() {
     return this.props.children({
       value: this.state.value,
@@ -119,6 +125,7 @@ class RelationController extends React.Component {
       query: this.query,
       queryHits: this.state.queryHits,
       setQueryHits: this.setQueryHits,
+      loadEntry: this.loadEntry,
     });
   }
 }
@@ -130,7 +137,7 @@ function setup({ field, value }) {
 
   const helpers = render(
     <RelationController value={value}>
-      {({ handleOnChange, value, query, queryHits, setQueryHits }) => {
+      {({ handleOnChange, value, query, queryHits, setQueryHits, loadEntry }) => {
         renderArgs = { value, onChangeSpy: handleOnChange, setQueryHitsSpy: setQueryHits };
         return (
           <RelationControl
@@ -138,6 +145,7 @@ function setup({ field, value }) {
             value={value}
             query={query}
             queryHits={queryHits}
+            loadEntry={loadEntry}
             onChange={handleOnChange}
             forID="relation-field"
             classNameWrapper=""
@@ -318,5 +326,26 @@ describe('Relation widget', () => {
         expect(onChangeSpy).toHaveBeenCalledWith(value, metadata2);
       });
     });
+  });
+
+  describe('with file collection', () => {
+    
+    const fileFieldConfig = {
+      name: 'post',
+      collection: 'posts',
+      displayFields: ['title', 'slug'],
+      searchFields: ['title', 'body'],
+      valueField: 'title',
+    };
+
+    it('should list the correct options', async () => {
+        const field = fromJS(fileFieldConfig);
+        const { getAllByText, input } = setup({ field });
+        fireEvent.keyDown(input, { key: 'ArrowDown' });
+    
+        await wait(() => {
+          expect(getAllByText(/cat/)).toHaveLength(3);
+        });
+    })
   });
 });
