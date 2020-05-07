@@ -348,18 +348,6 @@ export function changeDraftField(
   };
 }
 
-export function changeDraftMeta(
-  field: string,
-  value: string,
-  metadata: Record<string, unknown>,
-  entries: EntryMap[],
-) {
-  return {
-    type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata, entries },
-  };
-}
-
 export function changeDraftFieldValidation(
   uniquefieldId: string,
   errors: { type: string; parentIds: string[]; message: string }[],
