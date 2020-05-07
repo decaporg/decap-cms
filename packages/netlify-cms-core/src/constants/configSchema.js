@@ -191,6 +191,9 @@ const getConfigSchema = () => ({
             },
             required: ['depth'],
           },
+          meta: {
+            type: 'object',
+          },
         },
         required: ['name', 'label'],
         oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],

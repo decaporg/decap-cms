@@ -113,10 +113,9 @@ export const slugFromCustomPath = (collection: Collection, customPath: string) =
 };
 
 export const getCustomPath = (collection: Collection, entryDraft: EntryDraft) => {
-  const fieldsMetaData = entryDraft.get('fieldsMetaData');
-  const customPath =
-    fieldsMetaData?.getIn(['path', 'path']) &&
-    join(collection.get('folder') as string, fieldsMetaData.getIn(['path', 'path']));
+  const meta = entryDraft.getIn(['entry', 'meta']);
+  const path = meta && meta.get('path');
+  const customPath = path && join(collection.get('folder') as string, path);
   return customPath;
 };
 
@@ -168,6 +167,13 @@ interface ImplementationInitOptions {
 
 type Implementation = BackendImplementation & {
   init: (config: ImplementationConfig, options: ImplementationInitOptions) => Implementation;
+};
+
+const trimFolderPath = (path: string, collection: Collection) => {
+  if (!collection.has('folder')) {
+    return path;
+  }
+  return path.substring(collection.get('folder')!.length + 1);
 };
 
 export class Backend {
@@ -521,7 +527,12 @@ export class Backend {
 
     const label = selectFileEntryLabel(collection, slug);
     const entry: EntryValue = this.entryWithFormat(collection)(
-      createEntry(collection.get('name'), slug, path, { raw, label, mediaFiles }),
+      createEntry(collection.get('name'), slug, path, {
+        raw,
+        label,
+        mediaFiles,
+        meta: { path: trimFolderPath(path, collection) },
+      }),
     );
 
     return { entry };
@@ -578,6 +589,7 @@ export class Backend {
       raw: loadedEntry.data,
       label,
       mediaFiles: [],
+      meta: { path: trimFolderPath(loadedEntry.file.path, collection) },
     });
 
     entry = this.entryWithFormat(collection)(entry);
@@ -671,6 +683,7 @@ export class Backend {
       mediaFiles,
       updatedOn: entryData.timestamp,
       status: entryData.status,
+      meta: { path: trimFolderPath(path, collection) },
     });
 
     const entryWithFormat = this.entryWithFormat(collection)(entry);

@@ -13,6 +13,7 @@ interface Options {
   author?: string;
   updatedOn?: string;
   status?: string;
+  meta?: { path?: string };
 }
 
 export interface EntryValue {
@@ -29,6 +30,7 @@ export interface EntryValue {
   author: string;
   updatedOn: string;
   status?: string;
+  meta: { path?: string };
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
@@ -45,6 +47,7 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     author: options.author || '',
     updatedOn: options.updatedOn || '',
     status: options.status || '',
+    meta: options.meta || {},
   };
 
   return returnObj;

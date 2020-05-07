@@ -96,6 +96,7 @@ export type EntryObject = {
   author?: string;
   updatedOn?: string;
   status: string;
+  meta: StaticallyTypedRecord<{ path: string }>;
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
@@ -120,6 +121,7 @@ export type EntryField = StaticallyTypedRecord<{
   media_folder?: string;
   public_folder?: string;
   comment?: string;
+  meta?: boolean;
 }>;
 
 export type EntryFields = List<EntryField>;

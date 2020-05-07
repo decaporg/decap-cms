@@ -83,6 +83,20 @@ export function applyDefaults(config) {
               traverseFields(collection.get('fields'), setDefaultPublicFolder),
             );
             collection = collection.set('folder', trim(folder, '/'));
+            if (collection.has('meta')) {
+              const fields = collection.get('fields');
+              const metaFields = [];
+              collection.get('meta').forEach((value, key) => {
+                const field = value.withMutations(map => {
+                  map.set('name', key);
+                  map.set('meta', true);
+                });
+                metaFields.push(field);
+              });
+              collection = collection.set('fields', fromJS([]).concat(metaFields, fields));
+            } else {
+              collection = collection.set('meta', Map());
+            }
           }
 
           const files = collection.get('files');
