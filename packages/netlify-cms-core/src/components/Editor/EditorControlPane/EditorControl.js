@@ -115,13 +115,25 @@ class EditorControl extends React.Component {
     t: PropTypes.func.isRequired,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
+    listCallback: PropTypes.func
   };
 
   state = {
     activeLabel: false,
+    children: []
   };
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
+
+  componentDidMount() {
+    if (this.props.listCallback) {
+      this.props.listCallback(this.uniqueFieldId);
+    }
+  }
+
+  listCallback = (uniqueId) => {
+    this.setState(state => ({children: [...state.children, uniqueId]}));
+  };
 
   render() {
     const {
@@ -163,7 +175,9 @@ class EditorControl extends React.Component {
     const isFieldOptional = field.get('required') === false;
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
+    const childErrors = this.state.children.some(c => fieldsErrors.has(c));
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
+
     return (
       <ClassNames>
         {({ css, cx }) => (
@@ -184,7 +198,7 @@ class EditorControl extends React.Component {
             )}
             <FieldLabel
               isActive={isSelected || this.state.styleActive}
-              hasErrors={!!errors}
+              hasErrors={!!errors || childErrors}
               htmlFor={this.uniqueFieldId}
             >
               {`${field.get('label', field.get('name'))}${
@@ -204,7 +218,7 @@ class EditorControl extends React.Component {
                 {
                   [css`
                     ${styleStrings.widgetError};
-                  `]: !!errors,
+                  `]: !!errors || childErrors,
                 },
               )}
               classNameWidget={css`
@@ -255,6 +269,8 @@ class EditorControl extends React.Component {
               onValidateObject={onValidateObject}
               isEditorComponent={isEditorComponent}
               isNewEditorComponent={isNewEditorComponent}
+              listCallback={this.listCallback}
+              listChildren={this.state.children}
               t={t}
             />
             {fieldHint && (

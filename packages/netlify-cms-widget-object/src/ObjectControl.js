@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
 import { Map, List } from 'immutable';
-import { ObjectWidgetTopBar, lengths } from 'netlify-cms-ui-default';
+import { ObjectWidgetTopBar, lengths, colors } from 'netlify-cms-ui-default';
 
 const styleStrings = {
   nestedObjectControl: `
@@ -36,6 +36,8 @@ export default class ObjectControl extends React.Component {
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
+    listCallback: PropTypes.func,
+    hasError: PropTypes.bool
   };
 
   static defaultProps = {
@@ -79,8 +81,8 @@ export default class ObjectControl extends React.Component {
       fieldsErrors,
       editorControl: EditorControl,
       controlRef,
+      listCallback
     } = this.props;
-
     if (field.get('widget') === 'hidden') {
       return null;
     }
@@ -99,6 +101,7 @@ export default class ObjectControl extends React.Component {
         onValidate={onValidateObject}
         processControlRef={controlRef && controlRef.bind(this)}
         controlRef={controlRef}
+        listCallback={listCallback}
       />
     );
   }
@@ -115,7 +118,7 @@ export default class ObjectControl extends React.Component {
   };
 
   render() {
-    const { field, forID, classNameWrapper, forList } = this.props;
+    const { field, forID, classNameWrapper, forList, hasError } = this.props;
     const collapsed = forList ? this.props.collapsed : this.state.collapsed;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
@@ -136,6 +139,8 @@ export default class ObjectControl extends React.Component {
                     ${styleStrings.nestedObjectControl}
                   `]: forList,
                 },
+                {[css`border-color: ${colors.textFieldBorder}`]: !hasError},
+
               )}
             >
               {forList ? null : (

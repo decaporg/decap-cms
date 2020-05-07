@@ -59,6 +59,8 @@ export default class Widget extends Component {
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
+    listCallback: PropTypes.func,
+    listChildren: PropTypes.arrayOf(PropTypes.string)
   };
 
   shouldComponentUpdate(nextProps) {

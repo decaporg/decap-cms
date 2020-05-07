@@ -106,6 +106,8 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
+    listCallback: PropTypes.func,
+    listChildren: PropTypes.arrayOf(PropTypes.string)
   };
 
   static defaultProps = {
@@ -421,12 +423,15 @@ export default class ListControl extends React.Component {
       fieldsErrors,
       controlRef,
       resolveWidget,
+      listCallback,
+      listChildren
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
     const collapsed = itemsCollapsed[index];
     const key = keys[index];
     let field = this.props.field;
+    const hasError = fieldsErrors.has(listChildren[index]);
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
@@ -448,7 +453,7 @@ export default class ListControl extends React.Component {
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
-        <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
+        <NestedObjectLabel collapsed={collapsed} error={hasError}>{this.objectLabel(item)}</NestedObjectLabel>
         <ClassNames>
           {({ css, cx }) => (
             <ObjectControl
@@ -472,6 +477,8 @@ export default class ListControl extends React.Component {
               validationKey={key}
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
+              listCallback={listCallback}
+              hasError={hasError}
             />
           )}
         </ClassNames>
