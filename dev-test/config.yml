@@ -66,10 +66,10 @@ collections: # A list of collections the CMS should be able to edit
             types:
               - label: 'Type 1 Object'
                 name: 'type_1_object'
-                summary: 'hi {{string}}, {{year}}'
+                summary: 'hi {{label}} {{fields.label}}'
                 widget: 'object'
                 fields:
-                  - { label: 'String', name: 'string', widget: 'string' }
+                  - { label: 'Label', name: 'label', widget: 'string' }
                   - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
                   - { label: 'Text', name: 'text', widget: 'text' }
               - label: 'Type 2 Object'
@@ -82,6 +82,7 @@ collections: # A list of collections the CMS should be able to edit
                   - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
               - label: 'Type 3 Object'
                 name: 'type_3_object'
+                summary: '3 {{date}}'
                 widget: 'object'
                 fields:
                   - { label: 'Date', name: 'date', widget: 'date' }

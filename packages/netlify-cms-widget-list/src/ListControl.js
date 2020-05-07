@@ -15,7 +15,7 @@ import {
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
 import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
-import { compileStringTemplate } from 'netlify-cms-core/dist/esm/lib/stringTemplate';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
@@ -321,11 +321,14 @@ export default class ListControl extends React.Component {
     const { field } = this.props;
     if (this.getValueType() === valueTypes.MIXED) {
       const itemType = getTypedFieldForValue(field, item);
-      const fallbackLabel = itemType.get('label');
-      const summaryTemplate = itemType.get('summary');
-      return summaryTemplate
-        ? compileStringTemplate(summaryTemplate, null, '', item)
-        : fallbackLabel;
+      const label = itemType.get('label', field.get('name'));
+      const summary = itemType.get('summary');
+      let labelReturn = label
+      if (summary) {
+        const data = item.set('label', label)
+        labelReturn = stringTemplate.compileStringTemplate(summary, null, '', data)
+      }
+      return labelReturn
     }
 
     const multiFields = field.get('fields');

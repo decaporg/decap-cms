@@ -22,6 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
+    "netlify-cms-lib-widgets": "^1.3.0",
     "react-sortable-hoc": "^1.0.0"
   },
   "peerDependencies": {
