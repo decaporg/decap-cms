@@ -45,8 +45,6 @@ collections: # A list of collections the CMS should be able to edit
         tagname: ''
 
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-    meta:
-      - { label: 'SEO Description', name: 'description', widget: 'text' }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
