@@ -21,7 +21,8 @@ import {
 } from 'Actions/mediaLibrary';
 import TreeUtils from 'immutable-treeutils';
 import Widget from './Widget';
-import {Seq} from "immutable";
+import { Seq } from 'immutable';
+const treeUtils = new TreeUtils();
 
 /**
  * This is a necessary bridge as we are still passing classnames to widgets
@@ -121,39 +122,42 @@ class EditorControl extends React.Component {
   };
 
   state = {
-    activeLabel: false
+    activeLabel: false,
   };
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
 
-  componentDidMount() {
-      const isList = this.props.field.get('widget') === 'list';
-      const node = {
-        id: this.uniqueFieldId,
-        field: this.props.field
-      };
-      if (isList && !this.props.parentId) {
-        this.props.addToEntryTreeMap(node);
-      } else if (this.props.parentId) {
-        this.props.addToEntryTreeMap(node, this.props.parentId);
-      }
+  constructor(props) {
+    super(props);
+    const { field, parentId } = this.props;
+    const isListOrObject = field.get('widget') === 'list' || field.get('widget') === 'object';
+    const node = {
+      id: this.uniqueFieldId,
+      field,
+    };
+    if (isListOrObject && !parentId) {
+      this.props.addToEntryTreeMap(node);
+    } else if (parentId) {
+      this.props.addToEntryTreeMap(node, parentId);
+    }
   }
 
   isAncestorOfFieldError = () => {
-    console.log('this.props.entryTreeMap', JSON.stringify(this.props.entryTreeMap));
-      const treeUtils = new TreeUtils();
-      for (const k of this.props.entryTreeMap.keys()) {
-        const keyPathToCurrNode = treeUtils.byId(this.props.entryTreeMap.get(k), this.uniqueFieldId);
-        if (keyPathToCurrNode) {
-          for (const j of this.props.fieldsErrors.keys()) {
-            const result = treeUtils.find(this.props.entryTreeMap, n => n.get('id') === j, Seq([k, ...keyPathToCurrNode]));
-            if (result) {
-              return true;
-            }
-          }
+    const keyPathToCurrNode = treeUtils.byId(this.props.entryTreeMap, this.uniqueFieldId);
+    if (keyPathToCurrNode) {
+      for (const j of this.props.fieldsErrors.keys()) {
+        if (
+          treeUtils.find(
+            this.props.entryTreeMap,
+            n => n.get('id') === j,
+            Seq([...keyPathToCurrNode]),
+          )
+        ) {
+          return true;
         }
       }
-      return false;
+    }
+    return false;
   };
 
   render() {
@@ -186,7 +190,8 @@ class EditorControl extends React.Component {
       isSelected,
       isEditorComponent,
       isNewEditorComponent,
-      // entryTreeMap,
+      entryTreeMap,
+      addToEntryTreeMap,
       t,
     } = this.props;
 
@@ -195,13 +200,13 @@ class EditorControl extends React.Component {
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
     const isFieldOptional = field.get('required') === false;
-    // const isList = this.props.field.get('widget') === 'list';
+    const isList = this.props.field.get('widget') === 'list';
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const childErrors = this.isAncestorOfFieldError();
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
-    // const treeUtils = new TreeUtils();
-    // const listErrors = isList && treeUtils.find(entryTreeMap.get())
+    const listNodePath =
+      isList && treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId);
 
     return (
       <ClassNames>
@@ -294,6 +299,9 @@ class EditorControl extends React.Component {
               onValidateObject={onValidateObject}
               isEditorComponent={isEditorComponent}
               isNewEditorComponent={isNewEditorComponent}
+              listNodePath={listNodePath}
+              entryTreeMap={entryTreeMap}
+              addToEntryTreeMap={addToEntryTreeMap}
               t={t}
             />
             {fieldHint && (

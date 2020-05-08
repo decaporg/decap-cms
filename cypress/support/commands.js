@@ -229,6 +229,12 @@ Cypress.Commands.add('loginAndNewPost', () => {
   cy.contains('a', 'New Post').click();
 });
 
+Cypress.Commands.add('loginAndNewKitchenSink', () => {
+  cy.login();
+  cy.contains('a', 'Kitchen Sink').click();
+  cy.contains('a', 'New Kitchen Sink').click();
+});
+
 Cypress.Commands.add('drag', { prevSubject: true }, subject => {
   return cy.wrap(subject).trigger('dragstart', {
     dataTransfer: {},

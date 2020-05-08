@@ -60,7 +60,7 @@ export default class Widget extends Component {
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     listCallback: PropTypes.func,
-    listChildren: PropTypes.arrayOf(PropTypes.string)
+    listChildren: PropTypes.arrayOf(PropTypes.string),
   };
 
   shouldComponentUpdate(nextProps) {
@@ -259,6 +259,9 @@ export default class Widget extends Component {
       controlRef,
       isEditorComponent,
       isNewEditorComponent,
+      listNodePath,
+      entryTreeMap,
+      addToEntryTreeMap,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -303,6 +306,9 @@ export default class Widget extends Component {
       isNewEditorComponent,
       fieldsErrors,
       controlRef,
+      listNodePath,
+      entryTreeMap,
+      addToEntryTreeMap,
       t,
     });
   }

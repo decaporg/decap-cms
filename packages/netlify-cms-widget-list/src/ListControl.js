@@ -106,8 +106,7 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
-    listCallback: PropTypes.func,
-    listChildren: PropTypes.arrayOf(PropTypes.string)
+    listNodePath: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -127,6 +126,15 @@ export default class ListControl extends React.Component {
       value: valueToString(value),
       keys,
     };
+  }
+
+  componentDidMount() {
+    for (const k of this.state.keys) {
+      this.props.addToEntryTreeMap({
+        id: k,
+        field: Map({ name: 'listControl', widget: 'listControl' }),
+      });
+    }
   }
 
   getValueType = () => {
@@ -186,10 +194,16 @@ export default class ListControl extends React.Component {
       this.getValueType() === valueTypes.SINGLE
         ? this.singleDefault()
         : fromJS(this.multipleDefault(field.get('fields')));
+
+    const id = uuid();
     this.setState({
       itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, uuid()],
+      keys: [...this.state.keys, id],
     });
+    this.props.addToEntryTreeMap(
+      { id, field: Map({ name: 'listControl', widget: 'listControl' }) },
+      this.props.forID,
+    );
     onChange((value || List()).push(parsedValue));
   };
 
@@ -204,10 +218,16 @@ export default class ListControl extends React.Component {
   handleAddType = (type, typeKey) => {
     const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
+
+    const id = uuid();
     this.setState({
       itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, uuid()],
+      keys: [...this.state.keys, id],
     });
+    this.props.addToEntryTreeMap(
+      { id, field: Map({ name: 'listControl', widget: 'listControl' }) },
+      this.props.forID,
+    );
     onChange((value || List()).push(parsedValue));
   };
 
@@ -423,15 +443,20 @@ export default class ListControl extends React.Component {
       fieldsErrors,
       controlRef,
       resolveWidget,
-      forID
+      listNodePath,
+      entryTreeMap,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
     const collapsed = itemsCollapsed[index];
     const key = keys[index];
     let field = this.props.field;
-    const hasError = false;
-    // fieldsErrors.has(listChildren[index]);
+
+    let hasError = false;
+    if (listNodePath) {
+      const items = entryTreeMap.getIn([...listNodePath, 'childNodes', index, 'childNodes']);
+      hasError = items?.toJS().some(n => fieldsErrors.has(n.id));
+    }
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
@@ -453,7 +478,9 @@ export default class ListControl extends React.Component {
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
-        <NestedObjectLabel collapsed={collapsed} error={hasError}>{this.objectLabel(item)}</NestedObjectLabel>
+        <NestedObjectLabel collapsed={collapsed} error={hasError}>
+          {this.objectLabel(item)}
+        </NestedObjectLabel>
         <ClassNames>
           {({ css, cx }) => (
             <ObjectControl
@@ -478,7 +505,7 @@ export default class ListControl extends React.Component {
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
               hasError={hasError}
-              forID={forID}
+              forID={key}
             />
           )}
         </ClassNames>

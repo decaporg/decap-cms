@@ -1,4 +1,4 @@
-import {Map, List, fromJS, Seq} from 'immutable';
+import { Map, List, fromJS, Seq } from 'immutable';
 import TreeUtils from 'immutable-treeutils';
 import uuid from 'uuid/v4';
 import {
@@ -17,31 +17,37 @@ import {
   ENTRY_DELETE_SUCCESS,
   ADD_DRAFT_ENTRY_MEDIA_FILE,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
-  ADD_TO_ENTRY_TREE_MAP
+  ADD_TO_ENTRY_TREE_MAP,
 } from 'Actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
 } from 'Actions/editorialWorkflow';
+const treeUtils = new TreeUtils(Seq['entryTreeMap']);
+
+export const generateNode = node => {
+  return Map({
+    id: node.id,
+    name: node.field.get('name'),
+    type: node.field.get('widget'),
+    childNodes: List(),
+  });
+};
+
+export const entryTreeMapRootNode = generateNode({
+  id: 'root',
+  field: Map({ name: 'root', widget: 'root' }),
+});
 
 const initialState = Map({
   entry: Map(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
-  entryTreeMap: Map(),
+  entryTreeMap: entryTreeMapRootNode,
   hasChanged: false,
   key: '',
 });
-
-const generateNode = (node) => {
-  return {
-    id: node.id,
-    name: node.field.get('name'),
-    type: node.field.get('widget'),
-    childNodes: List(),
-  }
-};
 
 const entryDraftReducer = (state = Map(), action) => {
   switch (action.type) {
@@ -52,7 +58,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], false);
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', Map());
+        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', false);
         state.set('key', uuid());
       });
@@ -63,7 +69,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], true);
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', Map());
+        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', false);
         state.set('key', uuid());
       });
@@ -77,7 +83,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], !backupEntry.get('path'));
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', Map());
+        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', true);
         state.set('key', uuid());
       });
@@ -89,7 +95,7 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', Map());
+        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', true);
       });
     case DRAFT_DISCARD:
@@ -173,40 +179,19 @@ const entryDraftReducer = (state = Map(), action) => {
     }
 
     case ADD_TO_ENTRY_TREE_MAP: {
-      const {control, parentId} = action.payload;
+      const { control, parentId = 'root' } = action.payload;
       const node = generateNode(control);
-
-      // add node as childNode of node with id === parentId
-      if (parentId) {
-        return state.withMutations(state => {
-          // parentId is a root node, so just add the new node to its childNodes
-          if (state.get('entryTreeMap').has(parentId)) {
-            return state.setIn(
-             ['entryTreeMap', parentId, 'childNodes'],
-              state.getIn(['entryTreeMap', parentId, 'childNodes']).push(Map(node))
-            );
-          } else { // parentId is deeper in the tree
-            for (const k of state.get('entryTreeMap').keys()) {
-              const treeUtils = new TreeUtils(Seq(['entryTreeMap', k]));
-              const keyPathToParent = treeUtils.find(
-                state,
-                n => n.get('id') === parentId,
-                Seq(['entryTreeMap', k])
-              );
-              if (keyPathToParent) {
-                return state.setIn(
-                  [...keyPathToParent, 'childNodes'],
-                  state.getIn([...keyPathToParent,'childNodes']).push(Map(node))
-                );
-              }
-            }
-            return state;
-          }
-        });
-      } else {
-        // set the root
-        return state.setIn(['entryTreeMap', node.id], Map(node));
-      }
+      return state.withMutations(state => {
+        const keyPathToParent = treeUtils.find(
+          state.get('entryTreeMap'),
+          n => n.get('id') === parentId,
+        );
+        if (keyPathToParent) {
+          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes'], list =>
+            list.push(node),
+          );
+        }
+      });
     }
 
     default:

@@ -36,7 +36,7 @@ export default class ObjectControl extends React.Component {
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
-    hasError: PropTypes.bool
+    hasError: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -137,8 +137,11 @@ export default class ObjectControl extends React.Component {
                     ${styleStrings.nestedObjectControl}
                   `]: forList,
                 },
-                {[css`border-color: ${colors.textFieldBorder}`]: !hasError},
-
+                {
+                  [css`
+                    border-color: ${colors.textFieldBorder};
+                  `]: forList ? !hasError : false,
+                },
               )}
             >
               {forList ? null : (
