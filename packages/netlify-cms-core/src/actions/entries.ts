@@ -27,6 +27,7 @@ import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
+import { StaticallyTypedRecord } from '../types/immutable';
 
 const { notifSend } = notifActions;
 
@@ -344,6 +345,16 @@ export function changeDraftField(
   return {
     type: DRAFT_CHANGE_FIELD,
     payload: { field, value, metadata, entries },
+  };
+}
+
+export function addToEntryTreeMap(
+  control: { id: string; field: StaticallyTypedRecord<EntryField> },
+  parentId?: string,
+) {
+  return {
+    type: ADD_TO_ENTRY_TREE_MAP,
+    payload: { control, parentId },
   };
 }
 

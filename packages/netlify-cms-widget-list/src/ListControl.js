@@ -423,15 +423,15 @@ export default class ListControl extends React.Component {
       fieldsErrors,
       controlRef,
       resolveWidget,
-      listCallback,
-      listChildren
+      forID
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
     const collapsed = itemsCollapsed[index];
     const key = keys[index];
     let field = this.props.field;
-    const hasError = fieldsErrors.has(listChildren[index]);
+    const hasError = false;
+    // fieldsErrors.has(listChildren[index]);
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
@@ -477,8 +477,8 @@ export default class ListControl extends React.Component {
               validationKey={key}
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
-              listCallback={listCallback}
               hasError={hasError}
+              forID={forID}
             />
           )}
         </ClassNames>

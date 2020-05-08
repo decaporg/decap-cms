@@ -34,6 +34,7 @@
     "gray-matter": "^4.0.2",
     "history": "^4.7.2",
     "immer": "^3.1.3",
+    "immutable-treeutils": "^1.2.0",
     "js-base64": "^2.5.1",
     "jwt-decode": "^2.1.0",
     "node-polyglot": "^2.3.0",

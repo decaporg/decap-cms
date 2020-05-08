@@ -36,7 +36,6 @@ export default class ObjectControl extends React.Component {
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
-    listCallback: PropTypes.func,
     hasError: PropTypes.bool
   };
 
@@ -81,7 +80,6 @@ export default class ObjectControl extends React.Component {
       fieldsErrors,
       editorControl: EditorControl,
       controlRef,
-      listCallback
     } = this.props;
     if (field.get('widget') === 'hidden') {
       return null;
@@ -101,7 +99,7 @@ export default class ObjectControl extends React.Component {
         onValidate={onValidateObject}
         processControlRef={controlRef && controlRef.bind(this)}
         controlRef={controlRef}
-        listCallback={listCallback}
+        parentId={this.props.forID}
       />
     );
   }
