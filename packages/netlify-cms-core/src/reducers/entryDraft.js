@@ -18,6 +18,7 @@ import {
   ADD_DRAFT_ENTRY_MEDIA_FILE,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
   ADD_TO_ENTRY_TREE_MAP,
+  REMOVE_FROM_ENTRY_TREE_MAP,
 } from 'Actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
@@ -190,6 +191,16 @@ const entryDraftReducer = (state = Map(), action) => {
           state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes'], list =>
             list.push(node),
           );
+        }
+      });
+    }
+
+    case REMOVE_FROM_ENTRY_TREE_MAP: {
+      const { id, parentListPath = Seq() } = action.payload;
+      return state.withMutations(state => {
+        const pathToNode = treeUtils.find(state.get('entryTreeMap'), n => n.get('id') === id, parentListPath);
+        if (pathToNode) {
+          state.deleteIn(['entryTreeMap', ...pathToNode]);
         }
       });
     }

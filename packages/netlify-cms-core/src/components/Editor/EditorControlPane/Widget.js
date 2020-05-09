@@ -59,8 +59,10 @@ export default class Widget extends Component {
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
-    listCallback: PropTypes.func,
-    listChildren: PropTypes.arrayOf(PropTypes.string),
+    listNodePath: ImmutablePropTypes.seq,
+    entryTreeMap: ImmutablePropTypes.map.isRequired,
+    addToEntryTreeMap: PropTypes.func.isRequired,
+    removeFromEntryTreeMap: PropTypes.func.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -262,6 +264,7 @@ export default class Widget extends Component {
       listNodePath,
       entryTreeMap,
       addToEntryTreeMap,
+      removeFromEntryTreeMap,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -309,6 +312,7 @@ export default class Widget extends Component {
       listNodePath,
       entryTreeMap,
       addToEntryTreeMap,
+      removeFromEntryTreeMap,
       t,
     });
   }

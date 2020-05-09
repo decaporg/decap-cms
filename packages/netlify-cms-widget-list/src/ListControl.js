@@ -106,7 +106,10 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
-    listNodePath: PropTypes.arrayOf(PropTypes.string),
+    listNodePath: ImmutablePropTypes.seq,
+    entryTreeMap: ImmutablePropTypes.map.isRequired,
+    addToEntryTreeMap: PropTypes.func.isRequired,
+    removeFromEntryTreeMap: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -323,9 +326,9 @@ export default class ListControl extends React.Component {
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
         : metadata;
 
+    this.props.removeFromEntryTreeMap(this.state.keys[index], this.props.listNodePath);
     itemsCollapsed.splice(index, 1);
     keys.splice(index, 1);
-
     this.setState({ itemsCollapsed: [...itemsCollapsed], keys: [...keys] });
 
     onChange(value.remove(index), parsedMetadata);

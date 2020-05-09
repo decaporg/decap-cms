@@ -9,7 +9,7 @@ import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { clearFieldErrors, tryLoadEntry, addToEntryTreeMap } from 'Actions/entries';
+import { clearFieldErrors, tryLoadEntry, addToEntryTreeMap, removeFromEntryTreeMap } from 'Actions/entries';
 import { addAsset, boundGetAsset } from 'Actions/media';
 import { selectIsLoadingAsset } from 'Reducers/medias';
 import { query, clearSearch } from 'Actions/search';
@@ -119,6 +119,7 @@ class EditorControl extends React.Component {
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     parentId: PropTypes.string,
+    addToEntryTreeMap: PropTypes.func.isRequired
   };
 
   state = {
@@ -192,6 +193,7 @@ class EditorControl extends React.Component {
       isNewEditorComponent,
       entryTreeMap,
       addToEntryTreeMap,
+      removeFromEntryTreeMap,
       t,
     } = this.props;
 
@@ -201,12 +203,13 @@ class EditorControl extends React.Component {
     const fieldHint = field.get('hint');
     const isFieldOptional = field.get('required') === false;
     const isList = this.props.field.get('widget') === 'list';
+    const isListOrObject = field.get('widget') === 'list' || field.get('widget') === 'object';
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
-    const childErrors = this.isAncestorOfFieldError();
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
+    const childErrors = isListOrObject && this.isAncestorOfFieldError();
     const listNodePath =
-      isList && treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId);
+      isList ? treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId) : undefined;
 
     return (
       <ClassNames>
@@ -302,6 +305,7 @@ class EditorControl extends React.Component {
               listNodePath={listNodePath}
               entryTreeMap={entryTreeMap}
               addToEntryTreeMap={addToEntryTreeMap}
+              removeFromEntryTreeMap={removeFromEntryTreeMap}
               t={t}
             />
             {fieldHint && (
@@ -358,6 +362,7 @@ const mapDispatchToProps = dispatch => {
       clearSearch,
       clearFieldErrors,
       addToEntryTreeMap,
+      removeFromEntryTreeMap,
     },
     dispatch,
   );
