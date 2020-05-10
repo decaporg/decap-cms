@@ -9,7 +9,13 @@ import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { clearFieldErrors, tryLoadEntry, addToEntryTreeMap, removeFromEntryTreeMap } from 'Actions/entries';
+import {
+  clearFieldErrors,
+  tryLoadEntry,
+  addToEntryTreeMap,
+  swapNodesInEntryTreeMap,
+  removeFromEntryTreeMap,
+} from 'Actions/entries';
 import { addAsset, boundGetAsset } from 'Actions/media';
 import { selectIsLoadingAsset } from 'Reducers/medias';
 import { query, clearSearch } from 'Actions/search';
@@ -119,7 +125,9 @@ class EditorControl extends React.Component {
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     parentId: PropTypes.string,
-    addToEntryTreeMap: PropTypes.func.isRequired
+    addToEntryTreeMap: PropTypes.func.isRequired,
+    swapNodesInEntryTreeMap: PropTypes.func.isRequired,
+    removeFromEntryTreeMap: PropTypes.func.isRequired,
   };
 
   state = {
@@ -127,38 +135,35 @@ class EditorControl extends React.Component {
   };
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
+  isList = this.props.field.get('widget') === 'list';
+  isListOrObject = this.isList || this.props.field.get('widget') === 'object';
 
   constructor(props) {
     super(props);
-    const { field, parentId } = this.props;
-    const isListOrObject = field.get('widget') === 'list' || field.get('widget') === 'object';
-    const node = {
-      id: this.uniqueFieldId,
-      field,
-    };
-    if (isListOrObject && !parentId) {
-      this.props.addToEntryTreeMap(node);
+    const { field, parentId, addToEntryTreeMap } = this.props;
+    const node = { id: this.uniqueFieldId, field };
+
+    if (this.isListOrObject && !parentId) {
+      addToEntryTreeMap(node);
     } else if (parentId) {
-      this.props.addToEntryTreeMap(node, parentId);
+      addToEntryTreeMap(node, parentId);
     }
   }
 
   isAncestorOfFieldError = () => {
+    const { entryTreeMap, fieldsErrors } = this.props;
     const keyPathToCurrNode = treeUtils.byId(this.props.entryTreeMap, this.uniqueFieldId);
+    let isAncestor = false;
     if (keyPathToCurrNode) {
-      for (const j of this.props.fieldsErrors.keys()) {
-        if (
-          treeUtils.find(
-            this.props.entryTreeMap,
-            n => n.get('id') === j,
-            Seq([...keyPathToCurrNode]),
-          )
-        ) {
-          return true;
-        }
+      for (const j of fieldsErrors.keys()) {
+        isAncestor = treeUtils.find(
+          entryTreeMap,
+          n => n.get('id') === j,
+          Seq([...keyPathToCurrNode]),
+        );
       }
     }
-    return false;
+    return isAncestor;
   };
 
   render() {
@@ -193,6 +198,7 @@ class EditorControl extends React.Component {
       isNewEditorComponent,
       entryTreeMap,
       addToEntryTreeMap,
+      swapNodesInEntryTreeMap,
       removeFromEntryTreeMap,
       t,
     } = this.props;
@@ -202,14 +208,13 @@ class EditorControl extends React.Component {
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
     const isFieldOptional = field.get('required') === false;
-    const isList = this.props.field.get('widget') === 'list';
-    const isListOrObject = field.get('widget') === 'list' || field.get('widget') === 'object';
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
-    const childErrors = isListOrObject && this.isAncestorOfFieldError();
-    const listNodePath =
-      isList ? treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId) : undefined;
+    const childErrors = this.isListOrObject && this.isAncestorOfFieldError();
+    const listNodePath = this.isList
+      ? treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId)
+      : undefined;
 
     return (
       <ClassNames>
@@ -305,6 +310,7 @@ class EditorControl extends React.Component {
               listNodePath={listNodePath}
               entryTreeMap={entryTreeMap}
               addToEntryTreeMap={addToEntryTreeMap}
+              swapNodesInEntryTreeMap={swapNodesInEntryTreeMap}
               removeFromEntryTreeMap={removeFromEntryTreeMap}
               t={t}
             />
@@ -362,6 +368,7 @@ const mapDispatchToProps = dispatch => {
       clearSearch,
       clearFieldErrors,
       addToEntryTreeMap,
+      swapNodesInEntryTreeMap,
       removeFromEntryTreeMap,
     },
     dispatch,

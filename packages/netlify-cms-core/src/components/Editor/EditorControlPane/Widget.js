@@ -62,6 +62,7 @@ export default class Widget extends Component {
     listNodePath: ImmutablePropTypes.seq,
     entryTreeMap: ImmutablePropTypes.map.isRequired,
     addToEntryTreeMap: PropTypes.func.isRequired,
+    swapNodesInEntryTreeMap: PropTypes.func.isRequired,
     removeFromEntryTreeMap: PropTypes.func.isRequired,
   };
 
@@ -264,6 +265,7 @@ export default class Widget extends Component {
       listNodePath,
       entryTreeMap,
       addToEntryTreeMap,
+      swapNodesInEntryTreeMap,
       removeFromEntryTreeMap,
       t,
     } = this.props;
@@ -312,6 +314,7 @@ export default class Widget extends Component {
       listNodePath,
       entryTreeMap,
       addToEntryTreeMap,
+      swapNodesInEntryTreeMap,
       removeFromEntryTreeMap,
       t,
     });

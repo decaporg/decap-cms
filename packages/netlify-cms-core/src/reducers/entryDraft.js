@@ -19,6 +19,7 @@ import {
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
   ADD_TO_ENTRY_TREE_MAP,
   REMOVE_FROM_ENTRY_TREE_MAP,
+  SWAP_NODES_IN_ENTRY_TREE_MAP,
 } from 'Actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
@@ -182,6 +183,7 @@ const entryDraftReducer = (state = Map(), action) => {
     case ADD_TO_ENTRY_TREE_MAP: {
       const { control, parentId = 'root' } = action.payload;
       const node = generateNode(control);
+
       return state.withMutations(state => {
         const keyPathToParent = treeUtils.find(
           state.get('entryTreeMap'),
@@ -195,10 +197,37 @@ const entryDraftReducer = (state = Map(), action) => {
       });
     }
 
+    case SWAP_NODES_IN_ENTRY_TREE_MAP: {
+      const { parentId, oldIndex, newIndex, oldId, newId } = action.payload;
+
+      return state.withMutations(state => {
+        const keyPathToParent = treeUtils.find(
+          state.get('entryTreeMap'),
+          n => n.get('id') === parentId,
+        );
+        if (keyPathToParent) {
+          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes'], list => {
+            const temp = list.get(oldIndex);
+            return list.set(oldIndex, list.get(newIndex)).set(newIndex, temp);
+          });
+          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes', oldIndex], node =>
+            node.set('id', oldId),
+          );
+          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes', newIndex], node =>
+            node.set('id', newId),
+          );
+        }
+      });
+    }
+
     case REMOVE_FROM_ENTRY_TREE_MAP: {
       const { id, parentListPath = Seq() } = action.payload;
       return state.withMutations(state => {
-        const pathToNode = treeUtils.find(state.get('entryTreeMap'), n => n.get('id') === id, parentListPath);
+        const pathToNode = treeUtils.find(
+          state.get('entryTreeMap'),
+          n => n.get('id') === id,
+          parentListPath,
+        );
         if (pathToNode) {
           state.deleteIn(['entryTreeMap', ...pathToNode]);
         }

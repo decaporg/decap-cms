@@ -1,6 +1,6 @@
 import { Map, fromJS } from 'immutable';
 import * as actions from 'Actions/entries';
-import reducer, {entryTreeMapRootNode} from '../entryDraft';
+import reducer, { entryTreeMapRootNode } from '../entryDraft';
 
 jest.mock('uuid/v4', () => jest.fn(() => '1'));
 
