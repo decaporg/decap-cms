@@ -22,21 +22,17 @@ const FilterButton = styled(StyledDropdownButton)`
 const FilterControl = ({ fields }) => {
   return (
     <Dropdown
-      renderButton={() => { return <FilterButton>Filter</FilterButton>; }}
+      renderButton={() => {
+        return <FilterButton>Filter</FilterButton>;
+      }}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
       dropdownWidth="160px"
       dropdownPosition="left"
     >
-      {fields.map(
-        field => (
-          <DropdownCheckedItem
-            key={field.key}
-            label={field.label}
-            id={field.id}
-          />
-        )
-      )}
+      {fields.map(field => (
+        <DropdownCheckedItem key={field.key} label={field.label} id={field.id} />
+      ))}
     </Dropdown>
   );
 };

@@ -48,7 +48,7 @@ const DropdownList = styled.ul`
   `};
 `;
 
-const StyledMenuItem = ({ isActive, isCheckedItem=false, ...props }) => (
+const StyledMenuItem = ({ isActive, isCheckedItem = false, ...props }) => (
   <MenuItem
     css={css`
       ${components.dropdownItem};
@@ -131,7 +131,7 @@ DropdownItem.propTypes = {
 
 const DropdownCheckedItem = ({ label, id }) => {
   const [checked, setChecked] = useState(false);
-  
+
   return (
     <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={() => setChecked(!checked)}>
       <input readOnly checked={checked} type="checkbox" id={id} />
