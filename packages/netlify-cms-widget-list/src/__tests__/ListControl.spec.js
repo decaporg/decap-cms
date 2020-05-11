@@ -363,24 +363,11 @@ describe('ListControl', () => {
       name: 'list',
       label: 'List',
       collapsed: true,
-      field: {
-        name: 'first_and_last_name',
-        widget: 'object',
-        fields: [
-          { name: 'first_name', widget: 'string', label: 'First Name' },
-          { name: 'last_name', widget: 'string', label: 'Last Name' },
-        ],
-      },
+      field: { name: 'name', widget: 'string' },
     });
 
-    const { getByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { first_name: 'hello', last_name: 'world' } }])}
-      />,
-    );
-    expect(getByText('first_and_last_name')).toBeInTheDocument();
+    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
+    expect(getByText('name')).toBeInTheDocument();
   });
 
   it('should use label when no summary is configured for a single field', () => {
@@ -388,25 +375,11 @@ describe('ListControl', () => {
       name: 'list',
       label: 'List',
       collapsed: true,
-      field: {
-        name: 'first_and_last_name',
-        widget: 'object',
-        label: 'First and Last Name',
-        fields: [
-          { name: 'first_name', widget: 'string', label: 'First Name' },
-          { name: 'last_name', widget: 'string', label: 'Last Name' },
-        ],
-      },
+      field: { name: 'name', widget: 'string', label: 'Name' },
     });
 
-    const { getByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { first_name: 'hello', last_name: 'world' } }])}
-      />,
-    );
-    expect(getByText('First and Last Name')).toBeInTheDocument();
+    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
+    expect(getByText('Name')).toBeInTheDocument();
   });
 
   it('should use summary when configured for a single field', () => {
@@ -414,26 +387,12 @@ describe('ListControl', () => {
       name: 'list',
       label: 'List',
       collapsed: true,
-      summary: '{{object.first_name}} - {{object.last_name}} - {{filename}}.{{extension}}',
-      field: {
-        name: 'single_field_object',
-        widget: 'object',
-        label: 'Single Field Object',
-        fields: [
-          { name: 'first_name', widget: 'string', label: 'First Name' },
-          { name: 'last_name', widget: 'string', label: 'Last Name' },
-        ],
-      },
+      summary: 'Name - {{fields.name}}',
+      field: { name: 'name', widget: 'string', label: 'Name' },
     });
 
-    const { getByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { first_name: 'hello', last_name: 'world' } }])}
-      />,
-    );
-    expect(getByText('hello - world - index.md')).toBeInTheDocument();
+    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
+    expect(getByText('Name - Name')).toBeInTheDocument();
   });
 
   it('should use first field value when no summary or label are configured for multiple fields', () => {

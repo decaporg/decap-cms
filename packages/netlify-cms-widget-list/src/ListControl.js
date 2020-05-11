@@ -342,7 +342,8 @@ export default class ListControl extends React.Component {
         const singleField = field.get('field');
         const label = singleField.get('label', singleField.get('name'));
         const summary = field.get('summary');
-        const labelReturn = summary ? handleSummary(summary, entry, label, item) : label;
+        const data = fromJS({ [singleField.get('name')]: item });
+        const labelReturn = summary ? handleSummary(summary, entry, label, data) : label;
         return labelReturn;
       }
       case valueTypes.MULTIPLE: {
