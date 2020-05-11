@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
+import FilterControl from './FilterControl';
 import { lengths } from 'netlify-cms-ui-default';
 
 const CollectionControlsContainer = styled.div`
@@ -27,6 +28,12 @@ const CollectionControls = ({
 }) => (
   <CollectionControlsContainer>
     <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
+    {sortableFields.length > 0 && (
+      <FilterControl
+        fields={sortableFields}
+        collection={collection}
+      />
+    )}
     {sortableFields.length > 0 && (
       <SortControl
         fields={sortableFields}
