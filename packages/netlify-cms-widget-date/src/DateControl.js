@@ -67,7 +67,7 @@ export default class DateControl extends React.Component {
      * Set the current date as default value if no default value is provided. An
      * empty string means the value is intentionally blank.
      */
-    if (!value && value !== '') {
+    if (value === undefined) {
       setTimeout(() => {
         this.handleChange(this.defaultValue === undefined ? new Date() : this.defaultValue);
       }, 0);
