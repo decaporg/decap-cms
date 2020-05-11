@@ -124,6 +124,7 @@ collections: # A list of collections the CMS should be able to edit
       - label: 'Object'
         name: 'object'
         widget: 'object'
+        collapsed: true
         fields:
           - label: 'Related Post'
             name: 'post'
