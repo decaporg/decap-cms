@@ -1,4 +1,9 @@
-import Dropdown, { DropdownItem, DropdownCheckedItem, DropdownButton, StyledDropdownButton } from './Dropdown';
+import Dropdown, {
+  DropdownItem,
+  DropdownCheckedItem,
+  DropdownButton,
+  StyledDropdownButton,
+} from './Dropdown';
 import Icon from './Icon';
 import ListItemTopBar from './ListItemTopBar';
 import Loader from './Loader';
