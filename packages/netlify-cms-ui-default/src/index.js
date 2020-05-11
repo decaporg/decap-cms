@@ -1,4 +1,4 @@
-import Dropdown, { DropdownItem, DropdownButton, StyledDropdownButton } from './Dropdown';
+import Dropdown, { DropdownItem, DropdownCheckedItem, DropdownButton, StyledDropdownButton } from './Dropdown';
 import Icon from './Icon';
 import ListItemTopBar from './ListItemTopBar';
 import Loader from './Loader';
@@ -29,6 +29,7 @@ import {
 export const NetlifyCmsUiDefault = {
   Dropdown,
   DropdownItem,
+  DropdownCheckedItem,
   DropdownButton,
   StyledDropdownButton,
   ListItemTopBar,
@@ -61,6 +62,7 @@ export const NetlifyCmsUiDefault = {
 export {
   Dropdown,
   DropdownItem,
+  DropdownCheckedItem,
   DropdownButton,
   StyledDropdownButton,
   ListItemTopBar,
