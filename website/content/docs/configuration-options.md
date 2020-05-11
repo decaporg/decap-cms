@@ -3,6 +3,9 @@ title: Configuration Options
 group: reference
 weight: 23
 ---
+
+## Configuration File
+
 All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
 
 Alternatively, you can specify a custom config file using a link tag:
@@ -35,6 +38,7 @@ The `publish_mode` option allows you to enable "Editorial Workflow" mode for mor
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
 ```yaml
+# /admin/config.yml
 publish_mode: editorial_workflow
 ```
 
@@ -156,8 +160,7 @@ show_preview_links: false
 
 ## Slug Type
 
-The `slug` option allows you to change how filenames for entries are created and sanitized.
-It also applies to filenames of media inserted via the default media library.  
+The `slug` option allows you to change how filenames for entries are created and sanitized. It also applies to filenames of media inserted via the default media library.\
 For modifying the actual data in a slug, see the per-collection option below.
 
 `slug` accepts multiple options:
