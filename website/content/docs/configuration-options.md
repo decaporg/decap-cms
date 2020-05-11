@@ -3,6 +3,9 @@ title: Configuration Options
 group: reference
 weight: 23
 ---
+
+## Configuration File
+
 All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
 
 Alternatively, you can specify a custom config file using a link tag:
@@ -32,9 +35,10 @@ The `publish_mode` option allows you to enable "Editorial Workflow" mode for mor
 
 **Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
-You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file (for the admin pages, usually in the \`/admin\` folder, not the whole site):
+You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
 ```yaml
+# /admin/config.yml
 publish_mode: editorial_workflow
 ```
 
