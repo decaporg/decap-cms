@@ -212,8 +212,8 @@ export default class Widget extends Component {
   /**
    * Change handler for fields that are nested within another field.
    */
-  onChangeObject = (fieldName, newValue, newMetadata) => {
-    const newObjectValue = this.getObjectValue().set(fieldName, newValue);
+  onChangeObject = (field, newValue, newMetadata) => {
+    const newObjectValue = this.getObjectValue().set(field.get('name'), newValue);
     return this.props.onChange(
       newObjectValue,
       newMetadata && { [this.props.field.get('name')]: newMetadata },

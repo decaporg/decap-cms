@@ -682,7 +682,7 @@ export class Backend {
     }
     const entry = createEntry(collection.get('name'), slug, path, {
       raw: data,
-      isModification: newFile,
+      isModification: !newFile,
       label: collection && selectFileEntryLabel(collection, slug),
       mediaFiles,
       updatedOn: entryData.timestamp,
