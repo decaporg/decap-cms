@@ -163,6 +163,7 @@ To use variable types in the list widget, update your field configuration as fol
 
 - `types`: a nested list of object widgets. All widgets must be of type `object`. Every object widget may define different set of fields.
 - `typeKey`: the name of the field that will be added to every item in list representing the name of the object widget that item belongs to. Ignored if `types` is not defined. Default is `type`.
+- `summary`: allows customization of a collapsed list item object in a similar way to a [collection summary](/docs/configuration-options/?#summary)
 
 ### Example Configuration
 
@@ -177,6 +178,7 @@ either a "carousel" or a "spotlight". Each type has a unique name and set of fie
     - label: 'Carousel'
       name: 'carousel'
       widget: object
+      summary: '{{fields.header}}'
       fields:
         - { label: Header, name: header, widget: string, default: 'Image Gallery' }
         - { label: Template, name: template, widget: string, default: 'carousel.html' }

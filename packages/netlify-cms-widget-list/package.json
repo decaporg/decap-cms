@@ -31,6 +31,7 @@
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.6.0",
     "netlify-cms-widget-object": "^2.2.0",
+    "netlify-cms-lib-widgets": "^1.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"

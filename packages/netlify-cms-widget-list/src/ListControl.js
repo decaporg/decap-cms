@@ -15,6 +15,7 @@ import {
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
 import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
@@ -71,6 +72,14 @@ const valueTypes = {
   MIXED: 'MIXED',
 };
 
+const handleSummary = (summary, entry, label, item) => {
+  const data = stringTemplate.addFileTemplateFields(
+    entry.get('path'),
+    item.set('fields.label', label),
+  );
+  return stringTemplate.compileStringTemplate(summary, null, '', data);
+};
+
 export default class ListControl extends React.Component {
   validations = [];
 
@@ -96,6 +105,7 @@ export default class ListControl extends React.Component {
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
+    entry: ImmutablePropTypes.map.isRequired,
   };
 
   static defaultProps = {
@@ -317,17 +327,35 @@ export default class ListControl extends React.Component {
   };
 
   objectLabel(item) {
-    const { field } = this.props;
-    if (this.getValueType() === valueTypes.MIXED) {
-      return getTypedFieldForValue(field, item).get('label', field.get('name'));
+    const { field, entry } = this.props;
+    const valueType = this.getValueType();
+    switch (valueType) {
+      case valueTypes.MIXED: {
+        const itemType = getTypedFieldForValue(field, item);
+        const label = itemType.get('label', itemType.get('name'));
+        // each type can have its own summary, but default to the list summary if exists
+        const summary = itemType.get('summary', field.get('summary'));
+        const labelReturn = summary ? handleSummary(summary, entry, label, item) : label;
+        return labelReturn;
+      }
+      case valueTypes.SINGLE: {
+        const singleField = field.get('field');
+        const label = singleField.get('label', singleField.get('name'));
+        const summary = field.get('summary');
+        const data = fromJS({ [singleField.get('name')]: item });
+        const labelReturn = summary ? handleSummary(summary, entry, label, data) : label;
+        return labelReturn;
+      }
+      case valueTypes.MULTIPLE: {
+        const multiFields = field.get('fields');
+        const labelField = multiFields && multiFields.first();
+        const value = item.get(labelField.get('name'));
+        const summary = field.get('summary');
+        const labelReturn = summary ? handleSummary(summary, entry, value, item) : value;
+        return (labelReturn || `No ${labelField.get('name')}`).toString();
+      }
     }
-    const multiFields = field.get('fields');
-    const singleField = field.get('field');
-    const labelField = (multiFields && multiFields.first()) || singleField;
-    const value = multiFields
-      ? item.get(multiFields.first().get('name'))
-      : singleField.get('label');
-    return (value || `No ${labelField.get('name')}`).toString();
+    return '';
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {

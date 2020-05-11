@@ -12,6 +12,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   - `default`: if `fields` is specified, declare defaults on the child widgets; if not, you may specify a list of strings to populate the text field
   - `allow_add`: if added and labeled `false`, button to add additional widgets disappears
   - `collapsed`: if added and labeled `false`, the list widget's content does not collapse by default
+  - `summary`: allows customization of a collapsed list item object in a similar way to a [collection summary](/docs/configuration-options/?#summary)
   - `field`: a single widget field to be repeated
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
 - **Example** (`field`/`fields` not specified):
@@ -34,6 +35,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     - label: "Gallery"
       name: "galleryImages"
       widget: "list"
+      summary: '{{fields.image}}'
       field: {label: Image, name: image, widget: image}
     ```
 - **Example** (with `fields`):
@@ -41,6 +43,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     - label: "Testimonials"
       name: "testimonials"
       widget: "list"
+      summary: '{{fields.quote}} - {{fields.author.name}}'
       fields:
         - {label: Quote, name: quote, widget: string, default: "Everything is awesome!"}
         - label: Author

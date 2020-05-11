@@ -48,6 +48,9 @@ describe('ListControl', () => {
     resolveWidget: jest.fn(),
     clearFieldErrors: jest.fn(),
     fieldsErrors: fromJS({}),
+    entry: fromJS({
+      path: 'posts/index.md',
+    }),
   };
 
   beforeEach(() => {
@@ -269,5 +272,186 @@ describe('ListControl', () => {
 
     expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
+  });
+
+  it('should use widget name when no summary or label are configured for mixed types', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      types: [
+        {
+          name: 'type_1_object',
+          widget: 'object',
+          fields: [
+            { label: 'First Name', name: 'first_name', widget: 'string' },
+            { label: 'Last Name', name: 'last_name', widget: 'string' },
+          ],
+        },
+      ],
+    });
+
+    const { getByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
+      />,
+    );
+    expect(getByText('type_1_object')).toBeInTheDocument();
+  });
+
+  it('should use label when no summary is configured for mixed types', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      types: [
+        {
+          label: 'Type 1 Object',
+          name: 'type_1_object',
+          widget: 'object',
+          fields: [
+            { label: 'First Name', name: 'first_name', widget: 'string' },
+            { label: 'Last Name', name: 'last_name', widget: 'string' },
+          ],
+        },
+      ],
+    });
+
+    const { getByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
+      />,
+    );
+    expect(getByText('Type 1 Object')).toBeInTheDocument();
+  });
+
+  it('should use summary when configured for mixed types', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      types: [
+        {
+          label: 'Type 1 Object',
+          name: 'type_1_object',
+          summary: '{{first_name}} - {{last_name}} - {{filename}}.{{extension}}',
+          widget: 'object',
+          fields: [
+            { label: 'First Name', name: 'first_name', widget: 'string' },
+            { label: 'Last Name', name: 'last_name', widget: 'string' },
+          ],
+        },
+      ],
+    });
+
+    const { getByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
+      />,
+    );
+    expect(getByText('hello - world - index.md')).toBeInTheDocument();
+  });
+
+  it('should use widget name when no summary or label are configured for a single field', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      field: { name: 'name', widget: 'string' },
+    });
+
+    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
+    expect(getByText('name')).toBeInTheDocument();
+  });
+
+  it('should use label when no summary is configured for a single field', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      field: { name: 'name', widget: 'string', label: 'Name' },
+    });
+
+    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
+    expect(getByText('Name')).toBeInTheDocument();
+  });
+
+  it('should use summary when configured for a single field', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      summary: 'Name - {{fields.name}}',
+      field: { name: 'name', widget: 'string', label: 'Name' },
+    });
+
+    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
+    expect(getByText('Name - Name')).toBeInTheDocument();
+  });
+
+  it('should use first field value when no summary or label are configured for multiple fields', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      fields: [
+        { name: 'first_name', widget: 'string', label: 'First Name' },
+        { name: 'last_name', widget: 'string', label: 'Last Name' },
+      ],
+    });
+
+    const { getByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ first_name: 'hello', last_name: 'world' }])}
+      />,
+    );
+    expect(getByText('hello')).toBeInTheDocument();
+  });
+
+  it('should show `No <field>` when value is missing from first field for multiple fields', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      fields: [
+        { name: 'first_name', widget: 'string', label: 'First Name' },
+        { name: 'last_name', widget: 'string', label: 'Last Name' },
+      ],
+    });
+
+    const { getByText } = render(
+      <ListControl {...props} field={field} value={fromJS([{ last_name: 'world' }])} />,
+    );
+    expect(getByText('No first_name')).toBeInTheDocument();
+  });
+
+  it('should use summary when configured for multiple fields', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: true,
+      summary: '{{first_name}} - {{last_name}} - {{filename}}.{{extension}}',
+      fields: [
+        { name: 'first_name', widget: 'string', label: 'First Name' },
+        { name: 'last_name', widget: 'string', label: 'Last Name' },
+      ],
+    });
+
+    const { getByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ first_name: 'hello', last_name: 'world' }])}
+      />,
+    );
+    expect(getByText('hello - world - index.md')).toBeInTheDocument();
   });
 });
