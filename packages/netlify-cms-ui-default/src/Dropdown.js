@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -48,7 +48,7 @@ const DropdownList = styled.ul`
   `};
 `;
 
-const StyledMenuItem = ({ isActive, ...props }) => (
+const StyledMenuItem = ({ isActive, isCheckedItem=false, ...props }) => (
   <MenuItem
     css={css`
       ${components.dropdownItem};
@@ -58,6 +58,7 @@ const StyledMenuItem = ({ isActive, ...props }) => (
       &:not(:active) {
         background-color: ${isActive ? colors.activeBackground : 'inherit'};
         color: ${isActive ? colors.active : 'inherit'};
+        ${isCheckedItem ? 'display: flex; justify-content: start' : ''};
       }
       &:hover {
         color: ${colors.active};
@@ -128,4 +129,26 @@ DropdownItem.propTypes = {
   className: PropTypes.string,
 };
 
-export { Dropdown as default, DropdownItem, DropdownButton, StyledDropdownButton };
+const DropdownCheckedItem = ({ label, id }) => {
+  const [checked, setChecked] = useState(false);
+  
+  return (
+    <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={() => setChecked(!checked)}>
+      <input readOnly checked={checked} type="checkbox" id={id} />
+      <span htmlFor={id}>{label}</span>
+    </StyledMenuItem>
+  );
+};
+
+DropdownCheckedItem.propTypes = {
+  label: PropTypes.string,
+  id: PropTypes.string,
+};
+
+export {
+  Dropdown as default,
+  DropdownItem,
+  DropdownCheckedItem,
+  DropdownButton,
+  StyledDropdownButton,
+};
