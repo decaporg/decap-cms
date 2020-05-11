@@ -28,12 +28,7 @@ const CollectionControls = ({
 }) => (
   <CollectionControlsContainer>
     <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
-    {sortableFields.length > 0 && (
-      <FilterControl
-        fields={sortableFields}
-        collection={collection}
-      />
-    )}
+    {sortableFields.length > 0 && <FilterControl fields={sortableFields} collection={collection} />}
     {sortableFields.length > 0 && (
       <SortControl
         fields={sortableFields}
