@@ -211,30 +211,31 @@ export default class GitGateway implements Implementation {
           gitlab_enabled: gitlabEnabled,
           bitbucket_enabled: bitbucketEnabled,
           roles,
-        } = await fetch(`${this.gatewayUrl}/settings`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }).then(async res => {
-          const contentType = res.headers.get('Content-Type') || '';
-          if (!contentType.includes('application/json') && !contentType.includes('text/json')) {
-            throw new APIError(
-              `Your Git Gateway backend is not returning valid settings. Please make sure it is enabled.`,
-              res.status,
-              'Git Gateway',
-            );
-          }
+        } = await unsentRequest
+          .fetchWithTimeout(`${this.gatewayUrl}/settings`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(async res => {
+            const contentType = res.headers.get('Content-Type') || '';
+            if (!contentType.includes('application/json') && !contentType.includes('text/json')) {
+              throw new APIError(
+                `Your Git Gateway backend is not returning valid settings. Please make sure it is enabled.`,
+                res.status,
+                'Git Gateway',
+              );
+            }
+            const body = await res.json();
 
-          const body = await res.json();
+            if (!res.ok) {
+              throw new APIError(
+                `Git Gateway Error: ${body.message ? body.message : body}`,
+                res.status,
+                'Git Gateway',
+              );
+            }
 
-          if (!res.ok) {
-            throw new APIError(
-              `Git Gateway Error: ${body.message ? body.message : body}`,
-              res.status,
-              'Git Gateway',
-            );
-          }
-
-          return body;
-        });
+            return body;
+          });
         this.acceptRoles = roles;
         if (githubEnabled) {
           this.backendType = 'github';

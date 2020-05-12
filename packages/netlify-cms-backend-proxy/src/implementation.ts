@@ -8,6 +8,7 @@ import {
   ImplementationFile,
   EditorialWorkflowError,
   APIError,
+  unsentRequest,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 
@@ -83,13 +84,14 @@ export default class ProxyBackend implements Implementation {
   }
 
   async request(payload: { action: string; params: Record<string, unknown> }) {
-    const response = await fetch(this.proxyUrl, {
+    const response = await unsentRequest.fetchWithTimeout(this.proxyUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({ branch: this.branch, ...payload }),
     });
 
     const json = await response.json();
+
     if (response.ok) {
       return json;
     } else {

@@ -117,6 +117,7 @@ describe('github API', () => {
           Authorization: 'token token',
           'Content-Type': 'application/json; charset=utf-8',
         },
+        signal: expect.any(AbortSignal),
       });
     });
 
@@ -163,6 +164,7 @@ describe('github API', () => {
           Authorization: 'promise-token',
           'Content-Type': 'application/json; charset=utf-8',
         },
+        signal: expect.any(AbortSignal),
       });
     });
   });

@@ -43,6 +43,7 @@ describe('github backend implementation', () => {
         headers: {
           Authorization: 'token token',
         },
+        signal: expect.any(AbortSignal),
       });
     });
 
