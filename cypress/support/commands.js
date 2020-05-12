@@ -34,8 +34,8 @@ const matchRoute = (route, fetchArgs) => {
   const options = fetchArgs[1];
 
   const method = options && options.method ? options.method : 'GET';
-  let body = options && options.body;
-  let routeBody = route.body;
+  const body = options && options.body;
+  const routeBody = route.body;
 
   let bodyMatch = false;
   if (routeBody?.encoding === 'base64' && ['File', 'Blob'].includes(body?.constructor.name)) {
