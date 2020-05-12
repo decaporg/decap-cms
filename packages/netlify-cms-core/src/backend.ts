@@ -113,6 +113,9 @@ export const slugFromCustomPath = (collection: Collection, customPath: string) =
 };
 
 export const getCustomPath = (collection: Collection, entryDraft: EntryDraft) => {
+  if (collection.get('type') !== FOLDER) {
+    return;
+  }
   const meta = entryDraft.getIn(['entry', 'meta']);
   const path = meta && meta.get('path');
   const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
@@ -638,7 +641,13 @@ export class Backend {
     withMediaFiles: boolean,
   ) {
     const { slug } = entryData;
-    const extension = selectFolderEntryExtension(collection);
+    let extension: string;
+    if (collection.get('type') === FILES) {
+      const file = collection.get('files')!.find(f => f?.get('name') === slug);
+      extension = extname(file.get('file'));
+    } else {
+      extension = selectFolderEntryExtension(collection);
+    }
     const dataFiles = sortBy(
       entryData.diffs.filter(d => d.path.endsWith(extension)),
       f => f.path.length,

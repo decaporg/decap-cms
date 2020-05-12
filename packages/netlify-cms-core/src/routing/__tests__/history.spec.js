@@ -10,7 +10,7 @@ describe('history', () => {
   });
 
   describe('navigateToCollection', () => {
-    it('should push collection route', () => {
+    it('should push route', () => {
       const { navigateToCollection } = require('../history');
 
       navigateToCollection('posts');
@@ -21,13 +21,13 @@ describe('history', () => {
   });
 
   describe('navigateToNewEntry', () => {
-    it('should push new entry route', () => {
+    it('should replace route', () => {
       const { navigateToNewEntry } = require('../history');
 
       navigateToNewEntry('posts');
 
-      expect(history.push).toHaveBeenCalledTimes(1);
-      expect(history.push).toHaveBeenCalledWith('/collections/posts/new');
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith('/collections/posts/new');
     });
   });
 
