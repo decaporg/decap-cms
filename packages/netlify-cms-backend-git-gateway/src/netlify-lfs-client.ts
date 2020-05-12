@@ -1,6 +1,6 @@
 import { flow, fromPairs, map } from 'lodash/fp';
 import minimatch from 'minimatch';
-import { ApiRequest, PointerFile } from 'netlify-cms-lib-util';
+import { ApiRequest, PointerFile, unsentRequest } from 'netlify-cms-lib-util';
 
 type MakeAuthorizedRequest = (req: ApiRequest) => Promise<Response>;
 
@@ -96,7 +96,7 @@ const getResourceUploadURLs = async (
 };
 
 const uploadBlob = (uploadURL: string, blob: Blob) =>
-  fetch(uploadURL, {
+  unsentRequest.fetchWithTimeout(uploadURL, {
     method: 'PUT',
     body: blob,
   });

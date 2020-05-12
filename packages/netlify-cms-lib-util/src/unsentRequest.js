@@ -3,6 +3,21 @@ import curry from 'lodash/curry';
 import flow from 'lodash/flow';
 import isString from 'lodash/isString';
 
+let controller;
+let signal;
+if (typeof window !== 'undefined') {
+  controller = window.AbortController && new AbortController();
+  signal = controller && controller.signal;
+}
+
+const fetchWithTimeout = (input, init) => {
+  if (controller && signal && !init.signal) {
+    setTimeout(() => controller.abort(), 60 * 1000);
+    return fetch(input, { ...init, signal });
+  }
+  return fetch(input, init);
+};
+
 const decodeParams = paramsString =>
   List(paramsString.split('&'))
     .map(s => List(s.split('=')).map(decodeURIComponent))
@@ -48,17 +63,10 @@ const maybeRequestArg = req => {
 const ensureRequestArg = func => req => func(maybeRequestArg(req));
 const ensureRequestArg2 = func => (arg, req) => func(arg, maybeRequestArg(req));
 
-// This is a abort controller for requests.
-const controller = new AbortController();
-const signal = controller.signal;
-
 // This actually performs the built request object
 const performRequest = ensureRequestArg(req => {
   const args = toFetchArguments(req);
-  if (window.AbortController) {
-    setTimeout(controller.abort(), 60000);
-  }
-  return fetch(...args, { signal });
+  return fetchWithTimeout(...args);
 });
 
 // Each of the following functions takes options and returns another
@@ -98,4 +106,5 @@ export default {
   withParams,
   withRoot,
   withNoCache,
+  fetchWithTimeout,
 };
