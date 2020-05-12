@@ -132,48 +132,16 @@ describe('github backend implementation', () => {
     });
   });
 
-  describe('loadEntryMediaFiles', () => {
-    const readFile = jest.fn();
-    const mockAPI = {
-      readFile,
-    };
-
-    it('should return media files from meta data', async () => {
-      const gitHubImplementation = new GitHubImplementation(config);
-      gitHubImplementation.api = mockAPI;
-
-      const blob = new Blob(['']);
-      readFile.mockResolvedValue(blob);
-
-      const file = new File([blob], name);
-
-      await expect(
-        gitHubImplementation.loadEntryMediaFiles('branch', [
-          { path: 'static/media/image.png', id: 'sha' },
-        ]),
-      ).resolves.toEqual([
-        {
-          id: 'sha',
-          displayURL: 'displayURL',
-          path: 'static/media/image.png',
-          name: 'image.png',
-          size: file.size,
-          file,
-        },
-      ]);
-    });
-  });
-
   describe('unpublishedEntry', () => {
     const generateContentKey = jest.fn();
-    const readUnpublishedBranchFile = jest.fn();
+    const retrieveUnpublishedEntryData = jest.fn();
 
     const mockAPI = {
       generateContentKey,
-      readUnpublishedBranchFile,
+      retrieveUnpublishedEntryData,
     };
 
-    it('should return unpublished entry', async () => {
+    it('should return unpublished entry data', async () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.api = mockAPI;
       gitHubImplementation.loadEntryMediaFiles = jest
@@ -183,37 +151,25 @@ describe('github backend implementation', () => {
       generateContentKey.mockReturnValue('contentKey');
 
       const data = {
-        fileData: 'fileData',
-        isModification: true,
-        metaData: {
-          branch: 'branch',
-          objects: {
-            entry: { path: 'entry-path', mediaFiles: [{ path: 'image.png', id: 'sha' }] },
-          },
-        },
+        collection: 'collection',
+        slug: 'slug',
+        status: 'draft',
+        diffs: [],
+        timestamp: 'timestamp',
       };
-      readUnpublishedBranchFile.mockResolvedValue(data);
+      retrieveUnpublishedEntryData.mockResolvedValue(data);
 
       const collection = 'posts';
-      await expect(gitHubImplementation.unpublishedEntry(collection, 'slug')).resolves.toEqual({
-        slug: 'slug',
-        file: { path: 'entry-path', id: null },
-        data: 'fileData',
-        metaData: data.metaData,
-        mediaFiles: [{ path: 'image.png', id: 'sha' }],
-        isModification: true,
-      });
+      const slug = 'slug';
+      await expect(gitHubImplementation.unpublishedEntry({ collection, slug })).resolves.toEqual(
+        data,
+      );
 
       expect(generateContentKey).toHaveBeenCalledTimes(1);
       expect(generateContentKey).toHaveBeenCalledWith('posts', 'slug');
 
-      expect(readUnpublishedBranchFile).toHaveBeenCalledTimes(1);
-      expect(readUnpublishedBranchFile).toHaveBeenCalledWith('contentKey');
-
-      expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledTimes(1);
-      expect(gitHubImplementation.loadEntryMediaFiles).toHaveBeenCalledWith('branch', [
-        { path: 'image.png', id: 'sha' },
-      ]);
+      expect(retrieveUnpublishedEntryData).toHaveBeenCalledTimes(1);
+      expect(retrieveUnpublishedEntryData).toHaveBeenCalledWith('contentKey');
     });
   });
 
