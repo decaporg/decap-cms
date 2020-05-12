@@ -403,6 +403,9 @@ export default class GraphQLAPI extends API {
       ...this.getBranchQuery(branch, this.repoOwner, this.repoName),
       fetchPolicy: CACHE_FIRST,
     });
+    if (!data.repository.branch) {
+      throw new APIError('Branch not found', 404, API_NAME);
+    }
     return data.repository.branch;
   }
 

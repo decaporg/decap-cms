@@ -357,7 +357,9 @@ export default class TestBackend implements Implementation {
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
-    const files = getFolderFiles(window.repoFiles, mediaFolder, '', 100);
+    const files = getFolderFiles(window.repoFiles, mediaFolder.split('/')[0], '', 100).filter(f =>
+      f.path.startsWith(mediaFolder),
+    );
     const assets = files.map(f => this.normalizeAsset(f.content as AssetProxy));
     return Promise.resolve(assets);
   }

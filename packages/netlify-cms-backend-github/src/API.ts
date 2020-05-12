@@ -516,7 +516,9 @@ export default class API {
     // since the contributor doesn't have access to set labels
     // a branch without a pr (or a closed pr) means a 'draft' entry
     // a branch with an opened pr means a 'pending_review' entry
-    const data = await this.getBranch(branch);
+    const data = await this.getBranch(branch).catch(() => {
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+    });
     // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
     const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.sha)[0];
     // if no pull request is found for the branch we return a mocked one
