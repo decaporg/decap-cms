@@ -169,7 +169,7 @@ export default class CodeControl extends React.Component {
     if (changedProps.lang) {
       const { mode } = this.getLanguageByName(changedProps.lang) || {};
       if (mode) {
-        await import(`codemirror/mode/${mode}/${mode}.js`);
+        require(`codemirror/mode/${mode}/${mode}.js`);
       }
     }
 
