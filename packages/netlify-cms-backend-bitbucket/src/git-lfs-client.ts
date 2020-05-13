@@ -1,5 +1,5 @@
 import minimatch from 'minimatch';
-import { ApiRequest, PointerFile } from 'netlify-cms-lib-util';
+import { ApiRequest, PointerFile, unsentRequest } from 'netlify-cms-lib-util';
 
 type MakeAuthorizedRequest = (req: ApiRequest) => Promise<Response>;
 
@@ -63,7 +63,7 @@ export class GitLfsClient {
   }
 
   private async doUpload(upload: LfsBatchAction, resource: Blob) {
-    await fetch(decodeURI(upload.href), {
+    await unsentRequest.fetchWithTimeout(decodeURI(upload.href), {
       method: 'PUT',
       body: resource,
       headers: upload.header,

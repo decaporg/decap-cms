@@ -32,6 +32,7 @@ describe('github API', () => {
           Authorization: 'Bearer token',
           'Content-Type': 'application/json; charset=utf-8',
         },
+        signal: expect.any(AbortSignal),
       });
     });
 

@@ -107,6 +107,10 @@ export function applyDefaults(config) {
             collection = collection.set('sortableFields', fromJS(defaultSortable));
           }
 
+          if (!collection.has('view_filters')) {
+            collection = collection.set('view_filters', fromJS([]));
+          }
+
           return collection;
         }),
       );

@@ -1,5 +1,8 @@
 import { pickBy, trimEnd } from 'lodash';
 import { addParams } from 'Lib/urlHelper';
+import { unsentRequest } from 'netlify-cms-lib-util';
+
+const { fetchWithTimeout: fetch } = unsentRequest;
 
 export default class AssetStore {
   constructor(config, getToken) {

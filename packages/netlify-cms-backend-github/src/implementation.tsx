@@ -28,6 +28,7 @@ import {
   runWithLock,
   blobToFileObj,
   contentKeyFromBranch,
+  unsentRequest,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { Octokit } from '@octokit/rest';
@@ -39,6 +40,8 @@ type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 type ApiFile = { id: string; type: string; name: string; path: string; size: number };
+
+const { fetchWithTimeout: fetch } = unsentRequest;
 
 export default class GitHub implements Implementation {
   lock: AsyncLock;

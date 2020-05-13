@@ -254,7 +254,7 @@ export class Editor extends React.Component {
 
     await persistEntry(collection);
 
-    this.deleteBackup(collection, slug);
+    this.deleteBackup();
 
     if (createNew) {
       navigateToNewEntry(collection.get('name'));
