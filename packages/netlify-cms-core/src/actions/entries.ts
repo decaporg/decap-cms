@@ -44,6 +44,8 @@ export const SORT_ENTRIES_REQUEST = 'SORT_ENTRIES_REQUEST';
 export const SORT_ENTRIES_SUCCESS = 'SORT_ENTRIES_SUCCESS';
 export const SORT_ENTRIES_FAILURE = 'SORT_ENTRIES_FAILURE';
 
+export const FILTER_ENTRIES = 'FILTER_ENTRIES';
+
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
@@ -197,6 +199,16 @@ export function sortByField(
         },
       });
     }
+  };
+}
+
+export function filterByField(collection: Collection, key: string) {
+  return {
+    type: FILTER_ENTRIES,
+    payload: {
+      collection: collection.get('name'),
+      key,
+    },
   };
 }
 

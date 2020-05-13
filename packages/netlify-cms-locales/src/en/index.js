@@ -42,6 +42,7 @@ const en = {
       newButton: 'New %{collectionLabel}',
       ascending: 'Ascending',
       descending: 'Descending',
+      filter: 'Filter',
     },
     entries: {
       loadingEntries: 'Loading Entries...',

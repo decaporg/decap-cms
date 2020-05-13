@@ -11,6 +11,7 @@ import {
   SORT_ENTRIES_REQUEST,
   SORT_ENTRIES_SUCCESS,
   SORT_ENTRIES_FAILURE,
+  FILTER_ENTRIES,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
@@ -36,6 +37,7 @@ import {
   SortObject,
   Sort,
   SortDirection,
+  Filter,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
@@ -238,6 +240,16 @@ const entries = (
       return newState;
     }
 
+    case FILTER_ENTRIES: {
+      const payload = action.payload as { key: string; collection: string };
+      const { collection, key } = payload;
+      const newState = state.withMutations(map => {
+        const current = map.getIn(['filter', collection, key]);
+        map.setIn(['filter', collection, key], !current);
+      });
+      return newState;
+    }
+
     default:
       return state;
   }
@@ -246,6 +258,11 @@ const entries = (
 export const selectEntriesSort = (entries: Entries, collection: string) => {
   const sort = entries.get('sort') as Sort | undefined;
   return sort?.get(collection);
+};
+
+export const selectEntriesFilter = (entries: Entries, collection: string) => {
+  const filter = entries.get('filter') as Filter | undefined;
+  return filter?.get(collection) || Map();
 };
 
 export const selectEntriesSortFields = (entries: Entries, collection: string) => {

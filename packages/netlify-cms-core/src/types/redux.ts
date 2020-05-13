@@ -64,12 +64,15 @@ export type SortMap = OrderedMap<string, StaticallyTypedRecord<SortObject>>;
 
 export type Sort = Map<string, SortMap>;
 
+export type Filter = Map<string, Map<string, boolean>>; // collection.field.active
+
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
   entities: Entities & EntitiesObject;
   sort: Sort;
+  filter: Filter;
 }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;
@@ -134,6 +137,12 @@ export type CollectionFile = StaticallyTypedRecord<{
 
 export type CollectionFiles = List<CollectionFile>;
 
+export type ViewFilter = {
+  label: string;
+  field: string;
+  pattern: string;
+};
+
 type CollectionObject = {
   name: string;
   folder?: string;
@@ -157,6 +166,7 @@ type CollectionObject = {
   label_singular?: string;
   label: string;
   sortableFields: List<string>;
+  view_filters: List<StaticallyTypedRecord<ViewFilter>>;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
