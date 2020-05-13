@@ -125,14 +125,14 @@ export default class RelationControl extends React.Component {
     return value;
   };
 
-  parseHitOptions = (hits) => {
+  parseHitOptions = hits => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || field.get('valueField');
 
-    let data = hits
+    let data = hits;
     if (field.get('file')) {
-      data = get(hits[0], `data.${valueField}`, [])
+      data = get(hits[0], `data.${valueField}`, []);
     }
 
     if (typeof data[0] === 'string') {
@@ -140,7 +140,7 @@ export default class RelationControl extends React.Component {
         data,
         value,
         label: value,
-      }))
+      }));
     } else {
       return data.map(hit => {
         let labelReturn;
@@ -167,11 +167,11 @@ export default class RelationControl extends React.Component {
     const searchFields = field.get('searchFields');
     const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
-    const file = field.get('file')
+    const file = field.get('file');
 
     const queryPromise = file
       ? query(forID, collection, ['slug'], file)
-      : query(forID, collection, searchFieldsArray, term)
+      : query(forID, collection, searchFieldsArray, term);
 
     queryPromise.then(({ payload }) => {
       let options =
@@ -205,7 +205,8 @@ export default class RelationControl extends React.Component {
     const isClearable = !field.get('required', true) || isMultiple;
 
     const hits = queryHits.get(forID, []);
-    const options = this.allOptions || this.parseHitOptions(hits, { isFile: Boolean(field.get('file')) });
+    const options =
+      this.allOptions || this.parseHitOptions(hits, { isFile: Boolean(field.get('file')) });
     const selectedValue = getSelectedValue({
       options,
       value,
