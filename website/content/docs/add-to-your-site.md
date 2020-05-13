@@ -1,7 +1,7 @@
 ---
 title: Add to Your Site
-weight: 20
 group: start
+weight: 20
 ---
 
 You can adapt Netlify CMS to a wide variety of projects. It works with any content written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org). You can also create your own custom backend.
@@ -15,8 +15,8 @@ A static `admin` folder contains all Netlify CMS files, stored at the root of yo
 | These generators ...                       | store static files in |
 | -------------------------------------------| --------------------- |
 | Jekyll, GitBook                            | `/` (project root)    |
-| Hugo, Gatsby, Nuxt, Gridsome, Zola, Sapper | `/static`             |
-| Next                                       | `/public`             |
+| Hugo, Gatsby, Nuxt, Gridsome, Sapper.      | `/static`             |
+| Next, Zola                                 | `/public`             |
 | Hexo, Middleman, Jigsaw                    | `/source`             |
 | Spike                                      | `/views`              |
 | Wyam                                       | `/input`              |
