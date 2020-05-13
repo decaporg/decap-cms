@@ -346,7 +346,7 @@ describe('Relation widget', () => {
       name: 'categories',
       collection: 'file',
       file: 'general',
-      valueField: 'simple',
+      searchFields: 'simple',
     };
 
     it('should handle simple list', async () => {
@@ -362,7 +362,9 @@ describe('Relation widget', () => {
     it('should handle object list', async () => {
       const field = fromJS({
         ...fileFieldConfig,
-        valueField: 'object',
+        searchFields: 'object',
+        valueField: 'id',
+        displayFields: 'description',
       });
       const { getAllByText, input } = setup({ field });
       fireEvent.keyDown(input, { key: 'ArrowDown' });

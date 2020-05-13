@@ -128,18 +128,19 @@ export default class RelationControl extends React.Component {
   parseHitOptions = hits => {
     const { field } = this.props;
     const valueField = field.get('valueField');
+    const searchFields = field.get('searchFields');
     const displayField = field.get('displayFields') || field.get('valueField');
 
     let data = hits;
     if (field.get('file')) {
-      data = get(hits[0], `data.${valueField}`, []);
+      data = get(hits, `[0].data.${searchFields}`, []).map(item => ({ data: item }));
     }
 
-    if (typeof data[0] === 'string') {
-      return data.map(value => ({
+    if (data.every(item => typeof item.data === 'string')) {
+      return data.map(item => ({
         data,
-        value,
-        label: value,
+        value: item.data,
+        label: item.data,
       }));
     } else {
       return data.map(hit => {
