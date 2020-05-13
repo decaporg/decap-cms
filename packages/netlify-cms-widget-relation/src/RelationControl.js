@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Async as AsyncSelect } from 'react-select';
-import { find, isEmpty, last, debounce } from 'lodash';
+import { find, isEmpty, last, debounce, get } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -125,27 +125,40 @@ export default class RelationControl extends React.Component {
     return value;
   };
 
-  parseHitOptions = hits => {
+  parseHitOptions = (hits) => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || field.get('valueField');
 
-    return hits.map(hit => {
-      let labelReturn;
-      if (List.isList(displayField)) {
-        labelReturn = displayField
-          .toJS()
-          .map(key => this.parseNestedFields(hit, key))
-          .join(' ');
-      } else {
-        labelReturn = this.parseNestedFields(hit, displayField);
-      }
-      return {
-        data: hit.data,
-        value: this.parseNestedFields(hit, valueField),
-        label: labelReturn,
-      };
-    });
+    let data = hits
+    if (field.get('file')) {
+      data = get(hits[0], `data.${valueField}`, [])
+    }
+
+    if (typeof data[0] === 'string') {
+      return data.map(value => ({
+        data,
+        value,
+        label: value,
+      }))
+    } else {
+      return data.map(hit => {
+        let labelReturn;
+        if (List.isList(displayField)) {
+          labelReturn = displayField
+            .toJS()
+            .map(key => this.parseNestedFields(hit, key))
+            .join(' ');
+        } else {
+          labelReturn = this.parseNestedFields(hit, displayField);
+        }
+        return {
+          data: hit.data,
+          value: this.parseNestedFields(hit, valueField),
+          label: labelReturn,
+        };
+      });
+    }
   };
 
   loadOptions = debounce((term, callback) => {
@@ -154,8 +167,13 @@ export default class RelationControl extends React.Component {
     const searchFields = field.get('searchFields');
     const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
+    const file = field.get('file')
 
-    query(forID, collection, searchFieldsArray, term).then(({ payload }) => {
+    const queryPromise = file
+      ? query(forID, collection, ['slug'], file)
+      : query(forID, collection, searchFieldsArray, term)
+
+    queryPromise.then(({ payload }) => {
       let options =
         payload.response && payload.response.hits
           ? this.parseHitOptions(payload.response.hits)
@@ -187,7 +205,7 @@ export default class RelationControl extends React.Component {
     const isClearable = !field.get('required', true) || isMultiple;
 
     const hits = queryHits.get(forID, []);
-    const options = this.allOptions || this.parseHitOptions(hits);
+    const options = this.allOptions || this.parseHitOptions(hits, { isFile: Boolean(field.get('file')) });
     const selectedValue = getSelectedValue({
       options,
       value,
