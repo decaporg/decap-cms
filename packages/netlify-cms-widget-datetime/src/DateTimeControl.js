@@ -44,8 +44,15 @@ export default class DateTimeControl extends React.Component {
     return defaultValue;
   }
 
+  getPickerUtc() {
+    const { field } = this.props;
+    const pickerUtc = field.get('pickerUtc');
+    return pickerUtc;
+  }
+
   formats = this.getFormats();
   defaultValue = this.getDefaultValue();
+  pickerUtc = this.getPickerUtc();
 
   componentDidMount() {
     const { value } = this.props;
@@ -125,6 +132,7 @@ export default class DateTimeControl extends React.Component {
           onFocus={setActiveStyle}
           onBlur={this.onBlur}
           inputProps={{ className: classNameWrapper, id: forID }}
+          utc={this.pickerUtc}
         />
         <div
           css={css`
