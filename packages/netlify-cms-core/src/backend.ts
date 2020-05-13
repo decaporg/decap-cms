@@ -180,7 +180,7 @@ const prepareMetaPath = (path: string, collection: Collection) => {
     return path;
   }
   const dir = dirname(path);
-  return dir.substr(collection.get('folder')!.length + 1);
+  return dir.substr(collection.get('folder')!.length + 1) || '/';
 };
 
 export class Backend {

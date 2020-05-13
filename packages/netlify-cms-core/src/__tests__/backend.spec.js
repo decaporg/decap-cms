@@ -381,7 +381,7 @@ describe('Backend', () => {
         partial: false,
         raw: '---\ntitle: "Hello World"\n---\n',
         data: { title: 'Hello World' },
-        meta: { path: '' },
+        meta: { path: '/' },
         label: null,
         isModification: true,
         mediaFiles: [{ id: '1', draft: true }],
