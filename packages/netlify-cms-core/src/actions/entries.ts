@@ -633,15 +633,16 @@ interface DraftEntryData {
     | string
     | null
     | boolean
+    | List<unknown>
     | DraftEntryData
     | DraftEntryData[]
-    | (string | DraftEntryData | boolean)[];
+    | (string | DraftEntryData | boolean | List<unknown>)[];
 }
 
 export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
   return fields.reduce(
     (
-      reduction: DraftEntryData | string | undefined | boolean,
+      reduction: DraftEntryData | string | undefined | boolean | List<unknown>,
       value: EntryField | undefined | boolean,
     ) => {
       const acc = reduction as DraftEntryData;
@@ -658,6 +659,9 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
           : createEmptyDraftData(subfields as EntryFields);
         if (!isEmptyDefaultValue(subDefaultValue)) {
           acc[name] = subDefaultValue;
+        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
+          // allow setting an empty list as a default
+          acc[name] = defaultValue;
         }
         return acc;
       }
@@ -668,6 +672,9 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
           : createEmptyDraftData(List([subfields as EntryField]));
         if (!isEmptyDefaultValue(subDefaultValue)) {
           acc[name] = subDefaultValue;
+        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
+          // allow setting an empty list as a default
+          acc[name] = defaultValue;
         }
         return acc;
       }
