@@ -34,6 +34,14 @@ collections: # A list of collections the CMS should be able to edit
         tagname: ''
 
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+      - label: Categories
+        name: categories
+        widget: relation
+        collection: 'settings.general.categories'
+        valueField: id
+        displayFields: description
+        multiple: true
+
     meta:
       - { label: 'SEO Description', name: 'description', widget: 'text' }
 
@@ -76,6 +84,10 @@ collections: # A list of collections the CMS should be able to edit
                   class: 'thumb',
                   required: false,
                 }
+
+          - label: 'Post Categories'
+            name: categories
+            widget: list
 
       - name: 'authors'
         label: 'Authors'
