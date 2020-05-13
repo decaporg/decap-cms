@@ -130,6 +130,12 @@ class RelationController extends React.Component {
             name: 'name-C',
           },
         ],
+        nestedList: {
+          nested: Array.from({ length: 3 }, (_, id) => ({
+            id,
+            name: `nested-${id}`,
+          })),
+        },
       },
     });
   });
@@ -379,6 +385,19 @@ describe('Relation widget', () => {
 
       await wait(() => {
         expect(getAllByText(/name/)).toHaveLength(3);
+      });
+    });
+
+    it('should access list nested', async () => {
+      const field = fromJS({
+        ...objectListFieldConfig,
+        collection: 'file.fileName.nestedList.nested',
+      });
+      const { getAllByText, input } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await wait(() => {
+        expect(getAllByText(/nested/)).toHaveLength(3);
       });
     });
   });

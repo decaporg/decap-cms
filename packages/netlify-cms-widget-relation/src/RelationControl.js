@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Async as AsyncSelect } from 'react-select';
-import { find, isEmpty, last, debounce } from 'lodash';
+import { find, isEmpty, last, debounce, get } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -151,10 +151,10 @@ export default class RelationControl extends React.Component {
   loadFileOptions = debounce((term, callback) => {
     const { field, loadEntry } = this.props;
     const target = field.get('collection');
-    const [collection, fileName, fieldName] = target.split('.');
+    const [collection, fileName, ...fieldName] = target.split('.');
 
     loadEntry(collection, fileName).then(({ data }) => {
-      let options = data[fieldName] || [];
+      let options = get(data, fieldName, []);
 
       // handle simple array of string (from a simple list)
       if (options.every(item => typeof item === 'string')) {
