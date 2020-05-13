@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -129,11 +129,9 @@ DropdownItem.propTypes = {
   className: PropTypes.string,
 };
 
-const DropdownCheckedItem = ({ label, id }) => {
-  const [checked, setChecked] = useState(false);
-
+const DropdownCheckedItem = ({ label, id, checked, onClick }) => {
   return (
-    <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={() => setChecked(!checked)}>
+    <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={onClick}>
       <input readOnly checked={checked} type="checkbox" id={id} />
       <span htmlFor={id}>{label}</span>
     </StyledMenuItem>
@@ -141,8 +139,10 @@ const DropdownCheckedItem = ({ label, id }) => {
 };
 
 DropdownCheckedItem.propTypes = {
-  label: PropTypes.string,
-  id: PropTypes.string,
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export {

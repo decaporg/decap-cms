@@ -19,20 +19,27 @@ const FilterButton = styled(StyledDropdownButton)`
   }
 `;
 
-const FilterControl = ({ fields }) => {
+const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
   return (
     <Dropdown
       renderButton={() => {
-        return <FilterButton>Filter</FilterButton>;
+        return <FilterButton>{t('collection.collectionTop.filter')}</FilterButton>;
       }}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
-      dropdownWidth="160px"
       dropdownPosition="left"
     >
-      {fields.map(field => (
-        <DropdownCheckedItem key={field.key} label={field.label} id={field.id} />
-      ))}
+      {viewFilters.map(viewFilter => {
+        return (
+          <DropdownCheckedItem
+            key={viewFilter.field}
+            label={viewFilter.label}
+            id={viewFilter.field}
+            checked={filter.get(viewFilter.field, false)}
+            onClick={() => onFilterClick(viewFilter.field)}
+          />
+        );
+      })}
     </Dropdown>
   );
 };
