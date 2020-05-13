@@ -98,6 +98,27 @@ class RelationController extends React.Component {
 
   query = jest.fn((...args) => {
     const queryHits = generateHits(25);
+
+    if (args[1] === 'file') {
+      return Promise.resolve({
+        payload: {
+          response: {
+            hits: [
+              {
+                data: {
+                  simple: Array.from({ length: 5 }, (_, idx) => `smp-${idx}`),
+                  object: Array.from({ length: 5 }, (_, idx) => ({
+                    id: `obj-${idx}`,
+                    description: `obj-${idx}`,
+                  })),
+                },
+              },
+            ],
+          },
+        },
+      });
+    }
+
     if (last(args) === 'YAML') {
       return Promise.resolve({ payload: { response: { hits: [last(queryHits)] } } });
     } else if (last(args) === 'Nested') {
@@ -316,6 +337,38 @@ describe('Relation widget', () => {
         expect(onChangeSpy).toHaveBeenCalledTimes(2);
         expect(onChangeSpy).toHaveBeenCalledWith(value, metadata1);
         expect(onChangeSpy).toHaveBeenCalledWith(value, metadata2);
+      });
+    });
+  });
+
+  describe('with file collection', () => {
+    const fileFieldConfig = {
+      name: 'categories',
+      collection: 'file',
+      file: 'general',
+      valueField: 'simple',
+    };
+
+    it('should handle simple list', async () => {
+      const field = fromJS(fileFieldConfig);
+      const { getAllByText, input } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await wait(() => {
+        expect(getAllByText(/smp/)).toHaveLength(5);
+      });
+    });
+
+    it('should handle object list', async () => {
+      const field = fromJS({
+        ...fileFieldConfig,
+        valueField: 'object',
+      });
+      const { getAllByText, input } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await wait(() => {
+        expect(getAllByText(/obj/)).toHaveLength(5);
       });
     });
   });
