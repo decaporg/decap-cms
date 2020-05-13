@@ -26,8 +26,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
-import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
+import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
+import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
+import { getProcessSegment } from '../lib/formatters';
 
 const { notifSend } = notifActions;
 
@@ -864,4 +866,47 @@ export function deleteEntry(collection: Collection, slug: string) {
         return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
   };
+}
+
+export function validateMetaField(
+  state: State,
+  collection: Collection,
+  field: EntryField,
+  value: unknown,
+) {
+  if (field.get('meta') && field.get('name') === 'path') {
+    const sanitizedPath = (value as string)
+      .split('/')
+      .map(getProcessSegment(state.config.get('slug')))
+      .join('/');
+
+    if (value !== sanitizedPath) {
+      return {
+        error: {
+          type: ValidationErrorTypes.CUSTOM,
+          message: `'${value}' is not a valid path`,
+        },
+      };
+    }
+
+    const customPath =
+      selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } })) || '';
+
+    const existingEntry =
+      customPath && selectEntryByPath(state.entries, collection.get('name'), customPath);
+
+    const existingEntryPath = existingEntry && existingEntry.get('path');
+    const entryDraft = state.entryDraft;
+    const draftPath = entryDraft && entryDraft.getIn(['entry', 'path']);
+
+    if (existingEntryPath && existingEntryPath !== draftPath) {
+      return {
+        error: {
+          type: ValidationErrorTypes.CUSTOM,
+          message: `Path '${customPath}' already exists`,
+        },
+      };
+    }
+  }
+  return { error: false };
 }

@@ -22,6 +22,10 @@ import {
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
 } from 'Actions/editorialWorkflow';
+import { get } from 'lodash';
+import { FOLDER } from '../constants/collectionTypes';
+import { selectFolderEntryExtension } from './collections';
+import { join } from 'path';
 
 const initialState = Map({
   entry: Map(),
@@ -171,6 +175,18 @@ const entryDraftReducer = (state = Map(), action) => {
     default:
       return state;
   }
+};
+
+export const selectCustomPath = (collection, entryDraft) => {
+  if (collection.get('type') !== FOLDER) {
+    return;
+  }
+  const meta = entryDraft.getIn(['entry', 'meta']);
+  const path = meta && meta.get('path');
+  const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
+  const extension = selectFolderEntryExtension(collection);
+  const customPath = path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
+  return customPath;
 };
 
 export default entryDraftReducer;

@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq, trim, sortBy, get } from 'lodash';
+import { attempt, flatten, isError, uniq, trim, sortBy } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -50,6 +50,7 @@ import {
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
+import { selectCustomPath } from './reducers/entryDraft';
 import { UnpublishedEntry } from 'netlify-cms-lib-util/src/implementation';
 
 const { extractTemplateVars, dateParsers } = stringTemplate;
@@ -110,19 +111,6 @@ export const slugFromCustomPath = (collection: Collection, customPath: string) =
   const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
   const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
   return slug;
-};
-
-export const getCustomPath = (collection: Collection, entryDraft: EntryDraft) => {
-  if (collection.get('type') !== FOLDER) {
-    return;
-  }
-  const meta = entryDraft.getIn(['entry', 'meta']);
-  const path = meta && meta.get('path');
-  const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
-  const extension = selectFolderEntryExtension(collection);
-  const customPath =
-    path && join(collection.get('folder') as string, path, `${indexFile}.${extension}`);
-  return customPath;
 };
 
 interface AuthStore {
@@ -847,7 +835,7 @@ export class Backend {
       newPath?: string;
     };
 
-    const customPath = getCustomPath(collection, entryDraft);
+    const customPath = selectCustomPath(collection, entryDraft);
 
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {

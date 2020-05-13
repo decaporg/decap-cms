@@ -105,6 +105,9 @@ export default class Widget extends Component {
     const field = this.props.field;
     const errors = [];
     const validations = [this.validatePresence, this.validatePattern];
+    if (field.get('meta')) {
+      validations.push(this.props.validateMetaField);
+    }
     validations.forEach(func => {
       const response = func(field, value);
       if (response.error) errors.push(response.error);
@@ -115,6 +118,7 @@ export default class Widget extends Component {
       const wrappedError = this.validateWrappedControl(field);
       if (wrappedError.error) errors.push(wrappedError.error);
     }
+
     this.props.onValidate(errors);
   };
 
