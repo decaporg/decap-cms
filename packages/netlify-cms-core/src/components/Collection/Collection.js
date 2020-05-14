@@ -29,6 +29,7 @@ class Collection extends React.Component {
     searchTerm: PropTypes.string,
     collectionName: PropTypes.string,
     isSearchResults: PropTypes.bool,
+    isSingleSearchResult: PropTypes.bool,
     collection: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
     sortableFields: PropTypes.array,
@@ -46,8 +47,13 @@ class Collection extends React.Component {
   };
 
   renderEntriesSearch = () => {
-    const { searchTerm, collections } = this.props;
-    return <EntriesSearch collections={collections} searchTerm={searchTerm} />;
+    const { searchTerm, collections, collection, isSingleSearchResult } = this.props;
+    return (
+      <EntriesSearch
+        collections={isSingleSearchResult ? collections.filter(c => c === collection) : collections}
+        searchTerm={searchTerm}
+      />
+    );
   };
 
   handleChangeViewStyle = viewStyle => {
@@ -70,7 +76,7 @@ class Collection extends React.Component {
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
     return (
       <CollectionContainer>
-        <Sidebar collections={collections} searchTerm={searchTerm} />
+        <Sidebar collections={collections} collection={collection} searchTerm={searchTerm} />
         <CollectionMain>
           {isSearchResults ? null : (
             <>

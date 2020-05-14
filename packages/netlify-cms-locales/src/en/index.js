@@ -34,7 +34,9 @@ const en = {
   collection: {
     sidebar: {
       collections: 'Collections',
+      allCollections: 'All Collections',
       searchAll: 'Search all',
+      searchIn: 'Search in',
     },
     collectionTop: {
       sortBy: 'Sort by',

@@ -44,13 +44,14 @@ export const selectEntries = (state: State, collection: string) =>
 export const selectPublishedSlugs = (state: State, collection: string) =>
   fromEntries.selectPublishedSlugs(state.entries, collection);
 
-export const selectSearchedEntries = (state: State) => {
+export const selectSearchedEntries = (state: State, availableCollections: string[]) => {
   const searchItems = state.search.get('entryIds');
+  // only return search results for actually available collections
   return (
     searchItems &&
-    searchItems.map(({ collection, slug }) =>
-      fromEntries.selectEntry(state.entries, collection, slug),
-    )
+    searchItems
+      .filter(({ collection }) => availableCollections.indexOf(collection) !== -1)
+      .map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug))
   );
 };
 

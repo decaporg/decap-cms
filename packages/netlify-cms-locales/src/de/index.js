@@ -34,7 +34,9 @@ const de = {
   collection: {
     sidebar: {
       collections: 'Inhaltstypen',
+      allCollections: 'Allen Inhaltstypen',
       searchAll: 'Alles durchsuchen',
+      searchIn: 'Suchen in',
     },
     collectionTop: {
       viewAs: 'Anzeigen als',
