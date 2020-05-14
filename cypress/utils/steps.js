@@ -684,4 +684,6 @@ module.exports = {
   duplicatePostAndPublish,
   publishAndCreateNewEntryInEditor,
   publishAndDuplicateEntryInEditor,
+  assertNotification,
+  assertFieldValidationError,
 };
