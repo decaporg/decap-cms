@@ -109,7 +109,7 @@ export default class Widget extends Component {
       validations.push(this.props.validateMetaField);
     }
     validations.forEach(func => {
-      const response = func(field, value);
+      const response = func(field, value, this.props.t);
       if (response.error) errors.push(response.error);
     });
     if (skipWrapped) {

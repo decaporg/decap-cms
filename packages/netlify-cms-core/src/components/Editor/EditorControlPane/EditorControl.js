@@ -320,7 +320,7 @@ const mapStateToProps = state => {
     entry,
     collection,
     loadEntry,
-    validateMetaField: (field, value) => validateMetaField(state, collection, field, value),
+    validateMetaField: (field, value, t) => validateMetaField(state, collection, field, value, t),
   };
 };
 

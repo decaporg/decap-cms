@@ -868,25 +868,39 @@ export function deleteEntry(collection: Collection, slug: string) {
   };
 }
 
+const getPathError = (
+  path: string | undefined,
+  key: string,
+  t: (key: string, args: Record<string, unknown>) => string,
+) => {
+  return {
+    error: {
+      type: ValidationErrorTypes.CUSTOM,
+      message: t(`editor.editorControlPane.widget.${key}`, {
+        path,
+      }),
+    },
+  };
+};
+
 export function validateMetaField(
   state: State,
   collection: Collection,
   field: EntryField,
-  value: unknown,
+  value: string | undefined,
+  t: (key: string, args: Record<string, unknown>) => string,
 ) {
   if (field.get('meta') && field.get('name') === 'path') {
+    if (!value) {
+      return getPathError(value, 'invalidPath', t);
+    }
     const sanitizedPath = (value as string)
       .split('/')
       .map(getProcessSegment(state.config.get('slug')))
       .join('/');
 
     if (value !== sanitizedPath) {
-      return {
-        error: {
-          type: ValidationErrorTypes.CUSTOM,
-          message: `'${value}' is not a valid path`,
-        },
-      };
+      return getPathError(value, 'invalidPath', t);
     }
 
     const customPath =
@@ -900,12 +914,7 @@ export function validateMetaField(
     const draftPath = entryDraft && entryDraft.getIn(['entry', 'path']);
 
     if (existingEntryPath && existingEntryPath !== draftPath) {
-      return {
-        error: {
-          type: ValidationErrorTypes.CUSTOM,
-          message: `Path '${customPath}' already exists`,
-        },
-      };
+      return getPathError(value, 'pathExists', t);
     }
   }
   return { error: false };

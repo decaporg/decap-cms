@@ -5,6 +5,7 @@ import {
   retrieveLocalBackup,
   persistLocalBackup,
   getMediaAssets,
+  validateMetaField,
 } from '../entries';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -13,6 +14,8 @@ import AssetProxy from '../../valueObjects/AssetProxy';
 jest.mock('coreSrc/backend');
 jest.mock('netlify-cms-lib-util');
 jest.mock('../mediaLibrary');
+jest.mock('../../reducers/entries');
+jest.mock('../../reducers/entryDraft');
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -384,6 +387,172 @@ describe('entries', () => {
 
       const entry = Map({ mediaFiles });
       expect(getMediaAssets({ entry })).toEqual([new AssetProxy({ path: 'path2' })]);
+    });
+  });
+
+  describe('validateMetaField', () => {
+    const state = {
+      config: fromJS({
+        slug: {
+          encoding: 'unicode',
+          clean_accents: false,
+          sanitize_replacement: '-',
+        },
+      }),
+      entries: fromJS([]),
+    };
+    const collection = fromJS({
+      folder: 'folder',
+      type: 'folder_based_collection',
+      name: 'name',
+    });
+    const t = jest.fn((key, args) => ({ key, args }));
+
+    const { selectCustomPath } = require('../../reducers/entryDraft');
+    const { selectEntryByPath } = require('../../reducers/entries');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should not return error on non meta field', () => {
+      expect(validateMetaField(null, null, fromJS({}), null, t)).toEqual({ error: false });
+    });
+
+    it('should not return error on meta path field', () => {
+      expect(
+        validateMetaField(null, null, fromJS({ meta: true, name: 'other' }), null, t),
+      ).toEqual({ error: false });
+    });
+
+    it('should return error on empty path', () => {
+      expect(validateMetaField(null, null, fromJS({ meta: true, name: 'path' }), null, t)).toEqual({
+        error: {
+          message: {
+            key: 'editor.editorControlPane.widget.invalidPath',
+            args: { path: null },
+          },
+          type: 'CUSTOM',
+        },
+      });
+
+      expect(
+        validateMetaField(null, null, fromJS({ meta: true, name: 'path' }), undefined, t),
+      ).toEqual({
+        error: {
+          message: {
+            key: 'editor.editorControlPane.widget.invalidPath',
+            args: { path: undefined },
+          },
+          type: 'CUSTOM',
+        },
+      });
+
+      expect(validateMetaField(null, null, fromJS({ meta: true, name: 'path' }), '', t)).toEqual({
+        error: {
+          message: {
+            key: 'editor.editorControlPane.widget.invalidPath',
+            args: { path: '' },
+          },
+          type: 'CUSTOM',
+        },
+      });
+    });
+
+    it('should return error on invalid path', () => {
+      expect(
+        validateMetaField(state, null, fromJS({ meta: true, name: 'path' }), 'invalid path', t),
+      ).toEqual({
+        error: {
+          message: {
+            key: 'editor.editorControlPane.widget.invalidPath',
+            args: { path: 'invalid path' },
+          },
+          type: 'CUSTOM',
+        },
+      });
+    });
+
+    it('should return error on existing path', () => {
+      selectCustomPath.mockReturnValue('existing-path');
+      selectEntryByPath.mockReturnValue(fromJS({ path: 'existing-path' }));
+      expect(
+        validateMetaField(
+          {
+            ...state,
+            entryDraft: fromJS({
+              entry: {},
+            }),
+          },
+          collection,
+          fromJS({ meta: true, name: 'path' }),
+          'existing-path',
+          t,
+        ),
+      ).toEqual({
+        error: {
+          message: {
+            key: 'editor.editorControlPane.widget.pathExists',
+            args: { path: 'existing-path' },
+          },
+          type: 'CUSTOM',
+        },
+      });
+
+      expect(selectCustomPath).toHaveBeenCalledTimes(1);
+      expect(selectCustomPath).toHaveBeenCalledWith(
+        collection,
+        fromJS({ entry: { meta: { path: 'existing-path' } } }),
+      );
+
+      expect(selectEntryByPath).toHaveBeenCalledTimes(1);
+      expect(selectEntryByPath).toHaveBeenCalledWith(
+        state.entries,
+        collection.get('name'),
+        'existing-path',
+      );
+    });
+
+    it('should not return error on non existing path for new entry', () => {
+      selectCustomPath.mockReturnValue('non-existing-path');
+      selectEntryByPath.mockReturnValue(undefined);
+      expect(
+        validateMetaField(
+          {
+            ...state,
+            entryDraft: fromJS({
+              entry: {},
+            }),
+          },
+          collection,
+          fromJS({ meta: true, name: 'path' }),
+          'non-existing-path',
+          t,
+        ),
+      ).toEqual({
+        error: false,
+      });
+    });
+
+    it('should not return error when for existing entry', () => {
+      selectCustomPath.mockReturnValue('existing-path');
+      selectEntryByPath.mockReturnValue(fromJS({ path: 'existing-path' }));
+      expect(
+        validateMetaField(
+          {
+            ...state,
+            entryDraft: fromJS({
+              entry: { path: 'existing-path' },
+            }),
+          },
+          collection,
+          fromJS({ meta: true, name: 'path' }),
+          'existing-path',
+          t,
+        ),
+      ).toEqual({
+        error: false,
+      });
     });
   });
 });
