@@ -15,7 +15,6 @@ import { sortByField, filterByField } from '../../actions/entries';
 import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
 import { selectEntriesSort, selectEntriesFilter } from '../../reducers/entries';
 import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
-import { getFilterPath } from '../../routing/helpers';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -99,9 +98,8 @@ export class Collection extends React.Component {
     let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
     if (newEntryUrl && filterTerm) {
       newEntryUrl = getNewEntryUrl(collectionName);
-      const path = getFilterPath(filterTerm);
-      if (path) {
-        newEntryUrl = `${newEntryUrl}?path=${path}`;
+      if (filterTerm) {
+        newEntryUrl = `${newEntryUrl}?path=${filterTerm}`;
       }
     }
 

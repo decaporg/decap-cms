@@ -11,7 +11,6 @@ import {
 import { selectEntries, selectEntriesLoaded, selectIsFetching } from '../../../reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
-import { getFilterPath } from '../../../routing/helpers';
 
 export class EntriesCollection extends React.Component {
   static propTypes = {
@@ -63,6 +62,26 @@ export class EntriesCollection extends React.Component {
   }
 }
 
+export const filterNestedEntries = (path, collectionFolder, entries) => {
+  const filtered = entries.filter(e => {
+    const entryPath = e.get('path').substring(collectionFolder.length + 1);
+    if (!entryPath.startsWith(path)) {
+      return false;
+    }
+
+    // only show immediate children
+    if (path) {
+      // non root path
+      const trimmed = entryPath.substring(path.length + 1);
+      return trimmed.split('/').length === 2;
+    } else {
+      // root path
+      return entryPath.split('/').length <= 2;
+    }
+  });
+  return filtered;
+};
+
 function mapStateToProps(state, ownProps) {
   const { collection, viewStyle, filterTerm } = ownProps;
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
@@ -70,18 +89,8 @@ function mapStateToProps(state, ownProps) {
   let entries = selectEntries(state.entries, collection);
 
   if (collection.has('nested')) {
-    const path = getFilterPath(filterTerm);
     const collectionFolder = collection.get('folder');
-    entries = entries.filter(e => {
-      const entryPath = e.get('path').substring(collectionFolder.length + 1);
-      if (!entryPath.startsWith(path)) {
-        return false;
-      }
-
-      // only show immediate children
-      const trimmed = entryPath.substring(path.length + 1);
-      return trimmed.split('/').length <= 2;
-    });
+    entries = filterNestedEntries(filterTerm || '', collectionFolder, entries);
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
   const isFetching = selectIsFetching(state.entries, collection.get('name'));

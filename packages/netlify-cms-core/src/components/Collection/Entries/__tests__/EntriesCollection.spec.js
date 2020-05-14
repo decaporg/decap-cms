@@ -1,5 +1,8 @@
 import React from 'react';
-import ConnectedEntriesCollection, { EntriesCollection } from '../EntriesCollection';
+import ConnectedEntriesCollection, {
+  EntriesCollection,
+  filterNestedEntries,
+} from '../EntriesCollection';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
@@ -28,6 +31,38 @@ const toEntriesState = (collection, entriesArray) => {
   );
   return fromJS(entries);
 };
+
+describe('filterNestedEntries', () => {
+  it('should return only immediate children for non root path', () => {
+    const entriesArray = [
+      { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
+      { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
+      { slug: 'dir1/dir2/index', path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
+      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
+      { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
+    ];
+    const entries = fromJS(entriesArray);
+    expect(filterNestedEntries('dir3', 'src/pages', entries).toJS()).toEqual([
+      { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
+    ]);
+  });
+
+  it('should return immediate children and root for root path', () => {
+    const entriesArray = [
+      { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
+      { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
+      { slug: 'dir1/dir2/index', path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
+      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
+      { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
+    ];
+    const entries = fromJS(entriesArray);
+    expect(filterNestedEntries('', 'src/pages', entries).toJS()).toEqual([
+      { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
+      { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
+      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
+    ]);
+  });
+});
 
 describe('EntriesCollection', () => {
   const collection = fromJS({ name: 'pages', label: 'Pages', folder: 'src/pages' });
@@ -69,11 +104,7 @@ describe('EntriesCollection', () => {
     const entriesArray = [
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
       { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      {
-        slug: 'dir1/dir2/index.md',
-        path: 'src/pages/dir1/dir2/index.md',
-        data: { title: 'File 2' },
-      },
+      { slug: 'dir1/dir2/index', path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
       { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
       { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
     ];
@@ -97,11 +128,7 @@ describe('EntriesCollection', () => {
     const entriesArray = [
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
       { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      {
-        slug: 'dir1/dir2/index.md',
-        path: 'src/pages/dir1/dir2/index.md',
-        data: { title: 'File 2' },
-      },
+      { slug: 'dir1/dir2/index', path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
       { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
       { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
     ];

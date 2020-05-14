@@ -11,7 +11,6 @@ import { selectEntries } from '../../reducers/entries';
 import { Icon, colors } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { getFilterPath } from '../../routing/helpers';
 
 const { addFileTemplateFields } = stringTemplate;
 
@@ -235,7 +234,7 @@ export class NestedCollection extends React.Component {
       });
       const treeData = getTreeData(collection, entries);
 
-      const path = `/${getFilterPath(filterTerm)}`;
+      const path = `/${filterTerm}`;
       walk(treeData, node => {
         if (expanded[node.path] || (this.state.useFilter && path.startsWith(node.path))) {
           node.expanded = true;
