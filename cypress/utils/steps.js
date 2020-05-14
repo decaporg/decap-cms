@@ -442,31 +442,16 @@ function validateListFields({ name, description }) {
   assertNotification(notifications.error.missingField);
   assertFieldErrorStatus('Authors', colorError);
   cy.get('div[class*=ListControl]').eq(2).as('listControl');
-  cy.get('@listControl').within(() => {
-    // assert list item has error border
-    assertColorOn('border-right-color', colorError, {
-        el: cy.root().children().eq(2)
-    });
-    // assert fields have error status
-    assertFieldErrorStatus('Name', colorError, {scope: cy.root()});
-    assertColorOn('background-color', colorError,
-      {type: 'label', label: 'Description', scope: cy.root(), isMarkdown: true}
-    );
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-    // assert list item label text has error color
-    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
-
+  assertFieldErrorStatus('Name', colorError, {scope: cy.get('@listControl')});
+  assertColorOn('background-color', colorError,
+    {type: 'label', label: 'Description', scope: cy.get('@listControl'), isMarkdown: true}
+  );
+  assertListControlErrorStatus([colorError, colorError], '@listControl');
   cy.get('input')
     .eq(2)
     .type(name);
   cy.getMarkdownEditor()
     .eq(2)
-    .selectAll()
-    .backspace({ times: 2 })
     .type(description);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
@@ -565,16 +550,14 @@ function assertFieldErrorStatus(label, color, opts = {isMarkdown: false}) {
 
 function assertListControlErrorStatus(colors = ['', ''], alias) {
   cy.get(alias).within(() => {
+    // assert list item border has correct color
     assertColorOn('border-right-color', colors[0], {
       el: cy.root().children().eq(2)
     });
-
     // collapse list item
     cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has normal color
+    // assert list item label text has correct color
     assertColorOn('color', colors[1], {el: cy.get('div[class*=NestedObjectLabel]').first()});
-
     // uncollapse list item
     cy.get('button[class*=TopBarButton-button]').first().click();
   });
