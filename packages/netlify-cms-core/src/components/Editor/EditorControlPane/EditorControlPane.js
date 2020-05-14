@@ -32,12 +32,12 @@ export default class ControlPane extends React.Component {
   render() {
     const {
       collection,
-      entry,
       fields,
+      entry,
       fieldsMetaData,
       fieldsErrors,
-      onValidate,
       onChange,
+      onValidate,
     } = this.props;
 
     if (!collection || !fields) {

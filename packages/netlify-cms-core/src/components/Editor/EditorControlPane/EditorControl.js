@@ -316,9 +316,9 @@ const mapStateToProps = state => {
     isFetching: state.search.get('isFetching'),
     queryHits: state.search.get('queryHits'),
     config: state.config,
-    isLoadingAsset,
     entry,
     collection,
+    isLoadingAsset,
     loadEntry,
     validateMetaField: (field, value, t) => validateMetaField(state, collection, field, value, t),
   };
