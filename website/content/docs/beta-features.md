@@ -463,7 +463,7 @@ collections:
     # adding a nested object will show the collection folder structure
     nested:
       depth: 100 # max depth to show in the collection tree
-      summary: '{{title}}' # optional, defaults to the inferred title field
+      summary: '{{title}}' # optional summary for a tree node, defaults to the inferred title field
     fields:
       - label: Title
         name: title
@@ -471,7 +471,7 @@ collections:
       - label: Body
         name: body
         widget: markdown
-    # add a meta object with a path property allows editing the path of entries
-    # moving an existing entry will move the entries sub tree of the entry
+    # adding a meta object with a path property allows editing the path of entries
+    # moving an existing entry will move the entire sub tree of the entry to the new location
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
 ```
