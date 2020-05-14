@@ -77,6 +77,9 @@ export class PreviewPane extends React.Component {
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
     let value = values && values.get(field.get('name'));
+    if (field.get('meta')) {
+      value = this.props.entry.getIn(['meta', field.get('name')]);
+    }
     const nestedFields = field.get('fields');
     const singleField = field.get('field');
     const metadata = fieldsMetaData && fieldsMetaData.get(field.get('name'), Map());
