@@ -1,4 +1,4 @@
-const { notifications, workflowStatus, editorStatus, publishTypes } = require('./constants');
+const { notifications, workflowStatus, editorStatus, publishTypes, colorError, colorNormal } = require('./constants');
 
 function login(user) {
   cy.viewport(1200, 1200);
@@ -36,6 +36,28 @@ function assertNotification(message) {
     cy.wait(500);
     cy.contains(message).invoke('hide');
   });
+}
+
+function assertColorOn(cssProperty, color, opts) {
+  console.log("assertColorOn", cssProperty, color, opts);
+  if (opts.type && opts.type === 'label') {
+    (opts.scope ? opts.scope : cy).contains('label', opts.label).should(($el) => {
+      expect($el).to.have.css(cssProperty, color);
+    });
+  } else if (opts.type && opts.type === 'field') {
+    const assertion = ($el) => expect($el).to.have.css(cssProperty, color);
+    if (opts.isMarkdown) {
+      (opts.scope ? opts.scope : cy).contains('label', opts.label).next()
+        .children()
+        .eq(0).children().eq(1).should(assertion);
+    } else {
+      (opts.scope ? opts.scope : cy).contains('label', opts.label).next().should(assertion);
+    }
+  } else if (opts.el) {
+    opts.el.should(($el) => {
+      expect($el).to.have.css(cssProperty, color);
+    });
+  }
 }
 
 function exitEditor() {
@@ -381,10 +403,14 @@ function validateObjectFields({ limit, author }) {
   cy.get('input[type=number]').type(limit);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
+  assertFieldErrorStatus('Post Settings', colorError);
+  assertFieldErrorStatus('Default Author', colorError);
   cy.contains('label', 'Default Author').click();
   cy.focused().type(author);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
+  assertFieldErrorStatus('Post Settings', colorNormal);
+  assertFieldErrorStatus('Default Author', colorNormal);
 }
 
 function validateNestedObjectFields({ limit, author }) {
@@ -415,13 +441,185 @@ function validateListFields({ name, description }) {
   cy.contains('button', 'Add').click();
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
+  assertFieldErrorStatus('Authors', colorError);
+  cy.get('div[class*=ListControl]').eq(2).as('listControl');
+  cy.get('@listControl').within(() => {
+    // assert list item has error border
+    assertColorOn('border-right-color', colorError, {
+        el: cy.root().children().eq(2)
+    });
+    // assert fields have error status
+    assertFieldErrorStatus('Name', colorError, {scope: cy.root()});
+    assertColorOn('background-color', colorError,
+      {type: 'label', label: 'Description', scope: cy.root(), isMarkdown: true}
+    );
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+    // assert list item label text has error color
+    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
+
   cy.get('input')
     .eq(2)
     .type(name);
   cy.getMarkdownEditor()
     .eq(2)
+    .selectAll()
+    .backspace({ times: 2 })
     .type(description);
   cy.contains('button', 'Save').click();
+  assertNotification(notifications.saved);
+  assertFieldErrorStatus('Authors', colorNormal);
+}
+
+function validateNestedListFields() {
+  cy.get('a[href^="#/collections/hotel_locations"]').click();
+  cy.contains('a', 'New Hotel Location').click();
+
+  // add city list item
+  cy.contains('button', 'hotel locations').click();
+  cy.contains('button', 'cities').click();
+  cy.contains('label', 'City').next().type('Washington DC');
+  cy.contains('label', 'Number of Hotels in City').next().type('5');
+  cy.contains('button', 'city locations').click();
+
+  // add second city list item
+  cy.contains('button', 'cities').click();
+  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).contains('label', 'City').next().type('Boston');
+  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).contains('button', 'city locations').click();
+  // cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).contains('label', 'Number of Hotels in City').next().type('3');
+
+  cy.contains('button', 'Save').click();
+  assertNotification(notifications.error.missingField);
+
+  // assert on fields
+  assertFieldErrorStatus('Hotel Locations', colorError);
+  assertFieldErrorStatus('Cities', colorError);
+  assertFieldErrorStatus('City', colorNormal);
+  assertFieldErrorStatus('City', colorNormal, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
+  assertFieldErrorStatus('Number of Hotels in City', colorNormal);
+  assertFieldErrorStatus('Number of Hotels in City', colorError, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
+  assertFieldErrorStatus('City Locations', colorError);
+  assertFieldErrorStatus('City Locations', colorError, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
+  assertFieldErrorStatus('Hotel Name', colorError);
+  assertFieldErrorStatus('Hotel Name', colorError, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
+
+
+  // list control aliases
+  cy.contains('label', 'Hotel Locations').next().find('div[class*=ListControl]').first().as('hotelLocationsListControl');
+  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(0).as('firstCitiesListControl');
+  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).as('secondCitiesListControl');
+  cy.contains('label', 'City Locations').next().find('div[class*=ListControl]').eq(0).as('firstCityLocationsListControl');
+  cy.contains('label', 'City Locations').next().find('div[class*=ListControl]').eq(3).as('secondCityLocationsListControl');
+
+  // assert on list controls
+  cy.get('@hotelLocationsListControl').within(() => {
+    assertColorOn('border-right-color', colorError, {
+      el: cy.root().children().eq(2)
+    });
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has error color
+    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
+
+  cy.get('@firstCitiesListControl').within(() => {
+    assertColorOn('border-right-color', colorError, {
+      el: cy.root().children().eq(2)
+    });
+
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has normal color
+    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
+
+  cy.get('@secondCitiesListControl').within(() => {
+    assertColorOn('border-right-color', colorError, {
+      el: cy.root().children().eq(2)
+    });
+
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has error color
+    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
+
+  cy.get('@firstCityLocationsListControl').within(() => {
+    assertColorOn('border-right-color', colorError, {
+      el: cy.root().children().eq(2)
+    });
+
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has error color
+    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
+
+  cy.get('@firstCityLocationsListControl').within(() => {
+    assertColorOn('border-right-color', colorError, {
+      el: cy.root().children().eq(2)
+    });
+
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has error color
+    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
+
+  cy.contains('label', 'Hotel Name').next().type('The Ritz Carlton');
+
+  cy.get('@firstCitiesListControl').within(() => {
+    assertColorOn('border-right-color', colorNormal, {
+      el: cy.root().children().eq(2)
+    });
+
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has normal color
+    assertColorOn('color', colorNormal, {el: cy.get('div[class*=NestedObjectLabel]')});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
+
+  cy.get('@firstCitiesListControl').within(() => {
+    assertColorOn('border-right-color', colorNormal, {
+      el: cy.root().children().eq(2)
+    });
+
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has normal color
+    assertColorOn('color', colorNormal, {el: cy.get('div[class*=NestedObjectLabel]')});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
 }
 
 function validateObjectFieldsAndExit(setting) {
@@ -439,10 +637,21 @@ function validateListFieldsAndExit(setting) {
   exitEditor();
 }
 
+function validateNestedListFieldsAndExit(setting) {
+  validateNestedListFields(setting);
+  exitEditor();
+}
+
 function assertFieldValidationError({ message, fieldLabel }) {
   cy.contains('label', fieldLabel)
     .siblings('ul[class*=ControlErrorsList]')
     .contains(message);
+  assertFieldErrorStatus(fieldLabel, colorError);
+}
+
+function assertFieldErrorStatus(label, color, opts = {isMarkdown: false}) {
+  assertColorOn('background-color', color, {type: 'label', label, scope: opts.scope, isMarkdown: opts.isMarkdown});
+  assertColorOn('border-color', color, {type: 'field', label, scope: opts.scope, isMarkdown: opts.isMarkdown});
 }
 
 module.exports = {
@@ -468,6 +677,7 @@ module.exports = {
   validateObjectFieldsAndExit,
   validateNestedObjectFieldsAndExit,
   validateListFieldsAndExit,
+  validateNestedListFieldsAndExit,
   unpublishEntry,
   publishEntryInEditor,
   duplicateEntry,

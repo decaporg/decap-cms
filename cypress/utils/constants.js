@@ -3,6 +3,9 @@ const editorStatus = { draft: 'Draft', review: 'In review', ready: 'Ready' };
 const setting1 = { limit: 10, author: 'John Doe' };
 const setting2 = { name: 'Jane Doe', description: 'description' };
 const publishTypes = { publishNow: 'Publish now', publishAndCreateNew: 'Publish and create new', publishAndDuplicate: 'Publish and duplicate' };
+const colorError = 'rgb(255, 0, 59)';
+const colorNormal = 'rgb(223, 223, 227)';
+
 const notifications = {
   saved: 'Entry saved',
   published: 'Entry published',
@@ -40,5 +43,7 @@ module.exports = {
   setting2,
   notifications,
   publishTypes,
-  HOT_KEY_MAP
+  HOT_KEY_MAP,
+  colorError,
+  colorNormal,
 };

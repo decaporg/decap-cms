@@ -247,3 +247,40 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+  - name: hotel_locations
+    label: 'Hotel Locations'
+    label_singular: 'Hotel Location'
+    folder: content/hotel_locations
+    create: true
+    fields:
+      - { label: 'Country', name: 'country', widget: 'string' }
+      - label: 'Hotel Locations'
+        name: hotel_locations
+        widget: list
+        fields:
+          - label: 'Cities'
+            name: 'cities'
+            widget: 'list'
+            fields:
+              - { label: 'City', name: 'city', widget: 'string' }
+              - { label: 'Number of Hotels in City', name: 'number_of_hotels_in_city', widget: 'number' }
+              - label: 'City Locations'
+                name: 'city_locations'
+                widget: 'list'
+                fields:
+                  - { label: 'Hotel Name', name: 'hotel_name', widget: 'string' }
+      - label: 'Typed List'
+        name: 'typed_list'
+        widget: 'list'
+        types:
+          - label: 'Type 1 Object'
+            name: 'type_1_object'
+            widget: 'object'
+            fields:
+              - { label: 'String', name: 'string', widget: 'string' }
+              - { label: 'Text', name: 'text', widget: 'text' }
+          - label: 'Type 2 Object'
+            name: 'type_2_object'
+            widget: 'object'
+            fields:
+              - { label: 'Number', name: 'number', widget: 'number' }

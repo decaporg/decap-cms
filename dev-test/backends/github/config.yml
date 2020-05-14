@@ -61,3 +61,50 @@ collections:
       - label: Body
         name: body
         widget: markdown
+  - name: products
+    label: Products
+    label_singular: 'Product'
+    folder: content/products
+    create: true
+    fields:
+      - label: Template
+        name: template
+        widget: hidden
+        default: post
+      - label: Title
+        name: title
+        widget: string
+      - label: 'List 1'
+        name: list1
+        widget: list
+        fields:
+          - label: Description
+            name: string1
+            widget: string
+          - label: 'List 2'
+            name: list2
+            widget: list
+            fields:
+              - label: 'String 2'
+                name: string2
+                widget: string
+          - label: 'String 3'
+            name: string3
+            widget: string
+      - label: 'List 1b'
+        name: list1b
+        widget: list
+        fields:
+          - label: 'String 1b'
+            name: string1b
+            widget: string
+          - label: 'List 2b'
+            name: 'list2b'
+            widget: 'list'
+            fields:
+              - label: 'String2b'
+                name: 'string2b'
+                widget: 'string'
+          - label: 'String'
+            name: 'string3'
+            widget: 'string'

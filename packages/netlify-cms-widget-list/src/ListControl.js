@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
-import { List, Map, fromJS } from 'immutable';
+import { List, Map, fromJS, Seq } from 'immutable';
 import { partial, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
@@ -16,6 +16,8 @@ import {
 } from './typedListHelpers';
 import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+import TreeUtils from 'immutable-treeutils';
+const treeUtils = new TreeUtils();
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
@@ -464,9 +466,16 @@ export default class ListControl extends React.Component {
     let field = this.props.field;
 
     let hasError = false;
-    if (listNodePath) {
-      const items = entryTreeMap.getIn([...listNodePath, 'childNodes', index, 'childNodes']);
-      hasError = items && items.toJS().some(n => fieldsErrors.has(n.id));
+    if (listNodePath && fieldsErrors.size > 0) {
+      const descendantPaths = treeUtils.descendants(
+        entryTreeMap,
+        Seq([...listNodePath.toJS(), 'childNodes', index]),
+      );
+      for (const path of descendantPaths) {
+        const node = entryTreeMap.getIn([...path]);
+        console.log('node', node.toJS());
+        hasError = hasError || fieldsErrors.has(node.get('id'));
+      }
     }
 
     if (this.getValueType() === valueTypes.MIXED) {
