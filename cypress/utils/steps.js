@@ -1,4 +1,4 @@
-const { notifications, workflowStatus, editorStatus, publishTypes, colorError, colorNormal } = require('./constants');
+const { notifications, workflowStatus, editorStatus, publishTypes, colorError, colorNormal, textColorNormal } = require('./constants');
 
 function login(user) {
   cy.viewport(1200, 1200);
@@ -39,7 +39,6 @@ function assertNotification(message) {
 }
 
 function assertColorOn(cssProperty, color, opts) {
-  console.log("assertColorOn", cssProperty, color, opts);
   if (opts.type && opts.type === 'label') {
     (opts.scope ? opts.scope : cy).contains('label', opts.label).should(($el) => {
       expect($el).to.have.css(cssProperty, color);
@@ -478,7 +477,7 @@ function validateNestedListFields() {
   cy.get('a[href^="#/collections/hotel_locations"]').click();
   cy.contains('a', 'New Hotel Location').click();
 
-  // add city list item
+  // add first city list item
   cy.contains('button', 'hotel locations').click();
   cy.contains('button', 'cities').click();
   cy.contains('label', 'City').next().type('Washington DC');
@@ -487,9 +486,9 @@ function validateNestedListFields() {
 
   // add second city list item
   cy.contains('button', 'cities').click();
-  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).contains('label', 'City').next().type('Boston');
-  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).contains('button', 'city locations').click();
-  // cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).contains('label', 'Number of Hotels in City').next().type('3');
+  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).as('secondCitiesListControl');
+  cy.get('@secondCitiesListControl').contains('label', 'City').next().type('Boston');
+  cy.get('@secondCitiesListControl').contains('button', 'city locations').click();
 
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
@@ -498,128 +497,38 @@ function validateNestedListFields() {
   assertFieldErrorStatus('Hotel Locations', colorError);
   assertFieldErrorStatus('Cities', colorError);
   assertFieldErrorStatus('City', colorNormal);
-  assertFieldErrorStatus('City', colorNormal, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
+  assertFieldErrorStatus('City', colorNormal, {scope: cy.get('@secondCitiesListControl')});
   assertFieldErrorStatus('Number of Hotels in City', colorNormal);
-  assertFieldErrorStatus('Number of Hotels in City', colorError, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
+  assertFieldErrorStatus('Number of Hotels in City', colorError, {scope: cy.get('@secondCitiesListControl')});
   assertFieldErrorStatus('City Locations', colorError);
-  assertFieldErrorStatus('City Locations', colorError, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
+  assertFieldErrorStatus('City Locations', colorError, {scope: cy.get('@secondCitiesListControl')});
   assertFieldErrorStatus('Hotel Name', colorError);
-  assertFieldErrorStatus('Hotel Name', colorError, {scope: cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2)});
-
+  assertFieldErrorStatus('Hotel Name', colorError, {scope: cy.get('@secondCitiesListControl')});
 
   // list control aliases
   cy.contains('label', 'Hotel Locations').next().find('div[class*=ListControl]').first().as('hotelLocationsListControl');
   cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(0).as('firstCitiesListControl');
-  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(2).as('secondCitiesListControl');
   cy.contains('label', 'City Locations').next().find('div[class*=ListControl]').eq(0).as('firstCityLocationsListControl');
-  cy.contains('label', 'City Locations').next().find('div[class*=ListControl]').eq(3).as('secondCityLocationsListControl');
+  cy.contains('label', 'Cities').next().find('div[class*=ListControl]').eq(3).as('secondCityLocationsListControl');
 
   // assert on list controls
-  cy.get('@hotelLocationsListControl').within(() => {
-    assertColorOn('border-right-color', colorError, {
-      el: cy.root().children().eq(2)
-    });
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has error color
-    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
-
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
-
-  cy.get('@firstCitiesListControl').within(() => {
-    assertColorOn('border-right-color', colorError, {
-      el: cy.root().children().eq(2)
-    });
-
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has normal color
-    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
-
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
-
-  cy.get('@secondCitiesListControl').within(() => {
-    assertColorOn('border-right-color', colorError, {
-      el: cy.root().children().eq(2)
-    });
-
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has error color
-    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
-
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
-
-  cy.get('@firstCityLocationsListControl').within(() => {
-    assertColorOn('border-right-color', colorError, {
-      el: cy.root().children().eq(2)
-    });
-
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has error color
-    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
-
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
-
-  cy.get('@firstCityLocationsListControl').within(() => {
-    assertColorOn('border-right-color', colorError, {
-      el: cy.root().children().eq(2)
-    });
-
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has error color
-    assertColorOn('color', colorError, {el: cy.get('div[class*=NestedObjectLabel]')});
-
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
+  assertListControlErrorStatus([colorError, colorError], '@hotelLocationsListControl');
+  assertListControlErrorStatus([colorError, colorError], '@firstCitiesListControl');
+  assertListControlErrorStatus([colorError, colorError], '@secondCitiesListControl');
+  assertListControlErrorStatus([colorError, colorError], '@firstCityLocationsListControl');
+  assertListControlErrorStatus([colorError, colorError], '@secondCityLocationsListControl');
 
   cy.contains('label', 'Hotel Name').next().type('The Ritz Carlton');
+  cy.contains('button', 'Save').click();
+  assertNotification(notifications.error.missingField);
+  assertListControlErrorStatus([colorNormal, textColorNormal], '@firstCitiesListControl');
 
-  cy.get('@firstCitiesListControl').within(() => {
-    assertColorOn('border-right-color', colorNormal, {
-      el: cy.root().children().eq(2)
-    });
-
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has normal color
-    assertColorOn('color', colorNormal, {el: cy.get('div[class*=NestedObjectLabel]')});
-
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
-
-  cy.get('@firstCitiesListControl').within(() => {
-    assertColorOn('border-right-color', colorNormal, {
-      el: cy.root().children().eq(2)
-    });
-
-    // collapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-
-    // assert list item label text has normal color
-    assertColorOn('color', colorNormal, {el: cy.get('div[class*=NestedObjectLabel]')});
-
-    // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]').first().click();
-  });
+  // fill out rest of form and save
+  cy.get('@secondCitiesListControl').contains('label', 'Number of Hotels in City').type(3);
+  cy.get('@secondCitiesListControl').contains('label', 'Hotel Name').type('Grand Hyatt');
+  cy.contains('label', 'Country').next().type('United States');
+  cy.contains('button', 'Save').click();
+  assertNotification(notifications.saved);
 }
 
 function validateObjectFieldsAndExit(setting) {
@@ -652,6 +561,23 @@ function assertFieldValidationError({ message, fieldLabel }) {
 function assertFieldErrorStatus(label, color, opts = {isMarkdown: false}) {
   assertColorOn('background-color', color, {type: 'label', label, scope: opts.scope, isMarkdown: opts.isMarkdown});
   assertColorOn('border-color', color, {type: 'field', label, scope: opts.scope, isMarkdown: opts.isMarkdown});
+}
+
+function assertListControlErrorStatus(colors = ['', ''], alias) {
+  cy.get(alias).within(() => {
+    assertColorOn('border-right-color', colors[0], {
+      el: cy.root().children().eq(2)
+    });
+
+    // collapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+
+    // assert list item label text has normal color
+    assertColorOn('color', colors[1], {el: cy.get('div[class*=NestedObjectLabel]').first()});
+
+    // uncollapse list item
+    cy.get('button[class*=TopBarButton-button]').first().click();
+  });
 }
 
 module.exports = {

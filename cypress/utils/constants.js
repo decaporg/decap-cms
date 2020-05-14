@@ -5,6 +5,7 @@ const setting2 = { name: 'Jane Doe', description: 'description' };
 const publishTypes = { publishNow: 'Publish now', publishAndCreateNew: 'Publish and create new', publishAndDuplicate: 'Publish and duplicate' };
 const colorError = 'rgb(255, 0, 59)';
 const colorNormal = 'rgb(223, 223, 227)';
+const textColorNormal = 'rgb(68, 74, 87)';
 
 const notifications = {
   saved: 'Entry saved',
@@ -46,4 +47,5 @@ module.exports = {
   HOT_KEY_MAP,
   colorError,
   colorNormal,
+  textColorNormal,
 };

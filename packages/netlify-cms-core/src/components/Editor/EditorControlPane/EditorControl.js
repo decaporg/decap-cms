@@ -155,18 +155,12 @@ class EditorControl extends React.Component {
     const keyPathToCurrNode = treeUtils.byId(entryTreeMap, this.uniqueFieldId);
     let isAncestor = false;
     if (keyPathToCurrNode) {
-      // const descendantPaths = treeUtils.descendants(entryTreeMap, keyPathToCurrNode);
-      // for (const path of descendantPaths) {
-      //   const node = entryTreeMap.getIn([...path]);
-      //   isAncestor = isAncestor || fieldsErrors.has(node.get('id'));
-      // }
       for (const j of fieldsErrors.keys()) {
         isAncestor =
           isAncestor ||
           treeUtils.find(entryTreeMap, n => n.get('id') === j, Seq([...keyPathToCurrNode]));
       }
     }
-    console.log('isAncestor', isAncestor);
     return isAncestor;
   };
 

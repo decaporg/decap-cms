@@ -56,11 +56,11 @@ describe('Test Backend Editorial Workflow', () => {
     cy.task('updateConfig', { collections: [{ publish: true }] });
   });
 
-  it.skip('successfully loads', () => {
+  it('successfully loads', () => {
     login();
   });
 
-  it.skip('can create an entry', () => {
+  it('can create an entry', () => {
     login();
     createPost(entry1);
 
@@ -75,17 +75,17 @@ describe('Test Backend Editorial Workflow', () => {
     exitEditor();
   });
 
-  it.skip('can validate object fields', () => {
+  it('can validate object fields', () => {
     login();
     validateObjectFieldsAndExit(setting1);
   });
 
-  it.skip('can validate fields nested in an object field', () => {
+  it('can validate fields nested in an object field', () => {
     login();
     validateNestedObjectFieldsAndExit(setting1);
   });
 
-  it.skip('can validate list fields', () => {
+  it('can validate list fields', () => {
     login();
     validateListFieldsAndExit(setting2);
   });
@@ -95,7 +95,7 @@ describe('Test Backend Editorial Workflow', () => {
     validateNestedListFieldsAndExit(setting2);
   });
 
-  it.skip('can publish an editorial workflow entry', () => {
+  it('can publish an editorial workflow entry', () => {
     login();
     createPostAndExit(entry1);
     goToWorkflow();
@@ -103,7 +103,7 @@ describe('Test Backend Editorial Workflow', () => {
     publishWorkflowEntry(entry1);
   });
 
-  it.skip('can update an entry', () => {
+  it('can update an entry', () => {
     login();
     createPostAndExit(entry1);
     goToWorkflow();
@@ -124,7 +124,7 @@ describe('Test Backend Editorial Workflow', () => {
     exitEditor();
   });
 
-  it.skip('can change workflow status', () => {
+  it('can change workflow status', () => {
     login();
     createPostAndExit(entry1);
     goToWorkflow();
@@ -135,7 +135,7 @@ describe('Test Backend Editorial Workflow', () => {
     updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
   });
 
-  it.skip('can change status on and publish multiple entries', () => {
+  it('can change status on and publish multiple entries', () => {
     login();
     createPostAndExit(entry1);
     createPostAndExit(entry2);
@@ -151,7 +151,7 @@ describe('Test Backend Editorial Workflow', () => {
     assertPublishedEntry([entry3, entry2, entry1]);
   });
 
-  it.skip('can delete an entry', () => {
+  it('can delete an entry', () => {
     login();
     createPost(entry1);
     deleteEntryInEditor();
@@ -159,7 +159,7 @@ describe('Test Backend Editorial Workflow', () => {
     assertEntryDeleted(entry1);
   });
 
-  it.skip('can update workflow status from within the editor', () => {
+  it('can update workflow status from within the editor', () => {
     login();
     createPost(entry1);
     assertWorkflowStatusInEditor(editorStatus.draft);
@@ -172,7 +172,7 @@ describe('Test Backend Editorial Workflow', () => {
     assertWorkflowStatus(entry1, workflowStatus.ready);
   });
 
-  it.skip('can unpublish an existing entry', () => {
+  it('can unpublish an existing entry', () => {
     // first publish an entry
     login();
     createPostAndExit(entry1);
@@ -183,7 +183,7 @@ describe('Test Backend Editorial Workflow', () => {
     unpublishEntry(entry1);
   });
 
-  it.skip('can duplicate an existing entry', () => {
+  it('can duplicate an existing entry', () => {
     login();
     createPost(entry1);
     updateWorkflowStatusInEditor(editorStatus.ready);
@@ -191,7 +191,7 @@ describe('Test Backend Editorial Workflow', () => {
     duplicateEntry(entry1);
   });
 
-  it.skip('cannot publish when "publish" is false', () => {
+  it('cannot publish when "publish" is false', () => {
     cy.task('updateConfig', { collections: [{ publish: false }] });
     login();
     createPost(entry1);
@@ -202,7 +202,7 @@ describe('Test Backend Editorial Workflow', () => {
     cy.contains('button', 'Publish new entry').should('not.exist');
   });
 
-  it.skip('can create a new entry, publish and create new', () => {
+  it('can create a new entry, publish and create new', () => {
     login();
     createPost(entry1);
     updateWorkflowStatusInEditor(editorStatus.ready);
@@ -210,7 +210,7 @@ describe('Test Backend Editorial Workflow', () => {
     publishAndCreateNewEntryInEditor(entry1);
   });
 
-  it.skip('can create a new entry, publish and duplicate', () => {
+  it('can create a new entry, publish and duplicate', () => {
     login();
     createPost(entry1);
     updateWorkflowStatusInEditor(editorStatus.ready);
