@@ -446,3 +446,32 @@ will open the editor for a new post with the `title` field populated with `first
 with `second` and the markdown `body` field with `# content`.
 
 **Note:** URL Encoding might be required for certain values (e.g. in the previous example the value for `body` is URL encoded).
+
+## Nested Collections
+
+Allows a folder collection to show a nested structure of entries and edit the locations of the entries.
+
+Example configuration:
+
+```yaml
+collections:
+  - name: pages
+    label: Pages
+    label_singular: 'Page'
+    folder: content/pages
+    create: true
+    # adding a nested object will show the collection folder structure
+    nested:
+      depth: 100 # max depth to show in the collection tree
+      summary: '{{title}}' # optional, defaults to the inferred title field
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Body
+        name: body
+        widget: markdown
+    # add a meta object with a path property allows editing the path of entries
+    # moving an existing entry will move the entries sub tree of the entry
+    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+```
