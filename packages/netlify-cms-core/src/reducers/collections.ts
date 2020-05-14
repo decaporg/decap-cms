@@ -449,4 +449,13 @@ export const selectFieldsComments = (collection: Collection, entryMap: EntryMap)
   return comments;
 };
 
+export const selectHasMetaPath = (collection: Collection) => {
+  return (
+    collection.has('folder') &&
+    collection.get('type') === FOLDER &&
+    collection.has('meta') &&
+    collection.get('meta')?.has('path')
+  );
+};
+
 export default collections;

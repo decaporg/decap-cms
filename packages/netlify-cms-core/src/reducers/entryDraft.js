@@ -23,8 +23,7 @@ import {
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
 } from 'Actions/editorialWorkflow';
 import { get } from 'lodash';
-import { FOLDER } from '../constants/collectionTypes';
-import { selectFolderEntryExtension } from './collections';
+import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { join } from 'path';
 
 const initialState = Map({
@@ -178,7 +177,7 @@ const entryDraftReducer = (state = Map(), action) => {
 };
 
 export const selectCustomPath = (collection, entryDraft) => {
-  if (collection.get('type') !== FOLDER) {
+  if (!selectHasMetaPath(collection)) {
     return;
   }
   const meta = entryDraft.getIn(['entry', 'meta']);

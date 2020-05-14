@@ -15,6 +15,7 @@ import {
   selectInferedField,
   selectMediaFolders,
   selectFieldsComments,
+  selectHasMetaPath,
 } from './reducers/collections';
 import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -164,7 +165,7 @@ type Implementation = BackendImplementation & {
 };
 
 const prepareMetaPath = (path: string, collection: Collection) => {
-  if (!collection.has('folder')) {
+  if (!selectHasMetaPath(collection)) {
     return path;
   }
   const dir = dirname(path);
