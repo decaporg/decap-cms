@@ -1884,7 +1884,9 @@ exports[`ListControl should render list with nested object 1`] = `
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
+          forid="0"
           forlist="true"
+          haserror="false"
           validationkey="0"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
         />
@@ -1912,7 +1914,9 @@ exports[`ListControl should render list with nested object 1`] = `
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
+          forid="1"
           forlist="true"
+          haserror="false"
           validationkey="1"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
         />
@@ -2139,7 +2143,9 @@ exports[`ListControl should render list with nested object with collapse = false
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
+          forid="0"
           forlist="true"
+          haserror="false"
           validationkey="0"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
         />
@@ -2167,7 +2173,9 @@ exports[`ListControl should render list with nested object with collapse = false
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
+          forid="1"
           forlist="true"
+          haserror="false"
           validationkey="1"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
         />
