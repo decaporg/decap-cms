@@ -150,15 +150,25 @@ class EditorControl extends React.Component {
     }
   }
 
+  getListNodePath = () => {
+    const { entryTreeMap } = this.props;
+    return this.isList
+      ? treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId)
+      : undefined;
+  };
+
   isAncestorOfFieldError = () => {
-    const { entryTreeMap, fieldsErrors } = this.props;
-    const keyPathToCurrNode = treeUtils.byId(entryTreeMap, this.uniqueFieldId);
     let isAncestor = false;
-    if (keyPathToCurrNode) {
-      for (const j of fieldsErrors.keys()) {
-        isAncestor =
-          isAncestor ||
-          treeUtils.find(entryTreeMap, n => n.get('id') === j, Seq([...keyPathToCurrNode]));
+    if (this.isListOrObject) {
+      const { entryTreeMap, fieldsErrors } = this.props;
+      const keyPathToCurrNode = treeUtils.byId(entryTreeMap, this.uniqueFieldId);
+
+      if (keyPathToCurrNode && fieldsErrors.size > 0) {
+        for (const j of fieldsErrors.keys()) {
+          isAncestor =
+            isAncestor ||
+            treeUtils.find(entryTreeMap, n => n.get('id') === j, Seq([...keyPathToCurrNode]));
+        }
       }
     }
     return isAncestor;
@@ -209,10 +219,8 @@ class EditorControl extends React.Component {
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
-    const childErrors = this.isListOrObject && this.isAncestorOfFieldError();
-    const listNodePath = this.isList
-      ? treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId)
-      : undefined;
+    const childErrors = this.isAncestorOfFieldError();
+    const listNodePath = this.getListNodePath();
 
     return (
       <ClassNames>

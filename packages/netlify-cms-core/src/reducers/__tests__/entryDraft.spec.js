@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable';
+import { Map, fromJS, Seq } from 'immutable';
 import * as actions from 'Actions/entries';
 import reducer, { entryTreeMapRootNode } from '../entryDraft';
 
@@ -202,7 +202,7 @@ describe('entryDraft reducer', () => {
     });
   });
 
-  describe('ADD_TO_TREE_MAP', () => {
+  describe('ADD_TO_ENTRY_TREE_MAP', () => {
     it('should create correct tree map of fields', () => {
       const listField = Map({ name: 'list1', widget: 'list' });
       const listField2 = Map({ name: 'list2', widget: 'list' });
@@ -248,6 +248,112 @@ describe('entryDraft reducer', () => {
           name: listField2.get('name'),
           type: listField2.get('widget'),
           childNodes: [],
+        },
+      ];
+
+      const root = entryTreeMapRootNode.toJS();
+      root.childNodes = entryTreeMapState;
+
+      expect(state.toJS()).toEqual({
+        entry: {},
+        fieldsMetaData: {},
+        fieldsErrors: {},
+        entryTreeMap: root,
+        hasChanged: false,
+        key: '',
+      });
+    });
+  });
+
+  describe('REMOVE_FROM_ENTRY_TREE_MAP', () => {
+    it('should create correct tree map of fields', () => {
+      const listField = Map({ name: 'list1', widget: 'list' });
+      const listField2 = Map({ name: 'list2', widget: 'list' });
+      const subListField = Map({ name: 'sublist1', widget: 'list' });
+      const subSubListField = Map({ name: 'subsublist1', widget: 'list' });
+      const stringField = Map({ name: 'string1', widget: 'string' });
+
+      // build tree
+      let state = reducer(initialState, actions.addToEntryTreeMap({ id: '1', field: listField }));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '2', field: stringField }, '1'));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '3', field: subListField }, '1'));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '4', field: subSubListField }, '3'));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '5', field: listField2 }));
+
+      // remove nodes
+      state = reducer(state, actions.removeFromEntryTreeMap('2', Seq(['childNodes', 0])));
+      state = reducer(state, actions.removeFromEntryTreeMap('4', Seq(['childNodes', 0])));
+      state = reducer(state, actions.removeFromEntryTreeMap('3'));
+      state = reducer(state, actions.removeFromEntryTreeMap('5'));
+      state = reducer(state, actions.removeFromEntryTreeMap('1'));
+
+      const entryTreeMapState = [];
+
+      const root = entryTreeMapRootNode.toJS();
+      root.childNodes = entryTreeMapState;
+
+      expect(state.toJS()).toEqual({
+        entry: {},
+        fieldsMetaData: {},
+        fieldsErrors: {},
+        entryTreeMap: root,
+        hasChanged: false,
+        key: '',
+      });
+    });
+  });
+
+  describe('SWAP_NODES_IN_ENTRY_TREE_MAP', () => {
+    it('should create correct tree map of fields', () => {
+      const listField = Map({ name: 'list1', widget: 'list' });
+      const listField2 = Map({ name: 'list2', widget: 'list' });
+      const subListField = Map({ name: 'sublist1', widget: 'list' });
+      const subSubListField = Map({ name: 'subsublist1', widget: 'list' });
+      const stringField = Map({ name: 'string1', widget: 'string' });
+
+      // build tree
+      let state = reducer(initialState, actions.addToEntryTreeMap({ id: '1', field: listField }));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '2', field: stringField }, '1'));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '3', field: subListField }, '1'));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '4', field: subSubListField }, '3'));
+      state = reducer(state, actions.addToEntryTreeMap({ id: '5', field: listField2 }));
+
+      // swap nodes
+      state = reducer(state, actions.swapNodesInEntryTreeMap('1', 1, 0, '2', '3'));
+      state = reducer(state, actions.swapNodesInEntryTreeMap('root', 1, 0, '1', '5'));
+
+      const entryTreeMapState = [
+        {
+          id: '5',
+          name: listField2.get('name'),
+          type: listField2.get('widget'),
+          childNodes: [],
+        },
+        {
+          id: '1',
+          name: listField.get('name'),
+          type: listField.get('widget'),
+          childNodes: [
+            {
+              id: '3',
+              name: subListField.get('name'),
+              type: subListField.get('widget'),
+              childNodes: [
+                {
+                  id: '4',
+                  name: subSubListField.get('name'),
+                  type: subSubListField.get('widget'),
+                  childNodes: [],
+                },
+              ],
+            },
+            {
+              id: '2',
+              name: stringField.get('name'),
+              type: stringField.get('widget'),
+              childNodes: [],
+            },
+          ],
         },
       ];
 

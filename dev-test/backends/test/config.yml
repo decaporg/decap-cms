@@ -269,18 +269,3 @@ collections: # A list of collections the CMS should be able to edit
                 widget: 'list'
                 fields:
                   - { label: 'Hotel Name', name: 'hotel_name', widget: 'string' }
-      - label: 'Typed List'
-        name: 'typed_list'
-        widget: 'list'
-        types:
-          - label: 'Type 1 Object'
-            name: 'type_1_object'
-            widget: 'object'
-            fields:
-              - { label: 'String', name: 'string', widget: 'string' }
-              - { label: 'Text', name: 'text', widget: 'text' }
-          - label: 'Type 2 Object'
-            name: 'type_2_object'
-            widget: 'object'
-            fields:
-              - { label: 'Number', name: 'number', widget: 'number' }

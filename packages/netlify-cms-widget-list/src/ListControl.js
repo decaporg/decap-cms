@@ -445,6 +445,22 @@ export default class ListControl extends React.Component {
     this.validations = this.validations.filter(item => updatedKeys.includes(item.key));
   };
 
+  hasError = index => {
+    const { listNodePath, fieldsErrors, entryTreeMap } = this.props;
+    let hasError = false;
+    if (listNodePath && fieldsErrors.size > 0) {
+      const descendantPaths = treeUtils.descendants(
+        entryTreeMap,
+        Seq([...listNodePath, 'childNodes', index]),
+      );
+      for (const path of descendantPaths) {
+        const node = entryTreeMap.getIn([...path]);
+        hasError = hasError || fieldsErrors.has(node.get('id'));
+      }
+    }
+    return hasError;
+  };
+
   // eslint-disable-next-line react/display-name
   renderItem = (item, index) => {
     const {
@@ -456,27 +472,13 @@ export default class ListControl extends React.Component {
       fieldsErrors,
       controlRef,
       resolveWidget,
-      listNodePath,
-      entryTreeMap,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
     const collapsed = itemsCollapsed[index];
     const key = keys[index];
     let field = this.props.field;
-
-    let hasError = false;
-    if (listNodePath && fieldsErrors.size > 0) {
-      const descendantPaths = treeUtils.descendants(
-        entryTreeMap,
-        Seq([...listNodePath.toJS(), 'childNodes', index]),
-      );
-      for (const path of descendantPaths) {
-        const node = entryTreeMap.getIn([...path]);
-        console.log('node', node.toJS());
-        hasError = hasError || fieldsErrors.has(node.get('id'));
-      }
-    }
+    const hasError = this.hasError(index);
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
