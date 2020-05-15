@@ -15,6 +15,7 @@ import { sortByField } from 'Actions/entries';
 import { selectSortableFields } from 'Reducers/collections';
 import { selectEntriesSort } from 'Reducers/entries';
 import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
+import { components } from 'netlify-cms-ui-default/src/styles';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -22,6 +23,15 @@ const CollectionContainer = styled.div`
 
 const CollectionMain = styled.main`
   padding-left: 280px;
+`;
+
+const SearchResultContainer = styled.div`
+  ${components.cardTop};
+  margin-bottom: 22px;
+`;
+
+const SearchResultHeading = styled.h1`
+  ${components.cardTopHeading};
 `;
 
 class Collection extends React.Component {
@@ -68,17 +78,33 @@ class Collection extends React.Component {
       collections,
       collectionName,
       isSearchResults,
+      isSingleSearchResult,
       searchTerm,
       sortableFields,
       onSortClick,
       sort,
+      t,
     } = this.props;
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
+
+    const searchResultKey =
+      'collection.collectionTop.searchResults' + (isSingleSearchResult ? 'InCollection' : '');
+
     return (
       <CollectionContainer>
-        <Sidebar collections={collections} collection={collection} searchTerm={searchTerm} />
+        <Sidebar
+          collections={collections}
+          collection={(!isSearchResults || isSingleSearchResult) && collection}
+          searchTerm={searchTerm}
+        />
         <CollectionMain>
-          {isSearchResults ? null : (
+          {isSearchResults ? (
+            <SearchResultContainer>
+              <SearchResultHeading>
+                {t(searchResultKey, { searchTerm, collection: collection.get('label') })}
+              </SearchResultHeading>
+            </SearchResultContainer>
+          ) : (
             <>
               <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
               <CollectionControls

@@ -99,18 +99,19 @@ class CollectionSearch extends React.Component {
     query: this.props.searchTerm,
     suggestionsVisible: false,
     // default to the currently selected
-    selectedCollectionIdx: this.props.collection
-      ? this.props.collections.keySeq().indexOf(this.props.collection.get('name'))
-      : -1,
+    selectedCollectionIdx: this.getSelectedSelectionBasedOnProps(),
   };
 
   componentDidUpdate(prevProps) {
     if (prevProps.collection !== this.props.collection) {
-      const selectedCollectionIdx = this.props.collection
-        ? this.props.collections.keySeq().indexOf(this.props.collection.get('name'))
-        : -1;
+      const selectedCollectionIdx = this.getSelectedSelectionBasedOnProps();
       this.setState({ selectedCollectionIdx });
     }
+  }
+
+  getSelectedSelectionBasedOnProps() {
+    const { collection, collections } = this.props;
+    return collection ? collections.keySeq().indexOf(collection.get('name')) : -1;
   }
 
   toggleSuggestions(visible) {

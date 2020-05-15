@@ -39,8 +39,13 @@ const de = {
       searchIn: 'Suchen in',
     },
     collectionTop: {
+      sortBy: 'Sortieren nach',
       viewAs: 'Anzeigen als',
       newButton: 'Neue(r) %{collectionLabel}',
+      ascending: 'Aufsteigend',
+      descending: 'Absteigend',
+      searchResults: 'Suchergebnisse für "%{searchTerm}"',
+      searchResultsInCollection: 'Suchergebnisse für "%{searchTerm}" in %{collection}',
     },
     entries: {
       loadingEntries: 'Beiträge laden',

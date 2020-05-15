@@ -44,6 +44,8 @@ const en = {
       newButton: 'New %{collectionLabel}',
       ascending: 'Ascending',
       descending: 'Descending',
+      searchResults: 'Search Results for "%{searchTerm}"',
+      searchResultsInCollection: 'Search Results for "%{searchTerm}" in %{collection}',
     },
     entries: {
       loadingEntries: 'Loading Entries...',

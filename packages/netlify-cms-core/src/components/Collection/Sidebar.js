@@ -67,7 +67,7 @@ const SidebarNavLink = styled(NavLink)`
 class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap.isRequired,
-    collection: ImmutablePropTypes.map.isRequired,
+    collection: ImmutablePropTypes.map,
     searchTerm: PropTypes.string,
     t: PropTypes.func.isRequired,
   };
