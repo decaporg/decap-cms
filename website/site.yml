@@ -1,15 +1,17 @@
 menu:
   docs:
-    - name: start
-      title: Quick Start
-    - name: backends
-      title: Backends
-    - name: features
-      title: Features
-    - name: reference
-      title: Reference
+    - name: intro
+      title: Intro to Netlify CMS
+    - name: account
+      title: Account Settings
+    - name: config
+      title: Configuring your Site
     - name: media
       title: Media
+    - name: workflow
+      title: Workflow
+    - name: fields
+      title: Fields
     - name: guides
       title: Guides
     - name: customization

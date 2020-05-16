@@ -1,6 +1,7 @@
 ---
 title: boolean
 label: "Boolean"
+group: fields
 ---
 
 The boolean widget translates a toggle switch input to a true/false value.

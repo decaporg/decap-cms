@@ -1,6 +1,6 @@
 ---
 title: Deploy Preview Links
-group: features
+group: workflow
 weight: 10
 ---
 
