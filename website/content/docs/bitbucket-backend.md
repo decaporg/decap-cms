@@ -1,7 +1,7 @@
 ---
 title: Bitbucket
-group: backends
 weight: 20
+group: accounts
 ---
 For repositories stored on Bitbucket, the `bitbucket` backend allows CMS users to log in directly with their Bitbucket account. Note that all users must have write access to your content repository for this to work.
 

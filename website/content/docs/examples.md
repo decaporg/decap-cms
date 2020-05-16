@@ -1,6 +1,6 @@
 ---
 title: Examples
-group: start
+group: intro
 weight: 110
 ---
 

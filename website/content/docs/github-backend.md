@@ -1,7 +1,7 @@
 ---
 title: GitHub
 weight: 20
-group: backends
+group: accounts
 ---
 
 For repositories stored on GitHub, the `github` backend allows CMS users to log in directly with their GitHub account. Note that all users must have push access to your content repository for this to work.
