@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { FileUploadButton } from 'UI';
-import { buttons, shadows } from 'netlify-cms-ui-legacy';
 import { Button, ButtonGroup } from 'netlify-cms-ui-default';
+import { buttons, shadows, zIndex } from 'netlify-cms-ui-legacy';
 
 const styles = {
   button: css`
@@ -47,7 +47,7 @@ const StyledUploadButton = styled(FileUploadButton)`
     opacity: 0;
     overflow: hidden;
     position: absolute;
-    z-index: 0;
+    z-index: ${zIndex.zIndex0};
     outline: none;
   }
 `;

@@ -21,6 +21,10 @@ import {
   unpublishEntry,
   publishEntryInEditor,
   duplicateEntry,
+  goToEntry,
+  populateEntry,
+  publishAndCreateNewEntryInEditor,
+  publishAndDuplicateEntryInEditor,
 } from '../utils/steps';
 import { setting1, setting2, workflowStatus, editorStatus, publishTypes } from '../utils/constants';
 
@@ -47,13 +51,27 @@ describe('Test Backend Editorial Workflow', () => {
     cy.task('setupBackend', { backend: 'test' });
   });
 
+  beforeEach(() => {
+    cy.task('updateConfig', { collections: [{ publish: true }] });
+  });
+
   it('successfully loads', () => {
     login();
   });
 
   it('can create an entry', () => {
     login();
-    createPostAndExit(entry1);
+    createPost(entry1);
+
+    // new entry should show 'Delete unpublished entry'
+    cy.contains('button', 'Delete unpublished entry');
+    cy.url().should(
+      'eq',
+      `http://localhost:8080/#/collections/posts/entries/1970-01-01-${entry1.title
+        .toLowerCase()
+        .replace(/\s/, '-')}`,
+    );
+    exitEditor();
   });
 
   it('can validate object fields', () => {
@@ -77,6 +95,27 @@ describe('Test Backend Editorial Workflow', () => {
     goToWorkflow();
     updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
     publishWorkflowEntry(entry1);
+  });
+
+  it('can update an entry', () => {
+    login();
+    createPostAndExit(entry1);
+    goToWorkflow();
+    updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+    publishWorkflowEntry(entry1);
+
+    goToEntry(entry1);
+    populateEntry(entry2);
+    // existing entry should show 'Delete unpublished changes'
+    cy.contains('button', 'Delete unpublished changes');
+    // existing entry slug should remain the same after save'
+    cy.url().should(
+      'eq',
+      `http://localhost:8080/#/collections/posts/entries/1970-01-01-${entry1.title
+        .toLowerCase()
+        .replace(/\s/, '-')}`,
+    );
+    exitEditor();
   });
 
   it('can change workflow status', () => {
@@ -144,5 +183,31 @@ describe('Test Backend Editorial Workflow', () => {
     updateWorkflowStatusInEditor(editorStatus.ready);
     publishEntryInEditor(publishTypes.publishNow);
     duplicateEntry(entry1);
+  });
+
+  it('cannot publish when "publish" is false', () => {
+    cy.task('updateConfig', { collections: [{ publish: false }] });
+    login();
+    createPost(entry1);
+    cy.contains('span', 'Publish').should('not.exist');
+    exitEditor();
+    goToWorkflow();
+    updateWorkflowStatus(entry1, workflowStatus.draft, workflowStatus.ready);
+    cy.contains('button', 'Publish new entry').should('not.exist');
+  });
+
+  it('can create a new entry, publish and create new', () => {
+    login();
+    createPost(entry1);
+    updateWorkflowStatusInEditor(editorStatus.ready);
+
+    publishAndCreateNewEntryInEditor(entry1);
+  });
+
+  it('can create a new entry, publish and duplicate', () => {
+    login();
+    createPost(entry1);
+    updateWorkflowStatusInEditor(editorStatus.ready);
+    publishAndDuplicateEntryInEditor(entry1);
   });
 });

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.3.0...netlify-cms-widget-datetime@2.4.0) (2020-04-14)
+
+
+### Features
+
+* **widget-datetime:** add now to datepicker ([#3484](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/issues/3484)) ([79b8469](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/commit/79b8469337dade3bd7472b3f42b826efc7e0987d))
+
+
+
+
+
+# [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.2.6...netlify-cms-widget-datetime@2.3.0) (2020-04-07)
+
+
+### Features
+
+* **yaml:** support comments ([#3529](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/issues/3529)) ([4afbbdd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/commit/4afbbdd8a99241d239f28c5be544bb0ca77e345b))
+
+
+
+
+
 ## [2.2.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.2.5...netlify-cms-widget-datetime@2.2.6) (2020-02-17)
 
 

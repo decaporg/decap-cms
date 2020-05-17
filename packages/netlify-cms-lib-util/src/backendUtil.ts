@@ -1,4 +1,4 @@
-import { flow, fromPairs, get } from 'lodash';
+import { flow, fromPairs } from 'lodash';
 import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
 import unsentRequest from './unsentRequest';
@@ -6,10 +6,10 @@ import APIError from './APIError';
 
 type Formatter = (res: Response) => Promise<string | Blob | unknown>;
 
-export const filterByPropExtension = (extension: string, propName: string) => <T>(arr: T[]) =>
-  arr.filter(el =>
-    get(el, propName, '').endsWith(extension.startsWith('.') ? extension : `.${extension}`),
-  );
+export const filterByExtension = (file: { path: string }, extension: string) => {
+  const path = file?.path || '';
+  return path.endsWith(extension.startsWith('.') ? extension : `.${extension}`);
+};
 
 const catchFormatErrors = (format: string, formatter: Formatter) => (res: Response) => {
   try {
@@ -64,18 +64,23 @@ export const responseParser = (options: {
   apiName: string;
 }) => (res: Response) => parseResponse(res, options);
 
-export const parseLinkHeader = flow([
-  linksString => linksString.split(','),
-  map((str: string) => str.trim().split(';')),
-  map(([linkStr, keyStr]) => [
-    keyStr.match(/rel="(.*?)"/)[1],
-    linkStr
-      .trim()
-      .match(/<(.*?)>/)[1]
-      .replace(/\+/g, '%20'),
-  ]),
-  fromPairs,
-]);
+export const parseLinkHeader = (header: string | null) => {
+  if (!header) {
+    return {};
+  }
+  return flow([
+    linksString => linksString.split(','),
+    map((str: string) => str.trim().split(';')),
+    map(([linkStr, keyStr]) => [
+      keyStr.match(/rel="(.*?)"/)[1],
+      linkStr
+        .trim()
+        .match(/<(.*?)>/)[1]
+        .replace(/\+/g, '%20'),
+    ]),
+    fromPairs,
+  ])(header);
+};
 
 export const getAllResponses = async (
   url: string,

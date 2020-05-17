@@ -236,7 +236,6 @@ const Table = ({
     rows,
     prepareRow,
     selectedFlatRows,
-    state: { selectedRowIds },
   } = useTable(
     {
       columns,
@@ -330,7 +329,7 @@ const Table = ({
     );
 
   const RenderRow = useCallback(
-    ({ index, style, ...rest }) => {
+    ({ index, style }) => {
       const row = rows[index];
 
       prepareRow(row);

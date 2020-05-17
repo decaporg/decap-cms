@@ -30,8 +30,8 @@ const AddNewIconButton = styled(Button)`
   padding: 0 0.75rem;
   &,
   &:hover,
-  &:active:hover,
   &:focus,
+  &:active:hover,
   &:focus:hover {
     background-color: ${({ theme }) => theme.color.surface};
   }

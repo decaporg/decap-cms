@@ -129,6 +129,37 @@ export default class Algolia {
     }
   }
 
+  async listAllEntries(collection) {
+    const params = {
+      hitsPerPage: 1000,
+    };
+    let response = await this.request(
+      `${this.searchURL}/indexes/${this.indexPrefix}${collection.get('name')}`,
+      { params },
+    );
+    let { nbPages = 0, hits, page } = response;
+    page = page + 1;
+    while (page < nbPages) {
+      response = await this.request(
+        `${this.searchURL}/indexes/${this.indexPrefix}${collection.get('name')}`,
+        {
+          params: { ...params, page },
+        },
+      );
+      hits = [...hits, ...response.hits];
+      page = page + 1;
+    }
+    const entries = hits.map(hit => {
+      const slug = selectEntrySlug(collection, hit.path);
+      return createEntry(collection.get('name'), slug, hit.path, {
+        data: hit.data,
+        partial: true,
+      });
+    });
+
+    return entries;
+  }
+
   getEntry(collection, slug) {
     return this.searchBy('slug', collection.get('name'), slug).then(response => {
       const entry = response.hits.filter(hit => hit.slug === slug)[0];

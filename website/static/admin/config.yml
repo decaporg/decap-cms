@@ -16,60 +16,71 @@ public_folder: img
 docs_collection: &docs_collection
   folder: website/content/docs
   create: true
-  preview_path: "docs/{{slug}}"
+  preview_path: 'docs/{{slug}}'
   fields:
     - { label: Title, name: title }
-    - { label: Group, name: group, widget: select, options: [start, features, reference, media, guides, customization, contributing] }
+    - {
+        label: Group,
+        name: group,
+        widget: select,
+        options: [start, backends, features, reference, media, guides, customization, contributing],
+      }
     - { label: Weight, name: weight, widget: number }
     - { label: Body, name: body, widget: markdown }
 
 collections:
   - <<: *docs_collection
     name: docs_start
-    label: "Docs: Quick Start"
+    label: 'Docs: Quick Start'
     filter:
       field: group
       value: start
   - <<: *docs_collection
+    name: docs_backends
+    label: 'Docs: Backends'
+    filter:
+      field: group
+      value: backends
+  - <<: *docs_collection
     name: docs_features
-    label: "Docs: Features"
+    label: 'Docs: Features'
     filter:
       field: group
       value: features
   - <<: *docs_collection
     name: docs_reference
-    label: "Docs: Reference"
+    label: 'Docs: Reference'
     filter:
       field: group
       value: reference
   - <<: *docs_collection
     name: docs_media
-    label: "Docs: Media"
+    label: 'Docs: Media'
     filter:
       field: group
       value: media
   - <<: *docs_collection
     name: docs_guides
-    label: "Docs: Guides"
+    label: 'Docs: Guides'
     filter:
       field: group
       value: guides
   - <<: *docs_collection
     name: docs_customization
-    label: "Docs: Customization"
+    label: 'Docs: Customization'
     filter:
       field: group
       value: customization
   - <<: *docs_collection
     name: docs_contributing
-    label: "Docs: Contributing"
+    label: 'Docs: Contributing'
     filter:
       field: group
       value: contributing
   - name: widget_docs
-    label: "Docs: Widgets"
+    label: 'Docs: Widgets'
     folder: website/content/docs/widgets
-    preview_path: "docs/widgets/{{title}}"
+    preview_path: 'docs/widgets/{{title}}'
     create: true
     fields:
       - { label: Name, name: title }
@@ -79,13 +90,18 @@ collections:
     label: Blog
     label_singular: Post
     folder: website/content/blog
-    preview_path: "blog/{{year}}/{{month}}/{{title}}"
+    preview_path: 'blog/{{year}}/{{month}}/{{title}}'
     create: true
     fields:
       - { label: Title, name: title }
       - { label: Author, name: author }
       - { label: Description (for blog list), name: description, widget: text }
-      - { label: Meta Description (defaults to Description), name: meta_description, widget: text, required: false }
+      - {
+          label: Meta Description (defaults to Description),
+          name: meta_description,
+          widget: text,
+          required: false,
+        }
       - { label: Twitter Image, name: twitter_image, widget: image }
       - { label: Date, name: date, widget: date }
       - { label: Body, name: body, widget: markdown }
@@ -140,4 +156,4 @@ collections:
               - { label: Published, name: published, widget: boolean }
               - { label: Loud, name: loud, widget: boolean }
               - { label: Message, name: message, widget: text }
-              - { label: URL, name: url}
+              - { label: URL, name: url }

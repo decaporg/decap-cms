@@ -1,9 +1,11 @@
-import yaml from 'js-yaml';
+import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
 import { trimStart, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
+import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
+import { resolveBackend } from 'coreSrc/backend';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -22,6 +24,13 @@ const getConfigUrl = () => {
   return 'config.yml';
 };
 
+const setDefaultPublicFolder = map => {
+  if (map.has('media_folder') && !map.has('public_folder')) {
+    map = map.set('public_folder', map.get('media_folder'));
+  }
+  return map;
+};
+
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
@@ -37,7 +46,7 @@ export function applyDefaults(config) {
 
       // Use media_folder as default public_folder.
       const defaultPublicFolder = `/${trimStart(map.get('media_folder'), '/')}`;
-      if (!map.get('public_folder')) {
+      if (!map.has('public_folder')) {
         map.set('public_folder', defaultPublicFolder);
       }
 
@@ -58,27 +67,47 @@ export function applyDefaults(config) {
       map.set(
         'collections',
         map.get('collections').map(collection => {
+          if (!collection.has('publish')) {
+            collection = collection.set('publish', true);
+          }
+
           const folder = collection.get('folder');
           if (folder) {
             if (collection.has('path') && !collection.has('media_folder')) {
               // default value for media folder when using the path config
               collection = collection.set('media_folder', '');
             }
-            if (collection.has('media_folder') && !collection.has('public_folder')) {
-              collection = collection.set('public_folder', collection.get('media_folder'));
-            }
-            return collection.set('folder', trimStart(folder, '/'));
+            collection = setDefaultPublicFolder(collection);
+            collection = collection.set(
+              'fields',
+              traverseFields(collection.get('fields'), setDefaultPublicFolder),
+            );
+            collection = collection.set('folder', trimStart(folder, '/'));
           }
 
           const files = collection.get('files');
           if (files) {
-            return collection.set(
+            collection = collection.set(
               'files',
               files.map(file => {
-                return file.set('file', trimStart(file.get('file'), '/'));
+                file = file.set('file', trimStart(file.get('file'), '/'));
+                file = setDefaultPublicFolder(file);
+                file = file.set(
+                  'fields',
+                  traverseFields(file.get('fields'), setDefaultPublicFolder),
+                );
+                return file;
               }),
             );
           }
+
+          if (!collection.has('sortableFields')) {
+            const backend = resolveBackend(config);
+            const defaultSortable = selectDefaultSortableFields(collection, backend);
+            collection = collection.set('sortableFields', fromJS(defaultSortable));
+          }
+
+          return collection;
         }),
       );
     });
@@ -89,8 +118,8 @@ function mergePreloadedConfig(preloadedConfig, loadedConfig) {
   return preloadedConfig ? preloadedConfig.mergeDeep(map) : map;
 }
 
-function parseConfig(data) {
-  const config = yaml.safeLoad(data);
+export function parseConfig(data) {
+  const config = yaml.parse(data, { maxAliasCount: -1, prettyErrors: true, merge: true });
   if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
     Object.keys(config[CMS_ENV]).forEach(key => {
       config[key] = config[CMS_ENV][key];

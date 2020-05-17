@@ -29,6 +29,9 @@ import {
   blobToFileObj,
   contentKeyFromBranch,
   generateContentKey,
+  localForage,
+  allEntriesByFolder,
+  filterByExtension,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
@@ -78,6 +81,10 @@ export default class GitLab implements Implementation {
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
+  }
+
+  isGitBackend() {
+    return true;
   }
 
   authComponent() {
@@ -136,7 +143,7 @@ export default class GitLab implements Implementation {
   ) {
     // gitlab paths include the root folder
     const fileFolder = trim(file.path.split(folder)[1] || '/', '/');
-    return file.name.endsWith('.' + extension) && fileFolder.split('/').length <= depth;
+    return filterByExtension(file, extension) && fileFolder.split('/').length <= depth;
   }
 
   async entriesByFolder(folder: string, extension: string, depth: number) {
@@ -148,25 +155,52 @@ export default class GitLab implements Implementation {
         return files.filter(file => this.filterFile(folder, file, extension, depth));
       });
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), API_NAME);
+    const files = await entriesByFolder(
+      listFiles,
+      this.api!.readFile.bind(this.api!),
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;
   }
 
-  async allEntriesByFolder(folder: string, extension: string, depth: number) {
-    const listFiles = () =>
-      this.api!.listAllFiles(folder, depth > 1).then(files =>
-        files.filter(file => this.filterFile(folder, file, extension, depth)),
-      );
+  async listAllFiles(folder: string, extension: string, depth: number) {
+    const files = await this.api!.listAllFiles(folder, depth > 1);
+    const filtered = files.filter(file => this.filterFile(folder, file, extension, depth));
+    return filtered;
+  }
 
-    const files = await entriesByFolder(listFiles, this.api!.readFile.bind(this.api!), API_NAME);
+  async allEntriesByFolder(folder: string, extension: string, depth: number) {
+    const files = await allEntriesByFolder({
+      listAllFiles: () => this.listAllFiles(folder, extension, depth),
+      readFile: this.api!.readFile.bind(this.api!),
+      readFileMetadata: this.api!.readFileMetadata.bind(this.api),
+      apiName: API_NAME,
+      branch: this.branch,
+      localForage,
+      folder,
+      extension,
+      depth,
+      getDefaultBranch: () =>
+        this.api!.getDefaultBranch().then(b => ({ name: b.name, sha: b.commit.id })),
+      isShaExistsInBranch: this.api!.isShaExistsInBranch.bind(this.api!),
+      getDifferences: (to, from) => this.api!.getDifferences(to, from),
+      getFileId: path => this.api!.getFileId(path, this.branch),
+      filterFile: file => this.filterFile(folder, file, extension, depth),
+    });
     return files;
   }
 
   entriesByFiles(files: ImplementationFile[]) {
-    return entriesByFiles(files, this.api!.readFile.bind(this.api!), API_NAME);
+    return entriesByFiles(
+      files,
+      this.api!.readFile.bind(this.api!),
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
   }
 
   // Fetches a single entry.
@@ -258,12 +292,14 @@ export default class GitLab implements Implementation {
         entries = entries.filter(f => this.filterFile(folder, f, extension, depth));
         newCursor = newCursor.mergeMeta({ folder, extension, depth });
       }
+      const entriesWithData = await entriesByFiles(
+        entries,
+        this.api!.readFile.bind(this.api!),
+        this.api!.readFileMetadata.bind(this.api)!,
+        API_NAME,
+      );
       return {
-        entries: await Promise.all(
-          entries.map(file =>
-            this.api!.readFile(file.path, file.id).then(data => ({ file, data: data as string })),
-          ),
-        ),
+        entries: entriesWithData,
         cursor: newCursor,
       };
     });

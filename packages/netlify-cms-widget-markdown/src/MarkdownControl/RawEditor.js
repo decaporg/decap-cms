@@ -125,7 +125,6 @@ export default class RawEditor extends React.Component {
               onCut={this.handleCut}
               onCopy={this.handleCopy}
               ref={this.processRef}
-              t={t}
             />
           )}
         </ClassNames>

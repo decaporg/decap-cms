@@ -3,17 +3,16 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
-import { colors } from 'netlify-cms-ui-legacy';
 import { Card } from 'netlify-cms-ui-default';
+import { colors, zIndex } from 'netlify-cms-ui-legacy';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { summaryFormatter } from 'Lib/formatters';
-import { keyToPathArray } from 'Lib/stringTemplate';
 import { selectIsLoadingAsset } from 'Reducers/medias';
+import { selectEntryCollectionTitle } from 'Reducers/collections';
 
 const ListCard = styled(Card)`
   width: 100%;
   margin-left: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   overflow: hidden;
   color: ${({ theme }) => theme.color.mediumEmphasis};
 `;
@@ -69,12 +68,13 @@ const CardBody = styled.div`
     content: '';
     position: absolute;
     display: block;
-    z-index: 1;
+    z-index: ${zIndex.zIndex1};
     bottom: 0;
     left: -20%;
     height: 140%;
     width: 140%;
-    box-shadow: inset 0 -15px 24px background-color: ${({ theme }) => theme.color.surface};
+    box-shadow: inset 0 -15px 24px;
+    background-color: ${({ theme }) => theme.color.surface};
   }
 `;
 
@@ -123,15 +123,8 @@ const EntryCard = ({
 
 const mapStateToProps = (state, ownProps) => {
   const { entry, inferedFields, collection } = ownProps;
-  const label = entry.get('label');
   const entryData = entry.get('data');
-  const defaultTitle =
-    label ||
-    (inferedFields.titleField && entryData.getIn(keyToPathArray(inferedFields.titleField)));
-  const summaryTemplate = collection.get('summary');
-  const summary = summaryTemplate
-    ? summaryFormatter(summaryTemplate, entry, collection)
-    : defaultTitle;
+  const summary = selectEntryCollectionTitle(collection, entry);
 
   let image = entryData.get(inferedFields.imageField);
   if (image) {

@@ -2,9 +2,15 @@ const pl = {
   auth: {
     login: 'Zaloguj się',
     loggingIn: 'Logowanie...',
+    loginWithNetlifyIdentity: 'Zaloguj przez konto Netlify',
+    loginWithBitbucket: 'Zaloguj przez Bitbucket',
+    loginWithGitHub: 'Zaloguj przez GitHub',
+    loginWithGitLab: 'Zaloguj przez GitLab',
     errors: {
       email: 'Wprowadź swój adres email',
       password: 'Wprowadź swoje hasło',
+      identitySettings:
+        'Brak dostępu do ustawień tożsamości. Jeśli używasza backendu git-gateway upewnij się, że usługa tożsamośći (Identity service) oraz Git Gateway są włączone.',
     },
   },
   app: {
@@ -31,13 +37,25 @@ const pl = {
       searchAll: 'Wyszukaj wszystkie',
     },
     collectionTop: {
+      sortBy: 'Sortuj po',
       viewAs: 'Wyświetl jako',
       newButton: 'Nowy %{collectionLabel}',
+      ascending: 'Rosnąco',
+      descending: 'Malejąco',
     },
     entries: {
-      loadingEntries: 'Ładowanie pozycji',
-      cachingEntries: 'Ładowanie pozycji do pamięci podręcznej',
+      loadingEntries: 'Ładowanie pozycji...',
+      cachingEntries: 'Ładowanie pozycji do pamięci podręcznej...',
       longerLoading: 'To może zająć kilka minut',
+      noEntries: 'Brak pozycji',
+    },
+    defaultFields: {
+      author: {
+        label: 'Autor',
+      },
+      updatedOn: {
+        label: 'Zaktualizowano',
+      },
     },
   },
   editor: {
@@ -82,10 +100,11 @@ const pl = {
       publishing: 'Publikowanie...',
       publish: 'Opublikuj',
       published: 'Opublikowane',
-      duplicate: 'Zduplikuj',
       unpublish: 'Cofnij publikację',
+      duplicate: 'Zduplikuj',
       unpublishing: 'Cofanie publikacji...',
-      publishAndCreateNew: 'Opublikuj i dodaj',
+      publishAndCreateNew: 'Opublikuj i dodaj nowy',
+      publishAndDuplicate: 'Opublikuj i zduplikuj',
       deleteUnpublishedChanges: 'Usuń nieopublikowane zmiany',
       deleteUnpublishedEntry: 'Usuń nieopublikowaną pozycję',
       deletePublishedEntry: 'Usuń opublikowaną pozycję',
@@ -108,7 +127,7 @@ const pl = {
     },
     editorWidgets: {
       markdown: {
-        //richText: 'Edytor wizualny' - I'm not sure about that
+        richText: 'Tekst sformatowany',
         markdown: 'Markdown',
       },
       image: {
@@ -162,11 +181,16 @@ const pl = {
     },
   },
   ui: {
+    default: {
+      goBackToSite: 'Wróć do strony',
+    },
     errorBoundary: {
       title: 'Błąd',
       details: 'Wystąpił błąd - proszę ',
       reportIt: 'zgłoś to.',
       detailsHeading: 'Szczegóły',
+      privacyWarning:
+        'Nowe zgłoszenie zostanie wstępnie wypełnione danymi o błędzie.\nZweryfikuj czy dane są poprawne i usuń wrażliwe informacje jeśli takie zostały dodane.',
       recoveredEntry: {
         heading: 'Odzyskany dokument',
         warning: 'Proszę skopiuj/wklej to gdzieś zanim opuścisz tę stronę!',

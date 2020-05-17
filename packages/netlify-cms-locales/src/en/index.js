@@ -37,13 +37,25 @@ const en = {
       searchAll: 'Search all',
     },
     collectionTop: {
+      sortBy: 'Sort by',
       viewAs: 'View as',
       newButton: 'New %{collectionLabel}',
+      ascending: 'Ascending',
+      descending: 'Descending',
     },
     entries: {
-      loadingEntries: 'Loading Entries',
-      cachingEntries: 'Caching Entries',
+      loadingEntries: 'Loading Entries...',
+      cachingEntries: 'Caching Entries...',
       longerLoading: 'This might take several minutes',
+      noEntries: 'No Entries',
+    },
+    defaultFields: {
+      author: {
+        label: 'Author',
+      },
+      updatedOn: {
+        label: 'Updated On',
+      },
     },
   },
   editor: {
@@ -141,6 +153,9 @@ const en = {
         headingFive: 'Heading 5',
         headingSix: 'Heading 6',
       },
+      datetime: {
+        now: 'Now',
+      },
     },
   },
   mediaLibrary: {
@@ -174,8 +189,10 @@ const en = {
     errorBoundary: {
       title: 'Error',
       details: "There's been an error - please ",
-      reportIt: 'report it.',
+      reportIt: 'open an issue on GitHub.',
       detailsHeading: 'Details',
+      privacyWarning:
+        'Opening an issue pre-populates it with the error message and debugging data.\nPlease verify the information is correct and remove sensitive data if exists.',
       recoveredEntry: {
         heading: 'Recovered document',
         warning: 'Please copy/paste this somewhere before navigating away!',

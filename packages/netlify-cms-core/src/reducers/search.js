@@ -31,6 +31,7 @@ const entries = (state = defaultState, action) => {
         return state.withMutations(map => {
           map.set('isFetching', true);
           map.set('term', action.payload.searchTerm);
+          map.set('page', action.payload.page);
         });
       }
       return state;

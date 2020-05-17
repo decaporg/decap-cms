@@ -6,6 +6,7 @@ import collections, {
   selectEntrySlug,
   selectFieldsWithMediaFolders,
   selectMediaFolders,
+  selectEntryCollectionTitle,
   getFieldsNames,
   selectField,
   updateFieldByKey,
@@ -380,6 +381,66 @@ describe('collections', () => {
           .get('types')
           .get(0),
       );
+    });
+  });
+
+  describe('selectEntryCollectionTitle', () => {
+    const entry = fromJS({ data: { title: 'entry title', otherField: 'other field' } });
+
+    it('should return the entry title if set', () => {
+      const collection = fromJS({
+        fields: [{ name: 'title' }, { name: 'otherField' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, entry)).toEqual('entry title');
+    });
+
+    it('should return some other inferreable title if set', () => {
+      const headlineEntry = fromJS({
+        data: { headline: 'entry headline', otherField: 'other field' },
+      });
+      const collection = fromJS({
+        fields: [{ name: 'headline' }, { name: 'otherField' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, headlineEntry)).toEqual('entry headline');
+    });
+
+    it('should return the identifier_field content if defined in collection', () => {
+      const collection = fromJS({
+        identifier_field: 'otherField',
+        fields: [{ name: 'title' }, { name: 'otherField' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, entry)).toEqual('other field');
+    });
+
+    it('should return the entry label of a file collection', () => {
+      const labelEntry = fromJS({
+        slug: 'entry-name',
+        data: { title: 'entry title', otherField: 'other field' },
+      });
+      const collection = fromJS({
+        type: FILES,
+        files: [
+          {
+            name: 'entry-name',
+            label: 'entry label',
+          },
+        ],
+      });
+
+      expect(selectEntryCollectionTitle(collection, labelEntry)).toEqual('entry label');
+    });
+
+    it('should return a formatted summary before everything else', () => {
+      const collection = fromJS({
+        summary: '{{title}} -- {{otherField}}',
+        identifier_field: 'otherField',
+        fields: [{ name: 'title' }, { name: 'otherField' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, entry)).toEqual('entry title -- other field');
     });
   });
 

@@ -7,3 +7,4 @@ import { createSerializer } from 'jest-emotion';
 window.fetch = fetch;
 window.URL.createObjectURL = jest.fn();
 expect.addSnapshotSerializer(createSerializer(emotion));
+window.matchMedia = jest.fn(() => []);

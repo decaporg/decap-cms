@@ -152,5 +152,35 @@ describe('config', () => {
         );
       }).not.toThrowError();
     });
+
+    it('should throw if collection publish is not a boolean', () => {
+      expect(() => {
+        validateConfig(merge(validConfig, { collections: [{ publish: 'false' }] }));
+      }).toThrowError("'collections[0].publish' should be boolean");
+    });
+
+    it('should not throw if collection publish is a boolean', () => {
+      expect(() => {
+        validateConfig(merge(validConfig, { collections: [{ publish: false }] }));
+      }).not.toThrowError();
+    });
+
+    it('should throw if collections sortableFields is not a boolean or a string array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ sortableFields: 'title' }] }));
+      }).toThrowError("'collections[0].sortableFields' should be array");
+    });
+
+    it('should allow sortableFields to be a string array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ sortableFields: ['title'] }] }));
+      }).not.toThrow();
+    });
+
+    it('should allow sortableFields to be a an empty array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ sortableFields: [] }] }));
+      }).not.toThrow();
+    });
   });
 });

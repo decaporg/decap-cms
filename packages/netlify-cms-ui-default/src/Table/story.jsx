@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { withKnobs, boolean, select } from '@storybook/addon-knobs';
 import getMockData from '../utils/getMockData';
@@ -31,7 +31,7 @@ const FeaturedImage = styled.div`
   background-image: url(${({ srcUrl }) => srcUrl});
   background-size: cover;
   background-position: center center;
-  bacnkground-repeat: no-repeat;
+  background-repeat: no-repeat;
   width: ${({ size }) =>
     size === 'xs' ? 1.5 : size === 'sm' ? 2 : size === 'lg' ? 3 : size === 'xl' ? 3.5 : 2.5}rem;
   height: ${({ size }) =>

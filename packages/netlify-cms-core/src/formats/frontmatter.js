@@ -31,7 +31,8 @@ const parsers = {
   },
   yaml: {
     parse: input => yamlFormatter.fromFile(input),
-    stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(metadata, sortedKeys),
+    stringify: (metadata, { sortedKeys, comments }) =>
+      yamlFormatter.toFile(metadata, sortedKeys, comments),
   },
 };
 
@@ -78,7 +79,7 @@ class FrontmatterFormatter {
     };
   }
 
-  toFile(data, sortedKeys) {
+  toFile(data, sortedKeys, comments = {}) {
     const { body = '', ...meta } = data;
 
     // Stringify to YAML if the format was not set
@@ -90,7 +91,12 @@ class FrontmatterFormatter {
     // https://github.com/jonschlinkert/gray-matter/issues/96
     const trimLastLineBreak = body.slice(-1) !== '\n' ? true : false;
     // `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
-    const file = matter.stringify(body, meta, { engines: parsers, sortedKeys, ...format });
+    const file = matter.stringify(body, meta, {
+      engines: parsers,
+      sortedKeys,
+      comments,
+      ...format,
+    });
     return trimLastLineBreak && file.slice(-1) === '\n' ? file.substring(0, file.length - 1) : file;
   }
 }

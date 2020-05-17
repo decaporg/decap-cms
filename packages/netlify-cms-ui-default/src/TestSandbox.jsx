@@ -8,7 +8,6 @@ import { toast } from './Toast';
 
 const StyledPre = styled.pre`
   background-color: ${({ theme }) => theme.color.neutral['50']};
-  margin: 1rem;
   border-radius: 8px;
   max-width: 800px;
   margin: 0 auto;

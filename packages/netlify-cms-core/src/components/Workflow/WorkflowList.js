@@ -8,6 +8,7 @@ import { colors } from 'netlify-cms-ui-legacy';
 import { status } from 'Constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
 import WorkflowCard from './WorkflowCard';
+import { selectEntryCollectionTitle } from 'Reducers/collections';
 
 const WorkflowListContainer = styled.div`
   flex: 1;
@@ -115,7 +116,7 @@ class WorkflowList extends React.Component {
     handleDelete: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     isOpenAuthoring: PropTypes.bool,
-    collections: ImmutablePropTypes.orderedMap,
+    collections: ImmutablePropTypes.orderedMap.isRequired,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -190,11 +191,15 @@ class WorkflowList extends React.Component {
           const editLink = `collections/${entry.getIn(['metaData', 'collection'])}/entries/${slug}`;
           const ownStatus = entry.getIn(['metaData', 'status']);
           const collectionName = entry.getIn(['metaData', 'collection']);
-          const collectionLabel = collections
-            ?.find(collection => collection.get('name') === collectionName)
-            ?.get('label');
+          const collection = collections.find(
+            collection => collection.get('name') === collectionName,
+          );
+          const collectionLabel = collection?.get('label');
           const isModification = entry.get('isModification');
+
+          const allowPublish = collection?.get('publish');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
+
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -208,13 +213,14 @@ class WorkflowList extends React.Component {
                   <div>
                     <WorkflowCard
                       collectionLabel={collectionLabel || collectionName}
-                      title={entry.get('label') || entry.getIn(['data', 'title'])}
+                      title={selectEntryCollectionTitle(collection, entry)}
                       authorLastChange={entry.getIn(['metaData', 'user'])}
                       body={entry.getIn(['data', 'body'])}
                       isModification={isModification}
                       editLink={editLink}
                       timestamp={timestamp}
                       onDelete={this.requestDelete.bind(this, collectionName, slug, ownStatus)}
+                      allowPublish={allowPublish}
                       canPublish={canPublish}
                       onPublish={this.requestPublish.bind(this, collectionName, slug, ownStatus)}
                     />

@@ -7,6 +7,7 @@ import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-legacy';
+import { basename } from 'netlify-cms-lib-util';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -93,7 +94,11 @@ export default function withFileControl({ forImage } = {}) {
       onClearMediaControl: PropTypes.func.isRequired,
       onRemoveMediaControl: PropTypes.func.isRequired,
       classNameWrapper: PropTypes.string.isRequired,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+      value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+        ImmutablePropTypes.listOf(PropTypes.string),
+      ]),
       t: PropTypes.func.isRequired,
     };
 
@@ -173,6 +178,15 @@ export default function withFileControl({ forImage } = {}) {
       e.preventDefault();
       this.props.onClearMediaControl(this.controlID);
       return this.props.onChange('');
+    };
+
+    getValidateValue = () => {
+      const { value } = this.props;
+      if (value) {
+        return isMultiple(value) ? value.map(v => basename(v)) : basename(value);
+      }
+
+      return value;
     };
 
     renderFileLink = value => {

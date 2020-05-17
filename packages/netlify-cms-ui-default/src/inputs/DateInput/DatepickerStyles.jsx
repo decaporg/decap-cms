@@ -202,14 +202,7 @@ const getDatepickerStyles = theme => css`
     border-radius: 3px;
     cursor: pointer;
   }
-  .datetime-picker .time .sliders .slider .handle:hover {
-    border-color: #b8b8b8;
-  }
-  .datetime-picker .time .sliders .slider .handle:active,
-  .datetime-picker .time .sliders .slider .handle:focus {
-    background-color: #5cc4ef;
-    border-color: #5cc4ef;
-  }
+
   .datetime-picker .shortcuts-bar {
     border-bottom: 1px solid ${theme.color.border};
     padding: 8px;
@@ -312,6 +305,14 @@ const getDatepickerStyles = theme => css`
     &:active {
       background-color: ${theme.color.primary['1400']};
     }
+  }
+  .datetime-picker .time .sliders .slider .handle:hover {
+    border-color: #b8b8b8;
+  }
+  .datetime-picker .time .sliders .slider .handle:active,
+  .datetime-picker .time .sliders .slider .handle:focus {
+    background-color: #5cc4ef;
+    border-color: #5cc4ef;
   }
 `;
 

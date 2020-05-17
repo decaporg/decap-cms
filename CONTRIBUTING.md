@@ -7,12 +7,14 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 
 ## Setup
 
+> Install Node.js (LTS) on your system: [https://nodejs.org/](https://nodejs.org/)
+
 > Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
 
 ### Install dependencies
 
 > Only required on the first run, subsequent runs can use `yarn start` to both
-bootstrap and run the development server.
+> bootstrap and run the development server.
 
 ```sh
 $ git clone https://github.com/netlify/netlify-cms
@@ -44,6 +46,7 @@ Watches all CMS packages and transpiles them on change.
 ```sh
 yarn watch
 ```
+
 ### start
 
 Starts the development server. This task runs both the `bootstrap` and `watch` scripts.
@@ -134,12 +137,12 @@ Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/
 
 1. Fork the repo.
 2. Create a branch from `master`. If you're addressing a specific issue, prefix your branch name with the issue number.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Run `yarn test` and ensure the test suite passes.
-5. Use `yarn format` to format and lint your code.
-6. PR's must be rebased before merge (feel free to ask for help).
-7. PR should be reviewed by two maintainers prior to merging.
+3. If you've added code that should be tested, add tests.
+4. If you've changed APIs, update the documentation.
+5. Run `yarn test` and ensure the test suite passes.
+6. Use `yarn format` to format and lint your code.
+7. PR's must be rebased before merge (feel free to ask for help).
+8. PR should be reviewed by two maintainers prior to merging.
 
 ## License
 

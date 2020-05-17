@@ -9,6 +9,8 @@ import CollectionTop from './CollectionTop';
 import CollectionSearch from './CollectionSearch';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
+import { selectSortableFields } from 'Reducers/collections';
+import { selectEntriesSort } from 'Reducers/entries';
 import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
 import { createNewEntry } from 'Actions/collections';
 
@@ -87,10 +89,21 @@ Collection.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
-  const { isSearchResults, match } = ownProps;
+  const { isSearchResults, match, t } = ownProps;
   const { name, searchTerm } = match.params;
   const collection = name ? collections.get(name) : collections.first();
-  return { collection, collections, collectionName: name, isSearchResults, searchTerm };
+  const sort = selectEntriesSort(state.entries, collection.get('name'));
+  const sortableFields = selectSortableFields(collection, t);
+
+  return {
+    collection,
+    collections,
+    collectionName: name,
+    isSearchResults,
+    searchTerm,
+    sort,
+    sortableFields,
+  };
 }
 
 export const CollectionsAppBarActions = ({ collections, t }) => {

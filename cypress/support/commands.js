@@ -295,11 +295,14 @@ Cypress.Commands.add('confirmMarkdownEditorContent', expectedDomString => {
     // Slate makes the following representations:
     // - blank line: 2 BOM's + <br>
     // - blank element (placed inside empty elements): 1 BOM + <br>
-    // We replace to represent a blank line as a single <br>, and remove the
-    // contents of elements that are actually empty.
+    // - inline element (e.g. link tag <a>) are wrapped with BOM characters (https://github.com/ianstormtaylor/slate/issues/2722)
+    // We replace to represent a blank line as a single <br>, remove the
+    // contents of elements that are actually empty, and remove BOM characters wrapping <a> tags
     const actualDomString = toPlainTree(element.innerHTML)
       .replace(/\uFEFF\uFEFF<br>/g, '<br>')
-      .replace(/\uFEFF<br>/g, '');
+      .replace(/\uFEFF<br>/g, '')
+      .replace(/\uFEFF<a>/g, '<a>')
+      .replace(/<\/a>\uFEFF/g, '</a>');
     expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
   });
 });
@@ -335,7 +338,7 @@ function removeSlateArtifacts() {
       delete node.properties;
 
       // remove slate padding spans to simplify test cases
-      if (['h1', 'p'].includes(node.tagName)) {
+      if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(node.tagName)) {
         node.children = node.children.flatMap(getActualBlockChildren);
       }
     });

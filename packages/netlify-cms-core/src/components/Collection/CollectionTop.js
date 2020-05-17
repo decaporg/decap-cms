@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
@@ -89,11 +90,7 @@ const CollectionTop = ({
 };
 
 CollectionTop.propTypes = {
-  collectionLabel: PropTypes.string.isRequired,
-  collectionLabelSingular: PropTypes.string,
-  collectionDescription: PropTypes.string,
-  viewStyle: PropTypes.oneOf([VIEW_STYLE_LIST, VIEW_STYLE_GRID]).isRequired,
-  onChangeViewStyle: PropTypes.func.isRequired,
+  collection: ImmutablePropTypes.map.isRequired,
   newEntryUrl: PropTypes.string,
   t: PropTypes.func.isRequired,
 };
