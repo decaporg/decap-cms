@@ -20,6 +20,7 @@ jest.mock('netlify-cms-ui-default', () => {
   const actual = jest.requireActual('netlify-cms-ui-default');
   const ListItemTopBar = props => (
     <mock-list-item-top-bar {...props} onClick={props.onCollapseToggle}>
+      <button onClick={props.onRemove}>Remove</button>
       {props.children}
     </mock-list-item-top-bar>
   );
@@ -465,7 +466,7 @@ describe('ListControl', () => {
       <ListControl
         {...props}
         field={field}
-        value={fromJS([{ title: 'item 1' }, { title: 'item 2' }])}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
       />,
     );
 
@@ -489,7 +490,7 @@ describe('ListControl', () => {
       <ListControl
         {...props}
         field={field}
-        value={fromJS([{ title: 'item 1' }, { title: 'item 2' }])}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
       />,
     );
 
@@ -513,7 +514,7 @@ describe('ListControl', () => {
       <ListControl
         {...props}
         field={field}
-        value={fromJS([{ title: 'item 1' }, { title: 'item 2' }])}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
       />,
     );
 
@@ -546,7 +547,7 @@ describe('ListControl', () => {
       <ListControl
         {...props}
         field={field}
-        value={fromJS([{ title: 'item 1' }, { title: 'item 2' }])}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
       />,
     );
 
@@ -565,5 +566,66 @@ describe('ListControl', () => {
 
     expect(queryByTestId('object-control-0')).toBeNull();
     expect(queryByTestId('object-control-1')).toBeNull();
+  });
+
+  it('should add to list when add button is clicked', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getByText, queryByTestId, rerender, getByTestId } = render(
+      <ListControl {...props} field={field} value={fromJS([])} />,
+    );
+
+    expect(queryByTestId('object-control-0')).toBeNull();
+
+    fireEvent.click(getByText('Add list'));
+
+    expect(props.onChange).toHaveBeenCalledTimes(1);
+    expect(props.onChange).toHaveBeenCalledWith(fromJS([{}]));
+
+    rerender(<ListControl {...props} field={field} value={fromJS([{}])} />);
+
+    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should remove from list when remove button is clicked', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getAllByText, rerender } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
+      />,
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+
+    let mock;
+    try {
+      mock = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      const items = getAllByText('Remove');
+      fireEvent.click(items[0]);
+
+      expect(props.onChange).toHaveBeenCalledTimes(1);
+      expect(props.onChange).toHaveBeenCalledWith(fromJS([{ string: 'item 2' }]), undefined);
+
+      rerender(<ListControl {...props} field={field} value={fromJS([{ string: 'item 2' }])} />);
+
+      expect(asFragment()).toMatchSnapshot();
+    } finally {
+      mock.mockRestore();
+    }
   });
 });
