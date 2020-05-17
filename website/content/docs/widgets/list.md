@@ -13,6 +13,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   - `allow_add`: if added and labeled `false`, button to add additional widgets disappears
   - `collapsed`: if added and labeled `false`, the list widget's content does not collapse by default
   - `summary`: allows customization of a collapsed list item object in a similar way to a [collection summary](/docs/configuration-options/?#summary)
+  - `minimize_collapsed`: if added and labeled `true`, the list widget's content will be completely hidden instead of only collapsed if the list widget itself is collapsed
   - `field`: a single widget field to be repeated
   - `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
 - **Example** (`field`/`fields` not specified):
@@ -58,6 +59,16 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     - label: "Testimonials"
       name: "testimonials"
       collapsed: false
+      widget: "list"
+      fields:
+        - {label: Quote, name: quote, widget: string, default: "Everything is awesome!"}
+        - {label: Author, name: author, widget: string }
+    ```
+- **Example** (`minimize_collapsed` marked `true`):
+    ```yaml
+    - label: "Testimonials"
+      name: "testimonials"
+      minimize_collapsed: true
       widget: "list"
       fields:
         - {label: Quote, name: quote, widget: string, default: "Everything is awesome!"}
