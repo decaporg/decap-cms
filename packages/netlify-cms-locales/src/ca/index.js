@@ -164,7 +164,7 @@ const ca = {
       mediaAssets: 'Arxius multimèdia',
       search: 'Buscar...',
       uploading: 'Penjant...',
-      upload: 'Penjar de nou',
+      upload: 'Penjar nou',
       download: 'Descarregar',
       deleting: 'Eliminant...',
       deleteSelected: 'Eliminar selecció',
