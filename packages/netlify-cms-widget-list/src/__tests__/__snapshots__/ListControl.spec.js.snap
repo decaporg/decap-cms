@@ -217,7 +217,9 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="0"
           forlist="true"
+          haserror="false"
           validationkey="0"
           value="Map {}"
         />
@@ -444,7 +446,9 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="0"
           forlist="true"
+          haserror="false"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -472,7 +476,9 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="1"
           forlist="true"
+          haserror="false"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -700,7 +706,9 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="1"
           forlist="true"
+          haserror="false"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -937,7 +945,9 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="0"
           forlist="true"
+          haserror="false"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -965,7 +975,9 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="1"
           forlist="true"
+          haserror="false"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -1192,7 +1204,9 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="0"
           forlist="true"
+          haserror="false"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -1220,7 +1234,9 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="1"
           forlist="true"
+          haserror="false"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -1448,7 +1464,9 @@ exports[`ListControl should render list with fields with default collapse ("true
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="0"
           forlist="true"
+          haserror="false"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -1476,7 +1494,9 @@ exports[`ListControl should render list with fields with default collapse ("true
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
+          forid="1"
           forlist="true"
+          haserror="false"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
