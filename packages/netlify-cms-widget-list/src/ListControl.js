@@ -301,9 +301,10 @@ export default class ListControl extends React.Component {
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
         : metadata;
 
-    const newItemsCollapsed = itemsCollapsed.slice(index);
-    const newKeys = keys.slice(index);
-    this.setState({ itemsCollapsed: newItemsCollapsed, keys: newKeys });
+    itemsCollapsed.splice(index, 1);
+    keys.splice(index, 1);
+
+    this.setState({ itemsCollapsed: [...itemsCollapsed], keys: [...keys] });
 
     onChange(value.remove(index), parsedMetadata);
     clearFieldErrors();
@@ -391,7 +392,8 @@ export default class ListControl extends React.Component {
 
     // Update collapsing
     const collapsed = itemsCollapsed[oldIndex];
-    const updatedItemsCollapsed = itemsCollapsed.slice(oldIndex);
+    itemsCollapsed.splice(oldIndex, 1);
+    const updatedItemsCollapsed = [...itemsCollapsed];
     updatedItemsCollapsed.splice(newIndex, 0, collapsed);
 
     // Reset item to ensure updated state
