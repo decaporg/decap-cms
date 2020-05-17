@@ -115,15 +115,15 @@ export default class ListControl extends React.Component {
   constructor(props) {
     super(props);
     const { field, value } = props;
-    const allItemsCollapsed = field.get('collapsed', true);
-    const itemsCollapsed = value && Array(value.size).fill(allItemsCollapsed);
-    const keys = value && Array.from({ length: value.size }, () => uuid());
+    const listCollapsed = field.get('collapsed', true);
+    const itemsCollapsed = (value && Array(value.size).fill(listCollapsed)) || [];
+    const keys = (value && Array.from({ length: value.size }, () => uuid())) || [];
 
     this.state = {
-      collapsed: allItemsCollapsed,
-      itemsCollapsed: List(itemsCollapsed),
+      listCollapsed,
+      itemsCollapsed,
       value: valueToString(value),
-      keys: List(keys),
+      keys,
     };
   }
 
@@ -185,8 +185,8 @@ export default class ListControl extends React.Component {
         ? this.singleDefault()
         : fromJS(this.multipleDefault(field.get('fields')));
     this.setState({
-      itemsCollapsed: this.state.itemsCollapsed.push(false),
-      keys: this.state.keys.push(uuid()),
+      itemsCollapsed: [...this.state.itemsCollapsed, false],
+      keys: [...this.state.keys, uuid()],
     });
     onChange((value || List()).push(parsedValue));
   };
@@ -203,8 +203,8 @@ export default class ListControl extends React.Component {
     const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
     this.setState({
-      itemsCollapsed: this.state.itemsCollapsed.push(false),
-      keys: this.state.keys.push(uuid()),
+      itemsCollapsed: [...this.state.itemsCollapsed, false],
+      keys: [...this.state.keys, uuid()],
     });
     onChange((value || List()).push(parsedValue));
   };
@@ -301,7 +301,9 @@ export default class ListControl extends React.Component {
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
         : metadata;
 
-    this.setState({ itemsCollapsed: itemsCollapsed.delete(index), keys: keys.delete(index) });
+    const newItemsCollapsed = itemsCollapsed.slice(index);
+    const newKeys = keys.slice(index);
+    this.setState({ itemsCollapsed: newItemsCollapsed, keys: newKeys });
 
     onChange(value.remove(index), parsedMetadata);
     clearFieldErrors();
@@ -315,27 +317,34 @@ export default class ListControl extends React.Component {
   handleItemCollapseToggle = (index, event) => {
     event.preventDefault();
     const { itemsCollapsed } = this.state;
-    const collapsed = itemsCollapsed.get(index);
-    this.setState({ itemsCollapsed: itemsCollapsed.set(index, !collapsed) });
+    const newItemsCollapsed = itemsCollapsed.map((collapsed, itemIndex) => {
+      if (index === itemIndex) {
+        return !collapsed;
+      }
+      return collapsed;
+    });
+    this.setState({
+      itemsCollapsed: newItemsCollapsed,
+    });
   };
 
   handleCollapseAllToggle = e => {
     e.preventDefault();
     const { value, field } = this.props;
-    const { itemsCollapsed, collapsed } = this.state;
+    const { itemsCollapsed, listCollapsed } = this.state;
     const minimizeCollapsedItems = field.get('minimize_collapsed', false);
-    const allItemsCollapsedByDefault = field.get('collapsed', true);
+    const listCollapsedByDefault = field.get('collapsed', true);
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
 
-    if (!minimizeCollapsedItems) {
-      this.setState({ itemsCollapsed: List(Array(value.size).fill(!allItemsCollapsed)) });
-    } else {
+    if (minimizeCollapsedItems) {
       let updatedItemsCollapsed = itemsCollapsed;
       // Only allow collapsing all items in this mode but not opening all at once
-      if (!collapsed || !allItemsCollapsedByDefault) {
-        updatedItemsCollapsed = List(Array(value.size).fill(!collapsed));
+      if (!listCollapsed || !listCollapsedByDefault) {
+        updatedItemsCollapsed = Array(value.size).fill(!listCollapsed);
       }
-      this.setState({ collapsed: !collapsed, itemsCollapsed: updatedItemsCollapsed });
+      this.setState({ listCollapsed: !listCollapsed, itemsCollapsed: updatedItemsCollapsed });
+    } else {
+      this.setState({ itemsCollapsed: Array(value.size).fill(!allItemsCollapsed) });
     }
   };
 
@@ -381,11 +390,17 @@ export default class ListControl extends React.Component {
     this.props.onChange(newValue);
 
     // Update collapsing
-    const collapsed = itemsCollapsed.get(oldIndex);
-    const updatedItemsCollapsed = itemsCollapsed.delete(oldIndex).insert(newIndex, collapsed);
+    const collapsed = itemsCollapsed[oldIndex];
+    const updatedItemsCollapsed = itemsCollapsed.slice(oldIndex);
+    updatedItemsCollapsed.splice(newIndex, 0, collapsed);
 
     // Reset item to ensure updated state
-    const updatedKeys = keys.set(oldIndex, uuid()).set(newIndex, uuid());
+    const updatedKeys = keys.map((key, keyIndex) => {
+      if (keyIndex === oldIndex || keyIndex === newIndex) {
+        return uuid();
+      }
+      return key;
+    });
     this.setState({ itemsCollapsed: updatedItemsCollapsed, keys: updatedKeys });
 
     //clear error fields and remove old validations
@@ -407,8 +422,8 @@ export default class ListControl extends React.Component {
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
-    const collapsed = itemsCollapsed.get(index);
-    const key = keys.get(index);
+    const collapsed = itemsCollapsed[index];
+    const key = keys[index];
     let field = this.props.field;
 
     if (this.getValueType() === valueTypes.MIXED) {
@@ -486,14 +501,14 @@ export default class ListControl extends React.Component {
 
   renderListControl() {
     const { value, forID, field, classNameWrapper } = this.props;
-    const { itemsCollapsed, collapsed } = this.state;
+    const { itemsCollapsed, listCollapsed } = this.state;
     const items = value || List();
     const label = field.get('label', field.get('name'));
     const labelSingular = field.get('label_singular') || field.get('label', field.get('name'));
     const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
     const minimizeCollapsedItems = field.get('minimize_collapsed', false);
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
-    const selfCollapsed = allItemsCollapsed && (collapsed || !minimizeCollapsedItems);
+    const selfCollapsed = allItemsCollapsed && (listCollapsed || !minimizeCollapsedItems);
 
     return (
       <ClassNames>
