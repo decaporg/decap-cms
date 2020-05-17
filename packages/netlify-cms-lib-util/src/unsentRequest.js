@@ -13,13 +13,18 @@ if (typeof window !== 'undefined') {
 const timeout = 60;
 const fetchWithTimeout = (input, init) => {
   if (controller && signal && !init.signal) {
-    setTimeout(() => controller.abort(), timeout * 1000);
-    return fetch(input, { ...init, signal }).catch(e => {
-      if (e.name === 'AbortError') {
-        throw new Error(`Request timed out after ${timeout} seconds`);
-      }
-      throw e;
-    });
+    const timeoutId = setTimeout(() => controller.abort(), timeout * 1000);
+    return fetch(input, { ...init, signal })
+      .then(res => {
+        clearTimeout(timeoutId);
+        return res;
+      })
+      .catch(e => {
+        if (e.name === 'AbortError') {
+          throw new Error(`Request timed out after ${timeout} seconds`);
+        }
+        throw e;
+      });
   }
   return fetch(input, init);
 };
