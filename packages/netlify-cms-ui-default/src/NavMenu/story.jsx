@@ -49,7 +49,7 @@ export const _NavMenu = () => {
           <NavMenuItem
             active={activeItemId === 'posts'}
             onClick={() => setActiveItemId('posts')}
-            icon="edit-3"
+            icon="pin"
           >
             Posts
           </NavMenuItem>

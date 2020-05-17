@@ -43,12 +43,17 @@ const Nav = ({ collections, location }) => {
         </NavMenuItem>
         {collections.toList().map(collection => {
           const collectionName = collection.get('name');
+          console.log(collections.toJS());
           return (
             <NavMenuItem
               key={collectionName}
               active={activeItemId === `collections-${collectionName}`}
               onClick={() => history.push(`/collections/${collectionName}`)}
-              icon={collection.get('icon') || 'edit-3'}
+              icon={
+                collection.get('icon') || collection.get('type') === 'file_based_collection'
+                  ? 'file'
+                  : 'folder'
+              }
             >
               {collection.get('label')}
             </NavMenuItem>

@@ -30,6 +30,7 @@ import EyeOff from './icons/EyeOff';
 import Eye from './icons/Eye';
 import FileText from './icons/FileText';
 import File from './icons/File';
+import Files from './icons/Files';
 import Filter from './icons/Filter';
 import Flag from './icons/Flag';
 import Folder from './icons/Folder';
@@ -64,6 +65,7 @@ import NumberedList from './icons/NumberedList';
 import Package from './icons/Package';
 import Paperclip from './icons/Paperclip';
 import PieChart from './icons/PieChart';
+import Pin from './icons/Pin';
 import PlusCircle from './icons/PlusCircle';
 import Plus from './icons/Plus';
 import Quote from './icons/Quote';
@@ -120,6 +122,7 @@ export const iconComponents = {
   'eye': Eye,
   'file-text': FileText,
   'file': File,
+  'files': Files,
   'filter': Filter,
   'flag': Flag,
   'folder': Folder,
@@ -154,6 +157,7 @@ export const iconComponents = {
   'package': Package,
   'paperclip': Paperclip,
   'pie-chart': PieChart,
+  'pin': Pin,
   'plus-circle': PlusCircle,
   'plus': Plus,
   'quote': Quote,
