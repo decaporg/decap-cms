@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
-import { lengths } from 'netlify-cms-ui-default';
+import { lengths, components } from 'netlify-cms-ui-default';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
@@ -15,7 +15,6 @@ import { sortByField } from 'Actions/entries';
 import { selectSortableFields } from 'Reducers/collections';
 import { selectEntriesSort } from 'Reducers/entries';
 import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
-import { components } from 'netlify-cms-ui-default/src/styles';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
