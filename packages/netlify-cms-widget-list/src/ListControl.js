@@ -328,7 +328,7 @@ export default class ListControl extends React.Component {
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
         : metadata;
 
-    removeFromEntryTreeMap(this.state.keys.get(index), this.props.listNodePath);
+    removeFromEntryTreeMap(this.state.keys[index], this.props.listNodePath);
     itemsCollapsed.splice(index, 1);
     keys.splice(index, 1);
     this.setState({ itemsCollapsed: [...itemsCollapsed], keys: [...keys] });
