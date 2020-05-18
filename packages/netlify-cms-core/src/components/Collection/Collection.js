@@ -146,7 +146,7 @@ export class Collection extends React.Component {
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
   const { isSearchResults, match, t } = ownProps;
-  const { name, searchTerm, filterTerm } = match.params;
+  const { name, searchTerm = '', filterTerm = '' } = match.params;
   const collection = name ? collections.get(name) : collections.first();
   const sort = selectEntriesSort(state.entries, collection.get('name'));
   const sortableFields = selectSortableFields(collection, t);
