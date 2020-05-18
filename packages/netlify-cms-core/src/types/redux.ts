@@ -222,6 +222,7 @@ export type Search = StaticallyTypedRecord<{
   entryIds?: SearchItem[];
   isFetching: boolean;
   term: string | null;
+  collections: List<string> | null;
   page: number;
 }>;
 

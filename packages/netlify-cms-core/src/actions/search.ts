@@ -5,6 +5,7 @@ import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration } from '../reducers';
 import { EntryValue } from '../valueObjects/Entry';
+import { List } from 'immutable';
 
 /*
  * Constant Declarations
@@ -23,18 +24,24 @@ export const SEARCH_CLEAR = 'SEARCH_CLEAR';
  * Simple Action Creators (Internal)
  * We still need to export them for tests
  */
-export function searchingEntries(searchTerm: string, page: number) {
+export function searchingEntries(searchTerm: string, searchCollections: string[], page: number) {
   return {
     type: SEARCH_ENTRIES_REQUEST,
-    payload: { searchTerm, page },
+    payload: { searchTerm, searchCollections, page },
   };
 }
 
-export function searchSuccess(searchTerm: string, entries: EntryValue[], page: number) {
+export function searchSuccess(
+  searchTerm: string,
+  searchCollections: string[],
+  entries: EntryValue[],
+  page: number,
+) {
   return {
     type: SEARCH_ENTRIES_SUCCESS,
     payload: {
       searchTerm,
+      searchCollections,
       entries,
       page,
     },
@@ -124,12 +131,16 @@ export function clearSearch() {
  */
 
 // SearchEntries will search for complete entries in all collections.
-export function searchEntries(searchTerm: string, page = 0) {
+export function searchEntries(
+  searchTerm: string,
+  searchCollections: string[] | null = null,
+  page = 0,
+) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const { search } = state;
     const backend = currentBackend(state.config);
-    const allCollections = state.collections.keySeq().toArray();
+    const allCollections = searchCollections || state.collections.keySeq().toArray();
     const collections = allCollections.filter(collection =>
       selectIntegration(state, collection as string, 'search'),
     );
@@ -139,12 +150,14 @@ export function searchEntries(searchTerm: string, page = 0) {
     if (
       search.get('isFetching') === true &&
       search.get('term') === searchTerm &&
+      search.get('collections') !== null &&
+      List(allCollections).equals(search.get('collections') as List<string>) &&
       // if an integration doesn't exist, 'page' is not used
       (search.get('page') === page || !integration)
     ) {
       return;
     }
-    dispatch(searchingEntries(searchTerm, page));
+    dispatch(searchingEntries(searchTerm, allCollections as string[], page));
 
     const searchPromise = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration).search(
@@ -152,11 +165,24 @@ export function searchEntries(searchTerm: string, page = 0) {
           searchTerm,
           page,
         )
-      : backend.search(state.collections.valueSeq().toArray(), searchTerm);
+      : backend.search(
+          state.collections
+            .filter((_, key: string) => allCollections.indexOf(key) !== -1)
+            .valueSeq()
+            .toArray(),
+          searchTerm,
+        );
 
     return searchPromise.then(
       (response: Response) =>
-        dispatch(searchSuccess(searchTerm, response.entries, response.pagination)),
+        dispatch(
+          searchSuccess(
+            searchTerm,
+            allCollections as string[],
+            response.entries,
+            response.pagination,
+          ),
+        ),
       (error: Error) => dispatch(searchFailure(searchTerm, error)),
     );
   };

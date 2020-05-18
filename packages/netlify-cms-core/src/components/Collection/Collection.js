@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
-import { lengths } from 'netlify-cms-ui-default';
+import { lengths, components } from 'netlify-cms-ui-default';
 import { getNewEntryUrl } from 'Lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
@@ -24,11 +24,21 @@ const CollectionMain = styled.main`
   padding-left: 280px;
 `;
 
+const SearchResultContainer = styled.div`
+  ${components.cardTop};
+  margin-bottom: 22px;
+`;
+
+const SearchResultHeading = styled.h1`
+  ${components.cardTopHeading};
+`;
+
 class Collection extends React.Component {
   static propTypes = {
     searchTerm: PropTypes.string,
     collectionName: PropTypes.string,
     isSearchResults: PropTypes.bool,
+    isSingleSearchResult: PropTypes.bool,
     collection: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
     sortableFields: PropTypes.array,
@@ -46,8 +56,13 @@ class Collection extends React.Component {
   };
 
   renderEntriesSearch = () => {
-    const { searchTerm, collections } = this.props;
-    return <EntriesSearch collections={collections} searchTerm={searchTerm} />;
+    const { searchTerm, collections, collection, isSingleSearchResult } = this.props;
+    return (
+      <EntriesSearch
+        collections={isSingleSearchResult ? collections.filter(c => c === collection) : collections}
+        searchTerm={searchTerm}
+      />
+    );
   };
 
   handleChangeViewStyle = viewStyle => {
@@ -62,17 +77,33 @@ class Collection extends React.Component {
       collections,
       collectionName,
       isSearchResults,
+      isSingleSearchResult,
       searchTerm,
       sortableFields,
       onSortClick,
       sort,
+      t,
     } = this.props;
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
+
+    const searchResultKey =
+      'collection.collectionTop.searchResults' + (isSingleSearchResult ? 'InCollection' : '');
+
     return (
       <CollectionContainer>
-        <Sidebar collections={collections} searchTerm={searchTerm} />
+        <Sidebar
+          collections={collections}
+          collection={(!isSearchResults || isSingleSearchResult) && collection}
+          searchTerm={searchTerm}
+        />
         <CollectionMain>
-          {isSearchResults ? null : (
+          {isSearchResults ? (
+            <SearchResultContainer>
+              <SearchResultHeading>
+                {t(searchResultKey, { searchTerm, collection: collection.get('label') })}
+              </SearchResultHeading>
+            </SearchResultContainer>
+          ) : (
             <>
               <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
               <CollectionControls

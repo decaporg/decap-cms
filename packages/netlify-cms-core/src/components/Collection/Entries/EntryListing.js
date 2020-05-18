@@ -54,10 +54,11 @@ export default class EntryListing extends React.Component {
 
   renderCardsForMultipleCollections = () => {
     const { collections, entries } = this.props;
+    const isSingleCollectionInList = collections.size === 1;
     return entries.map((entry, idx) => {
       const collectionName = entry.get('collection');
       const collection = collections.find(coll => coll.get('name') === collectionName);
-      const collectionLabel = collection.get('label');
+      const collectionLabel = !isSingleCollectionInList && collection.get('label');
       const inferedFields = this.inferFields(collection);
       const entryCardProps = { collection, entry, inferedFields, collectionLabel };
       return <EntryCard {...entryCardProps} key={idx} />;

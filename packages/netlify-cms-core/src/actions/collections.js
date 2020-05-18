@@ -1,8 +1,12 @@
 import history from 'Routing/history';
 import { getCollectionUrl, getNewEntryUrl } from 'Lib/urlHelper';
 
-export function searchCollections(query) {
-  history.push(`/search/${query}`);
+export function searchCollections(query, collection) {
+  if (collection) {
+    history.push(`/collections/${collection}/search/${query}`);
+  } else {
+    history.push(`/search/${query}`);
+  }
 }
 
 export function showCollection(collectionName) {

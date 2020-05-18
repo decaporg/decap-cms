@@ -34,7 +34,9 @@ const en = {
   collection: {
     sidebar: {
       collections: 'Collections',
+      allCollections: 'All Collections',
       searchAll: 'Search all',
+      searchIn: 'Search in',
     },
     collectionTop: {
       sortBy: 'Sort by',
@@ -42,6 +44,8 @@ const en = {
       newButton: 'New %{collectionLabel}',
       ascending: 'Ascending',
       descending: 'Descending',
+      searchResults: 'Search Results for "%{searchTerm}"',
+      searchResultsInCollection: 'Search Results for "%{searchTerm}" in %{collection}',
     },
     entries: {
       loadingEntries: 'Loading Entries...',
