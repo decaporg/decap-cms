@@ -57,7 +57,7 @@ const TextInput = ({
       inline={inline}
       error={error}
       icon={icon}
-      clickable
+      clickable={!readOnly}
     >
       <StyledInput
         clickable={readOnly && !!onClick}

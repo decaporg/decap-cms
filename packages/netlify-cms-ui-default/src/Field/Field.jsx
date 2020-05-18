@@ -125,6 +125,7 @@ const Field = ({
       style={insideStyle}
       error={error}
       icon={icon}
+      clickable={clickable || !!onClick}
     >
       <StyledLabel
         control={control}
