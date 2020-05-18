@@ -14,6 +14,7 @@ exports[`Collection should render connected component 1`] = `
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] } }"
     />
     <main
@@ -51,6 +52,7 @@ exports[`Collection should render with collection with create url 1`] = `
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"create\\": true }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] } }"
     />
     <main
@@ -87,8 +89,8 @@ exports[`Collection should render with collection with create url and path 1`] =
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"create\\": true }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] } }"
-      filterterm="dir1/dir2"
     />
     <main
       class="emotion-0 emotion-1"
@@ -125,6 +127,7 @@ exports[`Collection should render with collection without create url 1`] = `
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"create\\": false }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] } }"
     />
     <main

@@ -13,10 +13,12 @@ jest.mock('netlify-cms-ui-default', () => {
 });
 
 jest.mock('../NestedCollection', () => 'nested-collection');
+jest.mock('../CollectionSearch', () => 'collection-search');
 jest.mock('Actions/collections');
 
 describe('Sidebar', () => {
   const props = {
+    searchTerm: '',
     t: jest.fn(key => key),
   };
   it('should render sidebar with a simple collection', () => {
