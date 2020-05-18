@@ -16,6 +16,7 @@ exports[`Collection should render connected component 1`] = `
     <mock-sidebar
       collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] } }"
+      searchterm=""
     />
     <main
       class="emotion-0 emotion-1"
@@ -31,6 +32,7 @@ exports[`Collection should render connected component 1`] = `
       />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] }"
+        filterterm=""
         viewstyle="VIEW_STYLE_LIST"
       />
     </main>
