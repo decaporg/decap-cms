@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Async as AsyncSelect } from 'react-select';
-import { find, isEmpty, last, debounce, get } from 'lodash';
+import { find, isEmpty, last, debounce, get, trimEnd } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -34,6 +34,33 @@ function getSelectedValue({ value, options, isMultiple }) {
     return find(options, ['value', value]) || null;
   }
 }
+
+export const expandPath = ({ data, path, paths = [] }) => {
+  if (path.endsWith('.*')) {
+    path = path + '.';
+  }
+
+  const sep = '.*.';
+  const parts = path.split(sep);
+  if (parts.length === 1) {
+    paths.push(path);
+  } else {
+    const partialPath = parts[0];
+    const value = get(data, partialPath);
+
+    if (Array.isArray(value)) {
+      value.forEach((v, index) => {
+        expandPath({
+          data,
+          path: trimEnd(`${partialPath}.${index}.${parts.slice(1).join(sep)}`, '.'),
+          paths,
+        });
+      });
+    }
+  }
+
+  return paths;
+};
 
 export default class RelationControl extends React.Component {
   didInitialSearch = false;
@@ -128,38 +155,26 @@ export default class RelationControl extends React.Component {
   parseHitOptions = hits => {
     const { field } = this.props;
     const valueField = field.get('valueField');
-    const searchFields = field.get('searchFields');
-    const displayField = field.get('displayFields') || field.get('valueField');
+    const displayField = field.get('displayFields') || List(field.get('valueField'));
 
-    let data = hits;
-    if (field.get('file')) {
-      data = get(hits, `[0].data.${searchFields}`, []).map(item => ({ data: item }));
-    }
+    const options = hits.reduce((acc, hit) => {
+      const valuesPaths = expandPath({ data: hit.data, path: valueField });
+      for (let i = 0; i < valuesPaths.length; i++) {
+        const label = displayField
+          .toJS()
+          .map(key => {
+            const displayPaths = expandPath({ data: hit.data, path: key });
+            return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
+          })
+          .join(' ');
+        const value = this.parseNestedFields(hit, valuesPaths[i]);
+        acc.push({ data: hit.data, value, label });
+      }
 
-    if (data.every(item => typeof item.data === 'string')) {
-      return data.map(item => ({
-        data,
-        value: item.data,
-        label: item.data,
-      }));
-    } else {
-      return data.map(hit => {
-        let labelReturn;
-        if (List.isList(displayField)) {
-          labelReturn = displayField
-            .toJS()
-            .map(key => this.parseNestedFields(hit, key))
-            .join(' ');
-        } else {
-          labelReturn = this.parseNestedFields(hit, displayField);
-        }
-        return {
-          data: hit.data,
-          value: this.parseNestedFields(hit, valueField),
-          label: labelReturn,
-        };
-      });
-    }
+      return acc;
+    }, []);
+
+    return options;
   };
 
   loadOptions = debounce((term, callback) => {
@@ -206,8 +221,7 @@ export default class RelationControl extends React.Component {
     const isClearable = !field.get('required', true) || isMultiple;
 
     const hits = queryHits.get(forID, []);
-    const options =
-      this.allOptions || this.parseHitOptions(hits, { isFile: Boolean(field.get('file')) });
+    const options = this.allOptions || this.parseHitOptions(hits);
     const selectedValue = getSelectedValue({
       options,
       value,

@@ -27,15 +27,6 @@ collections: # A list of collections the CMS should be able to edit
           timeFormat: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
         }
-      
-      - label: 'Categories'
-        name: 'categories'
-        widget: 'relation'
-        collection: 'settings'
-        file: 'general'
-        searchFields: categories
-        valueField: categories
-
       - label: 'Cover Image'
         name: 'image'
         widget: 'image'
@@ -86,10 +77,6 @@ collections: # A list of collections the CMS should be able to edit
                   required: false,
                 }
 
-          - label: Post Categories
-            name: categories
-            widget: list
-
       - name: 'authors'
         label: 'Authors'
         file: '_data/authors.yml'
@@ -137,7 +124,6 @@ collections: # A list of collections the CMS should be able to edit
       - label: 'Object'
         name: 'object'
         widget: 'object'
-        collapsed: true
         fields:
           - label: 'Related Post'
             name: 'post'
