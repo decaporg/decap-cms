@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import TextInput from '../TextInput';
-import { IconButton } from '../../Button';
+import Field from '../../Field';
+import { Tag, TagGroup } from '../../Tag';
 import { Menu, MenuItem } from '../../Menu';
-
-const StyledIconButton = styled(IconButton)`
-  position: absolute;
-  right: 0;
-  bottom: -0.5rem;
-`;
 
 const SelectInput = ({
   options,
@@ -17,71 +12,94 @@ const SelectInput = ({
   label,
   labelSingular,
   multiple,
-  className,
+  placeholder,
   ...props
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElWidth, setAnchorElWidth] = useState();
 
-  function handleOpenMenu(event) {
+  const handleOpenMenu = event => {
     setAnchorElWidth(`${event.currentTarget.offsetWidth}px`);
     setAnchorEl(event.currentTarget);
-  }
+  };
 
-  function handleClose(value) {
-    if (value && typeof value === 'string') {
-      onChange(value);
+  const handleClose = newValue => {
+    if (newValue) {
+      onChange(multiple ? [...(value || []), newValue] : newValue);
     }
     setAnchorEl(null);
-  }
+  };
 
-  const selection = options.find(option => option.name === value);
+  const selection = options.find(option =>
+    Array.isArray(value) ? option.name === value?.[0]?.name : option.name === value?.name,
+  );
+
+  const availableOptions = multiple
+    ? options.filter(option => value.every(opt => opt.name !== option.name))
+    : options;
 
   return (
     <>
-      <TextInput
-        {...props}
-        readOnly
-        label={multiple ? label : labelSingular}
-        placeholder={
-          multiple
-            ? label
-              ? `Select ${label}`
-              : 'Select multiple'
-            : labelSingular
-            ? `Select a ${labelSingular}`
-            : 'Select one'
-        }
-        onClick={handleOpenMenu}
-        focused={!!anchorEl}
-        value={options && selection && selection.label}
-        className={className}
-      >
-        <StyledIconButton
-          disabled={!options}
+      {multiple ? (
+        <Field
+          {...props}
           onClick={handleOpenMenu}
+          label={label}
+          focus={!!anchorEl}
           icon="chevron-down"
-          active={!!anchorEl}
+        >
+          {value.length ? (
+            <TagGroup>
+              {value.map(option => (
+                <Tag
+                  key={option.name}
+                  onDelete={() => onChange(value.filter(opt => opt.name !== option.name))}
+                >
+                  {option.label}
+                </Tag>
+              ))}
+            </TagGroup>
+          ) : (
+            <span>{placeholder || `Select ${label}...`}</span>
+          )}
+        </Field>
+      ) : (
+        <TextInput
+          {...props}
+          readOnly
+          label={labelSingular || label}
+          onClick={handleOpenMenu}
+          focus={!!anchorEl}
+          value={options && selection?.label}
+          placeholder={placeholder || `Select a ${labelSingular || label}...`}
+          icon="chevron-down"
         />
-      </TextInput>
+      )}
+
       {options && (
         <Menu
           anchorOrigin={{ x: 'center', y: 'bottom' }}
           transformOrigin={{ x: 'center', y: 'top' }}
           anchorEl={anchorEl}
           open={!!anchorEl}
-          onClose={handleClose}
+          onClose={() => handleClose()}
           width={anchorElWidth}
         >
-          {options.map(option => (
-            <MenuItem
-              selected={value === option.name}
-              onClick={() => handleClose(option.name)}
-              key={option.name}
-            >
-              {option.label}
+          {availableOptions.length ? (
+            availableOptions.map(option => (
+              <MenuItem
+                selected={!multiple && value && value.name === option.name}
+                onClick={() => handleClose(option)}
+                key={option.name}
+              >
+                {option.label}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem disabled>
+              No {label?.[0]?.toLowerCase() + label?.substr(1)} to select.
             </MenuItem>
-          ))}
+          )}
         </Menu>
       )}
     </>

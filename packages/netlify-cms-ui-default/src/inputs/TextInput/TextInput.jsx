@@ -13,7 +13,8 @@ const StyledInput = styled.input`
   font-weight: ${({ title }) => (title ? 'bold' : 'normal')};
   letter-spacing: ${({ title }) => (title ? '-0.5px' : '0')};
   line-height: 1rem;
-  caret-color: ${({ theme }) => theme.color.primary['800']};
+  caret-color: ${({ theme, error }) =>
+    error ? theme.color.danger['900'] : theme.color.primary['800']};
   margin: -2rem -1rem -1rem -1rem;
   padding: 2rem 1rem 1rem 1rem;
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)} ::placeholder {
@@ -37,22 +38,26 @@ const TextInput = ({
   placeholder,
   children,
   value,
-  focused,
+  focus,
   title,
   password,
   className,
   inline,
+  error,
 }) => {
-  const [focus, setFocus] = useState();
+  const [inputFocus, setInputFocus] = useState();
 
   return (
     <Field
       onClick={onClick}
       label={label}
       labelTarget={name}
-      focus={focused || focus}
+      focus={focus || inputFocus}
       className={className}
       inline={inline}
+      error={error}
+      icon={icon}
+      clickable
     >
       <StyledInput
         clickable={readOnly && !!onClick}
@@ -64,13 +69,13 @@ const TextInput = ({
         placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}
         value={value || ''}
         onChange={e => onChange(e.target.value)}
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onFocus={() => setInputFocus(true)}
+        onBlur={() => setInputFocus(false)}
         autoComplete="off"
         title={title}
+        error={error}
       />
       {children && children}
-      {icon && <InputIcon name={icon} />}
     </Field>
   );
 };

@@ -19,6 +19,7 @@ export const _BooleanInput = () => {
       label="Boolean Input Label"
       value={boolean('value', false)}
       inline={boolean('inline', false)}
+      error={boolean('error', false)}
     />
   );
 };

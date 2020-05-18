@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import Label from '../Label';
+import { IconButton } from '../Button';
 
 export const FieldContext = React.createContext();
 
@@ -10,7 +11,8 @@ const FocusIndicator = styled.div`
   left: 0;
   right: 0;
   height: ${({ focus }) => (focus ? 2 : 1)}px;
-  background-color: ${({ theme }) => theme.color.primary['800']};
+  background-color: ${({ theme, error }) =>
+    error ? theme.color.danger[900] : theme.color.primary[900]};
   transition: 0.2s;
   transform: scaleX(${({ focus }) => (focus ? 1 : 0)});
   backface-visibility: hidden;
@@ -23,8 +25,22 @@ const FieldWrap = styled.div`
       `
       : ``}
   position: relative;
-  ${({ theme, noBorder, inline }) =>
-    inline && !noBorder ? `box-shadow: inset 0 -1px 0 0 ${theme.color.border};` : ``}
+  ${({ theme, noBorder, inline, error, focus, clickable }) =>
+    inline && !noBorder
+      ? `
+        box-shadow: inset 0 -1px 0 0 ${error ? theme.color.danger[900] : theme.color.border};
+        transition: box-shadow 0.2s;
+        ${
+          clickable && !error && !focus
+            ? `
+      &:hover {
+        box-shadow: inset 0 -1px 0 0 ${theme.color.borderHover};
+      }
+    `
+            : ``
+        }
+      `
+      : ``}
   &:hover ${FocusIndicator} {
     height: 2px;
   }
@@ -35,26 +51,45 @@ const FieldInside = styled.div`
   max-width: 800px;
   margin: 0 auto;
   position: relative;
-  ${({ inline, focus, theme }) =>
+  ${({ inline, focus, theme, error, icon, clickable }) =>
     inline
       ? ``
       : `
     padding: 1rem;
+    ${icon ? `padding-right: 3rem;` : ``}
     box-shadow: inset 0 0 0 ${focus ? 2 : 1}px ${
-          focus ? theme.color.primary['900'] : theme.color.border
+          error
+            ? theme.color.danger['900']
+            : focus
+            ? theme.color.primary['900']
+            : theme.color.border
         };
     border-radius: 8px;
     transition: 0.2s;
+    ${
+      clickable && !error && !focus
+        ? `
+      &:hover {
+        box-shadow: inset 0 0 0 1px ${theme.color.borderHover};
+      }
+    `
+        : ``
+    }
   `}
 `;
 const ChildrenWrap = styled.div`
   position: relative;
 `;
-
 const StyledLabel = styled(Label)`
   font-family: ${({ theme }) => theme.fontFamily};
   ${({ control }) => (control ? `flex: 1; margin: 0;` : ``)}
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)};
+  ${({ theme, error }) => (error ? `color: ${theme.color.danger['900']};` : ``)};
+`;
+const StyledIconButton = styled(IconButton)`
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
 `;
 
 const Field = ({
@@ -68,6 +103,9 @@ const Field = ({
   className,
   noBorder,
   insideStyle,
+  error,
+  icon,
+  clickable,
 }) => (
   <FieldWrap
     focus={focus}
@@ -75,6 +113,8 @@ const Field = ({
     inline={inline}
     className={className}
     noBorder={noBorder}
+    error={error}
+    clickable={clickable || !!onClick}
   >
     <FieldInside
       focus={focus}
@@ -83,19 +123,23 @@ const Field = ({
       onClick={onClick}
       clickable={!!onClick}
       style={insideStyle}
+      error={error}
+      icon={icon}
     >
       <StyledLabel
         control={control}
         inline={inline}
         htmlFor={labelTarget}
         focus={focus}
-        clickable={!!onClick}
+        clickable={clickable || !!onClick}
+        error={error}
       >
         {label}
       </StyledLabel>
       <ChildrenWrap>{children}</ChildrenWrap>
+      {icon && <StyledIconButton icon={icon} active={focus} />}
     </FieldInside>
-    {!noBorder && inline && <FocusIndicator focus={focus} />}
+    {!noBorder && inline && <FocusIndicator focus={focus} error={error} />}
   </FieldWrap>
 );
 

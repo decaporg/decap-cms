@@ -7,15 +7,9 @@ import { IconButton } from '../../Button';
 import { Menu } from '../../Menu';
 import DatepickerStyles from './DatepickerStyles';
 
-const StyledIconButton = styled(IconButton)`
-  position: absolute;
-  right: 0;
-  bottom: -0.5rem;
-`;
 const StyledMenu = styled(Menu)`
   padding: 0;
 `;
-
 const shortcuts = {
   Today: moment(),
   Yesterday: moment().subtract(1, 'days'),
@@ -27,7 +21,7 @@ const StyledDatetimePicker = styled(DatetimePicker)`
   background-color: transparent;
 `;
 
-const DateInput = ({ onChange, className, inline, ...props }) => {
+const DateInput = ({ onChange, ...props }) => {
   const [date, setDate] = useState(moment());
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -51,12 +45,9 @@ const DateInput = ({ onChange, className, inline, ...props }) => {
         readOnly
         value={date && date.format('YYYY-MM-DD HH:mm')}
         onClick={handleOpenMenu}
-        focused={!!anchorEl}
-        className={className}
-        inline={inline}
-      >
-        <StyledIconButton icon="calendar" active={!!anchorEl} />
-      </TextInput>
+        focus={!!anchorEl}
+        icon="calendar"
+      />
       <StyledMenu
         anchorOrigin={{ x: 'right', y: 'bottom' }}
         transformOrigin={{ x: 'right', y: 'top' }}

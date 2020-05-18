@@ -14,7 +14,13 @@ export default {
 };
 
 export const _DateInput = () => {
-  return <StyledDateInput label="Date Input Label" inline={boolean('inline', false)} />;
+  return (
+    <StyledDateInput
+      label="Date Input Label"
+      inline={boolean('inline', false)}
+      error={boolean('error', false)}
+    />
+  );
 };
 
 _DateInput.story = {

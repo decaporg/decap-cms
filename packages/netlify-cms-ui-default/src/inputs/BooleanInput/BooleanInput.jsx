@@ -2,15 +2,13 @@ import React from 'react';
 import Field from '../../Field';
 import ToggleSwitch from '../../ToggleSwitch';
 
-const BooleanInput = ({ name, label, onChange, className, children, value, inline }) => {
+const BooleanInput = ({ name, onChange, children, value, ...props }) => {
   return (
     <Field
-      label={label}
+      {...props}
       labelTarget={name}
       control
       onClick={() => (value ? onChange(false) : onChange(true))}
-      className={className}
-      inline={inline}
     >
       <ToggleSwitch
         onChange={() => (value && onChange ? onChange(false) : onChange(true))}

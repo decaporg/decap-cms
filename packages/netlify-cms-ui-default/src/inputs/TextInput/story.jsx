@@ -19,6 +19,7 @@ export const _TextInput = () => {
       label="Text Input Label"
       placeholder="Type something here"
       inline={boolean('inline', false)}
+      error={boolean('error', false)}
     />
   );
 };

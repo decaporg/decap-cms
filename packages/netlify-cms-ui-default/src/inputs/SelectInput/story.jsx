@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { withKnobs } from '@storybook/addon-knobs';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 
 import SelectInput from '.';
 
@@ -14,14 +14,17 @@ export default {
 };
 
 export const _SelectInput = () => {
-  const [category, setCategory] = useState();
+  const [categories, setCategories] = useState([]);
   return (
     <StyledSelectInput
       name="category"
       label="Categories"
       labelSingular="Category"
-      value={category}
-      onChange={category => setCategory(category)}
+      inline={boolean('inline', false)}
+      multiple={boolean('multiple', false)}
+      error={boolean('error', false)}
+      value={categories}
+      onChange={categories => setCategories(categories)}
       options={[
         { name: 'general', label: 'General' },
         { name: 'advice', label: 'Advice' },
