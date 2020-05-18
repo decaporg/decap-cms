@@ -441,21 +441,15 @@ export default class GitGateway implements Implementation {
     const { path, id } = displayURL as DisplayURLObject;
     const client = await this.getLargeMediaClient();
     if (client.enabled && client.matchPath(path)) {
-      return this.getLargeMediaDisplayURL({ path, id });
+      const largeMediaUrl = await this.getLargeMediaDisplayURL({ path, id });
+      return largeMediaUrl;
     }
     if (typeof displayURL === 'string') {
       return displayURL;
     }
-    if (this.backend!.getMediaDisplayURL) {
-      return this.backend!.getMediaDisplayURL(displayURL);
-    }
-    const err = new Error(
-      `getMediaDisplayURL is not implemented by the ${this.backendType} backend, but the backend returned a displayURL which was not a string!`,
-    ) as Error & {
-      displayURL: DisplayURL;
-    };
-    err.displayURL = displayURL;
-    return Promise.reject(err);
+
+    const url = await this.backend!.getMediaDisplayURL(displayURL);
+    return url;
   }
 
   async getMediaFile(path: string) {
