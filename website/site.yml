@@ -4,7 +4,7 @@ menu:
       title: Intro to Netlify CMS
     - name: accounts
       title: Account Settings
-    - name: config
+    - name: configuration
       title: Configuring your Site
     - name: media
       title: Media
