@@ -10,6 +10,7 @@ export { default as it } from './it';
 export { default as ja } from './ja';
 export { default as nl } from './nl';
 export { default as nb_no } from './nb_no';
+export { default as nn_no } from './nn_no';
 export { default as pl } from './pl';
 export { default as pt } from './pt';
 export { default as ru } from './ru';
