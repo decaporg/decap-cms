@@ -362,6 +362,16 @@ describe('Relation widget', () => {
     });
   });
 
+  it('should default displayFields to valueField', async () => {
+    const field = fromJS(fieldConfig).delete('displayFields');
+    const { getAllByText, input } = setup({ field });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+    await wait(() => {
+      expect(getAllByText(/^Post # (\d{1,2})$/)).toHaveLength(20);
+    });
+  });
+
   describe('with multiple', () => {
     it('should call onChange with correct selectedItem value and metadata', async () => {
       const field = fromJS({ ...fieldConfig, multiple: true });
