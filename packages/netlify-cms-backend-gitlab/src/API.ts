@@ -659,13 +659,13 @@ export default class API {
     );
     const label = mergeRequest.labels.find(isCMSLabel) as string;
     const status = labelToStatus(label);
-    const timestamp = mergeRequest.updated_at;
+    const updatedAt = mergeRequest.updated_at;
     return {
       collection,
       slug,
       status,
       diffs: diffsWithIds,
-      timestamp,
+      updatedAt,
     };
   }
 

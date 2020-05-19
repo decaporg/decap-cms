@@ -35,7 +35,7 @@ export interface UnpublishedEntry {
   collection: string;
   status: string;
   diffs: { id: string; path: string; newFile: boolean }[];
-  timestamp: string;
+  updatedAt: string;
 }
 
 export interface Map {

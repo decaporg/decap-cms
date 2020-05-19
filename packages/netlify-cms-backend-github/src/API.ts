@@ -581,13 +581,13 @@ export default class API {
     const diffs = files.map(diffFromFile);
     const label = pullRequest.labels.find(l => isCMSLabel(l.name)) as { name: string };
     const status = labelToStatus(label.name);
-    const timestamp = pullRequest.updated_at;
+    const updatedAt = pullRequest.updated_at;
     return {
       collection,
       slug,
       status,
       diffs: diffs.map(d => ({ path: d.path, newFile: d.newFile, id: d.sha })),
-      timestamp,
+      updatedAt,
     };
   }
 

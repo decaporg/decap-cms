@@ -155,7 +155,7 @@ describe('github backend implementation', () => {
         slug: 'slug',
         status: 'draft',
         diffs: [],
-        timestamp: 'timestamp',
+        updatedAt: 'updatedAt',
       };
       retrieveUnpublishedEntryData.mockResolvedValue(data);
 

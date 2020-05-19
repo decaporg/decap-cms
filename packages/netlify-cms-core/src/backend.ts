@@ -683,7 +683,7 @@ export class Backend {
       isModification: !newFile,
       label: collection && selectFileEntryLabel(collection, slug),
       mediaFiles,
-      updatedOn: entryData.timestamp,
+      updatedOn: entryData.updatedAt,
       status: entryData.status,
       meta: { path: prepareMetaPath(path, collection) },
     });

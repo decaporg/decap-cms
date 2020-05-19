@@ -687,7 +687,7 @@ export default class API {
     const diffs = await this.getDifferences(branch);
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label);
-    const timestamp = pullRequest.updated_on;
+    const updatedAt = pullRequest.updated_on;
     return {
       collection,
       slug,
@@ -696,7 +696,7 @@ export default class API {
       diffs: diffs
         .filter(d => d.status !== 'deleted')
         .map(d => ({ path: d.path, newFile: d.newFile, id: '' })),
-      timestamp,
+      updatedAt,
     };
   }
 

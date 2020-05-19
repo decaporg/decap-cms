@@ -204,7 +204,7 @@ class WorkflowList extends React.Component {
     return (
       <div>
         {entries.map(entry => {
-          const timestamp = moment(entry.get('timestamp')).format(
+          const timestamp = moment(entry.get('updatedOn')).format(
             t('workflow.workflow.dateFormat'),
           );
           const slug = entry.get('slug');

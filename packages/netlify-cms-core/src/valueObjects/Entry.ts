@@ -7,7 +7,6 @@ interface Options {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   label?: string | null;
-  metaData?: unknown | null;
   isModification?: boolean | null;
   mediaFiles?: MediaFile[] | null;
   author?: string;
