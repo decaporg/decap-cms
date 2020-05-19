@@ -88,8 +88,8 @@ const StyledLabel = styled(Label)`
 `;
 const StyledIconButton = styled(IconButton)`
   position: absolute;
-  right: 0.5rem;
-  bottom: 0.5rem;
+  right: ${({ inline }) => (inline ? 0 : 0.5)}rem;
+  bottom: ${({ inline }) => (inline ? 0 : 0.5)}rem;
 `;
 
 const Field = ({
@@ -121,7 +121,6 @@ const Field = ({
       control={control}
       inline={inline}
       onClick={onClick}
-      clickable={!!onClick}
       style={insideStyle}
       error={error}
       icon={icon}
@@ -138,7 +137,7 @@ const Field = ({
         {label}
       </StyledLabel>
       <ChildrenWrap>{children}</ChildrenWrap>
-      {icon && <StyledIconButton icon={icon} active={focus} />}
+      {icon && <StyledIconButton icon={icon} active={focus} inline={inline} />}
     </FieldInside>
     {!noBorder && inline && <FocusIndicator focus={focus} error={error} />}
   </FieldWrap>
