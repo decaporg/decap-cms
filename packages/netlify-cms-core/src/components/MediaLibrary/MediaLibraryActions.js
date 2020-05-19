@@ -10,7 +10,6 @@ const styles = {
     ${buttons.button};
     ${buttons.default};
     display: inline-block;
-    margin-left: 15px;
     margin-right: 2px;
 
     &[disabled] {
@@ -54,6 +53,7 @@ const StyledUploadButton = styled(FileUploadButton)`
 const DeleteButton = styled.button`
   ${styles.button};
   ${buttons.lightRed};
+  margin-right: 15px;
 `;
 
 const InsertButton = styled.button`
@@ -65,6 +65,7 @@ const DownloadButton = styled.button`
   ${styles.button};
   background-color: ${colors.button};
   color: ${colors.buttonText};
+  margin-right: 15px;
 
   ${props =>
     props.focused === true &&
@@ -77,7 +78,10 @@ const DownloadButton = styled.button`
     `}
 `;
 
-const UpperActionsContainer = styled.div``;
+const UpperActionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
 const LowerActionsContainer = styled.div`
   margin-top: 30px;
