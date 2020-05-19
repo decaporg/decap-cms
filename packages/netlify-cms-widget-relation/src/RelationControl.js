@@ -155,7 +155,7 @@ export default class RelationControl extends React.Component {
   parseHitOptions = hits => {
     const { field } = this.props;
     const valueField = field.get('valueField');
-    const displayField = field.get('displayFields') || List(field.get('valueField'));
+    const displayField = field.get('displayFields') || List([field.get('valueField')]);
 
     const options = hits.reduce((acc, hit) => {
       const valuesPaths = expandPath({ data: hit.data, path: valueField });
