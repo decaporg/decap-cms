@@ -3,6 +3,7 @@ import { fromJS, Map } from 'immutable';
 import { last } from 'lodash';
 import { render, fireEvent, wait } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
+import { expandPath } from '../RelationControl';
 
 const RelationControl = NetlifyCmsWidgetRelation.controlComponent;
 
@@ -81,6 +82,27 @@ const generateHits = length => {
   ];
 };
 
+const simpleFileCollectionHits = [{ data: { categories: ['category 1', 'category 2'] } }];
+
+const nestedFileCollectionHits = [
+  {
+    data: {
+      nested: {
+        categories: [
+          {
+            name: 'category 1',
+            id: 'cat1',
+          },
+          {
+            name: 'category 2',
+            id: 'cat2',
+          },
+        ],
+      },
+    },
+  },
+];
+
 class RelationController extends React.Component {
   state = {
     value: this.props.value,
@@ -98,7 +120,12 @@ class RelationController extends React.Component {
 
   query = jest.fn((...args) => {
     const queryHits = generateHits(25);
-    if (last(args) === 'YAML') {
+
+    if (last(args) === 'nested_file') {
+      return Promise.resolve({ payload: { response: { hits: nestedFileCollectionHits } } });
+    } else if (last(args) === 'simple_file') {
+      return Promise.resolve({ payload: { response: { hits: simpleFileCollectionHits } } });
+    } else if (last(args) === 'YAML') {
       return Promise.resolve({ payload: { response: { hits: [last(queryHits)] } } });
     } else if (last(args) === 'Nested') {
       return Promise.resolve({
@@ -159,6 +186,68 @@ function setup({ field, value }) {
     input,
   };
 }
+
+describe('expandPath', () => {
+  it('should expand wildcard paths', () => {
+    const data = {
+      categories: [
+        {
+          name: 'category 1',
+        },
+        {
+          name: 'category 2',
+        },
+      ],
+    };
+
+    expect(expandPath({ data, path: 'categories.*.name' })).toEqual([
+      'categories.0.name',
+      'categories.1.name',
+    ]);
+  });
+
+  it('should handle wildcard at the end of the path', () => {
+    const data = {
+      nested: {
+        otherNested: {
+          list: [
+            {
+              title: 'title 1',
+              nestedList: [{ description: 'description 1' }, { description: 'description 2' }],
+            },
+            {
+              title: 'title 2',
+              nestedList: [{ description: 'description 2' }, { description: 'description 2' }],
+            },
+          ],
+        },
+      },
+    };
+
+    expect(expandPath({ data, path: 'nested.otherNested.list.*.nestedList.*' })).toEqual([
+      'nested.otherNested.list.0.nestedList.0',
+      'nested.otherNested.list.0.nestedList.1',
+      'nested.otherNested.list.1.nestedList.0',
+      'nested.otherNested.list.1.nestedList.1',
+    ]);
+  });
+
+  it('should handle non wildcard index', () => {
+    const data = {
+      categories: [
+        {
+          name: 'category 1',
+        },
+        {
+          name: 'category 2',
+        },
+      ],
+    };
+    const path = 'categories.0.name';
+
+    expect(expandPath({ data, path })).toEqual(['categories.0.name']);
+  });
+});
 
 describe('Relation widget', () => {
   it('should list the first 20 option hits on initial load', async () => {
@@ -316,6 +405,45 @@ describe('Relation widget', () => {
         expect(onChangeSpy).toHaveBeenCalledTimes(2);
         expect(onChangeSpy).toHaveBeenCalledWith(value, metadata1);
         expect(onChangeSpy).toHaveBeenCalledWith(value, metadata2);
+      });
+    });
+  });
+
+  describe('with file collection', () => {
+    const fileFieldConfig = {
+      name: 'categories',
+      collection: 'file',
+      file: 'simple_file',
+      valueField: 'categories.*',
+      displayFields: ['categories.*'],
+    };
+
+    it('should handle simple list', async () => {
+      const field = fromJS(fileFieldConfig);
+      const { getAllByText, input, getByText } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await wait(() => {
+        expect(getAllByText(/category/)).toHaveLength(2);
+        expect(getByText('category 1')).toBeInTheDocument();
+        expect(getByText('category 2')).toBeInTheDocument();
+      });
+    });
+
+    it('should handle nested list', async () => {
+      const field = fromJS({
+        ...fileFieldConfig,
+        file: 'nested_file',
+        valueField: 'nested.categories.*.id',
+        displayFields: ['nested.categories.*.name'],
+      });
+      const { getAllByText, input, getByText } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await wait(() => {
+        expect(getAllByText(/category/)).toHaveLength(2);
+        expect(getByText('category 1')).toBeInTheDocument();
+        expect(getByText('category 2')).toBeInTheDocument();
       });
     });
   });
