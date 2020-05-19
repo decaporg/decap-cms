@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.6...netlify-cms-widget-list@2.5.0) (2020-05-19)
+
+
+### Features
+
+* **netlify-cms-widget-list:** allow 'summary' field ([#3616](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/3616)) ([7cc4c89](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/7cc4c89539ddbd410ec7a1767c66f04e8d711cc5))
+* **widget-list:** add hiding list content with minimize_collapsed option ([#3607](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/3607)) ([4dd58c5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/4dd58c5dcb22f4c0456a36d6c38883b54d8a7c4d))
+
+
+
+
+
 ## [2.4.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.4.4...netlify-cms-widget-list@2.4.6) (2020-05-04)
 
 **Note:** Version bump only for package netlify-cms-widget-list

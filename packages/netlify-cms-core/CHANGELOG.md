@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.27.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.26.0...netlify-cms-core@2.27.0) (2020-05-19)
+
+
+### Bug Fixes
+
+* allow setting an empty array as default for complex lists ([#3746](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3746)) ([6042383](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6042383b9db696902f34636f12f44cbfea30562e))
+* delete new entry backup ([#3645](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3645)) ([334304e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/334304ed5262bfa10fec56fda1381bd27f096a49))
+* **deps:** update dependency @iarna/toml to v2.2.5 ([#3736](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3736)) ([6bead5c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6bead5c6b20c7413b2fd66336b309283555e56f1))
+
+
+### Features
+
+* improve search to target single collections ([#3760](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3760)) ([588622a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/588622adb23df53f9a26914446b0982eddf8f15c))
+
+
+
+
+
 # [2.26.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.25.0...netlify-cms-core@2.26.0) (2020-05-04)
 
 

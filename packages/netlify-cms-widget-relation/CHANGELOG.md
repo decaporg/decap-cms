@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.6.0...netlify-cms-widget-relation@2.7.0) (2020-05-19)
+
+
+### Bug Fixes
+
+* **widget-relation:** fix displayFields default ([#3783](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/3783)) ([24d96a7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/24d96a760a26f043468cd3e7af28ad3adc6c283a))
+
+
+### Features
+
+* **widget-relation:** target file collections ([#3754](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/3754)) ([2f435f8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/2f435f875bc139af345080eb8cca6146d27c10f6))
+
+
+
+
+
 # [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.5.2...netlify-cms-widget-relation@2.6.0) (2020-05-04)
 
 

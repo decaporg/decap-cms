@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.9.3...netlify-cms-lib-util@2.9.4) (2020-05-19)
+
+
+### Bug Fixes
+
+* clear fetch timeout on successful response ([#3768](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/3768)) ([088b1a8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/088b1a8ab626498382d6305fa46d174d4f5ba755))
+
+
+
+
+
 ## [2.9.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.9.2...netlify-cms-lib-util@2.9.3) (2020-04-21)
 
 **Note:** Version bump only for package netlify-cms-lib-util

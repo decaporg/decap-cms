@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.2.6...netlify-cms-proxy-server@1.2.7) (2020-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency simple-git to v2 ([#3730](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/3730)) ([1c7ef1c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/1c7ef1c457612242257d96af53a57c1460e45b31))
+
+
+
+
+
 ## [1.2.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.2.5...netlify-cms-proxy-server@1.2.6) (2020-04-21)
 
 **Note:** Version bump only for package netlify-cms-proxy-server

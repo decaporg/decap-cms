@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.1.4...netlify-cms-widget-code@1.1.5) (2020-05-19)
+
+
+### Bug Fixes
+
+* **widget-code:** change dynamic import to require ([#3745](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/issues/3745)) ([3d7d5d2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/commit/3d7d5d2e677fa0bb2bd6e2a65df302053ba4d159))
+
+
+
+
+
 ## [1.1.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.1.3...netlify-cms-widget-code@1.1.4) (2020-03-30)
 
 **Note:** Version bump only for package netlify-cms-widget-code

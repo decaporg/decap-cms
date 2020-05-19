@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.5.0...netlify-cms-widget-date@2.5.1) (2020-05-19)
+
+
+### Bug Fixes
+
+* **date:** allow default value to Date field ([#3740](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/3740)) ([8ab2a60](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/8ab2a6036be99c397c7d2fcb4ad3ebaeba549546))
+
+
+
+
+
 # [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.4.0...netlify-cms-widget-date@2.5.0) (2020-04-07)
 
 
