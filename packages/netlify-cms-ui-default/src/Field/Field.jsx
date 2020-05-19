@@ -21,7 +21,7 @@ const FieldWrap = styled.div`
   ${({ inline }) =>
     inline
       ? `
-    padding: 1rem;
+    padding: 0 1rem;
       `
       : ``}
   position: relative;
@@ -53,7 +53,7 @@ const FieldInside = styled.div`
   position: relative;
   ${({ inline, focus, theme, error, icon, clickable }) =>
     inline
-      ? ``
+      ? `padding: 1rem 0;`
       : `
     padding: 1rem;
     ${icon ? `padding-right: 3rem;` : ``}
@@ -89,7 +89,7 @@ const StyledLabel = styled(Label)`
 const StyledIconButton = styled(IconButton)`
   position: absolute;
   right: ${({ inline }) => (inline ? 0 : 0.5)}rem;
-  bottom: ${({ inline }) => (inline ? 0 : 0.5)}rem;
+  bottom: 0.5rem;
 `;
 
 const Field = ({

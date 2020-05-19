@@ -93,7 +93,7 @@ const StyledForm = styled.form`
 `;
 const StyledTextInput = styled(TextInput)`
   margin: 0 -1.5rem;
-  padding: 1rem 1.75rem;
+  padding: 0 1.75rem;
   ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
     margin: 0 -1rem;
     padding: 1rem 1.25rem;
