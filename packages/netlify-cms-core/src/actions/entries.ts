@@ -903,15 +903,13 @@ export function validateMetaField(
       return getPathError(value, 'invalidPath', t);
     }
 
-    const customPath =
-      selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } })) || '';
+    const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } }));
+    const existingEntry = customPath
+      ? selectEntryByPath(state.entries, collection.get('name'), customPath)
+      : undefined;
 
-    const existingEntry =
-      customPath && selectEntryByPath(state.entries, collection.get('name'), customPath);
-
-    const existingEntryPath = existingEntry && existingEntry.get('path');
-    const entryDraft = state.entryDraft;
-    const draftPath = entryDraft && entryDraft.getIn(['entry', 'path']);
+    const existingEntryPath = existingEntry?.get('path');
+    const draftPath = state.entryDraft?.getIn(['entry', 'path']);
 
     if (existingEntryPath && existingEntryPath !== draftPath) {
       return getPathError(value, 'pathExists', t);
