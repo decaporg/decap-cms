@@ -29,8 +29,16 @@ const viewFilters = {
     properties: {
       label: { type: 'string' },
       field: { type: 'string' },
-      pattern: { type: 'string' },
+      pattern: {
+        oneOf: [
+          { type: 'boolean' },
+          {
+            type: 'string',
+          },
+        ],
+      },
     },
+    additionalProperties: false,
     required: ['label', 'field', 'pattern'],
   },
 };

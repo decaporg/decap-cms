@@ -32,11 +32,11 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
       {viewFilters.map(viewFilter => {
         return (
           <DropdownCheckedItem
-            key={viewFilter.field}
+            key={viewFilter.id}
             label={viewFilter.label}
-            id={viewFilter.field}
-            checked={filter.get(viewFilter.field, false)}
-            onClick={() => onFilterClick(viewFilter.field)}
+            id={viewFilter.id}
+            checked={filter.getIn([viewFilter.id, 'active'], false)}
+            onClick={() => onFilterClick(viewFilter)}
           />
         );
       })}

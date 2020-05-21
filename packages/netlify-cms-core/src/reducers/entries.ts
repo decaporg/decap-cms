@@ -11,7 +11,9 @@ import {
   SORT_ENTRIES_REQUEST,
   SORT_ENTRIES_SUCCESS,
   SORT_ENTRIES_FAILURE,
-  FILTER_ENTRIES,
+  FILTER_ENTRIES_REQUEST,
+  FILTER_ENTRIES_SUCCESS,
+  FILTER_ENTRIES_FAILURE,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
@@ -31,17 +33,23 @@ import {
   EntryField,
   CollectionFiles,
   EntriesSortRequestPayload,
-  EntriesSortSuccessPayload,
   EntriesSortFailurePayload,
   SortMap,
   SortObject,
   Sort,
   SortDirection,
   Filter,
+  FilterMap,
+  EntriesFilterRequestPayload,
+  EntriesFilterFailurePayload,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once, sortBy, set } from 'lodash';
+import { trim, once, sortBy, set, orderBy } from 'lodash';
+import { selectSortDataPath } from './collections';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
+const { keyToPathArray } = stringTemplate;
 
 let collection: string;
 let loadedEntries: EntryObject[];
@@ -205,8 +213,9 @@ const entries = (
       return newState;
     }
 
+    case FILTER_ENTRIES_SUCCESS:
     case SORT_ENTRIES_SUCCESS: {
-      const payload = action.payload as EntriesSortSuccessPayload;
+      const payload = action.payload as { collection: string; entries: EntryObject[] };
       const { collection, entries } = payload;
       loadedEntries = entries;
       const newState = state.withMutations(map => {
@@ -240,12 +249,25 @@ const entries = (
       return newState;
     }
 
-    case FILTER_ENTRIES: {
-      const payload = action.payload as { key: string; collection: string };
-      const { collection, key } = payload;
+    case FILTER_ENTRIES_REQUEST: {
+      const payload = action.payload as EntriesFilterRequestPayload;
+      const { collection, filter } = payload;
       const newState = state.withMutations(map => {
-        const current = map.getIn(['filter', collection, key]);
-        map.setIn(['filter', collection, key], !current);
+        const current: FilterMap = map.getIn(['filter', collection, filter.id], fromJS(filter));
+        map.setIn(
+          ['filter', collection, current.get('id')],
+          current.set('active', !current.get('active')),
+        );
+      });
+      return newState;
+    }
+
+    case FILTER_ENTRIES_FAILURE: {
+      const payload = action.payload as EntriesFilterFailurePayload;
+      const { collection, filter } = payload;
+      const newState = state.withMutations(map => {
+        map.deleteIn(['filter', collection, filter.id]);
+        map.setIn(['pages', collection, 'isFetching'], false);
       });
       return newState;
     }
@@ -272,6 +294,17 @@ export const selectEntriesSortFields = (entries: Entries, collection: string) =>
       ?.valueSeq()
       .filter(v => v?.get('direction') !== SortDirection.None)
       .toArray() || [];
+
+  return values;
+};
+
+export const selectEntriesFilterFields = (entries: Entries, collection: string) => {
+  const filter = selectEntriesFilter(entries, collection);
+  const values =
+    filter
+      ?.valueSeq()
+      .filter(v => v?.get('active') === true)
+      .toArray() || [];
   return values;
 };
 
@@ -281,10 +314,39 @@ export const selectEntry = (state: Entries, collection: string, slug: string) =>
 export const selectPublishedSlugs = (state: Entries, collection: string) =>
   state.getIn(['pages', collection, 'ids'], List<string>());
 
-export const selectEntries = (state: Entries, collection: string) => {
-  const slugs = selectPublishedSlugs(state, collection);
-  const entries =
-    slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
+export const selectEntries = (state: Entries, collection: Collection) => {
+  const collectionName = collection.get('name');
+  const slugs = selectPublishedSlugs(state, collectionName);
+  let entries =
+    slugs &&
+    (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
+
+  const sortFields = selectEntriesSortFields(state, collectionName);
+  if (sortFields && sortFields.length > 0) {
+    const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));
+    const orders = sortFields.map(v =>
+      v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
+    );
+    entries = fromJS(orderBy(entries.toJS(), keys, orders));
+  }
+
+  const filters = selectEntriesFilterFields(state, collectionName);
+  if (filters && filters.length > 0) {
+    entries = entries
+      .filter(e => {
+        const allMatched = filters.every(f => {
+          const pattern = f.get('pattern');
+          const field = f.get('field');
+          const data = e!.get('data') || Map();
+          const toMatch = data.getIn(keyToPathArray(field));
+          const matched =
+            toMatch !== undefined && new RegExp(String(pattern)).test(String(toMatch));
+          return matched;
+        });
+        return allMatched;
+      })
+      .toList();
+  }
 
   return entries;
 };
