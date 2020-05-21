@@ -53,8 +53,10 @@ describe('NestedCollection', () => {
   it('should render correctly with nested entries', () => {
     const entries = fromJS([
       { path: 'src/pages/index.md', data: { title: 'Root' } },
-      { path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { path: 'src/pages/dir2/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { path: 'src/pages/b/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/a/index.md', data: { title: 'File 3' } },
+      { path: 'src/pages/b/a/index.md', data: { title: 'File 4' } },
     ]);
     const { asFragment, getByTestId } = render(
       <MemoryRouter>
@@ -65,11 +67,11 @@ describe('NestedCollection', () => {
     // expand the tree
     fireEvent.click(getByTestId('/'));
 
-    expect(getByTestId('/dir1')).toHaveTextContent('File 1');
-    expect(getByTestId('/dir1')).toHaveAttribute('href', '/collections/pages/filter/dir1');
+    expect(getByTestId('/a')).toHaveTextContent('File 1');
+    expect(getByTestId('/a')).toHaveAttribute('href', '/collections/pages/filter/a');
 
-    expect(getByTestId('/dir2')).toHaveTextContent('File 2');
-    expect(getByTestId('/dir2')).toHaveAttribute('href', '/collections/pages/filter/dir2');
+    expect(getByTestId('/b')).toHaveTextContent('File 2');
+    expect(getByTestId('/b')).toHaveAttribute('href', '/collections/pages/filter/b');
 
     expect(asFragment()).toMatchSnapshot();
   });
@@ -77,8 +79,10 @@ describe('NestedCollection', () => {
   it('should keep expanded nodes on re-render', () => {
     const entries = fromJS([
       { path: 'src/pages/index.md', data: { title: 'Root' } },
-      { path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { path: 'src/pages/b/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/a/index.md', data: { title: 'File 3' } },
+      { path: 'src/pages/b/a/index.md', data: { title: 'File 4' } },
     ]);
     const { getByTestId, rerender } = render(
       <MemoryRouter>
@@ -87,15 +91,18 @@ describe('NestedCollection', () => {
     );
 
     fireEvent.click(getByTestId('/'));
-    fireEvent.click(getByTestId('/dir1'));
+    fireEvent.click(getByTestId('/a'));
 
-    expect(getByTestId('/dir1/dir2')).toHaveTextContent('File 2');
+    expect(getByTestId('/a')).toHaveTextContent('File 1');
 
     const newEntries = fromJS([
       { path: 'src/pages/index.md', data: { title: 'Root' } },
-      { path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
-      { path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
+      { path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { path: 'src/pages/b/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/a/index.md', data: { title: 'File 3' } },
+      { path: 'src/pages/b/a/index.md', data: { title: 'File 4' } },
+      { path: 'src/pages/c/index.md', data: { title: 'File 5' } },
+      { path: 'src/pages/c/a/index.md', data: { title: 'File 6' } },
     ]);
 
     rerender(
@@ -104,14 +111,15 @@ describe('NestedCollection', () => {
       </MemoryRouter>,
     );
 
-    expect(getByTestId('/dir1/dir2')).toHaveTextContent('File 2');
+    expect(getByTestId('/a')).toHaveTextContent('File 1');
   });
 
   it('should expand nodes based on filterTerm', () => {
     const entries = fromJS([
       { path: 'src/pages/index.md', data: { title: 'Root' } },
-      { path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { path: 'src/pages/a/a/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/a/a/index.md', data: { title: 'File 3' } },
     ]);
 
     const { getByTestId, queryByTestId, rerender } = render(
@@ -120,22 +128,23 @@ describe('NestedCollection', () => {
       </MemoryRouter>,
     );
 
-    expect(queryByTestId('/dir1/dir2')).toBeNull();
+    expect(queryByTestId('/a/a')).toBeNull();
 
     rerender(
       <MemoryRouter>
-        <NestedCollection collection={collection} entries={entries} filterTerm={'dir1/dir2'} />
+        <NestedCollection collection={collection} entries={entries} filterTerm={'a/a'} />
       </MemoryRouter>,
     );
 
-    expect(getByTestId('/dir1/dir2')).toHaveTextContent('File 2');
+    expect(getByTestId('/a/a')).toHaveTextContent('File 2');
   });
 
   it('should ignore filterTerm once a user toggles an node', () => {
     const entries = fromJS([
       { path: 'src/pages/index.md', data: { title: 'Root' } },
-      { path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { path: 'src/pages/a/a/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/a/a/index.md', data: { title: 'File 3' } },
     ]);
 
     const { getByTestId, queryByTestId, rerender } = render(
@@ -146,32 +155,34 @@ describe('NestedCollection', () => {
 
     rerender(
       <MemoryRouter>
-        <NestedCollection collection={collection} entries={entries} filterTerm={'dir1/dir2'} />
+        <NestedCollection collection={collection} entries={entries} filterTerm={'a/a'} />
       </MemoryRouter>,
     );
 
-    expect(getByTestId('/dir1/dir2')).toHaveTextContent('File 2');
-    fireEvent.click(getByTestId('/dir1'));
+    expect(getByTestId('/a/a')).toHaveTextContent('File 2');
+
+    fireEvent.click(getByTestId('/a'));
 
     rerender(
       <MemoryRouter>
         <NestedCollection
           collection={collection}
           entries={fromJS(entries.toJS())}
-          filterTerm={'dir1/dir2'}
+          filterTerm={'a/a'}
         />
       </MemoryRouter>,
     );
 
-    expect(queryByTestId('/dir1/dir2')).toBeNull();
+    expect(queryByTestId('/a/a')).toBeNull();
   });
 
   it('should not collapse an unselected node when clicked', () => {
     const entries = fromJS([
       { path: 'src/pages/index.md', data: { title: 'Root' } },
-      { path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
-      { path: 'src/pages/dir1/dir2/dir3/index.md', data: { title: 'File 3' } },
+      { path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { path: 'src/pages/a/a/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/a/a/index.md', data: { title: 'File 3' } },
+      { path: 'src/pages/a/a/a/a/index.md', data: { title: 'File 4' } },
     ]);
 
     const { getByTestId } = render(
@@ -181,19 +192,21 @@ describe('NestedCollection', () => {
     );
 
     fireEvent.click(getByTestId('/'));
-    fireEvent.click(getByTestId('/dir1'));
-    fireEvent.click(getByTestId('/dir1/dir2'));
+    fireEvent.click(getByTestId('/a'));
+    fireEvent.click(getByTestId('/a/a'));
 
-    expect(getByTestId('/dir1')).toHaveTextContent('File 1');
-    fireEvent.click(getByTestId('/dir1'));
-    expect(getByTestId('/dir1')).toHaveTextContent('File 1');
+    expect(getByTestId('/a/a')).toHaveTextContent('File 2');
+    fireEvent.click(getByTestId('/a'));
+    expect(getByTestId('/a/a')).toHaveTextContent('File 2');
   });
 
   it('should collapse a selected node when clicked', () => {
     const entries = fromJS([
       { path: 'src/pages/index.md', data: { title: 'Root' } },
-      { path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { path: 'src/pages/a/a/index.md', data: { title: 'File 2' } },
+      { path: 'src/pages/a/a/a/index.md', data: { title: 'File 3' } },
+      { path: 'src/pages/a/a/a/a/index.md', data: { title: 'File 4' } },
     ]);
 
     const { getByTestId, queryByTestId } = render(
@@ -203,18 +216,21 @@ describe('NestedCollection', () => {
     );
 
     fireEvent.click(getByTestId('/'));
-    fireEvent.click(getByTestId('/dir1'));
+    fireEvent.click(getByTestId('/a'));
+    fireEvent.click(getByTestId('/a/a'));
 
-    expect(getByTestId('/dir1/dir2')).toHaveTextContent('File 2');
-    fireEvent.click(getByTestId('/dir1'));
-    expect(queryByTestId('/dir1/dir2')).toBeNull();
+    expect(getByTestId('/a/a/a')).toHaveTextContent('File 3');
+    fireEvent.click(getByTestId('/a/a'));
+    expect(queryByTestId('/a/a/a')).toBeNull();
   });
 
   it('should render connected component', () => {
     const entriesArray = [
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
-      { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { slug: 'dir2/index', path: 'src/pages/dir2/index.md', data: { title: 'File 2' } },
+      { slug: 'a/index', path: 'src/pages/a/index.md', data: { title: 'File 1' } },
+      { slug: 'b/index', path: 'src/pages/b/index.md', data: { title: 'File 2' } },
+      { slug: 'a/a/index', path: 'src/pages/a/a/index.md', data: { title: 'File 3' } },
+      { slug: 'b/a/index', path: 'src/pages/b/a/index.md', data: { title: 'File 4' } },
     ];
     const entries = entriesArray.reduce(
       (acc, entry) => {
@@ -237,11 +253,11 @@ describe('NestedCollection', () => {
     // expand the root
     fireEvent.click(getByTestId('/'));
 
-    expect(getByTestId('/dir1')).toHaveTextContent('File 1');
-    expect(getByTestId('/dir1')).toHaveAttribute('href', '/collections/pages/filter/dir1');
+    expect(getByTestId('/a')).toHaveTextContent('File 1');
+    expect(getByTestId('/a')).toHaveAttribute('href', '/collections/pages/filter/a');
 
-    expect(getByTestId('/dir2')).toHaveTextContent('File 2');
-    expect(getByTestId('/dir2')).toHaveAttribute('href', '/collections/pages/filter/dir2');
+    expect(getByTestId('/b')).toHaveTextContent('File 2');
+    expect(getByTestId('/b')).toHaveAttribute('href', '/collections/pages/filter/b');
 
     expect(asFragment()).toMatchSnapshot();
   });

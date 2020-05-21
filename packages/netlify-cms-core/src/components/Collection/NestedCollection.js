@@ -48,7 +48,8 @@ const TreeNode = props => {
   const collectionName = collection.get('name');
 
   return treeData.map(node => {
-    if (!node.isDir) {
+    const leaf = node.children.length <= 1 && !node.children[0]?.isDir && depth > 0;
+    if (leaf) {
       return null;
     }
     let to = `/collections/${collectionName}`;
@@ -57,7 +58,8 @@ const TreeNode = props => {
     }
     const title =
       depth > 0 ? node.children.find(c => !c.isDir && c.title)?.title || node.title : node.title;
-    const leaf = node.children.length <= 1 && !node.children[0]?.isDir && depth > 0;
+
+    const showChevron = depth === 0 || node.children.some(c => c.children.some(c => c.isDir));
     return (
       <React.Fragment key={node.path}>
         <TreeNavLink
@@ -71,12 +73,12 @@ const TreeNode = props => {
           <Icon type="write" />
           <StyledDiv>
             {title}
-            {leaf ? null : (
+            {showChevron && (
               <Icon type="chevron" size="small" direction={node.expanded ? 'down' : 'right'} />
             )}
           </StyledDiv>
         </TreeNavLink>
-        {node.expanded && !leaf && (
+        {node.expanded && (
           <TreeNode
             collection={collection}
             depth={depth + 1}

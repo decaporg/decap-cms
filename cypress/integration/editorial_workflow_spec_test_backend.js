@@ -216,11 +216,11 @@ describe('Test Backend Editorial Workflow', () => {
     inGrid(() => cy.contains('a', 'Sub Directory'));
     inGrid(() => cy.contains('a', 'Another Sub Directory'));
 
-    inSidebar(() => cy.contains('a', 'Another Sub Directory').click());
-    cy.contains('No Entries');
+    inSidebar(() => cy.contains('a', 'Sub Directory').click());
+    inGrid(() => cy.contains('a', 'Nested Directory'));
     cy.url().should(
       'eq',
-      'http://localhost:8080/#/collections/pages/filter/directory/another-sub-directory',
+      'http://localhost:8080/#/collections/pages/filter/directory/sub-directory',
     );
 
     inSidebar(() => cy.contains('a', 'Pages').click());
@@ -247,10 +247,10 @@ describe('Test Backend Editorial Workflow', () => {
 
     inSidebar(() => cy.contains('a', 'Pages').click());
     inSidebar(() => cy.contains('a', 'Directory').click());
-    inSidebar(() => cy.contains('a', 'Another Sub Directory').click());
+    inSidebar(() => cy.contains('a', 'Sub Directory').click());
     cy.contains('a', 'New Page').click();
 
-    cy.get('[id^="path-field"]').should('have.value', 'directory/another-sub-directory');
+    cy.get('[id^="path-field"]').should('have.value', 'directory/sub-directory');
     cy.get('[id^="path-field"]').type('/new-path');
     cy.get('[id^="title-field"]').type('New Path Title');
     cy.clock().then(clock => {
@@ -273,7 +273,7 @@ describe('Test Backend Editorial Workflow', () => {
 
     inSidebar(() => cy.contains('a', 'Pages').click());
     inSidebar(() => cy.contains('a', 'Directory').click());
-    inSidebar(() => cy.contains('a', 'Another Sub Directory').click());
+    inSidebar(() => cy.contains('a', 'Sub Directory').click());
 
     cy.contains('a', 'New Page').click();
     cy.get('[id^="title-field"]').type('New Path Title');
@@ -283,7 +283,7 @@ describe('Test Backend Editorial Workflow', () => {
     cy.contains('button', 'Save').click();
 
     assertFieldValidationError({
-      message: `Path 'directory/another-sub-directory' already exists`,
+      message: `Path 'directory/sub-directory' already exists`,
       fieldLabel: 'Path',
     });
   });

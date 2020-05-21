@@ -100,9 +100,9 @@ exports[`NestedCollection should render connected component 1`] = `
 
 <a
     class="emotion-2 emotion-3"
-    data-testid="/dir1"
+    data-testid="/a"
     depth="1"
-    href="/collections/pages/filter/dir1"
+    href="/collections/pages/filter/a"
   >
     <mocked-icon
       type="write"
@@ -153,9 +153,9 @@ exports[`NestedCollection should render connected component 1`] = `
 
 <a
     class="emotion-2 emotion-3"
-    data-testid="/dir2"
+    data-testid="/b"
     depth="1"
-    href="/collections/pages/filter/dir2"
+    href="/collections/pages/filter/b"
   >
     <mocked-icon
       type="write"
@@ -270,9 +270,9 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
 
 <a
     class="emotion-2 emotion-3"
-    data-testid="/dir1"
+    data-testid="/a"
     depth="1"
-    href="/collections/pages/filter/dir1"
+    href="/collections/pages/filter/a"
   >
     <mocked-icon
       type="write"
@@ -323,9 +323,9 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
 
 <a
     class="emotion-2 emotion-3"
-    data-testid="/dir2"
+    data-testid="/b"
     depth="1"
-    href="/collections/pages/filter/dir2"
+    href="/collections/pages/filter/b"
   >
     <mocked-icon
       type="write"

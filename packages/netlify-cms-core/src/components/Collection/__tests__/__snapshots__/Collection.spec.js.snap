@@ -16,6 +16,7 @@ exports[`Collection should render connected component 1`] = `
     <mock-sidebar
       collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] } }"
+      filterterm=""
       searchterm=""
     />
     <main
@@ -93,6 +94,7 @@ exports[`Collection should render with collection with create url and path 1`] =
     <mock-sidebar
       collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"create\\": true }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [] } }"
+      filterterm="dir1/dir2"
     />
     <main
       class="emotion-0 emotion-1"

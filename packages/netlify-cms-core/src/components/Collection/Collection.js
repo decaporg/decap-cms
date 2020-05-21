@@ -112,6 +112,7 @@ export class Collection extends React.Component {
           collections={collections}
           collection={(!isSearchResults || isSingleSearchResult) && collection}
           searchTerm={searchTerm}
+          filterTerm={filterTerm}
         />
         <CollectionMain>
           {isSearchResults ? (
