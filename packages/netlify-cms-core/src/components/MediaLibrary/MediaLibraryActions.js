@@ -53,12 +53,12 @@ const StyledUploadButton = styled(FileUploadButton)`
 const DeleteButton = styled.button`
   ${styles.button};
   ${buttons.lightRed};
-  margin-right: 15px;
 `;
 
 const InsertButton = styled.button`
   ${styles.button};
   ${buttons.green};
+  margin-left: 15px;
 `;
 
 const DownloadButton = styled.button`
