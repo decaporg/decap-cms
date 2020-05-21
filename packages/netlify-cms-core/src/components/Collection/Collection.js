@@ -163,7 +163,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSortClick: (key, direction) =>
       dispatchProps.sortByField(stateProps.collection, key, direction),
-    onFilterClick: key => dispatchProps.filterByField(stateProps.collection, key),
+    onFilterClick: filter => dispatchProps.filterByField(stateProps.collection, filter),
   };
 };
 
