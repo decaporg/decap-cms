@@ -23,7 +23,7 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
   return (
     <Dropdown
       renderButton={() => {
-        return <FilterButton>{t('collection.collectionTop.filter')}</FilterButton>;
+        return <FilterButton>{t('collection.collectionTop.filterBy')}</FilterButton>;
       }}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
