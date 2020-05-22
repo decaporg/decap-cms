@@ -129,10 +129,20 @@ DropdownItem.propTypes = {
   className: PropTypes.string,
 };
 
+const StyledDropdownCheckbox = ({ checked, id }) => (
+  <input
+    readOnly 
+    type="checkbox"
+    css={css`margin-right: 10px;`}
+    checked={checked}
+    id={id}
+  />
+);
+
 const DropdownCheckedItem = ({ label, id, checked, onClick }) => {
   return (
     <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={onClick}>
-      <input readOnly checked={checked} type="checkbox" id={id} />
+      <StyledDropdownCheckbox checked={checked} id={id} />
       <span htmlFor={id}>{label}</span>
     </StyledMenuItem>
   );
