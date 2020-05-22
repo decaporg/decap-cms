@@ -425,8 +425,8 @@ export const selectSortDataPath = (collection: Collection, key: string) => {
 };
 
 export const selectViewFilters = (collection: Collection) => {
-  const fields = collection.get('view_filters').toJS() as ViewFilter[];
-  return fields;
+  const viewFilters = collection.get('view_filters').toJS() as ViewFilter[];
+  return viewFilters;
 };
 
 export const selectFieldsComments = (collection: Collection, entryMap: EntryMap) => {

@@ -109,6 +109,13 @@ export function applyDefaults(config) {
 
           if (!collection.has('view_filters')) {
             collection = collection.set('view_filters', fromJS([]));
+          } else {
+            collection = collection.set(
+              'view_filters',
+              collection
+                .get('view_filters')
+                .map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
+            );
           }
 
           return collection;

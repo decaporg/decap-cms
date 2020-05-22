@@ -5,8 +5,9 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors, colorsRaw, lengths, zIndex } from 'netlify-cms-ui-default';
+import { Icon, components, colors } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
+import CollectionSearch from './CollectionSearch';
 
 const styles = {
   sidebarNavLinkActive: css`
@@ -22,7 +23,8 @@ const SidebarContainer = styled.aside`
   padding: 8px 0 12px;
   position: fixed;
   max-height: calc(100vh - 112px);
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
 `;
 
 const SidebarHeading = styled.h2`
@@ -33,42 +35,10 @@ const SidebarHeading = styled.h2`
   color: ${colors.textLead};
 `;
 
-const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 0 12px;
-  position: relative;
-
-  ${Icon} {
-    position: absolute;
-    top: 0;
-    left: 6px;
-    z-index: ${zIndex.zIndex2};
-    height: 100%;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-  }
-`;
-
-const SearchInput = styled.input`
-  background-color: #eff0f4;
-  border-radius: ${lengths.borderRadius};
-  font-size: 14px;
-  padding: 10px 6px 10px 32px;
-  width: 100%;
-  position: relative;
-  z-index: ${zIndex.zIndex1};
-
-  &:focus {
-    outline: none;
-    box-shadow: inset 0 0 0 2px ${colorsRaw.blue};
-  }
-`;
-
 const SidebarNavList = styled.ul`
   margin: 16px 0 0;
   list-style: none;
+  overflow: auto;
 `;
 
 const SidebarNavLink = styled(NavLink)`
@@ -78,6 +48,7 @@ const SidebarNavLink = styled(NavLink)`
   align-items: center;
   padding: 8px 12px;
   border-left: 2px solid #fff;
+  z-index: -1;
 
   ${Icon} {
     margin-right: 8px;
@@ -96,6 +67,7 @@ const SidebarNavLink = styled(NavLink)`
 class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap.isRequired,
+    collection: ImmutablePropTypes.map,
     searchTerm: PropTypes.string,
     t: PropTypes.func.isRequired,
   };
@@ -103,8 +75,6 @@ class Sidebar extends React.Component {
   static defaultProps = {
     searchTerm: '',
   };
-
-  state = { query: this.props.searchTerm };
 
   renderLink = collection => {
     const collectionName = collection.get('name');
@@ -119,21 +89,16 @@ class Sidebar extends React.Component {
   };
 
   render() {
-    const { collections, t } = this.props;
-    const { query } = this.state;
-
+    const { collections, collection, searchTerm, t } = this.props;
     return (
       <SidebarContainer>
         <SidebarHeading>{t('collection.sidebar.collections')}</SidebarHeading>
-        <SearchContainer>
-          <Icon type="search" size="small" />
-          <SearchInput
-            onChange={e => this.setState({ query: e.target.value })}
-            onKeyDown={e => e.key === 'Enter' && searchCollections(query)}
-            placeholder={t('collection.sidebar.searchAll')}
-            value={query}
-          />
-        </SearchContainer>
+        <CollectionSearch
+          searchTerm={searchTerm}
+          collections={collections}
+          collection={collection}
+          onSubmit={(query, collection) => searchCollections(query, collection)}
+        />
         <SidebarNavList>
           {collections
             .toList()

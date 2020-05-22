@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.11.2...netlify-cms-widget-markdown@2.11.3) (2020-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rehype-stringify to v7 ([#3729](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3729)) ([a33aebb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/a33aebbc58e345b3659a6fd93de9f9e755e57525))
+
+
+
+
+
 ## [2.11.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.11.1...netlify-cms-widget-markdown@2.11.2) (2020-05-04)
 
 

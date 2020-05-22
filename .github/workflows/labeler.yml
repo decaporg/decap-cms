@@ -5,6 +5,7 @@ on:
 
 jobs:
   label-pr:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
     steps:
       - uses: erezrokah/pr-labeler-action@v1.0.0

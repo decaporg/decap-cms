@@ -3,25 +3,31 @@ import curry from 'lodash/curry';
 import flow from 'lodash/flow';
 import isString from 'lodash/isString';
 
-let controller;
-let signal;
-if (typeof window !== 'undefined') {
-  controller = window.AbortController && new AbortController();
-  signal = controller && controller.signal;
-}
+const isAbortControllerSupported = () => {
+  if (typeof window !== 'undefined') {
+    return !!window.AbortController;
+  }
+  return false;
+};
 
 const timeout = 60;
 const fetchWithTimeout = (input, init) => {
-  if (controller && signal && !init.signal) {
-    setTimeout(() => controller.abort(), timeout * 1000);
-    return fetch(input, { ...init, signal }).catch(e => {
-      if (e.name === 'AbortError') {
+  if (init.signal || !isAbortControllerSupported()) {
+    return fetch(input, init);
+  }
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout * 1000);
+  return fetch(input, { ...init, signal: controller.signal })
+    .then(res => {
+      clearTimeout(timeoutId);
+      return res;
+    })
+    .catch(e => {
+      if (e.name === 'AbortError' || e.name === 'DOMException') {
         throw new Error(`Request timed out after ${timeout} seconds`);
       }
       throw e;
     });
-  }
-  return fetch(input, init);
 };
 
 const decodeParams = paramsString =>

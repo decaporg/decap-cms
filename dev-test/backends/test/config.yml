@@ -17,8 +17,19 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
+    view_filters:
+      - label: Posts With Index
+        field: title
+        pattern: 'This is post #'
+      - label: Posts Without Index
+        field: title
+        pattern: front matter post
+      - label: Drafts
+        field: draft
+        pattern: true
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
       - {
           label: 'Publish Date',
           name: 'date',
@@ -124,6 +135,7 @@ collections: # A list of collections the CMS should be able to edit
       - label: 'Object'
         name: 'object'
         widget: 'object'
+        collapsed: true
         fields:
           - label: 'Related Post'
             name: 'post'

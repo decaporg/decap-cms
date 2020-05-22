@@ -181,6 +181,7 @@ const es = {
       search: 'Buscar...',
       uploading: 'Subiendo...',
       upload: 'Subir nuevo',
+      download: 'Descargar',
       deleting: 'Eliminando...',
       deleteSelected: 'Eliminar selección',
       chooseSelected: 'Confirmar selección',

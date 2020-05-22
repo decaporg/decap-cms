@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.14.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.13.0...netlify-cms-locales@1.14.0) (2020-05-19)
+
+
+### Bug Fixes
+
+* **locale:** Add translation for "download" in mediaLibraryModal ([#3771](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3771)) ([9d6260b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/9d6260bd4b709f95c03ff37587bc2e40485451e5))
+* **locale:** Improve Catalan translation ([#3770](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3770)) ([76b19ea](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/76b19eaca44e435f10fd1cc39ec5a0d2b008950b))
+
+
+### Features
+
+* improve search to target single collections ([#3760](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3760)) ([588622a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/588622adb23df53f9a26914446b0982eddf8f15c))
+* **locale:** add 'sv' locale ([#3724](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3724)) ([5c5f390](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/5c5f3905901a014e94b9ed2b2f8d73377432038f))
+
+
+
+
+
 # [1.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.12.0...netlify-cms-locales@1.13.0) (2020-05-04)
 
 

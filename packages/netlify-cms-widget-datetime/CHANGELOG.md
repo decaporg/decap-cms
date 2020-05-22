@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.4.0...netlify-cms-widget-datetime@2.5.0) (2020-05-19)
+
+
+### Features
+
+* add pickerUtc option to datetime widget ([#3721](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/issues/3721)) ([ef5ff03](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/commit/ef5ff031dab99f73468c32835e2d94311967e09c))
+
+
+
+
+
 # [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/compare/netlify-cms-widget-datetime@2.3.0...netlify-cms-widget-datetime@2.4.0) (2020-04-14)
 
 

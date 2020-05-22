@@ -200,6 +200,12 @@ class App extends React.Component {
           <Switch>
             <Redirect exact from="/" to={defaultPath} />
             <Redirect exact from="/search/" to={defaultPath} />
+            <RouteInCollection
+              exact
+              collections={collections}
+              path="/collections/:name/search/"
+              render={({ match }) => <Redirect to={`/collections/${match.params.name}`} />}
+            />
             <Redirect
               // This happens on Identity + Invite Only + External Provider email not matching
               // the registered user
@@ -222,6 +228,11 @@ class App extends React.Component {
               path="/collections/:name/entries/*"
               collections={collections}
               render={props => <Editor {...props} />}
+            />
+            <RouteInCollection
+              path="/collections/:name/search/:searchTerm"
+              collections={collections}
+              render={props => <Collection {...props} isSearchResults isSingleSearchResult />}
             />
             <Route
               path="/search/:searchTerm"

@@ -12,10 +12,12 @@ let loadedEntries;
 let response;
 let page;
 let searchTerm;
+let searchCollections;
 
 const defaultState = Map({
   isFetching: false,
   term: null,
+  collections: null,
   page: 0,
   entryIds: List([]),
   queryHits: Map({}),
@@ -31,6 +33,7 @@ const entries = (state = defaultState, action) => {
         return state.withMutations(map => {
           map.set('isFetching', true);
           map.set('term', action.payload.searchTerm);
+          map.set('collections', List(action.payload.searchCollections));
           map.set('page', action.payload.page);
         });
       }
@@ -40,6 +43,7 @@ const entries = (state = defaultState, action) => {
       loadedEntries = action.payload.entries;
       page = action.payload.page;
       searchTerm = action.payload.searchTerm;
+      searchCollections = action.payload.searchCollections;
       return state.withMutations(map => {
         const entryIds = List(
           loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })),
@@ -48,6 +52,7 @@ const entries = (state = defaultState, action) => {
         map.set('fetchID', null);
         map.set('page', page);
         map.set('term', searchTerm);
+        map.set('collections', List(searchCollections));
         map.set(
           'entryIds',
           !page || isNaN(page) || page === 0

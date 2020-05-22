@@ -12,7 +12,7 @@ import mediaLibrary from './mediaLibrary';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import { Status } from '../constants/publishModes';
-import { State } from '../types/redux';
+import { State, Collection } from '../types/redux';
 
 const reducers = {
   auth,
@@ -38,19 +38,20 @@ export default reducers;
 export const selectEntry = (state: State, collection: string, slug: string) =>
   fromEntries.selectEntry(state.entries, collection, slug);
 
-export const selectEntries = (state: State, collection: string) =>
+export const selectEntries = (state: State, collection: Collection) =>
   fromEntries.selectEntries(state.entries, collection);
 
 export const selectPublishedSlugs = (state: State, collection: string) =>
   fromEntries.selectPublishedSlugs(state.entries, collection);
 
-export const selectSearchedEntries = (state: State) => {
+export const selectSearchedEntries = (state: State, availableCollections: string[]) => {
   const searchItems = state.search.get('entryIds');
+  // only return search results for actually available collections
   return (
     searchItems &&
-    searchItems.map(({ collection, slug }) =>
-      fromEntries.selectEntry(state.entries, collection, slug),
-    )
+    searchItems
+      .filter(({ collection }) => availableCollections.indexOf(collection) !== -1)
+      .map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug))
   );
 };
 

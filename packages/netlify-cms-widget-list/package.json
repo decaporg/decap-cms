@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-list",
   "description": "Widget for editing lists in Netlify CMS.",
-  "version": "2.4.6",
+  "version": "2.5.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#list",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -29,9 +29,9 @@
     "@emotion/styled": "^10.0.9",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
+    "netlify-cms-lib-widgets": "^1.0.0",
     "netlify-cms-ui-default": "^2.6.0",
     "netlify-cms-widget-object": "^2.2.0",
-    "netlify-cms-lib-widgets": "^1.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"

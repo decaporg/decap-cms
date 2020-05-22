@@ -20,6 +20,7 @@ jest.mock('netlify-cms-ui-default', () => {
   const actual = jest.requireActual('netlify-cms-ui-default');
   const ListItemTopBar = props => (
     <mock-list-item-top-bar {...props} onClick={props.onCollapseToggle}>
+      <button onClick={props.onRemove}>Remove</button>
       {props.children}
     </mock-list-item-top-bar>
   );
@@ -453,5 +454,178 @@ describe('ListControl', () => {
       />,
     );
     expect(getByText('hello - world - index.md')).toBeInTheDocument();
+  });
+
+  it('should render list with fields with default collapse ("true") and minimize_collapsed ("false")', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getByTestId } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
+      />,
+    );
+
+    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
+
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should render list with fields with collapse = "false" and default minimize_collapsed ("false")', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getByTestId } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
+      />,
+    );
+
+    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
+
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should render list with fields with default collapse ("true") and minimize_collapsed = "true"', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      minimize_collapsed: true,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getByTestId, queryByTestId } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
+      />,
+    );
+
+    expect(queryByTestId('styled-list-item-top-bar-0')).toBeNull();
+    expect(queryByTestId('styled-list-item-top-bar-1')).toBeNull();
+
+    expect(queryByTestId('object-control-0')).toBeNull();
+    expect(queryByTestId('object-control-1')).toBeNull();
+
+    expect(asFragment()).toMatchSnapshot();
+
+    fireEvent.click(getByTestId('expand-button'));
+
+    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
+
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
+  });
+
+  it('should render list with fields with collapse = "false" and default minimize_collapsed = "true"', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getByTestId, queryByTestId } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
+      />,
+    );
+
+    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
+
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
+
+    expect(asFragment()).toMatchSnapshot();
+
+    fireEvent.click(getByTestId('expand-button'));
+
+    expect(queryByTestId('styled-list-item-top-bar-0')).toBeNull();
+    expect(queryByTestId('styled-list-item-top-bar-1')).toBeNull();
+
+    expect(queryByTestId('object-control-0')).toBeNull();
+    expect(queryByTestId('object-control-1')).toBeNull();
+  });
+
+  it('should add to list when add button is clicked', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getByText, queryByTestId, rerender, getByTestId } = render(
+      <ListControl {...props} field={field} value={fromJS([])} />,
+    );
+
+    expect(queryByTestId('object-control-0')).toBeNull();
+
+    fireEvent.click(getByText('Add list'));
+
+    expect(props.onChange).toHaveBeenCalledTimes(1);
+    expect(props.onChange).toHaveBeenCalledWith(fromJS([{}]));
+
+    rerender(<ListControl {...props} field={field} value={fromJS([{}])} />);
+
+    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should remove from list when remove button is clicked', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const { asFragment, getAllByText, rerender } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
+      />,
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+
+    let mock;
+    try {
+      mock = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      const items = getAllByText('Remove');
+      fireEvent.click(items[0]);
+
+      expect(props.onChange).toHaveBeenCalledTimes(1);
+      expect(props.onChange).toHaveBeenCalledWith(fromJS([{ string: 'item 2' }]), undefined);
+
+      rerender(<ListControl {...props} field={field} value={fromJS([{ string: 'item 2' }])} />);
+
+      expect(asFragment()).toMatchSnapshot();
+    } finally {
+      mock.mockRestore();
+    }
   });
 });
