@@ -44,12 +44,12 @@ function assertNoImagesInLibrary() {
 
 function deleteImage() {
   cy.get('img[class*="CardImage"]').click();
-  cy.contains('button', 'Delete selected').click();
+  cy.contains('button', 'Delete').click();
   assertNoImagesInLibrary();
 }
 
 function chooseSelectedMediaFile() {
-  cy.contains('button', 'Choose selected').click();
+  cy.contains('button', 'Choose').click();
 }
 
 function chooseAnImage() {
