@@ -131,9 +131,11 @@ DropdownItem.propTypes = {
 
 const StyledDropdownCheckbox = ({ checked, id }) => (
   <input
-    readOnly 
+    readOnly
     type="checkbox"
-    css={css`margin-right: 10px;`}
+    css={css`
+      margin-right: 10px;
+    `}
     checked={checked}
     id={id}
   />
