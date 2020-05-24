@@ -275,9 +275,11 @@ Cypress.Commands.add('insertEditorComponent', title => {
 });
 
 Cypress.Commands.add('clickModeToggle', () => {
-  cy.get('button[role="switch"]')
-    .click()
-    .focused();
+  cy.get('.cms-editor-visual').within(() => {
+    cy.get('button[role="switch"]')
+      .click()
+      .focused();
+  });
 });
 
 [['insertCodeBlock', 'Code Block']].forEach(([commandName, componentTitle]) => {
