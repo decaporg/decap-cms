@@ -49,10 +49,6 @@ describe('ListControl', () => {
     resolveWidget: jest.fn(),
     clearFieldErrors: jest.fn(),
     fieldsErrors: fromJS({}),
-    addToEntryTreeMap: jest.fn(),
-    swapNodesInEntryTreeMap: jest.fn(),
-    removeFromEntryTreeMap: jest.fn(),
-    entryTreeMap: fromJS({}),
     entry: fromJS({
       path: 'posts/index.md',
     }),

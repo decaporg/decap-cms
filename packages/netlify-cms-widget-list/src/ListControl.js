@@ -185,10 +185,9 @@ export default class ListControl extends React.Component {
         ? this.singleDefault()
         : fromJS(this.multipleDefault(field.get('fields')));
 
-    const id = uuid();
     this.setState({
       itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, id],
+      keys: [...this.state.keys, uuid()],
     });
     onChange((value || List()).push(parsedValue));
   };
@@ -205,10 +204,9 @@ export default class ListControl extends React.Component {
     const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
 
-    const id = uuid();
     this.setState({
       itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, id],
+      keys: [...this.state.keys, uuid()],
     });
     onChange((value || List()).push(parsedValue));
   };
