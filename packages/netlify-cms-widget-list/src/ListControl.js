@@ -184,7 +184,6 @@ export default class ListControl extends React.Component {
       this.getValueType() === valueTypes.SINGLE
         ? this.singleDefault()
         : fromJS(this.multipleDefault(field.get('fields')));
-
     this.setState({
       itemsCollapsed: [...this.state.itemsCollapsed, false],
       keys: [...this.state.keys, uuid()],
@@ -203,7 +202,6 @@ export default class ListControl extends React.Component {
   handleAddType = (type, typeKey) => {
     const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
-
     this.setState({
       itemsCollapsed: [...this.state.itemsCollapsed, false],
       keys: [...this.state.keys, uuid()],
@@ -305,6 +303,7 @@ export default class ListControl extends React.Component {
 
     itemsCollapsed.splice(index, 1);
     keys.splice(index, 1);
+
     this.setState({ itemsCollapsed: [...itemsCollapsed], keys: [...keys] });
 
     onChange(value.remove(index), parsedMetadata);
@@ -399,10 +398,7 @@ export default class ListControl extends React.Component {
 
     // Reset item to ensure updated state
     const updatedKeys = keys.map((key, keyIndex) => {
-      if (keyIndex === oldIndex) {
-        return uuid();
-      }
-      if (keyIndex === newIndex) {
+      if (keyIndex === oldIndex || keyIndex === newIndex) {
         return uuid();
       }
       return key;

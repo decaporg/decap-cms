@@ -84,6 +84,7 @@ export default class ObjectControl extends React.Component {
       forID,
       parentIds,
     } = this.props;
+
     if (field.get('widget') === 'hidden') {
       return null;
     }
