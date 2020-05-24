@@ -131,7 +131,7 @@ class EditorControl extends React.Component {
   isAncestorOfFieldError = () => {
     const { fieldsErrors } = this.props;
 
-    if (fieldsErrors.size > 0) {
+    if (fieldsErrors && fieldsErrors.size > 0) {
       return Object.values(fieldsErrors.toJS()).some(arr =>
         arr.some(err => err.parentIds && err.parentIds.includes(this.uniqueFieldId)),
       );
