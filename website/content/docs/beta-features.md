@@ -349,14 +349,14 @@ backend:
 
 Netlify CMS generates the following commit types:
 
-| Commit type     | When is it triggered?                    | Available template tags                  |
-| --------------- | ---------------------------------------- | ---------------------------------------- |
-| `create`        | A new entry is created                   | `slug`, `path`, `collection`             |
-| `update`        | An existing entry is changed             | `slug`, `path`, `collection`             |
-| `delete`        | An exising entry is deleted              | `slug`, `path`, `collection`             |
-| `uploadMedia`   | A media file is uploaded                 | `path`                                   |
-| `deleteMedia`   | A media file is deleted                  | `path`                                   |
-| `openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name` |
+| Commit type     | When is it triggered?                    | Available template tags                                     |
+| --------------- | ---------------------------------------- | ----------------------------------------------------------- |
+| `create`        | A new entry is created                   | `slug`, `path`, `collection`, `author-login`, `author-name` |
+| `update`        | An existing entry is changed             | `slug`, `path`, `collection`, `author-login`, `author-name` |
+| `delete`        | An exising entry is deleted              | `slug`, `path`, `collection`, `author-login`, `author-name` |
+| `uploadMedia`   | A media file is uploaded                 | `path`, `author-login`, `author-name`                       |
+| `deleteMedia`   | A media file is deleted                  | `path`, `author-login`, `author-name`                       |
+| `openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name`                    |
 
 Template tags produce the following output:
 
