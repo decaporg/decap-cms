@@ -134,7 +134,7 @@ describe('formatters', () => {
       ).toEqual(' - : Create Collection “doc-slug”');
     });
 
-    it('should return custom update message with author information', () => {
+    it('should return custom create message with author information', () => {
       config.getIn.mockReturnValueOnce(
         Map({
           create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
