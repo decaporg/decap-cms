@@ -116,13 +116,13 @@ describe('formatters', () => {
     it('should use empty values if "authorLogin" and "authorName" are missing in commit message', () => {
       config.getIn.mockReturnValueOnce(
         Map({
-          update: '{{author-login}} - {{author-name}}: {{message}}',
+          update: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
         }),
       );
 
       expect(
         commitMessageFormatter(
-          'create',
+          'update',
           config,
           {
             slug: 'doc-slug',
@@ -137,7 +137,7 @@ describe('formatters', () => {
     it('should return custom update message with author information', () => {
       config.getIn.mockReturnValueOnce(
         Map({
-          update: '{{author-login}} - {{author-name}}: {{message}}',
+          create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
         }),
       );
 
