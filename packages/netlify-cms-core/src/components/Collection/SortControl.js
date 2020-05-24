@@ -20,8 +20,6 @@ const SortButton = styled(StyledDropdownButton)`
   &:after {
     top: 11px;
   }
-
-  color: ${props => (props.isActive ? colors.active : undefined)};
 `;
 
 function nextSortDirection(direction) {
