@@ -1,4 +1,5 @@
 import React from 'react';
+import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import {
@@ -6,6 +7,7 @@ import {
   Dropdown,
   DropdownCheckedItem,
   StyledDropdownButton,
+  colors,
 } from 'netlify-cms-ui-default';
 
 const FilterButton = styled(StyledDropdownButton)`
@@ -20,10 +22,23 @@ const FilterButton = styled(StyledDropdownButton)`
 `;
 
 const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
+  const hasActiveFilter = filter
+    ?.valueSeq()
+    .toJS()
+    .some(f => f.active === true);
+
   return (
     <Dropdown
       renderButton={() => {
-        return <FilterButton>{t('collection.collectionTop.filterBy')}</FilterButton>;
+        return (
+          <FilterButton
+            css={css`
+              color: ${hasActiveFilter ? colors.active : undefined};
+            `}
+          >
+            {t('collection.collectionTop.filterBy')}
+          </FilterButton>
+        );
       }}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
