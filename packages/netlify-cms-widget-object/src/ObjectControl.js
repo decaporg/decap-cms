@@ -80,13 +80,16 @@ export default class ObjectControl extends React.Component {
       fieldsErrors,
       editorControl: EditorControl,
       controlRef,
+      listControlId,
       forID,
+      parentIds,
     } = this.props;
     if (field.get('widget') === 'hidden') {
       return null;
     }
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
+    const newParentIds = [...parentIds, forID, listControlId].filter(id => id !== null);
 
     return (
       <EditorControl
@@ -100,7 +103,7 @@ export default class ObjectControl extends React.Component {
         onValidate={onValidateObject}
         processControlRef={controlRef && controlRef.bind(this)}
         controlRef={controlRef}
-        parentId={forID}
+        parentIds={newParentIds}
       />
     );
   }

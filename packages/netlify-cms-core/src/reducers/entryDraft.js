@@ -1,5 +1,4 @@
-import { Map, List, fromJS, Seq } from 'immutable';
-import TreeUtils from 'immutable-treeutils';
+import { Map, List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
 import {
   DRAFT_CREATE_FROM_ENTRY,
@@ -17,36 +16,17 @@ import {
   ENTRY_DELETE_SUCCESS,
   ADD_DRAFT_ENTRY_MEDIA_FILE,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
-  ADD_TO_ENTRY_TREE_MAP,
-  REMOVE_FROM_ENTRY_TREE_MAP,
-  SWAP_NODES_IN_ENTRY_TREE_MAP,
 } from 'Actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
 } from 'Actions/editorialWorkflow';
-const treeUtils = new TreeUtils(Seq['entryTreeMap']);
-
-export const generateNode = node => {
-  return Map({
-    id: node.id,
-    name: node.field.get('name'),
-    type: node.field.get('widget'),
-    childNodes: List(),
-  });
-};
-
-export const entryTreeMapRootNode = generateNode({
-  id: 'root',
-  field: Map({ name: 'root', widget: 'root' }),
-});
 
 const initialState = Map({
   entry: Map(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
-  entryTreeMap: entryTreeMapRootNode,
   hasChanged: false,
   key: '',
 });
@@ -60,7 +40,6 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], false);
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', false);
         state.set('key', uuid());
       });
@@ -71,7 +50,6 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], true);
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', false);
         state.set('key', uuid());
       });
@@ -85,7 +63,6 @@ const entryDraftReducer = (state = Map(), action) => {
         state.setIn(['entry', 'newRecord'], !backupEntry.get('path'));
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', true);
         state.set('key', uuid());
       });
@@ -97,7 +74,6 @@ const entryDraftReducer = (state = Map(), action) => {
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
-        state.set('entryTreeMap', entryTreeMapRootNode);
         state.set('hasChanged', true);
       });
     case DRAFT_DISCARD:
@@ -177,60 +153,6 @@ const entryDraftReducer = (state = Map(), action) => {
           mediaFiles.filterNot(file => file.get('id') === action.payload.id),
         );
         state.set('hasChanged', true);
-      });
-    }
-
-    case ADD_TO_ENTRY_TREE_MAP: {
-      const { control, parentId = 'root' } = action.payload;
-      const node = generateNode(control);
-
-      return state.withMutations(state => {
-        const keyPathToParent = treeUtils.find(
-          state.get('entryTreeMap'),
-          n => n.get('id') === parentId,
-        );
-        if (keyPathToParent) {
-          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes'], list =>
-            list.push(node),
-          );
-        }
-      });
-    }
-
-    case SWAP_NODES_IN_ENTRY_TREE_MAP: {
-      const { parentId, oldIndex, newIndex, oldId, newId } = action.payload;
-
-      return state.withMutations(state => {
-        const keyPathToParent = treeUtils.find(
-          state.get('entryTreeMap'),
-          n => n.get('id') === parentId,
-        );
-        if (keyPathToParent) {
-          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes'], list => {
-            const temp = list.get(oldIndex);
-            return list.set(oldIndex, list.get(newIndex)).set(newIndex, temp);
-          });
-          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes', oldIndex], node =>
-            node.set('id', oldId),
-          );
-          state.updateIn(['entryTreeMap', ...keyPathToParent, 'childNodes', newIndex], node =>
-            node.set('id', newId),
-          );
-        }
-      });
-    }
-
-    case REMOVE_FROM_ENTRY_TREE_MAP: {
-      const { id, parentListPath = Seq() } = action.payload;
-      return state.withMutations(state => {
-        const pathToNode = treeUtils.find(
-          state.get('entryTreeMap'),
-          n => n.get('id') === id,
-          parentListPath,
-        );
-        if (pathToNode) {
-          state.deleteIn(['entryTreeMap', ...pathToNode]);
-        }
       });
     }
 

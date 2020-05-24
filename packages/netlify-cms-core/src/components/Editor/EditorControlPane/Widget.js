@@ -59,11 +59,6 @@ export default class Widget extends Component {
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
-    listNodePath: ImmutablePropTypes.seq,
-    entryTreeMap: ImmutablePropTypes.map.isRequired,
-    addToEntryTreeMap: PropTypes.func.isRequired,
-    swapNodesInEntryTreeMap: PropTypes.func.isRequired,
-    removeFromEntryTreeMap: PropTypes.func.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -123,11 +118,12 @@ export default class Widget extends Component {
   };
 
   validatePresence = (field, value) => {
-    const t = this.props.t;
+    const { t, parentIds } = this.props;
     const isRequired = field.get('required', true);
     if (isRequired && isEmpty(value)) {
       const error = {
         type: ValidationErrorTypes.PRESENCE,
+        parentIds,
         message: t('editor.editorControlPane.widget.required', {
           fieldLabel: field.get('label', field.get('name')),
         }),
@@ -139,7 +135,7 @@ export default class Widget extends Component {
   };
 
   validatePattern = (field, value) => {
-    const t = this.props.t;
+    const { t, parentIds } = this.props;
     const pattern = field.get('pattern', false);
 
     if (isEmpty(value)) {
@@ -149,6 +145,7 @@ export default class Widget extends Component {
     if (pattern && !RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
+        parentIds,
         message: t('editor.editorControlPane.widget.regexPattern', {
           fieldLabel: field.get('label', field.get('name')),
           pattern: pattern.last(),
@@ -162,7 +159,7 @@ export default class Widget extends Component {
   };
 
   validateWrappedControl = field => {
-    const t = this.props.t;
+    const { t, parentIds } = this.props;
     if (typeof this.wrappedControlValid !== 'function') {
       throw new Error(oneLine`
         this.wrappedControlValid is not a function. Are you sure widget
@@ -193,6 +190,7 @@ export default class Widget extends Component {
 
       const error = {
         type: ValidationErrorTypes.CUSTOM,
+        parentIds,
         message: t('editor.editorControlPane.widget.processing', {
           fieldLabel: field.get('label', field.get('name')),
         }),
@@ -262,11 +260,7 @@ export default class Widget extends Component {
       controlRef,
       isEditorComponent,
       isNewEditorComponent,
-      listNodePath,
-      entryTreeMap,
-      addToEntryTreeMap,
-      swapNodesInEntryTreeMap,
-      removeFromEntryTreeMap,
+      parentIds,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -311,11 +305,7 @@ export default class Widget extends Component {
       isNewEditorComponent,
       fieldsErrors,
       controlRef,
-      listNodePath,
-      entryTreeMap,
-      addToEntryTreeMap,
-      swapNodesInEntryTreeMap,
-      removeFromEntryTreeMap,
+      parentIds,
       t,
     });
   }

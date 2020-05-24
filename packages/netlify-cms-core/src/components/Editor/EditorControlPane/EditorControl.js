@@ -9,13 +9,7 @@ import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import {
-  clearFieldErrors,
-  tryLoadEntry,
-  addToEntryTreeMap,
-  swapNodesInEntryTreeMap,
-  removeFromEntryTreeMap,
-} from 'Actions/entries';
+import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
 import { addAsset, boundGetAsset } from 'Actions/media';
 import { selectIsLoadingAsset } from 'Reducers/medias';
 import { query, clearSearch } from 'Actions/search';
@@ -25,10 +19,7 @@ import {
   clearMediaControl,
   removeMediaControl,
 } from 'Actions/mediaLibrary';
-import TreeUtils from 'immutable-treeutils';
 import Widget from './Widget';
-import { Seq } from 'immutable';
-const treeUtils = new TreeUtils();
 
 /**
  * This is a necessary bridge as we are still passing classnames to widgets
@@ -124,10 +115,11 @@ class EditorControl extends React.Component {
     t: PropTypes.func.isRequired,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
-    parentId: PropTypes.string,
-    addToEntryTreeMap: PropTypes.func.isRequired,
-    swapNodesInEntryTreeMap: PropTypes.func.isRequired,
-    removeFromEntryTreeMap: PropTypes.func.isRequired,
+    parentIds: PropTypes.arrayOf(PropTypes.string),
+  };
+
+  static defaultProps = {
+    parentIds: [],
   };
 
   state = {
@@ -138,40 +130,15 @@ class EditorControl extends React.Component {
   isList = this.props.field.get('widget') === 'list';
   isListOrObject = this.isList || this.props.field.get('widget') === 'object';
 
-  constructor(props) {
-    super(props);
-    const { field, parentId, addToEntryTreeMap } = this.props;
-    const node = { id: this.uniqueFieldId, field };
-
-    if (this.isListOrObject && !parentId) {
-      addToEntryTreeMap(node);
-    } else if (parentId) {
-      addToEntryTreeMap(node, parentId);
-    }
-  }
-
-  getListNodePath = () => {
-    const { entryTreeMap } = this.props;
-    return this.isList
-      ? treeUtils.find(entryTreeMap, n => n.get('id') === this.uniqueFieldId)
-      : undefined;
-  };
-
   isAncestorOfFieldError = () => {
-    let isAncestor = false;
-    if (this.isListOrObject) {
-      const { entryTreeMap, fieldsErrors } = this.props;
-      const keyPathToCurrNode = treeUtils.byId(entryTreeMap, this.uniqueFieldId);
+    const { fieldsErrors } = this.props;
 
-      if (keyPathToCurrNode && fieldsErrors.size > 0) {
-        for (const j of fieldsErrors.keys()) {
-          isAncestor =
-            isAncestor ||
-            treeUtils.find(entryTreeMap, n => n.get('id') === j, Seq([...keyPathToCurrNode]));
-        }
-      }
+    if (this.isListOrObject && fieldsErrors.size > 0) {
+      return Object.values(fieldsErrors.toJS()).some(arr =>
+        arr.some(err => err.parentIds && err.parentIds.includes(this.uniqueFieldId)),
+      );
     }
-    return isAncestor;
+    return false;
   };
 
   render() {
@@ -204,10 +171,7 @@ class EditorControl extends React.Component {
       isSelected,
       isEditorComponent,
       isNewEditorComponent,
-      entryTreeMap,
-      addToEntryTreeMap,
-      swapNodesInEntryTreeMap,
-      removeFromEntryTreeMap,
+      parentIds,
       t,
     } = this.props;
 
@@ -220,7 +184,6 @@ class EditorControl extends React.Component {
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
-    const listNodePath = this.getListNodePath();
 
     return (
       <ClassNames>
@@ -313,11 +276,7 @@ class EditorControl extends React.Component {
               onValidateObject={onValidateObject}
               isEditorComponent={isEditorComponent}
               isNewEditorComponent={isNewEditorComponent}
-              listNodePath={listNodePath}
-              entryTreeMap={entryTreeMap}
-              addToEntryTreeMap={addToEntryTreeMap}
-              swapNodesInEntryTreeMap={swapNodesInEntryTreeMap}
-              removeFromEntryTreeMap={removeFromEntryTreeMap}
+              parentIds={parentIds}
               t={t}
             />
             {fieldHint && (
@@ -335,7 +294,6 @@ class EditorControl extends React.Component {
 const mapStateToProps = state => {
   const { collections, entryDraft } = state;
   const entry = entryDraft.get('entry');
-  const entryTreeMap = entryDraft.get('entryTreeMap');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
@@ -356,7 +314,6 @@ const mapStateToProps = state => {
     config: state.config,
     collection,
     entry,
-    entryTreeMap,
     isLoadingAsset,
     loadEntry,
   };
@@ -373,9 +330,6 @@ const mapDispatchToProps = dispatch => {
       query,
       clearSearch,
       clearFieldErrors,
-      addToEntryTreeMap,
-      swapNodesInEntryTreeMap,
-      removeFromEntryTreeMap,
     },
     dispatch,
   );

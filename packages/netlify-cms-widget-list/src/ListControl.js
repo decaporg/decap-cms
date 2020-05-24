@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
-import { List, Map, fromJS, Seq } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
@@ -16,8 +16,6 @@ import {
 } from './typedListHelpers';
 import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
-import TreeUtils from 'immutable-treeutils';
-const treeUtils = new TreeUtils();
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
@@ -108,11 +106,6 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
-    listNodePath: ImmutablePropTypes.seq,
-    entryTreeMap: ImmutablePropTypes.map.isRequired,
-    addToEntryTreeMap: PropTypes.func.isRequired,
-    swapNodesInEntryTreeMap: PropTypes.func.isRequired,
-    removeFromEntryTreeMap: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -121,7 +114,7 @@ export default class ListControl extends React.Component {
 
   constructor(props) {
     super(props);
-    const { field, value, addToEntryTreeMap, forID } = props;
+    const { field, value } = props;
     const listCollapsed = field.get('collapsed', true);
     const itemsCollapsed = (value && Array(value.size).fill(listCollapsed)) || [];
     const keys = (value && Array.from({ length: value.size }, () => uuid())) || [];
@@ -132,13 +125,6 @@ export default class ListControl extends React.Component {
       value: valueToString(value),
       keys,
     };
-
-    for (const k of this.state.keys) {
-      addToEntryTreeMap(
-        { id: k, field: Map({ name: 'listControl', widget: 'listControl' }) },
-        forID,
-      );
-    }
   }
 
   getValueType = () => {
@@ -193,7 +179,7 @@ export default class ListControl extends React.Component {
 
   handleAdd = e => {
     e.preventDefault();
-    const { value, onChange, field, addToEntryTreeMap, forID } = this.props;
+    const { value, onChange, field } = this.props;
     const parsedValue =
       this.getValueType() === valueTypes.SINGLE
         ? this.singleDefault()
@@ -204,7 +190,6 @@ export default class ListControl extends React.Component {
       itemsCollapsed: [...this.state.itemsCollapsed, false],
       keys: [...this.state.keys, id],
     });
-    addToEntryTreeMap({ id, field: Map({ name: 'listControl', widget: 'listControl' }) }, forID);
     onChange((value || List()).push(parsedValue));
   };
 
@@ -217,7 +202,7 @@ export default class ListControl extends React.Component {
   };
 
   handleAddType = (type, typeKey) => {
-    const { value, onChange, addToEntryTreeMap, forID } = this.props;
+    const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
 
     const id = uuid();
@@ -225,7 +210,6 @@ export default class ListControl extends React.Component {
       itemsCollapsed: [...this.state.itemsCollapsed, false],
       keys: [...this.state.keys, id],
     });
-    addToEntryTreeMap({ id, field: Map({ name: 'listControl', widget: 'listControl' }) }, forID);
     onChange((value || List()).push(parsedValue));
   };
 
@@ -310,14 +294,7 @@ export default class ListControl extends React.Component {
   handleRemove = (index, key, event) => {
     event.preventDefault();
     const { itemsCollapsed, keys } = this.state;
-    const {
-      value,
-      metadata,
-      onChange,
-      field,
-      clearFieldErrors,
-      removeFromEntryTreeMap,
-    } = this.props;
+    const { value, metadata, onChange, field, clearFieldErrors } = this.props;
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
     const validations = this.validations;
@@ -328,7 +305,6 @@ export default class ListControl extends React.Component {
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
         : metadata;
 
-    removeFromEntryTreeMap(this.state.keys[index], this.props.listNodePath);
     itemsCollapsed.splice(index, 1);
     keys.splice(index, 1);
     this.setState({ itemsCollapsed: [...itemsCollapsed], keys: [...keys] });
@@ -409,13 +385,8 @@ export default class ListControl extends React.Component {
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { value, clearFieldErrors, swapNodesInEntryTreeMap, forID } = this.props;
+    const { value, clearFieldErrors } = this.props;
     const { itemsCollapsed, keys } = this.state;
-    const newId1 = uuid();
-    const newId2 = uuid();
-
-    // update entry tree map
-    swapNodesInEntryTreeMap(forID, oldIndex, newIndex, newId1, newId2);
 
     // Update value
     const item = value.get(oldIndex);
@@ -431,10 +402,10 @@ export default class ListControl extends React.Component {
     // Reset item to ensure updated state
     const updatedKeys = keys.map((key, keyIndex) => {
       if (keyIndex === oldIndex) {
-        return newId1;
+        return uuid();
       }
       if (keyIndex === newIndex) {
-        return newId2;
+        return uuid();
       }
       return key;
     });
@@ -446,19 +417,12 @@ export default class ListControl extends React.Component {
   };
 
   hasError = index => {
-    const { listNodePath, fieldsErrors, entryTreeMap } = this.props;
-    let hasError = false;
-    if (listNodePath && fieldsErrors.size > 0) {
-      const descendantPaths = treeUtils.descendants(
-        entryTreeMap,
-        Seq([...listNodePath, 'childNodes', index]),
+    const { fieldsErrors } = this.props;
+    if (fieldsErrors && fieldsErrors.size > 0) {
+      return Object.values(fieldsErrors.toJS()).some(arr =>
+        arr.some(err => err.parentIds && err.parentIds.includes(this.state.keys[index])),
       );
-      for (const path of descendantPaths) {
-        const node = entryTreeMap.getIn([...path]);
-        hasError = hasError || fieldsErrors.has(node.get('id'));
-      }
     }
-    return hasError;
   };
 
   // eslint-disable-next-line react/display-name
@@ -472,6 +436,8 @@ export default class ListControl extends React.Component {
       fieldsErrors,
       controlRef,
       resolveWidget,
+      parentIds,
+      forID,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
@@ -527,7 +493,9 @@ export default class ListControl extends React.Component {
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
               hasError={hasError}
-              forID={key}
+              listControlId={key}
+              forID={forID}
+              parentIds={parentIds}
             />
           )}
         </ClassNames>

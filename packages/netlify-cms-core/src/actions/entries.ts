@@ -349,7 +349,7 @@ export function changeDraftField(
 
 export function changeDraftFieldValidation(
   uniquefieldId: string,
-  errors: { type: string; message: string }[],
+  errors: { type: string; parentIds: string[]; message: string }[],
 ) {
   return {
     type: DRAFT_VALIDATION_ERRORS,
