@@ -210,6 +210,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `editor`: see detailed description below
 * `summary`: see detailed description below
 * `sortableFields`: see detailed description below
+* `view_filters`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -396,4 +397,25 @@ When `author` field can't be inferred commit author will be used.
 ```yaml
     # use dot notation for nested fields
     sortableFields: ['commit_date', 'title', 'commit_author', 'language.en']
+```
+
+### `view_filters`
+
+An optional list of predefined view filters to show in the UI.
+
+Defaults to an empty list.
+
+**Example**
+
+```yaml
+    view_filters:
+      - label: "Alice's and Bob's Posts"
+        field: author
+        pattern: 'Alice|Bob'
+      - label: 'Posts published in 2020'
+        field: date
+        pattern: '2020'
+      - label: Drafts
+        field: draft
+        pattern: true
 ```

@@ -48,7 +48,7 @@ const DropdownList = styled.ul`
   `};
 `;
 
-const StyledMenuItem = ({ isActive, ...props }) => (
+const StyledMenuItem = ({ isActive, isCheckedItem = false, ...props }) => (
   <MenuItem
     css={css`
       ${components.dropdownItem};
@@ -58,6 +58,7 @@ const StyledMenuItem = ({ isActive, ...props }) => (
       &:not(:active) {
         background-color: ${isActive ? colors.activeBackground : 'inherit'};
         color: ${isActive ? colors.active : 'inherit'};
+        ${isCheckedItem ? 'display: flex; justify-content: start' : ''};
       }
       &:hover {
         color: ${colors.active};
@@ -128,4 +129,38 @@ DropdownItem.propTypes = {
   className: PropTypes.string,
 };
 
-export { Dropdown as default, DropdownItem, DropdownButton, StyledDropdownButton };
+const StyledDropdownCheckbox = ({ checked, id }) => (
+  <input
+    readOnly
+    type="checkbox"
+    css={css`
+      margin-right: 10px;
+    `}
+    checked={checked}
+    id={id}
+  />
+);
+
+const DropdownCheckedItem = ({ label, id, checked, onClick }) => {
+  return (
+    <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={onClick}>
+      <StyledDropdownCheckbox checked={checked} id={id} />
+      <span htmlFor={id}>{label}</span>
+    </StyledMenuItem>
+  );
+};
+
+DropdownCheckedItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+export {
+  Dropdown as default,
+  DropdownItem,
+  DropdownCheckedItem,
+  DropdownButton,
+  StyledDropdownButton,
+};

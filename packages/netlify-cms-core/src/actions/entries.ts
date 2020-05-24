@@ -1,11 +1,11 @@
 import { fromJS, List, Map, Set } from 'immutable';
-import { isEqual, orderBy } from 'lodash';
+import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectFields, updateFieldByKey, selectSortDataPath } from '../reducers/collections';
+import { selectFields, updateFieldByKey } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
@@ -19,6 +19,7 @@ import {
   EntryFields,
   EntryField,
   SortDirection,
+  ViewFilter,
 } from '../types/redux';
 
 import { ThunkDispatch } from 'redux-thunk';
@@ -43,6 +44,10 @@ export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
 export const SORT_ENTRIES_REQUEST = 'SORT_ENTRIES_REQUEST';
 export const SORT_ENTRIES_SUCCESS = 'SORT_ENTRIES_SUCCESS';
 export const SORT_ENTRIES_FAILURE = 'SORT_ENTRIES_FAILURE';
+
+export const FILTER_ENTRIES_REQUEST = 'FILTER_ENTRIES_REQUEST';
+export const FILTER_ENTRIES_SUCCESS = 'FILTER_ENTRIES_SUCCESS';
+export const FILTER_ENTRIES_FAILURE = 'FILTER_ENTRIES_FAILURE';
 
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
@@ -137,6 +142,16 @@ export function entriesFailed(collection: Collection, error: Error) {
   };
 }
 
+const getAllEntries = async (state: State, collection: Collection) => {
+  const backend = currentBackend(state.config);
+  const integration = selectIntegration(state, collection.get('name'), 'listEntries');
+  const provider: Backend = integration
+    ? getIntegrationProvider(state.integrations, backend.getToken, integration)
+    : backend;
+  const entries = await provider.listAllEntries(collection);
+  return entries;
+};
+
 export function sortByField(
   collection: Collection,
   key: string,
@@ -144,8 +159,6 @@ export function sortByField(
 ) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
-    const backend = currentBackend(state.config);
-
     // if we're already fetching we update the sort key, but skip loading entries
     const isFetching = selectIsFetching(state.entries, collection.get('name'));
     dispatch({
@@ -161,22 +174,7 @@ export function sortByField(
     }
 
     try {
-      const integration = selectIntegration(state, collection.get('name'), 'listEntries');
-      const provider: Backend = integration
-        ? getIntegrationProvider(state.integrations, backend.getToken, integration)
-        : backend;
-
-      let entries = await provider.listAllEntries(collection);
-
-      const sortFields = selectEntriesSortFields(getState().entries, collection.get('name'));
-      if (sortFields && sortFields.length > 0) {
-        const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));
-        const orders = sortFields.map(v =>
-          v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
-        );
-        entries = orderBy(entries, keys, orders);
-      }
-
+      const entries = await getAllEntries(state, collection);
       dispatch({
         type: SORT_ENTRIES_SUCCESS,
         payload: {
@@ -193,6 +191,45 @@ export function sortByField(
           collection: collection.get('name'),
           key,
           direction,
+          error,
+        },
+      });
+    }
+  };
+}
+
+export function filterByField(collection: Collection, filter: ViewFilter) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    // if we're already fetching we update the filter key, but skip loading entries
+    const isFetching = selectIsFetching(state.entries, collection.get('name'));
+    dispatch({
+      type: FILTER_ENTRIES_REQUEST,
+      payload: {
+        collection: collection.get('name'),
+        filter,
+      },
+    });
+    if (isFetching) {
+      return;
+    }
+
+    try {
+      const entries = await getAllEntries(state, collection);
+      dispatch({
+        type: FILTER_ENTRIES_SUCCESS,
+        payload: {
+          collection: collection.get('name'),
+          filter,
+          entries,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: FILTER_ENTRIES_FAILURE,
+        payload: {
+          collection: collection.get('name'),
+          filter,
           error,
         },
       });

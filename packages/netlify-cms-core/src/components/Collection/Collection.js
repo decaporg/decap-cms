@@ -11,10 +11,10 @@ import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import CollectionControls from './CollectionControls';
-import { sortByField } from 'Actions/entries';
-import { selectSortableFields } from 'Reducers/collections';
-import { selectEntriesSort } from 'Reducers/entries';
-import { VIEW_STYLE_LIST } from 'Constants/collectionViews';
+import { sortByField, filterByField } from '../../actions/entries';
+import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
+import { selectEntriesSort, selectEntriesFilter } from '../../reducers/entries';
+import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -82,7 +82,10 @@ class Collection extends React.Component {
       sortableFields,
       onSortClick,
       sort,
+      viewFilters,
       t,
+      onFilterClick,
+      filter,
     } = this.props;
     const newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
 
@@ -107,12 +110,15 @@ class Collection extends React.Component {
             <>
               <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
               <CollectionControls
-                collection={collection}
                 viewStyle={this.state.viewStyle}
                 onChangeViewStyle={this.handleChangeViewStyle}
                 sortableFields={sortableFields}
                 onSortClick={onSortClick}
                 sort={sort}
+                viewFilters={viewFilters}
+                t={t}
+                onFilterClick={onFilterClick}
+                filter={filter}
               />
             </>
           )}
@@ -130,6 +136,8 @@ function mapStateToProps(state, ownProps) {
   const collection = name ? collections.get(name) : collections.first();
   const sort = selectEntriesSort(state.entries, collection.get('name'));
   const sortableFields = selectSortableFields(collection, t);
+  const viewFilters = selectViewFilters(collection);
+  const filter = selectEntriesFilter(state.entries, collection.get('name'));
 
   return {
     collection,
@@ -139,11 +147,14 @@ function mapStateToProps(state, ownProps) {
     searchTerm,
     sort,
     sortableFields,
+    viewFilters,
+    filter,
   };
 }
 
 const mapDispatchToProps = {
   sortByField,
+  filterByField,
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -152,6 +163,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSortClick: (key, direction) =>
       dispatchProps.sortByField(stateProps.collection, key, direction),
+    onFilterClick: filter => dispatchProps.filterByField(stateProps.collection, filter),
   };
 };
 

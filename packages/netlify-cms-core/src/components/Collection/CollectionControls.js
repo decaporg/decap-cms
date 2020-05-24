@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
+import FilterControl from './FilterControl';
 import { lengths } from 'netlify-cms-ui-default';
 
 const CollectionControlsContainer = styled.div`
@@ -18,24 +19,32 @@ const CollectionControlsContainer = styled.div`
 `;
 
 const CollectionControls = ({
-  collection,
   viewStyle,
   onChangeViewStyle,
   sortableFields,
   onSortClick,
   sort,
-}) => (
-  <CollectionControlsContainer>
-    <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
-    {sortableFields.length > 0 && (
-      <SortControl
-        fields={sortableFields}
-        collection={collection}
-        sort={sort}
-        onSortClick={onSortClick}
-      />
-    )}
-  </CollectionControlsContainer>
-);
+  viewFilters,
+  onFilterClick,
+  t,
+  filter,
+}) => {
+  return (
+    <CollectionControlsContainer>
+      <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
+      {viewFilters.length > 0 && (
+        <FilterControl
+          viewFilters={viewFilters}
+          onFilterClick={onFilterClick}
+          t={t}
+          filter={filter}
+        />
+      )}
+      {sortableFields.length > 0 && (
+        <SortControl fields={sortableFields} sort={sort} onSortClick={onSortClick} />
+      )}
+    </CollectionControlsContainer>
+  );
+};
 
 export default CollectionControls;

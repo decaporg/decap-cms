@@ -64,12 +64,17 @@ export type SortMap = OrderedMap<string, StaticallyTypedRecord<SortObject>>;
 
 export type Sort = Map<string, SortMap>;
 
+export type FilterMap = StaticallyTypedRecord<ViewFilter & { active: boolean }>;
+
+export type Filter = Map<string, Map<string, FilterMap>>; // collection.field.active
+
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
   entities: Entities & EntitiesObject;
   sort: Sort;
+  filter: Filter;
 }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;
@@ -134,6 +139,13 @@ export type CollectionFile = StaticallyTypedRecord<{
 
 export type CollectionFiles = List<CollectionFile>;
 
+export type ViewFilter = {
+  label: string;
+  field: string;
+  pattern: string;
+  id: string;
+};
+
 type CollectionObject = {
   name: string;
   folder?: string;
@@ -157,6 +169,7 @@ type CollectionObject = {
   label_singular?: string;
   label: string;
   sortableFields: List<string>;
+  view_filters: List<StaticallyTypedRecord<ViewFilter>>;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
@@ -297,11 +310,18 @@ export interface EntriesSortRequestPayload extends EntryPayload {
   direction: string;
 }
 
-export interface EntriesSortSuccessPayload extends EntriesSortRequestPayload {
-  entries: EntryObject[];
+export interface EntriesSortFailurePayload extends EntriesSortRequestPayload {
+  error: Error;
 }
 
-export interface EntriesSortFailurePayload extends EntriesSortRequestPayload {
+export interface EntriesFilterRequestPayload {
+  filter: ViewFilter;
+  collection: string;
+}
+
+export interface EntriesFilterFailurePayload {
+  filter: ViewFilter;
+  collection: string;
   error: Error;
 }
 

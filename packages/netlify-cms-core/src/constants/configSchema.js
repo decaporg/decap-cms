@@ -21,6 +21,28 @@ const fieldsConfig = {
   },
 };
 
+const viewFilters = {
+  type: 'array',
+  minItems: 1,
+  items: {
+    type: 'object',
+    properties: {
+      label: { type: 'string' },
+      field: { type: 'string' },
+      pattern: {
+        oneOf: [
+          { type: 'boolean' },
+          {
+            type: 'string',
+          },
+        ],
+      },
+    },
+    additionalProperties: false,
+    required: ['label', 'field', 'pattern'],
+  },
+};
+
 /**
  * The schema had to be wrapped in a function to
  * fix a circular dependency problem for WebPack,
@@ -142,6 +164,7 @@ const getConfigSchema = () => ({
               type: 'string',
             },
           },
+          view_filters: viewFilters,
         },
         required: ['name', 'label'],
         oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],

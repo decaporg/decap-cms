@@ -4,6 +4,7 @@ import reducer, {
   selectMediaFolder,
   selectMediaFilePath,
   selectMediaFilePublicPath,
+  selectEntries,
 } from '../entries';
 
 const initialState = OrderedMap({
@@ -558,5 +559,119 @@ describe('entries', () => {
         ),
       ).toBe('/images/image.png');
     });
+  });
+
+  describe('selectEntries', () => {
+    it('should return all entries', () => {
+      const state = fromJS({
+        entities: {
+          'posts.1': { slug: '1' },
+          'posts.2': { slug: '2' },
+          'posts.3': { slug: '3' },
+          'posts.4': { slug: '4' },
+        },
+        pages: { posts: { ids: ['1', '2', '3', '4'] } },
+      });
+      const collection = fromJS({
+        name: 'posts',
+      });
+
+      expect(selectEntries(state, collection)).toEqual(
+        fromJS([{ slug: '1' }, { slug: '2' }, { slug: '3' }, { slug: '4' }]),
+      );
+    });
+  });
+
+  it('should return sorted entries entries by field', () => {
+    const state = fromJS({
+      entities: {
+        'posts.1': { slug: '1', data: { title: '1' } },
+        'posts.2': { slug: '2', data: { title: '2' } },
+        'posts.3': { slug: '3', data: { title: '3' } },
+        'posts.4': { slug: '4', data: { title: '4' } },
+      },
+      pages: { posts: { ids: ['1', '2', '3', '4'] } },
+      sort: { posts: { title: { key: 'title', direction: 'Descending' } } },
+    });
+    const collection = fromJS({
+      name: 'posts',
+    });
+
+    expect(selectEntries(state, collection)).toEqual(
+      fromJS([
+        { slug: '4', data: { title: '4' } },
+        { slug: '3', data: { title: '3' } },
+        { slug: '2', data: { title: '2' } },
+        { slug: '1', data: { title: '1' } },
+      ]),
+    );
+  });
+
+  it('should return sorted entries entries by nested field', () => {
+    const state = fromJS({
+      entities: {
+        'posts.1': { slug: '1', data: { title: '1', nested: { date: 4 } } },
+        'posts.2': { slug: '2', data: { title: '2', nested: { date: 3 } } },
+        'posts.3': { slug: '3', data: { title: '3', nested: { date: 2 } } },
+        'posts.4': { slug: '4', data: { title: '4', nested: { date: 1 } } },
+      },
+      pages: { posts: { ids: ['1', '2', '3', '4'] } },
+      sort: { posts: { title: { key: 'nested.date', direction: 'Ascending' } } },
+    });
+    const collection = fromJS({
+      name: 'posts',
+    });
+
+    expect(selectEntries(state, collection)).toEqual(
+      fromJS([
+        { slug: '4', data: { title: '4', nested: { date: 1 } } },
+        { slug: '3', data: { title: '3', nested: { date: 2 } } },
+        { slug: '2', data: { title: '2', nested: { date: 3 } } },
+        { slug: '1', data: { title: '1', nested: { date: 4 } } },
+      ]),
+    );
+  });
+
+  it('should return filtered entries entries by field', () => {
+    const state = fromJS({
+      entities: {
+        'posts.1': { slug: '1', data: { title: '1' } },
+        'posts.2': { slug: '2', data: { title: '2' } },
+        'posts.3': { slug: '3', data: { title: '3' } },
+        'posts.4': { slug: '4', data: { title: '4' } },
+      },
+      pages: { posts: { ids: ['1', '2', '3', '4'] } },
+      filter: { posts: { title__1: { field: 'title', pattern: '4', active: true } } },
+    });
+    const collection = fromJS({
+      name: 'posts',
+    });
+
+    expect(selectEntries(state, collection)).toEqual(fromJS([{ slug: '4', data: { title: '4' } }]));
+  });
+
+  it('should return filtered entries entries by nested field', () => {
+    const state = fromJS({
+      entities: {
+        'posts.1': { slug: '1', data: { title: '1', nested: { draft: true } } },
+        'posts.2': { slug: '2', data: { title: '2', nested: { draft: true } } },
+        'posts.3': { slug: '3', data: { title: '3', nested: { draft: false } } },
+        'posts.4': { slug: '4', data: { title: '4', nested: { draft: false } } },
+      },
+      pages: { posts: { ids: ['1', '2', '3', '4'] } },
+      filter: {
+        posts: { 'nested.draft__false': { field: 'nested.draft', pattern: false, active: true } },
+      },
+    });
+    const collection = fromJS({
+      name: 'posts',
+    });
+
+    expect(selectEntries(state, collection)).toEqual(
+      fromJS([
+        { slug: '3', data: { title: '3', nested: { draft: false } } },
+        { slug: '4', data: { title: '4', nested: { draft: false } } },
+      ]),
+    );
   });
 });

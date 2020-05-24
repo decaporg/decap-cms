@@ -12,6 +12,7 @@ import {
   EntryField,
   State,
   EntryMap,
+  ViewFilter,
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -421,6 +422,11 @@ export const selectSortDataPath = (collection: Collection, key: string) => {
   } else {
     return `data.${key}`;
   }
+};
+
+export const selectViewFilters = (collection: Collection) => {
+  const viewFilters = collection.get('view_filters').toJS() as ViewFilter[];
+  return viewFilters;
 };
 
 export const selectFieldsComments = (collection: Collection, entryMap: EntryMap) => {

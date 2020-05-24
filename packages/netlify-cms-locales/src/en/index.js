@@ -46,6 +46,7 @@ const en = {
       descending: 'Descending',
       searchResults: 'Search Results for "%{searchTerm}"',
       searchResultsInCollection: 'Search Results for "%{searchTerm}" in %{collection}',
+      filterBy: 'Filter by',
     },
     entries: {
       loadingEntries: 'Loading Entries...',
