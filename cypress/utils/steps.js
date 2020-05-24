@@ -415,13 +415,11 @@ function validateObjectFields({ limit, author }) {
   cy.get('input[type=number]').type(limit);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
-  assertFieldErrorStatus('Post Settings', colorError);
   assertFieldErrorStatus('Default Author', colorError);
   cy.contains('label', 'Default Author').click();
   cy.focused().type(author);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
-  assertFieldErrorStatus('Post Settings', colorNormal);
   assertFieldErrorStatus('Default Author', colorNormal);
 }
 
@@ -477,8 +475,8 @@ function validateListFields({ name, description }) {
 }
 
 function validateNestedListFields() {
-  cy.get('a[href^="#/collections/hotel_locations"]').click();
-  cy.contains('a', 'New Hotel Location').click();
+  cy.get('a[href^="#/collections/settings"]').click();
+  cy.get('a[href^="#/collections/settings/entries/hotel_locations"]').click();
 
   // add first city list item
   cy.contains('button', 'hotel locations').click();

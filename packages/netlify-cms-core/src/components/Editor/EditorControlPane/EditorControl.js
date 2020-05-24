@@ -127,13 +127,11 @@ class EditorControl extends React.Component {
   };
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
-  isList = this.props.field.get('widget') === 'list';
-  isListOrObject = this.isList || this.props.field.get('widget') === 'object';
 
   isAncestorOfFieldError = () => {
     const { fieldsErrors } = this.props;
 
-    if (this.isListOrObject && fieldsErrors.size > 0) {
+    if (fieldsErrors.size > 0) {
       return Object.values(fieldsErrors.toJS()).some(arr =>
         arr.some(err => err.parentIds && err.parentIds.includes(this.uniqueFieldId)),
       );
@@ -184,6 +182,7 @@ class EditorControl extends React.Component {
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
+    const hasErrors = !!errors || childErrors;
 
     return (
       <ClassNames>
@@ -205,7 +204,7 @@ class EditorControl extends React.Component {
             )}
             <FieldLabel
               isActive={isSelected || this.state.styleActive}
-              hasErrors={!!errors || childErrors}
+              hasErrors={hasErrors}
               htmlFor={this.uniqueFieldId}
             >
               {`${field.get('label', field.get('name'))}${
@@ -225,7 +224,7 @@ class EditorControl extends React.Component {
                 {
                   [css`
                     ${styleStrings.widgetError};
-                  `]: !!errors || childErrors,
+                  `]: hasErrors,
                 },
               )}
               classNameWidget={css`
@@ -280,7 +279,7 @@ class EditorControl extends React.Component {
               t={t}
             />
             {fieldHint && (
-              <ControlHint active={isSelected || this.state.styleActive} error={!!errors}>
+              <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
                 {fieldHint}
               </ControlHint>
             )}

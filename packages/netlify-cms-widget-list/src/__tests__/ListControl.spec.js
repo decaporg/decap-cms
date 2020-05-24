@@ -52,6 +52,7 @@ describe('ListControl', () => {
     entry: fromJS({
       path: 'posts/index.md',
     }),
+    forID: 'forID',
   };
 
   beforeEach(() => {

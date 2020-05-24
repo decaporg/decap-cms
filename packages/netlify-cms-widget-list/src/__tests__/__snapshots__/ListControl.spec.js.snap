@@ -148,6 +148,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 
 <div
     class="classNameWrapper emotion-18"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -218,7 +219,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="0"
+          parentids="forID,0"
           validationkey="0"
           value="Map {}"
         />
@@ -376,6 +377,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 
 <div
     class="classNameWrapper emotion-22"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -446,7 +448,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="0"
+          parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -475,7 +477,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="1"
+          parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -634,6 +636,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
 
 <div
     class="classNameWrapper emotion-18"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -704,7 +707,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="1"
+          parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -718,6 +721,7 @@ exports[`ListControl should render empty list 1`] = `
 <DocumentFragment>
   <input
     class="classNameWrapper"
+    id="forID"
     type="text"
     value=""
   />
@@ -872,6 +876,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 
 <div
     class="classNameWrapper emotion-22"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -942,7 +947,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="0"
+          parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -971,7 +976,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="1"
+          parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -1129,6 +1134,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 
 <div
     class="classNameWrapper emotion-22"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -1199,7 +1205,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="0"
+          parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -1228,7 +1234,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="1"
+          parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -1387,6 +1393,7 @@ exports[`ListControl should render list with fields with default collapse ("true
 
 <div
     class="classNameWrapper emotion-22"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -1457,7 +1464,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="0"
+          parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
         />
@@ -1486,7 +1493,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="1"
+          parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
@@ -1627,6 +1634,7 @@ exports[`ListControl should render list with fields with default collapse ("true
 
 <div
     class="classNameWrapper emotion-14"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -1825,6 +1833,7 @@ exports[`ListControl should render list with nested object 1`] = `
 
 <div
     class="classNameWrapper emotion-22"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -1895,7 +1904,7 @@ exports[`ListControl should render list with nested object 1`] = `
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="0"
+          parentids="forID,0"
           validationkey="0"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
         />
@@ -1924,7 +1933,7 @@ exports[`ListControl should render list with nested object 1`] = `
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="1"
+          parentids="forID,1"
           validationkey="1"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
         />
@@ -2082,6 +2091,7 @@ exports[`ListControl should render list with nested object with collapse = false
 
 <div
     class="classNameWrapper emotion-22"
+    id="forID"
   >
     <div
       class="emotion-12 emotion-13"
@@ -2152,7 +2162,7 @@ exports[`ListControl should render list with nested object with collapse = false
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="0"
+          parentids="forID,0"
           validationkey="0"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
         />
@@ -2181,7 +2191,7 @@ exports[`ListControl should render list with nested object with collapse = false
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
           forlist="true"
-          listcontrolid="1"
+          parentids="forID,1"
           validationkey="1"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
         />
@@ -2195,6 +2205,7 @@ exports[`ListControl should render list with string array 1`] = `
 <DocumentFragment>
   <input
     class="classNameWrapper"
+    id="forID"
     type="text"
     value="item 1, item 2"
   />

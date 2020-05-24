@@ -15,10 +15,6 @@ import {
   assertEntryDeleted,
   assertWorkflowStatus,
   updateWorkflowStatusInEditor,
-  validateObjectFieldsAndExit,
-  validateNestedObjectFieldsAndExit,
-  validateListFieldsAndExit,
-  validateNestedListFieldsAndExit,
   unpublishEntry,
   publishEntryInEditor,
   duplicateEntry,
@@ -27,7 +23,7 @@ import {
   publishAndCreateNewEntryInEditor,
   publishAndDuplicateEntryInEditor,
 } from '../utils/steps';
-import { setting1, setting2, workflowStatus, editorStatus, publishTypes } from '../utils/constants';
+import { workflowStatus, editorStatus, publishTypes } from '../utils/constants';
 
 const entry1 = {
   title: 'first title',
@@ -73,26 +69,6 @@ describe('Test Backend Editorial Workflow', () => {
         .replace(/\s/, '-')}`,
     );
     exitEditor();
-  });
-
-  it('can validate object fields', () => {
-    login();
-    validateObjectFieldsAndExit(setting1);
-  });
-
-  it('can validate fields nested in an object field', () => {
-    login();
-    validateNestedObjectFieldsAndExit(setting1);
-  });
-
-  it('can validate list fields', () => {
-    login();
-    validateListFieldsAndExit(setting2);
-  });
-
-  it('can validate deeply nested list fields', () => {
-    login();
-    validateNestedListFieldsAndExit(setting2);
   });
 
   it('can publish an editorial workflow entry', () => {

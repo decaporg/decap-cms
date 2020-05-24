@@ -110,6 +110,7 @@ export default class ListControl extends React.Component {
 
   static defaultProps = {
     value: List(),
+    parentIds: [],
   };
 
   constructor(props) {
@@ -487,9 +488,7 @@ export default class ListControl extends React.Component {
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
               hasError={hasError}
-              listControlId={key}
-              forID={forID}
-              parentIds={parentIds}
+              parentIds={[...parentIds, forID, key]}
             />
           )}
         </ClassNames>
