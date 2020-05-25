@@ -184,8 +184,8 @@ const en = {
       upload: 'Upload',
       download: 'Download',
       deleting: 'Deleting...',
-      deleteSelected: 'Delete',
-      chooseSelected: 'Choose',
+      deleteSelected: 'Delete selected',
+      chooseSelected: 'Choose selected',
     },
   },
   ui: {
