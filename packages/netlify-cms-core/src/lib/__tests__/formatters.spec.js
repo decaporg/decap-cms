@@ -113,6 +113,50 @@ describe('formatters', () => {
       ).toEqual('Custom commit message');
     });
 
+    it('should use empty values if "authorLogin" and "authorName" are missing in commit message', () => {
+      config.getIn.mockReturnValueOnce(
+        Map({
+          update: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
+        }),
+      );
+
+      expect(
+        commitMessageFormatter(
+          'update',
+          config,
+          {
+            slug: 'doc-slug',
+            path: 'file-path',
+            collection,
+          },
+          true,
+        ),
+      ).toEqual(' - : Create Collection “doc-slug”');
+    });
+
+    it('should return custom create message with author information', () => {
+      config.getIn.mockReturnValueOnce(
+        Map({
+          create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
+        }),
+      );
+
+      expect(
+        commitMessageFormatter(
+          'create',
+          config,
+          {
+            slug: 'doc-slug',
+            path: 'file-path',
+            collection,
+            authorLogin: 'user-login',
+            authorName: 'Test User',
+          },
+          true,
+        ),
+      ).toEqual('user-login - Test User: Create Collection “doc-slug”');
+    });
+
     it('should return custom open authoring message', () => {
       config.getIn.mockReturnValueOnce(
         Map({
