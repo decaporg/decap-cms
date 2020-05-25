@@ -129,27 +129,40 @@ describe('config', () => {
 
     it('should throw if local_backend is not a boolean or plain object', () => {
       expect(() => {
-        validateConfig(merge(validConfig, { local_backend: [] }));
+        validateConfig({ ...validConfig, local_backend: [] });
       }).toThrowError("'local_backend' should be boolean");
     });
 
-    it('should throw if local_backend is a plain object but missing url property', () => {
+    it('should throw if local_backend url is not a string', () => {
       expect(() => {
-        validateConfig(merge(validConfig, { local_backend: {} }));
-      }).toThrowError("'local_backend' should be object");
+        validateConfig({ ...validConfig, local_backend: { url: [] } });
+      }).toThrowError("'local_backend.url' should be string");
+    });
+
+    it('should throw if local_backend allowed_hosts is not a string array', () => {
+      expect(() => {
+        validateConfig({ ...validConfig, local_backend: { allowed_hosts: [true] } });
+      }).toThrowError("'local_backend.allowed_hosts[0]' should be string");
     });
 
     it('should not throw if local_backend is a boolean', () => {
       expect(() => {
-        validateConfig(merge(validConfig, { local_backend: true }));
+        validateConfig({ ...validConfig, local_backend: true });
       }).not.toThrowError();
     });
 
-    it('should not throw if local_backend is a plain object with url property', () => {
+    it('should not throw if local_backend is a plain object with url string property', () => {
       expect(() => {
-        validateConfig(
-          merge(validConfig, { local_backend: { url: 'http://localhost:8081/api/v1' } }),
-        );
+        validateConfig({ ...validConfig, local_backend: { url: 'http://localhost:8081/api/v1' } });
+      }).not.toThrowError();
+    });
+
+    it('should not throw if local_backend is a plain object with allowed_hosts string array property', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          local_backend: { allowed_hosts: ['192.168.0.1'] },
+        });
       }).not.toThrowError();
     });
 

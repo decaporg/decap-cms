@@ -186,12 +186,14 @@ export function mergeConfig(config) {
 }
 
 export async function detectProxyServer(localBackend) {
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  const allowedHosts = ['localhost', '127.0.0.1', ...(localBackend?.allowed_hosts || [])];
+  if (allowedHosts.includes(location.hostname)) {
     let proxyUrl;
+    const defaultUrl = 'http://localhost:8081/api/v1';
     if (localBackend === true) {
-      proxyUrl = 'http://localhost:8081/api/v1';
+      proxyUrl = defaultUrl;
     } else if (isPlainObject(localBackend)) {
-      proxyUrl = localBackend.url;
+      proxyUrl = localBackend.url || defaultUrl.replace('localhost', location.hostname);
     }
     try {
       console.log(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
