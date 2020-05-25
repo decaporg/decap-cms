@@ -5,9 +5,7 @@ import { Map } from 'immutable';
 import { isEmpty } from 'lodash';
 import { translate } from 'react-polyglot';
 import { Modal } from 'UI';
-import MediaLibrarySearch from './MediaLibrarySearch';
-import MediaLibraryHeader from './MediaLibraryHeader';
-import MediaLibraryActions from './MediaLibraryActions';
+import MediaLibraryTop from './MediaLibraryTop';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import EmptyMessage from './EmptyMessage';
 import { colors } from 'netlify-cms-ui-default';
@@ -25,12 +23,6 @@ const cardMargin = `10px`;
  * (not using calc because this will be nested in other calcs)
  */
 const cardOutsideWidth = `300px`;
-
-const LibraryTop = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-`;
 
 const StyledModal = styled(Modal)`
   display: grid;
@@ -114,55 +106,29 @@ const MediaLibraryModal = ({
     (!hasFiles && t('mediaLibrary.mediaLibraryModal.noAssetsFound')) ||
     (!hasFilteredFiles && t('mediaLibrary.mediaLibraryModal.noImagesFound')) ||
     (!hasSearchResults && t('mediaLibrary.mediaLibraryModal.noResults'));
+
   const hasSelection = hasMedia && !isEmpty(selectedFile);
-  const shouldShowButtonLoader = isPersisting || isDeleting;
 
   return (
     <StyledModal isOpen={isVisible} onClose={handleClose} isPrivate={privateUpload}>
-      <LibraryTop>
-        <div>
-          <MediaLibraryHeader
-            onClose={handleClose}
-            title={`${privateUpload ? t('mediaLibrary.mediaLibraryModal.private') : ''}${
-              forImage
-                ? t('mediaLibrary.mediaLibraryModal.images')
-                : t('mediaLibrary.mediaLibraryModal.mediaAssets')
-            }`}
-            isPrivate={privateUpload}
-          />
-          <MediaLibrarySearch
-            value={query}
-            onChange={handleSearchChange}
-            onKeyDown={handleSearchKeyDown}
-            placeholder={t('mediaLibrary.mediaLibraryModal.search')}
-            disabled={!dynamicSearchActive && !hasFilteredFiles}
-          />
-        </div>
-        <MediaLibraryActions
-          uploadButtonLabel={
-            isPersisting
-              ? t('mediaLibrary.mediaLibraryModal.uploading')
-              : t('mediaLibrary.mediaLibraryModal.upload')
-          }
-          deleteButtonLabel={
-            isDeleting
-              ? t('mediaLibrary.mediaLibraryModal.deleting')
-              : t('mediaLibrary.mediaLibraryModal.deleteSelected')
-          }
-          downloadButtonLabel={t('mediaLibrary.mediaLibraryModal.download')}
-          insertButtonLabel={t('mediaLibrary.mediaLibraryModal.chooseSelected')}
-          uploadEnabled={!shouldShowButtonLoader}
-          deleteEnabled={!shouldShowButtonLoader && hasSelection}
-          insertEnabled={hasSelection}
-          downloadEnabled={hasSelection}
-          insertVisible={canInsert}
-          imagesOnly={forImage}
-          onPersist={handlePersist}
-          onDelete={handleDelete}
-          onInsert={handleInsert}
-          onDownload={handleDownload}
-        />
-      </LibraryTop>
+      <MediaLibraryTop
+        t={t}
+        onClose={handleClose}
+        privateUpload={privateUpload}
+        forImage={forImage}
+        onDownload={handleDownload}
+        onUpload={handlePersist}
+        query={query}
+        onSearchChange={handleSearchChange}
+        onSearchKeyDown={handleSearchKeyDown}
+        searchDisabled={!dynamicSearchActive && !hasFilteredFiles}
+        onDelete={handleDelete}
+        canInsert={canInsert}
+        onInsert={handleInsert}
+        hasSelection={hasSelection}
+        isPersisting={isPersisting}
+        isDeleting={isDeleting}
+      />
       {!shouldShowEmptyMessage ? null : (
         <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
       )}
