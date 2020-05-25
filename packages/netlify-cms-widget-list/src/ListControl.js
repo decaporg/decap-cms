@@ -110,6 +110,7 @@ export default class ListControl extends React.Component {
 
   static defaultProps = {
     value: List(),
+    parentIds: [],
   };
 
   constructor(props) {
@@ -410,6 +411,15 @@ export default class ListControl extends React.Component {
     this.validations = this.validations.filter(item => updatedKeys.includes(item.key));
   };
 
+  hasError = index => {
+    const { fieldsErrors } = this.props;
+    if (fieldsErrors && fieldsErrors.size > 0) {
+      return Object.values(fieldsErrors.toJS()).some(arr =>
+        arr.some(err => err.parentIds && err.parentIds.includes(this.state.keys[index])),
+      );
+    }
+  };
+
   // eslint-disable-next-line react/display-name
   renderItem = (item, index) => {
     const {
@@ -421,12 +431,15 @@ export default class ListControl extends React.Component {
       fieldsErrors,
       controlRef,
       resolveWidget,
+      parentIds,
+      forID,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
     const collapsed = itemsCollapsed[index];
     const key = keys[index];
     let field = this.props.field;
+    const hasError = this.hasError(index);
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
@@ -448,7 +461,9 @@ export default class ListControl extends React.Component {
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
-        <NestedObjectLabel collapsed={collapsed}>{this.objectLabel(item)}</NestedObjectLabel>
+        <NestedObjectLabel collapsed={collapsed} error={hasError}>
+          {this.objectLabel(item)}
+        </NestedObjectLabel>
         <ClassNames>
           {({ css, cx }) => (
             <ObjectControl
@@ -472,6 +487,8 @@ export default class ListControl extends React.Component {
               validationKey={key}
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
+              hasError={hasError}
+              parentIds={[...parentIds, forID, key]}
             />
           )}
         </ClassNames>

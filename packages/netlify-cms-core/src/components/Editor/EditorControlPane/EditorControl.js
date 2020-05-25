@@ -115,6 +115,11 @@ class EditorControl extends React.Component {
     t: PropTypes.func.isRequired,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
+    parentIds: PropTypes.arrayOf(PropTypes.string),
+  };
+
+  static defaultProps = {
+    parentIds: [],
   };
 
   state = {
@@ -122,6 +127,17 @@ class EditorControl extends React.Component {
   };
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
+
+  isAncestorOfFieldError = () => {
+    const { fieldsErrors } = this.props;
+
+    if (fieldsErrors && fieldsErrors.size > 0) {
+      return Object.values(fieldsErrors.toJS()).some(arr =>
+        arr.some(err => err.parentIds && err.parentIds.includes(this.uniqueFieldId)),
+      );
+    }
+    return false;
+  };
 
   render() {
     const {
@@ -153,6 +169,7 @@ class EditorControl extends React.Component {
       isSelected,
       isEditorComponent,
       isNewEditorComponent,
+      parentIds,
       t,
     } = this.props;
 
@@ -164,6 +181,9 @@ class EditorControl extends React.Component {
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
+    const childErrors = this.isAncestorOfFieldError();
+    const hasErrors = !!errors || childErrors;
+
     return (
       <ClassNames>
         {({ css, cx }) => (
@@ -184,7 +204,7 @@ class EditorControl extends React.Component {
             )}
             <FieldLabel
               isActive={isSelected || this.state.styleActive}
-              hasErrors={!!errors}
+              hasErrors={hasErrors}
               htmlFor={this.uniqueFieldId}
             >
               {`${field.get('label', field.get('name'))}${
@@ -204,7 +224,7 @@ class EditorControl extends React.Component {
                 {
                   [css`
                     ${styleStrings.widgetError};
-                  `]: !!errors,
+                  `]: hasErrors,
                 },
               )}
               classNameWidget={css`
@@ -255,10 +275,11 @@ class EditorControl extends React.Component {
               onValidateObject={onValidateObject}
               isEditorComponent={isEditorComponent}
               isNewEditorComponent={isNewEditorComponent}
+              parentIds={parentIds}
               t={t}
             />
             {fieldHint && (
-              <ControlHint active={isSelected || this.state.styleActive} error={!!errors}>
+              <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
                 {fieldHint}
               </ControlHint>
             )}
