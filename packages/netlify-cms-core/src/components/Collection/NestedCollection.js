@@ -11,6 +11,7 @@ import { selectEntries } from '../../reducers/entries';
 import { Icon, colors } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { sortBy } from 'lodash';
 
 const { addFileTemplateFields } = stringTemplate;
 
@@ -43,11 +44,19 @@ const TreeNavLink = styled(NavLink)`
   `};
 `;
 
+const getNodeTitle = node => {
+  const title = node.isRoot
+    ? node.title
+    : node.children.find(c => !c.isDir && c.title)?.title || node.title;
+  return title;
+};
+
 const TreeNode = props => {
   const { collection, treeData, depth = 0, onToggle } = props;
   const collectionName = collection.get('name');
 
-  return treeData.map(node => {
+  const sortedData = sortBy(treeData, getNodeTitle);
+  return sortedData.map(node => {
     const leaf = node.children.length <= 1 && !node.children[0]?.isDir && depth > 0;
     if (leaf) {
       return null;
@@ -56,8 +65,7 @@ const TreeNode = props => {
     if (depth > 0) {
       to = `${to}/filter${node.path}`;
     }
-    const title =
-      depth > 0 ? node.children.find(c => !c.isDir && c.title)?.title || node.title : node.title;
+    const title = getNodeTitle(node);
 
     const showChevron = depth === 0 || node.children.some(c => c.children.some(c => c.isDir));
     return (
@@ -137,11 +145,13 @@ export const getTreeData = (collection, entries) => {
       title: collection.get('label'),
       path: rootFolder,
       isDir: true,
+      isRoot: true,
     },
     ...Object.entries(dirs).map(([key, value]) => ({
       title: value,
       path: key,
       isDir: true,
+      isRoot: false,
     })),
     ...entriesObj.map((e, index) => {
       let entryMap = entries.get(index);
@@ -154,6 +164,7 @@ export const getTreeData = (collection, entries) => {
         ...e,
         title,
         isDir: false,
+        isRoot: false,
       };
     }),
   ];

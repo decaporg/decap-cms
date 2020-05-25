@@ -278,22 +278,26 @@ describe('NestedCollection', () => {
           title: 'Pages',
           path: '/',
           isDir: true,
+          isRoot: true,
           children: [
             {
               title: 'intro',
               path: '/intro',
               isDir: true,
+              isRoot: false,
               children: [
                 {
                   title: 'category',
                   path: '/intro/category',
                   isDir: true,
+                  isRoot: false,
                   children: [
                     {
                       path: '/intro/category/index.md',
                       data: { title: 'intro category index' },
                       title: 'intro category index',
                       isDir: false,
+                      isRoot: false,
                       children: [],
                     },
                   ],
@@ -303,6 +307,7 @@ describe('NestedCollection', () => {
                   data: { title: 'intro index' },
                   title: 'intro index',
                   isDir: false,
+                  isRoot: false,
                   children: [],
                 },
               ],
@@ -311,12 +316,14 @@ describe('NestedCollection', () => {
               title: 'compliance',
               path: '/compliance',
               isDir: true,
+              isRoot: false,
               children: [
                 {
                   path: '/compliance/index.md',
                   data: { title: 'compliance index' },
                   title: 'compliance index',
                   isDir: false,
+                  isRoot: false,
                   children: [],
                 },
               ],
@@ -326,6 +333,7 @@ describe('NestedCollection', () => {
               data: { title: 'Root' },
               title: 'Root',
               isDir: false,
+              isRoot: false,
               children: [],
             },
           ],
@@ -343,12 +351,14 @@ describe('NestedCollection', () => {
           title: 'Pages',
           path: '/',
           isDir: true,
+          isRoot: true,
           children: [
             {
               path: '/index.md',
               data: { title: 'Root' },
               title: 'Root',
               isDir: false,
+              isRoot: false,
               children: [],
             },
           ],
@@ -369,12 +379,14 @@ describe('NestedCollection', () => {
           title: 'Pages',
           path: '/',
           isDir: true,
+          isRoot: true,
           children: [
             {
               path: '/index.md',
               data: { title: 'Root' },
               title: 'index',
               isDir: false,
+              isRoot: false,
               children: [],
             },
           ],
