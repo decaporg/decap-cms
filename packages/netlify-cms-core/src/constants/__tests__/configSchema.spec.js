@@ -190,7 +190,7 @@ describe('config', () => {
             collections: [
               {
                 fields: [
-                  { name: 'title', label: 'other title', widget: 'string' },
+                  { name: 'title', label: 'title', widget: 'string' },
                   { name: 'title', label: 'other title', widget: 'string' },
                 ],
               },
@@ -207,7 +207,7 @@ describe('config', () => {
             collections: [
               {
                 fields: [
-                  { name: 'title', label: 'other title', widget: 'string' },
+                  { name: 'title', label: 'title', widget: 'string' },
                   {
                     name: 'object',
                     label: 'Object',
