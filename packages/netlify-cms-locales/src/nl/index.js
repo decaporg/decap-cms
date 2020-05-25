@@ -34,16 +34,33 @@ const nl = {
   collection: {
     sidebar: {
       collections: 'Inhoudstypen',
+      allCollections: 'Alle inhoudstypen',
       searchAll: 'Zoeken',
+      searchIn: 'Zoeken in',
     },
     collectionTop: {
+      sortBy: 'Sorteer op',
       viewAs: 'Bekijk als',
       newButton: 'Nieuwe %{collectionLabel}',
+      ascending: 'Oplopend',
+      descending: 'Aflopend',
+      searchResults: 'Zoekresultaten voor "%{searchTerm}"',
+      searchResultsInCollection: 'Zoekresultaten voor "%{searchTerm}" in %{collection}',
+      filterBy: 'Filteren op',
     },
     entries: {
       loadingEntries: 'Items laden',
       cachingEntries: 'Items cachen',
       longerLoading: 'Dit kan een paar minuten duren',
+      noEntries: 'Geen items',
+    },
+    defaultFields: {
+      author: {
+        label: 'Auteur',
+      },
+      updatedOn: {
+        label: 'Bijgewerkt op',
+      },
     },
   },
   editor: {
@@ -89,7 +106,6 @@ const nl = {
       publish: 'Publiceer',
       published: 'Gepubliceerd',
       unpublish: 'Publicatie terugtrekken',
-      unpublished: 'Publicatie teruggetrokken',
       duplicate: 'Dupliceren',
       unpublishing: 'Publicatie ongedaan maken...',
       publishAndCreateNew: 'Publiceer en maak nieuw item aan',
@@ -114,7 +130,6 @@ const nl = {
       deployPreviewButtonLabel: 'Bekijk voorvertoning',
       deployButtonLabel: 'Bekijk Live',
     },
-
     editorWidgets: {
       markdown: {
         richText: 'Rijke tekst',
@@ -144,6 +159,9 @@ const nl = {
         headingFive: 'Heading 5',
         headingSix: 'Heading 6',
       },
+      datetime: {
+        now: 'Nu',
+      },
     },
   },
   mediaLibrary: {
@@ -161,21 +179,28 @@ const nl = {
       noAssetsFound: 'Geen media gevonden.',
       noImagesFound: 'Geen afbeeldingen gevonden.',
       private: 'Privé',
+      images: 'Afbeeldingen',
       mediaAssets: 'Media',
       search: 'Zoeken...',
       uploading: 'Uploaden...',
       upload: 'Nieuwe uploaden',
+      download: 'Downloaden',
       deleting: 'Verwijderen...',
       deleteSelected: 'Verwijder selectie',
       chooseSelected: 'Gebruik selectie',
     },
   },
   ui: {
+    default: {
+      goBackToSite: 'Ga terug naar site',
+    },
     errorBoundary: {
       title: 'Fout',
       details: 'Er is een fout opgetreden - ',
       reportIt: 'maak er alstublieft een melding van.',
       detailsHeading: 'Details',
+      privacyWarning:
+        'Als u een probleem opent, wordt het vooraf gevuld met het foutbericht en foutopsporingsgegevens. \nControleer of de informatie correct is en verwijder, indien aanwezig, gevoelige gegevens.',
       recoveredEntry: {
         heading: 'Hersteld document',
         warning: 'Kopieer / plak dit ergens voordat u weggaat!',
@@ -194,7 +219,9 @@ const nl = {
       missingRequiredField: 'Oeps, sommige verplichte velden zijn niet ingevuld.',
       entrySaved: 'Item opgeslagen',
       entryPublished: 'Item gepubliceerd',
+      entryUnpublished: 'Publicatie teruggetrokken',
       onFailToPublishEntry: 'Kan item niet publiceren: %{details}',
+      onFailToUnpublishEntry: 'Kan item niet terugtrekken: %{details}',
       entryUpdated: 'Status van item geüpdatet',
       onDeleteUnpublishedChanges: 'Niet-gepubliceerde wijzigingen verwijderd',
       onFailToAuth: '%{details}',
