@@ -182,5 +182,44 @@ describe('config', () => {
         validateConfig(merge({}, validConfig, { collections: [{ sortableFields: [] }] }));
       }).not.toThrow();
     });
+
+    it('should throw if collection fields names are not unique', () => {
+      expect(() => {
+        validateConfig(
+          merge(validConfig, {
+            collections: [
+              {
+                fields: [
+                  { name: 'title', label: 'title', widget: 'string' },
+                  { name: 'title', label: 'other title', widget: 'string' },
+                ],
+              },
+            ],
+          }),
+        );
+      }).toThrowError("'collections[0].fields' fields names must be unique");
+    });
+
+    it('should not throw if collection fields are unique across nesting levels', () => {
+      expect(() => {
+        validateConfig(
+          merge(validConfig, {
+            collections: [
+              {
+                fields: [
+                  { name: 'title', label: 'title', widget: 'string' },
+                  {
+                    name: 'object',
+                    label: 'Object',
+                    widget: 'object',
+                    fields: [{ name: 'title', label: 'title', widget: 'string' }],
+                  },
+                ],
+              },
+            ],
+          }),
+        );
+      }).not.toThrow();
+    });
   });
 });
