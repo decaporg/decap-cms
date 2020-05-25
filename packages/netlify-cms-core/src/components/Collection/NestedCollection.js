@@ -269,7 +269,7 @@ export class NestedCollection extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collection } = ownProps;
-  const entries = selectEntries(state.entries, collection.get('name')) || List();
+  const entries = selectEntries(state.entries, collection) || List();
   return { entries };
 }
 
