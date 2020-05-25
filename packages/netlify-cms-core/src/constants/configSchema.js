@@ -1,4 +1,5 @@
 import AJV from 'ajv';
+import uniqueItemProperties from 'ajv-keywords/keywords/uniqueItemProperties';
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
 
@@ -19,6 +20,7 @@ const fieldsConfig = {
     },
     required: ['name'],
   },
+  uniqueItemProperties: ['name'],
 };
 
 const viewFilters = {
@@ -223,11 +225,20 @@ class ConfigError extends Error {
  */
 export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true });
+  uniqueItemProperties(ajv);
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
   if (!valid) {
-    console.error('Config Errors', ajv.errors);
-    throw new ConfigError(ajv.errors);
+    const errors = ajv.errors.map(e => {
+      // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
+      if (e.keyword === 'uniqueItemProperties') {
+        const newError = { ...e, message: 'fields names must be unique' };
+        return newError;
+      }
+      return e;
+    });
+    console.error('Config Errors', errors);
+    throw new ConfigError(errors);
   }
 }
