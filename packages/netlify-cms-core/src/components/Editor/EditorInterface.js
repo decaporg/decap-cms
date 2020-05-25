@@ -132,6 +132,10 @@ class EditorInterface extends Component {
     this.setState({ showEventBlocker: false });
   };
 
+  handleOnChange = () => {
+    this.controlPaneRef.validate();
+  };
+
   handleOnPersist = (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
     this.controlPaneRef.validate();

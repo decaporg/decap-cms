@@ -214,6 +214,7 @@ export class Editor extends React.Component {
   handleChangeDraftField = (field, value, metadata) => {
     const entries = [this.props.unPublishedEntry, this.props.publishedEntry].filter(Boolean);
     this.props.changeDraftField(field, value, metadata, entries);
+    this.editorInterfaceRef.handleOnChange();
   };
 
   handleChangeStatus = newStatusName => {
@@ -431,6 +432,7 @@ export class Editor extends React.Component {
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
         loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
+        ref={e => (this.editorInterfaceRef = e)}
       />
     );
   }
