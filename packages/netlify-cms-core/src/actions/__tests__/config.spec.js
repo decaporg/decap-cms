@@ -491,6 +491,25 @@ describe('config', () => {
 
       assetFetchCalled(url);
     });
+
+    it('should use local_backend allowed_hosts', async () => {
+      const allowed_hosts = ['192.168.0.1'];
+      window.location = { hostname: '192.168.0.1' };
+      global.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue({
+          repo: 'test-repo',
+          publish_modes: ['simple', 'editorial_workflow'],
+          type: 'local_git',
+        }),
+      });
+      await expect(detectProxyServer({ allowed_hosts })).resolves.toEqual({
+        proxyUrl: 'http://192.168.0.1:8081/api/v1',
+        publish_modes: ['simple', 'editorial_workflow'],
+        type: 'local_git',
+      });
+
+      assetFetchCalled('http://192.168.0.1:8081/api/v1');
+    });
   });
 
   describe('handleLocalBackend', () => {

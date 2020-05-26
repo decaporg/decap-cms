@@ -73,8 +73,12 @@ const getConfigSchema = () => ({
           type: 'object',
           properties: {
             url: { type: 'string', examples: ['http://localhost:8081/api/v1'] },
+            allowed_hosts: {
+              type: 'array',
+              items: { type: 'string' },
+            },
           },
-          required: ['url'],
+          additionalProperties: false,
         },
       ],
     },
