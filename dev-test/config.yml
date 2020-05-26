@@ -185,12 +185,15 @@ collections: # A list of collections the CMS should be able to edit
                 name: 'list'
                 widget: 'list'
                 fields:
-                  - label: 'Related Post'
+                  - label: 'Related Post (only numbered posts)'
                     name: 'post'
                     widget: 'relationKitchenSinkPost'
                     collection: 'posts'
                     searchFields: ['title', 'body']
                     valueField: 'title'
+                    filters:
+                      - field: title
+                        pattern: 'This is post #'
                   - { label: 'String', name: 'string', widget: 'string' }
                   - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
                   - { label: 'Text', name: 'text', widget: 'text' }

@@ -5,7 +5,7 @@ import { Async as AsyncSelect } from 'react-select';
 import { find, isEmpty, last, debounce, get, trimEnd } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stringTemplate, filter } from 'netlify-cms-lib-widgets';
 
 function optionToString(option) {
   return option && option.value ? option.value : '';
@@ -156,9 +156,16 @@ export default class RelationControl extends React.Component {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || List([field.get('valueField')]);
+    const filters = field.get('filters')?.toJS();
 
     const options = hits.reduce((acc, hit) => {
       const valuesPaths = expandPath({ data: hit.data, path: valueField });
+
+      if (filters && !filters.every(f => filter.matchesFilter(fromJS(hit.data), f))) {
+        // skip if not all filters match
+        return acc;
+      }
+
       for (let i = 0; i < valuesPaths.length; i++) {
         const label = displayField
           .toJS()
@@ -181,7 +188,7 @@ export default class RelationControl extends React.Component {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
-    const optionsLength = field.get('optionsLength') || 20;
+    const optionsLength = field.get('optionsLength', 20);
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
     const file = field.get('file');
 

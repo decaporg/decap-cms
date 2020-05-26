@@ -2,7 +2,11 @@ const workflowStatus = { draft: 'Drafts', review: 'In Review', ready: 'Ready' };
 const editorStatus = { draft: 'Draft', review: 'In review', ready: 'Ready' };
 const setting1 = { limit: 10, author: 'John Doe' };
 const setting2 = { name: 'Jane Doe', description: 'description' };
-const publishTypes = { publishNow: 'Publish now', publishAndCreateNew: 'Publish and create new', publishAndDuplicate: 'Publish and duplicate' };
+const publishTypes = {
+  publishNow: 'Publish now',
+  publishAndCreateNew: 'Publish and create new',
+  publishAndDuplicate: 'Publish and duplicate',
+};
 const colorError = 'rgb(255, 0, 59)';
 const colorNormal = 'rgb(223, 223, 227)';
 const textColorNormal = 'rgb(68, 74, 87)';
@@ -24,17 +28,17 @@ const notifications = {
   },
 };
 const HOT_KEY_MAP = {
-  'bold': 'mod+b',
-  'code': 'mod+shift+c',
-  'italic': 'mod+i',
-  'strikethrough': 'mod+shift+s',
+  bold: 'mod+b',
+  code: 'mod+shift+c',
+  italic: 'mod+i',
+  strikethrough: 'mod+shift+s',
   'heading-one': 'mod+1',
   'heading-two': 'mod+2',
   'heading-three': 'mod+3',
   'heading-four': 'mod+4',
   'heading-five': 'mod+5',
   'heading-six': 'mod+6',
-  'link': 'mod+k',
+  link: 'mod+k',
 };
 
 module.exports = {

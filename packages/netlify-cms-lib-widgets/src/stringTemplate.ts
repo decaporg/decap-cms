@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { Map } from 'immutable';
 import { basename, extname } from 'path';
+import { keyToPathArray } from './util';
 
 const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
@@ -10,6 +11,8 @@ const templateVariablePattern = `{{(${templateContentPattern})}}`;
 function formatDate(date: number) {
   return `0${date}`.slice(-2);
 }
+
+export { keyToPathArray };
 
 export const dateParsers: Record<string, (date: Date) => string> = {
   year: (date: Date) => `${date.getUTCFullYear()}`,
@@ -33,32 +36,6 @@ export function parseDateFromEntry(entry: Map<string, unknown>, dateFieldName?: 
 }
 
 export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
-
-export const keyToPathArray = (key?: string) => {
-  if (!key) {
-    return [];
-  }
-  const parts = [];
-  const separator = '';
-  const chars = key.split(separator);
-
-  let currentChar;
-  let currentStr = [];
-  while ((currentChar = chars.shift())) {
-    if (['[', ']', '.'].includes(currentChar)) {
-      if (currentStr.length > 0) {
-        parts.push(currentStr.join(separator));
-      }
-      currentStr = [];
-    } else {
-      currentStr.push(currentChar);
-    }
-  }
-  if (currentStr.length > 0) {
-    parts.push(currentStr.join(separator));
-  }
-  return parts;
-};
 
 // Allow `fields.` prefix in placeholder to override built in replacements
 // like "slug" and "year" with values from fields of the same name.
