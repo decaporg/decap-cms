@@ -1,7 +1,12 @@
 import { Map } from 'immutable';
 import { USE_OPEN_AUTHORING } from 'Actions/auth';
 
-const LOADING_IGNORE_LIST = ['DEPLOY_PREVIEW'];
+const LOADING_IGNORE_LIST = [
+  'DEPLOY_PREVIEW',
+  'STATUS_REQUEST',
+  'STATUS_SUCCESS',
+  'STATUS_FAILURE',
+];
 
 const ignoreWhenLoading = action => LOADING_IGNORE_LIST.some(type => action.type.includes(type));
 

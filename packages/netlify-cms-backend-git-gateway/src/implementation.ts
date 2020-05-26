@@ -168,6 +168,10 @@ export default class GitGateway implements Implementation {
     return true;
   }
 
+  status() {
+    return this.backend!.status();
+  }
+
   async getAuthClient() {
     if (this.authClient) {
       return this.authClient;
@@ -203,7 +207,16 @@ export default class GitGateway implements Implementation {
 
   authenticate(credentials: Credentials) {
     const user = credentials as NetlifyUser;
-    this.tokenPromise = user.jwt.bind(user);
+    this.tokenPromise = async () => {
+      try {
+        const func = user.jwt.bind(user);
+        const token = await func();
+        return token;
+      } catch (error) {
+        console.error(error);
+        throw new APIError(`Failed getting access token`, 401, '');
+      }
+    };
     return this.tokenPromise!().then(async token => {
       if (!this.backendType) {
         const {

@@ -179,6 +179,11 @@ export class Backend {
     }
   }
 
+  async status() {
+    const status = await this.implementation!.status();
+    return status;
+  }
+
   currentUser() {
     if (this.user) {
       return this.user;

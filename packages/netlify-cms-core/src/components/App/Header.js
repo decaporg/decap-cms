@@ -17,6 +17,8 @@ import {
   zIndex,
 } from 'netlify-cms-ui-default';
 import SettingsDropdown from 'UI/SettingsDropdown';
+import { connect } from 'react-redux';
+import { checkBackendStatus } from '../../actions/status';
 
 const styles = {
   buttonActive: css`
@@ -122,6 +124,18 @@ class Header extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  intervalId;
+
+  componentDidMount() {
+    this.intervalId = setInterval(() => {
+      this.props.checkBackendStatus();
+    }, 10000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
   handleCreatePostClick = collectionName => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
@@ -211,4 +225,10 @@ class Header extends React.Component {
   }
 }
 
-export default translate()(Header);
+function mapStateToProps() {
+  return {};
+}
+
+const mapDispatchToProps = { checkBackendStatus };
+
+export default connect(mapStateToProps, mapDispatchToProps)(translate()(Header));

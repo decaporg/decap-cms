@@ -111,6 +111,16 @@ export default class GitHub implements Implementation {
     return true;
   }
 
+  async status() {
+    const auth =
+      (await this.api
+        ?.user()
+        .then(user => !!user)
+        .catch(() => false)) || false;
+
+    return { auth };
+  }
+
   authComponent() {
     const wrappedAuthenticationPage = (props: Record<string, unknown>) => (
       <AuthenticationPage {...props} backend={this} />

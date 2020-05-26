@@ -111,6 +111,16 @@ export default class BitbucketBackend implements Implementation {
     return true;
   }
 
+  async status() {
+    const auth =
+      (await this.api
+        ?.user()
+        .then(user => !!user)
+        .catch(() => false)) || false;
+
+    return { auth };
+  }
+
   authComponent() {
     return AuthenticationPage;
   }

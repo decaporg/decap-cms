@@ -101,6 +101,10 @@ export default class TestBackend implements Implementation {
     return false;
   }
 
+  status() {
+    return Promise.resolve({ auth: true });
+  }
+
   authComponent() {
     return AuthenticationPage;
   }

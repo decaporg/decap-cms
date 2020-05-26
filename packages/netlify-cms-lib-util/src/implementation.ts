@@ -139,6 +139,7 @@ export interface Implementation {
   ) => Promise<{ entries: ImplementationEntry[]; cursor: Cursor }>;
 
   isGitBackend?: () => boolean;
+  status: () => Promise<{ auth: boolean }>;
 }
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
