@@ -32,7 +32,8 @@ Object {
             },
           ],
           "object": "text",
-          "text": "Note: Feel free to play with this page. Unlike regular notes, this doesn't automatically save itself.",
+          "text": "Note: Feel free to play with this page. Unlike regular notes, this doesn't
+automatically save itself.",
         },
       ],
       "object": "block",
@@ -52,7 +53,8 @@ Object {
       "nodes": Array [
         Object {
           "object": "text",
-          "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown. A paragraph is what text will turn into when there is no reason it should
+          "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
+A paragraph is what text will turn into when there is no reason it should
 become anything else.",
         },
       ],
@@ -76,7 +78,8 @@ become anything else.",
         },
         Object {
           "object": "text",
-          "text": " and ",
+          "text": " and
+",
         },
         Object {
           "marks": Array [
@@ -298,7 +301,8 @@ uses a fixed-width font.",
           "nodes": Array [
             Object {
               "object": "text",
-              "text": "Here is a quote. What this is should be self explanatory. Quotes are automatically indented when they are used.",
+              "text": "Here is a quote. What this is should be self explanatory. Quotes are
+automatically indented when they are used.",
             },
           ],
           "object": "block",
@@ -322,7 +326,8 @@ uses a fixed-width font.",
       "nodes": Array [
         Object {
           "object": "text",
-          "text": "There are six levels of headings. They correspond with the six levels of HTML headings. You've probably noticed them already in the page. Each level down
+          "text": "There are six levels of headings. They correspond with the six levels of HTML
+headings. You've probably noticed them already in the page. Each level down
 uses one more hash character.",
         },
       ],
@@ -384,7 +389,8 @@ uses one more hash character.",
       "nodes": Array [
         Object {
           "object": "text",
-          "text": "Of course, demonstrating what headings look like messes up the structure of the page.",
+          "text": "Of course, demonstrating what headings look like messes up the structure of the
+page.",
         },
       ],
       "object": "block",
@@ -394,7 +400,8 @@ uses one more hash character.",
       "nodes": Array [
         Object {
           "object": "text",
-          "text": "I don't recommend using more than three or four levels of headings here, because, when you're smallest heading isn't too small, and you're largest
+          "text": "I don't recommend using more than three or four levels of headings here,
+because, when you're smallest heading isn't too small, and you're largest
 heading isn't too big, and you want each size up to look noticeably larger and
 more important, there there are only so many sizes that you can use.",
         },
@@ -618,7 +625,8 @@ more important, there there are only so many sizes that you can use.",
       "nodes": Array [
         Object {
           "object": "text",
-          "text": "There's actually a lot more to Markdown than this. See the official introduction and syntax for more information. However, be aware that this is
+          "text": "There's actually a lot more to Markdown than this. See the official
+introduction and syntax for more information. However, be aware that this is
 not using the official implementation, and this might work subtly differently
   in some of the little things.",
         },

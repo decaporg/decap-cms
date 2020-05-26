@@ -158,7 +158,7 @@ export const markdownToHtml = (markdown, { getAsset, resolveWidget } = {}) => {
 
   const html = unified()
     .use(rehypeToHtml, {
-      allowDangerousHTML: true,
+      allowDangerousHtml: true,
       allowDangerousCharacters: true,
       closeSelfClosing: true,
       entities: { useNamedReferences: true },

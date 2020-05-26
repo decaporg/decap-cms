@@ -284,16 +284,8 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
         return createBlock(typeMap[node.type], nodes, { data });
       }
 
-      /**
-       * Text
-       *
-       * Text nodes contain plain text. We remove newlines because they don't
-       * carry meaning for a rich text editor - a break in rich text would be
-       * expected to result in a break in output HTML, but that isn't the case.
-       * To avoid this confusion we remove them.
-       */
       case 'text': {
-        const text = node.value.replace(/\n/, ' ');
+        const text = node.value;
         return createText(text);
       }
 
