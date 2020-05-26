@@ -1,5 +1,5 @@
 ---
-title: Start with a Template
+title: Otro Titulo
 group: start
 weight: 10
 ---
