@@ -52,7 +52,6 @@ export type Entry = { path: string; slug: string; raw: string };
 
 export type PersistOptions = {
   newEntry?: boolean;
-  parsedData?: { title: string; description: string };
   commitMessage: string;
   collectionName?: string;
   useWorkflow?: boolean;

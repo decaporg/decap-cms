@@ -702,18 +702,16 @@ export class Backend {
   async persistEntry({
     config,
     collection,
-    entryDraft,
+    entryDraft: draft,
     assetProxies,
     usedSlugs,
     unpublished = false,
     status,
   }: PersistArgs) {
-    const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
+    const modifiedData = await this.invokePreSaveEvent(draft.get('entry'));
+    const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
 
-    const parsedData = {
-      title: entryDraft.getIn(['entry', 'data', 'title'], 'No Title') as string,
-      description: entryDraft.getIn(['entry', 'data', 'description'], 'No Description!') as string,
-    };
+    const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
     let entryObj: {
       path: string;
@@ -782,7 +780,6 @@ export class Backend {
     const updatedOptions = { unpublished, status };
     const opts = {
       newEntry,
-      parsedData,
       commitMessage,
       collectionName,
       useWorkflow,
@@ -795,6 +792,8 @@ export class Backend {
 
     await this.implementation.persistEntry(entryObj, assetProxies, opts);
 
+    await this.invokePostSaveEvent(entryDraft.get('entry'));
+
     if (!useWorkflow) {
       await this.invokePostPublishEvent(entryDraft.get('entry'));
     }
@@ -804,7 +803,7 @@ export class Backend {
 
   async invokeEventWithEntry(event: string, entry: EntryMap) {
     const { login, name } = (await this.currentUser()) as User;
-    await invokeEvent({ name: event, data: { entry, author: { login, name } } });
+    return await invokeEvent({ name: event, data: { entry, author: { login, name } } });
   }
 
   async invokePrePublishEvent(entry: EntryMap) {
@@ -821,6 +820,14 @@ export class Backend {
 
   async invokePostUnpublishEvent(entry: EntryMap) {
     await this.invokeEventWithEntry('postUnpublish', entry);
+  }
+
+  async invokePreSaveEvent(entry: EntryMap) {
+    return await this.invokeEventWithEntry('preSave', entry);
+  }
+
+  async invokePostSaveEvent(entry: EntryMap) {
+    await this.invokeEventWithEntry('postSave', entry);
   }
 
   async persistMedia(config: Config, file: AssetProxy) {

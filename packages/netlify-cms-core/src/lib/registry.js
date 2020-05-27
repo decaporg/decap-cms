@@ -3,7 +3,14 @@ import produce from 'immer';
 import { oneLine } from 'common-tags';
 import EditorComponent from 'ValueObjects/EditorComponent';
 
-const allowedEvents = ['prePublish', 'postPublish', 'preUnpublish', 'postUnpublish'];
+const allowedEvents = [
+  'prePublish',
+  'postPublish',
+  'preUnpublish',
+  'postUnpublish',
+  'preSave',
+  'postSave',
+];
 const eventHandlers = {};
 allowedEvents.forEach(e => {
   eventHandlers[e] = [];
@@ -213,7 +220,7 @@ export async function invokeEvent({ name, data }) {
   const handlers = registry.eventHandlers[name];
   for (const { handler, options } of handlers) {
     try {
-      await handler(data, options);
+      return await handler(data, options);
     } catch (e) {
       console.warn(`Failed running handler for event ${name} with message: ${e.message}`);
     }

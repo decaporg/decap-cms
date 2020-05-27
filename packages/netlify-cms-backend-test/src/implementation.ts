@@ -226,8 +226,6 @@ export default class TestBackend implements Implementation {
         const unpubEntry = {
           ...unpubStore[existingEntryIndex],
           data: raw,
-          title: options.parsedData && options.parsedData.title,
-          description: options.parsedData && options.parsedData.description,
           mediaFiles: assetProxies.map(this.normalizeAsset),
         };
 
@@ -242,8 +240,6 @@ export default class TestBackend implements Implementation {
           metaData: {
             collection: options.collectionName as string,
             status: (options.status || this.options.initialWorkflowStatus) as string,
-            title: options.parsedData && options.parsedData.title,
-            description: options.parsedData && options.parsedData.description,
           },
           slug,
           mediaFiles: assetProxies.map(this.normalizeAsset),

@@ -45,7 +45,14 @@ describe('registry', () => {
   });
 
   describe('eventHandlers', () => {
-    const events = ['prePublish', 'postPublish', 'preUnpublish', 'postUnpublish'];
+    const events = [
+      'prePublish',
+      'postPublish',
+      'preUnpublish',
+      'postUnpublish',
+      'preSave',
+      'postSave',
+    ];
 
     describe('registerEventListener', () => {
       it('should throw error on invalid event', () => {
