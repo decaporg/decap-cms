@@ -399,30 +399,11 @@ CMS.registerEventListener({
   name: 'prePublish',
   handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
 });
-
-CMS.registerEventListener({
-  name: 'postPublish',
-  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
-});
-
-CMS.registerEventListener({
-  name: 'preUnpublish',
-  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
-});
-
-CMS.registerEventListener({
-  name: 'postUnpublish',
-  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
-});
-
-CMS.registerEventListener({
-  name: 'postSave',
-  handler: ({ author, entry }) => console.log(JSON.stringify({ author, data: entry.get('data') })),
-});
 ```
 
-**Note:** Supported events are `prePublish`, `postPublish`, `preUnpublish`, `postUnpublish`, `preSave`, `postSave`. The `preSave` hook can be used to modify the entry data like so:
-```
+Supported events are `prePublish`, `postPublish`, `preUnpublish`, `postUnpublish`, `preSave`, `postSave`. The `preSave` hook can be used to modify the entry data like so:
+
+```javascript
 CMS.registerEventListener({
   name: 'preSave',
   handler: ({ entry }) => {
