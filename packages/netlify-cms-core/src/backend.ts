@@ -708,7 +708,7 @@ export class Backend {
     unpublished = false,
     status,
   }: PersistArgs) {
-    const modifiedData = await this.invokePrePushEvent(draft.get('entry'));
+    const modifiedData = await this.invokePreSaveEvent(draft.get('entry'));
     const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
@@ -792,6 +792,8 @@ export class Backend {
 
     await this.implementation.persistEntry(entryObj, assetProxies, opts);
 
+    await this.invokePostSaveEvent(entryDraft.get('entry'));
+
     if (!useWorkflow) {
       await this.invokePostPublishEvent(entryDraft.get('entry'));
     }
@@ -820,8 +822,12 @@ export class Backend {
     await this.invokeEventWithEntry('postUnpublish', entry);
   }
 
-  async invokePrePushEvent(entry: EntryMap) {
-    return await this.invokeEventWithEntry('prePush', entry);
+  async invokePreSaveEvent(entry: EntryMap) {
+    return await this.invokeEventWithEntry('preSave', entry);
+  }
+
+  async invokePostSaveEvent(entry: EntryMap) {
+    await this.invokeEventWithEntry('postSave', entry);
   }
 
   async persistMedia(config: Config, file: AssetProxy) {

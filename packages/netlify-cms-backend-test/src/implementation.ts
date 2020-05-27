@@ -226,8 +226,6 @@ export default class TestBackend implements Implementation {
         const unpubEntry = {
           ...unpubStore[existingEntryIndex],
           data: raw,
-          title: options.parsedData && options.parsedData.title,
-          description: options.parsedData && options.parsedData.description,
           mediaFiles: assetProxies.map(this.normalizeAsset),
         };
 

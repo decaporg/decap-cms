@@ -3,7 +3,14 @@ import produce from 'immer';
 import { oneLine } from 'common-tags';
 import EditorComponent from 'ValueObjects/EditorComponent';
 
-const allowedEvents = ['prePublish', 'postPublish', 'preUnpublish', 'postUnpublish', 'prePush'];
+const allowedEvents = [
+  'prePublish',
+  'postPublish',
+  'preUnpublish',
+  'postUnpublish',
+  'preSave',
+  'postSave',
+];
 const eventHandlers = {};
 allowedEvents.forEach(e => {
   eventHandlers[e] = [];
