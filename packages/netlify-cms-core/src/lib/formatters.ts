@@ -122,7 +122,13 @@ export const slugFormatter = (
 
   const processSegment = getProcessSegment(slugConfig);
   const date = new Date();
-  const slug = compileStringTemplate(slugTemplate, date, identifier, entryData, processSegment);
+  const slug = compileStringTemplate(
+    slugTemplate,
+    date,
+    identifier,
+    entryData,
+    processSegment,
+  ) as string;
 
   if (!collection.has('path')) {
     return slug;
@@ -190,7 +196,7 @@ export const previewUrlFormatter = (
     throw err;
   }
 
-  const previewPath = trimStart(compiledPath, ' /');
+  const previewPath = trimStart(compiledPath as string, ' /');
   return `${basePath}/${previewPath}`;
 };
 

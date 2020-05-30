@@ -412,7 +412,7 @@ const traverseFields = (
       currentFolder,
       folderKey,
       config.get('slug'),
-    );
+    ) as string;
   }
 
   for (let f of fields) {
@@ -427,7 +427,7 @@ const traverseFields = (
       currentFolder,
       folderKey,
       config.get('slug'),
-    );
+    ) as string;
     let fieldFolder = null;
     if (f.has('fields')) {
       fieldFolder = traverseFields(
@@ -492,7 +492,7 @@ const evaluateFolder = (
       currentFolder,
       folderKey,
       config.get('slug'),
-    );
+    ) as string;
 
     let file = getFileField(collection.get('files')!, entryMap?.get('slug'));
     if (file) {
@@ -509,7 +509,7 @@ const evaluateFolder = (
         currentFolder,
         folderKey,
         config.get('slug'),
-      );
+      ) as string;
 
       if (field) {
         const fieldFolder = traverseFields(
@@ -537,7 +537,7 @@ const evaluateFolder = (
       currentFolder,
       folderKey,
       config.get('slug'),
-    );
+    ) as string;
 
     if (field) {
       const fieldFolder = traverseFields(

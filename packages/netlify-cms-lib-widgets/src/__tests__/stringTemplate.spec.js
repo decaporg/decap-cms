@@ -101,6 +101,10 @@ describe('stringTemplate', () => {
       ).toBe('backendSlug-2020-entrySlug-title-' + date.toString());
     });
 
+    it('return compiled template for fields prefixed number field', () => {
+      expect(compileStringTemplate('{{fields.age}}', null, '', fromJS({ age: 33 }))).toBe(33);
+    });
+
     it('return apply processor to values', () => {
       expect(
         compileStringTemplate('{{slug}}', date, 'slug', fromJS({}), value => value.toUpperCase()),

@@ -262,7 +262,7 @@ export class Backend {
     usedSlugs: List<string>,
   ) {
     const slugConfig = config.get('slug');
-    const slug: string = slugFormatter(collection, entryData, slugConfig);
+    const slug: string = slugFormatter(collection, entryData, slugConfig) as string;
     let i = 1;
     let uniqueSlug = slug;
 

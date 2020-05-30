@@ -66,12 +66,14 @@ function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
   if (!key.startsWith(FIELD_PREFIX)) {
     return;
   }
+
   const fieldName = key.substring(FIELD_PREFIX.length);
   const value = data.getIn(keyToPathArray(fieldName));
-  if (typeof value === 'object' && value !== null) {
-    return JSON.stringify(value);
+  const valueType = typeof value;
+  if (valueType === 'object' && value !== null) {
+    return { value: JSON.stringify(value), valueType };
   }
-  return value;
+  return { value: value || 'undefined', valueType };
 }
 
 export function compileStringTemplate(
@@ -82,6 +84,7 @@ export function compileStringTemplate(
   processor?: (value: string) => string,
 ) {
   let missingRequiredDate;
+  let replacementValueType;
 
   // Turn off date processing (support for replacements like `{{year}}`), by passing in
   // `null` as the date arg.
@@ -91,7 +94,10 @@ export function compileStringTemplate(
     RegExp(templateVariablePattern, 'g'),
     (_, key: string) => {
       let replacement;
-      const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
+
+      const fieldReplacement = getExplicitFieldReplacement(key, data);
+      const explicitFieldReplacement = (fieldReplacement || {}).value;
+      replacementValueType = (fieldReplacement || {}).valueType;
 
       if (explicitFieldReplacement) {
         replacement = explicitFieldReplacement;
@@ -118,6 +124,8 @@ export function compileStringTemplate(
     const err = new Error();
     err.name = SLUG_MISSING_REQUIRED_DATE;
     throw err;
+  } else if (!processor && replacementValueType === 'number') {
+    return +compiledString;
   } else {
     return compiledString;
   }
