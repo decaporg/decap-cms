@@ -140,15 +140,15 @@ declare module 'netlify-cms-core' {
     editor?: {
       preview?: boolean;
     };
-    
+
     /**
      * It accepts the following values: yml, yaml, toml, json, md, markdown, html
-     * 
+     *
      * You may also specify a custom extension not included in the list above, by specifying the format value.
      */
     extension?: string;
     format?: CmsCollectionFormatType;
-    
+
     frontmatter_delimiter?: string[] | string;
     fields?: CmsField[];
     filter?: { field: string; value: any };
