@@ -85,7 +85,7 @@ declare module 'netlify-cms-core' {
     collapsed?: boolean;
 
     /** If widget === "list" */
-    field: CmsField;
+    field?: CmsField;
     allow_add?: boolean;
     summary?: string;
     minimize_collapsed?: boolean;
@@ -98,7 +98,7 @@ declare module 'netlify-cms-core' {
 
     /** If widget === "markdown" */
     minimal?: boolean;
-    buttons: CmsMarkdownWidgetButton[];
+    buttons?: CmsMarkdownWidgetButton[];
     editorComponents?: string[];
 
     /** If widget === "number" */
