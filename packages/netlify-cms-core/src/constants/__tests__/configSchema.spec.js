@@ -234,5 +234,69 @@ describe('config', () => {
         );
       }).not.toThrow();
     });
+
+    it('should throw if nested relation displayFields and searchFields are not arrays', () => {
+      expect(() => {
+        validateConfig(
+          merge(validConfig, {
+            collections: [
+              {
+                fields: [
+                  { name: 'title', label: 'title', widget: 'string' },
+                  {
+                    name: 'object',
+                    label: 'Object',
+                    widget: 'object',
+                    fields: [
+                      { name: 'title', label: 'title', widget: 'string' },
+                      {
+                        name: 'relation',
+                        label: 'relation',
+                        widget: 'relation',
+                        displayFields: 'title',
+                        searchFields: 'title',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          }),
+        );
+      }).toThrowError(
+        "'collections[0].fields[1].fields[1].searchFields' should be array\n'collections[0].fields[1].fields[1].displayFields' should be array",
+      );
+    });
+
+    it('should not throw if nested relation displayFields and searchFields are arrays', () => {
+      expect(() => {
+        validateConfig(
+          merge(validConfig, {
+            collections: [
+              {
+                fields: [
+                  { name: 'title', label: 'title', widget: 'string' },
+                  {
+                    name: 'object',
+                    label: 'Object',
+                    widget: 'object',
+                    fields: [
+                      { name: 'title', label: 'title', widget: 'string' },
+                      {
+                        name: 'relation',
+                        label: 'relation',
+                        widget: 'relation',
+                        displayFields: ['title'],
+                        searchFields: ['title'],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          }),
+        );
+      }).not.toThrow();
+    });
   });
 });

@@ -7,16 +7,99 @@ import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Forma
  * Config for fields in both file and folder collections.
  */
 const fieldsConfig = {
+  $id: 'fields',
   type: 'array',
   minItems: 1,
   items: {
     // ------- Each field: -------
+    $id: 'field',
     type: 'object',
     properties: {
       name: { type: 'string' },
       label: { type: 'string' },
       widget: { type: 'string' },
       required: { type: 'boolean' },
+      hint: { type: 'string' },
+      pattern: { type: 'array', minItems: 2, items: { type: 'string' } },
+      // select widget
+      multiple: { type: 'boolean' },
+      min: { type: 'integer' },
+      max: { type: 'integer' },
+      options: {
+        type: 'array',
+        items: {
+          oneOf: [
+            { type: 'string' },
+            {
+              type: 'object',
+              properties: {
+                label: { type: 'string' },
+                value: { type: 'string' },
+              },
+            },
+          ],
+        },
+      },
+      // datetime widget
+      format: { type: 'string' },
+      dateFormat: { oneOf: [{ type: 'string' }, { type: 'boolean' }] },
+      timeFormat: { oneOf: [{ type: 'string' }, { type: 'boolean' }] },
+      pickerUtc: { type: 'boolean' },
+      // code widget
+      default_language: { type: 'string' },
+      allow_language_selection: { type: 'boolean' },
+      output_code_only: { type: 'boolean' },
+      keys: {
+        type: 'object',
+        properties: { code: { type: 'string' }, lang: { type: 'string' } },
+      },
+      // file and image widget
+      allow_multiple: { type: 'boolean' },
+      // list and object widget
+      allow_add: { type: 'boolean' },
+      collapsed: { type: 'boolean' },
+      summary: { type: 'string' },
+      minimize_collapsed: { type: 'boolean' },
+      label_singular: { type: 'string' },
+      field: { $ref: 'field' },
+      fields: { $ref: 'fields' },
+      types: { $ref: 'fields' },
+      // map widget
+      decimals: { type: 'integer' },
+      type: { type: 'string', enum: ['Point', 'LineString', 'Polygon'] },
+      // markdown widget
+      minimal: { type: 'boolean' },
+      buttons: {
+        type: 'array',
+        items: {
+          type: 'string',
+          enum: [
+            'bold',
+            'italic',
+            'code',
+            'link',
+            'heading-one',
+            'heading-two',
+            'heading-three',
+            'heading-four',
+            'heading-five',
+            'heading-six',
+            'quote',
+            'bulleted-list',
+          ],
+        },
+      },
+      editorComponents: { type: 'array', items: { type: 'string' } },
+      // number widget
+      step: { type: 'integer' },
+      valueType: { type: 'string' },
+      //relation widget
+      collection: { type: 'string' },
+      valueField: { type: 'string' },
+      searchFields: { type: 'array', items: { type: 'string' } },
+      file: { type: 'string' },
+      displayFields: { type: 'array', items: { type: 'string' } },
+      optionsLength: { type: 'integer' },
     },
     required: ['name'],
   },
