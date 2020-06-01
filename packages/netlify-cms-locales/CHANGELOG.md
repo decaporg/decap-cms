@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.15.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.14.0...netlify-cms-locales@1.15.0) (2020-06-01)
+
+
+### Bug Fixes
+
+* **locale:** update translation strings for 'nl' locale ([#3802](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3802)) ([dd7bced](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/dd7bced09eb7db5bfd27c18609fb769a2ec402a4))
+
+
+### Features
+
+* add filter to collection view ([#3741](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3741)) ([c28cc0c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/c28cc0c9e7c7bc4bed07c02dfb869b2dedab9aab))
+* **lang:** add norwegian ([#3785](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3785)) ([d3aaf4d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/d3aaf4ddb326efcaffdbcc5af5c0e5c8bcaa36ea))
+
+
+
+
+
 # [1.14.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.13.0...netlify-cms-locales@1.14.0) (2020-05-19)
 
 

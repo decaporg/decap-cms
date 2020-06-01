@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.28.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.27.0...netlify-cms-core@2.28.0) (2020-06-01)
+
+
+### Bug Fixes
+
+* add missing type definitions ([#3832](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3832)) ([8754639](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/87546393dec814f198dec913fb072a49038e15c6))
+* **config:** validate unique fields names under the same level ([#3804](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3804)) ([8047d06](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8047d06afd84fb3645f577708c0a42aa2c2c0de0))
+* **media-library:** prevent buttons from overlapping [#3639](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3639) ([#3784](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3784)) ([6056424](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6056424a2d34a80b71ad955a39a6288d0e224407))
+* Error UI improvements for nested lists/objects ([#3726](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3726)) ([3978578](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/397857855b2c8514c2f7ce83756af6b6698abc3d))
+
+
+### Features
+
+* add allowed_hosts support in local_backend ([#3805](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3805)) ([624b7ff](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/624b7ff14b9b84a7b7b3ee8c9f2bf601e38b2bc2))
+* add filter to collection view ([#3741](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3741)) ([c28cc0c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c28cc0c9e7c7bc4bed07c02dfb869b2dedab9aab))
+* add pre save/ post save hooks ([#3812](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3812)) ([812716e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/812716e18b09a716547f128b783c8e6f3d54cc5b))
+* allow author login/name to work in commit message templates [#3793](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3793) ([#3794](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3794)) ([2ecafd3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2ecafd3354e1d626fffb4c210143c54e2d584d86))
+
+
+
+
+
 # [2.27.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.26.0...netlify-cms-core@2.27.0) (2020-05-19)
 
 

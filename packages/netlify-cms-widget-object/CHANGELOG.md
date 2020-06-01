@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.4.1...netlify-cms-widget-object@2.4.2) (2020-06-01)
+
+
+### Bug Fixes
+
+* Error UI improvements for nested lists/objects ([#3726](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/3726)) ([3978578](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/commit/397857855b2c8514c2f7ce83756af6b6698abc3d))
+
+
+
+
+
 ## [2.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.4.0...netlify-cms-widget-object@2.4.1) (2020-04-20)
 
 

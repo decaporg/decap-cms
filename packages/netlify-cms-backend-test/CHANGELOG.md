@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.8.1...netlify-cms-backend-test@2.9.0) (2020-06-01)
+
+
+### Features
+
+* add pre save/ post save hooks ([#3812](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/issues/3812)) ([812716e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/commit/812716e18b09a716547f128b783c8e6f3d54cc5b))
+
+
+
+
+
 ## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.8.0...netlify-cms-backend-test@2.8.1) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-backend-test
