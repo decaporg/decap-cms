@@ -144,7 +144,7 @@ export default class API {
   async listAllMedia() {
     const allMedia = await this.storageRef.child(this.mediaFolder).listAll();
 
-    return Promise.all(allMedia.items.map(async (item) => {
+    const media = await Promise.all(allMedia.items.map(async (item) => {
       const metaData = await item.getMetadata();
       const url = await item.getDownloadURL();
       return {
@@ -154,8 +154,16 @@ export default class API {
         displayURL: url,
         path: url,
         url,
+        metaData,
       };
     }));
+
+    // sort by time created (desc)
+    media.sort((aItem, bItem) => {
+      return bItem.metaData.timeCreated.localeCompare(aItem.metaData.timeCreated);
+    });
+
+    return media;
   }
 
   async getMediaFile(path: string) {

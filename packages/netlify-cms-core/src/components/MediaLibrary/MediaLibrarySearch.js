@@ -44,6 +44,7 @@ const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled 
       onKeyDown={onKeyDown}
       placeholder={placeholder}
       disabled={disabled}
+      autoFocus
     />
   </SearchContainer>
 );
