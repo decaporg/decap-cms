@@ -84,6 +84,8 @@ export type Config = {
     large_media_url?: string;
     use_large_media_transforms_in_media_library?: boolean;
     proxy_url?: string;
+    auth_type?: string;
+    app_id?: string;
   };
   media_folder: string;
   base_url?: string;

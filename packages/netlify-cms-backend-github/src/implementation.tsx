@@ -114,9 +114,12 @@ export default class GitHub implements Implementation {
   async status() {
     const auth =
       (await this.api
-        ?.user()
+        ?.getUser()
         .then(user => !!user)
-        .catch(() => false)) || false;
+        .catch(e => {
+          console.warn('Failed getting GitHub user', e);
+          return false;
+        })) || false;
 
     return { auth };
   }

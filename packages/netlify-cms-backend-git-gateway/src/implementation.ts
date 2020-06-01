@@ -168,8 +168,16 @@ export default class GitGateway implements Implementation {
     return true;
   }
 
-  status() {
-    return this.backend!.status();
+  async status() {
+    const auth =
+      (await this.tokenPromise?.()
+        .then(token => !!token)
+        .catch(e => {
+          console.warn('Failed getting Identity token', e);
+          return false;
+        })) || false;
+
+    return { auth };
   }
 
   async getAuthClient() {
