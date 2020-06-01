@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
-  import { Map } from 'immutable';
+  import { List, Map } from 'immutable';
 
   export type CmsBackendType = 'git-gateway' | 'github' | 'gitlab' | 'bitbucket' | 'test-repo';
 
