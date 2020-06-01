@@ -1,4 +1,5 @@
 {
   "extends": ["github>netlify/renovate-config:default"],
-  "semanticCommits": true
+  "ignorePresets": [":prHourlyLimit2"],
+  "semanticCommits": true,
 }
