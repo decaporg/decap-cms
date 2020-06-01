@@ -23,7 +23,10 @@ declare module 'netlify-cms-core' {
     | 'bulleted-list'
     | 'numbered-list';
 
-  export type CmsFilesExtension = 'yml' | 'yaml' | 'toml' | 'json' | 'md' | 'markdown' | 'html';
+  export interface CmsSelectWidgetOptionObject {
+    label: string;
+    value: any;
+  }
 
   export type CmsCollectionFormatType =
     | 'yml'
@@ -46,6 +49,69 @@ declare module 'netlify-cms-core' {
     label?: string;
     widget?: string;
     required?: boolean;
+    hint?: string;
+    pattern?: [string, string];
+    default?: any;
+
+    /** If widget === "code" */
+    default_language?: string;
+    allow_language_selection?: boolean;
+    keys?: { code: string; lang: string };
+    output_code_only?: boolean;
+
+    /** If widget === "datetime" */
+    format?: string;
+    dateFormat?: boolean | string;
+    timeFormat?: boolean | string;
+    pickerUtc?: boolean;
+
+    /** If widget === "file" || widget === "image" */
+    media_library?: CmsMediaLibrary;
+    allow_multiple?: boolean;
+    config?: any;
+
+    /** If widget === "object" || widget === "list" */
+    fields?: CmsField[];
+    collapsed?: boolean;
+
+    /** If widget === "list" */
+    field?: CmsField;
+    allow_add?: boolean;
+    summary?: string;
+    minimize_collapsed?: boolean;
+    label_singular?: string;
+    types?: CmsField[];
+
+    /** If widget === "map" */
+    decimals?: number;
+    type?: CmsMapWidgetType;
+
+    /** If widget === "markdown" */
+    minimal?: boolean;
+    buttons?: CmsMarkdownWidgetButton[];
+    editorComponents?: string[];
+
+    /** If widget === "number" */
+    valueType?: 'int' | 'float' | string;
+    step?: number;
+
+    /** If widget === "number" || widget === "select" */
+    min?: number;
+    max?: number;
+
+    /** If widget === "relation" || widget === "select" */
+    multiple?: boolean;
+
+    /** If widget === "relation" */
+    collection?: string;
+    valueField?: string;
+    searchFields?: string[];
+    file?: string;
+    displayFields?: string[];
+    optionsLength?: number;
+
+    /** If widget === "select" */
+    options?: string[] | CmsSelectWidgetOptionObject[];
   }
 
   export interface CmsCollectionFile {
@@ -70,13 +136,26 @@ declare module 'netlify-cms-core' {
     preview_path?: string;
     preview_path_date_field?: string;
     create?: boolean;
+    delete?: boolean;
     editor?: {
       preview?: boolean;
     };
+
+    /**
+     * It accepts the following values: yml, yaml, toml, json, md, markdown, html
+     *
+     * You may also specify a custom extension not included in the list above, by specifying the format value.
+     */
+    extension?: string;
     format?: CmsCollectionFormatType;
-    extension?: CmsFilesExtension;
+
     frontmatter_delimiter?: string[] | string;
     fields?: CmsField[];
+    filter?: { field: string; value: any };
+    path?: string;
+    media_folder?: string;
+    public_folder?: string;
+    sortableFields?: string[];
   }
 
   export interface CmsBackend {
@@ -122,18 +201,14 @@ declare module 'netlify-cms-core' {
     widget: string;
   }
 
-  export interface EditorComponentData {
-    id: number | string;
-  }
-
   export interface EditorComponentOptions {
     id: string;
     label: string;
     fields: EditorComponentField[];
     pattern: RegExp;
-    fromBlock: (match: RegExpMatchArray) => EditorComponentData;
-    toBlock: (data: EditorComponentData) => string;
-    toPreview: (data: EditorComponentData) => string;
+    fromBlock: (match: RegExpMatchArray) => any;
+    toBlock: (data: any) => string;
+    toPreview: (data: any) => string;
   }
 
   export interface PreviewStyleOptions {
@@ -195,13 +270,30 @@ declare module 'netlify-cms-core' {
     };
   }
 
+  type GetAssetFunction = (
+    asset: string,
+  ) => { url: string; path: string; field?: any; fileObj: File };
+
+  export type PreviewTemplateComponentProps = {
+    entry: Map<string, any>;
+    collection: Map<string, any>;
+    widgetFor: (name: any, fields?: any, values?: any, fieldsMetaData?: any) => JSX.Element | null;
+    widgetsFor: (name: any) => any;
+    getAsset: GetAssetFunction;
+    boundGetAsset: (collection: any, path: any) => GetAssetFunction;
+    fieldsMetaData: Map<string, any>;
+    config: Map<string, any>;
+    fields: List<Map<string, any>>;
+    isLoadingAsset: boolean;
+  };
+
   export interface CMS {
     getBackend: (name: string) => CmsRegistryBackend | undefined;
     getEditorComponents: () => Map<string, ComponentType<any>>;
     getLocale: (locale: string) => CmsLocalePhrases | undefined;
     getMediaLibrary: (name: string) => CmsMediaLibrary | undefined;
     getPreviewStyles: () => PreviewStyle[];
-    getPreviewTemplate: (name: string) => ComponentType<any> | undefined;
+    getPreviewTemplate: (name: string) => ComponentType<PreviewTemplateComponentProps> | undefined;
     getWidget: (name: string) => CmsWidget | undefined;
     getWidgetValueSerializer: (widgetName: string) => CmsWidgetValueSerializer | undefined;
     init: (options?: InitOptions) => void;
@@ -210,7 +302,10 @@ declare module 'netlify-cms-core' {
     registerLocale: (locale: string, phrases: CmsLocalePhrases) => void;
     registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
     registerPreviewStyle: (filePath: string, options?: PreviewStyleOptions) => void;
-    registerPreviewTemplate: (name: string, component: ComponentType<any>) => void;
+    registerPreviewTemplate: (
+      name: string,
+      component: ComponentType<PreviewTemplateComponentProps>,
+    ) => void;
     registerWidget: (
       widget: string | CmsWidgetParam,
       control?: ComponentType<any>,
