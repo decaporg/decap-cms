@@ -183,7 +183,7 @@ Next, copy and paste the following into the collections array in `config.yml` be
   fields:
     - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'author' }
     - { label: 'Short Name', name: 'name', widget: 'string' }
-    - { label: 'Diplay Name', name: 'display_name', widget: 'string' }
+    - { label: 'Display Name', name: 'display_name', widget: 'string' }
     - { label: 'Position', name: 'position', widget: 'string' }
     - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
