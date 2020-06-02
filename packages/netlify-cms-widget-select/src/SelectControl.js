@@ -83,6 +83,11 @@ export default class SelectControl extends React.Component {
     return { error: false };
   };
 
+  handleBlur = () => {
+    this.props.setInactiveStyle();
+    if (typeof this.props.validate === 'function') this.props.validate();
+  };
+
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
     const isMultiple = field.get('multiple', false);
@@ -112,7 +117,7 @@ export default class SelectControl extends React.Component {
   }
 
   render() {
-    const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const { field, value, forID, classNameWrapper, setActiveStyle } = this.props;
     const fieldOptions = field.get('options');
     const isMultiple = field.get('multiple', false);
     const isClearable = !field.get('required', true) || isMultiple;
@@ -135,7 +140,7 @@ export default class SelectControl extends React.Component {
         onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        onBlur={this.handleBlur}
         options={options}
         styles={reactSelectStyles}
         isMulti={isMultiple}

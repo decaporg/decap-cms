@@ -113,6 +113,11 @@ export default class RelationControl extends React.Component {
     }
   }
 
+  handleBlur = () => {
+    this.props.setInactiveStyle();
+    if (typeof this.props.validate === 'function') this.props.validate();
+  };
+
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
     let value;
@@ -208,15 +213,7 @@ export default class RelationControl extends React.Component {
   }, 500);
 
   render() {
-    const {
-      value,
-      field,
-      forID,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-      queryHits,
-    } = this.props;
+    const { value, field, forID, classNameWrapper, setActiveStyle, queryHits } = this.props;
     const isMultiple = field.get('multiple', false);
     const isClearable = !field.get('required', true) || isMultiple;
 
@@ -237,7 +234,7 @@ export default class RelationControl extends React.Component {
         onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        onBlur={this.handleBlur}
         styles={reactSelectStyles}
         isMulti={isMultiple}
         isClearable={isClearable}

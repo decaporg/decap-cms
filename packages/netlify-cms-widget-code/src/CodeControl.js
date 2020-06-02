@@ -224,7 +224,9 @@ export default class CodeControl extends React.Component {
 
   handleBlur = () => {
     this.setInactive();
-    this.props.setInactiveStyle();
+    const { setInactiveStyle, validate } = this.props;
+    setInactiveStyle();
+    validate();
   };
 
   setActive = () => this.setState({ isActive: true });

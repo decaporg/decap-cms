@@ -80,6 +80,12 @@ export default class NumberControl extends React.Component {
     }
   };
 
+  handleBlur = () => {
+    const { setInactiveStyle, validate } = this.props;
+    setInactiveStyle();
+    validate();
+  };
+
   isValid = () => {
     const { field, value, t } = this.props;
     const hasPattern = !!field.get('pattern', false);
@@ -96,7 +102,7 @@ export default class NumberControl extends React.Component {
   };
 
   render() {
-    const { field, value, classNameWrapper, forID, setActiveStyle, setInactiveStyle } = this.props;
+    const { field, value, classNameWrapper, forID, setActiveStyle } = this.props;
     const min = field.get('min', '');
     const max = field.get('max', '');
     const step = field.get('step', field.get('valueType') === 'int' ? 1 : '');
@@ -106,7 +112,7 @@ export default class NumberControl extends React.Component {
         id={forID}
         className={classNameWrapper}
         onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        onBlur={this.handleBlur}
         value={value || (value === 0 ? value : '')}
         step={step}
         min={min}
