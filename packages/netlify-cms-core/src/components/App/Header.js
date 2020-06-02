@@ -122,6 +122,7 @@ class Header extends React.Component {
     displayUrl: PropTypes.string,
     isTestRepo: PropTypes.bool,
     t: PropTypes.func.isRequired,
+    checkBackendStatus: PropTypes.func.isRequired,
   };
 
   intervalId;
@@ -129,7 +130,7 @@ class Header extends React.Component {
   componentDidMount() {
     this.intervalId = setInterval(() => {
       this.props.checkBackendStatus();
-    }, 5 * 60 * 1000);
+    }, 60 * 1000);
   }
 
   componentWillUnmount() {
@@ -225,10 +226,8 @@ class Header extends React.Component {
   }
 }
 
-function mapStateToProps() {
-  return {};
-}
+const mapDispatchToProps = {
+  checkBackendStatus,
+};
 
-const mapDispatchToProps = { checkBackendStatus };
-
-export default connect(mapStateToProps, mapDispatchToProps)(translate()(Header));
+export default connect(null, mapDispatchToProps)(translate()(Header));

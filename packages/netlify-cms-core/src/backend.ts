@@ -180,7 +180,17 @@ export class Backend {
   }
 
   async status() {
-    const status = await this.implementation!.status();
+    const attempts = 3;
+    let status: { auth: boolean } = { auth: false };
+    for (let i = 1; i <= attempts; i++) {
+      status = await this.implementation!.status();
+      // return on first success
+      if (Object.values(status).every(s => s === true)) {
+        return status;
+      } else {
+        await new Promise(resolve => setTimeout(resolve, i * 1000));
+      }
+    }
     return status;
   }
 
@@ -227,13 +237,17 @@ export class Backend {
     });
   }
 
-  logout() {
-    return Promise.resolve(this.implementation.logout()).then(() => {
+  async logout() {
+    try {
+      await this.implementation.logout();
+    } catch (e) {
+      console.warn('Error during logout', e.message);
+    } finally {
       this.user = null;
       if (this.authStore) {
         this.authStore.logout();
       }
-    });
+    }
   }
 
   getToken = () => this.implementation.getToken();
