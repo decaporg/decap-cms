@@ -176,6 +176,7 @@ export default class ListControl extends React.Component {
       .filter(el => el);
     this.setState({ value: valueToString(listValue) });
     this.props.setInactiveStyle();
+    this.validate();
   };
 
   handleAdd = e => {

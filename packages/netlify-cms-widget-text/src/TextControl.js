@@ -8,12 +8,19 @@ export default class TextControl extends React.Component {
     forID: PropTypes.string,
     value: PropTypes.node,
     classNameWrapper: PropTypes.string.isRequired,
+    validate: PropTypes.func.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     value: '',
+  };
+
+  handleBlur = () => {
+    const { setInactiveStyle, validate } = this.props;
+    setInactiveStyle();
+    validate();
   };
 
   /**
@@ -28,14 +35,7 @@ export default class TextControl extends React.Component {
   }
 
   render() {
-    const {
-      forID,
-      value,
-      onChange,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { forID, value, onChange, classNameWrapper, setActiveStyle } = this.props;
 
     return (
       <Textarea
@@ -43,7 +43,7 @@ export default class TextControl extends React.Component {
         value={value || ''}
         className={classNameWrapper}
         onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        onBlur={this.handleBlur}
         style={{ minHeight: '140px' }}
         css={{ fontFamily: 'inherit' }}
         onChange={e => onChange(e.target.value)}

@@ -7,6 +7,7 @@ export default class StringControl extends React.Component {
     forID: PropTypes.string,
     value: PropTypes.node,
     classNameWrapper: PropTypes.string.isRequired,
+    validate: PropTypes.func.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
   };
@@ -15,15 +16,14 @@ export default class StringControl extends React.Component {
     value: '',
   };
 
+  handleBlur = () => {
+    const { setInactiveStyle, validate } = this.props;
+    setInactiveStyle();
+    validate();
+  };
+
   render() {
-    const {
-      forID,
-      value,
-      onChange,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { forID, value, onChange, classNameWrapper, setActiveStyle } = this.props;
 
     return (
       <input
@@ -33,7 +33,7 @@ export default class StringControl extends React.Component {
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        onBlur={this.handleBlur}
       />
     );
   }
