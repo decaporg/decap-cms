@@ -1,10 +1,12 @@
 import controlComponent from './SelectControl';
 import previewComponent from './SelectPreview';
+import schema from './Schema';
 
 const Widget = (opts = {}) => ({
   name: 'select',
   controlComponent,
   previewComponent,
+  schema,
   ...opts,
 });
 

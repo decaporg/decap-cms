@@ -1,12 +1,13 @@
 import AJV from 'ajv';
-import uniqueItemProperties from 'ajv-keywords/keywords/uniqueItemProperties';
+import { select, uniqueItemProperties } from 'ajv-keywords/keywords';
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
+import { getWidgets } from 'Lib/registry';
 
 /**
  * Config for fields in both file and folder collections.
  */
-const fieldsConfig = {
+const fieldsConfig = () => ({
   $id: 'fields',
   type: 'array',
   minItems: 1,
@@ -21,90 +22,18 @@ const fieldsConfig = {
       required: { type: 'boolean' },
       hint: { type: 'string' },
       pattern: { type: 'array', minItems: 2, items: { type: 'string' } },
-      // select widget
-      multiple: { type: 'boolean' },
-      min: { type: 'integer' },
-      max: { type: 'integer' },
-      options: {
-        type: 'array',
-        items: {
-          oneOf: [
-            { type: 'string' },
-            {
-              type: 'object',
-              properties: {
-                label: { type: 'string' },
-                value: { type: 'string' },
-              },
-            },
-          ],
-        },
-      },
-      // datetime widget
-      format: { type: 'string' },
-      dateFormat: { oneOf: [{ type: 'string' }, { type: 'boolean' }] },
-      timeFormat: { oneOf: [{ type: 'string' }, { type: 'boolean' }] },
-      pickerUtc: { type: 'boolean' },
-      // code widget
-      default_language: { type: 'string' },
-      allow_language_selection: { type: 'boolean' },
-      output_code_only: { type: 'boolean' },
-      keys: {
-        type: 'object',
-        properties: { code: { type: 'string' }, lang: { type: 'string' } },
-      },
-      // file and image widget
-      allow_multiple: { type: 'boolean' },
-      // list and object widget
-      allow_add: { type: 'boolean' },
-      collapsed: { type: 'boolean' },
-      summary: { type: 'string' },
-      minimize_collapsed: { type: 'boolean' },
-      label_singular: { type: 'string' },
       field: { $ref: 'field' },
       fields: { $ref: 'fields' },
       types: { $ref: 'fields' },
-      // map widget
-      decimals: { type: 'integer' },
-      type: { type: 'string', enum: ['Point', 'LineString', 'Polygon'] },
-      // markdown widget
-      minimal: { type: 'boolean' },
-      buttons: {
-        type: 'array',
-        items: {
-          type: 'string',
-          enum: [
-            'bold',
-            'italic',
-            'code',
-            'link',
-            'heading-one',
-            'heading-two',
-            'heading-three',
-            'heading-four',
-            'heading-five',
-            'heading-six',
-            'quote',
-            'bulleted-list',
-          ],
-        },
-      },
-      editorComponents: { type: 'array', items: { type: 'string' } },
-      // number widget
-      step: { type: 'integer' },
-      valueType: { type: 'string' },
-      //relation widget
-      collection: { type: 'string' },
-      valueField: { type: 'string' },
-      searchFields: { type: 'array', items: { type: 'string' } },
-      file: { type: 'string' },
-      displayFields: { type: 'array', items: { type: 'string' } },
-      optionsLength: { type: 'integer' },
+    },
+    select: { $data: '0/widget' },
+    selectCases: {
+      ...getWidgetSchemas(),
     },
     required: ['name'],
   },
   uniqueItemProperties: ['name'],
-};
+});
 
 const viewFilters = {
   type: 'array',
@@ -216,7 +145,7 @@ const getConfigSchema = () => ({
                 label_singular: { type: 'string' },
                 description: { type: 'string' },
                 file: { type: 'string' },
-                fields: fieldsConfig,
+                fields: fieldsConfig(),
               },
               required: ['name', 'label', 'file', 'fields'],
             },
@@ -246,7 +175,7 @@ const getConfigSchema = () => ({
               type: 'string',
             },
           },
-          fields: fieldsConfig,
+          fields: fieldsConfig(),
           sortableFields: {
             type: 'array',
             items: {
@@ -282,6 +211,11 @@ const getConfigSchema = () => ({
   anyOf: [{ required: ['media_folder'] }, { required: ['media_library'] }],
 });
 
+function getWidgetSchemas() {
+  const schemas = getWidgets().map(widget => ({ [widget.name]: widget.schema || {} }));
+  return Object.assign(...schemas);
+}
+
 class ConfigError extends Error {
   constructor(errors, ...args) {
     const message = errors
@@ -311,8 +245,9 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true });
+  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true });
   uniqueItemProperties(ajv);
+  select(ajv);
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
