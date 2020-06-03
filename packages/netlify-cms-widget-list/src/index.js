@@ -1,6 +1,6 @@
 import controlComponent from './ListControl';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
-import schema from './Schema';
+import schema from './schema';
 
 const previewComponent = NetlifyCmsWidgetObject.previewComponent;
 const Widget = (opts = {}) => ({

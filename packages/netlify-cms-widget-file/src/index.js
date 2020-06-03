@@ -1,6 +1,6 @@
 import withFileControl from './withFileControl';
 import previewComponent from './FilePreview';
-import schema from './Schema';
+import schema from './schema';
 
 const controlComponent = withFileControl();
 const Widget = (opts = {}) => ({

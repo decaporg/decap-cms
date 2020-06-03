@@ -1,6 +1,6 @@
 import controlComponent from './CodeControl';
 import previewComponent from './CodePreview';
-import schema from './Schema';
+import schema from './schema';
 
 const Widget = (opts = {}) => ({
   name: 'code',

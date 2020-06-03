@@ -1,6 +1,6 @@
 import withMapControl from './withMapControl';
 import previewComponent from './MapPreview';
-import schema from './Schema';
+import schema from './schema';
 
 const controlComponent = withMapControl();
 const Widget = (opts = {}) => ({

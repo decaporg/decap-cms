@@ -1,6 +1,6 @@
 import controlComponent from './NumberControl';
 import previewComponent from './NumberPreview';
-import schema from './Schema';
+import schema from './schema';
 
 const Widget = (opts = {}) => ({
   name: 'number',

@@ -1,6 +1,6 @@
 import controlComponent from './DateTimeControl';
 import previewComponent from './DateTimePreview';
-import schema from './Schema';
+import schema from './schema';
 
 const Widget = (opts = {}) => ({
   name: 'datetime',

@@ -212,7 +212,7 @@ const getConfigSchema = () => ({
 });
 
 function getWidgetSchemas() {
-  const schemas = getWidgets().map(widget => ({ [widget.name]: widget.schema || {} }));
+  const schemas = getWidgets().map(widget => ({ [widget.name]: widget.schema }));
   return Object.assign(...schemas);
 }
 

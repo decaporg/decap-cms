@@ -1,6 +1,6 @@
 import controlComponent from './ObjectControl';
 import previewComponent from './ObjectPreview';
-import schema from './Schema';
+import schema from './schema';
 
 const Widget = (opts = {}) => ({
   name: 'object',
