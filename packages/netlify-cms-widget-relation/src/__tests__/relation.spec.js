@@ -103,6 +103,25 @@ const nestedFileCollectionHits = [
   },
 ];
 
+const numberFieldsHits = [
+  {
+    collection: 'posts',
+    data: {
+      title: 'post # 1',
+      slug: 'post-1',
+      index: 1,
+    },
+  },
+  {
+    collection: 'posts',
+    data: {
+      title: 'post # 2',
+      slug: 'post-2',
+      index: 2,
+    },
+  },
+];
+
 class RelationController extends React.Component {
   state = {
     value: this.props.value,
@@ -121,7 +140,9 @@ class RelationController extends React.Component {
   query = jest.fn((...args) => {
     const queryHits = generateHits(25);
 
-    if (last(args) === 'nested_file') {
+    if (args[1] === 'numbers_collection') {
+      return Promise.resolve({ payload: { response: { hits: numberFieldsHits } } });
+    } else if (last(args) === 'nested_file') {
       return Promise.resolve({ payload: { response: { hits: nestedFileCollectionHits } } });
     } else if (last(args) === 'simple_file') {
       return Promise.resolve({ payload: { response: { hits: simpleFileCollectionHits } } });
@@ -369,6 +390,36 @@ describe('Relation widget', () => {
 
     await wait(() => {
       expect(getAllByText(/^Post # (\d{1,2})$/)).toHaveLength(20);
+    });
+  });
+  it('should keep number type of referenced field', async () => {
+    const fieldConfig = {
+      name: 'numbers',
+      collection: 'numbers_collection',
+      valueField: 'index',
+      searchFields: ['index'],
+      displayFields: ['title'],
+    };
+
+    const field = fromJS(fieldConfig);
+    const { getByText, getAllByText, input, onChangeSpy } = setup({ field });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+    await wait(() => {
+      expect(getAllByText(/^post # \d$/)).toHaveLength(2);
+    });
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.click(getByText('post # 1'));
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.click(getByText('post # 2'));
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(2);
+    expect(onChangeSpy).toHaveBeenCalledWith(1, {
+      numbers: { numbers_collection: { '1': { index: 1, slug: 'post-1', title: 'post # 1' } } },
+    });
+    expect(onChangeSpy).toHaveBeenCalledWith(2, {
+      numbers: { numbers_collection: { '2': { index: 2, slug: 'post-2', title: 'post # 2' } } },
     });
   });
 

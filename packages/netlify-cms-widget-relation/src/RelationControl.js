@@ -143,9 +143,9 @@ export default class RelationControl extends React.Component {
 
   parseNestedFields = (hit, field) => {
     const templateVars = stringTemplate.extractTemplateVars(field);
-    // wrap non template fields with a template
+    // return non template fields as is
     if (templateVars.length <= 0) {
-      field = `{{fields.${field}}}`;
+      return get(hit.data, field);
     }
     const data = stringTemplate.addFileTemplateFields(hit.path, fromJS(hit.data));
     const value = stringTemplate.compileStringTemplate(field, null, hit.slug, data);
