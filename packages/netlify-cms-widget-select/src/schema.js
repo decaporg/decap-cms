@@ -14,9 +14,11 @@ export default {
               label: { type: 'string' },
               value: { type: 'string' },
             },
+            required: ['label', 'value'],
           },
         ],
       },
     },
   },
+  required: ['options'],
 };

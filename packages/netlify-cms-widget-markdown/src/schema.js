@@ -18,6 +18,7 @@ export default {
           'heading-six',
           'quote',
           'bulleted-list',
+          'numbered-list',
         ],
       },
     },
