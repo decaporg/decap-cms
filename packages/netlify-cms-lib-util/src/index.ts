@@ -1,6 +1,7 @@
 import APIError from './APIError';
 import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from './Cursor';
 import EditorialWorkflowError, { EDITORIAL_WORKFLOW_ERROR } from './EditorialWorkflowError';
+import AccessTokenError from './AccessTokenError';
 import localForage from './localForage';
 import { isAbsolutePath, basename, fileExtensionWithSeparator, fileExtension } from './path';
 import { onlySuccessfulPromises, flowAsync, then } from './promise';
@@ -138,6 +139,7 @@ export const NetlifyCmsLibUtil = {
   blobToFileObj,
   requestWithBackoff,
   allEntriesByFolder,
+  AccessTokenError,
 };
 export {
   APIError,
@@ -192,4 +194,5 @@ export {
   blobToFileObj,
   requestWithBackoff,
   allEntriesByFolder,
+  AccessTokenError,
 };

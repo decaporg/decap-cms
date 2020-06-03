@@ -241,6 +241,11 @@ export type Search = StaticallyTypedRecord<{
 
 export type Cursors = StaticallyTypedRecord<{}>;
 
+export type Status = StaticallyTypedRecord<{
+  isFetching: boolean;
+  status: StaticallyTypedRecord<{ auth: boolean }>;
+}>;
+
 export interface State {
   config: Config;
   cursors: Cursors;
@@ -253,6 +258,8 @@ export interface State {
   medias: Medias;
   mediaLibrary: MediaLibrary;
   search: Search;
+  notifs: { message: { key: string }; kind: string; id: number }[];
+  status: Status;
 }
 
 export interface MediasAction extends Action<string> {

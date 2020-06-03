@@ -223,6 +223,7 @@ const en = {
       entryUpdated: 'Entry status updated',
       onDeleteUnpublishedChanges: 'Unpublished changes deleted',
       onFailToAuth: '%{details}',
+      onLoggedOut: 'You have been logged out, please back up any data and login again',
     },
   },
   workflow: {

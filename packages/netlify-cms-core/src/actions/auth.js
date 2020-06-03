@@ -1,7 +1,7 @@
 import { actions as notifActions } from 'redux-notifications';
 import { currentBackend } from 'coreSrc/backend';
 
-const { notifSend } = notifActions;
+const { notifSend, notifClear } = notifActions;
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
@@ -111,6 +111,7 @@ export function logoutUser() {
     const backend = currentBackend(state.config);
     Promise.resolve(backend.logout()).then(() => {
       dispatch(logout());
+      dispatch(notifClear());
     });
   };
 }

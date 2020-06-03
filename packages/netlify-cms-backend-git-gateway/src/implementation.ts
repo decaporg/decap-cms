@@ -24,6 +24,7 @@ import {
   getPointerFileForMediaFileObj,
   getLargeMediaFilteredMediaFiles,
   DisplayURLObject,
+  AccessTokenError,
 } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
@@ -38,12 +39,14 @@ type NetlifyIdentity = {
   currentUser: () => User;
   on: (event: string, args: unknown) => void;
   init: () => void;
+  store: { user: unknown; modal: { page: string }; saving: boolean };
 };
 
 type AuthClient = {
   logout: () => void;
   currentUser: () => unknown;
   login?(email: string, password: string, remember?: boolean): Promise<unknown>;
+  clearStore: () => void;
 };
 
 declare global {
@@ -168,6 +171,18 @@ export default class GitGateway implements Implementation {
     return true;
   }
 
+  async status() {
+    const auth =
+      (await this.tokenPromise?.()
+        .then(token => !!token)
+        .catch(e => {
+          console.warn('Failed getting Identity token', e);
+          return false;
+        })) || false;
+
+    return { auth };
+  }
+
   async getAuthClient() {
     if (this.authClient) {
       return this.authClient;
@@ -177,6 +192,14 @@ export default class GitGateway implements Implementation {
       this.authClient = {
         logout: () => window.netlifyIdentity?.logout(),
         currentUser: () => window.netlifyIdentity?.currentUser(),
+        clearStore: () => {
+          const store = window.netlifyIdentity?.store;
+          if (store) {
+            store.user = null;
+            store.modal.page = 'login';
+            store.saving = false;
+          }
+        },
       };
     } else {
       const goTrue = new GoTrue({ APIUrl: this.apiUrl });
@@ -189,6 +212,7 @@ export default class GitGateway implements Implementation {
         },
         currentUser: () => goTrue.currentUser(),
         login: goTrue.login.bind(goTrue),
+        clearStore: () => undefined,
       };
     }
     return this.authClient;
@@ -203,7 +227,15 @@ export default class GitGateway implements Implementation {
 
   authenticate(credentials: Credentials) {
     const user = credentials as NetlifyUser;
-    this.tokenPromise = user.jwt.bind(user);
+    this.tokenPromise = async () => {
+      try {
+        const func = user.jwt.bind(user);
+        const token = await func();
+        return token;
+      } catch (error) {
+        throw new AccessTokenError(`Failed getting access token: ${error.message}`);
+      }
+    };
     return this.tokenPromise!().then(async token => {
       if (!this.backendType) {
         const {
@@ -303,7 +335,13 @@ export default class GitGateway implements Implementation {
 
   async logout() {
     const client = await this.getAuthClient();
-    return client.logout();
+    try {
+      client.logout();
+    } catch (e) {
+      // due to a bug in the identity widget (gotrue-js actually) the store is not reset if logout fails
+      // TODO: remove after https://github.com/netlify/gotrue-js/pull/83 is merged
+      client.clearStore();
+    }
   }
   getToken() {
     return this.tokenPromise!();

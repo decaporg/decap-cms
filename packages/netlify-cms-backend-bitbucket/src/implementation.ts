@@ -37,6 +37,7 @@ import {
   generateContentKey,
   localForage,
   allEntriesByFolder,
+  AccessTokenError,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 import AuthenticationPage from './AuthenticationPage';
@@ -66,12 +67,12 @@ export default class BitbucketBackend implements Implementation {
   refreshToken?: string;
   refreshedTokenPromise?: Promise<string>;
   authenticator?: NetlifyAuthenticator;
-  auth?: unknown;
   _mediaDisplayURLSem?: Semaphore;
   squashMerges: boolean;
   previewContext: string;
   largeMediaURL: string;
   _largeMediaClientPromise?: Promise<GitLfsClient>;
+  authType: string;
 
   constructor(config: Config, options = {}) {
     this.options = {
@@ -105,10 +106,24 @@ export default class BitbucketBackend implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
+    this.authType = config.backend.auth_type || '';
   }
 
   isGitBackend() {
     return true;
+  }
+
+  async status() {
+    const auth =
+      (await this.api
+        ?.user()
+        .then(user => !!user)
+        .catch(e => {
+          console.warn('Failed getting Bitbucket user', e);
+          return false;
+        })) || false;
+
+    return { auth };
   }
 
   authComponent() {
@@ -180,12 +195,15 @@ export default class BitbucketBackend implements Implementation {
   }
 
   getRefreshedAccessToken() {
+    if (this.authType === 'implicit') {
+      throw new AccessTokenError(`Can't refresh access token when using implicit auth`);
+    }
     if (this.refreshedTokenPromise) {
       return this.refreshedTokenPromise;
     }
 
     // instantiating a new Authenticator on each refresh isn't ideal,
-    if (!this.auth) {
+    if (!this.authenticator) {
       const cfg = {
         // eslint-disable-next-line @typescript-eslint/camelcase
         base_url: this.baseUrl,

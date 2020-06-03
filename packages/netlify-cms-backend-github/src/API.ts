@@ -202,9 +202,13 @@ export default class API {
 
   user(): Promise<{ name: string; login: string }> {
     if (!this._userPromise) {
-      this._userPromise = this.request('/user') as Promise<GitHubUser>;
+      this._userPromise = this.getUser();
     }
     return this._userPromise;
+  }
+
+  getUser() {
+    return this.request('/user') as Promise<GitHubUser>;
   }
 
   async hasWriteAccess() {

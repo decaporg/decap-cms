@@ -87,6 +87,19 @@ export default class GitLab implements Implementation {
     return true;
   }
 
+  async status() {
+    const auth =
+      (await this.api
+        ?.user()
+        .then(user => !!user)
+        .catch(e => {
+          console.warn('Failed getting GitLab user', e);
+          return false;
+        })) || false;
+
+    return { auth };
+  }
+
   authComponent() {
     return AuthenticationPage;
   }

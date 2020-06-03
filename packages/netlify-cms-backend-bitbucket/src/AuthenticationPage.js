@@ -23,14 +23,15 @@ export default class BitbucketAuthenticationPage extends React.Component {
   state = {};
 
   componentDidMount() {
-    const {
-      auth_type: authType = '',
-      base_url = 'https://bitbucket.org',
-      auth_endpoint = 'site/oauth2/authorize',
-      app_id = '',
-    } = this.props.config.backend;
+    const { auth_type: authType = '' } = this.props.config.backend;
 
     if (authType === 'implicit') {
+      const {
+        base_url = 'https://bitbucket.org',
+        auth_endpoint = 'site/oauth2/authorize',
+        app_id = '',
+      } = this.props.config.backend;
+
       this.auth = new ImplicitAuthenticator({
         base_url,
         auth_endpoint,
