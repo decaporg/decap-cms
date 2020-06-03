@@ -1,27 +1,39 @@
 import AJV from 'ajv';
-import uniqueItemProperties from 'ajv-keywords/keywords/uniqueItemProperties';
+import { select, uniqueItemProperties } from 'ajv-keywords/keywords';
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
+import { getWidgets } from 'Lib/registry';
 
 /**
  * Config for fields in both file and folder collections.
  */
-const fieldsConfig = {
+const fieldsConfig = () => ({
+  $id: 'fields',
   type: 'array',
   minItems: 1,
   items: {
     // ------- Each field: -------
+    $id: 'field',
     type: 'object',
     properties: {
       name: { type: 'string' },
       label: { type: 'string' },
       widget: { type: 'string' },
       required: { type: 'boolean' },
+      hint: { type: 'string' },
+      pattern: { type: 'array', minItems: 2, items: { type: 'string' } },
+      field: { $ref: 'field' },
+      fields: { $ref: 'fields' },
+      types: { $ref: 'fields' },
+    },
+    select: { $data: '0/widget' },
+    selectCases: {
+      ...getWidgetSchemas(),
     },
     required: ['name'],
   },
   uniqueItemProperties: ['name'],
-};
+});
 
 const viewFilters = {
   type: 'array',
@@ -133,7 +145,7 @@ const getConfigSchema = () => ({
                 label_singular: { type: 'string' },
                 description: { type: 'string' },
                 file: { type: 'string' },
-                fields: fieldsConfig,
+                fields: fieldsConfig(),
               },
               required: ['name', 'label', 'file', 'fields'],
             },
@@ -163,7 +175,7 @@ const getConfigSchema = () => ({
               type: 'string',
             },
           },
-          fields: fieldsConfig,
+          fields: fieldsConfig(),
           sortableFields: {
             type: 'array',
             items: {
@@ -199,6 +211,11 @@ const getConfigSchema = () => ({
   anyOf: [{ required: ['media_folder'] }, { required: ['media_library'] }],
 });
 
+function getWidgetSchemas() {
+  const schemas = getWidgets().map(widget => ({ [widget.name]: widget.schema }));
+  return Object.assign(...schemas);
+}
+
 class ConfigError extends Error {
   constructor(errors, ...args) {
     const message = errors
@@ -228,8 +245,9 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true });
+  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true });
   uniqueItemProperties(ajv);
+  select(ajv);
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
