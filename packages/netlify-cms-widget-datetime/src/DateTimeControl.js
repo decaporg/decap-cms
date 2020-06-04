@@ -65,6 +65,10 @@ export default class DateTimeControl extends React.Component {
       setTimeout(() => {
         this.handleChange(this.defaultValue === undefined ? new Date() : this.defaultValue);
       }, 0);
+    } else {
+      setTimeout(() => {
+        this.handleChange(value);
+      }, 0);
     }
   }
 
