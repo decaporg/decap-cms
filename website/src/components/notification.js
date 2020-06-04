@@ -9,6 +9,7 @@ const Notif = styled.a`
   color: white;
   display: block;
   padding: ${theme.space[2]} ${theme.space[3]};
+  margin-bottom: ${theme.space[3]};
   text-align: center;
 
   /* prettier-ignore */
@@ -38,7 +39,7 @@ const Notif = styled.a`
 `;
 
 const Notification = ({ url, loud, children }) => (
-  <Notif href={url} loud={loud}>
+  <Notif href={url} loud={loud} target="_blank" rel="noopener noreferrer">
     {children}
   </Notif>
 );
