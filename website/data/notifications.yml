@@ -38,3 +38,9 @@ notifications:
     published: false
     title: JAMStack_conf 2018
     url: 'https://jamstackconf.com/'
+  - loud: false
+    message: >-
+      Netlify stands in solidarity with the Black community. Make a donation. Netlify will match it. #BlackLivesMatter
+    published: true
+    title: Donate now
+    url: 'http://www.netlify.com/donation-matching/'
