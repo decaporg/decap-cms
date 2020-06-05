@@ -240,4 +240,7 @@ CMS.registerEditorComponent({
 });
 ```
 
-For getting started quickly, you can refer to this amazing prebuilt resource of [hugo shortcodes editor components](https://github.com/sharadcodes/hugo-shortcodes-netlify-cms)!
+**Result**
+![gist-widget](/img/hugo_shortcode_gist.png)
+
+For getting started quickly you can refer to this amazing prebuilt resource of [hugo shortcodes editor components](https://github.com/sharadcodes/hugo-shortcodes-netlify-cms)!
