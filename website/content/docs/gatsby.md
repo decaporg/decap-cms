@@ -3,6 +3,7 @@ title: Gatsby
 group: guides
 weight: 20
 ---
+
 This guide will help you get started using Netlify CMS and Gatsby.
 
 To get up and running with Gatsby, you’ll need to have [Node.js](https://nodejs.org/) installed on your computer. _Note: Gatsby's minimum supported Node.js version is Node 8._
@@ -26,17 +27,14 @@ You will see that there are multiple Markdown files that represent blog posts. O
 ```yml
 ---
 title: New Beginnings
-date: "2015-05-28T22:40:32.169Z"
+date: '2015-05-28T22:40:32.169Z'
 description: This is an optional description for SEO and Open Graph purposes, rather than the default generated excerpt.
 ---
-
 Far far away, behind the word mountains, far from the countries Vokalia and
 Consonantia, there live the blind texts.
 ```
 
 We can see above that each blog post has a title, a date, a description and a body. Now, let's recreate this using Netlify CMS.
-
-**Note:** each existing blog post in `gatsby-starter-blog` is stored in its own directory. Netlify CMS doesn't work with files that are stored this way ([feature request here](https://github.com/netlify/netlify-cms/issues/1472)), so you won't be able to see or edit the starter's included sample blog posts in Netlify CMS, but you will be able to create and edit new posts.
 
 ## Add Netlify CMS to your site
 
@@ -69,24 +67,40 @@ media_folder: static/img
 public_folder: /img
 
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "content/blog"
+  - name: 'blog'
+    label: 'Blog'
+    folder: 'content/blog'
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: 'index'
+    media_folder: ''
+    public_folder: ''
+    path: '{{title}}/index'
     editor:
-     preview: false
+      preview: false
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Description", name: "description", widget: "string" }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Description', name: 'description', widget: 'string' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+```
+
+**Note:** The above configuration allows assets to be stored relative to their content. Therefore posts would be stored in the format below as it is in `gatsby-starter-blog`.
+
+```
+content/
+├── posts
+│   ├── first-post-title
+│   │   ├── index.md
+│   │   └── post-image.jpg
+└── └── second-post-title
+        ├── index.md
+        └── post-image.jpg
 ```
 
 Finally, add the plugin to your `gatsby-config.js`.
 
 ```javascript
-plugins: [`gatsby-plugin-netlify-cms`]
+plugins: [`gatsby-plugin-netlify-cms`];
 ```
 
 ### Push to GitHub
@@ -115,7 +129,7 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 
 ## Start publishing
 
-It's time to create your first blog post. Login to your site's `/admin/` page and create a new post by clicking New Blog. Add a title, a date and some text. When you click Publish, a new commit will be created in your GitHub repo with this format `Create Blog “year-month-date-title”`. 
+It's time to create your first blog post. Login to your site's `/admin/` page and create a new post by clicking New Blog. Add a title, a date and some text. When you click Publish, a new commit will be created in your GitHub repo with this format `Create Blog “year-month-date-title”`.
 
 Then Netlify will detect that there was a commit in your repo, and will start rebuilding your project. When your project is deployed you'll be able to see the post you created.
 
