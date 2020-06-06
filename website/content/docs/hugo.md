@@ -241,6 +241,6 @@ CMS.registerEditorComponent({
 
 **Result**
 
-![Hugo Gist Block for editor](img/hugo_shortcode_gist.png "Hugo Gist Block for editor")
+![Gist](img/hugo_shortcode_gist.png "Gist")
 
 For getting started quickly you can refer to this amazing prebuilt resource of [hugo shortcodes editor components](https://github.com/sharadcodes/hugo-shortcodes-netlify-cms)!
