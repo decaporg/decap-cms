@@ -202,8 +202,7 @@ You can see this basic template includes all the fields you've specified in your
 
 ### Using Hugo shortcodes in the Markdown Editor
 
-Using ```registerEditorComponent``` we can register a block level component for the Markdown editor.
-You can use it to add Hugo's inbuilt shortcodes like `gist`,`youtube` and others as block components to the markdown editor.
+Using `registerEditorComponent` we can register a block level component for the Markdown editor. You can use it to add Hugo's inbuilt shortcodes like `gist`,`youtube` and others as block components to the markdown editor.
 
 You can refer to [registering editor components](https://www.netlifycms.org/docs/custom-widgets/#registereditorcomponent) for a getting started guide or for creating your own editor components.
 
@@ -241,6 +240,7 @@ CMS.registerEditorComponent({
 ```
 
 **Result**
-![gist-widget](/img/hugo_shortcode_gist.png)
+
+![Hugo Gist Block for editor](img/hugo_shortcode_gist.png "Hugo Gist Block for editor")
 
 For getting started quickly you can refer to this amazing prebuilt resource of [hugo shortcodes editor components](https://github.com/sharadcodes/hugo-shortcodes-netlify-cms)!
