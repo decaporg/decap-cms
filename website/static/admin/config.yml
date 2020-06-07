@@ -11,7 +11,7 @@ site_url: https://www.netlifycms.org
 publish_mode: editorial_workflow
 
 media_folder: website/static/img
-public_folder: img
+public_folder: /img
 
 docs_collection: &docs_collection
   folder: website/content/docs

@@ -199,3 +199,48 @@ Create a file `layouts/blog/single.html`, and put the following content in there
 ```
 
 You can see this basic template includes all the fields you've specified in your Netlify CMS `config.yml` file. You can access any custom front-matter fields with `.Params.<field-name>`!
+
+### Using Hugo shortcodes in the Markdown Editor
+
+Using `registerEditorComponent` we can register a block level component for the Markdown editor. You can use it to add Hugo's inbuilt shortcodes like `gist`,`youtube` and others as block components to the markdown editor.
+
+You can refer to [registering editor components](https://www.netlifycms.org/docs/custom-widgets/#registereditorcomponent) for a getting started guide or for creating your own editor components.
+
+**Example**
+
+```javascript
+CMS.registerEditorComponent({
+    id: "gist",
+    label: "Gist",
+    fields: [{
+            name: "username",
+            label: "Github Username",
+            widget: "string"
+        },
+        {
+            name: "gid",
+            label: "Gist ID",
+            widget: "string"
+        },
+    ],
+    pattern: /{{< gist ([a-zA-Z0-9]+) ([a-zA-Z0-9]+) >}}/,
+    fromBlock: function(match) {
+        return {
+            username: match[1],
+            gid: match[2],
+        };
+    },
+    toBlock: function(obj) {
+        return `{{< gist ${obj.username} ${obj.gid} >}}`;
+    },
+    toPreview: function(obj) {
+        return `{{< gist ${obj.username} ${obj.gid} >}}`;
+    },
+});
+```
+
+**Result**
+
+![Gist](/img/hugo_shortcode_gist.png "Gist")
+
+For getting started quickly you can refer to this amazing prebuilt resource of [hugo shortcodes editor components](https://github.com/sharadcodes/hugo-shortcodes-netlify-cms)!
