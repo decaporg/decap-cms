@@ -5,13 +5,13 @@ weight: 20
 ---
 This guide will help you get started using Netlify CMS and Gatsby.
 
-To get up and running with Gatsby, you’ll need to have [Node.js](https://nodejs.org/) installed on your computer. _Note: Gatsby's minimum supported Node.js version is Node 8._
+To get up and running with Gatsby, you’ll need to have [Node.js](https://nodejs.org/) installed on your computer. *Note: Gatsby's minimum supported Node.js version is Node 8.*
 
 ## Create a new Gatsby site
 
 Let's create a new site using the default Gatsby Starter Blog. Run the following commands in the terminal, in the folder where you'd like to create the blog:
 
-```sh
+```bash
 npm install -g gatsby-cli
 gatsby new blog https://github.com/gatsbyjs/gatsby-starter-blog
 cd blog
@@ -36,13 +36,11 @@ Consonantia, there live the blind texts.
 
 We can see above that each blog post has a title, a date, a description and a body. Now, let's recreate this using Netlify CMS.
 
-**Note:** each existing blog post in `gatsby-starter-blog` is stored in its own directory. Netlify CMS doesn't work with files that are stored this way ([feature request here](https://github.com/netlify/netlify-cms/issues/1472)), so you won't be able to see or edit the starter's included sample blog posts in Netlify CMS, but you will be able to create and edit new posts.
-
 ## Add Netlify CMS to your site
 
 First let's install some dependencies. We'll need `netlify-cms-app` and `gatsby-plugin-netlify-cms`. Run the following command in the terminal at the root of your site:
 
-```sh
+```bash
 npm install --save netlify-cms-app gatsby-plugin-netlify-cms
 ```
 
@@ -52,7 +50,7 @@ For the purpose of this guide we will deploy to Netlify from a GitHub repository
 
 Create a `config.yml` file in the directory structure you see below:
 
-```sh
+```bash
 ├── static
 │   ├── admin
 │   │   ├── config.yml
@@ -69,18 +67,34 @@ media_folder: static/img
 public_folder: /img
 
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "content/blog"
+  - name: 'blog'
+    label: 'Blog'
+    folder: 'content/blog'
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: 'index'
+    media_folder: ''
+    public_folder: ''
+    path: '{{title}}/index'
     editor:
-     preview: false
+      preview: false
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Description", name: "description", widget: "string" }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Description', name: 'description', widget: 'string' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+```
+
+**Note:** The above configuration allows assets to be stored relative to their content. Therefore posts would be stored in the format below as it is in `gatsby-starter-blog`.
+
+```bash
+content/
+├── blog
+│   ├── first-post-title
+│   │   ├── index.md
+│   │   └── post-image.jpg
+└── └── second-post-title
+        ├── index.md
+        └── post-image.jpg
 ```
 
 Finally, add the plugin to your `gatsby-config.js`.
