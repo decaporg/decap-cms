@@ -11,7 +11,7 @@ To get up and running with Gatsby, you’ll need to have [Node.js](https://nodej
 
 Let's create a new site using the default Gatsby Starter Blog. Run the following commands in the terminal, in the folder where you'd like to create the blog:
 
-```sh
+```bash
 npm install -g gatsby-cli
 gatsby new blog https://github.com/gatsbyjs/gatsby-starter-blog
 cd blog
@@ -40,7 +40,7 @@ We can see above that each blog post has a title, a date, a description and a bo
 
 First let's install some dependencies. We'll need `netlify-cms-app` and `gatsby-plugin-netlify-cms`. Run the following command in the terminal at the root of your site:
 
-```sh
+```bash
 npm install --save netlify-cms-app gatsby-plugin-netlify-cms
 ```
 
@@ -50,7 +50,7 @@ For the purpose of this guide we will deploy to Netlify from a GitHub repository
 
 Create a `config.yml` file in the directory structure you see below:
 
-```sh
+```bash
 ├── static
 │   ├── admin
 │   │   ├── config.yml
@@ -86,7 +86,7 @@ collections:
 
 **Note:** The above configuration allows assets to be stored relative to their content. Therefore posts would be stored in the format below as it is in `gatsby-starter-blog`.
 
-```
+```bash
 content/
 ├── blog
 │   ├── first-post-title
