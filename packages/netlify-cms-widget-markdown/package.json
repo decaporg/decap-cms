@@ -29,7 +29,7 @@
     "react-monaco-editor": "^0.25.1",
     "react-select": "^2.4.3",
     "rehype-parse": "^6.0.0",
-    "rehype-remark": "^5.0.1",
+    "rehype-remark": "^8.0.0",
     "rehype-stringify": "^7.0.0",
     "remark-parse": "^6.0.3",
     "remark-rehype": "^4.0.0",

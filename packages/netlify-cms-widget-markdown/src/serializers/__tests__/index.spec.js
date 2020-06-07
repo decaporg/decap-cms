@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import { markdownToSlate } from '../';
+import { markdownToSlate, htmlToSlate } from '../';
 
 describe('markdownToSlate', () => {
   it('should not add duplicate identical marks under the same node (GitHub Issue 3280)', () => {
@@ -35,6 +35,28 @@ describe('markdownToSlate', () => {
               object: 'text',
               text: '.',
             },
+          ],
+        },
+      ],
+    });
+  });
+});
+
+describe('htmlToSlate', () => {
+  it('should preserve spaces in rich html (GitHub Issue 3727)', () => {
+    const html = `<strong>Bold Text</strong><span><span> </span>regular text<span> </span></span>`;
+
+    const actual = htmlToSlate(html);
+    expect(actual).toEqual({
+      object: 'block',
+      type: 'root',
+      nodes: [
+        {
+          object: 'block',
+          type: 'paragraph',
+          nodes: [
+            { object: 'text', text: 'Bold Text', marks: [{ type: 'bold' }] },
+            { object: 'text', text: ' regular text' },
           ],
         },
       ],
