@@ -97,11 +97,15 @@ export default class Widget extends Component {
     this.wrappedControlShouldComponentUpdate = scu && scu.bind(this.innerWrappedControl);
   };
 
-  validate = (skipWrapped = false) => {
+  getValidateValue = () => {
     let value = this.innerWrappedControl?.getValidateValue?.() || this.props.value;
     // Convert list input widget value to string for validation test
     List.isList(value) && (value = value.join(','));
+    return value;
+  };
 
+  validate = (skipWrapped = false) => {
+    const value = this.getValidateValue();
     const field = this.props.field;
     const errors = [];
     const validations = [this.validatePresence, this.validatePattern];
@@ -224,6 +228,13 @@ export default class Widget extends Component {
     );
   };
 
+  setInactiveStyle = () => {
+    this.props.setInactiveStyle();
+    if (this.props.field.has('pattern') && !isEmpty(this.getValidateValue())) {
+      this.validate();
+    }
+  };
+
   render() {
     const {
       controlComponent,
@@ -248,7 +259,6 @@ export default class Widget extends Component {
       classNameLabel,
       classNameLabelActive,
       setActiveStyle,
-      setInactiveStyle,
       hasActiveStyle,
       editorControl,
       uniqueFieldId,
@@ -294,7 +304,7 @@ export default class Widget extends Component {
       classNameLabel,
       classNameLabelActive,
       setActiveStyle,
-      setInactiveStyle,
+      setInactiveStyle: () => this.setInactiveStyle(),
       hasActiveStyle,
       editorControl,
       resolveWidget,
