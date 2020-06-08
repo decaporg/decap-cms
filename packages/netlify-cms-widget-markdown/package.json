@@ -34,7 +34,7 @@
     "remark-parse": "^6.0.3",
     "remark-rehype": "^4.0.0",
     "remark-stringify": "^6.0.4",
-    "slate": "^0.47.0",
+    "slate": "^0.58.0",
     "slate-base64-serializer": "^0.2.107",
     "slate-plain-serializer": "^0.7.1",
     "slate-react": "^0.22.0",
