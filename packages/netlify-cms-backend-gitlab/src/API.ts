@@ -854,7 +854,7 @@ export default class API {
   async getUnpublishedEntrySha(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
     const branch = branchFromContentKey(contentKey);
-    const pullRequest = await this.getBranchMergeRequest(branch);
-    return pullRequest.sha;
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    return mergeRequest.sha;
   }
 }
