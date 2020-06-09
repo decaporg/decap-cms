@@ -49,6 +49,7 @@ import {
   FetchError as FE,
   ApiRequest as AR,
   requestWithBackoff,
+  throwOnConflictingBranches,
 } from './API';
 import {
   CMS_BRANCH_PREFIX,
@@ -140,6 +141,7 @@ export const NetlifyCmsLibUtil = {
   requestWithBackoff,
   allEntriesByFolder,
   AccessTokenError,
+  throwOnConflictingBranches,
 };
 export {
   APIError,
@@ -195,4 +197,5 @@ export {
   requestWithBackoff,
   allEntriesByFolder,
   AccessTokenError,
+  throwOnConflictingBranches,
 };

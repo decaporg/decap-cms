@@ -14,8 +14,9 @@ import {
   DEFAULT_PR_BODY,
   branchFromContentKey,
   CMS_BRANCH_PREFIX,
+  throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
-import { trim } from 'lodash';
+import { trim, trimStart } from 'lodash';
 import introspectionQueryResultData from './fragmentTypes';
 import API, { Config, BlobArgs, API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';
@@ -134,10 +135,44 @@ export default class GraphQLAPI extends API {
     });
   }
 
-  mutate(options: MutationOptions<OperationVariables>) {
-    return this.client.mutate(options).catch(error => {
+  async mutate(options: MutationOptions<OperationVariables>) {
+    try {
+      const result = await this.client.mutate(options);
+      return result;
+    } catch (error) {
+      const errors = error.graphQLErrors;
+      if (Array.isArray(errors) && errors.some(e => e.message === 'Ref cannot be created.')) {
+        const refName = options?.variables?.createRefInput?.name || '';
+        const branchName = trimStart(refName, 'refs/heads/');
+        if (branchName) {
+          await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
+        }
+      } else if (
+        Array.isArray(errors) &&
+        errors.some(e =>
+          new RegExp(
+            `A ref named "refs/heads/${CMS_BRANCH_PREFIX}/.+?" already exists in the repository.`,
+          ).test(e.message),
+        )
+      ) {
+        const refName = options?.variables?.createRefInput?.name || '';
+        const sha = options?.variables?.createRefInput?.oid || '';
+        const branchName = trimStart(refName, 'refs/heads/');
+        if (branchName && branchName.startsWith(`${CMS_BRANCH_PREFIX}/`) && sha) {
+          try {
+            // this can happen if the branch wasn't deleted when the PR was merged
+            // we backup the existing branch just in case an re-run the mutation
+            await this.backupBranch(branchName);
+            await this.deleteBranch(branchName);
+            const result = await this.client.mutate(options);
+            return result;
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
       throw new APIError(error.message, 500, 'GitHub');
-    });
+    }
   }
 
   async hasWriteAccess() {

@@ -27,6 +27,7 @@ import {
   requestWithBackoff,
   unsentRequest,
   ApiRequest,
+  throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { Octokit } from '@octokit/rest';
 
@@ -1253,8 +1254,45 @@ export default class API {
     return result;
   }
 
-  createBranch(branchName: string, sha: string) {
-    return this.createRef('heads', branchName, sha);
+  async backupBranch(branchName: string) {
+    try {
+      const existingBranch = await this.getBranch(branchName);
+      await this.createBranch(
+        existingBranch.name.replace(
+          new RegExp(`${CMS_BRANCH_PREFIX}/`),
+          `${CMS_BRANCH_PREFIX}_${Date.now()}/`,
+        ),
+        existingBranch.commit.sha,
+      );
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
+  async createBranch(branchName: string, sha: string) {
+    try {
+      const result = await this.createRef('heads', branchName, sha);
+      return result;
+    } catch (e) {
+      const message = String(e.message || '');
+      if (message === 'Reference update failed') {
+        await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
+      } else if (
+        message === 'Reference already exists' &&
+        branchName.startsWith(`${CMS_BRANCH_PREFIX}/`)
+      ) {
+        try {
+          // this can happen if the branch wasn't deleted when the PR was merged
+          // we backup the existing branch just in case and patch it with the new sha
+          await this.backupBranch(branchName);
+          const result = await this.patchBranch(branchName, sha, { force: true });
+          return result;
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      throw e;
+    }
   }
 
   assertCmsBranch(branchName: string) {
