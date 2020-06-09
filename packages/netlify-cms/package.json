@@ -7,7 +7,8 @@
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "main": "dist/netlify-cms.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack",
+    "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
+    "build": "cross-env NODE_ENV=production run-s webpack",
     "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
     "develop": "webpack-dev-server --hot"
   },
