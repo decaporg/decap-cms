@@ -26,7 +26,6 @@
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
     "re-resizable": "^4.11.0",
-    "react-monaco-editor": "^0.36.0",
     "react-select": "^2.4.3",
     "rehype-parse": "^6.0.0",
     "rehype-remark": "^8.0.0",
@@ -57,7 +56,6 @@
   "devDependencies": {
     "commonmark": "^0.29.0",
     "commonmark-spec": "^0.29.0",
-    "monaco-editor-webpack-plugin": "^1.7.0",
     "slate-hyperscript": "^0.13.3"
   }
 }
