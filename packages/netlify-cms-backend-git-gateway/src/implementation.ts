@@ -25,6 +25,7 @@ import {
   getLargeMediaFilteredMediaFiles,
   DisplayURLObject,
   AccessTokenError,
+  PreviewState,
 } from 'netlify-cms-lib-util';
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
@@ -111,6 +112,12 @@ interface NetlifyUser extends Credentials {
   email: string;
   user_metadata: { full_name: string; avatar_url: string };
 }
+
+const apiGet = async (path: string) => {
+  const apiRoot = 'https://api.netlify.com/api/v1/sites';
+  const response = await fetch(`${apiRoot}/${path}`).then(res => res.json());
+  return response;
+};
 
 export default class GitGateway implements Implementation {
   config: Config;
@@ -347,7 +354,7 @@ export default class GitGateway implements Implementation {
     return this.tokenPromise!();
   }
 
-  entriesByFolder(folder: string, extension: string, depth: number) {
+  async entriesByFolder(folder: string, extension: string, depth: number) {
     return this.backend!.entriesByFolder(folder, extension, depth);
   }
   allEntriesByFolder(folder: string, extension: string, depth: number) {
@@ -533,7 +540,32 @@ export default class GitGateway implements Implementation {
     return this.backend!.deleteFile(path, commitMessage);
   }
   async getDeployPreview(collection: string, slug: string) {
-    return this.backend!.getDeployPreview(collection, slug);
+    let preview = await this.backend!.getDeployPreview(collection, slug);
+    if (!preview) {
+      try {
+        // if the commit doesn't have a status, try to use Netlify API directly
+        // this is useful when builds are queue up in Netlify and don't have a commit status yet
+        // and only works with public logs at the moment
+        // TODO: get Netlify API Token and use it to access private logs
+        const siteId = new URL(localStorage.getItem('netlifySiteURL') || '').hostname;
+        const site = await apiGet(siteId);
+        const deploys: { state: string; commit_ref: string; deploy_url: string }[] = await apiGet(
+          `${site.id}/deploys?per_page=100`,
+        );
+        if (deploys.length > 0) {
+          const ref = await this.api!.getUnpublishedEntrySha(collection, slug);
+          const deploy = deploys.find(d => d.commit_ref === ref);
+          if (deploy) {
+            preview = {
+              status: deploy.state === 'ready' ? PreviewState.Success : PreviewState.Other,
+              url: deploy.deploy_url,
+            };
+          }
+        }
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
+    }
+    return preview;
   }
   unpublishedEntries() {
     return this.backend!.unpublishedEntries();

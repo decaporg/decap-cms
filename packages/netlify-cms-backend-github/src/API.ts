@@ -1473,4 +1473,11 @@ export default class API {
     );
     return result;
   }
+
+  async getUnpublishedEntrySha(collection: string, slug: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    return pullRequest.head.sha;
+  }
 }

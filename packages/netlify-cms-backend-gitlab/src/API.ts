@@ -850,4 +850,11 @@ export default class API {
       target_url,
     }));
   }
+
+  async getUnpublishedEntrySha(collection: string, slug: string) {
+    const contentKey = generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    return mergeRequest.sha;
+  }
 }
