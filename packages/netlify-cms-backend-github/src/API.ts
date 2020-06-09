@@ -1262,6 +1262,26 @@ export default class API {
       const message = String(e.message || '');
       if (message === 'Reference update failed') {
         await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
+      } else if (
+        message === 'Reference already exists' &&
+        branchName.startsWith(`${CMS_BRANCH_PREFIX}/`)
+      ) {
+        // this can happen if the branch wasn't deleted when the PR was merged
+        // rename the existing branch just in case and patch it with the new sha
+        try {
+          const existingBranch = await this.getBranch(branchName);
+          await this.createBranch(
+            existingBranch.name.replace(
+              new RegExp(`${CMS_BRANCH_PREFIX}/`),
+              `${CMS_BRANCH_PREFIX}_old/`,
+            ),
+            existingBranch.commit.sha,
+          );
+          await this.patchBranch(branchName, sha);
+          return;
+        } catch (e) {
+          console.log(e);
+        }
       }
       throw e;
     }
