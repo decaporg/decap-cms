@@ -26,6 +26,7 @@ import {
   branchFromContentKey,
   requestWithBackoff,
   readFileMetadata,
+  throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
@@ -250,10 +251,18 @@ export default class API {
     return response.ok;
   };
 
+  getBranch = async (branchName: string) => {
+    const branch: BitBucketBranch = await this.requestJSON(
+      `${this.repoURL}/refs/branches/${branchName}`,
+    );
+
+    return branch;
+  };
+
   branchCommitSha = async (branch: string) => {
     const {
       target: { hash: branchSha },
-    }: BitBucketBranch = await this.requestJSON(`${this.repoURL}/refs/branches/${branch}`);
+    }: BitBucketBranch = await this.getBranch(branch);
 
     return branchSha;
   };
@@ -442,11 +451,20 @@ export default class API {
       formData.append('parents', parentSha);
     }
 
-    await this.request({
-      url: `${this.repoURL}/src`,
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      await this.requestText({
+        url: `${this.repoURL}/src`,
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error) {
+      const message = error.message || '';
+      // very descriptive message from Bitbucket
+      if (parentSha && message.includes('Something went wrong')) {
+        await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+      }
+      throw error;
+    }
 
     return files;
   }

@@ -27,6 +27,7 @@ import {
   requestWithBackoff,
   unsentRequest,
   ApiRequest,
+  throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { Octokit } from '@octokit/rest';
 
@@ -1253,8 +1254,17 @@ export default class API {
     return result;
   }
 
-  createBranch(branchName: string, sha: string) {
-    return this.createRef('heads', branchName, sha);
+  async createBranch(branchName: string, sha: string) {
+    try {
+      const result = await this.createRef('heads', branchName, sha);
+      return result;
+    } catch (e) {
+      const message = String(e.message || '');
+      if (message === 'Reference update failed') {
+        await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
+      }
+      throw e;
+    }
   }
 
   assertCmsBranch(branchName: string) {

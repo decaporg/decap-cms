@@ -25,6 +25,7 @@ import {
   requestWithBackoff,
   readFileMetadata,
   FetchError,
+  throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
@@ -407,7 +408,14 @@ export default class API {
   toBase64 = (str: string) => Promise.resolve(Base64.encode(str));
   fromBase64 = (str: string) => Base64.decode(str);
 
-  uploadAndCommit(
+  async getBranch(branchName: string) {
+    const branch: GitLabBranch = await this.requestJSON(
+      `${this.repoURL}/repository/branches/${encodeURIComponent(branchName)}`,
+    );
+    return branch;
+  }
+
+  async uploadAndCommit(
     items: CommitItem[],
     { commitMessage = '', branch = this.branch, newBranch = false },
   ) {
@@ -434,12 +442,21 @@ export default class API {
       commitParams.author_email = email;
     }
 
-    return this.requestJSON({
-      url: `${this.repoURL}/repository/commits`,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify(commitParams),
-    });
+    try {
+      const result = await this.requestJSON({
+        url: `${this.repoURL}/repository/commits`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(commitParams),
+      });
+      return result;
+    } catch (error) {
+      const message = error.message || '';
+      if (newBranch && message.includes(`Could not update ${branch}`)) {
+        await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+      }
+      throw error;
+    }
   }
 
   async getCommitItems(files: (Entry | AssetProxy)[], branch: string) {
@@ -781,9 +798,7 @@ export default class API {
   }
 
   async getDefaultBranch() {
-    const branch: GitLabBranch = await this.requestJSON(
-      `${this.repoURL}/repository/branches/${encodeURIComponent(this.branch)}`,
-    );
+    const branch: GitLabBranch = await this.getBranch(this.branch);
     return branch;
   }
 

@@ -1,5 +1,6 @@
 import { asyncLock, AsyncLock } from './asyncLock';
 import unsentRequest from './unsentRequest';
+import APIError from './APIError';
 
 export interface FetchError extends Error {
   status: number;
@@ -173,4 +174,42 @@ export const getPreviewStatus = (
   return statuses.find(({ context }) => {
     return isPreviewContext(context, previewContext);
   });
+};
+
+const getConflictingBranches = (branchName: string) => {
+  // for cms/posts/post-1, conflicting branches are cms/posts, cms
+  const parts = branchName.split('/');
+  parts.pop();
+
+  const conflictingBranches = parts.reduce((acc, _, index) => {
+    acc = [...acc, parts.slice(0, index + 1).join('/')];
+    return acc;
+  }, [] as string[]);
+
+  return conflictingBranches;
+};
+
+export const throwOnConflictingBranches = async (
+  branchName: string,
+  getBranch: (name: string) => Promise<{ name: string }>,
+  apiName: string,
+) => {
+  const possibleConflictingBranches = getConflictingBranches(branchName);
+
+  const conflictingBranches = await Promise.all(
+    possibleConflictingBranches.map(b =>
+      getBranch(b)
+        .then(b => b.name)
+        .catch(() => ''),
+    ),
+  );
+
+  const conflictingBranch = conflictingBranches.filter(Boolean)[0];
+  if (conflictingBranch) {
+    throw new APIError(
+      `Failed creating branch '${branchName}' since there is already a branch named '${conflictingBranch}'. Please delete the '${conflictingBranch}' branch and try again`,
+      500,
+      apiName,
+    );
+  }
 };
