@@ -147,6 +147,29 @@ export default class GraphQLAPI extends API {
         if (branchName) {
           await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
         }
+      } else if (
+        Array.isArray(errors) &&
+        errors.some(e =>
+          new RegExp(
+            `A ref named "refs/heads/${CMS_BRANCH_PREFIX}/.+?" already exists in the repository.`,
+          ).test(e.message),
+        )
+      ) {
+        const refName = options?.variables?.createRefInput?.name || '';
+        const sha = options?.variables?.createRefInput?.oid || '';
+        const branchName = trimStart(refName, 'refs/heads/');
+        if (branchName && branchName.startsWith(`${CMS_BRANCH_PREFIX}/`) && sha) {
+          try {
+            // this can happen if the branch wasn't deleted when the PR was merged
+            // we backup the existing branch just in case an re-run the mutation
+            await this.backupBranch(branchName);
+            await this.deleteBranch(branchName);
+            const result = await this.client.mutate(options);
+            return result;
+          } catch (e) {
+            console.log(e);
+          }
+        }
       }
       throw new APIError(error.message, 500, 'GitHub');
     }
