@@ -291,10 +291,13 @@ function publishEntry({ createNew = false, duplicate = false } = {}) {
 
     if (createNew) {
       selectDropdownItem('Publish', publishTypes.publishAndCreateNew);
+      clock && clock.tick(150);
     } else if (duplicate) {
       selectDropdownItem('Publish', publishTypes.publishAndDuplicate);
+      clock && clock.tick(150);
     } else {
       selectDropdownItem('Publish', publishTypes.publishNow);
+      clock && clock.tick(150);
     }
 
     assertNotification(notifications.saved);
