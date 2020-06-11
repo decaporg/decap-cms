@@ -278,21 +278,29 @@ function createPostAndExit(entry) {
   exitEditor();
 }
 
+function advanceClock(clock) {
+  if (clock) {
+    // https://github.com/cypress-io/cypress/issues/1273
+    clock.tick(150);
+    clock.tick(150);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+  }
+}
+
 function publishEntry({ createNew = false, duplicate = false } = {}) {
   cy.clock().then(clock => {
     // some input fields are de-bounced thus require advancing the clock
-    if (clock) {
-      // https://github.com/cypress-io/cypress/issues/1273
-      clock.tick(150);
-      clock.tick(150);
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-    }
+    advanceClock(clock);
 
     if (createNew) {
+      advanceClock(clock);
       selectDropdownItem('Publish', publishTypes.publishAndCreateNew);
+      advanceClock(clock);
     } else if (duplicate) {
+      advanceClock(clock);
       selectDropdownItem('Publish', publishTypes.publishAndDuplicate);
+      advanceClock(clock);
     } else {
       selectDropdownItem('Publish', publishTypes.publishNow);
     }
