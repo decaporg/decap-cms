@@ -43,6 +43,14 @@ type ApiFile = { id: string; type: string; name: string; path: string; size: num
 
 const { fetchWithTimeout: fetch } = unsentRequest;
 
+const GITHUB_STATUS_ENDPOINT = 'https://kctbh9vrtdwd.statuspage.io/api/v2/components.json';
+const GITHUB_OPERATIONAL_UNITS = ['API Requests', 'Issues, Pull Requests, Projects'];
+type GitHubStatusComponent = {
+  id: string;
+  name: string;
+  status: string;
+};
+
 export default class GitHub implements Implementation {
   lock: AsyncLock;
   api: API | null;
@@ -112,6 +120,22 @@ export default class GitHub implements Implementation {
   }
 
   async status() {
+    const api = await fetch(GITHUB_STATUS_ENDPOINT)
+      .then(res => res.json())
+      .then(res => {
+        return res['components']
+          .filter((statusComponent: GitHubStatusComponent) =>
+            GITHUB_OPERATIONAL_UNITS.includes(statusComponent.name),
+          )
+          .every(
+            (statusComponent: GitHubStatusComponent) => statusComponent.status === 'operational',
+          );
+      })
+      .catch(e => {
+        console.warn('Failed getting GitHub status', e);
+        return true;
+      });
+
     const auth =
       (await this.api
         ?.getUser()
@@ -121,7 +145,7 @@ export default class GitHub implements Implementation {
           return false;
         })) || false;
 
-    return { auth };
+    return { auth, api };
   }
 
   authComponent() {

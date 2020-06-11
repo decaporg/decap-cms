@@ -97,7 +97,7 @@ export default class GitLab implements Implementation {
           return false;
         })) || false;
 
-    return { auth };
+    return { auth, api: true };
   }
 
   authComponent() {

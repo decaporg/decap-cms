@@ -35,6 +35,14 @@ import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
 import { getClient, Client } from './netlify-lfs-client';
 
+const GITGATEWAY_STATUS_ENDPOINT = 'https://www.netlifystatus.com/api/v2/components.json';
+const GITGATEWAY_OPERATIONAL_UNITS = ['Git Gateway'];
+type GitGatewayStatus = {
+  id: string;
+  name: string;
+  status: string;
+};
+
 type NetlifyIdentity = {
   logout: () => void;
   currentUser: () => User;
@@ -179,6 +187,20 @@ export default class GitGateway implements Implementation {
   }
 
   async status() {
+    const api = await fetch(GITGATEWAY_STATUS_ENDPOINT)
+      .then(res => res.json())
+      .then(res => {
+        return res['components']
+          .filter((statusComponent: GitGatewayStatus) =>
+            GITGATEWAY_OPERATIONAL_UNITS.includes(statusComponent.name),
+          )
+          .every((statusComponent: GitGatewayStatus) => statusComponent.status === 'operational');
+      })
+      .catch(e => {
+        console.warn('Failed getting Git Gateway status', e);
+        return true;
+      });
+
     const auth =
       (await this.tokenPromise?.()
         .then(token => !!token)
@@ -187,7 +209,7 @@ export default class GitGateway implements Implementation {
           return false;
         })) || false;
 
-    return { auth };
+    return { auth, api };
   }
 
   async getAuthClient() {

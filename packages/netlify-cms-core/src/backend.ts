@@ -181,7 +181,7 @@ export class Backend {
 
   async status() {
     const attempts = 3;
-    let status: { auth: boolean } = { auth: false };
+    let status: { auth: boolean; api: boolean } = { auth: false, api: false };
     for (let i = 1; i <= attempts; i++) {
       status = await this.implementation!.status();
       // return on first success

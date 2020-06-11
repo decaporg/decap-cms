@@ -4,7 +4,7 @@ import { STATUS_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../actions/statu
 import { Status } from '../types/redux';
 
 export interface EntriesAction extends AnyAction {
-  payload: { status: { auth: boolean }; error?: Error };
+  payload: { status: { auth: boolean; api: boolean }; error?: Error };
 }
 
 const status = (state = Map(), action: EntriesAction) => {
