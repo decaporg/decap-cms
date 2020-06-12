@@ -56,6 +56,9 @@ const styleStrings = {
   widgetError: `
     border-color: ${colors.errorText};
   `,
+  widgetHidden: `
+    display: none;
+  `,
 };
 
 const ControlContainer = styled.div`
@@ -168,11 +171,13 @@ class EditorControl extends React.Component {
       clearSearch,
       clearFieldErrors,
       loadEntry,
-      className,
       isSelected,
       isEditorComponent,
       isNewEditorComponent,
       parentIds,
+      listIndexes,
+      hideField,
+      hideFieldCondition,
       t,
       validateMetaField,
     } = this.props;
@@ -191,7 +196,13 @@ class EditorControl extends React.Component {
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <ControlContainer className={className}>
+          <ControlContainer
+            className={cx({
+              [css`
+                ${styleStrings.widgetHidden}
+              `]: hideField,
+            })}
+          >
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
             {errors && (
               <ControlErrorsList>
@@ -280,6 +291,9 @@ class EditorControl extends React.Component {
               isEditorComponent={isEditorComponent}
               isNewEditorComponent={isNewEditorComponent}
               parentIds={parentIds}
+              listIndexes={listIndexes}
+              hideField={hideField}
+              hideFieldCondition={hideFieldCondition}
               t={t}
               validateMetaField={validateMetaField}
             />

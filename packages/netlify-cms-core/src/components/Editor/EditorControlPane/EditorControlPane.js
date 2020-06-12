@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { get } from 'lodash';
 import styled from '@emotion/styled';
 import EditorControl from './EditorControl';
 
@@ -26,6 +27,27 @@ export default class ControlPane extends React.Component {
     this.props.fields.forEach(field => {
       if (field.get('widget') === 'hidden') return;
       this.componentValidate[field.get('name')]();
+    });
+  };
+
+  hideFieldCondition = (field, indexes = [0]) => {
+    const data = this.props.entry.get('data').toJS();
+    const conditions = field.get('conditions');
+
+    return conditions.some(c => {
+      let fieldPath = c.get('fieldPath');
+      if (fieldPath.includes('*')) {
+        fieldPath = fieldPath.split('*').reduce((acc, item, i) => {
+          return `${acc}${item}${indexes[i] >= 0 ? indexes[i] : ''}`;
+        }, '');
+      }
+
+      return (
+        (c.get('equal') && get(data, fieldPath) === c.get('equal')) ||
+        (c.get('notEqual') && get(data, fieldPath) !== c.get('notEqual')) ||
+        (c.get('oneOf') && c.get('oneOf').includes(get(data, fieldPath))) ||
+        (c.get('pattern') && RegExp(c.get('pattern')).test(get(data, fieldPath)))
+      );
     });
   };
 
@@ -68,6 +90,8 @@ export default class ControlPane extends React.Component {
               controlRef={this.controlRef}
               entry={entry}
               collection={collection}
+              hideField={field.get('conditions') && this.hideFieldCondition(field)}
+              hideFieldCondition={this.hideFieldCondition}
             />
           );
         })}

@@ -25,6 +25,27 @@ const fieldsConfig = () => ({
       field: { $ref: 'field' },
       fields: { $ref: 'fields' },
       types: { $ref: 'fields' },
+      conditions: {
+        type: 'array',
+        minItems: 1,
+        items: {
+          type: 'object',
+          properties: {
+            fieldPath: { type: 'string' },
+            equal: { type: 'string' },
+            notEqual: { type: 'string' },
+            pattern: { type: 'string' },
+            oneOf: { type: 'array', minItems: 1, items: { type: 'string' } },
+          },
+          required: ['fieldPath'],
+          oneOf: [
+            { required: ['equal'] },
+            { required: ['notEqual'] },
+            { required: ['oneOf'] },
+            { required: ['pattern'] },
+          ],
+        },
+      },
     },
     select: { $data: '0/widget' },
     selectCases: {

@@ -81,6 +81,8 @@ export default class ObjectControl extends React.Component {
       editorControl: EditorControl,
       controlRef,
       parentIds,
+      listIndexes,
+      hideFieldCondition,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -102,6 +104,9 @@ export default class ObjectControl extends React.Component {
         processControlRef={controlRef && controlRef.bind(this)}
         controlRef={controlRef}
         parentIds={parentIds}
+        listIndexes={listIndexes}
+        hideField={field.get('conditions') && hideFieldCondition(field, listIndexes)}
+        hideFieldCondition={hideFieldCondition}
       />
     );
   }

@@ -123,7 +123,7 @@ export default class Widget extends Component {
       if (wrappedError.error) errors.push(wrappedError.error);
     }
 
-    this.props.onValidate(errors);
+    this.props.onValidate(this.props.hideField ? [] : errors);
   };
 
   validatePresence = (field, value) => {
@@ -276,6 +276,8 @@ export default class Widget extends Component {
       isEditorComponent,
       isNewEditorComponent,
       parentIds,
+      listIndexes,
+      hideFieldCondition,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -321,6 +323,8 @@ export default class Widget extends Component {
       fieldsErrors,
       controlRef,
       parentIds,
+      listIndexes,
+      hideFieldCondition,
       t,
     });
   }

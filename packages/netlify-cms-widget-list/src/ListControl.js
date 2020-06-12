@@ -433,6 +433,8 @@ export default class ListControl extends React.Component {
       resolveWidget,
       parentIds,
       forID,
+      hideFieldCondition,
+      listIndexes: indexes,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
@@ -440,6 +442,7 @@ export default class ListControl extends React.Component {
     const key = keys[index];
     let field = this.props.field;
     const hasError = this.hasError(index);
+    const listIndexes = indexes?.length ? indexes.concat(index) : [index];
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
@@ -489,6 +492,8 @@ export default class ListControl extends React.Component {
               data-testid={`object-control-${key}`}
               hasError={hasError}
               parentIds={[...parentIds, forID, key]}
+              listIndexes={listIndexes}
+              hideFieldCondition={hideFieldCondition}
             />
           )}
         </ClassNames>
