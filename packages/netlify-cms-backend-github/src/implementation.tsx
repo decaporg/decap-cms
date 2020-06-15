@@ -43,7 +43,8 @@ type ApiFile = { id: string; type: string; name: string; path: string; size: num
 
 const { fetchWithTimeout: fetch } = unsentRequest;
 
-const GITHUB_STATUS_ENDPOINT = 'https://kctbh9vrtdwd.statuspage.io/api/v2/components.json';
+const STATUS_PAGE = 'https://www.githubstatus.com';
+const GITHUB_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
 const GITHUB_OPERATIONAL_UNITS = ['API Requests', 'Issues, Pull Requests, Projects'];
 type GitHubStatusComponent = {
   id: string;
@@ -136,16 +137,20 @@ export default class GitHub implements Implementation {
         return true;
       });
 
-    const auth =
-      (await this.api
-        ?.getUser()
-        .then(user => !!user)
-        .catch(e => {
-          console.warn('Failed getting GitHub user', e);
-          return false;
-        })) || false;
+    let auth = false;
+    // no need to check auth if api is down
+    if (api) {
+      auth =
+        (await this.api
+          ?.getUser()
+          .then(user => !!user)
+          .catch(e => {
+            console.warn('Failed getting GitHub user', e);
+            return false;
+          })) || false;
+    }
 
-    return { auth, api };
+    return { auth: { status: auth }, api: { status: api, statusPage: STATUS_PAGE } };
   }
 
   authComponent() {

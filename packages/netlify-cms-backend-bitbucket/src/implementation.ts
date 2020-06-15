@@ -46,7 +46,8 @@ import { GitLfsClient } from './git-lfs-client';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
-const BITBUCKET_STATUS_ENDPOINT = 'https://bitbucket.status.atlassian.com/api/v2/components.json';
+const STATUS_PAGE = 'https://bitbucket.status.atlassian.com';
+const BITBUCKET_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
 const BITBUCKET_OPERATIONAL_UNITS = ['API', 'Authentication and user management', 'Git LFS'];
 type BitbucketStatusComponent = {
   id: string;
@@ -138,16 +139,20 @@ export default class BitbucketBackend implements Implementation {
         return true;
       });
 
-    const auth =
-      (await this.api
-        ?.user()
-        .then(user => !!user)
-        .catch(e => {
-          console.warn('Failed getting Bitbucket user', e);
-          return false;
-        })) || false;
+    let auth = false;
+    // no need to check auth if api is down
+    if (api) {
+      auth =
+        (await this.api
+          ?.user()
+          .then(user => !!user)
+          .catch(e => {
+            console.warn('Failed getting Bitbucket user', e);
+            return false;
+          })) || false;
+    }
 
-    return { auth, api };
+    return { auth: { status: auth }, api: { status: api, statusPage: STATUS_PAGE } };
   }
 
   authComponent() {

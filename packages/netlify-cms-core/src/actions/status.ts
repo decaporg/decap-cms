@@ -16,7 +16,10 @@ export function statusRequest() {
   };
 }
 
-export function statusSuccess(status: { auth: boolean; api: boolean }) {
+export function statusSuccess(status: {
+  auth: { status: boolean };
+  api: { status: boolean; statusPage: string };
+}) {
   return {
     type: STATUS_SUCCESS,
     payload: { status },
@@ -26,7 +29,7 @@ export function statusSuccess(status: { auth: boolean; api: boolean }) {
 export function statusFailure(error: Error) {
   return {
     type: STATUS_FAILURE,
-    error,
+    payload: { error },
   };
 }
 
@@ -45,11 +48,12 @@ export function checkBackendStatus() {
       const backendDownKey = 'ui.toast.onBackendDown';
       const previousBackendDownNotifs = state.notifs.filter(n => n.message?.key === backendDownKey);
 
-      if (status.api === false) {
+      if (status.api.status === false) {
         if (previousBackendDownNotifs.length === 0) {
           dispatch(
             notifSend({
               message: {
+                details: status.api.statusPage,
                 key: 'ui.toast.onBackendDown',
               },
               kind: 'danger',
@@ -57,14 +61,14 @@ export function checkBackendStatus() {
           );
         }
         return dispatch(statusSuccess(status));
-      } else if (status.api === true && previousBackendDownNotifs.length > 0) {
+      } else if (status.api.status === true && previousBackendDownNotifs.length > 0) {
         // If backend is up, clear all the danger messages
         previousBackendDownNotifs.forEach(notif => {
           dispatch(notifDismiss(notif.id));
         });
       }
 
-      const authError = status.auth === false;
+      const authError = status.auth.status === false;
       if (authError) {
         const key = 'ui.toast.onLoggedOut';
         const existingNotification = state.notifs.find(n => n.message?.key === key);

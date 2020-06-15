@@ -12,7 +12,7 @@ const isAbortControllerSupported = () => {
 
 const timeout = 60;
 const fetchWithTimeout = (input, init) => {
-  if (init.signal || !isAbortControllerSupported()) {
+  if ((init && init.signal) || !isAbortControllerSupported()) {
     return fetch(input, init);
   }
   const controller = new AbortController();
