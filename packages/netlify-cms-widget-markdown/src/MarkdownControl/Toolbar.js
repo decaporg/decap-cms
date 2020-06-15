@@ -170,6 +170,7 @@ export default class Toolbar extends React.Component {
           {Object.keys(headingOptions).some(isVisible) && (
             <ToolbarDropdownWrapper>
               <Dropdown
+                dropdownWidth="max-content"
                 dropdownTopOverlap="36px"
                 renderButton={() => (
                   <DropdownButton>
