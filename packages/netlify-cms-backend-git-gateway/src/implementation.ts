@@ -35,6 +35,15 @@ import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
 import { getClient, Client } from './netlify-lfs-client';
 
+const STATUS_PAGE = 'https://www.netlifystatus.com';
+const GIT_GATEWAY_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
+const GIT_GATEWAY_OPERATIONAL_UNITS = ['Git Gateway'];
+type GitGatewayStatus = {
+  id: string;
+  name: string;
+  status: string;
+};
+
 type NetlifyIdentity = {
   logout: () => void;
   currentUser: () => User;
@@ -179,15 +188,33 @@ export default class GitGateway implements Implementation {
   }
 
   async status() {
-    const auth =
-      (await this.tokenPromise?.()
-        .then(token => !!token)
-        .catch(e => {
-          console.warn('Failed getting Identity token', e);
-          return false;
-        })) || false;
+    const api = await fetch(GIT_GATEWAY_STATUS_ENDPOINT)
+      .then(res => res.json())
+      .then(res => {
+        return res['components']
+          .filter((statusComponent: GitGatewayStatus) =>
+            GIT_GATEWAY_OPERATIONAL_UNITS.includes(statusComponent.name),
+          )
+          .every((statusComponent: GitGatewayStatus) => statusComponent.status === 'operational');
+      })
+      .catch(e => {
+        console.warn('Failed getting Git Gateway status', e);
+        return true;
+      });
 
-    return { auth };
+    let auth = false;
+    // no need to check auth if api is down
+    if (api) {
+      auth =
+        (await this.tokenPromise?.()
+          .then(token => !!token)
+          .catch(e => {
+            console.warn('Failed getting Identity token', e);
+            return false;
+          })) || false;
+    }
+
+    return { auth: { status: auth }, api: { status: api, statusPage: STATUS_PAGE } };
   }
 
   async getAuthClient() {

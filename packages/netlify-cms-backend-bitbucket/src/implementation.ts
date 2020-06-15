@@ -46,6 +46,15 @@ import { GitLfsClient } from './git-lfs-client';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
+const STATUS_PAGE = 'https://bitbucket.status.atlassian.com';
+const BITBUCKET_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
+const BITBUCKET_OPERATIONAL_UNITS = ['API', 'Authentication and user management', 'Git LFS'];
+type BitbucketStatusComponent = {
+  id: string;
+  name: string;
+  status: string;
+};
+
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
   lock: AsyncLock;
@@ -114,16 +123,36 @@ export default class BitbucketBackend implements Implementation {
   }
 
   async status() {
-    const auth =
-      (await this.api
-        ?.user()
-        .then(user => !!user)
-        .catch(e => {
-          console.warn('Failed getting Bitbucket user', e);
-          return false;
-        })) || false;
+    const api = await fetch(BITBUCKET_STATUS_ENDPOINT)
+      .then(res => res.json())
+      .then(res => {
+        return res['components']
+          .filter((statusComponent: BitbucketStatusComponent) =>
+            BITBUCKET_OPERATIONAL_UNITS.includes(statusComponent.name),
+          )
+          .every(
+            (statusComponent: BitbucketStatusComponent) => statusComponent.status === 'operational',
+          );
+      })
+      .catch(e => {
+        console.warn('Failed getting BitBucket status', e);
+        return true;
+      });
 
-    return { auth };
+    let auth = false;
+    // no need to check auth if api is down
+    if (api) {
+      auth =
+        (await this.api
+          ?.user()
+          .then(user => !!user)
+          .catch(e => {
+            console.warn('Failed getting Bitbucket user', e);
+            return false;
+          })) || false;
+    }
+
+    return { auth: { status: auth }, api: { status: api, statusPage: STATUS_PAGE } };
   }
 
   authComponent() {

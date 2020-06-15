@@ -3,11 +3,14 @@ import { AnyAction } from 'redux';
 import { STATUS_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../actions/status';
 import { Status } from '../types/redux';
 
-export interface EntriesAction extends AnyAction {
-  payload: { status: { auth: boolean }; error?: Error };
+interface StatusAction extends AnyAction {
+  payload: {
+    status: { auth: { status: boolean }; api: { status: boolean; statusPage: string } };
+    error?: Error;
+  };
 }
 
-const status = (state = Map(), action: EntriesAction) => {
+const status = (state = Map(), action: StatusAction) => {
   switch (action.type) {
     case STATUS_REQUEST:
       return state.set('isFetching', true);
