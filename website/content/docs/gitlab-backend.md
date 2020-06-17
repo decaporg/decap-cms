@@ -3,7 +3,9 @@ title: GitLab
 group: backends
 weight: 20
 ---
-For repositories stored on GitLab, the `gitlab` backend allows CMS users to log in directly with their GitLab account. Note that all users must have push access to your content repository for this to work. In particular, all users must be able to make commits to the configured branch (`master` by default), which typically requires `maintainer` permissions in GitLab (since `master` is a [protected branch](https://docs.gitlab.com/ee/user/project/protected_branches.html) by default). 
+For repositories stored on GitLab, the `gitlab` backend allows CMS users to log in directly with their GitLab account. Note that all users must have push access to your content repository for this to work.
+
+**Note:** GitLab default branch is protected by default, thus typically requires `maintainer` permissions in order for users to have push access.
 
 The GitLab API allows for two types of OAuth2 flows:
 
