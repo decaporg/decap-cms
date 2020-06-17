@@ -8,15 +8,37 @@ import { dirname, sep } from 'path';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 import { selectEntries } from '../../reducers/entries';
-import { Icon, colors } from 'netlify-cms-ui-default';
+import { Icon, colors, components } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { sortBy } from 'lodash';
 
 const { addFileTemplateFields } = stringTemplate;
 
-const StyledDiv = styled.div`
+const NodeTitleContainer = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const NodeTitle = styled.div`
+  margin-right: 4px;
+`;
+
+const Caret = styled.div`
+  position: relative;
+  top: 2px;
+`;
+
+const CaretDown = styled(Caret)`
+  ${components.caretDown};
+  color: currentColor;
+`;
+
+const CaretRight = styled(Caret)`
+  ${components.caretRight};
+  color: currentColor;
+  left: 2px;
 `;
 
 const TreeNavLink = styled(NavLink)`
@@ -67,7 +89,8 @@ const TreeNode = props => {
     }
     const title = getNodeTitle(node);
 
-    const showChevron = depth === 0 || node.children.some(c => c.children.some(c => c.isDir));
+    const hasChildren = depth === 0 || node.children.some(c => c.children.some(c => c.isDir));
+
     return (
       <React.Fragment key={node.path}>
         <TreeNavLink
@@ -79,12 +102,10 @@ const TreeNode = props => {
           data-testid={node.path}
         >
           <Icon type="write" />
-          <StyledDiv>
-            {title}
-            {showChevron && (
-              <Icon type="chevron" size="small" direction={node.expanded ? 'down' : 'right'} />
-            )}
-          </StyledDiv>
+          <NodeTitleContainer>
+            <NodeTitle>{title}</NodeTitle>
+            {hasChildren && (node.expanded ? <CaretDown /> : <CaretRight />)}
+          </NodeTitleContainer>
         </TreeNavLink>
         {node.expanded && (
           <TreeNode

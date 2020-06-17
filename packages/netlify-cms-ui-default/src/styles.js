@@ -244,16 +244,25 @@ const buttons = {
   `,
 };
 
+const caret = css`
+  color: ${colorsRaw.white};
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+`;
+
 const components = {
   card,
   caretDown: css`
-    color: ${colorsRaw.white};
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
+    ${caret};
     border-top: 6px solid currentColor;
-    border-radius: 2px;
+    border-bottom: 0;
+  `,
+  caretRight: css`
+    ${caret};
+    border-left: 6px solid currentColor;
+    border-right: 0;
   `,
   badge: css`
     ${backgroundBadge};
