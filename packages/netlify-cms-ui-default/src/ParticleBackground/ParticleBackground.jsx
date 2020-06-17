@@ -15,29 +15,30 @@ const Particles = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  height: 100%;
+  height: 100%; /* We need a height defined */
 `;
 
 const ParticleBackground = ({ children, className }) => {
   const particlesRef = useRef(null);
   useEffect(() => {
     if (particlesRef.current) {
-      console.log({ particlesRef });
-      new Particle(particlesRef.current, {
-        dotColor: color.neutral['1000'],
-        lineColor: color.neutral['1200'],
-        minSpeedX: 0.5,
-        maxSpeedX: 2,
-        minSpeedY: 0.5,
-        maxSpeedY: 2,
-        density: 20000, // One particle every n pixels
-        curvedLines: false,
-        proximity: 100, // How close two dots need to be before they join
-        parallaxMultiplier: 10, // Lower the number is more extreme parallax
-        particleRadius: 4, // Dot size
+      setTimeout(() => {
+        new Particle(particlesRef.current, {
+          dotColor: color.neutral['1000'],
+          lineColor: color.neutral['1200'],
+          minSpeedX: 0.5,
+          maxSpeedX: 2,
+          minSpeedY: 0.5,
+          maxSpeedY: 2,
+          density: 20000, // One particle every n pixels
+          curvedLines: false,
+          proximity: 100, // How close two dots need to be before they join
+          parallaxMultiplier: 10, // Lower the number is more extreme parallax
+          particleRadius: 4, // Dot size
+        });
       });
     }
-  }, []);
+  }, [particlesRef]);
 
   return (
     <ParticleContainer className={className}>

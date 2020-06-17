@@ -4,6 +4,7 @@ import shadow from './utils/shadow';
 
 const fonts = {
   sansSerif: `
+    'Inter',
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
