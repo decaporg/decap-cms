@@ -181,11 +181,17 @@ export class Backend {
 
   async status() {
     const attempts = 3;
-    let status: { auth: boolean } = { auth: false };
+    let status: {
+      auth: { status: boolean };
+      api: { status: boolean; statusPage: string };
+    } = {
+      auth: { status: false },
+      api: { status: false, statusPage: '' },
+    };
     for (let i = 1; i <= attempts; i++) {
       status = await this.implementation!.status();
       // return on first success
-      if (Object.values(status).every(s => s === true)) {
+      if (Object.values(status).every(s => s.status === true)) {
         return status;
       } else {
         await new Promise(resolve => setTimeout(resolve, i * 1000));

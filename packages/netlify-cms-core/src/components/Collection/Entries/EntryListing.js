@@ -13,6 +13,8 @@ const CardsGrid = styled.ul`
   flex-flow: row wrap;
   list-style-type: none;
   margin-left: -12px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 `;
 
 export default class EntryListing extends React.Component {

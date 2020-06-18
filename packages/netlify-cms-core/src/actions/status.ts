@@ -4,7 +4,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { actions as notifActions } from 'redux-notifications';
 
-const { notifSend } = notifActions;
+const { notifSend, notifDismiss } = notifActions;
 
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_SUCCESS = 'STATUS_SUCCESS';
@@ -16,7 +16,10 @@ export function statusRequest() {
   };
 }
 
-export function statusSuccess(status: { auth: boolean }) {
+export function statusSuccess(status: {
+  auth: { status: boolean };
+  api: { status: boolean; statusPage: string };
+}) {
   return {
     type: STATUS_SUCCESS,
     payload: { status },
@@ -26,7 +29,7 @@ export function statusSuccess(status: { auth: boolean }) {
 export function statusFailure(error: Error) {
   return {
     type: STATUS_FAILURE,
-    error,
+    payload: { error },
   };
 }
 
@@ -42,7 +45,30 @@ export function checkBackendStatus() {
       const backend = currentBackend(state.config);
       const status = await backend.status();
 
-      const authError = status.auth === false;
+      const backendDownKey = 'ui.toast.onBackendDown';
+      const previousBackendDownNotifs = state.notifs.filter(n => n.message?.key === backendDownKey);
+
+      if (status.api.status === false) {
+        if (previousBackendDownNotifs.length === 0) {
+          dispatch(
+            notifSend({
+              message: {
+                details: status.api.statusPage,
+                key: 'ui.toast.onBackendDown',
+              },
+              kind: 'danger',
+            }),
+          );
+        }
+        return dispatch(statusSuccess(status));
+      } else if (status.api.status === true && previousBackendDownNotifs.length > 0) {
+        // If backend is up, clear all the danger messages
+        previousBackendDownNotifs.forEach(notif => {
+          dispatch(notifDismiss(notif.id));
+        });
+      }
+
+      const authError = status.auth.status === false;
       if (authError) {
         const key = 'ui.toast.onLoggedOut';
         const existingNotification = state.notifs.find(n => n.message?.key === key);

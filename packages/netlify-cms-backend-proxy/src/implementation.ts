@@ -64,7 +64,7 @@ export default class ProxyBackend implements Implementation {
   }
 
   status() {
-    return Promise.resolve({ auth: true });
+    return Promise.resolve({ auth: { status: true }, api: { status: true, statusPage: '' } });
   }
 
   authComponent() {

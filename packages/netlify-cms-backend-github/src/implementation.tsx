@@ -43,6 +43,15 @@ type ApiFile = { id: string; type: string; name: string; path: string; size: num
 
 const { fetchWithTimeout: fetch } = unsentRequest;
 
+const STATUS_PAGE = 'https://www.githubstatus.com';
+const GITHUB_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
+const GITHUB_OPERATIONAL_UNITS = ['API Requests', 'Issues, Pull Requests, Projects'];
+type GitHubStatusComponent = {
+  id: string;
+  name: string;
+  status: string;
+};
+
 export default class GitHub implements Implementation {
   lock: AsyncLock;
   api: API | null;
@@ -112,16 +121,36 @@ export default class GitHub implements Implementation {
   }
 
   async status() {
-    const auth =
-      (await this.api
-        ?.getUser()
-        .then(user => !!user)
-        .catch(e => {
-          console.warn('Failed getting GitHub user', e);
-          return false;
-        })) || false;
+    const api = await fetch(GITHUB_STATUS_ENDPOINT)
+      .then(res => res.json())
+      .then(res => {
+        return res['components']
+          .filter((statusComponent: GitHubStatusComponent) =>
+            GITHUB_OPERATIONAL_UNITS.includes(statusComponent.name),
+          )
+          .every(
+            (statusComponent: GitHubStatusComponent) => statusComponent.status === 'operational',
+          );
+      })
+      .catch(e => {
+        console.warn('Failed getting GitHub status', e);
+        return true;
+      });
 
-    return { auth };
+    let auth = false;
+    // no need to check auth if api is down
+    if (api) {
+      auth =
+        (await this.api
+          ?.getUser()
+          .then(user => !!user)
+          .catch(e => {
+            console.warn('Failed getting GitHub user', e);
+            return false;
+          })) || false;
+    }
+
+    return { auth: { status: auth }, api: { status: api, statusPage: STATUS_PAGE } };
   }
 
   authComponent() {
