@@ -8,11 +8,13 @@ describe('yaml', () => {
 
       const result = yaml.fromFile(stripIndent`
       date: 2020-04-02T16:08:03.327Z
+      dateString: 2020-04-02
       boolean: true
       number: 1
       `);
       expect(result).toEqual({
         date: new Date('2020-04-02T16:08:03.327Z'),
+        dateString: '2020-04-02',
         boolean: true,
         number: 1,
       });
