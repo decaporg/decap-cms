@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.4.2...netlify-cms-widget-object@2.5.0) (2020-06-18)
+
+
+### Features
+
+* add widgets schema validation ([#3841](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/3841)) ([2b46608](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/commit/2b46608f86d22c8ad34f75e396be7c34462d9e99))
+
+
+
+
+
 ## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.4.1...netlify-cms-widget-object@2.4.2) (2020-06-01)
 
 

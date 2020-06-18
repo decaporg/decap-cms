@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.7...netlify-cms-backend-proxy@1.1.0) (2020-06-18)
+
+
+### Bug Fixes
+
+* handle token expiry ([#3847](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3847)) ([285c940](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/285c940562548d7bc88de244123ba87ff66fba65))
+
+
+### Features
+
+* add backend status down indicator ([#3889](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3889)) ([a50edc7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/a50edc70553ad6afa1acee6a51996ad226443f8c))
+
+
+
+
+
 ## [1.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.6...netlify-cms-backend-proxy@1.0.7) (2020-05-19)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.7.0...netlify-cms-widget-relation@2.8.0) (2020-06-18)
+
+
+### Bug Fixes
+
+* **widget-relation:** keep referenced field type when not using template ([#3850](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/3850)) ([1419ba1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/1419ba1d09ba1671f964f797479e1da5073a608d))
+
+
+### Features
+
+* add widgets schema validation ([#3841](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/3841)) ([2b46608](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/2b46608f86d22c8ad34f75e396be7c34462d9e99))
+
+
+
+
+
 # [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.6.0...netlify-cms-widget-relation@2.7.0) (2020-05-19)
 
 

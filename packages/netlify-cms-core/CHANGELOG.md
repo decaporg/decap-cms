@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.29.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.28.0...netlify-cms-core@2.29.0) (2020-06-18)
+
+
+### Bug Fixes
+
+* **schema:** enforce files and collections names uniqueness ([#3913](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3913)) ([0dc62ea](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/0dc62eabec1857d4d88ba056c16b3808eeabfad9))
+* don't rely on browser builtin css for CardsGrid margins ([#3892](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3892)) ([1045ca7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1045ca753fa1a191e0bab6a177cf6daf51ec1e51))
+* **deps:** update dependency react-is to v16.13.1 ([#3870](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3870)) ([98c5434](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/98c5434a6d70d9beb8ff035dfcb20bc630dc128e))
+* **deps:** update dependency react-polyglot to ^0.7.0 ([#3872](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3872)) ([89f4181](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/89f418135a2d8f9862e7939c53c4bd1179f8d51e))
+* handle token expiry ([#3847](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3847)) ([285c940](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/285c940562548d7bc88de244123ba87ff66fba65))
+* **types:** add missing List import to index.d.ts ([#3843](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3843)) ([43ef28b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/43ef28b5dce32542e9c2d44cc9b2fc031232a13b))
+
+
+### Features
+
+* add backend status down indicator ([#3889](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3889)) ([a50edc7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a50edc70553ad6afa1acee6a51996ad226443f8c))
+* add widgets schema validation ([#3841](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3841)) ([2b46608](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/2b46608f86d22c8ad34f75e396be7c34462d9e99))
+
+
+
+
+
 # [2.28.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.27.0...netlify-cms-core@2.28.0) (2020-06-01)
 
 

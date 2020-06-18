@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.3.3...netlify-cms-widget-map@1.4.0) (2020-06-18)
+
+
+### Features
+
+* add widgets schema validation ([#3841](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/issues/3841)) ([2b46608](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/commit/2b46608f86d22c8ad34f75e396be7c34462d9e99))
+
+
+
+
+
 ## [1.3.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.3.2...netlify-cms-widget-map@1.3.3) (2019-07-24)
 
 **Note:** Version bump only for package netlify-cms-widget-map

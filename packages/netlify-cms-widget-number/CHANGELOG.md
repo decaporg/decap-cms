@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.5...netlify-cms-widget-number@2.4.0) (2020-06-18)
+
+
+### Features
+
+* add widgets schema validation ([#3841](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/issues/3841)) ([2b46608](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/commit/2b46608f86d22c8ad34f75e396be7c34462d9e99))
+* commit media with post ([#2851](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/issues/2851)) ([6515dee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/commit/6515dee8715d8571ea19484a7dfab7cfd0cc40be))
+
+
+
+
+
 ## [2.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.4...netlify-cms-widget-number@2.3.5) (2019-11-07)
 
 

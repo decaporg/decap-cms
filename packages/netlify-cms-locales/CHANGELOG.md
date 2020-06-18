@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.16.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.15.0...netlify-cms-locales@1.16.0) (2020-06-18)
+
+
+### Bug Fixes
+
+* handle token expiry ([#3847](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3847)) ([285c940](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/285c940562548d7bc88de244123ba87ff66fba65))
+
+
+### Features
+
+* add backend status down indicator ([#3889](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3889)) ([a50edc7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/a50edc70553ad6afa1acee6a51996ad226443f8c))
+* **lang:** add 'th' locale ([#3890](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3890)) ([699526c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/699526c23b0e6ecc7f79da977a93e0d6cf5284d1))
+
+
+
+
+
 # [1.15.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.14.0...netlify-cms-locales@1.15.0) (2020-06-01)
 
 

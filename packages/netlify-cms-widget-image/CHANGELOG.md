@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.6.2...netlify-cms-widget-image@2.7.0) (2020-06-18)
+
+
+### Features
+
+* add widgets schema validation ([#3841](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/issues/3841)) ([2b46608](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/commit/2b46608f86d22c8ad34f75e396be7c34462d9e99))
+
+
+
+
+
 ## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.6.1...netlify-cms-widget-image@2.6.2) (2020-02-14)
 
 **Note:** Version bump only for package netlify-cms-widget-image

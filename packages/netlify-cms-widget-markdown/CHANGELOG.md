@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.11.3...netlify-cms-widget-markdown@2.12.0) (2020-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-monaco-editor to ^0.36.0 ([#3871](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3871)) ([dc429f8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/dc429f8ffa40bc6d5f024823a10ae99a49aebdb5))
+* **widget-markdown:** don't strip new lines from text nodes ([#3813](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3813)) ([7bc75d0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/7bc75d095bcdae0a85d95ed9d0c9188a89136805))
+* **widget-markdown:** headings dropdown not showing properly no firefox ([#3903](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3903)) ([2b01e00](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/2b01e009c69ecb932815eda69385703e5774d775))
+* update rehype-remark ([#3864](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3864)) ([53cba02](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/53cba022442ee2e996a8917fced57a311fe22da0))
+
+
+### Features
+
+* add widgets schema validation ([#3841](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/3841)) ([2b46608](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/2b46608f86d22c8ad34f75e396be7c34462d9e99))
+
+
+
+
+
 ## [2.11.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.11.2...netlify-cms-widget-markdown@2.11.3) (2020-05-19)
 
 
