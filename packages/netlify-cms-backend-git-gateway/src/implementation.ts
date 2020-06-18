@@ -18,7 +18,6 @@ import {
   entriesByFiles,
   Config,
   ImplementationFile,
-  UnpublishedEntryMediaFile,
   parsePointerFile,
   getLargeMediaPatternsFromGitAttributesFile,
   getPointerFileForMediaFileObj,
@@ -394,34 +393,27 @@ export default class GitGateway implements Implementation {
     return this.backend!.getEntry(path);
   }
 
-  async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+    return this.backend!.unpublishedEntryDataFile(collection, slug, path, id);
+  }
+
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
     const client = await this.getLargeMediaClient();
-    const backend = this.backend as GitLabBackend | GitHubBackend;
-    if (!client.enabled) {
-      return backend!.loadEntryMediaFiles(branch, files);
+    if (client.enabled && client.matchPath(path)) {
+      const branch = this.backend!.getBranch(collection, slug);
+      const url = await this.getLargeMediaDisplayURL({ path, id }, branch);
+      return {
+        id,
+        name: basename(path),
+        path,
+        url,
+        displayURL: url,
+        file: new File([], name),
+        size: 0,
+      };
+    } else {
+      return this.backend!.unpublishedEntryMediaFile(collection, slug, path, id);
     }
-
-    const mediaFiles = await Promise.all(
-      files.map(async file => {
-        if (client.matchPath(file.path)) {
-          const { path, id } = file;
-          const url = await this.getLargeMediaDisplayURL({ path, id }, branch);
-          return {
-            id,
-            name: basename(path),
-            path,
-            url,
-            displayURL: url,
-            file: new File([], name),
-            size: 0,
-          };
-        } else {
-          return backend!.loadMediaFile(branch, file);
-        }
-      }),
-    );
-
-    return mediaFiles;
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
@@ -597,10 +589,8 @@ export default class GitGateway implements Implementation {
   unpublishedEntries() {
     return this.backend!.unpublishedEntries();
   }
-  unpublishedEntry(collection: string, slug: string) {
-    return this.backend!.unpublishedEntry(collection, slug, {
-      loadEntryMediaFiles: (branch, files) => this.loadEntryMediaFiles(branch, files),
-    });
+  unpublishedEntry({ id, collection, slug }: { id?: string; collection?: string; slug?: string }) {
+    return this.backend!.unpublishedEntry({ id, collection, slug });
   }
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     return this.backend!.updateUnpublishedEntryStatus(collection, slug, newStatus);

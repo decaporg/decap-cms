@@ -103,7 +103,7 @@ export const prepareSlug = (slug: string) => {
   );
 };
 
-const getProcessSegment = (slugConfig: SlugConfig) =>
+export const getProcessSegment = (slugConfig: SlugConfig) =>
   flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
 
 export const slugFormatter = (

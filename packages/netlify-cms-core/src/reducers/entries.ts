@@ -351,6 +351,14 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   return entries;
 };
 
+export const selectEntryByPath = (state: Entries, collection: string, path: string) => {
+  const slugs = selectPublishedSlugs(state, collection);
+  const entries =
+    slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
+
+  return entries && entries.find(e => e?.get('path') === path);
+};
+
 export const selectEntriesLoaded = (state: Entries, collection: string) => {
   return !!state.getIn(['pages', collection]);
 };

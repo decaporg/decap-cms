@@ -183,6 +183,30 @@ const getConfigSchema = () => ({
             },
           },
           view_filters: viewFilters,
+          nested: {
+            type: 'object',
+            properties: {
+              depth: { type: 'number', minimum: 1, maximum: 1000 },
+              summary: { type: 'string' },
+            },
+            required: ['depth'],
+          },
+          meta: {
+            type: 'object',
+            properties: {
+              path: {
+                type: 'object',
+                properties: {
+                  label: { type: 'string' },
+                  widget: { type: 'string' },
+                  index_file: { type: 'string' },
+                },
+                required: ['label', 'widget', 'index_file'],
+              },
+            },
+            additionalProperties: false,
+            minProperties: 1,
+          },
         },
         required: ['name', 'label'],
         oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],

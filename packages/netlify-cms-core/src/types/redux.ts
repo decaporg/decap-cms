@@ -93,9 +93,10 @@ export type EntryObject = {
   collection: string;
   mediaFiles: List<MediaFileMap>;
   newRecord: boolean;
-  metaData: { status: string };
   author?: string;
   updatedOn?: string;
+  status: string;
+  meta: StaticallyTypedRecord<{ path: string }>;
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
@@ -107,6 +108,7 @@ export type FieldsErrors = StaticallyTypedRecord<{ [field: string]: { type: stri
 export type EntryDraft = StaticallyTypedRecord<{
   entry: Entry;
   fieldsErrors: FieldsErrors;
+  fieldsMetaData?: Map<string, Map<string, string>>;
 }>;
 
 export type EntryField = StaticallyTypedRecord<{
@@ -119,6 +121,7 @@ export type EntryField = StaticallyTypedRecord<{
   media_folder?: string;
   public_folder?: string;
   comment?: string;
+  meta?: boolean;
 }>;
 
 export type EntryFields = List<EntryField>;
@@ -145,6 +148,17 @@ export type ViewFilter = {
   pattern: string;
   id: string;
 };
+type NestedObject = { depth: number };
+
+type Nested = StaticallyTypedRecord<NestedObject>;
+
+type PathObject = { label: string; widget: string; index_file: string };
+
+type MetaObject = {
+  path?: StaticallyTypedRecord<PathObject>;
+};
+
+type Meta = StaticallyTypedRecord<MetaObject>;
 
 type CollectionObject = {
   name: string;
@@ -170,6 +184,8 @@ type CollectionObject = {
   label: string;
   sortableFields: List<string>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
+  nested?: Nested;
+  meta?: Meta;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
@@ -330,6 +346,10 @@ export interface EntriesFilterFailurePayload {
   filter: ViewFilter;
   collection: string;
   error: Error;
+}
+
+export interface EntriesMoveSuccessPayload extends EntryPayload {
+  entries: EntryObject[];
 }
 
 export interface EntriesAction extends Action<string> {

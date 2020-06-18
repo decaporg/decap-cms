@@ -8,6 +8,7 @@ import { NavLink } from 'react-router-dom';
 import { Icon, components, colors } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 import CollectionSearch from './CollectionSearch';
+import NestedCollection from './NestedCollection';
 
 const styles = {
   sidebarNavLinkActive: css`
@@ -64,23 +65,35 @@ const SidebarNavLink = styled(NavLink)`
   `};
 `;
 
-class Sidebar extends React.Component {
+export class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.orderedMap.isRequired,
     collection: ImmutablePropTypes.map,
     searchTerm: PropTypes.string,
+    filterTerm: PropTypes.string,
     t: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    searchTerm: '',
-  };
-
-  renderLink = collection => {
+  renderLink = (collection, filterTerm) => {
     const collectionName = collection.get('name');
+    if (collection.has('nested')) {
+      return (
+        <li key={collectionName}>
+          <NestedCollection
+            collection={collection}
+            filterTerm={filterTerm}
+            data-testid={collectionName}
+          />
+        </li>
+      );
+    }
     return (
       <li key={collectionName}>
-        <SidebarNavLink to={`/collections/${collectionName}`} activeClassName="sidebar-active">
+        <SidebarNavLink
+          to={`/collections/${collectionName}`}
+          activeClassName="sidebar-active"
+          data-testid={collectionName}
+        >
           <Icon type="write" />
           {collection.get('label')}
         </SidebarNavLink>
@@ -89,7 +102,8 @@ class Sidebar extends React.Component {
   };
 
   render() {
-    const { collections, collection, searchTerm, t } = this.props;
+    const { collections, collection, searchTerm, t, filterTerm } = this.props;
+
     return (
       <SidebarContainer>
         <SidebarHeading>{t('collection.sidebar.collections')}</SidebarHeading>
@@ -103,7 +117,7 @@ class Sidebar extends React.Component {
           {collections
             .toList()
             .filter(collection => collection.get('hide') !== true)
-            .map(this.renderLink)}
+            .map(collection => this.renderLink(collection, filterTerm))}
         </SidebarNavList>
       </SidebarContainer>
     );

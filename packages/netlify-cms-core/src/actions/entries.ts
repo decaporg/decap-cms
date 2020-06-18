@@ -26,7 +26,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
-import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
+import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
+import { selectCustomPath } from '../reducers/entryDraft';
+import { navigateToEntry } from '../routing/history';
+import { getProcessSegment } from '../lib/formatters';
 
 const { notifSend } = notifActions;
 
@@ -336,7 +339,7 @@ export function discardDraft() {
 }
 
 export function changeDraftField(
-  field: string,
+  field: EntryField,
   value: string,
   metadata: Record<string, unknown>,
   entries: EntryMap[],
@@ -520,7 +523,10 @@ export function loadEntries(collection: Collection, page = 0) {
         cursor: Cursor;
         pagination: number;
         entries: EntryValue[];
-      } = await provider.listEntries(collection, page);
+      } = await (collection.has('nested')
+        ? // nested collections require all entries to construct the tree
+          provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
+        : provider.listEntries(collection, page));
       response = {
         ...response,
         // The only existing backend using the pagination system is the
@@ -647,7 +653,8 @@ export function createEmptyDraft(collection: Collection, search: string) {
     });
 
     const fields = collection.get('fields', List());
-    const dataFields = createEmptyDraftData(fields);
+    const dataFields = createEmptyDraftData(fields.filter(f => !f!.get('meta')).toList());
+    const metaFields = createEmptyDraftData(fields.filter(f => f!.get('meta') === true).toList());
 
     const state = getState();
     const backend = currentBackend(state.config);
@@ -659,6 +666,8 @@ export function createEmptyDraft(collection: Collection, search: string) {
     let newEntry = createEntry(collection.get('name'), '', '', {
       data: dataFields,
       mediaFiles: [],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      meta: metaFields as any,
     });
     newEntry = await backend.processEntry(state, collection, newEntry);
     dispatch(emptyDraftCreated(newEntry));
@@ -791,7 +800,7 @@ export function persistEntry(collection: Collection) {
         assetProxies,
         usedSlugs,
       })
-      .then((slug: string) => {
+      .then((newSlug: string) => {
         dispatch(
           notifSend({
             message: {
@@ -805,8 +814,14 @@ export function persistEntry(collection: Collection) {
         if (assetProxies.length > 0) {
           dispatch(loadMedia());
         }
-        dispatch(entryPersisted(collection, serializedEntry, slug));
-        if (serializedEntry.get('newRecord')) return dispatch(loadEntry(collection, slug));
+        dispatch(entryPersisted(collection, serializedEntry, newSlug));
+        if (collection.has('nested')) {
+          dispatch(loadEntries(collection));
+        }
+        if (entry.get('slug') !== newSlug) {
+          dispatch(loadEntry(collection, newSlug));
+          navigateToEntry(collection.get('name'), newSlug);
+        }
       })
       .catch((error: Error) => {
         console.error(error);
@@ -851,4 +866,54 @@ export function deleteEntry(collection: Collection, slug: string) {
         return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
   };
+}
+
+const getPathError = (
+  path: string | undefined,
+  key: string,
+  t: (key: string, args: Record<string, unknown>) => string,
+) => {
+  return {
+    error: {
+      type: ValidationErrorTypes.CUSTOM,
+      message: t(`editor.editorControlPane.widget.${key}`, {
+        path,
+      }),
+    },
+  };
+};
+
+export function validateMetaField(
+  state: State,
+  collection: Collection,
+  field: EntryField,
+  value: string | undefined,
+  t: (key: string, args: Record<string, unknown>) => string,
+) {
+  if (field.get('meta') && field.get('name') === 'path') {
+    if (!value) {
+      return getPathError(value, 'invalidPath', t);
+    }
+    const sanitizedPath = (value as string)
+      .split('/')
+      .map(getProcessSegment(state.config.get('slug')))
+      .join('/');
+
+    if (value !== sanitizedPath) {
+      return getPathError(value, 'invalidPath', t);
+    }
+
+    const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } }));
+    const existingEntry = customPath
+      ? selectEntryByPath(state.entries, collection.get('name'), customPath)
+      : undefined;
+
+    const existingEntryPath = existingEntry?.get('path');
+    const draftPath = state.entryDraft?.getIn(['entry', 'path']);
+
+    if (existingEntryPath && existingEntryPath !== draftPath) {
+      return getPathError(value, 'pathExists', t);
+    }
+  }
+  return { error: false };
 }

@@ -20,6 +20,7 @@ import {
   removeMediaControl,
 } from 'Actions/mediaLibrary';
 import Widget from './Widget';
+import { validateMetaField } from '../../../actions/entries';
 
 /**
  * This is a necessary bridge as we are still passing classnames to widgets
@@ -116,6 +117,8 @@ class EditorControl extends React.Component {
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     parentIds: PropTypes.arrayOf(PropTypes.string),
+    entry: ImmutablePropTypes.map.isRequired,
+    collection: ImmutablePropTypes.map.isRequired,
   };
 
   static defaultProps = {
@@ -171,6 +174,7 @@ class EditorControl extends React.Component {
       isNewEditorComponent,
       parentIds,
       t,
+      validateMetaField,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -248,7 +252,7 @@ class EditorControl extends React.Component {
               value={value}
               mediaPaths={mediaPaths}
               metadata={metadata}
-              onChange={(newValue, newMetadata) => onChange(fieldName, newValue, newMetadata)}
+              onChange={(newValue, newMetadata) => onChange(field, newValue, newMetadata)}
               onValidate={onValidate && partial(onValidate, this.uniqueFieldId)}
               onOpenMediaLibrary={openMediaLibrary}
               onClearMediaControl={clearMediaControl}
@@ -277,6 +281,7 @@ class EditorControl extends React.Component {
               isNewEditorComponent={isNewEditorComponent}
               parentIds={parentIds}
               t={t}
+              validateMetaField={validateMetaField}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
@@ -311,10 +316,11 @@ const mapStateToProps = state => {
     isFetching: state.search.get('isFetching'),
     queryHits: state.search.get('queryHits'),
     config: state.config,
-    collection,
     entry,
+    collection,
     isLoadingAsset,
     loadEntry,
+    validateMetaField: (field, value, t) => validateMetaField(state, collection, field, value, t),
   };
 };
 

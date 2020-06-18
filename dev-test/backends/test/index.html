@@ -74,6 +74,36 @@
       content: "---\ntitle: \"This FAQ item # " + i + "\"\ndate: " + dateString + "T00:99:99.999Z\n---\n\n# Loren ipsum dolor sit amet"
     }
   }
+  window.repoFiles._pages = {
+    directory: {
+      'sub-directory': {
+        'nested-directory': {
+          'index.md': {
+            path: '_pages/directory/sub-directory/nested-directory/index.md',
+            content: '---\ntitle: "Nested Directory"\n---\n',
+          },
+        },
+        'index.md': {
+          path: '_pages/directory/sub-directory/index.md',
+          content: '---\ntitle: "Sub Directory"\n---\n',
+        },
+      },
+      'another-sub-directory': {
+        'index.md': {
+          path: '_pages/directory/another-sub-directory/index.md',
+          content: '---\ntitle: "Another Sub Directory"\n---\n',
+        },
+      },
+      'index.md': {
+        path: '_pages/directory/index.md',
+        content: '---\ntitle: "Directory"\n---\n',
+      },
+    },
+    'index.md': {
+      path: '_pages/index.md',
+      content: '---\ntitle: "Root Page"\n---\n',
+    },
+  };
   </script>
 </head>
 <body>

@@ -9,8 +9,8 @@ jest.mock('simple-git/promise');
 const assetFailure = (result: Joi.ValidationResult, expectedMessage: string) => {
   const { error } = result;
   expect(error).not.toBeNull();
-  expect(error.details).toHaveLength(1);
-  const message = error.details.map(({ message }) => message)[0];
+  expect(error!.details).toHaveLength(1);
+  const message = error!.details.map(({ message }) => message)[0];
   expect(message).toBe(expectedMessage);
 };
 

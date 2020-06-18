@@ -403,6 +403,9 @@ export default class GraphQLAPI extends API {
       ...this.getBranchQuery(branch, this.repoOwner, this.repoName),
       fetchPolicy: CACHE_FIRST,
     });
+    if (!data.repository.branch) {
+      throw new APIError('Branch not found', 404, API_NAME);
+    }
     return data.repository.branch;
   }
 
@@ -539,12 +542,9 @@ export default class GraphQLAPI extends API {
     try {
       const contentKey = this.generateContentKey(collectionName, slug);
       const branchName = branchFromContentKey(contentKey);
-      const metadata = await this.retrieveMetadata(contentKey);
-      if (metadata.pullRequest.number !== MOCK_PULL_REQUEST) {
-        const { branch, pullRequest } = await this.getPullRequestAndBranch(
-          branchName,
-          metadata.pullRequest.number,
-        );
+      const pr = await this.getBranchPullRequest(branchName);
+      if (pr.number !== MOCK_PULL_REQUEST) {
+        const { branch, pullRequest } = await this.getPullRequestAndBranch(branchName, pr.number);
 
         const { data } = await this.mutate({
           mutation: mutations.closePullRequestAndDeleteBranch,

@@ -98,12 +98,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
       // Update Optimistically
       return state.withMutations(map => {
         map.setIn(
-          [
-            'entities',
-            `${action.payload!.collection}.${action.payload!.slug}`,
-            'metaData',
-            'status',
-          ],
+          ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'status'],
           action.payload!.newStatus,
         );
         map.setIn(
@@ -148,7 +143,7 @@ export const selectUnpublishedEntry = (
 export const selectUnpublishedEntriesByStatus = (state: EditorialWorkflow, status: string) => {
   if (!state) return null;
   const entities = state.get('entities') as Entities;
-  return entities.filter(entry => entry.getIn(['metaData', 'status']) === status).valueSeq();
+  return entities.filter(entry => entry.get('status') === status).valueSeq();
 };
 
 export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: string) => {

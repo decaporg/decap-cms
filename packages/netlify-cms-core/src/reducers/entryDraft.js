@@ -22,6 +22,9 @@ import {
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
 } from 'Actions/editorialWorkflow';
+import { get } from 'lodash';
+import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
+import { join } from 'path';
 
 const initialState = Map({
   entry: Map(),
@@ -87,10 +90,22 @@ const entryDraftReducer = (state = Map(), action) => {
     }
     case DRAFT_CHANGE_FIELD: {
       return state.withMutations(state => {
-        state.setIn(['entry', 'data', action.payload.field], action.payload.value);
-        state.mergeDeepIn(['fieldsMetaData'], fromJS(action.payload.metadata));
+        const { field, value, metadata, entries } = action.payload;
+        const name = field.get('name');
+        const meta = field.get('meta');
+        if (meta) {
+          state.setIn(['entry', 'meta', name], value);
+        } else {
+          state.setIn(['entry', 'data', name], value);
+        }
+        state.mergeDeepIn(['fieldsMetaData'], fromJS(metadata));
         const newData = state.getIn(['entry', 'data']);
-        state.set('hasChanged', !action.payload.entries.some(e => newData.equals(e.get('data'))));
+        const newMeta = state.getIn(['entry', 'meta']);
+        state.set(
+          'hasChanged',
+          !entries.some(e => newData.equals(e.get('data'))) ||
+            !entries.some(e => newMeta.equals(e.get('meta'))),
+        );
       });
     }
     case DRAFT_VALIDATION_ERRORS:
@@ -159,6 +174,18 @@ const entryDraftReducer = (state = Map(), action) => {
     default:
       return state;
   }
+};
+
+export const selectCustomPath = (collection, entryDraft) => {
+  if (!selectHasMetaPath(collection)) {
+    return;
+  }
+  const meta = entryDraft.getIn(['entry', 'meta']);
+  const path = meta && meta.get('path');
+  const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
+  const extension = selectFolderEntryExtension(collection);
+  const customPath = path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
+  return customPath;
 };
 
 export default entryDraftReducer;

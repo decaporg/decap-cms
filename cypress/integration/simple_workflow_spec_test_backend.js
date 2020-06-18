@@ -1,3 +1,4 @@
+import '../utils/dismiss-local-backup';
 import {
   login,
   newPost,

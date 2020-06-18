@@ -32,6 +32,7 @@ import {
   localForage,
   allEntriesByFolder,
   filterByExtension,
+  branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
@@ -351,34 +352,47 @@ export default class GitLab implements Implementation {
         branches.map(branch => contentKeyFromBranch(branch)),
       );
 
-    const readUnpublishedBranchFile = (contentKey: string) =>
-      this.api!.readUnpublishedBranchFile(contentKey);
-
-    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, API_NAME);
+    const ids = await unpublishedEntries(listEntriesKeys);
+    return ids;
   }
 
-  async unpublishedEntry(
-    collection: string,
-    slug: string,
-    {
-      loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
-        this.loadEntryMediaFiles(branch, files),
-    } = {},
-  ) {
+  async unpublishedEntry({
+    id,
+    collection,
+    slug,
+  }: {
+    id?: string;
+    collection?: string;
+    slug?: string;
+  }) {
+    if (id) {
+      const data = await this.api!.retrieveUnpublishedEntryData(id);
+      return data;
+    } else if (collection && slug) {
+      const entryId = generateContentKey(collection, slug);
+      const data = await this.api!.retrieveUnpublishedEntryData(entryId);
+      return data;
+    } else {
+      throw new Error('Missing unpublished entry id or collection and slug');
+    }
+  }
+
+  getBranch(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
-    const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const mediaFiles = await loadEntryMediaFiles(
-      data.metaData.branch,
-      data.metaData.objects.entry.mediaFiles,
-    );
-    return {
-      slug,
-      file: { path: data.metaData.objects.entry.path, id: null },
-      data: data.fileData as string,
-      metaData: data.metaData,
-      mediaFiles,
-      isModification: data.isModification,
-    };
+    const branch = branchFromContentKey(contentKey);
+    return branch;
+  }
+
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+    const branch = this.getBranch(collection, slug);
+    const data = (await this.api!.readFile(path, id, { branch })) as string;
+    return data;
+  }
+
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+    const branch = this.getBranch(collection, slug);
+    const mediaFile = await this.loadMediaFile(branch, { path, id });
+    return mediaFile;
   }
 
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {

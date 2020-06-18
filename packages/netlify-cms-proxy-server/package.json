@@ -27,7 +27,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
-    "simple-git": "^2.0.0"
+    "simple-git": "^2.0.0",
+    "what-the-diff": "^0.6.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",

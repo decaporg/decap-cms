@@ -107,7 +107,7 @@ async function deleteRepositories({ owner, repo, tempDir }) {
   console.log('Deleting repository', `${owner}/${repo}`);
   await fs.remove(tempDir);
 
-  let client = getGitLabClient(token);
+  const client = getGitLabClient(token);
   await client.Projects.remove(`${owner}/${repo}`).catch(errorHandler);
 }
 

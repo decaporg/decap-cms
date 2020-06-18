@@ -1,0 +1,153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Collection should render connected component 1`] = `
+<DocumentFragment>
+  .emotion-2 {
+  margin: 28px 18px;
+}
+
+.emotion-0 {
+  padding-left: 280px;
+}
+
+<div
+    class="emotion-2 emotion-3"
+  >
+    <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+      filterterm=""
+      searchterm=""
+    />
+    <main
+      class="emotion-0 emotion-1"
+    >
+      <mock-collection-top
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
+        newentryurl=""
+      />
+      <mock-collection-controls
+        filter="Map {}"
+        sortablefields=""
+        viewfilters=""
+        viewstyle="VIEW_STYLE_LIST"
+      />
+      <mock-entries-collection
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
+        filterterm=""
+        viewstyle="VIEW_STYLE_LIST"
+      />
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Collection should render with collection with create url 1`] = `
+<DocumentFragment>
+  .emotion-2 {
+  margin: 28px 18px;
+}
+
+.emotion-0 {
+  padding-left: 280px;
+}
+
+<div
+    class="emotion-2 emotion-3"
+  >
+    <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+    />
+    <main
+      class="emotion-0 emotion-1"
+    >
+      <mock-collection-top
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        newentryurl="/collections/pages/new"
+      />
+      <mock-collection-controls
+        viewstyle="VIEW_STYLE_LIST"
+      />
+      <mock-entries-collection
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        viewstyle="VIEW_STYLE_LIST"
+      />
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Collection should render with collection with create url and path 1`] = `
+<DocumentFragment>
+  .emotion-2 {
+  margin: 28px 18px;
+}
+
+.emotion-0 {
+  padding-left: 280px;
+}
+
+<div
+    class="emotion-2 emotion-3"
+  >
+    <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+      filterterm="dir1/dir2"
+    />
+    <main
+      class="emotion-0 emotion-1"
+    >
+      <mock-collection-top
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        newentryurl="/collections/pages/new?path=dir1/dir2"
+      />
+      <mock-collection-controls
+        viewstyle="VIEW_STYLE_LIST"
+      />
+      <mock-entries-collection
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        filterterm="dir1/dir2"
+        viewstyle="VIEW_STYLE_LIST"
+      />
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Collection should render with collection without create url 1`] = `
+<DocumentFragment>
+  .emotion-2 {
+  margin: 28px 18px;
+}
+
+.emotion-0 {
+  padding-left: 280px;
+}
+
+<div
+    class="emotion-2 emotion-3"
+  >
+    <mock-sidebar
+      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+    />
+    <main
+      class="emotion-0 emotion-1"
+    >
+      <mock-collection-top
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
+        newentryurl=""
+      />
+      <mock-collection-controls
+        viewstyle="VIEW_STYLE_LIST"
+      />
+      <mock-entries-collection
+        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
+        viewstyle="VIEW_STYLE_LIST"
+      />
+    </main>
+  </div>
+</DocumentFragment>
+`;

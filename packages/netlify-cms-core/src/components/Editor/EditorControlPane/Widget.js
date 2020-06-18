@@ -59,6 +59,7 @@ export default class Widget extends Component {
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
+    entry: ImmutablePropTypes.map.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -104,8 +105,11 @@ export default class Widget extends Component {
     const field = this.props.field;
     const errors = [];
     const validations = [this.validatePresence, this.validatePattern];
+    if (field.get('meta')) {
+      validations.push(this.props.validateMetaField);
+    }
     validations.forEach(func => {
-      const response = func(field, value);
+      const response = func(field, value, this.props.t);
       if (response.error) errors.push(response.error);
     });
     if (skipWrapped) {
@@ -114,6 +118,7 @@ export default class Widget extends Component {
       const wrappedError = this.validateWrappedControl(field);
       if (wrappedError.error) errors.push(wrappedError.error);
     }
+
     this.props.onValidate(errors);
   };
 
@@ -211,8 +216,8 @@ export default class Widget extends Component {
   /**
    * Change handler for fields that are nested within another field.
    */
-  onChangeObject = (fieldName, newValue, newMetadata) => {
-    const newObjectValue = this.getObjectValue().set(fieldName, newValue);
+  onChangeObject = (field, newValue, newMetadata) => {
+    const newObjectValue = this.getObjectValue().set(field.get('name'), newValue);
     return this.props.onChange(
       newObjectValue,
       newMetadata && { [this.props.field.get('name')]: newMetadata },

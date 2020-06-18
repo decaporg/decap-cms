@@ -45,8 +45,6 @@ collections: # A list of collections the CMS should be able to edit
         tagname: ''
 
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-    meta:
-      - { label: 'SEO Description', name: 'description', widget: 'text' }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
@@ -247,3 +245,14 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+  - name: pages # a nested collection
+    label: Pages
+    label_singular: 'Page'
+    folder: _pages
+    create: true
+    nested: { depth: 100 }
+    fields:
+      - label: Title
+        name: title
+        widget: string
+    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }

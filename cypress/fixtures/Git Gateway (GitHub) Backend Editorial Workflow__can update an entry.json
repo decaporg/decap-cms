@@ -1597,7 +1597,7 @@
     "status": 200
   },
   {
-    "body": "{\"base_tree\":\"e774625f38ae12e6bdc27574f3238a20bf71b6ca\",\"tree\":[{\"path\":\"content/posts/1970-01-01-first-title.md\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":null},{\"path\":\"content/posts/1970-01-01-first-title.md\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":\"5ed1cbc40b517ab0b1dba1f9486d6c2723e7020e\"}]}",
+    "body": "{\"base_tree\":\"e774625f38ae12e6bdc27574f3238a20bf71b6ca\",\"tree\":[{\"path\":\"content/posts/1970-01-01-first-title.md\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":\"5ed1cbc40b517ab0b1dba1f9486d6c2723e7020e\"}]}",
     "method": "POST",
     "url": "/.netlify/git/github/git/trees",
     "headers": {

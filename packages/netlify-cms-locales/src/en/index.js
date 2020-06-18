@@ -81,6 +81,8 @@ const en = {
         rangeCountExact: '%{fieldLabel} must have exactly %{count} item(s).',
         minCount: '%{fieldLabel} must be at least %{minCount} item(s).',
         maxCount: '%{fieldLabel} must be %{maxCount} or less item(s).',
+        invalidPath: `'%{path}' is not a valid path`,
+        pathExists: `Path '%{path}' already exists`,
       },
     },
     editor: {

@@ -1,6 +1,6 @@
 import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
-import { trimStart, get, isPlainObject } from 'lodash';
+import { trimStart, trim, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
@@ -82,11 +82,28 @@ export function applyDefaults(config) {
               'fields',
               traverseFields(collection.get('fields'), setDefaultPublicFolder),
             );
-            collection = collection.set('folder', trimStart(folder, '/'));
+            collection = collection.set('folder', trim(folder, '/'));
+            if (collection.has('meta')) {
+              const fields = collection.get('fields');
+              const metaFields = [];
+              collection.get('meta').forEach((value, key) => {
+                const field = value.withMutations(map => {
+                  map.set('name', key);
+                  map.set('meta', true);
+                  map.set('required', true);
+                });
+                metaFields.push(field);
+              });
+              collection = collection.set('fields', fromJS([]).concat(metaFields, fields));
+            } else {
+              collection = collection.set('meta', Map());
+            }
           }
 
           const files = collection.get('files');
           if (files) {
+            collection = collection.delete('nested');
+            collection = collection.delete('meta');
             collection = collection.set(
               'files',
               files.map(file => {

@@ -7,11 +7,12 @@ interface Options {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   label?: string | null;
-  metaData?: unknown | null;
   isModification?: boolean | null;
   mediaFiles?: MediaFile[] | null;
   author?: string;
   updatedOn?: string;
+  status?: string;
+  meta?: { path?: string };
 }
 
 export interface EntryValue {
@@ -23,11 +24,12 @@ export interface EntryValue {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   label: string | null;
-  metaData: unknown | null;
   isModification: boolean | null;
   mediaFiles: MediaFile[];
   author: string;
   updatedOn: string;
+  status?: string;
+  meta: { path?: string };
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
@@ -39,11 +41,12 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     raw: options.raw || '',
     data: options.data || {},
     label: options.label || null,
-    metaData: options.metaData || null,
     isModification: isBoolean(options.isModification) ? options.isModification : null,
     mediaFiles: options.mediaFiles || [],
     author: options.author || '',
     updatedOn: options.updatedOn || '',
+    status: options.status || '',
+    meta: options.meta || {},
   };
 
   return returnObj;
