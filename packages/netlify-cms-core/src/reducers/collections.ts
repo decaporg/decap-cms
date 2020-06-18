@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, Set } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
@@ -179,7 +179,7 @@ export const selectMediaFolders = (state: State, collection: Collection, entry: 
     folders.unshift(selectMediaFolder(state.config, collection, entry, undefined));
   }
 
-  return folders;
+  return Set(folders).toArray();
 };
 
 export const selectFields = (collection: Collection, slug: string) =>
