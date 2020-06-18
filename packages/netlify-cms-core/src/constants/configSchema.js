@@ -149,6 +149,7 @@ const getConfigSchema = () => ({
               },
               required: ['name', 'label', 'file', 'fields'],
             },
+            uniqueItemProperties: ['name'],
           },
           identifier_field: { type: 'string' },
           summary: { type: 'string' },
@@ -229,6 +230,7 @@ const getConfigSchema = () => ({
           },
         },
       },
+      uniqueItemProperties: ['name'],
     },
   },
   required: ['backend', 'collections'],
@@ -279,7 +281,15 @@ export function validateConfig(config) {
     const errors = ajv.errors.map(e => {
       // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
       if (e.keyword === 'uniqueItemProperties') {
-        const newError = { ...e, message: 'fields names must be unique' };
+        const path = e.dataPath || '';
+        let newError = e;
+        if (path.endsWith('/fields')) {
+          newError = { ...e, message: 'fields names must be unique' };
+        } else if (path.endsWith('/files')) {
+          newError = { ...e, message: 'files names must be unique' };
+        } else if (path.endsWith('/collections')) {
+          newError = { ...e, message: 'collections names must be unique' };
+        }
         return newError;
       }
       return e;
