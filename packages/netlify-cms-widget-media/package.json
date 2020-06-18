@@ -1,0 +1,37 @@
+{
+  "name": "netlify-cms-widget-media",
+  "description": "Widget for uploading images in Netlify CMS.",
+  "version": "2.6.5",
+  "homepage": "https://www.netlifycms.org/docs/widgets/#media",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-media",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-widget-media.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "upload",
+    "image",
+    "image-upload",
+    "file",
+    "file-upload"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "peerDependencies": {
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
+    "immutable": "^3.7.6",
+    "netlify-cms-ui-default": "^2.6.0",
+    "netlify-cms-widget-file": "^2.4.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
+}
+
