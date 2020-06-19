@@ -20,7 +20,7 @@ To enable it:
 
 With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly from the client. To do this:
 
-1. Follow the [Atlassian docs](https://confluence.atlassian.com/bitbucket/oauth-on-bitbucket-cloud-238027431.html) to create an OAuth consumer. Make sure you allow `Account/Read` and `Repository/Write` permissions. For the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), allow `PullRequests/Write` permissions. For the **Callback URL**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`.
+1. Follow the [Atlassian docs](https://confluence.atlassian.com/bitbucket/oauth-on-bitbucket-cloud-238027431.html) to create an OAuth consumer. Make sure you allow `Account/Read` and `Repository/Write` permissions. To use the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), allow `PullRequests/Write` permissions. For the **Callback URL**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`.
 2. Bitbucket gives you a **Key**. Copy this Key and enter it in your Netlify CMS `config.yml` file, along with the following settings:
 
    ```yaml
