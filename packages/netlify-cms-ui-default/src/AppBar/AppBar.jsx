@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import LogoTile from '../LogoTile';
 import Icon from '../Icon';
 import Card from '../Card';
 import { IconButton } from '../Button';
@@ -80,12 +79,10 @@ const AppBar = ({ renderStart, renderEnd, renderActions }) => {
 
   return (
     <AppBarWrap>
-      {isMobile ? (
+      {isMobile && (
         <ActionsWrap noBorder>
           <IconButton icon="arrow-left" />
         </ActionsWrap>
-      ) : (
-        <LogoTile />
       )}
       <StartWrap>
         <TitleWrap>
