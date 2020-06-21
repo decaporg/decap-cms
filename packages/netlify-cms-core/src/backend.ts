@@ -34,6 +34,8 @@ import {
   getPathDepth,
   Config as ImplementationConfig,
   blobToFileObj,
+  asyncLock,
+  AsyncLock,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
@@ -178,6 +180,7 @@ export class Backend {
   authStore: AuthStore | null;
   config: Config;
   user?: User | null;
+  backupSync: AsyncLock;
 
   constructor(
     implementation: Implementation,
@@ -196,6 +199,7 @@ export class Backend {
     if (this.implementation === null) {
       throw new Error('Cannot instantiate a Backend with no implementation');
     }
+    this.backupSync = asyncLock();
   }
 
   async status() {
@@ -535,39 +539,56 @@ export class Backend {
   }
 
   async persistLocalDraftBackup(entry: EntryMap, collection: Collection) {
-    const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
-    const raw = this.entryToRaw(collection, entry);
-    if (!raw.trim()) {
-      return;
+    try {
+      await this.backupSync.acquire();
+      const key = getEntryBackupKey(collection.get('name'), entry.get('slug'));
+      const raw = this.entryToRaw(collection, entry);
+
+      if (!raw.trim()) {
+        return;
+      }
+
+      const mediaFiles = await Promise.all<MediaFile>(
+        entry
+          .get('mediaFiles')
+          .toJS()
+          .map(async (file: MediaFile) => {
+            // make sure to serialize the file
+            if (file.url?.startsWith('blob:')) {
+              const blob = await fetch(file.url as string).then(res => res.blob());
+              return { ...file, file: blobToFileObj(file.name, blob) };
+            }
+            return file;
+          }),
+      );
+
+      await localForage.setItem<BackupEntry>(key, {
+        raw,
+        path: entry.get('path'),
+        mediaFiles,
+      });
+      const result = await localForage.setItem(getEntryBackupKey(), raw);
+      return result;
+    } catch (e) {
+      console.warn('persistLocalDraftBackup', e);
+    } finally {
+      this.backupSync.release();
     }
-
-    const mediaFiles = await Promise.all<MediaFile>(
-      entry
-        .get('mediaFiles')
-        .toJS()
-        .map(async (file: MediaFile) => {
-          // make sure to serialize the file
-          if (file.url?.startsWith('blob:')) {
-            const blob = await fetch(file.url as string).then(res => res.blob());
-            return { ...file, file: blobToFileObj(file.name, blob) };
-          }
-          return file;
-        }),
-    );
-
-    await localForage.setItem<BackupEntry>(key, {
-      raw,
-      path: entry.get('path'),
-      mediaFiles,
-    });
-    return localForage.setItem(getEntryBackupKey(), raw);
   }
 
   async deleteLocalDraftBackup(collection: Collection, slug: string) {
-    await localForage.removeItem(getEntryBackupKey(collection.get('name'), slug));
-    // delete new entry backup if not deleted
-    slug && (await localForage.removeItem(getEntryBackupKey(collection.get('name'))));
-    return this.deleteAnonymousBackup();
+    try {
+      await this.backupSync.acquire();
+      await localForage.removeItem(getEntryBackupKey(collection.get('name'), slug));
+      // delete new entry backup if not deleted
+      slug && (await localForage.removeItem(getEntryBackupKey(collection.get('name'))));
+      const result = await this.deleteAnonymousBackup();
+      return result;
+    } catch (e) {
+      console.warn('deleteLocalDraftBackup', e);
+    } finally {
+      this.backupSync.release();
+    }
   }
 
   // Unnamed backup for use in the global error boundary, should always be
