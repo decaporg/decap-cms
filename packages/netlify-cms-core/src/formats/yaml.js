@@ -17,12 +17,28 @@ const addComments = (items, comments, prefix = '') => {
   });
 };
 
+const timestampTag = {
+  identify: value => value instanceof Date,
+  default: true,
+  tag: '!timestamp',
+  test: RegExp(
+    '^' +
+    '([0-9]{4})-([0-9]{2})-([0-9]{2})' + // YYYY-MM-DD
+    'T' + // T
+    '([0-9]{2}):([0-9]{2}):([0-9]{2}(\\.[0-9]+)?)' + // HH:MM:SS(.ss)?
+    'Z' + // Z
+      '$',
+  ),
+  resolve: str => new Date(str),
+  stringify: value => value.toISOString(),
+};
+
 export default {
   fromFile(content) {
     if (content && content.trim().endsWith('---')) {
       content = content.trim().slice(0, -3);
     }
-    return yaml.parse(content, { version: '1.1' });
+    return yaml.parse(content, { customTags: [timestampTag] });
   },
 
   toFile(data, sortedKeys = [], comments = {}) {

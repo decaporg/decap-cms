@@ -8,11 +8,13 @@ describe('yaml', () => {
 
       const result = yaml.fromFile(stripIndent`
       date: 2020-04-02T16:08:03.327Z
+      dateString: 2020-04-02
       boolean: true
       number: 1
       `);
       expect(result).toEqual({
         date: new Date('2020-04-02T16:08:03.327Z'),
+        dateString: '2020-04-02',
         boolean: true,
         number: 1,
       });
@@ -56,6 +58,31 @@ describe('yaml', () => {
     });
     test('does not fail on closing separator', () => {
       expect(yaml.fromFile('---\n[]\n---')).toEqual([]);
+    });
+
+    test('parses single quoted string as string', () => {
+      expect(yaml.fromFile('name: y')).toEqual({ name: 'y' });
+    });
+
+    test('parses ISO date string as date', () => {
+      expect(yaml.fromFile('date: 2020-04-02T16:08:03.327Z')).toEqual({
+        date: new Date('2020-04-02T16:08:03.327Z'),
+      });
+    });
+
+    test('parses partial date string as string', () => {
+      expect(yaml.fromFile('date: 2020-06-12')).toEqual({
+        date: '2020-06-12',
+      });
+      expect(yaml.fromFile('date: 12-06-2012')).toEqual({
+        date: '12-06-2012',
+      });
+    });
+
+    test('parses partial time value as string', () => {
+      expect(yaml.fromFile('time: 10:05')).toEqual({
+        time: '10:05',
+      });
     });
   });
   describe('toFile', () => {
