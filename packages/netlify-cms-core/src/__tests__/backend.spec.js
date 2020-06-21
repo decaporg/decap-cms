@@ -114,7 +114,9 @@ describe('Backend', () => {
   });
 
   describe('getLocalDraftBackup', () => {
-    const { localForage } = require('netlify-cms-lib-util');
+    const { localForage, asyncLock } = require('netlify-cms-lib-util');
+
+    asyncLock.mockImplementation(() => ({ acquire: jest.fn(), release: jest.fn() }));
 
     beforeEach(() => {
       jest.clearAllMocks();
