@@ -1,8 +1,8 @@
 export default {
   properties: {
-    step: { type: 'integer' },
+    step: { type: 'number' },
     valueType: { type: 'string' },
-    min: { type: 'integer' },
-    max: { type: 'integer' },
+    min: { type: 'number' },
+    max: { type: 'number' },
   },
 };
