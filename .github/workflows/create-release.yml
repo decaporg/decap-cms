@@ -1,0 +1,34 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - 'netlify-cms@*'
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get semver number
+        id: get_semver
+        env:
+          TAG_NAME: ${{ github.ref }}
+        run: echo "::set-output name=pkg::${TAG_NAME:10}"
+
+      - name: Create release on GitHub API
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ steps.get_semver.outputs.pkg }}
+          body: |
+            :scroll: [Changelog](https://github.com/${{ github.repository }}/blob/${{ steps.get_semver.outputs.pkg }}/CHANGELOG.md)
+          draft: false
+          prerelease: false
