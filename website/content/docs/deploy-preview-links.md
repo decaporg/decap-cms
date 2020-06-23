@@ -3,22 +3,18 @@ title: Deploy Preview Links
 group: features
 weight: 10
 ---
-
 When using the editorial workflow, content editors can create and save content without publishing it
 to a live site. Deploy preview links provide a way to view live content when it has not been
 published, provided that you're using a continuous deployment platform to provide "deploy previews"
 of your unmerged content.
 
-**Note:** for the initial release, only the GitHub and Git Gateway (with GitHub) backends will
-support deploy preview links. Others should follow shortly.
-
 ## Using deploy preview links
+
 Deploy preview links will work without configuration when all of the following requirements are met:
 
-- Netlify CMS version is 2.4.0+
-- Using the GitHub backend (or Git Gateway with a GitHub repository)
-- Using editorial workflow
-- Have a continuous deployment platform that builds every commit and provides statuses to your repo
+* Netlify CMS version is 2.4.0+ for GitHub support and 2.10.6+ for GitLab/Bitbucket support 
+* Using editorial workflow
+* Have a continuous deployment platform that builds every commit and provides statuses to your repo
 
 Any site created using one of the Deploy to Netlify options on our [starters
 page](../start-with-a-template) will automatically meet these criteria (barring any changes made to
@@ -33,6 +29,7 @@ Deploy preview links are provided in the editor toolbar, near the publishing con
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
 ### Waiting for builds
+
 Deploy your site preview may take ten seconds or ten minutes, depending on many factors. For maximum
 flexibility, Netlify CMS provides a "Check for Preview" refresh button when the deploy preview is
 pending, which a content editor can use to manually check for a finished preview until it's ready:
@@ -40,6 +37,7 @@ pending, which a content editor can use to manually check for a finished preview
 ![Deploy preview link for unpublished content](/img/preview-link-check.png)
 
 ## Configuring preview paths
+
 Deploy preview links point to the site root by default, but you'll probably want them to point to
 the specific piece of content that the content editor is viewing. You can do this by providing a
 `preview_path` string template for each collection.
@@ -74,6 +72,7 @@ collections:
 ```
 
 ### Dates in preview paths
+
 Some static site generators allow URL's to be customized with date parameters - for example, Hugo
 can be configured to use values like `year` and `month` in a URL. These values are generally derived
 by the static site generator from a date field in the content file. `preview_path` accepts these
@@ -109,6 +108,7 @@ collections:
 ```
 
 ## Preview links for published content
+
 You may also want preview links for published content as a convenience. You can do this by providing
 a `site_url` in your configuration, which will be used in place of the deploy preview URL that a
 backend would provide for an unpublished entry. Just as for deploy preview links to unpublished
@@ -120,9 +120,11 @@ Preview links for published content will also work if you are not using the edit
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
 ## Disabling deploy preview links
+
 To disable deploy preview links, set `show_preview_links` to false in your CMS configuration.
 
 ## How it works
+
 Deploy preview links are provided through your CMS backend, and Netlify CMS is unopinionated about
 where the links come from or how they're created. That said, the general approach for Git backends
 like GitHub is powered by "commit statuses". Continuous deployment platforms like Netlify can deploy
