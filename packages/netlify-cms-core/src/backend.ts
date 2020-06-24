@@ -496,7 +496,7 @@ export class Backend {
   // for local searches and queries.
   async listAllEntries(collection: Collection, depth: number) {
     const selectedDepth =
-	  depth ||
+      depth ||
       collection.get('nested')?.get('depth') ||
       getPathDepth(collection.get('path', '') as string);
 
@@ -551,6 +551,7 @@ export class Backend {
           };
         });
     }
+
     return { entries: this.combineMultipleContentEntries(multiEntries) };
   }
 
@@ -850,31 +851,6 @@ export class Backend {
     } else {
       extension = selectFolderEntryExtension(collection);
     }
-    const dataFiles = sortBy(
-      entryData.diffs.filter(d => d.path.endsWith(extension)),
-      f => f.path.length,
-    );
-    // if the unpublished entry has no diffs, return the original
-    let data = '';
-    let newFile = false;
-    let path = slug;
-    if (dataFiles.length <= 0) {
-      const loadedEntry = await this.implementation.getEntry(
-        selectEntryPath(collection, slug) as string,
-      );
-      data = loadedEntry.data;
-      path = loadedEntry.file.path;
-    } else {
-      const entryFile = dataFiles[0];
-      data = await this.implementation.unpublishedEntryDataFile(
-        collection.get('name'),
-        entryData.slug,
-        entryFile.path,
-        entryFile.id,
-      );
-      newFile = entryFile.newFile;
-      path = entryFile.path;
-    }
 
     const mediaFiles: MediaFile[] = [];
     if (withMediaFiles) {
@@ -891,17 +867,81 @@ export class Backend {
       );
       mediaFiles.push(...files.map(f => ({ ...f, draft: true })));
     }
-    const entry = createEntry(collection.get('name'), slug, path, {
-      raw: data,
-      isModification: !newFile,
-      label: collection && selectFileEntryLabel(collection, slug),
-      mediaFiles,
-      updatedOn: entryData.updatedAt,
-      status: entryData.status,
-      meta: { path: prepareMetaPath(path, collection) },
-    });
 
-    const entryWithFormat = this.entryWithFormat(collection)(entry);
+    const dataFiles = sortBy(
+      entryData.diffs.filter(d => d.path.endsWith(extension)),
+      f => f.path.length,
+    );
+
+    let data = '';
+    let entryWithFormat;
+    let newFile = false;
+    let path = slug;
+    // if the unpublished entry has no diffs, return the original
+    if (dataFiles.length <= 0) {
+      const loadedEntry = await this.implementation.getEntry(
+        selectEntryPath(collection, slug) as string,
+      );
+      data = loadedEntry.data;
+      path = loadedEntry.file.path;
+    } else if (collection.get('multi_content_diff_files')) {
+      data = await Promise.all(
+        dataFiles.map(async file => {
+          const data = await this.implementation.unpublishedEntryDataFile(
+            collection.get('name'),
+            entryData.slug,
+            file.path,
+            file.id,
+          );
+          return { data, path: file.path };
+        }),
+      );
+      newFile = dataFiles[0].newFile;
+      path = dataFiles[0].path;
+    } else {
+      const entryFile = dataFiles[0];
+      data = await this.implementation.unpublishedEntryDataFile(
+        collection.get('name'),
+        entryData.slug,
+        entryFile.path,
+        entryFile.id,
+      );
+      newFile = entryFile.newFile;
+      path = entryFile.path;
+    }
+
+    if (Array.isArray(data)) {
+      const multipleEntries = data.map(d => {
+        return this.entryWithFormat(collection)(
+          createEntry(collection.get('name'), slug, path, {
+            raw: d.data,
+            isModification: !newFile,
+            label: collection && selectFileEntryLabel(collection, slug),
+            mediaFiles,
+            updatedOn: entryData.updatedAt,
+            status: entryData.status,
+            meta: { path: prepareMetaPath(path, collection) },
+            i18nStructure: collection.get('i18n_structure'),
+            slugWithLocale: selectEntrySlug(collection, d.path),
+          }),
+        );
+      });
+
+      entryWithFormat = this.combineEntries(multipleEntries);
+    } else {
+      const entry = createEntry(collection.get('name'), slug, path, {
+        raw: data,
+        isModification: !newFile,
+        label: collection && selectFileEntryLabel(collection, slug),
+        mediaFiles,
+        updatedOn: entryData.updatedAt,
+        status: entryData.status,
+        meta: { path: prepareMetaPath(path, collection) },
+      });
+
+      entryWithFormat = this.entryWithFormat(collection)(entry);
+    }
+
     return entryWithFormat;
   }
 
@@ -1066,8 +1106,6 @@ export class Backend {
     const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
-    const MultiContentDiffFiles =
-      DIFF_FILE_TYPES.includes(collection.get('i18n_structure')) && collection.get('multi_content');
 
     const useWorkflow = selectUseWorkflow(config);
 
@@ -1122,7 +1160,7 @@ export class Backend {
     }
 
     let entriesObj = [entryObj];
-    if (MultiContentDiffFiles) {
+    if (collection.get('multi_content_diff_files')) {
       entriesObj = this.getMultipleEntries(collection, entryDraft, entryObj);
     }
 
@@ -1249,8 +1287,6 @@ export class Backend {
     const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
     const extension = selectFolderEntryExtension(collection) as string;
-    const MultiContentDiffFiles =
-      DIFF_FILE_TYPES.includes(collection.get('i18n_structure')) && collection.get('multi_content');
     const locales = collection.get('locales');
 
     if (!selectAllowDeletion(collection)) {
@@ -1273,7 +1309,7 @@ export class Backend {
 
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
-    if (MultiContentDiffFiles) {
+    if (collection.get('multi_content_diff_files')) {
       const i18nStructure = collection.get('i18n_structure');
       if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
         for (const l of locales) {

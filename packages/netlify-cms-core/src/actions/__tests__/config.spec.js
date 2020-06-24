@@ -699,9 +699,9 @@ describe('config', () => {
   describe('addLocaleFields', () => {
     it('should add locale fields', () => {
       const fields = fromJS([
-        { name: 'title', widget: 'string' },
+        { name: 'title', widget: 'string', translatable: true },
         { name: 'date', widget: 'date' },
-        { name: 'content', widget: 'markdown' },
+        { name: 'content', widget: 'markdown', translatable: true },
       ]);
       const actual = addLocaleFields(fields, ['en', 'fr']);
 
@@ -713,9 +713,9 @@ describe('config', () => {
             widget: 'object',
             multiContentId: Symbol.for('multiContentId'),
             fields: [
-              { name: 'title', widget: 'string' },
+              { name: 'title', widget: 'string', translatable: true },
               { name: 'date', widget: 'date' },
-              { name: 'content', widget: 'markdown' },
+              { name: 'content', widget: 'markdown', translatable: true },
             ],
           },
           {
@@ -724,8 +724,8 @@ describe('config', () => {
             widget: 'object',
             multiContentId: Symbol.for('multiContentId'),
             fields: [
-              { name: 'title', widget: 'string' },
-              { name: 'content', widget: 'markdown' },
+              { name: 'title', widget: 'string', translatable: true },
+              { name: 'content', widget: 'markdown', translatable: true },
             ],
           },
         ]),

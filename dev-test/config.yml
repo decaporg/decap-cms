@@ -1,10 +1,15 @@
 backend:
-  name: test-repo
+  name: github
+  repo: bastiaan02/jekyll-base
 
 site_url: https://example.com
 
 publish_mode: editorial_workflow
 media_folder: assets/uploads
+
+locales:
+ - en
+ - fr
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
@@ -45,7 +50,22 @@ collections: # A list of collections the CMS should be able to edit
         tagname: ''
 
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-
+  - name: 'blog' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'BLOG' # Used in the UI
+    folder: '_blogs'
+    i18n_structure: locale_file_extensions
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', translatable: true, tagname: 'h1' }
+      - { label: 'Answer', name: 'body', widget: 'markdown', translatable: true }
+  - name: 'product' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'PRODUCT' # Used in the UI
+    folder: '_products'
+    i18n_structure: locale_folders
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', translatable: true, tagname: 'h1' }
+      - { label: 'Description', name: 'body', widget: 'markdown', translatable: true }
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
     folder: '_faqs'

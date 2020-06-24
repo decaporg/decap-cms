@@ -111,6 +111,20 @@ export const ControlHint = styled.p`
   transition: color ${transitions.main};
 `;
 
+const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange }) => {
+  return (
+    <Dropdown
+      renderButton={() => <LocaleButton>{selectedLocale}</LocaleButton>}
+      dropdownTopOverlap="30px"
+      dropdownWidth="100px"
+    >
+      {locales.map(l => (
+        <DropdownItem key={l} label={l} onClick={() => onLocaleChange(l)} />
+      ))}
+    </Dropdown>
+  );
+};
+
 class EditorControl extends React.Component {
   static propTypes = {
     value: PropTypes.oneOfType([
@@ -197,7 +211,6 @@ class EditorControl extends React.Component {
       isEditorComponent,
       isNewEditorComponent,
       parentIds,
-      locales,
       selectedLocale,
       onLocaleChange,
       t,
@@ -216,23 +229,16 @@ class EditorControl extends React.Component {
     const hasErrors = !!errors || childErrors;
     const multiContentWidgetId = field.get('multiContentId') === Symbol.for('multiContentId');
     const locales = this.props.collection.get('locales');
-    const label = (
-      <>
-        {locales && multiContentWidgetId ? (
-          <Dropdown
-            renderButton={() => <LocaleButton>{selectedLocale}</LocaleButton>}
-            dropdownTopOverlap="30px"
-            dropdownWidth="100px"
-          >
-            {locales.map(l => (
-              <DropdownItem key={l} label={l} onClick={() => onLocaleChange(l)} />
-            ))}
-          </Dropdown>
-        ) : (
-          `${field.get('label', field.get('name'))}`
-        )}
-      </>
-    );
+    const label =
+      locales && multiContentWidgetId ? (
+        <LocaleDropdown
+          locales={locales}
+          selectedLocale={selectedLocale}
+          onLocaleChange={onLocaleChange}
+        />
+      ) : (
+        `${field.get('label', field.get('name'))}`
+      );
 
     return (
       <ClassNames>

@@ -941,7 +941,7 @@ describe('Backend', () => {
     });
   });
 
-  describe('combineMultipleContentEntries', () => {
+    describe('combineMultipleContentEntries', () => {
     const implementation = {
       init: jest.fn(() => implementation),
     };
@@ -1081,68 +1081,6 @@ describe('Backend', () => {
           },
         ],
       });
-    });
-  });
-
-  describe('getMultipleEntries', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-    const implementation = {
-      init: jest.fn(() => implementation),
-    };
-    const config = Map({});
-    const backend = new Backend(implementation, { config, backendName: 'github' });
-    const entryDraft = fromJS({
-      entry: {
-        data: {
-          en: { title: 'post', content: 'Content en' },
-          fr: { title: 'publier', content: 'Content fr' },
-        },
-      },
-    });
-    const entryObj = { path: 'posts/post.md', slug: 'post' };
-
-    it('should split multiple content into different locale file entries', async () => {
-      const collection = fromJS({
-        i18n_structure: 'locale_file_extensions',
-        fields: [{ name: 'title' }, { name: 'content' }],
-        extension: 'md',
-      });
-
-      expect(backend.getMultipleEntries(collection, entryDraft, entryObj)).toEqual([
-        {
-          slug: 'post',
-          path: 'posts/post.en.md',
-          raw: '---\ntitle: post\ncontent: Content en\n---\n',
-        },
-        {
-          slug: 'post',
-          path: 'posts/post.fr.md',
-          raw: '---\ntitle: publier\ncontent: Content fr\n---\n',
-        },
-      ]);
-    });
-
-    it('should split multiple content into different locale folder entries', async () => {
-      const collection = fromJS({
-        i18n_structure: 'locale_folders',
-        fields: [{ name: 'title' }, { name: 'content' }],
-        extension: 'md',
-      });
-
-      expect(backend.getMultipleEntries(collection, entryDraft, entryObj)).toEqual([
-        {
-          slug: 'post',
-          path: 'posts/en/post.md',
-          raw: '---\ntitle: post\ncontent: Content en\n---\n',
-        },
-        {
-          slug: 'post',
-          path: 'posts/fr/post.md',
-          raw: '---\ntitle: publier\ncontent: Content fr\n---\n',
-        },
-      ]);
     });
   });
 

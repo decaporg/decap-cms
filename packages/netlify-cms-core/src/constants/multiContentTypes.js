@@ -2,7 +2,6 @@ export const SINGLE_FILE = 'single_file';
 export const LOCALE_FILE_EXTENSIONS = 'locale_file_extensions';
 export const LOCALE_FOLDERS = 'locale_folders';
 export const DIFF_FILE_TYPES = [LOCALE_FILE_EXTENSIONS, LOCALE_FOLDERS];
-export const NON_TRANSLATABLE_FIELDS = ['date', 'datetime', 'map', 'code', 'number'];
 
 export const locales = [
   'aa',
