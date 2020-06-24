@@ -187,6 +187,10 @@ type CollectionObject = {
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   nested?: Nested;
   meta?: Meta;
+  locales?: string[];
+  multi_content?: boolean;
+  multi_content_diff_files?: boolean;
+  i18n_structure?: string;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

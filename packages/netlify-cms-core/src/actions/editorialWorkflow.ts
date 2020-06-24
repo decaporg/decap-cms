@@ -266,8 +266,6 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const multiContent = collection.get('multi_content');
-    const i18nStructure = collection.get('i18n_structure');
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
     //run possible unpublishedEntries migration
     if (!entriesLoaded) {

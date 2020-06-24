@@ -465,8 +465,6 @@ export function deleteLocalBackup(collection: Collection, slug: string) {
 
 export function loadEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const locales = getState().config.get('locales');
-    const multiContent = collection.get('multi_content');
     await waitForMediaLibraryToLoad(dispatch, getState());
     dispatch(entryLoading(collection, slug));
 

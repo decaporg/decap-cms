@@ -13,6 +13,9 @@ interface Options {
   updatedOn?: string;
   status?: string;
   meta?: { path?: string };
+  i18nStructure?: string;
+  contentKey?: string;
+  slugWithLocale?: string;
 }
 
 export interface EntryValue {
