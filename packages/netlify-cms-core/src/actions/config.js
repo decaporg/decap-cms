@@ -1,11 +1,16 @@
 import yaml from 'yaml';
-import { Map, fromJS } from 'immutable';
-import { trimStart, trim, get, isPlainObject } from 'lodash';
+import { Map, List, fromJS } from 'immutable';
+import { trimStart, trim, get, isPlainObject, uniq, isEmpty } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
-import { selectDefaultSortableFields, traverseFields, selectIdentifier } from '../reducers/collections';
-import { NON_TRANSLATABLE_FIELDS } from 'Constants/multiContentTypes';
+import {
+  selectDefaultSortableFields,
+  traverseFields,
+  selectIdentifier,
+} from '../reducers/collections';
+import { resolveBackend } from 'coreSrc/backend';
+import { DIFF_FILE_TYPES } from 'Constants/multiContentTypes';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -124,6 +129,9 @@ export function applyDefaults(config) {
               if (backend === 'test-repo') {
                 collection = collection.set('i18n_structure', 'single_file');
               }
+              if (DIFF_FILE_TYPES.includes(collection.get('i18n_structure'))) {
+                collection = collection.set('multi_content_diff_files', true);
+              }
             }
           }
 
@@ -190,7 +198,6 @@ export function addLocaleFields(fields, locales) {
 function stripNonTranslatableFields(fields) {
   return fields.reduce((acc, item) => {
     const subfields = item.get('field') || item.get('fields');
-    const widget = item.get('widget');
 
     if (List.isList(subfields)) {
       return acc.push(item.set('fields', stripNonTranslatableFields(subfields)));
@@ -200,7 +207,7 @@ function stripNonTranslatableFields(fields) {
       return acc.push(item.set('field', stripNonTranslatableFields([subfields])));
     }
 
-    if (!NON_TRANSLATABLE_FIELDS.includes(widget)) {
+    if (item.get('translatable')) {
       return acc.push(item);
     }
 

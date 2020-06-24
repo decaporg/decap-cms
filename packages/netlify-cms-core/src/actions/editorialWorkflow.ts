@@ -23,7 +23,6 @@ import {
   createDraftFromEntry,
   loadEntries,
 } from './entries';
-import { DIFF_FILE_TYPES } from 'Constants/multiContentTypes';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
@@ -282,7 +281,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {
-      const entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
+      let entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
       const assetProxies = await Promise.all(
         entry.mediaFiles
           .filter(file => file.draft)
@@ -296,7 +295,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       );
       dispatch(addAssets(assetProxies));
 
-      if (multiContent && DIFF_FILE_TYPES.includes(i18nStructure)) {
+      if (collection.get('multi_content_diff_files')) {
         const publishedEntries = get(
           getState().entries.toJS(),
           `pages.${collection.get('name')}.ids`,

@@ -295,11 +295,8 @@ export default class TestBackend implements Implementation {
     };
   }
 
-  async persistEntry(
-    { path, raw, slug, newPath }: Entry,
-    assetProxies: AssetProxy[],
-    options: PersistOptions,
-  ) {
+  async persistEntry(entries: Entry, assetProxies: AssetProxy[], options: PersistOptions) {
+    const { path, raw, slug, newPath } = entries[0];
     if (options.useWorkflow) {
       const key = `${options.collectionName}/${slug}`;
       const currentEntry = window.repoFilesUnpublished[key];

@@ -200,7 +200,7 @@ describe('github API', () => {
         path: 'content/posts/new-post.md',
         raw: 'content',
       };
-      await api.persistFiles(entry, [], { commitMessage: 'commitMessage' });
+      await api.persistFiles([entry], [], { commitMessage: 'commitMessage' });
 
       expect(api.request).toHaveBeenCalledTimes(5);
 

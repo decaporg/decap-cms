@@ -11,7 +11,6 @@ import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
 import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { DIFF_FILE_TYPES } from 'Constants/multiContentTypes';
 import { addAssets, getAsset } from './media';
 import {
   Collection,
@@ -461,7 +460,7 @@ export function loadEntry(collection: Collection, slug: string) {
     dispatch(entryLoading(collection, slug));
 
     try {
-      const loadedEntry = await tryLoadEntry(getState(), collection, slug, locales, multiContent);
+      const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
     } catch (error) {
@@ -481,21 +480,9 @@ export function loadEntry(collection: Collection, slug: string) {
   };
 }
 
-export async function tryLoadEntry(
-  state: State,
-  collection: Collection,
-  slug: string,
-  locales,
-  multiContent
-) {
+export async function tryLoadEntry(state: State, collection: Collection, slug: string) {
   const backend = currentBackend(state.config);
-  const loadedEntry = await backend.getEntry(
-    state,
-    collection,
-    slug,
-    locales,
-    multiContent
-  );
+  const loadedEntry = await backend.getEntry(state, collection, slug);
   return loadedEntry;
 }
 
@@ -526,8 +513,6 @@ export function loadEntries(collection: Collection, page = 0) {
     }
 
     const backend = currentBackend(state.config);
-    const multiContent = collection.get('multi_content');
-    const i18nStructure = collection.get('i18n_structure');
     const integration = selectIntegration(state, collection.get('name'), 'listEntries');
     const provider = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)
@@ -543,8 +528,8 @@ export function loadEntries(collection: Collection, page = 0) {
       } = await (collection.has('nested')
         ? // nested collections require all entries to construct the tree
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
-        : locales && DIFF_FILE_TYPES.includes(multiContent)
-        ? provider.listAllMultipleEntires(collection, locales)
+        : collection.get('multi_content_diff_files')
+        ? provider.listAllMultipleEntires(collection)
         : provider.listEntries(collection, page));
       response = {
         ...response,

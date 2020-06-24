@@ -32,6 +32,7 @@ export interface EntryValue {
   meta: { path?: string };
   i18nStructure?: string;
   contentKey?: string;
+  slugWithLocale?: string;
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
@@ -54,6 +55,9 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     }),
     ...(options.i18nStructure && {
       i18nStructure: options.i18nStructure,
+    }),
+    ...(options.slugWithLocale && {
+      slugWithLocale: options.slugWithLocale,
     }),
   };
 

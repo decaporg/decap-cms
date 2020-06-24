@@ -1,10 +1,12 @@
 import { fromJS } from 'immutable';
-<<<<<<< HEAD
 import { stripIndent } from 'common-tags';
-import { parseConfig, applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
-=======
-import { applyDefaults, detectProxyServer, handleLocalBackend, addLocaleFields } from '../config';
->>>>>>> 6f4b539c... fix: add unit tests
+import {
+  parseConfig,
+  applyDefaults,
+  detectProxyServer,
+  handleLocalBackend,
+  addLocaleFields,
+} from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.mock('coreSrc/backend', () => {
@@ -582,9 +584,9 @@ describe('config', () => {
   describe('addLocaleFields', () => {
     it('should add locale fields', () => {
       const fields = fromJS([
-        { name: 'title', widget: 'string' },
+        { name: 'title', widget: 'string', translatable: true },
         { name: 'date', widget: 'date' },
-        { name: 'content', widget: 'markdown' },
+        { name: 'content', widget: 'markdown', translatable: true },
       ]);
       const actual = addLocaleFields(fields, ['en', 'fr']);
 
@@ -596,9 +598,9 @@ describe('config', () => {
             widget: 'object',
             multiContentId: Symbol.for('multiContentId'),
             fields: [
-              { name: 'title', widget: 'string' },
+              { name: 'title', widget: 'string', translatable: true },
               { name: 'date', widget: 'date' },
-              { name: 'content', widget: 'markdown' },
+              { name: 'content', widget: 'markdown', translatable: true },
             ],
           },
           {
@@ -607,8 +609,8 @@ describe('config', () => {
             widget: 'object',
             multiContentId: Symbol.for('multiContentId'),
             fields: [
-              { name: 'title', widget: 'string' },
-              { name: 'content', widget: 'markdown' },
+              { name: 'title', widget: 'string', translatable: true },
+              { name: 'content', widget: 'markdown', translatable: true },
             ],
           },
         ]),
