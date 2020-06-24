@@ -514,8 +514,9 @@ export default class API {
 
   async persistFiles(entries: Entry[] | null, mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = entries ? [...entries, ...mediaFiles] : mediaFiles;
+    const entry = entries ? entries[0] : null;
     if (options.useWorkflow) {
-      return this.editorialWorkflowGit(files, entries[0] as Entry, options);
+      return this.editorialWorkflowGit(files, entry as Entry, options);
     } else {
       const items = await this.getCommitItems(files, this.branch);
       return this.uploadAndCommit(items, {

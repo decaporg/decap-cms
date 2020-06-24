@@ -531,10 +531,10 @@ export default class GitGateway implements Implementation {
     return this.backend!.getMediaFile(path);
   }
 
-  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entries: Entry[], mediaFiles: AssetProxy[], options: PersistOptions) {
     const client = await this.getLargeMediaClient();
     return this.backend!.persistEntry(
-      entry,
+      entries,
       client.enabled ? await getLargeMediaFilteredMediaFiles(client, mediaFiles) : mediaFiles,
       options,
     );

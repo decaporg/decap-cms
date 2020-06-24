@@ -295,7 +295,7 @@ export default class TestBackend implements Implementation {
     };
   }
 
-  async persistEntry(entries: Entry, assetProxies: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entries: Entry[], assetProxies: AssetProxy[], options: PersistOptions) {
     const { path, raw, slug, newPath } = entries[0];
     if (options.useWorkflow) {
       const key = `${options.collectionName}/${slug}`;

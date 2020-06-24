@@ -48,7 +48,6 @@ import {
   FilterRule,
   Collections,
   EntryDraft,
-  Entry,
   CollectionFile,
   State,
   EntryField,
@@ -235,6 +234,13 @@ interface PersistArgs {
   usedSlugs: List<string>;
   unpublished?: boolean;
   status?: string;
+}
+
+interface EntryObj {
+  path: string;
+  slug: string;
+  raw: string;
+  newPath?: string;
 }
 
 interface ImplementationInitOptions {
@@ -494,7 +500,7 @@ export class Backend {
   // repeats the process. Once there is no available "next" action, it
   // returns all the collected entries. Used to retrieve all entries
   // for local searches and queries.
-  async listAllEntries(collection: Collection, depth: number) {
+  async listAllEntries(collection: Collection, depth: number | null = null) {
     const selectedDepth =
       depth ||
       collection.get('nested')?.get('depth') ||
@@ -518,10 +524,10 @@ export class Backend {
     return entries;
   }
 
-  async listAllMultipleEntires(collection: Collection, page: number) {
+  async listAllMultipleEntires(collection: Collection) {
     const i18nStructure = collection.get('i18n_structure');
-    const locales = collection.get('locales');
-    const depth = i18nStructure === LOCALE_FOLDERS ? 2 : '';
+    const locales = collection.get('locales') as string[];
+    const depth = i18nStructure === LOCALE_FOLDERS ? 2 : null;
     const entries = await this.listAllEntries(collection, depth);
     let multiEntries;
     if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
@@ -552,7 +558,7 @@ export class Backend {
         });
     }
 
-    return { entries: this.combineMultipleContentEntries(multiEntries) };
+    return { entries: this.combineMultipleContentEntries(multiEntries as EntryValue[]) };
   }
 
   async search(collections: Collection[], searchTerm: string) {
@@ -873,7 +879,7 @@ export class Backend {
       f => f.path.length,
     );
 
-    let data = '';
+    let data;
     let entryWithFormat;
     let newFile = false;
     let path = slug;
@@ -992,26 +998,26 @@ export class Backend {
     return entry;
   }
 
-  combineMultipleContentEntries(entries: entryMap[]) {
+  combineMultipleContentEntries(entries: EntryValue[]) {
     const groupEntries = groupBy(entries, 'contentKey');
-    return Object.keys(groupEntries).reduce((acc, key) => {
+    return Object.keys(groupEntries).reduce((acc: EntryValue[], key: string) => {
       const entries = groupEntries[key];
       return [...acc, this.combineEntries(entries)];
     }, []);
   }
 
-  combineEntries(entries: entryMap[]) {
+  combineEntries(entries: EntryValue[]) {
     const { i18nStructure, contentKey, slugWithLocale, ...entry } = entries[0];
-    const data = {};
-    let splitChar;
-    let path;
-    entries.forEach(e => {
+    const data: { [key: string]: any } = {};
+    let path = '';
+    let locale;
+    entries.forEach((e: EntryValue) => {
       if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
-        const locale = e.slugWithLocale.slice(-2);
+        locale = e?.slugWithLocale?.slice(-2) as string;
         !path && (path = e.path.replace(`.${locale}`, ''));
         data[locale] = e.data;
       } else if (i18nStructure === LOCALE_FOLDERS) {
-        const locale = e.slugWithLocale.slice(0, 2);
+        locale = e?.slugWithLocale?.slice(0, 2) as string;
         !path && (path = e.path.replace(`${locale}/`, ''));
         data[locale] = e.data;
       }
@@ -1109,12 +1115,7 @@ export class Backend {
 
     const useWorkflow = selectUseWorkflow(config);
 
-    let entryObj: {
-      path: string;
-      slug: string;
-      raw: string;
-      newPath?: string;
-    };
+    let entryObj: EntryObj;
 
     const customPath = selectCustomPath(collection, entryDraft);
 
@@ -1204,12 +1205,12 @@ export class Backend {
     return entryObj.slug;
   }
 
-  getMultipleEntries(collection: Collection, entryDraft: EntryDraft, entryObj: Entry) {
+  getMultipleEntries(collection: Collection, entryDraft: EntryDraft, entryObj: EntryObj) {
     const i18nStructure = collection.get('i18n_structure');
     const extension = selectFolderEntryExtension(collection);
     const data = entryDraft.getIn(['entry', 'data']).toJS();
     const locales = Object.keys(data);
-    const entriesObj = [];
+    const entriesObj: EntryObj[] = [];
     if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
       locales.forEach(l => {
         entriesObj.push({
@@ -1287,7 +1288,7 @@ export class Backend {
     const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
     const extension = selectFolderEntryExtension(collection) as string;
-    const locales = collection.get('locales');
+    const locales = collection.get('locales') as string[];
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
@@ -1310,7 +1311,7 @@ export class Backend {
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
     if (collection.get('multi_content_diff_files')) {
-      const i18nStructure = collection.get('i18n_structure');
+      const i18nStructure = collection.get('i18n_structure') as string;
       if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
         for (const l of locales) {
           await this.implementation

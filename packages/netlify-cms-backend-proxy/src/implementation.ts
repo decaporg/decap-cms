@@ -179,13 +179,13 @@ export default class ProxyBackend implements Implementation {
     });
   }
 
-  async persistEntry(entry: Entry, assetProxies: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entries: Entry[], assetProxies: AssetProxy[], options: PersistOptions) {
     const assets = await Promise.all(assetProxies.map(serializeAsset));
     return this.request({
       action: 'persistEntry',
       params: {
         branch: this.branch,
-        entry,
+        entries,
         assets,
         options: { ...options, status: options.status || this.options.initialWorkflowStatus },
       },

@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 import semaphore, { Semaphore } from 'semaphore';
-import { initial, last, partial, result, trimStart, trim, difference } from 'lodash';
+import { initial, last, partial, result, trimStart, trim } from 'lodash';
 import { oneLine } from 'common-tags';
 import {
   getAllResponses,
@@ -872,6 +872,7 @@ export default class API {
 
   async persistFiles(entries: Entry[] | null, mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = entries ? mediaFiles.concat(entries) : mediaFiles;
+    const entry = entries ? entries[0] : null;
     const uploadPromises = files.map(file => this.uploadBlob(file));
     await Promise.all(uploadPromises);
 
@@ -891,7 +892,7 @@ export default class API {
       );
       return this.editorialWorkflowGit(
         files as TreeFile[],
-        entries[0] as Entry,
+        entry as Entry,
         mediaFilesList,
         options,
       );

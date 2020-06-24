@@ -115,7 +115,11 @@ export interface Implementation {
   getMedia: (folder?: string) => Promise<ImplementationMediaFile[]>;
   getMediaFile: (path: string) => Promise<ImplementationMediaFile>;
 
-  persistEntry: (obj: Entry, assetProxies: AssetProxy[], opts: PersistOptions) => Promise<void>;
+  persistEntry: (
+    entries: Entry[],
+    assetProxies: AssetProxy[],
+    opts: PersistOptions,
+  ) => Promise<void>;
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFile: (path: string, commitMessage: string) => Promise<void>;
 
