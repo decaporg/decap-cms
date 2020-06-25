@@ -558,7 +558,7 @@ export class Backend {
         });
     }
 
-    return { entries: this.combineMultipleContentEntries(multiEntries as EntryValue[]) };
+    return this.combineMultipleContentEntries(multiEntries as EntryValue[]);
   }
 
   async search(collections: Collection[], searchTerm: string) {

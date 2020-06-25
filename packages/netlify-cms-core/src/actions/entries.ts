@@ -153,7 +153,9 @@ const getAllEntries = async (state: State, collection: Collection) => {
   const provider: Backend = integration
     ? getIntegrationProvider(state.integrations, backend.getToken, integration)
     : backend;
-  const entries = await provider.listAllEntries(collection);
+  const entries = await (collection.get('multi_content_diff_files')
+    ? provider.listAllMultipleEntires(collection)
+    : provider.listAllEntries(collection));
   return entries;
 };
 
@@ -538,7 +540,7 @@ export function loadEntries(collection: Collection, page = 0) {
         ? // nested collections require all entries to construct the tree
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
         : collection.get('multi_content_diff_files')
-        ? provider.listAllMultipleEntires(collection)
+        ? provider.listAllMultipleEntires(collection).then((entries: EntryValue[]) => ({ entries }))
         : provider.listEntries(collection, page));
       response = {
         ...response,
