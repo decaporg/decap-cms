@@ -174,14 +174,14 @@ export default class RelationControl extends React.Component {
     return value;
   };
 
-  parseHitOptions = hits => {
+  parseHitOptions = (hits, limit = Number.MAX_SAFE_INTEGER) => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || List([field.get('valueField')]);
 
     const options = hits.reduce((acc, hit) => {
       const valuesPaths = expandPath({ data: hit.data, path: valueField });
-      for (let i = 0; i < valuesPaths.length; i++) {
+      for (let i = 0; i < valuesPaths.length && acc.length < limit; i++) {
         const label = displayField
           .toJS()
           .map(key => {
@@ -214,17 +214,14 @@ export default class RelationControl extends React.Component {
       : query(forID, collection, searchFieldsArray, term);
 
     queryPromise.then(({ payload }) => {
-      let options =
+      const limit = term ? Number.MIN_SAFE_INTEGER : optionsLength;
+      const options =
         payload.response && payload.response.hits
-          ? this.parseHitOptions(payload.response.hits)
+          ? this.parseHitOptions(payload.response.hits, limit)
           : [];
 
       if (!this.allOptions && !term) {
         this.allOptions = options;
-      }
-
-      if (!term) {
-        options = options.slice(0, optionsLength);
       }
 
       callback(options);
