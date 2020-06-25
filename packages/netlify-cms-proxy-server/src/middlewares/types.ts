@@ -57,7 +57,7 @@ export type Entry = { slug: string; path: string; raw: string; newPath?: string 
 export type Asset = { path: string; content: string; encoding: 'base64' };
 
 export type PersistEntryParams = {
-  entry: Entry;
+  entries: Entry[];
   assets: Asset[];
   options: {
     collectionName?: string;

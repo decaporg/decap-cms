@@ -74,18 +74,20 @@ type GitOptions = {
 const commitEntry = async (
   git: simpleGit.SimpleGit,
   repoPath: string,
-  entry: Entry,
+  entries: Entry[],
   assets: Asset[],
   commitMessage: string,
 ) => {
   // save entry content
-  await writeFile(path.join(repoPath, entry.path), entry.raw);
+  await Promise.all(entries.map(e => writeFile(path.join(repoPath, e.path), e.raw)));
   // save assets
   await Promise.all(
     assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
   );
-  if (entry.newPath) {
-    await move(path.join(repoPath, entry.path), path.join(repoPath, entry.newPath));
+  if (entries.every(e => e.newPath)) {
+    await Promise.all(
+      entries.map(e => move(path.join(repoPath, e.path), path.join(repoPath, e.newPath!))),
+    );
   }
 
   // commits files
@@ -274,13 +276,13 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           break;
         }
         case 'persistEntry': {
-          const { entry, assets, options } = body.params as PersistEntryParams;
+          const { entries, assets, options } = body.params as PersistEntryParams;
           if (!options.useWorkflow) {
             await runOnBranch(git, branch, async () => {
-              await commitEntry(git, repoPath, entry, assets, options.commitMessage);
+              await commitEntry(git, repoPath, entries, assets, options.commitMessage);
             });
           } else {
-            const slug = entry.slug;
+            const slug = entries[0].slug;
             const collection = options.collectionName as string;
             const contentKey = generateContentKey(collection, slug);
             const cmsBranch = branchFromContentKey(contentKey);
@@ -298,7 +300,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
                 d => d.binary && !assets.map(a => a.path).includes(d.path),
               );
               await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
-              await commitEntry(git, repoPath, entry, assets, options.commitMessage);
+              await commitEntry(git, repoPath, entries, assets, options.commitMessage);
 
               // add status for new entries
               if (!branchExists) {
