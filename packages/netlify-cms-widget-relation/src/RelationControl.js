@@ -6,6 +6,28 @@ import { find, isEmpty, last, debounce, get, trimEnd } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { FixedSizeList } from 'react-window';
+
+const Option = ({ index, style, data }) => <div style={style}>{data.options[index]}</div>;
+
+const MenuList = props => {
+  const rows = props.children;
+  if (rows.length === 0) {
+    return;
+  }
+  return (
+    <FixedSizeList
+      style={{ width: '100%' }}
+      width={300}
+      height={300}
+      itemCount={rows.length}
+      itemSize={30}
+      itemData={{ options: rows }}
+    >
+      {Option}
+    </FixedSizeList>
+  );
+};
 
 function optionToString(option) {
   return option && option.value ? option.value : '';
@@ -186,7 +208,9 @@ export default class RelationControl extends React.Component {
     const file = field.get('file');
 
     const queryPromise = file
-      ? query(forID, collection, ['slug'], file)
+      ? this.props
+          .loadEntry(collection, file)
+          .then(entry => ({ payload: { response: { hits: [entry] } } }))
       : query(forID, collection, searchFieldsArray, term);
 
     queryPromise.then(({ payload }) => {
@@ -230,6 +254,7 @@ export default class RelationControl extends React.Component {
 
     return (
       <AsyncSelect
+        components={{ MenuList }}
         value={selectedValue}
         inputId={forID}
         defaultOptions
