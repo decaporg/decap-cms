@@ -61,16 +61,18 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
           break;
         }
         case 'persistEntry': {
-          const { entry, assets } = body.params as PersistEntryParams;
-          await writeFile(path.join(repoPath, entry.path), entry.raw);
+          const { entries, assets } = body.params as PersistEntryParams;
+          await Promise.all(entries.map(e => writeFile(path.join(repoPath, e.path), e.raw)));
           // save assets
           await Promise.all(
             assets.map(a =>
               writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding)),
             ),
           );
-          if (entry.newPath) {
-            await move(path.join(repoPath, entry.path), path.join(repoPath, entry.newPath));
+          if (entries.every(e => e.newPath)) {
+            await Promise.all(
+              entries.map(e => move(path.join(repoPath, e.path), path.join(repoPath, e.newPath!))),
+            );
           }
           res.json({ message: 'entry persisted' });
           break;

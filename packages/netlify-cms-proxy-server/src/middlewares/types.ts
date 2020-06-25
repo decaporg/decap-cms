@@ -60,7 +60,7 @@ export type Asset = { path: string; content: string; encoding: 'base64' };
 
 export type PersistEntryParams = {
   cmsLabelPrefix?: string;
-  entry: Entry;
+  entries: Entry[];
   assets: Asset[];
   options: {
     collectionName?: string;

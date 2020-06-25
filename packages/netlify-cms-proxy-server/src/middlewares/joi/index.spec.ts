@@ -275,12 +275,12 @@ describe('defaultSchema', () => {
 
       assetFailure(
         schema.validate({ action: 'persistEntry', params: { ...defaultParams } }),
-        '"params.entry" is required',
+        '"params.entries" is required',
       );
       assetFailure(
         schema.validate({
           action: 'persistEntry',
-          params: { ...defaultParams, entry: { slug: 'slug', path: 'path', raw: 'content' } },
+          params: { ...defaultParams, entries: [{ slug: 'slug', path: 'path', raw: 'content' }] },
         }),
         '"params.assets" is required',
       );
@@ -289,7 +289,7 @@ describe('defaultSchema', () => {
           action: 'persistEntry',
           params: {
             ...defaultParams,
-            entry: { slug: 'slug', path: 'path', raw: 'content' },
+            entries: [{ slug: 'slug', path: 'path', raw: 'content' }],
             assets: [],
           },
         }),
@@ -300,7 +300,7 @@ describe('defaultSchema', () => {
           action: 'persistEntry',
           params: {
             ...defaultParams,
-            entry: { slug: 'slug', path: 'path', raw: 'content' },
+            entries: [{ slug: 'slug', path: 'path', raw: 'content' }],
             assets: [],
             options: {},
           },
@@ -315,7 +315,7 @@ describe('defaultSchema', () => {
         action: 'persistEntry',
         params: {
           ...defaultParams,
-          entry: { slug: 'slug', path: 'path', raw: 'content' },
+          entries: [{ slug: 'slug', path: 'path', raw: 'content' }],
           assets: [{ path: 'path', content: 'content', encoding: 'base64' }],
           options: {
             commitMessage: 'commitMessage',

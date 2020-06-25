@@ -39,6 +39,13 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
     encoding: requiredString.valid('base64'),
   });
 
+  const entry = Joi.object({
+    slug: requiredString,
+    path,
+    raw: requiredString,
+    newPath: path.optional(),
+  });
+
   const params = Joi.when('action', {
     switch: [
       {
@@ -122,12 +129,9 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         then: defaultParams
           .keys({
             cmsLabelPrefix: Joi.string().optional(),
-            entry: Joi.object({
-              slug: requiredString,
-              path,
-              raw: requiredString,
-              newPath: path.optional(),
-            }).required(),
+            entries: Joi.array()
+              .items(entry)
+              .required(),
             assets: Joi.array()
               .items(asset)
               .required(),

@@ -188,6 +188,7 @@ type CollectionObject = {
   nested?: Nested;
   meta?: Meta;
   locales?: string[];
+  default_locale?: string;
   multi_content?: boolean;
   multi_content_diff_files?: boolean;
   i18n_structure?: string;
