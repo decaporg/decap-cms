@@ -55,11 +55,12 @@
     var date = new Date();
 
     date.setTime(date.getTime() + ONE_DAY);
-    var dateString = '' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var month = ('0' + (date.getMonth()+1)).slice(-2)
+    var dateString = '' + date.getFullYear() + '-' + month + '-' + date.getDate();
     var slug = dateString + "-post-number-" + i + ".md";
 
     window.repoFiles._posts[slug] = {
-      content: "---\ntitle: \"This is post # " + i + `\"\ndraft: ${i % 2 === 0}` + "\ndate: " + dateString + "T00:99:99.999Z\n---\n\n# The post is number " + i + "\n\nAnd this is yet another identical post body"
+      content: "---\ntitle: \"This is post # " + i + `\"\ndraft: ${i % 2 === 0}` + "\ndate: " + dateString + "T00:00:00.000Z\n---\n\n# The post is number " + i + "\n\nAnd this is yet another identical post body"
     }
   }
 
