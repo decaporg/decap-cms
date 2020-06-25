@@ -2,6 +2,7 @@ import { resolveBackend, Backend, extractSearchFields } from '../backend';
 import registry from 'Lib/registry';
 import { FOLDER } from 'Constants/collectionTypes';
 import { Map, List, fromJS } from 'immutable';
+import { FILES } from '../constants/collectionTypes';
 
 jest.mock('Lib/registry');
 jest.mock('netlify-cms-lib-util');
@@ -555,6 +556,23 @@ describe('Backend', () => {
       { path: 'pages/not-me.md', slug: 'not-me', data: { title: 'not me' } },
     ];
 
+    const files = [
+      {
+        path: 'files/file1.md',
+        slug: 'file1',
+        data: {
+          author: 'find me by author',
+        },
+      },
+      {
+        path: 'files/file2.md',
+        slug: 'file2',
+        data: {
+          other: 'find me by other',
+        },
+      },
+    ];
+
     const implementation = {
       init: jest.fn(() => implementation),
     };
@@ -569,6 +587,9 @@ describe('Backend', () => {
         }
         if (collection.get('name') === 'pages') {
           return Promise.resolve(pages);
+        }
+        if (collection.get('name') === 'files') {
+          return Promise.resolve(files);
         }
         return Promise.resolve([]);
       });
@@ -606,6 +627,32 @@ describe('Backend', () => {
 
       expect(results).toEqual({
         entries: [posts[0], pages[0]],
+      });
+    });
+
+    it('should search in file collection using top level fields', async () => {
+      const collections = [
+        fromJS({
+          name: 'files',
+          files: [
+            {
+              name: 'file1',
+              fields: [{ name: 'author', widget: 'string' }],
+            },
+            {
+              name: 'file2',
+              fields: [{ name: 'other', widget: 'string' }],
+            },
+          ],
+          type: FILES,
+        }),
+      ];
+
+      expect(await backend.search(collections, 'find me by author')).toEqual({
+        entries: [files[0]],
+      });
+      expect(await backend.search(collections, 'find me by other')).toEqual({
+        entries: [files[1]],
       });
     });
 

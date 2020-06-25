@@ -36,6 +36,7 @@ import {
   blobToFileObj,
   asyncLock,
   AsyncLock,
+  UnpublishedEntry,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
@@ -54,7 +55,6 @@ import {
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
-import { UnpublishedEntry } from 'netlify-cms-lib-util/src/implementation';
 
 const { extractTemplateVars, dateParsers } = stringTemplate;
 
@@ -446,20 +446,33 @@ export class Backend {
         const summaryFields = extractTemplateVars(summary);
 
         // TODO: pass search fields in as an argument
-        const searchFields = [
-          selectInferedField(collection, 'title'),
-          selectInferedField(collection, 'shortTitle'),
-          selectInferedField(collection, 'author'),
-          ...summaryFields.map(elem => {
-            if (dateParsers[elem]) {
-              return selectInferedField(collection, 'date');
-            }
-            return elem;
-          }),
-        ].filter(Boolean) as string[];
+        let searchFields: (string | null | undefined)[] = [];
+
+        if (collection.get('type') === FILES) {
+          collection.get('files')?.forEach(f => {
+            const topLevelFields = f!
+              .get('fields')
+              .map(f => f!.get('name'))
+              .toArray();
+            searchFields = [...searchFields, ...topLevelFields];
+          });
+        } else {
+          searchFields = [
+            selectInferedField(collection, 'title'),
+            selectInferedField(collection, 'shortTitle'),
+            selectInferedField(collection, 'author'),
+            ...summaryFields.map(elem => {
+              if (dateParsers[elem]) {
+                return selectInferedField(collection, 'date');
+              }
+              return elem;
+            }),
+          ];
+        }
+        const filteredSearchFields = searchFields.filter(Boolean) as string[];
         const collectionEntries = await this.listAllEntries(collection);
         return fuzzy.filter(searchTerm, collectionEntries, {
-          extract: extractSearchFields(uniq(searchFields)),
+          extract: extractSearchFields(uniq(filteredSearchFields)),
         });
       })
       .map(p =>
