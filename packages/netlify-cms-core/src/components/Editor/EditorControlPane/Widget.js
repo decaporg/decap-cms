@@ -277,7 +277,7 @@ export default class Widget extends Component {
       isNewEditorComponent,
       parentIds,
       listIndexes,
-      hideFieldCondition,
+      fieldCondition,
       t,
     } = this.props;
     return React.createElement(controlComponent, {
@@ -324,7 +324,7 @@ export default class Widget extends Component {
       controlRef,
       parentIds,
       listIndexes,
-      hideFieldCondition,
+      fieldCondition,
       t,
     });
   }

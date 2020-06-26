@@ -177,7 +177,7 @@ class EditorControl extends React.Component {
       parentIds,
       listIndexes,
       hideField,
-      hideFieldCondition,
+      fieldCondition,
       t,
       validateMetaField,
     } = this.props;
@@ -293,7 +293,7 @@ class EditorControl extends React.Component {
               parentIds={parentIds}
               listIndexes={listIndexes}
               hideField={hideField}
-              hideFieldCondition={hideFieldCondition}
+              fieldCondition={fieldCondition}
               t={t}
               validateMetaField={validateMetaField}
             />

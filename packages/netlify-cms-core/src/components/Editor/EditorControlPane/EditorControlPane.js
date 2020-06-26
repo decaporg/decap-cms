@@ -30,7 +30,7 @@ export default class ControlPane extends React.Component {
     });
   };
 
-  hideFieldCondition = (field, indexes = [0]) => {
+  fieldCondition = (field, indexes = [0]) => {
     const data = this.props.entry.get('data').toJS();
     const conditions = field.get('conditions');
 
@@ -90,8 +90,8 @@ export default class ControlPane extends React.Component {
               controlRef={this.controlRef}
               entry={entry}
               collection={collection}
-              hideField={field.get('conditions') && this.hideFieldCondition(field)}
-              hideFieldCondition={this.hideFieldCondition}
+              hideField={field.get('conditions') && !this.fieldCondition(field)}
+              fieldCondition={this.fieldCondition}
             />
           );
         })}

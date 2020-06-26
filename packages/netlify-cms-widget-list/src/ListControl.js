@@ -433,7 +433,7 @@ export default class ListControl extends React.Component {
       resolveWidget,
       parentIds,
       forID,
-      hideFieldCondition,
+      fieldCondition,
       listIndexes: indexes,
     } = this.props;
 
@@ -493,7 +493,7 @@ export default class ListControl extends React.Component {
               hasError={hasError}
               parentIds={[...parentIds, forID, key]}
               listIndexes={listIndexes}
-              hideFieldCondition={hideFieldCondition}
+              fieldCondition={fieldCondition}
             />
           )}
         </ClassNames>
