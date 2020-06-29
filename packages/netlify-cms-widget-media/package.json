@@ -6,7 +6,7 @@
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-media",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
-  "main": "dist/netlify-cms-widget-image.js",
+  "main": "dist/netlify-cms-widget-media.js",
   "license": "MIT",
   "keywords": [
     "netlify",
