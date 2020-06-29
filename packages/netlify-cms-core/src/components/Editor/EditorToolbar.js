@@ -570,7 +570,7 @@ class EditorToolbar extends React.Component {
       <ToolbarContainer>
         <ToolbarSectionBackLink
           onClick={() => {
-            if (history.length > 0) {
+            if (history.length > 2) {
               history.goBack();
             } else {
               history.push(`/collections/${collection.get('name')}`);
