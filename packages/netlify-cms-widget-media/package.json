@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-media",
   "description": "Widget for uploading media in Netlify CMS.",
-  "version": "2.7.1",
+  "version": "1.0.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#media",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-media",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
