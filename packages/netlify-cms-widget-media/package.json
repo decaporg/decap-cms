@@ -13,6 +13,7 @@
     "netlify-cms",
     "widget",
     "upload",
+    "media",
     "image",
     "image-upload",
     "file",
