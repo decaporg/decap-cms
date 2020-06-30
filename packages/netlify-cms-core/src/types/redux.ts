@@ -77,7 +77,14 @@ export type Entries = StaticallyTypedRecord<{
   filter: Filter;
 }>;
 
-export type DeployPreviewUrl = StaticallyTypedRecord<{ url: string }>;
+export type DeployPreviewUrl = StaticallyTypedRecord<{
+  url: string;
+  collection: Collection;
+  baseUrl: string;
+  slug: string;
+  slugConfig: SlugConfig;
+  entry: EntryMap;
+}>;
 
 export type Deploys = StaticallyTypedRecord<{}>;
 

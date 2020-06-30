@@ -791,6 +791,11 @@ export class Backend {
     }
     const hookEntry: DeployPreviewUrl = fromJS({
       url: previewUrlFormatter(baseUrl, collection, slug, this.config.get('slug'), entry),
+      collection,
+      baseUrl,
+      slug,
+      slugConfig: this.config.get('slug'),
+      entry,
     });
 
     const modifiedData = await this.invokePreDeployPreviewEvent(hookEntry);
@@ -846,6 +851,11 @@ export class Backend {
        * Create a URL using the collection `preview_path`, if provided.
        */
       url: previewUrlFormatter(deployPreview.url, collection, slug, this.config.get('slug'), entry),
+      collection,
+      baseUrl: deployPreview.url,
+      slug,
+      slugConfig: this.config.get('slug'),
+      entry,
     });
     const modifiedData = await this.invokePreDeployPreviewEvent(hookEntry);
     const finalEntry = (modifiedData && hookEntry.set('url', modifiedData)) || hookEntry;
