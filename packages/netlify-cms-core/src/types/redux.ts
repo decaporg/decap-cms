@@ -77,6 +77,8 @@ export type Entries = StaticallyTypedRecord<{
   filter: Filter;
 }>;
 
+export type DeployPreviewUrl = StaticallyTypedRecord<{ url: string }>;
+
 export type Deploys = StaticallyTypedRecord<{}>;
 
 export type EditorialWorkflow = StaticallyTypedRecord<{

@@ -62,7 +62,7 @@ export function loadDeployPreview(collection, slug, entry, published, opts) {
        * unpublished entries.
        */
       const deploy = published
-        ? backend.getDeploy(collection, slug, entry)
+        ? await backend.getDeploy(collection, slug, entry)
         : await backend.getDeployPreview(collection, slug, entry, opts);
       if (deploy) {
         return dispatch(deployPreviewLoaded(collection, slug, deploy));

@@ -52,6 +52,7 @@ describe('registry', () => {
       'postUnpublish',
       'preSave',
       'postSave',
+      'preDeployPreview',
     ];
 
     describe('registerEventListener', () => {

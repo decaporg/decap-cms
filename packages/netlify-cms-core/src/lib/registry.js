@@ -10,6 +10,7 @@ const allowedEvents = [
   'postUnpublish',
   'preSave',
   'postSave',
+  'preDeployPreview',
 ];
 const eventHandlers = {};
 allowedEvents.forEach(e => {

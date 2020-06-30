@@ -51,6 +51,7 @@ import {
   CollectionFile,
   State,
   EntryField,
+  DeployPreviewUrl,
 } from './types/redux';
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
@@ -778,7 +779,7 @@ export class Backend {
    * entry's collection. Does not currently make a request through the backend,
    * but likely will in the future.
    */
-  getDeploy(collection: Collection, slug: string, entry: EntryMap) {
+  async getDeploy(collection: Collection, slug: string, entry: EntryMap) {
     /**
      * If `site_url` is undefined or `show_preview_links` in the config is set to false, do nothing.
      */
@@ -788,9 +789,14 @@ export class Backend {
     if (!baseUrl || this.config.get('show_preview_links') === false) {
       return;
     }
-
-    return {
+    const hookEntry: DeployPreviewUrl = fromJS({
       url: previewUrlFormatter(baseUrl, collection, slug, this.config.get('slug'), entry),
+    });
+
+    const modifiedData = await this.invokePreDeployPreviewEvent(hookEntry);
+    const finalEntry = (modifiedData && hookEntry.set('url', modifiedData)) || hookEntry;
+    return {
+      url: finalEntry.get('url'),
       status: 'SUCCESS',
     };
   }
@@ -835,11 +841,16 @@ export class Backend {
       return;
     }
 
-    return {
+    const hookEntry: DeployPreviewUrl = fromJS({
       /**
        * Create a URL using the collection `preview_path`, if provided.
        */
       url: previewUrlFormatter(deployPreview.url, collection, slug, this.config.get('slug'), entry),
+    });
+    const modifiedData = await this.invokePreDeployPreviewEvent(hookEntry);
+    const finalEntry = (modifiedData && hookEntry.set('url', modifiedData)) || hookEntry;
+    return {
+      url: finalEntry.get('url'),
       /**
        * Always capitalize the status for consistency.
        */
@@ -980,6 +991,14 @@ export class Backend {
 
   async invokePostSaveEvent(entry: EntryMap) {
     await this.invokeEventWithEntry('postSave', entry);
+  }
+
+  async invokePreDeployPreviewEvent(deploy: DeployPreviewUrl) {
+    const { login, name } = (await this.currentUser()) as User;
+    return await invokeEvent({
+      name: 'preDeployPreview',
+      data: { deploy, author: { login, name } },
+    });
   }
 
   async persistMedia(config: Config, file: AssetProxy) {
