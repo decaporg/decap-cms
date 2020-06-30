@@ -401,7 +401,7 @@ CMS.registerEventListener({
 });
 ```
 
-Supported events are `prePublish`, `postPublish`, `preUnpublish`, `postUnepublish`, `preSave`, `postSave` and `preDeployPreview`. The `preSave` and `preDeployPreview` hook can be used to modify the entry data like so:
+Supported events are `prePublish`, `postPublish`, `preUnpublish`, `postUnepublish`, `preSave`, `postSave` and `preDeployPreview`. The `preSave` and `preDeployPreview` hooks can be used to modify the entry data like so:
 
 ```javascript
 CMS.registerEventListener({
