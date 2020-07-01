@@ -173,13 +173,13 @@ describe('config', () => {
 
     it('should throw if collection publish is not a boolean', () => {
       expect(() => {
-        validateConfig(merge(validConfig, { collections: [{ publish: 'false' }] }));
+        validateConfig(merge({}, validConfig, { collections: [{ publish: 'false' }] }));
       }).toThrowError("'collections[0].publish' should be boolean");
     });
 
     it('should not throw if collection publish is a boolean', () => {
       expect(() => {
-        validateConfig(merge(validConfig, { collections: [{ publish: false }] }));
+        validateConfig(merge({}, validConfig, { collections: [{ publish: false }] }));
       }).not.toThrowError();
     });
 
@@ -201,10 +201,48 @@ describe('config', () => {
       }).not.toThrow();
     });
 
+    it('should throw if collection names are not unique', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [validConfig.collections[0], validConfig.collections[0]],
+          }),
+        );
+      }).toThrowError("'collections' collections names must be unique");
+    });
+
+    it('should throw if collection file names are not unique', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [
+              {},
+              {
+                files: [
+                  {
+                    name: 'a',
+                    label: 'a',
+                    file: 'a.md',
+                    fields: [{ name: 'title', label: 'title', widget: 'string' }],
+                  },
+                  {
+                    name: 'a',
+                    label: 'b',
+                    file: 'b.md',
+                    fields: [{ name: 'title', label: 'title', widget: 'string' }],
+                  },
+                ],
+              },
+            ],
+          }),
+        );
+      }).toThrowError("'collections[1].files' files names must be unique");
+    });
+
     it('should throw if collection fields names are not unique', () => {
       expect(() => {
         validateConfig(
-          merge(validConfig, {
+          merge({}, validConfig, {
             collections: [
               {
                 fields: [
@@ -221,7 +259,7 @@ describe('config', () => {
     it('should not throw if collection fields are unique across nesting levels', () => {
       expect(() => {
         validateConfig(
-          merge(validConfig, {
+          merge({}, validConfig, {
             collections: [
               {
                 fields: [
@@ -257,7 +295,7 @@ describe('config', () => {
       it('should throw if nested relation displayFields and searchFields are not arrays', () => {
         expect(() => {
           validateConfig(
-            merge(validConfig, {
+            merge({}, validConfig, {
               collections: [
                 {
                   fields: [
@@ -288,7 +326,7 @@ describe('config', () => {
       it('should not throw if nested relation displayFields and searchFields are arrays', () => {
         expect(() => {
           validateConfig(
-            merge(validConfig, {
+            merge({}, validConfig, {
               collections: [
                 {
                   fields: [
@@ -354,6 +392,46 @@ describe('config', () => {
             collections: [
               { meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } } },
             ],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should throw if collection field pattern is not an array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ fields: [{ pattern: '' }] }] }));
+      }).toThrowError("'collections[0].fields[0].pattern' should be array");
+    });
+
+    it('should throw if collection field pattern is not an array of [string|regex, string]', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, { collections: [{ fields: [{ pattern: [1, ''] }] }] }),
+        );
+      }).toThrowError(
+        "'collections[0].fields[0].pattern[0]' should be string\n'collections[0].fields[0].pattern[0]' should be a regular expression",
+      );
+
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, { collections: [{ fields: [{ pattern: ['', 1] }] }] }),
+        );
+      }).toThrowError("'collections[0].fields[0].pattern[1]' should be string");
+    });
+
+    it('should allow collection field pattern to be an array of [string|regex, string]', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ fields: [{ pattern: ['pattern', 'error'] }] }],
+          }),
+        );
+      }).not.toThrow();
+
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ fields: [{ pattern: [/pattern/, 'error'] }] }],
           }),
         );
       }).not.toThrow();

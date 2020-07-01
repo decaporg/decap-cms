@@ -1,5 +1,5 @@
 import AJV from 'ajv';
-import { select, uniqueItemProperties } from 'ajv-keywords/keywords';
+import { select, uniqueItemProperties, instanceof as instanceOf } from 'ajv-keywords/keywords';
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
 import { getWidgets } from 'Lib/registry';
@@ -21,7 +21,11 @@ const fieldsConfig = () => ({
       widget: { type: 'string' },
       required: { type: 'boolean' },
       hint: { type: 'string' },
-      pattern: { type: 'array', minItems: 2, items: { type: 'string' } },
+      pattern: {
+        type: 'array',
+        minItems: 2,
+        items: [{ oneOf: [{ type: 'string' }, { instanceof: 'RegExp' }] }, { type: 'string' }],
+      },
       field: { $ref: 'field' },
       fields: { $ref: 'fields' },
       types: { $ref: 'fields' },
@@ -274,25 +278,40 @@ export function validateConfig(config) {
   const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true });
   uniqueItemProperties(ajv);
   select(ajv);
+  instanceOf(ajv);
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
   if (!valid) {
     const errors = ajv.errors.map(e => {
-      // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
-      if (e.keyword === 'uniqueItemProperties') {
-        const path = e.dataPath || '';
-        let newError = e;
-        if (path.endsWith('/fields')) {
-          newError = { ...e, message: 'fields names must be unique' };
-        } else if (path.endsWith('/files')) {
-          newError = { ...e, message: 'files names must be unique' };
-        } else if (path.endsWith('/collections')) {
-          newError = { ...e, message: 'collections names must be unique' };
+      switch (e.keyword) {
+        // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
+        case 'uniqueItemProperties': {
+          const path = e.dataPath || '';
+          let newError = e;
+          if (path.endsWith('/fields')) {
+            newError = { ...e, message: 'fields names must be unique' };
+          } else if (path.endsWith('/files')) {
+            newError = { ...e, message: 'files names must be unique' };
+          } else if (path.endsWith('/collections')) {
+            newError = { ...e, message: 'collections names must be unique' };
+          }
+          return newError;
         }
-        return newError;
+        case 'instanceof': {
+          const path = e.dataPath || '';
+          let newError = e;
+          if (/fields\/\d+\/pattern\/\d+/.test(path)) {
+            newError = {
+              ...e,
+              message: 'should be a regular expression',
+            };
+          }
+          return newError;
+        }
+        default:
+          return e;
       }
-      return e;
     });
     console.error('Config Errors', errors);
     throw new ConfigError(errors);
