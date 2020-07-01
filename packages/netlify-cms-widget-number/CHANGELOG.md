@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.4.0...netlify-cms-widget-number@2.4.1) (2020-07-01)
+
+
+### Bug Fixes
+
+* **widget-number:** use number instead of integer in schema ([#3931](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/issues/3931)) ([3a53873](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/commit/3a5387346925cb7a579ef199c261d7c7de4a3423))
+
+
+
+
+
 # [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.3.5...netlify-cms-widget-number@2.4.0) (2020-06-18)
 
 
