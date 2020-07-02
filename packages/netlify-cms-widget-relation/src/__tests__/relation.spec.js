@@ -398,11 +398,11 @@ describe('Relation widget', () => {
         fireEvent.click(getByText('Post # 1 post-number-1'));
         fireEvent.keyDown(input, { key: 'ArrowDown' });
         fireEvent.click(getByText('Post # 2 post-number-2'));
-      });
 
-      expect(onChangeSpy).toHaveBeenCalledTimes(2);
-      expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1']), metadata1);
-      expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1', 'Post # 2']), metadata2);
+        expect(onChangeSpy).toHaveBeenCalledTimes(2);
+        expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1']), metadata1);
+        expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1', 'Post # 2']), metadata2);
+      });
     });
 
     it('should update metadata for initial preview', async () => {

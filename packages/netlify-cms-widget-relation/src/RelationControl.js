@@ -124,7 +124,6 @@ export default class RelationControl extends React.Component {
           },
         }) ||
         {};
-
       onChange(fromJS(value), metadata);
     } else {
       value = optionToString(selectedOption);
@@ -176,9 +175,9 @@ export default class RelationControl extends React.Component {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
+    const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
     const file = field.get('file');
-    const optionsLength = field.get('optionsLength') || 20;
 
     query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
       const hits = payload.response?.hits || [];
