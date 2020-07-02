@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Async as AsyncSelect } from 'react-select';
-import { find, isEmpty, last, debounce, get, trimEnd } from 'lodash';
+import { find, isEmpty, last, debounce, get } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -11,10 +11,10 @@ import { FixedSizeList } from 'react-window';
 const Option = ({ index, style, data }) => <div style={style}>{data.options[index]}</div>;
 
 const MenuList = props => {
-  const rows = props.children;
-  if (rows.length === 0) {
-    return;
+  if (props.isLoading || props.options.length <= 0) {
+    return props.children;
   }
+  const rows = props.children;
   return (
     <FixedSizeList
       style={{ width: '100%' }}
@@ -56,33 +56,6 @@ function getSelectedValue({ value, options, isMultiple }) {
     return find(options, ['value', value]) || null;
   }
 }
-
-export const expandPath = ({ data, path, paths = [] }) => {
-  if (path.endsWith('.*')) {
-    path = path + '.';
-  }
-
-  const sep = '.*.';
-  const parts = path.split(sep);
-  if (parts.length === 1) {
-    paths.push(path);
-  } else {
-    const partialPath = parts[0];
-    const value = get(data, partialPath);
-
-    if (Array.isArray(value)) {
-      value.forEach((v, index) => {
-        expandPath({
-          data,
-          path: trimEnd(`${partialPath}.${index}.${parts.slice(1).join(sep)}`, '.'),
-          paths,
-        });
-      });
-    }
-  }
-
-  return paths;
-};
 
 export default class RelationControl extends React.Component {
   didInitialSearch = false;
@@ -151,6 +124,7 @@ export default class RelationControl extends React.Component {
           },
         }) ||
         {};
+
       onChange(fromJS(value), metadata);
     } else {
       value = optionToString(selectedOption);
@@ -174,18 +148,17 @@ export default class RelationControl extends React.Component {
     return value;
   };
 
-  parseHitOptions = (hits, limit = Number.MAX_SAFE_INTEGER) => {
+  parseHitOptions = hits => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || List([field.get('valueField')]);
-
     const options = hits.reduce((acc, hit) => {
-      const valuesPaths = expandPath({ data: hit.data, path: valueField });
-      for (let i = 0; i < valuesPaths.length && acc.length < limit; i++) {
+      const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
+      for (let i = 0; i < valuesPaths.length; i++) {
         const label = displayField
           .toJS()
           .map(key => {
-            const displayPaths = expandPath({ data: hit.data, path: key });
+            const displayPaths = stringTemplate.expandPath({ data: hit.data, path: key });
             return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
           })
           .join(' ');
@@ -203,27 +176,13 @@ export default class RelationControl extends React.Component {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
-    const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
     const file = field.get('file');
+    const optionsLength = field.get('optionsLength') || 20;
 
-    const queryPromise = file
-      ? this.props
-          .loadEntry(collection, file)
-          .then(entry => ({ payload: { response: { hits: [entry] } } }))
-      : query(forID, collection, searchFieldsArray, term);
-
-    queryPromise.then(({ payload }) => {
-      const limit = term ? Number.MIN_SAFE_INTEGER : optionsLength;
-      const options =
-        payload.response && payload.response.hits
-          ? this.parseHitOptions(payload.response.hits, limit)
-          : [];
-
-      if (!this.allOptions && !term) {
-        this.allOptions = options;
-      }
-
+    query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
+      const hits = payload.response?.hits || [];
+      const options = this.parseHitOptions(hits);
       callback(options);
     });
   }, 500);
@@ -242,7 +201,7 @@ export default class RelationControl extends React.Component {
     const isClearable = !field.get('required', true) || isMultiple;
 
     const hits = queryHits.get(forID, []);
-    const options = this.allOptions || this.parseHitOptions(hits);
+    const options = this.parseHitOptions(hits);
     const selectedValue = getSelectedValue({
       options,
       value,
@@ -254,6 +213,7 @@ export default class RelationControl extends React.Component {
         components={{ MenuList }}
         value={selectedValue}
         inputId={forID}
+        cacheOptions
         defaultOptions
         loadOptions={this.loadOptions}
         onChange={this.handleChange}

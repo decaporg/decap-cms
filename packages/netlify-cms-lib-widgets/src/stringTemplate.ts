@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { Map } from 'immutable';
 import { basename, extname } from 'path';
+import { get, trimEnd } from 'lodash';
 
 const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
@@ -58,6 +59,41 @@ export const keyToPathArray = (key?: string) => {
     parts.push(currentStr.join(separator));
   }
   return parts;
+};
+
+export const expandPath = ({
+  data,
+  path,
+  paths = [],
+}: {
+  data: Record<string, unknown>;
+  path: string;
+  paths?: string[];
+}) => {
+  if (path.endsWith('.*')) {
+    path = path + '.';
+  }
+
+  const sep = '.*.';
+  const parts = path.split(sep);
+  if (parts.length === 1) {
+    paths.push(path);
+  } else {
+    const partialPath = parts[0];
+    const value = get(data, partialPath);
+
+    if (Array.isArray(value)) {
+      value.forEach((_, index) => {
+        expandPath({
+          data,
+          path: trimEnd(`${partialPath}.${index}.${parts.slice(1).join(sep)}`, '.'),
+          paths,
+        });
+      });
+    }
+  }
+
+  return paths;
 };
 
 // Allow `fields.` prefix in placeholder to override built in replacements
