@@ -8,14 +8,17 @@ import Icon from '../Icon';
 import Thumbnail, { ThumbnailGrid } from '../Thumbnail';
 import getMockData from '../utils/getMockData';
 import SearchBar from '../SearchBar';
-
-import { NavMenuItem, NavMenuGroup, NavMenu } from '../NavMenu';
+import { NavMenuGroup, NavMenuItem, NavMenu } from '../NavMenu';
+import { useUIContext } from '../hooks';
 
 const MediaDialogWrap = styled(Card)`
   color: ${({ theme }) => theme.color.text};
   height: 80%;
-  width: auto;
+  max-height: 100%;
   display: flex;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    height: 100%;
+  }
 `;
 
 const SideWrap = styled.div`
@@ -24,7 +27,9 @@ const SideWrap = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 1rem;
+  ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
+    display: none;
+  }
 `;
 
 const MainWrap = styled.div`
@@ -86,9 +91,15 @@ const CloseBtn = styled(IconButton)`
   right: 0.8rem;
 `;
 
+const Collapsable = props => {
+  const { navCollapsed } = useUIContext();
+  return navCollapsed ? null : props.children;
+};
+
 const AddSrcBtn = styled(Button)`
   position: absolute;
-  bottom: 1rem;
+  bottom: 4rem;
+  align-self: center;
 `;
 const TitleWrap = styled.div`
   font-weight: bold;
@@ -98,8 +109,11 @@ const SideBarTitle = styled.div`
   font-weight: bold;
   font-size: 1.5rem;
   white-space: nowrap;
+  align-self: center;
+  margin-bottom: 1rem;
 `;
 
+// TODO: Pass the selected state up so that it can be used by Delete & Choose Selected button
 const StoryThumbnail = ({
   previewImgSrc,
   previewBgColor,
@@ -118,7 +132,7 @@ const StoryThumbnail = ({
   const [selected, setSelected] = useState(false);
 
   return (
-    <StyledThumbnail
+    <Thumbnail
       previewImgSrc={previewImgSrc}
       previewBgColor={previewBgColor}
       previewText={previewText}
@@ -138,17 +152,18 @@ const StoryThumbnail = ({
   );
 };
 
-const StyledThumbnail = styled(Thumbnail)`
-  ${({ width }) => (width ? `width: ${width}` : ``)};
-  ${({ height }) => (height ? `height: ${height}` : ``)};
+const StyledThumbnailGrid = styled(ThumbnailGrid)`
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(${({ horizontal }) => (horizontal ? 24 : 12)}rem, 100%), 1fr)
+  );
 `;
 
-// Currently renders photos of random size based on god knows what. Fix.
-const Gallery2 = ({ horizontal }) => {
+const Gallery = ({ horizontal }) => {
   const mockData = getMockData('post', 19);
   const selectable = true;
   const onClick = true;
-  const previewAspectRatio = '12:9';
+  const previewAspectRatio = '4:3';
   const previewImgSrc = true;
   const supertitle = true;
   const title = true;
@@ -157,7 +172,7 @@ const Gallery2 = ({ horizontal }) => {
   const titleMaxLines = 1;
   const subtitleMaxLines = 1;
   return (
-    <ThumbnailGrid horizontal={horizontal}>
+    <StyledThumbnailGrid horizontal={horizontal}>
       {mockData.map((thumb, i) => (
         <StoryThumbnail
           key={i}
@@ -170,14 +185,15 @@ const Gallery2 = ({ horizontal }) => {
           horizontal={horizontal}
           titleMaxLines={titleMaxLines}
           subtitleMaxLines={subtitleMaxLines}
-          onClick={onClick && !selectable ? () => alert('You just clicked a thumbnail.') : null}
         />
       ))}
-    </ThumbnailGrid>
+    </StyledThumbnailGrid>
   );
 };
 
 const SideBar = () => {
+  const collapsable = true;
+  const [activeItemId, setActiveItemId] = useState('Media Library');
   const sources = [
     {
       name: 'Media Library',
@@ -192,24 +208,34 @@ const SideBar = () => {
       icon: 'image',
     },
   ];
+
   return (
     <SideWrap>
-      <SideBarTitle>Choose Image</SideBarTitle>
-      <SourceWrap>
+      <NavMenu collapsable={collapsable}>
+        <Collapsable>
+          <SideBarTitle>Choose Source</SideBarTitle>
+        </Collapsable>
         {sources.map(el => (
-          <NavMenuItem icon={el.icon} key={el.name}>
+          <NavMenuItem
+            active={activeItemId === el.name}
+            onClick={() => setActiveItemId(el.name)}
+            icon={el.icon}
+            key={el.name}
+          >
             {el.name}
           </NavMenuItem>
         ))}
-      </SourceWrap>
-      <AddSrcBtn icon="plus">Add Source</AddSrcBtn>
+        <Collapsable>
+          <AddSrcBtn icon="plus">Add Source</AddSrcBtn>
+        </Collapsable>
+      </NavMenu>
     </SideWrap>
   );
 };
 
 const MediaDialog = props => {
   const [horizontal, setHorizontal] = useState(false);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const renderEnd = true;
   const placeholder = 'Search media library';
 
@@ -231,7 +257,7 @@ const MediaDialog = props => {
           <IconButton icon="grid" onClick={() => setHorizontal(false)} />
         </ActionsTopWrap>
         <GalleryWrap>
-          <Gallery2 horizontal={horizontal} />
+          <Gallery horizontal={horizontal} />
         </GalleryWrap>
         <ActionsBottomWrap>
           <ButtonGroup>
@@ -243,7 +269,14 @@ const MediaDialog = props => {
             </Button>
           </ButtonGroup>
           <ButtonGroup>
-            <Button type="default">Cancel</Button>
+            <Button
+              type="default"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
             <Button type="success" primary>
               Choose Selected
             </Button>
@@ -251,7 +284,15 @@ const MediaDialog = props => {
         </ActionsBottomWrap>
       </MainWrap>
     </MediaDialogWrap>
-  ) : null;
+  ) : (
+    <Button
+      onClick={() => {
+        setOpen(true);
+      }}
+    >
+      Media Library
+    </Button>
+  );
 };
 
 export default MediaDialog;
