@@ -72,7 +72,7 @@ const vi = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} bắt buộc nhập.',
-        regexPattern: "%{fieldLabel} không khớp với mẫu: %{pattern}.",
+        regexPattern: '%{fieldLabel} không khớp với mẫu: %{pattern}.',
         processing: '%{fieldLabel} đang xử lý.',
         range: '%{fieldLabel} phải nằm trong khoảng từ %{minValue} đến %{maxValue}.',
         min: '%{fieldLabel} phải ít nhất %{minValue}.',
@@ -87,7 +87,8 @@ const vi = {
     },
     editor: {
       onLeavePage: 'Bạn có chắc rằng bạn muốn rời khỏi trang này?',
-      onUpdatingWithUnsavedChanges: 'Bạn chưa lưu những thay đổi, hãy lưu trước khi thay đổi trạng thái.',
+      onUpdatingWithUnsavedChanges:
+        'Bạn chưa lưu những thay đổi, hãy lưu trước khi thay đổi trạng thái.',
       onPublishingNotReady: 'Hãy thay đổi trạng thái thành "Sẵn sàng" trước khi công bố.',
       onPublishingWithUnsavedChanges: 'Bạn có thay đổi chưa lưu, hãy lưu trước khi công bố.',
       onPublishing: 'Bạn có chắc rằng bạn muốn công bố mục này?',
@@ -100,7 +101,8 @@ const vi = {
       onDeleteUnpublishedChanges:
         'Tất cả những thay đổi chưa được lưu trong mục này sẽ bị xoá. Bạn vẫn muốn xoá chứ?',
       loadingEntry: 'Đang tải...',
-      confirmLoadBackup: 'Một bản sao lưu trên máy đã được phục hồi cho mục này, bạn có muốn tải lên không?',
+      confirmLoadBackup:
+        'Một bản sao lưu trên máy đã được phục hồi cho mục này, bạn có muốn tải lên không?',
     },
     editorToolbar: {
       publishing: 'Đang công bố...',
@@ -196,7 +198,7 @@ const vi = {
     },
     errorBoundary: {
       title: 'Lỗi',
-      details: "Đã xảy ra lỗi - xin hãy ",
+      details: 'Đã xảy ra lỗi - xin hãy ',
       reportIt: 'tạo một issue trên GitHub.',
       detailsHeading: 'Chi tiết',
       privacyWarning:
@@ -216,7 +218,7 @@ const vi = {
       onFailToPersist: 'Không thể giữ lại mục: %{details}',
       onFailToDelete: 'Không thể xoá mục: %{details}',
       onFailToUpdateStatus: 'Không thể cập nhật trạng thái: %{details}',
-      missingRequiredField: "Bạn còn thiếu vài thông tin bắt buộc. Hãy hoàn thành trước khi lưu.",
+      missingRequiredField: 'Bạn còn thiếu vài thông tin bắt buộc. Hãy hoàn thành trước khi lưu.',
       entrySaved: 'Mục đã được lưu',
       entryPublished: 'Mục đã được công bố',
       entryUnpublished: 'Mục đã ngừng công bố',
@@ -226,8 +228,7 @@ const vi = {
       onDeleteUnpublishedChanges: 'Những thay đổi chưa được công bố đã được xoá',
       onFailToAuth: '%{details}',
       onLoggedOut: 'Bạn đã đăng xuất, hãy sao lưu dữ liệu và đăng nhập lại',
-      onBackendDown:
-        'Dịch vụ backend đang gặp trục trặc. Hãy xem {details} để biết thêm thông tin',
+      onBackendDown: 'Dịch vụ backend đang gặp trục trặc. Hãy xem {details} để biết thêm thông tin',
     },
   },
   workflow: {
