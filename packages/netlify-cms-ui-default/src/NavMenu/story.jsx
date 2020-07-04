@@ -96,7 +96,7 @@ export const _NavMenu = () => {
             Events
           </NavMenuItem>
         </NavMenuGroup>
-        <NavMenuGroup>
+        <NavMenuGroup end>
           {showGroupLabels && <NavMenuGroupLabel>Secondary Items</NavMenuGroupLabel>}
           <NavMenuItem href="https://app.netlify.com/my-website/analytics" icon="bar-chart">
             Analytics

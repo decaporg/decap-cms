@@ -12,7 +12,7 @@ const NavWrap = styled(Card)`
   width: ${({ collapsed }) => (collapsed ? '56px' : '240px')};
   height: 100%;
   padding: 12px 0;
-  background-color: ${({ theme }) => theme.color.surface};
+  background-color: ${({ theme }) => theme.color.elevatedSurface};
   display: flex;
   flex-direction: column;
   position: relative;
@@ -85,7 +85,7 @@ NavMenu.propTypes = {
   collapsable: PropTypes.bool,
 };
 NavMenu.defaultProps = {
-  collapsable: true,
+  collapsable: false,
 };
 
 export default NavMenu;

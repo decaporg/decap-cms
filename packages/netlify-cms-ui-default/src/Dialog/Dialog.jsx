@@ -208,6 +208,7 @@ class Dialog extends React.Component {
       actions,
       onClose,
       children,
+      className,
       hideCloseButton,
       transitionDuration,
       BackdropProps,
@@ -288,21 +289,17 @@ class Dialog extends React.Component {
             elevation="lg"
             position={position}
             isMobile={isMobile}
+            className={className}
           >
-            <Header>
-              {title && (
-                <Title
-                  hasTitle={!!title}
-                  hasCloseButton={!hideCloseButton}
-                  hasContent={children}
-                  hasActions={actions}
-                >
+            {title && (
+              <Header>
+                <Title hasCloseButton={!hideCloseButton} hasContent={children} hasActions={actions}>
                   {title}
                 </Title>
-              )}
-              {!hideCloseButton && (title || actions) && <CloseButton onClick={onClose} />}
-            </Header>
-            {children && (
+                {!hideCloseButton && (title || actions) && <CloseButton onClick={onClose} />}
+              </Header>
+            )}
+            {children && (title || actions) ? (
               <DialogContent
                 noPadding={!title && !actions}
                 hasTitle={!!title}
@@ -311,6 +308,8 @@ class Dialog extends React.Component {
               >
                 {children}
               </DialogContent>
+            ) : (
+              children
             )}
             {actions && <DialogActions isMobile={isMobile}>{actions}</DialogActions>}
           </DialogWrap>

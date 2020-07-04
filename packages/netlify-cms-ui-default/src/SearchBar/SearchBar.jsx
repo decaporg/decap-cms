@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import Icon from '../Icon';
 
@@ -8,51 +8,67 @@ const SearchContainer = styled.div`
   position: relative;
   width: 100%;
   min-width: 200px;
-
-  svg {
-    position: absolute;
-    left: 6px;
-    z-index: 2;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
+  background-color: ${({ theme, focus }) =>
+    focus ? theme.color.elevatedSurfaceHighlight : theme.color.surfaceHighlight};
+  border-radius: 6px;
+  transition: 200ms;
+  ${({ theme, focus }) =>
+    focus
+      ? `box-shadow: inset 0 0 0 2px ${theme.color.primary['900']};`
+      : `box-shadow: inset 0 0 0 0 ${theme.color.primary['900']};`}
+  &:hover {
+    background-color: ${({ theme }) => theme.color.elevatedSurfaceHighlight};
   }
 `;
-
-const EndWrap = styled.div`
+const SearchIcon = styled(Icon)`
   position: absolute;
-  right: 6px;
   z-index: 2;
+  top: 0.5rem;
+  left: 0.5rem;
+  pointer-events: none;
+  transition: 200ms;
+  color: ${({ theme, focus }) => (focus ? theme.color.mediumEmphasis : theme.color.disabled)};
+`;
+const EndWrap = styled.div`
+  margin: 0.375rem;
+  margin-left: 0;
 `;
 
 const SearchInput = styled.input`
+  flex: 1;
+  background-color: transparent;
   color: ${({ theme }) => theme.color.highEmphasis};
-  background-color: ${({ theme }) => theme.color.surfaceHighlight};
-  border-radius: 6px;
-  font-size: 14px;
-  padding: 10px 6px 10px 32px;
-  width: 100%;
-  z-index: 1;
   border: 0;
   caret-color: ${({ theme }) => theme.color.primary['900']};
-
+  outline: none;
+  font-size: 0.875rem;
+  z-index: 1;
+  border: 0;
+  padding: 0;
+  padding-top: 0.625rem;
+  padding-right: 0;
+  padding-bottom: 0.625rem;
+  padding-left: 2.25rem;
+  line-height: 1;
   &::placeholder {
     color: ${({ theme }) => theme.color.disabled};
   }
-
-  &:focus {
-    outline: none;
-    box-shadow: inset 0 0 0 2px ${({ theme }) => theme.color.primary['900']};
-  }
 `;
 
-const SearchBar = ({ placeholder, renderEnd, onChange }) => {
+const SearchBar = ({ placeholder, renderEnd, onChange, className }) => {
+  const [focus, setFocus] = useState();
+
   return (
-    <SearchContainer>
-      <Icon name="search" />
-      <SearchInput placeholder={placeholder} onChange={onChange} />
-      <EndWrap>{renderEnd && renderEnd()}</EndWrap>
+    <SearchContainer focus={focus} className={className}>
+      <SearchIcon name="search" focus={focus} />
+      <SearchInput
+        placeholder={placeholder}
+        onChange={onChange}
+        focus={focus}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+      />
+      <EndWrap>{renderEnd && renderEnd(focus)}</EndWrap>
     </SearchContainer>
   );
 };

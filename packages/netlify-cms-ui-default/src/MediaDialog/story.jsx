@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
+import { withKnobs, boolean, select, text } from '@storybook/addon-knobs';
+
 import MediaDialog from './MediaDialog';
-import { Button } from '../Button';
+import { Button, ButtonGroup } from '../Button';
 
 export default {
-  title: 'Components/MediaDialog',
+  title: 'Dialogs/MediaDialog',
+  decorators: [withKnobs],
 };
 
 const StoryDialog = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <>
-      <Button onClick={() => setDialogOpen(true)}>Media</Button>
+      <ButtonGroup>
+        <Button onClick={() => setDialogOpen(true)}>Open Choose Media Dialog</Button>
+      </ButtonGroup>
       <MediaDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </>
   );
 };
 
 export const _MediaDialog = () => {
-  return <MediaDialog />;
+  return <StoryDialog />;
 };

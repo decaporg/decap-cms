@@ -5,7 +5,6 @@ import { withTheme } from 'emotion-theming';
 import interTypeface from 'typeface-inter/inter.css';
 
 const getGlobalStyles = theme => css`
-  ${interTypeface}
   html {
     box-sizing: border-box;
   }
@@ -22,6 +21,8 @@ const getGlobalStyles = theme => css`
       .string()};
     color: ${theme.color.success[theme.darkMode ? '200' : '1500']};
   }
+
+  ${interTypeface}
 
   html,
   body {

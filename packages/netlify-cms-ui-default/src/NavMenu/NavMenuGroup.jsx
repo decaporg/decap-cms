@@ -7,13 +7,16 @@ const NavMenuGroup = styled.div`
   &:first-child {
     padding-top: 0;
   }
-  &:last-child {
+  ${({ end }) =>
+    end
+      ? `
     flex: 1;
     justify-content: flex-end;
     padding-bottom: 0;
-  }
+  `
+      : ``}
   &:not(:first-child):not(:last-child) {
-    border-top: 1px solid ${({ theme }) => theme.color.border};
+    /* border-top: 1px solid ${({ theme }) => theme.color.border}; */
   }
 `;
 

@@ -18,7 +18,6 @@ const TableWrap = styled.div`
 const TableHeader = styled.div`
   position: sticky;
   top: 0;
-  background: ${({ theme }) => theme.color.background};
   z-index: 1;
 `;
 const TableHeaderRow = styled.div`
@@ -219,10 +218,12 @@ const TableRow = sortableElement(({ children, ...props }) => <TRow {...props}>{c
 const TableBody = sortableContainer(({ children }) => <TBody>{children}</TBody>);
 
 const Table = ({
+  className,
   columns,
   data,
   selectable,
   onSelect,
+  selected,
   renderMenu,
   onClick,
   draggable,
@@ -236,10 +237,17 @@ const Table = ({
     rows,
     prepareRow,
     selectedFlatRows,
+    state: { selectedRowIds },
   } = useTable(
     {
       columns,
       data: sortedData,
+      initialState: {
+        selectedRowIds: data.reduce(
+          (acc, row, index) => ({ ...acc, [index]: selected?.includes(row.id) }),
+          {},
+        ),
+      },
     },
     useSortBy,
     useFlexLayout,
@@ -316,6 +324,7 @@ const Table = ({
   );
 
   useEffect(() => setSortedData(data), [data]);
+  useEffect(() => console.log({ selectedRowIds }), [selectedRowIds]);
 
   useEffect(() => onSelect(selectedFlatRows.map(row => row.original.id)), [selectedFlatRows]);
 
@@ -333,8 +342,6 @@ const Table = ({
       const row = rows[index];
 
       prepareRow(row);
-
-      console.log(index, row);
 
       return (
         <TableRow
@@ -379,7 +386,7 @@ const Table = ({
 
   // Render the UI for your table
   return (
-    <TableWrap {...getTableProps()}>
+    <TableWrap className={className} {...getTableProps()}>
       <TableHeader>
         {headerGroups.map((headerGroup, headerGroupIndex) => (
           <TableHeaderRow {...headerGroup.getHeaderGroupProps()} key={headerGroupIndex}>
