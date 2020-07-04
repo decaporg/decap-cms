@@ -30,8 +30,8 @@ const SearchInput = styled.input`
   color: ${({ theme }) => theme.color.highEmphasis};
   background-color: ${({ theme }) => theme.color.surfaceHighlight};
   border-radius: 6px;
-  font-size: 14px;
-  padding: 10px 6px 10px 32px;
+  font-size: 0.875rem;
+  padding: 0.625rem 0.375rem 0.625rem 2rem;
   width: 100%;
   z-index: 1;
   border: 0;
