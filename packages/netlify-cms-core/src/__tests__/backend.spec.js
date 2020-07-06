@@ -822,7 +822,10 @@ describe('Backend', () => {
           data: {
             field: {
               nested: {
-                list: [{ id: 1, name: '1' }, undefined, undefined, { id: 4, name: '4' }],
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 4, name: '4' },
+                ],
               },
             },
             list: [1, 2],
@@ -888,10 +891,50 @@ describe('Backend', () => {
           data: {
             field: {
               nested: {
-                list: [{ id: 1, name: '1' }, undefined, undefined, { id: 4, name: '4' }],
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 4, name: '4' },
+                ],
               },
             },
-            list: [undefined, 2],
+            list: [2],
+          },
+        },
+      ]);
+    });
+
+    it('should merge entries and keep sort by entry index', () => {
+      const expanded = [
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.5',
+        },
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.0',
+        },
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.11',
+        },
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.1',
+        },
+      ];
+
+      expect(mergeExpandedEntries(expanded)).toEqual([
+        {
+          data: {
+            list: [5, 0, 11, 1],
           },
         },
       ]);

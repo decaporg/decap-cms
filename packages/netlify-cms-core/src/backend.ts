@@ -1,5 +1,5 @@
-import { attempt, flatten, isError, uniq, trim, sortBy, unset } from 'lodash';
-import { List, Map, fromJS } from 'immutable';
+import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
+import { List, Map, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
@@ -85,20 +85,17 @@ function getEntryBackupKey(collectionName?: string, slug?: string) {
 }
 
 const getEntryField = (field: string, entry: EntryValue) => {
-  const nestedFields = field.split('.');
-  let value = entry.data;
-  for (let i = 0; i < nestedFields.length; i++) {
-    value = value[nestedFields[i]];
-    if (!value) break;
-  }
-
+  const value = get(entry.data, field);
   if (value) {
     return String(value);
-  } else if (entry[nestedFields[0] as keyof EntryValue]) {
-    // allows searching using entry.slug/entry.path etc.
-    return entry[nestedFields[0] as keyof EntryValue];
   } else {
-    return '';
+    const firstFieldPart = field.split('.')[0];
+    if (entry[firstFieldPart as keyof EntryValue]) {
+      // allows searching using entry.slug/entry.path etc.
+      return entry[firstFieldPart as keyof EntryValue];
+    } else {
+      return '';
+    }
   }
 };
 
@@ -132,13 +129,16 @@ export const expandSearchEntries = (entries: EntryValue[], searchFields: string[
 };
 
 export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]) => {
-  // merged the search results by slug and only keep data that matched the search
+  // merge the search results by slug and only keep data that matched the search
   const fields = entries.map(f => f.field);
+  const arrayPaths: Record<string, Set<string>> = {};
+
   const merged = entries.reduce((acc, e) => {
     if (!acc[e.slug]) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { field, ...rest } = e;
       acc[e.slug] = rest;
+      arrayPaths[e.slug] = Set();
     }
 
     const nestedFields = e.field.split('.');
@@ -147,16 +147,37 @@ export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]
       value = value[nestedFields[i]];
       if (Array.isArray(value)) {
         const path = nestedFields.slice(0, i + 1).join('.');
-        value.forEach((_, index) => {
-          if (!fields.some(f => f.startsWith(`${path}.${index}`))) {
-            unset(value, index);
-          }
-        });
+        arrayPaths[e.slug] = arrayPaths[e.slug].add(path);
       }
     }
 
     return acc;
   }, {} as Record<string, EntryValue>);
+
+  // this keeps the search score sorting order designated by the order in entries
+  // and filters non matching items
+  Object.keys(merged).forEach(slug => {
+    const data = merged[slug].data;
+    for (const path of arrayPaths[slug].toArray()) {
+      const array = get(data, path) as unknown[];
+      const filtered = array.filter((_, index) => {
+        return fields.some(f => `${f}.`.startsWith(`${path}.${index}.`));
+      });
+      filtered.sort((a, b) => {
+        const indexOfA = array.indexOf(a);
+        const indexOfB = array.indexOf(b);
+        const pathOfA = `${path}.${indexOfA}.`;
+        const pathOfB = `${path}.${indexOfB}.`;
+
+        const matchingFieldIndexA = fields.findIndex(f => `${f}.`.startsWith(pathOfA));
+        const matchingFieldIndexB = fields.findIndex(f => `${f}.`.startsWith(pathOfB));
+
+        return matchingFieldIndexA - matchingFieldIndexB;
+      });
+
+      set(data, path, filtered);
+    }
+  });
 
   return Object.values(merged);
 };

@@ -172,12 +172,19 @@ export default class RelationControl extends React.Component {
   };
 
   loadOptions = debounce((term, callback) => {
-    const { field, query, forID } = this.props;
+    const { field, query, forID, value } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
     const optionsLength = field.get('optionsLength') || 20;
-    const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
+    let searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
     const file = field.get('file');
+
+    // if the field has a previous value perform the initial search based on the value field
+    // this is needed since search results are limited to optionsLength
+    if (!this.didInitialSearch && value && !term) {
+      searchFieldsArray = [field.get('valueField')];
+      term = value;
+    }
 
     query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
       const hits = payload.response?.hits || [];
