@@ -18,4 +18,5 @@ export { default as sv } from './sv';
 export { default as th } from './th';
 export { default as tr } from './tr';
 export { default as uk } from './uk';
+export { default as vi } from './vi';
 export { default as zh_Hant } from './zh_Hant';
