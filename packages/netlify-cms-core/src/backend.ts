@@ -1,5 +1,5 @@
-import { attempt, flatten, isError, uniq, trim, sortBy } from 'lodash';
-import { List, Map, fromJS } from 'immutable';
+import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
+import { List, Map, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
@@ -56,7 +56,7 @@ import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
 
-const { extractTemplateVars, dateParsers } = stringTemplate;
+const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -84,24 +84,103 @@ function getEntryBackupKey(collectionName?: string, slug?: string) {
   return `${baseKey}.${collectionName}${suffix}`;
 }
 
+const getEntryField = (field: string, entry: EntryValue) => {
+  const value = get(entry.data, field);
+  if (value) {
+    return String(value);
+  } else {
+    const firstFieldPart = field.split('.')[0];
+    if (entry[firstFieldPart as keyof EntryValue]) {
+      // allows searching using entry.slug/entry.path etc.
+      return entry[firstFieldPart as keyof EntryValue];
+    } else {
+      return '';
+    }
+  }
+};
+
 export const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
   searchFields.reduce((acc, field) => {
-    const nestedFields = field.split('.');
-    let f = entry.data;
-    for (let i = 0; i < nestedFields.length; i++) {
-      f = f[nestedFields[i]];
-      if (!f) break;
-    }
-
-    if (f) {
-      return `${acc} ${f}`;
-    } else if (entry[nestedFields[0] as keyof EntryValue]) {
-      // allows searching using entry.slug/entry.path etc.
-      return `${acc} ${entry[nestedFields[0] as keyof EntryValue]}`;
+    const value = getEntryField(field, entry);
+    if (value) {
+      return `${acc} ${value}`;
     } else {
       return acc;
     }
   }, '');
+
+export const expandSearchEntries = (entries: EntryValue[], searchFields: string[]) => {
+  // expand the entries for the purpose of the search
+  const expandedEntries = entries.reduce((acc, e) => {
+    const expandedFields = searchFields.reduce((acc, f) => {
+      const fields = expandPath({ data: e.data, path: f });
+      acc.push(...fields);
+      return acc;
+    }, [] as string[]);
+
+    for (let i = 0; i < expandedFields.length; i++) {
+      acc.push({ ...e, field: expandedFields[i] });
+    }
+
+    return acc;
+  }, [] as (EntryValue & { field: string })[]);
+
+  return expandedEntries;
+};
+
+export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]) => {
+  // merge the search results by slug and only keep data that matched the search
+  const fields = entries.map(f => f.field);
+  const arrayPaths: Record<string, Set<string>> = {};
+
+  const merged = entries.reduce((acc, e) => {
+    if (!acc[e.slug]) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { field, ...rest } = e;
+      acc[e.slug] = rest;
+      arrayPaths[e.slug] = Set();
+    }
+
+    const nestedFields = e.field.split('.');
+    let value = acc[e.slug].data;
+    for (let i = 0; i < nestedFields.length; i++) {
+      value = value[nestedFields[i]];
+      if (Array.isArray(value)) {
+        const path = nestedFields.slice(0, i + 1).join('.');
+        arrayPaths[e.slug] = arrayPaths[e.slug].add(path);
+      }
+    }
+
+    return acc;
+  }, {} as Record<string, EntryValue>);
+
+  // this keeps the search score sorting order designated by the order in entries
+  // and filters non matching items
+  Object.keys(merged).forEach(slug => {
+    const data = merged[slug].data;
+    for (const path of arrayPaths[slug].toArray()) {
+      const array = get(data, path) as unknown[];
+      const filtered = array.filter((_, index) => {
+        return fields.some(f => `${f}.`.startsWith(`${path}.${index}.`));
+      });
+      filtered.sort((a, b) => {
+        const indexOfA = array.indexOf(a);
+        const indexOfB = array.indexOf(b);
+        const pathOfA = `${path}.${indexOfA}.`;
+        const pathOfB = `${path}.${indexOfB}.`;
+
+        const matchingFieldIndexA = fields.findIndex(f => `${f}.`.startsWith(pathOfA));
+        const matchingFieldIndexB = fields.findIndex(f => `${f}.`.startsWith(pathOfB));
+
+        return matchingFieldIndexA - matchingFieldIndexB;
+      });
+
+      set(data, path, filtered);
+    }
+  });
+
+  return Object.values(merged);
+};
 
 const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) => {
   if (a.score > b.score) return -1;
@@ -497,13 +576,35 @@ export class Backend {
     return { entries: hits };
   }
 
-  async query(collection: Collection, searchFields: string[], searchTerm: string) {
-    const entries = await this.listAllEntries(collection);
-    const hits = fuzzy
-      .filter(searchTerm, entries, { extract: extractSearchFields(searchFields) })
+  async query(
+    collection: Collection,
+    searchFields: string[],
+    searchTerm: string,
+    file?: string,
+    limit?: number,
+  ) {
+    let entries = await this.listAllEntries(collection);
+    if (file) {
+      entries = entries.filter(e => e.slug === file);
+    }
+
+    const expandedEntries = expandSearchEntries(entries, searchFields);
+
+    let hits = fuzzy
+      .filter(searchTerm, expandedEntries, {
+        extract: entry => {
+          return getEntryField(entry.field, entry);
+        },
+      })
       .sort(sortByScore)
       .map(f => f.original);
-    return { query: searchTerm, hits };
+
+    if (limit !== undefined && limit > 0) {
+      hits = hits.slice(0, limit);
+    }
+
+    const merged = mergeExpandedEntries(hits);
+    return { query: searchTerm, hits: merged };
   }
 
   traverseCursor(cursor: Cursor, action: string) {

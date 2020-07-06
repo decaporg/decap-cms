@@ -4,6 +4,7 @@ import {
   compileStringTemplate,
   parseDateFromEntry,
   extractTemplateVars,
+  expandPath,
 } from '../stringTemplate';
 describe('stringTemplate', () => {
   describe('keyToPathArray', () => {
@@ -105,6 +106,68 @@ describe('stringTemplate', () => {
       expect(
         compileStringTemplate('{{slug}}', date, 'slug', fromJS({}), value => value.toUpperCase()),
       ).toBe('SLUG');
+    });
+  });
+
+  describe('expandPath', () => {
+    it('should expand wildcard paths', () => {
+      const data = {
+        categories: [
+          {
+            name: 'category 1',
+          },
+          {
+            name: 'category 2',
+          },
+        ],
+      };
+
+      expect(expandPath({ data, path: 'categories.*.name' })).toEqual([
+        'categories.0.name',
+        'categories.1.name',
+      ]);
+    });
+
+    it('should handle wildcard at the end of the path', () => {
+      const data = {
+        nested: {
+          otherNested: {
+            list: [
+              {
+                title: 'title 1',
+                nestedList: [{ description: 'description 1' }, { description: 'description 2' }],
+              },
+              {
+                title: 'title 2',
+                nestedList: [{ description: 'description 2' }, { description: 'description 2' }],
+              },
+            ],
+          },
+        },
+      };
+
+      expect(expandPath({ data, path: 'nested.otherNested.list.*.nestedList.*' })).toEqual([
+        'nested.otherNested.list.0.nestedList.0',
+        'nested.otherNested.list.0.nestedList.1',
+        'nested.otherNested.list.1.nestedList.0',
+        'nested.otherNested.list.1.nestedList.1',
+      ]);
+    });
+
+    it('should handle non wildcard index', () => {
+      const data = {
+        categories: [
+          {
+            name: 'category 1',
+          },
+          {
+            name: 'category 2',
+          },
+        ],
+      };
+      const path = 'categories.0.name';
+
+      expect(expandPath({ data, path })).toEqual(['categories.0.name']);
     });
   });
 });

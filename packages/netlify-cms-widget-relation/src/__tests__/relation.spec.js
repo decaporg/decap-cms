@@ -3,7 +3,13 @@ import { fromJS, Map } from 'immutable';
 import { last } from 'lodash';
 import { render, fireEvent, wait } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
-import { expandPath } from '../RelationControl';
+
+jest.mock('react-window', () => {
+  const FixedSizeList = props => props.itemData.options;
+  return {
+    FixedSizeList,
+  };
+});
 
 const RelationControl = NetlifyCmsWidgetRelation.controlComponent;
 
@@ -128,36 +134,51 @@ class RelationController extends React.Component {
     queryHits: Map(),
   };
 
+  mounted = false;
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   handleOnChange = jest.fn(value => {
     this.setState({ ...this.state, value });
   });
 
   setQueryHits = jest.fn(hits => {
-    const queryHits = Map().set('relation-field', hits);
-    this.setState({ ...this.state, queryHits });
+    if (this.mounted) {
+      const queryHits = Map().set('relation-field', hits);
+      this.setState({ ...this.state, queryHits });
+    }
   });
 
   query = jest.fn((...args) => {
     const queryHits = generateHits(25);
 
-    if (args[1] === 'numbers_collection') {
-      return Promise.resolve({ payload: { response: { hits: numberFieldsHits } } });
-    } else if (last(args) === 'nested_file') {
-      return Promise.resolve({ payload: { response: { hits: nestedFileCollectionHits } } });
-    } else if (last(args) === 'simple_file') {
-      return Promise.resolve({ payload: { response: { hits: simpleFileCollectionHits } } });
-    } else if (last(args) === 'YAML') {
-      return Promise.resolve({ payload: { response: { hits: [last(queryHits)] } } });
-    } else if (last(args) === 'Nested') {
-      return Promise.resolve({
-        payload: { response: { hits: [queryHits[queryHits.length - 2]] } },
-      });
-    } else if (last(args) === 'Deeply nested') {
-      return Promise.resolve({
-        payload: { response: { hits: [queryHits[queryHits.length - 3]] } },
-      });
+    const [, collection, , term, file, optionsLength] = args;
+    let hits = queryHits;
+    if (collection === 'numbers_collection') {
+      hits = numberFieldsHits;
+    } else if (file === 'nested_file') {
+      hits = nestedFileCollectionHits;
+    } else if (file === 'simple_file') {
+      hits = simpleFileCollectionHits;
+    } else if (term === 'YAML') {
+      hits = [last(queryHits)];
+    } else if (term === 'Nested') {
+      hits = [queryHits[queryHits.length - 2]];
+    } else if (term === 'Deeply nested') {
+      hits = [queryHits[queryHits.length - 3]];
     }
-    return Promise.resolve({ payload: { response: { hits: queryHits } } });
+
+    hits = hits.slice(0, optionsLength);
+
+    this.setQueryHits(hits);
+
+    return Promise.resolve({ payload: { response: { hits } } });
   });
 
   render() {
@@ -207,68 +228,6 @@ function setup({ field, value }) {
     input,
   };
 }
-
-describe('expandPath', () => {
-  it('should expand wildcard paths', () => {
-    const data = {
-      categories: [
-        {
-          name: 'category 1',
-        },
-        {
-          name: 'category 2',
-        },
-      ],
-    };
-
-    expect(expandPath({ data, path: 'categories.*.name' })).toEqual([
-      'categories.0.name',
-      'categories.1.name',
-    ]);
-  });
-
-  it('should handle wildcard at the end of the path', () => {
-    const data = {
-      nested: {
-        otherNested: {
-          list: [
-            {
-              title: 'title 1',
-              nestedList: [{ description: 'description 1' }, { description: 'description 2' }],
-            },
-            {
-              title: 'title 2',
-              nestedList: [{ description: 'description 2' }, { description: 'description 2' }],
-            },
-          ],
-        },
-      },
-    };
-
-    expect(expandPath({ data, path: 'nested.otherNested.list.*.nestedList.*' })).toEqual([
-      'nested.otherNested.list.0.nestedList.0',
-      'nested.otherNested.list.0.nestedList.1',
-      'nested.otherNested.list.1.nestedList.0',
-      'nested.otherNested.list.1.nestedList.1',
-    ]);
-  });
-
-  it('should handle non wildcard index', () => {
-    const data = {
-      categories: [
-        {
-          name: 'category 1',
-        },
-        {
-          name: 'category 2',
-        },
-      ],
-    };
-    const path = 'categories.0.name';
-
-    expect(expandPath({ data, path })).toEqual(['categories.0.name']);
-  });
-});
 
 describe('Relation widget', () => {
   it('should list the first 20 option hits on initial load', async () => {

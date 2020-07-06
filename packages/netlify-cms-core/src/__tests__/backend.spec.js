@@ -1,4 +1,10 @@
-import { resolveBackend, Backend, extractSearchFields } from '../backend';
+import {
+  resolveBackend,
+  Backend,
+  extractSearchFields,
+  expandSearchEntries,
+  mergeExpandedEntries,
+} from '../backend';
 import registry from 'Lib/registry';
 import { FOLDER } from 'Constants/collectionTypes';
 import { Map, List, fromJS } from 'immutable';
@@ -694,6 +700,244 @@ describe('Backend', () => {
         hits: [posts[0]],
         query: 'find me by nested title',
       });
+    });
+  });
+
+  describe('expandSearchEntries', () => {
+    it('should expand entry with list to multiple entries', () => {
+      const entry = {
+        data: {
+          field: {
+            nested: {
+              list: [
+                { id: 1, name: '1' },
+                { id: 2, name: '2' },
+              ],
+            },
+          },
+          list: [1, 2],
+        },
+      };
+
+      expect(expandSearchEntries([entry], ['list.*', 'field.nested.list.*.name'])).toEqual([
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'list.0',
+        },
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'list.1',
+        },
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'field.nested.list.0.name',
+        },
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'field.nested.list.1.name',
+        },
+      ]);
+    });
+  });
+
+  describe('mergeExpandedEntries', () => {
+    it('should merge entries and filter data', () => {
+      const expanded = [
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                  { id: 3, name: '3' },
+                  { id: 4, name: '4' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'field.nested.list.0.name',
+        },
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                  { id: 3, name: '3' },
+                  { id: 4, name: '4' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'field.nested.list.3.name',
+        },
+      ];
+
+      expect(mergeExpandedEntries(expanded)).toEqual([
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 4, name: '4' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+        },
+      ]);
+    });
+
+    it('should merge entries and filter data based on different fields', () => {
+      const expanded = [
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                  { id: 3, name: '3' },
+                  { id: 4, name: '4' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'field.nested.list.0.name',
+        },
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                  { id: 3, name: '3' },
+                  { id: 4, name: '4' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'field.nested.list.3.name',
+        },
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 2, name: '2' },
+                  { id: 3, name: '3' },
+                  { id: 4, name: '4' },
+                ],
+              },
+            },
+            list: [1, 2],
+          },
+          field: 'list.1',
+        },
+      ];
+
+      expect(mergeExpandedEntries(expanded)).toEqual([
+        {
+          data: {
+            field: {
+              nested: {
+                list: [
+                  { id: 1, name: '1' },
+                  { id: 4, name: '4' },
+                ],
+              },
+            },
+            list: [2],
+          },
+        },
+      ]);
+    });
+
+    it('should merge entries and keep sort by entry index', () => {
+      const expanded = [
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.5',
+        },
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.0',
+        },
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.11',
+        },
+        {
+          data: {
+            list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          },
+          field: 'list.1',
+        },
+      ];
+
+      expect(mergeExpandedEntries(expanded)).toEqual([
+        {
+          data: {
+            list: [5, 0, 11, 1],
+          },
+        },
+      ]);
     });
   });
 });

@@ -75,9 +75,14 @@ export function querying(
   };
 }
 
-type Response = {
+type SearchResponse = {
   entries: EntryValue[];
   pagination: number;
+};
+
+type QueryResponse = {
+  hits: EntryValue[];
+  query: string;
 };
 
 export function querySuccess(
@@ -85,7 +90,7 @@ export function querySuccess(
   collection: string,
   searchFields: string[],
   searchTerm: string,
-  response: Response,
+  response: QueryResponse,
 ) {
   return {
     type: QUERY_SUCCESS,
@@ -174,7 +179,7 @@ export function searchEntries(
         );
 
     return searchPromise.then(
-      (response: Response) =>
+      (response: SearchResponse) =>
         dispatch(
           searchSuccess(
             searchTerm,
@@ -195,8 +200,10 @@ export function query(
   collectionName: string,
   searchFields: string[],
   searchTerm: string,
+  file?: string,
+  limit?: number,
 ) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     dispatch(querying(namespace, collectionName, searchFields, searchTerm));
 
     const state = getState();
@@ -212,13 +219,13 @@ export function query(
           collectionName,
           searchTerm,
         )
-      : backend.query(collection, searchFields, searchTerm);
+      : backend.query(collection, searchFields, searchTerm, file, limit);
 
-    return queryPromise.then(
-      (response: Response) =>
-        dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response)),
-      (error: Error) =>
-        dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error)),
-    );
+    try {
+      const response: QueryResponse = await queryPromise;
+      return dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response));
+    } catch (error) {
+      return dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error));
+    }
   };
 }
