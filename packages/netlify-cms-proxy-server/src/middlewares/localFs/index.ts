@@ -1,3 +1,4 @@
+import winston from 'winston';
 import express from 'express';
 import path from 'path';
 import { defaultSchema, joi } from '../joi';
@@ -15,11 +16,12 @@ import {
 import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
-type Options = {
+type FsOptions = {
   repoPath: string;
+  logger: winston.Logger;
 };
 
-export const localFsMiddleware = ({ repoPath }: Options) => {
+export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
   return async function(req: express.Request, res: express.Response) {
     try {
       const { body } = req;
@@ -113,20 +115,25 @@ export const localFsMiddleware = ({ repoPath }: Options) => {
         }
       }
     } catch (e) {
-      console.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
+      logger.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
       res.status(500).json({ error: 'Unknown error' });
     }
   };
 };
 
-export const getSchema = ({ repoPath }: Options) => {
+export const getSchema = ({ repoPath }: { repoPath: string }) => {
   const schema = defaultSchema({ path: pathTraversal(repoPath) });
   return schema;
 };
 
-export const registerMiddleware = async (app: express.Express) => {
+type Options = {
+  logger: winston.Logger;
+};
+
+export const registerMiddleware = async (app: express.Express, options: Options) => {
+  const { logger } = options;
   const repoPath = path.resolve(process.env.GIT_REPO_DIRECTORY || process.cwd());
   app.post('/api/v1', joi(getSchema({ repoPath })));
-  app.post('/api/v1', localFsMiddleware({ repoPath }));
-  console.log(`Netlify CMS File System Proxy Server configured with ${repoPath}`);
+  app.post('/api/v1', localFsMiddleware({ repoPath, logger }));
+  logger.info(`Netlify CMS File System Proxy Server configured with ${repoPath}`);
 };

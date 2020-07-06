@@ -44,7 +44,7 @@ const startServer = async (repoDir, mode) => {
     serverProcess.stdout.on('data', data => {
       const message = data.toString().trim();
       console.log(`server:stdout: ${message}`);
-      if (message.startsWith('Netlify CMS Proxy Server listening on port')) {
+      if (message.includes('Netlify CMS Proxy Server listening on port')) {
         resolve(serverProcess);
       }
     });
