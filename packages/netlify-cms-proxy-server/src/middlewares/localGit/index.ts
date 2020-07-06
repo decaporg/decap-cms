@@ -1,3 +1,4 @@
+import winston from 'winston';
 import express from 'express';
 import path from 'path';
 import { promises as fs } from 'fs';
@@ -65,8 +66,9 @@ const runOnBranch = async <T>(git: simpleGit.SimpleGit, branch: string, func: ()
 
 const branchDescription = (branch: string) => `branch.${branch}.description`;
 
-type Options = {
+type GitOptions = {
   repoPath: string;
+  logger: winston.Logger;
 };
 
 const commitEntry = async (
@@ -142,7 +144,7 @@ const getDiffs = async (git: simpleGit.SimpleGit, source: string, dest: string) 
   return diffs;
 };
 
-export const validateRepo = async ({ repoPath }: Options) => {
+export const validateRepo = async ({ repoPath }: { repoPath: string }) => {
   const git = simpleGit(repoPath).silent(false);
   const isRepo = await git.checkIsRepo();
   if (!isRepo) {
@@ -150,12 +152,12 @@ export const validateRepo = async ({ repoPath }: Options) => {
   }
 };
 
-export const getSchema = ({ repoPath }: Options) => {
+export const getSchema = ({ repoPath }: { repoPath: string }) => {
   const schema = defaultSchema({ path: pathTraversal(repoPath) });
   return schema;
 };
 
-export const localGitMiddleware = ({ repoPath }: Options) => {
+export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
   const git = simpleGit(repoPath).silent(false);
 
   return async function(req: express.Request, res: express.Response) {
@@ -386,16 +388,21 @@ export const localGitMiddleware = ({ repoPath }: Options) => {
         }
       }
     } catch (e) {
-      console.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
+      logger.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
       res.status(500).json({ error: 'Unknown error' });
     }
   };
 };
 
-export const registerMiddleware = async (app: express.Express) => {
+type Options = {
+  logger: winston.Logger;
+};
+
+export const registerMiddleware = async (app: express.Express, options: Options) => {
+  const { logger } = options;
   const repoPath = path.resolve(process.env.GIT_REPO_DIRECTORY || process.cwd());
   await validateRepo({ repoPath });
   app.post('/api/v1', joi(getSchema({ repoPath })));
-  app.post('/api/v1', localGitMiddleware({ repoPath }));
-  console.log(`Netlify CMS Git Proxy Server configured with ${repoPath}`);
+  app.post('/api/v1', localGitMiddleware({ repoPath, logger }));
+  logger.info(`Netlify CMS Git Proxy Server configured with ${repoPath}`);
 };
