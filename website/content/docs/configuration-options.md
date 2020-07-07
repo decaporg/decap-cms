@@ -1,6 +1,6 @@
 ---
 title: Configuration Options
-group: reference
+group: configuration
 weight: 23
 ---
 

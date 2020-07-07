@@ -1,7 +1,8 @@
 ---
 title: Examples
-group: start
+group: contributing
 weight: 110
+
 ---
 
 Do you have a great, open source example? Submit a pull request to this page!

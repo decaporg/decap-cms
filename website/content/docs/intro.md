@@ -1,7 +1,7 @@
 ---
-title: Introduction
+title: Overview
 weight: 1
-group: start
+group: intro
 ---
 
 Netlify CMS is an open source content management system for your Git workflow that enables you to provide editors with a friendly UI and intuitive workflows. You can use it with any static site generator to create faster, more flexible web projects. Content is stored in your Git repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git.
@@ -29,7 +29,7 @@ With this in mind, you can:
 
 If you hook up Netlify CMS to your website, you're basically adding a tool for content editors to make commits to your site repository without touching code or learning Git.
 
-## Find out more
+### Find out more
 
 - Get a feel for the UI in the [demo site](https://cms-demo.netlify.com). (No login required. Click the login button to go straight to the CMS editor UI.)
 - [Start with a template](../start-with-a-template/) to make a Netlify CMS-enabled site of your own.
