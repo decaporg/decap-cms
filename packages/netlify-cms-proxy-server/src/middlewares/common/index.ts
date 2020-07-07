@@ -11,7 +11,7 @@ export const registerCommonMiddlewares = (app: express.Express, options: Options
   const { logger } = options;
   const stream = {
     write: (message: string) => {
-      logger.info(String(message).trim());
+      logger.debug(String(message).trim());
     },
   };
   app.use(morgan('combined', { stream }));
