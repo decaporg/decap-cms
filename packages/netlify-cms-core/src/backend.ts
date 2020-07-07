@@ -1171,8 +1171,8 @@ export class Backend {
       config,
       {
         collection,
-        slug: entriesObj[0].slug,
-        path: entriesObj[0].path,
+        slug: entryObj.slug,
+        path: entryObj.path,
         authorLogin: user.login,
         authorName: user.name,
       },
@@ -1209,7 +1209,7 @@ export class Backend {
     const i18nStructure = collection.get('i18n_structure');
     const extension = selectFolderEntryExtension(collection);
     const data = entryDraft.getIn(['entry', 'data']).toJS();
-    const locales = uniq([collection.get('default_locale'), ...Object.keys(data)]);
+    const locales = Object.keys(data);
     const entriesObj: EntryObj[] = [];
     if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
       locales.forEach(l => {
@@ -1218,7 +1218,7 @@ export class Backend {
           slug: entryObj.slug,
           raw: this.entryToRaw(
             collection,
-            entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l!])),
+            entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
           ),
           ...(entryObj.newPath && {
             newPath: entryObj.newPath,
@@ -1232,7 +1232,7 @@ export class Backend {
           slug: entryObj.slug,
           raw: this.entryToRaw(
             collection,
-            entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l!])),
+            entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
           ),
           ...(entryObj.newPath && {
             newPath: entryObj.newPath,

@@ -1036,19 +1036,17 @@ describe('Backend', () => {
 
       backend.listAllEntries = jest.fn().mockResolvedValue(entries);
 
-      await expect(backend.listAllMultipleEntires(collection)).resolves.toEqual({
-        entries: [
-          {
-            slug: 'post',
-            path: 'posts/post.md',
-            raw: '',
-            data: {
-              en: { title: 'Title en', content: 'Content en' },
-              fr: { title: 'Title fr', content: 'Content fr' },
-            },
+      await expect(backend.listAllMultipleEntires(collection)).resolves.toEqual([
+        {
+          slug: 'post',
+          path: 'posts/post.md',
+          raw: '',
+          data: {
+            en: { title: 'Title en', content: 'Content en' },
+            fr: { title: 'Title fr', content: 'Content fr' },
           },
-        ],
-      });
+        },
+      ]);
     });
 
     it('should combine multiple content different folder entries', async () => {
@@ -1068,19 +1066,17 @@ describe('Backend', () => {
 
       backend.listAllEntries = jest.fn().mockResolvedValue(entries);
 
-      await expect(backend.listAllMultipleEntires(collection)).resolves.toEqual({
-        entries: [
-          {
-            slug: 'post',
-            path: 'posts/post.md',
-            raw: '',
-            data: {
-              en: { title: 'Title en', content: 'Content en' },
-              fr: { title: 'Title fr', content: 'Content fr' },
-            },
+      await expect(backend.listAllMultipleEntires(collection)).resolves.toEqual([
+        {
+          slug: 'post',
+          path: 'posts/post.md',
+          raw: '',
+          data: {
+            en: { title: 'Title en', content: 'Content en' },
+            fr: { title: 'Title fr', content: 'Content fr' },
           },
-        ],
-      });
+        },
+      ]);
     });
   });
 
