@@ -185,6 +185,7 @@ class EditorInterface extends Component {
       loadDeployPreview,
       deployPreview,
       draftKey,
+      editorBackLink,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
@@ -263,6 +264,7 @@ class EditorInterface extends Component {
           onLogoutClick={onLogoutClick}
           loadDeployPreview={loadDeployPreview}
           deployPreview={deployPreview}
+          editorBackLink={editorBackLink}
         />
         <Editor key={draftKey}>
           <ViewControls>
