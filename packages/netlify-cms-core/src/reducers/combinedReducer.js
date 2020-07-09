@@ -1,13 +1,17 @@
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router';
 import { reducer as notifReducer } from 'redux-notifications';
 import optimist from 'redux-optimist';
 import reducers from './index';
 
-export default optimist(
-  combineReducers({
-    ...reducers,
-    notifs: notifReducer,
-    routing: routerReducer,
-  }),
-);
+const createRootReducer = history => {
+  return optimist(
+    combineReducers({
+      ...reducers,
+      notifs: notifReducer,
+      router: connectRouter(history),
+    }),
+  );
+};
+
+export default createRootReducer;
