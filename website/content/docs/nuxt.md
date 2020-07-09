@@ -3,7 +3,6 @@ title: Nuxt
 group: guides
 weight: 20
 ---
-
 This guide will walk you through how to integrate Netlify CMS with Nuxt.
 
 ## Starting With `create-nuxt-app`
@@ -20,7 +19,7 @@ npm run dev
 
 ### Add the Netlify CMS files to Nuxt
 
-In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the [Netlify CMS documentation], we'll set the content of `static/admin/index.html` to the following:
+In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the \[Netlify CMS documentation], we'll set the content of `static/admin/index.html` to the following:
 
 ```html
 <!DOCTYPE html>
@@ -101,7 +100,7 @@ git push -u origin master
 
 ### Deploying With Netlify
 
-Now you can go ahead and deploy to Netlify. Go to your Netlify dashboard and click **[New site from Git](https://app.netlify.com/start)**. Select the repo you just created. Under **Basic build settings**, you can set the build command to `yarn generate` and the publish directory to `dist`. Click **Deploy site** to get the process going.
+Now you can go ahead and deploy to Netlify. Go to your Netlify dashboard and click **[New site from Git](https://app.netlify.com/start)**. Select the repo you just created. Under **Basic build settings**, you can set the build command to `yarn generate` if using yarn or `npm run build && npm run export ` if using npm. Set the publish directory to `dist`. Click **Deploy site** to get the process going.
 
 ### Authenticating with Netlify Identity
 
@@ -121,7 +120,7 @@ export default {
 
 Once you've added this, make sure to push your changes to GitHub!
 
-_More on adding `<script>` tags to `<head>` [here](https://nuxtjs.org/faq/#local-settings)._
+*More on adding `<script>` tags to `<head>` [here](https://nuxtjs.org/faq/#local-settings).*
 
 **Enable Identity & Git Gateway in Netlify**
 
@@ -138,6 +137,10 @@ Once you've reached this point, you should be able to access the CMS in your bro
 ## Integrating content in Nuxt with Vuex
 
 **Note:** In order to use `nuxtServerInit` your mode must be `universal` in your `nuxt.config.js`.
+
+```javascript
+  mode: 'universal',
+```
 
 Next, you'll set up the integrated Vuex store to collect blog posts. Create a file `index.js` in the `store/` directory, and add **state**, **mutations**, and **actions** for your blog posts:
 
