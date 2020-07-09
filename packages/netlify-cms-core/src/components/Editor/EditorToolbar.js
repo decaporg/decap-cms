@@ -5,7 +5,7 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Map } from 'immutable';
-import history from 'Routing/history';
+import { Link } from 'react-router-dom';
 import {
   Icon,
   Dropdown,
@@ -80,7 +80,7 @@ const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
   justify-content: flex-end;
 `;
 
-const ToolbarSectionBackLink = styled.a`
+const ToolbarSectionBackLink = styled(Link)`
   ${styles.toolbarSection};
   border-right-width: 1px;
   font-weight: normal;
@@ -247,6 +247,7 @@ class EditorToolbar extends React.Component {
     deployPreview: ImmutablePropTypes.map,
     loadDeployPreview: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    editorBackLink: PropTypes.string.isRequired,
   };
 
   componentDidMount() {
@@ -564,19 +565,20 @@ class EditorToolbar extends React.Component {
   };
 
   render() {
-    const { user, hasChanged, displayUrl, collection, hasWorkflow, onLogoutClick, t } = this.props;
+    const {
+      user,
+      hasChanged,
+      displayUrl,
+      collection,
+      hasWorkflow,
+      onLogoutClick,
+      t,
+      editorBackLink,
+    } = this.props;
 
     return (
       <ToolbarContainer>
-        <ToolbarSectionBackLink
-          onClick={() => {
-            if (history.length > 2) {
-              history.goBack();
-            } else {
-              history.push(`/collections/${collection.get('name')}`);
-            }
-          }}
-        >
+        <ToolbarSectionBackLink to={editorBackLink}>
           <BackArrow>←</BackArrow>
           <div>
             <BackCollection>
