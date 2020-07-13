@@ -36,7 +36,7 @@
     "slate": "^0.47.0",
     "slate-base64-serializer": "^0.2.107",
     "slate-plain-serializer": "^0.7.1",
-    "slate-react": "^0.22.0",
+    "slate-react": "^0.58.0",
     "slate-soft-break": "^0.9.0",
     "unified": "^7.1.0",
     "unist-builder": "^1.0.3",
