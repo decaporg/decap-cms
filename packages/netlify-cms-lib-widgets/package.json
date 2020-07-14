@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-lib-widgets",
   "description": "Shared utilities for Netlify CMS.",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",

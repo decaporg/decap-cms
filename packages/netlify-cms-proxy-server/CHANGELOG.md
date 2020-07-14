@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.2.9...netlify-cms-proxy-server@1.3.0) (2020-07-14)
+
+
+### Bug Fixes
+
+* **proxy-server:** change request logging level to debug ([#3993](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/3993)) ([784c1fe](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/784c1fe4801c89f1908d1b5e96cd7e847ec10fa0))
+
+
+### Features
+
+* **proxy-server:** allow setting proxy log level ([#3989](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/3989)) ([3e0d088](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/3e0d0886d930a17c7b77d995cc0fa628ef3ecdc2))
+
+
+
+
+
 ## [1.2.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.2.8...netlify-cms-proxy-server@1.2.9) (2020-06-18)
 
 **Note:** Version bump only for package netlify-cms-proxy-server

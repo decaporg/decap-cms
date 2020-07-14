@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.0...netlify-cms-widget-relation@2.8.1) (2020-07-14)
+
+
+### Bug Fixes
+
+* relation widget performance ([#3975](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/3975)) ([c7e0fe8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/c7e0fe8492d09a3d151c608f50da844f421362ed))
+
+
+
+
+
 # [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.7.0...netlify-cms-widget-relation@2.8.0) (2020-06-18)
 
 

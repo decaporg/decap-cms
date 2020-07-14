@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.17.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.16.0...netlify-cms-locales@1.17.0) (2020-07-14)
+
+
+### Features
+
+* update locale (fr) ([#4002](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4002)) ([ec58401](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/ec584015005443f3b69022663f7ec0e83847ac10))
+* **locale:** add 'vi' locale 🇻🇳 ([#3981](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/3981)) ([f4b2999](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/f4b29998989c7a90a809a6e4e815cbb54dc6a81c))
+
+
+
+
+
 # [1.16.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.15.0...netlify-cms-locales@1.16.0) (2020-06-18)
 
 

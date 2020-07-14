@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.30.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.30.0...netlify-cms-core@2.30.1) (2020-07-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-scroll-sync to ^0.8.0 ([#4011](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4011)) ([e046a41](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e046a414f8e2c4596f440a1742b671d84b283bd5))
+* **editor:** pass back link to editor toolbar ([#4000](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4000)) ([c3a680f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c3a680ff52ec8ff4fff31ca5d6074bfe07b5859c))
+* relation widget performance ([#3975](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3975)) ([c7e0fe8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c7e0fe8492d09a3d151c608f50da844f421362ed))
+
+
+
+
+
 # [2.30.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.29.0...netlify-cms-core@2.30.0) (2020-07-01)
 
 

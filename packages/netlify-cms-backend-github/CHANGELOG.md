@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.11.0...netlify-cms-backend-github@2.11.1) (2020-07-14)
+
+
+### Bug Fixes
+
+* **backend-github:** use workflow branch when listing files to move ([#4019](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/4019)) ([8720a42](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/8720a4233db16d91d6b86ee8653d05f8953cb430))
+
+
+
+
+
 # [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.10.6...netlify-cms-backend-github@2.11.0) (2020-06-18)
 
 
