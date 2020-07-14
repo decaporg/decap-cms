@@ -1000,7 +1000,7 @@ export default class API {
       // rebase the branch before applying new changes
       const rebasedHead = await this.rebaseBranch(branch);
       const treeFiles = mediaFilesToRemove.concat(files);
-      const changeTree = await this.updateTree(rebasedHead.sha, treeFiles);
+      const changeTree = await this.updateTree(rebasedHead.sha, treeFiles, branch);
       const commit = await this.commit(options.commitMessage, changeTree);
 
       return this.patchBranch(branch, commit.sha, { force: true });
