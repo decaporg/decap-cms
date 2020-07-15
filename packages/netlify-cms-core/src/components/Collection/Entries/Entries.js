@@ -36,7 +36,8 @@ const Entries = ({
     return <Loader active>{loadingMessages}</Loader>;
   }
 
-  if (entries && entries.size > 0) {
+  const hasEntries = (entries && entries.size > 0) || cursor?.actions?.has('append_next');
+  if (hasEntries) {
     return (
       <>
         <EntryListing
@@ -45,8 +46,9 @@ const Entries = ({
           viewStyle={viewStyle}
           cursor={cursor}
           handleCursorActions={handleCursorActions}
+          page={page}
         />
-        {isFetching && page !== undefined ? (
+        {isFetching && page !== undefined && entries.size > 0 ? (
           <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
         ) : null}
       </>

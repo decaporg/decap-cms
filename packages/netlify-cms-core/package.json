@@ -58,7 +58,7 @@
     "react-split-pane": "^0.1.85",
     "react-topbar-progress-indicator": "^2.0.0",
     "react-virtualized-auto-sizer": "^1.0.2",
-    "react-waypoint": "^8.1.0",
+    "react-waypoint": "^9.0.3",
     "react-window": "^1.8.5",
     "redux": "^4.0.5",
     "redux-notifications": "^4.0.1",
