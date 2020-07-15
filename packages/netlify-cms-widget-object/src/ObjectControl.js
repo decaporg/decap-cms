@@ -32,7 +32,7 @@ export default class ObjectControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     forList: PropTypes.bool,
     controlRef: PropTypes.func,
-    editorControl: PropTypes.func.isRequired,
+    editorControl: PropTypes.elementType.isRequired,
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
