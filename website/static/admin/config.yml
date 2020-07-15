@@ -30,35 +30,47 @@ docs_collection: &docs_collection
 
 collections:
   - <<: *docs_collection
-    name: docs_start
-    label: 'Docs: Quick Start'
+    name: docs_intro
+    label: 'Docs: Intro'
     filter:
       field: group
-      value: start
+      value: intro
   - <<: *docs_collection
-    name: docs_backends
-    label: 'Docs: Backends'
+    name: docs_accounts
+    label: 'Docs: Account'
     filter:
       field: group
-      value: backends
+      value: accounts
   - <<: *docs_collection
-    name: docs_features
-    label: 'Docs: Features'
+    name: docs_configuration
+    label: 'Docs: Configuration'
     filter:
       field: group
-      value: features
-  - <<: *docs_collection
-    name: docs_reference
-    label: 'Docs: Reference'
-    filter:
-      field: group
-      value: reference
+      value: configuration
   - <<: *docs_collection
     name: docs_media
     label: 'Docs: Media'
     filter:
       field: group
       value: media
+  - <<: *docs_collection
+    name: docs_workflow
+    label: 'Docs: Workflow'
+    filter:
+      field: group
+      value: workflow
+  - <<: *docs_collection
+    name: docs_collections
+    label: 'Docs: Collections'
+    filter:
+      field: group
+      value: collections
+  - <<: *docs_collection
+    name: docs_fields
+    label: 'Docs: Fields'
+    filter:
+      field: group
+      value: fields
   - <<: *docs_collection
     name: docs_guides
     label: 'Docs: Guides'
