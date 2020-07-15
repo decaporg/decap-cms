@@ -18,5 +18,7 @@ menu:
       title: Platform Guides
     - name: customization
       title: Customizing Netlify CMS
+    - name: support
+      title: Support
     - name: contributing
       title: Community

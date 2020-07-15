@@ -77,6 +77,12 @@ collections:
     filter:
       field: group
       value: contributing
+  -  <<: *docs_collection
+    name: docs_support
+    label: 'Docs: Support'
+    filter:
+      field: group
+      value: support
   - name: widget_docs
     label: 'Docs: Widgets'
     folder: website/content/docs/widgets
