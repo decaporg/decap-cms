@@ -475,3 +475,4 @@ collections:
     # moving an existing entry will move the entire sub tree of the entry to the new location
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
 ```
+
