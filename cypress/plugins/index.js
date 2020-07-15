@@ -178,15 +178,7 @@ module.exports = async (on, config) => {
 
   on('before:browser:launch', (browser = {}, launchOptions) => {
     if (browser.name === 'chrome') {
-      // to allows usage of a mock proxy
-      launchOptions.args.push('--ignore-certificate-errors');
-      launchOptions.args.push('-–disable-gpu');
-      if (browser.isHeaded) {
-        launchOptions.args.push('--window-size=1200,1200');
-      } else {
-        launchOptions.args.push('--window-size=1200,1077');
-      }
-
+      launchOptions.args.push('--disable-dev-shm-usage');
       return launchOptions;
     }
   });
