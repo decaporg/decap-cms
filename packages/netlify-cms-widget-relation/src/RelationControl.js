@@ -60,6 +60,10 @@ function getSelectedValue({ value, options, isMultiple }) {
 export default class RelationControl extends React.Component {
   didInitialSearch = false;
 
+  state = {
+    initialOptions: [],
+  };
+
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string.isRequired,
@@ -176,20 +180,36 @@ export default class RelationControl extends React.Component {
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
     const optionsLength = field.get('optionsLength') || 20;
-    let searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
+    const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
     const file = field.get('file');
 
-    // if the field has a previous value perform the initial search based on the value field
-    // this is needed since search results are limited to optionsLength
+    // if the field has a previous value perform an initial search based on the value field
+    // and display it as the first option.
+    // this is required since each search is limited by optionsLength so the selected value
+    // might not show up on the first search
+    let initialSearchPromise = Promise.resolve([]);
     if (!this.didInitialSearch && value && !term) {
-      searchFieldsArray = [field.get('valueField')];
-      term = value;
+      initialSearchPromise = query(
+        forID,
+        collection,
+        [field.get('valueField')],
+        value,
+        file,
+        1,
+      ).then(({ payload }) => {
+        const hits = payload.response?.hits || [];
+        const options = this.parseHitOptions(hits);
+        return options;
+      });
     }
 
-    query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
-      const hits = payload.response?.hits || [];
-      const options = this.parseHitOptions(hits);
-      callback(options);
+    initialSearchPromise.then(initialOptions => {
+      this.setState({ initialOptions });
+      query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
+        const hits = payload.response?.hits || [];
+        const options = this.parseHitOptions(hits);
+        callback(initialOptions.concat(options));
+      });
     });
   }, 500);
 
@@ -209,7 +229,7 @@ export default class RelationControl extends React.Component {
     const hits = queryHits.get(forID, []);
     const options = this.parseHitOptions(hits);
     const selectedValue = getSelectedValue({
-      options,
+      options: this.state.initialOptions.concat(options),
       value,
       isMultiple,
     });
