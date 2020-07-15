@@ -20,7 +20,7 @@ export default class MarkdownControl extends React.Component {
     onAddAsset: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
-    editorControl: PropTypes.func.isRequired,
+    editorControl: PropTypes.elementType.isRequired,
     value: PropTypes.string,
     field: ImmutablePropTypes.map.isRequired,
     getEditorComponents: PropTypes.func,
