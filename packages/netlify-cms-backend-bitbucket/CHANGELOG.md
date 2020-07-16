@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.12.1 (2020-07-16)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
 # [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.11.5...netlify-cms-backend-bitbucket@2.12.0) (2020-06-18)
 
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.1 (2020-07-16)
+
+**Note:** Version bump only for package netlify-cms-widget-code
+
+
+
+
+
 # [1.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.1.5...netlify-cms-widget-code@1.2.0) (2020-06-18)
 
 

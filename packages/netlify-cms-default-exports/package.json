@@ -1,6 +1,6 @@
 {
   "name": "netlify-cms-default-exports",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "NetlifyCMS default exports",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
