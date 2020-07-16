@@ -131,7 +131,7 @@ There are many different ways to add Netlify CMS to your project. The easiest is
 
 ```bash
 # Create and navigate into public/admin folder
-mkdir public/admin
+mkdir -p public/admin
 cd public/admin
 
 # Create index.html and config.yml file
