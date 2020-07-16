@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.30.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.30.1...netlify-cms-core@2.30.2) (2020-07-16)
+
+
+### Bug Fixes
+
+* **entries-pagination:** keep loading pages until entries are available ([#4021](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4021)) ([9119011](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9119011c8fd304742db7490027de7faf9cec5ee0))
+* **prop-types:** check for react components via PropTypes.elementType ([#4025](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4025)) ([d3831b1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d3831b1ed44fcff51a63f6645a5aa68332467dab))
+
+
+
+
+
 ## [2.30.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.30.0...netlify-cms-core@2.30.1) (2020-07-14)
 
 

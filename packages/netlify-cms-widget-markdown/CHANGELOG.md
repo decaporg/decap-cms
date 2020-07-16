@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.0...netlify-cms-widget-markdown@2.12.1) (2020-07-16)
+
+
+### Bug Fixes
+
+* **prop-types:** check for react components via PropTypes.elementType ([#4025](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/4025)) ([d3831b1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/d3831b1ed44fcff51a63f6645a5aa68332467dab))
+
+
+
+
+
 # [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.11.3...netlify-cms-widget-markdown@2.12.0) (2020-06-18)
 
 

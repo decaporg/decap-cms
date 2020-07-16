@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.1...netlify-cms-widget-relation@2.8.2) (2020-07-16)
+
+
+### Bug Fixes
+
+* **widget-relation:** append initial value search to options ([#4026](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/4026)) ([12c388e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/12c388eff3795bf1f4475b1d7c3b61f8569c3b31))
+
+
+
+
+
 ## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.0...netlify-cms-widget-relation@2.8.1) (2020-07-14)
 
 
