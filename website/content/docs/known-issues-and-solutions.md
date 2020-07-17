@@ -30,7 +30,7 @@ Failed to load settings from /.netlify/identity
 
 #### Possible Cause
 
-- config.yml has git-gateway as a backend on a site that isn't hosted on Netlify.
+- `config.yml` has git-gateway as a backend on a site that isn't hosted on Netlify.
 
 ## Other Issues
 
