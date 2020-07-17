@@ -8,17 +8,17 @@ group: support
 
 There are a couple of issues that users face while integrating or working with Netlify CMS and while the community is doing their best fixing them, here is a list of known issues and their solutions.
 
-## API Errors
+## API Errors.
 
 A list of error messages and their possible cause(s) to provide more context while debugging.
 
 #### 1. Error Message.
 
 ```
-API_ERROR: Not Found
+API_ERROR: Not Found.
 ```
 
-#### Possible Cause
+#### Possible Cause.
 
 - The org account needs to grant access to your Netlify CMS instance. [More details](https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/requesting-organization-approval-for-oauth-apps).
 
@@ -28,7 +28,7 @@ API_ERROR: Not Found
 Failed to load settings from /.netlify/identity
 ```
 
-#### Possible Cause
+#### Possible Cause.
 
 - `config.yml` has git-gateway as a backend on a site that isn't hosted on Netlify.
 
@@ -54,8 +54,37 @@ Credits to [@tomrutgers](https://github.com/tomrutgers). Check here for [more de
 
 If you deployed Netlify CMS to Netlify using a template and didn't receive an invitation email after deploying the site, check your email settings to make sure that your email provider doesn't block emails from no-reply@netlify.com.
 
-#### 3. Mobile responsiveness.
+#### 3. Mobile Responsiveness.
 
 To make Netlify CMS responsive for usage on mobile, [here](https://gist.github.com/lilpolymath/51082130d316df3a938648569077c933) is a temporary CSS solution to include to your `admin/index.html` below your closing `</body>` tag so it can overwrite netlify-generated css.
 
 Credits to [truongoi](https://github.com/truongoi).
+
+
+#### 4. Access Private Repo with Netlify CMS.
+If you are unable to access the admin panel of a private repo belonging to an organization, follow these steps.
+- Go to https://github.com/settings/applications.
+- Select Authorized OAuth Apps tab.
+- Click on Netlify CMS.
+- Click on Grant next to your organization name.
+
+Credits to [Amadeusz Annissimo ](https://github.com/amadeann).
+
+#### 5. Netlify CMS local update doesn't reflect.
+You can either disable `gatsby-plugin-offline` or remove `CMS/` from the list of directories to cache via https://www.gatsbyjs.org/packages/gatsby-plugin-offline/#overriding-workbox-configuration.
+ 
+In case you want to remove `gatsby-plugin-offline` from your site, follow these steps.
+1. Run these
+```
+npm uninstall gatsby-plugin-offline
+npm install gatsby-plugin-remove-serviceworker
+```
+2. Then update your gatsby-config.js file
+```
+ plugins: [
+-  `gatsby-plugin-offline`,
++  `gatsby-plugin-remove-serviceworker`,
+ ]
+```
+
+This removes the serviceworker clearing all the cached data instead of leaving your users with an outdated version of your site. You can safely remove this plugin after a few weeks.
