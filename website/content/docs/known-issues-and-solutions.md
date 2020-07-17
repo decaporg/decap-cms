@@ -15,27 +15,6 @@ A list of error messages and their possible cause(s) to provide more context whi
 #### 1. Error Message.
 
 ```
-API_ERROR: {"message":"404 File Not Found"}
-```
-
-#### Possible Causes.
-
-- The collection folder or file property is missing a value (a dedicated file or folder, can't be blank or root). The file or folder should be relative to root (so `src/posts` for example).
-- There are subfolders within the collection folder.
-
-#### 2. Error Message
-
-```
-API_ERROR: Not Found
-```
-
-#### Possible Cause
-
-- The media library folder is missing, or the value of the media library property within config.yml isn't correct.
-
-#### 3. Error Message
-
-```
 API_ERROR: Not Found
 ```
 
@@ -43,7 +22,7 @@ API_ERROR: Not Found
 
 - The org account needs to grant access to your Netlify CMS instance. [More details](https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/requesting-organization-approval-for-oauth-apps).
 
-#### 4. Error Message
+#### 2. Error Message
 
 ```
 Failed to load settings from /.netlify/identity
@@ -71,7 +50,7 @@ Email not confirmed
 
 Credits to [@tomrutgers](https://github.com/tomrutgers). Check here for [more details](https://community.netlify.com/t/common-issue-netlify-cms-git-gateway-email-not-confirmed/10690).
 
-#### 2. Invitation Email not Recieved.
+#### 2. Invitation Email not Received.
 
 If you deployed Netlify CMS to Netlify using a template and didn't receive an invitation email after deploying the site, check your email settings to make sure that your email provider doesn't block emails from no-reply@netlify.com.
 
