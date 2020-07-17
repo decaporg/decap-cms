@@ -36,25 +36,14 @@ API_ERROR: Not Found
 #### 3. Error Message
 
 ```
-Failed to load entries: API_ERROR: Not Found
-```
-
-#### Possible Causes
-
-- Git Gateway is not enabled: Enable Git Gateway from the Netlify Identity settings or refresh the token.
-- There aren't any entries for a given collection. Not sure if we should throw this error at all actually.
-
-#### 4. Error Message
-
-```
-Failed to persist entry: API_ERROR: Not Found
+API_ERROR: Not Found
 ```
 
 #### Possible Cause
 
 - The org account needs to grant access to your Netlify CMS instance. [More details](https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/requesting-organization-approval-for-oauth-apps).
 
-#### 5. Error Message
+#### 4. Error Message
 
 ```
 Failed to load settings from /.netlify/identity
