@@ -60,9 +60,10 @@ To make Netlify CMS responsive for usage on mobile, [here](https://gist.github.c
 
 Credits to [truongoi](https://github.com/truongoi).
 
-
 #### 4. Access Private Repo with Netlify CMS.
+
 If you are unable to access the admin panel of a private repo belonging to an organization, follow these steps.
+
 - Go to https://github.com/settings/applications.
 - Select Authorized OAuth Apps tab.
 - Click on Netlify CMS.
@@ -71,19 +72,24 @@ If you are unable to access the admin panel of a private repo belonging to an or
 Credits to [Amadeusz Annissimo ](https://github.com/amadeann).
 
 #### 5. Netlify CMS local update doesn't reflect.
-You can either disable `gatsby-plugin-offline` or remove `CMS/` from the list of directories to cache via https://www.gatsbyjs.org/packages/gatsby-plugin-offline/#overriding-workbox-configuration.
- 
+
+You can either disable `gatsby-plugin-offline` or remove `CMS/` from the list of directories to cache ([check here](https://www.gatsbyjs.org/packages/gatsby-plugin-offline/#overriding-workbox-configuration)).
+
 In case you want to remove `gatsby-plugin-offline` from your site, follow these steps.
+
 1. Run these
+
 ```
 npm uninstall gatsby-plugin-offline
 npm install gatsby-plugin-remove-serviceworker
 ```
-2. Then update your gatsby-config.js file
+
+2. Then update your `gatsby-config.js` file
+
 ```
  plugins: [
--  `gatsby-plugin-offline`,
-+  `gatsby-plugin-remove-serviceworker`,
+ -  `gatsby-plugin-offline`,
+ +  `gatsby-plugin-remove-serviceworker`,
  ]
 ```
 
