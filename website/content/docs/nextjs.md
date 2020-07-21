@@ -192,7 +192,7 @@ Awesome! Netlify CMS should now be available at `localhost:3000/admin/index.html
 
 ## Publishing to GitHub and Netlify
 
-Create a new repository at GitHub (or one of the other supported git services) and follow the instructions on how to push existing files into your new respository.
+Create a new repository at GitHub (or one of the other supported git services) and follow the instructions on how to push existing files into your new repository.
 
 Now is probably also a good time to add a `.gitignore` file:
 
