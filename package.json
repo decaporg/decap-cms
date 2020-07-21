@@ -92,7 +92,7 @@
     "@storybook/addon-actions": "^5.3.6",
     "@storybook/addon-links": "^5.3.6",
     "@storybook/react": "^5.3.6",
-    "@testing-library/jest-dom": "^4.2.3",
+    "@testing-library/jest-dom": "^5.0.0",
     "@testing-library/react": "^9.3.2",
     "@types/common-tags": "^1.8.0",
     "@types/jest": "^26.0.0",
