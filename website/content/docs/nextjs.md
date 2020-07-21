@@ -86,7 +86,7 @@ module.exports = {
 }
 ```
 
-Almost there! The last thing we need to do is to add some content our `pages/index.js` file. With a little help of our webpack loader, we can now easilly import Markdown files:
+Almost there! The last thing we need to do is to add some content our `pages/index.js` file. With a little help of our webpack loader, we can now easily import Markdown files:
 
 ```js
 import Head from "next/head"
