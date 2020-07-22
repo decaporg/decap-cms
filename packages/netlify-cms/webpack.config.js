@@ -26,7 +26,7 @@ const baseConfig = {
         messages: [`Netlify CMS is now running at http://localhost:${devServerPort}`],
       },
     }),
-    new CopyWebpackPlugin([{ from: './shims/cms.css', to: './' }]),
+    new CopyWebpackPlugin({ patterns: [{ from: './shims/cms.css', to: './' }] }),
   ],
   devServer: {
     contentBase: '../../dev-test',
