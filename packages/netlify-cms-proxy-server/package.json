@@ -39,7 +39,7 @@
     "@types/morgan": "^1.7.37",
     "@types/node": "^13.1.7",
     "@types/vfile-message": "^2.0.0",
-    "jest": "^24.9.0",
+    "jest": "^26.1.0",
     "netlify-cms-lib-util": "^2.11.0",
     "nodemon": "^2.0.2",
     "ts-jest": "^24.3.0",

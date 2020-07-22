@@ -1,7 +1,7 @@
 import React from 'react';
 import { fromJS, Map } from 'immutable';
 import { last } from 'lodash';
-import { render, fireEvent, wait } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
 
 jest.mock('react-window', () => {
@@ -235,7 +235,7 @@ describe('Relation widget', () => {
     const { getAllByText, input } = setup({ field });
     fireEvent.keyDown(input, { key: 'ArrowDown' });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toHaveLength(20);
     });
   });
@@ -245,7 +245,7 @@ describe('Relation widget', () => {
     const { getAllByText, input } = setup({ field });
     fireEvent.keyDown(input, { key: 'ArrowDown' });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toHaveLength(10);
     });
   });
@@ -255,7 +255,7 @@ describe('Relation widget', () => {
     const { getAllByText, input } = setup({ field });
     fireEvent.change(input, { target: { value: 'YAML' } });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(getAllByText('YAML post post-yaml')).toHaveLength(1);
     });
   });
@@ -269,8 +269,9 @@ describe('Relation widget', () => {
       post: { posts: { 'Post # 1': { title: 'Post # 1', slug: 'post-number-1' } } },
     };
 
-    await wait(() => {
-      fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+    await waitFor(() => {
       fireEvent.click(getByText(label));
       expect(onChangeSpy).toHaveBeenCalledTimes(1);
       expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
@@ -288,7 +289,7 @@ describe('Relation widget', () => {
 
     setQueryHitsSpy(generateHits(1));
 
-    await wait(() => {
+    await waitFor(() => {
       expect(getByText(label)).toBeInTheDocument();
       expect(onChangeSpy).toHaveBeenCalledTimes(1);
       expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
@@ -300,7 +301,7 @@ describe('Relation widget', () => {
     const { getAllByText, input } = setup({ field });
     fireEvent.change(input, { target: { value: 'Nested' } });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(getAllByText('Nested post post-nested Nested field 1')).toHaveLength(1);
     });
   });
@@ -310,7 +311,7 @@ describe('Relation widget', () => {
     const { getAllByText, input } = setup({ field });
     fireEvent.change(input, { target: { value: 'Deeply nested' } });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(
         getAllByText('Deeply nested post post-deeply-nested Deeply nested field'),
       ).toHaveLength(1);
@@ -334,8 +335,8 @@ describe('Relation widget', () => {
       post: { posts: { 'post-number-1': { title: 'Post # 1', slug: 'post-number-1' } } },
     };
 
-    await wait(() => {
-      fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    await waitFor(() => {
       fireEvent.click(getByText(label));
       expect(onChangeSpy).toHaveBeenCalledTimes(1);
       expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
@@ -347,7 +348,7 @@ describe('Relation widget', () => {
     const { getAllByText, input } = setup({ field });
     fireEvent.keyDown(input, { key: 'ArrowDown' });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(getAllByText(/^Post # (\d{1,2})$/)).toHaveLength(20);
     });
   });
@@ -364,7 +365,7 @@ describe('Relation widget', () => {
     const { getByText, getAllByText, input, onChangeSpy } = setup({ field });
     fireEvent.keyDown(input, { key: 'ArrowDown' });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(getAllByText(/^post # \d$/)).toHaveLength(2);
     });
 
@@ -393,16 +394,19 @@ describe('Relation widget', () => {
         post: { posts: { 'Post # 2': { title: 'Post # 2', slug: 'post-number-2' } } },
       };
 
-      await wait(() => {
-        fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      await waitFor(() => {
         fireEvent.click(getByText('Post # 1 post-number-1'));
-        fireEvent.keyDown(input, { key: 'ArrowDown' });
-        fireEvent.click(getByText('Post # 2 post-number-2'));
-
-        expect(onChangeSpy).toHaveBeenCalledTimes(2);
-        expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1']), metadata1);
-        expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1', 'Post # 2']), metadata2);
       });
+
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      await waitFor(() => {
+        fireEvent.click(getByText('Post # 2 post-number-2'));
+      });
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(2);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1']), metadata1);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1', 'Post # 2']), metadata2);
     });
 
     it('should update metadata for initial preview', async () => {
@@ -418,7 +422,7 @@ describe('Relation widget', () => {
 
       setQueryHitsSpy(generateHits(2));
 
-      await wait(() => {
+      await waitFor(() => {
         expect(getByText('Post # 1 post-number-1')).toBeInTheDocument();
         expect(getByText('Post # 2 post-number-2')).toBeInTheDocument();
 
@@ -443,7 +447,7 @@ describe('Relation widget', () => {
       const { getAllByText, input, getByText } = setup({ field });
       fireEvent.keyDown(input, { key: 'ArrowDown' });
 
-      await wait(() => {
+      await waitFor(() => {
         expect(getAllByText(/category/)).toHaveLength(2);
         expect(getByText('category 1')).toBeInTheDocument();
         expect(getByText('category 2')).toBeInTheDocument();
@@ -460,7 +464,7 @@ describe('Relation widget', () => {
       const { getAllByText, input, getByText } = setup({ field });
       fireEvent.keyDown(input, { key: 'ArrowDown' });
 
-      await wait(() => {
+      await waitFor(() => {
         expect(getAllByText(/category/)).toHaveLength(2);
         expect(getByText('category 1')).toBeInTheDocument();
         expect(getByText('category 2')).toBeInTheDocument();
