@@ -9,4 +9,5 @@ module.exports = {
     'netlify-cms-widget-object': '<rootDir>/packages/netlify-cms-widget-object/src/index.js',
   },
   testURL: 'http://localhost:8080',
+  snapshotSerializers: ['jest-emotion'],
 };
