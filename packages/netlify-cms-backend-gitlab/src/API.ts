@@ -478,8 +478,9 @@ export default class API {
         let path = trimStart(file.path, '/');
         let oldPath = undefined;
         if (fileExists) {
-          action = file.newPath ? CommitAction.MOVE : CommitAction.UPDATE;
           oldPath = file.newPath && path;
+          action =
+            file.newPath && file.newPath !== oldPath ? CommitAction.MOVE : CommitAction.UPDATE;
           path = file.newPath ? trimStart(file.newPath, '/') : path;
         }
 
