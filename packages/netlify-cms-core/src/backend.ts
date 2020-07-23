@@ -775,7 +775,7 @@ export class Backend {
     const extension = selectFolderEntryExtension(collection);
     const multiContent = hasMultiContent(collection);
     const i18nStructure = collection.get('i18n_structure');
-    const locales = collection.get('locales')!.toJS() as string[];
+    const locales = collection?.get('locales')?.toJS() as string[];
     let loadedEntries;
 
     if (multiContent && i18nStructure === LOCALE_FILE_EXTENSIONS) {
