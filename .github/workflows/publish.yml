@@ -29,6 +29,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -57,9 +59,8 @@ jobs:
       - name: Publish Netlify CMS
         uses: erezrokah/2fa-with-slack-action@v1.0.0
         env:
-          GIT_TOKEN: ${{ secrets.PUSH_TOKEN }}
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
           SLACK_TOKEN: ${{secrets.SLACK_TOKEN}}
           CONVERSATION_ID: ${{secrets.CONVERSATION_ID}}
-          PUBLISH_COMMAND: "yarn\npublish:ci:github"
+          PUBLISH_COMMAND: "yarn\npublish:ci"
           CODE_PATTERN: 'Enter OTP'
