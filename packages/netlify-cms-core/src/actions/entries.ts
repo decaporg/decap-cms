@@ -5,7 +5,7 @@ import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, Backend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectFields, updateFieldByKey } from '../reducers/collections';
+import { selectFields, updateFieldByKey, hasMultiContentDiffFiles } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { createEntry, EntryValue } from '../valueObjects/Entry';
@@ -153,7 +153,7 @@ const getAllEntries = async (state: State, collection: Collection) => {
   const provider: Backend = integration
     ? getIntegrationProvider(state.integrations, backend.getToken, integration)
     : backend;
-  const entries = await (collection.get('multi_content_diff_files')
+  const entries = await (hasMultiContentDiffFiles(collection)
     ? provider.listAllMultipleEntires(collection)
     : provider.listAllEntries(collection));
   return entries;
@@ -539,7 +539,7 @@ export function loadEntries(collection: Collection, page = 0) {
       } = await (collection.has('nested')
         ? // nested collections require all entries to construct the tree
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
-        : collection.get('multi_content_diff_files')
+        : hasMultiContentDiffFiles(collection)
         ? provider.listAllMultipleEntires(collection).then((entries: EntryValue[]) => ({ entries }))
         : provider.listEntries(collection, page));
       response = {
@@ -803,7 +803,7 @@ export function persistEntry(collection: Collection) {
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
+    const serializedData = serializeValues(collection, entryDraft.getIn(['entry', 'data']), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));

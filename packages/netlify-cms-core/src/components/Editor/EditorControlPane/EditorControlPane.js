@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import EditorControl from './EditorControl';
+import { hasMultiContent } from 'Reducers/collections';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
@@ -18,18 +19,6 @@ export default class ControlPane extends React.Component {
 
   componentValidate = {};
 
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.collection.get('multi_content') &&
-      !prevProps.fieldsErrors.equals(this.props.fieldsErrors) &&
-      this.props.defaultEditor
-    ) {
-      // show default locale fields on field error
-      const defaultLocale = this.props.collection.get('locales').first();
-      this.handleLocaleChange(defaultLocale);
-    }
-  }
-
   controlRef(field, wrappedControl) {
     if (!wrappedControl) return;
     const name = field.get('name');
@@ -38,11 +27,10 @@ export default class ControlPane extends React.Component {
       wrappedControl.innerWrappedControl?.validate || wrappedControl.validate;
   }
 
-  getFields = (defaultLocale = '') => {
+  getFields = () => {
     let fields = this.props.fields;
-    const selectedLocale = defaultLocale || this.state.selectedLocale;
-    if (this.props.collection.get('multi_content')) {
-      fields = fields.filter(f => f.get('name') === selectedLocale);
+    if (hasMultiContent(this.props.collection)) {
+      fields = fields.filter(f => f.get('name') === this.state.selectedLocale);
     }
     return fields;
   };
@@ -51,10 +39,14 @@ export default class ControlPane extends React.Component {
     this.setState({ selectedLocale: val });
   };
 
-  validate = () => {
+  defaultLocale = () => {
     const collection = this.props.collection;
-    const defaultLocale = collection.get('multi_content') && collection.get('locales').first();
-    this.getFields(defaultLocale).forEach(field => {
+    const defaultLocale = hasMultiContent(collection) && collection.get('default_locale');
+    return new Promise(resolve => this.setState({ selectedLocale: defaultLocale }, resolve));
+  };
+
+  validate = async () => {
+    this.getFields().forEach(field => {
       if (field.get('widget') === 'hidden') return;
       this.componentValidate[field.get('name')]();
     });

@@ -13,7 +13,7 @@ import {
   selectUnpublishedEntry,
 } from '../reducers';
 import { selectEditingDraft } from '../reducers/entries';
-import { selectFields } from '../reducers/collections';
+import { selectFields, hasMultiContentDiffFiles } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import {
@@ -293,18 +293,18 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       );
       dispatch(addAssets(assetProxies));
 
-      if (collection.get('multi_content_diff_files')) {
+      if (hasMultiContentDiffFiles(collection)) {
         const publishedEntries = get(
           getState().entries.toJS(),
           `pages.${collection.get('name')}.ids`,
           false,
         );
         !publishedEntries && (await dispatch(loadEntry(collection, slug)));
-
-        if (entry.isModification) {
-          const publishedEntry = selectEntry(getState(), collection.get('name'), slug);
-          entry = publishedEntry.mergeDeep(fromJS(entry)).toJS();
-        }
+        const publishedEntry = selectEntry(getState(), collection.get('name'), slug);
+        publishedEntry &&
+          entry.isModification === false &&
+          (entry = { ...entry, isModification: true });
+        entry.isModification && (entry = publishedEntry.mergeDeep(fromJS(entry)).toJS());
       }
 
       dispatch(unpublishedEntryLoaded(collection, entry));
@@ -339,7 +339,14 @@ export function loadUnpublishedEntries(collections: Collections) {
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
+      .then(response => {
+        const entries = response.entries;
+        const multiContentEntries = entries.filter(e => e.multiContent);
+        dispatch(unpublishedEntriesLoaded(entries, response.pagination));
+        multiContentEntries.forEach(entry => {
+          dispatch(loadUnpublishedEntry(collections.get(entry.collection), entry.slug));
+        });
+      })
       .catch((error: Error) => {
         dispatch(
           notifSend({
@@ -402,7 +409,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
      * update the entry and entryDraft with the serialized values.
      */
     const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(entry.get('data'), fields);
+    const serializedData = serializeValues(collection, entry.get('data'), fields);
     const serializedEntry = entry.set('data', serializedData);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 

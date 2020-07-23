@@ -189,6 +189,7 @@ export default class ProxyBackend implements Implementation {
       action: 'persistEntry',
       params: {
         branch: this.branch,
+        entry: entries[0],
         entries,
         assets,
         options: { ...options, status: options.status || this.options.initialWorkflowStatus },

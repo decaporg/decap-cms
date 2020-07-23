@@ -941,7 +941,7 @@ describe('Backend', () => {
     });
   });
 
-  describe('combineMultipleContentEntries', () => {
+  describe('mergeMultipleContentEntries', () => {
     const implementation = {
       init: jest.fn(() => implementation),
     };
@@ -955,16 +955,18 @@ describe('Backend', () => {
           data: { title: 'Title en', content: 'Content en' },
           i18nStructure: 'locale_file_extensions',
           slugWithLocale: 'post.en',
+          contentKey: 'posts/post',
         },
         {
           path: 'posts/post.fr.md',
           data: { title: 'Title fr', content: 'Content fr' },
           i18nStructure: 'locale_file_extensions',
           slugWithLocale: 'post.fr',
+          contentKey: 'posts/post',
         },
       ];
 
-      expect(backend.combineMultipleContentEntries(entries)).toEqual([
+      expect(backend.mergeMultipleContentEntries(entries)).toEqual([
         {
           path: 'posts/post.md',
           raw: '',
@@ -983,17 +985,18 @@ describe('Backend', () => {
           data: { title: 'Title en', content: 'Content en' },
           i18nStructure: 'locale_folders',
           slugWithLocale: 'en/post.md',
+          contentKey: 'posts/post',
         },
         {
           path: 'posts/fr/post.md',
           data: { title: 'Title fr', content: 'Content fr' },
           i18nStructure: 'locale_folders',
           slugWithLocale: 'fr/post.md',
+          contentKey: 'posts/post',
         },
       ];
-      const collection = fromJS({ multi_content: 'diff_folder' });
 
-      expect(backend.combineMultipleContentEntries(entries, collection)).toEqual([
+      expect(backend.mergeMultipleContentEntries(entries)).toEqual([
         {
           path: 'posts/post.md',
           raw: '',

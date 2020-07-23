@@ -243,21 +243,16 @@ const getConfigSchema = () => ({
         not: {
           required: ['sortable_fields', 'sortableFields'],
         },
-        allOf: [
-          {
-            if: { required: ['extension'] },
-            then: {
-              // Cannot infer format from extension.
-              if: {
-                properties: {
-                  extension: { enum: Object.keys(extensionFormatters) },
-                },
-              },
-              else: { required: ['format'] },
+        if: { required: ['extension'] },
+        then: {
+          // Cannot infer format from extension.
+          if: {
+            properties: {
+              extension: { enum: Object.keys(extensionFormatters) },
             },
           },
-          { if: { required: ['files'] }, then: { not: { required: ['i18n_structure'] } } },
-        ],
+          else: { required: ['format'] },
+        },
         dependencies: {
           frontmatter_delimiter: {
             properties: {
