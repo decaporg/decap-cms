@@ -610,6 +610,7 @@ describe('config', () => {
             multiContentId: Symbol.for('multiContentId'),
             fields: [
               { name: 'title', widget: 'string', translatable: true },
+              { name: 'date', widget: 'date', translatable: false },
               { name: 'content', widget: 'markdown', translatable: true },
             ],
           },

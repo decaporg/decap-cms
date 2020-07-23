@@ -954,14 +954,14 @@ describe('Backend', () => {
           path: 'posts/post.en.md',
           data: { title: 'Title en', content: 'Content en' },
           i18nStructure: 'locale_file_extensions',
-          slugWithLocale: 'post.en',
+          locale: 'en',
           contentKey: 'posts/post',
         },
         {
           path: 'posts/post.fr.md',
           data: { title: 'Title fr', content: 'Content fr' },
           i18nStructure: 'locale_file_extensions',
-          slugWithLocale: 'post.fr',
+          locale: 'fr',
           contentKey: 'posts/post',
         },
       ];
@@ -969,6 +969,7 @@ describe('Backend', () => {
       expect(backend.mergeMultipleContentEntries(entries)).toEqual([
         {
           path: 'posts/post.md',
+          multiContent: true,
           raw: '',
           data: {
             en: { title: 'Title en', content: 'Content en' },
@@ -984,14 +985,14 @@ describe('Backend', () => {
           path: 'posts/en/post.md',
           data: { title: 'Title en', content: 'Content en' },
           i18nStructure: 'locale_folders',
-          slugWithLocale: 'en/post.md',
+          locale: 'en',
           contentKey: 'posts/post',
         },
         {
           path: 'posts/fr/post.md',
           data: { title: 'Title fr', content: 'Content fr' },
           i18nStructure: 'locale_folders',
-          slugWithLocale: 'fr/post.md',
+          locale: 'fr',
           contentKey: 'posts/post',
         },
       ];
@@ -999,6 +1000,7 @@ describe('Backend', () => {
       expect(backend.mergeMultipleContentEntries(entries)).toEqual([
         {
           path: 'posts/post.md',
+          multiContent: true,
           raw: '',
           data: {
             en: { title: 'Title en', content: 'Content en' },
@@ -1043,6 +1045,7 @@ describe('Backend', () => {
         {
           slug: 'post',
           path: 'posts/post.md',
+          multiContent: true,
           raw: '',
           data: {
             en: { title: 'Title en', content: 'Content en' },
@@ -1073,6 +1076,7 @@ describe('Backend', () => {
         {
           slug: 'post',
           path: 'posts/post.md',
+          multiContent: true,
           raw: '',
           data: {
             en: { title: 'Title en', content: 'Content en' },

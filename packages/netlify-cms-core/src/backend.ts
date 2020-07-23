@@ -1028,7 +1028,7 @@ export class Backend {
   }
 
   mergeEntries(entries: (EntryValue & MultiContentArgs)[]) {
-    const { i18nStructure, contentKey, ...entry } = entries[0];
+    const { i18nStructure, contentKey, locale, ...entry } = entries[0];
     const data: { [key: string]: any } = {};
     let path = '';
 
