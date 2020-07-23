@@ -256,7 +256,7 @@ Back in your `pages/blog/_blog.vue` file, you can update your template to render
 
 ### Generating pages with the `generate` property
 
-To render your site as a static site, you'll need to create a `generate` property in `nuxt.config.js` to create dynamic routes and provide their content as a `payload`. Create `generate`, and make your `routes` entry a function:
+To render your site as a static site, you'll need to create or update the `generate` property in `nuxt.config.js` to create dynamic routes and provide their content as a `payload`. In `generate`, and make your `routes` entry a function:
 
 ```js
 export default {
