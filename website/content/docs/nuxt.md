@@ -19,7 +19,7 @@ npm run dev
 
 ### Add the Netlify CMS files to Nuxt
 
-In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the \[Netlify CMS documentation], we'll set the content of `static/admin/index.html` to the following:
+In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the [Netlify CMS documentation](/docs/add-to-your-site/), we'll set the content of `static/admin/index.html` to the following:
 
 ```html
 <!DOCTYPE html>
