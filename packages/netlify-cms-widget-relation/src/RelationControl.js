@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Async as AsyncSelect } from 'react-select';
-import { find, isEmpty, last, debounce, get } from 'lodash';
+import { find, isEmpty, last, debounce, get, uniqBy, sortBy } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -11,17 +11,18 @@ import { FixedSizeList } from 'react-window';
 const Option = ({ index, style, data }) => <div style={style}>{data.options[index]}</div>;
 
 const MenuList = props => {
-  if (props.isLoading || props.options.length <= 0) {
+  if (props.isLoading || props.options.length <= 0 || !Array.isArray(props.children)) {
     return props.children;
   }
   const rows = props.children;
+  const itemSize = 30;
   return (
     <FixedSizeList
       style={{ width: '100%' }}
       width={300}
-      height={300}
+      height={Math.min(300, rows.length * itemSize + itemSize / 3)}
       itemCount={rows.length}
-      itemSize={30}
+      itemSize={itemSize}
       itemData={{ options: rows }}
     >
       {Option}
@@ -40,18 +41,32 @@ function convertToOption(raw) {
   return Map.isMap(raw) ? raw.toJS() : raw;
 }
 
+function getSelectedOptions(value) {
+  const selectedOptions = List.isList(value) ? value.toJS() : value;
+
+  if (!selectedOptions || !Array.isArray(selectedOptions)) {
+    return null;
+  }
+
+  return selectedOptions;
+}
+
+function uniqOptions(initial, current) {
+  return uniqBy(initial.concat(current), o => o.value);
+}
+
 function getSelectedValue({ value, options, isMultiple }) {
   if (isMultiple) {
-    const selectedOptions = List.isList(value) ? value.toJS() : value;
-
-    if (!selectedOptions || !Array.isArray(selectedOptions)) {
+    const selectedOptions = getSelectedOptions(value);
+    if (selectedOptions === null) {
       return null;
     }
 
-    return selectedOptions
+    const selected = selectedOptions
       .map(i => options.find(o => o.value === (i.value || i)))
       .filter(Boolean)
       .map(convertToOption);
+    return selected;
   } else {
     return find(options, ['value', value]) || null;
   }
@@ -59,6 +74,7 @@ function getSelectedValue({ value, options, isMultiple }) {
 
 export default class RelationControl extends React.Component {
   didInitialSearch = false;
+  mounted = false;
 
   state = {
     initialOptions: [],
@@ -83,6 +99,39 @@ export default class RelationControl extends React.Component {
       this.props.hasActiveStyle !== nextProps.hasActiveStyle ||
       this.props.queryHits !== nextProps.queryHits
     );
+  }
+
+  async componentDidMount() {
+    this.mounted = true;
+    // if the field has a previous value perform an initial search based on the value field
+    // this is required since each search is limited by optionsLength so the selected value
+    // might not show up on the search
+    const { forID, field, value, query } = this.props;
+    const collection = field.get('collection');
+    const file = field.get('file');
+    const initialSearchValues = this.isMultiple() ? getSelectedOptions(value) : [value];
+    if (initialSearchValues && initialSearchValues.length > 0) {
+      const allOptions = await Promise.all(
+        initialSearchValues.map((v, index) => {
+          return query(forID, collection, [field.get('valueField')], v, file, 1).then(
+            ({ payload }) => {
+              const hits = payload.response?.hits || [];
+              const options = this.parseHitOptions(hits);
+              return { options, index };
+            },
+          );
+        }),
+      );
+
+      const initialOptions = [].concat(
+        ...sortBy(allOptions, ({ index }) => index).map(({ options }) => options),
+      );
+      this.mounted && this.setState({ initialOptions });
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   componentDidUpdate(prevProps) {
@@ -118,6 +167,7 @@ export default class RelationControl extends React.Component {
     let metadata;
 
     if (Array.isArray(selectedOption)) {
+      this.setState({ initialOptions: selectedOption });
       value = selectedOption.map(optionToString);
       metadata =
         (!isEmpty(selectedOption) && {
@@ -130,6 +180,7 @@ export default class RelationControl extends React.Component {
         {};
       onChange(fromJS(value), metadata);
     } else {
+      this.setState({ initialOptions: [selectedOption] });
       value = optionToString(selectedOption);
       metadata = selectedOption && {
         [field.get('name')]: {
@@ -150,6 +201,10 @@ export default class RelationControl extends React.Component {
     const value = stringTemplate.compileStringTemplate(field, null, hit.slug, data);
     return value;
   };
+
+  isMultiple() {
+    return this.props.field.get('multiple', false);
+  }
 
   parseHitOptions = hits => {
     const { field } = this.props;
@@ -176,40 +231,18 @@ export default class RelationControl extends React.Component {
   };
 
   loadOptions = debounce((term, callback) => {
-    const { field, query, forID, value } = this.props;
+    const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFields = field.get('searchFields');
     const optionsLength = field.get('optionsLength') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
     const file = field.get('file');
 
-    // if the field has a previous value perform an initial search based on the value field
-    // and display it as the first option.
-    // this is required since each search is limited by optionsLength so the selected value
-    // might not show up on the first search
-    let initialSearchPromise = Promise.resolve([]);
-    if (!this.didInitialSearch && value && !term) {
-      initialSearchPromise = query(
-        forID,
-        collection,
-        [field.get('valueField')],
-        value,
-        file,
-        1,
-      ).then(({ payload }) => {
-        const hits = payload.response?.hits || [];
-        const options = this.parseHitOptions(hits);
-        return options;
-      });
-    }
-
-    initialSearchPromise.then(initialOptions => {
-      this.setState({ initialOptions });
-      query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
-        const hits = payload.response?.hits || [];
-        const options = this.parseHitOptions(hits);
-        callback(initialOptions.concat(options));
-      });
+    query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
+      const hits = payload.response?.hits || [];
+      const options = this.parseHitOptions(hits);
+      const uniq = uniqOptions(this.state.initialOptions, options);
+      callback(uniq);
     });
   }, 500);
 
@@ -223,13 +256,14 @@ export default class RelationControl extends React.Component {
       setInactiveStyle,
       queryHits,
     } = this.props;
-    const isMultiple = field.get('multiple', false);
+    const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 
     const hits = queryHits.get(forID, []);
-    const options = this.parseHitOptions(hits);
+    const queryOptions = this.parseHitOptions(hits);
+    const options = uniqOptions(this.state.initialOptions, queryOptions);
     const selectedValue = getSelectedValue({
-      options: this.state.initialOptions.concat(options),
+      options,
       value,
       isMultiple,
     });
