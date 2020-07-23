@@ -3,7 +3,6 @@ title: Nuxt
 group: guides
 weight: 20
 ---
-
 This guide will walk you through how to integrate Netlify CMS with Nuxt.
 
 ## Starting With `create-nuxt-app`
@@ -20,7 +19,7 @@ npm run dev
 
 ### Add the Netlify CMS files to Nuxt
 
-In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the [Netlify CMS documentation], we'll set the content of `static/admin/index.html` to the following:
+In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the [Netlify CMS documentation](/docs/add-to-your-site/), we'll set the content of `static/admin/index.html` to the following:
 
 ```html
 <!DOCTYPE html>
@@ -101,7 +100,7 @@ git push -u origin master
 
 ### Deploying With Netlify
 
-Now you can go ahead and deploy to Netlify. Go to your Netlify dashboard and click **[New site from Git](https://app.netlify.com/start)**. Select the repo you just created. Under **Basic build settings**, you can set the build command to `yarn generate` and the publish directory to `dist`. Click **Deploy site** to get the process going.
+Now you can go ahead and deploy to Netlify. Go to your Netlify dashboard and click **[New site from Git](https://app.netlify.com/start)**. Select the repo you just created. Under **Basic build settings**, you can set the build command to  `npm run build && npm run export` . Set the publish directory to `dist`. Click **Deploy site** to get the process going.
 
 ### Authenticating with Netlify Identity
 
@@ -121,7 +120,7 @@ export default {
 
 Once you've added this, make sure to push your changes to GitHub!
 
-_More on adding `<script>` tags to `<head>` [here](https://nuxtjs.org/faq/#local-settings)._
+*More on adding `<script>` tags to `<head>` [here](https://nuxtjs.org/faq/#local-settings).*
 
 **Enable Identity & Git Gateway in Netlify**
 
@@ -138,6 +137,10 @@ Once you've reached this point, you should be able to access the CMS in your bro
 ## Integrating content in Nuxt with Vuex
 
 **Note:** In order to use `nuxtServerInit` your mode must be `universal` in your `nuxt.config.js`.
+
+```javascript
+mode: 'universal'
+```
 
 Next, you'll set up the integrated Vuex store to collect blog posts. Create a file `index.js` in the `store/` directory, and add **state**, **mutations**, and **actions** for your blog posts:
 
@@ -169,20 +172,31 @@ Now you can use that content in your templates. In your `pages/` directory, crea
 
 **Blog List Page**
 
-In `pages/blog/index.vue`, you'll add a method to the `computed` property of the Vue instance to return blog posts from the Vuex store. This will make `blogPosts` available in the Vue template for you to iterate over, etc.
+In `pages/blog/index.vue`, you'll add your template and a method to the `computed` property of the Vue instance to return blog posts from the Vuex store. This will make `blogPosts` available in the Vue template for you to iterate over, etc. Feel free to add styling as well. 
 
 ```js
+<template>
+  <div>
+    <ul v-for="(blogPost, index) in blogPosts" :key="index">
+      <nuxt-link :to="`../blog/${blogPost.slug}`">{{blogPost.title}}</nuxt-link>
+      <p>{{blogPost.description}}</p>
+    </ul>
+  </div>
+</template>
+
+<script>
 export default {
   computed: {
     blogPosts() {
-      return this.$store.state.blogPosts;
+      return this.$store.state.blogPosts
     },
   },
-};
+}
+</script>
 ```
 
 **Blog Post Page**
-Now open your `pages/blog/_blog.vue` file. Add an `asyncData()` method to the Vue instance that imports the corresponding JSON file. You can add a `payload` as well — this will come in handy during the process of running `nuxt generate` to create a static site.
+Now open your `pages/blog/_blog.vue` file. Add an `asyncData()` method to the Vue instance that imports the corresponding JSON file. You can add a `payload` as well — this will come in handy during the process of creating a static site.
 
 ```js
 export default {
@@ -242,7 +256,7 @@ Back in your `pages/blog/_blog.vue` file, you can update your template to render
 
 ### Generating pages with the `generate` property
 
-To render your site as a static site, you'll need to update the `generate` property in `nuxt.config.js` to create dynamic routes and provide their content as a `payload`. In `generate`, make your `routes` entry a function:
+To render your site as a static site, you'll need to create or update the `generate` property in `nuxt.config.js` to create dynamic routes and provide their content as a `payload`. In `generate`, make your `routes` entry a function:
 
 ```js
 export default {
@@ -261,4 +275,4 @@ export default {
 };
 ```
 
-Now you can generate your site with `nuxt generate`.
+To see the generated site, navigate to name-of-your-website.netlify.app/blog
