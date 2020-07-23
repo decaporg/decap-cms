@@ -70,10 +70,21 @@ const styleStrings = {
 
 const ControlContainer = styled.div`
   margin-top: 16px;
+  position: relative;
 
   &:first-of-type {
     margin-top: 36px;
   }
+`;
+
+const HideContainer = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: #fff;
+  z-index: 1;
 `;
 
 const ControlErrorsList = styled.ul`
@@ -228,7 +239,8 @@ class EditorControl extends React.Component {
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
     const multiContentWidgetId = field.get('multiContentId') === Symbol.for('multiContentId');
-    const locales = this.props.collection.get('locales');
+    const nonTranslatableField = field.get('translatable') === false;
+    const locales = collection.get('locales');
     const label =
       locales && multiContentWidgetId ? (
         <LocaleDropdown
@@ -244,6 +256,7 @@ class EditorControl extends React.Component {
       <ClassNames>
         {({ css, cx }) => (
           <ControlContainer className={className}>
+            {nonTranslatableField && <HideContainer />}
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
             {errors && (
               <ControlErrorsList>

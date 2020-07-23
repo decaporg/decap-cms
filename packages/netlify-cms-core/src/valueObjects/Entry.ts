@@ -13,9 +13,12 @@ interface Options {
   updatedOn?: string;
   status?: string;
   meta?: { path?: string };
+}
+
+export interface MultiContentArgs {
   i18nStructure?: string;
   contentKey?: string;
-  slugWithLocale?: string;
+  locale?: string;
 }
 
 export interface EntryValue {
@@ -33,12 +36,15 @@ export interface EntryValue {
   updatedOn: string;
   status?: string;
   meta: { path?: string };
-  i18nStructure?: string;
-  contentKey?: string;
-  slugWithLocale?: string;
+  multiContent?: boolean;
 }
 
-export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
+export function createEntry(
+  collection: string,
+  slug = '',
+  path = '',
+  options: Options & MultiContentArgs = {},
+) {
   const returnObj: EntryValue = {
     collection,
     slug,
@@ -59,8 +65,8 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     ...(options.i18nStructure && {
       i18nStructure: options.i18nStructure,
     }),
-    ...(options.slugWithLocale && {
-      slugWithLocale: options.slugWithLocale,
+    ...(options.locale && {
+      locale: options.locale,
     }),
   };
 

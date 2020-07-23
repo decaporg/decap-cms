@@ -10,6 +10,7 @@ import collections, {
   getFieldsNames,
   selectField,
   updateFieldByKey,
+  duplicateFields,
 } from '../collections';
 import { FILES, FOLDER } from 'Constants/collectionTypes';
 
@@ -544,6 +545,64 @@ describe('collections', () => {
             { name: 'body' },
             { name: 'widgetList', types: [{ name: 'widget', default: 'default' }] },
           ],
+        }),
+      );
+    });
+  });
+
+  describe('duplicateFields', () => {
+    it('should duplicate field values across locales', () => {
+      const collection = fromJS({
+        locales: ['en', 'fr'],
+        default_locale: 'en',
+        fields: [
+          {
+            name: 'en',
+            fields: [
+              { name: 'title' },
+              { name: 'image', duplicate: true },
+              { name: 'fieldList', field: { name: 'image', duplicate: true } },
+              {
+                name: 'fieldsList',
+                fields: [{ name: 'title' }, { name: 'image', duplicate: true }],
+              },
+            ],
+          },
+          {
+            name: 'fr',
+            fields: [
+              { name: 'title' },
+              { name: 'image' },
+              { name: 'fieldList', field: { name: 'image' } },
+              {
+                name: 'fieldsList',
+                fields: [{ name: 'title' }, { name: 'image' }],
+              },
+            ],
+          },
+        ],
+      });
+      const values = fromJS({
+        en: {
+          title: 'title',
+          image: 'image.png',
+          fieldList: ['image2.png'],
+          fieldsList: [{ title: 'title', image: 'image3.png' }, { image: 'image4.png' }],
+        },
+      });
+      expect(duplicateFields(collection, values)).toEqual(
+        fromJS({
+          en: {
+            title: 'title',
+            image: 'image.png',
+            fieldList: ['image2.png'],
+            fieldsList: [{ title: 'title', image: 'image3.png' }, { image: 'image4.png' }],
+          },
+          fr: {
+            image: 'image.png',
+            fieldList: ['image2.png'],
+            fieldsList: [{ image: 'image3.png' }, { image: 'image4.png' }],
+          },
         }),
       );
     });

@@ -16,8 +16,10 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  hasMultiContent,
+  hasMultiContentDiffFiles,
 } from './reducers/collections';
-import { createEntry, EntryValue } from './valueObjects/Entry';
+import { createEntry, EntryValue, MultiContentArgs } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
@@ -261,6 +263,24 @@ const prepareMetaPath = (path: string, collection: Collection) => {
   return dir.substr(collection.get('folder')!.length + 1) || '/';
 };
 
+const entryLocale = (collection: Collection, slug: string) => {
+  return collection.get('i18n_structure') === LOCALE_FILE_EXTENSIONS
+    ? slug.split('.').pop()
+    : slug.split('/').shift();
+};
+
+const collectionDepth = (collection: Collection) => {
+  let depth;
+  depth =
+    collection.get('nested')?.get('depth') || getPathDepth(collection.get('path', '') as string);
+
+  if (hasMultiContent(collection) && collection.get('i18n_structure') === LOCALE_FOLDERS) {
+    depth = 2;
+  }
+
+  return depth;
+};
+
 export class Backend {
   implementation: Implementation;
   backendName: string;
@@ -447,21 +467,17 @@ export class Backend {
     return filteredEntries;
   }
 
-  async listEntries(collection: Collection, depth: number | null = null) {
+  async listEntries(collection: Collection) {
     const extension = selectFolderEntryExtension(collection);
     let listMethod: () => Promise<ImplementationEntry[]>;
     const collectionType = collection.get('type');
     if (collectionType === FOLDER) {
-      const selectedDepth =
-        depth ||
-        collection.get('nested')?.get('depth') ||
-        getPathDepth(collection.get('path', '') as string);
-
+      const depth = collectionDepth(collection);
       listMethod = () => {
         return this.implementation.entriesByFolder(
           collection.get('folder') as string,
           extension,
-          selectedDepth,
+          depth,
         );
       };
     } else if (collectionType === FILES) {
@@ -500,20 +516,16 @@ export class Backend {
   // repeats the process. Once there is no available "next" action, it
   // returns all the collected entries. Used to retrieve all entries
   // for local searches and queries.
-  async listAllEntries(collection: Collection, depth: number | null = null) {
-    const selectedDepth =
-      depth ||
-      collection.get('nested')?.get('depth') ||
-      getPathDepth(collection.get('path', '') as string);
-
+  async listAllEntries(collection: Collection) {
+    const depth = collectionDepth(collection);
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const extension = selectFolderEntryExtension(collection);
       return this.implementation
-        .allEntriesByFolder(collection.get('folder') as string, extension, selectedDepth)
+        .allEntriesByFolder(collection.get('folder') as string, extension, depth)
         .then(entries => this.processEntries(entries, collection));
     }
 
-    const response = await this.listEntries(collection, selectedDepth);
+    const response = await this.listEntries(collection);
     const { entries } = response;
     let { cursor } = response;
     while (cursor && cursor.actions!.includes('next')) {
@@ -526,39 +538,38 @@ export class Backend {
 
   async listAllMultipleEntires(collection: Collection) {
     const i18nStructure = collection.get('i18n_structure');
-    const locales = collection.get('locales') as string[];
-    const depth = i18nStructure === LOCALE_FOLDERS ? 2 : null;
-    const entries = await this.listAllEntries(collection, depth);
+    const locales = collection.get('locales') as List<string>;
+    const entries = await this.listAllEntries(collection);
     let multiEntries;
     if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
       multiEntries = entries
         .filter(entry => locales.some(l => entry.slug.endsWith(`.${l}`)))
         .map(entry => {
-          const locale = entry.slug.slice(-2);
+          const locale = entryLocale(collection, entry.slug);
           return {
             ...entry,
             slug: entry.slug.replace(`.${locale}`, ''),
             contentKey: entry.path.replace(`.${locale}`, ''),
             i18nStructure,
-            slugWithLocale: entry.slug,
+            locale,
           };
         });
     } else if (i18nStructure === LOCALE_FOLDERS) {
       multiEntries = entries
         .filter(entry => locales.some(l => entry.slug.startsWith(`${l}/`)))
         .map(entry => {
-          const locale = entry.slug.slice(0, 2);
+          const locale = entryLocale(collection, entry.slug);
           return {
             ...entry,
             slug: entry.slug.replace(`${locale}/`, ''),
             contentKey: entry.path.replace(`${locale}/`, ''),
             i18nStructure,
-            slugWithLocale: entry.slug,
+            locale,
           };
         });
     }
 
-    return this.combineMultipleContentEntries(multiEntries as EntryValue[]);
+    return this.mergeMultipleContentEntries(multiEntries as EntryValue[]);
   }
 
   async search(collections: Collection[], searchTerm: string) {
@@ -762,25 +773,27 @@ export class Backend {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
     const extension = selectFolderEntryExtension(collection);
-    const multiContent = collection.get('multi_content');
+    const multiContent = hasMultiContent(collection);
     const i18nStructure = collection.get('i18n_structure');
-    const locales = collection.get('locales') as string[];
+    const locales = collection.get('locales')!.toJS() as string[];
     let loadedEntries;
 
     if (multiContent && i18nStructure === LOCALE_FILE_EXTENSIONS) {
       loadedEntries = await Promise.all(
-        locales.map(l =>
+        locales.map(locale =>
           this.implementation
-            .getEntry(path.replace(extension, `${l}.${extension}`))
-            .catch(() => undefined),
+            .getEntry(path.replace(extension, `${locale}.${extension}`))
+            .then(entry => (entry.data ? entry : null))
+            .catch(() => false),
         ),
       );
     } else if (multiContent && i18nStructure === LOCALE_FOLDERS) {
       loadedEntries = await Promise.all(
-        locales.map(l =>
+        locales.map(locale =>
           this.implementation
-            .getEntry(path.replace(`/${slug}`, `/${l}/${slug}`))
-            .catch(() => undefined),
+            .getEntry(path.replace(`/${slug}`, `/${locale}/${slug}`))
+            .then(entry => (entry.data ? entry : null))
+            .catch(() => null),
         ),
       );
     } else {
@@ -788,13 +801,18 @@ export class Backend {
       loadedEntries = [loadedEntry];
     }
 
+    const filteredLoadedEntries = loadedEntries.filter(Boolean) as ImplementationEntry[];
     const entries = await Promise.all(
-      loadedEntries.filter(Boolean).map(async (loadedEntry: any) => {
+      filteredLoadedEntries.map(async loadedEntry => {
+        const locale = entryLocale(
+          collection,
+          selectEntrySlug(collection, loadedEntry.file.path) as string,
+        );
         let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
           raw: loadedEntry.data,
           label,
           i18nStructure,
-          slugWithLocale: selectEntrySlug(collection, loadedEntry.file.path),
+          locale,
           mediaFiles: [],
           meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
         });
@@ -806,8 +824,8 @@ export class Backend {
       }),
     );
 
-    if (collection.get('multi_content_diff_files')) {
-      return this.combineEntries(entries);
+    if (hasMultiContentDiffFiles(collection)) {
+      return this.mergeEntries(entries);
     }
 
     return entries[0];
@@ -890,7 +908,7 @@ export class Backend {
       );
       data = loadedEntry.data;
       path = loadedEntry.file.path;
-    } else if (collection.get('multi_content_diff_files')) {
+    } else if (hasMultiContentDiffFiles(collection)) {
       data = await Promise.all(
         dataFiles.map(async file => {
           const data = await this.implementation.unpublishedEntryDataFile(
@@ -918,6 +936,9 @@ export class Backend {
 
     if (Array.isArray(data)) {
       const multipleEntries = data.map(d => {
+        const i18nStructure = collection.get('i18n_structure');
+        const locale = entryLocale(collection, selectEntrySlug(collection, d.path) as string);
+
         return this.entryWithFormat(collection)(
           createEntry(collection.get('name'), slug, path, {
             raw: d.data,
@@ -927,13 +948,13 @@ export class Backend {
             updatedOn: entryData.updatedAt,
             status: entryData.status,
             meta: { path: prepareMetaPath(path, collection) },
-            i18nStructure: collection.get('i18n_structure'),
-            slugWithLocale: selectEntrySlug(collection, d.path),
+            i18nStructure,
+            locale,
           }),
         );
       });
 
-      entryWithFormat = this.combineEntries(multipleEntries);
+      entryWithFormat = this.mergeEntries(multipleEntries);
     } else {
       const entry = createEntry(collection.get('name'), slug, path, {
         raw: data,
@@ -998,31 +1019,29 @@ export class Backend {
     return entry;
   }
 
-  combineMultipleContentEntries(entries: EntryValue[]) {
-    const groupEntries = groupBy(entries, 'contentKey');
+  mergeMultipleContentEntries(entries: (EntryValue & MultiContentArgs)[]) {
+    const groupEntries = groupBy(entries, e => e.contentKey);
     return Object.keys(groupEntries).reduce((acc: EntryValue[], key: string) => {
       const entries = groupEntries[key];
-      return [...acc, this.combineEntries(entries)];
+      return [...acc, this.mergeEntries(entries)];
     }, []);
   }
 
-  combineEntries(entries: EntryValue[]) {
-    const { i18nStructure, contentKey, slugWithLocale, ...entry } = entries[0];
+  mergeEntries(entries: (EntryValue & MultiContentArgs)[]) {
+    const { i18nStructure, contentKey, ...entry } = entries[0];
     const data: { [key: string]: any } = {};
     let path = '';
-    let locale;
-    entries.forEach((e: EntryValue) => {
+
+    entries.forEach((e: EntryValue & MultiContentArgs) => {
       if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
-        locale = e!.slugWithLocale!.slice(-2) as string;
-        !path && (path = e.path.replace(`.${locale}`, ''));
-        data[locale] = e.data;
+        !path && (path = e.path.replace(`.${e.locale}`, ''));
+        data[e.locale as string] = e.data;
       } else if (i18nStructure === LOCALE_FOLDERS) {
-        locale = e!.slugWithLocale!.slice(0, 2) as string;
-        !path && (path = e.path.replace(`${locale}/`, ''));
-        data[locale] = e.data;
+        !path && (path = e.path.replace(`${e.locale}/`, ''));
+        data[e.locale as string] = e.data;
       }
     });
-    return { ...entry, path, raw: '', data };
+    return { ...entry, path, raw: '', data, multiContent: true };
   }
 
   /**
@@ -1161,7 +1180,7 @@ export class Backend {
     }
 
     let entriesObj = [entryObj];
-    if (collection.get('multi_content_diff_files')) {
+    if (hasMultiContentDiffFiles(collection)) {
       entriesObj = this.getMultipleEntries(collection, entryDraft, entryObj);
     }
 
@@ -1294,7 +1313,7 @@ export class Backend {
     const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
     const extension = selectFolderEntryExtension(collection) as string;
-    const locales = collection.get('locales') as string[];
+    const locales = collection.get('locales')!.toJS() as string[];
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
@@ -1316,7 +1335,7 @@ export class Backend {
 
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
-    if (collection.get('multi_content_diff_files')) {
+    if (hasMultiContentDiffFiles(collection)) {
       const i18nStructure = collection.get('i18n_structure') as string;
       if (i18nStructure === LOCALE_FILE_EXTENSIONS) {
         for (const l of locales) {

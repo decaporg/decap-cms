@@ -16,6 +16,7 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
+import { hasMultiContent } from 'Reducers/collections';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -132,14 +133,16 @@ class EditorInterface extends Component {
     this.setState({ showEventBlocker: false });
   };
 
-  handleOnPersist = (opts = {}) => {
+  handleOnPersist = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
+    hasMultiContent(this.props.collection) && (await this.handleRefDefaultLocale());
     this.handleRefValidation();
     this.props.onPersist({ createNew, duplicate });
   };
 
-  handleOnPublish = (opts = {}) => {
+  handleOnPublish = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
+    hasMultiContent(this.props.collection) && (await this.handleRefDefaultLocale());
     this.handleRefValidation();
     this.props.onPublish({ createNew, duplicate });
   };
@@ -158,6 +161,10 @@ class EditorInterface extends Component {
 
   handleRefValidation = () => {
     this.controlPaneRef.validate();
+  };
+
+  handleRefDefaultLocale = () => {
+    this.controlPaneRef.defaultLocale();
   };
 
   render() {
@@ -190,11 +197,11 @@ class EditorInterface extends Component {
       deployPreview,
       draftKey,
       editorBackLink,
+      clearFieldErrors,
     } = this.props;
 
     const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
-    const multiContent = collection.get('multi_content');
     const locales = this.props.collection.get('locales');
     const editorProps = {
       collection,
@@ -204,6 +211,7 @@ class EditorInterface extends Component {
       fieldsErrors,
       onChange,
       onValidate,
+      clearFieldErrors,
     };
 
     const editor = (
@@ -320,7 +328,7 @@ class EditorInterface extends Component {
               />
             )}
           </ViewControls>
-          {multiContent ? (
+          {hasMultiContent(collection) ? (
             editorWithEditor
           ) : collectionPreviewEnabled && this.state.previewVisible ? (
             editorWithPreview

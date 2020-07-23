@@ -1,14 +1,16 @@
-import { List, Set } from 'immutable';
-import { get, escapeRegExp } from 'lodash';
+import { List, Set, Map, fromJS } from 'immutable';
+import { get, escapeRegExp, set } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
+import { DIFF_FILE_TYPES } from '../constants/multiContentTypes';
 import { formatExtensions } from '../formats/formats';
 import {
   CollectionsAction,
   Collection,
   CollectionFiles,
+  EntryFields,
   EntryField,
   State,
   EntryMap,
@@ -456,6 +458,82 @@ export const selectHasMetaPath = (collection: Collection) => {
     collection.has('meta') &&
     collection.get('meta')?.has('path')
   );
+};
+
+export const hasMultiContent = (collection: Collection) => {
+  return collection.get('locales');
+};
+
+export const hasMultiContentDiffFiles = (collection: Collection) => {
+  return (
+    hasMultiContent(collection) &&
+    DIFF_FILE_TYPES.includes(collection.get('i18n_structure') as string)
+  );
+};
+
+export const selectDuplicateFieldPaths = (
+  values: any,
+  fields: EntryFields,
+  path = '',
+): string[] => {
+  return fields.reduce((reduction, item) => {
+    const acc = reduction as string[];
+    const field = item as EntryField;
+    const fieldName = field.get('name');
+    const value = Map.isMap(values) ? values.get(fieldName) : values;
+    const nestedFields = field.get('fields') || field.get('field');
+    const fieldPath = path ? `${path}${Map.isMap(values) ? `.${fieldName}` : ''}` : fieldName;
+    const duplicateField = field.get('duplicate');
+
+    if (nestedFields && List.isList(value)) {
+      return acc.concat(
+        ...value.map((val: any, index: number) =>
+          selectDuplicateFieldPaths(
+            val,
+            List.isList(nestedFields)
+              ? (nestedFields as EntryFields)
+              : (List([nestedFields]) as EntryFields),
+            `${fieldPath}.${index}`,
+          ),
+        ),
+      );
+    }
+
+    if (nestedFields && Map.isMap(value)) {
+      return acc.concat(
+        ...selectDuplicateFieldPaths(
+          value,
+          List.isList(nestedFields)
+            ? (nestedFields as EntryFields)
+            : (List([nestedFields]) as EntryFields),
+          `${fieldPath}`,
+        ),
+      );
+    }
+
+    if (duplicateField) {
+      return acc.concat(fieldPath);
+    }
+
+    return acc;
+  }, [] as string[]);
+};
+
+export const duplicateFields = (collection: Collection, values: any) => {
+  const data = values.toJS();
+  const locales = collection.get('locales') as List<string>;
+  const defaultLocale = collection.get('default_locale') as string;
+  const paths = selectDuplicateFieldPaths(values, List([collection.get('fields').first()]));
+  paths.forEach((path: string) => {
+    const duplicateValue = get(data, path);
+    if (duplicateValue) {
+      locales.shift().forEach(l => {
+        set(data, `${l}${path.substring(defaultLocale.length)}`, duplicateValue);
+      });
+    }
+  });
+
+  return fromJS(data);
 };
 
 export default collections;

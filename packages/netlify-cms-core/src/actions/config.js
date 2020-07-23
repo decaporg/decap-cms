@@ -10,7 +10,7 @@ import {
   selectIdentifier,
 } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
-import { DIFF_FILE_TYPES } from 'Constants/multiContentTypes';
+import { TEST } from '../constants/backendTypes';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -123,22 +123,15 @@ export function applyDefaults(config) {
               // add locale fields
               collection = collection.set('fields', addLocaleFields(fields, locales));
 
-              collection = collection.set('multi_content', true);
-
               // for test-repo backend single file mode should suffice
-              if (backend === 'test-repo') {
+              if (backend === TEST) {
                 collection = collection.set('i18n_structure', 'single_file');
-              }
-              if (DIFF_FILE_TYPES.includes(collection.get('i18n_structure'))) {
-                collection = collection.set('multi_content_diff_files', true);
               }
             }
           }
 
           const files = collection.get('files');
           if (files) {
-            // remove multi_content config if set
-            collection = collection.delete('multi_content');
             collection = collection.delete('nested');
             collection = collection.delete('meta');
             collection = collection.set(
@@ -180,7 +173,7 @@ export function applyDefaults(config) {
 
 export function addLocaleFields(fields, locales) {
   const defaultLocale = locales[0];
-  const stripedFields = stripNonTranslatableFields(fields);
+  const stripedFields = tagNonTranslatableFields(fields);
   return locales.reduce((acc, item) => {
     const selectedFields = item === defaultLocale ? fields : stripedFields;
     return acc.push(
@@ -195,23 +188,19 @@ export function addLocaleFields(fields, locales) {
   }, List());
 }
 
-function stripNonTranslatableFields(fields) {
+function tagNonTranslatableFields(fields) {
   return fields.reduce((acc, item) => {
     const subfields = item.get('field') || item.get('fields');
 
     if (List.isList(subfields)) {
-      return acc.push(item.set('fields', stripNonTranslatableFields(subfields)));
+      return acc.push(item.set('fields', tagNonTranslatableFields(subfields)));
     }
 
     if (Map.isMap(subfields)) {
-      return acc.push(item.set('field', stripNonTranslatableFields([subfields])));
+      return acc.push(item.set('field', tagNonTranslatableFields([subfields]).first()));
     }
 
-    if (item.get('translatable')) {
-      return acc.push(item);
-    }
-
-    return acc;
+    return acc.push(item.get('translatable') ? item : item.set('translatable', false));
   }, List());
 }
 
