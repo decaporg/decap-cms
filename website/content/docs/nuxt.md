@@ -196,7 +196,7 @@ export default {
 ```
 
 **Blog Post Page**
-Now open your `pages/blog/_blog.vue` file. Add an `asyncData()` method to the Vue instance that imports the corresponding JSON file. You can add a `payload` as well — this will come in handy during the process of running creating a static site.
+Now open your `pages/blog/_blog.vue` file. Add an `asyncData()` method to the Vue instance that imports the corresponding JSON file. You can add a `payload` as well — this will come in handy during the process of creating a static site.
 
 ```js
 export default {
