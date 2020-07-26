@@ -34,7 +34,9 @@ const ja = {
   collection: {
     sidebar: {
       collections: 'コレクション',
+      allCollections: 'すべてのコレクション',
       searchAll: '検索',
+      searchIn: '検索対象',
     },
     collectionTop: {
       sortBy: 'ソート',
@@ -42,6 +44,9 @@ const ja = {
       newButton: '%{collectionLabel}を作成',
       ascending: '昇順',
       descending: '降順',
+      searchResults: '「%{searchTerm}」の検索結果',
+      searchResultsInCollection: '%{collection}内の「%{searchTerm}」の検索結果',
+      filterBy: '絞り込み',
     },
     entries: {
       loadingEntries: 'エントリを読み込み中',
@@ -76,6 +81,8 @@ const ja = {
         rangeCountExact: '%{fieldLabel}はちょうど%{count}個選択してください。',
         minCount: '%{fieldLabel}は%{minCount}個以上選択してください。',
         maxCount: '%{fieldLabel}は%{maxCount}個以下選択してください。',
+        invalidPath: `'%{path}'は有効なパスではありません。`,
+        pathExists: `'%{path}'というパスはすでに存在しています。`,
       },
     },
     editor: {
@@ -210,7 +217,7 @@ const ja = {
       onFailToPersist: 'エントリの保存に失敗しました。%{details}',
       onFailToDelete: 'エントリの削除に失敗しました。%{details}',
       onFailToUpdateStatus: 'エントリのステータス更新に失敗しました。%{details}',
-      missingRequiredField: '全ての必須項目を入力してください。',
+      missingRequiredField: 'すべての必須項目を入力してください。',
       entrySaved: '保存しました。',
       entryPublished: '公開しました。',
       entryUnpublished: '未公開にしました。',
@@ -219,6 +226,8 @@ const ja = {
       entryUpdated: 'エントリのステータスを更新しました。',
       onDeleteUnpublishedChanges: '未公開の変更を削除しました。',
       onFailToAuth: '%{details}',
+      onLoggedOut: 'ログアウトされています。データをバックアップし、再度ログインしてください。',
+      onBackendDown: 'バックエンドのシステムが停止しています。%{details}',
     },
   },
   workflow: {
