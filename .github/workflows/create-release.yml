@@ -1,14 +1,13 @@
 name: Create release
 
 on:
-  push:
-    tags:
-      - 'netlify-cms@*'
+  create
 
 jobs:
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/netlify-cms@')
 
     steps:
       - name: Checkout
