@@ -57,10 +57,10 @@ jobs:
           git config --local user.name "GitHub Action"
 
       - name: Publish Netlify CMS
-        uses: erezrokah/2fa-with-slack-action@v1.0.0
+        uses: erezrokah/2fa-with-slack-action@v1
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
           SLACK_TOKEN: ${{secrets.SLACK_TOKEN}}
-          CONVERSATION_ID: ${{secrets.CONVERSATION_ID}}
+          CHANNEL_ID: ${{secrets.CHANNEL_ID}}
           PUBLISH_COMMAND: "yarn\npublish:ci"
           CODE_PATTERN: 'Enter OTP'
