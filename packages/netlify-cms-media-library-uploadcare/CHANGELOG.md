@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.5.6 (2020-07-27)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([118d50a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/commit/118d50a7a70295f25073e564b5161aa2b9883056))
+
+
+
+
+
 ## [0.5.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.5.4...netlify-cms-media-library-uploadcare@0.5.5) (2019-11-07)
 
 **Note:** Version bump only for package netlify-cms-media-library-uploadcare

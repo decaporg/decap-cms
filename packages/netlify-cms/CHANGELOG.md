@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.10.55 (2020-07-27)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([118d50a](https://github.com/netlify/netlify-cms/commit/118d50a7a70295f25073e564b5161aa2b9883056))
+
+
+
+
+
 ## [2.10.54](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.53...netlify-cms@2.10.54) (2020-07-16)
 
 **Note:** Version bump only for package netlify-cms

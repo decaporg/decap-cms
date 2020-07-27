@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.2.9 (2020-07-27)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([118d50a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/commit/118d50a7a70295f25073e564b5161aa2b9883056))
+
+
+
+
+
 ## [2.2.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.2.7...netlify-cms-lib-auth@2.2.8) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-lib-auth

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.3.2 (2020-07-27)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([118d50a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/commit/118d50a7a70295f25073e564b5161aa2b9883056))
+
+
+
+
+
 ## [1.3.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.3.0...netlify-cms-lib-widgets@1.3.1) (2020-07-14)
 
 
