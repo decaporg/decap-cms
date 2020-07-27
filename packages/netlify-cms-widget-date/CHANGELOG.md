@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 2.5.2 (2020-07-27)
-
-
-### Bug Fixes
-
-* **widget-markdown:** properly check for selection when inserting links ([#4075](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/4075)) ([a4b7481](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/a4b7481a99f58b9abe85ab5712d27593cde20096))
-
-
-
-
-
 ## [2.5.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.5.0...netlify-cms-widget-date@2.5.1) (2020-05-19)
 
 

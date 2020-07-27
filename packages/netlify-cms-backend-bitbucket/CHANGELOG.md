@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 2.12.1 (2020-07-27)
-
-
-### Bug Fixes
-
-* **widget-markdown:** properly check for selection when inserting links ([#4075](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/4075)) ([a4b7481](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/a4b7481a99f58b9abe85ab5712d27593cde20096))
-
-
-
-
-
 # [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.11.5...netlify-cms-backend-bitbucket@2.12.0) (2020-06-18)
 
 

@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 1.1.1 (2020-07-27)
-
-
-### Bug Fixes
-
-* **widget-markdown:** properly check for selection when inserting links ([#4075](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/4075)) ([a4b7481](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/a4b7481a99f58b9abe85ab5712d27593cde20096))
-
-
-
-
-
 # [1.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.7...netlify-cms-backend-proxy@1.1.0) (2020-06-18)
 
 
