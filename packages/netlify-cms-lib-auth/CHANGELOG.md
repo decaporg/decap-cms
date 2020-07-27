@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.2.9 (2020-07-27)
+
+
+### Bug Fixes
+
+* **widget-markdown:** properly check for selection when inserting links ([#4075](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/issues/4075)) ([a4b7481](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/commit/a4b7481a99f58b9abe85ab5712d27593cde20096))
+
+
+
+
+
 ## [2.2.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.2.7...netlify-cms-lib-auth@2.2.8) (2020-04-01)
 
 **Note:** Version bump only for package netlify-cms-lib-auth

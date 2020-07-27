@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.10.55 (2020-07-27)
+
+
+### Bug Fixes
+
+* **widget-markdown:** properly check for selection when inserting links ([#4075](https://github.com/netlify/netlify-cms/issues/4075)) ([a4b7481](https://github.com/netlify/netlify-cms/commit/a4b7481a99f58b9abe85ab5712d27593cde20096))
+
+
+
+
+
 ## [2.10.54](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.53...netlify-cms@2.10.54) (2020-07-16)
 
 **Note:** Version bump only for package netlify-cms

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.4.1 (2020-07-27)
+
+
+### Bug Fixes
+
+* **widget-markdown:** properly check for selection when inserting links ([#4075](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/issues/4075)) ([a4b7481](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/commit/a4b7481a99f58b9abe85ab5712d27593cde20096))
+
+
+
+
+
 # [1.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.3.3...netlify-cms-widget-map@1.4.0) (2020-06-18)
 
 
