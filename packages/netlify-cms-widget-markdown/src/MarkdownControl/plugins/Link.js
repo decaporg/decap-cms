@@ -7,12 +7,18 @@ const Link = ({ type }) => ({
         const url = getUrl();
         if (!url) return;
 
-        // If no text is selected, use the entered URL as text.
-        if (editor.value.isCollapsed) {
-          editor.insertText(url).moveFocusBackward(0 - url.length);
+        const selection = editor.value.selection;
+        const isCollapsed = selection && selection.isCollapsed;
+        if (isCollapsed) {
+          // If no text is selected, use the entered URL as text.
+          return editor.insertInline({
+            type,
+            data: { url },
+            nodes: [{ object: 'text', text: url }],
+          });
+        } else {
+          return editor.wrapInline({ type, data: { url } }).moveToEnd();
         }
-
-        return editor.wrapInline({ type, data: { url } }).moveToEnd();
       }
     },
   },

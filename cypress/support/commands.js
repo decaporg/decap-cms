@@ -268,6 +268,7 @@ Cypress.Commands.add('insertEditorComponent', title => {
   ['clickCodeButton', 'Code'],
   ['clickItalicButton', 'Italic'],
   ['clickQuoteButton', 'Quote'],
+  ['clickLinkButton', 'Link'],
 ].forEach(([commandName, toolbarButtonName]) => {
   Cypress.Commands.add(commandName, opts => {
     return cy.clickToolbarButton(toolbarButtonName, opts);
@@ -314,6 +315,12 @@ Cypress.Commands.add('clearMarkdownEditorContent', () => {
     .getMarkdownEditor()
     .selectAll()
     .backspace({ times: 2 });
+});
+
+Cypress.Commands.add('confirmRawEditorContent', expectedDomString => {
+  cy.get('.cms-editor-raw').within(() => {
+    cy.contains('span', expectedDomString);
+  });
 });
 
 function toPlainTree(domString) {
