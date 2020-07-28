@@ -1,6 +1,6 @@
 [build]
   base = "website/"
-  command = "yarn install && yarn build"
+  command = "yarn install && yarn lint && yarn build"
   publish = "dist/"
 
   [build.environment]

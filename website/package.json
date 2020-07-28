@@ -5,6 +5,7 @@
   "scripts": {
     "start": "gatsby develop",
     "build": "gatsby build && mv public dist",
+    "lint": "markdownlint 'content/docs/**/*.md'",
     "copy:contribs": "cp ../.all-contributorsrc data/contributors.json",
     "prepare": "npm run copy:contribs",
     "reset": "rm -rf .cache"
@@ -46,7 +47,8 @@
     "babel-plugin-prismjs": "^2.0.1",
     "babel-preset-gatsby": "^0.5.1",
     "eslint": "^7.4.0",
-    "eslint-plugin-import": "^2.20.1"
+    "eslint-plugin-import": "^2.20.1",
+    "markdownlint-cli": "^0.23.2"
   },
   "private": true
 }

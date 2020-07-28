@@ -7,16 +7,18 @@ group: accounts
 [Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct write access to your GitHub or GitLab repository. (For Bitbucket repositories, use the [Bitbucket backend](#bitbucket-backend) instead.)
 
 ## Git Gateway with Netlify
+
 The [Netlify Identity](https://www.netlify.com/docs/identity/) service can handle the authentication and provides a simple interface for user management. The Netlify CMS [featured templates](../start-with-a-template) are working examples of this backend.
 
 To use it in your own project stored on GitHub or GitLab, follow these steps:
 
 1. Head over to the [Netlify Identity docs](https://www.netlify.com/docs/identity) and follow the steps to get started.
 2. Add the following lines to your Netlify CMS `config.yml` file:
-  ```yaml
-  backend:
-    name: git-gateway
-  ```
+
+```yaml
+backend:
+  name: git-gateway
+```
 
 ## Reconnect after Changing Repository Permissions
 
