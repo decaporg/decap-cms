@@ -208,10 +208,6 @@ export default {
 };
 </script>
 ````
-## Integrating content in Nuxt with Vuex
-
-**Note:** In order to use `nuxtServerInit` your mode must be `universal` in your `nuxt.config.js`.
-
 
 ### Generating pages with the `generate` property
 
