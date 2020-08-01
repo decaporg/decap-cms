@@ -220,14 +220,14 @@ class EditorInterface extends Component {
           {...editorProps}
           ref={c => (this.controlPaneRef = c)}
           defaultEditor
-          locale={locales && locales.first()}
+          locale={locales && locales.get(0)}
         />
       </ControlPaneContainer>
     );
 
     const editor2 = (
       <ControlPaneContainer overFlow={!this.state.scrollSyncEnabled} blockEntry={showEventBlocker}>
-        <EditorControlPane {...editorProps} locale={locales && locales.last()} />
+        <EditorControlPane {...editorProps} locale={locales && locales.get(1)} />
       </ControlPaneContainer>
     );
 

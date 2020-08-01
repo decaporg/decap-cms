@@ -299,7 +299,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
           `pages.${collection.get('name')}.ids`,
           false,
         );
-        !publishedEntries && (await dispatch(loadEntry(collection, slug)));
+        !publishedEntries && (await dispatch(loadEntries(collection)));
         const publishedEntry = selectEntry(getState(), collection.get('name'), slug);
         publishedEntry &&
           entry.isModification === false &&

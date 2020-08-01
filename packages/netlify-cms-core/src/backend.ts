@@ -784,7 +784,7 @@ export class Backend {
           this.implementation
             .getEntry(path.replace(extension, `${locale}.${extension}`))
             .then(entry => (entry.data ? entry : null))
-            .catch(() => false),
+            .catch(() => null),
         ),
       );
     } else if (multiContent && i18nStructure === LOCALE_FOLDERS) {
