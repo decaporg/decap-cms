@@ -40,9 +40,9 @@ export default class ControlPane extends React.Component {
   };
 
   defaultLocale = () => {
-    const collection = this.props.collection;
-    const defaultLocale = hasMultiContent(collection) && collection.get('default_locale');
-    return new Promise(resolve => this.setState({ selectedLocale: defaultLocale }, resolve));
+    return new Promise(resolve =>
+      this.setState({ selectedLocale: this.props.collection.get('default_locale') }, resolve),
+    );
   };
 
   validate = async () => {

@@ -27,6 +27,7 @@ const fieldsConfig = () => ({
       widget: { type: 'string' },
       required: { type: 'boolean' },
       translatable: { type: 'boolean' },
+      duplicate: { type: 'boolean' },
       hint: { type: 'string' },
       pattern: {
         type: 'array',
