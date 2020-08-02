@@ -133,7 +133,7 @@ Back in your [Netlify dashboard](https://app.netlify.com/):
 **Accessing the CMS**
 Once you've reached this point, you should be able to access the CMS in your browser at `http://localhost:3000/admin`. You'll be prompted to add the URL of your Netlify site. Once you've added that URL, you can log in with an Identity account or with one of the External Providers you enabled in step 3 above. For the sake of this tutorial, you can create a blog post in the CMS, and publish it! Once you `git pull` in your project, the blog post will show up in the project at `assets/content/blog/<slugified-blog-post-title>.json`.
 
-## Using nuxt/content.
+## Using nuxt/content
 Netlify CMS and [nuxt/content](https://content.nuxtjs.org) module just click together and complement each other to give you best authoring experience and developer experience respectively.
 
 Adding nuxt/content dependency
@@ -180,7 +180,7 @@ export default {
 </script>
 ````
 ### Example Blog Post
-To generate blog posts create _slug.vue file in pages folder. by using `$content` you would get a json which you can use to display. But if you are using `markdown` to write your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features]().
+To generate blog posts create _slug.vue file in the pages folder. by using `$content` you would get a json which you can use to display. But if you are using `markdown` to write your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features]().
 
 ````javascript
 <template>
