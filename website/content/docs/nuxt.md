@@ -52,7 +52,7 @@ collections:
   - name: 'blog'
     label: 'Blog'
     format: 'json'
-    folder: 'assets/content/blog'
+    folder: 'content/blog'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     editor:
@@ -68,12 +68,11 @@ You can build whatever collections and content modeling you want. The important 
 
 ### Add the `content/` directory to Nuxt
 
-In your `assets/` directory, you can create a new directory `content/`. As you might guess, this is where our content will live. Your filesystem should look about like this, so far:
+In your root directory, you can create a new directory `content/`. As you might guess, this is where our content will live. Your filesystem should look about like this, so far:
 
 ```sh
 root/
-├ assets/
-│  └ content/
+├ content/
 ├ components/
 ├ layouts/
 ├ middleware/
@@ -134,127 +133,111 @@ Back in your [Netlify dashboard](https://app.netlify.com/):
 **Accessing the CMS**
 Once you've reached this point, you should be able to access the CMS in your browser at `http://localhost:3000/admin`. You'll be prompted to add the URL of your Netlify site. Once you've added that URL, you can log in with an Identity account or with one of the External Providers you enabled in step 3 above. For the sake of this tutorial, you can create a blog post in the CMS, and publish it! Once you `git pull` in your project, the blog post will show up in the project at `assets/content/blog/<slugified-blog-post-title>.json`.
 
-## Integrating content in Nuxt with Vuex
+## Using nuxt/content
+Netlify CMS and [nuxt/content](https://content.nuxtjs.org) module just click together and complement each other to give you best authoring experience and developer experience respectively.
 
-**Note:** In order to use `nuxtServerInit` your mode must be `universal` in your `nuxt.config.js`.
-
+Adding nuxt/content dependency
 ```javascript
-mode: 'universal'
-```
+yarn add @nuxt/content
+or
+npm i @nuxt/content
 
-Next, you'll set up the integrated Vuex store to collect blog posts. Create a file `index.js` in the `store/` directory, and add **state**, **mutations**, and **actions** for your blog posts:
+````
+Then, add @nuxt/content to the modules section of nuxt.config.js:
 
-```js
-export const state = () => ({
-  blogPosts: [],
-});
+````javascript
+{
+  modules: [
+    '@nuxt/content'
+  ],
+  content: {
+    // Options
+  }
+}
+````
+By adding nuxt content module you get `$content` injected into your whole app which you can use to fetch content from your content folder using `simple fetch api` or `nuxt asyncData` option.
+<br />
+This also gives a `<nuxt-content>` component which helps you display markdowm content with ease and also gives option of live editing in dev mode.
+### Example Blog Post List
+`nuxt/content` module gives us `$content` which we can use to fetch the list of blog posts in `content/blog` directory.
+````javascript
+<template>
+    <li v-for="post of posts" :key="post.slug">
+      <NuxtLink :to="post.slug">{{ post.title }}</NuxtLink>
+    </li>
+</template>
 
-export const mutations = {
-  setBlogPosts(state, list) {
-    state.blogPosts = list;
+<script>
+export default {
+   async asyncData({ $content }) {
+    const posts = await $content("blog").fetch();
+
+    return {
+      posts,
+    };
   },
 };
+</script>
+````
+### Example Blog Post
+To generate blog posts create _slug.vue file in the pages folder. by using `$content` you would get a json which you can use to display. But if you are using `markdown` to write your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features]().
 
-export const actions = {
-  async nuxtServerInit({ commit }) {
-    let files = await require.context('~/assets/content/blog/', false, /\.json$/);
-    let blogPosts = files.keys().map(key => {
-      let res = files(key);
-      res.slug = key.slice(2, -5);
-      return res;
-    });
-    await commit('setBlogPosts', blogPosts);
-  },
-};
-```
-
-Now you can use that content in your templates. In your `pages/` directory, create a `blog/` directory. Within the `blog/` directory, create two files `index.vue` and `_blog.vue`. These will respectively be the blog list page and the blog post page.
-
-**Blog List Page**
-
-In `pages/blog/index.vue`, you'll add your template and a method to the `computed` property of the Vue instance to return blog posts from the Vuex store. This will make `blogPosts` available in the Vue template for you to iterate over, etc. Feel free to add styling as well. 
-
-```js
+````javascript
 <template>
   <div>
-    <ul v-for="(blogPost, index) in blogPosts" :key="index">
-      <nuxt-link :to="`../blog/${blogPost.slug}`">{{blogPost.title}}</nuxt-link>
-      <p>{{blogPost.description}}</p>
-    </ul>
+    <h2>{{ post.title }}</h2>
+    <nuxt-content :document="post" />
   </div>
 </template>
 
 <script>
 export default {
-  computed: {
-    blogPosts() {
-      return this.$store.state.blogPosts
-    },
+  async asyncData({ $content, params, error }) {
+    let post;
+    try {
+      post = await $content("blog", params.slug).fetch();
+      // OR const article = await $content(`articles/${params.slug}`).fetch()
+    } catch (e) {
+      error({ message: "Blog Post not found" });
+    }
+
+    return {
+      post,
+    };
   },
-}
+};
 </script>
-```
-
-**Blog Post Page**
-Now open your `pages/blog/_blog.vue` file. Add an `asyncData()` method to the Vue instance that imports the corresponding JSON file. You can add a `payload` as well — this will come in handy during the process of creating a static site.
-
-```js
-export default {
-  async asyncData({ params, payload }) {
-    if (payload) return { blogPost: payload };
-    else
-      return {
-        blogPost: await require(`~/assets/content/blog/${params.blog}.json`),
-      };
-  },
-};
-```
-
-Now in your template, you can access whatever properties you need.
-
-```html
-<template>
-  <article>
-    <h1>{{blogPost.title}}</h1>
-    <div>{{blogPost.body}}</div>
-  </article>
-</template>
-<script>
-```
-
-If you have Markdown in your content, you can use the `@nuxtjs/markdownit` module to render that.
-
-### Rendering Markdown with `@nuxtjs/markdownit`
-
-First, install the Nuxt `markdownit` module.
-
-```sh
-npm install @nuxtjs/markdownit
-```
-
-Next, add the module to your `nuxt.config.js` and set its configuration. For this example, you can use `markdownit`'s Vue injection.
-
-```js
-export default {
-  modules: ['@nuxtjs/markdownit'],
-  markdownit: {
-    injected: true,
-  },
-};
-```
-
-Back in your `pages/blog/_blog.vue` file, you can update your template to render that Markdown.
-
-```html
-<template>
-  <article>
-    <h1>{{blogPost.title}}</h1>
-    <div v-html="$md.render(blogPost.body)" />
-  </article>
-</template>
-```
+````
 
 ### Generating pages with the `generate` property
+
+
+Since Nuxt 2.13+, nuxt export has a crawler feature integrated which will crawl all your links and generate your routes based on those links. Therefore you do not need to do anything in order for your dynamic routes to be crawled. i.e, if you are on version of nuxt above 2.14 add target as static in nuxt.config.js and use `nuxt generate` to build your static site.
+
+
+```javascript
+// nuxt.config.js
+target: 'static'
+```
+If you are using nuxt version below 2.14 you have to use generate option in nuxt/content module to generate pages
+
+````javascript
+//nux.config.js
+export default {
+  modules: [,
+    '@nuxt/content'
+  ],
+  generate: {
+    async routes () {
+      const { $content } = require('@nuxt/content')
+      const files = await $content().only(['path']).fetch()
+
+      return files.map(file => file.path === '/index' ? '/' : file.path)
+    }
+  }
+}
+````
+
 
 To render your site as a static site, you'll need to create or update the `generate` property in `nuxt.config.js` to create dynamic routes and provide their content as a `payload`. In `generate`, make your `routes` entry a function:
 
