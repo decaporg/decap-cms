@@ -473,6 +473,7 @@ export const hasMultiContentDiffFiles = (collection: Collection) => {
 };
 
 export const selectDuplicateFieldPaths = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   values: any,
   fields: EntryFields,
   path = '',
@@ -488,7 +489,7 @@ export const selectDuplicateFieldPaths = (
 
     if (nestedFields && List.isList(value)) {
       return acc.concat(
-        ...value.map((val: any, index: number) =>
+        ...value.map((val: unknown, index: number) =>
           selectDuplicateFieldPaths(
             val,
             List.isList(nestedFields)
@@ -520,7 +521,7 @@ export const selectDuplicateFieldPaths = (
   }, [] as string[]);
 };
 
-export const duplicateFields = (collection: Collection, values: any) => {
+export const duplicateFields = (collection: Collection, values: Map<string, unknown>) => {
   const data = values.toJS();
   const locales = collection.get('locales') as List<string>;
   const defaultLocale = collection.get('default_locale') as string;

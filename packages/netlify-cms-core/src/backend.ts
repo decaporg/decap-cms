@@ -1028,8 +1028,9 @@ export class Backend {
   }
 
   mergeEntries(entries: (EntryValue & MultiContentArgs)[]) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { i18nStructure, contentKey, locale, ...entry } = entries[0];
-    const data: { [key: string]: any } = {};
+    const data: { [key: string]: unknown } = {};
     let path = '';
 
     entries.forEach((e: EntryValue & MultiContentArgs) => {
