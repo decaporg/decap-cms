@@ -373,7 +373,7 @@ const reactSelectStyles = {
       : 'transparent',
     paddingLeft: '22px',
   }),
-  menu: styles => ({ ...styles, right: 0, zIndex: 300 }),
+  menu: styles => ({ ...styles, right: 0, zIndex: zIndex.zIndex300 }),
   container: styles => ({ ...styles, padding: '0 !important' }),
   indicatorSeparator: (styles, state) =>
     state.hasValue && state.selectProps.isClearable
@@ -407,6 +407,7 @@ const zIndex = {
   zIndex10: 10,
   zIndex100: 100,
   zIndex200: 200,
+  zIndex250: 250,
   zIndex299: 299,
   zIndex300: 300,
   zIndex1000: 1000,

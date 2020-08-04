@@ -17,6 +17,7 @@ import {
   DropdownItem,
   StyledDropdownButton,
   buttons,
+  zIndex,
 } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
@@ -84,7 +85,7 @@ const HideContainer = styled.div`
   right: 0;
   left: 0;
   background-color: #fff;
-  z-index: 1;
+  z-index: ${zIndex.zIndex250};
 `;
 
 const ControlErrorsList = styled.ul`
