@@ -815,7 +815,7 @@ export function persistEntry(collection: Collection) {
         assetProxies,
         usedSlugs,
       })
-      .then((newSlug: string) => {
+      .then(async (newSlug: string) => {
         dispatch(
           notifSend({
             message: {
@@ -825,16 +825,17 @@ export function persistEntry(collection: Collection) {
             dismissAfter: 4000,
           }),
         );
+
         // re-load media library if entry had media files
         if (assetProxies.length > 0) {
-          dispatch(loadMedia());
+          await dispatch(loadMedia());
         }
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
         if (collection.has('nested')) {
-          dispatch(loadEntries(collection));
+          await dispatch(loadEntries(collection));
         }
         if (entry.get('slug') !== newSlug) {
-          dispatch(loadEntry(collection, newSlug));
+          await dispatch(loadEntry(collection, newSlug));
           navigateToEntry(collection.get('name'), newSlug);
         }
       })
