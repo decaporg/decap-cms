@@ -206,6 +206,7 @@ declare module 'netlify-cms-core' {
     label: string;
     fields: EditorComponentField[];
     pattern: RegExp;
+    allow_add?: boolean;
     fromBlock: (match: RegExpMatchArray) => any;
     toBlock: (data: any) => string;
     toPreview: (data: any) => string;
