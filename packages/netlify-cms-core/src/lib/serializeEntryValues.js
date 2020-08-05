@@ -1,7 +1,6 @@
 import { isNil } from 'lodash';
 import { Map, List } from 'immutable';
 import { getWidgetValueSerializer } from './registry';
-import { duplicateFields, hasMultiContent } from '../reducers/collections';
 
 /**
  * Methods for serializing/deserializing entry field values. Most widgets don't
@@ -66,10 +65,8 @@ const runSerializer = (values, fields, method) => {
   return serializedData;
 };
 
-export const serializeValues = (collection, values, fields) => {
-  let serializedValues = runSerializer(values, fields, 'serialize');
-  hasMultiContent(collection) && (serializedValues = duplicateFields(collection, serializedValues));
-  return serializedValues;
+export const serializeValues = (values, fields) => {
+  return runSerializer(values, fields, 'serialize');
 };
 
 export const deserializeValues = (values, fields) => {

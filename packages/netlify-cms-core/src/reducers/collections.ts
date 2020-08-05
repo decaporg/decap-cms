@@ -18,6 +18,7 @@ import {
 import { selectMediaFolder } from './entries';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { summaryFormatter } from '../lib/formatters';
+import { I18N_STRUCTURE } from '../lib/i18n';
 import { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;
@@ -461,11 +462,18 @@ export const selectHasMetaPath = (collection: Collection) => {
 };
 
 export const hasMultiContent = (collection: Collection) => {
-  return collection.get('locales');
+  return collection.has('i18n');
 };
 
 export const hasMultiContentDiffFiles = (collection: Collection) => {
-  return hasMultiContent(collection);
+  if (hasMultiContent(collection)) {
+    const i18 = collection.get('i18n');
+    const structure = i18.get('structure');
+    return (
+      structure === I18N_STRUCTURE.MULTIPLE_FILES || structure === I18N_STRUCTURE.MULTIPLE_FOLDERS
+    );
+  }
+  return false;
 };
 
 export const selectDuplicateFieldPaths = (
@@ -515,23 +523,6 @@ export const selectDuplicateFieldPaths = (
 
     return acc;
   }, [] as string[]);
-};
-
-export const duplicateFields = (collection: Collection, values: Map<string, unknown>) => {
-  const data = values.toJS();
-  const locales = collection.get('locales') as List<string>;
-  const defaultLocale = collection.get('default_locale') as string;
-  const paths = selectDuplicateFieldPaths(values, List([collection.get('fields').first()]));
-  paths.forEach((path: string) => {
-    const duplicateValue = get(data, path);
-    if (duplicateValue) {
-      locales.shift().forEach(l => {
-        set(data, `${l}${path.substring(defaultLocale.length)}`, duplicateValue);
-      });
-    }
-  });
-
-  return fromJS(data);
 };
 
 export default collections;
