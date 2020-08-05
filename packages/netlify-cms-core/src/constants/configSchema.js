@@ -3,12 +3,36 @@ import { select, uniqueItemProperties, instanceof as instanceOf } from 'ajv-keyw
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
 import { getWidgets } from 'Lib/registry';
-import {
-  locales,
-  SINGLE_FILE,
-  LOCALE_FILE_EXTENSIONS,
-  LOCALE_FOLDERS,
-} from 'Constants/multiContentTypes';
+import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
+
+const i18n = {
+  type: 'object',
+  properties: {
+    structure: { type: 'string', enum: Object.values(I18N_STRUCTURE) },
+    locales: {
+      type: 'array',
+      minItems: 2,
+      items: { type: 'string' },
+      uniqueItems: true,
+    },
+    default_locale: {
+      type: 'string',
+    },
+  },
+};
+
+const i18nRoot = {
+  ...i18n,
+  required: ['structure', 'locales'],
+};
+
+const i18nCollection = {
+  oneOf: [{ type: 'boolean' }, i18n],
+};
+
+const i18nField = {
+  oneOf: [{ type: 'boolean' }, { type: 'string', enum: Object.values(I18N_FIELD) }],
+};
 
 /**
  * Config for fields in both file and folder collections.
@@ -26,8 +50,7 @@ const fieldsConfig = () => ({
       label: { type: 'string' },
       widget: { type: 'string' },
       required: { type: 'boolean' },
-      translatable: { type: 'boolean' },
-      duplicate: { type: 'boolean' },
+      i18n: i18nField,
       hint: { type: 'string' },
       pattern: {
         type: 'array',
@@ -108,6 +131,7 @@ const getConfigSchema = () => ({
       ],
     },
     locale: { type: 'string', examples: ['en', 'fr', 'de'] },
+    i18n: i18nRoot,
     site_url: { type: 'string', examples: ['https://example.com'] },
     display_url: { type: 'string', examples: ['https://example.com'] },
     logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
@@ -134,12 +158,6 @@ const getConfigSchema = () => ({
         encoding: { type: 'string', enum: ['unicode', 'ascii'] },
         clean_accents: { type: 'boolean' },
       },
-    },
-    locales: {
-      type: 'array',
-      minItems: 2,
-      items: { type: 'string', enum: locales },
-      uniqueItems: true,
     },
     collections: {
       type: 'array',
@@ -233,11 +251,7 @@ const getConfigSchema = () => ({
             additionalProperties: false,
             minProperties: 1,
           },
-          i18n_structure: {
-            type: 'string',
-            enum: [SINGLE_FILE, LOCALE_FILE_EXTENSIONS, LOCALE_FOLDERS],
-          },
-          default_locale: { type: 'string', enum: locales },
+          i18n: i18nCollection,
         },
         required: ['name', 'label'],
         oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],

@@ -1,15 +1,12 @@
 import yaml from 'yaml';
-import { Map, List, fromJS } from 'immutable';
-import { trimStart, trim, get, isPlainObject, uniq, isEmpty } from 'lodash';
+import { Map, fromJS } from 'immutable';
+import { trimStart, trim, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
-import {
-  selectDefaultSortableFields,
-  traverseFields,
-  selectIdentifier,
-} from '../reducers/collections';
+import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
+import { I18N, I18N_FIELD } from '../lib/i18n';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -60,6 +57,15 @@ const setSnakeCaseConfig = field => {
     }
   });
   return field;
+};
+
+const setI18nField = map => {
+  if (map.get(I18N) === true) {
+    map = map.set(I18N, I18N_FIELD.TRANSLATE);
+  } else if (map.get(I18N) === false) {
+    map = map.delete(I18N);
+  }
+  return map;
 };
 
 const defaults = {
@@ -136,7 +142,9 @@ export function applyDefaults(config) {
         map.setIn(['slug', 'sanitize_replacement'], '-');
       }
 
-      let locales = map.get('locales', List()).toJS();
+      let i18n = config.get(I18N);
+      i18n = i18n?.set('default_locale', i18n.get('default_locale', i18n.get('locales').first()));
+
       // Strip leading slash from collection folders and files
       map.set(
         'collections',
@@ -173,27 +181,35 @@ export function applyDefaults(config) {
               collection = collection.set('meta', Map());
             }
 
-            const fields = collection.get('fields');
-            const identifier_field = selectIdentifier(collection);
-            if (!isEmpty(locales) && fields && collection.get('i18n_structure')) {
-              if (!collection.get('default_locale')) {
-                collection = collection.set('default_locale', locales[0]);
+            if (i18n && collection.has(I18N)) {
+              const collectionI18n = collection.get(I18N);
+              if (collectionI18n === true) {
+                collection = collection.set(I18N, i18n);
+              } else if (collectionI18n === false) {
+                collection = collection.delete(I18N);
               } else {
-                locales = uniq([collection.get('default_locale'), ...locales]);
+                const locales = collectionI18n.get('locales', i18n.get('locales'));
+                const defaultLocale = collectionI18n.get('default_locale', locales.first());
+                collection = collection.set(I18N, i18n.merge(collectionI18n));
+                collection = collection.setIn([I18N, 'locales'], locales);
+                collection = collection.setIn([I18N, 'default_locale'], defaultLocale);
               }
 
-              // add identifier config
-              collection = collection.set('identifier_field', `${locales[0]}.${identifier_field}`);
-
-              collection = collection.set('locales', fromJS(locales));
-
-              // add locale fields
-              collection = collection.set('fields', addLocaleFields(fields, locales));
+              if (collectionI18n !== false) {
+                // set default values for i18n fields
+                collection = collection.set(
+                  'fields',
+                  traverseFields(collection.get('fields'), setI18nField),
+                );
+              }
             }
           }
 
           const files = collection.get('files');
           if (files) {
+            if (i18n && collection.has(I18N)) {
+              throw new Error('i18n configuration is not supported for files collection');
+            }
             collection = collection.delete('nested');
             collection = collection.delete('meta');
             collection = collection.set(
@@ -231,39 +247,6 @@ export function applyDefaults(config) {
         }),
       );
     });
-}
-
-export function addLocaleFields(fields, locales) {
-  const defaultLocale = locales[0];
-  const stripedFields = tagNonTranslatableFields(fields);
-  return locales.reduce((acc, item) => {
-    const selectedFields = item === defaultLocale ? fields : stripedFields;
-    return acc.push(
-      fromJS({
-        label: item,
-        name: item,
-        widget: 'object',
-        fields: selectedFields,
-        multiContentId: Symbol.for('multiContentId'),
-      }),
-    );
-  }, List());
-}
-
-function tagNonTranslatableFields(fields) {
-  return fields.reduce((acc, item) => {
-    const subfields = item.get('field') || item.get('fields');
-
-    if (List.isList(subfields)) {
-      return acc.push(item.set('fields', tagNonTranslatableFields(subfields)));
-    }
-
-    if (Map.isMap(subfields)) {
-      return acc.push(item.set('field', tagNonTranslatableFields([subfields]).first()));
-    }
-
-    return acc.push(item.get('translatable') ? item : item.set('translatable', false));
-  }, List());
 }
 
 function mergePreloadedConfig(preloadedConfig, loadedConfig) {

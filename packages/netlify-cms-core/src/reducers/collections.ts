@@ -4,7 +4,6 @@ import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
-import { DIFF_FILE_TYPES } from '../constants/multiContentTypes';
 import { formatExtensions } from '../formats/formats';
 import {
   CollectionsAction,
@@ -466,10 +465,7 @@ export const hasMultiContent = (collection: Collection) => {
 };
 
 export const hasMultiContentDiffFiles = (collection: Collection) => {
-  return (
-    hasMultiContent(collection) &&
-    DIFF_FILE_TYPES.includes(collection.get('i18n_structure') as string)
-  );
+  return hasMultiContent(collection);
 };
 
 export const selectDuplicateFieldPaths = (
