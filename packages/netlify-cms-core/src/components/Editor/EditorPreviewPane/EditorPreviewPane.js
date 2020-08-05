@@ -211,7 +211,7 @@ export class PreviewPane extends React.Component {
     });
 
     if (!collection) {
-      <PreviewPaneFrame head={styleEls} />;
+      <PreviewPaneFrame id="preview-pane" head={styleEls} />;
     }
 
     const initialContent = `
@@ -224,7 +224,7 @@ export class PreviewPane extends React.Component {
 
     return (
       <ErrorBoundary config={config}>
-        <PreviewPaneFrame head={styleEls} initialContent={initialContent}>
+        <PreviewPaneFrame id="preview-pane" head={styleEls} initialContent={initialContent}>
           <EditorPreviewContent {...{ previewComponent, previewProps }} />
         </PreviewPaneFrame>
       </ErrorBoundary>
