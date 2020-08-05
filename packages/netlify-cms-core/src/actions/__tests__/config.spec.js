@@ -666,6 +666,48 @@ describe('config', () => {
           ).getIn(['collections', 0, 'fields', 0, 'i18n']),
         ).toBeUndefined();
       });
+
+      it('should throw is default locale is missing from root i18n config', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+                default_locale: 'fr',
+              },
+              collections: [
+                {
+                  folder: 'foo',
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }),
+          ),
+        ).toThrow("i18n locales 'en, de' are missing the default locale fr");
+      });
+
+      it('should throw is default locale is missing from collection i18n config', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  folder: 'foo',
+                  i18n: {
+                    default_locale: 'fr',
+                  },
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }),
+          ),
+        ).toThrow("i18n locales 'en, de' are missing the default locale fr");
+      });
     });
   });
 

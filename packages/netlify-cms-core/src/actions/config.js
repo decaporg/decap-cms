@@ -68,6 +68,16 @@ const setI18nField = map => {
   return map;
 };
 
+const throwOnMissingDefaultLocale = i18n => {
+  if (i18n && !i18n.get('locales').includes(i18n.get('default_locale'))) {
+    throw new Error(
+      `i18n locales '${i18n.get('locales').join(', ')}' are missing the default locale ${i18n.get(
+        'default_locale',
+      )}`,
+    );
+  }
+};
+
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
@@ -144,6 +154,7 @@ export function applyDefaults(config) {
 
       let i18n = config.get(I18N);
       i18n = i18n?.set('default_locale', i18n.get('default_locale', i18n.get('locales').first()));
+      throwOnMissingDefaultLocale(i18n);
 
       // Strip leading slash from collection folders and files
       map.set(
@@ -189,10 +200,15 @@ export function applyDefaults(config) {
                 collection = collection.delete(I18N);
               } else {
                 const locales = collectionI18n.get('locales', i18n.get('locales'));
-                const defaultLocale = collectionI18n.get('default_locale', locales.first());
+                const defaultLocale = collectionI18n.get(
+                  'default_locale',
+                  collectionI18n.has('locales') ? locales.first() : i18n.get('default_locale'),
+                );
                 collection = collection.set(I18N, i18n.merge(collectionI18n));
                 collection = collection.setIn([I18N, 'locales'], locales);
                 collection = collection.setIn([I18N, 'default_locale'], defaultLocale);
+
+                throwOnMissingDefaultLocale(collection.get(I18N));
               }
 
               if (collectionI18n !== false) {
