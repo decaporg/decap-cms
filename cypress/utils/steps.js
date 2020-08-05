@@ -252,12 +252,17 @@ function populateEntry(entry, onDone = flushClockAndSave) {
     const value = entry[key];
     if (key === 'body') {
       cy.getMarkdownEditor()
+        .first()
         .click()
         .clear({ force: true })
         .type(value, { force: true });
     } else {
-      cy.get(`[id^="${key}-field"]`).clear({ force: true });
-      cy.get(`[id^="${key}-field"]`).type(value, { force: true });
+      cy.get(`[id^="${key}-field"]`)
+        .first()
+        .clear({ force: true });
+      cy.get(`[id^="${key}-field"]`)
+        .first()
+        .type(value, { force: true });
     }
   }
 

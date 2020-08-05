@@ -6,7 +6,7 @@ const backend = 'proxy';
 const mode = 'fs';
 
 describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
-  let taskResult = { data: {} };
+  const taskResult = { data: {} };
 
   before(() => {
     specUtils.before(taskResult, { publish_mode: 'simple', mode }, backend);
