@@ -10,7 +10,6 @@ import {
   selectIdentifier,
 } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
-import { TEST } from '../constants/backendTypes';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -137,7 +136,6 @@ export function applyDefaults(config) {
         map.setIn(['slug', 'sanitize_replacement'], '-');
       }
 
-      const backend = map.getIn(['backend', 'name']);
       let locales = map.get('locales', List()).toJS();
       // Strip leading slash from collection folders and files
       map.set(
@@ -191,11 +189,6 @@ export function applyDefaults(config) {
 
               // add locale fields
               collection = collection.set('fields', addLocaleFields(fields, locales));
-
-              // for test-repo backend single file mode should suffice
-              if (backend === TEST) {
-                collection = collection.set('i18n_structure', 'single_file');
-              }
             }
           }
 
