@@ -16,7 +16,7 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
-import { hasMultiContent } from 'Reducers/collections';
+import { hasI18n } from '../../lib/i18n';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -135,14 +135,14 @@ class EditorInterface extends Component {
 
   handleOnPersist = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
-    hasMultiContent(this.props.collection) && (await this.handleRefDefaultLocale());
+    hasI18n(this.props.collection) && (await this.handleRefDefaultLocale());
     this.handleRefValidation();
     this.props.onPersist({ createNew, duplicate });
   };
 
   handleOnPublish = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
-    hasMultiContent(this.props.collection) && (await this.handleRefDefaultLocale());
+    hasI18n(this.props.collection) && (await this.handleRefDefaultLocale());
     this.handleRefValidation();
     this.props.onPublish({ createNew, duplicate });
   };
@@ -219,7 +219,6 @@ class EditorInterface extends Component {
         <EditorControlPane
           {...editorProps}
           ref={c => (this.controlPaneRef = c)}
-          defaultEditor
           locale={locales && locales.get(0)}
         />
       </ControlPaneContainer>
@@ -328,7 +327,7 @@ class EditorInterface extends Component {
               />
             )}
           </ViewControls>
-          {hasMultiContent(collection) ? (
+          {hasI18n(collection) ? (
             editorWithEditor
           ) : collectionPreviewEnabled && this.state.previewVisible ? (
             editorWithPreview

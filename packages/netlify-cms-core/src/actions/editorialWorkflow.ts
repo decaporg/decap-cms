@@ -13,7 +13,7 @@ import {
   selectUnpublishedEntry,
 } from '../reducers';
 import { selectEditingDraft } from '../reducers/entries';
-import { selectFields, hasMultiContentDiffFiles } from '../reducers/collections';
+import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import {
@@ -26,7 +26,7 @@ import {
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
-
+import { hasI18nMultipleFiles } from '../lib/i18n';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { Collection, EntryMap, State, Collections, EntryDraft, MediaFile } from '../types/redux';
 import { AnyAction } from 'redux';
@@ -293,7 +293,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       );
       dispatch(addAssets(assetProxies));
 
-      if (hasMultiContentDiffFiles(collection)) {
+      if (hasI18nMultipleFiles(collection)) {
         const publishedEntries = get(
           getState().entries.toJS(),
           `pages.${collection.get('name')}.ids`,

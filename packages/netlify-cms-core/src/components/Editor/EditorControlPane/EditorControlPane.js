@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import EditorControl from './EditorControl';
-import { hasMultiContent } from 'Reducers/collections';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
@@ -28,10 +27,7 @@ export default class ControlPane extends React.Component {
   }
 
   getFields = () => {
-    let fields = this.props.fields;
-    if (hasMultiContent(this.props.collection)) {
-      fields = fields.filter(f => f.get('name') === this.state.selectedLocale);
-    }
+    const fields = this.props.fields;
     return fields;
   };
 

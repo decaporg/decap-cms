@@ -1,5 +1,5 @@
-import { List, Set, Map, fromJS } from 'immutable';
-import { get, escapeRegExp, set } from 'lodash';
+import { List, Set, Map } from 'immutable';
+import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
@@ -459,70 +459,6 @@ export const selectHasMetaPath = (collection: Collection) => {
     collection.has('meta') &&
     collection.get('meta')?.has('path')
   );
-};
-
-export const hasMultiContent = (collection: Collection) => {
-  return collection.has('i18n');
-};
-
-export const hasMultiContentDiffFiles = (collection: Collection) => {
-  if (hasMultiContent(collection)) {
-    const i18 = collection.get('i18n');
-    const structure = i18.get('structure');
-    return (
-      structure === I18N_STRUCTURE.MULTIPLE_FILES || structure === I18N_STRUCTURE.MULTIPLE_FOLDERS
-    );
-  }
-  return false;
-};
-
-export const selectDuplicateFieldPaths = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  values: any,
-  fields: EntryFields,
-  path = '',
-): string[] => {
-  return fields.reduce((reduction, item) => {
-    const acc = reduction as string[];
-    const field = item as EntryField;
-    const fieldName = field.get('name');
-    const value = Map.isMap(values) ? values.get(fieldName) : values;
-    const nestedFields = field.get('fields') || field.get('field');
-    const fieldPath = path ? `${path}${Map.isMap(values) ? `.${fieldName}` : ''}` : fieldName;
-    const duplicateField = field.get('duplicate');
-
-    if (nestedFields && List.isList(value)) {
-      return acc.concat(
-        ...value.map((val: unknown, index: number) =>
-          selectDuplicateFieldPaths(
-            val,
-            List.isList(nestedFields)
-              ? (nestedFields as EntryFields)
-              : (List([nestedFields]) as EntryFields),
-            `${fieldPath}.${index}`,
-          ),
-        ),
-      );
-    }
-
-    if (nestedFields && Map.isMap(value)) {
-      return acc.concat(
-        ...selectDuplicateFieldPaths(
-          value,
-          List.isList(nestedFields)
-            ? (nestedFields as EntryFields)
-            : (List([nestedFields]) as EntryFields),
-          `${fieldPath}`,
-        ),
-      );
-    }
-
-    if (duplicateField) {
-      return acc.concat(fieldPath);
-    }
-
-    return acc;
-  }, [] as string[]);
 };
 
 export default collections;
