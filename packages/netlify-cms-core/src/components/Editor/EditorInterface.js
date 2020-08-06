@@ -135,13 +135,13 @@ class EditorInterface extends Component {
 
   handleOnPersist = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
-    this.handleRefValidation();
+    this.controlPaneRef.validate();
     this.props.onPersist({ createNew, duplicate });
   };
 
   handleOnPublish = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
-    this.handleRefValidation();
+    this.controlPaneRef.validate();
     this.props.onPublish({ createNew, duplicate });
   };
 
@@ -155,10 +155,6 @@ class EditorInterface extends Component {
     const newScrollSyncEnabled = !this.state.scrollSyncEnabled;
     this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
     localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
-  };
-
-  handleRefValidation = () => {
-    this.controlPaneRef.validate();
   };
 
   render() {
