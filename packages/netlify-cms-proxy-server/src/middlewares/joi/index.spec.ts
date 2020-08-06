@@ -274,13 +274,24 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'persistEntry', params: { ...defaultParams } }),
-        '"params.entries" is required',
+        schema.validate({
+          action: 'persistEntry',
+          params: {
+            ...defaultParams,
+            assets: [],
+            options: {
+              commitMessage: 'commitMessage',
+              useWorkflow: true,
+              status: 'draft',
+            },
+          },
+        }),
+        '"params" must contain at least one of [entry, dataFiles]',
       );
       assetFailure(
         schema.validate({
           action: 'persistEntry',
-          params: { ...defaultParams, entries: [{ slug: 'slug', path: 'path', raw: 'content' }] },
+          params: { ...defaultParams, entry: { slug: 'slug', path: 'path', raw: 'content' } },
         }),
         '"params.assets" is required',
       );
@@ -289,7 +300,7 @@ describe('defaultSchema', () => {
           action: 'persistEntry',
           params: {
             ...defaultParams,
-            entries: [{ slug: 'slug', path: 'path', raw: 'content' }],
+            entry: { slug: 'slug', path: 'path', raw: 'content' },
             assets: [],
           },
         }),
@@ -300,7 +311,7 @@ describe('defaultSchema', () => {
           action: 'persistEntry',
           params: {
             ...defaultParams,
-            entries: [{ slug: 'slug', path: 'path', raw: 'content' }],
+            entry: { slug: 'slug', path: 'path', raw: 'content' },
             assets: [],
             options: {},
           },
@@ -309,13 +320,32 @@ describe('defaultSchema', () => {
       );
     });
 
-    it('should pass on valid params', () => {
+    it('should pass on valid params (entry argument)', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'persistEntry',
         params: {
           ...defaultParams,
-          entries: [{ slug: 'slug', path: 'path', raw: 'content' }],
+          entry: { slug: 'slug', path: 'path', raw: 'content' },
+          assets: [{ path: 'path', content: 'content', encoding: 'base64' }],
+          options: {
+            commitMessage: 'commitMessage',
+            useWorkflow: true,
+            status: 'draft',
+          },
+        },
+      });
+
+      expect(error).toBeUndefined();
+    });
+
+    it('should pass on valid params (dataFiles argument)', () => {
+      const schema = defaultSchema();
+      const { error } = schema.validate({
+        action: 'persistEntry',
+        params: {
+          ...defaultParams,
+          dataFiles: [{ slug: 'slug', path: 'path', raw: 'content' }],
           assets: [{ path: 'path', content: 'content', encoding: 'base64' }],
           options: {
             commitMessage: 'commitMessage',

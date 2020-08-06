@@ -25,7 +25,7 @@ import {
 import { get } from 'lodash';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { join } from 'path';
-import { I18N } from '../lib/i18n';
+import { getLocaleDataPath } from '../lib/i18n';
 
 const initialState = Map({
   entry: Map(),
@@ -95,7 +95,7 @@ const entryDraftReducer = (state = Map(), action) => {
         const name = field.get('name');
         const meta = field.get('meta');
 
-        const dataPath = locale ? [I18N, locale, 'data'] : ['data'];
+        const dataPath = locale ? getLocaleDataPath(locale) : ['data'];
         if (meta) {
           state.setIn(['entry', 'meta', name], value);
         } else {

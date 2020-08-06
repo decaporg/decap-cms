@@ -12,6 +12,7 @@ import {
   GetMediaFileParams,
   PersistMediaParams,
   DeleteFileParams,
+  DataFile,
 } from '../types';
 import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
@@ -61,17 +62,25 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
           break;
         }
         case 'persistEntry': {
-          const { entries, assets } = body.params as PersistEntryParams;
-          await Promise.all(entries.map(e => writeFile(path.join(repoPath, e.path), e.raw)));
+          const {
+            entry,
+            dataFiles = [entry as DataFile],
+            assets,
+          } = body.params as PersistEntryParams;
+          await Promise.all(
+            dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
+          );
           // save assets
           await Promise.all(
             assets.map(a =>
               writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding)),
             ),
           );
-          if (entries.every(e => e.newPath)) {
+          if (dataFiles.every(dataFile => dataFile.newPath)) {
             await Promise.all(
-              entries.map(e => move(path.join(repoPath, e.path), path.join(repoPath, e.newPath!))),
+              dataFiles.map(dataFile =>
+                move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!)),
+              ),
             );
           }
           res.json({ message: 'entry persisted' });

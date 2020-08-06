@@ -183,14 +183,13 @@ export default class ProxyBackend implements Implementation {
     });
   }
 
-  async persistEntry(entries: Entry[], assetProxies: AssetProxy[], options: PersistOptions) {
-    const assets = await Promise.all(assetProxies.map(serializeAsset));
+  async persistEntry(entry: Entry, options: PersistOptions) {
+    const assets = await Promise.all(entry.assets.map(serializeAsset));
     return this.request({
       action: 'persistEntry',
       params: {
         branch: this.branch,
-        entry: entries[0],
-        entries,
+        dataFiles: entry.dataFiles,
         assets,
         options: { ...options, status: options.status || this.options.initialWorkflowStatus },
         cmsLabelPrefix: this.cmsLabelPrefix,

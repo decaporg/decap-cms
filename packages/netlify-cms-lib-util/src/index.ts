@@ -40,6 +40,7 @@ import {
   UnpublishedEntryMediaFile as UEMF,
   blobToFileObj,
   allEntriesByFolder,
+  DataFile as DF,
 } from './implementation';
 import {
   readFile,
@@ -91,6 +92,7 @@ export type ApiRequest = AR;
 export type Config = C;
 export type FetchError = FE;
 export type PointerFile = PF;
+export type DataFile = DF;
 
 export const NetlifyCmsLibUtil = {
   APIError,

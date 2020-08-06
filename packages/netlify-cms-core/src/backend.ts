@@ -37,6 +37,7 @@ import {
   asyncLock,
   AsyncLock,
   UnpublishedEntry,
+  DataFile,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
@@ -60,10 +61,32 @@ import {
   getLocaleFromSlug,
   getI18nFilesDepth,
   getI18nInfo,
-  hasI18nMultipleFiles,
+  getI18nFiles,
+  hasI18n,
 } from './lib/i18n';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
+
+const updateAssetProxies = (
+  assetProxies: AssetProxy[],
+  config: Config,
+  collection: Collection,
+  entryDraft: EntryDraft,
+  path: string,
+) => {
+  assetProxies.map(asset => {
+    // update media files path based on entry path
+    const oldPath = asset.path;
+    const newPath = selectMediaFilePath(
+      config,
+      collection,
+      entryDraft.get('entry').set('path', path),
+      oldPath,
+      asset.field,
+    );
+    asset.path = newPath;
+  });
+};
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -240,13 +263,6 @@ interface PersistArgs {
   usedSlugs: List<string>;
   unpublished?: boolean;
   status?: string;
-}
-
-interface EntryObj {
-  path: string;
-  slug: string;
-  raw: string;
-  newPath?: string;
 }
 
 interface ImplementationInitOptions {
@@ -533,9 +549,7 @@ export class Backend {
   }
 
   async listAllMultipleEntires(collection: Collection) {
-    const i18n = collection.get('i18n');
-    const locales = i18n.get('locales') as List<string>;
-    const i18nStructure = i18n.get('structure');
+    const { structure: i18nStructure, locales } = getI18nInfo(collection);
     const entries = await this.listAllEntries(collection);
     let multiEntries;
     if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FILES) {
@@ -1131,10 +1145,9 @@ export class Backend {
 
     const useWorkflow = selectUseWorkflow(config);
 
-    let entryObj: EntryObj;
-
     const customPath = selectCustomPath(collection, entryDraft);
 
+    let dataFile: DataFile;
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
@@ -1147,27 +1160,16 @@ export class Backend {
         customPath,
       );
       const path = customPath || (selectEntryPath(collection, slug) as string);
-      entryObj = {
+      dataFile = {
         path,
         slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
 
-      assetProxies.map(asset => {
-        // update media files path based on entry path
-        const oldPath = asset.path;
-        const newPath = selectMediaFilePath(
-          config,
-          collection,
-          entryDraft.get('entry').set('path', path),
-          oldPath,
-          asset.field,
-        );
-        asset.path = newPath;
-      });
+      updateAssetProxies(assetProxies, config, collection, entryDraft, path);
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
-      entryObj = {
+      dataFile = {
         path: entryDraft.getIn(['entry', 'path']),
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
@@ -1176,9 +1178,20 @@ export class Backend {
       };
     }
 
-    let entriesObj = [entryObj];
-    if (hasI18nMultipleFiles(collection)) {
-      entriesObj = this.getMultipleEntries(collection, entryDraft, entryObj);
+    const { slug, path, newPath } = dataFile;
+
+    let dataFiles = [dataFile];
+    if (hasI18n(collection)) {
+      const extension = selectFolderEntryExtension(collection);
+      dataFiles = getI18nFiles(
+        collection,
+        extension,
+        entryDraft,
+        (draftData: EntryMap) => this.entryToRaw(collection, draftData),
+        slug,
+        path,
+        newPath,
+      );
     }
 
     const user = (await this.currentUser()) as User;
@@ -1187,8 +1200,8 @@ export class Backend {
       config,
       {
         collection,
-        slug: entryObj.slug,
-        path: entryObj.path,
+        slug,
+        path,
         authorLogin: user.login,
         authorName: user.name,
       },
@@ -1210,7 +1223,13 @@ export class Backend {
       await this.invokePrePublishEvent(entryDraft.get('entry'));
     }
 
-    await this.implementation.persistEntry(entriesObj, assetProxies, opts);
+    await this.implementation.persistEntry(
+      {
+        dataFiles,
+        assets: assetProxies,
+      },
+      opts,
+    );
 
     await this.invokePostSaveEvent(entryDraft.get('entry'));
 
@@ -1218,46 +1237,52 @@ export class Backend {
       await this.invokePostPublishEvent(entryDraft.get('entry'));
     }
 
-    return entryObj.slug;
+    return slug;
   }
 
-  getMultipleEntries(collection: Collection, entryDraft: EntryDraft, entryObj: EntryObj) {
+  getMultipleEntries(
+    collection: Collection,
+    entryDraft: EntryDraft,
+    path: string,
+    slug: string,
+    newPath?: string,
+  ) {
     const { structure: i18nStructure } = getI18nInfo(collection);
     const extension = selectFolderEntryExtension(collection);
     const data = entryDraft.getIn(['entry', 'data']).toJS();
     const locales = Object.keys(data);
-    const entriesObj: EntryObj[] = [];
+    const dataFiles = [] as DataFile[];
     if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FILES) {
       locales.forEach(l => {
-        entriesObj.push({
-          path: entryObj.path.replace(extension, `${l}.${extension}`),
-          slug: entryObj.slug,
+        dataFiles.push({
+          path: path.replace(extension, `${l}.${extension}`),
+          slug,
           raw: this.entryToRaw(
             collection,
             entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
           ),
-          ...(entryObj.newPath && {
-            newPath: entryObj.newPath,
+          ...(newPath && {
+            newPath,
           }),
         });
       });
     } else if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
       locales.forEach(l => {
-        entriesObj.push({
-          path: entryObj.path.replace(`/${entryObj.slug}`, `/${l}/${entryObj.slug}`),
-          slug: entryObj.slug,
+        dataFiles.push({
+          path: path.replace(`/${slug}`, `/${l}/${slug}`),
+          slug,
           raw: this.entryToRaw(
             collection,
             entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
           ),
-          ...(entryObj.newPath && {
-            newPath: entryObj.newPath,
+          ...(newPath && {
+            newPath,
           }),
         });
       });
     }
 
-    return entriesObj;
+    return dataFiles;
   }
 
   async invokeEventWithEntry(event: string, entry: EntryMap) {

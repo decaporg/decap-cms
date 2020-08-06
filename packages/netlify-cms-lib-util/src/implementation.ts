@@ -45,13 +45,23 @@ export interface Map {
   set: <T>(key: string, value: T) => Map;
 }
 
+export type DataFile = {
+  path: string;
+  slug: string;
+  raw: string;
+  newPath?: string;
+};
+
 export type AssetProxy = {
   path: string;
   fileObj?: File;
   toBase64?: () => Promise<string>;
 };
 
-export type Entry = { path: string; slug: string; raw: string; newPath?: string };
+export type Entry = {
+  dataFiles: DataFile[];
+  assets: AssetProxy[];
+};
 
 export type PersistOptions = {
   newEntry?: boolean;
@@ -116,11 +126,7 @@ export interface Implementation {
   getMedia: (folder?: string) => Promise<ImplementationMediaFile[]>;
   getMediaFile: (path: string) => Promise<ImplementationMediaFile>;
 
-  persistEntry: (
-    entries: Entry[],
-    assetProxies: AssetProxy[],
-    opts: PersistOptions,
-  ) => Promise<void>;
+  persistEntry: (entry: Entry, opts: PersistOptions) => Promise<void>;
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFile: (path: string, commitMessage: string) => Promise<void>;
 

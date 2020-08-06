@@ -39,7 +39,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
     encoding: requiredString.valid('base64'),
   });
 
-  const entry = Joi.object({
+  const dataFile = Joi.object({
     slug: requiredString,
     path,
     raw: requiredString,
@@ -129,9 +129,8 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         then: defaultParams
           .keys({
             cmsLabelPrefix: Joi.string().optional(),
-            entries: Joi.array()
-              .items(entry)
-              .required(),
+            entry: dataFile, // entry is kept for backwards compatibility
+            dataFiles: Joi.array().items(dataFile),
             assets: Joi.array()
               .items(asset)
               .required(),
@@ -142,6 +141,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
               status: requiredString,
             }).required(),
           })
+          .xor('entry', 'dataFiles')
           .required(),
       },
       {

@@ -17,6 +17,7 @@ export interface StaticallyTypedRecord<T> {
     keys: [K1, K2, K3],
     defaultValue?: V,
   ): T[K1][K2][K3];
+  getIn(keys: string[]): unknown;
   setIn<K1 extends keyof T, K2 extends keyof T[K1], V extends T[K1][K2]>(
     keys: [K1, K2],
     value: V,
