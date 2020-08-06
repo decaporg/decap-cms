@@ -123,8 +123,7 @@ export type EntryField = StaticallyTypedRecord<{
   public_folder?: string;
   comment?: string;
   meta?: boolean;
-  translatable?: boolean;
-  duplicate?: boolean;
+  i18n: 'translate' | 'duplicate';
 }>;
 
 export type EntryFields = List<EntryField>;

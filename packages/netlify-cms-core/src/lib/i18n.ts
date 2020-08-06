@@ -1,4 +1,4 @@
-import { Collection } from '../types/redux';
+import { Collection, EntryField } from '../types/redux';
 
 export const I18N = 'i18n';
 
@@ -45,4 +45,19 @@ export const hasI18nMultipleFiles = (collection: Collection) => {
   return (
     structure === I18N_STRUCTURE.MULTIPLE_FILES || structure === I18N_STRUCTURE.MULTIPLE_FOLDERS
   );
+};
+
+export const isFieldTranslatable = (field: EntryField, locale: string, defaultLocale: string) => {
+  const isTranslatable = locale !== defaultLocale && field.get(I18N) === I18N_FIELD.TRANSLATE;
+  return isTranslatable;
+};
+
+export const isFieldDuplicate = (field: EntryField, locale: string, defaultLocale: string) => {
+  const isDuplicate = locale !== defaultLocale && field.get(I18N) === I18N_FIELD.DUPLICATE;
+  return isDuplicate;
+};
+
+export const isFieldHidden = (field: EntryField, locale: string, defaultLocale: string) => {
+  const isHidden = locale !== defaultLocale && !field.get(I18N);
+  return isHidden;
 };

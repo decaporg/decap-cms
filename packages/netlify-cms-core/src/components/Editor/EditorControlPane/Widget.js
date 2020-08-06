@@ -60,6 +60,7 @@ export default class Widget extends Component {
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     entry: ImmutablePropTypes.map.isRequired,
+    isDisabled: PropTypes.bool,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -277,6 +278,7 @@ export default class Widget extends Component {
       isNewEditorComponent,
       parentIds,
       t,
+      isDisabled,
     } = this.props;
 
     return React.createElement(controlComponent, {
@@ -323,6 +325,7 @@ export default class Widget extends Component {
       controlRef,
       parentIds,
       t,
+      isDisabled,
     });
   }
 }

@@ -196,9 +196,9 @@ export class Editor extends React.Component {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
-  handleChangeDraftField = (field, value, metadata) => {
+  handleChangeDraftField = (field, value, metadata, locale) => {
     const entries = [this.props.unPublishedEntry, this.props.publishedEntry].filter(Boolean);
-    this.props.changeDraftField(field, value, metadata, entries);
+    this.props.changeDraftField({ field, value, metadata, entries, locale });
   };
 
   handleChangeStatus = newStatusName => {

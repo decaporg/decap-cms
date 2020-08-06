@@ -351,15 +351,22 @@ export function discardDraft() {
   return { type: DRAFT_DISCARD };
 }
 
-export function changeDraftField(
-  field: EntryField,
-  value: string,
-  metadata: Record<string, unknown>,
-  entries: EntryMap[],
-) {
+export function changeDraftField({
+  field,
+  value,
+  metadata,
+  entries,
+  locale,
+}: {
+  field: EntryField;
+  value: string;
+  metadata: Record<string, unknown>;
+  entries: EntryMap[];
+  locale?: string;
+}) {
   return {
     type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata, entries },
+    payload: { field, value, metadata, entries, locale },
   };
 }
 

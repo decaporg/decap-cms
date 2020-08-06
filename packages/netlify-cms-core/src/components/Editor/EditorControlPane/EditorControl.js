@@ -17,7 +17,7 @@ import {
   DropdownItem,
   StyledDropdownButton,
   buttons,
-  zIndex,
+  text,
 } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
@@ -67,6 +67,14 @@ const styleStrings = {
   widgetError: `
     border-color: ${colors.errorText};
   `,
+  disabled: `
+    pointer-events: none;
+    opacity: 0.5;
+    background: #ccc;
+  `,
+  hidden: `
+    visibility: hidden;
+  `,
 };
 
 const ControlContainer = styled.div`
@@ -76,16 +84,6 @@ const ControlContainer = styled.div`
   &:first-of-type {
     margin-top: 36px;
   }
-`;
-
-const HideContainer = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background-color: #fff;
-  z-index: ${zIndex.zIndex250};
 `;
 
 const ControlErrorsList = styled.ul`
@@ -103,11 +101,10 @@ const ControlErrorsList = styled.ul`
 const LocaleButton = styled(StyledDropdownButton)`
   ${buttons.button};
   ${buttons.medium};
+  ${text.fieldLabel}
   color: ${colors.controlLabel};
   background: ${colors.textFieldBorder};
-  height: 20px;
-  line-height: 28px;
-  margin-right: 8px;
+  height: 100%;
 
   &:after {
     top: 11px;
@@ -125,16 +122,60 @@ export const ControlHint = styled.p`
 
 const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange }) => {
   return (
-    <Dropdown
-      renderButton={() => <LocaleButton>{selectedLocale}</LocaleButton>}
-      dropdownTopOverlap="30px"
-      dropdownWidth="100px"
-    >
+    <Dropdown renderButton={() => <LocaleButton>{selectedLocale}</LocaleButton>}>
       {locales.map(l => (
-        <DropdownItem key={l} label={l} onClick={() => onLocaleChange(l)} />
+        <DropdownItem
+          css={coreCss`${text.fieldLabel}`}
+          key={l}
+          label={l}
+          onClick={() => onLocaleChange(l)}
+        />
       ))}
     </Dropdown>
   );
+};
+
+const LabelAndLocalWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+`;
+
+const LabelComponent = ({
+  field,
+  isActive,
+  hasErrors,
+  uniqueFieldId,
+  isFieldOptional,
+  selectedLocale,
+  onLocaleChange,
+  locales,
+  renderLocaleDropdown,
+  t,
+}) => {
+  const label = `${field.get('label', field.get('name'))}`;
+  let labelComponent = (
+    <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
+      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+    </FieldLabel>
+  );
+  if (renderLocaleDropdown) {
+    const dropdown = (
+      <LocaleDropdown
+        locales={locales}
+        selectedLocale={selectedLocale}
+        onLocaleChange={onLocaleChange}
+      />
+    );
+    labelComponent = (
+      <LabelAndLocalWrapper>
+        {labelComponent}
+        {dropdown}
+      </LabelAndLocalWrapper>
+    );
+  }
+
+  return labelComponent;
 };
 
 class EditorControl extends React.Component {
@@ -169,6 +210,8 @@ class EditorControl extends React.Component {
     parentIds: PropTypes.arrayOf(PropTypes.string),
     entry: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
+    isDisabled: PropTypes.bool,
+    isHidden: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -218,7 +261,6 @@ class EditorControl extends React.Component {
       clearSearch,
       clearFieldErrors,
       loadEntry,
-      className,
       isSelected,
       isEditorComponent,
       isNewEditorComponent,
@@ -227,6 +269,10 @@ class EditorControl extends React.Component {
       onLocaleChange,
       t,
       validateMetaField,
+      locales,
+      renderLocaleDropdown,
+      isDisabled,
+      isHidden,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -239,25 +285,15 @@ class EditorControl extends React.Component {
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
-    const multiContentWidgetId = field.get('multiContentId') === Symbol.for('multiContentId');
-    const nonTranslatableField = field.get('translatable') === false;
-    const locales = collection.get('locales');
-    const label =
-      locales && multiContentWidgetId ? (
-        <LocaleDropdown
-          locales={locales}
-          selectedLocale={selectedLocale}
-          onLocaleChange={onLocaleChange}
-        />
-      ) : (
-        `${field.get('label', field.get('name'))}`
-      );
 
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <ControlContainer className={className}>
-            {nonTranslatableField && <HideContainer />}
+          <ControlContainer
+            css={css`
+              ${isHidden && styleStrings.hidden};
+            `}
+          >
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
             {errors && (
               <ControlErrorsList>
@@ -272,13 +308,18 @@ class EditorControl extends React.Component {
                 )}
               </ControlErrorsList>
             )}
-            <FieldLabel
+            <LabelComponent
+              field={field}
               isActive={isSelected || this.state.styleActive}
               hasErrors={hasErrors}
-              htmlFor={this.uniqueFieldId}
-            >
-              {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
-            </FieldLabel>
+              uniqueFieldId={this.uniqueFieldId}
+              isFieldOptional={isFieldOptional}
+              locales={locales}
+              selectedLocale={selectedLocale}
+              onLocaleChange={onLocaleChange}
+              renderLocaleDropdown={renderLocaleDropdown}
+              t={t}
+            />
             <Widget
               classNameWrapper={cx(
                 css`
@@ -293,6 +334,11 @@ class EditorControl extends React.Component {
                   [css`
                     ${styleStrings.widgetError};
                   `]: hasErrors,
+                },
+                {
+                  [css`
+                    ${styleStrings.disabled}
+                  `]: isDisabled,
                 },
               )}
               classNameWidget={css`
@@ -346,6 +392,7 @@ class EditorControl extends React.Component {
               parentIds={parentIds}
               t={t}
               validateMetaField={validateMetaField}
+              isDisabled={isDisabled}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>

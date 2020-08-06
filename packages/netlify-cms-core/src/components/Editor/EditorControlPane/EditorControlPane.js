@@ -3,6 +3,13 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import EditorControl from './EditorControl';
+import {
+  getI18nInfo,
+  isFieldTranslatable,
+  isFieldDuplicate,
+  isFieldHidden,
+  I18N,
+} from '../../../lib/i18n';
 
 const ControlPaneContainer = styled.div`
   max-width: 800px;
@@ -10,6 +17,18 @@ const ControlPaneContainer = styled.div`
   padding-bottom: 16px;
   font-size: 16px;
 `;
+
+const getFieldValue = ({ field, entry, locale, defaultLocale }) => {
+  if (field.get('meta')) {
+    return entry.getIn(['meta', field.get('name')]);
+  }
+
+  if (isFieldTranslatable(field, locale, defaultLocale)) {
+    return entry.getIn([I18N, locale, 'data', field.get('name')]);
+  }
+
+  return entry.getIn(['data', field.get('name')]);
+};
 
 export default class ControlPane extends React.Component {
   state = {
@@ -35,12 +54,6 @@ export default class ControlPane extends React.Component {
     this.setState({ selectedLocale: val });
   };
 
-  defaultLocale = () => {
-    return new Promise(resolve =>
-      this.setState({ selectedLocale: this.props.collection.get('default_locale') }, resolve),
-    );
-  };
-
   validate = async () => {
     this.getFields().forEach(field => {
       if (field.get('widget') === 'hidden') return;
@@ -60,21 +73,35 @@ export default class ControlPane extends React.Component {
       return null;
     }
 
+    const { locales, defaultLocale } = getI18nInfo(collection);
+    const locale = this.state.selectedLocale;
+
     return (
       <ControlPaneContainer>
         {fields.map((field, i) => {
+          const renderLocaleDropdown = locales && i === 0;
+          const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
+          const isDisabled = locales && isFieldDuplicate(field, locale, defaultLocale);
+          const isHidden = locales && isFieldHidden(field, locale, defaultLocale);
           return field.get('widget') === 'hidden' ? null : (
             <EditorControl
               key={i}
               field={field}
-              value={
-                field.get('meta')
-                  ? entry.getIn(['meta', field.get('name')])
-                  : entry.getIn(['data', field.get('name')])
-              }
+              value={getFieldValue({
+                field,
+                entry,
+                locale,
+                defaultLocale,
+              })}
               fieldsMetaData={fieldsMetaData}
               fieldsErrors={fieldsErrors}
-              onChange={onChange}
+              onChange={(field, newValue, newMetadata) => {
+                if (isTranslatable) {
+                  onChange(field, newValue, newMetadata, locale);
+                } else {
+                  onChange(field, newValue, newMetadata);
+                }
+              }}
               onValidate={onValidate}
               processControlRef={this.controlRef.bind(this)}
               controlRef={this.controlRef}
@@ -82,6 +109,10 @@ export default class ControlPane extends React.Component {
               collection={collection}
               selectedLocale={this.state.selectedLocale}
               onLocaleChange={this.handleLocaleChange}
+              locales={locales}
+              renderLocaleDropdown={renderLocaleDropdown}
+              isDisabled={isDisabled}
+              isHidden={isHidden}
             />
           );
         })}

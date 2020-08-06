@@ -59,13 +59,47 @@ const setSnakeCaseConfig = field => {
   return field;
 };
 
-const setI18nField = map => {
-  if (map.get(I18N) === true) {
-    map = map.set(I18N, I18N_FIELD.TRANSLATE);
-  } else if (map.get(I18N) === false) {
-    map = map.delete(I18N);
+const setI18nField = field => {
+  if (field.get(I18N) === true) {
+    field = field.set(I18N, I18N_FIELD.TRANSLATE);
+  } else if (field.get(I18N) === false) {
+    field = field.delete(I18N);
   }
-  return map;
+  return field;
+};
+
+const setI18nDefaults = (i18n, collection) => {
+  if (i18n && collection.has(I18N)) {
+    const collectionI18n = collection.get(I18N);
+    if (collectionI18n === true) {
+      collection = collection.set(I18N, i18n);
+    } else if (collectionI18n === false) {
+      collection = collection.delete(I18N);
+    } else {
+      const locales = collectionI18n.get('locales', i18n.get('locales'));
+      const defaultLocale = collectionI18n.get(
+        'default_locale',
+        collectionI18n.has('locales') ? locales.first() : i18n.get('default_locale'),
+      );
+      collection = collection.set(I18N, i18n.merge(collectionI18n));
+      collection = collection.setIn([I18N, 'locales'], locales);
+      collection = collection.setIn([I18N, 'default_locale'], defaultLocale);
+
+      throwOnMissingDefaultLocale(collection.get(I18N));
+    }
+
+    if (collectionI18n !== false) {
+      // set default values for i18n fields
+      collection = collection.set('fields', traverseFields(collection.get('fields'), setI18nField));
+    }
+  } else {
+    collection = collection.delete(I18N);
+    collection = collection.set(
+      'fields',
+      traverseFields(collection.get('fields'), field => field.delete(I18N)),
+    );
+  }
+  return collection;
 };
 
 const throwOnMissingDefaultLocale = i18n => {
@@ -192,33 +226,7 @@ export function applyDefaults(config) {
               collection = collection.set('meta', Map());
             }
 
-            if (i18n && collection.has(I18N)) {
-              const collectionI18n = collection.get(I18N);
-              if (collectionI18n === true) {
-                collection = collection.set(I18N, i18n);
-              } else if (collectionI18n === false) {
-                collection = collection.delete(I18N);
-              } else {
-                const locales = collectionI18n.get('locales', i18n.get('locales'));
-                const defaultLocale = collectionI18n.get(
-                  'default_locale',
-                  collectionI18n.has('locales') ? locales.first() : i18n.get('default_locale'),
-                );
-                collection = collection.set(I18N, i18n.merge(collectionI18n));
-                collection = collection.setIn([I18N, 'locales'], locales);
-                collection = collection.setIn([I18N, 'default_locale'], defaultLocale);
-
-                throwOnMissingDefaultLocale(collection.get(I18N));
-              }
-
-              if (collectionI18n !== false) {
-                // set default values for i18n fields
-                collection = collection.set(
-                  'fields',
-                  traverseFields(collection.get('fields'), setI18nField),
-                );
-              }
-            }
+            collection = setI18nDefaults(i18n, collection);
           }
 
           const files = collection.get('files');
