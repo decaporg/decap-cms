@@ -89,6 +89,7 @@ export type Config = {
     proxy_url?: string;
     auth_type?: string;
     app_id?: string;
+    include_cookies_in_requests?: boolean;
   };
   media_folder: string;
   base_url?: string;

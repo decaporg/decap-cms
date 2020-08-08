@@ -88,6 +88,7 @@ const getPropSetFunction = path => getCurriedRequestProcessor((val, req) => req.
 const getPropMergeFunction = path =>
   getCurriedRequestProcessor((obj, req) => req.updateIn(path, (p = Map()) => p.merge(obj)));
 
+const withCredentials = getPropSetFunction(['credentials']);
 const withMethod = getPropSetFunction(['method']);
 const withBody = getPropSetFunction(['body']);
 const withNoCache = getPropSetFunction(['cache'])('no-cache');
@@ -113,6 +114,7 @@ export default {
   fromFetchArguments,
   performRequest,
   withMethod,
+  withCredentials,
   withBody,
   withHeaders,
   withParams,

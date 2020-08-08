@@ -41,6 +41,7 @@ export interface Config {
   repo?: string;
   squashMerges: boolean;
   initialWorkflowStatus: string;
+  includeCookiesInRequests?: boolean;
 }
 
 export interface CommitAuthor {
@@ -189,6 +190,7 @@ export default class API {
   commitAuthor?: CommitAuthor;
   squashMerges: boolean;
   initialWorkflowStatus: string;
+  includeCookiesInRequests: boolean;
 
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://gitlab.com/api/v4';
@@ -198,6 +200,7 @@ export default class API {
     this.repoURL = `/projects/${encodeURIComponent(this.repo)}`;
     this.squashMerges = config.squashMerges;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
+    this.includeCookiesInRequests = config.includeCookiesInRequests || false;
   }
 
   withAuthorizationHeaders = (req: ApiRequest) => {
@@ -221,6 +224,10 @@ export default class API {
   };
 
   request = async (req: ApiRequest): Promise<Response> => {
+    if (this.includeCookiesInRequests) {
+      unsentRequest.withCredentials('include', req);
+    }
+
     try {
       return requestWithBackoff(this, req);
     } catch (err) {

@@ -134,6 +134,7 @@ export default class GitGateway implements Implementation {
   squashMerges: boolean;
   mediaFolder: string;
   transformImages: boolean;
+  includeCookiesInRequests: boolean;
   gatewayUrl: string;
   netlifyLargeMediaURL: string;
   backendType: string | null;
@@ -161,6 +162,7 @@ export default class GitGateway implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.mediaFolder = config.media_folder;
     this.transformImages = config.backend.use_large_media_transforms_in_media_library || true;
+    this.includeCookiesInRequests = config.backend.include_cookies_in_requests || false;
 
     const netlifySiteURL = localStorage.getItem('netlifySiteURL');
     this.apiUrl = getEndpoint(config.backend.identity_url || defaults.identity, netlifySiteURL);
@@ -251,12 +253,17 @@ export default class GitGateway implements Implementation {
     return this.authClient;
   }
 
-  requestFunction = (req: ApiRequest) =>
-    this.tokenPromise!()
+  requestFunction = (req: ApiRequest) => {
+    if (this.includeCookiesInRequests) {
+      unsentRequest.withCredentials('include', req);
+    }
+
+    return this.tokenPromise!()
       .then(
         token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req) as ApiRequest,
       )
       .then(unsentRequest.performRequest);
+  };
 
   authenticate(credentials: Credentials) {
     const user = credentials as NetlifyUser;
@@ -279,6 +286,7 @@ export default class GitGateway implements Implementation {
         } = await unsentRequest
           .fetchWithTimeout(`${this.gatewayUrl}/settings`, {
             headers: { Authorization: `Bearer ${token}` },
+            credentials: this.includeCookiesInRequests ? 'include' : 'omit',
           })
           .then(async res => {
             const contentType = res.headers.get('Content-Type') || '';
@@ -333,6 +341,7 @@ export default class GitGateway implements Implementation {
         commitAuthor: pick(userData, ['name', 'email']),
         squashMerges: this.squashMerges,
         initialWorkflowStatus: this.options.initialWorkflowStatus,
+        includeCookiesInRequests: this.includeCookiesInRequests,
       };
 
       if (this.backendType === 'github') {
