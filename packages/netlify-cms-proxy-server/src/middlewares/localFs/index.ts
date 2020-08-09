@@ -12,6 +12,7 @@ import {
   GetMediaFileParams,
   PersistMediaParams,
   DeleteFileParams,
+  DeleteFilesParams,
   DataFile,
 } from '../types';
 import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
@@ -113,6 +114,12 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
           const { path: filePath } = body.params as DeleteFileParams;
           await deleteFile(repoPath, filePath);
           res.json({ message: `deleted file ${filePath}` });
+          break;
+        }
+        case 'deleteFiles': {
+          const { paths } = body.params as DeleteFilesParams;
+          await Promise.all(paths.map(filePath => deleteFile(repoPath, filePath)));
+          res.json({ message: `deleted files ${paths.join(', ')}` });
           break;
         }
         case 'getDeployPreview': {

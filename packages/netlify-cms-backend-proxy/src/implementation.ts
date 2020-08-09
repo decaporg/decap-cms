@@ -244,10 +244,10 @@ export default class ProxyBackend implements Implementation {
     return deserializeMediaFile(file);
   }
 
-  deleteFile(path: string, commitMessage: string) {
+  deleteFiles(paths: string[], commitMessage: string) {
     return this.request({
       action: 'deleteFile',
-      params: { branch: this.branch, path, options: { commitMessage } },
+      params: { branch: this.branch, paths, options: { commitMessage } },
     });
   }
 

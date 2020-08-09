@@ -627,7 +627,7 @@ describe('config', () => {
         ).toThrow('i18n configuration is not supported for files collection');
       });
 
-      it('should set default i18n value on field when i18n=true for field', () => {
+      it('should set i18n value to translate on field when i18n=true for field', () => {
         expect(
           applyDefaults(
             fromJS({
@@ -647,7 +647,7 @@ describe('config', () => {
         ).toEqual('translate');
       });
 
-      it('should remove i18n from field when i18n=false for field', () => {
+      it('should set i18n value to none on field when i18n=false for field', () => {
         expect(
           applyDefaults(
             fromJS({
@@ -664,7 +664,7 @@ describe('config', () => {
               ],
             }),
           ).getIn(['collections', 0, 'fields', 0, 'i18n']),
-        ).toBeUndefined();
+        ).toEqual('none');
       });
 
       it('should throw is default locale is missing from root i18n config', () => {

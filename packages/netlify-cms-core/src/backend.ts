@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq, trim, sortBy, groupBy, get, set } from 'lodash';
+import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
 import { List, Map, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import { resolveFormat } from './formats/formats';
@@ -17,7 +17,7 @@ import {
   selectFieldsComments,
   selectHasMetaPath,
 } from './reducers/collections';
-import { createEntry, EntryValue, MultiContentArgs } from './valueObjects/Entry';
+import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
@@ -56,14 +56,7 @@ import {
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
-import {
-  I18N_STRUCTURE,
-  getLocaleFromSlug,
-  getI18nFilesDepth,
-  getI18nInfo,
-  getI18nFiles,
-  hasI18n,
-} from './lib/i18n';
+import { getI18nFilesDepth, getI18nFiles, hasI18n, getFilePaths, getI18nEntry } from './lib/i18n';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
@@ -288,7 +281,9 @@ const collectionDepth = (collection: Collection) => {
   depth =
     collection.get('nested')?.get('depth') || getPathDepth(collection.get('path', '') as string);
 
-  depth = getI18nFilesDepth(collection, depth);
+  if (hasI18n(collection)) {
+    depth = getI18nFilesDepth(collection, depth);
+  }
 
   return depth;
 };
@@ -548,41 +543,6 @@ export class Backend {
     return entries;
   }
 
-  async listAllMultipleEntires(collection: Collection) {
-    const { structure: i18nStructure, locales } = getI18nInfo(collection);
-    const entries = await this.listAllEntries(collection);
-    let multiEntries;
-    if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FILES) {
-      multiEntries = entries
-        .filter(entry => locales.some(l => entry.slug.endsWith(`.${l}`)))
-        .map(entry => {
-          const locale = getLocaleFromSlug(collection, entry.slug);
-          return {
-            ...entry,
-            slug: entry.slug.replace(`.${locale}`, ''),
-            contentKey: entry.path.replace(`.${locale}`, ''),
-            i18nStructure,
-            locale,
-          };
-        });
-    } else if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-      multiEntries = entries
-        .filter(entry => locales.some(l => entry.slug.startsWith(`${l}/`)))
-        .map(entry => {
-          const locale = getLocaleFromSlug(collection, entry.slug);
-          return {
-            ...entry,
-            slug: entry.slug.replace(`${locale}/`, ''),
-            contentKey: entry.path.replace(`${locale}/`, ''),
-            i18nStructure,
-            locale,
-          };
-        });
-    }
-
-    return this.mergeMultipleContentEntries(multiEntries as EntryValue[]);
-  }
-
   async search(collections: Collection[], searchTerm: string) {
     // Perform a local search by requesting all entries. For each
     // collection, load it, search, and call onCollectionResults with
@@ -784,61 +744,30 @@ export class Backend {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
     const extension = selectFolderEntryExtension(collection);
-    const { structure: i18nStructure } = getI18nInfo(collection);
-    const locales = collection.get('locales')?.toJS() as string[];
-    let loadedEntries;
 
-    if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FILES) {
-      loadedEntries = await Promise.all(
-        locales.map(locale =>
-          this.implementation
-            .getEntry(path.replace(extension, `${locale}.${extension}`))
-            .then(entry => (entry.data ? entry : null))
-            .catch(() => null),
-        ),
-      );
-    } else if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-      loadedEntries = await Promise.all(
-        locales.map(locale =>
-          this.implementation
-            .getEntry(path.replace(`/${slug}`, `/${locale}/${slug}`))
-            .then(entry => (entry.data ? entry : null))
-            .catch(() => null),
-        ),
-      );
-    } else {
+    const getEntryValue = async (path: string) => {
       const loadedEntry = await this.implementation.getEntry(path);
-      loadedEntries = [loadedEntry];
+      let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+        raw: loadedEntry.data,
+        label,
+        mediaFiles: [],
+        meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+      });
+
+      entry = this.entryWithFormat(collection)(entry);
+      entry = await this.processEntry(state, collection, entry);
+
+      return entry;
+    };
+
+    let entryValue: EntryValue;
+    if (hasI18n(collection)) {
+      entryValue = await getI18nEntry(collection, extension, path, slug, getEntryValue);
+    } else {
+      entryValue = await getEntryValue(path);
     }
 
-    const filteredLoadedEntries = loadedEntries.filter(Boolean) as ImplementationEntry[];
-    const entries = await Promise.all(
-      filteredLoadedEntries.map(async loadedEntry => {
-        const locale = getLocaleFromSlug(
-          collection,
-          selectEntrySlug(collection, loadedEntry.file.path) as string,
-        );
-        let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
-          raw: loadedEntry.data,
-          label,
-          i18nStructure,
-          locale,
-          mediaFiles: [],
-          meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
-        });
-
-        entry = this.entryWithFormat(collection)(entry);
-        entry = await this.processEntry(state, collection, entry);
-
-        return entry;
-      }),
-    );
-
-    if (hasI18nMultipleFiles(collection)) {
-      return this.mergeEntries(entries);
-    }
-
-    return entries[0];
+    return entryValue;
   }
 
   getMedia() {
@@ -908,7 +837,6 @@ export class Backend {
     );
 
     let data;
-    let entryWithFormat;
     let newFile = false;
     let path = slug;
     // if the unpublished entry has no diffs, return the original
@@ -918,20 +846,6 @@ export class Backend {
       );
       data = loadedEntry.data;
       path = loadedEntry.file.path;
-    } else if (hasI18nMultipleFiles(collection)) {
-      data = await Promise.all(
-        dataFiles.map(async file => {
-          const data = await this.implementation.unpublishedEntryDataFile(
-            collection.get('name'),
-            entryData.slug,
-            file.path,
-            file.id,
-          );
-          return { data, path: file.path };
-        }),
-      );
-      newFile = dataFiles[0].newFile;
-      path = dataFiles[0].path;
     } else {
       const entryFile = dataFiles[0];
       data = await this.implementation.unpublishedEntryDataFile(
@@ -944,40 +858,17 @@ export class Backend {
       path = entryFile.path;
     }
 
-    if (Array.isArray(data)) {
-      const multipleEntries = data.map(d => {
-        const { structure: i18nStructure } = getI18nInfo(collection);
-        const locale = getLocaleFromSlug(collection, selectEntrySlug(collection, d.path) as string);
+    const entry = createEntry(collection.get('name'), slug, path, {
+      raw: data,
+      isModification: !newFile,
+      label: collection && selectFileEntryLabel(collection, slug),
+      mediaFiles,
+      updatedOn: entryData.updatedAt,
+      status: entryData.status,
+      meta: { path: prepareMetaPath(path, collection) },
+    });
 
-        return this.entryWithFormat(collection)(
-          createEntry(collection.get('name'), slug, path, {
-            raw: d.data,
-            isModification: !newFile,
-            label: collection && selectFileEntryLabel(collection, slug),
-            mediaFiles,
-            updatedOn: entryData.updatedAt,
-            status: entryData.status,
-            meta: { path: prepareMetaPath(path, collection) },
-            i18nStructure,
-            locale,
-          }),
-        );
-      });
-
-      entryWithFormat = this.mergeEntries(multipleEntries);
-    } else {
-      const entry = createEntry(collection.get('name'), slug, path, {
-        raw: data,
-        isModification: !newFile,
-        label: collection && selectFileEntryLabel(collection, slug),
-        mediaFiles,
-        updatedOn: entryData.updatedAt,
-        status: entryData.status,
-        meta: { path: prepareMetaPath(path, collection) },
-      });
-
-      entryWithFormat = this.entryWithFormat(collection)(entry);
-    }
+    const entryWithFormat = this.entryWithFormat(collection)(entry);
 
     return entryWithFormat;
   }
@@ -1027,32 +918,6 @@ export class Backend {
     let entry = await this.processUnpublishedEntry(collection, entryData, true);
     entry = await this.processEntry(state, collection, entry);
     return entry;
-  }
-
-  mergeMultipleContentEntries(entries: (EntryValue & MultiContentArgs)[]) {
-    const groupEntries = groupBy(entries, e => e.contentKey);
-    return Object.keys(groupEntries).reduce((acc: EntryValue[], key: string) => {
-      const entries = groupEntries[key];
-      return [...acc, this.mergeEntries(entries)];
-    }, []);
-  }
-
-  mergeEntries(entries: (EntryValue & MultiContentArgs)[]) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { i18nStructure, contentKey, locale, ...entry } = entries[0];
-    const data: { [key: string]: unknown } = {};
-    let path = '';
-
-    entries.forEach((e: EntryValue & MultiContentArgs) => {
-      if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FILES) {
-        !path && (path = e.path.replace(`.${e.locale}`, ''));
-        data[e.locale as string] = e.data;
-      } else if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-        !path && (path = e.path.replace(`${e.locale}/`, ''));
-        data[e.locale as string] = e.data;
-      }
-    });
-    return { ...entry, path, raw: '', data, multiContent: true };
   }
 
   /**
@@ -1186,7 +1051,7 @@ export class Backend {
       dataFiles = getI18nFiles(
         collection,
         extension,
-        entryDraft,
+        entryDraft.get('entry'),
         (draftData: EntryMap) => this.entryToRaw(collection, draftData),
         slug,
         path,
@@ -1240,51 +1105,6 @@ export class Backend {
     return slug;
   }
 
-  getMultipleEntries(
-    collection: Collection,
-    entryDraft: EntryDraft,
-    path: string,
-    slug: string,
-    newPath?: string,
-  ) {
-    const { structure: i18nStructure } = getI18nInfo(collection);
-    const extension = selectFolderEntryExtension(collection);
-    const data = entryDraft.getIn(['entry', 'data']).toJS();
-    const locales = Object.keys(data);
-    const dataFiles = [] as DataFile[];
-    if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FILES) {
-      locales.forEach(l => {
-        dataFiles.push({
-          path: path.replace(extension, `${l}.${extension}`),
-          slug,
-          raw: this.entryToRaw(
-            collection,
-            entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
-          ),
-          ...(newPath && {
-            newPath,
-          }),
-        });
-      });
-    } else if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-      locales.forEach(l => {
-        dataFiles.push({
-          path: path.replace(`/${slug}`, `/${l}/${slug}`),
-          slug,
-          raw: this.entryToRaw(
-            collection,
-            entryDraft.get('entry').set('data', entryDraft.getIn(['entry', 'data', l])),
-          ),
-          ...(newPath && {
-            newPath,
-          }),
-        });
-      });
-    }
-
-    return dataFiles;
-  }
-
   async invokeEventWithEntry(event: string, entry: EntryMap) {
     const { login, name } = (await this.currentUser()) as User;
     return await invokeEvent({ name: event, data: { entry, author: { login, name } } });
@@ -1335,7 +1155,6 @@ export class Backend {
     const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
     const extension = selectFolderEntryExtension(collection) as string;
-    const locales = collection.get('locales')?.toJS() as string[];
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
@@ -1357,24 +1176,12 @@ export class Backend {
 
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
-    if (hasI18nMultipleFiles(collection)) {
-      const { structure: i18nStructure } = getI18nInfo(collection);
-      if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FILES) {
-        for (const l of locales) {
-          await this.implementation
-            .deleteFile(path.replace(extension, `${l}.${extension}`), commitMessage)
-            .catch(() => undefined);
-        }
-      } else if (i18nStructure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-        for (const l of locales) {
-          await this.implementation
-            .deleteFile(path.replace(`/${slug}`, `/${l}/${slug}`), commitMessage)
-            .catch(() => undefined);
-        }
-      }
-    } else {
-      await this.implementation.deleteFile(path, commitMessage);
+    let paths = [path];
+    if (hasI18n(collection)) {
+      paths = getFilePaths(collection, extension, path, slug);
     }
+    await this.implementation.deleteFiles(paths, commitMessage);
+
     await this.invokePostUnpublishEvent(entry);
     return Promise.resolve();
   }
@@ -1391,7 +1198,7 @@ export class Backend {
       },
       user.useOpenAuthoring,
     );
-    return this.implementation.deleteFile(path, commitMessage);
+    return this.implementation.deleteFiles([path], commitMessage);
   }
 
   persistUnpublishedEntry(args: PersistArgs) {

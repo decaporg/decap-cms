@@ -18,6 +18,7 @@ const allowedActions = [
   'getMediaFile',
   'persistMedia',
   'deleteFile',
+  'deleteFiles',
   'getDeployPreview',
 ];
 
@@ -196,6 +197,20 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         then: defaultParams
           .keys({
             path,
+            options: Joi.object({
+              commitMessage: requiredString,
+            }).required(),
+          })
+          .required(),
+      },
+      {
+        is: 'deleteFiles',
+        then: defaultParams
+          .keys({
+            paths: Joi.array()
+              .items(path)
+              .min(1)
+              .required(),
             options: Joi.object({
               commitMessage: requiredString,
             }).required(),

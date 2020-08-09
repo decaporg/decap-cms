@@ -29,13 +29,14 @@ import {
   DataFile,
   GetMediaFileParams,
   DeleteEntryParams,
+  DeleteFilesParams,
   UnpublishedEntryDataFileParams,
   UnpublishedEntryMediaFileParams,
 } from '../types';
 // eslint-disable-next-line import/default
 import simpleGit from 'simple-git/promise';
 import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, writeFile, move } from '../utils/fs';
+import { listRepoFiles, writeFile, move, deleteFile } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
 const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
@@ -391,10 +392,22 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
             options: { commitMessage },
           } = body.params as DeleteFileParams;
           await runOnBranch(git, branch, async () => {
-            await fs.unlink(path.join(repoPath, filePath));
+            await deleteFile(repoPath, filePath);
             await commit(git, commitMessage);
           });
           res.json({ message: `deleted file ${filePath}` });
+          break;
+        }
+        case 'deleteFiles': {
+          const {
+            paths,
+            options: { commitMessage },
+          } = body.params as DeleteFilesParams;
+          await runOnBranch(git, branch, async () => {
+            await Promise.all(paths.map(filePath => deleteFile(repoPath, filePath)));
+            await commit(git, commitMessage);
+          });
+          res.json({ message: `deleted files ${paths.join(', ')}` });
           break;
         }
         case 'getDeployPreview': {

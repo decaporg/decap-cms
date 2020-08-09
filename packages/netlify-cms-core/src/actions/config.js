@@ -62,8 +62,8 @@ const setSnakeCaseConfig = field => {
 const setI18nField = field => {
   if (field.get(I18N) === true) {
     field = field.set(I18N, I18N_FIELD.TRANSLATE);
-  } else if (field.get(I18N) === false) {
-    field = field.delete(I18N);
+  } else if (field.get(I18N) === false || !field.has(I18N)) {
+    field = field.set(I18N, I18N_FIELD.NONE);
   }
   return field;
 };

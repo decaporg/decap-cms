@@ -26,7 +26,7 @@ describe('defaultSchema', () => {
 
     assetFailure(
       schema.validate({ action: 'unknown', params: {} }),
-      '"action" must be one of [info, entriesByFolder, entriesByFiles, getEntry, unpublishedEntries, unpublishedEntry, unpublishedEntryDataFile, unpublishedEntryMediaFile, deleteUnpublishedEntry, persistEntry, updateUnpublishedEntryStatus, publishUnpublishedEntry, getMedia, getMediaFile, persistMedia, deleteFile, getDeployPreview]',
+      '"action" must be one of [info, entriesByFolder, entriesByFiles, getEntry, unpublishedEntries, unpublishedEntry, unpublishedEntryDataFile, unpublishedEntryMediaFile, deleteUnpublishedEntry, persistEntry, updateUnpublishedEntryStatus, publishUnpublishedEntry, getMedia, getMediaFile, persistMedia, deleteFile, deleteFiles, getDeployPreview]',
     );
   });
 
@@ -513,6 +513,31 @@ describe('defaultSchema', () => {
         params: {
           ...defaultParams,
           path: 'src/static/images/image.png',
+          options: { commitMessage: 'commitMessage' },
+        },
+      });
+
+      expect(error).toBeUndefined();
+    });
+  });
+
+  describe('deleteFiles', () => {
+    it('should fail on invalid params', () => {
+      const schema = defaultSchema();
+
+      assetFailure(
+        schema.validate({ action: 'deleteFiles', params: { ...defaultParams } }),
+        '"params.paths" is required',
+      );
+    });
+
+    it('should pass on valid params', () => {
+      const schema = defaultSchema();
+      const { error } = schema.validate({
+        action: 'deleteFiles',
+        params: {
+          ...defaultParams,
+          paths: ['src/static/images/image.png'],
           options: { commitMessage: 'commitMessage' },
         },
       });

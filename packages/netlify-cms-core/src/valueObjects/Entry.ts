@@ -15,12 +15,6 @@ interface Options {
   meta?: { path?: string };
 }
 
-export interface MultiContentArgs {
-  i18nStructure?: string;
-  contentKey?: string;
-  locale?: string;
-}
-
 export interface EntryValue {
   collection: string;
   slug: string;
@@ -36,15 +30,13 @@ export interface EntryValue {
   updatedOn: string;
   status?: string;
   meta: { path?: string };
-  multiContent?: boolean;
+  i18n?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [locale: string]: any;
+  };
 }
 
-export function createEntry(
-  collection: string,
-  slug = '',
-  path = '',
-  options: Options & MultiContentArgs = {},
-) {
+export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
   const returnObj: EntryValue = {
     collection,
     slug,
@@ -59,15 +51,6 @@ export function createEntry(
     updatedOn: options.updatedOn || '',
     status: options.status || '',
     meta: options.meta || {},
-    ...(options.contentKey && {
-      contentKey: options.contentKey,
-    }),
-    ...(options.i18nStructure && {
-      i18nStructure: options.i18nStructure,
-    }),
-    ...(options.locale && {
-      locale: options.locale,
-    }),
   };
 
   return returnObj;

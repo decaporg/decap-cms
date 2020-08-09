@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { ThunkDispatch } from 'redux-thunk';
-import { Map, List, fromJS } from 'immutable';
+import { Map, List } from 'immutable';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
@@ -26,7 +26,6 @@ import {
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
-import { hasI18nMultipleFiles } from '../lib/i18n';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { Collection, EntryMap, State, Collections, EntryDraft, MediaFile } from '../types/redux';
 import { AnyAction } from 'redux';
@@ -279,7 +278,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {
-      let entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
+      const entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
       const assetProxies = await Promise.all(
         entry.mediaFiles
           .filter(file => file.draft)
@@ -292,21 +291,6 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
           ),
       );
       dispatch(addAssets(assetProxies));
-
-      if (hasI18nMultipleFiles(collection)) {
-        const publishedEntries = get(
-          getState().entries.toJS(),
-          `pages.${collection.get('name')}.ids`,
-          false,
-        );
-        !publishedEntries && (await dispatch(loadEntries(collection)));
-        const publishedEntry = selectEntry(getState(), collection.get('name'), slug);
-        publishedEntry &&
-          entry.isModification === false &&
-          (entry = { ...entry, isModification: true });
-        entry.isModification && (entry = publishedEntry.mergeDeep(fromJS(entry)).toJS());
-      }
-
       dispatch(unpublishedEntryLoaded(collection, entry));
       dispatch(createDraftFromEntry(entry));
     } catch (error) {
@@ -341,11 +325,7 @@ export function loadUnpublishedEntries(collections: Collections) {
       .unpublishedEntries(collections)
       .then(response => {
         const entries = response.entries;
-        const multiContentEntries = entries.filter(e => e.multiContent);
         dispatch(unpublishedEntriesLoaded(entries, response.pagination));
-        multiContentEntries.forEach(entry => {
-          dispatch(loadUnpublishedEntry(collections.get(entry.collection), entry.slug));
-        });
       })
       .catch((error: Error) => {
         dispatch(

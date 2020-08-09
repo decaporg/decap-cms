@@ -21,6 +21,7 @@ import { hasI18n, getI18nInfo } from '../../lib/i18n';
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const SPLIT_PANE_POSITION = 'cms.split-pane-position';
+const I18N_VISIBLE = 'cms.i18n-visible';
 
 const styles = {
   splitPane: css`
@@ -118,11 +119,28 @@ const ViewControls = styled.div`
   z-index: ${zIndex.zIndex299};
 `;
 
+const EditorContent = ({
+  i18nVisible,
+  previewVisible,
+  editor,
+  editorWithEditor,
+  editorWithPreview,
+}) => {
+  if (i18nVisible) {
+    return editorWithEditor;
+  } else if (previewVisible) {
+    return editorWithPreview;
+  } else {
+    return <NoPreviewContainer>{editor}</NoPreviewContainer>;
+  }
+};
+
 class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
+    i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
   };
 
   handleSplitPaneDragStart = () => {
@@ -155,6 +173,12 @@ class EditorInterface extends Component {
     const newScrollSyncEnabled = !this.state.scrollSyncEnabled;
     this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
     localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
+  };
+
+  handleToggleI18n = () => {
+    const newI18nVisible = !this.state.i18nVisible;
+    this.setState({ i18nVisible: newI18nVisible });
+    localStorage.setItem(I18N_VISIBLE, newI18nVisible);
   };
 
   render() {
@@ -190,9 +214,10 @@ class EditorInterface extends Component {
       clearFieldErrors,
     } = this.props;
 
-    const { previewVisible, scrollSyncEnabled, showEventBlocker } = this.state;
+    const { scrollSyncEnabled, showEventBlocker } = this.state;
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
-    const { locales } = getI18nInfo(this.props.collection);
+    const collectionI18nEnabled = hasI18n(collection);
+    const locales = collectionI18nEnabled && getI18nInfo(this.props.collection).locales;
     const editorProps = {
       collection,
       entry,
@@ -262,6 +287,10 @@ class EditorInterface extends Component {
       </ScrollSync>
     );
 
+    const i18nVisible = collectionI18nEnabled && this.state.i18nVisible;
+    const previewVisible = collectionPreviewEnabled && this.state.previewVisible;
+    const scrollSyncVisible = i18nVisible || previewVisible;
+
     return (
       <EditorContainer>
         <EditorToolbar
@@ -298,6 +327,15 @@ class EditorInterface extends Component {
         />
         <Editor key={draftKey}>
           <ViewControls>
+            {collectionI18nEnabled && (
+              <EditorToggle
+                isActive={i18nVisible}
+                onClick={this.handleToggleI18n}
+                size="large"
+                type="page"
+                title="Toggle i18n"
+              />
+            )}
             {collectionPreviewEnabled && (
               <EditorToggle
                 isActive={previewVisible}
@@ -307,7 +345,7 @@ class EditorInterface extends Component {
                 title="Toggle preview"
               />
             )}
-            {collectionPreviewEnabled && previewVisible && (
+            {scrollSyncVisible && (
               <EditorToggle
                 isActive={scrollSyncEnabled}
                 onClick={this.handleToggleScrollSync}
@@ -317,13 +355,13 @@ class EditorInterface extends Component {
               />
             )}
           </ViewControls>
-          {hasI18n(collection) ? (
-            editorWithEditor
-          ) : collectionPreviewEnabled && this.state.previewVisible ? (
-            editorWithPreview
-          ) : (
-            <NoPreviewContainer>{editor}</NoPreviewContainer>
-          )}
+          <EditorContent
+            i18nVisible={i18nVisible}
+            previewVisible={previewVisible}
+            editor={editor}
+            editorWithEditor={editorWithEditor}
+            editorWithPreview={editorWithPreview}
+          />
         </Editor>
       </EditorContainer>
     );

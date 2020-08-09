@@ -21,7 +21,6 @@ import {
   SortDirection,
   ViewFilter,
 } from '../types/redux';
-import { hasI18nMultipleFiles } from '../lib/i18n';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
@@ -153,9 +152,7 @@ const getAllEntries = async (state: State, collection: Collection) => {
   const provider: Backend = integration
     ? getIntegrationProvider(state.integrations, backend.getToken, integration)
     : backend;
-  const entries = await (hasI18nMultipleFiles(collection)
-    ? provider.listAllMultipleEntires(collection)
-    : provider.listAllEntries(collection));
+  const entries = await provider.listAllEntries(collection);
   return entries;
 };
 
@@ -546,8 +543,6 @@ export function loadEntries(collection: Collection, page = 0) {
       } = await (collection.has('nested')
         ? // nested collections require all entries to construct the tree
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
-        : hasI18nMultipleFiles(collection)
-        ? provider.listAllMultipleEntires(collection).then((entries: EntryValue[]) => ({ entries }))
         : provider.listEntries(collection, page));
       response = {
         ...response,
