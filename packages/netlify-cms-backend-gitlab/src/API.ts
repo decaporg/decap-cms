@@ -225,7 +225,7 @@ export default class API {
 
   request = async (req: ApiRequest): Promise<Response> => {
     if (this.includeCookiesInRequests) {
-      unsentRequest.withCredentials('include', req);
+      req = unsentRequest.withCredentials('include', req);
     }
 
     try {
