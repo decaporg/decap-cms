@@ -255,7 +255,7 @@ export default class GitGateway implements Implementation {
 
   requestFunction = (req: ApiRequest) => {
     if (this.includeCookiesInRequests) {
-      unsentRequest.withCredentials('include', req);
+      req = unsentRequest.withCredentials('include', req);
     }
 
     return this.tokenPromise!()
