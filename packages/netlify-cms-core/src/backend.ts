@@ -38,6 +38,7 @@ import {
   AsyncLock,
   UnpublishedEntry,
   DataFile,
+  UnpublishedEntryDiff,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
@@ -850,41 +851,49 @@ export class Backend {
       f => f.path.length,
     );
 
-    let data;
-    let newFile = false;
-    let path = slug;
+    const formatData = (data: string, path: string, newFile: boolean) => {
+      const entry = createEntry(collection.get('name'), slug, path, {
+        raw: data,
+        isModification: !newFile,
+        label: collection && selectFileEntryLabel(collection, slug),
+        mediaFiles,
+        updatedOn: entryData.updatedAt,
+        status: entryData.status,
+        meta: { path: prepareMetaPath(path, collection) },
+      });
+
+      const entryWithFormat = this.entryWithFormat(collection)(entry);
+      return entryWithFormat;
+    };
+
+    const readAndFormatDataFile = async (dataFile: UnpublishedEntryDiff) => {
+      const data = await this.implementation.unpublishedEntryDataFile(
+        collection.get('name'),
+        entryData.slug,
+        dataFile.path,
+        dataFile.id,
+      );
+      const entryWithFormat = formatData(data, dataFile.path, dataFile.newFile);
+      return entryWithFormat;
+    };
+
     // if the unpublished entry has no diffs, return the original
     if (dataFiles.length <= 0) {
       const loadedEntry = await this.implementation.getEntry(
         selectEntryPath(collection, slug) as string,
       );
-      data = loadedEntry.data;
-      path = loadedEntry.file.path;
-    } else {
-      const entryFile = dataFiles[0];
-      data = await this.implementation.unpublishedEntryDataFile(
-        collection.get('name'),
-        entryData.slug,
-        entryFile.path,
-        entryFile.id,
+      return formatData(loadedEntry.data, loadedEntry.file.path, false);
+    } else if (hasI18n(collection)) {
+      let entries = await Promise.all(
+        dataFiles.map(dataFile => readAndFormatDataFile(dataFile).catch(() => null)),
       );
-      newFile = entryFile.newFile;
-      path = entryFile.path;
+      entries = entries.filter(Boolean);
+      const grouped = await groupEntries(collection, extension, entries as EntryValue[]);
+      return grouped[0];
+    } else {
+      const entryWithFormat = await readAndFormatDataFile(dataFiles[0]);
+      return entryWithFormat;
     }
-
-    const entry = createEntry(collection.get('name'), slug, path, {
-      raw: data,
-      isModification: !newFile,
-      label: collection && selectFileEntryLabel(collection, slug),
-      mediaFiles,
-      updatedOn: entryData.updatedAt,
-      status: entryData.status,
-      meta: { path: prepareMetaPath(path, collection) },
-    });
-
-    const entryWithFormat = this.entryWithFormat(collection)(entry);
-
-    return entryWithFormat;
   }
 
   async unpublishedEntries(collections: Collections) {

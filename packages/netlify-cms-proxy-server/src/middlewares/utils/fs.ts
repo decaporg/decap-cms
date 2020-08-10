@@ -56,3 +56,10 @@ export const move = async (from: string, to: string) => {
   const allFiles = await listFiles(sourceDir, '', 100);
   await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
 };
+
+export const getUpdateDate = async (repoPath: string, filePath: string) => {
+  return fs
+    .stat(path.join(repoPath, filePath))
+    .then(stat => stat.mtime)
+    .catch(() => new Date());
+};

@@ -30,11 +30,17 @@ export interface ImplementationEntry {
   file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
 }
 
+export interface UnpublishedEntryDiff {
+  id: string;
+  path: string;
+  newFile: boolean;
+}
+
 export interface UnpublishedEntry {
   slug: string;
   collection: string;
   status: string;
-  diffs: { id: string; path: string; newFile: boolean }[];
+  diffs: UnpublishedEntryDiff[];
   updatedAt: string;
 }
 

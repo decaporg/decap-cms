@@ -35,8 +35,9 @@ import {
 } from '../types';
 // eslint-disable-next-line import/default
 import simpleGit from 'simple-git/promise';
+import { Mutex, withTimeout } from 'async-mutex';
 import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, writeFile, move, deleteFile } from '../utils/fs';
+import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
 const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
@@ -169,8 +170,13 @@ export const getSchema = ({ repoPath }: { repoPath: string }) => {
 export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
   const git = simpleGit(repoPath).silent(false);
 
+  // we can only perform a single git operation at any given time
+  const mutex = withTimeout(new Mutex(), 3000, new Error('Request timed out'));
+
   return async function(req: express.Request, res: express.Response) {
+    let release;
     try {
+      release = await mutex.acquire();
       const { body } = req;
       if (body.action === 'info') {
         res.json({
@@ -240,11 +246,18 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
             const diffs = await getDiffs(git, branch, cmsBranch);
             const label = await git.raw(['config', branchDescription(cmsBranch)]);
             const status = label && labelToStatus(label.trim(), cmsLabelPrefix || '');
+            const updatedAt =
+              diffs.length >= 0
+                ? await runOnBranch(git, cmsBranch, () => {
+                    return getUpdateDate(repoPath, diffs[0].newPath);
+                  })
+                : new Date();
             const unpublishedEntry = {
               collection,
               slug,
               status,
               diffs,
+              updatedAt,
             };
             res.json(unpublishedEntry);
           } else {
@@ -423,6 +436,8 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
     } catch (e) {
       logger.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
       res.status(500).json({ error: 'Unknown error' });
+    } finally {
+      release && release();
     }
   };
 };

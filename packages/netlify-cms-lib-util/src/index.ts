@@ -20,6 +20,7 @@ import { asyncLock, AsyncLock as AL } from './asyncLock';
 import {
   Implementation as I,
   ImplementationEntry as IE,
+  UnpublishedEntryDiff as UED,
   UnpublishedEntry as UE,
   ImplementationMediaFile as IMF,
   ImplementationFile as IF,
@@ -77,6 +78,7 @@ import {
 export type AsyncLock = AL;
 export type Implementation = I;
 export type ImplementationEntry = IE;
+export type UnpublishedEntryDiff = UED;
 export type UnpublishedEntry = UE;
 export type ImplementationMediaFile = IMF;
 export type ImplementationFile = IF;
