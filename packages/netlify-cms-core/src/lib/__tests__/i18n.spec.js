@@ -391,10 +391,13 @@ describe('i18n', () => {
         slug: 'index',
         path: 'src/content/index.md',
         data: {
-          en: { title: 'en_title' },
-          de: { title: 'de_title' },
-          fr: { title: 'fr_title' },
+          title: 'en_title',
         },
+        i18n: {
+          de: { data: { title: 'de_title' } },
+          fr: { data: { title: 'fr_title' } },
+        },
+        raw: '',
       });
     });
   });
@@ -501,7 +504,17 @@ describe('i18n', () => {
           extension,
           entries,
         ),
-      ).toBe(entries);
+      ).toEqual([
+        {
+          slug: 'index',
+          path: 'src/content/index.md',
+          data: {
+            title: 'en_title',
+          },
+          i18n: { de: { data: { title: 'de_title' } }, fr: { data: { title: 'fr_title' } } },
+          raw: '',
+        },
+      ]);
     });
   });
 });

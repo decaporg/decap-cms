@@ -205,6 +205,24 @@ const mergeValues = (
   return entryValue;
 };
 
+const mergeSingleFileValue = (entryValue: EntryValue, defaultLocale: string, locales: string[]) => {
+  const data = entryValue.data[defaultLocale];
+  const i18n = locales
+    .filter(l => l !== defaultLocale)
+    .map(l => ({ locale: l, value: entryValue.data[l] }))
+    .filter(e => e.value)
+    .reduce((acc, e) => {
+      return { ...acc, [e.locale]: { data: e.value } };
+    }, {});
+
+  return {
+    ...entryValue,
+    data,
+    i18n,
+    raw: '',
+  };
+};
+
 export const getI18nEntry = async (
   collection: Collection,
   extension: string,
@@ -216,7 +234,7 @@ export const getI18nEntry = async (
 
   let entryValue: EntryValue;
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
-    entryValue = await getEntryValue(path);
+    entryValue = mergeSingleFileValue(await getEntryValue(path), defaultLocale, locales);
   } else {
     const entryValues = await Promise.all(
       locales.map(async locale => {
@@ -238,9 +256,9 @@ export const getI18nEntry = async (
 };
 
 export const groupEntries = (collection: Collection, extension: string, entries: EntryValue[]) => {
-  const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+  const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
-    return entries;
+    return entries.map(e => mergeSingleFileValue(e, defaultLocale, locales));
   }
 
   const grouped = groupBy(
