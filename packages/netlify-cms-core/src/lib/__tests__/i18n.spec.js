@@ -1,6 +1,12 @@
 import { fromJS } from 'immutable';
 import * as i18n from '../i18n';
 
+jest.mock('../../reducers/collections', () => {
+  return {
+    selectEntrySlug: () => 'index',
+  };
+});
+
 describe('i18n', () => {
   describe('hasI18n', () => {
     it('should return false for collection with no i18n', () => {
@@ -390,6 +396,112 @@ describe('i18n', () => {
           fr: { title: 'fr_title' },
         },
       });
+    });
+  });
+
+  describe('groupEntries', () => {
+    const locales = ['en', 'de', 'fr'];
+    const default_locale = 'en';
+    const extension = 'md';
+
+    it('should group entries array when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
+      const entries = [
+        {
+          slug: 'index',
+          path: 'src/content/en/index.md',
+          data: { title: 'en_title' },
+        },
+        {
+          slug: 'index',
+          path: 'src/content/de/index.md',
+          data: { title: 'de_title' },
+        },
+        {
+          slug: 'index',
+          path: 'src/content/fr/index.md',
+          data: { title: 'fr_title' },
+        },
+      ];
+
+      expect(
+        i18n.groupEntries(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, locales, default_locale },
+          }),
+          extension,
+          entries,
+        ),
+      ).toEqual([
+        {
+          slug: 'index',
+          path: 'src/content/index.md',
+          data: { title: 'en_title' },
+          i18n: { de: { data: { title: 'de_title' } }, fr: { data: { title: 'fr_title' } } },
+          raw: '',
+        },
+      ]);
+    });
+
+    it('should group entries array when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
+      const entries = [
+        {
+          slug: 'index',
+          path: 'src/content/index.en.md',
+          data: { title: 'en_title' },
+        },
+        {
+          slug: 'index',
+          path: 'src/content/index.de.md',
+          data: { title: 'de_title' },
+        },
+        {
+          slug: 'index',
+          path: 'src/content/index.fr.md',
+          data: { title: 'fr_title' },
+        },
+      ];
+
+      expect(
+        i18n.groupEntries(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES, locales, default_locale },
+          }),
+          extension,
+          entries,
+        ),
+      ).toEqual([
+        {
+          slug: 'index',
+          path: 'src/content/index.md',
+          data: { title: 'en_title' },
+          i18n: { de: { data: { title: 'de_title' } }, fr: { data: { title: 'fr_title' } } },
+          raw: '',
+        },
+      ]);
+    });
+
+    it('should return entries array as is when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
+      const entries = [
+        {
+          slug: 'index',
+          path: 'src/content/index.md',
+          data: {
+            en: { title: 'en_title' },
+            de: { title: 'de_title' },
+            fr: { title: 'fr_title' },
+          },
+        },
+      ];
+
+      expect(
+        i18n.groupEntries(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales, default_locale },
+          }),
+          extension,
+          entries,
+        ),
+      ).toBe(entries);
     });
   });
 });

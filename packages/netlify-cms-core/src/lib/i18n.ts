@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
-import { set } from 'lodash';
+import { set, trimEnd, groupBy } from 'lodash';
 import { Collection, EntryField, EntryMap } from '../types/redux';
+import { selectEntrySlug } from '../reducers/collections';
 import { EntryValue } from '../valueObjects/Entry';
 
 export const I18N = 'i18n';
@@ -85,6 +86,25 @@ export const getFilePath = (
   }
 };
 
+export const getLocaleFromPath = (structure: I18N_STRUCTURE, extension: string, path: string) => {
+  switch (structure) {
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
+      const parts = path.split('/');
+      // filename
+      parts.pop();
+      // locale
+      return parts.pop();
+    }
+    case I18N_STRUCTURE.MULTIPLE_FILES: {
+      const parts = trimEnd(path, `.${extension}`);
+      return parts.split('.').pop();
+    }
+    case I18N_STRUCTURE.SINGLE_FILE:
+    default:
+      return '';
+  }
+};
+
 export const getFilePaths = (
   collection: Collection,
   extension: string,
@@ -141,19 +161,48 @@ export const getI18nFiles = (
     ];
   }
 
-  const dataFiles = locales.map(locale => {
-    const dataPath = getDataPath(locale, defaultLocale);
-    const draft = entryDraft.set('data', entryDraft.getIn(dataPath));
-    return {
-      path: getFilePath(structure, extension, path, slug, locale),
-      slug,
-      raw: entryToRaw(draft),
-      ...(newPath && {
-        newPath,
-      }),
-    };
-  });
+  const dataFiles = locales
+    .map(locale => {
+      const dataPath = getDataPath(locale, defaultLocale);
+      const draft = entryDraft.set('data', entryDraft.getIn(dataPath));
+      return {
+        path: getFilePath(structure, extension, path, slug, locale),
+        slug,
+        raw: draft.get('data') ? entryToRaw(draft) : '',
+        ...(newPath && {
+          newPath,
+        }),
+      };
+    })
+    .filter(dataFile => dataFile.raw);
   return dataFiles;
+};
+
+const mergeValues = (
+  collection: Collection,
+  structure: I18N_STRUCTURE,
+  defaultLocale: string,
+  values: { locale: string; value: EntryValue }[],
+) => {
+  const defaultEntry = values.find(e => e.locale === defaultLocale)!.value;
+  const i18n = values
+    .filter(e => e.locale !== defaultLocale)
+    .reduce((acc, { locale, value }) => {
+      const dataPath = getLocaleDataPath(locale);
+      return set(acc, dataPath, value.data);
+    }, {});
+
+  const path = normalizeFilePath(structure, defaultEntry.path, defaultLocale);
+  const slug = selectEntrySlug(collection, path) as string;
+  const entryValue: EntryValue = {
+    ...defaultEntry,
+    raw: '',
+    ...i18n,
+    path,
+    slug,
+  };
+
+  return entryValue;
 };
 
 export const getI18nEntry = async (
@@ -182,21 +231,32 @@ export const getI18nEntry = async (
       locale: string;
     }[];
 
-    const defaultEntry = nonNullValues.find(e => e.locale === defaultLocale)!.value;
-    const i18n = nonNullValues
-      .filter(e => e.locale !== defaultLocale)
-      .reduce((acc, { locale, value }) => {
-        const dataPath = getLocaleDataPath(locale);
-        return set(acc, dataPath, value.data);
-      }, {});
-
-    entryValue = {
-      ...defaultEntry,
-      raw: '',
-      ...i18n,
-      path: normalizeFilePath(structure as I18N_STRUCTURE, defaultEntry.path, defaultLocale),
-    };
+    entryValue = mergeValues(collection, structure, defaultLocale, nonNullValues);
   }
 
   return entryValue;
+};
+
+export const groupEntries = (collection: Collection, extension: string, entries: EntryValue[]) => {
+  const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return entries;
+  }
+
+  const grouped = groupBy(
+    entries.map(e => ({
+      locale: getLocaleFromPath(structure, extension, e.path) as string,
+      value: e,
+    })),
+    ({ locale, value: e }) => {
+      return normalizeFilePath(structure, e.path, locale);
+    },
+  );
+
+  const groupedEntries = Object.values(grouped).reduce((acc, values) => {
+    const entryValue = mergeValues(collection, structure, defaultLocale, values);
+    return [...acc, entryValue];
+  }, [] as EntryValue[]);
+
+  return groupedEntries;
 };

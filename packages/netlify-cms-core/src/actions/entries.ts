@@ -29,6 +29,7 @@ import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '..
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
+import { hasI18n } from '../lib/i18n';
 
 const { notifSend } = notifActions;
 
@@ -353,17 +354,21 @@ export function changeDraftField({
   value,
   metadata,
   entries,
-  locale,
+  i18n,
 }: {
   field: EntryField;
   value: string;
   metadata: Record<string, unknown>;
   entries: EntryMap[];
-  locale?: string;
+  i18n?: {
+    currentLocale: string;
+    defaultLocale: string;
+    locales: string[];
+  };
 }) {
   return {
     type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata, entries, locale },
+    payload: { field, value, metadata, entries, i18n },
   };
 }
 
@@ -536,11 +541,13 @@ export function loadEntries(collection: Collection, page = 0) {
     dispatch(entriesLoading(collection));
 
     try {
+      const loadAllEntries = collection.has('nested') || hasI18n(collection);
+
       let response: {
         cursor: Cursor;
         pagination: number;
         entries: EntryValue[];
-      } = await (collection.has('nested')
+      } = await (loadAllEntries
         ? // nested collections require all entries to construct the tree
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
         : provider.listEntries(collection, page));

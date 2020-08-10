@@ -1,4 +1,4 @@
-import { List, Set, Map } from 'immutable';
+import { List, Set } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
@@ -9,7 +9,6 @@ import {
   CollectionsAction,
   Collection,
   CollectionFiles,
-  EntryFields,
   EntryField,
   State,
   EntryMap,
@@ -18,7 +17,6 @@ import {
 import { selectMediaFolder } from './entries';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { summaryFormatter } from '../lib/formatters';
-import { I18N_STRUCTURE } from '../lib/i18n';
 import { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;

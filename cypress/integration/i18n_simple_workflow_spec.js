@@ -14,8 +14,8 @@ const entry = {
 
 const expectedEnContent = `---
 template: post
-date: 1970-01-01T00:00:00.000Z
 title: first title
+date: 1970-01-01T00:00:00.000Z
 description: first description
 category: first category
 tags:
@@ -24,14 +24,12 @@ tags:
 `;
 
 const expectedDeContent = `---
-template: post
-date: 1970-01-01T00:00:00.000Z
 title: de
+date: 1970-01-01T00:00:00.000Z
 ---
 `;
 
 const expectedFrContent = `---
-template: post
 title: fr
 date: 1970-01-01T00:00:00.000Z
 ---
@@ -48,13 +46,11 @@ en:
     - tag1
   body: first body
 de:
-  template: post
   date: 1970-01-01T00:00:00.000Z
   title: de
 fr:
-  template: post
-  title: fr
   date: 1970-01-01T00:00:00.000Z
+  title: fr
 ---
 `;
 
@@ -95,8 +91,10 @@ describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
       {
         mode,
         publish_mode: 'simple',
-        locales: ['en', 'de', 'fr'],
-        collections: [{ fields: [{}, { translatable: true }, {}, { duplicate: true }] }],
+        i18n: {
+          locales: ['en', 'de', 'fr'],
+        },
+        collections: [{ i18n: true, fields: [{}, { i18n: true }, {}, { i18n: 'duplicate' }] }],
       },
       backend,
     );
@@ -117,7 +115,7 @@ describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
   });
 
   it('can create entry with translation in locale_folders mode', () => {
-    cy.task('updateConfig', { collections: [{ i18n_structure: 'locale_folders' }] });
+    cy.task('updateConfig', { i18n: { structure: 'multiple_folders' } });
 
     login(taskResult.data.user);
 
@@ -140,7 +138,7 @@ describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
   });
 
   it('can create entry with translation in single_file mode', () => {
-    cy.task('updateConfig', { collections: [{ i18n_structure: 'locale_file_extensions' }] });
+    cy.task('updateConfig', { i18n: { structure: 'multiple_files' } });
 
     login(taskResult.data.user);
 
@@ -163,7 +161,7 @@ describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
   });
 
   it('can create entry with translation in locale_file_extensions mode', () => {
-    cy.task('updateConfig', { collections: [{ i18n_structure: 'single_file' }] });
+    cy.task('updateConfig', { i18n: { structure: 'single_file' } });
 
     login(taskResult.data.user);
 

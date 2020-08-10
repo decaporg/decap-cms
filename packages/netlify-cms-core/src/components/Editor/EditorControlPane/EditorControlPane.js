@@ -8,7 +8,7 @@ import {
   isFieldTranslatable,
   isFieldDuplicate,
   isFieldHidden,
-  I18N,
+  getLocaleDataPath,
 } from '../../../lib/i18n';
 
 const ControlPaneContainer = styled.div`
@@ -18,13 +18,14 @@ const ControlPaneContainer = styled.div`
   font-size: 16px;
 `;
 
-const getFieldValue = ({ field, entry, locale, defaultLocale }) => {
+const getFieldValue = ({ field, entry, isTranslatable, locale }) => {
   if (field.get('meta')) {
     return entry.getIn(['meta', field.get('name')]);
   }
 
-  if (isFieldTranslatable(field, locale, defaultLocale)) {
-    return entry.getIn([I18N, locale, 'data', field.get('name')]);
+  if (isTranslatable) {
+    const dataPath = getLocaleDataPath(locale);
+    return entry.getIn([...dataPath, field.get('name')]);
   }
 
   return entry.getIn(['data', field.get('name')]);
@@ -75,47 +76,51 @@ export default class ControlPane extends React.Component {
 
     const { locales, defaultLocale } = getI18nInfo(collection);
     const locale = this.state.selectedLocale;
+    const i18n = locales && {
+      currentLocale: locale,
+      locales,
+      defaultLocale,
+    };
 
     return (
       <ControlPaneContainer>
-        {fields.map((field, i) => {
-          const renderLocaleDropdown = locales && i === 0;
-          const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
-          const isDisabled = locales && isFieldDuplicate(field, locale, defaultLocale);
-          const isHidden = locales && isFieldHidden(field, locale, defaultLocale);
-          return field.get('widget') === 'hidden' ? null : (
-            <EditorControl
-              key={i}
-              field={field}
-              value={getFieldValue({
-                field,
-                entry,
-                locale,
-                defaultLocale,
-              })}
-              fieldsMetaData={fieldsMetaData}
-              fieldsErrors={fieldsErrors}
-              onChange={(field, newValue, newMetadata) => {
-                if (isTranslatable) {
-                  onChange(field, newValue, newMetadata, locale);
-                } else {
-                  onChange(field, newValue, newMetadata);
+        {fields
+          .filter(f => f.get('widget') !== 'hidden')
+          .map((field, i) => {
+            const renderLocaleDropdown = locales && i === 0;
+            const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
+            const isDuplicate = locales && isFieldDuplicate(field, locale, defaultLocale);
+            const isHidden = locales && isFieldHidden(field, locale, defaultLocale);
+
+            return (
+              <EditorControl
+                key={i}
+                field={field}
+                value={getFieldValue({
+                  field,
+                  entry,
+                  locale,
+                  isTranslatable,
+                })}
+                fieldsMetaData={fieldsMetaData}
+                fieldsErrors={fieldsErrors}
+                onChange={(field, newValue, newMetadata) =>
+                  onChange(field, newValue, newMetadata, i18n)
                 }
-              }}
-              onValidate={onValidate}
-              processControlRef={this.controlRef.bind(this)}
-              controlRef={this.controlRef}
-              entry={entry}
-              collection={collection}
-              selectedLocale={this.state.selectedLocale}
-              onLocaleChange={this.handleLocaleChange}
-              locales={locales}
-              renderLocaleDropdown={renderLocaleDropdown}
-              isDisabled={isDisabled}
-              isHidden={isHidden}
-            />
-          );
-        })}
+                onValidate={onValidate}
+                processControlRef={this.controlRef.bind(this)}
+                controlRef={this.controlRef}
+                entry={entry}
+                collection={collection}
+                selectedLocale={this.state.selectedLocale}
+                onLocaleChange={this.handleLocaleChange}
+                locales={locales}
+                renderLocaleDropdown={renderLocaleDropdown}
+                isDisabled={isDuplicate}
+                isHidden={isHidden}
+              />
+            );
+          })}
       </ControlPaneContainer>
     );
   }

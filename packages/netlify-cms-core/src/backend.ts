@@ -56,7 +56,14 @@ import {
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
-import { getI18nFilesDepth, getI18nFiles, hasI18n, getFilePaths, getI18nEntry } from './lib/i18n';
+import {
+  getI18nFilesDepth,
+  getI18nFiles,
+  hasI18n,
+  getFilePaths,
+  getI18nEntry,
+  groupEntries,
+} from './lib/i18n';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
@@ -452,7 +459,6 @@ export class Backend {
   }
 
   processEntries(loadedEntries: ImplementationEntry[], collection: Collection) {
-    const collectionFilter = collection.get('filter');
     const entries = loadedEntries.map(loadedEntry =>
       createEntry(
         collection.get('name'),
@@ -468,9 +474,17 @@ export class Backend {
     );
     const formattedEntries = entries.map(this.entryWithFormat(collection));
     // If this collection has a "filter" property, filter entries accordingly
+    const collectionFilter = collection.get('filter');
     const filteredEntries = collectionFilter
       ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
       : formattedEntries;
+
+    if (hasI18n(collection)) {
+      const extension = selectFolderEntryExtension(collection);
+      const groupedEntries = groupEntries(collection, extension, entries);
+      return groupedEntries;
+    }
+
     return filteredEntries;
   }
 
@@ -1053,8 +1067,8 @@ export class Backend {
         extension,
         entryDraft.get('entry'),
         (draftData: EntryMap) => this.entryToRaw(collection, draftData),
-        slug,
         path,
+        slug,
         newPath,
       );
     }

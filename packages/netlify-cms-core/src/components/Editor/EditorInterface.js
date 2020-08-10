@@ -37,6 +37,9 @@ const styles = {
 
 const EditorToggle = styled(IconButton)`
   margin-bottom: 12px;
+  @media screen and (max-width: 1800px) {
+    margin-top: ${props => props.marginTop};
+  }
 `;
 
 const ReactSplitPaneGlobalStyles = () => (
@@ -334,6 +337,7 @@ class EditorInterface extends Component {
                 size="large"
                 type="page"
                 title="Toggle i18n"
+                marginTop="70px"
               />
             )}
             {collectionPreviewEnabled && (

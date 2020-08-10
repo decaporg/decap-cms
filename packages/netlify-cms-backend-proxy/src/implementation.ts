@@ -246,7 +246,7 @@ export default class ProxyBackend implements Implementation {
 
   deleteFiles(paths: string[], commitMessage: string) {
     return this.request({
-      action: 'deleteFile',
+      action: 'deleteFiles',
       params: { branch: this.branch, paths, options: { commitMessage } },
     });
   }

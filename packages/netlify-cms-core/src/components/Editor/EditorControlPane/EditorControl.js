@@ -18,6 +18,7 @@ import {
   StyledDropdownButton,
   buttons,
   text,
+  zIndex,
 } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
@@ -105,6 +106,7 @@ const LocaleButton = styled(StyledDropdownButton)`
   color: ${colors.controlLabel};
   background: ${colors.textFieldBorder};
   height: 100%;
+  z-index: ${zIndex.zIndex299};
 
   &:after {
     top: 11px;

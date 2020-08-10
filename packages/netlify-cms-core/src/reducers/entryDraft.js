@@ -25,7 +25,7 @@ import {
 import { get } from 'lodash';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { join } from 'path';
-import { getLocaleDataPath } from '../lib/i18n';
+import { getDataPath, I18N, I18N_FIELD } from '../lib/i18n';
 
 const initialState = Map({
   entry: Map(),
@@ -91,15 +91,23 @@ const entryDraftReducer = (state = Map(), action) => {
     }
     case DRAFT_CHANGE_FIELD: {
       return state.withMutations(state => {
-        const { field, value, metadata, entries, locale } = action.payload;
+        const { field, value, metadata, entries, i18n } = action.payload;
         const name = field.get('name');
         const meta = field.get('meta');
 
-        const dataPath = locale ? getLocaleDataPath(locale) : ['data'];
+        const dataPath = (i18n && getDataPath(i18n.currentLocale, i18n.defaultLocale)) || ['data'];
         if (meta) {
           state.setIn(['entry', 'meta', name], value);
         } else {
           state.setIn(['entry', ...dataPath, name], value);
+          if (field.get(I18N) === I18N_FIELD.DUPLICATE) {
+            i18n &&
+              i18n.locales
+                .filter(l => l !== i18n.defaultLocale)
+                .forEach(l => {
+                  state.setIn(['entry', ...getDataPath(l, i18n.defaultLocale), name], value);
+                });
+          }
         }
         state.mergeDeepIn(['fieldsMetaData'], fromJS(metadata));
         const newData = state.getIn(['entry', ...dataPath]);
