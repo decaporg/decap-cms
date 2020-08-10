@@ -90,7 +90,7 @@ const EntryCard = ({
   image,
   imageField,
   collectionLabel,
-  viewStyle = VIEW_STYLE_LIST,
+  viewStyle = VIEW_STYLE_GRID,
   getAsset,
 }) => {
   if (viewStyle === VIEW_STYLE_LIST) {

@@ -14,7 +14,7 @@ import CollectionControls from './CollectionControls';
 import { sortByField, filterByField } from '../../actions/entries';
 import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
 import { selectEntriesSort, selectEntriesFilter } from '../../reducers/entries';
-import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
+import { VIEW_STYLE_GRID } from '../../constants/collectionViews';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -47,7 +47,7 @@ export class Collection extends React.Component {
   };
 
   state = {
-    viewStyle: VIEW_STYLE_LIST,
+    viewStyle: VIEW_STYLE_GRID,
   };
 
   renderEntriesCollection = () => {
