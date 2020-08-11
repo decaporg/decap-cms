@@ -80,7 +80,6 @@ const styleStrings = {
 
 const ControlContainer = styled.div`
   margin-top: 16px;
-  position: relative;
 
   &:first-of-type {
     margin-top: 36px;
@@ -263,6 +262,7 @@ class EditorControl extends React.Component {
       clearSearch,
       clearFieldErrors,
       loadEntry,
+      className,
       isSelected,
       isEditorComponent,
       isNewEditorComponent,
@@ -292,6 +292,7 @@ class EditorControl extends React.Component {
       <ClassNames>
         {({ css, cx }) => (
           <ControlContainer
+            className={className}
             css={css`
               ${isHidden && styleStrings.hidden};
             `}

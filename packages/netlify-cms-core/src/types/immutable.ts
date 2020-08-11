@@ -3,7 +3,6 @@ export interface StaticallyTypedRecord<T> {
   set<K extends keyof T, V extends T[K]>(key: K, value: V): StaticallyTypedRecord<T> & T;
   has<K extends keyof T>(key: K): boolean;
   delete<K extends keyof T>(key: K): StaticallyTypedRecord<T>;
-  mergeDeep<T>(value: T): StaticallyTypedRecord<T>;
   getIn<K1 extends keyof T, K2 extends keyof T[K1], V extends T[K1][K2]>(
     keys: [K1, K2],
     defaultValue?: V,

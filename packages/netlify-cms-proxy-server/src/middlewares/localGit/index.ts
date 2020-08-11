@@ -91,11 +91,9 @@ const commitEntry = async (
     assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
   );
   if (dataFiles.every(dataFile => dataFile.newPath)) {
-    await Promise.all(
-      dataFiles.map(dataFile =>
-        move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!)),
-      ),
-    );
+    dataFiles.forEach(async dataFile => {
+      await move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!));
+    });
   }
 
   // commits files
@@ -248,8 +246,13 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
             const status = label && labelToStatus(label.trim(), cmsLabelPrefix || '');
             const updatedAt =
               diffs.length >= 0
-                ? await runOnBranch(git, cmsBranch, () => {
-                    return getUpdateDate(repoPath, diffs[0].newPath);
+                ? await runOnBranch(git, cmsBranch, async () => {
+                    const dates = await Promise.all(
+                      diffs.map(({ newPath }) => getUpdateDate(repoPath, newPath)),
+                    );
+                    return dates.reduce((a, b) => {
+                      return a > b ? a : b;
+                    });
                   })
                 : new Date();
             const unpublishedEntry = {

@@ -21,6 +21,7 @@ import {
   SortDirection,
   ViewFilter,
 } from '../types/redux';
+
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';

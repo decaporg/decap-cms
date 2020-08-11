@@ -155,7 +155,7 @@ export const getI18nFiles = (
         slug,
         raw: entryToRaw(draft),
         ...(newPath && {
-          newPath,
+          newPath: getFilePath(structure, extension, newPath, slug, locales[0]),
         }),
       },
     ];
@@ -170,7 +170,7 @@ export const getI18nFiles = (
         slug,
         raw: draft.get('data') ? entryToRaw(draft) : '',
         ...(newPath && {
-          newPath,
+          newPath: getFilePath(structure, extension, newPath, slug, locale),
         }),
       };
     })

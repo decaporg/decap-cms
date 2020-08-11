@@ -407,7 +407,6 @@ const zIndex = {
   zIndex10: 10,
   zIndex100: 100,
   zIndex200: 200,
-  zIndex250: 250,
   zIndex299: 299,
   zIndex300: 300,
   zIndex1000: 1000,

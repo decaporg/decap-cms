@@ -46,17 +46,12 @@ export default class ControlPane extends React.Component {
       wrappedControl.innerWrappedControl?.validate || wrappedControl.validate;
   }
 
-  getFields = () => {
-    const fields = this.props.fields;
-    return fields;
-  };
-
   handleLocaleChange = val => {
     this.setState({ selectedLocale: val });
   };
 
   validate = async () => {
-    this.getFields().forEach(field => {
+    this.props.fields.forEach(field => {
       if (field.get('widget') === 'hidden') return;
       this.componentValidate[field.get('name')]();
     });
@@ -64,7 +59,7 @@ export default class ControlPane extends React.Component {
 
   render() {
     const { collection, entry, fieldsMetaData, fieldsErrors, onChange, onValidate } = this.props;
-    const fields = this.getFields();
+    const fields = this.props.fields;
 
     if (!collection || !fields) {
       return null;

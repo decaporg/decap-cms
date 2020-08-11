@@ -105,8 +105,8 @@ const Editor = styled.div`
 
 const PreviewPaneContainer = styled.div`
   height: 100%;
-  overflow-y: ${props => (props.overFlow ? 'auto' : 'hidden')};
   pointer-events: ${props => (props.blockEntry ? 'none' : 'auto')};
+  overflow-y: ${props => (props.overFlow ? 'auto' : 'hidden')};
 `;
 
 const ControlPaneContainer = styled(PreviewPaneContainer)`
@@ -154,13 +154,13 @@ class EditorInterface extends Component {
     this.setState({ showEventBlocker: false });
   };
 
-  handleOnPersist = async (opts = {}) => {
+  handleOnPersist = (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
     this.controlPaneRef.validate();
     this.props.onPersist({ createNew, duplicate });
   };
 
-  handleOnPublish = async (opts = {}) => {
+  handleOnPublish = (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
     this.controlPaneRef.validate();
     this.props.onPublish({ createNew, duplicate });
@@ -214,7 +214,6 @@ class EditorInterface extends Component {
       deployPreview,
       draftKey,
       editorBackLink,
-      clearFieldErrors,
     } = this.props;
 
     const { scrollSyncEnabled, showEventBlocker } = this.state;
@@ -229,7 +228,6 @@ class EditorInterface extends Component {
       fieldsErrors,
       onChange,
       onValidate,
-      clearFieldErrors,
     };
 
     const editor = (

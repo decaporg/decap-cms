@@ -494,8 +494,8 @@ export class Backend {
     let listMethod: () => Promise<ImplementationEntry[]>;
     const collectionType = collection.get('type');
     if (collectionType === FOLDER) {
-      const depth = collectionDepth(collection);
       listMethod = () => {
+        const depth = collectionDepth(collection);
         return this.implementation.entriesByFolder(
           collection.get('folder') as string,
           extension,
@@ -539,8 +539,8 @@ export class Backend {
   // returns all the collected entries. Used to retrieve all entries
   // for local searches and queries.
   async listAllEntries(collection: Collection) {
-    const depth = collectionDepth(collection);
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
+      const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
       return this.implementation
         .allEntriesByFolder(collection.get('folder') as string, extension, depth)
@@ -1206,7 +1206,6 @@ export class Backend {
     await this.implementation.deleteFiles(paths, commitMessage);
 
     await this.invokePostUnpublishEvent(entry);
-    return Promise.resolve();
   }
 
   async deleteMedia(config: Config, path: string) {

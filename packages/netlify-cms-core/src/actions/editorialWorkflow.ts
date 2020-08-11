@@ -323,10 +323,7 @@ export function loadUnpublishedEntries(collections: Collections) {
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then(response => {
-        const entries = response.entries;
-        dispatch(unpublishedEntriesLoaded(entries, response.pagination));
-      })
+      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
       .catch((error: Error) => {
         dispatch(
           notifSend({

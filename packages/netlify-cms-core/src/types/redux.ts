@@ -194,8 +194,6 @@ type CollectionObject = {
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   nested?: Nested;
   meta?: Meta;
-  locales?: List<string>;
-  default_locale?: string;
   i18n: i18n;
 };
 

@@ -78,11 +78,12 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
             ),
           );
           if (dataFiles.every(dataFile => dataFile.newPath)) {
-            await Promise.all(
-              dataFiles.map(dataFile =>
-                move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!)),
-              ),
-            );
+            dataFiles.forEach(async dataFile => {
+              await move(
+                path.join(repoPath, dataFile.path),
+                path.join(repoPath, dataFile.newPath!),
+              );
+            });
           }
           res.json({ message: 'entry persisted' });
           break;
