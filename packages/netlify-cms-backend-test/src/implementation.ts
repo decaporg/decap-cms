@@ -13,6 +13,7 @@ import {
   User,
   Config,
   ImplementationFile,
+  DataFile,
 } from 'netlify-cms-lib-util';
 import { extname, dirname } from 'path';
 import AuthenticationPage from './AuthenticationPage';
@@ -20,18 +21,20 @@ import AuthenticationPage from './AuthenticationPage';
 type RepoFile = { path: string; content: string | AssetProxy };
 type RepoTree = { [key: string]: RepoFile | RepoTree };
 
+type Diff = {
+  id: string;
+  originalPath?: string;
+  path: string;
+  newFile: boolean;
+  status: string;
+  content: string | AssetProxy;
+};
+
 type UnpublishedRepoEntry = {
   slug: string;
   collection: string;
   status: string;
-  diffs: {
-    id: string;
-    originalPath?: string;
-    path: string;
-    newFile: boolean;
-    status: string;
-    content: string | AssetProxy;
-  }[];
+  diffs: Diff[];
   updatedAt: string;
 };
 
@@ -257,24 +260,25 @@ export default class TestBackend implements Implementation {
 
   async addOrUpdateUnpublishedEntry(
     key: string,
-    path: string,
-    newPath: string | undefined,
-    raw: string,
+    dataFiles: DataFile[],
     assetProxies: AssetProxy[],
     slug: string,
     collection: string,
     status: string,
   ) {
-    const currentDataFile = window.repoFilesUnpublished[key]?.diffs.find(d => d.path === path);
-    const originalPath = currentDataFile ? currentDataFile.originalPath : path;
-    const diffs = [];
-    diffs.push({
-      originalPath,
-      id: newPath || path,
-      path: newPath || path,
-      newFile: isEmpty(getFile(originalPath as string, window.repoFiles)),
-      status: 'added',
-      content: raw,
+    const diffs: Diff[] = [];
+    dataFiles.forEach(dataFile => {
+      const { path, newPath, raw } = dataFile;
+      const currentDataFile = window.repoFilesUnpublished[key]?.diffs.find(d => d.path === path);
+      const originalPath = currentDataFile ? currentDataFile.originalPath : path;
+      diffs.push({
+        originalPath,
+        id: newPath || path,
+        path: newPath || path,
+        newFile: isEmpty(getFile(originalPath as string, window.repoFiles)),
+        status: 'added',
+        content: raw,
+      });
     });
     assetProxies.forEach(a => {
       const asset = this.normalizeAsset(a);
@@ -295,19 +299,18 @@ export default class TestBackend implements Implementation {
     };
   }
 
-  async persistEntry(entries: Entry[], assetProxies: AssetProxy[], options: PersistOptions) {
-    const { path, raw, slug, newPath } = entries[0];
+  async persistEntry(entry: Entry, options: PersistOptions) {
     if (options.useWorkflow) {
+      const slug = entry.dataFiles[0].slug;
       const key = `${options.collectionName}/${slug}`;
       const currentEntry = window.repoFilesUnpublished[key];
       const status =
         currentEntry?.status || options.status || (this.options.initialWorkflowStatus as string);
+
       this.addOrUpdateUnpublishedEntry(
         key,
-        path,
-        newPath,
-        raw,
-        assetProxies,
+        entry.dataFiles,
+        entry.assets,
         slug,
         options.collectionName as string,
         status,
@@ -315,9 +318,12 @@ export default class TestBackend implements Implementation {
       return Promise.resolve();
     }
 
-    writeFile(path, raw, window.repoFiles);
-    assetProxies.forEach(a => {
-      writeFile(a.path, raw, window.repoFiles);
+    entry.dataFiles.forEach(dataFile => {
+      const { path, raw } = dataFile;
+      writeFile(path, raw, window.repoFiles);
+    });
+    entry.assets.forEach(a => {
+      writeFile(a.path, a, window.repoFiles);
     });
     return Promise.resolve();
   }
@@ -406,8 +412,10 @@ export default class TestBackend implements Implementation {
     return Promise.resolve(normalizedAsset);
   }
 
-  deleteFile(path: string) {
-    deleteFile(path, window.repoFiles);
+  deleteFiles(paths: string[]) {
+    paths.forEach(path => {
+      deleteFile(path, window.repoFiles);
+    });
 
     return Promise.resolve();
   }
