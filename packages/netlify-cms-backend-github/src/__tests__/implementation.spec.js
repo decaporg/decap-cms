@@ -104,7 +104,7 @@ describe('github backend implementation', () => {
       });
 
       expect(persistFiles).toHaveBeenCalledTimes(1);
-      expect(persistFiles).toHaveBeenCalledWith(null, [mediaFile], {});
+      expect(persistFiles).toHaveBeenCalledWith([], [mediaFile], {});
       expect(createObjectURL).toHaveBeenCalledTimes(1);
       expect(createObjectURL).toHaveBeenCalledWith(mediaFile.fileObj);
     });

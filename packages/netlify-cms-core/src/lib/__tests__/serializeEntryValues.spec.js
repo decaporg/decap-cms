@@ -3,11 +3,10 @@ import { fromJS } from 'immutable';
 
 const values = fromJS({ title: 'New Post', unknown: 'Unknown Field' });
 const fields = fromJS([{ name: 'title', widget: 'string' }]);
-const collection = fromJS({ name: 'collection' });
 
 describe('serializeValues', () => {
   it('should retain unknown fields', () => {
-    expect(serializeValues(collection, values, fields)).toEqual(
+    expect(serializeValues(values, fields)).toEqual(
       fromJS({ title: 'New Post', unknown: 'Unknown Field' }),
     );
   });

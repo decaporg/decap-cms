@@ -325,7 +325,7 @@ describe('github API', () => {
 
       expect(api.editorialWorkflowGit).toHaveBeenCalledWith(
         mediaFiles.concat(entry),
-        entry,
+        entry.slug,
         [
           { path: 'static/media/image-1.png', sha: 'image-1.png' },
           { path: 'static/media/image-2.png', sha: 'image-2.png' },
