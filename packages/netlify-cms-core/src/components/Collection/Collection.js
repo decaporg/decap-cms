@@ -14,7 +14,6 @@ import CollectionControls from './CollectionControls';
 import { sortByField, filterByField, changeViewStyle } from '../../actions/entries';
 import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
 import { selectEntriesSort, selectEntriesFilter, selectViewStyle } from '../../reducers/entries';
-import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -44,10 +43,6 @@ export class Collection extends React.Component {
     sortableFields: PropTypes.array,
     sort: ImmutablePropTypes.orderedMap,
     onSortClick: PropTypes.func.isRequired,
-  };
-
-  state = {
-    viewStyle: VIEW_STYLE_LIST,
   };
 
   renderEntriesCollection = () => {
