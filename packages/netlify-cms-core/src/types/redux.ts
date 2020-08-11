@@ -348,6 +348,10 @@ export interface EntriesFilterFailurePayload {
   error: Error;
 }
 
+export interface ChangeViewStylePayload {
+  style: string;
+}
+
 export interface EntriesMoveSuccessPayload extends EntryPayload {
   entries: EntryObject[];
 }
