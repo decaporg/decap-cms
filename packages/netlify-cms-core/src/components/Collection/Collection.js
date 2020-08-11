@@ -53,11 +53,7 @@ export class Collection extends React.Component {
   renderEntriesCollection = () => {
     const { collection, filterTerm, viewStyle } = this.props;
     return (
-      <EntriesCollection
-        collection={collection}
-        viewStyle={viewStyle}
-        filterTerm={filterTerm}
-      />
+      <EntriesCollection collection={collection} viewStyle={viewStyle} filterTerm={filterTerm} />
     );
   };
 
