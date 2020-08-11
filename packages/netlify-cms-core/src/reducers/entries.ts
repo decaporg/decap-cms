@@ -14,6 +14,7 @@ import {
   FILTER_ENTRIES_REQUEST,
   FILTER_ENTRIES_SUCCESS,
   FILTER_ENTRIES_FAILURE,
+  CHANGE_VIEW_STYLE,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
@@ -42,6 +43,7 @@ import {
   FilterMap,
   EntriesFilterRequestPayload,
   EntriesFilterFailurePayload,
+  ChangeViewStylePayload,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
@@ -58,6 +60,7 @@ let page: number;
 let slug: string;
 
 const storageSortKey = 'netlify-cms.entries.sort';
+const viewStyleKey = 'netlify-cms.entries.viewStyle';
 type StorageSortObject = SortObject & { index: number };
 type StorageSort = { [collection: string]: { [key: string]: StorageSortObject } };
 
@@ -270,6 +273,22 @@ const entries = (
         map.setIn(['pages', collection, 'isFetching'], false);
       });
       return newState;
+    }
+
+    case CHANGE_VIEW_STYLE: {
+      const payload = (action.payload as unknown) as ChangeViewStylePayload;
+      const { style } = payload;
+
+      const oldStyle = localStorage.getItem(viewStyleKey);
+      if (oldStyle !== style) {
+        localStorage.setItem(viewStyleKey, style);
+
+        return state.withMutations(map => {
+          map.setIn(['viewStyle'], style);
+        });
+      }
+
+      return state;
     }
 
     default:
