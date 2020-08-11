@@ -310,7 +310,11 @@ const transformRecordedData = (expectation, toSanitize) => {
   const requestBodySanitizer = httpRequest => {
     let body;
     if (httpRequest.body && httpRequest.body.type === 'JSON' && httpRequest.body.json) {
-      const bodyObject = JSON.parse(httpRequest.body.json);
+      const bodyObject =
+        typeof httpRequest.body.json === 'string'
+          ? JSON.parse(httpRequest.body.json)
+          : httpRequest.body.json;
+
       if (bodyObject.encoding === 'base64') {
         // sanitize encoded data
         const decodedBody = Buffer.from(bodyObject.content, 'base64').toString('binary');
@@ -319,10 +323,14 @@ const transformRecordedData = (expectation, toSanitize) => {
         bodyObject.content = sanitizedEncodedContent;
         body = JSON.stringify(bodyObject);
       } else {
-        body = httpRequest.body.json;
+        body = JSON.stringify(bodyObject);
       }
     } else if (httpRequest.body && httpRequest.body.type === 'STRING' && httpRequest.body.string) {
       body = httpRequest.body.string;
+    } else if (httpRequest.body) {
+      const str =
+        typeof httpRequest.body !== 'string' ? JSON.stringify(httpRequest.body) : httpRequest.body;
+      body = sanitizeString(str, toSanitize);
     }
     return body;
   };
@@ -340,8 +348,13 @@ const transformRecordedData = (expectation, toSanitize) => {
         encoding: 'base64',
         content: httpResponse.body.base64Bytes,
       };
-    } else if (httpResponse.body) {
-      responseBody = httpResponse.body;
+    } else if (httpResponse.body && httpResponse.body.json) {
+      responseBody = JSON.stringify(httpResponse.body.json);
+    } else {
+      responseBody =
+        typeof httpResponse.body === 'string'
+          ? httpResponse.body
+          : httpResponse.body && JSON.stringify(httpResponse.body);
     }
 
     // replace recorded user with fake one
