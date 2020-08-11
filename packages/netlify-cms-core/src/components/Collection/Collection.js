@@ -11,7 +11,7 @@ import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import CollectionControls from './CollectionControls';
-import { sortByField, filterByField } from '../../actions/entries';
+import { sortByField, filterByField, changeViewStyle } from '../../actions/entries';
 import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
 import { selectEntriesSort, selectEntriesFilter } from '../../reducers/entries';
 import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
@@ -93,6 +93,7 @@ export class Collection extends React.Component {
       t,
       onFilterClick,
       filter,
+      onChangeViewStyle,
     } = this.props;
 
     let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
@@ -125,8 +126,7 @@ export class Collection extends React.Component {
             <>
               <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
               <CollectionControls
-                viewStyle={this.state.viewStyle}
-                onChangeViewStyle={this.handleChangeViewStyle}
+                onChangeViewStyle={onChangeViewStyle}
                 sortableFields={sortableFields}
                 onSortClick={onSortClick}
                 sort={sort}
@@ -171,6 +171,7 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {
   sortByField,
   filterByField,
+  changeViewStyle,
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -180,6 +181,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onSortClick: (key, direction) =>
       dispatchProps.sortByField(stateProps.collection, key, direction),
     onFilterClick: filter => dispatchProps.filterByField(stateProps.collection, filter),
+    onChangeViewStyle: viewStyle => dispatchProps.changeViewStyle(viewStyle),
   };
 };
 
