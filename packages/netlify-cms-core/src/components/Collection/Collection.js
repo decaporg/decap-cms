@@ -13,7 +13,7 @@ import EntriesSearch from './Entries/EntriesSearch';
 import CollectionControls from './CollectionControls';
 import { sortByField, filterByField, changeViewStyle } from '../../actions/entries';
 import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
-import { selectEntriesSort, selectEntriesFilter } from '../../reducers/entries';
+import { selectEntriesSort, selectEntriesFilter, selectViewStyle } from '../../reducers/entries';
 import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
 
 const CollectionContainer = styled.div`
@@ -51,11 +51,11 @@ export class Collection extends React.Component {
   };
 
   renderEntriesCollection = () => {
-    const { collection, filterTerm } = this.props;
+    const { collection, filterTerm, viewStyle } = this.props;
     return (
       <EntriesCollection
         collection={collection}
-        viewStyle={this.state.viewStyle}
+        viewStyle={viewStyle}
         filterTerm={filterTerm}
       />
     );
@@ -94,6 +94,7 @@ export class Collection extends React.Component {
       onFilterClick,
       filter,
       onChangeViewStyle,
+      viewStyle,
     } = this.props;
 
     let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
@@ -126,6 +127,7 @@ export class Collection extends React.Component {
             <>
               <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
               <CollectionControls
+                viewStyle={viewStyle}
                 onChangeViewStyle={onChangeViewStyle}
                 sortableFields={sortableFields}
                 onSortClick={onSortClick}
@@ -153,6 +155,7 @@ function mapStateToProps(state, ownProps) {
   const sortableFields = selectSortableFields(collection, t);
   const viewFilters = selectViewFilters(collection);
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
+  const viewStyle = selectViewStyle();
 
   return {
     collection,
@@ -165,6 +168,7 @@ function mapStateToProps(state, ownProps) {
     sortableFields,
     viewFilters,
     filter,
+    viewStyle,
   };
 }
 
