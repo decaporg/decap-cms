@@ -50,6 +50,7 @@ import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
 import { trim, once, sortBy, set, orderBy } from 'lodash';
 import { selectSortDataPath } from './collections';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { VIEW_STYLE_LIST } from '../constants/collectionViews';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -325,6 +326,15 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
       .filter(v => v?.get('active') === true)
       .toArray() || [];
   return values;
+};
+
+export const selectViewStyle = () => {
+  const viewStyle = localStorage.getItem(viewStyleKey);
+  if (viewStyle == null) {
+    localStorage.setItem(viewStyleKey, VIEW_STYLE_LIST);
+    return VIEW_STYLE_LIST;
+  }
+  return viewStyle;
 };
 
 export const selectEntry = (state: Entries, collection: string, slug: string) =>
