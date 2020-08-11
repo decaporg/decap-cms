@@ -67,12 +67,6 @@ export class Collection extends React.Component {
     );
   };
 
-  handleChangeViewStyle = viewStyle => {
-    if (this.state.viewStyle !== viewStyle) {
-      this.setState({ viewStyle });
-    }
-  };
-
   render() {
     const {
       collection,
