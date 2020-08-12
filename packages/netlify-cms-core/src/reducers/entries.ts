@@ -111,8 +111,30 @@ const persistSort = (sort: Sort | undefined) => {
   }
 };
 
+const loadViewStyle = once(() => {
+  const viewStyle = localStorage.getItem(viewStyleKey);
+  if (viewStyle) {
+    return viewStyle;
+  }
+
+  localStorage.setItem(viewStyleKey, VIEW_STYLE_LIST);
+  return VIEW_STYLE_LIST;
+});
+
+const clearViewStyle = () => {
+  localStorage.removeItem(viewStyleKey);
+};
+
+const persistViewStyle = (viewStyle: string | undefined) => {
+  if (viewStyle) {
+    localStorage.setItem(viewStyleKey, viewStyle);
+  } else {
+    clearViewStyle();
+  }
+};
+
 const entries = (
-  state = Map({ entities: Map(), pages: Map(), sort: loadSort() }),
+  state = Map({ entities: Map(), pages: Map(), sort: loadSort(), viewStyle: loadViewStyle() }),
   action: EntriesAction,
 ) => {
   switch (action.type) {
@@ -279,18 +301,12 @@ const entries = (
     case CHANGE_VIEW_STYLE: {
       const payload = (action.payload as unknown) as ChangeViewStylePayload;
       const { style } = payload;
-
-      const oldStyle = localStorage.getItem(viewStyleKey);
-      if (oldStyle !== style) {
-        localStorage.setItem(viewStyleKey, style);
-
-        return state.withMutations(map => {
+      const newState = state.withMutations(map => {
           map.setIn(['viewStyle'], style);
         });
+      persistViewStyle(newState.get('viewStyle') as string);
+      return newState;
       }
-
-      return state;
-    }
 
     default:
       return state;
