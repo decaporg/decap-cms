@@ -302,11 +302,11 @@ const entries = (
       const payload = (action.payload as unknown) as ChangeViewStylePayload;
       const { style } = payload;
       const newState = state.withMutations(map => {
-          map.setIn(['viewStyle'], style);
-        });
+        map.setIn(['viewStyle'], style);
+      });
       persistViewStyle(newState.get('viewStyle') as string);
       return newState;
-      }
+    }
 
     default:
       return state;
@@ -344,13 +344,8 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
   return values;
 };
 
-export const selectViewStyle = () => {
-  const viewStyle = localStorage.getItem(viewStyleKey);
-  if (viewStyle == null) {
-    localStorage.setItem(viewStyleKey, VIEW_STYLE_LIST);
-    return VIEW_STYLE_LIST;
-  }
-  return viewStyle;
+export const selectViewStyle = (entries: Entries) => {
+  return entries.get('viewStyle');
 };
 
 export const selectEntry = (state: Entries, collection: string, slug: string) =>

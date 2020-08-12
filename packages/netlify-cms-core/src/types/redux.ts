@@ -75,6 +75,7 @@ export type Entries = StaticallyTypedRecord<{
   entities: Entities & EntitiesObject;
   sort: Sort;
   filter: Filter;
+  viewStyle: string;
 }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;

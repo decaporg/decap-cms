@@ -140,7 +140,7 @@ function mapStateToProps(state, ownProps) {
   const sortableFields = selectSortableFields(collection, t);
   const viewFilters = selectViewFilters(collection);
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
-  const viewStyle = selectViewStyle();
+  const viewStyle = selectViewStyle(state.entries);
 
   return {
     collection,
