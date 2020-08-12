@@ -91,6 +91,18 @@ function goToMediaLibrary() {
   cy.contains('button', 'Media').click();
 }
 
+function assertUnpublishedEntryInEditor() {
+  cy.contains('button', 'Delete unpublished entry');
+}
+
+function assertPublishedEntryInEditor() {
+  cy.contains('button', 'Delete published entry');
+}
+
+function assertUnpublishedChangesInEditor() {
+  cy.contains('button', 'Delete unpublished changes');
+}
+
 function goToEntry(entry) {
   goToCollections();
   cy.get('a h2')
@@ -691,4 +703,8 @@ module.exports = {
   publishAndDuplicateEntryInEditor,
   assertNotification,
   assertFieldValidationError,
+  flushClockAndSave,
+  assertPublishedEntryInEditor,
+  assertUnpublishedEntryInEditor,
+  assertUnpublishedChangesInEditor,
 };

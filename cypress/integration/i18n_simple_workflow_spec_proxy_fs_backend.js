@@ -1,16 +1,9 @@
 import * as specUtils from './common/spec_utils';
-import { login, newPost, populateEntry, publishEntry } from '../utils/steps';
+import { login } from '../utils/steps';
+import { createEntryTranslateAndPublish } from './common/i18n';
 
 const backend = 'proxy';
 const mode = 'fs';
-
-const entry = {
-  title: 'first title',
-  body: 'first body',
-  description: 'first description',
-  category: 'first category',
-  tags: 'tag1',
-};
 
 const expectedEnContent = `---
 template: post
@@ -54,36 +47,16 @@ fr:
 ---
 `;
 
-const enterTranslation = str => {
-  cy.get(`[id^="title-field"]`)
-    .first()
-    .clear({ force: true });
-  cy.get(`[id^="title-field"]`)
-    .first()
-    .type(str, { force: true });
-};
-
-const createAndTranslateEntry = () => {
-  newPost();
-  // fill the main entry
-  populateEntry(entry, () => undefined);
-
-  // fill the translation
-  cy.get('.Pane2').within(() => {
-    enterTranslation('de');
-
-    cy.contains('span', 'de').click();
-    cy.contains('span', 'fr').click();
-
-    enterTranslation('fr');
-  });
-
-  // publish the entry
-  publishEntry();
-};
-
-describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
+describe(`I18N Proxy Backend Simple Workflow - '${mode}' mode`, () => {
   const taskResult = { data: {} };
+
+  const entry = {
+    title: 'first title',
+    body: 'first body',
+    description: 'first description',
+    category: 'first category',
+    tags: 'tag1',
+  };
 
   before(() => {
     specUtils.before(
@@ -119,7 +92,7 @@ describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
 
     login(taskResult.data.user);
 
-    createAndTranslateEntry();
+    createEntryTranslateAndPublish(entry);
 
     cy.readFile(`${taskResult.data.tempDir}/content/posts/en/1970-01-01-first-title.md`).should(
       'contain',
@@ -142,7 +115,7 @@ describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
 
     login(taskResult.data.user);
 
-    createAndTranslateEntry();
+    createEntryTranslateAndPublish(entry);
 
     cy.readFile(`${taskResult.data.tempDir}/content/posts/1970-01-01-first-title.en.md`).should(
       'contain',
@@ -165,7 +138,7 @@ describe(`Proxy Backend Simple Workflow - '${mode}' mode`, () => {
 
     login(taskResult.data.user);
 
-    createAndTranslateEntry();
+    createEntryTranslateAndPublish(entry);
 
     cy.readFile(`${taskResult.data.tempDir}/content/posts/1970-01-01-first-title.md`).should(
       'eq',
