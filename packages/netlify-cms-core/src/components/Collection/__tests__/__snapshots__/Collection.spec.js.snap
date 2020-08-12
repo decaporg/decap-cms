@@ -30,12 +30,10 @@ exports[`Collection should render connected component 1`] = `
         filter="Map {}"
         sortablefields=""
         viewfilters=""
-        viewstyle="VIEW_STYLE_LIST"
       />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
         filterterm=""
-        viewstyle="VIEW_STYLE_LIST"
       />
     </main>
   </div>
