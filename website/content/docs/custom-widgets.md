@@ -1,15 +1,14 @@
 ---
 title: Creating Custom Widgets
-weight: 35
 group: fields
+weight: 35
 ---
-
 The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netify CMS as an npm module. The available widget extension methods are:
 
 * **registerWidget:** registers a custom widget.
 * **registerEditorComponent:** adds a block component to the Markdown editor.
 
-See also [netlify-cms-widget-starter](https://github.com/netlify/netlify-cms-widget-starter) for a starter project to fork.
+See also [netlify-cms-widget-starter](https://github.com/netlify/netlify-cms-widget-starter) for a starter project to fork..
 
 ### Writing React Components inline
 
@@ -32,12 +31,12 @@ CMS.registerWidget(name, control, [preview], [schema]);
 
 **Params:**
 
-| Param       | Type                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ----------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`      | `string`                    | Widget name, allows this widget to be used via the field `widget` property in config                                                                                                                                                                                                                                                                                                                                                                                        |
-| `control`   | `React.Component` or `string`| <ul><li>React component that renders the control, receives the following props: <ul><li>**value:** Current field value</li><li>**field:** Immutable map of current field configuration</li><li>**forID:** Unique identifier for the field</li><li>**classNameWrapper:** class name to apply CMS styling to the field</li><li>**onChange:** Callback function to update the field value</li></ul></li><li>Name of a registered widget whose control should be used (includes built in widgets).</li></ul>                                                                                                                                                                  |
-| [`preview`] | `React.Component`, optional | Renders the widget preview, receives the following props: <ul><li>**value:** Current preview value</li><li>**field:** Immutable map of current field configuration</li><li>**metadata:** Immutable map of any available metadata for the current field</li><li>**getAsset:** Function for retrieving an asset url for image/file fields</li><li>**entry:** Immutable Map of all entry data</li><li>**fieldsMetaData:** Immutable map of metadata from all fields.</li></ul> |
-| [`schema`]  | `JSON Schema object`, optional | Enforces a schema for the widget's field configuration
+| Param       | Type                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ----------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`      | `string`                       | Widget name, allows this widget to be used via the field `widget` property in config                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `control`   | `React.Component` or `string`  | <ul><li>React component that renders the control, receives the following props: <ul><li>**value:** Current field value</li><li>**field:** Immutable map of current field configuration</li><li>**forID:** Unique identifier for the field</li><li>**classNameWrapper:** class name to apply CMS styling to the field</li><li>**onChange:** Callback function to update the field value</li></ul></li><li>Name of a registered widget whose control should be used (includes built in widgets).</li></ul> |
+| [`preview`] | `React.Component`, optional    | Renders the widget preview, receives the following props: <ul><li>**value:** Current preview value</li><li>**field:** Immutable map of current field configuration</li><li>**metadata:** Immutable map of any available metadata for the current field</li><li>**getAsset:** Function for retrieving an asset url for image/file fields</li><li>**entry:** Immutable Map of all entry data</li><li>**fieldsMetaData:** Immutable map of metadata from all fields.</li></ul>                              |
+| [`schema`]  | `JSON Schema object`, optional | Enforces a schema for the widget's field configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 **Example:**
 
