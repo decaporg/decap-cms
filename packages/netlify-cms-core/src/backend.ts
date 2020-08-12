@@ -64,6 +64,7 @@ import {
   getFilePaths,
   getI18nEntry,
   groupEntries,
+  getI18nDataFiles,
 } from './lib/i18n';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
@@ -884,8 +885,11 @@ export class Backend {
       );
       return formatData(loadedEntry.data, loadedEntry.file.path, false);
     } else if (hasI18n(collection)) {
+      // we need to read all locales files and not just the changes
+      const path = selectEntryPath(collection, slug) as string;
+      const i18nFiles = getI18nDataFiles(collection, extension, path, slug, dataFiles);
       let entries = await Promise.all(
-        dataFiles.map(dataFile => readAndFormatDataFile(dataFile).catch(() => null)),
+        i18nFiles.map(dataFile => readAndFormatDataFile(dataFile).catch(() => null)),
       );
       entries = entries.filter(Boolean);
       const grouped = await groupEntries(collection, extension, entries as EntryValue[]);

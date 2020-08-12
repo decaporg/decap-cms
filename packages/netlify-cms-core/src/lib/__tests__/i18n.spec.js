@@ -517,4 +517,55 @@ describe('i18n', () => {
       ]);
     });
   });
+
+  describe('getI18nDataFiles', () => {
+    const locales = ['en', 'de', 'fr'];
+    const default_locale = 'en';
+
+    const args = ['md', 'src/content/index.md', 'index'];
+
+    it('should add missing locale files to diff files when structure is MULTIPLE_FOLDERS', () => {
+      expect(
+        i18n.getI18nDataFiles(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, locales, default_locale },
+          }),
+          ...args,
+          [{ path: 'src/content/fr/index.md', id: 'id', newFile: false }],
+        ),
+      ).toEqual([
+        { path: 'src/content/en/index.md', id: '', newFile: false },
+        { path: 'src/content/de/index.md', id: '', newFile: false },
+        { path: 'src/content/fr/index.md', id: 'id', newFile: false },
+      ]);
+    });
+
+    it('should add missing locale files to diff files when structure is MULTIPLE_FILES', () => {
+      expect(
+        i18n.getI18nDataFiles(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES, locales, default_locale },
+          }),
+          ...args,
+          [{ path: 'src/content/index.fr.md', id: 'id', newFile: false }],
+        ),
+      ).toEqual([
+        { path: 'src/content/index.en.md', id: '', newFile: false },
+        { path: 'src/content/index.de.md', id: '', newFile: false },
+        { path: 'src/content/index.fr.md', id: 'id', newFile: false },
+      ]);
+    });
+
+    it('should return a single file when structure is SINGLE_FILE', () => {
+      expect(
+        i18n.getI18nDataFiles(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales, default_locale },
+          }),
+          ...args,
+          [{ path: 'src/content/index.md', id: 'id', newFile: false }],
+        ),
+      ).toEqual([{ path: 'src/content/index.md', id: 'id', newFile: false }]);
+    });
+  });
 });

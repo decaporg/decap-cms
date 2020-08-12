@@ -278,3 +278,27 @@ export const groupEntries = (collection: Collection, extension: string, entries:
 
   return groupedEntries;
 };
+
+export const getI18nDataFiles = (
+  collection: Collection,
+  extension: string,
+  path: string,
+  slug: string,
+  diffFiles: { path: string; id: string; newFile: boolean }[],
+) => {
+  const { structure } = getI18nInfo(collection) as I18nInfo;
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return diffFiles;
+  }
+  const paths = getFilePaths(collection, extension, path, slug);
+  const dataFiles = paths.reduce((acc, path) => {
+    const dataFile = diffFiles.find(file => file.path === path);
+    if (dataFile) {
+      return [...acc, dataFile];
+    } else {
+      return [...acc, { path, id: '', newFile: false }];
+    }
+  }, [] as { path: string; id: string; newFile: boolean }[]);
+
+  return dataFiles;
+};

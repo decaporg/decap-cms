@@ -30,6 +30,7 @@ export const updateTranslation = () => {
     enterTranslation('fr fr');
 
     cy.contains('span', 'fr').click();
+    cy.contains('span', 'de').click();
 
     enterTranslation('de de');
   });
