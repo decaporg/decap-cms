@@ -9,6 +9,7 @@ import {
   isFieldDuplicate,
   isFieldHidden,
   getLocaleDataPath,
+  hasI18n,
 } from '../../../lib/i18n';
 
 const ControlPaneContainer = styled.div`
@@ -55,6 +56,15 @@ export default class ControlPane extends React.Component {
       if (field.get('widget') === 'hidden') return;
       this.componentValidate[field.get('name')]();
     });
+  };
+
+  switchToDefaultLocale = () => {
+    if (hasI18n(this.props.collection)) {
+      const { defaultLocale } = getI18nInfo(this.props.collection);
+      return new Promise(resolve => this.setState({ selectedLocale: defaultLocale }, resolve));
+    } else {
+      return Promise.resolve();
+    }
   };
 
   render() {

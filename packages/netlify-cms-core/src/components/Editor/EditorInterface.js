@@ -154,14 +154,16 @@ class EditorInterface extends Component {
     this.setState({ showEventBlocker: false });
   };
 
-  handleOnPersist = (opts = {}) => {
+  handleOnPersist = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
+    await this.controlPaneRef.switchToDefaultLocale();
     this.controlPaneRef.validate();
     this.props.onPersist({ createNew, duplicate });
   };
 
-  handleOnPublish = (opts = {}) => {
+  handleOnPublish = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
+    await this.controlPaneRef.switchToDefaultLocale();
     this.controlPaneRef.validate();
     this.props.onPublish({ createNew, duplicate });
   };
