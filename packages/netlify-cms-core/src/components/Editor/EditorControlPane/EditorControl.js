@@ -2,6 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { translate } from 'react-polyglot';
 import { ClassNames, Global, css as coreCss } from '@emotion/core';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
@@ -389,6 +390,6 @@ const ConnectedEditorControl = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
-)(EditorControl);
+)(translate()(EditorControl));
 
 export default ConnectedEditorControl;

@@ -186,7 +186,6 @@ export default class ControlPane extends React.Component {
                 collection={collection}
                 isDisabled={isDuplicate}
                 isHidden={isHidden}
-                t={t}
               />
             );
           })}
