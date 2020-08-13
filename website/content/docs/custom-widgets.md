@@ -15,8 +15,6 @@ The NetlifyCMS exposes a `window.CMS` global object that you can use to register
 * **registerWidget:** registers a custom widget.
 * **registerEditorComponent:** adds a block component to the Markdown editor.
 
-!! See also [netlify-cms-widget-starter](https://github.com/netlify/netlify-cms-widget-starter) for a starter project to fork.
-
 ### Writing React Components inline
 
 The `registerWidget` requires you to provide a React component. If you have a build process in place for your project, it is possible to integrate with this build process.
@@ -207,11 +205,9 @@ You can also return a promise from `isValid`. While the promise is pending, the 
 
 ## Creating a custom widget using JSX syntax with a build step
 
-A boilerplate for creating Netlify CMS widgets.
-
 Widgets are inputs for the Netlify CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
 
-The starter currently provides a basic string widget, which you can customize, extend, or replace entirely with your own widget.
+We have created a boilerplate for creating Netlify CMS widgets. You can check the [netlify-cms-widget-starter](https://github.com/netlify/netlify-cms-widget-starter) out for a starter project to fork. The starter currently provides a basic string widget, which you can customize, extend, or replace entirely with your own widget.
 
 ### [](https://github.com/netlify/netlify-cms-widget-starter#getting-started)Getting started
 
