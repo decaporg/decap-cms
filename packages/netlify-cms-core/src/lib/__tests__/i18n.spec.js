@@ -568,4 +568,37 @@ describe('i18n', () => {
       ).toEqual([{ path: 'src/content/index.md', id: 'id', newFile: false }]);
     });
   });
+
+  describe('getI18nBackup', () => {
+    it('should return i18n with raw data', () => {
+      const locales = ['en', 'de', 'fr'];
+      const default_locale = 'en';
+
+      expect(
+        i18n.getI18nBackup(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES, locales, default_locale },
+          }),
+          fromJS({
+            data: 'raw_en',
+            i18n: {
+              de: { data: 'raw_de' },
+              fr: { data: 'raw_fr' },
+            },
+          }),
+          e => e.get('data'),
+        ),
+      ).toEqual({ de: { raw: 'raw_de' }, fr: { raw: 'raw_fr' } });
+    });
+  });
+
+  describe('formatI18nBackup', () => {
+    it('should return i18n with formatted data', () => {
+      expect(
+        i18n.formatI18nBackup({ de: { raw: 'raw_de' }, fr: { raw: 'raw_fr' } }, raw => ({
+          data: raw,
+        })),
+      ).toEqual({ de: { data: 'raw_de' }, fr: { data: 'raw_fr' } });
+    });
+  });
 });

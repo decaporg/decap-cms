@@ -178,6 +178,36 @@ export const getI18nFiles = (
   return dataFiles;
 };
 
+export const getI18nBackup = (
+  collection: Collection,
+  entry: EntryMap,
+  entryToRaw: (entry: EntryMap) => string,
+) => {
+  const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  const i18nBackup = locales
+    .filter(l => l !== defaultLocale)
+    .reduce((acc, locale) => {
+      const dataPath = getDataPath(locale, defaultLocale);
+      const draft = entry.set('data', entry.getIn(dataPath));
+      return { ...acc, [locale]: { raw: entryToRaw(draft) } };
+    }, {} as Record<string, { raw: string }>);
+
+  return i18nBackup;
+};
+
+export const formatI18nBackup = (
+  i18nBackup: Record<string, { raw: string }>,
+  formatRawData: (raw: string) => EntryValue,
+) => {
+  const i18n = Object.entries(i18nBackup).reduce((acc, [locale, { raw }]) => {
+    const entry = formatRawData(raw);
+    return { ...acc, [locale]: { data: entry.data } };
+  }, {});
+
+  return i18n;
+};
+
 const mergeValues = (
   collection: Collection,
   structure: I18N_STRUCTURE,

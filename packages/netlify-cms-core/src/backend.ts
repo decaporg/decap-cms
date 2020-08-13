@@ -65,6 +65,8 @@ import {
   getI18nEntry,
   groupEntries,
   getI18nDataFiles,
+  getI18nBackup,
+  formatI18nBackup,
 } from './lib/i18n';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
@@ -255,6 +257,7 @@ interface BackupEntry {
   raw: string;
   path: string;
   mediaFiles: MediaFile[];
+  i18n?: Record<string, { raw: string }>;
 }
 
 interface PersistArgs {
@@ -685,14 +688,23 @@ export class Backend {
     });
 
     const label = selectFileEntryLabel(collection, slug);
-    const entry: EntryValue = this.entryWithFormat(collection)(
-      createEntry(collection.get('name'), slug, path, {
-        raw,
-        label,
-        mediaFiles,
-        meta: { path: prepareMetaPath(path, collection) },
-      }),
-    );
+
+    const formatRawData = (raw: string) => {
+      return this.entryWithFormat(collection)(
+        createEntry(collection.get('name'), slug, path, {
+          raw,
+          label,
+          mediaFiles,
+          meta: { path: prepareMetaPath(path, collection) },
+        }),
+      );
+    };
+
+    const entry: EntryValue = formatRawData(raw);
+    if (hasI18n(collection) && backup.i18n) {
+      const i18n = formatI18nBackup(backup.i18n, formatRawData);
+      entry.i18n = i18n;
+    }
 
     return { entry };
   }
@@ -721,10 +733,16 @@ export class Backend {
           }),
       );
 
+      let i18n;
+      if (hasI18n(collection)) {
+        i18n = getI18nBackup(collection, entry, entry => this.entryToRaw(collection, entry));
+      }
+
       await localForage.setItem<BackupEntry>(key, {
         raw,
         path: entry.get('path'),
         mediaFiles,
+        ...(i18n && { i18n }),
       });
       const result = await localForage.setItem(getEntryBackupKey(), raw);
       return result;
