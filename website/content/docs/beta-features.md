@@ -48,6 +48,86 @@ publish_mode: editorial_workflow
 
 In order to track unpublished entries statuses the GitLab implementation uses merge requests labels and the BitBucket implementation uses pull requests comments.
 
+## i18n Support
+
+The CMS can provide a side by side interface for authoring content in multiple languages.
+Configuring the CMS for i18n support requires top level configuration, collection level configuration and field level configuration.
+
+### Top level configuration
+
+```yaml
+i18n:
+  # Required and can be one of multiple_folders, multiple_files or single_file
+  # multiple_folders - persists files in `<folder>/<locale>/<slug>.<extension>`
+  # multiple_files - persists files in `<folder>/<slug>.<locale>.<extension>`
+  # single_file - persists a single file in `<folder>/<slug>.<extension>`
+  structure: multiple_folders
+
+  # Required - a list of locales to show in the editor UI
+  locales: [en, de, fr]
+
+  # Optional, defaults to the first item in locales.
+  # The locale to be used for fields validation and as a baseline for the entry.
+  defaultLocale: en
+```
+
+### Collection level configuration
+
+```yaml
+collections:
+  - name: i18n_content
+    # same as the top level, but all fields are optional and defaults to the top level
+    # can also be a boolean to accept the top level defaults
+    i18n: true
+```
+
+### Fields level configuration
+
+```yaml
+fields:
+  - label: Title
+    name: title
+    widget: string
+    # same as 'i18n: translate'. Allows translation of the title field
+    i18n: true
+  - label: Date
+    name: date
+    widget: datetime
+    # The date field will be duplicated from the default locale.
+    i18n: duplicate
+  - label: Body
+    name: body
+    # The markdown field will be omitted from the translation.
+    widget: markdown
+```
+
+Example configuration:
+
+```yaml
+i18n:
+  structure: multiple_folders
+  locales: [en, de, fr]
+
+collections:
+  - name: posts
+    label: Posts
+    folder: content/posts
+    create: true
+    i18n: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        i18n: true
+      - label: Date
+        name: date
+        widget: datetime
+        i18n: duplicate
+      - label: Body
+        name: body
+        widget: markdown
+```
+
 ## GitHub GraphQL API
 
 Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
