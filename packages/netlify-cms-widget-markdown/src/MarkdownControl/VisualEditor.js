@@ -188,7 +188,7 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { onAddAsset, getAsset, className, field, isShowModeToggle, t } = this.props;
+    const { onAddAsset, getAsset, className, field, isShowModeToggle, t, isDisabled } = this.props;
     return (
       <div
         css={coreCss`
@@ -205,13 +205,14 @@ export default class Editor extends React.Component {
             onSubmit={this.handleInsertShortcode}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
-            buttons={field.get('buttons')}
+            buttons={isDisabled ? [] : field.get('buttons')}
             editorComponents={field.get('editor_components')}
             hasMark={this.hasMark}
             hasInline={this.hasInline}
             hasBlock={this.hasBlock}
             isShowModeToggle={isShowModeToggle}
             t={t}
+            disabled={isDisabled}
           />
         </EditorControlBar>
         <ClassNames>
