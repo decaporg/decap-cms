@@ -200,14 +200,203 @@ You can also return a promise from `isValid`. While the promise is pending, the 
 
 Widgets are inputs for the Netlify CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
 
+For writing custom widgets as a separate package you should follow these steps:
 
+1. Create a directory 
 
-1. Create a directory `mkdir my-custom-widget`.
-2. Navigate to the directory `cd my-custom-widget`.
-3. Run `npm init`.
-4. Create a `src` directory with the files `Control.js`, `Preview.js` and `index.js`.
-5. Install the following dependencies...
-6. Create a Webpack configuration file...
+   ```javascript
+   mkdir my-custom-widget
+   ```
+2. Navigate to the directory 
+
+   ```javascript
+   cd my-custom-widget
+   ```
+3. For setting up a new npm package run this command:
+
+   ```javascript
+   npm init
+   ```
+4. Create a `src` directory with the files `Control.js`, `Preview.js` and `index.js`
+
+`src/Control.js`
+
+```javascript
+ import PropTypes from 'prop-types';
+ import React from 'react';
+
+ export default class Control extends React.Component {
+   static propTypes = {
+     onChange: PropTypes.func.isRequired,
+     forID: PropTypes.string,
+     value: PropTypes.node,
+     classNameWrapper: PropTypes.string.isRequired,
+   }
+
+   static defaultProps = {
+     value: '',
+   }
+
+   render() {
+     const {
+       forID,
+       value,
+       onChange,
+       classNameWrapper,
+     } = this.props;
+
+     return (
+       <input
+         type="text"
+         id={forID}
+         className={classNameWrapper}
+         value={value || ''}
+         onChange={e => onChange(e.target.value)}
+       />
+     );
+   }
+ }
+```
+
+`src/Preview.js`
+
+```javascript
+import PropTypes from 'prop-types';
+import React from 'react';
+
+export default function Preview({ value }) {
+  return <div>{ value }</div>;
+}
+
+Preview.propTypes = {
+  value: PropTypes.node,
+};
+```
+
+`src/index.js`
+
+```javascript
+import Control from './Control'
+import Preview from './Preview'
+
+if (typeof window !== 'undefined') {
+  window.Control = Control
+  window.Preview = Preview
+}
+
+export { Control, Preview }
+```
+
+6. Change the content of package.json as below:
+
+   ```javascript
+   {
+     "name": "netlify-cms-widget-starter",
+     "description": "A boilerplate for creating Netlify CMS widgets.",
+     "author": "name of developer",
+     "keywords": [
+       "netlify",
+       "netlify-cms",
+       "cms",
+       "widget",
+       "starter",
+       "boilerplate"
+     ],
+     "version": "0.0.1",
+     "homepage": "https://github.com/netlify/netlify-cms-widget-starter",
+     "license": "MIT",
+     "main": "dist/main.js",
+     "devDependencies": {
+       "babel-loader": "^7.1.4",
+       "babel-plugin-transform-class-properties": "^6.24.1",
+       "babel-plugin-transform-export-extensions": "^6.22.0",
+       "babel-plugin-transform-object-rest-spread": "^6.26.0",
+       "babel-preset-env": "^1.6.1",
+       "babel-preset-react": "^6.24.1",
+       "cross-env": "^5.1.4",
+       "css-loader": "^0.28.11",
+       "html-webpack-plugin": "^3.2.0",
+       "netlify-cms": "^1.5.0",
+       "react": "^16.3.2",
+       "source-map-loader": "^0.2.3",
+       "style-loader": "^0.20.3",
+       "webpack": "^4.6.0",
+       "webpack-cli": "^2.0.14",
+       "webpack-serve": "^0.3.1"
+     },
+     "dependencies": {
+       "prop-types": "^15.6.1"
+     },
+     "peerDependencies": {
+       "react": "^16"
+     },
+     "scripts": {
+       "start": "webpack-serve --log-level error --open-path '/#/collections/test/entries/test'",
+       "demo": "webpack --display errors-only --devtool source-map",
+       "build": "cross-env NODE_ENV=production webpack",
+       "prepublishOnly": "npm run build"
+     }
+   }
+
+   ```
+7. For installing the dependencies run this command:
+
+   ```javascript
+   npm install
+   ```
+8. Create a Webpack configuration file with this content:
+
+   `webpack.config.js`
+
+   ```javascript
+   const path = require('path')
+   const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+   const developmentConfig = {
+     mode: 'development',
+     entry: './dev/index.js',
+     output: {
+       path: path.resolve(__dirname, 'public'),
+     },
+     module: {
+       rules: [
+         {
+           test: /\.js$/,
+           loader: 'source-map-loader',
+           enforce: 'pre',
+         },
+         {
+           test: /\.jsx?$/,
+           exclude: /node_modules/,
+           loader: 'babel-loader',
+         },
+         {
+           test: /\.css$/,
+           loader: ['style-loader', 'css-loader'],
+         },
+       ],
+     },
+     plugins: [
+       new HtmlWebpackPlugin(),
+     ],
+     devtool: 'eval-source-map',
+   }
+
+   const productionConfig = {
+     mode: 'production',
+     module: {
+       rules: [
+         {
+           test: /\.jsx?$/,
+           loader: 'babel-loader',
+         },
+       ],
+     },
+     devtool: 'source-map',
+   }
+
+   module.exports = process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
+   ```
 
 We have created a boilerplate for creating Netlify CMS widgets. You can check the [netlify-cms-widget-starter](https://github.com/netlify/netlify-cms-widget-starter) out for a starter project to fork. The starter currently provides a basic string widget, which you can customize, extend, or replace entirely with your own widget.
 
