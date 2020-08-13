@@ -418,6 +418,7 @@ export class Editor extends React.Component {
         deployPreview={deployPreview}
         loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
         editorBackLink={editorBackLink}
+        t={t}
       />
     );
   }

@@ -2,24 +2,11 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { translate } from 'react-polyglot';
 import { ClassNames, Global, css as coreCss } from '@emotion/core';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import {
-  FieldLabel,
-  colors,
-  transitions,
-  lengths,
-  borders,
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  buttons,
-  text,
-  zIndex,
-} from 'netlify-cms-ui-default';
+import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import { resolveWidget, getEditorComponents } from 'Lib/registry';
 import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
 import { addAsset, boundGetAsset } from 'Actions/media';
@@ -98,20 +85,6 @@ const ControlErrorsList = styled.ul`
   top: 20px;
 `;
 
-const LocaleButton = styled(StyledDropdownButton)`
-  ${buttons.button};
-  ${buttons.medium};
-  ${text.fieldLabel}
-  color: ${colors.controlLabel};
-  background: ${colors.textFieldBorder};
-  height: 100%;
-  z-index: ${zIndex.zIndex299};
-
-  &:after {
-    top: 11px;
-  }
-`;
-
 export const ControlHint = styled.p`
   margin-bottom: 0;
   padding: 3px 0;
@@ -121,60 +94,13 @@ export const ControlHint = styled.p`
   transition: color ${transitions.main};
 `;
 
-const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange }) => {
-  return (
-    <Dropdown renderButton={() => <LocaleButton>{selectedLocale}</LocaleButton>}>
-      {locales.map(l => (
-        <DropdownItem
-          css={coreCss`${text.fieldLabel}`}
-          key={l}
-          label={l}
-          onClick={() => onLocaleChange(l)}
-        />
-      ))}
-    </Dropdown>
-  );
-};
-
-const LabelAndLocalWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-`;
-
-const LabelComponent = ({
-  field,
-  isActive,
-  hasErrors,
-  uniqueFieldId,
-  isFieldOptional,
-  selectedLocale,
-  onLocaleChange,
-  locales,
-  renderLocaleDropdown,
-  t,
-}) => {
+const LabelComponent = ({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) => {
   const label = `${field.get('label', field.get('name'))}`;
-  let labelComponent = (
+  const labelComponent = (
     <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
       {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
     </FieldLabel>
   );
-  if (renderLocaleDropdown) {
-    const dropdown = (
-      <LocaleDropdown
-        locales={locales}
-        selectedLocale={selectedLocale}
-        onLocaleChange={onLocaleChange}
-      />
-    );
-    labelComponent = (
-      <LabelAndLocalWrapper>
-        {labelComponent}
-        {dropdown}
-      </LabelAndLocalWrapper>
-    );
-  }
 
   return labelComponent;
 };
@@ -267,12 +193,8 @@ class EditorControl extends React.Component {
       isEditorComponent,
       isNewEditorComponent,
       parentIds,
-      selectedLocale,
-      onLocaleChange,
       t,
       validateMetaField,
-      locales,
-      renderLocaleDropdown,
       isDisabled,
       isHidden,
     } = this.props;
@@ -317,10 +239,6 @@ class EditorControl extends React.Component {
               hasErrors={hasErrors}
               uniqueFieldId={this.uniqueFieldId}
               isFieldOptional={isFieldOptional}
-              locales={locales}
-              selectedLocale={selectedLocale}
-              onLocaleChange={onLocaleChange}
-              renderLocaleDropdown={renderLocaleDropdown}
               t={t}
             />
             <Widget
@@ -471,6 +389,6 @@ const ConnectedEditorControl = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
-)(translate()(EditorControl));
+)(EditorControl);
 
 export default ConnectedEditorControl;

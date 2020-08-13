@@ -1,8 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import EditorControl from './EditorControl';
+import {
+  colors,
+  Dropdown,
+  DropdownItem,
+  StyledDropdownButton,
+  buttons,
+  text,
+} from 'netlify-cms-ui-default';
 import {
   getI18nInfo,
   isFieldTranslatable,
@@ -18,6 +27,57 @@ const ControlPaneContainer = styled.div`
   padding-bottom: 16px;
   font-size: 16px;
 `;
+
+const LocaleButton = styled(StyledDropdownButton)`
+  ${buttons.button};
+  ${buttons.medium};
+  color: ${colors.controlLabel};
+  background: ${colors.textFieldBorder};
+  height: 100%;
+
+  &:after {
+    top: 11px;
+  }
+`;
+
+const LocaleButtonWrapper = styled.div`
+  display: flex;
+`;
+
+const StyledDropdown = styled(Dropdown)`
+  width: max-content;
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+
+const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange, t }) => {
+  return (
+    <StyledDropdown
+      renderButton={() => {
+        return (
+          <LocaleButtonWrapper>
+            <LocaleButton>
+              {t('editor.editorControlPane.i18n.writingInLocale', {
+                locale: selectedLocale.toUpperCase(),
+              })}
+            </LocaleButton>
+          </LocaleButtonWrapper>
+        );
+      }}
+    >
+      {locales.map(l => (
+        <DropdownItem
+          css={css`
+            ${text.fieldLabel}
+          `}
+          key={l}
+          label={l}
+          onClick={() => onLocaleChange(l)}
+        />
+      ))}
+    </StyledDropdown>
+  );
+};
 
 const getFieldValue = ({ field, entry, isTranslatable, locale }) => {
   if (field.get('meta')) {
@@ -68,7 +128,7 @@ export default class ControlPane extends React.Component {
   };
 
   render() {
-    const { collection, entry, fieldsMetaData, fieldsErrors, onChange, onValidate } = this.props;
+    const { collection, entry, fieldsMetaData, fieldsErrors, onChange, onValidate, t } = this.props;
     const fields = this.props.fields;
 
     if (!collection || !fields) {
@@ -89,10 +149,17 @@ export default class ControlPane extends React.Component {
 
     return (
       <ControlPaneContainer>
+        {locales && (
+          <LocaleDropdown
+            locales={locales}
+            selectedLocale={locale}
+            onLocaleChange={this.handleLocaleChange}
+            t={t}
+          />
+        )}
         {fields
           .filter(f => f.get('widget') !== 'hidden')
           .map((field, i) => {
-            const renderLocaleDropdown = locales && i === 0;
             const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
             const isDuplicate = locales && isFieldDuplicate(field, locale, defaultLocale);
             const isHidden = locales && isFieldHidden(field, locale, defaultLocale);
@@ -117,12 +184,9 @@ export default class ControlPane extends React.Component {
                 controlRef={this.controlRef}
                 entry={entry}
                 collection={collection}
-                selectedLocale={this.state.selectedLocale}
-                onLocaleChange={this.handleLocaleChange}
-                locales={locales}
-                renderLocaleDropdown={renderLocaleDropdown}
                 isDisabled={isDuplicate}
                 isHidden={isHidden}
+                t={t}
               />
             );
           })}

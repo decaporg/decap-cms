@@ -18,7 +18,7 @@ const createAndTranslate = entry => {
   cy.get('.Pane2').within(() => {
     enterTranslation('de');
 
-    cy.contains('span', 'de').click();
+    cy.contains('span', 'Writing in DE').click();
     cy.contains('span', 'fr').click();
 
     enterTranslation('fr');
@@ -29,7 +29,7 @@ export const updateTranslation = () => {
   cy.get('.Pane2').within(() => {
     enterTranslation('fr fr');
 
-    cy.contains('span', 'fr').click();
+    cy.contains('span', 'Writing in FR').click();
     cy.contains('span', 'de').click();
 
     enterTranslation('de de');
@@ -41,7 +41,7 @@ export const assertTranslation = () => {
   cy.get('.Pane2').within(() => {
     cy.get(`[id^="title-field"]`).should('have.value', 'de');
 
-    cy.contains('span', 'de').click();
+    cy.contains('span', 'Writing in DE').click();
     cy.contains('span', 'fr').click();
 
     cy.get(`[id^="title-field"]`).should('have.value', 'fr');

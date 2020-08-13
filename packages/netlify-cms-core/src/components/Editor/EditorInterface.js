@@ -37,9 +37,6 @@ const styles = {
 
 const EditorToggle = styled(IconButton)`
   margin-bottom: 12px;
-  @media screen and (max-width: 1800px) {
-    margin-top: ${props => props.marginTop};
-  }
 `;
 
 const ReactSplitPaneGlobalStyles = () => (
@@ -144,6 +141,7 @@ class EditorInterface extends Component {
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
+    t: PropTypes.func.isRequired,
   };
 
   handleSplitPaneDragStart = () => {
@@ -216,6 +214,7 @@ class EditorInterface extends Component {
       deployPreview,
       draftKey,
       editorBackLink,
+      t,
     } = this.props;
 
     const { scrollSyncEnabled, showEventBlocker } = this.state;
@@ -238,13 +237,14 @@ class EditorInterface extends Component {
           {...editorProps}
           ref={c => (this.controlPaneRef = c)}
           locale={locales?.[0]}
+          t={t}
         />
       </ControlPaneContainer>
     );
 
     const editor2 = (
       <ControlPaneContainer overFlow={!this.state.scrollSyncEnabled} blockEntry={showEventBlocker}>
-        <EditorControlPane {...editorProps} locale={locales?.[1]} />
+        <EditorControlPane {...editorProps} locale={locales?.[1]} t={t} />
       </ControlPaneContainer>
     );
 
