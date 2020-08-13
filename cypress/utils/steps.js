@@ -322,7 +322,8 @@ function publishEntry({ createNew = false, duplicate = false } = {}) {
       selectDropdownItem('Publish', publishTypes.publishNow);
     }
 
-    assertNotification(notifications.saved);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
   });
 }
 
