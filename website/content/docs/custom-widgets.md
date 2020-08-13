@@ -339,12 +339,8 @@ export { Control, Preview }
    }
 
    ```
-7. For installing the dependencies run this command:
 
-   ```javascript
-   npm install
-   ```
-8. Create a Webpack configuration file with this content:
+7. Create a Webpack configuration file with this content:
 
    `webpack.config.js`
 
@@ -398,7 +394,11 @@ export { Control, Preview }
    module.exports = process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
    ```
 
+8. For installing the dependencies run this command:
 
+   ```javascript
+   npm install
+   ```
 
 ### [](https://github.com/netlify/netlify-cms-widget-starter#development)Development
 
