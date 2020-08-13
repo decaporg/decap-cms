@@ -5,8 +5,8 @@ weight: 35
 ---
 There are two ways to build a custom widget:
 
-1. Using vanilla JS
-2. Using JSX syntax with a build step
+1. [Using vanilla JS](#creating-a-custom-widget-using-vanilla-js)
+2. [Using JSX syntax with a build step](#creating-a-custom-widget-using-jsx-syntax-with-a-build-step)
 
 ## Creating a custom widget using vanilla JS
 
