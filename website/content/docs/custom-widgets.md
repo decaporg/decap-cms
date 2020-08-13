@@ -234,6 +234,25 @@ Your widget source is in the `src` directory, where there are separate files for
 You'll want to take a few steps before publishing a production built package to npm:
 
 1. Customize `package.json` with details for your specific widget, e.g. name, description, author, version, etc.
+
+   ```json
+   {
+     "name": "netlify-cms-widget-starter",
+     "description": "A boilerplate for creating Netlify CMS widgets.",
+     "author": "name of developer",
+     "keywords": [
+       "netlify",
+       "netlify-cms",
+       "cms",
+       "widget",
+       "starter",
+       "boilerplate"
+     ],
+     "version": "0.0.1",
+     // ... rest
+   }
+
+   ```
 2. For discoverability, ensure that your package name follows the pattern `netlify-cms-widget-<name>`.
 3. Delete this `README.md`, rename `README_TEMPLATE.md` to `README.md`, and update the new file for your specific widget.
 4. Rename the exports in `src/index.js`. For example, if your widget is `netlify-cms-widget-awesome`, you would do:
