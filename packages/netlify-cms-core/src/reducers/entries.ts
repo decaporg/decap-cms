@@ -14,6 +14,7 @@ import {
   FILTER_ENTRIES_REQUEST,
   FILTER_ENTRIES_SUCCESS,
   FILTER_ENTRIES_FAILURE,
+  CHANGE_VIEW_STYLE,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
@@ -42,12 +43,14 @@ import {
   FilterMap,
   EntriesFilterRequestPayload,
   EntriesFilterFailurePayload,
+  ChangeViewStylePayload,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
 import { trim, once, sortBy, set, orderBy } from 'lodash';
 import { selectSortDataPath } from './collections';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { VIEW_STYLE_LIST } from '../constants/collectionViews';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -58,6 +61,7 @@ let page: number;
 let slug: string;
 
 const storageSortKey = 'netlify-cms.entries.sort';
+const viewStyleKey = 'netlify-cms.entries.viewStyle';
 type StorageSortObject = SortObject & { index: number };
 type StorageSort = { [collection: string]: { [key: string]: StorageSortObject } };
 
@@ -107,8 +111,30 @@ const persistSort = (sort: Sort | undefined) => {
   }
 };
 
+const loadViewStyle = once(() => {
+  const viewStyle = localStorage.getItem(viewStyleKey);
+  if (viewStyle) {
+    return viewStyle;
+  }
+
+  localStorage.setItem(viewStyleKey, VIEW_STYLE_LIST);
+  return VIEW_STYLE_LIST;
+});
+
+const clearViewStyle = () => {
+  localStorage.removeItem(viewStyleKey);
+};
+
+const persistViewStyle = (viewStyle: string | undefined) => {
+  if (viewStyle) {
+    localStorage.setItem(viewStyleKey, viewStyle);
+  } else {
+    clearViewStyle();
+  }
+};
+
 const entries = (
-  state = Map({ entities: Map(), pages: Map(), sort: loadSort() }),
+  state = Map({ entities: Map(), pages: Map(), sort: loadSort(), viewStyle: loadViewStyle() }),
   action: EntriesAction,
 ) => {
   switch (action.type) {
@@ -272,6 +298,16 @@ const entries = (
       return newState;
     }
 
+    case CHANGE_VIEW_STYLE: {
+      const payload = (action.payload as unknown) as ChangeViewStylePayload;
+      const { style } = payload;
+      const newState = state.withMutations(map => {
+        map.setIn(['viewStyle'], style);
+      });
+      persistViewStyle(newState.get('viewStyle') as string);
+      return newState;
+    }
+
     default:
       return state;
   }
@@ -306,6 +342,10 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
       .filter(v => v?.get('active') === true)
       .toArray() || [];
   return values;
+};
+
+export const selectViewStyle = (entries: Entries) => {
+  return entries.get('viewStyle');
 };
 
 export const selectEntry = (state: Entries, collection: string, slug: string) =>

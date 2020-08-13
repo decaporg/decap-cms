@@ -75,6 +75,7 @@ export type Entries = StaticallyTypedRecord<{
   entities: Entities & EntitiesObject;
   sort: Sort;
   filter: Filter;
+  viewStyle: string;
 }>;
 
 export type Deploys = StaticallyTypedRecord<{}>;
@@ -346,6 +347,10 @@ export interface EntriesFilterFailurePayload {
   filter: ViewFilter;
   collection: string;
   error: Error;
+}
+
+export interface ChangeViewStylePayload {
+  style: string;
 }
 
 export interface EntriesMoveSuccessPayload extends EntryPayload {

@@ -73,6 +73,8 @@ export const ENTRY_DELETE_FAILURE = 'ENTRY_DELETE_FAILURE';
 export const ADD_DRAFT_ENTRY_MEDIA_FILE = 'ADD_DRAFT_ENTRY_MEDIA_FILE';
 export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
 
+export const CHANGE_VIEW_STYLE = 'CHANGE_VIEW_STYLE';
+
 /*
  * Simple Action Creators (Internal)
  * We still need to export them for tests
@@ -237,6 +239,15 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
         },
       });
     }
+  };
+}
+
+export function changeViewStyle(viewStyle: string) {
+  return {
+    type: CHANGE_VIEW_STYLE,
+    payload: {
+      style: viewStyle,
+    },
   };
 }
 

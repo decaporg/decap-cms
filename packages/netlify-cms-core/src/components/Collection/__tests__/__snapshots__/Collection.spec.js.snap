@@ -30,12 +30,10 @@ exports[`Collection should render connected component 1`] = `
         filter="Map {}"
         sortablefields=""
         viewfilters=""
-        viewstyle="VIEW_STYLE_LIST"
       />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
         filterterm=""
-        viewstyle="VIEW_STYLE_LIST"
       />
     </main>
   </div>
@@ -66,12 +64,9 @@ exports[`Collection should render with collection with create url 1`] = `
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
         newentryurl="/collections/pages/new"
       />
-      <mock-collection-controls
-        viewstyle="VIEW_STYLE_LIST"
-      />
+      <mock-collection-controls />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
-        viewstyle="VIEW_STYLE_LIST"
       />
     </main>
   </div>
@@ -103,13 +98,10 @@ exports[`Collection should render with collection with create url and path 1`] =
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
         newentryurl="/collections/pages/new?path=dir1/dir2"
       />
-      <mock-collection-controls
-        viewstyle="VIEW_STYLE_LIST"
-      />
+      <mock-collection-controls />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
         filterterm="dir1/dir2"
-        viewstyle="VIEW_STYLE_LIST"
       />
     </main>
   </div>
@@ -140,12 +132,9 @@ exports[`Collection should render with collection without create url 1`] = `
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
         newentryurl=""
       />
-      <mock-collection-controls
-        viewstyle="VIEW_STYLE_LIST"
-      />
+      <mock-collection-controls />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
-        viewstyle="VIEW_STYLE_LIST"
       />
     </main>
   </div>

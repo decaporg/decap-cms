@@ -11,10 +11,9 @@ import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import CollectionControls from './CollectionControls';
-import { sortByField, filterByField } from '../../actions/entries';
+import { sortByField, filterByField, changeViewStyle } from '../../actions/entries';
 import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
-import { selectEntriesSort, selectEntriesFilter } from '../../reducers/entries';
-import { VIEW_STYLE_LIST } from '../../constants/collectionViews';
+import { selectEntriesSort, selectEntriesFilter, selectViewStyle } from '../../reducers/entries';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -46,18 +45,10 @@ export class Collection extends React.Component {
     onSortClick: PropTypes.func.isRequired,
   };
 
-  state = {
-    viewStyle: VIEW_STYLE_LIST,
-  };
-
   renderEntriesCollection = () => {
-    const { collection, filterTerm } = this.props;
+    const { collection, filterTerm, viewStyle } = this.props;
     return (
-      <EntriesCollection
-        collection={collection}
-        viewStyle={this.state.viewStyle}
-        filterTerm={filterTerm}
-      />
+      <EntriesCollection collection={collection} viewStyle={viewStyle} filterTerm={filterTerm} />
     );
   };
 
@@ -69,12 +60,6 @@ export class Collection extends React.Component {
         searchTerm={searchTerm}
       />
     );
-  };
-
-  handleChangeViewStyle = viewStyle => {
-    if (this.state.viewStyle !== viewStyle) {
-      this.setState({ viewStyle });
-    }
   };
 
   render() {
@@ -93,6 +78,8 @@ export class Collection extends React.Component {
       t,
       onFilterClick,
       filter,
+      onChangeViewStyle,
+      viewStyle,
     } = this.props;
 
     let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
@@ -125,8 +112,8 @@ export class Collection extends React.Component {
             <>
               <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
               <CollectionControls
-                viewStyle={this.state.viewStyle}
-                onChangeViewStyle={this.handleChangeViewStyle}
+                viewStyle={viewStyle}
+                onChangeViewStyle={onChangeViewStyle}
                 sortableFields={sortableFields}
                 onSortClick={onSortClick}
                 sort={sort}
@@ -153,6 +140,7 @@ function mapStateToProps(state, ownProps) {
   const sortableFields = selectSortableFields(collection, t);
   const viewFilters = selectViewFilters(collection);
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
+  const viewStyle = selectViewStyle(state.entries);
 
   return {
     collection,
@@ -165,12 +153,14 @@ function mapStateToProps(state, ownProps) {
     sortableFields,
     viewFilters,
     filter,
+    viewStyle,
   };
 }
 
 const mapDispatchToProps = {
   sortByField,
   filterByField,
+  changeViewStyle,
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -180,6 +170,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onSortClick: (key, direction) =>
       dispatchProps.sortByField(stateProps.collection, key, direction),
     onFilterClick: filter => dispatchProps.filterByField(stateProps.collection, filter),
+    onChangeViewStyle: viewStyle => dispatchProps.changeViewStyle(viewStyle),
   };
 };
 
