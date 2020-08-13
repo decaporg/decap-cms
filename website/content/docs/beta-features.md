@@ -81,7 +81,7 @@ collections:
     i18n: true
 ```
 
-### Fields level configuration
+### Field level configuration
 
 ```yaml
 fields:
