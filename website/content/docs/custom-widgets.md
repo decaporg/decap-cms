@@ -203,7 +203,7 @@ You can also return a promise from `isValid`. While the promise is pending, the 
 
 **Note:** Do not create a promise inside `isValid` - `isValid` is called right before trying to persist. This means that even if a previous promise was already resolved, when the user hits 'save', `isValid` will be called again. If it returns a new promise, it will be immediately marked as "in error" until the new promise resolves.
 
-## Creating a custom widget using JSX syntax with a build step
+### Writing custom widgets as a separate package
 
 Widgets are inputs for the Netlify CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
 
@@ -251,7 +251,6 @@ You'll want to take a few steps before publishing a production built package to 
      "version": "0.0.1",
      // ... rest
    }
-
    ```
 2. For discoverability, ensure that your package name follows the pattern `netlify-cms-widget-<name>`.
 3. Delete this `README.md`, rename `README_TEMPLATE.md` to `README.md`, and update the new file for your specific widget.
