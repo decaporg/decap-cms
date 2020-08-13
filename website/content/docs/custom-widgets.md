@@ -3,14 +3,7 @@ title: Creating Custom Widgets
 group: fields
 weight: 35
 ---
-There are two ways to build a custom widget:
-
-1. [Using vanilla JS](#creating-a-custom-widget-using-vanilla-js)
-2. [Using JSX syntax with a build step](#creating-a-custom-widget-using-jsx-syntax-with-a-build-step)
-
-## Creating a custom widget using vanilla JS
-
-The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netify CMS as an npm module. The available widget extension methods are:
+The NetlifyCMS exposes a `window.CMS` a global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netlify CMS as an npm module. The available widget extension methods are:
 
 * **registerWidget:** registers a custom widget.
 * **registerEditorComponent:** adds a block component to the Markdown editor.
@@ -206,6 +199,15 @@ You can also return a promise from `isValid`. While the promise is pending, the 
 ### Writing custom widgets as a separate package
 
 Widgets are inputs for the Netlify CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
+
+
+
+1. Create a directory `mkdir my-custom-widget`.
+2. Navigate to the directory `cd my-custom-widget`.
+3. Run `npm init`.
+4. Create a `src` directory with the files `Control.js`, `Preview.js` and `index.js`.
+5. Install the following dependencies...
+6. Create a Webpack configuration file...
 
 We have created a boilerplate for creating Netlify CMS widgets. You can check the [netlify-cms-widget-starter](https://github.com/netlify/netlify-cms-widget-starter) out for a starter project to fork. The starter currently provides a basic string widget, which you can customize, extend, or replace entirely with your own widget.
 
