@@ -398,17 +398,7 @@ export { Control, Preview }
    module.exports = process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
    ```
 
-We have created a boilerplate for creating Netlify CMS widgets. You can check the [netlify-cms-widget-starter](https://github.com/netlify/netlify-cms-widget-starter) out for a starter project to fork. The starter currently provides a basic string widget, which you can customize, extend, or replace entirely with your own widget.
 
-### [](https://github.com/netlify/netlify-cms-widget-starter#getting-started)Getting started
-
-Clone or fork the repo, then install dependencies:
-
-```javascript
-git clone --depth=1 https://github.com/netlify/netlify-cms-widget-starter.git netlify-cms-widget-<name>
-cd netlify-cms-widget-<name>
-npm install
-```
 
 ### [](https://github.com/netlify/netlify-cms-widget-starter#development)Development
 
