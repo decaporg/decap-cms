@@ -5,6 +5,8 @@ import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Forma
 import { getWidgets } from 'Lib/registry';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
 
+const localeType = { type: 'string', minLength: 2, maxLength: 10, pattern: '^[a-zA-Z-_]+$' };
+
 const i18n = {
   type: 'object',
   properties: {
@@ -12,12 +14,10 @@ const i18n = {
     locales: {
       type: 'array',
       minItems: 2,
-      items: { type: 'string' },
+      items: localeType,
       uniqueItems: true,
     },
-    default_locale: {
-      type: 'string',
-    },
+    default_locale: localeType,
   },
 };
 
