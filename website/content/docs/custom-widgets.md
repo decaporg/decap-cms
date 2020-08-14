@@ -287,7 +287,7 @@ if (typeof window !== 'undefined') {
 export { Control, Preview }
 ```
 
-6. Change the content of package.json as below:
+6. Change the content of `package.json` as below:
 
    ```javascript
    {
@@ -337,9 +337,7 @@ export { Control, Preview }
        "prepublishOnly": "npm run build"
      }
    }
-
    ```
-
 7. Create a Webpack configuration file with this content:
 
    `webpack.config.js`
@@ -393,7 +391,6 @@ export { Control, Preview }
 
    module.exports = process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
    ```
-
 8. For installing the dependencies run this command:
 
    ```javascript
@@ -402,7 +399,7 @@ export { Control, Preview }
 
 ### [](https://github.com/netlify/netlify-cms-widget-starter#development)Development
 
-To run a copy of Netlify CMS with your widget loaded for development, use the start script:
+To run a copy of Netlify CMS with your widget for development, use the start script:
 
 ```javascript
 npm start
