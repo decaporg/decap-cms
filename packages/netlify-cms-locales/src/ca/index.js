@@ -17,8 +17,8 @@ const ca = {
     header: {
       content: 'Contingut',
       workflow: 'Flux Editorial',
-      media: 'Mitjans',
-      quickAdd: 'Afegir ràpid',
+      media: 'Multimèdia',
+      quickAdd: 'Afegir',
     },
     app: {
       errorHeader: 'Error al carregar la configuració del CMS',
@@ -43,7 +43,7 @@ const ca = {
     entries: {
       loadingEntries: 'Carregant entrades',
       cachingEntries: 'Emmagatzemant entrades a la caché',
-      longerLoading: 'Això pot tardar uns minuts',
+      longerLoading: 'Això podria tardar uns minuts',
     },
   },
   editor: {
@@ -72,7 +72,7 @@ const ca = {
         "Té canvis no guardats, si us plau, guardi'ls abans d'actualitzar l'estat.",
       onPublishingNotReady: 'si us plau, actualitzi l\'estat a "Ready" abans de publicar.',
       onPublishingWithUnsavedChanges:
-        "Té canvis no guardats, siusplay, guardi'ls abans de publicar-los.",
+        "Té canvis no guardats, si us plau, guardi'ls abans de publicar-los.",
       onPublishing: 'Està segur que vol publicar aquesta entrada?',
       onDeleteWithUnsavedChanges:
         'Està segur que vol eliminar aquesta entrada publicada, així com els canvis no guardats de la sessió actual?',
