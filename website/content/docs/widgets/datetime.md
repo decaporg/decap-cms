@@ -20,8 +20,8 @@ The datetime widget translates a datetime picker to a datetime string.
       name: "start"
       widget: "datetime"
       default: ""
-      dateFormat: "DD.MM.YYYY" # e.g. 24.12.2021
-      timeFormat: "HH:mm" # e.g. 21:07
+      date_format: "DD.MM.YYYY" # e.g. 24.12.2021
+      time_format: "HH:mm" # e.g. 21:07
       format: "LLL"
-      pickerUtc: false
+      picker_utc: false
     ```

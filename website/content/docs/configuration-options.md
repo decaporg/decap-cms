@@ -396,7 +396,7 @@ When `author` field can't be inferred commit author will be used.
 
 ```yaml
     # use dot notation for nested fields
-    sortableFields: ['commit_date', 'title', 'commit_author', 'language.en']
+    sortable_fields: ['commit_date', 'title', 'commit_author', 'language.en']
 ```
 
 ### `view_filters`

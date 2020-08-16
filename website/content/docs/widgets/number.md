@@ -20,7 +20,7 @@ The number widget uses an HTML number input, saving the value as a string, integ
       name: "puppies"
       widget: "number"
       default: 2
-      valueType: "int"
+      value_type: "int"
       min: 1
       max: 101
       step: 2

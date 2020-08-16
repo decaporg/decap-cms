@@ -24,9 +24,9 @@ The relation widget allows you to reference items from another collection. It pr
   name: "author"
   widget: "relation"
   collection: "authors"
-  searchFields: ["name.first", "twitterHandle"]
-  valueField: "name.first"
-  displayFields: ["twitterHandle", "followerCount"]
+  search_fields: ["name.first", "twitterHandle"]
+  value_field: "name.first"
+  display_fields: ["twitterHandle", "followerCount"]
 ```
 
 The generated UI input will search the authors collection by name and twitterHandle, and display each author's handle and follower count. On selection, the author name will be saved for the field.
@@ -38,9 +38,9 @@ The generated UI input will search the authors collection by name and twitterHan
   name: "author"
   widget: "relation"
   collection: "authors"
-  searchFields: ['name.first']
-  valueField: "{{slug}}"
-  displayFields: ["{{twitterHandle}} - {{followerCount}}"]
+  search_fields: ['name.first']
+  value_field: "{{slug}}"
+  display_fields: ["{{twitterHandle}} - {{followerCount}}"]
 ```
 
 The generated UI input will search the authors collection by name, and display each author's handle and follower count. On selection, the author entry slug will be saved for the field.
@@ -53,9 +53,9 @@ The generated UI input will search the authors collection by name, and display e
   widget: "relation"
   collection: "relation_files"
   file: "cities"
-  searchFields: ["cities.*.name"]
-  displayFields: ["cities.*.name"]
-  valueField: "cities.*.id"
+  search_fields: ["cities.*.name"]
+  display_fields: ["cities.*.name"]
+  value_field: "cities.*.id"
 ```
 
 The generated UI input will search the cities file by city name, and display each city's name. On selection, the city id will be saved for the field.
