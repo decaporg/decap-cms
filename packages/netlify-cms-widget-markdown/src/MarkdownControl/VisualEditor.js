@@ -205,7 +205,7 @@ export default class Editor extends React.Component {
             onSubmit={this.handleInsertShortcode}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
-            buttons={isDisabled ? [] : field.get('buttons')}
+            buttons={field.get('buttons')}
             editorComponents={field.get('editor_components')}
             hasMark={this.hasMark}
             hasInline={this.hasInline}
