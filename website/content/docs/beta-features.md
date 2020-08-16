@@ -128,6 +128,29 @@ collections:
         widget: markdown
 ```
 
+### Limitations
+
+1. List widgets don't support the `i18n` configuration at the moment.
+2. Object widgets only support `i18n: true` and `i18n` configuration should be done per field:
+
+```yaml
+- label: 'Object'
+  name: 'object'
+  widget: 'object'
+  i18n: true
+  fields:
+    - { label: 'String', name: 'string', widget: 'string', i18n: true }
+    - { label: 'Date', name: 'date', widget: 'datetime', i18n: duplicate }
+    - { label: 'Boolean', name: 'boolean', widget: 'boolean', i18n: duplicate }
+    - {
+        label: 'Object',
+        name: 'object',
+        widget: 'object',
+        i18n: true,
+        field: { label: 'String', name: 'string', widget: 'string', i18n: duplicate },
+      }
+```
+
 ## GitHub GraphQL API
 
 Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.

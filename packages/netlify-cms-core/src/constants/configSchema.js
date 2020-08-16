@@ -1,5 +1,10 @@
 import AJV from 'ajv';
-import { select, uniqueItemProperties, instanceof as instanceOf } from 'ajv-keywords/keywords';
+import {
+  select,
+  uniqueItemProperties,
+  instanceof as instanceOf,
+  prohibited,
+} from 'ajv-keywords/keywords';
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
 import { getWidgets } from 'Lib/registry';
@@ -322,6 +327,7 @@ export function validateConfig(config) {
   uniqueItemProperties(ajv);
   select(ajv);
   instanceOf(ajv);
+  prohibited(ajv);
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);

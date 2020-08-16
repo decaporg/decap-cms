@@ -140,6 +140,8 @@ class EditorControl extends React.Component {
     collection: ImmutablePropTypes.map.isRequired,
     isDisabled: PropTypes.bool,
     isHidden: PropTypes.bool,
+    isFieldDuplicate: PropTypes.func,
+    isFieldHidden: PropTypes.func,
   };
 
   static defaultProps = {
@@ -198,6 +200,8 @@ class EditorControl extends React.Component {
       validateMetaField,
       isDisabled,
       isHidden,
+      isFieldDuplicate,
+      isFieldHidden,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -315,6 +319,8 @@ class EditorControl extends React.Component {
               t={t}
               validateMetaField={validateMetaField}
               isDisabled={isDisabled}
+              isFieldDuplicate={isFieldDuplicate}
+              isFieldHidden={isFieldHidden}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>

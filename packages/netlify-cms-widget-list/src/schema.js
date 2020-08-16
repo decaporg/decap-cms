@@ -6,4 +6,5 @@ export default {
     minimize_collapsed: { type: 'boolean' },
     label_singular: { type: 'string' },
   },
+  prohibited: ['i18n'],
 };

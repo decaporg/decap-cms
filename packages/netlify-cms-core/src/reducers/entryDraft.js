@@ -25,7 +25,7 @@ import {
 import { get } from 'lodash';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { join } from 'path';
-import { getDataPath, I18N, I18N_FIELD } from '../lib/i18n';
+import { getDataPath, duplicateI18nFields } from '../lib/i18n';
 
 const initialState = Map({
   entry: Map(),
@@ -100,13 +100,8 @@ const entryDraftReducer = (state = Map(), action) => {
           state.setIn(['entry', 'meta', name], value);
         } else {
           state.setIn(['entry', ...dataPath, name], value);
-          if (field.get(I18N) === I18N_FIELD.DUPLICATE) {
-            i18n &&
-              i18n.locales
-                .filter(l => l !== i18n.defaultLocale)
-                .forEach(l => {
-                  state.setIn(['entry', ...getDataPath(l, i18n.defaultLocale), name], value);
-                });
+          if (i18n) {
+            state = duplicateI18nFields(state, field, i18n.locales, i18n.defaultLocale);
           }
         }
         state.mergeDeepIn(['fieldsMetaData'], fromJS(metadata));

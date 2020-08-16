@@ -81,6 +81,8 @@ export default class ObjectControl extends React.Component {
       editorControl: EditorControl,
       controlRef,
       parentIds,
+      isFieldDuplicate,
+      isFieldHidden,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -88,6 +90,9 @@ export default class ObjectControl extends React.Component {
     }
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
+
+    const isDuplicate = isFieldDuplicate(field);
+    const isHidden = isFieldHidden(field);
 
     return (
       <EditorControl
@@ -102,6 +107,10 @@ export default class ObjectControl extends React.Component {
         processControlRef={controlRef && controlRef.bind(this)}
         controlRef={controlRef}
         parentIds={parentIds}
+        isDisabled={isDuplicate}
+        isHidden={isHidden}
+        isFieldDuplicate={isFieldDuplicate}
+        isFieldHidden={isFieldHidden}
       />
     );
   }

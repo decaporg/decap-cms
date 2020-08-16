@@ -1,6 +1,6 @@
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { set, trimEnd, groupBy } from 'lodash';
-import { Collection, EntryField, EntryMap } from '../types/redux';
+import { Collection, EntryDraft, EntryField, EntryMap } from '../types/redux';
 import { selectEntrySlug } from '../reducers/collections';
 import { EntryValue } from '../valueObjects/Entry';
 
@@ -189,7 +189,11 @@ export const getI18nBackup = (
     .filter(l => l !== defaultLocale)
     .reduce((acc, locale) => {
       const dataPath = getDataPath(locale, defaultLocale);
-      const draft = entry.set('data', entry.getIn(dataPath));
+      const data = entry.getIn(dataPath);
+      if (!data) {
+        return acc;
+      }
+      const draft = entry.set('data', data);
       return { ...acc, [locale]: { raw: entryToRaw(draft) } };
     }, {} as Record<string, { raw: string }>);
 
@@ -331,4 +335,44 @@ export const getI18nDataFiles = (
   }, [] as { path: string; id: string; newFile: boolean }[]);
 
   return dataFiles;
+};
+
+export const duplicateI18nFields = (
+  entryDraft: EntryDraft,
+  field: EntryField,
+  locales: string[],
+  defaultLocale: string,
+  fieldPath: string[] = [field.get('name')],
+) => {
+  const value = entryDraft.getIn(['entry', 'data', ...fieldPath]);
+  if (field.get(I18N) === I18N_FIELD.DUPLICATE) {
+    locales
+      .filter(l => l !== defaultLocale)
+      .forEach(l => {
+        entryDraft = entryDraft.setIn(
+          ['entry', ...getDataPath(l, defaultLocale), ...fieldPath],
+          value,
+        );
+      });
+  }
+
+  if (field.has('field') && !List.isList(value)) {
+    const fields = [field.get('field') as EntryField];
+    fields.forEach(field => {
+      entryDraft = duplicateI18nFields(entryDraft, field, locales, defaultLocale, [
+        ...fieldPath,
+        field.get('name'),
+      ]);
+    });
+  } else if (field.has('fields') && !List.isList(value)) {
+    const fields = field.get('fields')!.toArray() as EntryField[];
+    fields.forEach(field => {
+      entryDraft = duplicateI18nFields(entryDraft, field, locales, defaultLocale, [
+        ...fieldPath,
+        field.get('name'),
+      ]);
+    });
+  }
+
+  return entryDraft;
 };

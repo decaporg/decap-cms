@@ -161,8 +161,8 @@ export default class ControlPane extends React.Component {
           .filter(f => f.get('widget') !== 'hidden')
           .map((field, i) => {
             const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
-            const isDuplicate = locales && isFieldDuplicate(field, locale, defaultLocale);
-            const isHidden = locales && isFieldHidden(field, locale, defaultLocale);
+            const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
+            const isHidden = isFieldHidden(field, locale, defaultLocale);
 
             return (
               <EditorControl
@@ -186,6 +186,8 @@ export default class ControlPane extends React.Component {
                 collection={collection}
                 isDisabled={isDuplicate}
                 isHidden={isHidden}
+                isFieldDuplicate={field => isFieldDuplicate(field, locale, defaultLocale)}
+                isFieldHidden={field => isFieldHidden(field, locale, defaultLocale)}
               />
             );
           })}

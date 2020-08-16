@@ -433,6 +433,8 @@ export default class ListControl extends React.Component {
       resolveWidget,
       parentIds,
       forID,
+      isFieldDuplicate,
+      isFieldHidden,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
@@ -489,6 +491,8 @@ export default class ListControl extends React.Component {
               data-testid={`object-control-${key}`}
               hasError={hasError}
               parentIds={[...parentIds, forID, key]}
+              isFieldDuplicate={isFieldDuplicate}
+              isFieldHidden={isFieldHidden}
             />
           )}
         </ClassNames>

@@ -601,4 +601,79 @@ describe('i18n', () => {
       ).toEqual({ de: { data: 'raw_de' }, fr: { data: 'raw_fr' } });
     });
   });
+
+  describe('duplicateI18nFields', () => {
+    it('should duplicate non nested field when field i18n is DUPLICATE', () => {
+      const date = new Date('2020/01/01');
+      expect(
+        i18n
+          .duplicateI18nFields(
+            fromJS({ entry: { data: { date } } }),
+            fromJS({ name: 'date', i18n: i18n.I18N_FIELD.DUPLICATE }),
+            ['en', 'de', 'fr'],
+            'en',
+          )
+          .toJS(),
+      ).toEqual({
+        entry: {
+          data: { date },
+          i18n: {
+            de: { data: { date } },
+            fr: { data: { date } },
+          },
+        },
+      });
+    });
+
+    it('should not duplicate field when field i18n is not DUPLICATE', () => {
+      const date = new Date('2020/01/01');
+      [i18n.I18N_FIELD.TRANSLATE, i18n.I18N_FIELD.TRANSLATE.DUPLICATE].forEach(fieldI18n => {
+        expect(
+          i18n
+            .duplicateI18nFields(
+              fromJS({ entry: { data: { date } } }),
+              fromJS({ name: 'date', i18n: fieldI18n }),
+              ['en', 'de', 'fr'],
+              'en',
+            )
+            .toJS(),
+        ).toEqual({
+          entry: {
+            data: { date },
+          },
+        });
+      });
+    });
+
+    it('should duplicate nested field when nested fields i18n is DUPLICATE', () => {
+      const date = new Date('2020/01/01');
+      const value = fromJS({ title: 'title', date, boolean: true });
+      expect(
+        i18n
+          .duplicateI18nFields(
+            fromJS({ entry: { data: { object: value } } }),
+            fromJS({
+              name: 'object',
+              fields: [
+                { name: 'string', i18n: i18n.I18N_FIELD.TRANSLATE },
+                { name: 'date', i18n: i18n.I18N_FIELD.DUPLICATE },
+                { name: 'boolean', i18n: i18n.I18N_FIELD.NONE },
+              ],
+              i18n: i18n.I18N_FIELD.TRANSLATE,
+            }),
+            ['en', 'de', 'fr'],
+            'en',
+          )
+          .toJS(),
+      ).toEqual({
+        entry: {
+          data: { object: value.toJS() },
+          i18n: {
+            de: { data: { object: { date } } },
+            fr: { data: { object: { date } } },
+          },
+        },
+      });
+    });
+  });
 });

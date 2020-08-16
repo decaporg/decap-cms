@@ -21,6 +21,7 @@ export interface StaticallyTypedRecord<T> {
     keys: [K1, K2],
     value: V,
   ): StaticallyTypedRecord<T>;
+  setIn(keys: string[], value: unknown): StaticallyTypedRecord<T>;
   toJS(): T;
   isEmpty(): boolean;
   some<K extends keyof T>(predicate: (value: T[K], key: K, iter: this) => boolean): boolean;
