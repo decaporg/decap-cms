@@ -10,7 +10,7 @@ The number widget uses an HTML number input, saving the value as a string, integ
 - **Data type:** string by default; configured by `valueType` option
 - **Options:**
   - `default`: accepts string or number value; defaults to empty string
-  - `valueType`: accepts `int` or `float`; any other value results in saving as a string
+  - `value_type`: accepts `int` or `float`; any other value results in saving as a string
   - `min`: accepts a number for minimum value accepted; unset by default
   - `max`: accepts a number for maximum value accepted; unset by default
   - `step`: accepts a number for stepping up/down values in the input; 1 by default
