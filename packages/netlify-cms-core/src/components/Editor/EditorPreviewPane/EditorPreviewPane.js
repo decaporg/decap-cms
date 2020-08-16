@@ -3,7 +3,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Frame from 'react-frame-component';
+import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
 import { ErrorBoundary } from 'UI';
@@ -225,7 +225,15 @@ export class PreviewPane extends React.Component {
     return (
       <ErrorBoundary config={config}>
         <PreviewPaneFrame id="preview-pane" head={styleEls} initialContent={initialContent}>
-          <EditorPreviewContent {...{ previewComponent, previewProps }} />
+          <FrameContextConsumer>
+            {({ document, window }) => {
+              return (
+                <EditorPreviewContent
+                  {...{ previewComponent, previewProps: { ...previewProps, document, window } }}
+                />
+              );
+            }}
+          </FrameContextConsumer>
         </PreviewPaneFrame>
       </ErrorBoundary>
     );
