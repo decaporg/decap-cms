@@ -34,8 +34,8 @@ collections: # A list of collections the CMS should be able to edit
           label: 'Publish Date',
           name: 'date',
           widget: 'datetime',
-          dateFormat: 'YYYY-MM-DD',
-          timeFormat: 'HH:mm',
+          date_format: 'YYYY-MM-DD',
+          time_format: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
         }
       - label: 'Cover Image'
@@ -108,9 +108,9 @@ collections: # A list of collections the CMS should be able to edit
         name: 'post'
         widget: 'relationKitchenSinkPost'
         collection: 'posts'
-        displayFields: ['title', 'date']
-        searchFields: ['title', 'body']
-        valueField: 'title'
+        display_fields: ['title', 'date']
+        search_fields: ['title', 'body']
+        value_field: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
       - { label: 'Map', name: 'map', widget: 'map' }
@@ -139,8 +139,8 @@ collections: # A list of collections the CMS should be able to edit
             name: 'post'
             widget: 'relationKitchenSinkPost'
             collection: 'posts'
-            searchFields: ['title', 'body']
-            valueField: 'title'
+            search_fields: ['title', 'body']
+            value_field: 'title'
           - { label: 'String', name: 'string', widget: 'string' }
           - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: false }
           - { label: 'Text', name: 'text', widget: 'text' }
@@ -187,8 +187,8 @@ collections: # A list of collections the CMS should be able to edit
                     name: 'post'
                     widget: 'relationKitchenSinkPost'
                     collection: 'posts'
-                    searchFields: ['title', 'body']
-                    valueField: 'title'
+                    search_fields: ['title', 'body']
+                    value_field: 'title'
                   - { label: 'String', name: 'string', widget: 'string' }
                   - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
                   - { label: 'Text', name: 'text', widget: 'text' }
