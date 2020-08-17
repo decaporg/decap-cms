@@ -73,7 +73,7 @@ const loadSort = once(() => {
       let map = Map() as Sort;
       Object.entries(sort).forEach(([collection, sort]) => {
         let orderedMap = OrderedMap() as SortMap;
-        sortBy(Object.values(sort), ['index']).forEach(value => {
+        sortBy(Object.values(sort), ['index']).forEach((value) => {
           const { key, direction } = value;
           orderedMap = orderedMap.set(key, fromJS({ key, direction }));
         });
@@ -94,14 +94,14 @@ const clearSort = () => {
 const persistSort = (sort: Sort | undefined) => {
   if (sort) {
     const storageSort: StorageSort = {};
-    sort.keySeq().forEach(key => {
+    sort.keySeq().forEach((key) => {
       const collection = key as string;
       const sortObjects = (sort
         .get(collection)
         .valueSeq()
         .toJS() as SortObject[]).map((value, index) => ({ ...value, index }));
 
-      sortObjects.forEach(value => {
+      sortObjects.forEach((value) => {
         set(storageSort, [collection, value.key], value);
       });
     });
@@ -147,7 +147,7 @@ const entries = (
       const payload = action.payload as EntrySuccessPayload;
       collection = payload.collection;
       slug = payload.entry.slug;
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.setIn(['entities', `${collection}.${slug}`], fromJS(payload.entry));
         const ids = map.getIn(['pages', collection, 'ids'], List());
         if (!ids.includes(slug)) {
@@ -158,7 +158,7 @@ const entries = (
 
     case ENTRIES_REQUEST: {
       const payload = action.payload as EntriesRequestPayload;
-      const newState = state.withMutations(map => {
+      const newState = state.withMutations((map) => {
         map.setIn(['pages', payload.collection, 'isFetching'], true);
       });
 
@@ -171,15 +171,15 @@ const entries = (
       loadedEntries = payload.entries;
       append = payload.append;
       page = payload.page;
-      return state.withMutations(map => {
-        loadedEntries.forEach(entry =>
+      return state.withMutations((map) => {
+        loadedEntries.forEach((entry) =>
           map.setIn(
             ['entities', `${collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
           ),
         );
 
-        const ids = List(loadedEntries.map(entry => entry.slug));
+        const ids = List(loadedEntries.map((entry) => entry.slug));
         map.setIn(
           ['pages', collection],
           Map({
@@ -194,7 +194,7 @@ const entries = (
 
     case ENTRY_FAILURE: {
       const payload = action.payload as EntryFailurePayload;
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.setIn(['entities', `${payload.collection}.${payload.slug}`, 'isFetching'], false);
         map.setIn(
           ['entities', `${payload.collection}.${payload.slug}`, 'error'],
@@ -206,8 +206,8 @@ const entries = (
     case SEARCH_ENTRIES_SUCCESS: {
       const payload = action.payload as EntriesSuccessPayload;
       loadedEntries = payload.entries;
-      return state.withMutations(map => {
-        loadedEntries.forEach(entry =>
+      return state.withMutations((map) => {
+        loadedEntries.forEach((entry) =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
@@ -218,10 +218,10 @@ const entries = (
 
     case ENTRY_DELETE_SUCCESS: {
       const payload = action.payload as EntryDeletePayload;
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.deleteIn(['entities', `${payload.collectionName}.${payload.entrySlug}`]);
         map.updateIn(['pages', payload.collectionName, 'ids'], (ids: string[]) =>
-          ids.filter(id => id !== payload.entrySlug),
+          ids.filter((id) => id !== payload.entrySlug),
         );
       });
     }
@@ -229,7 +229,7 @@ const entries = (
     case SORT_ENTRIES_REQUEST: {
       const payload = action.payload as EntriesSortRequestPayload;
       const { collection, key, direction } = payload;
-      const newState = state.withMutations(map => {
+      const newState = state.withMutations((map) => {
         const sort = OrderedMap({ [key]: Map({ key, direction }) });
         map.setIn(['sort', collection], sort);
         map.setIn(['pages', collection, 'isFetching'], true);
@@ -244,15 +244,15 @@ const entries = (
       const payload = action.payload as { collection: string; entries: EntryObject[] };
       const { collection, entries } = payload;
       loadedEntries = entries;
-      const newState = state.withMutations(map => {
-        loadedEntries.forEach(entry =>
+      const newState = state.withMutations((map) => {
+        loadedEntries.forEach((entry) =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
           ),
         );
         map.setIn(['pages', collection, 'isFetching'], false);
-        const ids = List(loadedEntries.map(entry => entry.slug));
+        const ids = List(loadedEntries.map((entry) => entry.slug));
         map.setIn(
           ['pages', collection],
           Map({
@@ -267,7 +267,7 @@ const entries = (
     case SORT_ENTRIES_FAILURE: {
       const payload = action.payload as EntriesSortFailurePayload;
       const { collection, key } = payload;
-      const newState = state.withMutations(map => {
+      const newState = state.withMutations((map) => {
         map.deleteIn(['sort', collection, key]);
         map.setIn(['pages', collection, 'isFetching'], false);
       });
@@ -278,7 +278,7 @@ const entries = (
     case FILTER_ENTRIES_REQUEST: {
       const payload = action.payload as EntriesFilterRequestPayload;
       const { collection, filter } = payload;
-      const newState = state.withMutations(map => {
+      const newState = state.withMutations((map) => {
         const current: FilterMap = map.getIn(['filter', collection, filter.id], fromJS(filter));
         map.setIn(
           ['filter', collection, current.get('id')],
@@ -291,7 +291,7 @@ const entries = (
     case FILTER_ENTRIES_FAILURE: {
       const payload = action.payload as EntriesFilterFailurePayload;
       const { collection, filter } = payload;
-      const newState = state.withMutations(map => {
+      const newState = state.withMutations((map) => {
         map.deleteIn(['filter', collection, filter.id]);
         map.setIn(['pages', collection, 'isFetching'], false);
       });
@@ -301,7 +301,7 @@ const entries = (
     case CHANGE_VIEW_STYLE: {
       const payload = (action.payload as unknown) as ChangeViewStylePayload;
       const { style } = payload;
-      const newState = state.withMutations(map => {
+      const newState = state.withMutations((map) => {
         map.setIn(['viewStyle'], style);
       });
       persistViewStyle(newState.get('viewStyle') as string);
@@ -328,7 +328,7 @@ export const selectEntriesSortFields = (entries: Entries, collection: string) =>
   const values =
     sort
       ?.valueSeq()
-      .filter(v => v?.get('direction') !== SortDirection.None)
+      .filter((v) => v?.get('direction') !== SortDirection.None)
       .toArray() || [];
 
   return values;
@@ -339,7 +339,7 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
   const values =
     filter
       ?.valueSeq()
-      .filter(v => v?.get('active') === true)
+      .filter((v) => v?.get('active') === true)
       .toArray() || [];
   return values;
 };
@@ -359,12 +359,12 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   const slugs = selectPublishedSlugs(state, collectionName);
   let entries =
     slugs &&
-    (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
+    (slugs.map((slug) => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
 
   const sortFields = selectEntriesSortFields(state, collectionName);
   if (sortFields && sortFields.length > 0) {
-    const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));
-    const orders = sortFields.map(v =>
+    const keys = sortFields.map((v) => selectSortDataPath(collection, v.get('key')));
+    const orders = sortFields.map((v) =>
       v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
     );
     entries = fromJS(orderBy(entries.toJS(), keys, orders));
@@ -373,8 +373,8 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   const filters = selectEntriesFilterFields(state, collectionName);
   if (filters && filters.length > 0) {
     entries = entries
-      .filter(e => {
-        const allMatched = filters.every(f => {
+      .filter((e) => {
+        const allMatched = filters.every((f) => {
           const pattern = f.get('pattern');
           const field = f.get('field');
           const data = e!.get('data') || Map();
@@ -394,9 +394,10 @@ export const selectEntries = (state: Entries, collection: Collection) => {
 export const selectEntryByPath = (state: Entries, collection: string, path: string) => {
   const slugs = selectPublishedSlugs(state, collection);
   const entries =
-    slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
+    slugs &&
+    (slugs.map((slug) => selectEntry(state, collection, slug as string)) as List<EntryMap>);
 
-  return entries && entries.find(e => e?.get('path') === path);
+  return entries && entries.find((e) => e?.get('path') === path);
 };
 
 export const selectEntriesLoaded = (state: Entries, collection: string) => {
@@ -410,7 +411,7 @@ export const selectIsFetching = (state: Entries, collection: string) => {
 const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 
 const getFileField = (collectionFiles: CollectionFiles, slug: string | undefined) => {
-  const file = collectionFiles.find(f => f?.get('name') === slug);
+  const file = collectionFiles.find((f) => f?.get('name') === slug);
   return file;
 };
 
@@ -451,7 +452,7 @@ const traverseFields = (
   fields: EntryField[],
   currentFolder: string,
 ): string | null => {
-  const matchedField = fields.filter(f => f === field)[0];
+  const matchedField = fields.filter((f) => f === field)[0];
   if (matchedField) {
     return folderFormatter(
       matchedField.has(folderKey) ? matchedField.get(folderKey)! : `{{${folderKey}}}`,

@@ -151,7 +151,7 @@ class CollectionSearch extends React.Component {
     }
   };
 
-  handleKeyDown = event => {
+  handleKeyDown = (event) => {
     const { suggestionsVisible } = this.state;
 
     if (event.key === 'Enter') {
@@ -174,7 +174,7 @@ class CollectionSearch extends React.Component {
     }
   };
 
-  handleQueryChange = query => {
+  handleQueryChange = (query) => {
     this.setState({ query });
     this.toggleSuggestions(query !== '');
     if (query === '') {
@@ -198,7 +198,7 @@ class CollectionSearch extends React.Component {
         <InputContainer>
           <Icon type="search" />
           <SearchInput
-            onChange={e => this.handleQueryChange(e.target.value)}
+            onChange={(e) => this.handleQueryChange(e.target.value)}
             onKeyDown={this.handleKeyDown}
             onClick={() => this.toggleSuggestions(true)}
             placeholder={t('collection.sidebar.searchAll')}
@@ -211,8 +211,8 @@ class CollectionSearch extends React.Component {
               <SuggestionHeader>{t('collection.sidebar.searchIn')}</SuggestionHeader>
               <SuggestionItem
                 isActive={selectedCollectionIdx === -1}
-                onClick={e => this.handleSuggestionClick(e, -1)}
-                onMouseDown={e => e.preventDefault()}
+                onClick={(e) => this.handleSuggestionClick(e, -1)}
+                onMouseDown={(e) => e.preventDefault()}
               >
                 {t('collection.sidebar.allCollections')}
               </SuggestionItem>
@@ -221,8 +221,8 @@ class CollectionSearch extends React.Component {
                 <SuggestionItem
                   key={idx}
                   isActive={idx === selectedCollectionIdx}
-                  onClick={e => this.handleSuggestionClick(e, idx)}
-                  onMouseDown={e => e.preventDefault()}
+                  onClick={(e) => this.handleSuggestionClick(e, idx)}
+                  onMouseDown={(e) => e.preventDefault()}
                 >
                   {collection.get('label')}
                 </SuggestionItem>

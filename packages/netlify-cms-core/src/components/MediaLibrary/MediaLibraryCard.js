@@ -7,15 +7,15 @@ import { colors, borders, lengths, shadows, effects } from 'netlify-cms-ui-defau
 const IMAGE_HEIGHT = 160;
 
 const Card = styled.div`
-  width: ${props => props.width};
-  height: ${props => props.height};
-  margin: ${props => props.margin};
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  margin: ${(props) => props.margin};
   border: ${borders.textField};
-  border-color: ${props => props.isSelected && colors.active};
+  border-color: ${(props) => props.isSelected && colors.active};
   border-radius: ${lengths.borderRadius};
   cursor: pointer;
   overflow: hidden;
-  background-color: ${props => props.isPrivate && colors.textFieldBorder};
+  background-color: ${(props) => props.isPrivate && colors.textFieldBorder};
 
   &:focus {
     outline: none;

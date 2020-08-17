@@ -30,7 +30,7 @@ const entries = (state = defaultState, action) => {
 
     case SEARCH_ENTRIES_REQUEST:
       if (action.payload.searchTerm !== state.get('term')) {
-        return state.withMutations(map => {
+        return state.withMutations((map) => {
           map.set('isFetching', true);
           map.set('term', action.payload.searchTerm);
           map.set('collections', List(action.payload.searchCollections));
@@ -44,9 +44,9 @@ const entries = (state = defaultState, action) => {
       page = action.payload.page;
       searchTerm = action.payload.searchTerm;
       searchCollections = action.payload.searchCollections;
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         const entryIds = List(
-          loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })),
+          loadedEntries.map((entry) => ({ collection: entry.collection, slug: entry.slug })),
         );
         map.set('isFetching', false);
         map.set('fetchID', null);
@@ -63,7 +63,7 @@ const entries = (state = defaultState, action) => {
 
     case QUERY_REQUEST:
       if (action.payload.searchTerm !== state.get('term')) {
-        return state.withMutations(map => {
+        return state.withMutations((map) => {
           map.set('isFetching', action.payload.namespace ? true : false);
           map.set('fetchID', action.payload.namespace);
           map.set('term', action.payload.searchTerm);
@@ -74,7 +74,7 @@ const entries = (state = defaultState, action) => {
     case QUERY_SUCCESS:
       searchTerm = action.payload.searchTerm;
       response = action.payload.response;
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.set('isFetching', false);
         map.set('fetchID', null);
         map.set('term', searchTerm);

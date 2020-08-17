@@ -18,7 +18,7 @@ jest.mock('netlify-cms-widget-object', () => {
 });
 jest.mock('netlify-cms-ui-default', () => {
   const actual = jest.requireActual('netlify-cms-ui-default');
-  const ListItemTopBar = props => (
+  const ListItemTopBar = (props) => (
     <mock-list-item-top-bar {...props} onClick={props.onCollapseToggle}>
       <button onClick={props.onRemove}>Remove</button>
       {props.children}

@@ -9,7 +9,7 @@ export default function remarkImagesToText() {
   return transform;
 
   function transform(node) {
-    const children = node.children.map(child => {
+    const children = node.children.map((child) => {
       if (
         child.type === 'paragraph' &&
         child.children.length === 1 &&

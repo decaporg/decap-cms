@@ -5,7 +5,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
 
 jest.mock('react-window', () => {
-  const FixedSizeList = props => props.itemData.options;
+  const FixedSizeList = (props) => props.itemData.options;
   return {
     FixedSizeList,
   };
@@ -46,7 +46,7 @@ const nestedFieldConfig = {
   valueField: 'title',
 };
 
-const generateHits = length => {
+const generateHits = (length) => {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
     const slug = `post-number-${idx + 1}`;
@@ -144,11 +144,11 @@ class RelationController extends React.Component {
     this.mounted = false;
   }
 
-  handleOnChange = jest.fn(value => {
+  handleOnChange = jest.fn((value) => {
     this.setState({ ...this.state, value });
   });
 
-  setQueryHits = jest.fn(hits => {
+  setQueryHits = jest.fn((hits) => {
     if (this.mounted) {
       const queryHits = Map().set('relation-field', hits);
       this.setState({ ...this.state, queryHits });

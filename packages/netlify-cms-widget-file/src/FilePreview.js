@@ -15,7 +15,7 @@ const FileLink = styled(({ href, path }) => (
 function FileLinkList({ values, getAsset, field }) {
   return (
     <div>
-      {values.map(value => (
+      {values.map((value) => (
         <FileLink key={value} path={value} href={getAsset(value, field)} />
       ))}
     </div>
@@ -30,7 +30,7 @@ function FileContent(props) {
   return <FileLink key={value} path={value} href={getAsset(value, field)} />;
 }
 
-const FilePreview = props => (
+const FilePreview = (props) => (
   <WidgetPreviewContainer>{props.value ? <FileContent {...props} /> : null}</WidgetPreviewContainer>
 );
 

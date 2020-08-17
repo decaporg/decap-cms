@@ -28,11 +28,11 @@ const markMap = {
   inlineCode: 'code',
 };
 
-const isInline = node => node.object === 'inline';
-const isText = node => node.object === 'text';
+const isInline = (node) => node.object === 'inline';
+const isText = (node) => node.object === 'text';
 const isMarksEqual = (node1, node2) => isEqual(node1.marks, node2.marks);
 
-export const wrapInlinesWithTexts = children => {
+export const wrapInlinesWithTexts = (children) => {
   if (children.length <= 0) {
     return children;
   }
@@ -65,7 +65,7 @@ export const wrapInlinesWithTexts = children => {
   return children;
 };
 
-export const mergeAdjacentTexts = children => {
+export const mergeAdjacentTexts = (children) => {
   if (children.length <= 0) {
     return children;
   }
@@ -116,7 +116,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
     let children =
       !['strong', 'emphasis', 'delete'].includes(node.type) &&
       !isEmpty(node.children) &&
-      flatMap(node.children, transformNode).filter(val => val);
+      flatMap(node.children, transformNode).filter((val) => val);
 
     if (Array.isArray(children)) {
       // Ensure that inline nodes are surrounded by text nodes to conform to slate schema
@@ -210,7 +210,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
         return processMarkNode(childNode, marks);
 
       case 'link': {
-        const nodes = map(childNode.children, child => processMarkChild(child, marks));
+        const nodes = map(childNode.children, (child) => processMarkChild(child, marks));
         const result = convertNode(childNode, flatten(nodes));
         return result;
       }
@@ -234,7 +234,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       ? [...parentMarks.filter(({ type }) => type !== markType), { type: markType }]
       : parentMarks;
 
-    const children = flatMap(node.children, child => processMarkChild(child, marks));
+    const children = flatMap(node.children, (child) => processMarkChild(child, marks));
 
     return children;
   }

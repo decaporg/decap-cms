@@ -16,17 +16,17 @@ const integrations = (state = null, action: IntegrationsAction): Integrations | 
           const { hooks, collections, provider, ...providerData } = integration;
           acc.providers[provider] = { ...providerData };
           if (!collections) {
-            hooks.forEach(hook => {
+            hooks.forEach((hook) => {
               acc.hooks[hook] = provider;
             });
             return acc;
           }
           const integrationCollections =
             collections === '*'
-              ? action.payload.get('collections').map(collection => collection.get('name'))
+              ? action.payload.get('collections').map((collection) => collection.get('name'))
               : (collections as string[]);
-          integrationCollections.forEach(collection => {
-            hooks.forEach(hook => {
+          integrationCollections.forEach((collection) => {
+            hooks.forEach((hook) => {
               acc.hooks[collection]
                 ? ((acc.hooks[collection] as Record<string, string>)[hook] = provider)
                 : (acc.hooks[collection] = { [hook]: provider });

@@ -28,7 +28,7 @@ const StyledModal = styled(Modal)`
   display: grid;
   grid-template-rows: 120px auto;
   width: calc(${cardOutsideWidth} + 20px);
-  background-color: ${props => props.isPrivate && colors.grayDark};
+  background-color: ${(props) => props.isPrivate && colors.grayDark};
 
   @media (min-width: 800px) {
     width: calc(${cardOutsideWidth} * 2 + 20px);
@@ -51,12 +51,12 @@ const StyledModal = styled(Modal)`
   }
 
   h1 {
-    color: ${props => props.isPrivate && colors.textFieldBorder};
+    color: ${(props) => props.isPrivate && colors.textFieldBorder};
   }
 
   button:disabled,
   label[disabled] {
-    background-color: ${props => props.isPrivate && `rgba(217, 217, 217, 0.15)`};
+    background-color: ${(props) => props.isPrivate && `rgba(217, 217, 217, 0.15)`};
   }
 `;
 
@@ -135,7 +135,7 @@ const MediaLibraryModal = ({
       <MediaLibraryCardGrid
         setScrollContainerRef={setScrollContainerRef}
         mediaItems={tableData}
-        isSelectedFile={file => selectedFile.key === file.key}
+        isSelectedFile={(file) => selectedFile.key === file.key}
         onAssetClick={handleAssetClick}
         canLoadMore={hasNextPage}
         onLoadMore={handleLoadMore}

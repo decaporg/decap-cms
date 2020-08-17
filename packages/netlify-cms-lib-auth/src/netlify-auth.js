@@ -40,7 +40,7 @@ class Authenticator {
   }
 
   handshakeCallback(options, cb) {
-    const fn = e => {
+    const fn = (e) => {
       if (e.data === 'authorizing:' + options.provider && e.origin === this.base_url) {
         window.removeEventListener('message', fn, false);
         window.addEventListener('message', this.authorizeCallback(options, cb), false);
@@ -51,7 +51,7 @@ class Authenticator {
   }
 
   authorizeCallback(options, cb) {
-    const fn = e => {
+    const fn = (e) => {
       if (e.origin !== this.base_url) {
         return;
       }
@@ -150,7 +150,7 @@ class Authenticator {
       );
     }
     const url = `${this.base_url}/${this.auth_endpoint}/refresh?provider=${provider}&site_id=${siteID}&refresh_token=${refresh_token}`;
-    const refreshPromise = fetch(url, { method: 'POST', body: '' }).then(res => res.json());
+    const refreshPromise = fetch(url, { method: 'POST', body: '' }).then((res) => res.json());
 
     // Return a promise if a callback wasn't provided
     if (!cb) {
@@ -158,7 +158,7 @@ class Authenticator {
     }
 
     // Otherwise, use the provided callback.
-    refreshPromise.then(data => cb(null, data)).catch(cb);
+    refreshPromise.then((data) => cb(null, data)).catch(cb);
   }
 }
 

@@ -56,7 +56,7 @@ const SidebarNavLink = styled(NavLink)`
     flex-shrink: 0;
   }
 
-  ${props => css`
+  ${(props) => css`
     &:hover,
     &:active,
     &.${props.activeClassName} {
@@ -116,8 +116,8 @@ export class Sidebar extends React.Component {
         <SidebarNavList>
           {collections
             .toList()
-            .filter(collection => collection.get('hide') !== true)
-            .map(collection => this.renderLink(collection, filterTerm))}
+            .filter((collection) => collection.get('hide') !== true)
+            .map((collection) => this.renderLink(collection, filterTerm))}
         </SidebarNavList>
       </SidebarContainer>
     );

@@ -124,8 +124,8 @@ export default class BitbucketBackend implements Implementation {
 
   async status() {
     const api = await fetch(BITBUCKET_STATUS_ENDPOINT)
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         return res['components']
           .filter((statusComponent: BitbucketStatusComponent) =>
             BITBUCKET_OPERATIONAL_UNITS.includes(statusComponent.name),
@@ -134,7 +134,7 @@ export default class BitbucketBackend implements Implementation {
             (statusComponent: BitbucketStatusComponent) => statusComponent.status === 'operational',
           );
       })
-      .catch(e => {
+      .catch((e) => {
         console.warn('Failed getting BitBucket status', e);
         return true;
       });
@@ -145,8 +145,8 @@ export default class BitbucketBackend implements Implementation {
       auth =
         (await this.api
           ?.user()
-          .then(user => !!user)
-          .catch(e => {
+          .then((user) => !!user)
+          .catch((e) => {
             console.warn('Failed getting Bitbucket user', e);
             return false;
           })) || false;
@@ -192,7 +192,7 @@ export default class BitbucketBackend implements Implementation {
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
 
-    const isCollab = await this.api.hasWriteAccess().catch(error => {
+    const isCollab = await this.api.hasWriteAccess().catch((error) => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
 
@@ -301,7 +301,7 @@ export default class BitbucketBackend implements Implementation {
     const listFiles = () =>
       this.api!.listFiles(folder, depth, 20, this.branch).then(({ entries, cursor: c }) => {
         cursor = c.mergeMeta({ extension });
-        return entries.filter(e => filterByExtension(e, extension));
+        return entries.filter((e) => filterByExtension(e, extension));
       });
 
     const head = await this.api!.defaultBranchCommitSha();
@@ -324,7 +324,7 @@ export default class BitbucketBackend implements Implementation {
 
   async listAllFiles(folder: string, extension: string, depth: number) {
     const files = await this.api!.listAllFiles(folder, depth, this.branch);
-    const filtered = files.filter(file => filterByExtension(file, extension));
+    const filtered = files.filter((file) => filterByExtension(file, extension));
     return filtered;
   }
 
@@ -348,8 +348,8 @@ export default class BitbucketBackend implements Implementation {
       getDefaultBranch: () => Promise.resolve({ name: this.branch, sha: head }),
       isShaExistsInBranch: this.api!.isShaExistsInBranch.bind(this.api!),
       getDifferences: (source, destination) => this.api!.getDifferences(source, destination),
-      getFileId: path => Promise.resolve(this.api!.getFileId(head, path)),
-      filterFile: file => filterByExtension(file, extension),
+      getFileId: (path) => Promise.resolve(this.api!.getFileId(head, path)),
+      filterFile: (file) => filterByExtension(file, extension),
     });
     return files;
   }
@@ -364,14 +364,14 @@ export default class BitbucketBackend implements Implementation {
   }
 
   getEntry(path: string) {
-    return this.api!.readFile(path).then(data => ({
+    return this.api!.readFile(path).then((data) => ({
       file: { path, id: null },
       data: data as string,
     }));
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
-    return this.api!.listAllFiles(mediaFolder, 1, this.branch).then(files =>
+    return this.api!.listAllFiles(mediaFolder, 1, this.branch).then((files) =>
       files.map(({ id, name, path }) => ({ id, name, path, displayURL: { id, path } })),
     );
   }
@@ -380,7 +380,7 @@ export default class BitbucketBackend implements Implementation {
     if (!this._largeMediaClientPromise) {
       this._largeMediaClientPromise = (async (): Promise<GitLfsClient> => {
         const patterns = await this.api!.readFile('.gitattributes')
-          .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
+          .then((attributes) => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
           .catch((err: FetchError) => {
             if (err.status === 404) {
               console.log('This 404 was expected and handled appropriately.');
@@ -488,7 +488,7 @@ export default class BitbucketBackend implements Implementation {
     return this.api!.traverseCursor(cursor, action).then(async ({ entries, cursor: newCursor }) => {
       const extension = cursor.meta?.get('extension');
       if (extension) {
-        entries = entries.filter(e => filterByExtension(e, extension));
+        entries = entries.filter((e) => filterByExtension(e, extension));
         newCursor = newCursor.mergeMeta({ extension });
       }
       const head = await this.api!.defaultBranchCommitSha();
@@ -533,8 +533,8 @@ export default class BitbucketBackend implements Implementation {
 
   async unpublishedEntries() {
     const listEntriesKeys = () =>
-      this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => contentKeyFromBranch(branch)),
+      this.api!.listUnpublishedBranches().then((branches) =>
+        branches.map((branch) => contentKeyFromBranch(branch)),
       );
 
     const ids = await unpublishedEntries(listEntriesKeys);

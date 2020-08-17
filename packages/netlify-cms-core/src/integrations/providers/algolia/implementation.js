@@ -44,7 +44,7 @@ export default class Algolia {
   }
 
   parseJsonResponse(response) {
-    return response.json().then(json => {
+    return response.json().then((json) => {
       if (!response.ok) {
         return Promise.reject(json);
       }
@@ -69,7 +69,7 @@ export default class Algolia {
   request(path, options = {}) {
     const headers = this.requestHeaders(options.headers || {});
     const url = this.urlFor(path, options);
-    return fetch(url, { ...options, headers }).then(response => {
+    return fetch(url, { ...options, headers }).then((response) => {
       const contentType = response.headers.get('Content-Type');
       if (contentType && contentType.match(/json/)) {
         return this.parseJsonResponse(response);
@@ -80,7 +80,7 @@ export default class Algolia {
   }
 
   search(collections, searchTerm, page) {
-    const searchCollections = collections.map(collection => ({
+    const searchCollections = collections.map((collection) => ({
       indexName: `${this.indexPrefix}${collection}`,
       params: `query=${searchTerm}&page=${page}`,
     }));
@@ -88,9 +88,9 @@ export default class Algolia {
     return this.request(`${this.searchURL}/indexes/*/queries`, {
       method: 'POST',
       body: JSON.stringify({ requests: searchCollections }),
-    }).then(response => {
+    }).then((response) => {
       const entries = response.results.map((result, index) =>
-        result.hits.map(hit => {
+        result.hits.map((hit) => {
           const slug = getSlug(hit.path);
           return createEntry(collections[index], slug, hit.path, { data: hit.data, partial: true });
         }),
@@ -118,8 +118,8 @@ export default class Algolia {
         {
           params: { page },
         },
-      ).then(response => {
-        const entries = response.hits.map(hit => {
+      ).then((response) => {
+        const entries = response.hits.map((hit) => {
           const slug = selectEntrySlug(collection, hit.path);
           return createEntry(collection.get('name'), slug, hit.path, {
             data: hit.data,
@@ -152,7 +152,7 @@ export default class Algolia {
       hits = [...hits, ...response.hits];
       page = page + 1;
     }
-    const entries = hits.map(hit => {
+    const entries = hits.map((hit) => {
       const slug = selectEntrySlug(collection, hit.path);
       return createEntry(collection.get('name'), slug, hit.path, {
         data: hit.data,
@@ -164,8 +164,8 @@ export default class Algolia {
   }
 
   getEntry(collection, slug) {
-    return this.searchBy('slug', collection.get('name'), slug).then(response => {
-      const entry = response.hits.filter(hit => hit.slug === slug)[0];
+    return this.searchBy('slug', collection.get('name'), slug).then((response) => {
+      const entry = response.hits.filter((hit) => hit.slug === slug)[0];
       return createEntry(collection.get('name'), slug, entry.path, {
         data: entry.data,
         partial: true,

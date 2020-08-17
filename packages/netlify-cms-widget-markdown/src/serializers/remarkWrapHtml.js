@@ -6,7 +6,7 @@ import u from 'unist-builder';
  */
 export default function remarkWrapHtml() {
   function transform(tree) {
-    tree.children = tree.children.map(node => {
+    tree.children = tree.children.map((node) => {
       if (node.type === 'html') {
         return u('paragraph', [node]);
       }

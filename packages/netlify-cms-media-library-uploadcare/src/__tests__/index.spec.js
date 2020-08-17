@@ -22,7 +22,7 @@ let openDialogCallback;
 jest.mock('uploadcare-widget', () => ({
   registerTab: jest.fn(),
   openDialog: jest.fn(() => ({
-    done: jest.fn(cb => {
+    done: jest.fn((cb) => {
       openDialogCallback = cb;
     }),
   })),
@@ -32,7 +32,7 @@ jest.mock('uploadcare-widget', () => ({
     }),
   ),
   loadFileGroup: () => ({
-    done: cb => cb(),
+    done: (cb) => cb(),
   }),
 }));
 
@@ -54,7 +54,7 @@ describe('uploadcare media library', () => {
     simulateCloseDialog = (result, files) =>
       openDialogCallback({
         promise: () => Promise.resolve(result),
-        ...(files ? { files: () => files.map(file => Promise.resolve(file)) } : {}),
+        ...(files ? { files: () => files.map((file) => Promise.resolve(file)) } : {}),
       });
 
     /**

@@ -92,8 +92,8 @@ export default class GitLab implements Implementation {
     const auth =
       (await this.api
         ?.user()
-        .then(user => !!user)
-        .catch(e => {
+        .then((user) => !!user)
+        .catch((e) => {
           console.warn('Failed getting GitLab user', e);
           return false;
         })) || false;
@@ -166,7 +166,7 @@ export default class GitLab implements Implementation {
     const listFiles = () =>
       this.api!.listFiles(folder, depth > 1).then(({ files, cursor: c }) => {
         cursor = c.mergeMeta({ folder, extension, depth });
-        return files.filter(file => this.filterFile(folder, file, extension, depth));
+        return files.filter((file) => this.filterFile(folder, file, extension, depth));
       });
 
     const files = await entriesByFolder(
@@ -183,7 +183,7 @@ export default class GitLab implements Implementation {
 
   async listAllFiles(folder: string, extension: string, depth: number) {
     const files = await this.api!.listAllFiles(folder, depth > 1);
-    const filtered = files.filter(file => this.filterFile(folder, file, extension, depth));
+    const filtered = files.filter((file) => this.filterFile(folder, file, extension, depth));
     return filtered;
   }
 
@@ -199,11 +199,11 @@ export default class GitLab implements Implementation {
       extension,
       depth,
       getDefaultBranch: () =>
-        this.api!.getDefaultBranch().then(b => ({ name: b.name, sha: b.commit.id })),
+        this.api!.getDefaultBranch().then((b) => ({ name: b.name, sha: b.commit.id })),
       isShaExistsInBranch: this.api!.isShaExistsInBranch.bind(this.api!),
       getDifferences: (to, from) => this.api!.getDifferences(to, from),
-      getFileId: path => this.api!.getFileId(path, this.branch),
-      filterFile: file => this.filterFile(folder, file, extension, depth),
+      getFileId: (path) => this.api!.getFileId(path, this.branch),
+      filterFile: (file) => this.filterFile(folder, file, extension, depth),
     });
     return files;
   }
@@ -219,14 +219,14 @@ export default class GitLab implements Implementation {
 
   // Fetches a single entry.
   getEntry(path: string) {
-    return this.api!.readFile(path).then(data => ({
+    return this.api!.readFile(path).then((data) => ({
       file: { path, id: null },
       data: data as string,
     }));
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
-    return this.api!.listAllFiles(mediaFolder).then(files =>
+    return this.api!.listAllFiles(mediaFolder).then((files) =>
       files.map(({ id, name, path }) => {
         return { id, name, path, displayURL: { id, name, path } };
       }),
@@ -303,7 +303,7 @@ export default class GitLab implements Implementation {
         cursor.meta?.get('extension') as string,
       ];
       if (folder && depth && extension) {
-        entries = entries.filter(f => this.filterFile(folder, f, extension, depth));
+        entries = entries.filter((f) => this.filterFile(folder, f, extension, depth));
         newCursor = newCursor.mergeMeta({ folder, extension, depth });
       }
       const entriesWithData = await entriesByFiles(
@@ -326,7 +326,7 @@ export default class GitLab implements Implementation {
       { parseText }: { parseText: boolean },
     ) => this.api!.readFile(path, id, { branch, parseText });
 
-    return getMediaAsBlob(file.path, null, readFile).then(blob => {
+    return getMediaAsBlob(file.path, null, readFile).then((blob) => {
       const name = basename(file.path);
       const fileObj = blobToFileObj(name, blob);
       return {
@@ -341,15 +341,15 @@ export default class GitLab implements Implementation {
   }
 
   async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
-    const mediaFiles = await Promise.all(files.map(file => this.loadMediaFile(branch, file)));
+    const mediaFiles = await Promise.all(files.map((file) => this.loadMediaFile(branch, file)));
 
     return mediaFiles;
   }
 
   async unpublishedEntries() {
     const listEntriesKeys = () =>
-      this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => contentKeyFromBranch(branch)),
+      this.api!.listUnpublishedBranches().then((branches) =>
+        branches.map((branch) => contentKeyFromBranch(branch)),
       );
 
     const ids = await unpublishedEntries(listEntriesKeys);

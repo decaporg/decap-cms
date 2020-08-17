@@ -24,7 +24,7 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
         if (ancestor && ancestor.type === 'list-item') {
           return ancestor;
         }
-        return editor.value.document.getClosest(ancestor.key, node => node.type === 'list-item');
+        return editor.value.document.getClosest(ancestor.key, (node) => node.type === 'list-item');
       },
       getListOrListItem(editor, { node, ...opts } = {}) {
         const listContextNode = editor.getBlockContainer(node);
@@ -126,7 +126,7 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
 
         // Unwrap each selected list item into the parent list.
         editor.withoutNormalizing(() => {
-          listItems.forEach(listItem => editor.unwrapNodeToDepth(listItem, 2));
+          listItems.forEach((listItem) => editor.unwrapNodeToDepth(listItem, 2));
         });
 
         // If there were other list items after the selected items, use the last
@@ -166,7 +166,7 @@ const ListPlugin = ({ defaultType, unorderedListType, orderedListType }) => {
               });
             } else {
               editor.withoutNormalizing(() => {
-                list.nodes.forEach(listItem => {
+                list.nodes.forEach((listItem) => {
                   if (editor.isSelected(listItem)) {
                     editor.unwrapListItem(listItem);
                   }

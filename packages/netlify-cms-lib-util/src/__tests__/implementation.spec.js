@@ -33,7 +33,7 @@ describe('implementation', () => {
     it('should return createObjectURL result', async () => {
       const blob = {};
       const readFile = jest.fn().mockResolvedValue(blob);
-      const semaphore = { take: jest.fn(callback => callback()), leave: jest.fn() };
+      const semaphore = { take: jest.fn((callback) => callback()), leave: jest.fn() };
 
       global.URL.createObjectURL = jest
         .fn()

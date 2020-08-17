@@ -146,7 +146,7 @@ export function searchEntries(
     const { search } = state;
     const backend = currentBackend(state.config);
     const allCollections = searchCollections || state.collections.keySeq().toArray();
-    const collections = allCollections.filter(collection =>
+    const collections = allCollections.filter((collection) =>
       selectIntegration(state, collection as string, 'search'),
     );
     const integration = selectIntegration(state, collections[0] as string, 'search');
@@ -210,12 +210,12 @@ export function query(
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, collectionName, 'search');
     const collection = state.collections.find(
-      collection => collection.get('name') === collectionName,
+      (collection) => collection.get('name') === collectionName,
     );
 
     const queryPromise = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration).searchBy(
-          searchFields.map(f => `data.${f}`),
+          searchFields.map((f) => `data.${f}`),
           collectionName,
           searchTerm,
         )

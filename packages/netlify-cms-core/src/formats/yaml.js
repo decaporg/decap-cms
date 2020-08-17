@@ -2,7 +2,7 @@ import yaml from 'yaml';
 import { sortKeys } from './helpers';
 
 const addComments = (items, comments, prefix = '') => {
-  items.forEach(item => {
+  items.forEach((item) => {
     if (item.key !== undefined) {
       const itemKey = item.key.toString();
       const key = prefix ? `${prefix}.${itemKey}` : itemKey;
@@ -18,7 +18,7 @@ const addComments = (items, comments, prefix = '') => {
 };
 
 const timestampTag = {
-  identify: value => value instanceof Date,
+  identify: (value) => value instanceof Date,
   default: true,
   tag: '!timestamp',
   test: RegExp(
@@ -29,8 +29,8 @@ const timestampTag = {
     'Z' + // Z
       '$',
   ),
-  resolve: str => new Date(str),
-  stringify: value => value.toISOString(),
+  resolve: (str) => new Date(str),
+  stringify: (value) => value.toISOString(),
 };
 
 export default {
@@ -46,7 +46,7 @@ export default {
 
     addComments(contents.items, comments);
 
-    contents.items.sort(sortKeys(sortedKeys, item => item.key?.toString()));
+    contents.items.sort(sortKeys(sortedKeys, (item) => item.key?.toString()));
     const doc = new yaml.Document();
     doc.contents = contents;
 

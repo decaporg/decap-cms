@@ -30,7 +30,7 @@ const TranslatedApp = ({ locale, config }) => {
   );
 };
 
-const mapDispatchToProps = state => {
+const mapDispatchToProps = (state) => {
   return { locale: selectLocale(state.config), config: state.config };
 };
 

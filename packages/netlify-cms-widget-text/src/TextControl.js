@@ -46,7 +46,7 @@ export default class TextControl extends React.Component {
         onBlur={setInactiveStyle}
         style={{ minHeight: '140px' }}
         css={{ fontFamily: 'inherit' }}
-        onChange={e => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
       />
     );
   }

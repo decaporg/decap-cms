@@ -25,7 +25,7 @@ const LibraryTitle = styled.h1`
   font-size: 22px;
   text-align: left;
   margin-bottom: 25px;
-  color: ${props => props.isPrivate && colors.textFieldBorder};
+  color: ${(props) => props.isPrivate && colors.textFieldBorder};
 `;
 
 const MediaLibraryHeader = ({ onClose, title, isPrivate }) => (

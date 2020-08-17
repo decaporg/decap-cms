@@ -75,14 +75,14 @@ const EventBox = ({ title, cta }) => {
     const url = `https://www.eventbriteapi.com/v3/events/search/?token=${eventbriteToken}&organizer.id=${eventbriteOrganiser}&expand=venue%27`;
 
     fetch(url)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const eventDate = data.events[0].start.utc;
 
         setEventDate(eventDate);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err); // eslint-disable-line no-console
         // TODO: set state to show error message
 

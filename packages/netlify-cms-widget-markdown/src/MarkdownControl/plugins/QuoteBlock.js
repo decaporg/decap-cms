@@ -27,7 +27,7 @@ const QuoteBlock = ({ type }) => ({
         } else {
           const blockContainerParent = editor.value.document.getParent(blockContainer.key);
           editor.withoutNormalizing(() => {
-            const selectedListItems = nodes.filter(node => editor.isSelected(node));
+            const selectedListItems = nodes.filter((node) => editor.isSelected(node));
             const newList = Block.create(blockContainer.type);
             editor.unwrapNodeByKey(selectedListItems.first());
             const offset = editor.getOffset(selectedListItems.first());

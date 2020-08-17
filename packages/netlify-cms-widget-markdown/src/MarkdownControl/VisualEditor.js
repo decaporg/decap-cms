@@ -57,8 +57,8 @@ export const mergeMediaConfig = (editorComponents, field) => {
 
     if (fields) {
       imageComponent.fields = fields.update(
-        fields.findIndex(f => f.get('widget') === 'image'),
-        f => {
+        fields.findIndex((f) => f.get('widget') === 'image'),
+        (f) => {
           // merge `media_library` config
           if (field.has('media_library')) {
             f = f.set(
@@ -130,11 +130,11 @@ export default class Editor extends React.Component {
     }
   }
 
-  handleMarkClick = type => {
+  handleMarkClick = (type) => {
     this.editor.toggleMark(type).focus();
   };
 
-  handleBlockClick = type => {
+  handleBlockClick = (type) => {
     this.editor.toggleBlock(type).focus();
   };
 
@@ -142,15 +142,15 @@ export default class Editor extends React.Component {
     this.editor.toggleLink(() => window.prompt('Enter the URL of the link'));
   };
 
-  hasMark = type => this.editor && this.editor.hasMark(type);
-  hasInline = type => this.editor && this.editor.hasInline(type);
-  hasBlock = type => this.editor && this.editor.hasBlock(type);
+  hasMark = (type) => this.editor && this.editor.hasMark(type);
+  hasInline = (type) => this.editor && this.editor.hasInline(type);
+  hasBlock = (type) => this.editor && this.editor.hasBlock(type);
 
   handleToggleMode = () => {
     this.props.onMode('raw');
   };
 
-  handleInsertShortcode = pluginConfig => {
+  handleInsertShortcode = (pluginConfig) => {
     this.editor.insertShortcode(pluginConfig);
   };
 
@@ -158,21 +158,21 @@ export default class Editor extends React.Component {
     this.editor.moveToEndOfDocument();
   };
 
-  handleDocumentChange = debounce(editor => {
+  handleDocumentChange = debounce((editor) => {
     const { onChange } = this.props;
     const raw = editor.value.document.toJS();
     const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
     onChange(markdown);
   }, 150);
 
-  handleChange = editor => {
+  handleChange = (editor) => {
     if (!this.state.value.document.equals(editor.value.document)) {
       this.handleDocumentChange(editor);
     }
     this.setState({ value: editor.value });
   };
 
-  processRef = ref => {
+  processRef = (ref) => {
     this.editor = ref;
   };
 

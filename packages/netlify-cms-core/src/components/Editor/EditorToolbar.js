@@ -275,7 +275,7 @@ class EditorToolbar extends React.Component {
     );
   };
 
-  renderDeployPreviewControls = label => {
+  renderDeployPreviewControls = (label) => {
     const { deployPreview = Map(), loadDeployPreview, t } = this.props;
     const url = deployPreview.get('url');
     const status = deployPreview.get('status');

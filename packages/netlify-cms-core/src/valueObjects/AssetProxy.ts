@@ -25,11 +25,11 @@ export default class AssetProxy {
   }
 
   async toBase64(): Promise<string> {
-    const blob = await fetch(this.url).then(response => response.blob());
+    const blob = await fetch(this.url).then((response) => response.blob());
     if (blob.size <= 0) {
       return '';
     }
-    const result = await new Promise<string>(resolve => {
+    const result = await new Promise<string>((resolve) => {
       const fr = new FileReader();
       fr.onload = (readerEvt): void => {
         const binaryString = readerEvt.target?.result || '';

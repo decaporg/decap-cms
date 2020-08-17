@@ -12,7 +12,7 @@ const allowedEvents = [
   'postSave',
 ];
 const eventHandlers = {};
-allowedEvents.forEach(e => {
+allowedEvents.forEach((e) => {
   eventHandlers[e] = [];
 });
 
@@ -84,7 +84,7 @@ export function getPreviewTemplate(name) {
  */
 export function registerWidget(name, control, preview, schema = {}) {
   if (Array.isArray(name)) {
-    name.forEach(widget => {
+    name.forEach((widget) => {
       if (typeof widget !== 'object') {
         console.error(`Cannot register widget: ${widget}`);
       } else {
@@ -131,7 +131,7 @@ export function getWidget(name) {
   return registry.widgets[name];
 }
 export function getWidgets() {
-  return produce(Object.entries(registry.widgets), draft => {
+  return produce(Object.entries(registry.widgets), (draft) => {
     return draft.map(([key, value]) => ({ name: key, ...value }));
   });
 }
@@ -145,7 +145,7 @@ export function resolveWidget(name) {
 export function registerEditorComponent(component) {
   const plugin = EditorComponent(component);
   if (plugin.type === 'code-block') {
-    const codeBlock = registry.editorComponents.find(c => c.type === 'code-block');
+    const codeBlock = registry.editorComponents.find((c) => c.type === 'code-block');
 
     if (codeBlock) {
       console.warn(oneLine`
@@ -197,14 +197,14 @@ export function getBackend(name) {
  * Media Libraries
  */
 export function registerMediaLibrary(mediaLibrary, options) {
-  if (registry.mediaLibraries.find(ml => mediaLibrary.name === ml.name)) {
+  if (registry.mediaLibraries.find((ml) => mediaLibrary.name === ml.name)) {
     throw new Error(`A media library named ${mediaLibrary.name} has already been registered.`);
   }
   registry.mediaLibraries.push({ ...mediaLibrary, options });
 }
 
 export function getMediaLibrary(name) {
-  return registry.mediaLibraries.find(ml => ml.name === name);
+  return registry.mediaLibraries.find((ml) => ml.name === name);
 }
 
 function validateEventName(name) {
@@ -239,7 +239,7 @@ export function removeEventListener({ name, handler }) {
   validateEventName(name);
   if (handler) {
     registry.eventHandlers[name] = registry.eventHandlers[name].filter(
-      item => item.handler !== handler,
+      (item) => item.handler !== handler,
     );
   } else {
     registry.eventHandlers[name] = [];

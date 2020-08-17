@@ -8,7 +8,8 @@ const LOADING_IGNORE_LIST = [
   'STATUS_FAILURE',
 ];
 
-const ignoreWhenLoading = action => LOADING_IGNORE_LIST.some(type => action.type.includes(type));
+const ignoreWhenLoading = (action) =>
+  LOADING_IGNORE_LIST.some((type) => action.type.includes(type));
 
 /*
  * Reducer for some global UI state that we want to share between components

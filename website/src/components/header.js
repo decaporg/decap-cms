@@ -26,7 +26,7 @@ const StyledHeader = styled.header`
     width: 100%;
     z-index: ${theme.zIndexes.header};
 
-    ${p =>
+    ${(p) =>
       !p.collapsed &&
       css`
         background: #2a2c24;
@@ -34,7 +34,7 @@ const StyledHeader = styled.header`
         padding-bottom: ${theme.space[5]};
       `};
 
-    ${p =>
+    ${(p) =>
       p.hasNotifications &&
       css`
         padding-top: 0;
@@ -77,7 +77,7 @@ const MenuBtn = styled.button`
 const SearchBtn = styled(MenuBtn)``;
 
 const ToggleArea = styled.div`
-  display: ${p => (p.open ? 'block' : 'none')};
+  display: ${(p) => (p.open ? 'block' : 'none')};
   flex: 1;
   width: 100%;
   margin-top: ${theme.space[3]};
@@ -168,20 +168,20 @@ const Header = ({ hasHeroBelow }) => {
   };
 
   const handleMenuBtnClick = () => {
-    setNavOpen(s => !s);
+    setNavOpen((s) => !s);
     setSearchOpen(false);
   };
 
   const handleSearchBtnClick = () => {
-    setSearchOpen(s => !s);
+    setSearchOpen((s) => !s);
     setNavOpen(false);
   };
 
   return (
     <StaticQuery query={NOTIFS_QUERY}>
-      {data => {
+      {(data) => {
         const notifications = data.file.childDataYaml.notifications.filter(
-          notif => notif.published,
+          (notif) => notif.published,
         );
         const collapsed = !hasHeroBelow || scrolled;
         const hasNotifications = notifications.length > 0;

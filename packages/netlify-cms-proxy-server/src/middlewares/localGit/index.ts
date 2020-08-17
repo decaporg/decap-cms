@@ -47,7 +47,7 @@ const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
 };
 
 const getCurrentBranch = async (git: simpleGit.SimpleGit) => {
-  const currentBranch = await git.branchLocal().then(summary => summary.current);
+  const currentBranch = await git.branchLocal().then((summary) => summary.current);
   return currentBranch;
 };
 
@@ -82,7 +82,7 @@ const commitEntry = async (
   await writeFile(path.join(repoPath, entry.path), entry.raw);
   // save assets
   await Promise.all(
-    assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
+    assets.map((a) => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
   );
   if (entry.newPath) {
     await move(path.join(repoPath, entry.path), path.join(repoPath, entry.newPath));
@@ -127,7 +127,7 @@ const isBranchExists = async (git: simpleGit.SimpleGit, branch: string) => {
 
 const getDiffs = async (git: simpleGit.SimpleGit, source: string, dest: string) => {
   const rawDiff = await git.diff([source, dest]);
-  const diffs = parse(rawDiff).map(d => {
+  const diffs = parse(rawDiff).map((d) => {
     const oldPath = d.oldPath?.replace(/b\//, '') || '';
     const newPath = d.newPath?.replace(/b\//, '') || '';
     const path = newPath || (oldPath as string);
@@ -160,7 +160,7 @@ export const getSchema = ({ repoPath }: { repoPath: string }) => {
 export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
   const git = simpleGit(repoPath).silent(false);
 
-  return async function(req: express.Request, res: express.Response) {
+  return async function (req: express.Request, res: express.Response) {
     try {
       const { body } = req;
       if (body.action === 'info') {
@@ -186,10 +186,10 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           const payload = body.params as EntriesByFolderParams;
           const { folder, extension, depth } = payload;
           const entries = await runOnBranch(git, branch, () =>
-            listRepoFiles(repoPath, folder, extension, depth).then(files =>
+            listRepoFiles(repoPath, folder, extension, depth).then((files) =>
               entriesFromFiles(
                 repoPath,
-                files.map(file => ({ path: file })),
+                files.map((file) => ({ path: file })),
               ),
             ),
           );
@@ -215,7 +215,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
         case 'unpublishedEntries': {
           const cmsBranches = await git
             .branchLocal()
-            .then(result => result.all.filter(b => b.startsWith(`${CMS_BRANCH_PREFIX}/`)));
+            .then((result) => result.all.filter((b) => b.startsWith(`${CMS_BRANCH_PREFIX}/`)));
           res.json(cmsBranches.map(contentKeyFromBranch));
           break;
         }
@@ -295,9 +295,9 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
               const diffs = await getDiffs(git, branch, cmsBranch);
               // delete media files that have been removed from the entry
               const toDelete = diffs.filter(
-                d => d.binary && !assets.map(a => a.path).includes(d.path),
+                (d) => d.binary && !assets.map((a) => a.path).includes(d.path),
               );
-              await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
+              await Promise.all(toDelete.map((f) => fs.unlink(path.join(repoPath, f.path))));
               await commitEntry(git, repoPath, entry, assets, options.commitMessage);
 
               // add status for new entries
@@ -333,7 +333,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           const mediaFiles = await runOnBranch(git, branch, async () => {
             const files = await listRepoFiles(repoPath, mediaFolder, '', 1);
             const serializedFiles = await Promise.all(
-              files.map(file => readMediaFile(repoPath, file)),
+              files.map((file) => readMediaFile(repoPath, file)),
             );
             return serializedFiles;
           });

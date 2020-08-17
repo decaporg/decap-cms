@@ -41,12 +41,12 @@ export default class MarkdownControl extends React.Component {
     };
   }
 
-  handleMode = mode => {
+  handleMode = (mode) => {
     this.setState({ mode, pendingFocus: true });
     localStorage.setItem(MODE_STORAGE_KEY, mode);
   };
 
-  processRef = ref => (this.ref = ref);
+  processRef = (ref) => (this.ref = ref);
 
   setFocusReceived = () => {
     this.setState({ pendingFocus: false });

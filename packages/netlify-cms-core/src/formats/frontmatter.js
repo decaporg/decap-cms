@@ -5,11 +5,11 @@ import jsonFormatter from './json';
 
 const parsers = {
   toml: {
-    parse: input => tomlFormatter.fromFile(input),
+    parse: (input) => tomlFormatter.fromFile(input),
     stringify: (metadata, { sortedKeys }) => tomlFormatter.toFile(metadata, sortedKeys),
   },
   json: {
-    parse: input => {
+    parse: (input) => {
       let JSONinput = input.trim();
       // Fix JSON if leading and trailing brackets were trimmed.
       if (JSONinput.substr(0, 1) !== '{') {
@@ -30,7 +30,7 @@ const parsers = {
     },
   },
   yaml: {
-    parse: input => yamlFormatter.fromFile(input),
+    parse: (input) => yamlFormatter.fromFile(input),
     stringify: (metadata, { sortedKeys, comments }) =>
       yamlFormatter.toFile(metadata, sortedKeys, comments),
   },
@@ -54,7 +54,7 @@ function inferFrontmatterFormat(str) {
   }
 }
 
-export const getFormatOpts = format =>
+export const getFormatOpts = (format) =>
   ({
     yaml: { language: 'yaml', delimiters: '---' },
     toml: { language: 'toml', delimiters: '+++' },
@@ -102,6 +102,9 @@ class FrontmatterFormatter {
 }
 
 export const FrontmatterInfer = new FrontmatterFormatter();
-export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
-export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
-export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);
+export const frontmatterYAML = (customDelimiter) =>
+  new FrontmatterFormatter('yaml', customDelimiter);
+export const frontmatterTOML = (customDelimiter) =>
+  new FrontmatterFormatter('toml', customDelimiter);
+export const frontmatterJSON = (customDelimiter) =>
+  new FrontmatterFormatter('json', customDelimiter);

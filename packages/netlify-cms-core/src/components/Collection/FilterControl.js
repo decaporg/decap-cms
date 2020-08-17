@@ -25,7 +25,7 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
   const hasActiveFilter = filter
     ?.valueSeq()
     .toJS()
-    .some(f => f.active === true);
+    .some((f) => f.active === true);
 
   return (
     <Dropdown
@@ -44,7 +44,7 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
       dropdownTopOverlap="30px"
       dropdownPosition="left"
     >
-      {viewFilters.map(viewFilter => {
+      {viewFilters.map((viewFilter) => {
         return (
           <DropdownCheckedItem
             key={viewFilter.id}

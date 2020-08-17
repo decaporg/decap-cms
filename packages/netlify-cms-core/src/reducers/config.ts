@@ -19,7 +19,7 @@ const config = (state = defaultState, action: ConfigAction) => {
        */
       return action.payload.delete('isFetching');
     case CONFIG_FAILURE:
-      return state.withMutations(s => {
+      return state.withMutations((s) => {
         s.delete('isFetching');
         s.set('error', action.payload.toString());
       });

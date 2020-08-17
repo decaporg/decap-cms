@@ -18,7 +18,7 @@ class NumberController extends React.Component {
     value: this.props.defaultValue,
   };
 
-  handleOnChange = jest.fn(value => {
+  handleOnChange = jest.fn((value) => {
     this.setState({ value });
   });
 

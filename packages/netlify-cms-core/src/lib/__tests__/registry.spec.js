@@ -63,7 +63,7 @@ describe('registry', () => {
         );
       });
 
-      events.forEach(name => {
+      events.forEach((name) => {
         it(`should register '${name}' event`, () => {
           const { registerEventListener, getEventListeners } = require('../registry');
 
@@ -84,7 +84,7 @@ describe('registry', () => {
         );
       });
 
-      events.forEach(name => {
+      events.forEach((name) => {
         it(`should remove '${name}' event by handler`, () => {
           const {
             registerEventListener,
@@ -105,7 +105,7 @@ describe('registry', () => {
         });
       });
 
-      events.forEach(name => {
+      events.forEach((name) => {
         it(`should remove '${name}' event by name`, () => {
           const {
             registerEventListener,
@@ -136,7 +136,7 @@ describe('registry', () => {
         );
       });
 
-      events.forEach(name => {
+      events.forEach((name) => {
         it(`should invoke '${name}' event with data`, async () => {
           const { registerEventListener, invokeEvent } = require('../registry');
 

@@ -38,7 +38,7 @@ export const LayoutTemplate = ({ children }) => (
 const Layout = ({ hasPageHero, children }) => {
   return (
     <StaticQuery query={LAYOUT_QUERY}>
-      {data => {
+      {(data) => {
         const { title, description } = data.site.siteMetadata;
 
         return (

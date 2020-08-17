@@ -19,7 +19,7 @@ jest.mock('Actions/collections');
 describe('Sidebar', () => {
   const props = {
     searchTerm: '',
-    t: jest.fn(key => key),
+    t: jest.fn((key) => key),
   };
   it('should render sidebar with a simple collection', () => {
     const collections = fromJS([{ name: 'posts', label: 'Posts' }]).toOrderedMap();

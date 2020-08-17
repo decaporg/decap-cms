@@ -324,7 +324,7 @@ export default class API {
     const links = parseLinkHeader(headers.get('Link'));
     const actions = Map(links)
       .keySeq()
-      .flatMap(key =>
+      .flatMap((key) =>
         (key === 'prev' && page > 1) ||
         (key === 'next' && page < pageCount) ||
         (key === 'first' && page > 1) ||
@@ -355,7 +355,7 @@ export default class API {
     flow([
       unsentRequest.withMethod('GET'),
       this.request,
-      p =>
+      (p) =>
         Promise.all([
           p.then(this.getCursor),
           p.then(this.responseToJSON).catch((e: FetchError) => {
@@ -422,7 +422,7 @@ export default class API {
     items: CommitItem[],
     { commitMessage = '', branch = this.branch, newBranch = false },
   ) {
-    const actions = items.map(item => ({
+    const actions = items.map((item) => ({
       action: item.action,
       // eslint-disable-next-line @typescript-eslint/camelcase
       file_path: item.path,
@@ -460,7 +460,7 @@ export default class API {
     } catch (error) {
       const message = error.message || '';
       if (newBranch && message.includes(`Could not update ${branch}`)) {
-        await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+        await throwOnConflictingBranches(branch, (name) => this.getBranch(name), API_NAME);
       }
       throw error;
     }
@@ -468,7 +468,7 @@ export default class API {
 
   async getCommitItems(files: { path: string; newPath?: string }[], branch: string) {
     const items: CommitItem[] = await Promise.all(
-      files.map(async file => {
+      files.map(async (file) => {
         const [base64Content, fileExists] = await Promise.all([
           result(file, 'toBase64', partial(this.toBase64, (file as Entry).raw)),
           this.isFileExists(file.path, branch),
@@ -494,13 +494,13 @@ export default class API {
     );
 
     // move children
-    for (const item of items.filter(i => i.oldPath && i.action === CommitAction.MOVE)) {
+    for (const item of items.filter((i) => i.oldPath && i.action === CommitAction.MOVE)) {
       const sourceDir = dirname(item.oldPath as string);
       const destDir = dirname(item.path);
       const children = await this.listAllFiles(sourceDir, true, branch);
       children
-        .filter(f => f.path !== item.oldPath)
-        .forEach(file => {
+        .filter((f) => f.path !== item.oldPath)
+        .forEach((file) => {
           items.push({
             action: CommitAction.MOVE,
             path: file.path.replace(sourceDir, destDir),
@@ -557,7 +557,7 @@ export default class API {
     });
 
     return mergeRequests.filter(
-      mr => mr.source_branch.startsWith(CMS_BRANCH_PREFIX) && mr.labels.some(isCMSLabel),
+      (mr) => mr.source_branch.startsWith(CMS_BRANCH_PREFIX) && mr.labels.some(isCMSLabel),
     );
   }
 
@@ -568,7 +568,7 @@ export default class API {
     );
 
     const mergeRequests = await this.getMergeRequests();
-    const branches = mergeRequests.map(mr => mr.source_branch);
+    const branches = mergeRequests.map((mr) => mr.source_branch);
 
     return branches;
   }
@@ -591,7 +591,7 @@ export default class API {
       params: { ref: branch },
     })
       .then(() => true)
-      .catch(error => {
+      .catch((error) => {
         if (error instanceof APIError && error.status === 404) {
           return false;
         }
@@ -626,7 +626,7 @@ export default class API {
       throw new APIError('Diff limit reached', null, API_NAME);
     }
 
-    return result.diffs.map(d => {
+    return result.diffs.map((d) => {
       let status = 'modified';
       if (d.new_file) {
         status = 'added';
@@ -652,7 +652,7 @@ export default class API {
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const diffs = await this.getDifferences(mergeRequest.sha);
     const diffsWithIds = await Promise.all(
-      diffs.map(async d => {
+      diffs.map(async (d) => {
         const { path, newFile } = d;
         const id = await this.getFileId(path, branch);
         return { id, path, newFile };
@@ -678,7 +678,7 @@ export default class API {
 
     let i = 1;
     while (rebase.rebase_in_progress) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       rebase = await this.requestJSON({
         url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
         params: {
@@ -742,8 +742,8 @@ export default class API {
         this.getDifferences(branch),
       ]);
       // mark files for deletion
-      for (const diff of diffs.filter(d => d.binary)) {
-        if (!items.some(item => item.path === diff.path)) {
+      for (const diff of diffs.filter((d) => d.binary)) {
+        if (!items.some((item) => item.path === diff.path)) {
           items.push({ action: CommitAction.DELETE, path: diff.newPath });
         }
       }
@@ -771,7 +771,7 @@ export default class API {
     const mergeRequest = await this.getBranchMergeRequest(branch);
 
     const labels = [
-      ...mergeRequest.labels.filter(label => !isCMSLabel(label)),
+      ...mergeRequest.labels.filter((label) => !isCMSLabel(label)),
       statusToLabel(newStatus),
     ];
     await this.updateMergeRequestLabels(mergeRequest, labels);
@@ -823,7 +823,7 @@ export default class API {
         type: 'branch',
       },
     });
-    return refs.some(r => r.name === branch);
+    return refs.some((r) => r.name === branch);
   }
 
   async deleteBranch(branch: string) {

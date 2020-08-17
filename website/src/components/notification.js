@@ -13,7 +13,7 @@ const Notif = styled.a`
   text-align: center;
 
   /* prettier-ignore */
-  ${p =>
+  ${(p) =>
     p.loud &&
     css`
       background-color: ${theme.colors.green};

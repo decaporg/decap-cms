@@ -29,7 +29,7 @@ export default function remarkPaddedLinks() {
      * only pass in the link nodes instead of the entire array of children, but
      * this seems unlikely to produce a noticeable perf gain.
      */
-    const hasLinkChild = node.children.some(child => child.type === 'link');
+    const hasLinkChild = node.children.some((child) => child.type === 'link');
     const processedChildren = hasLinkChild
       ? flatMap(node.children, transformChildren)
       : node.children;
@@ -78,7 +78,7 @@ export default function remarkPaddedLinks() {
       trailingWhitespaceNode && u('text', ' '),
     ];
 
-    return nodes.filter(val => val);
+    return nodes.filter((val) => val);
   }
 
   /**

@@ -82,7 +82,7 @@ export const ControlHint = styled.p`
   margin-bottom: 0;
   padding: 3px 0;
   font-size: 12px;
-  color: ${props =>
+  color: ${(props) =>
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
   transition: color ${transitions.main};
 `;
@@ -135,8 +135,8 @@ class EditorControl extends React.Component {
     const { fieldsErrors } = this.props;
 
     if (fieldsErrors && fieldsErrors.size > 0) {
-      return Object.values(fieldsErrors.toJS()).some(arr =>
-        arr.some(err => err.parentIds && err.parentIds.includes(this.uniqueFieldId)),
+      return Object.values(fieldsErrors.toJS()).some((arr) =>
+        arr.some((err) => err.parentIds && err.parentIds.includes(this.uniqueFieldId)),
       );
     }
     return false;
@@ -196,7 +196,7 @@ class EditorControl extends React.Component {
             {errors && (
               <ControlErrorsList>
                 {errors.map(
-                  error =>
+                  (error) =>
                     error.message &&
                     typeof error.message === 'string' && (
                       <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
@@ -295,7 +295,7 @@ class EditorControl extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { collections, entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
@@ -324,7 +324,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   const creators = bindActionCreators(
     {
       openMediaLibrary,

@@ -17,7 +17,7 @@ const CommandsAndQueries = ({ defaultType }) => ({
       return parent.nodes.indexOf(node);
     },
     getSelectedChildren(editor, node) {
-      return node.nodes.filter(child => editor.isSelected(child));
+      return node.nodes.filter((child) => editor.isSelected(child));
     },
     getCommonAncestor(editor) {
       const { startBlock, endBlock, document: doc } = editor.value;
@@ -25,7 +25,7 @@ const CommandsAndQueries = ({ defaultType }) => ({
     },
     getClosestType(editor, node, type) {
       const types = castArray(type);
-      return editor.value.document.getClosest(node.key, n => types.includes(n.type));
+      return editor.value.document.getClosest(node.key, (n) => types.includes(n.type));
     },
     getBlockContainer(editor, node) {
       const targetTypes = ['bulleted-list', 'numbered-list', 'list-item', 'quote', 'table-cell'];
@@ -42,7 +42,7 @@ const CommandsAndQueries = ({ defaultType }) => ({
       return editor.getBlockContainer(target);
     },
     isSelected(editor, nodes) {
-      return castArray(nodes).every(node => {
+      return castArray(nodes).every((node) => {
         return editor.value.document.isInRange(node.key, editor.value.selection);
       });
     },
@@ -54,21 +54,21 @@ const CommandsAndQueries = ({ defaultType }) => ({
         return true;
       }
       const parent = editor.value.document.getParent(nodes[0].key);
-      return tail(nodes).every(node => {
+      return tail(nodes).every((node) => {
         return editor.value.document.getParent(node.key).key === parent.key;
       });
     },
     everyBlock(editor, type) {
-      return editor.value.blocks.every(block => block.type === type);
+      return editor.value.blocks.every((block) => block.type === type);
     },
     hasMark(editor, type) {
-      return editor.value.activeMarks.some(mark => mark.type === type);
+      return editor.value.activeMarks.some((mark) => mark.type === type);
     },
     hasBlock(editor, type) {
-      return editor.value.blocks.some(node => node.type === type);
+      return editor.value.blocks.some((node) => node.type === type);
     },
     hasInline(editor, type) {
-      return editor.value.inlines.some(node => node.type === type);
+      return editor.value.inlines.some((node) => node.type === type);
     },
   },
   commands: {

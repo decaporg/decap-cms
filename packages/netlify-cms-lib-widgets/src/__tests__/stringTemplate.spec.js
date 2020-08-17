@@ -104,7 +104,7 @@ describe('stringTemplate', () => {
 
     it('return apply processor to values', () => {
       expect(
-        compileStringTemplate('{{slug}}', date, 'slug', fromJS({}), value => value.toUpperCase()),
+        compileStringTemplate('{{slug}}', date, 'slug', fromJS({}), (value) => value.toUpperCase()),
       ).toBe('SLUG');
     });
   });

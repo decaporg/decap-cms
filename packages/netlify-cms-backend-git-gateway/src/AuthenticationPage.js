@@ -54,13 +54,13 @@ const ErrorMessage = styled.p`
 let component = null;
 
 if (window.netlifyIdentity) {
-  window.netlifyIdentity.on('login', user => {
+  window.netlifyIdentity.on('login', (user) => {
     component && component.handleIdentityLogin(user);
   });
   window.netlifyIdentity.on('logout', () => {
     component && component.handleIdentityLogout();
   });
-  window.netlifyIdentity.on('error', err => {
+  window.netlifyIdentity.on('error', (err) => {
     component && component.handleIdentityError(err);
   });
 }
@@ -84,7 +84,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     component = null;
   }
 
-  handleIdentityLogin = user => {
+  handleIdentityLogin = (user) => {
     this.props.onLogin(user);
     window.netlifyIdentity.close();
   };
@@ -93,7 +93,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     window.netlifyIdentity.open();
   };
 
-  handleIdentityError = err => {
+  handleIdentityError = (err) => {
     if (err?.message?.match(/^Failed to load settings from.+\.netlify\/identity$/)) {
       window.netlifyIdentity.close();
       this.setState({
@@ -125,7 +125,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     this.setState({ ...this.state, [name]: e.target.value });
   };
 
-  handleLogin = async e => {
+  handleLogin = async (e) => {
     e.preventDefault();
 
     const { email, password } = this.state;

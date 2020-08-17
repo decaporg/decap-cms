@@ -101,7 +101,7 @@ const Editor = styled.div`
 const PreviewPaneContainer = styled.div`
   height: 100%;
   overflow-y: auto;
-  pointer-events: ${props => (props.blockEntry ? 'none' : 'auto')};
+  pointer-events: ${(props) => (props.blockEntry ? 'none' : 'auto')};
 `;
 
 const ControlPaneContainer = styled(PreviewPaneContainer)`
@@ -202,7 +202,7 @@ class EditorInterface extends Component {
           fieldsErrors={fieldsErrors}
           onChange={onChange}
           onValidate={onValidate}
-          ref={c => (this.controlPaneRef = c)}
+          ref={(c) => (this.controlPaneRef = c)}
         />
       </ControlPaneContainer>
     );
@@ -214,7 +214,7 @@ class EditorInterface extends Component {
           <StyledSplitPane
             maxSize={-100}
             defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
-            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
+            onChange={(size) => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
           >

@@ -74,7 +74,7 @@ export default function remarkUnwrapInvalidNest() {
     const nodeBefore = !isEmpty(childrenBefore) && { ...parent, children: childrenBefore };
     const nodeAfter = !isEmpty(childrenAfter) && { ...parent, children: childrenAfter };
 
-    const childrenToInsert = [nodeBefore, node, nodeAfter].filter(val => !isEmpty(val));
+    const childrenToInsert = [nodeBefore, node, nodeAfter].filter((val) => !isEmpty(val));
     const beforeChildren = splitChildren.slice(0, splitIndex);
     const afterChildren = splitChildren.slice(splitIndex + 1);
     const newChildren = concat(beforeChildren, childrenToInsert, afterChildren);

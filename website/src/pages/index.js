@@ -171,7 +171,7 @@ const HomePage = ({ data }) => {
               {landing.community.contributors}
             </h3>
             <ContribList>
-              {contribs.contributors.map(user => (
+              {contribs.contributors.map((user) => (
                 <a href={user.profile} title={user.name} key={user.login}>
                   <img src={user.avatar_url.replace('v=4', 's=32')} alt={user.login} />
                 </a>

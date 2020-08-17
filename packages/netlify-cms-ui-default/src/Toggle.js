@@ -30,7 +30,7 @@ const ToggleHandle = styled.span`
   background-color: ${colorsRaw.white};
   transition: transform ${transitions.main};
 
-  ${props =>
+  ${(props) =>
     props.isActive &&
     css`
       transform: translateX(20px);

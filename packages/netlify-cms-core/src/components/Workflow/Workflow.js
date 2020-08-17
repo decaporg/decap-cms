@@ -104,9 +104,9 @@ class Workflow extends Component {
               )}
             >
               {collections
-                .filter(collection => collection.get('create'))
+                .filter((collection) => collection.get('create'))
                 .toList()
-                .map(collection => (
+                .map((collection) => (
                   <DropdownItem
                     key={collection.get('name')}
                     label={collection.get('label')}

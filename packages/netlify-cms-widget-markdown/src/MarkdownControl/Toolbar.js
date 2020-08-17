@@ -48,9 +48,9 @@ const ToolbarToggleLabel = styled.span`
   text-align: center;
   white-space: nowrap;
   line-height: 20px;
-  min-width: ${props => (props.offPosition ? '62px' : '70px')};
+  min-width: ${(props) => (props.offPosition ? '62px' : '70px')};
 
-  ${props =>
+  ${(props) =>
     props.isActive &&
     css`
       font-weight: 600;
@@ -78,7 +78,7 @@ export default class Toolbar extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
-  isVisible = button => {
+  isVisible = (button) => {
     const { buttons } = this.props;
     return !List.isList(buttons) || buttons.includes(button);
   };

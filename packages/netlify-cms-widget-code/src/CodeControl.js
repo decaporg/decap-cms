@@ -30,7 +30,7 @@ function getChangedProps(previous, next, keys) {
   }
 }
 
-const languages = languageData.map(lang => ({
+const languages = languageData.map((lang) => ({
   label: lang.label,
   name: lang.identifiers[0],
   mode: lang.codemirror_mode,
@@ -106,15 +106,15 @@ export default class CodeControl extends React.Component {
     }
   }
 
-  getLanguageByName = name => {
-    return languages.find(lang => lang.name === name);
+  getLanguageByName = (name) => {
+    return languages.find((lang) => lang.name === name);
   };
 
   getKeyMapOptions = () => {
     return Object.keys(CodeMirror.keyMap)
       .sort()
-      .filter(keyMap => ['emacs', 'vim', 'sublime', 'default'].includes(keyMap))
-      .map(keyMap => ({ value: keyMap, label: keyMap }));
+      .filter((keyMap) => ['emacs', 'vim', 'sublime', 'default'].includes(keyMap))
+      .map((keyMap) => ({ value: keyMap, label: keyMap }));
   };
 
   // This widget is not fully controlled, it only takes a value through props
@@ -256,14 +256,14 @@ export default class CodeControl extends React.Component {
                 forID={forID}
                 modes={modes}
                 mode={valueToOption(langInfo || defaultLang)}
-                theme={themes.find(t => t === theme)}
+                theme={themes.find((t) => t === theme)}
                 themes={themes}
                 keyMap={{ value: keyMap, label: keyMap }}
                 keyMaps={this.getKeyMapOptions()}
                 allowLanguageSelection={this.allowLanguageSelection}
-                onChangeLang={newLang => this.setState({ lang: newLang })}
-                onChangeTheme={newTheme => this.setState({ theme: newTheme })}
-                onChangeKeyMap={newKeyMap => this.setState({ keyMap: newKeyMap })}
+                onChangeLang={(newLang) => this.setState({ lang: newLang })}
+                onChangeTheme={(newTheme) => this.setState({ theme: newTheme })}
+                onChangeKeyMap={(newKeyMap) => this.setState({ keyMap: newKeyMap })}
               />
             )}
             <ReactCodeMirror
@@ -298,7 +298,7 @@ export default class CodeControl extends React.Component {
                 viewportMargin: Infinity,
               }}
               detach={true}
-              editorDidMount={cm => {
+              editorDidMount={(cm) => {
                 this.cm = cm;
                 if (isNewEditorComponent) {
                   this.handleFocus();

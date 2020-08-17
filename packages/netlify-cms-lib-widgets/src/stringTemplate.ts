@@ -163,7 +163,7 @@ export function extractTemplateVars(template: string) {
   const regexp = RegExp(templateVariablePattern, 'g');
   const contentRegexp = RegExp(templateContentPattern, 'g');
   const matches = template.match(regexp) || [];
-  return matches.map(elem => {
+  return matches.map((elem) => {
     const match = elem.match(contentRegexp);
     return match ? match[0] : '';
   });
@@ -176,7 +176,7 @@ export const addFileTemplateFields = (entryPath: string, fields: Map<string, str
 
   const extension = extname(entryPath);
   const filename = basename(entryPath, extension);
-  fields = fields.withMutations(map => {
+  fields = fields.withMutations((map) => {
     map.set('filename', filename);
     map.set('extension', extension === '' ? extension : extension.substr(1));
   });

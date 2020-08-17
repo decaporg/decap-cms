@@ -68,9 +68,7 @@ export function sanitizeURI(str: string, { replacement = '', encoding = 'unicode
 
   // `Array.from` must be used instead of `String.split` because
   //   `split` converts things like emojis into UTF-16 surrogate pairs.
-  return Array.from(str)
-    .map(getCharReplacer(encoding, replacement))
-    .join('');
+  return Array.from(str).map(getCharReplacer(encoding, replacement)).join('');
 }
 
 export function sanitizeChar(char: string, options: SlugConfig) {

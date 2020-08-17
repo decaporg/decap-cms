@@ -116,7 +116,7 @@ export class Loader extends React.Component {
 }
 
 const StyledLoader = styled(Loader)`
-  display: ${props => (props.active ? 'block' : 'none')};
+  display: ${(props) => (props.active ? 'block' : 'none')};
   position: absolute;
   top: 50%;
   left: 50%;

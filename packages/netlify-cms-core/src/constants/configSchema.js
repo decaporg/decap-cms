@@ -242,7 +242,7 @@ const getConfigSchema = () => ({
 });
 
 function getWidgetSchemas() {
-  const schemas = getWidgets().map(widget => ({ [widget.name]: widget.schema }));
+  const schemas = getWidgets().map((widget) => ({ [widget.name]: widget.schema }));
   return Object.assign(...schemas);
 }
 
@@ -253,7 +253,7 @@ class ConfigError extends Error {
         const dotPath = dataPath
           .slice(1)
           .split('/')
-          .map(seg => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))
+          .map((seg) => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))
           .join('')
           .slice(1);
         return `${dotPath ? `'${dotPath}'` : 'config'} ${message}`;
@@ -283,7 +283,7 @@ export function validateConfig(config) {
 
   const valid = ajv.validate(getConfigSchema(), config);
   if (!valid) {
-    const errors = ajv.errors.map(e => {
+    const errors = ajv.errors.map((e) => {
       switch (e.keyword) {
         // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
         case 'uniqueItemProperties': {

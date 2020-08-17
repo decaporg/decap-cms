@@ -11,13 +11,13 @@ const Container = styled.div`
   padding-left: ${theme.space[4]};
   padding-right: ${theme.space[4]};
 
-  ${p =>
+  ${(p) =>
     p.size === 'sm' &&
     css`
       max-width: 800px;
     `};
 
-  ${p =>
+  ${(p) =>
     p.size === 'md' &&
     css`
       max-width: 1024px;

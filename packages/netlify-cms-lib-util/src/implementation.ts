@@ -190,9 +190,9 @@ const fetchFiles = async (
 ) => {
   const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
   const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
-  files.forEach(file => {
+  files.forEach((file) => {
     promises.push(
-      new Promise(resolve =>
+      new Promise((resolve) =>
         sem.take(async () => {
           try {
             const [data, fileMetadata] = await Promise.all([
@@ -210,8 +210,8 @@ const fetchFiles = async (
       ),
     );
   });
-  return Promise.all(promises).then(loadedEntries =>
-    loadedEntries.filter(loadedEntry => !(loadedEntry as { error: boolean }).error),
+  return Promise.all(promises).then((loadedEntries) =>
+    loadedEntries.filter((loadedEntry) => !(loadedEntry as { error: boolean }).error),
   ) as Promise<ImplementationEntry[]>;
 };
 
@@ -271,7 +271,7 @@ export const getMediaDisplayURL = async (
   return new Promise<string>((resolve, reject) =>
     semaphore.take(() =>
       getMediaAsBlob(path, id, readFile)
-        .then(blob => URL.createObjectURL(blob))
+        .then((blob) => URL.createObjectURL(blob))
         .then(resolve, reject)
         .finally(() => semaphore.leave()),
     ),
@@ -379,7 +379,7 @@ const getDiffFromLocalTree = async ({
 }: GetDiffFromLocalTreeArgs) => {
   const diff = await getDifferences(branch.sha, localTree.head);
   const diffFiles = diff
-    .filter(d => d.oldPath?.startsWith(folder) || d.newPath?.startsWith(folder))
+    .filter((d) => d.oldPath?.startsWith(folder) || d.newPath?.startsWith(folder))
     .reduce((acc, d) => {
       if (d.status === 'renamed') {
         acc.push({
@@ -412,7 +412,7 @@ const getDiffFromLocalTree = async ({
     .filter(filterFile);
 
   const diffFilesWithIds = await Promise.all(
-    diffFiles.map(async file => {
+    diffFiles.map(async (file) => {
       if (!file.deleted) {
         const id = await getFileId(file.path);
         return { ...file, id };
@@ -463,7 +463,7 @@ export const allEntriesByFolder = async ({
       localForage,
       localTree: {
         head: branch.sha,
-        files: files.map(f => ({ id: f.id!, path: f.path, name: basename(f.path) })),
+        files: files.map((f) => ({ id: f.id!, path: f.path, name: basename(f.path) })),
       },
       branch: branch.name,
       depth,
@@ -494,7 +494,7 @@ export const allEntriesByFolder = async ({
         getDifferences,
         getFileId,
         filterFile,
-      }).catch(e => {
+      }).catch((e) => {
         console.log('Failed getting diff from local tree:', e);
         return null;
       });
@@ -516,8 +516,8 @@ export const allEntriesByFolder = async ({
         }, {} as Record<string, boolean>);
         const newCopy = sortBy(
           unionBy(
-            diff.filter(d => !deleted[d.path]),
-            localTree.files.filter(f => !deleted[f.path]),
+            diff.filter((d) => !deleted[d.path]),
+            localTree.files.filter((f) => !deleted[f.path]),
             identity,
           ),
           identity,

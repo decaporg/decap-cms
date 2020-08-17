@@ -58,7 +58,7 @@ import { getEditorComponents } from '../MarkdownControl';
 /**
  * Deserialize a Markdown string to an MDAST.
  */
-export const markdownToRemark = markdown => {
+export const markdownToRemark = (markdown) => {
   /**
    * Parse the Markdown string input to an MDAST.
    */
@@ -72,9 +72,7 @@ export const markdownToRemark = markdown => {
   /**
    * Further transform the MDAST with plugins.
    */
-  const result = unified()
-    .use(remarkSquashReferences)
-    .runSync(parsed);
+  const result = unified().use(remarkSquashReferences).runSync(parsed);
 
   return result;
 };
@@ -84,7 +82,7 @@ export const markdownToRemark = markdown => {
  */
 function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
   inlineTokenizers &&
-    inlineTokenizers.forEach(tokenizer => {
+    inlineTokenizers.forEach((tokenizer) => {
       delete this.Parser.prototype.inlineTokenizers[tokenizer];
     });
 }
@@ -92,7 +90,7 @@ function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
 /**
  * Serialize an MDAST to a Markdown string.
  */
-export const remarkToMarkdown = obj => {
+export const remarkToMarkdown = (obj) => {
   /**
    * Rewrite the remark-stringify text visitor to simply return the text value,
    * without encoding or escaping any characters. This means we're completely
@@ -101,7 +99,7 @@ export const remarkToMarkdown = obj => {
   function remarkAllowAllText() {
     const Compiler = this.Compiler;
     const visitors = Compiler.prototype.visitors;
-    visitors.text = node => node.value;
+    visitors.text = (node) => node.value;
   }
 
   /**
@@ -172,10 +170,8 @@ export const markdownToHtml = (markdown, { getAsset, resolveWidget } = {}) => {
  * Deserialize an HTML string to Slate's Raw AST. Currently used for HTML
  * pastes.
  */
-export const htmlToSlate = html => {
-  const hast = unified()
-    .use(htmlToRehype, { fragment: true })
-    .parse(html);
+export const htmlToSlate = (html) => {
+  const hast = unified().use(htmlToRehype, { fragment: true }).parse(html);
 
   const mdast = unified()
     .use(rehypePaperEmoji)

@@ -6,9 +6,9 @@ import icons from './Icon/icons';
 const IconWrapper = styled.span`
   display: inline-block;
   line-height: 0;
-  width: ${props => props.size};
-  height: ${props => props.size};
-  transform: ${props => `rotate(${props.rotation})`};
+  width: ${(props) => props.size};
+  height: ${(props) => props.size};
+  transform: ${(props) => `rotate(${props.rotation})`};
 
   & path:not(.no-fill),
   & circle:not(.no-fill),

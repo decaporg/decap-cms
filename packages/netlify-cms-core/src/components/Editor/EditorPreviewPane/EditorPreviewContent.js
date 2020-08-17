@@ -14,7 +14,7 @@ class PreviewContent extends React.Component {
     const { previewComponent, previewProps } = this.props;
     return (
       <FrameContextConsumer>
-        {context => (
+        {(context) => (
           <ScrollSyncPane attachTo={context.document.scrollingElement}>
             {isElement(previewComponent)
               ? React.cloneElement(previewComponent, previewProps)

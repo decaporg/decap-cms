@@ -14,17 +14,17 @@ const StyledImageAsset = ({ getAsset, value, field }) => {
   return <StyledImage src={getAsset(value, field)} />;
 };
 
-const ImagePreviewContent = props => {
+const ImagePreviewContent = (props) => {
   const { value, getAsset, field } = props;
   if (Array.isArray(value) || List.isList(value)) {
-    return value.map(val => (
+    return value.map((val) => (
       <StyledImageAsset key={val} value={val} getAsset={getAsset} field={field} />
     ));
   }
   return <StyledImageAsset {...props} />;
 };
 
-const ImagePreview = props => {
+const ImagePreview = (props) => {
   return (
     <WidgetPreviewContainer>
       {props.value ? <ImagePreviewContent {...props} /> : null}

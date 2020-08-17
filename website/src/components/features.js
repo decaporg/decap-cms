@@ -14,7 +14,7 @@ const Box = styled.div`
 `;
 
 const Title = styled.h3`
-  color: ${p => (p.kind === 'light' ? theme.colors.white : theme.colors.gray)};
+  color: ${(p) => (p.kind === 'light' ? theme.colors.white : theme.colors.gray)};
   font-size: ${theme.fontsize[4]};
 `;
 
@@ -38,6 +38,6 @@ const FeatureItem = ({ feature, description, imgpath, kind }) => (
 );
 
 const Features = ({ items, kind }) =>
-  items.map(item => <FeatureItem kind={kind} {...item} key={item.feature} />);
+  items.map((item) => <FeatureItem kind={kind} {...item} key={item.feature} />);
 
 export default Features;

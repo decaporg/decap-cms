@@ -17,7 +17,7 @@ export default class AssetStore {
   }
 
   parseJsonResponse(response) {
-    return response.json().then(json => {
+    return response.json().then((json) => {
       if (!response.ok) {
         return Promise.reject(json);
       }
@@ -46,7 +46,7 @@ export default class AssetStore {
   }
 
   confirmRequest(assetID) {
-    this.getToken().then(token =>
+    this.getToken().then((token) =>
       this.request(`${this.getSignedFormURL}/${assetID}`, {
         method: 'PUT',
         headers: {
@@ -71,7 +71,7 @@ export default class AssetStore {
   async retrieve(query, page, privateUpload) {
     const params = pickBy(
       { search: query, page, filter: privateUpload ? 'private' : 'public' },
-      val => !!val,
+      (val) => !!val,
     );
     const url = addParams(this.getSignedFormURL, params);
     const token = await this.getToken();
@@ -88,7 +88,7 @@ export default class AssetStore {
 
   delete(assetID) {
     const url = `${this.getSignedFormURL}/${assetID}`;
-    return this.getToken().then(token =>
+    return this.getToken().then((token) =>
       this.request(url, {
         method: 'DELETE',
         headers: {
@@ -127,7 +127,7 @@ export default class AssetStore {
       const { id, name, size, url } = response.asset;
 
       const formData = new FormData();
-      Object.keys(formFields).forEach(key => formData.append(key, formFields[key]));
+      Object.keys(formFields).forEach((key) => formData.append(key, formFields[key]));
       formData.append('file', file, file.name);
 
       await this.request(formURL, { method: 'POST', body: formData });

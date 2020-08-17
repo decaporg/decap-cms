@@ -38,7 +38,7 @@ const entryDraftReducer = (state = Map(), action) => {
   switch (action.type) {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         state.set('entry', fromJS(action.payload.entry));
         state.setIn(['entry', 'newRecord'], false);
         state.set('fieldsMetaData', Map());
@@ -48,7 +48,7 @@ const entryDraftReducer = (state = Map(), action) => {
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         state.set('entry', fromJS(action.payload));
         state.setIn(['entry', 'newRecord'], true);
         state.set('fieldsMetaData', Map());
@@ -58,7 +58,7 @@ const entryDraftReducer = (state = Map(), action) => {
       });
     case DRAFT_CREATE_FROM_LOCAL_BACKUP:
       // Local Backup
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         const backupDraftEntry = state.get('localBackup');
         const backupEntry = backupDraftEntry.get('entry');
         state.delete('localBackup');
@@ -71,7 +71,7 @@ const entryDraftReducer = (state = Map(), action) => {
       });
     case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
       // Duplicate Entry
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         state.set('entry', fromJS(action.payload));
         state.setIn(['entry', 'newRecord'], true);
         state.set('mediaFiles', List());
@@ -89,7 +89,7 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.set('localBackup', newState);
     }
     case DRAFT_CHANGE_FIELD: {
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         const { field, value, metadata, entries } = action.payload;
         const name = field.get('name');
         const meta = field.get('meta');
@@ -103,8 +103,8 @@ const entryDraftReducer = (state = Map(), action) => {
         const newMeta = state.getIn(['entry', 'meta']);
         state.set(
           'hasChanged',
-          !entries.some(e => newData.equals(e.get('data'))) ||
-            !entries.some(e => newMeta.equals(e.get('meta'))),
+          !entries.some((e) => newData.equals(e.get('data'))) ||
+            !entries.some((e) => newMeta.equals(e.get('meta'))),
         );
       });
     }
@@ -131,7 +131,7 @@ const entryDraftReducer = (state = Map(), action) => {
 
     case ENTRY_PERSIST_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         state.deleteIn(['entry', 'isPersisting']);
         state.set('hasChanged', false);
         if (!state.getIn(['entry', 'slug'])) {
@@ -140,19 +140,19 @@ const entryDraftReducer = (state = Map(), action) => {
       });
 
     case ENTRY_DELETE_SUCCESS:
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         state.deleteIn(['entry', 'isPersisting']);
         state.set('hasChanged', false);
       });
 
     case ADD_DRAFT_ENTRY_MEDIA_FILE: {
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         const mediaFiles = state.getIn(['entry', 'mediaFiles']);
 
         state.setIn(
           ['entry', 'mediaFiles'],
           mediaFiles
-            .filterNot(file => file.get('id') === action.payload.id)
+            .filterNot((file) => file.get('id') === action.payload.id)
             .insert(0, fromJS(action.payload)),
         );
         state.set('hasChanged', true);
@@ -160,12 +160,12 @@ const entryDraftReducer = (state = Map(), action) => {
     }
 
     case REMOVE_DRAFT_ENTRY_MEDIA_FILE: {
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         const mediaFiles = state.getIn(['entry', 'mediaFiles']);
 
         state.setIn(
           ['entry', 'mediaFiles'],
-          mediaFiles.filterNot(file => file.get('id') === action.payload.id),
+          mediaFiles.filterNot((file) => file.get('id') === action.payload.id),
         );
         state.set('hasChanged', true);
       });

@@ -12,16 +12,13 @@ import Widgets from '../components/widgets';
 import Markdown from '../components/markdown';
 
 function filenameFromPath(p) {
-  return p
-    .split('/')
-    .slice(-1)[0]
-    .split('.')[0];
+  return p.split('/').slice(-1)[0].split('.')[0];
 }
 
 const toMenu = (menu, nav) =>
-  menu.map(group => ({
+  menu.map((group) => ({
     title: group.title,
-    group: nav.group.find(g => g.fieldValue === group.name),
+    group: nav.group.find((g) => g.fieldValue === group.name),
   }));
 
 const DocsSidebar = ({ docsNav, location }) => (

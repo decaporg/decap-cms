@@ -12,7 +12,7 @@ const ViewControlsSection = styled.div`
 
 const ViewControlsButton = styled.button`
   ${buttons.button};
-  color: ${props => (props.isActive ? colors.active : '#b3b9c4')};
+  color: ${(props) => (props.isActive ? colors.active : '#b3b9c4')};
   background-color: transparent;
   display: block;
   padding: 0;

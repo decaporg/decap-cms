@@ -282,7 +282,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       const entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
       const assetProxies = await Promise.all(
         entry.mediaFiles
-          .filter(file => file.draft)
+          .filter((file) => file.draft)
           .map(({ url, file, path }) =>
             createAssetProxy({
               path,
@@ -324,7 +324,7 @@ export function loadUnpublishedEntries(collections: Collections) {
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
+      .then((response) => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
       .catch((error: Error) => {
         dispatch(
           notifSend({
@@ -357,8 +357,8 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
-      const hasPresenceErrors = fieldsErrors.some(errors =>
-        errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE),
+      const hasPresenceErrors = fieldsErrors.some((errors) =>
+        errors.some((error) => error.type && error.type === ValidationErrorTypes.PRESENCE),
       );
 
       if (hasPresenceErrors) {

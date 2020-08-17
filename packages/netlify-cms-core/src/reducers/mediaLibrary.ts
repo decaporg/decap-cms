@@ -54,7 +54,7 @@ const defaultState: {
 const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => {
   switch (action.type) {
     case MEDIA_LIBRARY_CREATE:
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.set('externalLibrary', action.payload);
         map.set('showMediaButton', action.payload.enableStandalone());
       });
@@ -74,7 +74,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
           field,
         });
       }
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.set('isVisible', true);
         map.set('forImage', forImage);
         map.set('controlID', controlID);
@@ -89,7 +89,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
     case MEDIA_INSERT: {
       const { mediaPath } = action.payload;
       const controlID = state.get('controlID');
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.setIn(['controlMedia', controlID], mediaPath);
       });
     }
@@ -98,7 +98,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
       return state.setIn(['controlMedia', controlID], '');
     }
     case MEDIA_LOAD_REQUEST:
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.set('isLoading', true);
         map.set('isPaginating', action.payload.page > 1);
       });
@@ -117,8 +117,8 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         return state;
       }
 
-      const filesWithKeys = files.map(file => ({ ...file, key: uuid() }));
-      return state.withMutations(map => {
+      const filesWithKeys = files.map((file) => ({ ...file, key: uuid() }));
+      return state.withMutations((map) => {
         map.set('isLoading', false);
         map.set('isPaginating', false);
         map.set('page', page);
@@ -149,7 +149,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
       if (privateUploadChanged) {
         return state;
       }
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         const fileWithKey = { ...file, key: uuid() };
         const files = map.get('files') as MediaFile[];
         const updatedFiles = [fileWithKey, ...files];
@@ -172,9 +172,9 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
       if (privateUploadChanged) {
         return state;
       }
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         const files = map.get('files') as MediaFile[];
-        const updatedFiles = files.filter(file => (key ? file.key !== key : file.id !== id));
+        const updatedFiles = files.filter((file) => (key ? file.key !== key : file.id !== id));
         map.set('files', updatedFiles);
         map.deleteIn(['displayURLs', id]);
         map.set('isDeleting', false);
@@ -228,8 +228,8 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
     files = entryFiles
-      .filter(f => dirname(f.path) === mediaFolder)
-      .map(file => ({ key: file.id, ...file }));
+      .filter((f) => dirname(f.path) === mediaFolder)
+      .map((file) => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
   }
@@ -239,7 +239,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
 
 export function selectMediaFileByPath(state: State, path: string) {
   const files = selectMediaFiles(state);
-  const file = files.find(file => file.path === path);
+  const file = files.find((file) => file.path === path);
   return file;
 }
 

@@ -358,7 +358,7 @@ const components = {
 };
 
 const reactSelectStyles = {
-  control: styles => ({
+  control: (styles) => ({
     ...styles,
     border: 0,
     boxShadow: 'none',
@@ -373,24 +373,24 @@ const reactSelectStyles = {
       : 'transparent',
     paddingLeft: '22px',
   }),
-  menu: styles => ({ ...styles, right: 0, zIndex: 300 }),
-  container: styles => ({ ...styles, padding: '0 !important' }),
+  menu: (styles) => ({ ...styles, right: 0, zIndex: 300 }),
+  container: (styles) => ({ ...styles, padding: '0 !important' }),
   indicatorSeparator: (styles, state) =>
     state.hasValue && state.selectProps.isClearable
       ? { ...styles, backgroundColor: `${colors.textFieldBorder}` }
       : { display: 'none' },
-  dropdownIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
-  clearIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
-  multiValue: styles => ({
+  dropdownIndicator: (styles) => ({ ...styles, color: `${colors.controlLabel}` }),
+  clearIndicator: (styles) => ({ ...styles, color: `${colors.controlLabel}` }),
+  multiValue: (styles) => ({
     ...styles,
     backgroundColor: colors.background,
   }),
-  multiValueLabel: styles => ({
+  multiValueLabel: (styles) => ({
     ...styles,
     color: colors.textLead,
     fontWeight: 500,
   }),
-  multiValueRemove: styles => ({
+  multiValueRemove: (styles) => ({
     ...styles,
     color: colors.controlLabel,
     ':hover': {

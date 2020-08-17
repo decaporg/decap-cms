@@ -32,9 +32,9 @@ const StyledListItemTopBar = styled(ListItemTopBar)`
 `;
 
 const NestedObjectLabel = styled.div`
-  display: ${props => (props.collapsed ? 'block' : 'none')};
+  display: ${(props) => (props.collapsed ? 'block' : 'none')};
   border-top: 0;
-  color: ${props => (props.error ? colors.errorText : 'inherit')};
+  color: ${(props) => (props.error ? colors.errorText : 'inherit')};
   background-color: ${colors.textFieldBorder};
   padding: 13px;
   border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
@@ -151,7 +151,7 @@ export default class ListControl extends React.Component {
     return true;
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     const { onChange } = this.props;
     const oldValue = this.state.value;
     const newValue = e.target.value;
@@ -162,23 +162,23 @@ export default class ListControl extends React.Component {
 
     const parsedValue = valueToString(listValue);
     this.setState({ value: parsedValue });
-    onChange(List(listValue.map(val => val.trim())));
+    onChange(List(listValue.map((val) => val.trim())));
   };
 
   handleFocus = () => {
     this.props.setActiveStyle();
   };
 
-  handleBlur = e => {
+  handleBlur = (e) => {
     const listValue = e.target.value
       .split(',')
-      .map(el => el.trim())
-      .filter(el => el);
+      .map((el) => el.trim())
+      .filter((el) => el);
     this.setState({ value: valueToString(listValue) });
     this.props.setInactiveStyle();
   };
 
-  handleAdd = e => {
+  handleAdd = (e) => {
     e.preventDefault();
     const { value, onChange, field } = this.props;
     const parsedValue =
@@ -196,7 +196,7 @@ export default class ListControl extends React.Component {
     return this.props.field.getIn(['field', 'default'], null);
   };
 
-  multipleDefault = fields => {
+  multipleDefault = (fields) => {
     return this.getFieldsDefault(fields);
   };
 
@@ -211,7 +211,7 @@ export default class ListControl extends React.Component {
   };
 
   mixedDefault = (typeKey, type) => {
-    const selectedType = this.props.field.get(TYPES_KEY).find(f => f.get('name') === type);
+    const selectedType = this.props.field.get(TYPES_KEY).find((f) => f.get('name') === type);
     const fields = selectedType.get('fields') || [selectedType.get('field')];
 
     return this.getFieldsDefault(fields, { [typeKey]: type });
@@ -244,7 +244,7 @@ export default class ListControl extends React.Component {
     }, initialValue);
   };
 
-  processControlRef = ref => {
+  processControlRef = (ref) => {
     if (!ref) return;
     const {
       validate,
@@ -255,7 +255,7 @@ export default class ListControl extends React.Component {
 
   validate = () => {
     if (this.getValueType()) {
-      this.validations.forEach(item => {
+      this.validations.forEach((item) => {
         item.validate();
       });
     } else {
@@ -268,7 +268,7 @@ export default class ListControl extends React.Component {
    * e.g. when debounced, always get the latest object value instead of using
    * `this.props.value` directly.
    */
-  getObjectValue = idx => this.props.value.get(idx) || Map();
+  getObjectValue = (idx) => this.props.value.get(idx) || Map();
 
   handleChangeFor(index) {
     return (f, newValue, newMetadata) => {
@@ -312,7 +312,7 @@ export default class ListControl extends React.Component {
 
     // Remove deleted item object validation
     if (validations) {
-      this.validations = validations.filter(item => item.key !== key);
+      this.validations = validations.filter((item) => item.key !== key);
     }
   };
 
@@ -330,13 +330,13 @@ export default class ListControl extends React.Component {
     });
   };
 
-  handleCollapseAllToggle = e => {
+  handleCollapseAllToggle = (e) => {
     e.preventDefault();
     const { value, field } = this.props;
     const { itemsCollapsed, listCollapsed } = this.state;
     const minimizeCollapsedItems = field.get('minimize_collapsed', false);
     const listCollapsedByDefault = field.get('collapsed', true);
-    const allItemsCollapsed = itemsCollapsed.every(val => val === true);
+    const allItemsCollapsed = itemsCollapsed.every((val) => val === true);
 
     if (minimizeCollapsedItems) {
       let updatedItemsCollapsed = itemsCollapsed;
@@ -408,14 +408,14 @@ export default class ListControl extends React.Component {
 
     //clear error fields and remove old validations
     clearFieldErrors();
-    this.validations = this.validations.filter(item => updatedKeys.includes(item.key));
+    this.validations = this.validations.filter((item) => updatedKeys.includes(item.key));
   };
 
-  hasError = index => {
+  hasError = (index) => {
     const { fieldsErrors } = this.props;
     if (fieldsErrors && fieldsErrors.size > 0) {
-      return Object.values(fieldsErrors.toJS()).some(arr =>
-        arr.some(err => err.parentIds && err.parentIds.includes(this.state.keys[index])),
+      return Object.values(fieldsErrors.toJS()).some((arr) =>
+        arr.some((err) => err.parentIds && err.parentIds.includes(this.state.keys[index])),
       );
     }
   };
@@ -526,7 +526,7 @@ export default class ListControl extends React.Component {
     const labelSingular = field.get('label_singular') || field.get('label', field.get('name'));
     const listLabel = items.size === 1 ? labelSingular.toLowerCase() : label.toLowerCase();
     const minimizeCollapsedItems = field.get('minimize_collapsed', false);
-    const allItemsCollapsed = itemsCollapsed.every(val => val === true);
+    const allItemsCollapsed = itemsCollapsed.every((val) => val === true);
     const selfCollapsed = allItemsCollapsed && (listCollapsed || !minimizeCollapsedItems);
 
     return (
@@ -545,7 +545,7 @@ export default class ListControl extends React.Component {
               allowAdd={field.get('allow_add', true)}
               onAdd={this.handleAdd}
               types={field.get(TYPES_KEY, null)}
-              onAddType={type => this.handleAddType(type, resolveFieldKeyType(field))}
+              onAddType={(type) => this.handleAddType(type, resolveFieldKeyType(field))}
               heading={`${items.size} ${listLabel}`}
               label={labelSingular.toLowerCase()}
               onCollapseToggle={this.handleCollapseAllToggle}

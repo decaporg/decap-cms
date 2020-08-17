@@ -49,8 +49,8 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
       return state.setIn(['pages', 'isFetching'], true);
 
     case UNPUBLISHED_ENTRIES_SUCCESS:
-      return state.withMutations(map => {
-        action.payload!.entries.forEach(entry =>
+      return state.withMutations((map) => {
+        action.payload!.entries.forEach((entry) =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
@@ -60,14 +60,14 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
           'pages',
           Map({
             ...action.payload!.pages,
-            ids: List(action.payload!.entries.map(entry => entry.slug)),
+            ids: List(action.payload!.entries.map((entry) => entry.slug)),
           }),
         );
       });
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       // Update Optimistically
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.setIn(
           ['entities', `${action.payload!.collection}.${action.payload!.entry.get('slug')}`],
           fromJS(action.payload!.entry),
@@ -80,7 +80,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
           ],
           true,
         );
-        map.updateIn(['pages', 'ids'], List(), list =>
+        map.updateIn(['pages', 'ids'], List(), (list) =>
           list.push(action.payload!.entry.get('slug')),
         );
       });
@@ -96,7 +96,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
       // Update Optimistically
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.setIn(
           ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'status'],
           action.payload!.newStatus,
@@ -122,7 +122,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
     case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
       });
 
@@ -143,7 +143,7 @@ export const selectUnpublishedEntry = (
 export const selectUnpublishedEntriesByStatus = (state: EditorialWorkflow, status: string) => {
   if (!state) return null;
   const entities = state.get('entities') as Entities;
-  return entities.filter(entry => entry.get('status') === status).valueSeq();
+  return entities.filter((entry) => entry.get('status') === status).valueSeq();
 };
 
 export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: string) => {
@@ -151,7 +151,7 @@ export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: str
   const entities = state.get('entities') as Entities;
   return entities
     .filter((_v, k) => startsWith(k as string, `${collection}.`))
-    .map(entry => entry.get('slug'))
+    .map((entry) => entry.get('slug'))
     .valueSeq();
 };
 

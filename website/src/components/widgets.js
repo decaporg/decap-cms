@@ -29,7 +29,7 @@ const Widgets = ({ widgets, location }) => {
   useEffect(() => {
     const hash = location.hash ? location.hash.replace('#', '') : '';
 
-    const widgetsContainHash = widgets.edges.some(w => w.node.frontmatter.title === hash);
+    const widgetsContainHash = widgets.edges.some((w) => w.node.frontmatter.title === hash);
 
     if (widgetsContainHash) {
       setWidget(hash);
@@ -59,7 +59,7 @@ const Widgets = ({ widgets, location }) => {
             <Button
               key={title}
               active={currentWidget === title}
-              onClick={event => handleWidgetChange(event, title)}
+              onClick={(event) => handleWidgetChange(event, title)}
               outline
             >
               {label}

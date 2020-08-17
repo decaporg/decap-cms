@@ -61,7 +61,7 @@ const CardBody = styled.div`
   padding: 16px 22px;
   height: 90px;
   position: relative;
-  margin-bottom: ${props => props.hasImage && 0};
+  margin-bottom: ${(props) => props.hasImage && 0};
 
   &:after {
     content: '';
@@ -77,7 +77,7 @@ const CardBody = styled.div`
 `;
 
 const CardImage = styled.div`
-  background-image: url(${props => props.src});
+  background-image: url(${(props) => props.src});
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -137,12 +137,12 @@ const mapStateToProps = (state, ownProps) => {
     image,
     imageFolder: collection
       .get('fields')
-      ?.find(f => f.get('name') === inferedFields.imageField && f.get('widget') === 'image'),
+      ?.find((f) => f.get('name') === inferedFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
   };

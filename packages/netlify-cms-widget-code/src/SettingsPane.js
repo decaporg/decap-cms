@@ -44,7 +44,7 @@ const SettingsSelect = ({ value, options, onChange, forID, type, autoFocus }) =>
     styles={languageSelectStyles}
     value={value}
     options={options}
-    onChange={opt => onChange(opt.value)}
+    onChange={(opt) => onChange(opt.value)}
     menuPlacement="auto"
     captureMenuScroll={false}
     autoFocus={autoFocus}
@@ -65,7 +65,7 @@ const SettingsPane = ({
   onChangeTheme,
   onChangeKeyMap,
 }) => (
-  <SettingsPaneContainer onKeyDown={e => isHotkey('esc', e) && hideSettings()}>
+  <SettingsPaneContainer onKeyDown={(e) => isHotkey('esc', e) && hideSettings()}>
     <SettingsButton onClick={hideSettings} showClose={true} />
     {allowLanguageSelection && (
       <>
@@ -90,7 +90,7 @@ const SettingsPane = ({
             type="theme"
             forID={forID}
             value={{ value: theme, label: theme }}
-            options={themes.map(t => ({ value: t, label: t }))}
+            options={themes.map((t) => ({ value: t, label: t }))}
             onChange={onChangeTheme}
             autoFocus={!allowLanguageSelection}
           />

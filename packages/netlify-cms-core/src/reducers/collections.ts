@@ -31,7 +31,7 @@ const collections = (state = null, action: CollectionsAction) => {
       return (
         configCollections
           .toOrderedMap()
-          .map(item => {
+          .map((item) => {
             const collection = item as Collection;
             if (collection.has('folder')) {
               return collection.set('type', FOLDER);
@@ -87,7 +87,7 @@ const selectors = {
   [FILES]: {
     fileForEntry(collection: Collection, slug: string) {
       const files = collection.get('files');
-      return files && files.filter(f => f?.get('name') === slug).get(0);
+      return files && files.filter((f) => f?.get('name') === slug).get(0);
     },
     fields(collection: Collection, slug: string) {
       const file = this.fileForEntry(collection, slug);
@@ -99,7 +99,7 @@ const selectors = {
     },
     entrySlug(collection: Collection, path: string) {
       const file = (collection.get('files') as CollectionFiles)
-        .filter(f => f?.get('file') === path)
+        .filter((f) => f?.get('file') === path)
         .get(0);
       return file && file.get('name');
     },
@@ -146,7 +146,7 @@ const getFileFromSlug = (collection: Collection, slug: string) => {
   return collection
     .get('files')
     ?.toArray()
-    .filter(f => f.get('name') === slug)[0];
+    .filter((f) => f.get('name') === slug)[0];
 };
 
 export const selectFieldsWithMediaFolders = (collection: Collection, slug: string) => {
@@ -154,10 +154,7 @@ export const selectFieldsWithMediaFolders = (collection: Collection, slug: strin
     const fields = collection.get('fields').toArray();
     return getFieldsWithMediaFolders(fields);
   } else if (collection.has('files')) {
-    const fields =
-      getFileFromSlug(collection, slug)
-        ?.get('fields')
-        .toArray() || [];
+    const fields = getFileFromSlug(collection, slug)?.get('fields').toArray() || [];
     return getFieldsWithMediaFolders(fields);
   }
 
@@ -166,7 +163,7 @@ export const selectFieldsWithMediaFolders = (collection: Collection, slug: strin
 
 export const selectMediaFolders = (state: State, collection: Collection, entry: EntryMap) => {
   const fields = selectFieldsWithMediaFolders(collection, entry.get('slug'));
-  const folders = fields.map(f => selectMediaFolder(state.config, collection, entry, f));
+  const folders = fields.map((f) => selectMediaFolder(state.config, collection, entry, f));
   if (collection.has('files')) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     if (file) {
@@ -200,7 +197,7 @@ export const selectTemplateName = (collection: Collection, slug: string) =>
   selectors[collection.get('type')].templateName(collection, slug);
 
 export const getFieldsNames = (fields: EntryField[], prefix = '') => {
-  let names = fields.map(f => `${prefix}${f.get('name')}`);
+  let names = fields.map((f) => `${prefix}${f.get('name')}`);
 
   fields.forEach((f, index) => {
     if (f.has('fields')) {
@@ -224,7 +221,7 @@ export const selectField = (collection: Collection, key: string) => {
   let field;
   let fields = collection.get('fields', List<EntryField>()).toArray();
   while ((name = array.shift()) && fields) {
-    field = fields.find(f => f.get('name') === name);
+    field = fields.find((f) => f.get('name') === name);
     if (field?.has('fields')) {
       fields = field?.get('fields')?.toArray() as EntryField[];
     } else if (field?.has('field')) {
@@ -246,7 +243,7 @@ export const traverseFields = (
     return fields;
   }
   fields = fields
-    .map(f => {
+    .map((f) => {
       const field = updater(f as EntryField);
       if (done()) {
         return field;
@@ -301,8 +298,8 @@ export const selectIdentifier = (collection: Collection) => {
   const identifier = collection.get('identifier_field');
   const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
   const fieldNames = getFieldsNames(collection.get('fields', List<EntryField>()).toArray());
-  return identifierFields.find(id =>
-    fieldNames.find(name => name?.toLowerCase().trim() === id.toLowerCase().trim()),
+  return identifierFields.find((id) =>
+    fieldNames.find((name) => name?.toLowerCase().trim() === id.toLowerCase().trim()),
   );
 };
 
@@ -327,16 +324,18 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
   if (!fields || !inferableField) return null;
   // Try to return a field of the specified type with one of the synonyms
   const mainTypeFields = fields
-    .filter(f => f?.get('widget', 'string') === inferableField.type)
-    .map(f => f?.get('name'));
-  field = mainTypeFields.filter(f => inferableField.synonyms.indexOf(f as string) !== -1);
+    .filter((f) => f?.get('widget', 'string') === inferableField.type)
+    .map((f) => f?.get('name'));
+  field = mainTypeFields.filter((f) => inferableField.synonyms.indexOf(f as string) !== -1);
   if (field && field.size > 0) return field.first();
 
   // Try to return a field for each of the specified secondary types
   const secondaryTypeFields = fields
-    .filter(f => inferableField.secondaryTypes.indexOf(f?.get('widget', 'string') as string) !== -1)
-    .map(f => f?.get('name'));
-  field = secondaryTypeFields.filter(f => inferableField.synonyms.indexOf(f as string) !== -1);
+    .filter(
+      (f) => inferableField.secondaryTypes.indexOf(f?.get('widget', 'string') as string) !== -1,
+    )
+    .map((f) => f?.get('name'));
+  field = secondaryTypeFields.filter((f) => inferableField.synonyms.indexOf(f as string) !== -1);
   if (field && field.size > 0) return field.first();
 
   // Try to return the first field of the specified type
@@ -397,7 +396,7 @@ export const selectSortableFields = (collection: Collection, t: (key: string) =>
   const fields = collection
     .get('sortableFields')
     .toArray()
-    .map(key => {
+    .map((key) => {
       if (key === COMMIT_DATE) {
         return { key, field: { name: key, label: t('collection.defaultFields.updatedOn.label') } };
       }
@@ -408,8 +407,8 @@ export const selectSortableFields = (collection: Collection, t: (key: string) =>
 
       return { key, field: field?.toJS() };
     })
-    .filter(item => !!item.field)
-    .map(item => ({ ...item.field, key: item.key }));
+    .filter((item) => !!item.field)
+    .map((item) => ({ ...item.field, key: item.key }));
 
   return fields;
 };
@@ -434,12 +433,12 @@ export const selectFieldsComments = (collection: Collection, entryMap: EntryMap)
   if (collection.has('folder')) {
     fields = collection.get('fields').toArray();
   } else if (collection.has('files')) {
-    const file = collection.get('files')!.find(f => f?.get('name') === entryMap.get('slug'));
+    const file = collection.get('files')!.find((f) => f?.get('name') === entryMap.get('slug'));
     fields = file.get('fields').toArray();
   }
   const comments: Record<string, string> = {};
   const names = getFieldsNames(fields);
-  names.forEach(name => {
+  names.forEach((name) => {
     const field = selectField(collection, name);
     if (field?.has('comment')) {
       comments[name] = field.get('comment')!;

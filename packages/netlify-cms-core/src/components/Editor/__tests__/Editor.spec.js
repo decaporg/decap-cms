@@ -5,17 +5,17 @@ import { fromJS } from 'immutable';
 
 jest.mock('lodash/debounce', () => {
   const flush = jest.fn();
-  return func => {
+  return (func) => {
     func.flush = flush;
     return func;
   };
 });
 // eslint-disable-next-line react/display-name
-jest.mock('../EditorInterface', () => props => <mock-editor-interface {...props} />);
+jest.mock('../EditorInterface', () => (props) => <mock-editor-interface {...props} />);
 jest.mock('netlify-cms-ui-default', () => {
   return {
     // eslint-disable-next-line react/display-name
-    Loader: props => <mock-loader {...props} />,
+    Loader: (props) => <mock-loader {...props} />,
   };
 });
 jest.mock('Routing/history');
@@ -46,7 +46,7 @@ describe('Editor', () => {
     deployPreview: fromJS({}),
     loadDeployPreview: jest.fn(),
     user: fromJS({}),
-    t: jest.fn(key => key),
+    t: jest.fn((key) => key),
     localBackup: fromJS({}),
     retrieveLocalBackup: jest.fn(),
     persistLocalBackup: jest.fn(),
@@ -182,7 +182,7 @@ describe('Editor', () => {
     expect(window.removeEventListener).toHaveBeenCalledWith('beforeunload', expect.any(Function));
 
     const callback = window.removeEventListener.mock.calls.find(
-      call => call[0] === 'beforeunload',
+      (call) => call[0] === 'beforeunload',
     )[1];
 
     const event = {};

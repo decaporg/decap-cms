@@ -21,9 +21,9 @@ function transform(data) {
   return Object.entries(data).reduce((acc, [label, lang]) => {
     const { extensions = [], aliases = [], codemirror_mode, codemirror_mime_type } = lang;
     if (codemirror_mode) {
-      const dotlessExtensions = extensions.map(ext => ext.slice(1));
+      const dotlessExtensions = extensions.map((ext) => ext.slice(1));
       const identifiers = uniq(
-        [label.toLowerCase(), ...aliases, ...dotlessExtensions].filter(alias => {
+        [label.toLowerCase(), ...aliases, ...dotlessExtensions].filter((alias) => {
           if (!alias) {
             return;
           }

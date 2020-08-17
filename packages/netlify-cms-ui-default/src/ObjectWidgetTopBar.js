@@ -17,7 +17,7 @@ const TopBarContainer = styled.div`
 `;
 
 const ExpandButtonContainer = styled.div`
-  ${props =>
+  ${(props) =>
     props.hasHeading &&
     css`
       display: flex;

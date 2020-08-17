@@ -96,7 +96,7 @@ const ReleasePreview = ({ entry }) => (
     <WhatsNew
       updates={entry
         .getIn(['data', 'updates'])
-        .map(release => ({
+        .map((release) => ({
           version: release.get('version'),
           date: dayjs(release.get('date')).format('MMMM D, YYYY'),
           description: release.get('description'),
@@ -110,7 +110,7 @@ const NotificationPreview = ({ entry }) => (
   <PreviewContainer>
     {entry
       .getIn(['data', 'notifications'])
-      .filter(notif => notif.get('published'))
+      .filter((notif) => notif.get('published'))
       .map((notif, idx) => (
         <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
           {notif.get('message')}
@@ -120,7 +120,7 @@ const NotificationPreview = ({ entry }) => (
 );
 
 CMS.registerPreviewTemplate('blog', BlogPostPreview);
-siteConfig.menu.docs.forEach(group => {
+siteConfig.menu.docs.forEach((group) => {
   CMS.registerPreviewTemplate(`docs_${group.name}`, DocsPreview);
 });
 CMS.registerPreviewTemplate('widget_docs', WidgetDocPreview);

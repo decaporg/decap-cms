@@ -79,7 +79,7 @@ const getActionHandlers = (store: CursorStore, handler: ActionHandler) =>
   store
     .get('actions', Set<string>())
     .toMap()
-    .map(action => handler(action as string));
+    .map((action) => handler(action as string));
 
 // The cursor logic is entirely functional, so this class simply
 // provides a chainable interface

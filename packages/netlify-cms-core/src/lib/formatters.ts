@@ -104,7 +104,7 @@ export const prepareSlug = (slug: string) => {
 };
 
 export const getProcessSegment = (slugConfig: SlugConfig) =>
-  flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
+  flow([(value) => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)]);
 
 export const slugFormatter = (
   collection: Collection,

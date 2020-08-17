@@ -3,10 +3,7 @@ import path from 'path';
 import { promises as fs } from 'fs';
 
 const sha256 = (buffer: Buffer) => {
-  return crypto
-    .createHash('sha256')
-    .update(buffer)
-    .digest('hex');
+  return crypto.createHash('sha256').update(buffer).digest('hex');
 };
 
 // normalize windows os path format
@@ -17,7 +14,7 @@ export const entriesFromFiles = async (
   files: { path: string; label?: string }[],
 ) => {
   return Promise.all(
-    files.map(async file => {
+    files.map(async (file) => {
       try {
         const content = await fs.readFile(path.join(repoPath, file.path));
         return {

@@ -13,7 +13,7 @@ jest.spyOn(console, 'error').mockImplementation(() => ({}));
 Object.defineProperty(
   window.navigator,
   'userAgent',
-  (value => ({
+  ((value) => ({
     get() {
       return value;
     },
@@ -26,7 +26,7 @@ Object.defineProperty(
 describe('Editor', () => {
   const config = fromJS({ backend: { name: 'github' } });
 
-  const props = { t: jest.fn(key => key), config };
+  const props = { t: jest.fn((key) => key), config };
 
   beforeEach(() => {
     jest.clearAllMocks();

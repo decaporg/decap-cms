@@ -50,7 +50,7 @@ const SortControl = ({ t, fields, onSortClick, sort }) => {
   const hasActiveSort = sort
     ?.valueSeq()
     .toJS()
-    .some(s => s.direction !== SortDirection.None);
+    .some((s) => s.direction !== SortDirection.None);
 
   return (
     <Dropdown
@@ -68,7 +68,7 @@ const SortControl = ({ t, fields, onSortClick, sort }) => {
       dropdownWidth="160px"
       dropdownPosition="left"
     >
-      {fields.map(field => {
+      {fields.map((field) => {
         const sortDir = sort?.getIn([field.key, 'direction']);
         const isActive = sortDir && sortDir !== SortDirection.None;
         const nextSortDir = nextSortDirection(sortDir);

@@ -36,7 +36,7 @@ describe('cloudinary media library', () => {
     waitForElement(() => {
       const url = 'https://media-library.cloudinary.com/global/all.js';
       return queryHelpers.queryByAttribute('src', document, url);
-    }).then(script => {
+    }).then((script) => {
       cloudinaryScript = script;
       script.onreadystatechange();
     });

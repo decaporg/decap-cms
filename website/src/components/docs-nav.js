@@ -18,7 +18,7 @@ const MenuBtn = styled(Button)`
 `;
 
 const MenuContent = styled.div`
-  display: ${p => (p.isOpen ? 'block' : 'none')};
+  display: ${(p) => (p.isOpen ? 'block' : 'none')};
   background: white;
   padding: ${theme.space[3]};
 
@@ -66,7 +66,7 @@ const DocsNav = ({ items, location }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    setMenuOpen(isOpen => !isOpen);
+    setMenuOpen((isOpen) => !isOpen);
   };
 
   return (
@@ -76,7 +76,7 @@ const DocsNav = ({ items, location }) => {
         Navigation
       </MenuBtn>
       <MenuContent isOpen={isMenuOpen}>
-        {items.map(item => (
+        {items.map((item) => (
           <MenuSection key={item.title}>
             <SectionTitle>{item.title}</SectionTitle>
             <SectionList>

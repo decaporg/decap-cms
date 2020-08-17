@@ -29,15 +29,15 @@ fetch(`${API_HOST}/graphql`, {
     `,
   }),
 })
-  .then(result => result.json())
-  .then(result => {
+  .then((result) => result.json())
+  .then((result) => {
     // here we're filtering out any type information unrelated to unions or interfaces
-    const filteredData = result.data.__schema.types.filter(type => type.possibleTypes !== null);
+    const filteredData = result.data.__schema.types.filter((type) => type.possibleTypes !== null);
     result.data.__schema.types = filteredData;
     fs.writeFile(
       path.join(__dirname, '..', 'src', 'fragmentTypes.js'),
       `module.exports = ${JSON.stringify(result.data)}`,
-      err => {
+      (err) => {
         if (err) {
           console.error('Error writing fragmentTypes file', err);
         } else {

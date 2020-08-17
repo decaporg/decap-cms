@@ -18,11 +18,11 @@ export const waitUntilWithTimeout = async <T>(
 ): Promise<T | null> => {
   let waitDone = false;
 
-  const waitPromise = new Promise<T>(resolve => {
+  const waitPromise = new Promise<T>((resolve) => {
     dispatch(waitUntil(waitActionArgs(resolve)));
   });
 
-  const timeoutPromise = new Promise<T | null>(resolve => {
+  const timeoutPromise = new Promise<T | null>((resolve) => {
     setTimeout(() => {
       if (waitDone) {
         resolve();
@@ -35,7 +35,7 @@ export const waitUntilWithTimeout = async <T>(
 
   const result = await Promise.race([
     waitPromise
-      .then(result => {
+      .then((result) => {
         waitDone = true;
         return result;
       })

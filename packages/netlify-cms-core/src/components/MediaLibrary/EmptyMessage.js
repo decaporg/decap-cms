@@ -9,7 +9,7 @@ const EmptyMessageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${props => props.isPrivate && colors.textFieldBorder};
+  color: ${(props) => props.isPrivate && colors.textFieldBorder};
 `;
 
 const EmptyMessage = ({ content, isPrivate }) => (

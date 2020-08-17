@@ -4,7 +4,7 @@ import { reducer as notifReducer } from 'redux-notifications';
 import optimist from 'redux-optimist';
 import reducers from './index';
 
-const createRootReducer = history => {
+const createRootReducer = (history) => {
   return optimist(
     combineReducers({
       ...reducers,

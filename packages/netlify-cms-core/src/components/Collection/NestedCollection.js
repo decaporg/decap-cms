@@ -47,7 +47,7 @@ const TreeNavLink = styled(NavLink)`
   font-weight: 500;
   align-items: center;
   padding: 8px;
-  padding-left: ${props => props.depth * 20 + 12}px;
+  padding-left: ${(props) => props.depth * 20 + 12}px;
   border-left: 2px solid #fff;
 
   ${Icon} {
@@ -55,7 +55,7 @@ const TreeNavLink = styled(NavLink)`
     flex-shrink: 0;
   }
 
-  ${props => css`
+  ${(props) => css`
     &:hover,
     &:active,
     &.${props.activeClassName} {
@@ -66,19 +66,19 @@ const TreeNavLink = styled(NavLink)`
   `};
 `;
 
-const getNodeTitle = node => {
+const getNodeTitle = (node) => {
   const title = node.isRoot
     ? node.title
-    : node.children.find(c => !c.isDir && c.title)?.title || node.title;
+    : node.children.find((c) => !c.isDir && c.title)?.title || node.title;
   return title;
 };
 
-const TreeNode = props => {
+const TreeNode = (props) => {
   const { collection, treeData, depth = 0, onToggle } = props;
   const collectionName = collection.get('name');
 
   const sortedData = sortBy(treeData, getNodeTitle);
-  return sortedData.map(node => {
+  return sortedData.map((node) => {
     const leaf = node.children.length <= 1 && !node.children[0]?.isDir && depth > 0;
     if (leaf) {
       return null;
@@ -89,7 +89,7 @@ const TreeNode = props => {
     }
     const title = getNodeTitle(node);
 
-    const hasChildren = depth === 0 || node.children.some(c => c.children.some(c => c.isDir));
+    const hasChildren = depth === 0 || node.children.some((c) => c.children.some((c) => c.isDir));
 
     return (
       <React.Fragment key={node.path}>
@@ -128,7 +128,7 @@ TreeNode.propTypes = {
 };
 
 export const walk = (treeData, callback) => {
-  const traverse = children => {
+  const traverse = (children) => {
     for (const child of children) {
       callback(child);
       traverse(child.children);
@@ -143,7 +143,7 @@ export const getTreeData = (collection, entries) => {
   const rootFolder = '/';
   const entriesObj = entries
     .toJS()
-    .map(e => ({ ...e, path: e.path.substring(collectionFolder.length) }));
+    .map((e) => ({ ...e, path: e.path.substring(collectionFolder.length) }));
 
   const dirs = entriesObj.reduce((acc, entry) => {
     let dir = dirname(entry.path);
@@ -219,7 +219,7 @@ export const getTreeData = (collection, entries) => {
 export const updateNode = (treeData, node, callback) => {
   let stop = false;
 
-  const updater = nodes => {
+  const updater = (nodes) => {
     if (stop) {
       return nodes;
     }
@@ -230,7 +230,7 @@ export const updateNode = (treeData, node, callback) => {
         return nodes;
       }
     }
-    nodes.forEach(node => updater(node.children));
+    nodes.forEach((node) => updater(node.children));
     return nodes;
   };
 
@@ -261,7 +261,7 @@ export class NestedCollection extends React.Component {
       filterTerm !== prevProps.filterTerm
     ) {
       const expanded = {};
-      walk(this.state.treeData, node => {
+      walk(this.state.treeData, (node) => {
         if (node.expanded) {
           expanded[node.path] = true;
         }
@@ -269,7 +269,7 @@ export class NestedCollection extends React.Component {
       const treeData = getTreeData(collection, entries);
 
       const path = `/${filterTerm}`;
-      walk(treeData, node => {
+      walk(treeData, (node) => {
         if (expanded[node.path] || (this.state.useFilter && path.startsWith(node.path))) {
           node.expanded = true;
         }
@@ -280,7 +280,7 @@ export class NestedCollection extends React.Component {
 
   onToggle = ({ node, expanded }) => {
     if (!this.state.selected || this.state.selected.path === node.path || expanded) {
-      const treeData = updateNode(this.state.treeData, node, node => ({
+      const treeData = updateNode(this.state.treeData, node, (node) => ({
         ...node,
         expanded,
       }));

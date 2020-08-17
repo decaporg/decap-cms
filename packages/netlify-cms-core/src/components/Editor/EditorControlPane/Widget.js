@@ -7,7 +7,7 @@ import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
 const truthy = () => ({ error: false });
 
-const isEmpty = value =>
+const isEmpty = (value) =>
   value === null ||
   value === undefined ||
   (Object.prototype.hasOwnProperty.call(value, 'length') && value.length === 0) ||
@@ -76,7 +76,7 @@ export default class Widget extends Component {
     );
   }
 
-  processInnerControlRef = ref => {
+  processInnerControlRef = (ref) => {
     if (!ref) return;
 
     /**
@@ -112,7 +112,7 @@ export default class Widget extends Component {
     if (field.get('meta')) {
       validations.push(this.props.validateMetaField);
     }
-    validations.forEach(func => {
+    validations.forEach((func) => {
       const response = func(field, value, this.props.t);
       if (response.error) errors.push(response.error);
     });
@@ -167,7 +167,7 @@ export default class Widget extends Component {
     return { error: false };
   };
 
-  validateWrappedControl = field => {
+  validateWrappedControl = (field) => {
     const { t, parentIds } = this.props;
     if (typeof this.wrappedControlValid !== 'function') {
       throw new Error(oneLine`
@@ -187,7 +187,7 @@ export default class Widget extends Component {
         () => {
           this.validate({ error: false });
         },
-        err => {
+        (err) => {
           const error = {
             type: ValidationErrorTypes.CUSTOM,
             message: `${field.get('label', field.get('name'))} - ${err}.`,

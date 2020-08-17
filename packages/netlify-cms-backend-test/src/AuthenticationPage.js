@@ -51,7 +51,7 @@ export default class AuthenticationPage extends React.Component {
     }
   }
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
     this.props.onLogin(this.state);
   };

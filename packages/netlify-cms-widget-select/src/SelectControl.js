@@ -26,7 +26,7 @@ function getSelectedValue({ value, options, isMultiple }) {
     }
 
     return selectedOptions
-      .map(i => options.find(o => o.value === (i.value || i)))
+      .map((i) => options.find((o) => o.value === (i.value || i)))
       .filter(Boolean)
       .map(convertToOption);
   } else {
@@ -59,7 +59,7 @@ export default class SelectControl extends React.Component {
     const { field, value, t } = this.props;
     const min = field.get('min');
     const max = field.get('max');
-    const minMaxError = messageKey => ({
+    const minMaxError = (messageKey) => ({
       error: {
         message: t(`editor.editorControlPane.widget.${messageKey}`, {
           fieldLabel: field.get('label', field.get('name')),
@@ -83,7 +83,7 @@ export default class SelectControl extends React.Component {
     return { error: false };
   };
 
-  handleChange = selectedOption => {
+  handleChange = (selectedOption) => {
     const { onChange, field } = this.props;
     const isMultiple = field.get('multiple', false);
     const isEmpty = isMultiple ? !selectedOption?.length : !selectedOption;

@@ -26,7 +26,7 @@ const styles = {
   `,
 };
 
-const AppHeader = props => (
+const AppHeader = (props) => (
   <header
     css={css`
       ${shadows.dropMain};
@@ -76,7 +76,7 @@ const AppHeaderButton = styled.button`
     }
   }
 
-  ${props => css`
+  ${(props) => css`
     &.${props.activeClassName} {
       ${styles.buttonActive};
 
@@ -137,7 +137,7 @@ class Header extends React.Component {
     clearInterval(this.intervalId);
   }
 
-  handleCreatePostClick = collectionName => {
+  handleCreatePostClick = (collectionName) => {
     const { onCreateEntryClick } = this.props;
     if (onCreateEntryClick) {
       onCreateEntryClick(collectionName);
@@ -158,7 +158,7 @@ class Header extends React.Component {
     } = this.props;
 
     const createableCollections = collections
-      .filter(collection => collection.get('create'))
+      .filter((collection) => collection.get('create'))
       .toList();
 
     return (
@@ -204,7 +204,7 @@ class Header extends React.Component {
                 dropdownWidth="160px"
                 dropdownPosition="left"
               >
-                {createableCollections.map(collection => (
+                {createableCollections.map((collection) => (
                   <DropdownItem
                     key={collection.get('name')}
                     label={collection.get('label_singular') || collection.get('label')}

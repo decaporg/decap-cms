@@ -34,7 +34,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     returnObj.loadEntry = (collection, slug) => dispatch(loadUnpublishedEntry(collection, slug));
 
     // Overwrite persistEntry to persistUnpublishedEntry
-    returnObj.persistEntry = collection =>
+    returnObj.persistEntry = (collection) =>
       dispatch(persistUnpublishedEntry(collection, unpublishedEntry));
   }
 

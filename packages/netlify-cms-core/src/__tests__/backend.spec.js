@@ -587,7 +587,7 @@ describe('Backend', () => {
     let backend;
     beforeEach(() => {
       backend = new Backend(implementation, { config, backendName: 'github' });
-      backend.listAllEntries = jest.fn(collection => {
+      backend.listAllEntries = jest.fn((collection) => {
         if (collection.get('name') === 'posts') {
           return Promise.resolve(posts);
         }
@@ -627,7 +627,7 @@ describe('Backend', () => {
 
     it('should search collections by summary description', async () => {
       const results = await backend.search(
-        collections.map(c => c.set('summary', '{{description}}')),
+        collections.map((c) => c.set('summary', '{{description}}')),
         'find me by description',
       );
 

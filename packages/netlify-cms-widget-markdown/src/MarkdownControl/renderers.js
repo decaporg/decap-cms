@@ -123,36 +123,38 @@ const StyledTd = styled.td`
 /**
  * Mark Components
  */
-const Bold = props => <strong>{props.children}</strong>;
-const Italic = props => <em>{props.children}</em>;
-const Strikethrough = props => <s>{props.children}</s>;
-const Code = props => <StyledCode>{props.children}</StyledCode>;
+const Bold = (props) => <strong>{props.children}</strong>;
+const Italic = (props) => <em>{props.children}</em>;
+const Strikethrough = (props) => <s>{props.children}</s>;
+const Code = (props) => <StyledCode>{props.children}</StyledCode>;
 
 /**
  * Node Components
  */
-const Paragraph = props => <StyledP {...props.attributes}>{props.children}</StyledP>;
-const ListItem = props => <StyledLi {...props.attributes}>{props.children}</StyledLi>;
-const Quote = props => <StyledBlockQuote {...props.attributes}>{props.children}</StyledBlockQuote>;
-const CodeBlock = props => (
+const Paragraph = (props) => <StyledP {...props.attributes}>{props.children}</StyledP>;
+const ListItem = (props) => <StyledLi {...props.attributes}>{props.children}</StyledLi>;
+const Quote = (props) => (
+  <StyledBlockQuote {...props.attributes}>{props.children}</StyledBlockQuote>
+);
+const CodeBlock = (props) => (
   <StyledPre>
     <StyledCode {...props.attributes}>{props.children}</StyledCode>
   </StyledPre>
 );
-const HeadingOne = props => <StyledH1 {...props.attributes}>{props.children}</StyledH1>;
-const HeadingTwo = props => <StyledH2 {...props.attributes}>{props.children}</StyledH2>;
-const HeadingThree = props => <StyledH3 {...props.attributes}>{props.children}</StyledH3>;
-const HeadingFour = props => <StyledH4 {...props.attributes}>{props.children}</StyledH4>;
-const HeadingFive = props => <StyledH5 {...props.attributes}>{props.children}</StyledH5>;
-const HeadingSix = props => <StyledH6 {...props.attributes}>{props.children}</StyledH6>;
-const Table = props => (
+const HeadingOne = (props) => <StyledH1 {...props.attributes}>{props.children}</StyledH1>;
+const HeadingTwo = (props) => <StyledH2 {...props.attributes}>{props.children}</StyledH2>;
+const HeadingThree = (props) => <StyledH3 {...props.attributes}>{props.children}</StyledH3>;
+const HeadingFour = (props) => <StyledH4 {...props.attributes}>{props.children}</StyledH4>;
+const HeadingFive = (props) => <StyledH5 {...props.attributes}>{props.children}</StyledH5>;
+const HeadingSix = (props) => <StyledH6 {...props.attributes}>{props.children}</StyledH6>;
+const Table = (props) => (
   <StyledTable>
     <tbody {...props.attributes}>{props.children}</tbody>
   </StyledTable>
 );
-const TableRow = props => <tr {...props.attributes}>{props.children}</tr>;
-const TableCell = props => <StyledTd {...props.attributes}>{props.children}</StyledTd>;
-const ThematicBreak = props => (
+const TableRow = (props) => <tr {...props.attributes}>{props.children}</tr>;
+const TableCell = (props) => <StyledTd {...props.attributes}>{props.children}</StyledTd>;
+const ThematicBreak = (props) => (
   <StyledHr
     {...props.attributes}
     css={
@@ -165,14 +167,14 @@ const ThematicBreak = props => (
     }
   />
 );
-const Break = props => <br {...props.attributes} />;
-const BulletedList = props => <StyledUl {...props.attributes}>{props.children}</StyledUl>;
-const NumberedList = props => (
+const Break = (props) => <br {...props.attributes} />;
+const BulletedList = (props) => <StyledUl {...props.attributes}>{props.children}</StyledUl>;
+const NumberedList = (props) => (
   <StyledOl {...props.attributes} start={props.node.data.get('start') || 1}>
     {props.children}
   </StyledOl>
 );
-const Link = props => {
+const Link = (props) => {
   const data = props.node.get('data');
   const url = data.get('url');
   const title = data.get('title');
@@ -183,7 +185,7 @@ const Link = props => {
   );
 };
 
-const Image = props => {
+const Image = (props) => {
   const data = props.node.get('data');
   const marks = data.get('marks');
   const url = data.get('url');
@@ -198,7 +200,7 @@ const Image = props => {
   return result;
 };
 
-export const renderMark = () => props => {
+export const renderMark = () => (props) => {
   switch (props.mark.type) {
     case 'bold':
       return <Bold {...props} />;
@@ -211,7 +213,7 @@ export const renderMark = () => props => {
   }
 };
 
-export const renderInline = () => props => {
+export const renderInline = () => (props) => {
   switch (props.node.type) {
     case 'link':
       return <Link {...props} />;
@@ -222,7 +224,7 @@ export const renderInline = () => props => {
   }
 };
 
-export const renderBlock = ({ classNameWrapper, codeBlockComponent }) => props => {
+export const renderBlock = ({ classNameWrapper, codeBlockComponent }) => (props) => {
   switch (props.node.type) {
     case 'paragraph':
       return <Paragraph {...props} />;

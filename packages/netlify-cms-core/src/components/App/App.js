@@ -49,8 +49,8 @@ const ErrorCodeBlock = styled.pre`
   line-height: 1.5;
 `;
 
-const getDefaultPath = collections => {
-  const first = collections.filter(collection => collection.get('hide') !== true).first();
+const getDefaultPath = (collections) => {
+  const first = collections.filter((collection) => collection.get('hide') !== true).first();
   if (first) {
     return `/collections/${first.get('name')}`;
   } else {
@@ -63,7 +63,7 @@ const RouteInCollection = ({ collections, render, ...props }) => {
   return (
     <Route
       {...props}
-      render={routeProps => {
+      render={(routeProps) => {
         const collectionExists = collections.get(routeProps.match.params.name);
         return collectionExists ? render(routeProps) : <Redirect to={defaultPath} />;
       }}
@@ -217,31 +217,31 @@ class App extends React.Component {
               exact
               collections={collections}
               path="/collections/:name"
-              render={props => <Collection {...props} />}
+              render={(props) => <Collection {...props} />}
             />
             <RouteInCollection
               path="/collections/:name/new"
               collections={collections}
-              render={props => <Editor {...props} newRecord />}
+              render={(props) => <Editor {...props} newRecord />}
             />
             <RouteInCollection
               path="/collections/:name/entries/*"
               collections={collections}
-              render={props => <Editor {...props} />}
+              render={(props) => <Editor {...props} />}
             />
             <RouteInCollection
               path="/collections/:name/search/:searchTerm"
               collections={collections}
-              render={props => <Collection {...props} isSearchResults isSingleSearchResult />}
+              render={(props) => <Collection {...props} isSearchResults isSingleSearchResult />}
             />
             <RouteInCollection
               collections={collections}
               path="/collections/:name/filter/:filterTerm*"
-              render={props => <Collection {...props} />}
+              render={(props) => <Collection {...props} />}
             />
             <Route
               path="/search/:searchTerm"
-              render={props => <Collection {...props} isSearchResults />}
+              render={(props) => <Collection {...props} isSearchResults />}
             />
             <RouteInCollection
               path="/edit/:name/:entryName"

@@ -426,7 +426,7 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
       // load assets from backup
       const mediaFiles = entry.mediaFiles || [];
       const assetProxies: AssetProxy[] = await Promise.all(
-        mediaFiles.map(file => {
+        mediaFiles.map((file) => {
           if (file.file || file.url) {
             return createAssetProxy({
               path: file.path,
@@ -658,14 +658,14 @@ export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const params = new URLSearchParams(search);
     params.forEach((value, key) => {
-      collection = updateFieldByKey(collection, key, field =>
+      collection = updateFieldByKey(collection, key, (field) =>
         field.set('default', processValue(value)),
       );
     });
 
     const fields = collection.get('fields', List());
-    const dataFields = createEmptyDraftData(fields.filter(f => !f!.get('meta')).toList());
-    const metaFields = createEmptyDraftData(fields.filter(f => f!.get('meta') === true).toList());
+    const dataFields = createEmptyDraftData(fields.filter((f) => !f!.get('meta')).toList());
+    const metaFields = createEmptyDraftData(fields.filter((f) => f!.get('meta') === true).toList());
 
     const state = getState();
     const backend = currentBackend(state.config);
@@ -708,7 +708,7 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
       const list = item.get('widget') == 'list';
       const name = item.get('name');
       const defaultValue = item.get('default', null);
-      const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some(e => isEqual(val, e));
+      const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some((e) => isEqual(val, e));
 
       if (List.isList(subfields)) {
         const subDefaultValue = list
@@ -752,8 +752,8 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
 export function getMediaAssets({ entry }: { entry: EntryMap }) {
   const filesArray = entry.get('mediaFiles').toArray();
   const assets = filesArray
-    .filter(file => file.get('draft'))
-    .map(file =>
+    .filter((file) => file.get('draft'))
+    .map((file) =>
       createAssetProxy({ path: file.get('path'), file: file.get('file'), url: file.get('url') }),
     );
 
@@ -769,8 +769,8 @@ export function persistEntry(collection: Collection) {
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {
-      const hasPresenceErrors = fieldsErrors.some(errors =>
-        errors.some(error => error.type && error.type === ValidationErrorTypes.PRESENCE),
+      const hasPresenceErrors = fieldsErrors.some((errors) =>
+        errors.some((error) => error.type && error.type === ValidationErrorTypes.PRESENCE),
       );
 
       if (hasPresenceErrors) {

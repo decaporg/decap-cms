@@ -49,7 +49,7 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 };
 
-const pad = n => (n >= 10 ? n : `0${n}`);
+const pad = (n) => (n >= 10 ? n : `0${n}`);
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;

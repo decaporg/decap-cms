@@ -24,8 +24,8 @@ const getStateColors = ({ isActive, hasErrors }) => {
 
 const FieldLabel = styled.label`
   ${text.fieldLabel};
-  color: ${props => getStateColors(props).text};
-  background-color: ${props => getStateColors(props).background};
+  color: ${(props) => getStateColors(props).text};
+  background-color: ${(props) => getStateColors(props).background};
   display: inline-block;
   border: 0;
   border-radius: 3px 3px 0 0;

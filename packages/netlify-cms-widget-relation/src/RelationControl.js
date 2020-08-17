@@ -10,7 +10,7 @@ import { FixedSizeList } from 'react-window';
 
 const Option = ({ index, style, data }) => <div style={style}>{data.options[index]}</div>;
 
-const MenuList = props => {
+const MenuList = (props) => {
   if (props.isLoading || props.options.length <= 0 || !Array.isArray(props.children)) {
     return props.children;
   }
@@ -52,7 +52,7 @@ function getSelectedOptions(value) {
 }
 
 function uniqOptions(initial, current) {
-  return uniqBy(initial.concat(current), o => o.value);
+  return uniqBy(initial.concat(current), (o) => o.value);
 }
 
 function getSelectedValue({ value, options, isMultiple }) {
@@ -63,7 +63,7 @@ function getSelectedValue({ value, options, isMultiple }) {
     }
 
     const selected = selectedOptions
-      .map(i => options.find(o => o.value === (i.value || i)))
+      .map((i) => options.find((o) => o.value === (i.value || i)))
       .filter(Boolean)
       .map(convertToOption);
     return selected;
@@ -147,8 +147,8 @@ export default class RelationControl extends React.Component {
       const hits = queryHits.get(forID);
       if (value) {
         const listValue = List.isList(value) ? value : List([value]);
-        listValue.forEach(val => {
-          const hit = hits.find(hit => this.parseNestedFields(hit, valueField) === val);
+        listValue.forEach((val) => {
+          const hit = hits.find((hit) => this.parseNestedFields(hit, valueField) === val);
           if (hit) {
             onChange(value, {
               [field.get('name')]: {
@@ -161,7 +161,7 @@ export default class RelationControl extends React.Component {
     }
   }
 
-  handleChange = selectedOption => {
+  handleChange = (selectedOption) => {
     const { onChange, field } = this.props;
     let value;
     let metadata;
@@ -206,7 +206,7 @@ export default class RelationControl extends React.Component {
     return this.props.field.get('multiple', false);
   }
 
-  parseHitOptions = hits => {
+  parseHitOptions = (hits) => {
     const { field } = this.props;
     const valueField = field.get('valueField');
     const displayField = field.get('displayFields') || List([field.get('valueField')]);
@@ -215,7 +215,7 @@ export default class RelationControl extends React.Component {
       for (let i = 0; i < valuesPaths.length; i++) {
         const label = displayField
           .toJS()
-          .map(key => {
+          .map((key) => {
             const displayPaths = stringTemplate.expandPath({ data: hit.data, path: key });
             return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
           })

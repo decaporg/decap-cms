@@ -35,7 +35,7 @@ const CollectionTopDescription = styled.p`
   margin-bottom: 0;
 `;
 
-const getCollectionProps = collection => {
+const getCollectionProps = (collection) => {
   const collectionLabel = collection.get('label');
   const collectionLabelSingular = collection.get('label_singular');
   const collectionDescription = collection.get('description');

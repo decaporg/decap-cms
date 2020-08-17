@@ -36,7 +36,7 @@ const TableOfContents = () => {
     // TODO: we should be generating headings during the build
     const contentHeadings = document.querySelectorAll('[data-docs-content] h2');
     const headings = [];
-    contentHeadings.forEach(h => {
+    contentHeadings.forEach((h) => {
       headings.push({
         id: h.id,
         text: h.innerText,
@@ -49,7 +49,7 @@ const TableOfContents = () => {
   return (
     headings.length > 0 && (
       <TocList>
-        {headings.map(h => (
+        {headings.map((h) => (
           <li key={h.id}>
             <TocLink href={`#${h.id}`}>{h.text}</TocLink>
           </li>

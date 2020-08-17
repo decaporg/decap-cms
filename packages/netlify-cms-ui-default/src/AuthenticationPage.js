@@ -38,7 +38,7 @@ const CustomLogoIcon = ({ url }) => {
   );
 };
 
-const renderPageLogo = logoUrl => {
+const renderPageLogo = (logoUrl) => {
   if (logoUrl) {
     return <CustomLogoIcon url={logoUrl} />;
   }

@@ -30,7 +30,7 @@ const StyledImage = styled.img`
   object-fit: contain;
 `;
 
-const Image = props => <StyledImage role="presentation" {...props} />;
+const Image = (props) => <StyledImage role="presentation" {...props} />;
 
 const MultiImageWrapper = styled.div`
   display: flex;
@@ -72,7 +72,7 @@ function isMultiple(value) {
   return Array.isArray(value) || List.isList(value);
 }
 
-const warnDeprecatedOptions = once(field =>
+const warnDeprecatedOptions = once((field) =>
   console.warn(oneLine`
   Netlify CMS config: ${field.get('name')} field: property "options" has been deprecated for the
   ${field.get('widget')} widget and will be removed in the next major release. Rather than
@@ -145,7 +145,7 @@ export default function withFileControl({ forImage } = {}) {
       this.props.onRemoveMediaControl(this.controlID);
     }
 
-    handleChange = e => {
+    handleChange = (e) => {
       const { field, onOpenMediaLibrary, value } = this.props;
       e.preventDefault();
       let mediaLibraryFieldOptions;
@@ -174,7 +174,7 @@ export default function withFileControl({ forImage } = {}) {
       });
     };
 
-    handleRemove = e => {
+    handleRemove = (e) => {
       e.preventDefault();
       this.props.onClearMediaControl(this.controlID);
       return this.props.onChange('');
@@ -183,13 +183,13 @@ export default function withFileControl({ forImage } = {}) {
     getValidateValue = () => {
       const { value } = this.props;
       if (value) {
-        return isMultiple(value) ? value.map(v => basename(v)) : basename(value);
+        return isMultiple(value) ? value.map((v) => basename(v)) : basename(value);
       }
 
       return value;
     };
 
-    renderFileLink = value => {
+    renderFileLink = (value) => {
       const size = MAX_DISPLAY_LENGTH;
       if (!value || value.length <= size) {
         return value;
@@ -212,7 +212,7 @@ export default function withFileControl({ forImage } = {}) {
         return (
           <FileLinks>
             <FileLinkList>
-              {value.map(val => (
+              {value.map((val) => (
                 <li key={val}>{this.renderFileLink(val)}</li>
               ))}
             </FileLinkList>
@@ -228,7 +228,7 @@ export default function withFileControl({ forImage } = {}) {
       if (isMultiple(value)) {
         return (
           <MultiImageWrapper>
-            {value.map(val => (
+            {value.map((val) => (
               <ImageWrapper key={val}>
                 <Image src={getAsset(val, field) || ''} />
               </ImageWrapper>
@@ -245,7 +245,7 @@ export default function withFileControl({ forImage } = {}) {
       );
     };
 
-    renderSelection = subject => {
+    renderSelection = (subject) => {
       const { t } = this.props;
       return (
         <div>
@@ -263,7 +263,7 @@ export default function withFileControl({ forImage } = {}) {
       );
     };
 
-    renderNoSelection = subject => {
+    renderNoSelection = (subject) => {
       const { t } = this.props;
       return (
         <FileWidgetButton onClick={this.handleChange}>

@@ -117,7 +117,7 @@ export function insertMedia(mediaPath: string | string[], field: EntryField | un
     const collectionName = state.entryDraft.getIn(['entry', 'collection']);
     const collection = state.collections.get(collectionName);
     if (Array.isArray(mediaPath)) {
-      mediaPath = mediaPath.map(path =>
+      mediaPath = mediaPath.map((path) =>
         selectMediaFilePublicPath(config, collection, path, entry, field),
       );
     } else {
@@ -161,7 +161,7 @@ export function loadMedia(
     const loadFunction = () =>
       backend
         .getMedia()
-        .then(files => dispatch(mediaLoaded(files)))
+        .then((files) => dispatch(mediaLoaded(files)))
         .catch((error: { status?: number }) => {
           console.error(error);
           if (error.status === 404) {
@@ -173,7 +173,7 @@ export function loadMedia(
         });
 
     if (delay > 0) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => resolve(loadFunction()), delay);
       });
     } else {
@@ -215,7 +215,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const integration = selectIntegration(state, null, 'assetStore');
     const files: MediaFile[] = selectMediaFiles(state, field);
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
-    const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
+    const existingFile = files.find((existingFile) => existingFile.name.toLowerCase() === fileName);
 
     const editingDraft = selectEditingDraft(state.entryDraft);
 
@@ -484,7 +484,7 @@ export async function waitForMediaLibraryToLoad(
   state: State,
 ) {
   if (state.mediaLibrary.get('isLoading') !== false && !state.mediaLibrary.get('externalLibrary')) {
-    await waitUntilWithTimeout(dispatch, resolve => ({
+    await waitUntilWithTimeout(dispatch, (resolve) => ({
       predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS || type === MEDIA_LOAD_FAILURE,
       run: () => resolve(),
     }));
@@ -507,7 +507,7 @@ export async function getMediaDisplayURL(
     url = null;
   } else {
     const key = file.id;
-    const promise = waitUntilWithTimeout<string>(dispatch, resolve => ({
+    const promise = waitUntilWithTimeout<string>(dispatch, (resolve) => ({
       predicate: ({ type, payload }) =>
         (type === MEDIA_DISPLAY_URL_SUCCESS || type === MEDIA_DISPLAY_URL_FAILURE) &&
         payload.key === key,

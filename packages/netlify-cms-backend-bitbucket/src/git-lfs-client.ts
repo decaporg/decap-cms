@@ -48,7 +48,7 @@ export class GitLfsClient {
   ) {}
 
   matchPath(path: string) {
-    return this.patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
+    return this.patterns.some((pattern) => minimatch(path, pattern, { matchBase: true }));
   }
 
   async uploadResource(pointer: PointerFile, resource: Blob): Promise<string> {
@@ -89,7 +89,7 @@ export class GitLfsClient {
         objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha })),
       }),
     });
-    return ((await response.json()) as LfsBatchUploadResponse).objects.filter(object => {
+    return ((await response.json()) as LfsBatchUploadResponse).objects.filter((object) => {
       if ('error' in object) {
         console.error(object.error);
         return false;

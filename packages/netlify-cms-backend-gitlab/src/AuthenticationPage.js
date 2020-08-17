@@ -57,7 +57,7 @@ export default class GitLabAuthenticationPage extends React.Component {
     }
   }
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
     this.auth.authenticate({ provider: 'gitlab', scope: 'api' }, (err, data) => {
       if (err) {

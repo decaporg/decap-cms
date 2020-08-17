@@ -70,10 +70,10 @@ export default class DateTimeControl extends React.Component {
 
   // Date is valid if datetime is a moment or Date object otherwise it's a string.
   // Handle the empty case, if the user wants to empty the field.
-  isValidDate = datetime =>
+  isValidDate = (datetime) =>
     moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
 
-  handleChange = datetime => {
+  handleChange = (datetime) => {
     /**
      * Set the date only if it is valid.
      */
@@ -97,7 +97,7 @@ export default class DateTimeControl extends React.Component {
     }
   };
 
-  onBlur = datetime => {
+  onBlur = (datetime) => {
     const { setInactiveStyle } = this.props;
 
     if (!this.isValidDate(datetime)) {

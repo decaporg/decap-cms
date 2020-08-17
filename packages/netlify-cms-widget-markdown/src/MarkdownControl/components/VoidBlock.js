@@ -3,7 +3,7 @@ import React from 'react';
 import { css } from '@emotion/core';
 import { zIndex } from 'netlify-cms-ui-default';
 
-const InsertionPoint = props => (
+const InsertionPoint = (props) => (
   <div
     css={css`
       height: 32px;
@@ -17,7 +17,7 @@ const InsertionPoint = props => (
 );
 
 const VoidBlock = ({ editor, attributes, node, children }) => {
-  const handleClick = event => {
+  const handleClick = (event) => {
     event.stopPropagation();
   };
 

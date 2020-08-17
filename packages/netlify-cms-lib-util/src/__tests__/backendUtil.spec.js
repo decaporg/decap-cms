@@ -21,7 +21,7 @@ describe('parseLinkHeader', () => {
 });
 
 describe('getAllResponses', () => {
-  const generatePulls = length => {
+  const generatePulls = (length) => {
     return Array.from({ length }, (_, id) => {
       return { id: id + 1, number: `134${id}`, state: 'open' };
     });
@@ -31,7 +31,7 @@ describe('getAllResponses', () => {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
     const url = 'https://api.github.com/pulls';
-    const link = linkPage => `<${url}?page=${linkPage}>`;
+    const link = (linkPage) => `<${url}?page=${linkPage}>`;
 
     const linkHeader = oneLine`
       ${pageNum === 1 ? '' : `${link(1)}; rel="first",`}
@@ -48,7 +48,7 @@ describe('getAllResponses', () => {
       .get('/pulls')
       .query(true)
       .times(repeat)
-      .reply(uri => {
+      .reply((uri) => {
         const searchParams = new URLSearchParams(uri.split('?')[1]);
         const page = searchParams.get('page') || 1;
         const pageCount = data.length <= perPage ? 1 : Math.ceil(data.length / perPage);
@@ -61,8 +61,8 @@ describe('getAllResponses', () => {
 
   it('should return all paged response', async () => {
     interceptCall({ repeat: 3, data: generatePulls(70) });
-    const res = await getAllResponses('https://api.github.com/pulls', {}, 'next', url => url);
-    const pages = await Promise.all(res.map(res => res.json()));
+    const res = await getAllResponses('https://api.github.com/pulls', {}, 'next', (url) => url);
+    const pages = await Promise.all(res.map((res) => res.json()));
 
     expect(pages[0]).toHaveLength(30);
     expect(pages[1]).toHaveLength(30);

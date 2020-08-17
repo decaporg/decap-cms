@@ -46,7 +46,9 @@ export function checkBackendStatus() {
       const status = await backend.status();
 
       const backendDownKey = 'ui.toast.onBackendDown';
-      const previousBackendDownNotifs = state.notifs.filter(n => n.message?.key === backendDownKey);
+      const previousBackendDownNotifs = state.notifs.filter(
+        (n) => n.message?.key === backendDownKey,
+      );
 
       if (status.api.status === false) {
         if (previousBackendDownNotifs.length === 0) {
@@ -63,7 +65,7 @@ export function checkBackendStatus() {
         return dispatch(statusSuccess(status));
       } else if (status.api.status === true && previousBackendDownNotifs.length > 0) {
         // If backend is up, clear all the danger messages
-        previousBackendDownNotifs.forEach(notif => {
+        previousBackendDownNotifs.forEach((notif) => {
           dispatch(notifDismiss(notif.id));
         });
       }
@@ -71,7 +73,7 @@ export function checkBackendStatus() {
       const authError = status.auth.status === false;
       if (authError) {
         const key = 'ui.toast.onLoggedOut';
-        const existingNotification = state.notifs.find(n => n.message?.key === key);
+        const existingNotification = state.notifs.find((n) => n.message?.key === key);
         if (!existingNotification) {
           dispatch(
             notifSend({

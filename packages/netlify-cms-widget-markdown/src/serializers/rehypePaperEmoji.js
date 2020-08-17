@@ -4,7 +4,7 @@
  * replaces the images with the emoji characters.
  */
 export default function rehypePaperEmoji() {
-  const transform = node => {
+  const transform = (node) => {
     if (node.tagName === 'img' && node.properties.dataEmojiCh) {
       return { type: 'text', value: node.properties.dataEmojiCh };
     }

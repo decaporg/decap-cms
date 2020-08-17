@@ -12,7 +12,7 @@ function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
     let match;
     const potentialMatchValue = value.split('\n\n')[0].trimEnd();
-    const plugin = plugins.find(plugin => {
+    const plugin = plugins.find((plugin) => {
       match = value.match(plugin.pattern);
 
       if (!match) {
@@ -55,7 +55,7 @@ export function createRemarkShortcodeStringifier({ plugins }) {
 
     function shortcode(node) {
       const { data } = node;
-      const plugin = plugins.find(plugin => data.shortcode === plugin.id);
+      const plugin = plugins.find((plugin) => data.shortcode === plugin.id);
       return plugin.toBlock(data.shortcodeData);
     }
   };

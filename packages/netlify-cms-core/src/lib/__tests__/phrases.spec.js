@@ -51,7 +51,7 @@ describe('defaultPhrases', () => {
       },
     };
 
-    getLocale.mockImplementation(locale => locales[locale]);
+    getLocale.mockImplementation((locale) => locales[locale]);
 
     expect(getPhrases('de')).toEqual({
       app: {
@@ -110,7 +110,7 @@ describe('defaultPhrases', () => {
       },
     };
 
-    getLocale.mockImplementation(locale => locales[locale]);
+    getLocale.mockImplementation((locale) => locales[locale]);
 
     const result = getPhrases('de');
 

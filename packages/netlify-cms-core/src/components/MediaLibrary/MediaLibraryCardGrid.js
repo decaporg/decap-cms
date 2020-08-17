@@ -8,7 +8,7 @@ import { colors } from 'netlify-cms-ui-default';
 import { FixedSizeGrid as Grid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-const CardWrapper = props => {
+const CardWrapper = (props) => {
   const {
     rowIndex,
     columnIndex,
@@ -63,7 +63,7 @@ const CardWrapper = props => {
   );
 };
 
-const VirtualizedGrid = props => {
+const VirtualizedGrid = (props) => {
   const { mediaItems, setScrollContainerRef } = props;
 
   return (
@@ -116,7 +116,7 @@ const PaginatedGrid = ({
   return (
     <CardGridContainer ref={setScrollContainerRef}>
       <CardGrid>
-        {mediaItems.map(file => (
+        {mediaItems.map((file) => (
           <MediaLibraryCard
             key={file.key}
             isSelected={isSelectedFile(file)}
@@ -157,10 +157,10 @@ const CardGrid = styled.div`
 `;
 
 const PaginatingMessage = styled.h1`
-  color: ${props => props.isPrivate && colors.textFieldBorder};
+  color: ${(props) => props.isPrivate && colors.textFieldBorder};
 `;
 
-const MediaLibraryCardGrid = props => {
+const MediaLibraryCardGrid = (props) => {
   const { canLoadMore, isPaginating } = props;
   if (canLoadMore || isPaginating) {
     return <PaginatedGrid {...props} />;

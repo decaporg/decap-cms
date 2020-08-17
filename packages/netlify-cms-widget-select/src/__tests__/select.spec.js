@@ -17,7 +17,7 @@ class SelectController extends React.Component {
     value: this.props.defaultValue,
   };
 
-  handleOnChange = jest.fn(value => {
+  handleOnChange = jest.fn((value) => {
     this.setState({ value });
   });
 
@@ -52,8 +52,8 @@ function setup({ field, defaultValue }) {
             classNameWrapper=""
             setActiveStyle={setActiveSpy}
             setInactiveStyle={setInactiveSpy}
-            ref={widgetRef => (ref = widgetRef)}
-            t={msg => msg}
+            ref={(widgetRef) => (ref = widgetRef)}
+            t={(msg) => msg}
           />
         );
       }}

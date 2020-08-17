@@ -88,7 +88,7 @@ class MediaLibrary extends React.Component {
     }
   }
 
-  loadDisplayURL = file => {
+  loadDisplayURL = (file) => {
     const { loadMediaDisplayURL } = this.props;
     loadMediaDisplayURL(file);
   };
@@ -96,8 +96,8 @@ class MediaLibrary extends React.Component {
   /**
    * Filter an array of file data to include only images.
    */
-  filterImages = files => {
-    return files.filter(file => {
+  filterImages = (files) => {
+    return files.filter((file) => {
       const ext = fileExtension(file.name).toLowerCase();
       return IMAGE_EXTENSIONS.includes(ext);
     });
@@ -106,7 +106,7 @@ class MediaLibrary extends React.Component {
   /**
    * Transform file data for table display.
    */
-  toTableData = files => {
+  toTableData = (files) => {
     const tableData =
       files &&
       files.map(({ key, name, id, size, path, queryOrder, displayURL, draft }) => {
@@ -143,7 +143,7 @@ class MediaLibrary extends React.Component {
   /**
    * Toggle asset selection on click.
    */
-  handleAssetClick = asset => {
+  handleAssetClick = (asset) => {
     const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
     this.setState({ selectedFile });
   };
@@ -151,7 +151,7 @@ class MediaLibrary extends React.Component {
   /**
    * Upload a file.
    */
-  handlePersist = async event => {
+  handlePersist = async (event) => {
     /**
      * Stop the browser from automatically handling the file input click, and
      * get the file for upload, and retain the synthetic event for access after
@@ -204,7 +204,7 @@ class MediaLibrary extends React.Component {
     if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
       return;
     }
-    const file = files.find(file => selectedFile.key === file.key);
+    const file = files.find((file) => selectedFile.key === file.key);
     deleteMedia(file, { privateUpload }).then(() => {
       this.setState({ selectedFile: {} });
     });
@@ -252,7 +252,7 @@ class MediaLibrary extends React.Component {
    * the GitHub backend, search is in-memory and occurs as the query is typed,
    * so this handler has no impact.
    */
-  handleSearchKeyDown = async event => {
+  handleSearchKeyDown = async (event) => {
     const { dynamicSearch, loadMedia, privateUpload } = this.props;
     if (event.key === 'Enter' && dynamicSearch) {
       await loadMedia({ query: this.state.query, privateUpload });
@@ -267,7 +267,7 @@ class MediaLibrary extends React.Component {
   /**
    * Updates query state as the user types in the search field.
    */
-  handleSearchChange = event => {
+  handleSearchChange = (event) => {
     this.setState({ query: event.target.value });
   };
 
@@ -281,7 +281,7 @@ class MediaLibrary extends React.Component {
      * query.
      */
     const strippedQuery = query.replace(/ /g, '');
-    const matches = fuzzy.filter(strippedQuery, files, { extract: file => file.name });
+    const matches = fuzzy.filter(strippedQuery, files, { extract: (file) => file.name });
     const matchFiles = matches.map((match, queryIndex) => {
       const file = files[match.index];
       return { ...file, queryIndex };
@@ -333,7 +333,7 @@ class MediaLibrary extends React.Component {
         handleDelete={this.handleDelete}
         handleInsert={this.handleInsert}
         handleDownload={this.handleDownload}
-        setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
+        setScrollContainerRef={(ref) => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleLoadMore={this.handleLoadMore}
         displayURLs={displayURLs}
@@ -344,7 +344,7 @@ class MediaLibrary extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { mediaLibrary } = state;
   const field = mediaLibrary.get('field');
   const mediaLibraryProps = {

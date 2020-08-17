@@ -65,7 +65,7 @@ const Footer = ({ buttons }) => (
     <Container>
       <FooterGrid>
         <FooterButtons>
-          {buttons.map(btn => (
+          {buttons.map((btn) => (
             <SocialButton href={btn.url} key={btn.url}>
               {btn.name}
             </SocialButton>

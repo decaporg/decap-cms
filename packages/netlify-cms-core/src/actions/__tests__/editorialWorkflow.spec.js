@@ -16,7 +16,7 @@ jest.mock('redux-notifications', () => {
   return {
     ...actual,
     actions: {
-      notifSend: jest.fn().mockImplementation(payload => ({
+      notifSend: jest.fn().mockImplementation((payload) => ({
         type: 'NOTIF_SEND',
         ...payload,
       })),

@@ -126,9 +126,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
               raw: requiredString,
               newPath: path.optional(),
             }).required(),
-            assets: Joi.array()
-              .items(asset)
-              .required(),
+            assets: Joi.array().items(asset).required(),
             options: Joi.object({
               collectionName: Joi.string(),
               commitMessage: requiredString,
@@ -222,7 +220,7 @@ export const joi = (schema: Joi.Schema) => (
   const { error } = schema.validate(req.body, { allowUnknown: true });
   if (error) {
     const { details } = error;
-    const message = details.map(i => i.message).join(',');
+    const message = details.map((i) => i.message).join(',');
     res.status(422).json({ error: message });
   } else {
     next();

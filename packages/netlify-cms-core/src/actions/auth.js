@@ -57,7 +57,7 @@ export function authenticateUser() {
     dispatch(authenticating());
     return backend
       .currentUser()
-      .then(user => {
+      .then((user) => {
         if (user) {
           if (user.useOpenAuthoring) {
             dispatch(useOpenAuthoring());
@@ -67,7 +67,7 @@ export function authenticateUser() {
           dispatch(doneAuthenticating());
         }
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(authError(error));
         dispatch(logoutUser());
       });
@@ -82,13 +82,13 @@ export function loginUser(credentials) {
     dispatch(authenticating());
     return backend
       .authenticate(credentials)
-      .then(user => {
+      .then((user) => {
         if (user.useOpenAuthoring) {
           dispatch(useOpenAuthoring());
         }
         dispatch(authenticate(user));
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
         dispatch(
           notifSend({

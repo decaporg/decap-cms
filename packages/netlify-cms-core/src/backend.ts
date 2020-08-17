@@ -130,7 +130,7 @@ export const expandSearchEntries = (entries: EntryValue[], searchFields: string[
 
 export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]) => {
   // merge the search results by slug and only keep data that matched the search
-  const fields = entries.map(f => f.field);
+  const fields = entries.map((f) => f.field);
   const arrayPaths: Record<string, Set<string>> = {};
 
   const merged = entries.reduce((acc, e) => {
@@ -156,12 +156,12 @@ export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]
 
   // this keeps the search score sorting order designated by the order in entries
   // and filters non matching items
-  Object.keys(merged).forEach(slug => {
+  Object.keys(merged).forEach((slug) => {
     const data = merged[slug].data;
     for (const path of arrayPaths[slug].toArray()) {
       const array = get(data, path) as unknown[];
       const filtered = array.filter((_, index) => {
-        return fields.some(f => `${f}.`.startsWith(`${path}.${index}.`));
+        return fields.some((f) => `${f}.`.startsWith(`${path}.${index}.`));
       });
       filtered.sort((a, b) => {
         const indexOfA = array.indexOf(a);
@@ -169,8 +169,8 @@ export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]
         const pathOfA = `${path}.${indexOfA}.`;
         const pathOfB = `${path}.${indexOfB}.`;
 
-        const matchingFieldIndexA = fields.findIndex(f => `${f}.`.startsWith(pathOfA));
-        const matchingFieldIndexB = fields.findIndex(f => `${f}.`.startsWith(pathOfB));
+        const matchingFieldIndexA = fields.findIndex((f) => `${f}.`.startsWith(pathOfA));
+        const matchingFieldIndexB = fields.findIndex((f) => `${f}.`.startsWith(pathOfB));
 
         return matchingFieldIndexA - matchingFieldIndexB;
       });
@@ -293,10 +293,10 @@ export class Backend {
     for (let i = 1; i <= attempts; i++) {
       status = await this.implementation!.status();
       // return on first success
-      if (Object.values(status).every(s => s.status === true)) {
+      if (Object.values(status).every((s) => s.status === true)) {
         return status;
       } else {
-        await new Promise(resolve => setTimeout(resolve, i * 1000));
+        await new Promise((resolve) => setTimeout(resolve, i * 1000));
       }
     }
     return status;
@@ -308,7 +308,7 @@ export class Backend {
     }
     const stored = this.authStore!.retrieve();
     if (stored && stored.backendName === this.backendName) {
-      return Promise.resolve(this.implementation.restoreUser(stored)).then(user => {
+      return Promise.resolve(this.implementation.restoreUser(stored)).then((user) => {
         this.user = { ...user, backendName: this.backendName };
         // return confirmed/rehydrated user object instead of stored
         this.authStore!.store(this.user as User);
@@ -336,7 +336,7 @@ export class Backend {
   }
 
   authenticate(credentials: Credentials) {
-    return this.implementation.authenticate(credentials).then(user => {
+    return this.implementation.authenticate(credentials).then((user) => {
       this.user = { ...user, backendName: this.backendName };
       if (this.authStore) {
         this.authStore.store(this.user as User);
@@ -365,7 +365,7 @@ export class Backend {
       useWorkflow &&
       (await this.implementation
         .unpublishedEntry({ collection: collection.get('name'), slug })
-        .catch(error => {
+        .catch((error) => {
           if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
             return Promise.resolve(false);
           }
@@ -418,7 +418,7 @@ export class Backend {
 
   processEntries(loadedEntries: ImplementationEntry[], collection: Collection) {
     const collectionFilter = collection.get('filter');
-    const entries = loadedEntries.map(loadedEntry =>
+    const entries = loadedEntries.map((loadedEntry) =>
       createEntry(
         collection.get('name'),
         selectEntrySlug(collection, loadedEntry.file.path),
@@ -458,7 +458,7 @@ export class Backend {
     } else if (collectionType === FILES) {
       const files = collection
         .get('files')!
-        .map(collectionFile => ({
+        .map((collectionFile) => ({
           path: collectionFile!.get('file'),
           label: collectionFile!.get('label'),
         }))
@@ -500,7 +500,7 @@ export class Backend {
 
       return this.implementation
         .allEntriesByFolder(collection.get('folder') as string, extension, depth)
-        .then(entries => this.processEntries(entries, collection));
+        .then((entries) => this.processEntries(entries, collection));
     }
 
     const response = await this.listEntries(collection);
@@ -520,7 +520,7 @@ export class Backend {
     // its results.
     const errors: Error[] = [];
     const collectionEntriesRequests = collections
-      .map(async collection => {
+      .map(async (collection) => {
         const summary = collection.get('summary', '') as string;
         const summaryFields = extractTemplateVars(summary);
 
@@ -528,10 +528,10 @@ export class Backend {
         let searchFields: (string | null | undefined)[] = [];
 
         if (collection.get('type') === FILES) {
-          collection.get('files')?.forEach(f => {
+          collection.get('files')?.forEach((f) => {
             const topLevelFields = f!
               .get('fields')
-              .map(f => f!.get('name'))
+              .map((f) => f!.get('name'))
               .toArray();
             searchFields = [...searchFields, ...topLevelFields];
           });
@@ -540,7 +540,7 @@ export class Backend {
             selectInferedField(collection, 'title'),
             selectInferedField(collection, 'shortTitle'),
             selectInferedField(collection, 'author'),
-            ...summaryFields.map(elem => {
+            ...summaryFields.map((elem) => {
               if (dateParsers[elem]) {
                 return selectInferedField(collection, 'date');
               }
@@ -554,14 +554,14 @@ export class Backend {
           extract: extractSearchFields(uniq(filteredSearchFields)),
         });
       })
-      .map(p =>
-        p.catch(err => {
+      .map((p) =>
+        p.catch((err) => {
           errors.push(err);
           return [] as fuzzy.FilterResult<EntryValue>[];
         }),
       );
 
-    const entries = await Promise.all(collectionEntriesRequests).then(arrays => flatten(arrays));
+    const entries = await Promise.all(collectionEntriesRequests).then((arrays) => flatten(arrays));
 
     if (errors.length > 0) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -585,19 +585,19 @@ export class Backend {
   ) {
     let entries = await this.listAllEntries(collection);
     if (file) {
-      entries = entries.filter(e => e.slug === file);
+      entries = entries.filter((e) => e.slug === file);
     }
 
     const expandedEntries = expandSearchEntries(entries, searchFields);
 
     let hits = fuzzy
       .filter(searchTerm, expandedEntries, {
-        extract: entry => {
+        extract: (entry) => {
           return getEntryField(entry.field, entry);
         },
       })
       .sort(sortByScore)
-      .map(f => f.original);
+      .map((f) => f.original);
 
     if (limit !== undefined && limit > 0) {
       hits = hits.slice(0, limit);
@@ -631,7 +631,7 @@ export class Backend {
     const { raw, path } = backup;
     let { mediaFiles = [] } = backup;
 
-    mediaFiles = mediaFiles.map(file => {
+    mediaFiles = mediaFiles.map((file) => {
       // de-serialize the file object
       if (file.file) {
         return { ...file, url: URL.createObjectURL(file.file) };
@@ -669,7 +669,7 @@ export class Backend {
           .map(async (file: MediaFile) => {
             // make sure to serialize the file
             if (file.url?.startsWith('blob:')) {
-              const blob = await fetch(file.url as string).then(res => res.blob());
+              const blob = await fetch(file.url as string).then((res) => res.blob());
               return { ...file, file: blobToFileObj(file.name, blob) };
             }
             return file;
@@ -767,14 +767,14 @@ export class Backend {
     const { slug } = entryData;
     let extension: string;
     if (collection.get('type') === FILES) {
-      const file = collection.get('files')!.find(f => f?.get('name') === slug);
+      const file = collection.get('files')!.find((f) => f?.get('name') === slug);
       extension = extname(file.get('file'));
     } else {
       extension = selectFolderEntryExtension(collection);
     }
     const dataFiles = sortBy(
-      entryData.diffs.filter(d => d.path.endsWith(extension)),
-      f => f.path.length,
+      entryData.diffs.filter((d) => d.path.endsWith(extension)),
+      (f) => f.path.length,
     );
     // if the unpublished entry has no diffs, return the original
     let data = '';
@@ -800,9 +800,9 @@ export class Backend {
 
     const mediaFiles: MediaFile[] = [];
     if (withMediaFiles) {
-      const nonDataFiles = entryData.diffs.filter(d => !d.path.endsWith(extension));
+      const nonDataFiles = entryData.diffs.filter((d) => !d.path.endsWith(extension));
       const files = await Promise.all(
-        nonDataFiles.map(f =>
+        nonDataFiles.map((f) =>
           this.implementation!.unpublishedEntryMediaFile(
             collection.get('name'),
             slug,
@@ -811,7 +811,7 @@ export class Backend {
           ),
         ),
       );
-      mediaFiles.push(...files.map(f => ({ ...f, draft: true })));
+      mediaFiles.push(...files.map((f) => ({ ...f, draft: true })));
     }
     const entry = createEntry(collection.get('name'), slug, path, {
       raw: data,
@@ -831,10 +831,10 @@ export class Backend {
     const ids = await this.implementation.unpublishedEntries!();
     const entries = (
       await Promise.all(
-        ids.map(async id => {
+        ids.map(async (id) => {
           const entryData = await this.implementation.unpublishedEntry({ id });
           const collectionName = entryData.collection;
-          const collection = collections.find(c => c.get('name') === collectionName);
+          const collection = collections.find((c) => c.get('name') === collectionName);
           if (!collection) {
             console.warn(`Missing collection '${collectionName}' for unpublished entry '${id}'`);
             return null;
@@ -853,7 +853,7 @@ export class Backend {
     const mediaFolders = selectMediaFolders(state, collection, fromJS(entry));
     if (mediaFolders.length > 0 && !integration) {
       const files = await Promise.all(
-        mediaFolders.map(folder => this.implementation.getMedia(folder)),
+        mediaFolders.map((folder) => this.implementation.getMedia(folder)),
       );
       entry.mediaFiles = entry.mediaFiles.concat(...files);
     } else {
@@ -925,7 +925,7 @@ export class Backend {
       count++;
       deployPreview = await this.implementation.getDeployPreview(collection.get('name'), slug);
       if (!deployPreview) {
-        await new Promise(resolve => setTimeout(() => resolve(), interval));
+        await new Promise((resolve) => setTimeout(() => resolve(), interval));
       }
     }
 
@@ -991,7 +991,7 @@ export class Backend {
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
 
-      assetProxies.map(asset => {
+      assetProxies.map((asset) => {
         // update media files path based on entry path
         const oldPath = asset.path;
         const newPath = selectMediaFilePath(
@@ -1177,13 +1177,13 @@ export class Backend {
     if (fields) {
       return collection
         .get('fields')
-        .map(f => f!.get('name'))
+        .map((f) => f!.get('name'))
         .toArray();
     }
 
     const files = collection.get('files');
     const file = (files || List<CollectionFile>())
-      .filter(f => f!.get('name') === entry.get('slug'))
+      .filter((f) => f!.get('name') === entry.get('slug'))
       .get(0);
 
     if (file == null) {
@@ -1191,12 +1191,12 @@ export class Backend {
     }
     return file
       .get('fields')
-      .map(f => f!.get('name'))
+      .map((f) => f!.get('name'))
       .toArray();
   }
 
   filterEntries(collection: { entries: EntryValue[] }, filterRule: FilterRule) {
-    return collection.entries.filter(entry => {
+    return collection.entries.filter((entry) => {
       const fieldValue = entry.data[filterRule.get('field')];
       if (Array.isArray(fieldValue)) {
         return fieldValue.includes(filterRule.get('value'));
@@ -1222,7 +1222,7 @@ export function resolveBackend(config: Config) {
   }
 }
 
-export const currentBackend = (function() {
+export const currentBackend = (function () {
   let backend: Backend;
 
   return (config: Config) => {

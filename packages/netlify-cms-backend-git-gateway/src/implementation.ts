@@ -100,13 +100,13 @@ let initPromise = Promise.resolve() as Promise<unknown>;
 if (window.netlifyIdentity) {
   let initialized = false;
   initPromise = Promise.race([
-    new Promise(resolve => {
+    new Promise((resolve) => {
       window.netlifyIdentity?.on('init', () => {
         initialized = true;
         resolve();
       });
     }),
-    new Promise(resolve => setTimeout(resolve, 2500)).then(() => {
+    new Promise((resolve) => setTimeout(resolve, 2500)).then(() => {
       if (!initialized) {
         console.log('Manually initializing identity widget');
         window.netlifyIdentity?.init();
@@ -123,7 +123,7 @@ interface NetlifyUser extends Credentials {
 
 const apiGet = async (path: string) => {
   const apiRoot = 'https://api.netlify.com/api/v1/sites';
-  const response = await fetch(`${apiRoot}/${path}`).then(res => res.json());
+  const response = await fetch(`${apiRoot}/${path}`).then((res) => res.json());
   return response;
 };
 
@@ -188,15 +188,15 @@ export default class GitGateway implements Implementation {
 
   async status() {
     const api = await fetch(GIT_GATEWAY_STATUS_ENDPOINT)
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         return res['components']
           .filter((statusComponent: GitGatewayStatus) =>
             GIT_GATEWAY_OPERATIONAL_UNITS.includes(statusComponent.name),
           )
           .every((statusComponent: GitGatewayStatus) => statusComponent.status === 'operational');
       })
-      .catch(e => {
+      .catch((e) => {
         console.warn('Failed getting Git Gateway status', e);
         return true;
       });
@@ -206,8 +206,8 @@ export default class GitGateway implements Implementation {
     if (api) {
       auth =
         (await this.tokenPromise?.()
-          .then(token => !!token)
-          .catch(e => {
+          .then((token) => !!token)
+          .catch((e) => {
             console.warn('Failed getting Identity token', e);
             return false;
           })) || false;
@@ -254,7 +254,8 @@ export default class GitGateway implements Implementation {
   requestFunction = (req: ApiRequest) =>
     this.tokenPromise!()
       .then(
-        token => unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req) as ApiRequest,
+        (token) =>
+          unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req) as ApiRequest,
       )
       .then(unsentRequest.performRequest);
 
@@ -269,7 +270,7 @@ export default class GitGateway implements Implementation {
         throw new AccessTokenError(`Failed getting access token: ${error.message}`);
       }
     };
-    return this.tokenPromise!().then(async token => {
+    return this.tokenPromise!().then(async (token) => {
       if (!this.backendType) {
         const {
           github_enabled: githubEnabled,
@@ -280,7 +281,7 @@ export default class GitGateway implements Implementation {
           .fetchWithTimeout(`${this.gatewayUrl}/settings`, {
             headers: { Authorization: `Bearer ${token}` },
           })
-          .then(async res => {
+          .then(async (res) => {
             const contentType = res.headers.get('Content-Type') || '';
             if (!contentType.includes('application/json') && !contentType.includes('text/json')) {
               throw new APIError(
@@ -431,15 +432,15 @@ export default class GitGateway implements Implementation {
   }
   _getLargeMediaClient() {
     const netlifyLargeMediaEnabledPromise = this.api!.readFile('.lfsconfig')
-      .then(config => ini.decode<{ lfs: { url: string } }>(config as string))
+      .then((config) => ini.decode<{ lfs: { url: string } }>(config as string))
       .then(({ lfs: { url } }) => new URL(url))
-      .then(lfsURL => ({
+      .then((lfsURL) => ({
         enabled: lfsURL.hostname.endsWith('netlify.com') || lfsURL.hostname.endsWith('netlify.app'),
       }))
       .catch((err: Error) => ({ enabled: false, err }));
 
     const lfsPatternsPromise = this.api!.readFile('.gitattributes')
-      .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
+      .then((attributes) => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
       .then((patterns: string[]) => ({ err: null, patterns }))
       .catch((err: Error) => {
         if (err.message.includes('404')) {
@@ -573,7 +574,7 @@ export default class GitGateway implements Implementation {
         );
         if (deploys.length > 0) {
           const ref = await this.api!.getUnpublishedEntrySha(collection, slug);
-          const deploy = deploys.find(d => d.commit_ref === ref);
+          const deploy = deploys.find((d) => d.commit_ref === ref);
           if (deploy) {
             preview = {
               status: deploy.state === 'ready' ? PreviewState.Success : PreviewState.Other,

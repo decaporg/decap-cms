@@ -123,8 +123,8 @@ export default class GitHub implements Implementation {
 
   async status() {
     const api = await fetch(GITHUB_STATUS_ENDPOINT)
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         return res['components']
           .filter((statusComponent: GitHubStatusComponent) =>
             GITHUB_OPERATIONAL_UNITS.includes(statusComponent.name),
@@ -133,7 +133,7 @@ export default class GitHub implements Implementation {
             (statusComponent: GitHubStatusComponent) => statusComponent.status === 'operational',
           );
       })
-      .catch(e => {
+      .catch((e) => {
         console.warn('Failed getting GitHub status', e);
         return true;
       });
@@ -144,8 +144,8 @@ export default class GitHub implements Implementation {
       auth =
         (await this.api
           ?.getUser()
-          .then(user => !!user)
-          .catch(e => {
+          .then((user) => !!user)
+          .catch((e) => {
             console.warn('Failed getting GitHub user', e);
             return false;
           })) || false;
@@ -178,7 +178,7 @@ export default class GitHub implements Implementation {
         headers: { Authorization: `token ${token}` },
       })
         .then(() => true)
-        .catch(err => {
+        .catch((err) => {
           if (err && err.status === 404) {
             console.log('This 404 was expected and handled appropriately.');
             return false;
@@ -188,7 +188,7 @@ export default class GitHub implements Implementation {
         });
       // wait between polls
       if (!repoExists) {
-        await new Promise(resolve => setTimeout(resolve, pollDelay));
+        await new Promise((resolve) => setTimeout(resolve, pollDelay));
       }
     }
     return Promise.resolve();
@@ -200,7 +200,7 @@ export default class GitHub implements Implementation {
         headers: {
           Authorization: `token ${token}`,
         },
-      }).then(res => res.json());
+      }).then((res) => res.json());
     }
     return this._currentUserPromise;
   }
@@ -223,7 +223,7 @@ export default class GitHub implements Implementation {
           },
         },
       )
-        .then(res => res.json())
+        .then((res) => res.json())
         .then(({ permission }) => permission === 'admin' || permission === 'write');
     }
     return this._userIsOriginMaintainerPromises[username];
@@ -238,7 +238,7 @@ export default class GitHub implements Implementation {
         headers: {
           Authorization: `token ${token}`,
         },
-      }).then(res => res.json());
+      }).then((res) => res.json());
 
       // https://developer.github.com/v3/repos/#get
       // The parent and source objects are present when the repository is a fork.
@@ -281,7 +281,7 @@ export default class GitHub implements Implementation {
       headers: {
         Authorization: `token ${token}`,
       },
-    }).then(res => res.json());
+    }).then((res) => res.json());
     this.useOpenAuthoring = true;
     this.repo = fork.full_name;
     return this.pollUntilForkExists({ repo: fork.full_name, token });
@@ -301,7 +301,7 @@ export default class GitHub implements Implementation {
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     const user = await this.api!.user();
-    const isCollab = await this.api!.hasWriteAccess().catch(error => {
+    const isCollab = await this.api!.hasWriteAccess().catch((error) => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
 
@@ -368,8 +368,8 @@ export default class GitHub implements Implementation {
       this.api!.listFiles(folder, {
         repoURL,
         depth,
-      }).then(files => {
-        const filtered = files.filter(file => filterByExtension(file, extension));
+      }).then((files) => {
+        const filtered = files.filter((file) => filterByExtension(file, extension));
         const result = this.getCursorAndFiles(filtered, 1);
         cursor = result.cursor;
         return result.files;
@@ -397,7 +397,7 @@ export default class GitHub implements Implementation {
       this.api!.listFiles(folder, {
         repoURL,
         depth,
-      }).then(files => files.filter(file => filterByExtension(file, extension)));
+      }).then((files) => files.filter((file) => filterByExtension(file, extension)));
 
     const readFile = (path: string, id: string | null | undefined) => {
       return this.api!.readFile(path, id, { repoURL }) as Promise<string>;
@@ -425,7 +425,7 @@ export default class GitHub implements Implementation {
   getEntry(path: string) {
     const repoURL = this.api!.originRepoURL;
     return this.api!.readFile(path, null, { repoURL })
-      .then(data => ({
+      .then((data) => ({
         file: { path, id: null },
         data: data as string,
       }))
@@ -433,7 +433,7 @@ export default class GitHub implements Implementation {
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
-    return this.api!.listFiles(mediaFolder).then(files =>
+    return this.api!.listFiles(mediaFolder).then((files) =>
       files.map(({ id, name, size, path }) => {
         // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
         // for private repositories
@@ -569,8 +569,8 @@ export default class GitHub implements Implementation {
 
   async unpublishedEntries() {
     const listEntriesKeys = () =>
-      this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => contentKeyFromBranch(branch)),
+      this.api!.listUnpublishedBranches().then((branches) =>
+        branches.map((branch) => contentKeyFromBranch(branch)),
       );
 
     const ids = await unpublishedEntries(listEntriesKeys);

@@ -69,7 +69,7 @@ export const parseLinkHeader = (header: string | null) => {
     return {};
   }
   return flow([
-    linksString => linksString.split(','),
+    (linksString) => linksString.split(','),
     map((str: string) => str.trim().split(';')),
     map(([linkStr, keyStr]) => [
       keyStr.match(/rel="(.*?)"/)[1],

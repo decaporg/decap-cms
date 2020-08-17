@@ -15,7 +15,7 @@ const medias = (state: Medias = fromJS({}), action: MediasAction) => {
     case ADD_ASSETS: {
       const payload = action.payload as AssetProxy[];
       let newState = state;
-      payload.forEach(asset => {
+      payload.forEach((asset) => {
         newState = newState.set(asset.path, { asset, isLoading: false, error: null });
       });
       return newState;
@@ -46,6 +46,6 @@ const medias = (state: Medias = fromJS({}), action: MediasAction) => {
 };
 
 export const selectIsLoadingAsset = (state: Medias) =>
-  Object.values(state.toJS()).some(state => state.isLoading);
+  Object.values(state.toJS()).some((state) => state.isLoading);
 
 export default medias;

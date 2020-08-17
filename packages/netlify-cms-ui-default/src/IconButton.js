@@ -12,13 +12,13 @@ const ButtonRound = styled.button`
   ${buttons.button};
   ${shadows.dropMiddle};
   background-color: ${colorsRaw.white};
-  color: ${props => colors[props.isActive ? `active` : `inactive`]};
+  color: ${(props) => colors[props.isActive ? `active` : `inactive`]};
   border-radius: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${props => sizes[props.size]};
-  height: ${props => sizes[props.size]};
+  width: ${(props) => sizes[props.size]};
+  height: ${(props) => sizes[props.size]};
   padding: 0;
 `;
 

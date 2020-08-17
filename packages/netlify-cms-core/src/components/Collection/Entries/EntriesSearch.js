@@ -50,7 +50,7 @@ class EntriesSearch extends React.Component {
     });
   };
 
-  handleCursorActions = action => {
+  handleCursorActions = (action) => {
     const { page, searchTerm, searchEntries, collectionNames } = this.props;
     if (action === 'append_next') {
       const nextPage = page + 1;

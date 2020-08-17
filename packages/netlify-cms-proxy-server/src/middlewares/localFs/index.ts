@@ -22,7 +22,7 @@ type FsOptions = {
 };
 
 export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
-  return async function(req: express.Request, res: express.Response) {
+  return async function (req: express.Request, res: express.Response) {
     try {
       const { body } = req;
 
@@ -39,10 +39,10 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
         case 'entriesByFolder': {
           const payload = body.params as EntriesByFolderParams;
           const { folder, extension, depth } = payload;
-          const entries = await listRepoFiles(repoPath, folder, extension, depth).then(files =>
+          const entries = await listRepoFiles(repoPath, folder, extension, depth).then((files) =>
             entriesFromFiles(
               repoPath,
-              files.map(file => ({ path: file })),
+              files.map((file) => ({ path: file })),
             ),
           );
           res.json(entries);
@@ -65,7 +65,7 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
           await writeFile(path.join(repoPath, entry.path), entry.raw);
           // save assets
           await Promise.all(
-            assets.map(a =>
+            assets.map((a) =>
               writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding)),
             ),
           );
@@ -78,7 +78,7 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
         case 'getMedia': {
           const { mediaFolder } = body.params as GetMediaParams;
           const files = await listRepoFiles(repoPath, mediaFolder, '', 1);
-          const mediaFiles = await Promise.all(files.map(file => readMediaFile(repoPath, file)));
+          const mediaFiles = await Promise.all(files.map((file) => readMediaFile(repoPath, file)));
           res.json(mediaFiles);
           break;
         }

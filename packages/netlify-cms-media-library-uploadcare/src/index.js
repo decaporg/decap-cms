@@ -25,7 +25,7 @@ function isFileGroup(files) {
   const basePatternString = `~${files.length}/nth/`;
   const mapExpression = (val, idx) => new RegExp(`${basePatternString}${idx}/$`);
   const expressions = Array.from({ length: files.length }, mapExpression);
-  return expressions.every(exp => files.some(url => exp.test(url)));
+  return expressions.every((exp) => files.some((url) => exp.test(url)));
 }
 
 /**
@@ -42,7 +42,9 @@ function getFileGroup(files) {
    * `fileFrom`, but requires the promise returned by `loadFileGroup` to provide
    * the result of it's `done` method.
    */
-  return new Promise(resolve => uploadcare.loadFileGroup(groupId).done(group => resolve(group)));
+  return new Promise((resolve) =>
+    uploadcare.loadFileGroup(groupId).done((group) => resolve(group)),
+  );
 }
 
 /**
@@ -53,7 +55,7 @@ function getFileGroup(files) {
 function getFiles(value) {
   if (Array.isArray(value) || Iterable.isIterable(value)) {
     const arr = Array.isArray(value) ? value : value.toJS();
-    return isFileGroup(arr) ? getFileGroup(arr) : Promise.all(arr.map(val => getFile(val)));
+    return isFileGroup(arr) ? getFileGroup(arr) : Promise.all(arr.map((val) => getFile(val)));
   }
   return value && typeof value === 'string' ? getFile(value) : null;
 }
@@ -80,7 +82,7 @@ function openDialog({ files, config, handleInsert, settings = {} }) {
     );
   }
 
-  const buildUrl = fileInfo => {
+  const buildUrl = (fileInfo) => {
     const { cdnUrl, name, isImage } = fileInfo;
 
     let url =
@@ -97,11 +99,11 @@ function openDialog({ files, config, handleInsert, settings = {} }) {
   uploadcare.openDialog(files, config).done(({ promise, files }) => {
     const isGroup = Boolean(files);
 
-    return promise().then(info => {
+    return promise().then((info) => {
       if (isGroup) {
         return Promise.all(
-          files().map(promise => promise.then(fileInfo => buildUrl(fileInfo))),
-        ).then(urls => handleInsert(urls));
+          files().map((promise) => promise.then((fileInfo) => buildUrl(fileInfo))),
+        ).then((urls) => handleInsert(urls));
       } else {
         handleInsert(buildUrl(info));
       }
@@ -141,7 +143,7 @@ async function init({ options = { config: {}, settings: {} }, handleInsert } = {
        * from the Uploadcare library will have a `state` method.
        */
       if (files && !files.state) {
-        return files.then(result =>
+        return files.then((result) =>
           openDialog({
             files: result,
             config: resolvedConfig,

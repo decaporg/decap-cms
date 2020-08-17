@@ -24,7 +24,7 @@ const WorkflowListContainerOpenAuthoring = styled.div`
 `;
 
 const styles = {
-  columnPosition: idx =>
+  columnPosition: (idx) =>
     (idx === 0 &&
       css`
         margin-left: 0;
@@ -83,21 +83,21 @@ const ColumnHeader = styled.h2`
   border-radius: ${lengths.borderRadius};
   margin-bottom: 28px;
 
-  ${props =>
+  ${(props) =>
     props.name === 'draft' &&
     css`
       background-color: ${colors.statusDraftBackground};
       color: ${colors.statusDraftText};
     `}
 
-  ${props =>
+  ${(props) =>
     props.name === 'pending_review' &&
     css`
       background-color: ${colors.statusReviewBackground};
       color: ${colors.statusReviewText};
     `}
 
-  ${props =>
+  ${(props) =>
     props.name === 'pending_publish' &&
     css`
       background-color: ${colors.statusReadyBackground};
@@ -203,7 +203,7 @@ class WorkflowList extends React.Component {
     }
     return (
       <div>
-        {entries.map(entry => {
+        {entries.map((entry) => {
           const timestamp = moment(entry.get('updatedOn')).format(
             t('workflow.workflow.dateFormat'),
           );
@@ -212,7 +212,7 @@ class WorkflowList extends React.Component {
           const editLink = `collections/${collectionName}/entries/${slug}`;
           const ownStatus = entry.get('status');
           const collection = collections.find(
-            collection => collection.get('name') === collectionName,
+            (collection) => collection.get('name') === collectionName,
           );
           const collectionLabel = collection?.get('label');
           const isModification = entry.get('isModification');
@@ -228,7 +228,7 @@ class WorkflowList extends React.Component {
               collection={collectionName}
               ownStatus={ownStatus}
             >
-              {connect =>
+              {(connect) =>
                 connect(
                   <div>
                     <WorkflowCard

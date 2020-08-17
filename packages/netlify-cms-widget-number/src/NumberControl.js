@@ -68,7 +68,7 @@ export default class NumberControl extends React.Component {
     value: '',
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const valueType = this.props.field.get('valueType');
     const { onChange } = this.props;
     const value = valueType === 'float' ? parseFloat(e.target.value) : parseInt(e.target.value, 10);

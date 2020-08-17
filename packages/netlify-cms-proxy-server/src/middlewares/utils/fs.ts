@@ -9,11 +9,11 @@ const listFiles = async (dir: string, extension: string, depth: number): Promise
   try {
     const dirents = await fs.readdir(dir, { withFileTypes: true });
     const files = await Promise.all(
-      dirents.map(dirent => {
+      dirents.map((dirent) => {
         const res = path.join(dir, dirent.name);
         return dirent.isDirectory()
           ? listFiles(res, extension, depth - 1)
-          : [res].filter(f => f.endsWith(extension));
+          : [res].filter((f) => f.endsWith(extension));
       }),
     );
     return ([] as string[]).concat(...files);
@@ -29,7 +29,7 @@ export const listRepoFiles = async (
   depth: number,
 ) => {
   const files = await listFiles(path.join(repoPath, folder), extension, depth);
-  return files.map(f => f.substr(repoPath.length + 1));
+  return files.map((f) => f.substr(repoPath.length + 1));
 };
 
 export const writeFile = async (filePath: string, content: Buffer | string) => {
@@ -54,5 +54,5 @@ export const move = async (from: string, to: string) => {
   const sourceDir = path.dirname(from);
   const destDir = path.dirname(to);
   const allFiles = await listFiles(sourceDir, '', 100);
-  await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
+  await Promise.all(allFiles.map((file) => moveFile(file, file.replace(sourceDir, destDir))));
 };

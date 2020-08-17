@@ -337,12 +337,12 @@ export default class API {
     const { values }: { values: BitBucketCommit[] } = await this.requestJSON({
       url: `${this.repoURL}/commits`,
       params: { include: branch, pagelen: 100 },
-    }).catch(e => {
+    }).catch((e) => {
       console.log(`Failed getting commits for branch '${branch}'`, e);
       return [];
     });
 
-    return values.some(v => v.hash === sha);
+    return values.some((v) => v.hash === sha);
   }
 
   getEntriesAndCursor = (jsonResponse: BitBucketSrcResult) => {
@@ -429,7 +429,7 @@ export default class API {
   ) {
     const formData = new FormData();
     const toMove: { from: string; to: string; contentBlob: Blob }[] = [];
-    files.forEach(file => {
+    files.forEach((file) => {
       if (file.delete) {
         // delete the file
         formData.append('files', file.path);
@@ -491,7 +491,7 @@ export default class API {
       const message = error.message || '';
       // very descriptive message from Bitbucket
       if (parentSha && message.includes('Something went wrong')) {
-        await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+        await throwOnConflictingBranches(branch, (name) => this.getBranch(name), API_NAME);
       }
       throw error;
     }
@@ -528,7 +528,7 @@ export default class API {
         pagelen: 100,
       },
     });
-    return comments.values.map(c => c.content.raw)[comments.values.length - 1];
+    return comments.values.map((c) => c.content.raw)[comments.values.length - 1];
   }
 
   async createPullRequest(branch: string, commitMessage: string, status: string) {
@@ -568,7 +568,7 @@ export default class API {
       },
     });
 
-    const diffs = parse(rawDiff).map(d => {
+    const diffs = parse(rawDiff).map((d) => {
       const oldPath = d.oldPath?.replace(/b\//, '') || '';
       const newPath = d.newPath?.replace(/b\//, '') || '';
       const path = newPath || (oldPath as string);
@@ -604,8 +604,8 @@ export default class API {
       // mark files for deletion
       const diffs = await this.getDifferences(branch);
       const toDelete: DeleteEntry[] = [];
-      for (const diff of diffs.filter(d => d.binary && d.status !== 'deleted')) {
-        if (!files.some(file => file.path === diff.path)) {
+      for (const diff of diffs.filter((d) => d.binary && d.status !== 'deleted')) {
+        if (!files.some((file) => file.path === diff.path)) {
           toDelete.push({ path: diff.path, delete: true });
         }
       }
@@ -653,7 +653,7 @@ export default class API {
     });
 
     const labels = await Promise.all(
-      pullRequests.values.map(pr => this.getPullRequestLabel(pr.id)),
+      pullRequests.values.map((pr) => this.getPullRequestLabel(pr.id)),
     );
 
     return pullRequests.values.filter((_, index) => isCMSLabel(labels[index]));
@@ -675,7 +675,7 @@ export default class API {
     );
 
     const pullRequests = await this.getPullRequests();
-    const branches = pullRequests.map(mr => mr.source.branch.name);
+    const branches = pullRequests.map((mr) => mr.source.branch.name);
 
     return branches;
   }
@@ -694,8 +694,8 @@ export default class API {
       status,
       // TODO: get real id
       diffs: diffs
-        .filter(d => d.status !== 'deleted')
-        .map(d => ({ path: d.path, newFile: d.newFile, id: '' })),
+        .filter((d) => d.status !== 'deleted')
+        .map((d) => ({ path: d.path, newFile: d.newFile, id: '' })),
       updatedAt,
     };
   }

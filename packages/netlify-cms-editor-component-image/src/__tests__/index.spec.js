@@ -1,6 +1,6 @@
 import component from '../index';
 
-const getAsset = path => path;
+const getAsset = (path) => path;
 const image = '/image';
 const alt = 'alt';
 const title = 'title';

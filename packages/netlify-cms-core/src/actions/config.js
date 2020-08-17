@@ -24,7 +24,7 @@ const getConfigUrl = () => {
   return 'config.yml';
 };
 
-const setDefaultPublicFolder = map => {
+const setDefaultPublicFolder = (map) => {
   if (map.has('media_folder') && !map.has('public_folder')) {
     map = map.set('public_folder', map.get('media_folder'));
   }
@@ -38,7 +38,7 @@ const defaults = {
 export function applyDefaults(config) {
   return Map(defaults)
     .mergeDeep(config)
-    .withMutations(map => {
+    .withMutations((map) => {
       // Use `site_url` as default `display_url`.
       if (!map.get('display_url') && map.get('site_url')) {
         map.set('display_url', map.get('site_url'));
@@ -66,7 +66,7 @@ export function applyDefaults(config) {
       // Strip leading slash from collection folders and files
       map.set(
         'collections',
-        map.get('collections').map(collection => {
+        map.get('collections').map((collection) => {
           if (!collection.has('publish')) {
             collection = collection.set('publish', true);
           }
@@ -87,7 +87,7 @@ export function applyDefaults(config) {
               const fields = collection.get('fields');
               const metaFields = [];
               collection.get('meta').forEach((value, key) => {
-                const field = value.withMutations(map => {
+                const field = value.withMutations((map) => {
                   map.set('name', key);
                   map.set('meta', true);
                   map.set('required', true);
@@ -106,7 +106,7 @@ export function applyDefaults(config) {
             collection = collection.delete('meta');
             collection = collection.set(
               'files',
-              files.map(file => {
+              files.map((file) => {
                 file = file.set('file', trimStart(file.get('file'), '/'));
                 file = setDefaultPublicFolder(file);
                 file = file.set(
@@ -131,7 +131,7 @@ export function applyDefaults(config) {
               'view_filters',
               collection
                 .get('view_filters')
-                .map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
+                .map((v) => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
             );
           }
 
@@ -149,7 +149,7 @@ function mergePreloadedConfig(preloadedConfig, loadedConfig) {
 export function parseConfig(data) {
   const config = yaml.parse(data, { maxAliasCount: -1, prettyErrors: true, merge: true });
   if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
-    Object.keys(config[CMS_ENV]).forEach(key => {
+    Object.keys(config[CMS_ENV]).forEach((key) => {
       config[key] = config[CMS_ENV][key];
     });
   }
@@ -157,7 +157,7 @@ export function parseConfig(data) {
 }
 
 async function getConfig(file, isPreloaded) {
-  const response = await fetch(file, { credentials: 'same-origin' }).catch(err => err);
+  const response = await fetch(file, { credentials: 'same-origin' }).catch((err) => err);
   if (response instanceof Error || response.status !== 200) {
     if (isPreloaded) return parseConfig('');
     throw new Error(`Failed to load config.yml (${response.status || response})`);
@@ -193,7 +193,7 @@ export function configFailed(err) {
 }
 
 export function configDidLoad(config) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(configLoaded(config));
   };
 }
@@ -218,7 +218,7 @@ export async function detectProxyServer(localBackend) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'info' }),
-      }).then(res => res.json());
+      }).then((res) => res.json());
       if (typeof repo === 'string' && Array.isArray(publish_modes) && typeof type === 'string') {
         console.log(`Detected Netlify CMS Proxy Server at '${proxyUrl}' with repo: '${repo}'`);
         return { proxyUrl, publish_modes, type };

@@ -6,10 +6,7 @@ const LineBreak = () => ({
     if (!isShiftEnter) {
       return next();
     }
-    return editor
-      .insertInline('break')
-      .insertText('')
-      .moveToStartOfNextText();
+    return editor.insertInline('break').insertText('').moveToStartOfNextText();
   },
 });
 

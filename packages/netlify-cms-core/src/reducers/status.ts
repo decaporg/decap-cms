@@ -15,12 +15,12 @@ const status = (state = Map(), action: StatusAction) => {
     case STATUS_REQUEST:
       return state.set('isFetching', true);
     case STATUS_SUCCESS:
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.set('isFetching', false);
         map.set('status', fromJS(action.payload.status));
       });
     case STATUS_FAILURE:
-      return state.withMutations(map => {
+      return state.withMutations((map) => {
         map.set('isFetching', false);
         map.set('error', action.payload.error);
       });

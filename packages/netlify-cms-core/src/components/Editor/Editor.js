@@ -104,7 +104,7 @@ export class Editor extends React.Component {
 
     const leaveMessage = t('editor.editor.onLeavePage');
 
-    this.exitBlocker = event => {
+    this.exitBlocker = (event) => {
       if (this.props.entryDraft.get('hasChanged')) {
         // This message is ignored in most browsers, but its presence
         // triggers the confirmation dialog
@@ -192,7 +192,7 @@ export class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createBackup = debounce(function(entry, collection) {
+  createBackup = debounce(function (entry, collection) {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
@@ -201,7 +201,7 @@ export class Editor extends React.Component {
     this.props.changeDraftField(field, value, metadata, entries);
   };
 
-  handleChangeStatus = newStatusName => {
+  handleChangeStatus = (newStatusName) => {
     const {
       entryDraft,
       updateUnpublishedEntryStatus,
@@ -416,7 +416,7 @@ export class Editor extends React.Component {
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
-        loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
+        loadDeployPreview={(opts) => loadDeployPreview(collection, slug, entry, isPublished, opts)}
         editorBackLink={editorBackLink}
       />
     );

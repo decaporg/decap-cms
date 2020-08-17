@@ -37,7 +37,7 @@ const runSerializer = (values, fields, method) => {
     if (nestedFields && List.isList(value)) {
       return acc.set(
         fieldName,
-        value.map(val => runSerializer(val, nestedFields, method)),
+        value.map((val) => runSerializer(val, nestedFields, method)),
       );
     }
 

@@ -1,6 +1,6 @@
 import { Text, Block } from 'slate';
 
-const createShortcodeBlock = shortcodeConfig => {
+const createShortcodeBlock = (shortcodeConfig) => {
   // Handle code block component
   if (shortcodeConfig.type === 'code-block') {
     return Block.create({ type: shortcodeConfig.type, data: { shortcodeNew: true } });
@@ -12,8 +12,8 @@ const createShortcodeBlock = shortcodeConfig => {
   const defaultValues = shortcodeConfig.fields
     .toMap()
     .mapKeys((_, field) => field.get('name'))
-    .filter(field => field.has('default'))
-    .map(field => field.get('default'));
+    .filter((field) => field.has('default'))
+    .map((field) => field.get('default'));
 
   // Create new shortcode block with default values set.
   return Block.create({

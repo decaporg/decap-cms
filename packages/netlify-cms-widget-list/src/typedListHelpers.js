@@ -6,15 +6,15 @@ export function getTypedFieldForValue(field, value) {
   const typeKey = resolveFieldKeyType(field);
   const types = field.get(TYPES_KEY);
   const valueType = value.get(typeKey);
-  return types.find(type => type.get('name') === valueType);
+  return types.find((type) => type.get('name') === valueType);
 }
 
 export function resolveFunctionForTypedField(field) {
   const typeKey = resolveFieldKeyType(field);
   const types = field.get(TYPES_KEY);
-  return value => {
+  return (value) => {
     const valueType = value.get(typeKey);
-    return types.find(type => type.get('name') === valueType);
+    return types.find((type) => type.get('name') === valueType);
   };
 }
 

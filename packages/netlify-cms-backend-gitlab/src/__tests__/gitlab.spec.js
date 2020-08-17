@@ -222,7 +222,7 @@ describe('gitlab backend', () => {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
     const url = `${backend.implementation.apiRoot}${basePath}`;
-    const link = linkPage =>
+    const link = (linkPage) =>
       `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
 
     const linkHeader = oneLine`
@@ -261,7 +261,7 @@ describe('gitlab backend', () => {
         return true;
       })
       .times(repeat)
-      .reply(uri => {
+      .reply((uri) => {
         const { page = 1, per_page = 20 } = parseQuery(uri);
         const pageCount = tree.length <= per_page ? 1 : Math.round(tree.length / per_page);
         const pageLastIndex = page * per_page;
@@ -285,10 +285,7 @@ describe('gitlab backend', () => {
   function interceptFiles(backend, path) {
     const api = mockApi(backend);
     const url = `${expectedRepoUrl}/repository/files/${encodeURIComponent(path)}/raw`;
-    api
-      .get(url)
-      .query(true)
-      .reply(200, mockRepo.files[path]);
+    api.get(url).query(true).reply(200, mockRepo.files[path]);
 
     api
       .get(`${expectedRepoUrl}/repository/commits`)
@@ -389,10 +386,7 @@ describe('gitlab backend', () => {
 
     it('returns an entry from folder collection', async () => {
       const entryTree = mockRepo.tree[collectionContentConfig.folder][0];
-      const slug = entryTree.path
-        .split('/')
-        .pop()
-        .replace('.md', '');
+      const slug = entryTree.path.split('/').pop().replace('.md', '');
 
       interceptFiles(backend, entryTree.path);
       interceptCollection(backend, collectionContentConfig);
@@ -417,7 +411,7 @@ describe('gitlab backend', () => {
 
     it('returns entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionContentConfig.folder];
-      tree.forEach(file => interceptFiles(backend, file.path));
+      tree.forEach((file) => interceptFiles(backend, file.path));
 
       interceptCollection(backend, collectionContentConfig);
       const entries = await backend.listEntries(fromJS(collectionContentConfig));
@@ -426,7 +420,7 @@ describe('gitlab backend', () => {
         cursor: expect.any(Cursor),
         pagination: 1,
         entries: expect.arrayContaining(
-          tree.map(file => expect.objectContaining({ path: file.path })),
+          tree.map((file) => expect.objectContaining({ path: file.path })),
         ),
       });
       expect(entries.entries).toHaveLength(2);
@@ -435,26 +429,26 @@ describe('gitlab backend', () => {
     it('returns all entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
       interceptBranch(backend);
-      tree.forEach(file => interceptFiles(backend, file.path));
+      tree.forEach((file) => interceptFiles(backend, file.path));
 
       interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
       const entries = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
 
       expect(entries).toEqual(
-        expect.arrayContaining(tree.map(file => expect.objectContaining({ path: file.path }))),
+        expect.arrayContaining(tree.map((file) => expect.objectContaining({ path: file.path }))),
       );
       expect(entries).toHaveLength(500);
     }, 7000);
 
     it('returns entries from file collection', async () => {
       const { files } = collectionFilesConfig;
-      files.forEach(file => interceptFiles(backend, file.file));
+      files.forEach((file) => interceptFiles(backend, file.file));
       const entries = await backend.listEntries(fromJS(collectionFilesConfig));
 
       expect(entries).toEqual({
         cursor: expect.any(Cursor),
         entries: expect.arrayContaining(
-          files.map(file => expect.objectContaining({ path: file.file })),
+          files.map((file) => expect.objectContaining({ path: file.file })),
         ),
       });
       expect(entries.entries).toHaveLength(2);
@@ -463,12 +457,14 @@ describe('gitlab backend', () => {
     it('returns first page from paginated folder collection tree', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
       const pageTree = tree.slice(0, 20);
-      pageTree.forEach(file => interceptFiles(backend, file.path));
+      pageTree.forEach((file) => interceptFiles(backend, file.path));
       interceptCollection(backend, collectionManyEntriesConfig, { page: 1 });
       const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
 
       expect(entries.entries).toEqual(
-        expect.arrayContaining(pageTree.map(file => expect.objectContaining({ path: file.path }))),
+        expect.arrayContaining(
+          pageTree.map((file) => expect.objectContaining({ path: file.path })),
+        ),
       );
       expect(entries.entries).toHaveLength(20);
     });
@@ -479,29 +475,29 @@ describe('gitlab backend', () => {
 
     it('returns complete last page of paginated tree', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
-      tree.slice(0, 20).forEach(file => interceptFiles(backend, file.path));
+      tree.slice(0, 20).forEach((file) => interceptFiles(backend, file.path));
       interceptCollection(backend, collectionManyEntriesConfig, { page: 1 });
       const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
 
       const nextPageTree = tree.slice(20, 40);
-      nextPageTree.forEach(file => interceptFiles(backend, file.path));
+      nextPageTree.forEach((file) => interceptFiles(backend, file.path));
       interceptCollection(backend, collectionManyEntriesConfig, { page: 2 });
       const nextPage = await backend.traverseCursor(entries.cursor, 'next');
 
       expect(nextPage.entries).toEqual(
         expect.arrayContaining(
-          nextPageTree.map(file => expect.objectContaining({ path: file.path })),
+          nextPageTree.map((file) => expect.objectContaining({ path: file.path })),
         ),
       );
       expect(nextPage.entries).toHaveLength(20);
 
       const lastPageTree = tree.slice(-20);
-      lastPageTree.forEach(file => interceptFiles(backend, file.path));
+      lastPageTree.forEach((file) => interceptFiles(backend, file.path));
       interceptCollection(backend, collectionManyEntriesConfig, { page: 25 });
       const lastPage = await backend.traverseCursor(nextPage.cursor, 'last');
       expect(lastPage.entries).toEqual(
         expect.arrayContaining(
-          lastPageTree.map(file => expect.objectContaining({ path: file.path })),
+          lastPageTree.map((file) => expect.objectContaining({ path: file.path })),
         ),
       );
       expect(lastPage.entries).toHaveLength(20);

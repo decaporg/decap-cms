@@ -23,7 +23,7 @@ export default class Preview extends React.Component {
     }
     return (
       <PreviewContainer>
-        {fields.filter(isVisible).map(field => (
+        {fields.filter(isVisible).map((field) => (
           <div key={field.get('name')}>{widgetFor(field.get('name'))}</div>
         ))}
       </PreviewContainer>

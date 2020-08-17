@@ -33,11 +33,11 @@ describe('github API', () => {
         '/repos/owner/my-repo/git/trees': () => ({}),
         '/repos/owner/my-repo/git/commits': () => ({}),
         '/repos/owner/my-repo/git/refs': () => ({}),
-        '/repos/owner/my-repo/pulls': req => {
+        '/repos/owner/my-repo/pulls': (req) => {
           prBaseBranch = JSON.parse(req.body).base;
           return { head: { sha: 'cbd' }, labels: [], number: 1 };
         },
-        '/repos/owner/my-repo/issues/1/labels': req => {
+        '/repos/owner/my-repo/issues/1/labels': (req) => {
           labels = JSON.parse(req.body).labels;
           return {};
         },
@@ -181,7 +181,7 @@ describe('github API', () => {
         '/repos/owner/repo/branches/master': () => ({ commit: { sha: 'root' } }),
 
         // create new tree
-        '/repos/owner/repo/git/trees': options => {
+        '/repos/owner/repo/git/trees': (options) => {
           const data = JSON.parse(options.body);
           return { sha: data.base_tree };
         },

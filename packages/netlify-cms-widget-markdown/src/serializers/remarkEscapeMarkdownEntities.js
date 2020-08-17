@@ -138,7 +138,7 @@ const escapePatterns = [
  * Generate new non-escape expression. The non-escape expression matches
  * substrings whose contents should not be processed for escaping.
  */
-const joinedNonEscapePatterns = map(nonEscapePatterns, pattern => {
+const joinedNonEscapePatterns = map(nonEscapePatterns, (pattern) => {
   return new RegExp(joinPatternSegments(pattern));
 });
 const nonEscapePattern = combinePatterns(joinedNonEscapePatterns);
@@ -146,7 +146,7 @@ const nonEscapePattern = combinePatterns(joinedNonEscapePatterns);
 /**
  * Create chain of successive escape functions for various markdown entities.
  */
-const escapeFunctions = escapePatterns.map(pattern => partial(escapeDelimiters, pattern));
+const escapeFunctions = escapePatterns.map((pattern) => partial(escapeDelimiters, pattern));
 const escapeAll = flow(escapeFunctions);
 
 /**

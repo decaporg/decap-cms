@@ -26,7 +26,7 @@ describe('Collection', () => {
     collections: fromJS([collection]).toOrderedMap(),
     collection,
     collectionName: collection.get('name'),
-    t: jest.fn(key => key),
+    t: jest.fn((key) => key),
     onSortClick: jest.fn(),
   };
 

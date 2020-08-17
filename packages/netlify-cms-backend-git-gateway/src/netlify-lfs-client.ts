@@ -15,7 +15,7 @@ type ClientConfig = {
 };
 
 export const matchPath = ({ patterns }: ClientConfig, path: string) =>
-  patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
+  patterns.some((pattern) => minimatch(path, pattern, { matchBase: true }));
 
 //
 // API interactions
@@ -58,9 +58,9 @@ const getDownloadURL = (
       t && Object.keys(t).length > 0 ? getTransofrmationsParams(t as ImageTransformations) : ''
     }`,
   )
-    .then(res => (res.ok ? res : Promise.reject(res)))
-    .then(res => res.blob())
-    .then(blob => URL.createObjectURL(blob))
+    .then((res) => (res.ok ? res : Promise.reject(res)))
+    .then((res) => res.blob())
+    .then((blob) => URL.createObjectURL(blob))
     .catch((err: Error) => {
       console.error(err);
       return Promise.resolve('');
@@ -144,7 +144,7 @@ export const getClient = (clientConfig: ClientConfig) => {
     Object.keys,
     map((key: string) => [key, configureFn(clientConfig, clientFns[key])]),
     fromPairs,
-    configuredFns => ({
+    (configuredFns) => ({
       ...configuredFns,
       patterns: clientConfig.patterns,
       enabled: clientConfig.enabled,

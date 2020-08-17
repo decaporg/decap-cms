@@ -64,7 +64,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
      */
     const hasBlockChildren = node.nodes && node.nodes[0] && node.nodes[0].object === 'block';
     const children = hasBlockChildren
-      ? node.nodes.map(transform).filter(v => v)
+      ? node.nodes.map(transform).filter((v) => v)
       : convertInlineAndTextChildren(node.nodes);
 
     const output = convertBlockNode(node, children);
@@ -73,7 +73,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
   }
 
   function removeMarkFromNodes(nodes, markType) {
-    return nodes.map(node => {
+    return nodes.map((node) => {
       switch (node.type) {
         case 'link': {
           const updatedNodes = removeMarkFromNodes(node.nodes, markType);
@@ -106,7 +106,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         // ends up nested inside of that mark. Code marks sometimes can't do
         // that, like when they wrap all of the text content of a link. Here we
         // remove code marks before processing so that they stay put.
-        const nodesWithoutCode = node.nodes.map(n => ({
+        const nodesWithoutCode = node.nodes.map((n) => ({
           ...n,
           marks: n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks,
         }));
@@ -116,10 +116,10 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
 
       case 'break':
       case 'image':
-        return map(get(node, ['data', 'marks']), mark => mark.type);
+        return map(get(node, ['data', 'marks']), (mark) => mark.type);
 
       default:
-        return map(node.marks, mark => mark.type);
+        return map(node.marks, (mark) => mark.type);
     }
   }
 
@@ -204,7 +204,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     const lastNode = nodes.length > 1 ? last(nodes) : leadingNode;
     const trailingSplitResult = splitWhitespace(lastNode, { trailing: true });
     const { whitespace: trailingWhitespace, trimmedNode: trailingNode } = trailingSplitResult;
-    const centerNodes = collectCenterNodes(nodes, leadingNode, trailingNode).filter(val => val);
+    const centerNodes = collectCenterNodes(nodes, leadingNode, trailingNode).filter((val) => val);
     return { leadingWhitespace, centerNodes, trailingWhitespace };
   }
 
@@ -243,12 +243,12 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
             remainingNodes = remainder;
             continue;
           }
-          const createText = text => text && u('html', text);
+          const createText = (text) => text && u('html', text);
           const normalizedNodes = [
             createText(leadingWhitespace),
             markNode,
             createText(trailingWhitespace),
-          ].filter(val => val);
+          ].filter((val) => val);
           convertedNodes.push(...normalizedNodes);
         }
         remainingNodes = remainder;

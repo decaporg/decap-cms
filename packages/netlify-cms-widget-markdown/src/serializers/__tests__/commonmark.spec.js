@@ -68,7 +68,7 @@ const onlys = [
  */
 const reader = new commonmark.Parser();
 const writer = new commonmark.HtmlRenderer();
-const parseWithCommonmark = markdown => {
+const parseWithCommonmark = (markdown) => {
   const parsed = reader.parse(markdown);
   return writer.render(parsed);
 };
@@ -79,12 +79,12 @@ const parse = flow([markdownToSlate, slateToMarkdown]);
  * tests, of which we're passing about 300 as of introduction of this suite. To
  * work on improving Commonmark support, update __fixtures__/commonmarkExpected.json
  */
-describe.skip('Commonmark support', function() {
+describe.skip('Commonmark support', function () {
   const specs =
     onlys.length > 0
       ? commonmarkSpec.filter(({ number }) => onlys.includes(number))
       : commonmarkSpec;
-  specs.forEach(spec => {
+  specs.forEach((spec) => {
     const skip = skips.find(({ number }) => {
       return Array.isArray(number) ? number.includes(spec.number) : number === spec.number;
     });

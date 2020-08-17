@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 import { isFunction } from 'lodash';
 
 const catchesNothing = /.^/;
-const bind = fn => isFunction(fn) && fn.bind(null);
+const bind = (fn) => isFunction(fn) && fn.bind(null);
 
 export default function createEditorComponent(config) {
   const {

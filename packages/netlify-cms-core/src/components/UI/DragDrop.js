@@ -17,7 +17,7 @@ export const DragSource = ({ namespace, ...props }) => {
         return ownProps;
       },
     },
-    connect => ({
+    (connect) => ({
       connectDragComponent: connect.dragSource(),
     }),
   )(({ children, connectDragComponent }) => children(connectDragComponent));
@@ -51,4 +51,5 @@ DropTarget.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
-export const HTML5DragDrop = component => ReactDNDDragDropContext(ReactDNDHTML5Backend)(component);
+export const HTML5DragDrop = (component) =>
+  ReactDNDDragDropContext(ReactDNDHTML5Backend)(component);

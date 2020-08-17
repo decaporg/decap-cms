@@ -41,7 +41,7 @@ export default class AuthenticationPage extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
     this.props.onLogin(this.state);
   };

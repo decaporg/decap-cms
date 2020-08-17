@@ -428,7 +428,7 @@ describe('NestedCollection', () => {
       const treeData = getTreeData(collection, entries);
       expect(treeData[0].children[0].children[0].expanded).toBeUndefined();
 
-      const callback = jest.fn(node => ({ ...node, expanded: true }));
+      const callback = jest.fn((node) => ({ ...node, expanded: true }));
       const node = { path: '/dir1/index.md' };
       updateNode(treeData, node, callback);
 

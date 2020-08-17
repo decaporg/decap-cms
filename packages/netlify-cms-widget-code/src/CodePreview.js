@@ -14,7 +14,7 @@ const toValue = (value, field) => {
   return '';
 };
 
-const CodePreview = props => (
+const CodePreview = (props) => (
   <WidgetPreviewContainer>
     <pre>
       <code>{toValue(props.value, props.field)}</code>

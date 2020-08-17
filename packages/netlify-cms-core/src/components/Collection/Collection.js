@@ -56,7 +56,9 @@ export class Collection extends React.Component {
     const { searchTerm, collections, collection, isSingleSearchResult } = this.props;
     return (
       <EntriesSearch
-        collections={isSingleSearchResult ? collections.filter(c => c === collection) : collections}
+        collections={
+          isSingleSearchResult ? collections.filter((c) => c === collection) : collections
+        }
         searchTerm={searchTerm}
       />
     );
@@ -169,8 +171,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSortClick: (key, direction) =>
       dispatchProps.sortByField(stateProps.collection, key, direction),
-    onFilterClick: filter => dispatchProps.filterByField(stateProps.collection, filter),
-    onChangeViewStyle: viewStyle => dispatchProps.changeViewStyle(viewStyle),
+    onFilterClick: (filter) => dispatchProps.filterByField(stateProps.collection, filter),
+    onChangeViewStyle: (viewStyle) => dispatchProps.changeViewStyle(viewStyle),
   };
 };
 

@@ -10,7 +10,7 @@ window.netlifyIdentity = {
 describe('GitGatewayAuthenticationPage', () => {
   const props = {
     config: { logo_url: 'logo_url' },
-    t: jest.fn(key => key),
+    t: jest.fn((key) => key),
     onLogin: jest.fn(),
     inProgress: false,
   };
@@ -24,7 +24,9 @@ describe('GitGatewayAuthenticationPage', () => {
     const { default: GitGatewayAuthenticationPage } = require('../AuthenticationPage');
     const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
 
-    const errorCallback = window.netlifyIdentity.on.mock.calls.find(call => call[0] === 'error')[1];
+    const errorCallback = window.netlifyIdentity.on.mock.calls.find(
+      (call) => call[0] === 'error',
+    )[1];
 
     errorCallback(
       new Error('Failed to load settings from https://site.netlify.com/.netlify/identity'),

@@ -9,7 +9,7 @@ const versionPlugin = new webpack.DefinePlugin({
 });
 
 const configs = () => {
-  return getConfig().map(config => {
+  return getConfig().map((config) => {
     return {
       ...config,
       plugins: [...config.plugins, versionPlugin],

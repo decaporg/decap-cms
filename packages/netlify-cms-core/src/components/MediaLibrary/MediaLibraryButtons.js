@@ -60,7 +60,7 @@ export const DownloadButton = styled.button`
   background-color: ${colors.button};
   color: ${colors.buttonText};
 
-  ${props =>
+  ${(props) =>
     props.focused === true &&
     css`
       &:focus,

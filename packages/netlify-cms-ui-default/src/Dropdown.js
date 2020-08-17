@@ -40,7 +40,7 @@ const DropdownList = styled.ul`
   min-width: 100%;
   z-index: ${zIndex.zIndex299};
 
-  ${props => css`
+  ${(props) => css`
     width: ${props.width};
     top: ${props.top};
     left: ${props.position === 'left' ? 0 : 'auto'};
@@ -73,7 +73,7 @@ const MenuItemIconContainer = styled.div`
   flex: 1 0 32px;
   text-align: right;
   position: relative;
-  top: ${props => (props.iconSmall ? '0' : '2px')};
+  top: ${(props) => (props.iconSmall ? '0' : '2px')};
 `;
 
 const Dropdown = ({
@@ -88,7 +88,7 @@ const Dropdown = ({
   return (
     <StyledWrapper
       closeOnSelection={closeOnSelection}
-      onSelection={handler => handler()}
+      onSelection={(handler) => handler()}
       className={className}
     >
       {renderButton()}

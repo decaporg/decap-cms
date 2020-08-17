@@ -60,7 +60,7 @@ export default class BitbucketAuthenticationPage extends React.Component {
     }
   }
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
     this.auth.authenticate(this.authSettings, (err, data) => {
       if (err) {
