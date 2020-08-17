@@ -245,6 +245,21 @@ export const traverseFields = (
   if (done()) {
     return fields;
   }
+
+  // List of widgets and options that are still using camelCase
+  const widgetArray = ['date', 'datetime', 'markdown', 'number', 'relation'];
+  const widgetKeyMap = new Map([
+    ['dateFormat', 'date_format'],
+    ['timeFormat', 'time_format'],
+    ['pickerUtc', 'picker_utc'],
+    ['editorComponents', 'editor_components'],
+    ['valueType', 'value_type'],
+    ['valueField', 'value_field'],
+    ['searchFields', 'search_fields'],
+    ['displayFields', 'display_fields'],
+    ['optionsLength', 'options_length'],
+  ]);
+  
   fields = fields
     .map(f => {
       const field = updater(f as EntryField);
@@ -259,6 +274,18 @@ export const traverseFields = (
         );
       } else if (field.has('types')) {
         return field.set('types', traverseFields(field.get('types')!, updater, done));
+      } else if (field.has('widget')) {
+        const widgetType = field.get('widget');
+        const widget = (field as unknown) as Map<string, string>;
+        if (widgetArray.includes(widgetType)) {
+          widgetKeyMap.forEach((value, key) => {
+            if (widget.has(value)) {
+              widget.set(key, widget.get(value) as string);
+            }
+          });
+        }
+
+        return (widget as unknown) as EntryField;
       } else {
         return field;
       }
