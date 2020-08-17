@@ -104,7 +104,7 @@
     "axios": "^0.19.2",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^11.0.0-beta.2",
-    "babel-jest": "^24.5.0",
+    "babel-jest": "^26.0.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-emotion": "^10.0.9",
     "babel-plugin-inline-json-import": "^0.3.2",
