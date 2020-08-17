@@ -118,10 +118,12 @@ export function applyDefaults(config) {
             );
           }
 
-          if (!collection.has('sortableFields')) {
+          if (!collection.has('sortableFields') && !collection.has('sortable_fields')) {
             const backend = resolveBackend(config);
             const defaultSortable = selectDefaultSortableFields(collection, backend);
             collection = collection.set('sortableFields', fromJS(defaultSortable));
+          } else if (collection.has('sortable_fields')) {
+            collection.set('sortableFields', collection.get('sortable_fields'));
           }
 
           if (!collection.has('view_filters')) {
