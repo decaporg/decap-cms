@@ -4252,9 +4252,9 @@ date-fns@^2.0.1, date-fns@^2.14.0, date-fns@^2.8.1:
   integrity sha512-ZCPzAMJZn3rNUvvQIMlXhDr4A+Ar07eLeGsGREoWU19a3Pqf5oYa+ccd+B3F6XVtQY6HANMFdOQ8A+ipFnvJdQ==
 
 dayjs@^1.8.23:
-  version "1.8.32"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.32.tgz#66c48b95c397d9f7907e89bd29f78b3d19d40294"
-  integrity sha512-V91aTRu5btP+uzGHaaOfodckEfBWhmi9foRP7cauAO1PTB8+tZ9o0Jec7q6TIIRY1N4q1IfiKsZunkB/AEWqMQ==
+  version "1.8.33"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.33.tgz#18bc4a2b6c1c6f4d67b4c4f2536c0b97e5b766f7"
+  integrity sha512-881TDLZCdpJFKbraWRHcUG8zfMLLX400ENf9rFZDuWc5zYMss6xifo2PhlDX0ftOmR2NRmaIY47bAa4gKQfXqw==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.6, debug@^2.6.9:
   version "2.6.9"
