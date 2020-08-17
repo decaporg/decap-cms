@@ -10,6 +10,7 @@ jest.mock('lodash/debounce', () => {
     return func;
   };
 });
+// eslint-disable-next-line react/display-name
 jest.mock('../EditorInterface', () => props => <mock-editor-interface {...props} />);
 jest.mock('netlify-cms-ui-default', () => {
   return {
