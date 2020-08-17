@@ -259,7 +259,7 @@ export const traverseFields = (
     ['displayFields', 'display_fields'],
     ['optionsLength', 'options_length'],
   ]);
-  
+
   fields = fields
     .map(f => {
       const field = updater(f as EntryField);
