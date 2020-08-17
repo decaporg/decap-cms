@@ -1,4 +1,3 @@
-import path from 'path';
 import '../../utils/dismiss-local-backup';
 import {
   login,
@@ -18,14 +17,7 @@ function uploadMediaFile() {
   assertNoImagesInLibrary();
 
   const fixture = 'media/netlify.png';
-  cy.fixture(fixture).then(fileContent => {
-    cy.get('input[type="file"]').upload({
-      fileContent,
-      fileName: path.basename(fixture),
-      mimeType: 'image/png',
-    });
-  });
-
+  cy.get('input[type="file"]').attachFile(fixture);
   cy.contains('span', 'Uploading...').should('not.exist');
 
   assertImagesInLibrary();
