@@ -15,34 +15,34 @@ const RelationControl = NetlifyCmsWidgetRelation.controlComponent;
 const fieldConfig = {
   name: 'post',
   collection: 'posts',
-  displayFields: ['title', 'slug'],
-  searchFields: ['title', 'body'],
-  valueField: 'title',
+  display_fields: ['title', 'slug'],
+  search_fields: ['title', 'body'],
+  value_field: 'title',
 };
 
 const customizedOptionsLengthConfig = {
   name: 'post',
   collection: 'posts',
-  displayFields: ['title', 'slug'],
-  searchFields: ['title', 'body'],
-  valueField: 'title',
-  optionsLength: 10,
+  display_fields: ['title', 'slug'],
+  search_fields: ['title', 'body'],
+  value_field: 'title',
+  options_length: 10,
 };
 
 const deeplyNestedFieldConfig = {
   name: 'post',
   collection: 'posts',
-  displayFields: ['title', 'slug', 'deeply.nested.post.field'],
-  searchFields: ['deeply.nested.post.field'],
-  valueField: 'title',
+  display_fields: ['title', 'slug', 'deeply.nested.post.field'],
+  search_fields: ['deeply.nested.post.field'],
+  value_field: 'title',
 };
 
 const nestedFieldConfig = {
   name: 'post',
   collection: 'posts',
-  displayFields: ['title', 'slug', 'nested.field_1'],
-  searchFields: ['nested.field_1', 'nested.field_2'],
-  valueField: 'title',
+  display_fields: ['title', 'slug', 'nested.field_1'],
+  search_fields: ['nested.field_1', 'nested.field_2'],
+  value_field: 'title',
 };
 
 const generateHits = length => {
@@ -327,9 +327,9 @@ describe('Relation widget', () => {
     const stringTemplateConfig = {
       name: 'post',
       collection: 'posts',
-      displayFields: ['{{slug}}', '{{filename}}', '{{extension}}'],
-      searchFields: ['slug'],
-      valueField: '{{slug}}',
+      display_fields: ['{{slug}}', '{{filename}}', '{{extension}}'],
+      search_fields: ['slug'],
+      value_field: '{{slug}}',
     };
 
     const field = fromJS(stringTemplateConfig);
@@ -348,8 +348,8 @@ describe('Relation widget', () => {
     });
   });
 
-  it('should default displayFields to valueField', async () => {
-    const field = fromJS(fieldConfig).delete('displayFields');
+  it('should default display_fields to value_field', async () => {
+    const field = fromJS(fieldConfig).delete('display_fields');
     const { getAllByText, input } = setup({ field });
     fireEvent.keyDown(input, { key: 'ArrowDown' });
 
@@ -361,9 +361,9 @@ describe('Relation widget', () => {
     const fieldConfig = {
       name: 'numbers',
       collection: 'numbers_collection',
-      valueField: 'index',
-      searchFields: ['index'],
-      displayFields: ['title'],
+      value_field: 'index',
+      search_fields: ['index'],
+      display_fields: ['title'],
     };
 
     const field = fromJS(fieldConfig);
@@ -442,8 +442,8 @@ describe('Relation widget', () => {
       name: 'categories',
       collection: 'file',
       file: 'simple_file',
-      valueField: 'categories.*',
-      displayFields: ['categories.*'],
+      value_field: 'categories.*',
+      display_fields: ['categories.*'],
     };
 
     it('should handle simple list', async () => {
@@ -462,8 +462,8 @@ describe('Relation widget', () => {
       const field = fromJS({
         ...fileFieldConfig,
         file: 'nested_file',
-        valueField: 'nested.categories.*.id',
-        displayFields: ['nested.categories.*.name'],
+        value_field: 'nested.categories.*.id',
+        display_fields: ['nested.categories.*.name'],
       });
       const { getAllByText, input, getByText } = setup({ field });
       fireEvent.keyDown(input, { key: 'ArrowDown' });

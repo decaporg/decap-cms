@@ -10,7 +10,7 @@ const fieldSettings = {
   min: -20,
   max: 20,
   step: 1,
-  valueType: 'int',
+  value_type: 'int',
 };
 
 class NumberController extends React.Component {
@@ -120,7 +120,7 @@ describe('Number widget', () => {
   });
 
   it('should parse float numbers as float', () => {
-    const field = fromJS({ ...fieldSettings, valueType: 'float' });
+    const field = fromJS({ ...fieldSettings, value_type: 'float' });
     const testValue = (Math.random() * (20 - -20 + 1) + -20).toFixed(2);
     const { input, onChangeSpy } = setup({ field });
 
