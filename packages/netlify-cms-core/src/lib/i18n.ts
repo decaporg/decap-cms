@@ -218,18 +218,22 @@ const mergeValues = (
   defaultLocale: string,
   values: { locale: string; value: EntryValue }[],
 ) => {
-  const defaultEntry = values.find(e => e.locale === defaultLocale)!.value;
+  let defaultEntry = values.find(e => e.locale === defaultLocale);
+  if (!defaultEntry) {
+    defaultEntry = values[0];
+    console.warn(`Could not locale entry for default locale '${defaultLocale}'`);
+  }
   const i18n = values
-    .filter(e => e.locale !== defaultLocale)
+    .filter(e => e.locale !== defaultEntry!.locale)
     .reduce((acc, { locale, value }) => {
       const dataPath = getLocaleDataPath(locale);
       return set(acc, dataPath, value.data);
     }, {});
 
-  const path = normalizeFilePath(structure, defaultEntry.path, defaultLocale);
+  const path = normalizeFilePath(structure, defaultEntry.value.path, defaultLocale);
   const slug = selectEntrySlug(collection, path) as string;
   const entryValue: EntryValue = {
-    ...defaultEntry,
+    ...defaultEntry.value,
     raw: '',
     ...i18n,
     path,
