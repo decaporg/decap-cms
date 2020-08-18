@@ -20,6 +20,7 @@ import {
   EntryField,
   SortDirection,
   ViewFilter,
+  Entry,
 } from '../types/redux';
 
 import { ThunkDispatch } from 'redux-thunk';
@@ -30,7 +31,7 @@ import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '..
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
-import { hasI18n } from '../lib/i18n';
+import { hasI18n, serializeI18n } from '../lib/i18n';
 
 const { notifSend } = notifActions;
 
@@ -774,6 +775,24 @@ export function getMediaAssets({ entry }: { entry: EntryMap }) {
   return assets;
 }
 
+export const getSerializedEntry = (collection: Collection, entry: Entry) => {
+  /**
+   * Serialize the values of any fields with registered serializers, and
+   * update the entry and entryDraft with the serialized values.
+   */
+  const fields = selectFields(collection, entry.get('slug'));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serializeData = (data: any) => {
+    return serializeValues(data, fields);
+  };
+  const serializedData = serializeData(entry.get('data'));
+  let serializedEntry = entry.set('data', serializedData);
+  if (hasI18n(collection)) {
+    serializedEntry = serializeI18n(collection, serializedEntry, serializeData);
+  }
+  return serializedEntry;
+};
+
 export function persistEntry(collection: Collection) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
@@ -808,13 +827,7 @@ export function persistEntry(collection: Collection) {
       entry,
     });
 
-    /**
-     * Serialize the values of any fields with registered serializers, and
-     * update the entry and entryDraft with the serialized values.
-     */
-    const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
-    const serializedEntry = entry.set('data', serializedData);
+    const serializedEntry = getSerializedEntry(collection, entry);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend

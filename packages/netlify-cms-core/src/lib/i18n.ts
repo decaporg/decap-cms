@@ -1,6 +1,6 @@
 import { Map, List } from 'immutable';
 import { set, trimEnd, groupBy } from 'lodash';
-import { Collection, EntryDraft, EntryField, EntryMap } from '../types/redux';
+import { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
 import { selectEntrySlug } from '../reducers/collections';
 import { EntryValue } from '../valueObjects/Entry';
 
@@ -386,4 +386,22 @@ export const getPreviewEntry = (entry: EntryMap, locale: string, defaultLocale: 
     return entry;
   }
   return entry.set('data', entry.getIn([I18N, locale, 'data']));
+};
+
+export const serializeI18n = (
+  collection: Collection,
+  entry: Entry,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  serializeValues: (data: any) => any,
+) => {
+  const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  locales
+    .filter(locale => locale !== defaultLocale)
+    .forEach(locale => {
+      const dataPath = getLocaleDataPath(locale);
+      entry = entry.setIn(dataPath, serializeValues(entry.getIn(dataPath)));
+    });
+
+  return entry;
 };
