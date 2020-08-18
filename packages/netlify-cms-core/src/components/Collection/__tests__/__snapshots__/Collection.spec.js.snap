@@ -14,8 +14,8 @@ exports[`Collection should render connected component 1`] = `
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
-      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
-      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+      collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [] }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [] } }"
       filterterm=""
       searchterm=""
     />
@@ -23,7 +23,7 @@ exports[`Collection should render connected component 1`] = `
       class="emotion-0 emotion-1"
     >
       <mock-collection-top
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [] }"
         newentryurl=""
       />
       <mock-collection-controls
@@ -32,7 +32,7 @@ exports[`Collection should render connected component 1`] = `
         viewfilters=""
       />
       <mock-entries-collection
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [] }"
         filterterm=""
       />
     </main>
@@ -54,19 +54,19 @@ exports[`Collection should render with collection with create url 1`] = `
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
-      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
-      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+      collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [] } }"
     />
     <main
       class="emotion-0 emotion-1"
     >
       <mock-collection-top
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
         newentryurl="/collections/pages/new"
       />
       <mock-collection-controls />
       <mock-entries-collection
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
       />
     </main>
   </div>
@@ -87,20 +87,20 @@ exports[`Collection should render with collection with create url and path 1`] =
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
-      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
-      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+      collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [] } }"
       filterterm="dir1/dir2"
     />
     <main
       class="emotion-0 emotion-1"
     >
       <mock-collection-top
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
         newentryurl="/collections/pages/new?path=dir1/dir2"
       />
       <mock-collection-controls />
       <mock-entries-collection
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": true }"
         filterterm="dir1/dir2"
       />
     </main>
@@ -122,19 +122,19 @@ exports[`Collection should render with collection without create url 1`] = `
     class="emotion-2 emotion-3"
   >
     <mock-sidebar
-      collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
-      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [] } }"
+      collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
+      collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [] } }"
     />
     <main
       class="emotion-0 emotion-1"
     >
       <mock-collection-top
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
         newentryurl=""
       />
       <mock-collection-controls />
       <mock-entries-collection
-        collection="Map { \\"name\\": \\"pages\\", \\"sortableFields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
+        collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"create\\": false }"
       />
     </main>
   </div>
