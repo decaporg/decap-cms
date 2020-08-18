@@ -172,9 +172,9 @@
       render: function() {
         // When a post is selected from the relation field, all of it's data
         // will be available in the field's metadata nested under the collection
-        // name, and then further nested under the value specified in `valueField`.
+        // name, and then further nested under the value specified in `value_field`.
         // In this case, the post would be nested under "posts" and then under
-        // the title of the selected post, since our `valueField` in the config
+        // the title of the selected post, since our `value_field` in the config
         // is "title".
         const { value, fieldsMetaData } = this.props;
         const post = fieldsMetaData && fieldsMetaData.getIn(['posts', value]);
