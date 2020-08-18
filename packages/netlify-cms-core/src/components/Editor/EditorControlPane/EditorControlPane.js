@@ -163,10 +163,11 @@ export default class ControlPane extends React.Component {
             const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
             const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
             const isHidden = isFieldHidden(field, locale, defaultLocale);
+            const key = i18n ? `${locale}_${i}` : i;
 
             return (
               <EditorControl
-                key={i}
+                key={key}
                 field={field}
                 value={getFieldValue({
                   field,
