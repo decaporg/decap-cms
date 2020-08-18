@@ -31,6 +31,29 @@ const setDefaultPublicFolder = map => {
   return map;
 };
 
+const setSnakeCaseConfig = field => {
+  // List of options that are still using camelCase
+  const widgetKeyMap = new Map([
+    ['date_format', 'dateFormat'],
+    ['time_format', 'timeFormat'],
+    ['picker_utc', 'pickerUtc'],
+    ['editor_components', 'editorComponents'],
+    ['value_type', 'valueType'],
+    ['value_field', 'valueField'],
+    ['search_fields', 'searchFields'],
+    ['display_fields', 'displayFields'],
+    ['options_length', 'optionsLength'],
+  ]);
+
+  widgetKeyMap.forEach((value, key) => {
+    if (field.has(value)) {
+      field.set(key, field.get(value));
+      delete field[value];
+    }
+  });
+  return field;
+};
+
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
