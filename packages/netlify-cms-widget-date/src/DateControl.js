@@ -36,9 +36,9 @@ export default class DateControl extends React.Component {
 
     // dateFormat and timeFormat are strictly for modifying
     // input field with the date/time pickers
-    const dateFormat = field.get('dateFormat');
+    const dateFormat = field.get('date_format');
     // show time-picker? false hides it, true shows it using default format
-    let timeFormat = field.get('timeFormat');
+    let timeFormat = field.get('time_format');
     if (typeof timeFormat === 'undefined') {
       timeFormat = !!includeTime;
     }
