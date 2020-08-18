@@ -240,6 +240,7 @@ export const selectField = (collection: Collection, key: string) => {
 export const traverseFields = (
   fields: List<EntryField>,
   updater: (field: EntryField) => EntryField,
+  converter: (field: EntryField) => EntryField,
   done = () => false,
 ) => {
   if (done()) {
@@ -252,28 +253,16 @@ export const traverseFields = (
       if (done()) {
         return field;
       } else if (field.has('fields')) {
-        return field.set('fields', traverseFields(field.get('fields')!, updater, done));
+        return field.set('fields', traverseFields(field.get('fields')!, updater, converter, done));
       } else if (field.has('field')) {
         return field.set(
           'field',
-          traverseFields(List([field.get('field')!]), updater, done).get(0),
+          traverseFields(List([field.get('field')!]), updater, converter, done).get(0),
         );
       } else if (field.has('types')) {
-        return field.set('types', traverseFields(field.get('types')!, updater, done));
-      } else if (field.has('widget')) {
-        const widgetType = field.get('widget');
-        const widget = (field as unknown) as Map<string, string>;
-        if (widgetArray.includes(widgetType)) {
-          widgetKeyMap.forEach((value, key) => {
-            if (widget.has(value)) {
-              widget.set(key, widget.get(value) as string);
-            }
-          });
-        }
-
-        return (widget as unknown) as EntryField;
+        return field.set('types', traverseFields(field.get('types')!, updater, converter, done));
       } else {
-        return field;
+        return converter(field);
       }
     })
     .toList() as List<EntryField>;
@@ -304,7 +293,14 @@ export const updateFieldByKey = (
 
   collection = collection.set(
     'fields',
-    traverseFields(collection.get('fields', List<EntryField>()), updateAndBreak, () => updated),
+    traverseFields(
+      collection.get('fields', List<EntryField>()),
+      updateAndBreak,
+      field => {
+        return field;
+      },
+      () => updated,
+    ),
   );
 
   return collection;

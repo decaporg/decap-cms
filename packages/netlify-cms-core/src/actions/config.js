@@ -103,7 +103,7 @@ export function applyDefaults(config) {
             collection = setDefaultPublicFolder(collection);
             collection = collection.set(
               'fields',
-              traverseFields(collection.get('fields'), setDefaultPublicFolder),
+              traverseFields(collection.get('fields'), setDefaultPublicFolder, setSnakeCaseConfig),
             );
             collection = collection.set('folder', trim(folder, '/'));
             if (collection.has('meta')) {
@@ -134,7 +134,7 @@ export function applyDefaults(config) {
                 file = setDefaultPublicFolder(file);
                 file = file.set(
                   'fields',
-                  traverseFields(file.get('fields'), setDefaultPublicFolder),
+                  traverseFields(file.get('fields'), setDefaultPublicFolder, setSnakeCaseConfig),
                 );
                 return file;
               }),
