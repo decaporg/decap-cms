@@ -376,3 +376,10 @@ export const duplicateI18nFields = (
 
   return entryDraft;
 };
+
+export const getPreviewEntry = (entry: EntryMap, locale: string, defaultLocale: string) => {
+  if (locale === defaultLocale) {
+    return entry;
+  }
+  return entry.set('data', entry.getIn([I18N, locale, 'data']));
+};

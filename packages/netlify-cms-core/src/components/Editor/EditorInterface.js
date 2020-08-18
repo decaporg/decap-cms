@@ -16,7 +16,7 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
-import { hasI18n, getI18nInfo } from '../../lib/i18n';
+import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -141,7 +141,6 @@ class EditorInterface extends Component {
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
-    t: PropTypes.func.isRequired,
   };
 
   handleSplitPaneDragStart = () => {
@@ -184,6 +183,10 @@ class EditorInterface extends Component {
     localStorage.setItem(I18N_VISIBLE, newI18nVisible);
   };
 
+  handleLeftPanelLocaleChange = locale => {
+    this.setState({ leftPanelLocale: locale });
+  };
+
   render() {
     const {
       collection,
@@ -220,7 +223,7 @@ class EditorInterface extends Component {
     const { scrollSyncEnabled, showEventBlocker } = this.state;
     const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
     const collectionI18nEnabled = hasI18n(collection);
-    const locales = collectionI18nEnabled && getI18nInfo(this.props.collection).locales;
+    const { locales, defaultLocale } = getI18nInfo(this.props.collection);
     const editorProps = {
       collection,
       entry,
@@ -231,13 +234,15 @@ class EditorInterface extends Component {
       onValidate,
     };
 
+    const leftPanelLocale = this.state.leftPanelLocale || locales?.[0];
     const editor = (
       <ControlPaneContainer overFlow blockEntry={showEventBlocker}>
         <EditorControlPane
           {...editorProps}
           ref={c => (this.controlPaneRef = c)}
-          locale={locales?.[0]}
+          locale={leftPanelLocale}
           t={t}
+          onLocaleChange={this.handleLeftPanelLocaleChange}
         />
       </ControlPaneContainer>
     );
@@ -247,6 +252,10 @@ class EditorInterface extends Component {
         <EditorControlPane {...editorProps} locale={locales?.[1]} t={t} />
       </ControlPaneContainer>
     );
+
+    const previewEntry = collectionI18nEnabled
+      ? getPreviewEntry(entry, leftPanelLocale, defaultLocale)
+      : entry;
 
     const editorWithPreview = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
@@ -263,7 +272,7 @@ class EditorInterface extends Component {
             <PreviewPaneContainer blockEntry={showEventBlocker}>
               <EditorPreviewPane
                 collection={collection}
-                entry={entry}
+                entry={previewEntry}
                 fields={fields}
                 fieldsMetaData={fieldsMetaData}
               />
@@ -401,6 +410,7 @@ EditorInterface.propTypes = {
   deployPreview: ImmutablePropTypes.map,
   loadDeployPreview: PropTypes.func.isRequired,
   draftKey: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default EditorInterface;

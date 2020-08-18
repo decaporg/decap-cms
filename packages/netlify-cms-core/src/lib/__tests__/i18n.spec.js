@@ -676,4 +676,31 @@ describe('i18n', () => {
       });
     });
   });
+
+  describe('getPreviewEntry', () => {
+    it('should set data to i18n data when locale is not default', () => {
+      expect(
+        i18n
+          .getPreviewEntry(
+            fromJS({
+              data: { title: 'en', body: 'markdown' },
+              i18n: { de: { data: { title: 'de' } } },
+            }),
+            'de',
+          )
+          .toJS(),
+      ).toEqual({
+        data: { title: 'de' },
+        i18n: { de: { data: { title: 'de' } } },
+      });
+    });
+
+    it('should not change entry for default locale', () => {
+      const entry = fromJS({
+        data: { title: 'en', body: 'markdown' },
+        i18n: { de: { data: { title: 'de' } } },
+      });
+      expect(i18n.getPreviewEntry(entry, 'en', 'en')).toBe(entry);
+    });
+  });
 });
