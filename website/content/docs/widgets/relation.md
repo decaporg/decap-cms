@@ -11,9 +11,9 @@ The relation widget allows you to reference items from another collection. It pr
 - **Options:**
   - `collection`: (**required**) name of the collection being referenced (string)
   - `value_field`: (**required**) name of the field from the referenced collection whose value will be stored for the relation. For nested fields, separate each subfield with a `.` (e.g. `name.first`). For list fields use a wildcard `*` to target all list items (e.g. `categories.*`).
-  - `search_fields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value. Syntax to reference nested fields is similar to that of *valueField*.
+  - `search_fields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value. Syntax to reference nested fields is similar to that of *value_field*.
   - `file`: allows referencing a specific file when the collection being referenced is a files collection (string)
-  - `display_fields`: list of one or more names of fields in the referenced collection that will render in the autocomplete menu of the control. Defaults to `value_field`. Syntax to reference nested fields is similar to that of *valueField*.
+  - `display_fields`: list of one or more names of fields in the referenced collection that will render in the autocomplete menu of the control. Defaults to `value_field`. Syntax to reference nested fields is similar to that of *value_field*.
   - `default`: accepts any widget data type; defaults to an empty string
   - `multiple` : accepts a boolean, defaults to `false`
   - `options_length`: accepts integer to override number of options presented to user. Defaults to `20`.

@@ -7,7 +7,7 @@ The number widget uses an HTML number input, saving the value as a string, integ
 
 - **Name:** `number`
 - **UI:** HTML [number input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number)
-- **Data type:** string by default; configured by `valueType` option
+- **Data type:** string by default; configured by `value_type` option
 - **Options:**
   - `default`: accepts string or number value; defaults to empty string
   - `value_type`: accepts `int` or `float`; any other value results in saving as a string
