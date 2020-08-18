@@ -91,8 +91,8 @@ export default class ObjectControl extends React.Component {
     const fieldName = field.get('name');
     const fieldValue = value && Map.isMap(value) ? value.get(fieldName) : value;
 
-    const isDuplicate = isFieldDuplicate(field);
-    const isHidden = isFieldHidden(field);
+    const isDuplicate = isFieldDuplicate && isFieldDuplicate(field);
+    const isHidden = isFieldHidden && isFieldHidden(field);
 
     return (
       <EditorControl
