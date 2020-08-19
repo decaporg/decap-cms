@@ -557,7 +557,7 @@ export default class API {
     });
 
     return mergeRequests.filter(
-      mr => mr.source_branch.startsWith(CMS_BRANCH_PREFIX) && mr.labels.some(isCMSLabel),
+      mr => mr.source_branch.startsWith(CMS_BRANCH_PREFIX) && mr.labels.some(l => isCMSLabel(l)),
     );
   }
 
@@ -658,7 +658,7 @@ export default class API {
         return { id, path, newFile };
       }),
     );
-    const label = mergeRequest.labels.find(isCMSLabel) as string;
+    const label = mergeRequest.labels.find(l => isCMSLabel(l)) as string;
     const status = labelToStatus(label);
     const updatedAt = mergeRequest.updated_at;
     return {

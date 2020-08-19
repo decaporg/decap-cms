@@ -19,23 +19,56 @@ describe('APIUtils', () => {
 
   describe('isCMSLabel', () => {
     it('should return true for CMS label', () => {
-      expect(apiUtils.isCMSLabel('netlify-cms/draft')).toBe(true);
+      expect(apiUtils.isCMSLabel('netlify-cms/draft', 'netlify-cms/')).toBe(true);
     });
 
     it('should return false for non CMS label', () => {
-      expect(apiUtils.isCMSLabel('other/label')).toBe(false);
+      expect(apiUtils.isCMSLabel('other/label', 'netlify-cms/')).toBe(false);
+    });
+
+    it('should return true if the prefix not provided for CMS label', () => {
+      expect(apiUtils.isCMSLabel('netlify-cms/draft', '')).toBe(true);
+    });
+
+    it('should return false if a different prefix provided for CMS label', () => {
+      expect(apiUtils.isCMSLabel('netlify-cms/draft', 'other/')).toBe(false);
+    });
+
+    it('should return true for CMS label', () => {
+      expect(apiUtils.isCMSLabel('netlify-cms/draft', undefined)).toBe(true);
     });
   });
 
   describe('labelToStatus', () => {
     it('should get status from label', () => {
-      expect(apiUtils.labelToStatus('netlify-cms/draft')).toBe('draft');
+      expect(apiUtils.labelToStatus('netlify-cms/draft', 'netlify-cms/')).toBe('draft');
+    });
+
+    it('should get status from label', () => {
+      expect(apiUtils.labelToStatus('netlify-cms/draft', 'netlify-cms/')).toBe('draft');
+    });
+
+    it('should get status from label', () => {
+      expect(apiUtils.labelToStatus('netlify-cms/draft', '')).toBe('draft');
+    });
+
+    it('should get status from label', () => {
+      expect(apiUtils.labelToStatus('netlify-cms/draft', undefined)).toBe('draft');
     });
   });
 
   describe('statusToLabel', () => {
     it('should generate label from status', () => {
-      expect(apiUtils.statusToLabel('draft')).toBe('netlify-cms/draft');
+      expect(apiUtils.statusToLabel('draft', 'netlify-cms/')).toBe('netlify-cms/draft');
+    });
+    it('should generate label from status', () => {
+      expect(apiUtils.statusToLabel('draft', 'other/')).toBe('other/draft');
+    });
+    it('should generate label from status', () => {
+      expect(apiUtils.statusToLabel('draft', '')).toBe('netlify-cms/draft');
+    });
+    it('should generate label from status', () => {
+      expect(apiUtils.statusToLabel('draft', undefined)).toBe('netlify-cms/draft');
     });
   });
 });

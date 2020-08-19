@@ -6,6 +6,8 @@ backend:
 
 local_backend: true
 
+netlify_cms_label_prefix: 'netlify-cms/'
+
 site_url: https://www.netlifycms.org
 
 publish_mode: editorial_workflow

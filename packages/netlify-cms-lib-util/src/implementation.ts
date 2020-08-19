@@ -93,6 +93,7 @@ export type Config = {
   media_folder: string;
   base_url?: string;
   site_id?: string;
+  netlify_cms_label_prefix?: string;
 };
 
 export interface Implementation {
