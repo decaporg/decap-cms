@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 2.12.3 (2020-08-20)
-
-
-### Reverts
-
-* Revert "chore(release): publish" ([18f2e33](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/18f2e33854e17abf3fd879dfa2e7d0957f13836d))
-
-
-
-
-
 ## 2.12.2 (2020-07-27)
 
 
