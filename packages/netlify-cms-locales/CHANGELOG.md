@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.17.2 (2020-08-20)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([8262487](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/82624879ccbcb16610090041db28f00714d924c8))
+
+
+
+
+
 ## 1.17.1 (2020-07-27)
 
 
