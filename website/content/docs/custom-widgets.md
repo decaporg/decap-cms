@@ -456,15 +456,3 @@ npm run build
 ```javascript
 npm publish
 ```
-
-### [](https://github.com/netlify/netlify-cms-widget-starter#deploying-a-live-demo)Deploying a live demo
-
-The development (start) task provides a locally served preview of your widget in the CMS editor. This starter also includes a `demo` task for deploying this view live. Here's how to get your demo deployed using Netlify.
-
-1. Assuming your repo is on GitHub, head over to Netlify and [create a site](https://app.netlify.com/start) from your repo.
-2. The proper settings will be pre-filled based on what's in the `netlify.toml` file in this repo, so you can just click through to deploy.
-3. Add your deployed site URL to `README.md`, replacing the placeholder URL in the demo link.
-
-**Note:** Be sure to retain the "/demo" at the end of the URL, as that will automatically redirect to the editor view with your widget.
-
-Once deployed, your demo should look like [this](https://netlify-cms-widget-starter.netlify.com/demo), except with your custom widget.
