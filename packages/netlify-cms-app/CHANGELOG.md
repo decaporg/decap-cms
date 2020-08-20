@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.12.20 (2020-08-20)
+
+
+### Bug Fixes
+
+* **locale:** add missing translation strings for pt locale ([#4173](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/4173)) ([331f4b6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/331f4b6ac171eb9e6196a29fa8c8371cd7846d04))
+
+
+
+
+
 ## 2.12.19 (2020-07-27)
 
 
