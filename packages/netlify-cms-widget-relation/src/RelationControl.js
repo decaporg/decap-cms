@@ -73,7 +73,6 @@ function getSelectedValue({ value, options, isMultiple }) {
 }
 
 export default class RelationControl extends React.Component {
-  didInitialSearch = false;
   mounted = false;
 
   state = {
@@ -106,10 +105,11 @@ export default class RelationControl extends React.Component {
     // if the field has a previous value perform an initial search based on the value field
     // this is required since each search is limited by optionsLength so the selected value
     // might not show up on the search
-    const { forID, field, value, query } = this.props;
+    const { forID, field, value, query, onChange } = this.props;
     const collection = field.get('collection');
     const file = field.get('file');
     const initialSearchValues = this.isMultiple() ? getSelectedOptions(value) : [value];
+    const metadata = {};
     if (initialSearchValues && initialSearchValues.length > 0) {
       const allOptions = await Promise.all(
         initialSearchValues.map((v, index) => {
@@ -117,6 +117,7 @@ export default class RelationControl extends React.Component {
             ({ payload }) => {
               const hits = payload.response?.hits || [];
               const options = this.parseHitOptions(hits);
+              metadata[v] = hits[0]?.data;
               return { options, index };
             },
           );
@@ -127,38 +128,18 @@ export default class RelationControl extends React.Component {
         ...sortBy(allOptions, ({ index }) => index).map(({ options }) => options),
       );
       this.mounted && this.setState({ initialOptions });
+
+      //set metadata
+      onChange(value, {
+        [field.get('name')]: {
+          [field.get('collection')]: metadata,
+        },
+      });
     }
   }
 
   componentWillUnmount() {
     this.mounted = false;
-  }
-
-  componentDidUpdate(prevProps) {
-    /**
-     * Load extra post data into the store after first query.
-     */
-    if (this.didInitialSearch) return;
-    const { value, field, forID, queryHits, onChange } = this.props;
-
-    if (queryHits !== prevProps.queryHits && queryHits.get(forID)) {
-      this.didInitialSearch = true;
-      const valueField = field.get('valueField');
-      const hits = queryHits.get(forID);
-      if (value) {
-        const listValue = List.isList(value) ? value : List([value]);
-        listValue.forEach(val => {
-          const hit = hits.find(hit => this.parseNestedFields(hit, valueField) === val);
-          if (hit) {
-            onChange(value, {
-              [field.get('name')]: {
-                [field.get('collection')]: { [val]: hit.data },
-              },
-            });
-          }
-        });
-      }
-    }
   }
 
   handleChange = selectedOption => {
