@@ -108,7 +108,7 @@ export default class RelationControl extends React.Component {
     const { forID, field, value, query, onChange } = this.props;
     const collection = field.get('collection');
     const file = field.get('file');
-    const initialSearchValues = this.isMultiple() ? getSelectedOptions(value) : [value];
+    const initialSearchValues = value && (this.isMultiple() ? getSelectedOptions(value) : [value]);
     const metadata = {};
     if (initialSearchValues && initialSearchValues.length > 0) {
       const allOptions = await Promise.all(
