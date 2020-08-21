@@ -51,6 +51,40 @@ describe('github API', () => {
         })),
       ).resolves.toEqual({ prBaseBranch: 'gh-pages', labels: ['netlify-cms/draft'] });
     });
+
+    it('should create PR with correct base branch name with custom prefix when publishing with editorial workflow', () => {
+      let prBaseBranch = null;
+      let labels = null;
+      const api = new API({
+        branch: 'gh-pages',
+        repo: 'owner/my-repo',
+        initialWorkflowStatus: 'draft',
+        cmsLabelPrefix: 'other/',
+      });
+      const responses = {
+        '/repos/owner/my-repo/branches/gh-pages': () => ({ commit: { sha: 'def' } }),
+        '/repos/owner/my-repo/git/trees/def': () => ({ tree: [] }),
+        '/repos/owner/my-repo/git/trees': () => ({}),
+        '/repos/owner/my-repo/git/commits': () => ({}),
+        '/repos/owner/my-repo/git/refs': () => ({}),
+        '/repos/owner/my-repo/pulls': req => {
+          prBaseBranch = JSON.parse(req.body).base;
+          return { head: { sha: 'cbd' }, labels: [], number: 1 };
+        },
+        '/repos/owner/my-repo/issues/1/labels': req => {
+          labels = JSON.parse(req.body).labels;
+          return {};
+        },
+      };
+      mockAPI(api, responses);
+
+      return expect(
+        api.editorialWorkflowGit([], { slug: 'entry', sha: 'abc' }, null, {}).then(() => ({
+          prBaseBranch,
+          labels,
+        })),
+      ).resolves.toEqual({ prBaseBranch: 'gh-pages', labels: ['other/draft'] });
+    });
   });
 
   describe('updateTree', () => {
