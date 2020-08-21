@@ -218,7 +218,7 @@ For writing custom widgets as a separate package you should follow these steps:
    npm init
    ```
 4. Answer the questions in the command line questionnaire.
-5. In order to build React components, we need to set up a build step. We'll be using Webpack. Please run the following command to install the required dependencies:
+5. In order to build React components, we need to set up a build step. We'll be using Webpack. Please run the following commands to install the required dependencies:
 
 ```javascript
    npm install --save-dev babel-loader@7 babel-core babel-plugin-transform-class-properties babel-plugin-transform-export-extensions babel-plugin-transform-object-rest-spread babel-preset-env babel-preset-react cross-env css-loader html-webpack-plugin netlify-cms react source-map-loader style-loader webpack webpack-cli webpack-serve
@@ -230,7 +230,7 @@ For writing custom widgets as a separate package you should follow these steps:
 
 And you should manually add "**peerDependencies**" as shown below.
 
-Here is the content of `package.json` as an example:
+Here is the content of `package.json` that you will have at the end:
 
 ```javascript
 {
@@ -405,12 +405,7 @@ if (typeof window !== 'undefined') {
 export { Control, Preview }
 ```
 
-7. For installing the dependencies run this command:
-
-   ```javascript
-   npm install
-   ```
-8. Now you need to set up the locale example site.
+7. Now you need to set up the locale example site.
    Under the main project, create a `dev` directory with the files `bootstrap.js` and `index.js`
 
 `bootstrap.js`
