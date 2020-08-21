@@ -218,15 +218,17 @@ For writing custom widgets as a separate package you should follow these steps:
    npm init
    ```
 4. Answer the questions in the command line questionnaire.
-
 5. In order to build React components, we need to set up a build step. We'll be using Webpack. Please run the following command to install the required dependencies:
 
 ```javascript
    npm install --save-dev babel-loader@7 babel-core babel-plugin-transform-class-properties babel-plugin-transform-export-extensions babel-plugin-transform-object-rest-spread babel-preset-env babel-preset-react cross-env css-loader html-webpack-plugin netlify-cms react source-map-loader style-loader webpack webpack-cli webpack-serve
-   ```
+```
+
 ```javascript
    npm install --save prop-types
-   ```
+```
+
+And you should manually add "**peerDependencies**" as shown below.
 
 Here is the content of `package.json` as an example:
 
