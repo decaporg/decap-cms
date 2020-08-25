@@ -38,7 +38,8 @@ const deserializeMediaFile = ({ id, content, encoding, path, name }: MediaFile) 
       byteArray[i] = decodedContent.charCodeAt(i);
     }
   }
-  const file = new File([byteArray], name);
+  const options = name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
+  const file = new File([byteArray], name, options);
   const url = URL.createObjectURL(file);
   return { id, name, path, file, size: file.size, url, displayURL: url };
 };
