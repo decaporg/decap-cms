@@ -41,8 +41,10 @@ import { entriesFromFiles, readMediaFile } from '../utils/entries';
 const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
   await git.add('.');
   await git.commit(commitMessage, undefined, {
-    '--no-verify': true,
-    '--no-gpg-sign': true,
+    // setting the value to a string passes name=value
+    // any other value passes just the key
+    '--no-verify': null,
+    '--no-gpg-sign': null,
   });
 };
 
