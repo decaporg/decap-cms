@@ -161,7 +161,7 @@
     "stylelint-config-styled-components": "^0.1.1",
     "svg-inline-loader": "^0.8.0",
     "to-string-loader": "^1.1.5",
-    "typescript": "^3.7.2",
+    "typescript": "^4.0.0",
     "unist-util-visit": "^1.4.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
