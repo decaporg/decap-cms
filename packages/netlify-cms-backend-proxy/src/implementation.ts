@@ -10,6 +10,7 @@ import {
   APIError,
   unsentRequest,
   UnpublishedEntry,
+  blobToFileObj,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 
@@ -38,8 +39,8 @@ const deserializeMediaFile = ({ id, content, encoding, path, name }: MediaFile) 
       byteArray[i] = decodedContent.charCodeAt(i);
     }
   }
-  const options = name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
-  const file = new File([byteArray], name, options);
+  const blob = new Blob([byteArray]);
+  const file = blobToFileObj(name, blob);
   const url = URL.createObjectURL(file);
   return { id, name, path, file, size: file.size, url, displayURL: url };
 };
