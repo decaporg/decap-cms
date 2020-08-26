@@ -72,8 +72,8 @@
     "yaml": "^1.8.3"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",

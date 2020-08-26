@@ -25,8 +25,8 @@
     "react-datetime": "^2.16.3"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
     "moment": "^2.24.0",
     "netlify-cms-ui-default": "^2.6.0",
     "prop-types": "^15.7.2",
