@@ -14,7 +14,7 @@
   "homepage": "https://www.netlifycms.org/",
   "license": "MIT",
   "dependencies": {
-    "@emotion/core": "^10.0.28",
+    "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
     "dayjs": "^1.8.23",
     "emotion-theming": "^10.0.27",

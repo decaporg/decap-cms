@@ -25,8 +25,8 @@
     "react-sortable-hoc": "^1.0.0"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "netlify-cms-lib-widgets": "^1.0.0",

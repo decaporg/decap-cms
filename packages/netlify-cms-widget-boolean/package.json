@@ -21,7 +21,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.9",
+    "@emotion/core": "^10.0.35",
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.6.0",
     "prop-types": "^15.7.2",

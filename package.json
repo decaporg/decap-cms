@@ -178,7 +178,7 @@
   },
   "private": true,
   "dependencies": {
-    "@emotion/babel-preset-css-prop": "^10.0.9",
+    "@emotion/babel-preset-css-prop": "^10.0.27",
     "emotion": "^10.0.9",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-babel": "^5.3.0",
