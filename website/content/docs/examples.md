@@ -2,7 +2,6 @@
 title: Examples
 group: contributing
 weight: 110
-
 ---
 
 Do you have a great, open source example? Submit a pull request to this page!
@@ -28,3 +27,4 @@ Example | Tools | Type | Source | More info |
 [Next.js demo](https://netlifycms-nextjs.netlify.com) | Next.js | blog | [masives/netlifycms-nextjs](https://github.com/masives/netlifycms-nextjs) | [read me](https://github.com/masives/netlifycms-nextjs)
 [Delog - JAMStack Blog with Netlify CMS](https://delog-w3layouts.netlify.com/) | Gatsby, Netlify-CMS | demo | [W3Layouts/gatsby-starter-delog](https://github.com/W3Layouts/gatsby-starter-delog) | [blog post](https://w3layouts.com/articles/delog-gatsby-starter-netlify-cms/)
 [Netlify CMS template for Gridsome](https://netlifycms-gridsome.suits.at/) | Gridsome, Vue | demo | [suits-at/netlifycms-gridsome](https://github.com/suits-at/netlifycms-gridsome) | [read me](https://github.com/suits-at/netlifycms-gridsome)
+[Next.js blogging template for Netlify](https://nextjs-netlify-blog-template.netlify.app/) | Next.js, Netlify | blog | [wutali/nextjs-netlify-blog-template](https://github.com/wutali/nextjs-netlify-blog-template) | [read me](https://github.com/wutali/nextjs-netlify-blog-template)
