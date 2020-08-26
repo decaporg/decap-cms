@@ -102,7 +102,7 @@
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
     "all-contributors-cli": "^6.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^11.0.0-beta.2",
     "babel-jest": "^26.0.0",
