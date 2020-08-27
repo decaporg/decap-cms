@@ -107,7 +107,7 @@ Now you can go ahead and deploy to Netlify. Go to your Netlify dashboard and cli
 
 You've already added the Netlify Identity widget to our `admin/index.html`. The next thing to do is add the Netlify Identity widget to our site's index page. In `pages/index.vue`, we can add the following to the page `<script>` tag:
 
-```js
+```javascript
 export default {
   head() {
     return {
@@ -131,21 +131,23 @@ Back in your [Netlify dashboard](https://app.netlify.com/):
 4. Scroll down to **Services** and click **Enable Git Gateway**.
 
 **Accessing the CMS**
-Once you've reached this point, you should be able to access the CMS in your browser at `http://localhost:3000/admin`. You'll be prompted to add the URL of your Netlify site. Once you've added that URL, you can log in with an Identity account or with one of the External Providers you enabled in step 3 above. For the sake of this tutorial, you can create a blog post in the CMS, and publish it! Once you `git pull` in your project, the blog post will show up in the project at `assets/content/blog/<slugified-blog-post-title>.json`.
+Once you've reached this point, you should be able to access the CMS in your browser at `http://localhost:3000/admin`. You'll be prompted to add the URL of your Netlify site. Once you've added that URL, you can log in with an Identity account or with one of the External Providers you enabled in step 3 above. For the sake of this tutorial, you can create a blog post in the CMS, and publish it! Once you `git pull` in your project, the blog post will show up in the project at `content/blog/<slugified-blog-post-title>.json`.
 
 ## Using nuxt/content
+
 Netlify CMS and [nuxt/content](https://content.nuxtjs.org) module just click together and complement each other to give you best authoring experience and developer experience respectively.
 
 Adding nuxt/content dependency
+
 ```javascript
 yarn add @nuxt/content
 or
 npm i @nuxt/content
+```
 
-````
 Then, add @nuxt/content to the modules section of nuxt.config.js:
 
-````javascript
+```javascript
 {
   modules: [
     '@nuxt/content'
@@ -154,13 +156,17 @@ Then, add @nuxt/content to the modules section of nuxt.config.js:
     // Options
   }
 }
-````
+```
+
 By adding nuxt content module you get `$content` injected into your whole app which you can use to fetch content from your content folder using `simple fetch api` or `nuxt asyncData` option.
 <br />
 This also gives a `<nuxt-content>` component which helps you display markdowm content with ease and also gives option of live editing in dev mode.
+
 ### Example Blog Post List
+
 `nuxt/content` module gives us `$content` which we can use to fetch the list of blog posts in `content/blog` directory.
-````javascript
+
+```javascript
 <template>
     <li v-for="post of posts" :key="post.slug">
       <NuxtLink :to="post.slug">{{ post.title }}</NuxtLink>
@@ -178,11 +184,13 @@ export default {
   },
 };
 </script>
-````
-### Example Blog Post
-To generate blog posts create _slug.vue file in the pages folder. by using `$content` you would get a json which you can use to display. But if you are using `markdown` to write your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features]().
+```
 
-````javascript
+### Example Blog Post
+
+To generate blog posts create _slug.vue file in the pages folder. by using `$content` you would get a json which you can use to display. But if you are using `markdown` to write your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features](<>).
+
+```javascript
 <template>
   <div>
     <h2>{{ post.title }}</h2>
@@ -207,21 +215,20 @@ export default {
   },
 };
 </script>
-````
+```
 
 ### Generating pages with the `generate` property
 
-
 Since Nuxt 2.13+, nuxt export has a crawler feature integrated which will crawl all your links and generate your routes based on those links. Therefore you do not need to do anything in order for your dynamic routes to be crawled. i.e, if you are on version of nuxt above 2.14 add target as static in nuxt.config.js and use `nuxt generate` to build your static site.
-
 
 ```javascript
 // nuxt.config.js
 target: 'static'
 ```
+
 If you are using nuxt version below 2.14 you have to use generate option in nuxt/content module to generate pages
 
-````javascript
+```javascript
 //nux.config.js
 export default {
   modules: [,
@@ -236,21 +243,20 @@ export default {
     }
   }
 }
-````
-
+```
 
 To render your site as a static site, you'll need to create or update the `generate` property in `nuxt.config.js` to create dynamic routes and provide their content as a `payload`. In `generate`, make your `routes` entry a function:
 
-```js
+```javascript
 export default {
   generate: {
     routes: function() {
       const fs = require('fs');
       const path = require('path');
-      return fs.readdirSync('./assets/content/blog').map(file => {
+      return fs.readdirSync('./content/blog').map(file => {
         return {
           route: `/blog/${path.parse(file).name}`, // Return the slug
-          payload: require(`./assets/content/blog/${file}`),
+          payload: require(`./content/blog/${file}`),
         };
       });
     },
