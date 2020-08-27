@@ -107,7 +107,7 @@ Now you can go ahead and deploy to Netlify. Go to your Netlify dashboard and cli
 
 You've already added the Netlify Identity widget to our `admin/index.html`. The next thing to do is add the Netlify Identity widget to our site's index page. In `pages/index.vue`, we can add the following to the page `<script>` tag:
 
-```js
+```javascript
 export default {
   head() {
     return {
@@ -247,7 +247,7 @@ export default {
 
 To render your site as a static site, you'll need to create or update the `generate` property in `nuxt.config.js` to create dynamic routes and provide their content as a `payload`. In `generate`, make your `routes` entry a function:
 
-```js
+```javascript
 export default {
   generate: {
     routes: function() {
