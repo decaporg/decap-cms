@@ -180,9 +180,6 @@ export function applyDefaults(config) {
             const backend = resolveBackend(config);
             const defaultSortable = selectDefaultSortableFields(collection, backend);
             collection = collection.set('sortable_fields', fromJS(defaultSortable));
-          } else if (collection.has('sortableFields')) {
-            collection = collection.set('sortable_fields', collection.get('sortableFields'));
-            delete collection['sortableFields'];
           }
 
           if (!collection.has('view_filters')) {
