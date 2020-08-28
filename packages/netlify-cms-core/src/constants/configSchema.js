@@ -181,6 +181,12 @@ const getConfigSchema = () => ({
             },
           },
           fields: fieldsConfig(),
+          sortable_fields: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
           sortableFields: {
             type: 'array',
             items: {
@@ -215,6 +221,9 @@ const getConfigSchema = () => ({
         },
         required: ['name', 'label'],
         oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
+        not: {
+          required: ['sortable_fields', 'sortableFields'],
+        },
         if: { required: ['extension'] },
         then: {
           // Cannot infer format from extension.

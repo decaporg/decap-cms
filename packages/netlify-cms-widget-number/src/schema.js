@@ -1,7 +1,7 @@
 export default {
   properties: {
     step: { type: 'number' },
-    valueType: { type: 'string' },
+    value_type: { type: 'string' },
     min: { type: 'number' },
     max: { type: 'number' },
   },

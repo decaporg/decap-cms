@@ -1,12 +1,12 @@
 export default {
   properties: {
     collection: { type: 'string' },
-    valueField: { type: 'string' },
-    searchFields: { type: 'array', minItems: 1, items: { type: 'string' } },
+    value_field: { type: 'string' },
+    search_fields: { type: 'array', minItems: 1, items: { type: 'string' } },
     file: { type: 'string' },
     multiple: { type: 'boolean' },
-    displayFields: { type: 'array', minItems: 1, items: { type: 'string' } },
-    optionsLength: { type: 'integer' },
+    display_fields: { type: 'array', minItems: 1, items: { type: 'string' } },
+    options_length: { type: 'integer' },
   },
-  required: ['collection', 'valueField', 'searchFields'],
+  required: ['collection', 'value_field', 'search_fields'],
 };
