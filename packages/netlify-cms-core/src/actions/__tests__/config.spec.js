@@ -1,6 +1,12 @@
 import { fromJS } from 'immutable';
 import { stripIndent } from 'common-tags';
-import { parseConfig, applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
+import {
+  parseConfig,
+  normalizedConfig,
+  applyDefaults,
+  detectProxyServer,
+  handleLocalBackend,
+} from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.mock('coreSrc/backend', () => {
@@ -417,50 +423,52 @@ describe('config', () => {
     test('should convert camel case to snake case', () => {
       expect(
         applyDefaults(
-          fromJS({
-            collections: [
-              {
-                sortableFields: ['title'],
-                folder: 'src',
-                identifier_field: 'datetime',
-                fields: [
-                  {
-                    name: 'datetime',
-                    widget: 'datetime',
-                    dateFormat: 'YYYY/MM/DD',
-                    timeFormat: 'HH:mm',
-                    pickerUtc: true,
-                  },
-                  {
-                    widget: 'number',
-                    valueType: 'float',
-                  },
-                ],
-              },
-              {
-                sortableFields: [],
-                files: [
-                  {
-                    name: 'file',
-                    file: 'src/file.json',
-                    fields: [
-                      {
-                        widget: 'markdown',
-                        editorComponents: ['code'],
-                      },
-                      {
-                        widget: 'relation',
-                        valueField: 'title',
-                        searchFields: ['title'],
-                        displayFields: ['title'],
-                        optionsLength: 5,
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          }),
+          normalizedConfig(
+            fromJS({
+              collections: [
+                {
+                  sortableFields: ['title'],
+                  folder: 'src',
+                  identifier_field: 'datetime',
+                  fields: [
+                    {
+                      name: 'datetime',
+                      widget: 'datetime',
+                      dateFormat: 'YYYY/MM/DD',
+                      timeFormat: 'HH:mm',
+                      pickerUtc: true,
+                    },
+                    {
+                      widget: 'number',
+                      valueType: 'float',
+                    },
+                  ],
+                },
+                {
+                  sortableFields: [],
+                  files: [
+                    {
+                      name: 'file',
+                      file: 'src/file.json',
+                      fields: [
+                        {
+                          widget: 'markdown',
+                          editorComponents: ['code'],
+                        },
+                        {
+                          widget: 'relation',
+                          valueField: 'title',
+                          searchFields: ['title'],
+                          displayFields: ['title'],
+                          optionsLength: 5,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          ),
         ).toJS(),
       ).toEqual({
         public_folder: '/',
