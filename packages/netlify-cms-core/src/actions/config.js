@@ -58,6 +58,42 @@ const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
 
+export function normalizedConfig(config) {
+  return Map(config).withMutations(map => {
+    map.set(
+      'collections',
+      map.get('collections').map(collection => {
+        const folder = collection.get('folder');
+        if (folder) {
+          collection = collection.set(
+            'fields',
+            traverseFields(collection.get('fields'), setSnakeCaseConfig),
+          );
+        }
+
+        const files = collection.get('files');
+        if (files) {
+          collection = collection.set(
+            'files',
+            files.map(file => {
+              file = file.set('fields', traverseFields(file.get('fields'), setSnakeCaseConfig));
+              return file;
+            }),
+          );
+        }
+
+        if (collection.has('sortableFields')) {
+          collection = collection
+            .set('sortable_fields', collection.get('sortableFields'))
+            .delete('sortableFields');
+        }
+
+        return collection;
+      }),
+    );
+  });
+}
+
 export function applyDefaults(config) {
   return Map(defaults)
     .mergeDeep(config)
@@ -309,7 +345,7 @@ export function loadConfig() {
 
       mergedConfig = await handleLocalBackend(mergedConfig);
 
-      const config = applyDefaults(mergedConfig);
+      const config = applyDefaults(normalizedConfig(mergedConfig));
 
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());
