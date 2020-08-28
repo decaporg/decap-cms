@@ -32,23 +32,22 @@ const setDefaultPublicFolder = map => {
 };
 
 const setSnakeCaseConfig = field => {
-  // List of options that are still using camelCase
-  const widgetKeyMap = new Map([
-    ['date_format', 'dateFormat'],
-    ['time_format', 'timeFormat'],
-    ['picker_utc', 'pickerUtc'],
-    ['editor_components', 'editorComponents'],
-    ['value_type', 'valueType'],
-    ['value_field', 'valueField'],
-    ['search_fields', 'searchFields'],
-    ['display_fields', 'displayFields'],
-    ['options_length', 'optionsLength'],
-  ]);
+  // Mapping between existing camelCase and its snake_case counterpart
+  const widgetKeyMap = {
+    dateFormat: 'date_format',
+    timeFormat: 'time_format',
+    pickerUtc: 'picker_utc',
+    editorComponents: 'editor_components',
+    valueType: 'value_type',
+    valueField: 'value_field',
+    searchFields: 'search_fields',
+    displayFields: 'display_fields',
+    optionsLength: 'options_length',
+  };
 
-  widgetKeyMap.forEach((value, key) => {
-    if (field.has(value)) {
-      field.set(key, field.get(value));
-      delete field[value];
+  Object.entries(widgetKeyMap).forEach(([camel, snake]) => {
+    if (field.has(camel)) {
+      field = field.set(snake, field.get(camel));
     }
   });
   return field;
