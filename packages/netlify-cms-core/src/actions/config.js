@@ -48,6 +48,11 @@ const setSnakeCaseConfig = field => {
   Object.entries(widgetKeyMap).forEach(([camel, snake]) => {
     if (field.has(camel)) {
       field = field.set(snake, field.get(camel));
+      console.warn(
+        `Field ${field.get(
+          'name',
+        )} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
+      );
     }
   });
   return field;
@@ -57,7 +62,7 @@ const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
 
-export function normalizedConfig(config) {
+export function normalizeConfig(config) {
   return Map(config).withMutations(map => {
     map.set(
       'collections',
@@ -85,6 +90,12 @@ export function normalizedConfig(config) {
           collection = collection
             .set('sortable_fields', collection.get('sortableFields'))
             .delete('sortableFields');
+
+          console.warn(
+            `Collection ${collection.get(
+              'name',
+            )} is using a deprecated configuration 'sortableFields'. Please use 'sortable_fields'`,
+          );
         }
 
         return collection;
@@ -176,7 +187,7 @@ export function applyDefaults(config) {
             );
           }
 
-          if (!collection.has('sortable_fields') && !collection.has('sortableFields')) {
+          if (!collection.has('sortable_fields')) {
             const backend = resolveBackend(config);
             const defaultSortable = selectDefaultSortableFields(collection, backend);
             collection = collection.set('sortable_fields', fromJS(defaultSortable));
@@ -341,7 +352,7 @@ export function loadConfig() {
 
       mergedConfig = await handleLocalBackend(mergedConfig);
 
-      const config = applyDefaults(normalizedConfig(mergedConfig));
+      const config = applyDefaults(normalizeConfig(mergedConfig));
 
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());

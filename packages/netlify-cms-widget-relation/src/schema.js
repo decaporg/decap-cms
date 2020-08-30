@@ -8,5 +8,12 @@ export default {
     display_fields: { type: 'array', minItems: 1, items: { type: 'string' } },
     options_length: { type: 'integer' },
   },
-  required: ['collection', 'value_field', 'search_fields'],
+  oneOf: [
+    {
+      required: ['collection', 'value_field', 'search_fields'],
+    },
+    {
+      required: ['collection', 'valueField', 'searchFields'],
+    },
+  ],
 };

@@ -2,13 +2,14 @@ import { fromJS } from 'immutable';
 import { stripIndent } from 'common-tags';
 import {
   parseConfig,
-  normalizedConfig,
+  normalizeConfig,
   applyDefaults,
   detectProxyServer,
   handleLocalBackend,
 } from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
+jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.mock('coreSrc/backend', () => {
   return {
     resolveBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
@@ -423,7 +424,7 @@ describe('config', () => {
     test('should convert camel case to snake case', () => {
       expect(
         applyDefaults(
-          normalizedConfig(
+          normalizeConfig(
             fromJS({
               collections: [
                 {

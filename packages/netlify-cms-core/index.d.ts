@@ -61,8 +61,21 @@ declare module 'netlify-cms-core' {
 
     /** If widget === "datetime" */
     format?: string;
+    date_format?: boolean | string;
+    time_format?: boolean | string;
+    picker_utc?: boolean;
+
+    /**
+     * @deprecated Use date_format instead
+     */
     dateFormat?: boolean | string;
+    /**
+     * @deprecated Use time_format instead
+     */
     timeFormat?: boolean | string;
+    /**
+     * @deprecated Use picker_utc instead
+     */
     pickerUtc?: boolean;
 
     /** If widget === "file" || widget === "image" */
@@ -89,11 +102,21 @@ declare module 'netlify-cms-core' {
     /** If widget === "markdown" */
     minimal?: boolean;
     buttons?: CmsMarkdownWidgetButton[];
+    editor_components?: string[];
+
+    /**
+     * @deprecated Use editor_components instead
+     */
     editorComponents?: string[];
 
     /** If widget === "number" */
-    valueType?: 'int' | 'float' | string;
+    value_type?: 'int' | 'float' | string;
     step?: number;
+
+    /**
+     * @deprecated Use valueType instead
+     */
+    valueType?: 'int' | 'float' | string;
 
     /** If widget === "number" || widget === "select" */
     min?: number;
@@ -104,10 +127,27 @@ declare module 'netlify-cms-core' {
 
     /** If widget === "relation" */
     collection?: string;
-    valueField?: string;
-    searchFields?: string[];
+    value_field?: string;
+    search_fields?: string[];
     file?: string;
+    display_fields?: string[];
+    options_length?: number;
+
+    /**
+     * @deprecated Use value_field instead
+     */
+    valueField?: string;
+    /**
+     * @deprecated Use search_fields instead
+     */
+    searchFields?: string[];
+    /**
+     * @deprecated Use display_fields instead
+     */
     displayFields?: string[];
+    /**
+     * @deprecated Use options_length instead
+     */
     optionsLength?: number;
 
     /** If widget === "select" */
@@ -155,6 +195,11 @@ declare module 'netlify-cms-core' {
     path?: string;
     media_folder?: string;
     public_folder?: string;
+    sortable_fields?: string[];
+
+    /**
+     * @deprecated Use sortable_fields instead
+     */
     sortableFields?: string[];
   }
 
