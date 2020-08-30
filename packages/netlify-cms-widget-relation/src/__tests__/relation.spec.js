@@ -1,6 +1,5 @@
 import React from 'react';
 import { fromJS, Map } from 'immutable';
-import { last } from 'lodash';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
 
@@ -85,6 +84,10 @@ const generateHits = length => {
       collection: 'posts',
       data: { title: 'YAML post', slug: 'post-yaml', body: 'Body yaml' },
     },
+    {
+      collection: 'posts',
+      data: { title: 'JSON post', slug: 'post-json', body: 'Body json' },
+    },
   ];
 };
 
@@ -166,12 +169,14 @@ class RelationController extends React.Component {
       hits = nestedFileCollectionHits;
     } else if (file === 'simple_file') {
       hits = simpleFileCollectionHits;
-    } else if (term === 'YAML') {
-      hits = [last(queryHits)];
-    } else if (term === 'Nested') {
+    } else if (term === 'JSON post') {
+      hits = [queryHits[queryHits.length - 1]];
+    } else if (term === 'YAML' || term === 'YAML post') {
       hits = [queryHits[queryHits.length - 2]];
-    } else if (term === 'Deeply nested') {
+    } else if (term === 'Nested') {
       hits = [queryHits[queryHits.length - 3]];
+    } else if (term === 'Deeply nested') {
+      hits = [queryHits[queryHits.length - 4]];
     }
 
     hits = hits.slice(0, optionsLength);
@@ -411,24 +416,23 @@ describe('Relation widget', () => {
 
     it('should update metadata for initial preview', async () => {
       const field = fromJS({ ...fieldConfig, multiple: true });
-      const value = fromJS(['Post # 1', 'Post # 2']);
-      const { getByText, onChangeSpy, setQueryHitsSpy } = setup({ field, value });
-      const metadata1 = {
-        post: { posts: { 'Post # 1': { title: 'Post # 1', slug: 'post-number-1' } } },
+      const value = fromJS(['YAML post', 'JSON post']);
+      const { getByText, onChangeSpy } = setup({ field, value });
+      const metadata = {
+        post: {
+          posts: {
+            'YAML post': { title: 'YAML post', slug: 'post-yaml', body: 'Body yaml' },
+            'JSON post': { title: 'JSON post', slug: 'post-json', body: 'Body json' },
+          },
+        },
       };
-      const metadata2 = {
-        post: { posts: { 'Post # 2': { title: 'Post # 2', slug: 'post-number-2' } } },
-      };
-
-      setQueryHitsSpy(generateHits(2));
 
       await waitFor(() => {
-        expect(getByText('Post # 1 post-number-1')).toBeInTheDocument();
-        expect(getByText('Post # 2 post-number-2')).toBeInTheDocument();
+        expect(getByText('YAML post post-yaml')).toBeInTheDocument();
+        expect(getByText('JSON post post-json')).toBeInTheDocument();
 
-        expect(onChangeSpy).toHaveBeenCalledTimes(2);
-        expect(onChangeSpy).toHaveBeenCalledWith(value, metadata1);
-        expect(onChangeSpy).toHaveBeenCalledWith(value, metadata2);
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
+        expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
       });
     });
   });
