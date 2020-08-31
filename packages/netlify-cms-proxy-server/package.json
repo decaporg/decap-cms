@@ -37,7 +37,7 @@
     "@types/hapi__joi": "17.1.4",
     "@types/jest": "^26.0.0",
     "@types/morgan": "^1.7.37",
-    "@types/node": "^13.1.7",
+    "@types/node": "^13.13.15",
     "@types/vfile-message": "^2.0.0",
     "jest": "^26.1.0",
     "netlify-cms-lib-util": "^2.11.2",
