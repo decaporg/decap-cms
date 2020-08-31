@@ -3327,7 +3327,7 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.14.tgz#37daaf78069e7948520474c87b80092ea912520a"
   integrity sha512-Q5hTcfdudEL2yOmluA1zaSyPbzWPmJ3XfSWeP3RyoYvS9hnje1ZyagrZOuQ6+1nQC1Gw+7gap3pLNL3xL6UBug==
 
-"@types/js-base64@^2.3.1":
+"@types/js-base64@^2.3.2":
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/@types/js-base64/-/js-base64-2.3.2.tgz#266be882b28b52649b1d34db9515e54c8ef783f2"
   integrity sha512-iGjZEnheu9n53fhlU+QLovdKHsdwPJ79iammNM0opTEp18zcJ/nNAIthuMilJoDPNUQHoqRAJdDNI5rxHY4nkA==
