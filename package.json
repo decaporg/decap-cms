@@ -86,7 +86,7 @@
     "@babel/preset-typescript": "^7.10.4",
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^9.1.2",
-    "@octokit/rest": "^16.28.7",
+    "@octokit/rest": "^16.43.2",
     "@storybook/addon-actions": "^5.3.6",
     "@storybook/addon-links": "^5.3.6",
     "@storybook/react": "^5.3.6",
