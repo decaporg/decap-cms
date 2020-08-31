@@ -6632,9 +6632,9 @@ cyclist@^1.0.1:
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
 cypress-file-upload@^4.0.0:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-4.0.7.tgz#1136139bb3c660b9c39a69f231ac1da7785acaae"
-  integrity sha512-rFFmnoZ2bWyWFpSV09AhkSUgYEiVy70pcQ6nf/mGTMTrVHvKCCCIfRu3TbgVYHbgBq+0hqjfjQrtz4IbgH7qZA==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-4.1.1.tgz#952713c8104ab7008de99c65bd63f74b244fe4df"
+  integrity sha512-tX6UhuJ63rNgjdzxglpX+ZYf/bM6PDhFMtt1qCBljLtAgdearqyfD1AHqyh59rOHCjfM+bf6FA3o9b/mdaX6pw==
   dependencies:
     mime "^2.4.4"
 
