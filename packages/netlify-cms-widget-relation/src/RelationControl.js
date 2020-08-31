@@ -113,7 +113,7 @@ export default class RelationControl extends React.Component {
       const metadata = {};
       const allOptions = await Promise.all(
         initialSearchValues.map((v, index) => {
-          return query(forID, collection, [field.get('valueField')], v, file, 1).then(
+          return query(forID, collection, [field.get('value_field')], v, file, 1).then(
             ({ payload }) => {
               const hits = payload.response?.hits || [];
               const options = this.parseHitOptions(hits);
@@ -189,8 +189,8 @@ export default class RelationControl extends React.Component {
 
   parseHitOptions = hits => {
     const { field } = this.props;
-    const valueField = field.get('valueField');
-    const displayField = field.get('displayFields') || List([field.get('valueField')]);
+    const valueField = field.get('value_field');
+    const displayField = field.get('display_fields') || List([field.get('value_field')]);
     const options = hits.reduce((acc, hit) => {
       const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
       for (let i = 0; i < valuesPaths.length; i++) {
@@ -214,8 +214,8 @@ export default class RelationControl extends React.Component {
   loadOptions = debounce((term, callback) => {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
-    const searchFields = field.get('searchFields');
-    const optionsLength = field.get('optionsLength') || 20;
+    const searchFields = field.get('search_fields');
+    const optionsLength = field.get('options_length') || 20;
     const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
     const file = field.get('file');
 

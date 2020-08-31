@@ -201,9 +201,9 @@ fields:
       name: 'author',
       widget: 'relation',
       collection: 'authors',
-      displayFields: [display_name],
-      searchFields: [display_name],
-      valueField: 'name',
+      display_fields: [display_name],
+      search_fields: [display_name],
+      value_field: 'name',
     }
   - { label: 'Body', name: 'body', widget: 'markdown' }
 ```

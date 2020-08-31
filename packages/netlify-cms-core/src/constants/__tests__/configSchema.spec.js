@@ -183,22 +183,36 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
-    it('should throw if collections sortableFields is not a boolean or a string array', () => {
+    it('should throw if collections sortable_fields is not a boolean or a string array', () => {
       expect(() => {
-        validateConfig(merge({}, validConfig, { collections: [{ sortableFields: 'title' }] }));
-      }).toThrowError("'collections[0].sortableFields' should be array");
+        validateConfig(merge({}, validConfig, { collections: [{ sortable_fields: 'title' }] }));
+      }).toThrowError("'collections[0].sortable_fields' should be array");
     });
 
-    it('should allow sortableFields to be a string array', () => {
+    it('should allow sortable_fields to be a string array', () => {
       expect(() => {
-        validateConfig(merge({}, validConfig, { collections: [{ sortableFields: ['title'] }] }));
+        validateConfig(merge({}, validConfig, { collections: [{ sortable_fields: ['title'] }] }));
       }).not.toThrow();
     });
 
-    it('should allow sortableFields to be a an empty array', () => {
+    it('should allow sortable_fields to be a an empty array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ sortable_fields: [] }] }));
+      }).not.toThrow();
+    });
+
+    it('should allow sortableFields instead of sortable_fields', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ sortableFields: [] }] }));
       }).not.toThrow();
+    });
+
+    it('should throw if both sortable_fields and sortableFields exist', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, { collections: [{ sortable_fields: [], sortableFields: [] }] }),
+        );
+      }).toThrowError("'collections[0]' should NOT be valid");
     });
 
     it('should throw if collection names are not unique', () => {
@@ -285,14 +299,14 @@ describe('config', () => {
           name: 'relation',
           schema: {
             properties: {
-              searchFields: { type: 'array', items: { type: 'string' } },
-              displayFields: { type: 'array', items: { type: 'string' } },
+              search_fields: { type: 'array', items: { type: 'string' } },
+              display_fields: { type: 'array', items: { type: 'string' } },
             },
           },
         },
       ]);
 
-      it('should throw if nested relation displayFields and searchFields are not arrays', () => {
+      it('should throw if nested relation display_fields and search_fields are not arrays', () => {
         expect(() => {
           validateConfig(
             merge({}, validConfig, {
@@ -310,8 +324,8 @@ describe('config', () => {
                           name: 'relation',
                           label: 'relation',
                           widget: 'relation',
-                          displayFields: 'title',
-                          searchFields: 'title',
+                          display_fields: 'title',
+                          search_fields: 'title',
                         },
                       ],
                     },
@@ -320,10 +334,10 @@ describe('config', () => {
               ],
             }),
           );
-        }).toThrowError("'searchFields' should be array\n'displayFields' should be array");
+        }).toThrowError("'search_fields' should be array\n'display_fields' should be array");
       });
 
-      it('should not throw if nested relation displayFields and searchFields are arrays', () => {
+      it('should not throw if nested relation display_fields and search_fields are arrays', () => {
         expect(() => {
           validateConfig(
             merge({}, validConfig, {
@@ -341,8 +355,8 @@ describe('config', () => {
                           name: 'relation',
                           label: 'relation',
                           widget: 'relation',
-                          displayFields: ['title'],
-                          searchFields: ['title'],
+                          display_fields: ['title'],
+                          search_fields: ['title'],
                         },
                       ],
                     },

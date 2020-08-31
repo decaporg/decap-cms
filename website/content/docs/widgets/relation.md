@@ -10,13 +10,13 @@ The relation widget allows you to reference items from another collection. It pr
 - **Data type:** data type of the value pulled from the related collection item
 - **Options:**
   - `collection`: (**required**) name of the collection being referenced (string)
-  - `valueField`: (**required**) name of the field from the referenced collection whose value will be stored for the relation. For nested fields, separate each subfield with a `.` (e.g. `name.first`). For list fields use a wildcard `*` to target all list items (e.g. `categories.*`).
-  - `searchFields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value. Syntax to reference nested fields is similar to that of *valueField*.
+  - `value_field`: (**required**) name of the field from the referenced collection whose value will be stored for the relation. For nested fields, separate each subfield with a `.` (e.g. `name.first`). For list fields use a wildcard `*` to target all list items (e.g. `categories.*`).
+  - `search_fields`: (**required**) list of one or more names of fields in the referenced collection to search for the typed value. Syntax to reference nested fields is similar to that of *value_field*.
   - `file`: allows referencing a specific file when the collection being referenced is a files collection (string)
-  - `displayFields`: list of one or more names of fields in the referenced collection that will render in the autocomplete menu of the control. Defaults to `valueField`. Syntax to reference nested fields is similar to that of *valueField*.
+  - `display_fields`: list of one or more names of fields in the referenced collection that will render in the autocomplete menu of the control. Defaults to `value_field`. Syntax to reference nested fields is similar to that of *value_field*.
   - `default`: accepts any widget data type; defaults to an empty string
   - `multiple` : accepts a boolean, defaults to `false`
-  - `optionsLength`: accepts integer to override number of options presented to user. Defaults to `20`.
+  - `options_length`: accepts integer to override number of options presented to user. Defaults to `20`.
 - **Referencing a folder collection example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields with subfields "first" and "last" for the "name" field):
 
 ```yaml
@@ -24,9 +24,9 @@ The relation widget allows you to reference items from another collection. It pr
   name: "author"
   widget: "relation"
   collection: "authors"
-  searchFields: ["name.first", "twitterHandle"]
-  valueField: "name.first"
-  displayFields: ["twitterHandle", "followerCount"]
+  search_fields: ["name.first", "twitterHandle"]
+  value_field: "name.first"
+  display_fields: ["twitterHandle", "followerCount"]
 ```
 
 The generated UI input will search the authors collection by name and twitterHandle, and display each author's handle and follower count. On selection, the author name will be saved for the field.
@@ -38,9 +38,9 @@ The generated UI input will search the authors collection by name and twitterHan
   name: "author"
   widget: "relation"
   collection: "authors"
-  searchFields: ['name.first']
-  valueField: "{{slug}}"
-  displayFields: ["{{twitterHandle}} - {{followerCount}}"]
+  search_fields: ['name.first']
+  value_field: "{{slug}}"
+  display_fields: ["{{twitterHandle}} - {{followerCount}}"]
 ```
 
 The generated UI input will search the authors collection by name, and display each author's handle and follower count. On selection, the author entry slug will be saved for the field.
@@ -53,9 +53,9 @@ The generated UI input will search the authors collection by name, and display e
   widget: "relation"
   collection: "relation_files"
   file: "cities"
-  searchFields: ["cities.*.name"]
-  displayFields: ["cities.*.name"]
-  valueField: "cities.*.id"
+  search_fields: ["cities.*.name"]
+  display_fields: ["cities.*.name"]
+  value_field: "cities.*.id"
 ```
 
 The generated UI input will search the cities file by city name, and display each city's name. On selection, the city id will be saved for the field.

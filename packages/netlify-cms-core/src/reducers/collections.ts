@@ -245,6 +245,7 @@ export const traverseFields = (
   if (done()) {
     return fields;
   }
+
   fields = fields
     .map(f => {
       const field = updater(f as EntryField);
@@ -395,7 +396,7 @@ export const selectDefaultSortableFields = (collection: Collection, backend: Bac
 
 export const selectSortableFields = (collection: Collection, t: (key: string) => string) => {
   const fields = collection
-    .get('sortableFields')
+    .get('sortable_fields')
     .toArray()
     .map(key => {
       if (key === COMMIT_DATE) {

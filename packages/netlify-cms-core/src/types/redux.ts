@@ -183,7 +183,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
-  sortableFields: List<string>;
+  sortable_fields: List<string>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   nested?: Nested;
   meta?: Meta;

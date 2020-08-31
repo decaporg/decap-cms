@@ -22,6 +22,6 @@ export default {
         ],
       },
     },
-    editorComponents: { type: 'array', items: { type: 'string' } },
+    editor_components: { type: 'array', items: { type: 'string' } },
   },
 };

@@ -31,9 +31,78 @@ const setDefaultPublicFolder = map => {
   return map;
 };
 
+const setSnakeCaseConfig = field => {
+  // Mapping between existing camelCase and its snake_case counterpart
+  const widgetKeyMap = {
+    dateFormat: 'date_format',
+    timeFormat: 'time_format',
+    pickerUtc: 'picker_utc',
+    editorComponents: 'editor_components',
+    valueType: 'value_type',
+    valueField: 'value_field',
+    searchFields: 'search_fields',
+    displayFields: 'display_fields',
+    optionsLength: 'options_length',
+  };
+
+  Object.entries(widgetKeyMap).forEach(([camel, snake]) => {
+    if (field.has(camel)) {
+      field = field.set(snake, field.get(camel));
+      console.warn(
+        `Field ${field.get(
+          'name',
+        )} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
+      );
+    }
+  });
+  return field;
+};
+
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
+
+export function normalizeConfig(config) {
+  return Map(config).withMutations(map => {
+    map.set(
+      'collections',
+      map.get('collections').map(collection => {
+        const folder = collection.get('folder');
+        if (folder) {
+          collection = collection.set(
+            'fields',
+            traverseFields(collection.get('fields'), setSnakeCaseConfig),
+          );
+        }
+
+        const files = collection.get('files');
+        if (files) {
+          collection = collection.set(
+            'files',
+            files.map(file => {
+              file = file.set('fields', traverseFields(file.get('fields'), setSnakeCaseConfig));
+              return file;
+            }),
+          );
+        }
+
+        if (collection.has('sortableFields')) {
+          collection = collection
+            .set('sortable_fields', collection.get('sortableFields'))
+            .delete('sortableFields');
+
+          console.warn(
+            `Collection ${collection.get(
+              'name',
+            )} is using a deprecated configuration 'sortableFields'. Please use 'sortable_fields'`,
+          );
+        }
+
+        return collection;
+      }),
+    );
+  });
+}
 
 export function applyDefaults(config) {
   return Map(defaults)
@@ -118,10 +187,10 @@ export function applyDefaults(config) {
             );
           }
 
-          if (!collection.has('sortableFields')) {
+          if (!collection.has('sortable_fields')) {
             const backend = resolveBackend(config);
             const defaultSortable = selectDefaultSortableFields(collection, backend);
-            collection = collection.set('sortableFields', fromJS(defaultSortable));
+            collection = collection.set('sortable_fields', fromJS(defaultSortable));
           }
 
           if (!collection.has('view_filters')) {
@@ -283,7 +352,7 @@ export function loadConfig() {
 
       mergedConfig = await handleLocalBackend(mergedConfig);
 
-      const config = applyDefaults(mergedConfig);
+      const config = applyDefaults(normalizeConfig(mergedConfig));
 
       dispatch(configDidLoad(config));
       dispatch(authenticateUser());

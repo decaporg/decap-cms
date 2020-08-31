@@ -21,7 +21,7 @@ const renderWithRedux = (component, { store } = {}) => {
 };
 
 describe('Collection', () => {
-  const collection = fromJS({ name: 'pages', sortableFields: [], view_filters: [] });
+  const collection = fromJS({ name: 'pages', sortable_fields: [], view_filters: [] });
   const props = {
     collections: fromJS([collection]).toOrderedMap(),
     collection,

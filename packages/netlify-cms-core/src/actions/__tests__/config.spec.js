@@ -1,8 +1,15 @@
 import { fromJS } from 'immutable';
 import { stripIndent } from 'common-tags';
-import { parseConfig, applyDefaults, detectProxyServer, handleLocalBackend } from '../config';
+import {
+  parseConfig,
+  normalizeConfig,
+  applyDefaults,
+  detectProxyServer,
+  handleLocalBackend,
+} from '../config';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
+jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.mock('coreSrc/backend', () => {
   return {
     resolveBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
@@ -411,6 +418,119 @@ describe('config', () => {
             ).getIn(['collections', 0, 'publish']),
           ).toEqual(false);
         });
+      });
+    });
+
+    test('should convert camel case to snake case', () => {
+      expect(
+        applyDefaults(
+          normalizeConfig(
+            fromJS({
+              collections: [
+                {
+                  sortableFields: ['title'],
+                  folder: 'src',
+                  identifier_field: 'datetime',
+                  fields: [
+                    {
+                      name: 'datetime',
+                      widget: 'datetime',
+                      dateFormat: 'YYYY/MM/DD',
+                      timeFormat: 'HH:mm',
+                      pickerUtc: true,
+                    },
+                    {
+                      widget: 'number',
+                      valueType: 'float',
+                    },
+                  ],
+                },
+                {
+                  sortableFields: [],
+                  files: [
+                    {
+                      name: 'file',
+                      file: 'src/file.json',
+                      fields: [
+                        {
+                          widget: 'markdown',
+                          editorComponents: ['code'],
+                        },
+                        {
+                          widget: 'relation',
+                          valueField: 'title',
+                          searchFields: ['title'],
+                          displayFields: ['title'],
+                          optionsLength: 5,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }),
+          ),
+        ).toJS(),
+      ).toEqual({
+        public_folder: '/',
+        publish_mode: 'simple',
+        slug: { clean_accents: false, encoding: 'unicode', sanitize_replacement: '-' },
+        collections: [
+          {
+            sortable_fields: ['title'],
+            folder: 'src',
+            identifier_field: 'datetime',
+            fields: [
+              {
+                name: 'datetime',
+                widget: 'datetime',
+                date_format: 'YYYY/MM/DD',
+                dateFormat: 'YYYY/MM/DD',
+                time_format: 'HH:mm',
+                timeFormat: 'HH:mm',
+                picker_utc: true,
+                pickerUtc: true,
+              },
+              {
+                widget: 'number',
+                value_type: 'float',
+                valueType: 'float',
+              },
+            ],
+            meta: {},
+            publish: true,
+            view_filters: [],
+          },
+          {
+            sortable_fields: [],
+            files: [
+              {
+                name: 'file',
+                file: 'src/file.json',
+                fields: [
+                  {
+                    widget: 'markdown',
+                    editor_components: ['code'],
+                    editorComponents: ['code'],
+                  },
+                  {
+                    widget: 'relation',
+                    value_field: 'title',
+                    valueField: 'title',
+                    search_fields: ['title'],
+                    searchFields: ['title'],
+                    display_fields: ['title'],
+                    displayFields: ['title'],
+                    options_length: 5,
+                    optionsLength: 5,
+                  },
+                ],
+              },
+            ],
+            publish: true,
+            view_filters: [],
+          },
+        ],
       });
     });
   });
