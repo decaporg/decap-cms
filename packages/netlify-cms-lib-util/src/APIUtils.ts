@@ -5,11 +5,11 @@ export const MERGE_COMMIT_MESSAGE = 'Automatically generated. Merged on Netlify 
 const DEFAULT_NETLIFY_CMS_LABEL_PREFIX = 'netlify-cms/';
 const getLabelPrefix = (labelPrefix: string) => labelPrefix || DEFAULT_NETLIFY_CMS_LABEL_PREFIX;
 
-export const isCMSLabel = (label: string, labelPrefix = '') =>
+export const isCMSLabel = (label: string, labelPrefix: string) =>
   label.startsWith(getLabelPrefix(labelPrefix));
-export const labelToStatus = (label: string, labelPrefix = '') =>
+export const labelToStatus = (label: string, labelPrefix: string) =>
   label.substr(getLabelPrefix(labelPrefix).length);
-export const statusToLabel = (status: string, labelPrefix = '') =>
+export const statusToLabel = (status: string, labelPrefix: string) =>
   `${getLabelPrefix(labelPrefix)}${status}`;
 
 export const generateContentKey = (collectionName: string, slug: string) =>
