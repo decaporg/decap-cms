@@ -90,7 +90,7 @@
     "@storybook/addon-actions": "^5.3.6",
     "@storybook/addon-links": "^5.3.6",
     "@storybook/react": "^5.3.6",
-    "@testing-library/dom": "^7.22.2",
+    "@testing-library/dom": "^7.23.0",
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "^10.0.0",
     "@types/common-tags": "^1.8.0",
