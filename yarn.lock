@@ -3213,7 +3213,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/cors@^2.8.6":
+"@types/cors@^2.8.7":
   version "2.8.7"
   resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.7.tgz#ab2f47f1cba93bce27dfd3639b006cc0e5600889"
   integrity sha512-sOdDRU3oRS7LBNTIqwDkPJyq0lpHYcbMTt0TrjzsXbk/e37hcLTH6eZX7CdbDeN0yJJvzw9hFBZkbtCSbk/jAQ==
