@@ -151,7 +151,7 @@ export const isPreviewContext = (context: string, previewContext: string) => {
   if (previewContext) {
     return context === previewContext;
   }
-  return PREVIEW_CONTEXT_KEYWORDS.some((keyword) => context.includes(keyword));
+  return PREVIEW_CONTEXT_KEYWORDS.some(keyword => context.includes(keyword));
 };
 
 export enum PreviewState {
@@ -197,9 +197,9 @@ export const throwOnConflictingBranches = async (
   const possibleConflictingBranches = getConflictingBranches(branchName);
 
   const conflictingBranches = await Promise.all(
-    possibleConflictingBranches.map((b) =>
+    possibleConflictingBranches.map(b =>
       getBranch(b)
-        .then((b) => b.name)
+        .then(b => b.name)
         .catch(() => ''),
     ),
   );
