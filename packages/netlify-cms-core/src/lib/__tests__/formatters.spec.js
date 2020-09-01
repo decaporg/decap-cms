@@ -241,6 +241,34 @@ describe('formatters', () => {
       expect(prepareSlug(`sl'ug`)).toBe('slug');
     });
 
+    it('should remove double quotes', () => {
+      expect(prepareSlug(`s"lu"g`)).toBe('slug');
+    });
+
+    it('should remove curly quotes', () => {
+      expect(prepareSlug(`s‘lu’g`)).toBe('slug');
+    });
+
+    it('should remove curly double quotes', () => {
+      expect(prepareSlug(`s“lu”g`)).toBe('slug');
+    });
+
+    it('should remove double quotes', () => {
+      expect(prepareSlug(`s"lu"g`)).toBe('slug');
+    });
+
+    it('should remove commas', () => {
+      expect(prepareSlug(`slu,g`)).toBe('slug');
+    });
+
+    it('should remove exclamation marks', () => {
+      expect(prepareSlug(`slu!g`)).toBe('slug');
+    });
+
+    it('should remove question marks', () => {
+      expect(prepareSlug(`slu?g`)).toBe('slug');
+    });
+
     it('should replace periods with slashes', () => {
       expect(prepareSlug(`sl.ug`)).toBe('sl-ug');
     });

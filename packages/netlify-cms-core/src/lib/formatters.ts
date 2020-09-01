@@ -95,8 +95,8 @@ export const prepareSlug = (slug: string) => {
       // Convert slug to lower-case
       .toLocaleLowerCase()
 
-      // Remove single quotes.
-      .replace(/[']/g, '')
+      // Remove special characters.
+      .replace(/[!?,'"”’“‘]/g, '')
 
       // Replace periods with dashes.
       .replace(/[.]/g, '-')
