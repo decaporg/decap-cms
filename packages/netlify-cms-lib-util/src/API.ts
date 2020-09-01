@@ -69,7 +69,9 @@ export const requestWithBackoff = async (
     }
     return response;
   } catch (err) {
-    if (attempt <= 5) {
+    if (attempt > 5 || err.message === "Can't refresh access token when using implicit auth") {
+      throw err;
+    } else {
       if (!api.rateLimiter) {
         const timeout = err.resetSeconds || attempt * attempt;
         console.log(
@@ -87,8 +89,6 @@ export const requestWithBackoff = async (
         }, 1000 * timeout);
       }
       return requestWithBackoff(api, req, attempt + 1);
-    } else {
-      throw err;
     }
   }
 };
