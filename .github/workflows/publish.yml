@@ -64,3 +64,5 @@ jobs:
           CHANNEL_ID: ${{secrets.CHANNEL_ID}}
           PUBLISH_COMMAND: "yarn\npublish:ci"
           CODE_PATTERN: 'Enter OTP'
+          # 40 minutes for the entire command, 20 minutes for waiting for 2FA
+          TIMEOUT: '2400000'
