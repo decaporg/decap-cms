@@ -1,7 +1,7 @@
 ---
 title: Configuration Options
 group: configuration
-weight: 23
+weight: 10
 ---
 
 ## Configuration File

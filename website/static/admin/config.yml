@@ -16,19 +16,44 @@ public_folder: /img
 docs_collection: &docs_collection
   folder: website/content/docs
   create: true
+  summary: '{{weight}} - {{title}}'
   preview_path: 'docs/{{slug}}'
+  sortableFields: ['weight', 'title']
   fields:
     - { label: Title, name: title }
-    - {
-        label: Group,
-        name: group,
-        widget: select,
-        options: [start, backends, features, reference, media, guides, customization, contributing],
-      }
-    - { label: Weight, name: weight, widget: number }
+    - label: Section
+      name: group
+      widget: relation
+      collection: settings
+      file: docs_settings
+      default: "Intro"
+      searchFields: ["menu.docs.*.name", "menu.docs.*.title"]
+      displayFields: ["menu.docs.*.title"]
+      valueField: "menu.docs.*.name"
+    - { label: 'Order', name: weight, widget: number }
     - { label: Body, name: body, widget: markdown }
 
 collections:
+  - label: Settings
+    name: settings
+    files:
+      - label: Documentation Settings
+        name: docs_settings
+        file: website/site.yml
+        fields:
+            - label: menu
+              name: menu
+              widget: object
+              fields:
+              - label: Sections
+                label_singular: Section
+                name: docs
+                widget: list
+                summary: '{{title}} ({{name}})'
+                fields:
+                  - { label: 'Full Name', name: 'title', widget: 'string' }
+                  - { label: 'Summary Name', name: 'name', widget: 'string' }
+
   - <<: *docs_collection
     name: docs_intro
     label: 'Docs: Intro'

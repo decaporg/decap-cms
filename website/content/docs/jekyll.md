@@ -1,7 +1,7 @@
 ---
 title: Jekyll
 group: guides
-weight: 20
+weight: 30
 ---
 
 ## Introduction
