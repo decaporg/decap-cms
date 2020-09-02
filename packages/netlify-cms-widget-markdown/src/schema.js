@@ -23,5 +23,12 @@ export default {
       },
     },
     editor_components: { type: 'array', items: { type: 'string' } },
+    mode: {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: ['raw', 'rich_text'],
+      },
+    },
   },
 };
