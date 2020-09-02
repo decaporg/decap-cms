@@ -1,6 +1,6 @@
 ---
 title: Configuration Overview
-group: contributing
+group: guides
 weight: 23
 ---
 
