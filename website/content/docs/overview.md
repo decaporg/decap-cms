@@ -16,7 +16,9 @@ All Netlify CMS configuration options are specified in a YAML file, located wher
 
 ## Why YAML?
 
-YAML is a simple and friendly language for creating nested data structures that are easy for humans to read. It can be written with indented "block formatting" similar to Python, or a more streamlined "inline formatting" with bracketing similar to JSON. You will commonly find a mix of  block and inline formatting styles in Netlify CMS configuration files, and we recommend reviewing these resources to understand the differences:
+YAML is a simple language for creating nested data structures that are easy for humans to read. It can be written with indented "block formatting" similar to Python, or a more bracketed  "inline formatting" similar to JSON.
+
+You will commonly find a mix of block and inline formatting styles in Netlify CMS configuration files, and we recommend reviewing these resources if you have not worked with YAML before:
 
 • [YAML Basic Formatting](https://en.wikipedia.org/wiki/YAML#Basic_components)
 
@@ -28,7 +30,7 @@ YAML is a simple and friendly language for creating nested data structures that 
 
 ## Try It Out!
 
-You can check out the Netlify CMS demo site [](https://cms-demo.netlify.com)below for a live example, and you can refer to its `config.yml` file to see how each option was configured.
+You can check out a live Netlify CMS demo site and refer to its `config.yml` file to see how each option was added and configured.
 
 [Netlify CMS Demo Site](https://cms-demo.netlify.com/)\
 Clicking "Login" will open a live demo site, no password required.
