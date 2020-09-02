@@ -1,6 +1,6 @@
 ---
-title: Overview
-group: start
+title: Configuration Overview
+group: contributing
 weight: 23
 ---
 
