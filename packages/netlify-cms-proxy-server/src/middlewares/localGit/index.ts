@@ -230,7 +230,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           if (branchExists) {
             const diffs = await getDiffs(git, branch, cmsBranch);
             const label = await git.raw(['config', branchDescription(cmsBranch)]);
-            const status = label && labelToStatus(label.trim(), cmsLabelPrefix);
+            const status = label && labelToStatus(label.trim(), cmsLabelPrefix || '');
             const unpublishedEntry = {
               collection,
               slug,
@@ -302,7 +302,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
 
               // add status for new entries
               if (!branchExists) {
-                const description = statusToLabel(options.status, cmsLabelPrefix);
+                const description = statusToLabel(options.status, cmsLabelPrefix || '');
                 await git.addConfig(branchDescription(cmsBranch), description);
               }
             });
@@ -319,7 +319,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           } = body.params as UpdateUnpublishedEntryStatusParams;
           const contentKey = generateContentKey(collection, slug);
           const cmsBranch = branchFromContentKey(contentKey);
-          const description = statusToLabel(newStatus, cmsLabelPrefix);
+          const description = statusToLabel(newStatus, cmsLabelPrefix || '');
           await git.addConfig(branchDescription(cmsBranch), description);
           res.json({ message: `${branch} description was updated to ${description}` });
           break;
