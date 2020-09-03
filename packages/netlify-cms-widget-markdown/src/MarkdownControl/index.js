@@ -40,9 +40,9 @@ export default class MarkdownControl extends React.Component {
     _getEditorComponents = props.getEditorComponents;
     this.state = {
       mode:
-        this.getAllowedMode().indexOf(preferredMode) !== -1
+        this.getAllowedModes().indexOf(preferredMode) !== -1
           ? preferredMode
-          : this.getAllowedMode()[0],
+          : this.getAllowedModes()[0],
       pendingFocus: false,
     };
   }
@@ -58,7 +58,7 @@ export default class MarkdownControl extends React.Component {
     this.setState({ pendingFocus: false });
   };
 
-  getAllowedMode = () => this.props.field.get('mode', List(['rich_text', 'raw'])).toArray();
+  getAllowedModes = () => this.props.field.get('modes', List(['rich_text', 'raw'])).toArray();
 
   render() {
     const {
@@ -74,7 +74,7 @@ export default class MarkdownControl extends React.Component {
     } = this.props;
 
     const { mode, pendingFocus } = this.state;
-    const isShowModeToggle = this.getAllowedMode().length > 1;
+    const isShowModeToggle = this.getAllowedModes().length > 1;
     const visualEditor = (
       <div className="cms-editor-visual" ref={this.processRef}>
         <VisualEditor
