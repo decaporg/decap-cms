@@ -90,7 +90,7 @@ export default class RawEditor extends React.Component {
   }, 150);
 
   handleToggleMode = () => {
-    this.props.onMode('visual');
+    this.props.onMode('rich_text');
   };
 
   processRef = ref => {
@@ -98,7 +98,7 @@ export default class RawEditor extends React.Component {
   };
 
   render() {
-    const { className, field, t } = this.props;
+    const { className, field, isShowModeToggle, t } = this.props;
     return (
       <RawEditorContainer>
         <EditorControlBar>
@@ -107,6 +107,7 @@ export default class RawEditor extends React.Component {
             buttons={field.get('buttons')}
             disabled
             rawMode
+            isShowModeToggle={isShowModeToggle}
             t={t}
           />
         </EditorControlBar>
@@ -139,5 +140,6 @@ RawEditor.propTypes = {
   className: PropTypes.string.isRequired,
   value: PropTypes.string,
   field: ImmutablePropTypes.map.isRequired,
+  isShowModeToggle: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
 };

@@ -64,6 +64,7 @@ export default class Toolbar extends React.Component {
     editorComponents: ImmutablePropTypes.list,
     onToggleMode: PropTypes.func.isRequired,
     rawMode: PropTypes.bool,
+    isShowModeToggle: PropTypes.bool.isRequired,
     plugins: ImmutablePropTypes.map,
     onSubmit: PropTypes.func,
     onAddAsset: PropTypes.func,
@@ -100,6 +101,7 @@ export default class Toolbar extends React.Component {
       onLinkClick,
       onToggleMode,
       rawMode,
+      isShowModeToggle,
       plugins,
       disabled,
       onSubmit,
@@ -252,15 +254,17 @@ export default class Toolbar extends React.Component {
             </ToolbarDropdownWrapper>
           )}
         </div>
-        <ToolbarToggle>
-          <ToolbarToggleLabel isActive={!rawMode} offPosition>
-            {t('editor.editorWidgets.markdown.richText')}
-          </ToolbarToggleLabel>
-          <StyledToggle active={rawMode} onChange={onToggleMode} />
-          <ToolbarToggleLabel isActive={rawMode}>
-            {t('editor.editorWidgets.markdown.markdown')}
-          </ToolbarToggleLabel>
-        </ToolbarToggle>
+        {isShowModeToggle && (
+          <ToolbarToggle>
+            <ToolbarToggleLabel isActive={!rawMode} offPosition>
+              {t('editor.editorWidgets.markdown.richText')}
+            </ToolbarToggleLabel>
+            <StyledToggle active={rawMode} onChange={onToggleMode} />
+            <ToolbarToggleLabel isActive={rawMode}>
+              {t('editor.editorWidgets.markdown.markdown')}
+            </ToolbarToggleLabel>
+          </ToolbarToggle>
+        )}
       </ToolbarContainer>
     );
   }
