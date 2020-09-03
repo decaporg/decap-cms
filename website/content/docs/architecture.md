@@ -1,7 +1,7 @@
 ---
 title: Architecture
 position: 90
-group: contributing
+group: Contributing
 weight: 200
 ---
 

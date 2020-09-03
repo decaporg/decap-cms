@@ -1,7 +1,7 @@
 ---
-title: Deploy Preview Links
-group: workflow
+group: Workflow
 weight: 10
+title: Deploy Preview Links
 ---
 When using the editorial workflow, content editors can create and save content without publishing it
 to a live site. Deploy preview links provide a way to view live content when it has not been

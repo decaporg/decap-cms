@@ -1,6 +1,6 @@
 ---
 title: Examples
-group: contributing
+group: Contributing
 weight: 110
 ---
 

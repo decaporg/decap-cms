@@ -1,6 +1,6 @@
 ---
 title: GitHub
-group: accounts
+group: Accounts
 weight: 30
 ---
 

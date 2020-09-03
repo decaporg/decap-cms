@@ -1,6 +1,6 @@
 ---
 title: Jekyll
-group: guides
+group: Guides
 weight: 30
 ---
 

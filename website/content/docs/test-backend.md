@@ -1,6 +1,6 @@
 ---
 title: Test
-group: accounts
+group: Accounts
 weight: 50
 ---
 

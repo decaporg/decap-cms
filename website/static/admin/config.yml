@@ -18,27 +18,27 @@ docs_collection: &docs_collection
   create: true
   summary: '{{weight}} - {{title}}'
   preview_path: 'docs/{{slug}}'
-  sortableFields: ['weight', 'title']
+  sortableFields: ['weight', 'title', 'group']
   fields:
-    - { label: Title, name: title }
     - label: Section
       name: group
       widget: relation
       collection: settings
-      file: docs_settings
-      default: "Intro"
+      file: docs_sections
       searchFields: ["menu.docs.*.name", "menu.docs.*.title"]
       displayFields: ["menu.docs.*.title"]
       valueField: "menu.docs.*.name"
     - { label: 'Order', name: weight, widget: number }
+    - { label: Title, name: title }
     - { label: Body, name: body, widget: markdown }
 
 collections:
   - label: Settings
     name: settings
+    hide: true
     files:
-      - label: Documentation Settings
-        name: docs_settings
+      - label: Docs Sections
+        name: docs_sections
         file: website/site.yml
         fields:
             - label: menu
@@ -59,61 +59,61 @@ collections:
     label: 'Docs: Intro'
     filter:
       field: group
-      value: intro
+      value: Intro
   - <<: *docs_collection
     name: docs_accounts
     label: 'Docs: Account'
     filter:
       field: group
-      value: accounts
+      value: Accounts
   - <<: *docs_collection
     name: docs_configuration
     label: 'Docs: Configuration'
     filter:
       field: group
-      value: configuration
+      value: Configuration
   - <<: *docs_collection
     name: docs_media
     label: 'Docs: Media'
     filter:
       field: group
-      value: media
+      value: Media
   - <<: *docs_collection
     name: docs_workflow
     label: 'Docs: Workflow'
     filter:
       field: group
-      value: workflow
+      value: Workflow
   - <<: *docs_collection
     name: docs_collections
     label: 'Docs: Collections'
     filter:
       field: group
-      value: collections
+      value: Collections
   - <<: *docs_collection
     name: docs_fields
     label: 'Docs: Fields'
     filter:
       field: group
-      value: fields
+      value: Fields
   - <<: *docs_collection
     name: docs_guides
     label: 'Docs: Guides'
     filter:
       field: group
-      value: guides
+      value: Guides
   - <<: *docs_collection
     name: docs_customization
     label: 'Docs: Customization'
     filter:
       field: group
-      value: customization
+      value: Customization
   - <<: *docs_collection
     name: docs_contributing
     label: 'Docs: Contributing'
     filter:
       field: group
-      value: contributing
+      value: Contributing
   - name: widget_docs
     label: 'Docs: Widgets'
     folder: website/content/docs/widgets

@@ -1,6 +1,6 @@
 ---
 title: Netlify Large Media
-group: media
+group: Media
 weight: 20
 ---
 

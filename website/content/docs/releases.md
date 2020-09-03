@@ -1,6 +1,6 @@
 ---
 title: Releases
-group: intro
+group: Intro
 weight: 4
 ---
 

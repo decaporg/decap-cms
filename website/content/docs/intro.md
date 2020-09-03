@@ -1,7 +1,7 @@
 ---
 title: Overview
 section: intro
-group: intro
+group: Intro
 weight: 1
 ---
 

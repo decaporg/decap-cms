@@ -1,7 +1,7 @@
 ---
-title: Overview
+group: Accounts
 weight: 1
-group: accounts
+title: Overview
 ---
 
 A backend is JavaScript code that allows Netlify CMS to communicate with a service that stores content - typically a Git host like GitHub or GitLab. It provides functions that Netlify CMS can use to do things like read and update files using API's provided by the service.

@@ -1,6 +1,6 @@
 ---
 title: NextJS
-group: guides
+group: Guides
 weight: 40
 ---
 This guide will help you get started using Netlify CMS with NextJS.

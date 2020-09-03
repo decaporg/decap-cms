@@ -1,22 +1,22 @@
 menu:
   docs:
-    - name: intro
+    - name: Intro
       title: Intro to Netlify CMS
-    - name: accounts
+    - name: Accounts
       title: Account Settings
-    - name: configuration
+    - name: Configuration
       title: Configuring your Site
-    - name: media
+    - name: Media
       title: Media
-    - name: workflow
+    - name: Workflow
       title: Workflow
-    - name: collections
+    - name: Collections
       title: Collections
-    - name: fields
+    - name: Fields
       title: Fields
-    - name: guides
+    - name: Guides
       title: Platform Guides
-    - name: customization
+    - name: Customization
       title: Customizing Netlify CMS
-    - name: contributing
+    - name: Contributing
       title: Community

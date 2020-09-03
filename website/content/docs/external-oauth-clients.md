@@ -1,6 +1,6 @@
 ---
 title: External OAuth Clients
-group: accounts
+group: Accounts
 weight: 60
 ---
 

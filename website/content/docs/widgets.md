@@ -1,6 +1,6 @@
 ---
 title: Widgets
-group: fields
+group: Fields
 weight: 10
 ---
 
