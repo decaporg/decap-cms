@@ -52,7 +52,7 @@ function getSelectedOptions(value) {
 }
 
 function uniqOptions(initial, current) {
-  return uniqBy(initial.concat(current), o => o.value);
+  return uniqBy(initial.concat(current), o => (o && o.value) || null);
 }
 
 function getSelectedValue({ value, options, isMultiple }) {
