@@ -41,7 +41,7 @@ interface Config {
   hasWriteAccess?: () => Promise<boolean>;
   squashMerges: boolean;
   initialWorkflowStatus: string;
-  cmsLabelPrefix?: string;
+  cmsLabelPrefix: string;
 }
 
 interface CommitAuthor {

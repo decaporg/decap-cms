@@ -41,7 +41,7 @@ export interface Config {
   repo?: string;
   squashMerges: boolean;
   initialWorkflowStatus: string;
-  cmsLabelPrefix?: string;
+  cmsLabelPrefix: string;
 }
 
 export interface CommitAuthor {
@@ -200,7 +200,7 @@ export default class API {
     this.repoURL = `/projects/${encodeURIComponent(this.repo)}`;
     this.squashMerges = config.squashMerges;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
-    this.cmsLabelPrefix = config.cmsLabelPrefix || '';
+    this.cmsLabelPrefix = config.cmsLabelPrefix;
   }
 
   withAuthorizationHeaders = (req: ApiRequest) => {

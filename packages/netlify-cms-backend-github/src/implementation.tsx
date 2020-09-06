@@ -112,7 +112,7 @@ export default class GitHub implements Implementation {
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
-    this.cmsLabelPrefix = config.netlify_cms_label_prefix || '';
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.useGraphql = config.backend.use_graphql || false;
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';

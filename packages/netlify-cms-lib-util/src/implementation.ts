@@ -89,11 +89,11 @@ export type Config = {
     proxy_url?: string;
     auth_type?: string;
     app_id?: string;
+    cms_label_prefix?: string;
   };
   media_folder: string;
   base_url?: string;
   site_id?: string;
-  netlify_cms_label_prefix?: string;
 };
 
 export interface Implementation {

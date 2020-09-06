@@ -78,6 +78,7 @@ export default class BitbucketBackend implements Implementation {
   authenticator?: NetlifyAuthenticator;
   _mediaDisplayURLSem?: Semaphore;
   squashMerges: boolean;
+  cmsLabelPrefix: string;
   previewContext: string;
   largeMediaURL: string;
   _largeMediaClientPromise?: Promise<GitLfsClient>;
@@ -113,6 +114,7 @@ export default class BitbucketBackend implements Implementation {
     this.token = '';
     this.mediaFolder = config.media_folder;
     this.squashMerges = config.backend.squash_merges || false;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
     this.authType = config.backend.auth_type || '';
@@ -166,6 +168,7 @@ export default class BitbucketBackend implements Implementation {
       branch: this.branch,
       repo: this.repo,
       squashMerges: this.squashMerges,
+      cmsLabelPrefix: this.cmsLabelPrefix,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
   }
@@ -189,6 +192,7 @@ export default class BitbucketBackend implements Implementation {
       repo: this.repo,
       apiRoot: this.apiRoot,
       squashMerges: this.squashMerges,
+      cmsLabelPrefix: this.cmsLabelPrefix,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
 

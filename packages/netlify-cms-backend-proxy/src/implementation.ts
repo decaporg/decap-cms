@@ -59,7 +59,7 @@ export default class ProxyBackend implements Implementation {
     this.proxyUrl = config.backend.proxy_url;
     this.mediaFolder = config.media_folder;
     this.options = options;
-    this.cmsLabelPrefix = config.netlify_cms_label_prefix || undefined;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix;
   }
 
   isGitBackend() {

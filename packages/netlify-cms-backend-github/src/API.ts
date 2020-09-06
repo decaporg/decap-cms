@@ -52,7 +52,7 @@ export interface Config {
   originRepo?: string;
   squashMerges: boolean;
   initialWorkflowStatus: string;
-  cmsLabelPrefix?: string;
+  cmsLabelPrefix: string;
 }
 
 interface TreeFile {
