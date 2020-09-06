@@ -213,6 +213,7 @@ declare module 'netlify-cms-core' {
     site_domain?: string;
     base_url?: string;
     auth_endpoint?: string;
+    cms_label_prefix?: string;
   }
 
   export interface CmsSlug {

@@ -82,6 +82,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
             id: Joi.string().optional(),
             collection: Joi.string().optional(),
             slug: Joi.string().optional(),
+            cmsLabelPrefix: Joi.string().optional(),
           })
           .required(),
       },
@@ -120,6 +121,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         is: 'persistEntry',
         then: defaultParams
           .keys({
+            cmsLabelPrefix: Joi.string().optional(),
             entry: Joi.object({
               slug: requiredString,
               path,
@@ -145,6 +147,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
             collection,
             slug,
             newStatus: requiredString,
+            cmsLabelPrefix: Joi.string().optional(),
           })
           .required(),
       },

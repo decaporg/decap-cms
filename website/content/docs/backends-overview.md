@@ -18,6 +18,7 @@ Individual backends should provide their own configuration documentation, but th
 | `site_domain`   | `location.hostname` (or `cms.netlify.com` when on `localhost`) | Sets the `site_id` query param sent to the API endpoint. Non-Netlify auth setups will often need to set this for local development to work properly. |
 | `base_url`      | `https://api.netlify.com` (GitHub, Bitbucket) or `https://gitlab.com` (GitLab)                                     | OAuth client hostname (just the base domain, no path). **Required** when using an external OAuth server or self-hosted GitLab.                               |
 | `auth_endpoint` | `auth` (GitHub, Bitbucket) or `oauth/authorize` (GitLab)                  | Path to append to `base_url` for authentication requests. Optional.                                                                                  |
+| `cms_label_prefix` | `netlify-cms/` | Pull (or Merge) Requests label prefix when using editorial workflow. Optional. |
 
 ## Creating a New Backend
 

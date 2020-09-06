@@ -52,6 +52,7 @@ export interface Config {
   originRepo?: string;
   squashMerges: boolean;
   initialWorkflowStatus: string;
+  cmsLabelPrefix: string;
 }
 
 interface TreeFile {
@@ -132,8 +133,10 @@ type MediaFile = {
   path: string;
 };
 
-const withCmsLabel = (pr: GitHubPull) => pr.labels.some(l => isCMSLabel(l.name));
-const withoutCmsLabel = (pr: GitHubPull) => pr.labels.every(l => !isCMSLabel(l.name));
+const withCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
+  pr.labels.some(l => isCMSLabel(l.name, cmsLabelPrefix));
+const withoutCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
+  pr.labels.every(l => !isCMSLabel(l.name, cmsLabelPrefix));
 
 const getTreeFiles = (files: GitHubCompareFiles) => {
   const treeFiles = files.reduce((arr, file) => {
@@ -190,6 +193,7 @@ export default class API {
   originRepoURL: string;
   mergeMethod: string;
   initialWorkflowStatus: string;
+  cmsLabelPrefix: string;
 
   _userPromise?: Promise<GitHubUser>;
   _metadataSemaphore?: Semaphore;
@@ -215,6 +219,7 @@ export default class API {
     this.originRepoName = originRepoParts[1];
 
     this.mergeMethod = config.squashMerges ? 'squash' : 'merge';
+    this.cmsLabelPrefix = config.cmsLabelPrefix;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
@@ -527,18 +532,18 @@ export default class API {
         return {
           head: { sha: data.commit.sha },
           number: MOCK_PULL_REQUEST,
-          labels: [{ name: statusToLabel(this.initialWorkflowStatus) }],
+          labels: [{ name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) }],
           state: PullRequestState.Open,
         } as GitHubPull;
       } catch (e) {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
     } else {
-      pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name));
+      pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, this.cmsLabelPrefix));
       const cmsLabel =
         pullRequest.state === PullRequestState.Closed
-          ? { name: statusToLabel(this.initialWorkflowStatus) }
-          : { name: statusToLabel('pending_review') };
+          ? { name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) }
+          : { name: statusToLabel('pending_review', this.cmsLabelPrefix) };
 
       pullRequest.labels.push(cmsLabel as Octokit.PullsGetResponseLabelsItem);
       return pullRequest;
@@ -550,7 +555,9 @@ export default class API {
       const pullRequests = await this.getPullRequests(branch, PullRequestState.All, () => true);
       return this.getOpenAuthoringPullRequest(branch, pullRequests);
     } else {
-      const pullRequests = await this.getPullRequests(branch, PullRequestState.Open, withCmsLabel);
+      const pullRequests = await this.getPullRequests(branch, PullRequestState.Open, pr =>
+        withCmsLabel(pr, this.cmsLabelPrefix),
+      );
       if (pullRequests.length <= 0) {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
@@ -579,8 +586,10 @@ export default class API {
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
     const diffs = files.map(diffFromFile);
-    const label = pullRequest.labels.find(l => isCMSLabel(l.name)) as { name: string };
-    const status = labelToStatus(label.name);
+    const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix)) as {
+      name: string;
+    };
+    const status = labelToStatus(label.name, this.cmsLabelPrefix);
     const updatedAt = pullRequest.updated_at;
     return {
       collection,
@@ -823,7 +832,7 @@ export default class API {
       const pullRequests = await this.getPullRequests(
         undefined,
         PullRequestState.Open,
-        pr => !pr.head.repo.fork && withoutCmsLabel(pr),
+        pr => !pr.head.repo.fork && withoutCmsLabel(pr, this.cmsLabelPrefix),
       );
       let prCount = 0;
       for (const pr of pullRequests) {
@@ -838,10 +847,8 @@ export default class API {
         prCount = prCount + 1;
         await this.migratePullRequest(pr, `${prCount} of ${pullRequests.length}`);
       }
-      const cmsPullRequests = await this.getPullRequests(
-        undefined,
-        PullRequestState.Open,
-        withCmsLabel,
+      const cmsPullRequests = await this.getPullRequests(undefined, PullRequestState.Open, pr =>
+        withCmsLabel(pr, this.cmsLabelPrefix),
       );
       branches = cmsPullRequests.map(pr => pr.head.ref);
     }
@@ -1098,8 +1105,10 @@ export default class API {
 
   async setPullRequestStatus(pullRequest: GitHubPull, newStatus: string) {
     const labels = [
-      ...pullRequest.labels.filter(label => !isCMSLabel(label.name)).map(l => l.name),
-      statusToLabel(newStatus),
+      ...pullRequest.labels
+        .filter(label => !isCMSLabel(label.name, this.cmsLabelPrefix))
+        .map(l => l.name),
+      statusToLabel(newStatus, this.cmsLabelPrefix),
     ];
     await this.updatePullRequestLabels(pullRequest.number, labels);
   }
