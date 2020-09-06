@@ -34,40 +34,40 @@ describe('APIUtils', () => {
       expect(apiUtils.isCMSLabel('netlify-cms/draft', 'other/')).toBe(false);
     });
 
-    it('should return true for CMS label', () => {
+    it('should return true for CMS label when undefined prefix is passed', () => {
       expect(apiUtils.isCMSLabel('netlify-cms/draft', undefined)).toBe(true);
     });
   });
 
   describe('labelToStatus', () => {
-    it('should get status from label', () => {
+    it('should get status from label when default prefix is passed', () => {
       expect(apiUtils.labelToStatus('netlify-cms/draft', 'netlify-cms/')).toBe('draft');
     });
 
-    it('should get status from label', () => {
-      expect(apiUtils.labelToStatus('netlify-cms/draft', 'netlify-cms/')).toBe('draft');
+    it('should get status from label when custom prefix is passed', () => {
+      expect(apiUtils.labelToStatus('other/draft', 'other/')).toBe('draft');
     });
 
-    it('should get status from label', () => {
+    it('should get status from label when empty prefix is passed', () => {
       expect(apiUtils.labelToStatus('netlify-cms/draft', '')).toBe('draft');
     });
 
-    it('should get status from label', () => {
+    it('should get status from label when undefined prefix is passed', () => {
       expect(apiUtils.labelToStatus('netlify-cms/draft', undefined)).toBe('draft');
     });
   });
 
   describe('statusToLabel', () => {
-    it('should generate label from status', () => {
+    it('should generate label from status when default prefix is passed', () => {
       expect(apiUtils.statusToLabel('draft', 'netlify-cms/')).toBe('netlify-cms/draft');
     });
-    it('should generate label from status', () => {
+    it('should generate label from status when custom prefix is passed', () => {
       expect(apiUtils.statusToLabel('draft', 'other/')).toBe('other/draft');
     });
-    it('should generate label from status', () => {
+    it('should generate label from status when empty prefix is passed', () => {
       expect(apiUtils.statusToLabel('draft', '')).toBe('netlify-cms/draft');
     });
-    it('should generate label from status', () => {
+    it('should generate label from status when undefined prefix is passed', () => {
       expect(apiUtils.statusToLabel('draft', undefined)).toBe('netlify-cms/draft');
     });
   });
