@@ -216,7 +216,7 @@ export default class API {
     this.repoURL = this.repo ? `/repositories/${this.repo}` : '';
     this.mergeStrategy = config.squashMerges ? 'squash' : 'merge_commit';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
-    this.cmsLabelPrefix = config.cmsLabelPrefix || '';
+    this.cmsLabelPrefix = config.cmsLabelPrefix;
   }
 
   buildRequest = (req: ApiRequest) => {

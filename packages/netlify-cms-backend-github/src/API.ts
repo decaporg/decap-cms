@@ -219,7 +219,7 @@ export default class API {
     this.originRepoName = originRepoParts[1];
 
     this.mergeMethod = config.squashMerges ? 'squash' : 'merge';
-    this.cmsLabelPrefix = config.cmsLabelPrefix || '';
+    this.cmsLabelPrefix = config.cmsLabelPrefix;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
   }
 
