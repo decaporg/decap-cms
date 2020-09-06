@@ -148,7 +148,7 @@ export default class RelationControl extends React.Component {
     let metadata;
 
     if (Array.isArray(selectedOption)) {
-      this.setState({ initialOptions: selectedOption });
+      this.setState({ initialOptions: selectedOption.filter(Boolean) });
       value = selectedOption.map(optionToString);
       metadata =
         (!isEmpty(selectedOption) && {
@@ -161,7 +161,7 @@ export default class RelationControl extends React.Component {
         {};
       onChange(fromJS(value), metadata);
     } else {
-      this.setState({ initialOptions: [selectedOption] });
+      this.setState({ initialOptions: [selectedOption].filter(Boolean) });
       value = optionToString(selectedOption);
       metadata = selectedOption && {
         [field.get('name')]: {
