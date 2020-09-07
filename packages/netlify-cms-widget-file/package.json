@@ -33,6 +33,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0",
-    "uuid": "^3.3.2"
+    "uuid": "^8.0.0"
   }
 }
