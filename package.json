@@ -92,7 +92,7 @@
     "@storybook/react": "^5.3.6",
     "@testing-library/dom": "^7.24.1",
     "@testing-library/jest-dom": "^5.11.1",
-    "@testing-library/react": "^10.0.0",
+    "@testing-library/react": "^11.0.2",
     "@types/common-tags": "^1.8.0",
     "@types/jest": "^26.0.13",
     "@types/js-base64": "^2.3.1",
