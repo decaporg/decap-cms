@@ -4,7 +4,7 @@ const nodeExternals = require('webpack-node-externals');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const { NODE_ENV = 'production' } = process.env;
 
-const allowList = [/^netlify-cms-lib-util/];
+const allowlist = [/^netlify-cms-lib-util/];
 
 module.exports = {
   entry: { index: path.join('src', 'index.ts'), middlewares: path.join('src', 'middlewares.ts') },
@@ -29,9 +29,9 @@ module.exports = {
     ],
   },
   externals: [
-    nodeExternals({ whitelist: allowList }),
+    nodeExternals({ allowlist }),
     nodeExternals({
-      whitelist: allowList,
+      allowlist,
       modulesDir: path.resolve(__dirname, path.join('..', '..', 'node_modules')),
     }),
   ],
