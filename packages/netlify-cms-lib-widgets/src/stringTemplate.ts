@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { Map } from 'immutable';
 import { basename, extname } from 'path';
-import { get, trimEnd } from 'lodash';
+import { get, trimEnd, trim } from 'lodash';
 
 const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
@@ -115,7 +115,7 @@ export function compileStringTemplate(
   date: Date | undefined | null,
   identifier = '',
   data = Map<string, unknown>(),
-  processor?: (value: string) => string,
+  processor?: (value: string, key: string) => string,
 ) {
   let missingRequiredDate;
 
@@ -143,7 +143,7 @@ export function compileStringTemplate(
       }
 
       if (processor) {
-        return processor(replacement);
+        return processor(replacement, key);
       }
 
       return replacement;
@@ -179,6 +179,19 @@ export const addFileTemplateFields = (entryPath: string, fields: Map<string, str
   fields = fields.withMutations(map => {
     map.set('filename', filename);
     map.set('extension', extension === '' ? extension : extension.substr(1));
+  });
+
+  return fields;
+};
+
+export const addNestedPath = (nestedPath: string, fields: Map<string, string>) => {
+  if (!nestedPath) {
+    return fields;
+  }
+
+  fields = fields.withMutations(map => {
+    // Ensure the nested_path is always prefixed with a slash and has no trailing slash.
+    map.set('nested_path', `/${trim(nestedPath, '/')}`);
   });
 
   return fields;

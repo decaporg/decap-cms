@@ -18,6 +18,7 @@ const {
   SLUG_MISSING_REQUIRED_DATE,
   keyToPathArray,
   addFileTemplateFields,
+  addNestedPath,
 } = stringTemplate;
 
 const commitMessageTemplates = Map({
@@ -165,13 +166,17 @@ export const previewUrlFormatter = (
   const pathTemplate = collection.get('preview_path') as string;
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields);
+  fields = addNestedPath(entry.get('meta')?.get('path'), fields);
   const dateFieldName =
     collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
   const date = parseDateFromEntry((entry as unknown) as Map<string, unknown>, dateFieldName);
 
   // Prepare and sanitize slug variables only, leave the rest of the
   // `preview_path` template as is.
-  const processSegment = getProcessSegment(slugConfig);
+  const processSegment = (value: string, key: string) => {
+    // `nested_path` should not be sanitized
+    return key === 'nested_path' ? value : getProcessSegment(slugConfig)(value, key);
+  };
   let compiledPath;
 
   try {
@@ -208,6 +213,7 @@ export const summaryFormatter = (
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
 
   entryData = addFileTemplateFields(entry.get('path'), entryData);
+  entryData = addNestedPath(entry.get('meta')?.get('path'), entryData);
   // allow commit information in summary template
   if (entry.get('author') && !selectField(collection, COMMIT_AUTHOR)) {
     entryData = entryData.set(COMMIT_AUTHOR, entry.get('author'));
@@ -233,6 +239,7 @@ export const folderFormatter = (
 
   let fields = (entry.get('data') as Map<string, string>).set(folderKey, defaultFolder);
   fields = addFileTemplateFields(entry.get('path'), fields);
+  fields = addNestedPath(entry.get('meta')?.get('path'), fields);
 
   const date =
     parseDateFromEntry(
