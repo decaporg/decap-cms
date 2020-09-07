@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "common-tags": "^1.8.0",
-    "js-base64": "^2.5.1",
+    "js-base64": "^3.0.0",
     "semaphore": "^1.1.0",
     "what-the-diff": "^0.6.0"
   },
