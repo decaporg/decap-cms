@@ -20,7 +20,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
-    "js-base64": "^2.5.1",
+    "js-base64": "^3.0.0",
     "semaphore": "^1.1.0"
   },
   "peerDependencies": {
