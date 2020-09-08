@@ -20,6 +20,7 @@ export type UnpublishedEntryParams = {
   id?: string;
   collection?: string;
   slug?: string;
+  cmsLabelPrefix?: string;
 };
 
 export type UnpublishedEntryDataFileParams = {
@@ -45,6 +46,7 @@ export type UpdateUnpublishedEntryStatusParams = {
   collection: string;
   slug: string;
   newStatus: string;
+  cmsLabelPrefix?: string;
 };
 
 export type PublishUnpublishedEntryParams = {
@@ -57,6 +59,7 @@ export type Entry = { slug: string; path: string; raw: string; newPath?: string 
 export type Asset = { path: string; content: string; encoding: 'base64' };
 
 export type PersistEntryParams = {
+  cmsLabelPrefix?: string;
   entry: Entry;
   assets: Asset[];
   options: {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
+import { List } from 'immutable';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
@@ -34,9 +35,14 @@ export default class MarkdownControl extends React.Component {
   constructor(props) {
     super(props);
     editorControl = props.editorControl;
+    const preferredMode = localStorage.getItem(MODE_STORAGE_KEY) ?? 'rich_text';
+
     _getEditorComponents = props.getEditorComponents;
     this.state = {
-      mode: localStorage.getItem(MODE_STORAGE_KEY) || 'visual',
+      mode:
+        this.getAllowedModes().indexOf(preferredMode) !== -1
+          ? preferredMode
+          : this.getAllowedModes()[0],
       pendingFocus: false,
     };
   }
@@ -52,6 +58,8 @@ export default class MarkdownControl extends React.Component {
     this.setState({ pendingFocus: false });
   };
 
+  getAllowedModes = () => this.props.field.get('modes', List(['rich_text', 'raw'])).toArray();
+
   render() {
     const {
       onChange,
@@ -66,11 +74,13 @@ export default class MarkdownControl extends React.Component {
     } = this.props;
 
     const { mode, pendingFocus } = this.state;
+    const isShowModeToggle = this.getAllowedModes().length > 1;
     const visualEditor = (
       <div className="cms-editor-visual" ref={this.processRef}>
         <VisualEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
+          isShowModeToggle={isShowModeToggle}
           onMode={this.handleMode}
           getAsset={getAsset}
           className={classNameWrapper}
@@ -88,6 +98,7 @@ export default class MarkdownControl extends React.Component {
         <RawEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
+          isShowModeToggle={isShowModeToggle}
           onMode={this.handleMode}
           getAsset={getAsset}
           className={classNameWrapper}
@@ -98,6 +109,6 @@ export default class MarkdownControl extends React.Component {
         />
       </div>
     );
-    return mode === 'visual' ? visualEditor : rawEditor;
+    return mode === 'rich_text' ? visualEditor : rawEditor;
   }
 }

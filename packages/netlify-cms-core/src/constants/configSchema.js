@@ -78,6 +78,7 @@ const getConfigSchema = () => ({
           examples: ['repo', 'public_repo'],
           enum: ['repo', 'public_repo'],
         },
+        cms_label_prefix: { type: 'string', minLength: 1 },
         open_authoring: { type: 'boolean', examples: [true] },
       },
       required: ['name'],

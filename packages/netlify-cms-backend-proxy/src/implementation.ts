@@ -50,6 +50,7 @@ export default class ProxyBackend implements Implementation {
   mediaFolder: string;
   options: { initialWorkflowStatus?: string };
   branch: string;
+  cmsLabelPrefix?: string;
 
   constructor(config: Config, options = {}) {
     if (!config.backend.proxy_url) {
@@ -60,6 +61,7 @@ export default class ProxyBackend implements Implementation {
     this.proxyUrl = config.backend.proxy_url;
     this.mediaFolder = config.media_folder;
     this.options = options;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix;
   }
 
   isGitBackend() {
@@ -146,7 +148,7 @@ export default class ProxyBackend implements Implementation {
     try {
       const entry: UnpublishedEntry = await this.request({
         action: 'unpublishedEntry',
-        params: { branch: this.branch, id, collection, slug },
+        params: { branch: this.branch, id, collection, slug, cmsLabelPrefix: this.cmsLabelPrefix },
       });
 
       return entry;
@@ -190,6 +192,7 @@ export default class ProxyBackend implements Implementation {
         entry,
         assets,
         options: { ...options, status: options.status || this.options.initialWorkflowStatus },
+        cmsLabelPrefix: this.cmsLabelPrefix,
       },
     });
   }
@@ -197,7 +200,13 @@ export default class ProxyBackend implements Implementation {
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     return this.request({
       action: 'updateUnpublishedEntryStatus',
-      params: { branch: this.branch, collection, slug, newStatus },
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        newStatus,
+        cmsLabelPrefix: this.cmsLabelPrefix,
+      },
     });
   }
 

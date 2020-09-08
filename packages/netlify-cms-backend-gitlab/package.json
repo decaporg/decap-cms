@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-gitlab",
   "description": "GitLab backend for Netlify CMS",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
-    "js-base64": "^2.5.1",
+    "js-base64": "^3.0.0",
     "semaphore": "^1.1.0"
   },
   "peerDependencies": {

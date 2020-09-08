@@ -132,6 +132,7 @@ export default class GitGateway implements Implementation {
   api?: GitHubAPI | GitLabAPI | BitBucketAPI;
   branch: string;
   squashMerges: boolean;
+  cmsLabelPrefix: string;
   mediaFolder: string;
   transformImages: boolean;
   gatewayUrl: string;
@@ -159,6 +160,7 @@ export default class GitGateway implements Implementation {
     this.config = config;
     this.branch = config.backend.branch?.trim() || 'master';
     this.squashMerges = config.backend.squash_merges || false;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = config.media_folder;
     this.transformImages = config.backend.use_large_media_transforms_in_media_library || true;
 
@@ -332,6 +334,7 @@ export default class GitGateway implements Implementation {
         tokenPromise: this.tokenPromise!,
         commitAuthor: pick(userData, ['name', 'email']),
         squashMerges: this.squashMerges,
+        cmsLabelPrefix: this.cmsLabelPrefix,
         initialWorkflowStatus: this.options.initialWorkflowStatus,
       };
 

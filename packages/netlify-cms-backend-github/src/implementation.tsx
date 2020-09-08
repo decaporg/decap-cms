@@ -72,6 +72,7 @@ export default class GitHub implements Implementation {
   previewContext: string;
   token: string | null;
   squashMerges: boolean;
+  cmsLabelPrefix: string;
   useGraphql: boolean;
   _currentUserPromise?: Promise<GitHubUser>;
   _userIsOriginMaintainerPromises?: {
@@ -111,6 +112,7 @@ export default class GitHub implements Implementation {
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.useGraphql = config.backend.use_graphql || false;
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
@@ -297,6 +299,7 @@ export default class GitHub implements Implementation {
       originRepo: this.originRepo,
       apiRoot: this.apiRoot,
       squashMerges: this.squashMerges,
+      cmsLabelPrefix: this.cmsLabelPrefix,
       useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });

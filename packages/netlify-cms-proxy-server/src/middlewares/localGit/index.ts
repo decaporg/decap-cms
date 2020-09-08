@@ -222,7 +222,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           break;
         }
         case 'unpublishedEntry': {
-          let { id, collection, slug } = body.params as UnpublishedEntryParams;
+          let { id, collection, slug, cmsLabelPrefix } = body.params as UnpublishedEntryParams;
           if (id) {
             ({ collection, slug } = parseContentKey(id));
           }
@@ -232,7 +232,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           if (branchExists) {
             const diffs = await getDiffs(git, branch, cmsBranch);
             const label = await git.raw(['config', branchDescription(cmsBranch)]);
-            const status = label && labelToStatus(label.trim());
+            const status = label && labelToStatus(label.trim(), cmsLabelPrefix || '');
             const unpublishedEntry = {
               collection,
               slug,
@@ -276,7 +276,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           break;
         }
         case 'persistEntry': {
-          const { entry, assets, options } = body.params as PersistEntryParams;
+          const { entry, assets, options, cmsLabelPrefix } = body.params as PersistEntryParams;
           if (!options.useWorkflow) {
             await runOnBranch(git, branch, async () => {
               await commitEntry(git, repoPath, entry, assets, options.commitMessage);
@@ -304,7 +304,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
 
               // add status for new entries
               if (!branchExists) {
-                const description = statusToLabel(options.status);
+                const description = statusToLabel(options.status, cmsLabelPrefix || '');
                 await git.addConfig(branchDescription(cmsBranch), description);
               }
             });
@@ -313,10 +313,15 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           break;
         }
         case 'updateUnpublishedEntryStatus': {
-          const { collection, slug, newStatus } = body.params as UpdateUnpublishedEntryStatusParams;
+          const {
+            collection,
+            slug,
+            newStatus,
+            cmsLabelPrefix,
+          } = body.params as UpdateUnpublishedEntryStatusParams;
           const contentKey = generateContentKey(collection, slug);
           const cmsBranch = branchFromContentKey(contentKey);
-          const description = statusToLabel(newStatus);
+          const description = statusToLabel(newStatus, cmsLabelPrefix || '');
           await git.addConfig(branchDescription(cmsBranch), description);
           res.json({ message: `${branch} description was updated to ${description}` });
           break;

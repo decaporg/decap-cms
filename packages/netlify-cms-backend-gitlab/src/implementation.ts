@@ -52,6 +52,7 @@ export default class GitLab implements Implementation {
   apiRoot: string;
   token: string | null;
   squashMerges: boolean;
+  cmsLabelPrefix: string;
   mediaFolder: string;
   previewContext: string;
 
@@ -79,6 +80,7 @@ export default class GitLab implements Implementation {
     this.apiRoot = config.backend.api_root || 'https://gitlab.com/api/v4';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
@@ -117,6 +119,7 @@ export default class GitLab implements Implementation {
       repo: this.repo,
       apiRoot: this.apiRoot,
       squashMerges: this.squashMerges,
+      cmsLabelPrefix: this.cmsLabelPrefix,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     const user = await this.api.user();

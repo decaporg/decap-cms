@@ -15,6 +15,7 @@ _Please note:_ If you want to use your markdown editor to fill a markdown file c
   - `minimal`: accepts a boolean value, `false` by default. Sets the widget height to minimum possible.
   - `buttons`: an array of strings representing the formatting buttons to display (all shown by default). Buttons include: `bold`, `italic`, `code`, `link`, `heading-one`, `heading-two`, `heading-three`, `heading-four`, `heading-five`, `heading-six`, `quote`, `bulleted-list`, and `numbered-list`.
   - `editor_components`: an array of strings representing the names of editor components to display (all shown by default). The `image` and `code-block` editor components are included with Netlify CMS by default, but others may be [created and registered](/docs/custom-widgets/#registereditorcomponent).
+  - `modes`: an array of strings representing the names of allowed editor modes. Possible modes are `raw` and `rich_text`. If both modes are allowed, they can be toggled via a toggle button in the toolbar.
 - **Example:**
 
   ```yaml
