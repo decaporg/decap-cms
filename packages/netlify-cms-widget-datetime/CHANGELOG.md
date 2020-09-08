@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 2.6.3 (2020-09-08)
-
-
-### Bug Fixes
-
-* **deps:** update dependency immer to v7 ([#4276](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/issues/4276)) ([e73f38d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-datetime/commit/e73f38d5c260fd70cda38a3e842e21b99002503b))
-
-
-
-
-
 ## 2.6.2 (2020-08-20)
 
 
