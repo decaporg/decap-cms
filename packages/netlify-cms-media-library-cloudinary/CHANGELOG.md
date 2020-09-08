@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 1.3.7 (2020-09-08)
-
-
-### Reverts
-
-* Revert "chore(release): publish" ([3b83403](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-cloudinary/commit/3b834034518fd029530b069c507b8efed297edac))
-
-
-
-
-
 ## 1.3.6 (2020-08-20)
 
 
