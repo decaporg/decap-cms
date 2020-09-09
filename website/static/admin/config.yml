@@ -16,79 +16,104 @@ public_folder: /img
 docs_collection: &docs_collection
   folder: website/content/docs
   create: true
+  summary: '{{weight}} - {{title}}'
   preview_path: 'docs/{{slug}}'
+  sortableFields: ['weight', 'title', 'group']
   fields:
+    - label: Section
+      name: group
+      widget: relation
+      collection: settings
+      file: docs_sections
+      searchFields: ["menu.docs.*.name", "menu.docs.*.title"]
+      displayFields: ["menu.docs.*.title"]
+      valueField: "menu.docs.*.name"
+    - { label: 'Order', name: weight, widget: number }
     - { label: Title, name: title }
-    - {
-        label: Group,
-        name: group,
-        widget: select,
-        options: [start, backends, features, reference, media, guides, customization, contributing],
-      }
-    - { label: Weight, name: weight, widget: number }
     - { label: Body, name: body, widget: markdown }
 
 collections:
+  - label: Settings
+    name: settings
+    hide: true
+    files:
+      - label: Docs Sections
+        name: docs_sections
+        file: website/site.yml
+        fields:
+            - label: menu
+              name: menu
+              widget: object
+              fields:
+              - label: Sections
+                label_singular: Section
+                name: docs
+                widget: list
+                summary: '{{title}} ({{name}})'
+                fields:
+                  - { label: 'Full Name', name: 'title', widget: 'string' }
+                  - { label: 'Summary Name', name: 'name', widget: 'string' }
+
   - <<: *docs_collection
     name: docs_intro
     label: 'Docs: Intro'
     filter:
       field: group
-      value: intro
+      value: Intro
   - <<: *docs_collection
     name: docs_accounts
     label: 'Docs: Account'
     filter:
       field: group
-      value: accounts
+      value: Accounts
   - <<: *docs_collection
     name: docs_configuration
     label: 'Docs: Configuration'
     filter:
       field: group
-      value: configuration
+      value: Configuration
   - <<: *docs_collection
     name: docs_media
     label: 'Docs: Media'
     filter:
       field: group
-      value: media
+      value: Media
   - <<: *docs_collection
     name: docs_workflow
     label: 'Docs: Workflow'
     filter:
       field: group
-      value: workflow
+      value: Workflow
   - <<: *docs_collection
     name: docs_collections
     label: 'Docs: Collections'
     filter:
       field: group
-      value: collections
+      value: Collections
   - <<: *docs_collection
     name: docs_fields
     label: 'Docs: Fields'
     filter:
       field: group
-      value: fields
+      value: Fields
   - <<: *docs_collection
     name: docs_guides
     label: 'Docs: Guides'
     filter:
       field: group
-      value: guides
+      value: Guides
   - <<: *docs_collection
     name: docs_customization
     label: 'Docs: Customization'
     filter:
       field: group
-      value: customization
+      value: Customization
   - <<: *docs_collection
     name: docs_contributing
     label: 'Docs: Contributing'
     filter:
       field: group
-      value: contributing
+      value: Contributing
   - name: widget_docs
     label: 'Docs: Widgets'
     folder: website/content/docs/widgets

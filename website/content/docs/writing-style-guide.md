@@ -1,7 +1,7 @@
 ---
 title: Writing Style Guide
 weight: 30
-group: contributing
+group: Contributing
 ---
 
 # Netlify CMS Style Guide

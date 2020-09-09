@@ -1,7 +1,7 @@
 ---
 title: Middleman
-group: guides
-weight: 30
+group: Guides
+weight: 60
 ---
 This guide will help you get started using Netlify CMS and Middleman.
 

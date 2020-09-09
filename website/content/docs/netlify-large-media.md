@@ -1,7 +1,7 @@
 ---
 title: Netlify Large Media
-group: media
-weight: 10
+group: Media
+weight: 20
 ---
 
 [Netlify Large Media](https://www.netlify.com/features/large-media/) is a [Git LFS](https://git-lfs.github.com/) implementation for repositories connected to Netlify sites. This means that you can use Git to work with large asset files like images, audio, and video, without bloating your repository. It does this by replacing the asset files in your repository with text pointer files, then uploading the assets to the Netlify Large Media storage service.

@@ -1,6 +1,6 @@
 ---
 title: Hugo
-group: guides
+group: Guides
 weight: 20
 ---
 ## Introduction

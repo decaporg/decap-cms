@@ -1,7 +1,7 @@
 ---
 title: Nuxt
-group: guides
-weight: 20
+group: Guides
+weight: 50
 ---
 This guide will walk you through how to integrate Netlify CMS with Nuxt.
 

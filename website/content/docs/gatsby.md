@@ -1,7 +1,7 @@
 ---
 title: Gatsby
-group: guides
-weight: 20
+group: Guides
+weight: 10
 ---
 This guide will help you get started using Netlify CMS and Gatsby.
 

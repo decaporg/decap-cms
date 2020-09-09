@@ -1,6 +1,7 @@
 ---
 title: Open Authoring
-group: workflow
+group: Workflow
+weight: 20
 ---
 
 **This is a [beta feature](/docs/beta-features#open-authoring).**
