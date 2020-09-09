@@ -66,3 +66,4 @@ jobs:
           CODE_PATTERN: 'Enter OTP'
           # 40 minutes for the entire command, 20 minutes for waiting for 2FA
           TIMEOUT: '2400000'
+          REVERT_COMMAND: './scripts/revert_publish.sh'
