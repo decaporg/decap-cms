@@ -13,7 +13,7 @@ declare global {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const store = createStore<State, any, {}, {}>(
+const store = createStore<any, any, {}, {}>(
   createRootReducer(history),
   compose(
     applyMiddleware(
