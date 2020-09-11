@@ -31,8 +31,8 @@ editors:
 community:
   hook: "Supported by a growing&nbsp;community"
   features:
-    - feature: "Built on the JAMstack"
-      description: "Netlify CMS is based on client-side JavaScript, reusable APIs and prebuilt Markup. Compared to server-side CMS like WordPress, this means better performance, higher security, lower cost of scaling, and a better developer experience. You can learn more about the JAMstack on [jamstack.org](https://jamstack.org)."
+    - feature: "Built on the Jamstack"
+      description: "Netlify CMS is based on client-side JavaScript, reusable APIs and prebuilt Markup. Compared to server-side CMS like WordPress, this means better performance, higher security, lower cost of scaling, and a better developer experience. You can learn more about the Jamstack on [jamstack.org](https://jamstack.org)."
     - feature: "Support when you need it"
       description: "Get up and running with comprehensive [documentation](/docs) and templates or work through difficult problems in our [community chat](https://netlifycms.org/chat)."
     - feature: "A community-driven project you can help evolve"

@@ -4,7 +4,7 @@ weight: 20
 group: Contributing
 ---
 
-We're hoping that Netlify CMS will do for the [JAMstack](https://www.jamstack.org) what WordPress did for dynamic sites back in the day. We know we can't do that without building a thriving community of contributors and users, and we'd love to have you join us.
+We're hoping that Netlify CMS will do for the [Jamstack](https://www.jamstack.org) what WordPress did for dynamic sites back in the day. We know we can't do that without building a thriving community of contributors and users, and we'd love to have you join us.
 
 ## Getting started with contributing
 Being a developer is not a requirement for contributing to Netlify CMS, you only need the desire, a web browser, and a [GitHub account](https://github.com/join). The GitHub repo has a step-by-step [guide](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) to get started with the code.
