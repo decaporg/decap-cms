@@ -1,6 +1,6 @@
 import { flow } from 'lodash';
 import { tests as commonmarkSpec } from 'commonmark-spec';
-import commonmark from 'commonmark';
+import * as commonmark from 'commonmark';
 import { markdownToSlate, slateToMarkdown } from '../index.js';
 
 const skips = [
