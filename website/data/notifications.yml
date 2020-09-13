@@ -27,7 +27,7 @@ notifications:
     title: 2.1.0 - external media libraries
     url: /blog/2018/09/netlify-cms-2-1-0-adds-external-media-support-with-uploadcare
   - loud: true
-    message: Learn more about the JAMstack at JAMstack Conf, San Francisco — 29-30
+    message: Learn more about the Jamstack at JAMstack Conf, San Francisco — 29-30
       October, 2018
     published: false
     title: JAMStack_conf 2018
