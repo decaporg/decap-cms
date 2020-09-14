@@ -3128,7 +3128,7 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@testing-library/dom@^7.23.0", "@testing-library/dom@^7.24.1":
+"@testing-library/dom@^7.24.1", "@testing-library/dom@^7.24.2":
   version "7.24.2"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.24.2.tgz#6d2b7dd21efbd5358b98c2777fc47c252f3ae55e"
   integrity sha512-ERxcZSoHx0EcN4HfshySEWmEf5Kkmgi+J7O79yCJ3xggzVlBJ2w/QjJUC+EBkJJ2OeSw48i3IoePN4w8JlVUIA==
@@ -3156,12 +3156,12 @@
     redent "^3.0.0"
 
 "@testing-library/react@^11.0.2":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-11.0.3.tgz#2df00089587462847c45aebd05f71d2e609372f0"
-  integrity sha512-3T2aAZSpKtORY2iHt9lg2PRPoQWNYstsooRCTSERNGRkvWLXmffE617Nxh9MeNlgkVj9StQLWuPzhAeNC2pjfg==
+  version "11.0.4"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-11.0.4.tgz#c84082bfe1593d8fcd475d46baee024452f31dee"
+  integrity sha512-U0fZO2zxm7M0CB5h1+lh31lbAwMSmDMEMGpMT3BUPJwIjDEKYWOV4dx7lb3x2Ue0Pyt77gmz/VropuJnSz/Iew==
   dependencies:
     "@babel/runtime" "^7.11.2"
-    "@testing-library/dom" "^7.23.0"
+    "@testing-library/dom" "^7.24.2"
 
 "@types/anymatch@*":
   version "1.3.1"
