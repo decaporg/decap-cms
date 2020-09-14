@@ -14377,15 +14377,13 @@ re-resizable@^4.11.0:
   resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-4.11.0.tgz#d5df10bda445c4ec0945751a223bf195afb61890"
   integrity sha512-dye+7rERqNf/6mDT1iwps+4Gf42420xuZgygF33uX178DxffqcyeuHbBuJ382FIcB5iP6mMZOhfW7kI0uXwb/Q==
 
-react-aria-menubutton@^6.0.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/react-aria-menubutton/-/react-aria-menubutton-6.3.0.tgz#01acc4322c5271488941270b278b17001031e687"
-  integrity sha512-qlvbPgBDg+YreqrAsT2I0qpQfM7soRxA6dsTacogfCoVajcTEsgIPU3ewS7IzPvm+UMphK5Z8684WA2TNP3Zmg==
+react-aria-menubutton@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-aria-menubutton/-/react-aria-menubutton-7.0.0.tgz#3909216ed6ef115d850e206df9e197cabc4ebd49"
+  integrity sha512-5MiUnoEaC9WxFftKJp7BtBH8Mts758w5DN7jyr6iWJuVXn3AOvx7fdVN7ojQhqRy/CWK4w0xgjEyEPttjQg41w==
   dependencies:
-    create-react-context "^0.3.0"
     focus-group "^0.3.1"
     prop-types "^15.6.0"
-    react-display-name "^0.2.4"
     teeny-tap "^0.2.0"
 
 react-clientside-effect@^1.2.2:
@@ -14440,11 +14438,6 @@ react-dev-utils@^9.0.0:
     sockjs-client "1.4.0"
     strip-ansi "5.2.0"
     text-table "0.2.0"
-
-react-display-name@^0.2.4:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/react-display-name/-/react-display-name-0.2.5.tgz#304c7cbfb59ee40389d436e1a822c17fe27936c6"
-  integrity sha512-I+vcaK9t4+kypiSgaiVWAipqHRXYmZIuAiS8vzFvXHHXVigg/sMKwlRgLy6LH2i3rmP+0Vzfl5lFsFRwF1r3pg==
 
 react-dnd-html5-backend@^7.2.0:
   version "7.7.0"
