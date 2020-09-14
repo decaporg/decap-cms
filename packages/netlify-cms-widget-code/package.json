@@ -34,6 +34,6 @@
   "dependencies": {
     "re-resizable": "^4.11.0",
     "react-codemirror2": "^6.0.0",
-    "react-select": "^2.4.3"
+    "react-select": "^3.0.0"
   }
 }
