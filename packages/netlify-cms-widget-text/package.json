@@ -24,7 +24,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "react-textarea-autosize": "^7.1.0"
+    "react-textarea-autosize": "^8.0.0"
   },
   "peerDependencies": {
     "netlify-cms-ui-default": "^2.6.0",
