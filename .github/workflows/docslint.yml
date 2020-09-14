@@ -1,0 +1,27 @@
+name: "Docs Linting:"
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+
+jobs:
+  style-usage:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Vale Linter
+      uses: errata-ai/vale-action@v1.3.0
+      with:
+        # Optional
+        files: website/content/docs
+      env:
+        # Required
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
