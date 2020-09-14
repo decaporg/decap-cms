@@ -32,7 +32,7 @@
     "react": "^16.8.4"
   },
   "dependencies": {
-    "react-codemirror2": "^6.0.0",
+    "react-codemirror2": "^7.0.0",
     "react-select": "^2.4.3"
   }
 }
