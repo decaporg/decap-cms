@@ -3417,6 +3417,11 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
+"@types/parse5@^5.0.0":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-5.0.3.tgz#e7b5aebbac150f8b5fdd4a46e7f0bd8e65e19109"
+  integrity sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==
+
 "@types/prettier@^2.0.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.1.0.tgz#5f96562c1075ee715a5b138f0b7f591c1f40f6b8"
@@ -9389,6 +9394,18 @@ hast-util-from-parse5@^5.0.0:
     web-namespaces "^1.1.2"
     xtend "^4.0.1"
 
+hast-util-from-parse5@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/hast-util-from-parse5/-/hast-util-from-parse5-6.0.0.tgz#b38793c81e1a99f5fd592a4a88fc2731dccd0f30"
+  integrity sha512-3ZYnfKenbbkhhNdmOQqgH10vnvPivTdsOJCri+APn0Kty+nRkDHArnaX9Hiaf8H+Ig+vkNptL+SRY/6RwWJk1Q==
+  dependencies:
+    "@types/parse5" "^5.0.0"
+    ccount "^1.0.0"
+    hastscript "^5.0.0"
+    property-information "^5.0.0"
+    vfile "^4.0.0"
+    web-namespaces "^1.0.0"
+
 hast-util-has-property@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/hast-util-has-property/-/hast-util-has-property-1.0.4.tgz#9f137565fad6082524b382c1e7d7d33ca5059f36"
@@ -13478,6 +13495,11 @@ parse5@5.1.1, parse5@^5.0.0:
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-5.1.1.tgz#f68e4e5ba1852ac2cadc00f4555fff6c2abb6178"
   integrity sha512-ugq4DFI0Ptb+WWjAdOK16+u/nHfiIrcE+sh8kZMaM0WllQKLI9rOUq6c2b7cwPkXdzfQESqvoqK6ug7U/Yyzug==
 
+parse5@^6.0.0:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/parse5/-/parse5-6.0.1.tgz#e1a1c085c569b3dc08321184f19a39cc27f7c30b"
+  integrity sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==
+
 parseurl@~1.3.2, parseurl@~1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
@@ -15166,6 +15188,14 @@ rehype-parse@^6.0.0:
     hast-util-from-parse5 "^5.0.0"
     parse5 "^5.0.0"
     xtend "^4.0.0"
+
+rehype-parse@^7.0.0:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/rehype-parse/-/rehype-parse-7.0.1.tgz#58900f6702b56767814afc2a9efa2d42b1c90c57"
+  integrity sha512-fOiR9a9xH+Le19i4fGzIEowAbwG7idy2Jzs4mOrFWBSJ0sNUgy0ev871dwWnbOo371SjgjG4pwzrbgSVrKxecw==
+  dependencies:
+    hast-util-from-parse5 "^6.0.0"
+    parse5 "^6.0.0"
 
 rehype-remark@^8.0.0:
   version "8.0.0"
@@ -18238,7 +18268,7 @@ weak-map@^1.0.5:
   resolved "https://registry.yarnpkg.com/weak-map/-/weak-map-1.0.5.tgz#79691584d98607f5070bd3b70a40e6bb22e401eb"
   integrity sha1-eWkVhNmGB/UHC9O3CkDmuyLkAes=
 
-web-namespaces@^1.1.2:
+web-namespaces@^1.0.0, web-namespaces@^1.1.2:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.4.tgz#bc98a3de60dadd7faefc403d1076d529f5e030ec"
   integrity sha512-wYxSGajtmoP4WxfejAPIr4l0fVh+jeMXZb08wNc0tMg6xsfZXj3cECqIK0G7ZAqUq0PP8WlMDtaOGVBTAWztNw==

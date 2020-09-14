@@ -27,7 +27,7 @@
     "mdast-util-to-string": "^1.0.5",
     "re-resizable": "^4.11.0",
     "react-select": "^2.4.3",
-    "rehype-parse": "^6.0.0",
+    "rehype-parse": "^7.0.0",
     "rehype-remark": "^8.0.0",
     "rehype-stringify": "^7.0.0",
     "remark-parse": "^6.0.3",
