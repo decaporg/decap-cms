@@ -30,6 +30,6 @@
     "react-immutable-proptypes": "^2.1.0"
   },
   "dependencies": {
-    "ol": "^5.3.1"
+    "ol": "^6.0.0"
   }
 }
