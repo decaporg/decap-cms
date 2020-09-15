@@ -1,5 +1,5 @@
 extends: existence
-message: "'%s' is a weasel word!"
+message: "'%s' is ambiguous or misleading."
 ignorecase: true
 level: warning
 tokens:
@@ -66,7 +66,6 @@ tokens:
   - fiercely
   - finally
   - fondly
-  - few
   - foolishly
   - fortunately
   - frankly

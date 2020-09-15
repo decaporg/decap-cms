@@ -1,5 +1,5 @@
 extends: existence
-message: "'%s' is too wordy."
+message: "Consider replacing '%s' with more simpler or more direct language."
 ignorecase: true
 level: warning
 tokens:
