@@ -11,7 +11,7 @@ on:
 
 
 jobs:
-  style-usage:
+  prose:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
