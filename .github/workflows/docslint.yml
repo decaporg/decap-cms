@@ -11,7 +11,7 @@ on:
 
 
 jobs:
-  linting:
+  style-usage:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
