@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/compare/netlify-cms-widget-text@2.3.3...netlify-cms-widget-text@2.3.4) (2020-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-textarea-autosize to v8 ([#4312](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/issues/4312)) ([1071e0b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text/commit/1071e0b222e1535f168a3928754ce56b48752f49))
+
+
+
+
+
 ## 2.3.3 (2020-09-08)
 
 

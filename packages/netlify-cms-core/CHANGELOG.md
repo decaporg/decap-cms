@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.30.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.30.5...netlify-cms-core@2.30.6) (2020-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-topbar-progress-indicator to v4 ([#4313](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4313)) ([9898f5e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9898f5e3286d3faa768759042ce5fe5918d84ec9))
+
+
+
+
+
 ## 2.30.5 (2020-09-08)
 
 

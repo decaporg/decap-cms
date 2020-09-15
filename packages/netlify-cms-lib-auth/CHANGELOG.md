@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.2.11...netlify-cms-lib-auth@2.2.12) (2020-09-15)
+
+**Note:** Version bump only for package netlify-cms-lib-auth
+
+
+
+
+
 ## 2.2.11 (2020-09-08)
 
 

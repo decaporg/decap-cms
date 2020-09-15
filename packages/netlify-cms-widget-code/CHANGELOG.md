@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.2.3...netlify-cms-widget-code@1.2.4) (2020-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency re-resizable to v6 ([#4308](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/issues/4308)) ([de068cb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/commit/de068cba1d44ec76e47e28d724427a9f4a53e0fd))
+* **deps:** update dependency react-codemirror2 to v7 ([#4310](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/issues/4310)) ([180cd5f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/commit/180cd5f652ba23a186ade9173161ac13605a8ce8))
+
+
+
+
+
 ## 1.2.3 (2020-09-08)
 
 

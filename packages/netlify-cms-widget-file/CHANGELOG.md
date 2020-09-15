@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.7.3...netlify-cms-widget-file@2.7.4) (2020-09-15)
+
+**Note:** Version bump only for package netlify-cms-widget-file
+
+
+
+
+
 ## 2.7.3 (2020-09-08)
 
 
