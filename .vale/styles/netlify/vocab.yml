@@ -1,6 +1,0 @@
-extends: existence
-message: "Verify your use of '%s' with the A-Z word list."
-level: suggestion
-ignorecase: true
-tokens:
-  - netlify
