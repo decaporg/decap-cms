@@ -1,8 +1,0 @@
-extends: existence
-message: "'%s' is a malapropism."
-ignorecase: true
-level: error
-tokens:
-  - the infinitesimal universe
-  - a serial experience
-  - attack my voracity
