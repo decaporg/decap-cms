@@ -274,10 +274,7 @@ Here is the content of `package.json` that you will have at the end:
     "react": "^16"
   },
   "scripts": {
-    "start": "webpack-serve --static public --open",
-    "demo": "webpack --display errors-only --devtool source-map",
-    "build": "cross-env NODE_ENV=production webpack",
-    "prepublishOnly": "npm run build"
+    "start": "webpack-serve --static public --open"
   }
 }
 ```
