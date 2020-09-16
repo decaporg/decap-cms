@@ -335,7 +335,7 @@ Here is the content of `package.json` that you will have at the end:
 
    module.exports = process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
    ```
-6. Create a `.babelrc` file under the main project with this content:
+6. The `.babelrc` file is our local configuration for our code in the project. You should create it under the root of the application repo. It will affect all files that Babel processes. So, create a `.babelrc` file under the main project with this content:
 
 ```javascript
 {
