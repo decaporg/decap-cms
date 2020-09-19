@@ -3,7 +3,6 @@ group: Intro
 weight: 3
 title: Add to Your Site
 ---
-
 You can adapt Netlify CMS to a wide variety of projects. It works with any content written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org). You can also create your own custom backend.
 
 This tutorial guides you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](../start-with-a-template) or dive right into [configuration options](../configuration-options).
@@ -13,7 +12,7 @@ This tutorial guides you through the steps for adding Netlify CMS to a site that
 A static `admin` folder contains all Netlify CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
 
 | These generators ...                       | store static files in |
-| -------------------------------------------| --------------------- |
+| ------------------------------------------ | --------------------- |
 | Jekyll, GitBook                            | `/` (project root)    |
 | Hugo, Gatsby, Nuxt, Gridsome, Zola, Sapper | `/static`             |
 | Next                                       | `/public`             |
@@ -52,6 +51,7 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
 </body>
 </html>
 ```
+
 In the code above the `script` is loaded from the `unpkg` CDN. Should there be any issue, `jsDelivr` can be used as an alternative source. Simply set the `src` to `https://cdn.jsdelivr.net/npm/netlify-cms@^2.0.0/dist/netlify-cms.js`
 
 The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
@@ -88,7 +88,7 @@ backend:
   branch: master # Branch to update (optional; defaults to master)
 ```
 
-_(For Bitbucket repositories, use the [Bitbucket backend](/docs/bitbucket-backend) instructions instead.)_
+*(For Bitbucket repositories, use the [Bitbucket backend](/docs/bitbucket-backend) instructions instead.)*
 
 The configuration above specifies your backend protocol and your publication branch. Git Gateway is an open source API that acts as a proxy between authenticated users of your site and your site repo. (We'll get to the details of that in the [Authentication section](#authentication) below.) If you leave out the `branch` declaration, it defaults to `master`.
 
@@ -103,13 +103,13 @@ By default, saving a post in the CMS interface pushes a commit directly to the p
 publish_mode: editorial_workflow
 ```
 
-### Media and Public Folders
+### Media and Public F
 
 Netlify CMS allows users to upload images directly within the editor. For this to work, the CMS needs to know where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:
 
 ```yaml
 # This line should *not* be indented
-media_folder: "images/uploads" # Media files will be stored in the repo under images/uploads
+media_folder: "images/uploads" # Media files will be stored ipo under images/uploads
 ```
 
 If you're creating a new folder for uploaded media, you'll need to know where your static site generator expects static files. You can refer to the paths outlined above in [App File Structure](#app-file-structure), and put your media folder in the same location where you put the `admin` folder.
@@ -245,7 +245,7 @@ With the backend set to handle authentication, now you need a frontend interface
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 ```
 
-Add this to the `<head>` of your CMS index page at `/admin/index.html`, as well as the `<head>` of your site's main index page. Depending on how your site generator is set up, this may mean you need to add it to the default template, or to a "partial" or "include" template. If you can find where the site stylesheet is linked, that's probably the right place. Alternatively, you can include the script in your site using Netlify's [Script Injection](https://www.netlify.com/docs/inject-analytics-snippets/) feature.
+Add this to the `<head>` of your CMS index page at `/admin/index.html`, as well as the `<head>` of your site's main index page. Depending on how your site generator is set up, this may ipt in your site using Netlify's [Script Injection](https://www.netlify.com/docs/inject-analytics-snippets/) feature.
 
 When a user logs in with the Netlify Identity widget, an access token directs to the site homepage. In order to complete the login and get back to the CMS, redirect the user back to the `/admin/` path. To do this, add the following script before the closing `body` tag of your site's main index page:
 
