@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.6...netlify-cms-widget-relation@2.8.7) (2020-09-20)
+
+
+### Bug Fixes
+
+* **widget-relation:** set initial metadata value ([#4326](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/4326)) ([5a4b365](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/5a4b36527e21e87f401b15501418fd739c672d85))
+
+
+
+
+
 ## [2.8.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.5...netlify-cms-widget-relation@2.8.6) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-widget-relation

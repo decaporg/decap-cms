@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.18.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.17.4...netlify-cms-locales@1.18.0) (2020-09-20)
+
+
+### Features
+
+* add korean(ko) locale ([#4332](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4332)) ([6b35ca4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/6b35ca4e3bdbb50764ff3c76ab189925ceebe54b))
+
+
+
+
+
 ## [1.17.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.17.3...netlify-cms-locales@1.17.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-locales
