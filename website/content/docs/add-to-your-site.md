@@ -61,13 +61,15 @@ The second file, `admin/config.yml`, is the heart of your Netlify CMS installati
 You can also use Netlify CMS as an npm module. Wherever you import Netlify CMS, it automatically runs, taking over the current page. Make sure the script that imports it only runs on your CMS page. First install the package and save it to your project:
 
 ```bash
-npm install netlify-cms --save
+npm install netlify-cms-app --save
 ```
 
 Then import it (assuming your project has tooling for imports):
 
 ```js
-import CMS from 'netlify-cms'
+import CMS from 'netlify-cms-app'
+// Initialize the CMS object
+CMS.init()
 // Now the registry is available via the CMS object.
 CMS.registerPreviewTemplate('my-template', MyTemplate)
 ```
