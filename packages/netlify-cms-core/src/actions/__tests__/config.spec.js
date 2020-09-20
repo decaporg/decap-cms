@@ -533,6 +533,182 @@ describe('config', () => {
         ],
       });
     });
+
+    describe('i18n', () => {
+      it('should set root i18n on collection when collection i18n is set to true', () => {
+        expect(
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                { folder: 'foo', i18n: true, fields: [{ name: 'title', widget: 'string' }] },
+              ],
+            }),
+          )
+            .getIn(['collections', 0, 'i18n'])
+            .toJS(),
+        ).toEqual({ structure: 'multiple_folders', locales: ['en', 'de'], default_locale: 'en' });
+      });
+
+      it('should not set root i18n on collection when collection i18n is not set', () => {
+        expect(
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [{ folder: 'foo', fields: [{ name: 'title', widget: 'string' }] }],
+            }),
+          ).getIn(['collections', 0, 'i18n']),
+        ).toBeUndefined();
+      });
+
+      it('should not set root i18n on collection when collection i18n is set to false', () => {
+        expect(
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                { folder: 'foo', i18n: false, fields: [{ name: 'title', widget: 'string' }] },
+              ],
+            }),
+          ).getIn(['collections', 0, 'i18n']),
+        ).toBeUndefined();
+      });
+
+      it('should merge root i18n on collection when collection i18n is set to an object', () => {
+        expect(
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+                default_locale: 'en',
+              },
+              collections: [
+                {
+                  folder: 'foo',
+                  i18n: { locales: ['en', 'fr'], default_locale: 'fr' },
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }),
+          )
+            .getIn(['collections', 0, 'i18n'])
+            .toJS(),
+        ).toEqual({ structure: 'multiple_folders', locales: ['en', 'fr'], default_locale: 'fr' });
+      });
+
+      it('should throw when i18n is set on files collection', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  files: [
+                    { name: 'file', file: 'file', fields: [{ name: 'title', widget: 'string' }] },
+                  ],
+                  i18n: true,
+                },
+              ],
+            }),
+          ),
+        ).toThrow('i18n configuration is not supported for files collection');
+      });
+
+      it('should set i18n value to translate on field when i18n=true for field', () => {
+        expect(
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  folder: 'foo',
+                  i18n: true,
+                  fields: [{ name: 'title', widget: 'string', i18n: true }],
+                },
+              ],
+            }),
+          ).getIn(['collections', 0, 'fields', 0, 'i18n']),
+        ).toEqual('translate');
+      });
+
+      it('should set i18n value to none on field when i18n=false for field', () => {
+        expect(
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  folder: 'foo',
+                  i18n: true,
+                  fields: [{ name: 'title', widget: 'string', i18n: false }],
+                },
+              ],
+            }),
+          ).getIn(['collections', 0, 'fields', 0, 'i18n']),
+        ).toEqual('none');
+      });
+
+      it('should throw is default locale is missing from root i18n config', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+                default_locale: 'fr',
+              },
+              collections: [
+                {
+                  folder: 'foo',
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }),
+          ),
+        ).toThrow("i18n locales 'en, de' are missing the default locale fr");
+      });
+
+      it('should throw is default locale is missing from collection i18n config', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  folder: 'foo',
+                  i18n: {
+                    default_locale: 'fr',
+                  },
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }),
+          ),
+        ).toThrow("i18n locales 'en, de' are missing the default locale fr");
+      });
+    });
   });
 
   describe('detectProxyServer', () => {

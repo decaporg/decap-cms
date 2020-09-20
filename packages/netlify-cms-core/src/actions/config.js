@@ -6,6 +6,7 @@ import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
+import { I18N, I18N_FIELD } from '../lib/i18n';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -56,6 +57,59 @@ const setSnakeCaseConfig = field => {
     }
   });
   return field;
+};
+
+const setI18nField = field => {
+  if (field.get(I18N) === true) {
+    field = field.set(I18N, I18N_FIELD.TRANSLATE);
+  } else if (field.get(I18N) === false || !field.has(I18N)) {
+    field = field.set(I18N, I18N_FIELD.NONE);
+  }
+  return field;
+};
+
+const setI18nDefaults = (i18n, collection) => {
+  if (i18n && collection.has(I18N)) {
+    const collectionI18n = collection.get(I18N);
+    if (collectionI18n === true) {
+      collection = collection.set(I18N, i18n);
+    } else if (collectionI18n === false) {
+      collection = collection.delete(I18N);
+    } else {
+      const locales = collectionI18n.get('locales', i18n.get('locales'));
+      const defaultLocale = collectionI18n.get(
+        'default_locale',
+        collectionI18n.has('locales') ? locales.first() : i18n.get('default_locale'),
+      );
+      collection = collection.set(I18N, i18n.merge(collectionI18n));
+      collection = collection.setIn([I18N, 'locales'], locales);
+      collection = collection.setIn([I18N, 'default_locale'], defaultLocale);
+
+      throwOnMissingDefaultLocale(collection.get(I18N));
+    }
+
+    if (collectionI18n !== false) {
+      // set default values for i18n fields
+      collection = collection.set('fields', traverseFields(collection.get('fields'), setI18nField));
+    }
+  } else {
+    collection = collection.delete(I18N);
+    collection = collection.set(
+      'fields',
+      traverseFields(collection.get('fields'), field => field.delete(I18N)),
+    );
+  }
+  return collection;
+};
+
+const throwOnMissingDefaultLocale = i18n => {
+  if (i18n && !i18n.get('locales').includes(i18n.get('default_locale'))) {
+    throw new Error(
+      `i18n locales '${i18n.get('locales').join(', ')}' are missing the default locale ${i18n.get(
+        'default_locale',
+      )}`,
+    );
+  }
 };
 
 const defaults = {
@@ -132,6 +186,10 @@ export function applyDefaults(config) {
         map.setIn(['slug', 'sanitize_replacement'], '-');
       }
 
+      let i18n = config.get(I18N);
+      i18n = i18n?.set('default_locale', i18n.get('default_locale', i18n.get('locales').first()));
+      throwOnMissingDefaultLocale(i18n);
+
       // Strip leading slash from collection folders and files
       map.set(
         'collections',
@@ -167,10 +225,15 @@ export function applyDefaults(config) {
             } else {
               collection = collection.set('meta', Map());
             }
+
+            collection = setI18nDefaults(i18n, collection);
           }
 
           const files = collection.get('files');
           if (files) {
+            if (i18n && collection.has(I18N)) {
+              throw new Error('i18n configuration is not supported for files collection');
+            }
             collection = collection.delete('nested');
             collection = collection.delete('meta');
             collection = collection.set(

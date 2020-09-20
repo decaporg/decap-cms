@@ -6,7 +6,7 @@ import {
   APIError,
   Cursor,
   ApiRequest,
-  Entry,
+  DataFile,
   AssetProxy,
   PersistOptions,
   readFile,
@@ -473,7 +473,7 @@ export default class API {
     const items: CommitItem[] = await Promise.all(
       files.map(async file => {
         const [base64Content, fileExists] = await Promise.all([
-          result(file, 'toBase64', partial(this.toBase64, (file as Entry).raw)),
+          result(file, 'toBase64', partial(this.toBase64, (file as DataFile).raw)),
           this.isFileExists(file.path, branch),
         ]);
 
@@ -515,10 +515,11 @@ export default class API {
     return items;
   }
 
-  async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
-    const files = entry ? [entry, ...mediaFiles] : mediaFiles;
+  async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
+    const files = [...dataFiles, ...mediaFiles];
     if (options.useWorkflow) {
-      return this.editorialWorkflowGit(files, entry as Entry, options);
+      const slug = dataFiles[0].slug;
+      return this.editorialWorkflowGit(files, slug, options);
     } else {
       const items = await this.getCommitItems(files, this.branch);
       return this.uploadAndCommit(items, {
@@ -527,7 +528,7 @@ export default class API {
     }
   }
 
-  deleteFile = (path: string, commitMessage: string) => {
+  deleteFiles = (paths: string[], commitMessage: string) => {
     const branch = this.branch;
     // eslint-disable-next-line @typescript-eslint/camelcase
     const commitParams: CommitsParams = { commit_message: commitMessage, branch };
@@ -538,12 +539,11 @@ export default class API {
       // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_email = email;
     }
-    return flow([
-      unsentRequest.withMethod('DELETE'),
-      // TODO: only send author params if they are defined.
-      unsentRequest.withParams(commitParams),
-      this.request,
-    ])(`${this.repoURL}/repository/files/${encodeURIComponent(path)}`);
+
+    const items = paths.map(path => ({ path, action: CommitAction.DELETE }));
+    return this.uploadAndCommit(items, {
+      commitMessage,
+    });
   };
 
   async getMergeRequests(sourceBranch?: string) {
@@ -723,8 +723,12 @@ export default class API {
     });
   }
 
-  async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
+  async editorialWorkflowGit(
+    files: (DataFile | AssetProxy)[],
+    slug: string,
+    options: PersistOptions,
+  ) {
+    const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {

@@ -9,7 +9,7 @@ import {
   localForage,
   basename,
   AssetProxy,
-  Entry as LibEntry,
+  DataFile,
   PersistOptions,
   readFileMetadata,
   CMS_BRANCH_PREFIX,
@@ -60,10 +60,6 @@ interface TreeFile {
   sha: string;
   path: string;
   raw?: string;
-}
-
-export interface Entry extends LibEntry {
-  sha?: string;
 }
 
 type Override<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U;
@@ -877,8 +873,8 @@ export default class API {
     }));
   }
 
-  async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
-    const files = entry ? mediaFiles.concat(entry) : mediaFiles;
+  async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
+    const files = mediaFiles.concat(dataFiles);
     const uploadPromises = files.map(file => this.uploadBlob(file));
     await Promise.all(uploadPromises);
 
@@ -896,12 +892,8 @@ export default class API {
           sha,
         }),
       );
-      return this.editorialWorkflowGit(
-        files as TreeFile[],
-        entry as Entry,
-        mediaFilesList,
-        options,
-      );
+      const slug = dataFiles[0].slug;
+      return this.editorialWorkflowGit(files as TreeFile[], slug, mediaFilesList, options);
     }
   }
 
@@ -927,29 +919,16 @@ export default class API {
     }
   }
 
-  deleteFile(path: string, message: string) {
+  async deleteFiles(paths: string[], message: string) {
     if (this.useOpenAuthoring) {
       return Promise.reject('Cannot delete published entries as an Open Authoring user!');
     }
 
-    const branch = this.branch;
-
-    return this.getFileSha(path, { branch }).then(sha => {
-      const params: { sha: string; message: string; branch: string; author?: { date: string } } = {
-        sha,
-        message,
-        branch,
-      };
-      const opts = { method: 'DELETE', params };
-      if (this.commitAuthor) {
-        opts.params.author = {
-          ...this.commitAuthor,
-          date: new Date().toISOString(),
-        };
-      }
-      const fileURL = `${this.repoURL}/contents/${path}`;
-      return this.request(fileURL, opts);
-    });
+    const branchData = await this.getDefaultBranch();
+    const files = paths.map(path => ({ path, sha: null }));
+    const changeTree = await this.updateTree(branchData.commit.sha, files);
+    const commit = await this.commit(message, changeTree);
+    await this.patchBranch(this.branch, commit.sha);
   }
 
   async createBranchAndPullRequest(branchName: string, sha: string, commitMessage: string) {
@@ -966,11 +945,11 @@ export default class API {
 
   async editorialWorkflowGit(
     files: TreeFile[],
-    entry: Entry,
+    slug: string,
     mediaFilesList: MediaFile[],
     options: PersistOptions,
   ) {
-    const contentKey = this.generateContentKey(options.collectionName as string, entry.slug);
+    const contentKey = this.generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {

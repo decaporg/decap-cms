@@ -26,16 +26,18 @@ import {
   PersistMediaParams,
   DeleteFileParams,
   UpdateUnpublishedEntryStatusParams,
-  Entry,
+  DataFile,
   GetMediaFileParams,
   DeleteEntryParams,
+  DeleteFilesParams,
   UnpublishedEntryDataFileParams,
   UnpublishedEntryMediaFileParams,
 } from '../types';
 // eslint-disable-next-line import/default
 import simpleGit from 'simple-git/promise';
+import { Mutex, withTimeout } from 'async-mutex';
 import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, writeFile, move } from '../utils/fs';
+import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
 const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
@@ -76,18 +78,22 @@ type GitOptions = {
 const commitEntry = async (
   git: simpleGit.SimpleGit,
   repoPath: string,
-  entry: Entry,
+  dataFiles: DataFile[],
   assets: Asset[],
   commitMessage: string,
 ) => {
   // save entry content
-  await writeFile(path.join(repoPath, entry.path), entry.raw);
+  await Promise.all(
+    dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
+  );
   // save assets
   await Promise.all(
     assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
   );
-  if (entry.newPath) {
-    await move(path.join(repoPath, entry.path), path.join(repoPath, entry.newPath));
+  if (dataFiles.every(dataFile => dataFile.newPath)) {
+    dataFiles.forEach(async dataFile => {
+      await move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!));
+    });
   }
 
   // commits files
@@ -162,8 +168,13 @@ export const getSchema = ({ repoPath }: { repoPath: string }) => {
 export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
   const git = simpleGit(repoPath).silent(false);
 
+  // we can only perform a single git operation at any given time
+  const mutex = withTimeout(new Mutex(), 3000, new Error('Request timed out'));
+
   return async function(req: express.Request, res: express.Response) {
+    let release;
     try {
+      release = await mutex.acquire();
       const { body } = req;
       if (body.action === 'info') {
         res.json({
@@ -233,11 +244,23 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
             const diffs = await getDiffs(git, branch, cmsBranch);
             const label = await git.raw(['config', branchDescription(cmsBranch)]);
             const status = label && labelToStatus(label.trim(), cmsLabelPrefix || '');
+            const updatedAt =
+              diffs.length >= 0
+                ? await runOnBranch(git, cmsBranch, async () => {
+                    const dates = await Promise.all(
+                      diffs.map(({ newPath }) => getUpdateDate(repoPath, newPath)),
+                    );
+                    return dates.reduce((a, b) => {
+                      return a > b ? a : b;
+                    });
+                  })
+                : new Date();
             const unpublishedEntry = {
               collection,
               slug,
               status,
               diffs,
+              updatedAt,
             };
             res.json(unpublishedEntry);
           } else {
@@ -276,13 +299,20 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
           break;
         }
         case 'persistEntry': {
-          const { entry, assets, options, cmsLabelPrefix } = body.params as PersistEntryParams;
+          const {
+            cmsLabelPrefix,
+            entry,
+            dataFiles = [entry as DataFile],
+            assets,
+            options,
+          } = body.params as PersistEntryParams;
+
           if (!options.useWorkflow) {
             await runOnBranch(git, branch, async () => {
-              await commitEntry(git, repoPath, entry, assets, options.commitMessage);
+              await commitEntry(git, repoPath, dataFiles, assets, options.commitMessage);
             });
           } else {
-            const slug = entry.slug;
+            const slug = dataFiles[0].slug;
             const collection = options.collectionName as string;
             const contentKey = generateContentKey(collection, slug);
             const cmsBranch = branchFromContentKey(contentKey);
@@ -300,7 +330,7 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
                 d => d.binary && !assets.map(a => a.path).includes(d.path),
               );
               await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
-              await commitEntry(git, repoPath, entry, assets, options.commitMessage);
+              await commitEntry(git, repoPath, dataFiles, assets, options.commitMessage);
 
               // add status for new entries
               if (!branchExists) {
@@ -378,10 +408,22 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
             options: { commitMessage },
           } = body.params as DeleteFileParams;
           await runOnBranch(git, branch, async () => {
-            await fs.unlink(path.join(repoPath, filePath));
+            await deleteFile(repoPath, filePath);
             await commit(git, commitMessage);
           });
           res.json({ message: `deleted file ${filePath}` });
+          break;
+        }
+        case 'deleteFiles': {
+          const {
+            paths,
+            options: { commitMessage },
+          } = body.params as DeleteFilesParams;
+          await runOnBranch(git, branch, async () => {
+            await Promise.all(paths.map(filePath => deleteFile(repoPath, filePath)));
+            await commit(git, commitMessage);
+          });
+          res.json({ message: `deleted files ${paths.join(', ')}` });
           break;
         }
         case 'getDeployPreview': {
@@ -397,6 +439,8 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
     } catch (e) {
       logger.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
       res.status(500).json({ error: 'Unknown error' });
+    } finally {
+      release && release();
     }
   };
 };

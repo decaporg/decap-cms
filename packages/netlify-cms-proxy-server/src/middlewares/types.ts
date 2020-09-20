@@ -54,13 +54,14 @@ export type PublishUnpublishedEntryParams = {
   slug: string;
 };
 
-export type Entry = { slug: string; path: string; raw: string; newPath?: string };
+export type DataFile = { slug: string; path: string; raw: string; newPath?: string };
 
 export type Asset = { path: string; content: string; encoding: 'base64' };
 
 export type PersistEntryParams = {
   cmsLabelPrefix?: string;
-  entry: Entry;
+  entry?: DataFile;
+  dataFiles?: DataFile[];
   assets: Asset[];
   options: {
     collectionName?: string;
@@ -87,6 +88,13 @@ export type PersistMediaParams = {
 
 export type DeleteFileParams = {
   path: string;
+  options: {
+    commitMessage: string;
+  };
+};
+
+export type DeleteFilesParams = {
+  paths: string[];
   options: {
     commitMessage: string;
   };

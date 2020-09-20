@@ -25,6 +25,7 @@ import {
 import { get } from 'lodash';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { join } from 'path';
+import { getDataPath, duplicateI18nFields } from '../lib/i18n';
 
 const initialState = Map({
   entry: Map(),
@@ -90,20 +91,25 @@ const entryDraftReducer = (state = Map(), action) => {
     }
     case DRAFT_CHANGE_FIELD: {
       return state.withMutations(state => {
-        const { field, value, metadata, entries } = action.payload;
+        const { field, value, metadata, entries, i18n } = action.payload;
         const name = field.get('name');
         const meta = field.get('meta');
+
+        const dataPath = (i18n && getDataPath(i18n.currentLocale, i18n.defaultLocale)) || ['data'];
         if (meta) {
           state.setIn(['entry', 'meta', name], value);
         } else {
-          state.setIn(['entry', 'data', name], value);
+          state.setIn(['entry', ...dataPath, name], value);
+          if (i18n) {
+            state = duplicateI18nFields(state, field, i18n.locales, i18n.defaultLocale);
+          }
         }
         state.mergeDeepIn(['fieldsMetaData'], fromJS(metadata));
-        const newData = state.getIn(['entry', 'data']);
+        const newData = state.getIn(['entry', ...dataPath]);
         const newMeta = state.getIn(['entry', 'meta']);
         state.set(
           'hasChanged',
-          !entries.some(e => newData.equals(e.get('data'))) ||
+          !entries.some(e => newData.equals(e.get(...dataPath))) ||
             !entries.some(e => newMeta.equals(e.get('meta'))),
         );
       });

@@ -432,15 +432,17 @@ export default class BitbucketBackend implements Implementation {
     };
   }
 
-  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entry: Entry, options: PersistOptions) {
     const client = await this.getLargeMediaClient();
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
       async () =>
         this.api!.persistFiles(
-          entry,
-          client.enabled ? await getLargeMediaFilteredMediaFiles(client, mediaFiles) : mediaFiles,
+          entry.dataFiles,
+          client.enabled
+            ? await getLargeMediaFilteredMediaFiles(client, entry.assets)
+            : entry.assets,
           options,
         ),
       'Failed to acquire persist entry lock',
@@ -468,7 +470,7 @@ export default class BitbucketBackend implements Implementation {
 
     const [id] = await Promise.all([
       getBlobSHA(fileObj),
-      this.api!.persistFiles(null, [mediaFile], options),
+      this.api!.persistFiles([], [mediaFile], options),
     ]);
 
     const url = URL.createObjectURL(fileObj);
@@ -484,8 +486,8 @@ export default class BitbucketBackend implements Implementation {
     };
   }
 
-  deleteFile(path: string, commitMessage: string) {
-    return this.api!.deleteFile(path, commitMessage);
+  deleteFiles(paths: string[], commitMessage: string) {
+    return this.api!.deleteFiles(paths, commitMessage);
   }
 
   traverseCursor(cursor: Cursor, action: string) {

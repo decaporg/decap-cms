@@ -26,7 +26,7 @@ describe('defaultSchema', () => {
 
     assetFailure(
       schema.validate({ action: 'unknown', params: {} }),
-      '"action" must be one of [info, entriesByFolder, entriesByFiles, getEntry, unpublishedEntries, unpublishedEntry, unpublishedEntryDataFile, unpublishedEntryMediaFile, deleteUnpublishedEntry, persistEntry, updateUnpublishedEntryStatus, publishUnpublishedEntry, getMedia, getMediaFile, persistMedia, deleteFile, getDeployPreview]',
+      '"action" must be one of [info, entriesByFolder, entriesByFiles, getEntry, unpublishedEntries, unpublishedEntry, unpublishedEntryDataFile, unpublishedEntryMediaFile, deleteUnpublishedEntry, persistEntry, updateUnpublishedEntryStatus, publishUnpublishedEntry, getMedia, getMediaFile, persistMedia, deleteFile, deleteFiles, getDeployPreview]',
     );
   });
 
@@ -274,8 +274,19 @@ describe('defaultSchema', () => {
       const schema = defaultSchema();
 
       assetFailure(
-        schema.validate({ action: 'persistEntry', params: { ...defaultParams } }),
-        '"params.entry" is required',
+        schema.validate({
+          action: 'persistEntry',
+          params: {
+            ...defaultParams,
+            assets: [],
+            options: {
+              commitMessage: 'commitMessage',
+              useWorkflow: true,
+              status: 'draft',
+            },
+          },
+        }),
+        '"params" must contain at least one of [entry, dataFiles]',
       );
       assetFailure(
         schema.validate({
@@ -309,13 +320,32 @@ describe('defaultSchema', () => {
       );
     });
 
-    it('should pass on valid params', () => {
+    it('should pass on valid params (entry argument)', () => {
       const schema = defaultSchema();
       const { error } = schema.validate({
         action: 'persistEntry',
         params: {
           ...defaultParams,
           entry: { slug: 'slug', path: 'path', raw: 'content' },
+          assets: [{ path: 'path', content: 'content', encoding: 'base64' }],
+          options: {
+            commitMessage: 'commitMessage',
+            useWorkflow: true,
+            status: 'draft',
+          },
+        },
+      });
+
+      expect(error).toBeUndefined();
+    });
+
+    it('should pass on valid params (dataFiles argument)', () => {
+      const schema = defaultSchema();
+      const { error } = schema.validate({
+        action: 'persistEntry',
+        params: {
+          ...defaultParams,
+          dataFiles: [{ slug: 'slug', path: 'path', raw: 'content' }],
           assets: [{ path: 'path', content: 'content', encoding: 'base64' }],
           options: {
             commitMessage: 'commitMessage',
@@ -483,6 +513,31 @@ describe('defaultSchema', () => {
         params: {
           ...defaultParams,
           path: 'src/static/images/image.png',
+          options: { commitMessage: 'commitMessage' },
+        },
+      });
+
+      expect(error).toBeUndefined();
+    });
+  });
+
+  describe('deleteFiles', () => {
+    it('should fail on invalid params', () => {
+      const schema = defaultSchema();
+
+      assetFailure(
+        schema.validate({ action: 'deleteFiles', params: { ...defaultParams } }),
+        '"params.paths" is required',
+      );
+    });
+
+    it('should pass on valid params', () => {
+      const schema = defaultSchema();
+      const { error } = schema.validate({
+        action: 'deleteFiles',
+        params: {
+          ...defaultParams,
+          paths: ['src/static/images/image.png'],
           options: { commitMessage: 'commitMessage' },
         },
       });

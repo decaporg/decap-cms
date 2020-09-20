@@ -20,6 +20,7 @@ import { asyncLock, AsyncLock as AL } from './asyncLock';
 import {
   Implementation as I,
   ImplementationEntry as IE,
+  UnpublishedEntryDiff as UED,
   UnpublishedEntry as UE,
   ImplementationMediaFile as IMF,
   ImplementationFile as IF,
@@ -40,6 +41,7 @@ import {
   UnpublishedEntryMediaFile as UEMF,
   blobToFileObj,
   allEntriesByFolder,
+  DataFile as DF,
 } from './implementation';
 import {
   readFile,
@@ -76,6 +78,7 @@ import {
 export type AsyncLock = AL;
 export type Implementation = I;
 export type ImplementationEntry = IE;
+export type UnpublishedEntryDiff = UED;
 export type UnpublishedEntry = UE;
 export type ImplementationMediaFile = IMF;
 export type ImplementationFile = IF;
@@ -91,6 +94,7 @@ export type ApiRequest = AR;
 export type Config = C;
 export type FetchError = FE;
 export type PointerFile = PF;
+export type DataFile = DF;
 
 export const NetlifyCmsLibUtil = {
   APIError,

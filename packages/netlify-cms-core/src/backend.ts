@@ -37,6 +37,8 @@ import {
   asyncLock,
   AsyncLock,
   UnpublishedEntry,
+  DataFile,
+  UnpublishedEntryDiff,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
@@ -55,8 +57,40 @@ import {
 import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
+import {
+  getI18nFilesDepth,
+  getI18nFiles,
+  hasI18n,
+  getFilePaths,
+  getI18nEntry,
+  groupEntries,
+  getI18nDataFiles,
+  getI18nBackup,
+  formatI18nBackup,
+} from './lib/i18n';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
+
+const updateAssetProxies = (
+  assetProxies: AssetProxy[],
+  config: Config,
+  collection: Collection,
+  entryDraft: EntryDraft,
+  path: string,
+) => {
+  assetProxies.map(asset => {
+    // update media files path based on entry path
+    const oldPath = asset.path;
+    const newPath = selectMediaFilePath(
+      config,
+      collection,
+      entryDraft.get('entry').set('path', path),
+      oldPath,
+      asset.field,
+    );
+    asset.path = newPath;
+  });
+};
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -223,6 +257,7 @@ interface BackupEntry {
   raw: string;
   path: string;
   mediaFiles: MediaFile[];
+  i18n?: Record<string, { raw: string }>;
 }
 
 interface PersistArgs {
@@ -251,6 +286,18 @@ const prepareMetaPath = (path: string, collection: Collection) => {
   }
   const dir = dirname(path);
   return dir.substr(collection.get('folder')!.length + 1) || '/';
+};
+
+const collectionDepth = (collection: Collection) => {
+  let depth;
+  depth =
+    collection.get('nested')?.get('depth') || getPathDepth(collection.get('path', '') as string);
+
+  if (hasI18n(collection)) {
+    depth = getI18nFilesDepth(collection, depth);
+  }
+
+  return depth;
 };
 
 export class Backend {
@@ -417,7 +464,6 @@ export class Backend {
   }
 
   processEntries(loadedEntries: ImplementationEntry[], collection: Collection) {
-    const collectionFilter = collection.get('filter');
     const entries = loadedEntries.map(loadedEntry =>
       createEntry(
         collection.get('name'),
@@ -433,9 +479,17 @@ export class Backend {
     );
     const formattedEntries = entries.map(this.entryWithFormat(collection));
     // If this collection has a "filter" property, filter entries accordingly
+    const collectionFilter = collection.get('filter');
     const filteredEntries = collectionFilter
       ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
       : formattedEntries;
+
+    if (hasI18n(collection)) {
+      const extension = selectFolderEntryExtension(collection);
+      const groupedEntries = groupEntries(collection, extension, entries);
+      return groupedEntries;
+    }
+
     return filteredEntries;
   }
 
@@ -445,10 +499,7 @@ export class Backend {
     const collectionType = collection.get('type');
     if (collectionType === FOLDER) {
       listMethod = () => {
-        const depth =
-          collection.get('nested')?.get('depth') ||
-          getPathDepth(collection.get('path', '') as string);
-
+        const depth = collectionDepth(collection);
         return this.implementation.entriesByFolder(
           collection.get('folder') as string,
           extension,
@@ -493,11 +544,8 @@ export class Backend {
   // for local searches and queries.
   async listAllEntries(collection: Collection) {
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
+      const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
-      const depth =
-        collection.get('nested')?.get('depth') ||
-        getPathDepth(collection.get('path', '') as string);
-
       return this.implementation
         .allEntriesByFolder(collection.get('folder') as string, extension, depth)
         .then(entries => this.processEntries(entries, collection));
@@ -640,14 +688,23 @@ export class Backend {
     });
 
     const label = selectFileEntryLabel(collection, slug);
-    const entry: EntryValue = this.entryWithFormat(collection)(
-      createEntry(collection.get('name'), slug, path, {
-        raw,
-        label,
-        mediaFiles,
-        meta: { path: prepareMetaPath(path, collection) },
-      }),
-    );
+
+    const formatRawData = (raw: string) => {
+      return this.entryWithFormat(collection)(
+        createEntry(collection.get('name'), slug, path, {
+          raw,
+          label,
+          mediaFiles,
+          meta: { path: prepareMetaPath(path, collection) },
+        }),
+      );
+    };
+
+    const entry: EntryValue = formatRawData(raw);
+    if (hasI18n(collection) && backup.i18n) {
+      const i18n = formatI18nBackup(backup.i18n, formatRawData);
+      entry.i18n = i18n;
+    }
 
     return { entry };
   }
@@ -676,10 +733,16 @@ export class Backend {
           }),
       );
 
+      let i18n;
+      if (hasI18n(collection)) {
+        i18n = getI18nBackup(collection, entry, entry => this.entryToRaw(collection, entry));
+      }
+
       await localForage.setItem<BackupEntry>(key, {
         raw,
         path: entry.get('path'),
         mediaFiles,
+        ...(i18n && { i18n }),
       });
       const result = await localForage.setItem(getEntryBackupKey(), raw);
       return result;
@@ -714,18 +777,31 @@ export class Backend {
   async getEntry(state: State, collection: Collection, slug: string) {
     const path = selectEntryPath(collection, slug) as string;
     const label = selectFileEntryLabel(collection, slug);
+    const extension = selectFolderEntryExtension(collection);
 
-    const loadedEntry = await this.implementation.getEntry(path);
-    let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
-      raw: loadedEntry.data,
-      label,
-      mediaFiles: [],
-      meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
-    });
+    const getEntryValue = async (path: string) => {
+      const loadedEntry = await this.implementation.getEntry(path);
+      let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+        raw: loadedEntry.data,
+        label,
+        mediaFiles: [],
+        meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+      });
 
-    entry = this.entryWithFormat(collection)(entry);
-    entry = await this.processEntry(state, collection, entry);
-    return entry;
+      entry = this.entryWithFormat(collection)(entry);
+      entry = await this.processEntry(state, collection, entry);
+
+      return entry;
+    };
+
+    let entryValue: EntryValue;
+    if (hasI18n(collection)) {
+      entryValue = await getI18nEntry(collection, extension, path, slug, getEntryValue);
+    } else {
+      entryValue = await getEntryValue(path);
+    }
+
+    return entryValue;
   }
 
   getMedia() {
@@ -772,31 +848,6 @@ export class Backend {
     } else {
       extension = selectFolderEntryExtension(collection);
     }
-    const dataFiles = sortBy(
-      entryData.diffs.filter(d => d.path.endsWith(extension)),
-      f => f.path.length,
-    );
-    // if the unpublished entry has no diffs, return the original
-    let data = '';
-    let newFile = false;
-    let path = slug;
-    if (dataFiles.length <= 0) {
-      const loadedEntry = await this.implementation.getEntry(
-        selectEntryPath(collection, slug) as string,
-      );
-      data = loadedEntry.data;
-      path = loadedEntry.file.path;
-    } else {
-      const entryFile = dataFiles[0];
-      data = await this.implementation.unpublishedEntryDataFile(
-        collection.get('name'),
-        entryData.slug,
-        entryFile.path,
-        entryFile.id,
-      );
-      newFile = entryFile.newFile;
-      path = entryFile.path;
-    }
 
     const mediaFiles: MediaFile[] = [];
     if (withMediaFiles) {
@@ -813,18 +864,58 @@ export class Backend {
       );
       mediaFiles.push(...files.map(f => ({ ...f, draft: true })));
     }
-    const entry = createEntry(collection.get('name'), slug, path, {
-      raw: data,
-      isModification: !newFile,
-      label: collection && selectFileEntryLabel(collection, slug),
-      mediaFiles,
-      updatedOn: entryData.updatedAt,
-      status: entryData.status,
-      meta: { path: prepareMetaPath(path, collection) },
-    });
 
-    const entryWithFormat = this.entryWithFormat(collection)(entry);
-    return entryWithFormat;
+    const dataFiles = sortBy(
+      entryData.diffs.filter(d => d.path.endsWith(extension)),
+      f => f.path.length,
+    );
+
+    const formatData = (data: string, path: string, newFile: boolean) => {
+      const entry = createEntry(collection.get('name'), slug, path, {
+        raw: data,
+        isModification: !newFile,
+        label: collection && selectFileEntryLabel(collection, slug),
+        mediaFiles,
+        updatedOn: entryData.updatedAt,
+        status: entryData.status,
+        meta: { path: prepareMetaPath(path, collection) },
+      });
+
+      const entryWithFormat = this.entryWithFormat(collection)(entry);
+      return entryWithFormat;
+    };
+
+    const readAndFormatDataFile = async (dataFile: UnpublishedEntryDiff) => {
+      const data = await this.implementation.unpublishedEntryDataFile(
+        collection.get('name'),
+        entryData.slug,
+        dataFile.path,
+        dataFile.id,
+      );
+      const entryWithFormat = formatData(data, dataFile.path, dataFile.newFile);
+      return entryWithFormat;
+    };
+
+    // if the unpublished entry has no diffs, return the original
+    if (dataFiles.length <= 0) {
+      const loadedEntry = await this.implementation.getEntry(
+        selectEntryPath(collection, slug) as string,
+      );
+      return formatData(loadedEntry.data, loadedEntry.file.path, false);
+    } else if (hasI18n(collection)) {
+      // we need to read all locales files and not just the changes
+      const path = selectEntryPath(collection, slug) as string;
+      const i18nFiles = getI18nDataFiles(collection, extension, path, slug, dataFiles);
+      let entries = await Promise.all(
+        i18nFiles.map(dataFile => readAndFormatDataFile(dataFile).catch(() => null)),
+      );
+      entries = entries.filter(Boolean);
+      const grouped = await groupEntries(collection, extension, entries as EntryValue[]);
+      return grouped[0];
+    } else {
+      const entryWithFormat = await readAndFormatDataFile(dataFiles[0]);
+      return entryWithFormat;
+    }
   }
 
   async unpublishedEntries(collections: Collections) {
@@ -964,15 +1055,9 @@ export class Backend {
 
     const useWorkflow = selectUseWorkflow(config);
 
-    let entryObj: {
-      path: string;
-      slug: string;
-      raw: string;
-      newPath?: string;
-    };
-
     const customPath = selectCustomPath(collection, entryDraft);
 
+    let dataFile: DataFile;
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
@@ -985,27 +1070,16 @@ export class Backend {
         customPath,
       );
       const path = customPath || (selectEntryPath(collection, slug) as string);
-      entryObj = {
+      dataFile = {
         path,
         slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
       };
 
-      assetProxies.map(asset => {
-        // update media files path based on entry path
-        const oldPath = asset.path;
-        const newPath = selectMediaFilePath(
-          config,
-          collection,
-          entryDraft.get('entry').set('path', path),
-          oldPath,
-          asset.field,
-        );
-        asset.path = newPath;
-      });
+      updateAssetProxies(assetProxies, config, collection, entryDraft, path);
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
-      entryObj = {
+      dataFile = {
         path: entryDraft.getIn(['entry', 'path']),
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
@@ -1014,14 +1088,30 @@ export class Backend {
       };
     }
 
+    const { slug, path, newPath } = dataFile;
+
+    let dataFiles = [dataFile];
+    if (hasI18n(collection)) {
+      const extension = selectFolderEntryExtension(collection);
+      dataFiles = getI18nFiles(
+        collection,
+        extension,
+        entryDraft.get('entry'),
+        (draftData: EntryMap) => this.entryToRaw(collection, draftData),
+        path,
+        slug,
+        newPath,
+      );
+    }
+
     const user = (await this.currentUser()) as User;
     const commitMessage = commitMessageFormatter(
       newEntry ? 'create' : 'update',
       config,
       {
         collection,
-        slug: entryObj.slug,
-        path: entryObj.path,
+        slug,
+        path,
         authorLogin: user.login,
         authorName: user.name,
       },
@@ -1043,7 +1133,13 @@ export class Backend {
       await this.invokePrePublishEvent(entryDraft.get('entry'));
     }
 
-    await this.implementation.persistEntry(entryObj, assetProxies, opts);
+    await this.implementation.persistEntry(
+      {
+        dataFiles,
+        assets: assetProxies,
+      },
+      opts,
+    );
 
     await this.invokePostSaveEvent(entryDraft.get('entry'));
 
@@ -1051,7 +1147,7 @@ export class Backend {
       await this.invokePostPublishEvent(entryDraft.get('entry'));
     }
 
-    return entryObj.slug;
+    return slug;
   }
 
   async invokeEventWithEntry(event: string, entry: EntryMap) {
@@ -1101,13 +1197,14 @@ export class Backend {
   }
 
   async deleteEntry(state: State, collection: Collection, slug: string) {
+    const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
+    const extension = selectFolderEntryExtension(collection) as string;
 
     if (!selectAllowDeletion(collection)) {
       throw new Error('Not allowed to delete entries in this collection');
     }
 
-    const config = state.config;
     const user = (await this.currentUser()) as User;
     const commitMessage = commitMessageFormatter(
       'delete',
@@ -1124,9 +1221,13 @@ export class Backend {
 
     const entry = selectEntry(state.entries, collection.get('name'), slug);
     await this.invokePreUnpublishEvent(entry);
-    const result = await this.implementation.deleteFile(path, commitMessage);
+    let paths = [path];
+    if (hasI18n(collection)) {
+      paths = getFilePaths(collection, extension, path, slug);
+    }
+    await this.implementation.deleteFiles(paths, commitMessage);
+
     await this.invokePostUnpublishEvent(entry);
-    return result;
   }
 
   async deleteMedia(config: Config, path: string) {
@@ -1141,7 +1242,7 @@ export class Backend {
       },
       user.useOpenAuthoring,
     );
-    return this.implementation.deleteFile(path, commitMessage);
+    return this.implementation.deleteFiles([path], commitMessage);
   }
 
   persistUnpublishedEntry(args: PersistArgs) {

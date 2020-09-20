@@ -56,6 +56,14 @@ const styleStrings = {
   widgetError: `
     border-color: ${colors.errorText};
   `,
+  disabled: `
+    pointer-events: none;
+    opacity: 0.5;
+    background: #ccc;
+  `,
+  hidden: `
+    visibility: hidden;
+  `,
 };
 
 const ControlContainer = styled.div`
@@ -86,6 +94,17 @@ export const ControlHint = styled.p`
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
   transition: color ${transitions.main};
 `;
+
+const LabelComponent = ({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) => {
+  const label = `${field.get('label', field.get('name'))}`;
+  const labelComponent = (
+    <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
+      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+    </FieldLabel>
+  );
+
+  return labelComponent;
+};
 
 class EditorControl extends React.Component {
   static propTypes = {
@@ -119,6 +138,10 @@ class EditorControl extends React.Component {
     parentIds: PropTypes.arrayOf(PropTypes.string),
     entry: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
+    isDisabled: PropTypes.bool,
+    isHidden: PropTypes.bool,
+    isFieldDuplicate: PropTypes.func,
+    isFieldHidden: PropTypes.func,
   };
 
   static defaultProps = {
@@ -175,6 +198,10 @@ class EditorControl extends React.Component {
       parentIds,
       t,
       validateMetaField,
+      isDisabled,
+      isHidden,
+      isFieldDuplicate,
+      isFieldHidden,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -191,7 +218,12 @@ class EditorControl extends React.Component {
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <ControlContainer className={className}>
+          <ControlContainer
+            className={className}
+            css={css`
+              ${isHidden && styleStrings.hidden};
+            `}
+          >
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
             {errors && (
               <ControlErrorsList>
@@ -206,15 +238,14 @@ class EditorControl extends React.Component {
                 )}
               </ControlErrorsList>
             )}
-            <FieldLabel
+            <LabelComponent
+              field={field}
               isActive={isSelected || this.state.styleActive}
               hasErrors={hasErrors}
-              htmlFor={this.uniqueFieldId}
-            >
-              {`${field.get('label', field.get('name'))}${
-                isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''
-              }`}
-            </FieldLabel>
+              uniqueFieldId={this.uniqueFieldId}
+              isFieldOptional={isFieldOptional}
+              t={t}
+            />
             <Widget
               classNameWrapper={cx(
                 css`
@@ -229,6 +260,11 @@ class EditorControl extends React.Component {
                   [css`
                     ${styleStrings.widgetError};
                   `]: hasErrors,
+                },
+                {
+                  [css`
+                    ${styleStrings.disabled}
+                  `]: isDisabled,
                 },
               )}
               classNameWidget={css`
@@ -282,6 +318,9 @@ class EditorControl extends React.Component {
               parentIds={parentIds}
               t={t}
               validateMetaField={validateMetaField}
+              isDisabled={isDisabled}
+              isFieldDuplicate={isFieldDuplicate}
+              isFieldHidden={isFieldHidden}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>

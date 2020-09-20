@@ -4,7 +4,6 @@ import { actions as notifActions } from 'redux-notifications';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import { ThunkDispatch } from 'redux-thunk';
 import { Map, List } from 'immutable';
-import { serializeValues } from '../lib/serializeEntryValues';
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
   selectPublishedSlugs,
@@ -13,7 +12,6 @@ import {
   selectUnpublishedEntry,
 } from '../reducers';
 import { selectEditingDraft } from '../reducers/entries';
-import { selectFields } from '../reducers/collections';
 import { EDITORIAL_WORKFLOW, status, Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import {
@@ -22,11 +20,11 @@ import {
   getMediaAssets,
   createDraftFromEntry,
   loadEntries,
+  getSerializedEntry,
 } from './entries';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
-
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { Collection, EntryMap, State, Collections, EntryDraft, MediaFile } from '../types/redux';
 import { AnyAction } from 'redux';
@@ -382,13 +380,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
       entry,
     });
 
-    /**
-     * Serialize the values of any fields with registered serializers, and
-     * update the entry and entryDraft with the serialized values.
-     */
-    const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(entry.get('data'), fields);
-    const serializedEntry = entry.set('data', serializedData);
+    const serializedEntry = getSerializedEntry(collection, entry);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 
     dispatch(unpublishedEntryPersisting(collection, serializedEntry, transactionID));

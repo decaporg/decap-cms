@@ -12,6 +12,8 @@ import {
   GetMediaFileParams,
   PersistMediaParams,
   DeleteFileParams,
+  DeleteFilesParams,
+  DataFile,
 } from '../types';
 import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
@@ -61,16 +63,27 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
           break;
         }
         case 'persistEntry': {
-          const { entry, assets } = body.params as PersistEntryParams;
-          await writeFile(path.join(repoPath, entry.path), entry.raw);
+          const {
+            entry,
+            dataFiles = [entry as DataFile],
+            assets,
+          } = body.params as PersistEntryParams;
+          await Promise.all(
+            dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
+          );
           // save assets
           await Promise.all(
             assets.map(a =>
               writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding)),
             ),
           );
-          if (entry.newPath) {
-            await move(path.join(repoPath, entry.path), path.join(repoPath, entry.newPath));
+          if (dataFiles.every(dataFile => dataFile.newPath)) {
+            dataFiles.forEach(async dataFile => {
+              await move(
+                path.join(repoPath, dataFile.path),
+                path.join(repoPath, dataFile.newPath!),
+              );
+            });
           }
           res.json({ message: 'entry persisted' });
           break;
@@ -102,6 +115,12 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
           const { path: filePath } = body.params as DeleteFileParams;
           await deleteFile(repoPath, filePath);
           res.json({ message: `deleted file ${filePath}` });
+          break;
+        }
+        case 'deleteFiles': {
+          const { paths } = body.params as DeleteFilesParams;
+          await Promise.all(paths.map(filePath => deleteFile(repoPath, filePath)));
+          res.json({ message: `deleted files ${paths.join(', ')}` });
           break;
         }
         case 'getDeployPreview': {

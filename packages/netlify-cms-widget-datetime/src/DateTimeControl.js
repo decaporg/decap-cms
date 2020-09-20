@@ -7,6 +7,34 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import { buttons } from 'netlify-cms-ui-default';
 
+const NowButton = ({ t, handleChange }) => {
+  return (
+    <div
+      css={css`
+        position: absolute;
+        right: 20px;
+        transform: translateY(-40px);
+        width: fit-content;
+        z-index: 1;
+      `}
+    >
+      <button
+        css={css`
+    ${buttons.button}
+    ${buttons.default}
+    ${buttons.lightBlue}
+    ${buttons.small}
+`}
+        onClick={() => {
+          handleChange(moment());
+        }}
+      >
+        {t('editor.editorWidgets.datetime.now')}
+      </button>
+    </div>
+  );
+};
+
 export default class DateTimeControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
@@ -114,7 +142,7 @@ export default class DateTimeControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, t } = this.props;
+    const { forID, value, classNameWrapper, setActiveStyle, t, isDisabled } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
 
     return (
@@ -134,29 +162,7 @@ export default class DateTimeControl extends React.Component {
           inputProps={{ className: classNameWrapper, id: forID }}
           utc={this.pickerUtc}
         />
-        <div
-          css={css`
-            position: absolute;
-            right: 20px;
-            transform: translateY(-40px);
-            width: fit-content;
-            z-index: 1;
-          `}
-        >
-          <button
-            css={css`
-              ${buttons.button}
-              ${buttons.default}
-              ${buttons.lightBlue}
-              ${buttons.small}
-          `}
-            onClick={() => {
-              this.handleChange(moment());
-            }}
-          >
-            {t('editor.editorWidgets.datetime.now')}
-          </button>
-        </div>
+        {!isDisabled && <NowButton t={t} handleChange={v => this.handleChange(v)} />}
       </div>
     );
   }

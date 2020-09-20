@@ -450,5 +450,59 @@ describe('config', () => {
         );
       }).not.toThrow();
     });
+
+    describe('i18n', () => {
+      it('should throw error when locale has invalid characters', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'tr.TR'],
+              },
+            }),
+          );
+        }).toThrowError(`'i18n.locales[1]' should match pattern "^[a-zA-Z-_]+$"`);
+      });
+
+      it('should throw error when locale is less than 2 characters', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 't'],
+              },
+            }),
+          );
+        }).toThrowError(`'i18n.locales[1]' should NOT be shorter than 2 characters`);
+      });
+
+      it('should throw error when locale is more than 10 characters', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'a_very_long_locale'],
+              },
+            }),
+          );
+        }).toThrowError(`'i18n.locales[1]' should NOT be longer than 10 characters`);
+      });
+
+      it('should allow valid locales strings', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'tr-TR', 'zh_CHS'],
+              },
+            }),
+          );
+        }).not.toThrow();
+      });
+    });
   });
 });

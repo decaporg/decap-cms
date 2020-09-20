@@ -123,6 +123,7 @@ export type EntryField = StaticallyTypedRecord<{
   public_folder?: string;
   comment?: string;
   meta?: boolean;
+  i18n: 'translate' | 'duplicate' | 'none';
 }>;
 
 export type EntryFields = List<EntryField>;
@@ -161,6 +162,12 @@ type MetaObject = {
 
 type Meta = StaticallyTypedRecord<MetaObject>;
 
+type i18n = StaticallyTypedRecord<{
+  structure: string;
+  locales: string[];
+  default_locale: string;
+}>;
+
 type CollectionObject = {
   name: string;
   folder?: string;
@@ -187,6 +194,7 @@ type CollectionObject = {
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   nested?: Nested;
   meta?: Meta;
+  i18n: i18n;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

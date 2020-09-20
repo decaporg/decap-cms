@@ -18,6 +18,7 @@ const allowedActions = [
   'getMediaFile',
   'persistMedia',
   'deleteFile',
+  'deleteFiles',
   'getDeployPreview',
 ];
 
@@ -37,6 +38,13 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
     path,
     content: requiredString,
     encoding: requiredString.valid('base64'),
+  });
+
+  const dataFile = Joi.object({
+    slug: requiredString,
+    path,
+    raw: requiredString,
+    newPath: path.optional(),
   });
 
   const params = Joi.when('action', {
@@ -122,12 +130,8 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         then: defaultParams
           .keys({
             cmsLabelPrefix: Joi.string().optional(),
-            entry: Joi.object({
-              slug: requiredString,
-              path,
-              raw: requiredString,
-              newPath: path.optional(),
-            }).required(),
+            entry: dataFile, // entry is kept for backwards compatibility
+            dataFiles: Joi.array().items(dataFile),
             assets: Joi.array()
               .items(asset)
               .required(),
@@ -138,6 +142,7 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
               status: requiredString,
             }).required(),
           })
+          .xor('entry', 'dataFiles')
           .required(),
       },
       {
@@ -192,6 +197,20 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
         then: defaultParams
           .keys({
             path,
+            options: Joi.object({
+              commitMessage: requiredString,
+            }).required(),
+          })
+          .required(),
+      },
+      {
+        is: 'deleteFiles',
+        then: defaultParams
+          .keys({
+            paths: Joi.array()
+              .items(path)
+              .min(1)
+              .required(),
             options: Joi.object({
               commitMessage: requiredString,
             }).required(),

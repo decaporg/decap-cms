@@ -91,6 +91,18 @@ function goToMediaLibrary() {
   cy.contains('button', 'Media').click();
 }
 
+function assertUnpublishedEntryInEditor() {
+  cy.contains('button', 'Delete unpublished entry');
+}
+
+function assertPublishedEntryInEditor() {
+  cy.contains('button', 'Delete published entry');
+}
+
+function assertUnpublishedChangesInEditor() {
+  cy.contains('button', 'Delete unpublished changes');
+}
+
 function goToEntry(entry) {
   goToCollections();
   cy.get('a h2')
@@ -252,12 +264,17 @@ function populateEntry(entry, onDone = flushClockAndSave) {
     const value = entry[key];
     if (key === 'body') {
       cy.getMarkdownEditor()
+        .first()
         .click()
         .clear({ force: true })
         .type(value, { force: true });
     } else {
-      cy.get(`[id^="${key}-field"]`).clear({ force: true });
-      cy.get(`[id^="${key}-field"]`).type(value, { force: true });
+      cy.get(`[id^="${key}-field"]`)
+        .first()
+        .clear({ force: true });
+      cy.get(`[id^="${key}-field"]`)
+        .first()
+        .type(value, { force: true });
     }
   }
 
@@ -305,7 +322,8 @@ function publishEntry({ createNew = false, duplicate = false } = {}) {
       selectDropdownItem('Publish', publishTypes.publishNow);
     }
 
-    assertNotification(notifications.saved);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
   });
 }
 
@@ -686,4 +704,8 @@ module.exports = {
   publishAndDuplicateEntryInEditor,
   assertNotification,
   assertFieldValidationError,
+  flushClockAndSave,
+  assertPublishedEntryInEditor,
+  assertUnpublishedEntryInEditor,
+  assertUnpublishedChangesInEditor,
 };

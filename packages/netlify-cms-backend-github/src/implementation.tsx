@@ -30,10 +30,11 @@ import {
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
+  Entry,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { Octokit } from '@octokit/rest';
-import API, { Entry, API_NAME } from './API';
+import API, { API_NAME } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
@@ -473,18 +474,18 @@ export default class GitHub implements Implementation {
     );
   }
 
-  persistEntry(entry: Entry, mediaFiles: AssetProxy[] = [], options: PersistOptions) {
+  persistEntry(entry: Entry, options: PersistOptions) {
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.persistFiles(entry, mediaFiles, options),
+      () => this.api!.persistFiles(entry.dataFiles, entry.assets, options),
       'Failed to acquire persist entry lock',
     );
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
     try {
-      await this.api!.persistFiles(null, [mediaFile], options);
+      await this.api!.persistFiles([], [mediaFile], options);
       const { sha, path, fileObj } = mediaFile as AssetProxy & { sha: string };
       const displayURL = URL.createObjectURL(fileObj);
       return {
@@ -500,8 +501,8 @@ export default class GitHub implements Implementation {
     }
   }
 
-  deleteFile(path: string, commitMessage: string) {
-    return this.api!.deleteFile(path, commitMessage);
+  deleteFiles(paths: string[], commitMessage: string) {
+    return this.api!.deleteFiles(paths, commitMessage);
   }
 
   async traverseCursor(cursor: Cursor, action: string) {

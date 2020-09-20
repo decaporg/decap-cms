@@ -20,6 +20,7 @@ import {
   EntryField,
   SortDirection,
   ViewFilter,
+  Entry,
 } from '../types/redux';
 
 import { ThunkDispatch } from 'redux-thunk';
@@ -30,6 +31,7 @@ import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '..
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
+import { hasI18n, serializeI18n } from '../lib/i18n';
 
 const { notifSend } = notifActions;
 
@@ -349,15 +351,26 @@ export function discardDraft() {
   return { type: DRAFT_DISCARD };
 }
 
-export function changeDraftField(
-  field: EntryField,
-  value: string,
-  metadata: Record<string, unknown>,
-  entries: EntryMap[],
-) {
+export function changeDraftField({
+  field,
+  value,
+  metadata,
+  entries,
+  i18n,
+}: {
+  field: EntryField;
+  value: string;
+  metadata: Record<string, unknown>;
+  entries: EntryMap[];
+  i18n?: {
+    currentLocale: string;
+    defaultLocale: string;
+    locales: string[];
+  };
+}) {
   return {
     type: DRAFT_CHANGE_FIELD,
-    payload: { field, value, metadata, entries },
+    payload: { field, value, metadata, entries, i18n },
   };
 }
 
@@ -530,11 +543,13 @@ export function loadEntries(collection: Collection, page = 0) {
     dispatch(entriesLoading(collection));
 
     try {
+      const loadAllEntries = collection.has('nested') || hasI18n(collection);
+
       let response: {
         cursor: Cursor;
         pagination: number;
         entries: EntryValue[];
-      } = await (collection.has('nested')
+      } = await (loadAllEntries
         ? // nested collections require all entries to construct the tree
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
         : provider.listEntries(collection, page));
@@ -760,6 +775,24 @@ export function getMediaAssets({ entry }: { entry: EntryMap }) {
   return assets;
 }
 
+export const getSerializedEntry = (collection: Collection, entry: Entry) => {
+  /**
+   * Serialize the values of any fields with registered serializers, and
+   * update the entry and entryDraft with the serialized values.
+   */
+  const fields = selectFields(collection, entry.get('slug'));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serializeData = (data: any) => {
+    return serializeValues(data, fields);
+  };
+  const serializedData = serializeData(entry.get('data'));
+  let serializedEntry = entry.set('data', serializedData);
+  if (hasI18n(collection)) {
+    serializedEntry = serializeI18n(collection, serializedEntry, serializeData);
+  }
+  return serializedEntry;
+};
+
 export function persistEntry(collection: Collection) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
@@ -794,13 +827,7 @@ export function persistEntry(collection: Collection) {
       entry,
     });
 
-    /**
-     * Serialize the values of any fields with registered serializers, and
-     * update the entry and entryDraft with the serialized values.
-     */
-    const fields = selectFields(collection, entry.get('slug'));
-    const serializedData = serializeValues(entryDraft.getIn(['entry', 'data']), fields);
-    const serializedEntry = entry.set('data', serializedData);
+    const serializedEntry = getSerializedEntry(collection, entry);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
@@ -811,7 +838,7 @@ export function persistEntry(collection: Collection) {
         assetProxies,
         usedSlugs,
       })
-      .then((newSlug: string) => {
+      .then(async (newSlug: string) => {
         dispatch(
           notifSend({
             message: {
@@ -821,16 +848,17 @@ export function persistEntry(collection: Collection) {
             dismissAfter: 4000,
           }),
         );
+
         // re-load media library if entry had media files
         if (assetProxies.length > 0) {
-          dispatch(loadMedia());
+          await dispatch(loadMedia());
         }
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
         if (collection.has('nested')) {
-          dispatch(loadEntries(collection));
+          await dispatch(loadEntries(collection));
         }
         if (entry.get('slug') !== newSlug) {
-          dispatch(loadEntry(collection, newSlug));
+          await dispatch(loadEntry(collection, newSlug));
           navigateToEntry(collection.get('name'), newSlug);
         }
       })

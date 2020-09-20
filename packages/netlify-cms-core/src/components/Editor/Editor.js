@@ -196,9 +196,9 @@ export class Editor extends React.Component {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
-  handleChangeDraftField = (field, value, metadata) => {
+  handleChangeDraftField = (field, value, metadata, i18n) => {
     const entries = [this.props.unPublishedEntry, this.props.publishedEntry].filter(Boolean);
-    this.props.changeDraftField(field, value, metadata, entries);
+    this.props.changeDraftField({ field, value, metadata, entries, i18n });
   };
 
   handleChangeStatus = newStatusName => {
@@ -418,6 +418,7 @@ export class Editor extends React.Component {
         deployPreview={deployPreview}
         loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
         editorBackLink={editorBackLink}
+        t={t}
       />
     );
   }

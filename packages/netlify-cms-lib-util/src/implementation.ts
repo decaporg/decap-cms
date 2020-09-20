@@ -30,11 +30,17 @@ export interface ImplementationEntry {
   file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
 }
 
+export interface UnpublishedEntryDiff {
+  id: string;
+  path: string;
+  newFile: boolean;
+}
+
 export interface UnpublishedEntry {
   slug: string;
   collection: string;
   status: string;
-  diffs: { id: string; path: string; newFile: boolean }[];
+  diffs: UnpublishedEntryDiff[];
   updatedAt: string;
 }
 
@@ -45,13 +51,23 @@ export interface Map {
   set: <T>(key: string, value: T) => Map;
 }
 
+export type DataFile = {
+  path: string;
+  slug: string;
+  raw: string;
+  newPath?: string;
+};
+
 export type AssetProxy = {
   path: string;
   fileObj?: File;
   toBase64?: () => Promise<string>;
 };
 
-export type Entry = { path: string; slug: string; raw: string; newPath?: string };
+export type Entry = {
+  dataFiles: DataFile[];
+  assets: AssetProxy[];
+};
 
 export type PersistOptions = {
   newEntry?: boolean;
@@ -116,9 +132,9 @@ export interface Implementation {
   getMedia: (folder?: string) => Promise<ImplementationMediaFile[]>;
   getMediaFile: (path: string) => Promise<ImplementationMediaFile>;
 
-  persistEntry: (obj: Entry, assetProxies: AssetProxy[], opts: PersistOptions) => Promise<void>;
+  persistEntry: (entry: Entry, opts: PersistOptions) => Promise<void>;
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
-  deleteFile: (path: string, commitMessage: string) => Promise<void>;
+  deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
 
   unpublishedEntries: () => Promise<string[]>;
   unpublishedEntry: (args: {

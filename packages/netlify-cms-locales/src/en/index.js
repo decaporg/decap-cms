@@ -84,6 +84,9 @@ const en = {
         invalidPath: `'%{path}' is not a valid path`,
         pathExists: `Path '%{path}' already exists`,
       },
+      i18n: {
+        writingInLocale: 'Writing in %{locale}',
+      },
     },
     editor: {
       onLeavePage: 'Are you sure you want to leave this page?',

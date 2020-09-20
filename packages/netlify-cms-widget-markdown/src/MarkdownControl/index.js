@@ -71,6 +71,7 @@ export default class MarkdownControl extends React.Component {
       getEditorComponents,
       resolveWidget,
       t,
+      isDisabled,
     } = this.props;
 
     const { mode, pendingFocus } = this.state;
@@ -90,6 +91,7 @@ export default class MarkdownControl extends React.Component {
           resolveWidget={resolveWidget}
           pendingFocus={pendingFocus && this.setFocusReceived}
           t={t}
+          isDisabled={isDisabled}
         />
       </div>
     );

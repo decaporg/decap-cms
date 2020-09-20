@@ -229,12 +229,17 @@ describe('github API', () => {
       mockAPI(api, responses);
 
       const entry = {
-        slug: 'entry',
-        sha: 'abc',
-        path: 'content/posts/new-post.md',
-        raw: 'content',
+        dataFiles: [
+          {
+            slug: 'entry',
+            sha: 'abc',
+            path: 'content/posts/new-post.md',
+            raw: 'content',
+          },
+        ],
+        assets: [],
       };
-      await api.persistFiles(entry, [], { commitMessage: 'commitMessage' });
+      await api.persistFiles(entry.dataFiles, entry.assets, { commitMessage: 'commitMessage' });
 
       expect(api.request).toHaveBeenCalledTimes(5);
 
@@ -242,7 +247,10 @@ describe('github API', () => {
         '/repos/owner/repo/git/blobs',
         {
           method: 'POST',
-          body: JSON.stringify({ content: Base64.encode(entry.raw), encoding: 'base64' }),
+          body: JSON.stringify({
+            content: Base64.encode(entry.dataFiles[0].raw),
+            encoding: 'base64',
+          }),
         },
       ]);
 
@@ -297,35 +305,38 @@ describe('github API', () => {
       api.editorialWorkflowGit = jest.fn();
 
       const entry = {
-        slug: 'entry',
-        sha: 'abc',
-        path: 'content/posts/new-post.md',
-        raw: 'content',
+        dataFiles: [
+          {
+            slug: 'entry',
+            sha: 'abc',
+            path: 'content/posts/new-post.md',
+            raw: 'content',
+          },
+        ],
+        assets: [
+          {
+            path: '/static/media/image-1.png',
+            sha: 'image-1.png',
+          },
+          {
+            path: '/static/media/image-2.png',
+            sha: 'image-2.png',
+          },
+        ],
       };
 
-      const mediaFiles = [
-        {
-          path: '/static/media/image-1.png',
-          sha: 'image-1.png',
-        },
-        {
-          path: '/static/media/image-2.png',
-          sha: 'image-2.png',
-        },
-      ];
-
-      await api.persistFiles(entry, mediaFiles, { useWorkflow: true });
+      await api.persistFiles(entry.dataFiles, entry.assets, { useWorkflow: true });
 
       expect(api.uploadBlob).toHaveBeenCalledTimes(3);
-      expect(api.uploadBlob).toHaveBeenCalledWith(entry);
-      expect(api.uploadBlob).toHaveBeenCalledWith(mediaFiles[0]);
-      expect(api.uploadBlob).toHaveBeenCalledWith(mediaFiles[1]);
+      expect(api.uploadBlob).toHaveBeenCalledWith(entry.dataFiles[0]);
+      expect(api.uploadBlob).toHaveBeenCalledWith(entry.assets[0]);
+      expect(api.uploadBlob).toHaveBeenCalledWith(entry.assets[1]);
 
       expect(api.editorialWorkflowGit).toHaveBeenCalledTimes(1);
 
       expect(api.editorialWorkflowGit).toHaveBeenCalledWith(
-        mediaFiles.concat(entry),
-        entry,
+        entry.assets.concat(entry.dataFiles),
+        entry.dataFiles[0].slug,
         [
           { path: 'static/media/image-1.png', sha: 'image-1.png' },
           { path: 'static/media/image-2.png', sha: 'image-2.png' },

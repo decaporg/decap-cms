@@ -5,5 +5,6 @@ export default {
     summary: { type: 'string' },
     minimize_collapsed: { type: 'boolean' },
     label_singular: { type: 'string' },
+    i18n: { type: 'boolean' },
   },
 };

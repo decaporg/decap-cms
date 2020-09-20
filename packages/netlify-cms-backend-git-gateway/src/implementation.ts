@@ -534,13 +534,14 @@ export default class GitGateway implements Implementation {
     return this.backend!.getMediaFile(path);
   }
 
-  async persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions) {
+  async persistEntry(entry: Entry, options: PersistOptions) {
     const client = await this.getLargeMediaClient();
-    return this.backend!.persistEntry(
-      entry,
-      client.enabled ? await getLargeMediaFilteredMediaFiles(client, mediaFiles) : mediaFiles,
-      options,
-    );
+    if (client.enabled) {
+      const assets = await getLargeMediaFilteredMediaFiles(client, entry.assets);
+      return this.backend!.persistEntry({ ...entry, assets }, options);
+    } else {
+      return this.backend!.persistEntry(entry, options);
+    }
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
@@ -558,8 +559,8 @@ export default class GitGateway implements Implementation {
       displayURL,
     };
   }
-  deleteFile(path: string, commitMessage: string) {
-    return this.backend!.deleteFile(path, commitMessage);
+  deleteFiles(paths: string[], commitMessage: string) {
+    return this.backend!.deleteFiles(paths, commitMessage);
   }
   async getDeployPreview(collection: string, slug: string) {
     let preview = await this.backend!.getDeployPreview(collection, slug);

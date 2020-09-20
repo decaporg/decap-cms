@@ -183,13 +183,13 @@ export default class ProxyBackend implements Implementation {
     });
   }
 
-  async persistEntry(entry: Entry, assetProxies: AssetProxy[], options: PersistOptions) {
-    const assets = await Promise.all(assetProxies.map(serializeAsset));
+  async persistEntry(entry: Entry, options: PersistOptions) {
+    const assets = await Promise.all(entry.assets.map(serializeAsset));
     return this.request({
       action: 'persistEntry',
       params: {
         branch: this.branch,
-        entry,
+        dataFiles: entry.dataFiles,
         assets,
         options: { ...options, status: options.status || this.options.initialWorkflowStatus },
         cmsLabelPrefix: this.cmsLabelPrefix,
@@ -244,10 +244,10 @@ export default class ProxyBackend implements Implementation {
     return deserializeMediaFile(file);
   }
 
-  deleteFile(path: string, commitMessage: string) {
+  deleteFiles(paths: string[], commitMessage: string) {
     return this.request({
-      action: 'deleteFile',
-      params: { branch: this.branch, path, options: { commitMessage } },
+      action: 'deleteFiles',
+      params: { branch: this.branch, paths, options: { commitMessage } },
     });
   }
 

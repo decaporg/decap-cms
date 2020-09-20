@@ -38,7 +38,7 @@ export const writeFile = async (filePath: string, content: Buffer | string) => {
 };
 
 export const deleteFile = async (repoPath: string, filePath: string) => {
-  await fs.unlink(path.join(repoPath, filePath));
+  await fs.unlink(path.join(repoPath, filePath)).catch(() => undefined);
 };
 
 const moveFile = async (from: string, to: string) => {
@@ -55,4 +55,11 @@ export const move = async (from: string, to: string) => {
   const destDir = path.dirname(to);
   const allFiles = await listFiles(sourceDir, '', 100);
   await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
+};
+
+export const getUpdateDate = async (repoPath: string, filePath: string) => {
+  return fs
+    .stat(path.join(repoPath, filePath))
+    .then(stat => stat.mtime)
+    .catch(() => new Date());
 };
