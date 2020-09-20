@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Async as AsyncSelect } from 'react-select';
-import { find, isEmpty, last, debounce, get, uniqBy, sortBy } from 'lodash';
+import { find, isEmpty, last, debounce, get, uniqBy } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -53,6 +53,10 @@ function getSelectedOptions(value) {
 
 function uniqOptions(initial, current) {
   return uniqBy(initial.concat(current), o => o.value);
+}
+
+function getSearchFieldArray(searchFields) {
+  return List.isList(searchFields) ? searchFields.toJS() : [searchFields];
 }
 
 function getSelectedValue({ value, options, isMultiple }) {
@@ -111,22 +115,18 @@ export default class RelationControl extends React.Component {
     const initialSearchValues = value && (this.isMultiple() ? getSelectedOptions(value) : [value]);
     if (initialSearchValues && initialSearchValues.length > 0) {
       const metadata = {};
-      const allOptions = await Promise.all(
-        initialSearchValues.map((v, index) => {
-          return query(forID, collection, [field.get('value_field')], v, file, 1).then(
-            ({ payload }) => {
-              const hits = payload.response?.hits || [];
-              const options = this.parseHitOptions(hits);
-              metadata[v] = hits[0]?.data;
-              return { options, index };
-            },
-          );
-        }),
-      );
+      const searchFieldsArray = getSearchFieldArray(field.get('search_fields'));
+      const { payload } = await query(forID, collection, searchFieldsArray, '', file);
+      const hits = payload.response?.hits || [];
+      const options = this.parseHitOptions(hits);
+      const initialOptions = initialSearchValues
+        .map(v => {
+          const selectedOption = options.find(o => o.value === v);
+          metadata[v] = selectedOption?.data;
+          return selectedOption;
+        })
+        .filter(Boolean);
 
-      const initialOptions = [].concat(
-        ...sortBy(allOptions, ({ index }) => index).map(({ options }) => options),
-      );
       this.mounted && this.setState({ initialOptions });
 
       //set metadata
@@ -214,9 +214,8 @@ export default class RelationControl extends React.Component {
   loadOptions = debounce((term, callback) => {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
-    const searchFields = field.get('search_fields');
     const optionsLength = field.get('options_length') || 20;
-    const searchFieldsArray = List.isList(searchFields) ? searchFields.toJS() : [searchFields];
+    const searchFieldsArray = getSearchFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
     query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
