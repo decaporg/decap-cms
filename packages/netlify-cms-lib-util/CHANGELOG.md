@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.11.4...netlify-cms-lib-util@2.11.5) (2020-09-20)
+
+**Note:** Version bump only for package netlify-cms-lib-util
+
+
+
+
+
 ## [2.11.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.11.3...netlify-cms-lib-util@2.11.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-lib-util
