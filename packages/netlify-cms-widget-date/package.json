@@ -22,7 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "react-datetime": "^2.16.3"
+    "react-datetime": "^3.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
