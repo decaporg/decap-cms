@@ -39,7 +39,7 @@
     "slate-soft-break": "^0.9.0",
     "unified": "^7.1.0",
     "unist-builder": "^1.0.3",
-    "unist-util-visit-parents": "^2.0.1"
+    "unist-util-visit-parents": "^3.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
