@@ -54,24 +54,6 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Answer', name: 'body', widget: 'markdown' }
 
-  - name: 'nested_collection'
-    create: true
-    label: 'Pages'
-    label_singular: 'Page'
-    folder: '_nested'
-    preview_path: '{{dirname}}'
-    media_folder: '/{{media_folder}}/pages/{{dirname}}'
-    summary: '{{title}} - [{{dirname}}]'
-    nested: { depth: 100 }
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
-    fields:
-      - label: 'Title'
-        name: 'title'
-        widget: 'string'
-      - label: 'Image'
-        name: 'image'
-        widget: 'image'
-
   - name: 'settings'
     label: 'Settings'
     delete: false # Prevent users from deleting documents in this collection
