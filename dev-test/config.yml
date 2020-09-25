@@ -56,16 +56,21 @@ collections: # A list of collections the CMS should be able to edit
 
   - name: 'nested_collection'
     create: true
-    label: 'Nested Collection'
+    label: 'Pages'
+    label_singular: 'Page'
     folder: '_nested'
-    preview_path: '{{nested_path}}'
-    summary: '{{title}} - [{{nested_path}}]'
-    nested: { depth: 100, summary: '{{meta.path}}' }
+    preview_path: '{{dirname}}'
+    media_folder: '/{{media_folder}}/pages/{{dirname}}'
+    summary: '{{title}} - [{{dirname}}]'
+    nested: { depth: 100 }
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
     fields:
       - label: 'Title'
         name: 'title'
         widget: 'string'
+      - label: 'Image'
+        name: 'image'
+        widget: 'image'
 
   - name: 'settings'
     label: 'Settings'

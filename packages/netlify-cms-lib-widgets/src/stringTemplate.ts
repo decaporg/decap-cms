@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { Map } from 'immutable';
-import { basename, extname } from 'path';
-import { get, trimEnd, trim } from 'lodash';
+import { basename, extname, dirname } from 'path';
+import { get, trimEnd } from 'lodash';
 
 const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '[^}{]+';
@@ -169,29 +169,30 @@ export function extractTemplateVars(template: string) {
   });
 }
 
-export const addFileTemplateFields = (entryPath: string, fields: Map<string, string>) => {
+/**
+ * Appends `dirname`, `filename` and `extension` to the provided `fields` map.
+ * @param entryPath
+ * @param fields
+ * @param folder - optionally include a folder that the dirname will be relative to.
+ *   eg: `addFileTemplateFields('foo/bar/baz.ext', fields, 'foo')`
+ *       will result in: `{ dirname: 'bar', filename: 'baz', extension: 'ext' }`
+ */
+export const addFileTemplateFields = (
+  entryPath: string,
+  fields: Map<string, string>,
+  folder = '',
+) => {
   if (!entryPath) {
     return fields;
   }
 
   const extension = extname(entryPath);
   const filename = basename(entryPath, extension);
+  const dirnameExcludingFolder = dirname(entryPath).replace(new RegExp(`^(/?)${folder}/?`), '$1');
   fields = fields.withMutations(map => {
+    map.set('dirname', dirnameExcludingFolder);
     map.set('filename', filename);
     map.set('extension', extension === '' ? extension : extension.substr(1));
-  });
-
-  return fields;
-};
-
-export const addNestedPath = (nestedPath: string, fields: Map<string, string>) => {
-  if (!nestedPath) {
-    return fields;
-  }
-
-  fields = fields.withMutations(map => {
-    // Ensure the nested_path is always prefixed with a slash and has no trailing slash.
-    map.set('nested_path', `/${trim(nestedPath, '/')}`);
   });
 
   return fields;
