@@ -115,7 +115,7 @@ export function compileStringTemplate(
   date: Date | undefined | null,
   identifier = '',
   data = Map<string, unknown>(),
-  processor?: (value: string, key: string) => string,
+  processor?: (value: string) => string,
 ) {
   let missingRequiredDate;
 
@@ -143,7 +143,7 @@ export function compileStringTemplate(
       }
 
       if (processor) {
-        return processor(replacement, key);
+        return processor(replacement);
       }
 
       return replacement;
