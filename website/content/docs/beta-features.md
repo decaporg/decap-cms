@@ -248,6 +248,7 @@ And for the image field being populated with a value of `image.png`.
 
 Supports all of the [`slug` templates](/docs/configuration-options#slug) and:
 
+- `{{dirname}}` The path to the file's parent directory, relative to the collection's `folder`.
 - `{{filename}}` The file name without the extension part.
 - `{{extension}}` The file extension.
 - `{{media_folder}}` The global `media_folder`.

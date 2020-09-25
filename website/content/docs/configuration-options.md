@@ -293,6 +293,7 @@ Template tags are the same as those for [slug](#slug), with the following except
 
 * `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the case with [`slug` configuration](#slug))
 * The date based template tags, such as `{{year}}` and `{{month}}`, are pulled from a date field in your entry, and may require additional configuration - see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
+* `{{dirname}}` The path to the file's parent directory, relative to the collection's `folder`.
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
 
@@ -373,6 +374,7 @@ This setting allows the customization of the collection list view. Similar to th
 
 Template tags are the same as those for [slug](#slug), with the following additions:
 
+* `{{dirname}}` The path to the file's parent directory, relative to the collection's `folder`.
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
 * `{{commit_date}}` The file commit date on supported backends (git based backends).
