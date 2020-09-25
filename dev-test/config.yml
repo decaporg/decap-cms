@@ -1,9 +1,11 @@
 backend:
-  name: test-repo
+  name: proxy
+  proxy_url: http://localhost:8081/api/v1
+  branch: master
 
 site_url: https://example.com
 
-publish_mode: editorial_workflow
+#publish_mode: editorial_workflow
 media_folder: assets/uploads
 
 collections: # A list of collections the CMS should be able to edit
@@ -75,12 +77,13 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'settings'
     label: 'Settings'
     delete: false # Prevent users from deleting documents in this collection
+    summary: '{{title}} -- {{dirname}}'
     editor:
       preview: false
     files:
       - name: 'general'
         label: 'Site Settings'
-        file: '_data/settings.json'
+        file: '_data/blah/settings.json'
         description: 'General Site Settings'
         fields:
           - { label: 'Global title', name: 'site_title', widget: 'string' }

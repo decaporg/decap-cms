@@ -622,7 +622,7 @@ describe('formatters', () => {
         folder: '_portfolio',
         nested: { depth: 100 },
         meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
-        fields: [{ name: 'date', widget: 'date' }]
+        fields: [{ name: 'date', widget: 'date' }],
       });
 
       expect(
