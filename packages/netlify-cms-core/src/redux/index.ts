@@ -5,6 +5,7 @@ import { waitUntilAction } from './middleware/waitUntilAction';
 import createRootReducer from '../reducers/combinedReducer';
 import history from '../routing/history';
 import { State } from '../types/redux';
+import { Reducer } from 'react';
 
 declare global {
   interface Window {
@@ -14,7 +15,7 @@ declare global {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const store = createStore<State, any, {}, {}>(
-  createRootReducer(history),
+  (createRootReducer(history) as unknown) as Reducer<any, any>,
   compose(
     applyMiddleware(
       routerMiddleware(history),
