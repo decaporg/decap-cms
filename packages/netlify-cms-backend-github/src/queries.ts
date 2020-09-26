@@ -54,6 +54,16 @@ export const statues = gql`
               target_url: targetUrl
             }
           }
+          deployments(last: 1) {
+            nodes {
+              latestStatus {
+                id
+                context: description
+                state
+                target_url: environmentUrl
+              }
+            }
+          }
         }
       }
     }
