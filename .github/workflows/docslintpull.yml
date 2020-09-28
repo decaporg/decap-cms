@@ -1,5 +1,10 @@
 name: "Docs Linting:"
 on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
 
   pull_request:
     types: [opened, synchronize, reopened]
@@ -15,7 +20,6 @@ jobs:
     - name: Vale Linter
       uses: errata-ai/vale-action@v1.3.0
       with:
-        config: ../../.valepull.ini
         # Optional
         files: website/content/docs
       env:
