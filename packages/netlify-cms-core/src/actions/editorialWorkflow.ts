@@ -129,12 +129,12 @@ function unpublishedEntryPersisting(collection: Collection, entry: EntryMap) {
   };
 }
 
-function unpublishedEntryPersisted(collection: Collection, slug: string) {
+function unpublishedEntryPersisted(collection: Collection, entry: EntryMap) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: {
       collection: collection.get('name'),
-      slug,
+      entry,
     },
   };
 }
@@ -378,7 +378,8 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
           dismissAfter: 4000,
         }),
       );
-      dispatch(unpublishedEntryPersisted(collection, newSlug));
+      dispatch(unpublishedEntryPersisted(collection, serializedEntry));
+
       if (entry.get('slug') !== newSlug) {
         dispatch(loadUnpublishedEntry(collection, newSlug));
         navigateToEntry(collection.get('name'), newSlug);
@@ -533,7 +534,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
         }),
       )
       .then(() => {
-        dispatch(unpublishedEntryPersisted(collection, slug));
+        dispatch(unpublishedEntryPersisted(collection, entry));
         dispatch(entryDeleted(collection, slug));
         dispatch(loadUnpublishedEntry(collection, slug));
         dispatch(
