@@ -474,6 +474,7 @@ export class Backend {
           label: loadedEntry.file.label,
           author: loadedEntry.file.author,
           updatedOn: loadedEntry.file.updatedOn,
+          meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
         },
       ),
     );

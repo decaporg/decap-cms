@@ -402,6 +402,38 @@ describe('formatters', () => {
       ).toBe('https://www.example.com/posts/title.md');
     });
 
+    it('should compile the dirname template value to empty in a regular collection', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            folder: '_portfolio',
+            preview_path: 'portfolio/{{dirname}}',
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({}), path: '_portfolio/i-am-the-slug.md' }),
+        ),
+      ).toBe('https://www.example.com/portfolio/');
+    });
+
+    it('should compile dirname template value when in a nested collection', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            folder: '_portfolio',
+            preview_path: 'portfolio/{{dirname}}',
+            nested: { depth: 100 },
+            meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({}), path: '_portfolio/drawing/i-am-the-slug/index.md' }),
+        ),
+      ).toBe('https://www.example.com/portfolio/drawing/i-am-the-slug');
+    });
+
     it('should log error and ignore preview_path when date is missing', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       expect(
@@ -448,6 +480,46 @@ describe('formatters', () => {
       expect(
         summaryFormatter('{{title}}-{{year}}-{{filename}}.{{extension}}', entry, collection),
       ).toBe('title-2020-post.md');
+    });
+
+    it('should handle the dirname variable in a regular collection', () => {
+      const { selectInferedField } = require('../../reducers/collections');
+      selectInferedField.mockReturnValue('date');
+
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      const entry = fromJS({
+        path: '_portfolio/drawing.md',
+        data: { date, title: 'title' },
+      });
+      const collection = fromJS({
+        folder: '_portfolio',
+        fields: [{ name: 'date', widget: 'date' }],
+      });
+
+      expect(summaryFormatter('{{dirname}}/{{title}}-{{year}}', entry, collection)).toBe(
+        '/title-2020',
+      );
+    });
+
+    it('should handle the dirname variable in a nested collection', () => {
+      const { selectInferedField } = require('../../reducers/collections');
+      selectInferedField.mockReturnValue('date');
+
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      const entry = fromJS({
+        path: '_portfolio/drawing/index.md',
+        data: { date, title: 'title' },
+      });
+      const collection = fromJS({
+        folder: '_portfolio',
+        nested: { depth: 100 },
+        meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
+        fields: [{ name: 'date', widget: 'date' }],
+      });
+
+      expect(summaryFormatter('{{dirname}}/{{title}}-{{year}}', entry, collection)).toBe(
+        'drawing/title-2020',
+      );
     });
   });
 
@@ -518,6 +590,51 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('md');
+    });
+
+    it('should compile dirname template value in a regular collection', () => {
+      const entry = fromJS({
+        path: 'content/en/hosting-and-deployment/deployment-with-nanobox.md',
+        data: { category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        folder: 'content/en/',
+      });
+
+      expect(
+        folderFormatter(
+          '{{dirname}}',
+          entry,
+          collection,
+          'static/images',
+          'media_folder',
+          slugConfig,
+        ),
+      ).toBe('hosting-and-deployment');
+    });
+
+    it('should compile dirname template value in a nested collection', () => {
+      const entry = fromJS({
+        path: '_portfolio/drawing/i-am-the-slug/index.md',
+        data: { category: 'Hosting And Deployment' },
+      });
+      const collection = fromJS({
+        folder: '_portfolio',
+        nested: { depth: 100 },
+        meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
+        fields: [{ name: 'date', widget: 'date' }],
+      });
+
+      expect(
+        folderFormatter(
+          '{{dirname}}',
+          entry,
+          collection,
+          'static/images',
+          'media_folder',
+          slugConfig,
+        ),
+      ).toBe('drawing/i-am-the-slug');
     });
   });
 });
