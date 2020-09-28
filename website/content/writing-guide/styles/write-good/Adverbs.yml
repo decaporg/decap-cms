@@ -1,3 +1,14 @@
+description: >-
+  This is a Work In Progress to allow Authors to update and adjust the
+  documentation linters that flag Style & Usage in the docs.
+
+
+  Please do not update the output message at this time.
+
+  The '%s' is actually a quoted variable that will be replaced by whichever word is found/flagged during linting.
+
+
+  Also the list widget needs some work to be more useful in this situation.
 extends: existence
 message: "'%s' is not needed."
 ignorecase: true

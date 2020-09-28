@@ -32,6 +32,32 @@ docs_collection: &docs_collection
     - { label: Title, name: title }
     - { label: Body, name: body, widget: markdown }
 
+word_list: &word_list
+  fields:
+    - label: Description
+      name: description
+      widget: text
+    - label: hidden
+      name: extends
+      widget: hidden
+    - label: Output message
+      name: message
+      widget: string
+    - label: Ignore Case
+      name: ignorecase
+      widget: boolean
+      default: true
+    - label: Notification Level
+      name: level
+      widget: select
+      options:
+        - {label: "Warning", value: "warning"}
+        - {label: "Error", value: "error"}
+    - label: Word List
+      name: tokens
+      widget: list
+
+
 collections:
   - label: Settings
     name: settings
@@ -53,6 +79,30 @@ collections:
                 fields:
                   - { label: 'Full Name', name: 'title', widget: 'string' }
                   - { label: 'Summary Name', name: 'name', widget: 'string' }
+  - label: Style & Usage Options
+    name: linter
+    hide: false
+    files:
+        - <<: *word_list
+          label: Adverbs
+          name: adverbs
+          file: .vale/styles/write-good/Adverbs.yml
+        - <<: *word_list
+          label: Cliches
+          name: cliches
+          file: .vale/styles/write-good/Cliches.yml
+        - <<: *word_list
+          label: Direct Language
+          name: direct
+          file: .vale/styles/write-good/DirectLanguage.yml
+        - <<: *word_list
+          label: Simpler Language
+          name: simple
+          file: .vale/styles/write-good/Simplify.yml
+        - <<: *word_list
+          label: Archaisms
+          name: archaisms
+          file: .vale/styles/proselint/Archaisms.yml
 
   - <<: *docs_collection
     name: docs_intro
