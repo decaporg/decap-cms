@@ -1,5 +1,5 @@
 extends: existence
-message: "Do not start a paragraph with a 'but'."
+message: "Do not start a paragraph with ''%s'."
 level: error
 scope: paragraph
 action:

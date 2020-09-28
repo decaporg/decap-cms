@@ -1,3 +1,7 @@
+extends: existence
+message: "'%s' is not needed."
+ignorecase: true
+level: warning
 description: >-
   This is a Work In Progress to allow Authors to update and adjust the
   documentation linters that flag Style & Usage in the docs.
@@ -9,10 +13,6 @@ description: >-
 
 
   Also the list widget needs some work to be more useful in this situation.
-extends: existence
-message: "'%s' is not needed."
-ignorecase: true
-level: warning
 tokens:
   - absolutely
   - accidentally
@@ -91,6 +91,7 @@ tokens:
   - heartily
   - helpfully
   - honestly
+  - hopefully
   - hungrily
   - hurriedly
   - immediately
@@ -179,6 +180,7 @@ tokens:
   - swiftly
   - tenderly
   - tensely
+  - thankfully
   - thoughtfully
   - tightly
   - timely
@@ -186,6 +188,7 @@ tokens:
   - unexpectedly
   - unfortunately
   - usually
+  - very
   - victoriously
   - violently
   - vivaciously

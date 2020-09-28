@@ -1,5 +1,5 @@
 extends: existence
-message: "'%s' may be passive voice. Use active voice if you can."
+message: "'%s' is passive voice. Use active voice."
 ignorecase: true
 level: warning
 raw:

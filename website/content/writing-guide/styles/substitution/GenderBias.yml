@@ -1,5 +1,5 @@
 extends: substitution
-message: Consider using '%s' instead of '%s'.
+message: Avoid gender bias by using '%s' instead of '%s'.
 ignorecase: true
 level: error
 action:
@@ -19,7 +19,6 @@ swap:
   fisher(?:m[ae]n|wom[ae]n):   fisher(s)
   fresh(?:m[ae]n|wom[ae]n):    first-year student(s)
   garbage(?:m[ae]n|wom[ae]n):  waste collector(s)
-  lady lawyer:                 lawyer
   ladylike:                    courteous
   landlord:                    building manager
   mail(?:m[ae]n|wom[ae]n):     mail carriers
@@ -27,7 +26,7 @@ swap:
   man enough:                  strong enough
   mankind:                     human kind
   manmade:                     manufactured
-  men and girls:               men and women
+  men and women:               people
   middle(?:m[ae]n|wom[ae]n):   intermediary
   news(?:m[ae]n|wom[ae]n):     journalist(s)
   ombuds(?:man|woman):         ombuds
@@ -43,3 +42,6 @@ swap:
   woman doctor:                doctor
   woman scientist[s]?:         scientist(s)
   work(?:m[ae]n|wom[ae]n):     worker(s)
+  (?:he|she):                  they
+  (?:him|her):                 them
+  (?:his/hers):                their

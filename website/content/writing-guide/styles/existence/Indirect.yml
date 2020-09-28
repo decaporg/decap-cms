@@ -1,3 +1,8 @@
+
+extends: existence
+message: "'%s'  Use more direct language."
+ignorecase: true
+level: warning
 description: >-
   This is a Work In Progress to allow Authors to update and adjust the
   documentation linters that flag Style & Usage in the docs.
@@ -9,10 +14,6 @@ description: >-
 
 
   Also the list widget needs some work to be more useful in this situation.
-extends: existence
-message: "'%s'  Use more direct language."
-ignorecase: true
-level: warning
 tokens:
   - a number of
   - accede to
@@ -96,10 +97,12 @@ tokens:
   - refer back
   - should you wish
   - span across
+  - so to speak
   - successfully complete
   - the month of
   - the point I am trying to make
   - time period
+  - to a certain degree
   - took advantage of
   - until such time as
   - utilization
@@ -109,3 +112,21 @@ tokens:
   - whether or not
   - with respect to
   - with the exception of
+  - would argue that
+  - increasingly less
+  - advancing backwards
+  - alludes explicitly to
+  - explicitly alludes to
+  - totally obsolete
+  - completely obsolete
+  - generally always
+  - usually always
+  - increasingly less
+  - build down
+  - conspicuous absence
+  - exact estimate
+  - found missing
+  - intense apathy
+  - mandatory choice
+  - organized mess
+  

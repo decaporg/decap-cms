@@ -1,8 +1,10 @@
-extends: consistency
+extends: substitution
 message: "Inconsistent spelling of '%s'."
 level: error
 ignorecase: true
-either:
+action:
+  name: replace
+swap:
   advisor: adviser
   centre: center
   colour: color

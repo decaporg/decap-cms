@@ -1,8 +1,0 @@
-extends: existence
-message: "Excessive apologizing: '%s'"
-ignorecase: true
-level: error
-action:
-  name: remove
-tokens:
-  - More research is needed

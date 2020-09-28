@@ -34,12 +34,12 @@ docs_collection: &docs_collection
 
 word_list: &word_list
   fields:
-    - label: Description
-      name: description
-      widget: text
     - label: hidden
       name: extends
       widget: hidden
+    - label: Description
+      name: description
+      widget: text
     - label: Output message
       name: message
       widget: string

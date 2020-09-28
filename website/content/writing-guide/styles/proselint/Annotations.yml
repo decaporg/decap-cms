@@ -1,9 +1,0 @@
-extends: existence
-message: "'%s' left in text."
-ignorecase: false
-level: error
-tokens:
-  - XXX
-  - FIXME
-  - TODO
-  - NOTE
