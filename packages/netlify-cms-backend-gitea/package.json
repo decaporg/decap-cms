@@ -1,0 +1,37 @@
+{
+  "name": "netlify-cms-backend-gitea",
+  "description": "Gitea backend for Netlify CMS",
+  "version": "1.0.0",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitea",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "license": "MIT",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-backend-gitea.js",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "backend",
+    "gitea"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {
+    "js-base64": "^3.0.0",
+    "semaphore": "^1.1.0"
+  },
+  "peerDependencies": {
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "netlify-cms-lib-auth": "^2.2.0",
+    "netlify-cms-lib-util": "^2.3.0",
+    "netlify-cms-ui-default": "^2.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
+}
