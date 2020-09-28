@@ -247,7 +247,7 @@ Avoid making promises or giving hints about the future. If you need to talk abou
 
 ### Avoid statements that will soon be out of date
 
-Avoid words like “currently” and “new.” A feature that is new today might not be considered new in a few months.
+Avoid words like “currently” and “new.” A feature that is new today will not be new in a few months.
 
 Do: In version 1.4, …
 
