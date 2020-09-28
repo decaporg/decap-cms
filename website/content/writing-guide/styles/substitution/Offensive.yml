@@ -1,4 +1,4 @@
-extends: existence
+extends: substitution
 message: "'%s' is offensive, and has been censored."
 ignorecase: true
 level: error
