@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.3.5...netlify-cms-lib-widgets@1.4.0) (2020-09-28)
+
+
+### Features
+
+* **core:** Add {{dirname}} to summary and preview_path ([#4279](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/issues/4279)) ([576e4f0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/commit/576e4f0f1a158d6b587587c52fb288d8f6eea89f))
+
+
+
+
+
 ## [1.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.3.4...netlify-cms-lib-widgets@1.3.5) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-lib-widgets

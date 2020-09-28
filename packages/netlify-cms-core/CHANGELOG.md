@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.31.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.30.7...netlify-cms-core@2.31.0) (2020-09-28)
+
+
+### Features
+
+* **core:** Add {{dirname}} to summary and preview_path ([#4279](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4279)) ([576e4f0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/576e4f0f1a158d6b587587c52fb288d8f6eea89f))
+
+
+
+
+
 ## [2.30.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.30.6...netlify-cms-core@2.30.7) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-core
