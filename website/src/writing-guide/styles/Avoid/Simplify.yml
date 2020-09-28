@@ -1,5 +1,5 @@
 extends: existence
-message: "Say '%s' with simpler words."
+message: ""Use simpler words instead of '%s'."
 ignorecase: true
 level: warning
 description: >-
@@ -29,7 +29,6 @@ tokens:
   - advise
   - aforementioned
   - aggregate
-  - aircraft
   - alleviate
   - allocate
   - ameliorate
@@ -58,7 +57,6 @@ tokens:
   - endeavor
   - equitable
   - equivalent
-  - evaluate
   - evidenced
   - exclusively
   - expedite
@@ -66,7 +64,6 @@ tokens:
   - expiration
   - facilitate
   - feasible
-  - finalize
   - forfeit
   - formulate
   - however
@@ -78,10 +75,7 @@ tokens:
   - initiate
   - irregardless
   - magnitude
-  - maximum
   - methodology
-  - minimize
-  - minimum
   - monitor
   - necessitate
   - nevertheless
@@ -97,7 +91,6 @@ tokens:
   - portion
   - possess
   - preclude
-  - previously
   - prioritize
   - procure
   - proficiency
@@ -106,7 +99,6 @@ tokens:
   - relocate
   - remainder
   - remuneration
-  - requirement
   - reside
   - residence
   - retain
@@ -119,7 +111,6 @@ tokens:
   - sufficient
   - terminate
   - therefore
-  - transmit
   - transpire
   - utilization
   - utilize
@@ -127,6 +118,5 @@ tokens:
   - witnessed
   - decimate
   - effete
-  - deceptively
   - fulsome
   - impassionate
