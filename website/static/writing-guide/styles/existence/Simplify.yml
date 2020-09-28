@@ -23,7 +23,6 @@ tokens:
   - accrue
   - acquiesce
   - acquire
-  - additional
   - adjustment
   - admissible
   - advantageous
@@ -33,8 +32,6 @@ tokens:
   - aircraft
   - alleviate
   - allocate
-  - alternatively
-  - amazing
   - ameliorate
   - anticipate
   - apparent
@@ -49,7 +46,6 @@ tokens:
   - commence
   - concerning
   - consequently
-  - consolidate
   - constitutes
   - demonstrate
   - depart
@@ -60,7 +56,6 @@ tokens:
   - elucidate
   - employ
   - endeavor
-  - enumerate
   - equitable
   - equivalent
   - evaluate
@@ -87,9 +82,7 @@ tokens:
   - methodology
   - minimize
   - minimum
-  - modify
   - monitor
-  - multiple
   - necessitate
   - nevertheless
   - notwithstanding
