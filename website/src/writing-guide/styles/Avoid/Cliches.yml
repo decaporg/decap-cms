@@ -1,4 +1,3 @@
-notes: This is a work in progress
 extends: existence
 message: Avoid cliches such as '%s'.
 ignorecase: true

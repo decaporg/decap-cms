@@ -1,5 +1,3 @@
-notes: >-
-  This is a Work In Progress
 extends: existence
 message: "'%s' is redundant."
 ignorecase: true

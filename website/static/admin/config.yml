@@ -34,10 +34,6 @@ docs_collection: &docs_collection
 
 word_list: &word_list
   fields:
-    - label: Notes
-      name: notes
-      widget: text
-      required: false
     - label: Extends
       name: extends
       widget: hidden
