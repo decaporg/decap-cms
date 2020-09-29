@@ -1,7 +1,7 @@
 extends: existence
 message: "'%s' is not needed."
 ignorecase: true
-level: suggestion
+level: warning
 tokens:
   - absolutely
   - accidentally
