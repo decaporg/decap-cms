@@ -1,7 +1,7 @@
 ---
-title: Creating Custom Widgets
 group: Fields
 weight: 20
+title: Creating Custom Widgets
 ---
 The NetlifyCMS exposes a `window.CMS` a global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netlify CMS as an npm module. The available widget extension methods are:
 
@@ -228,7 +228,7 @@ For writing custom widgets as a separate package you should follow these steps:
    npm install --save prop-types
 ```
 
-And you should manually add "**peerDependencies**" as shown below.
+And you should manually add "**peerDependencies**" and "**scripts**" as shown below.
 
 Here is the content of `package.json` that you will have at the end:
 
@@ -274,10 +274,7 @@ Here is the content of `package.json` that you will have at the end:
     "react": "^16"
   },
   "scripts": {
-    "start": "webpack-serve --log-level error --open-path '/#/collections/test/entries/test'",
-    "demo": "webpack --display errors-only --devtool source-map",
-    "build": "cross-env NODE_ENV=production webpack",
-    "prepublishOnly": "npm run build"
+    "start": "webpack-serve --static public --open"
   }
 }
 ```
@@ -335,7 +332,23 @@ Here is the content of `package.json` that you will have at the end:
 
    module.exports = process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
    ```
-6. Create a `src` directory with the files `Control.js`, `Preview.js` and `index.js`
+6. The `.babelrc` file is our local configuration for our code in the project. You should create it under the root of the application repo. It will affect all files that Babel processes. So, create a `.babelrc` file under the main project with this content:
+
+```javascript
+{
+  "presets": [
+    "react",
+    "env",
+  ],
+  "plugins": [
+    "transform-export-extensions",
+    "transform-class-properties",
+    "transform-object-rest-spread",
+  ],
+}
+```
+
+7. Create a `src` directory with the files `Control.js`, `Preview.js` and `index.js`
 
 `src/Control.js`
 
@@ -405,7 +418,7 @@ if (typeof window !== 'undefined') {
 export { Control, Preview }
 ```
 
-7. Now you need to set up the locale example site.
+8. Now you need to set up the locale example site.
    Under the main project, create a `dev` directory with the files `bootstrap.js` and `index.js`
 
 `bootstrap.js`
