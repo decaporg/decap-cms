@@ -1,9 +1,8 @@
 ---
-title: Configuration Options
 group: Configuration
 weight: 10
+title: Configuration Options
 ---
-
 ## Configuration File
 
 All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
@@ -44,7 +43,7 @@ publish_mode: editorial_workflow
 
 From a technical perspective, the workflow translates editor UI actions into common Git commands:
 
-| Actions in Netlify UI ... | Perform these Git actions                                                                                         |
+| Actions in Netlify UI     | Perform these Git actions                                                                                         |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | Save draft                | Commits to a new branch (named according to the pattern `cms/collectionName/entrySlug`), and opens a pull request |
 | Edit draft                | Pushes another commit to the draft branch/pull request                                                            |
