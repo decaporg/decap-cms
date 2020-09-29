@@ -1,12 +1,15 @@
+notes: >-
+  This is a Work In Progress
 extends: existence
 message: "'%s' is redundant."
+ignorecase: true
 level: error
 action:
   name: edit
   params:
-   - split
-   - ' '
-   - '0'
+    - split
+    - " "
+    - "0"
 tokens:
   - ABM missile
   - ACT test

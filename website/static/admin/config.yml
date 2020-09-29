@@ -34,9 +34,14 @@ docs_collection: &docs_collection
 
 word_list: &word_list
   fields:
-    - label: hidden
+    - label: Notes
+      name: notes
+      widget: text
+      required: false
+    - label: Extends
       name: extends
       widget: hidden
+      default: "existence"
     - label: Output message
       name: message
       widget: string
@@ -44,35 +49,18 @@ word_list: &word_list
       name: ignorecase
       widget: boolean
       default: true
+      required: false
     - label: Notification Level
       name: level
       widget: select
+      default: suggestion
       options:
+        - {label: "Suggestion", value: "suggestion"}
         - {label: "Warning", value: "warning"}
         - {label: "Error", value: "error"}
-    - label: Description
-      name: description
-      widget: text
-    - label: Word List
+    - label: Entries
       name: tokens
       widget: list
-    - label: Scope
-      name: scope
-      widget: select
-      options:
-        - {label: "Paragraph", value: "paragraph"}
-        - {label: "Sentence", value: "sentence"}
-        - {label: "Heading", value: "heading"}
-        - {label: "Table Header", value: "table.header"}
-        - {label: "Table Cell", value: "table.cell"}
-        - {label: "List", value: "list"}
-        - {label: "Link", value: "link"}
-        - {label: "Alt", value: "alt"}
-        - {label: "Block Quotes", value: "blockquotes"}
-        - {label: "Summary", value: "summary"}
-        - {label: "Code", value: "code"}
-        - {label: "Strong", value: "strong"}
-        - {label: "Emphasis", value: "emphasis"}
 
 collections:
   - label: Settings
@@ -128,17 +116,9 @@ collections:
           name: jargon
           file: website/src/writing-guide/styles/Avoid/Jargon.yml
         - <<: *word_list
-          label: Paragraph
-          name: paragraph
-          file: website/src/writing-guide/styles/Avoid/Paragraph.yml
-        - <<: *word_list
           label: Passive
           name: passive
           file: website/src/writing-guide/styles/Avoid/Passive.yml
-        - <<: *word_list
-          label: Sentence
-          name: sentence
-          file: website/src/writing-guide/styles/Avoid/Sentence.yml
         - <<: *word_list
           label: Simplify
           name: simplify

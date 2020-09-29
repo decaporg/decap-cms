@@ -1,7 +1,10 @@
+notes: >-
+  This is a Work In Progress
 extends: existence
 message: "'%s' is jargon."
 ignorecase: true
 level: error
+description:
 tokens:
   - in the affirmative
   - in the negative
