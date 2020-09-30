@@ -24,7 +24,8 @@ import {
   unpublishedEntries,
   UnpublishedEntryMediaFile,
   entriesByFiles,
-  filterByPropExtension,
+  filterByExtension,
+  readFileMetadata,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -159,7 +160,8 @@ export default class Azure implements Implementation {
     return this.api!.listFiles(collection)
       .then(files => {
         if (extension) {
-          return filterByPropExtension(extension, 'relativePath')(files);
+          const filtered = files.filter(file => filterByExtension({path: file.relativePath}, extension));
+          return filtered;
         }
         return files;
       })
@@ -168,7 +170,10 @@ export default class Azure implements Implementation {
   }
 
   entriesByFiles(files: ImplementationFile[]) {
-    return entriesByFiles(files, this.api!.readFile.bind(this.api!), API_NAME);
+    const readFile = (path: string, id: string | null | undefined) => {
+      return this.api!.readFile(path, id) as Promise<string>;
+    }
+    return entriesByFiles(files, readFile, readFileMetadata.bind(this.api), API_NAME);
   }
 
   fetchFiles = (files: any) => {
@@ -255,7 +260,8 @@ export default class Azure implements Implementation {
     };
   }
 
-  persistEntry(entry: Entry, mediaFiles: AssetProxy[], options: PersistOptions): Promise<void> {
+  persistEntry(entry: Entry, options: PersistOptions): Promise<void> {
+    const mediaFiles: AssetProxy[] = entry.assets;
     return this.api!.persistFiles(entry, mediaFiles, options).then(voidReturn);
   }
 

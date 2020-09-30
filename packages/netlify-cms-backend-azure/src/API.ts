@@ -12,6 +12,7 @@ import {
   readFile,
   CMS_BRANCH_PREFIX,
   DEFAULT_PR_BODY,
+  DEFAULT_NETLIFY_CMS_LABEL_PREFIX,
   generateContentKey,
   parseContentKey,
   labelToStatus,
@@ -334,7 +335,7 @@ export default class API {
       req,
     );
 
-    req = unsentRequest.withDefaultParams(
+    req = unsentRequest.withParams(
       {
         'api-version': this.apiVersion,
       },
@@ -349,7 +350,7 @@ export default class API {
       unsentRequest.withRoot(this.apiRoot),
       this.withAuthorizationHeaders,
       this.withAzureFeatures,
-      unsentRequest.withTimestamp,
+      // unsentRequest.withTimestamp,
     ])(req);
 
   request = async (req: ApiRequest): Promise<Response> =>
@@ -398,9 +399,9 @@ export default class API {
         return { path, id };
       });
 
-    const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) => isCMSLabel(l.name));
-    const labelText = prLabel ? prLabel.name : statusToLabel('draft');
-    const status = labelToStatus(labelText);
+    const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) => isCMSLabel(l.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX));
+    const labelText = prLabel ? prLabel.name : statusToLabel('draft', DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
+    const status = labelToStatus(labelText, DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
 
     return { branch, collection, slug, path, status, mediaFiles };
   }
@@ -596,7 +597,7 @@ export default class API {
       files.map(async file => {
         const [base64Content, fileExists] = await Promise.all([
           result(file, 'toBase64', partial(this.toBase64, (file as Entry).raw)),
-          this.isFileExists(file.path, branch),
+          this.isFileExists(file.toString(), branch),
         ]);
         return {
           action: fileExists ? AzureCommitChangeType.EDIT : AzureCommitChangeType.ADD,
@@ -709,7 +710,7 @@ export default class API {
       description: DEFAULT_PR_BODY,
       labels: [
         {
-          name: statusToLabel(status),
+          name: statusToLabel(status, DEFAULT_NETLIFY_CMS_LABEL_PREFIX),
         },
       ],
     };
@@ -746,7 +747,8 @@ export default class API {
   }
 
   async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
-    const contentKey = generateContentKey(options.collectionName as string, entry.slug);
+    // assumes entry.dataFiles share the same slug
+    const contentKey = generateContentKey(options.collectionName as string, entry.dataFiles[0].slug);
     const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
 
@@ -781,9 +783,9 @@ export default class API {
 
     const labels = [
       ...mergeRequest.labels
-        .filter((label: AzurePRLabel) => !isCMSLabel(label.name))
+        .filter((label: AzurePRLabel) => !isCMSLabel(label.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX))
         .map((label: AzurePRLabel) => label.name),
-      statusToLabel(newStatus),
+      statusToLabel(newStatus, DEFAULT_NETLIFY_CMS_LABEL_PREFIX),
     ];
 
     await this.updatePullRequestLabels(mergeRequest, labels);
@@ -805,7 +807,7 @@ export default class API {
 
   async updatePullRequestLabels(pullRequest: AzurePullRequest, labels: string[]) {
     for (const l of pullRequest.labels) {
-      if (isCMSLabel(l.name)) {
+      if (isCMSLabel(l.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX)) {
         await this.requestText({
           method: 'DELETE',
           url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
