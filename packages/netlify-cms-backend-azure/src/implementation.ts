@@ -173,7 +173,8 @@ export default class Azure implements Implementation {
     const readFile = (path: string, id: string | null | undefined) => {
       return this.api!.readFile(path, id) as Promise<string>;
     }
-    return entriesByFiles(files, readFile, readFileMetadata.bind(this.api), API_NAME);
+
+    return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
   fetchFiles = (files: any) => {

@@ -20,6 +20,7 @@ import {
   EditorialWorkflowError,
   statusToLabel,
   PreviewState,
+  readFileMetadata
 } from 'netlify-cms-lib-util';
 
 export const API_NAME = 'Azure DevOps';
@@ -404,6 +405,35 @@ export default class API {
     const status = labelToStatus(labelText, DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
 
     return { branch, collection, slug, path, status, mediaFiles };
+  }
+
+  async readFileMetadata(path: string,
+    sha: string | null | undefined,
+    { branch = this.branch } = {}) {
+    const fetchFileMetadata = async () => {
+      try {
+        const result = await this.request({
+          url: `${this.endpointUrl}/commits/`,
+          params: { 'searchCriteria.itemPath': path,
+                    'searchCriteria.itemVersion.version': branch
+                  },
+          cache: 'no-store',
+        });
+
+        let commit = (await this.responseToJSON(result))['value'][0];
+
+        return {
+          author: commit.author.email || commit.author.name,
+          updatedOn: commit.author.date
+        };
+
+      } catch(error) {
+        return {author: '', updatedOn: ''};
+      }
+    }
+
+    const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
+    return fileMetadata;
   }
 
   /**
