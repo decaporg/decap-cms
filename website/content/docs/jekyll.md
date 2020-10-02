@@ -227,7 +227,7 @@ Copy and paste the following into the collections array in `config.yml`
       file: 'about.md'
       fields:
         - { label: 'Title', name: 'title', widget: 'hidden', default: 'about' }
-        - { label: 'Layout', name: 'title', widget: 'hidden', default: 'about' }
+        - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'about' }
         - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
