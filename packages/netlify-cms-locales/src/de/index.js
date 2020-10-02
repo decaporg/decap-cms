@@ -232,7 +232,8 @@ const de = {
       entryUpdated: 'Beitragsstatus aktualisiert',
       onDeleteUnpublishedChanges: 'Unveröffentlichte Änderungen verworfen',
       onFailToAuth: '%{details}',
-      onLoggedOut: 'Sie wurden ausgeloggt. Bitte sichern Sie Ihre Daten und melden Sie sich erneut an.',
+      onLoggedOut:
+        'Sie wurden ausgeloggt. Bitte sichern Sie Ihre Daten und melden Sie sich erneut an.',
       onBackendDown:
         'Der Server ist aktuell nicht erreichbar. Für weitere Informationen, siehe: %{details}',
     },
