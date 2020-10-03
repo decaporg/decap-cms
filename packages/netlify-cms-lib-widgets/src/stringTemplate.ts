@@ -1,11 +1,12 @@
 import moment from 'moment';
 import { Map } from 'immutable';
-import { basename, extname, dirname } from 'path';
+import { basename, dirname, extname } from 'path';
 import { get, trimEnd } from 'lodash';
 
 const FIELD_PREFIX = 'fields.';
-const templateContentPattern = '[^}{]+';
-const templateVariablePattern = `{{(${templateContentPattern})}}`;
+const templateContentPattern = '([^}{\\|]+)';
+const filterPattern = '( \\| ([^}{]+))?';
+const templateVariablePattern = `{{${templateContentPattern}${filterPattern}}}`; // prepends a Zero if the date has only 1 digit
 
 // prepends a Zero if the date has only 1 digit
 function formatDate(date: number) {
@@ -117,6 +118,23 @@ export function compileStringTemplate(
   data = Map<string, unknown>(),
   processor?: (value: string) => string,
 ) {
+  function getFilterFunction(filter: string): ((input: {}) => string) | null {
+    if (!filter) {
+      return null;
+    } else if (filter === 'upper') {
+      return str => (str ? str.toString().toUpperCase() : '');
+    } else if (filter === 'lower') {
+      return str => (str ? str.toString().toLowerCase() : '');
+    } else if (filter.match(/date\('.*'\)/)) {
+      return str => {
+        const format = filter.replace(/date\('(.*)'\)/, '$1');
+        return moment(str).format(format);
+      };
+    } else {
+      return null;
+    }
+  }
+
   let missingRequiredDate;
 
   // Turn off date processing (support for replacements like `{{year}}`), by passing in
@@ -125,7 +143,7 @@ export function compileStringTemplate(
 
   const compiledString = template.replace(
     RegExp(templateVariablePattern, 'g'),
-    (_, key: string) => {
+    (_full, key: string, _part, filter: string) => {
       let replacement;
       const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
 
@@ -142,6 +160,10 @@ export function compileStringTemplate(
         replacement = data.getIn(keyToPathArray(key), '') as string;
       }
 
+      const filterFunction = getFilterFunction(filter);
+      if (filterFunction) {
+        replacement = filterFunction(replacement);
+      }
       if (processor) {
         return processor(replacement);
       }

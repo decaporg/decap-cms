@@ -107,6 +107,28 @@ describe('stringTemplate', () => {
         compileStringTemplate('{{slug}}', date, 'slug', fromJS({}), value => value.toUpperCase()),
       ).toBe('SLUG');
     });
+
+    it('return apply filter to values', () => {
+      expect(
+        compileStringTemplate(
+          '{{slug | upper}}-{{title | lower}}-{{year}}',
+          date,
+          'backendSlug',
+          fromJS({ slug: 'entrySlug', title: 'Title', date }),
+        ),
+      ).toBe('BACKENDSLUG-title-2020');
+    });
+
+    it('return apply filter to date field', () => {
+      expect(
+        compileStringTemplate(
+          "{{slug | upper}}-{{title | lower}}-{{published | date('MM-DD')}}-{{year}}",
+          date,
+          'backendSlug',
+          fromJS({ slug: 'entrySlug', title: 'Title', published: date, date }),
+        ),
+      ).toBe('BACKENDSLUG-title-01-02-2020');
+    });
   });
 
   describe('expandPath', () => {
