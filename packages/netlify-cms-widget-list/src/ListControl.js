@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
-import { partial, isEmpty } from 'lodash';
+import { partial, isEmpty, isNumber } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
@@ -261,6 +261,33 @@ export default class ListControl extends React.Component {
     } else {
       this.props.validate();
     }
+    this.props.onValidateObject(this.props.forID, this.validateSize());
+  };
+
+  validateSize = () => {
+    const { field, value, t } = this.props;
+    const min = field.get('min');
+    const max = field.get('max');
+    const minMaxError = messageKey => [
+      {
+        type: 'RANGE',
+        message: t(`editor.editorControlPane.widget.${messageKey}`, {
+          fieldLabel: field.get('label', field.get('name')),
+          minCount: min,
+          maxCount: max,
+          count: min,
+        }),
+      },
+    ];
+
+    if ([min, max, value?.size].every(isNumber) && (value.size < min || value.size > max)) {
+      return minMaxError(min === max ? 'rangeCountExact' : 'rangeCount');
+    } else if (isNumber(min) && min > 0 && value?.size && value.size < min) {
+      return minMaxError('rangeMin');
+    } else if (isNumber(max) && value?.size && value.size > max) {
+      return minMaxError('rangeMax');
+    }
+    return [];
   };
 
   /**
@@ -459,7 +486,7 @@ export default class ListControl extends React.Component {
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-          onRemove={allowRemove ? partial(this.handleRemove, index, key):null}
+          onRemove={allowRemove ? partial(this.handleRemove, index, key) : null}
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
@@ -521,7 +548,6 @@ export default class ListControl extends React.Component {
   }
 
   renderListControl() {
-    console.log( this.props );
     const { value, forID, field, classNameWrapper } = this.props;
     const { itemsCollapsed, listCollapsed } = this.state;
     const items = value || List();
