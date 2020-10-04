@@ -51,7 +51,6 @@ public_folder: /img
 collections:
   - name: 'blog'
     label: 'Blog'
-    format: 'json'
     folder: 'content/blog'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
