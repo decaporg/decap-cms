@@ -7,12 +7,14 @@ on:
       - '*'
 
     paths:
+      - '.github/workflows/docslint.yml'
       - 'website/**'
 
   pull_request:
     types: [opened, synchronize, reopened]
 
     paths:
+      - '.github/workflows/docslint.yml'
       - 'website/**'
 
 jobs:
