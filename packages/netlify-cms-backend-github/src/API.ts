@@ -138,9 +138,9 @@ type MediaFile = {
 };
 
 const withCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
-  pr.labels.some((l) => isCMSLabel(l.name, cmsLabelPrefix));
+  pr.labels.some(l => isCMSLabel(l.name, cmsLabelPrefix));
 const withoutCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
-  pr.labels.every((l) => !isCMSLabel(l.name, cmsLabelPrefix));
+  pr.labels.every(l => !isCMSLabel(l.name, cmsLabelPrefix));
 
 const getTreeFiles = (files: GitHubCompareFiles) => {
   const treeFiles = files.reduce((arr, file) => {
@@ -271,7 +271,7 @@ export default class API {
   }
 
   parseJsonResponse(response: Response) {
-    return response.json().then((json) => {
+    return response.json().then(json => {
       if (!response.ok) {
         return Promise.reject(json);
       }
@@ -298,7 +298,7 @@ export default class API {
     if (contentType && contentType.match(/json/)) {
       return this.parseJsonResponse(response);
     }
-    const textPromise = response.text().then((text) => {
+    const textPromise = response.text().then(text => {
       if (!response.ok) {
         return Promise.reject(text);
       }
@@ -378,7 +378,7 @@ export default class API {
 
   checkMetadataRef() {
     return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms`)
-      .then((response) => response.object)
+      .then(response => response.object)
       .catch(() => {
         // Meta ref doesn't exist
         const readme = {
@@ -387,7 +387,7 @@ export default class API {
         };
 
         return this.uploadBlob(readme)
-          .then((item) =>
+          .then(item =>
             this.request(`${this.repoURL}/git/trees`, {
               method: 'POST',
               body: JSON.stringify({
@@ -395,9 +395,9 @@ export default class API {
               }),
             }),
           )
-          .then((tree) => this.commit('First Commit', tree))
-          .then((response) => this.createRef('meta', '_netlify_cms', response.sha))
-          .then((response) => response.object);
+          .then(tree => this.commit('First Commit', tree))
+          .then(response => this.createRef('meta', '_netlify_cms', response.sha))
+          .then(response => response.object);
       });
   }
 
@@ -435,7 +435,7 @@ export default class API {
     if (!this._metadataSemaphore) {
       this._metadataSemaphore = semaphore(1);
     }
-    return new Promise((resolve) =>
+    return new Promise(resolve =>
       this._metadataSemaphore?.take(async () => {
         try {
           const branchData = await this.checkMetadataRef();
@@ -516,7 +516,7 @@ export default class API {
     );
 
     return pullRequests.filter(
-      (pr) => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
+      pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
     );
   }
 
@@ -529,7 +529,7 @@ export default class API {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     });
     // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
-    const pullRequest = pullRequests.filter((pr) => pr.head.sha === data.commit.sha)[0];
+    const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.sha)[0];
     // if no pull request is found for the branch we return a mocked one
     if (!pullRequest) {
       try {
@@ -543,9 +543,7 @@ export default class API {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
     } else {
-      pullRequest.labels = pullRequest.labels.filter(
-        (l) => !isCMSLabel(l.name, this.cmsLabelPrefix),
-      );
+      pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, this.cmsLabelPrefix));
       const cmsLabel =
         pullRequest.state === PullRequestState.Closed
           ? { name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) }
@@ -561,7 +559,7 @@ export default class API {
       const pullRequests = await this.getPullRequests(branch, PullRequestState.All, () => true);
       return this.getOpenAuthoringPullRequest(branch, pullRequests);
     } else {
-      const pullRequests = await this.getPullRequests(branch, PullRequestState.Open, (pr) =>
+      const pullRequests = await this.getPullRequests(branch, PullRequestState.Open, pr =>
         withCmsLabel(pr, this.cmsLabelPrefix),
       );
       if (pullRequests.length <= 0) {
@@ -592,7 +590,7 @@ export default class API {
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
     const diffs = files.map(diffFromFile);
-    const label = pullRequest.labels.find((l) => isCMSLabel(l.name, this.cmsLabelPrefix)) as {
+    const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix)) as {
       name: string;
     };
     const status = labelToStatus(label.name, this.cmsLabelPrefix);
@@ -601,7 +599,7 @@ export default class API {
       collection,
       slug,
       status,
-      diffs: diffs.map((d) => ({ path: d.path, newFile: d.newFile, id: d.sha })),
+      diffs: diffs.map(d => ({ path: d.path, newFile: d.newFile, id: d.sha })),
       updatedAt,
     };
   }
@@ -686,8 +684,8 @@ export default class API {
       return (
         result.tree
           // filter only files and up to the required depth
-          .filter((file) => file.type === 'blob' && file.path.split('/').length <= depth)
-          .map((file) => ({
+          .filter(file => file.type === 'blob' && file.path.split('/').length <= depth)
+          .map(file => ({
             type: file.type,
             id: file.sha,
             name: basename(file.path),
@@ -827,18 +825,18 @@ export default class API {
     if (this.useOpenAuthoring) {
       // open authoring branches can exist without a pr
       const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.getOpenAuthoringBranches();
-      branches = cmsBranches.map((b) => b.ref.substring('refs/heads/'.length));
+      branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
       // filter irrelevant branches
       const branchesWithFilter = await Promise.all(
-        branches.map((b) => this.filterOpenAuthoringBranches(b)),
+        branches.map(b => this.filterOpenAuthoringBranches(b)),
       );
-      branches = branchesWithFilter.filter((b) => b.filter).map((b) => b.branch);
+      branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
     } else {
       // backwards compatibility code, get relevant pull requests and migrate them
       const pullRequests = await this.getPullRequests(
         undefined,
         PullRequestState.Open,
-        (pr) => !pr.head.repo.fork && withoutCmsLabel(pr, this.cmsLabelPrefix),
+        pr => !pr.head.repo.fork && withoutCmsLabel(pr, this.cmsLabelPrefix),
       );
       let prCount = 0;
       for (const pr of pullRequests) {
@@ -853,10 +851,10 @@ export default class API {
         prCount = prCount + 1;
         await this.migratePullRequest(pr, `${prCount} of ${pullRequests.length}`);
       }
-      const cmsPullRequests = await this.getPullRequests(undefined, PullRequestState.Open, (pr) =>
+      const cmsPullRequests = await this.getPullRequests(undefined, PullRequestState.Open, pr =>
         withCmsLabel(pr, this.cmsLabelPrefix),
       );
-      branches = cmsPullRequests.map((pr) => pr.head.ref);
+      branches = cmsPullRequests.map(pr => pr.head.ref);
     }
 
     return branches;
@@ -878,7 +876,7 @@ export default class API {
       `${this.originRepoURL}/deployments?task=deploy&ref=${sha}`,
     );
     const depStatuses = await Promise.all(
-      deploys.map(async (dep) => {
+      deploys.map(async dep => {
         const stats: GitHubDeployStatuses = await this.request(
           `${this.originRepoURL}/deployments/${dep.id}/statuses`,
         );
@@ -902,7 +900,7 @@ export default class API {
     );
     return resp.statuses
       .map(
-        (s) =>
+        s =>
           ({
             context: s.context,
             // eslint-disable-next-line @typescript-eslint/camelcase
@@ -918,16 +916,16 @@ export default class API {
 
   async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = mediaFiles.concat(dataFiles);
-    const uploadPromises = files.map((file) => this.uploadBlob(file));
+    const uploadPromises = files.map(file => this.uploadBlob(file));
     await Promise.all(uploadPromises);
 
     if (!options.useWorkflow) {
       return this.getDefaultBranch()
-        .then((branchData) =>
+        .then(branchData =>
           this.updateTree(branchData.commit.sha, files as { sha: string; path: string }[]),
         )
-        .then((changeTree) => this.commit(options.commitMessage, changeTree))
-        .then((response) => this.patchBranch(this.branch, response.sha));
+        .then(changeTree => this.commit(options.commitMessage, changeTree))
+        .then(response => this.patchBranch(this.branch, response.sha));
     } else {
       const mediaFilesList = (mediaFiles as { sha: string; path: string }[]).map(
         ({ sha, path }) => ({
@@ -954,7 +952,7 @@ export default class API {
     const fileDataURL = `${repoURL}/git/trees/${branch}:${fileDataPath}`;
 
     const result: Octokit.GitGetTreeResponse = await this.request(fileDataURL);
-    const file = result.tree.find((file) => file.path === filename);
+    const file = result.tree.find(file => file.path === filename);
     if (file) {
       return file.sha;
     } else {
@@ -968,7 +966,7 @@ export default class API {
     }
 
     const branchData = await this.getDefaultBranch();
-    const files = paths.map((path) => ({ path, sha: null }));
+    const files = paths.map(path => ({ path, sha: null }));
     const changeTree = await this.updateTree(branchData.commit.sha, files);
     const commit = await this.commit(message, changeTree);
     await this.patchBranch(this.branch, commit.sha);
@@ -1020,8 +1018,8 @@ export default class API {
       const diffs = diffFiles.map(diffFromFile);
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
-      for (const diff of diffs.filter((d) => d.binary)) {
-        if (!mediaFilesList.some((file) => file.path === diff.path)) {
+      for (const diff of diffs.filter(d => d.binary)) {
+        if (!mediaFilesList.some(file => file.path === diff.path)) {
           mediaFilesToRemove.push({ path: diff.path, sha: null });
         }
       }
@@ -1050,7 +1048,7 @@ export default class API {
           console.warn(`Reached maximum number of attempts '${attempts}' for getDifferences`);
           throw e;
         }
-        await new Promise((resolve) => setTimeout(resolve, i * 500));
+        await new Promise(resolve => setTimeout(resolve, i * 500));
       }
     }
     throw new APIError('Not Found', 404, API_NAME);
@@ -1099,7 +1097,7 @@ export default class API {
        * info, such as the author/committer data.
        */
       const newHeadPromise = commits.reduce((lastCommitPromise, commit) => {
-        return lastCommitPromise.then((newParent) => {
+        return lastCommitPromise.then(newParent => {
           const parent = newParent;
           const commitToRebase = commit;
           return this.rebaseSingleCommit(parent, commitToRebase);
@@ -1128,8 +1126,8 @@ export default class API {
   async setPullRequestStatus(pullRequest: GitHubPull, newStatus: string) {
     const labels = [
       ...pullRequest.labels
-        .filter((label) => !isCMSLabel(label.name, this.cmsLabelPrefix))
-        .map((l) => l.name),
+        .filter(label => !isCMSLabel(label.name, this.cmsLabelPrefix))
+        .map(l => l.name),
       statusToLabel(newStatus, this.cmsLabelPrefix),
     ];
     await this.updatePullRequestLabels(pullRequest.number, labels);
@@ -1247,7 +1245,7 @@ export default class API {
     } catch (e) {
       const message = String(e.message || '');
       if (message === 'Reference update failed') {
-        await throwOnConflictingBranches(branchName, (name) => this.getBranch(name), API_NAME);
+        await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
       } else if (
         message === 'Reference already exists' &&
         branchName.startsWith(`${CMS_BRANCH_PREFIX}/`)
@@ -1368,7 +1366,7 @@ export default class API {
     const files = getTreeFiles(result.files as GitHubCompareFiles);
 
     let commitMessage = 'Automatically generated. Merged on Netlify CMS\n\nForce merge of:';
-    files.forEach((file) => {
+    files.forEach(file => {
       commitMessage += `\n* "${file.path}"`;
     });
     console.log(
@@ -1376,9 +1374,9 @@ export default class API {
       'line-height: 30px;text-align: center;font-weight: bold',
     );
     return this.getDefaultBranch()
-      .then((branchData) => this.updateTree(branchData.commit.sha, files))
-      .then((changeTree) => this.commit(commitMessage, changeTree))
-      .then((response) => this.patchBranch(this.branch, response.sha));
+      .then(branchData => this.updateTree(branchData.commit.sha, files))
+      .then(changeTree => this.commit(commitMessage, changeTree))
+      .then(response => this.patchBranch(this.branch, response.sha));
   }
 
   toBase64(str: string) {
