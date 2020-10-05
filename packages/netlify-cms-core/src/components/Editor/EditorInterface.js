@@ -221,7 +221,14 @@ class EditorInterface extends Component {
     } = this.props;
 
     const { scrollSyncEnabled, showEventBlocker } = this.state;
-    const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
+    let previewEnabled;
+    if (collection.get('type') === 'file_based_collection') {
+      const files = collection.get('files');
+      const fileName = entry.get('slug');
+      const file = files?.find(f => f?.get('name') === fileName);
+      previewEnabled = file?.getIn(['editor', 'preview']);
+    }
+    previewEnabled = previewEnabled ?? collection.getIn(['editor', 'preview'], true);
     const collectionI18nEnabled = hasI18n(collection);
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
     const editorProps = {
@@ -300,7 +307,7 @@ class EditorInterface extends Component {
     );
 
     const i18nVisible = collectionI18nEnabled && this.state.i18nVisible;
-    const previewVisible = collectionPreviewEnabled && this.state.previewVisible;
+    const previewVisible = previewEnabled && this.state.previewVisible;
     const scrollSyncVisible = i18nVisible || previewVisible;
 
     return (
@@ -349,7 +356,7 @@ class EditorInterface extends Component {
                 marginTop="70px"
               />
             )}
-            {collectionPreviewEnabled && (
+            {previewEnabled && (
               <EditorToggle
                 isActive={previewVisible}
                 onClick={this.handleTogglePreview}
