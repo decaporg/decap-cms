@@ -95,13 +95,11 @@ const zh_Hant = {
       onPublishingWithUnsavedChanges: '您有未儲存的變更，在發布前請先進行儲存。',
       onPublishing: '你確定要發表此內容嗎？',
       onUnpublishing: '你確定要取消發表此內容嗎？',
-      onDeleteWithUnsavedChanges:
-        '你確定要刪除這篇已發布的內容以及你尚未儲存的變更？',
+      onDeleteWithUnsavedChanges: '你確定要刪除這篇已發布的內容以及你尚未儲存的變更？',
       onDeletePublishedEntry: '你確定要刪除這篇已發布的內容？',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         '這將會刪除此內容所有未發布的變更，以及未儲存的變更。你確定還是要刪除？',
-      onDeleteUnpublishedChanges:
-        '此內容所有未發布的變更都將會被刪除。你確定還是要刪除？',
+      onDeleteUnpublishedChanges: '此內容所有未發布的變更都將會被刪除。你確定還是要刪除？',
       loadingEntry: '載入內容中...',
       confirmLoadBackup: '此內容的本地備份已經還原，你想要使用嗎？',
     },
@@ -229,8 +227,7 @@ const zh_Hant = {
       onDeleteUnpublishedChanges: '已刪除未發布的變更',
       onFailToAuth: '%{details}',
       onLoggedOut: '你已經登出，請備份任何資料然後重新登入',
-      onBackendDown:
-        '後端服務發生中斷。看 %{details} 取得更多資訊',
+      onBackendDown: '後端服務發生中斷。看 %{details} 取得更多資訊',
     },
   },
   workflow: {
