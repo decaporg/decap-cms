@@ -420,7 +420,7 @@ export default class API {
           cache: 'no-store',
         });
 
-        let commit = (await this.responseToJSON(result))['value'][0];
+        const commit = (await this.responseToJSON(result))['value'][0];
 
         return {
           author: commit.author.email || commit.author.name,
@@ -626,13 +626,13 @@ export default class API {
     const items = await Promise.all(
       files.map(async file => {
         const [base64Content, fileExists] = await Promise.all([
-          result(file, 'toBase64', partial(this.toBase64, (file as Entry).raw)),
+          result(file, 'toBase64', partial(this.toBase64, (file as Entry).toString())),
           this.isFileExists(file.toString(), branch),
         ]);
         return {
           action: fileExists ? AzureCommitChangeType.EDIT : AzureCommitChangeType.ADD,
           base64Content,
-          path: '/' + trim(file.path, '/'),
+          path: '/' + trim(file.toString(), '/'),
         };
       }),
     );

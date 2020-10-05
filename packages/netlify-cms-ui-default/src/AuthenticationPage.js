@@ -95,7 +95,7 @@ AuthenticationPage.propTypes = {
   loginErrorMessage: PropTypes.node,
   renderButtonContent: PropTypes.func,
   renderPageContent: PropTypes.func,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func,
 };
 
 export default AuthenticationPage;

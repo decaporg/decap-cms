@@ -25,7 +25,6 @@ import {
   UnpublishedEntryMediaFile,
   entriesByFiles,
   filterByExtension,
-  readFileMetadata,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -325,13 +324,11 @@ export default class Azure implements Implementation {
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map((branch: any) => this.api!.contentKeyFromBranch(branch)),
+        branches.map(branch => this.api!.contentKeyFromBranch(branch)),
       );
 
-    const readUnpublishedBranchFile = (contentKey: string) =>
-      this.api!.readUnpublishedBranchFile(contentKey);
-
-    return unpublishedEntries(listEntriesKeys, readUnpublishedBranchFile, API_NAME);
+    const ids = await unpublishedEntries(listEntriesKeys);
+    return ids;
   }
 
   async unpublishedEntry(

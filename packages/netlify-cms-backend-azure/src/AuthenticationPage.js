@@ -17,7 +17,7 @@ export default class AzureAuthenticationPage extends React.Component {
     authEndpoint: PropTypes.string,
     config: PropTypes.object.isRequired,
     clearHash: PropTypes.func,
-    t: PropTypes.func.isRequired,
+    t: PropTypes.func,
   };
 
   state = {};
