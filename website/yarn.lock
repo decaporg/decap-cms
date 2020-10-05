@@ -8685,10 +8685,10 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
-linkify-it@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-2.2.0.tgz#e3b54697e78bf915c70a38acd78fd09e0058b1cf"
-  integrity sha512-GnAl/knGn+i1U/wjBz3akz2stz+HrHLsxMwHQGofCDfPvlf+gDKN58UtfmUquTY4/MXeE2x7k19KQmeoZi94Iw==
+linkify-it@^3.0.1:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-3.0.2.tgz#f55eeb8bc1d3ae754049e124ab3bb56d97797fb8"
+  integrity sha512-gDBO4aHNZS6coiZCKVhSNh43F9ioIL4JwRjLZPkoLIY4yZFwg264Y5lu2x6rb1Js42Gh6Yqm2f6L2AJcnkzinQ==
   dependencies:
     uc.micro "^1.0.1"
 
@@ -9001,14 +9001,14 @@ markdown-escapes@^1.0.0:
   resolved "https://registry.yarnpkg.com/markdown-escapes/-/markdown-escapes-1.0.4.tgz#c95415ef451499d7602b91095f3c8e8975f78535"
   integrity sha512-8z4efJYk43E0upd0NbVXwgSTQs6cT3T06etieCMEg7dRbzCbxUCK/GHlX8mhHRDcp+OLlHkPKsvqQTCvsRl2cg==
 
-markdown-it@10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-10.0.0.tgz#abfc64f141b1722d663402044e43927f1f50a8dc"
-  integrity sha512-YWOP1j7UbDNz+TumYP1kpwnP0aEa711cJjrAQrzd0UXlbJfc5aAq0F/PZHjiioqDC1NKgvIMX+o+9Bk7yuM2dg==
+markdown-it@11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-11.0.0.tgz#dbfc30363e43d756ebc52c38586b91b90046b876"
+  integrity sha512-+CvOnmbSubmQFSA9dKz1BRiaSMV7rhexl3sngKqFyXSagoA3fBdJQ8oZWtRy2knXdpDXaBw44euz37DeJQ9asg==
   dependencies:
     argparse "^1.0.7"
     entities "~2.0.0"
-    linkify-it "^2.0.0"
+    linkify-it "^3.0.1"
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
 
@@ -9029,10 +9029,10 @@ markdown-table@^2.0.0:
   dependencies:
     repeat-string "^1.0.0"
 
-markdownlint-cli@^0.23.2:
-  version "0.23.2"
-  resolved "https://registry.yarnpkg.com/markdownlint-cli/-/markdownlint-cli-0.23.2.tgz#43f0a96e2699542b74fb5e6188c025e4934357fc"
-  integrity sha512-OSl5OZ8xzGN6z355cqRkiq67zPi3reJimklaF72p0554q85Dng5ToOjjSB9tDKZebSt85jX8cp+ruoQlPqOsPA==
+markdownlint-cli@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/markdownlint-cli/-/markdownlint-cli-0.24.0.tgz#d1c1d43cd53b87aaec93035b3234eef7097139a8"
+  integrity sha512-AusUxaX4sFayUBFTCKeHc8+fq73KFqIUW+ZZZYyQ/BvY0MoGAnE2C/3xiawSE7WXmpmguaWzhrXRuY6IrOLX7A==
   dependencies:
     commander "~2.9.0"
     deep-extend "~0.5.1"
@@ -9043,23 +9043,23 @@ markdownlint-cli@^0.23.2:
     jsonc-parser "~2.2.0"
     lodash.differencewith "~4.5.0"
     lodash.flatten "~4.4.0"
-    markdownlint "~0.20.4"
-    markdownlint-rule-helpers "~0.11.0"
+    markdownlint "~0.21.0"
+    markdownlint-rule-helpers "~0.12.0"
     minimatch "~3.0.4"
     minimist "~1.2.5"
     rc "~1.2.7"
 
-markdownlint-rule-helpers@~0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/markdownlint-rule-helpers/-/markdownlint-rule-helpers-0.11.0.tgz#faaaae4337771c7d88ca38ef6265afb4fbe0fb3f"
-  integrity sha512-PhGii9dOiDJDXxiRMpK8N0FM9powprvRPsXALgkjlSPTwLh6ymH+iF3iUe3nq8KGu26tclFBlLL5xAGy/zb7FA==
+markdownlint-rule-helpers@~0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/markdownlint-rule-helpers/-/markdownlint-rule-helpers-0.12.0.tgz#c41d9b990c50911572e8eb2fba3e6975a5514b7e"
+  integrity sha512-Q7qfAk+AJvx82ZY52OByC4yjoQYryOZt6D8TKrZJIwCfhZvcj8vCQNuwDqILushtDBTvGFmUPq+uhOb1KIMi6A==
 
-markdownlint@~0.20.4:
-  version "0.20.4"
-  resolved "https://registry.yarnpkg.com/markdownlint/-/markdownlint-0.20.4.tgz#3b34681494cdad174e14a27182b5cdefaa537823"
-  integrity sha512-jpfaPgjT0OpeBbemjYNZbzGG3hCLcAIvrm/pEY3+q/szDScG6ZonDacqySVRJAv9glbo8y4wBPJ0wgW17+9GGA==
+markdownlint@~0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/markdownlint/-/markdownlint-0.21.0.tgz#411a6937315c7562042e478cd91f52194ff88da4"
+  integrity sha512-rTxr0fbCFmS65oxXBD0HNy3/+PSukLS+b7Z6rGDWbjdRJp/e2dKj538r3KTn8oXrusx+ZtuYOozV2Knpnn0pkQ==
   dependencies:
-    markdown-it "10.0.0"
+    markdown-it "11.0.0"
 
 md5-file@^3.2.3:
   version "3.2.3"
