@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 import {
   commitMessageFormatter,
   prepareSlug,
@@ -367,6 +367,40 @@ describe('formatters', () => {
           Map({ data: Map({ customDateField: date, slug: 'entrySlug', title: 'title' }) }),
         ),
       ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
+    });
+
+    it('should return preview url for files in file collection', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
+            type: 'file_based_collection',
+            files: List([
+              Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' }),
+            ]),
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+        ),
+      ).toBe('https://www.example.com/backendslug/about-the-project/title');
+    });
+
+    it('should fall back to collection preview url for files in file collection', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
+            type: 'file_based_collection',
+            files: List([Map({ name: 'about-file' })]),
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+        ),
+      ).toBe('https://www.example.com/backendslug/title/about-the-project');
     });
 
     it('should infer date field when preview_path_date_field is not configured', () => {

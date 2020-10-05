@@ -187,6 +187,8 @@ const getConfigSchema = () => ({
                 label_singular: { type: 'string' },
                 description: { type: 'string' },
                 file: { type: 'string' },
+                preview_path: { type: 'string' },
+                preview_path_date_field: { type: 'string' },
                 fields: fieldsConfig(),
               },
               required: ['name', 'label', 'file', 'fields'],

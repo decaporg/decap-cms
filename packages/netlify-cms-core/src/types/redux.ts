@@ -140,6 +140,8 @@ export type CollectionFile = StaticallyTypedRecord<{
   label: string;
   media_folder?: string;
   public_folder?: string;
+  preview_path?: string;
+  preview_path_date_field?: string;
 }>;
 
 export type CollectionFiles = List<CollectionFile>;

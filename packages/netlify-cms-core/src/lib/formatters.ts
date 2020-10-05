@@ -166,11 +166,25 @@ export const previewUrlFormatter = (
    * URL path.
    */
   const basePath = trimEnd(baseUrl, '/');
-  const pathTemplate = collection.get('preview_path') as string;
+
+  let filePathTemplate;
+  let fileDateField;
+  if (collection.get('type') === 'file_based_collection') {
+    const files = collection.get('files');
+    const fileName = entry.get('slug');
+    const file = files?.find(f => f?.get('name') === fileName);
+    filePathTemplate = file?.get('preview_path') as string;
+    fileDateField = file?.get('preview_path_date_field') as string;
+  }
+
+  const pathTemplate = filePathTemplate || (collection.get('preview_path') as string);
+
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
   const dateFieldName =
-    collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
+    fileDateField ||
+    collection.get('preview_path_date_field') ||
+    selectInferedField(collection, 'date');
   const date = parseDateFromEntry((entry as unknown) as Map<string, unknown>, dateFieldName);
 
   // Prepare and sanitize slug variables only, leave the rest of the
