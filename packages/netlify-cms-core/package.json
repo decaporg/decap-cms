@@ -38,7 +38,7 @@
     "history": "^4.7.2",
     "immer": "^7.0.0",
     "js-base64": "^3.0.0",
-    "jwt-decode": "^2.1.0",
+    "jwt-decode": "^3.0.0",
     "node-polyglot": "^2.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
