@@ -48,7 +48,7 @@
     "babel-preset-gatsby": "^0.5.1",
     "eslint": "^7.4.0",
     "eslint-plugin-import": "^2.20.1",
-    "markdownlint-cli": "^0.23.2"
+    "markdownlint-cli": "^0.24.0"
   },
   "private": true
 }
