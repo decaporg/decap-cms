@@ -93,12 +93,6 @@ type GitHubCommitStatus = Octokit.ReposListStatusesForRefResponseItem & {
   state: GitHubCommitStatusState;
 };
 
-type ParsedStatus = {
-  context: string;
-  state: string;
-  target_url: string;
-};
-
 interface MetaDataObjects {
   entry: { path: string; sha: string };
   files: MediaFile[];
@@ -881,21 +875,17 @@ export default class API {
           `${this.originRepoURL}/deployments/${dep.id}/statuses`,
         );
 
-        return stats.reduce(
-          (acc, stat, i) =>
-            i === 0 || stat.state === GitHubCommitStatusState.Success
-              ? ({
-                  context: stat.description,
-                  // eslint-disable-next-line @typescript-eslint/camelcase
-                  target_url: stat.target_url,
-                  state:
-                    stat.state === GitHubCommitStatusState.Success
-                      ? PreviewState.Success
-                      : PreviewState.Other,
-                } as ParsedStatus)
-              : acc,
-          {} as ParsedStatus,
-        );
+        return stats.map((stat) => ({
+          context: stat.description,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          target_url: stat.target_url,
+          state:
+            stat.state === GitHubCommitStatusState.Success
+              ? PreviewState.Success
+              : PreviewState.Other,
+        })).reduce((acc, stat) => (
+          stat.state === PreviewState.Success ? stat : acc
+        ));
       }),
     );
     return resp.statuses
@@ -909,7 +899,7 @@ export default class API {
               s.state === GitHubCommitStatusState.Success
                 ? PreviewState.Success
                 : PreviewState.Other,
-          } as ParsedStatus),
+          }),
       )
       .concat(...depStatuses);
   }
