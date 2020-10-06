@@ -284,6 +284,12 @@ const getConfigSchema = () => ({
       },
       uniqueItemProperties: ['name'],
     },
+    editor: {
+      type: 'object',
+      properties: {
+        preview: { type: 'boolean' },
+      },
+    },
   },
   required: ['backend', 'collections'],
   anyOf: [{ required: ['media_folder'] }, { required: ['media_library'] }],

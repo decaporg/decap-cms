@@ -267,6 +267,10 @@ export function applyDefaults(config) {
             );
           }
 
+          if (map.hasIn(['editor', 'preview']) && !collection.has('editor')) {
+            collection = collection.setIn(['editor', 'preview'], map.getIn(['editor', 'preview']));
+          }
+
           return collection;
         }),
       );
