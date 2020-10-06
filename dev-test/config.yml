@@ -1,6 +1,6 @@
 backend:
   name: azure
-  repo: owner/repo
+  repo: org/project/repo
   identity_url: https://login.microsoftonline.com/{tenantId}
   app_id: {appId}
 

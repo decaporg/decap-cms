@@ -6,7 +6,6 @@ import {
   ApiRequest,
   unsentRequest,
   responseParser,
-  Entry,
   AssetProxy,
   PersistOptions,
   readFile,
@@ -20,7 +19,7 @@ import {
   EditorialWorkflowError,
   statusToLabel,
   PreviewState,
-  readFileMetadata
+  readFileMetadata,
 } from 'netlify-cms-lib-util';
 import { DataFile } from 'netlify-cms-lib-util/src/implementation';
 
@@ -314,7 +313,7 @@ export default class API {
   initialWorkflowStatus: string;
   commitAuthor?: AzureCommitAuthor;
 
-  constructor(config: AzureApiConfig, token: string) {
+  constructor(config: AzureApiConfig, token: string) {    
     this.repo = config.repo;
     this.apiRoot = trim(config.apiRoot, '/') || 'https://dev.azure.com';
     this.endpointUrl = `${this.apiRoot}/${this.repo?.org}/${this.repo?.project}/_apis/git/repositories/${this.repo?.name}`;
@@ -401,23 +400,27 @@ export default class API {
         return { path, id };
       });
 
-    const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) => isCMSLabel(l.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX));
-    const labelText = prLabel ? prLabel.name : statusToLabel('draft', DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
+    const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) =>
+      isCMSLabel(l.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX),
+    );
+    const labelText = prLabel
+      ? prLabel.name
+      : statusToLabel('draft', DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
     const status = labelToStatus(labelText, DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
 
     return { branch, collection, slug, path, status, mediaFiles };
   }
 
-  async readFileMetadata(path: string,
+  async readFileMetadata(
+    path: string,
     sha: string | null | undefined,
-    { branch = this.branch } = {}) {
+    { branch = this.branch } = {},
+  ) {
     const fetchFileMetadata = async () => {
       try {
         const result = await this.request({
           url: `${this.endpointUrl}/commits/`,
-          params: { 'searchCriteria.itemPath': path,
-                    'searchCriteria.itemVersion.version': branch
-                  },
+          params: { 'searchCriteria.itemPath': path, 'searchCriteria.itemVersion.version': branch },
           cache: 'no-store',
         });
 
@@ -425,13 +428,12 @@ export default class API {
 
         return {
           author: commit.author.email || commit.author.name,
-          updatedOn: commit.author.date
+          updatedOn: commit.author.date,
         };
-
-      } catch(error) {
-        return {author: '', updatedOn: ''};
+      } catch (error) {
+        return { author: '', updatedOn: '' };
       }
-    }
+    };
 
     const fileMetadata = await readFileMetadata(sha, fetchFileMetadata, localForage);
     return fileMetadata;
@@ -539,7 +541,6 @@ export default class API {
         ref = new AzureRef(this.branchToRef(branch), ref.objectId);
       }
 
-      console.log(JSON.stringify(ref));
       const commit = new AzureCommit(comment);
 
       items.forEach((i: any) => {
@@ -623,10 +624,9 @@ export default class API {
     }));
   }
 
-  async getCommitItems(files: {path: string; newPath?: string }[], branch: string) {
+  async getCommitItems(files: { path: string; newPath?: string }[], branch: string) {
     const items = await Promise.all(
       files.map(async file => {
-
         const [base64Content, fileExists] = await Promise.all([
           result(file, 'toBase64', partial(this.toBase64, (file as DataFile).raw)),
           this.isFileExists(file.path, branch),
@@ -635,8 +635,7 @@ export default class API {
         return {
           action: fileExists ? AzureCommitChangeType.EDIT : AzureCommitChangeType.ADD,
           base64Content,
-          path: trimStart(file.path, '/')
-
+          path: trimStart(file.path, '/'),
         };
       }),
     );
@@ -698,8 +697,8 @@ export default class API {
       },
     });
 
-    return pullRequests.value.filter((mr: any) =>
-      mr.sourceRefName.startsWith(this.branchToRef(CMS_BRANCH_PREFIX)),
+    return pullRequests.value.filter(pr =>
+      pr.sourceRefName.startsWith(this.branchToRef(CMS_BRANCH_PREFIX)),
     );
   }
 
@@ -709,7 +708,7 @@ export default class API {
    */
   async listUnpublishedBranches(): Promise<string[]> {
     const pullRequests = await this.getPullRequests();
-    const branches = pullRequests.map((mr: any) => this.refToBranch(mr.sourceRefName));
+    const branches = pullRequests.map(pr => this.refToBranch(pr.sourceRefName));
     return branches;
   }
 
@@ -762,6 +761,7 @@ export default class API {
 
   async getBranchPullRequest(branch: string): Promise<AzurePullRequest> {
     const pullRequests = await this.getPullRequests(branch);
+
     if (pullRequests.length <= 0) {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     }
@@ -781,7 +781,11 @@ export default class API {
     return result.changes;
   }
 
-  async editorialWorkflowGit(files: (DataFile | AssetProxy)[], slug: string, options: PersistOptions) {
+  async editorialWorkflowGit(
+    files: (DataFile | AssetProxy)[],
+    slug: string,
+    options: PersistOptions,
+  ) {
     // assumes entry.dataFiles share the same slug
     const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = this.branchFromContentKey(contentKey);
@@ -789,9 +793,6 @@ export default class API {
 
     if (!unpublished) {
       const items = await this.getCommitItems(files, this.branch);
-      console.log('FILES',files);
-      console.log('ITEMS', items);
-
       await this.uploadAndCommit(items, options.commitMessage, branch, true);
 
       await this.createPullRequest(
@@ -828,7 +829,7 @@ export default class API {
     await this.updatePullRequestLabels(mergeRequest, labels);
   }
 
-  async deleteUnpublishedEntry(collectionName: any, slug: string) {
+  async deleteUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = generateContentKey(collectionName, slug);
     const branch = this.branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchPullRequest(branch);

@@ -159,7 +159,9 @@ export default class Azure implements Implementation {
     return this.api!.listFiles(collection)
       .then(files => {
         if (extension) {
-          const filtered = files.filter(file => filterByExtension({path: file.relativePath}, extension));
+          const filtered = files.filter(file =>
+            filterByExtension({ path: file.relativePath }, extension),
+          );
           return filtered;
         }
         return files;
@@ -171,7 +173,7 @@ export default class Azure implements Implementation {
   entriesByFiles(files: ImplementationFile[]) {
     const readFile = (path: string, id: string | null | undefined) => {
       return this.api!.readFile(path, id) as Promise<string>;
-    }
+    };
 
     return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
@@ -222,7 +224,6 @@ export default class Azure implements Implementation {
       return await Promise.all(
         files.map(async ({ objectId, relativePath, size, url }) => {
           const name: string = last(relativePath.split('/')) || '';
-
           const blobUrl = await this.getMediaDisplayURL({ id: objectId, path: relativePath });
 
           return { id: objectId, name, size, displayURL: blobUrl || url, path: relativePath };
@@ -232,7 +233,6 @@ export default class Azure implements Implementation {
   }
 
   getMediaDisplayURL(displayURL: DisplayURL) {
-    console.log(displayURL);
     this._mediaDisplayURLSem = this._mediaDisplayURLSem || semaphore(MAX_CONCURRENT_DOWNLOADS);
     return getMediaDisplayURL(
       displayURL,
@@ -242,7 +242,6 @@ export default class Azure implements Implementation {
   }
 
   async getMediaFile(path: string) {
-    console.log('getMediaFile: ' + path);
     const name = basename(path);
     const blob = await getMediaAsBlob(path, null, this.api!.readFile.bind(this.api!));
     const fileObj = new File([blob], name);

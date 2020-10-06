@@ -70,7 +70,7 @@ describe('azure backend implementation', () => {
       expect.assertions(1);
       await expect(azureImplementation.forkExists({ token: 'token' })).resolves.toBe(false);
     });
-  });    
+  });
 
   describe('persistMedia', () => {
     const persistFiles = jest.fn();
@@ -213,5 +213,4 @@ describe('azure backend implementation', () => {
       expect(readFile).toHaveBeenCalledTimes(20);
     });
   });
-
 });
