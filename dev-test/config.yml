@@ -1,106 +1,107 @@
 backend:
   name: azure
-  repo: exelontfs/EUCOMS/EU-Web-Marketplace-cms
+  repo: owner/repo
   identity_url: https://login.microsoftonline.com/{tenantId}
   app_id: {appId}
 
 site_url: https://example.com
 
-publish_mode: editorial_workflow
+# editorial workflow does not yet work properly
+# publish_mode: editorial_workflow
 media_folder: assets/uploads
 
-# collections: # A list of collections the CMS should be able to edit
-#   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
-#     label: 'Posts' # Used in the UI
-#     label_singular: 'Post' # Used in the UI, ie: "New Post"
-#     description: >
-#       The description is a great place for tone setting, high level information, and editing
-#       guidelines that are specific to a collection.
-#     folder: '_posts'
-#     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-#     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-#     create: true # Allow users to create new documents in this collection
-#     view_filters:
-#       - label: Posts With Index
-#         field: title
-#         pattern: 'This is post #'
-#       - label: Posts Without Index
-#         field: title
-#         pattern: front matter post
-#       - label: Drafts
-#         field: draft
-#         pattern: true
-#     fields: # The fields each document in this collection have
-#       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-#       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
-#       - {
-#           label: 'Publish Date',
-#           name: 'date',
-#           widget: 'datetime',
-#           date_format: 'YYYY-MM-DD',
-#           time_format: 'HH:mm',
-#           format: 'YYYY-MM-DD HH:mm',
-#         }
-#       - label: 'Cover Image'
-#         name: 'image'
-#         widget: 'image'
-#         required: false
-#         tagname: ''
+collections: # A list of collections the CMS should be able to edit
+  - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'Posts' # Used in the UI
+    label_singular: 'Post' # Used in the UI, ie: "New Post"
+    description: >
+      The description is a great place for tone setting, high level information, and editing
+      guidelines that are specific to a collection.
+    folder: '_posts'
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
+    create: true # Allow users to create new documents in this collection
+    view_filters:
+      - label: Posts With Index
+        field: title
+        pattern: 'This is post #'
+      - label: Posts Without Index
+        field: title
+        pattern: front matter post
+      - label: Drafts
+        field: draft
+        pattern: true
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - {
+          label: 'Publish Date',
+          name: 'date',
+          widget: 'datetime',
+          date_format: 'YYYY-MM-DD',
+          time_format: 'HH:mm',
+          format: 'YYYY-MM-DD HH:mm',
+        }
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
+        required: false
+        tagname: ''
 
-#       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
 
-#   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
-#     label: 'FAQ' # Used in the UI
-#     folder: '_faqs'
-#     create: true # Allow users to create new documents in this collection
-#     fields: # The fields each document in this collection have
-#       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
-#       - { label: 'Answer', name: 'body', widget: 'markdown' }
+  - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'FAQ' # Used in the UI
+    folder: '_faqs'
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Answer', name: 'body', widget: 'markdown' }
 
-#   - name: 'settings'
-#     label: 'Settings'
-#     delete: false # Prevent users from deleting documents in this collection
-#     editor:
-#       preview: false
-#     files:
-#       - name: 'general'
-#         label: 'Site Settings'
-#         file: '_data/settings.json'
-#         description: 'General Site Settings'
-#         fields:
-#           - { label: 'Global title', name: 'site_title', widget: 'string' }
-#           - label: 'Post Settings'
-#             name: posts
-#             widget: 'object'
-#             fields:
-#               - {
-#                   label: 'Number of posts on frontpage',
-#                   name: front_limit,
-#                   widget: number,
-#                   min: 1,
-#                   max: 10,
-#                 }
-#               - { label: 'Default Author', name: author, widget: string }
-#               - {
-#                   label: 'Default Thumbnail',
-#                   name: thumb,
-#                   widget: image,
-#                   class: 'thumb',
-#                   required: false,
-#                 }
+  - name: 'settings'
+    label: 'Settings'
+    delete: false # Prevent users from deleting documents in this collection
+    editor:
+      preview: false
+    files:
+      - name: 'general'
+        label: 'Site Settings'
+        file: '_data/settings.json'
+        description: 'General Site Settings'
+        fields:
+          - { label: 'Global title', name: 'site_title', widget: 'string' }
+          - label: 'Post Settings'
+            name: posts
+            widget: 'object'
+            fields:
+              - {
+                  label: 'Number of posts on frontpage',
+                  name: front_limit,
+                  widget: number,
+                  min: 1,
+                  max: 10,
+                }
+              - { label: 'Default Author', name: author, widget: string }
+              - {
+                  label: 'Default Thumbnail',
+                  name: thumb,
+                  widget: image,
+                  class: 'thumb',
+                  required: false,
+                }
 
-#       - name: 'authors'
-#         label: 'Authors'
-#         file: '_data/authors.yml'
-#         description: 'Author descriptions'
-#         fields:
-#           - name: authors
-#             label: Authors
-#             label_singular: 'Author'
-#             widget: list
-#             fields:
-#               - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-#               - { label: 'Description', name: 'description', widget: 'markdown' }
+      - name: 'authors'
+        label: 'Authors'
+        file: '_data/authors.yml'
+        description: 'Author descriptions'
+        fields:
+          - name: authors
+            label: Authors
+            label_singular: 'Author'
+            widget: list
+            fields:
+              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
+              - { label: 'Description', name: 'description', widget: 'markdown' }
 
   - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
     label: 'Kitchen Sink'
