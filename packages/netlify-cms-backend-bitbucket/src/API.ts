@@ -653,8 +653,8 @@ export default class API {
       params: {
         pagelen: 50,
         q: oneLine`
-        source.repository.full_name = "${this.repo}" 
-        AND state = "${BitBucketPullRequestState.OPEN}" 
+        source.repository.full_name = "${this.repo}"
+        AND state = "${BitBucketPullRequestState.OPEN}"
         AND destination.branch.name = "${this.branch}"
         AND comment_count > 0
         AND ${sourceQuery}

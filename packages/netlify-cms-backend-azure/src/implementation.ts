@@ -262,7 +262,7 @@ export default class Azure implements Implementation {
 
   persistEntry(entry: Entry, options: PersistOptions): Promise<void> {
     const mediaFiles: AssetProxy[] = entry.assets;
-    return this.api!.persistFiles(entry, mediaFiles, options).then(voidReturn);
+    return this.api!.persistFiles(entry.dataFiles, mediaFiles, options).then(voidReturn);
   }
 
   async persistMedia(
@@ -273,7 +273,7 @@ export default class Azure implements Implementation {
 
     const [id] = await Promise.all([
       getBlobSHA(fileObj),
-      this.api!.persistFiles(null, [mediaFile], options),
+      this.api!.persistFiles([], [mediaFile], options),
     ]);
 
     const { path } = mediaFile;

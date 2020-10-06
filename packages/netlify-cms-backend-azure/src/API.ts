@@ -1,5 +1,5 @@
 import { Base64 } from 'js-base64';
-import { first, flow, partial, result, trim } from 'lodash';
+import { first, flow, partial, result, trim, trimStart } from 'lodash';
 import {
   localForage,
   APIError,
@@ -22,6 +22,7 @@ import {
   PreviewState,
   readFileMetadata
 } from 'netlify-cms-lib-util';
+import { DataFile } from 'netlify-cms-lib-util/src/implementation';
 
 export const API_NAME = 'Azure DevOps';
 
@@ -622,17 +623,20 @@ export default class API {
     }));
   }
 
-  async getCommitItems(files: (Entry | AssetProxy)[], branch: string) {
+  async getCommitItems(files: {path: string; newPath?: string }[], branch: string) {
     const items = await Promise.all(
       files.map(async file => {
+
         const [base64Content, fileExists] = await Promise.all([
-          result(file, 'toBase64', partial(this.toBase64, (file as Entry).toString())),
-          this.isFileExists(file.toString(), branch),
+          result(file, 'toBase64', partial(this.toBase64, (file as DataFile).raw)),
+          this.isFileExists(file.path, branch),
         ]);
+
         return {
           action: fileExists ? AzureCommitChangeType.EDIT : AzureCommitChangeType.ADD,
           base64Content,
-          path: '/' + trim(file.toString(), '/'),
+          path: trimStart(file.path, '/')
+
         };
       }),
     );
@@ -645,10 +649,11 @@ export default class API {
    * @param mediaFiles
    * @param options
    */
-  async persistFiles(entry: Entry | null, mediaFiles: AssetProxy[], options: PersistOptions) {
-    const files = entry ? [entry, ...mediaFiles] : mediaFiles;
+  async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
+    const files = [...dataFiles, ...mediaFiles];
     if (options.useWorkflow) {
-      return this.editorialWorkflowGit(files, entry as Entry, options);
+      const slug = dataFiles[0].slug;
+      return this.editorialWorkflowGit(files, slug, options);
     } else {
       const items = await this.getCommitItems(files, this.branch);
       return this.uploadAndCommit(items, options.commitMessage);
@@ -776,14 +781,16 @@ export default class API {
     return result.changes;
   }
 
-  async editorialWorkflowGit(files: (Entry | AssetProxy)[], entry: Entry, options: PersistOptions) {
+  async editorialWorkflowGit(files: (DataFile | AssetProxy)[], slug: string, options: PersistOptions) {
     // assumes entry.dataFiles share the same slug
-    const contentKey = generateContentKey(options.collectionName as string, entry.dataFiles[0].slug);
+    const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
 
     if (!unpublished) {
       const items = await this.getCommitItems(files, this.branch);
+      console.log('FILES',files);
+      console.log('ITEMS', items);
 
       await this.uploadAndCommit(items, options.commitMessage, branch, true);
 
