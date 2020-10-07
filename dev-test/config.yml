@@ -1,13 +1,9 @@
 backend:
-  name: azure
-  repo: org/project/repo
-  identity_url: https://login.microsoftonline.com/{tenantId}
-  app_id: {appId}
+  name: test-repo
 
 site_url: https://example.com
 
-# editorial workflow does not yet work properly
-# publish_mode: editorial_workflow
+publish_mode: editorial_workflow
 media_folder: assets/uploads
 
 collections: # A list of collections the CMS should be able to edit
