@@ -130,7 +130,7 @@ export default class GraphQLAPI extends API {
   }
 
   query(options: QueryOptions<OperationVariables>) {
-    return this.client.query(options).catch(error => {
+    return this.client.query(options).catch((error) => {
       throw new APIError(error.message, 500, 'GitHub');
     });
   }
@@ -141,15 +141,15 @@ export default class GraphQLAPI extends API {
       return result;
     } catch (error) {
       const errors = error.graphQLErrors;
-      if (Array.isArray(errors) && errors.some(e => e.message === 'Ref cannot be created.')) {
+      if (Array.isArray(errors) && errors.some((e) => e.message === 'Ref cannot be created.')) {
         const refName = options?.variables?.createRefInput?.name || '';
         const branchName = trimStart(refName, 'refs/heads/');
         if (branchName) {
-          await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
+          await throwOnConflictingBranches(branchName, (name) => this.getBranch(name), API_NAME);
         }
       } else if (
         Array.isArray(errors) &&
-        errors.some(e =>
+        errors.some((e) =>
           new RegExp(
             `A ref named "refs/heads/${CMS_BRANCH_PREFIX}/.+?" already exists in the repository.`,
           ).test(e.message),
@@ -301,7 +301,7 @@ export default class GraphQLAPI extends API {
     const mapped = pullRequests.nodes.map(transformPullRequest);
 
     return ((mapped as unknown) as Octokit.PullsListResponseItem[]).filter(
-      pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
+      (pr) => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
     );
   }
 
