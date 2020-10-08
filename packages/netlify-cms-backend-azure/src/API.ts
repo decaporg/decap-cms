@@ -79,7 +79,7 @@ interface AzureReferenceLinks {
   tree?: AzureGitTreeRef;
 }
 
-interface AzureGitTreeEntryRef {
+export interface AzureGitTreeEntryRef {
   gitObjectType: string;
   objectId: string;
   relativePath: string;
@@ -101,11 +101,18 @@ interface AzurePullRequest {
   closedDate: string;
   isDraft: string;
   status: AzurePullRequestStatus;
+  lastMergeSourceCommit: AzureGitChangeItem;
   mergeStatus: AzureAsyncPullRequestStatus;
   pullRequestId: number;
   labels: AzureWebApiTagDefinition[];
   sourceRefName: string;
 }
+
+type AzurePullRequestStatusItem = {
+  status: AzurePullRequestStatus;
+  name: string;
+  target_url: string;
+};
 
 // This does not match Azure documentation, but it is what comes back from some calls
 // PullRequest as an example is documented as returning PullRequest[], but it actually
@@ -121,7 +128,7 @@ enum AzureCommitChangeType {
   EDIT = 'edit',
 }
 
-enum AzureCommitContentType {
+enum AzureItemContentType {
   RAW = 'rawtext',
   BASE64 = 'base64encoded',
 }
@@ -145,6 +152,7 @@ interface AzureGitCommitDiffs {
   changes: AzureGitChange[];
 }
 
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-5.1#gitchange
 interface AzureGitChange {
   item: AzureGitChangeItem;
 }
@@ -174,11 +182,11 @@ class AzureRef {
   }
 }
 
-class AzureChangeContent {
+class AzureItemContent {
   content: string;
-  contentType: AzureCommitContentType;
+  contentType: AzureItemContentType;
 
-  constructor(content: string, type: AzureCommitContentType) {
+  constructor(content: string, type: AzureItemContentType) {
     this.content = content;
     this.contentType = type;
   }
@@ -203,20 +211,20 @@ class AzureCommitChange {
 }
 
 class AzureCommitAddChange extends AzureCommitChange {
-  newContent: AzureChangeContent;
+  newContent: AzureItemContent;
 
-  constructor(path: string, content: string, type: AzureCommitContentType) {
+  constructor(path: string, content: string, type: AzureItemContentType) {
     super(AzureCommitChangeType.ADD, path);
-    this.newContent = new AzureChangeContent(content, type);
+    this.newContent = new AzureItemContent(content, type);
   }
 }
 
 class AzureCommitEditChange extends AzureCommitChange {
-  newContent: AzureChangeContent;
+  newContent: AzureItemContent;
 
-  constructor(path: string, content: string, type: AzureCommitContentType) {
+  constructor(path: string, content: string, type: AzureItemContentType) {
     super(AzureCommitChangeType.EDIT, path);
-    this.newContent = new AzureChangeContent(content, type);
+    this.newContent = new AzureItemContent(content, type);
   }
 }
 
@@ -243,11 +251,11 @@ class AzureChangeList extends Array<AzureCommitChange> {
   }
 
   addBase64(path: string, base64data: string) {
-    this.push(new AzureCommitAddChange(path, base64data, AzureCommitContentType.BASE64));
+    this.push(new AzureCommitAddChange(path, base64data, AzureItemContentType.BASE64));
   }
 
   addRawText(path: string, text: string) {
-    this.push(new AzureCommitAddChange(path, text, AzureCommitContentType.RAW));
+    this.push(new AzureCommitAddChange(path, text, AzureItemContentType.RAW));
   }
 
   delete(path: string) {
@@ -255,13 +263,19 @@ class AzureChangeList extends Array<AzureCommitChange> {
   }
 
   editBase64(path: string, base64data: string) {
-    this.push(new AzureCommitEditChange(path, base64data, AzureCommitContentType.BASE64));
+    this.push(new AzureCommitEditChange(path, base64data, AzureItemContentType.BASE64));
   }
 
   rename(source: string, destination: string) {
     this.push(new AzureCommitRenameChange(source, destination));
   }
 }
+
+type AzureCommitItem = {
+  action: AzureCommitChangeType;
+  base64Content: string;
+  path: string;
+};
 
 class AzureCommit {
   comment: string;
@@ -313,7 +327,7 @@ export default class API {
   initialWorkflowStatus: string;
   commitAuthor?: AzureCommitAuthor;
 
-  constructor(config: AzureApiConfig, token: string) {    
+  constructor(config: AzureApiConfig, token: string) {
     this.repo = config.repo;
     this.apiRoot = trim(config.apiRoot, '/') || 'https://dev.azure.com';
     this.endpointUrl = `${this.apiRoot}/${this.repo?.org}/${this.repo?.project}/_apis/git/repositories/${this.repo?.name}`;
@@ -486,7 +500,7 @@ export default class API {
             `Cannot list files, path ${path} is not a directory but a ${typeof files}`,
           );
         }
-        files.forEach((f: any) => {
+        files.forEach((f: AzureGitTreeEntryRef) => {
           f.relativePath = `${path}/${f.relativePath}`;
         });
         return files;
@@ -499,15 +513,17 @@ export default class API {
    * @param branch The name of the branch to get a commit ref for.
    */
   async getRef(branch: string = this.branch): Promise<AzureRef> {
-    return this.requestJSON({
+    const refs: { value: AzureRef[] } = await this.requestJSON({
       url: `${this.endpointUrl}/refs`,
       params: {
         $top: '1', // There's only one, so keep the payload small
         filter: 'heads/' + branch,
       },
-    }).then((refs: any) => {
-      return first(refs.value.filter((b: any) => b.name == this.branchToRef(branch))) as AzureRef;
     });
+
+    return first(
+      refs.value.filter((b: AzureRef) => b.name == this.branchToRef(branch)),
+    ) as AzureRef;
   }
 
   async deleteRef(ref: AzureRef): Promise<void> {
@@ -527,7 +543,7 @@ export default class API {
   }
 
   uploadAndCommit(
-    items: any,
+    items: AzureCommitItem[],
     comment = 'Creating new files',
     branch: string = this.branch,
     newBranch = false,
@@ -543,7 +559,7 @@ export default class API {
 
       const commit = new AzureCommit(comment);
 
-      items.forEach((i: any) => {
+      items.forEach((i: AzureCommitItem) => {
         switch (i.action as AzureCommitChangeType) {
           case AzureCommitChangeType.ADD:
             commit.changes.addBase64(i.path, i.base64Content);
@@ -614,7 +630,7 @@ export default class API {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     await this.getBranchPullRequest(branch);
 
-    const statuses: any[] = [];
+    const statuses: AzurePullRequestStatusItem[] = [];
     // eslint-disable-next-line @typescript-eslint/camelcase
     return statuses.map(({ name, status, target_url }) => ({
       context: name,
@@ -639,7 +655,7 @@ export default class API {
         };
       }),
     );
-    return items as any[];
+    return items as AzureCommitItem[];
   }
 
   /**
@@ -875,23 +891,23 @@ export default class API {
   /**
    * Completes the pull request, setting an appropriate merge commit message
    * and ensuring that the source branch is also deleted.
-   * @param mergeRequest The merge request provided by a previous GET operation.
+   * @param pullRequest The merge request provided by a previous GET operation.
    */
-  async completePullRequest(mergeRequest: any) {
+  async completePullRequest(pullRequest: AzurePullRequest) {
     // This is the minimum payload required to complete the pull request.
     const pullRequestCompletion = {
       status: AzurePullRequestStatus.COMPLETED,
-      lastMergeSourceCommit: mergeRequest.lastMergeSourceCommit,
+      lastMergeSourceCommit: pullRequest.lastMergeSourceCommit,
       completionOptions: {
         deleteSourceBranch: true,
-        mergeCommitMessage: `Completed merge of ${mergeRequest.title}`,
+        mergeCommitMessage: `Completed merge of ${pullRequest.title}`,
         mergeStrategy: this.squashMerges ? 'squash' : 'noFastForward',
       },
     };
 
     let response = await this.requestJSON<AzurePullRequest>({
       method: 'PATCH',
-      url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(mergeRequest.pullRequestId)}`,
+      url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(pullRequest.pullRequestId)}`,
       body: JSON.stringify(pullRequestCompletion),
     });
 
@@ -900,7 +916,7 @@ export default class API {
     while (response.mergeStatus === 'queued') {
       await delay(500);
       response = await this.requestJSON({
-        url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(mergeRequest.pullRequestId)}`,
+        url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(pullRequest.pullRequestId)}`,
       });
     }
   }
@@ -909,7 +925,7 @@ export default class API {
    * Abandons the pull request status and ensuring that the source branch is also deleted.
    * @param pullRequest The pull request provided by a previous GET operation.
    */
-  async abandonPullRequest(pullRequest: any) {
+  async abandonPullRequest(pullRequest: AzurePullRequest) {
     const pullRequestAbandon = {
       status: AzurePullRequestStatus.ABANDONED,
     };

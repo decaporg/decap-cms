@@ -1,7 +1,7 @@
 import { trimStart, trim, last } from 'lodash';
 import semaphore, { Semaphore } from 'semaphore';
 import AuthenticationPage from './AuthenticationPage';
-import API, { API_NAME, AzureRepo } from './API';
+import API, { API_NAME, AzureRepo, AzureGitTreeEntryRef } from './API';
 import {
   Credentials,
   Implementation,
@@ -24,7 +24,7 @@ import {
   unpublishedEntries,
   UnpublishedEntryMediaFile,
   entriesByFiles,
-  filterByExtension,
+  filterByExtension
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -178,32 +178,31 @@ export default class Azure implements Implementation {
     return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
-  fetchFiles = (files: any) => {
+  fetchFiles = (files: AzureGitTreeEntryRef[]) => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises: any[] = [];
-    files.forEach((file: any) => {
-      file.sha = file.objectId; // due to different element naming in Azure
-      file.path = file.relativePath;
-
+    const promises: Promise<
+      { file: AzureGitTreeEntryRef; data: string | Blob; error?: string } | { error: string }
+    >[] = [];
+    files.forEach((file: AzureGitTreeEntryRef) => {
       promises.push(
         new Promise(resolve =>
           sem.take(() =>
-            this.api!.readFile(file.path, file.objectId) // Azure
+            this.api!.readFile(file.relativePath, file.objectId) // Azure
               .then(data => {
                 resolve({ file, data });
                 sem.leave();
               })
               .catch((err = true) => {
                 sem.leave();
-                console.error(`failed to load file from Azure: ${file.path}`);
+                console.error(`failed to load file from Azure: ${file.relativePath}`);
                 resolve({ error: err });
               }),
           ),
         ),
       );
     });
-    return Promise.all(promises).then(loadedEntries =>
-      loadedEntries.filter(loadedEntry => !loadedEntry.error),
+    return Promise.all(promises).then(loadedEntryRefs =>
+      loadedEntryRefs.filter(loadedEntryRef => !loadedEntryRef.error),
     );
   };
 
