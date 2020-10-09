@@ -140,6 +140,7 @@ const en = {
         italic: 'Italic',
         code: 'Code',
         link: 'Link',
+        linkPrompt: 'Enter the URL of the link',
         headings: 'Headings',
         quote: 'Quote',
         bulletedList: 'Bulleted List',

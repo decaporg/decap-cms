@@ -14,7 +14,7 @@ import Shortcode from './Shortcode';
 import { SLATE_DEFAULT_BLOCK_TYPE as defaultType } from '../../types';
 import Hotkey, { HOT_KEY_MAP } from './Hotkey';
 
-const plugins = ({ getAsset, resolveWidget }) => [
+const plugins = ({ getAsset, resolveWidget, t }) => [
   {
     onKeyDown(event, editor, next) {
       if (isHotkey('mod+j', event)) {
@@ -33,7 +33,9 @@ const plugins = ({ getAsset, resolveWidget }) => [
   Hotkey(HOT_KEY_MAP['heading-four'], e => e.toggleBlock('heading-four')),
   Hotkey(HOT_KEY_MAP['heading-five'], e => e.toggleBlock('heading-five')),
   Hotkey(HOT_KEY_MAP['heading-six'], e => e.toggleBlock('heading-six')),
-  Hotkey(HOT_KEY_MAP['link'], e => e.toggleLink(() => window.prompt('Enter the URL of the link'))),
+  Hotkey(HOT_KEY_MAP['link'], e =>
+    e.toggleLink(() => window.prompt(t('editor.editorWidgets.markdown.linkPrompt'))),
+  ),
   CommandsAndQueries({ defaultType }),
   QuoteBlock({ defaultType, type: 'quote' }),
   ListPlugin({ defaultType, unorderedListType: 'bulleted-list', orderedListType: 'numbered-list' }),
