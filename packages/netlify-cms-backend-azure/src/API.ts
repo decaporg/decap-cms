@@ -154,7 +154,11 @@ interface AzureGitCommitDiffs {
 
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-5.1#gitchange
 interface AzureGitChange {
-  item: AzureGitChangeItem;
+  changeId: number;
+  item: AzureGitChangeItem; // string
+  changeType: AzureCommitChangeType;
+  originalPath: string;
+  url: string;
 }
 
 interface AzureGitChangeItem {
@@ -326,6 +330,7 @@ export default class API {
   endpointUrl: string;
   initialWorkflowStatus: string;
   commitAuthor?: AzureCommitAuthor;
+  cmsLabelPrefix: string;
 
   constructor(config: AzureApiConfig, token: string) {
     this.repo = config.repo;
@@ -336,6 +341,7 @@ export default class API {
     this.squashMerges = config.squashMerges || true;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
     this.apiVersion = '5.1'; // Azure API version is recommended and sometimes even required
+    this.cmsLabelPrefix = CMS_BRANCH_PREFIX ? CMS_BRANCH_PREFIX : DEFAULT_NETLIFY_CMS_LABEL_PREFIX;
   }
 
   withAuthorizationHeaders = (req: ApiRequest) =>
@@ -605,6 +611,32 @@ export default class API {
       metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
       fileData,
       isModification,
+    };
+  }
+
+  async retrieveUnpublishedEntryData(contentKey: string) {
+    const { collection, slug } = parseContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const diffs = await this.getDifferences(pullRequest.sourceRefName);
+    const diffsWithIds = await Promise.all(
+      diffs.map(async d => {
+        const path = d.item.path;
+        const newFile = d.changeType === 'add';
+        const id = await this.readFile(path, branch);
+        return { id, path, newFile };
+      }),
+    );
+    const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix));
+    const labelName = label && label.name ? label.name : DEFAULT_NETLIFY_CMS_LABEL_PREFIX;
+    const status = labelToStatus(labelName, this.cmsLabelPrefix);
+    const updatedAt = pullRequest.closedDate;
+    return {
+      collection,
+      slug,
+      status,
+      diffs: diffsWithIds,
+      updatedAt,
     };
   }
 

@@ -24,7 +24,8 @@ import {
   unpublishedEntries,
   UnpublishedEntryMediaFile,
   entriesByFiles,
-  filterByExtension
+  filterByExtension,
+  UnpublishedEntryDiff,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -155,8 +156,8 @@ export default class Azure implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(collection: string, extension: string) {
-    return this.api!.listFiles(collection)
+  entriesByFolder(folder: string, extension: string, depth?: number) {
+    return this.api!.listFiles(folder)
       .then(files => {
         if (extension) {
           const filtered = files.filter(file =>
@@ -192,10 +193,9 @@ export default class Azure implements Implementation {
                 resolve({ file, data });
                 sem.leave();
               })
-              .catch((err = true) => {
+              .catch(() => {
                 sem.leave();
                 console.error(`failed to load file from Azure: ${file.relativePath}`);
-                resolve({ error: err });
               }),
           ),
         ),
@@ -204,6 +204,12 @@ export default class Azure implements Implementation {
     return Promise.all(promises).then(loadedEntryRefs =>
       loadedEntryRefs.filter(loadedEntryRef => !loadedEntryRef.error),
     );
+
+    // interface ImplementationEntry {
+    //   data: string;
+    //   file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
+    // }
+
   };
 
   // Fetches a single entry.
@@ -329,28 +335,28 @@ export default class Azure implements Implementation {
     return ids;
   }
 
-  async unpublishedEntry(
-    collection: string,
-    slug: string,
-    {
-      loadEntryMediaFiles = (branch: string, files: UnpublishedEntryMediaFile[]) =>
-        this.loadEntryMediaFiles(branch, files),
-    } = {},
-  ) {
-    const contentKey = generateContentKey(collection, slug);
-    const data = await this.api!.readUnpublishedBranchFile(contentKey);
-    const mediaFiles = await loadEntryMediaFiles(
-      data.metaData.branch,
-      data.metaData.objects.entry.mediaFiles,
-    );
-    return {
-      slug,
-      file: { path: data.metaData.objects.entry.path, id: null },
-      data: data.fileData as string,
-      metaData: data.metaData,
-      mediaFiles,
-      isModification: data.isModification,
-    };
+  async unpublishedEntry({
+    id,
+    collection,
+    slug,
+  }: {
+    id?: string;
+    collection?: string;
+    slug?: string;
+    status: string;
+    diffs: UnpublishedEntryDiff[];
+    updatedAt: string;
+  }) {
+    if (id) {
+      const data = await this.api!.retrieveUnpublishedEntryData(id);
+      return data;
+    } else if (collection && slug) {
+      const contentKey = generateContentKey(collection, slug);
+      const data = await this.api!.retrieveUnpublishedEntryData(contentKey);
+      return data;
+    } else {
+      throw new Error('Missing unpublished entry id or collection and slug');
+    }
   }
 
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
