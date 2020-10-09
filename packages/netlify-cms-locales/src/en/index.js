@@ -136,6 +136,15 @@ const en = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Bold',
+        italic: 'Italic',
+        code: 'Code',
+        link: 'Link',
+        headings: 'Headings',
+        quote: 'Quote',
+        bulletedList: 'Bulleted List',
+        numberedList: 'Numbered List',
+        addComponent: 'Add Component',
         richText: 'Rich Text',
         markdown: 'Markdown',
       },
