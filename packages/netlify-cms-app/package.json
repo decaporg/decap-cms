@@ -45,6 +45,7 @@
     "netlify-cms-ui-default": "^2.11.6",
     "netlify-cms-widget-boolean": "^2.3.4",
     "netlify-cms-widget-code": "^1.2.4",
+    "netlify-cms-widget-color": "^1.0.0",
     "netlify-cms-widget-date": "^2.5.5",
     "netlify-cms-widget-datetime": "^2.6.5",
     "netlify-cms-widget-file": "^2.7.4",
