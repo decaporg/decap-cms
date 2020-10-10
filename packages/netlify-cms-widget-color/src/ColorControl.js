@@ -38,7 +38,7 @@ export default class ColorControl extends React.Component {
     this.props.onChange(formatedColor);
   };
   render() {
-    const editable = this.props.field.get('editable') || false;
+    const allowInput = this.props.field.get('allowInput') || false;
     const {
       forID,
       value,
@@ -50,9 +50,9 @@ export default class ColorControl extends React.Component {
     return (
       <>
         {' '}
-        {!editable && value ? (
+        {!allowInput && value ? (
           <div
-            // clear button, only displayed if set to editable: false
+            // clear button, not displayed if allowInput: true
             style={{
               position: 'absolute',
               right: '18px',
@@ -134,7 +134,7 @@ export default class ColorControl extends React.Component {
             <ChromePicker
               color={value || ''}
               onChange={this.handleChange}
-              disableAlpha={this.props.field.get('disableAlpha') || false}
+              disableAlpha={!this.props.field.get('enableAlpha') || false}
             />
           </div>
         ) : null}
@@ -150,11 +150,11 @@ export default class ColorControl extends React.Component {
           style={{
             paddingLeft: '75px',
             paddingRight: '70px',
-            color: !editable && '#bbb',
+            color: !allowInput && '#bbb',
           }}
-          // make readonly and open color picker on click if set to editable: false
-          onClick={!editable && this.handleClick}
-          readOnly={!editable}
+          // make readonly and open color picker on click if set to allowInput: false
+          onClick={!allowInput && this.handleClick}
+          readOnly={!allowInput}
         />
       </>
     );
