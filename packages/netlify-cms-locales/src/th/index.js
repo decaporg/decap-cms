@@ -81,6 +81,11 @@ const th = {
         rangeCountExact: '%{fieldLabel} จะต้องมี %{count} รายการ',
         minCount: '%{fieldLabel} จะต้องมีไม่ต่ำกว่า %{minCount} รายการ',
         maxCount: '%{fieldLabel} จะต้องมีไม่มากกว่า %{maxCount} รายการ',
+        invalidPath: `'%{path}' path ไม่ถูกต้อง`,
+        pathExists: `Path '%{path}' ไม่อยู่แล้ว`,
+      },
+      i18n: {
+        writingInLocale: 'Writing in %{locale}',
       },
     },
     editor: {
@@ -225,6 +230,7 @@ const th = {
       onDeleteUnpublishedChanges: 'การเปลี่ยนแปลงเนื้อหาไม่ถูกเผยแพร่ได้ถูกลบ',
       onFailToAuth: '%{details}',
       onLoggedOut: 'คุณได้ออกจากระบบ โปรดสำรองข้อมูลแล้วเข้าสู่ระบบอีกครั้ง',
+      onBackendDown: 'บริการแบ็กเอนด์เกิดการขัดข้อง ดู %{details} สำหรับข้อมูลเพิ่มเติม',
     },
   },
   workflow: {
