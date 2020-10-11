@@ -146,7 +146,7 @@ export const getFileFromSlug = (collection: Collection, slug: string) => {
   return collection
     .get('files')
     ?.toArray()
-    .find((f) => f.get('name') === slug);
+    .find(f => f.get('name') === slug);
 };
 
 export const selectFieldsWithMediaFolders = (collection: Collection, slug: string) => {
