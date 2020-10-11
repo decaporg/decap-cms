@@ -1,0 +1,32 @@
+extends: existence
+message: "'%s' is redundant."
+ignorecase: true
+level: error
+action:
+  name: edit
+  params:
+    - split
+    - " "
+    - "0"
+tokens:
+  - ABM missile
+  - ACT test
+  - ABM missiles
+  - ABS braking system
+  - ATM machine
+  - CD disc
+  - CPI Index
+  - GPS system
+  - GUI interface
+  - HIV virus
+  - ISBN number
+  - LCD display
+  - PDF format
+  - PIN number
+  - RAS syndrome
+  - RIP in peace
+  - please RSVP
+  - SALT talks
+  - SAT test
+  - UPC codes
+  - YAML language

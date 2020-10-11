@@ -32,6 +32,32 @@ docs_collection: &docs_collection
     - { label: Title, name: title }
     - { label: Body, name: body, widget: markdown }
 
+word_list: &word_list
+  fields:
+    - label: Extends
+      name: extends
+      widget: hidden
+      default: "existence"
+    - label: Output message
+      name: message
+      widget: string
+    - label: Ignore Case
+      name: ignorecase
+      widget: boolean
+      default: true
+      required: false
+    - label: Notification Level
+      name: level
+      widget: select
+      default: suggestion
+      options:
+        - {label: "Suggestion", value: "suggestion"}
+        - {label: "Warning", value: "warning"}
+        - {label: "Error", value: "error"}
+    - label: Entries
+      name: tokens
+      widget: list
+
 collections:
   - label: Settings
     name: settings
@@ -53,6 +79,46 @@ collections:
                 fields:
                   - { label: 'Full Name', name: 'title', widget: 'string' }
                   - { label: 'Summary Name', name: 'name', widget: 'string' }
+  - label: Style & Usage Options
+    name: linter
+    hide: false
+    files:
+        - <<: *word_list
+          label: Acronyms
+          name: acronyms
+          file: website/src/writing-guide/styles/Avoid/Acronyms.yml
+        - <<: *word_list
+          label: Adverbs
+          name: adverbs
+          file: website/src/writing-guide/styles/Avoid/Adverbs.yml
+        - <<: *word_list
+          label: Archaisms
+          name: archaisms
+          file: website/src/writing-guide/styles/Avoid/Archaisms.yml
+        - <<: *word_list
+          label: Cliches
+          name: cliches
+          file: website/src/writing-guide/styles/Avoid/Cliches.yml
+        - <<: *word_list
+          label: Hyperbole
+          name: hyperbole
+          file: website/src/writing-guide/styles/Avoid/Hyperbole.yml
+        - <<: *word_list
+          label: Indirect Language
+          name: indirect
+          file: website/src/writing-guide/styles/Avoid/Indirect.yml
+        - <<: *word_list
+          label: Jargon
+          name: jargon
+          file: website/src/writing-guide/styles/Avoid/Jargon.yml
+        - <<: *word_list
+          label: Passive
+          name: passive
+          file: website/src/writing-guide/styles/Avoid/Passive.yml
+        - <<: *word_list
+          label: Simplify
+          name: simplify
+          file: website/src/writing-guide/styles/Avoid/Simplify.yml
 
   - <<: *docs_collection
     name: docs_intro

@@ -1,0 +1,19 @@
+extends: substitution
+message: "Inconsistent spelling of '%s'."
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  advisor: adviser
+  centre: center
+  colour: color
+  emphasise: emphasize
+  finalise: finalize
+  focussed: focused
+  labour: labor
+  learnt: learned
+  organise: organize
+  organised: organized
+  organising: organizing
+  recognise: recognize

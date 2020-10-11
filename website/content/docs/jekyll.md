@@ -1,9 +1,8 @@
 ---
-title: Jekyll
 group: Guides
 weight: 30
+title: Jekyll
 ---
-
 ## Introduction
 
 This section will help you integrate Netlify CMS with a new or existing Jekyll project.
@@ -87,13 +86,14 @@ collections:
 
 A few things to note.
 
-- We set the `slug` to `'{{year}}-{{month}}-{{day}}-{{slug}}'` because [Jekyll requires this format for blog posts](https://jekyllrb.com/docs/posts/#creating-posts). `year`, `month`, and `day` will be extracted from the `date` field, and `slug` will be generated from the `title` field.
-- We added `editor` configuration with a field `preview: false`. This will eliminate the preview pane. Because Jekyll uses Liquid templates, there currently isn't a good way to provide a preview of pages as you update the content.
-- The `layout` field default is set to `post` so Jekyll knows to use `_layouts/post.html` when it renders a post. This field is hidden because we want all posts to use the same layout.
-- The `date` and `title` field will be used by the `slug` - as noted above, Jekyll relies on the filename to determine a post's publish date, but Netlify CMS does not pull date information from the filename and requires a frontmatter `date` field. **Note** Changing the `date` or `title` fields in Netlify CMS will not update the filename. This has a few implications...
-  - If you change the `date` or `title` fields in Netlify CMS, Jekyll won't notice
-  - You don't necessarily need to change the `date` and `title` fields for existing posts, but if you don't the filenames and frontmatter will disagree in a way that might be confusing
-  - If you want to avoid these issues, use a regular Jekyll collection instead of the special `_posts` directory
+* We set the `slug` to `'{{year}}-{{month}}-{{day}}-{{slug}}'` because [Jekyll requires this format for blog posts](https://jekyllrb.com/docs/posts/#creating-posts). `year`, `month`, and `day` will be extracted from the `date` field, and `slug` will be generated from the `title` field.
+* We added `editor` configuration with a field `preview: false`. This will eliminate the preview pane. Because Jekyll uses Liquid templates, there currently isn't a good way to provide a preview of pages as you update the content.
+* The `layout` field default is set to `post` so Jekyll knows to use `_layouts/post.html` when it renders a post. This field is hidden because we want all posts to use the same layout.
+* The `date` and `title` field will be used by the `slug` - as noted above, Jekyll relies on the filename to determine a post's publish date, but Netlify CMS does not pull date information from the filename and requires a frontmatter `date` field. **Note** Changing the `date` or `title` fields in Netlify CMS will not update the filename. This has a few implications:
+
+  * If you change the `date` or `title` fields in Netlify CMS, Jekyll won't notice
+  * You don't necessarily need to change the `date` and `title` fields for existing posts, but if you don't the filenames and frontmatter will disagree in a way that might be confusing
+  * If you want to avoid these issues, use a regular Jekyll collection instead of the special `_posts` directory
 
 ### Author Collection
 

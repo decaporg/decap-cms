@@ -1,0 +1,13 @@
+extends: substitution
+message: Consider using '%s' instead of '%s'.
+ignorecase: true
+level: error
+action:
+  name: replace
+swap:
+  my resume: my résumé
+  your resume: your résumé
+  his resume: his résumé
+  her resume: her résumé
+  a resume: a résumé
+  the resume: the résumé

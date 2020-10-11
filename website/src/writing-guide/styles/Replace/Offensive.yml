@@ -1,0 +1,27 @@
+extends: substitution
+message: "'%s' is offensive, and has been censored."
+ignorecase: true
+level: error
+action:
+  name: replace
+swap:
+  fag: [CENSORED]
+  faggot: [CENSORED]
+  dyke: [CENSORED]
+  sodomite: [CENSORED]
+  homosexual agenda: [CENSORED]
+  gay agenda: [CENSORED]
+  transvestite: [CENSORED]
+  homosexual lifestyle: [CENSORED]
+  gay lifestyle: [CENSORED]
+  shit: [CENSORED]
+  piss: [CENSORED]
+  fuck: [CENSORED]
+  cunt: [CENSORED]
+  cocksucker: [CENSORED]
+  motherfucker: [CENSORED]
+  tits: [CENSORED]
+  fart: [CENSORED]
+  turd: [CENSORED]
+  twat: [CENSORED]
+  damn: [CENSORED]
