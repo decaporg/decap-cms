@@ -17,6 +17,8 @@ import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
 import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
+import { FILES } from '../../constants/collectionTypes';
+import { getFileFromSlug } from '../../reducers/collections';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -135,6 +137,15 @@ const EditorContent = ({
   }
 };
 
+function isPreviewEnabled(collection, entry) {
+  if (collection.get('type') === FILES) {
+    const file = getFileFromSlug(collection, entry.get('slug'));
+    const previewEnabled = file?.getIn(['editor', 'preview']);
+    if (previewEnabled != null) return previewEnabled;
+  }
+  return collection.getIn(['editor', 'preview'], true);
+}
+
 class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
@@ -221,14 +232,9 @@ class EditorInterface extends Component {
     } = this.props;
 
     const { scrollSyncEnabled, showEventBlocker } = this.state;
-    let previewEnabled;
-    if (collection.get('type') === 'file_based_collection') {
-      const files = collection.get('files');
-      const fileName = entry.get('slug');
-      const file = files?.find(f => f?.get('name') === fileName);
-      previewEnabled = file?.getIn(['editor', 'preview']);
-    }
-    previewEnabled = previewEnabled ?? collection.getIn(['editor', 'preview'], true);
+
+    const previewEnabled = isPreviewEnabled(collection, entry);
+
     const collectionI18nEnabled = hasI18n(collection);
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
     const editorProps = {
