@@ -875,17 +875,17 @@ export default class API {
           `${this.originRepoURL}/deployments/${dep.id}/statuses`,
         );
 
-        return stats
-          .map(stat => ({
-            context: stat.description,
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            target_url: stat.target_url,
-            state:
-              stat.state === GitHubCommitStatusState.Success
-                ? PreviewState.Success
-                : PreviewState.Other,
-          }))
-          .reduce((acc, stat) => (stat.state === PreviewState.Success ? stat : acc));
+        const statuses = stats.map(stat => ({
+          context: stat.description,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          target_url: stat.target_url,
+          state:
+            stat.state === GitHubCommitStatusState.Success
+              ? PreviewState.Success
+              : PreviewState.Other,
+        }));
+
+        return statuses.reverse().find(s => s.state === PreviewState.Success) || statuses[0];
       }),
     );
     return resp.statuses
