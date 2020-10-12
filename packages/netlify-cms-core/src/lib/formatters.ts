@@ -8,9 +8,11 @@ import {
   COMMIT_AUTHOR,
   COMMIT_DATE,
   selectInferedField,
+  getFileFromSlug,
 } from '../reducers/collections';
 import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
 import { stripIndent } from 'common-tags';
+import { FILES } from '../constants/collectionTypes';
 
 const {
   compileStringTemplate,
@@ -161,30 +163,26 @@ export const previewUrlFormatter = (
     return baseUrl;
   }
 
+  const isFileCollection = collection.get('type') === FILES;
+  const file = isFileCollection ? getFileFromSlug(collection, entry.get('slug')) : undefined;
+
+  const getPathTemplate = () => {
+    return file?.get('preview_path') ?? (collection.get('preview_path') as string);
+  };
+  const getDateField = () => {
+    return file?.get('preview_path_date_field') ?? collection.get('preview_path_date_field');
+  };
+
   /**
    * If a `previewPath` is provided for the collection, use it to construct the
    * URL path.
    */
   const basePath = trimEnd(baseUrl, '/');
-
-  let filePathTemplate;
-  let fileDateField;
-  if (collection.get('type') === 'file_based_collection') {
-    const files = collection.get('files');
-    const fileName = entry.get('slug');
-    const file = files?.find(f => f?.get('name') === fileName);
-    filePathTemplate = file?.get('preview_path') as string;
-    fileDateField = file?.get('preview_path_date_field') as string;
-  }
-
-  const pathTemplate = filePathTemplate || (collection.get('preview_path') as string);
+  const pathTemplate = getPathTemplate();
 
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
-  const dateFieldName =
-    fileDateField ||
-    collection.get('preview_path_date_field') ||
-    selectInferedField(collection, 'date');
+  const dateFieldName = getDateField() || selectInferedField(collection, 'date');
   const date = parseDateFromEntry((entry as unknown) as Map<string, unknown>, dateFieldName);
 
   // Prepare and sanitize slug variables only, leave the rest of the

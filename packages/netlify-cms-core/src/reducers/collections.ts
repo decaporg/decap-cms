@@ -142,11 +142,11 @@ const getFieldsWithMediaFolders = (fields: EntryField[]) => {
   return fieldsWithMediaFolders;
 };
 
-const getFileFromSlug = (collection: Collection, slug: string) => {
+export const getFileFromSlug = (collection: Collection, slug: string) => {
   return collection
     .get('files')
     ?.toArray()
-    .filter(f => f.get('name') === slug)[0];
+    .find(f => f.get('name') === slug);
 };
 
 export const selectFieldsWithMediaFolders = (collection: Collection, slug: string) => {
