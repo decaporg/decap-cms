@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.5...netlify-cms-backend-git-gateway@2.11.6) (2020-10-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jwt-decode to v3 ([#4408](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/4408)) ([03492e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/03492e4e684ffce3a541ef15edb591d1fd5b5854))
+
+
+
+
+
 ## [2.11.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.4...netlify-cms-backend-git-gateway@2.11.5) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway

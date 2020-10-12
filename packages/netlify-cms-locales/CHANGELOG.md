@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.18.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.18.1...netlify-cms-locales@1.18.2) (2020-10-12)
+
+
+### Bug Fixes
+
+* **locale:** update zh_Hant translation ([#4418](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4418)) ([277a151](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/277a1519bed31145910a67e22e0f51c46e8e2006))
+* **locales:** update 'th' locale ([#4421](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4421)) ([e987922](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/e987922fd332aa2f41b6025700f021039102a134))
+
+
+
+
+
 ## [1.18.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.18.0...netlify-cms-locales@1.18.1) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-locales

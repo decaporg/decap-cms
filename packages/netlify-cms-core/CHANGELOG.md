@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.32.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.31.0...netlify-cms-core@2.32.0) (2020-10-12)
+
+
+### Bug Fixes
+
+* allow setting per-file editor preview ([#4414](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4414)) ([ecb4fd6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ecb4fd6165677e61b1c60c6ef5204f575bbfcca8))
+* **deps:** update dependency jwt-decode to v3 ([#4408](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4408)) ([03492e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/03492e4e684ffce3a541ef15edb591d1fd5b5854))
+
+
+### Features
+
+* **editor-preview:** allow to disable editor preview for all collections ([#4423](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4423)) ([1639971](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/16399719a01c3959a5e4d6a5c3e6017eaf822300))
+
+
+
+
+
 # [2.31.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.30.7...netlify-cms-core@2.31.0) (2020-09-28)
 
 
