@@ -18,6 +18,7 @@ The object widget allows you to group multiple widgets together, nested under a 
   - label: "Profile"
     name: "profile"
     widget: "object"
+    summary: '{{fields.name}}: {{fields.birthdate}}'
     fields:
       - {label: "Public", name: "public", widget: "boolean", default: true}
       - {label: "Name", name: "name", widget: "string"}
