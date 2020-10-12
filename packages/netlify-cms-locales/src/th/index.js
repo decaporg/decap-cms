@@ -81,11 +81,11 @@ const th = {
         rangeCountExact: '%{fieldLabel} จะต้องมี %{count} รายการ',
         minCount: '%{fieldLabel} จะต้องมีไม่ต่ำกว่า %{minCount} รายการ',
         maxCount: '%{fieldLabel} จะต้องมีไม่มากกว่า %{maxCount} รายการ',
-        invalidPath: `'%{path}' path ไม่ถูกต้อง`,
-        pathExists: `Path '%{path}' ไม่อยู่แล้ว`,
+        invalidPath: `'%{path}' พาทไม่ถูกต้อง`,
+        pathExists: `พาท '%{path}' มีอยู่แล้ว`,
       },
       i18n: {
-        writingInLocale: 'Writing in %{locale}',
+        writingInLocale: 'เขียนด้วยภาษา %{locale}',
       },
     },
     editor: {
