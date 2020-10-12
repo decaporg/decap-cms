@@ -484,34 +484,38 @@ export default class API {
   };
 
   listFiles = async (path: string, recursive = false) => {
-    return await this.requestJSON<AzureGitItem>({
-      url: `${this.endpointUrl}/items/`,
-      params: {
-        version: this.branch,
-        path,
-        recursionLevel: recursive ? 'full' : 'none',
-      }, // Azure
-    })
-      .then(response => {
-        // Get the real URL of the tree data and hit it.
-        return response._links.tree.href;
-      })
-      .then(url => {
-        return this.requestJSON<AzureGitTreeRef>(url);
-      })
-      .then(response => {
-        const files = response.treeEntries || [];
-        if (!Array.isArray(files)) {
-          throw new Error(
-            `Cannot list files, path ${path} is not a directory but a ${typeof files}`,
-          );
-        }
-        files.forEach((f: AzureGitTreeEntryRef) => {
-          f.relativePath = `${path}/${f.relativePath}`;
-        });
-        return files;
-      })
-      .then(files => files.filter(file => file.gitObjectType === 'blob')); // Azure
+    try {
+      const azureGitItem = await this.requestJSON<AzureGitItem>({
+        url: `${this.endpointUrl}/items/`,
+        params: {
+          version: this.branch,
+          path,
+          recursionLevel: recursive ? 'full' : 'none',
+        }, // Azure
+      });
+
+      const azureGitTreeRef = await this.requestJSON<AzureGitTreeRef>(
+        azureGitItem._links.tree.href,
+      );
+
+      const azureTreeEntries = azureGitTreeRef.treeEntries || [];
+      if (!Array.isArray(azureTreeEntries)) {
+        throw new Error(
+          `Cannot list files, path ${path} is not a directory but a ${typeof azureTreeEntries}`,
+        );
+      }
+
+      azureTreeEntries.forEach((f: AzureGitTreeEntryRef) => {
+        f.relativePath = `${path}/${f.relativePath}`;
+      });
+
+      return azureTreeEntries;
+      // return azureTreeEntries.filter(
+      //   file => file.gitObjectType === 'blob' || file.gitObjectType === 'tree',
+      // ); // Azure
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   /**

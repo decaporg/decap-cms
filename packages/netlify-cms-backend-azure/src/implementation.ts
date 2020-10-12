@@ -26,6 +26,7 @@ import {
   entriesByFiles,
   filterByExtension,
   UnpublishedEntryDiff,
+  branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -156,16 +157,16 @@ export default class Azure implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(folder: string, extension: string, depth?: number) {
+  entriesByFolder(folder: string, extension: string) {
     return this.api!.listFiles(folder)
       .then(files => {
-        if (extension) {
+        if (extension && files) {
           const filtered = files.filter(file =>
             filterByExtension({ path: file.relativePath }, extension),
           );
           return filtered;
         }
-        return files;
+        return files || [];
       })
       .then(this.fetchFiles)
       .catch(() => []);
@@ -204,12 +205,6 @@ export default class Azure implements Implementation {
     return Promise.all(promises).then(loadedEntryRefs =>
       loadedEntryRefs.filter(loadedEntryRef => !loadedEntryRef.error),
     );
-
-    // interface ImplementationEntry {
-    //   data: string;
-    //   file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
-    // }
-
   };
 
   // Fetches a single entry.
@@ -226,14 +221,18 @@ export default class Azure implements Implementation {
    */
   async getMedia(): Promise<ImplementationMediaFile[]> {
     return this.api!.listFiles(this.mediaFolder).then(async files => {
-      return await Promise.all(
-        files.map(async ({ objectId, relativePath, size, url }) => {
-          const name: string = last(relativePath.split('/')) || '';
-          const blobUrl = await this.getMediaDisplayURL({ id: objectId, path: relativePath });
+      if (files && files.length) {
+        return await Promise.all(
+          files.map(async ({ objectId, relativePath, size, url }) => {
+            const name: string = last(relativePath.split('/')) || '';
+            const blobUrl = await this.getMediaDisplayURL({ id: objectId, path: relativePath });
 
-          return { id: objectId, name, size, displayURL: blobUrl || url, path: relativePath };
-        }),
-      );
+            return { id: objectId, name, size, displayURL: blobUrl || url, path: relativePath };
+          }),
+        );
+      } else {
+        return [];
+      }
     });
   }
 
@@ -357,6 +356,24 @@ export default class Azure implements Implementation {
     } else {
       throw new Error('Missing unpublished entry id or collection and slug');
     }
+  }
+
+  getBranch(collection: string, slug: string) {
+    const contentKey = generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    return branch;
+  }
+
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+    const branch = this.getBranch(collection, slug);
+    const mediaFile = await this.loadMediaFile(branch, { path, id });
+    return mediaFile;
+  }
+
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+    const branch = this.getBranch(collection, slug);
+    const data = (await this.api!.readFile(path, id, { branch })) as string;
+    return data;
   }
 
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
