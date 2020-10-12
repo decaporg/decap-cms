@@ -268,6 +268,12 @@ export default class ListControl extends React.Component {
     const { field, value, t } = this.props;
     const min = field.get('min');
     const max = field.get('max');
+    const required = field.get('required', true);
+
+    if (!required && !value?.size) {
+      return [];
+    }
+
     const minMaxError = messageKey => [
       {
         type: 'RANGE',
@@ -448,7 +454,7 @@ export default class ListControl extends React.Component {
   };
 
   // eslint-disable-next-line react/display-name
-  renderItem = (item, index, list) => {
+  renderItem = (item, index) => {
     const {
       classNameWrapper,
       editorControl,
@@ -467,8 +473,6 @@ export default class ListControl extends React.Component {
     const key = keys[index];
     let field = this.props.field;
     const hasError = this.hasError(index);
-    const min = field.get('min');
-    const allowRemove = typeof min === 'number' ? list.size > min : true;
 
     if (this.getValueType() === valueTypes.MIXED) {
       field = getTypedFieldForValue(field, item);
@@ -486,7 +490,7 @@ export default class ListControl extends React.Component {
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-          onRemove={allowRemove ? partial(this.handleRemove, index, key) : null}
+          onRemove={partial(this.handleRemove, index, key)}
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
@@ -557,8 +561,6 @@ export default class ListControl extends React.Component {
     const minimizeCollapsedItems = field.get('minimize_collapsed', false);
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
     const selfCollapsed = allItemsCollapsed && (listCollapsed || !minimizeCollapsedItems);
-    const max = field.get('max');
-    const allowAdd = typeof max === 'number' ? items.size < max : field.get('allow_add', true);
 
     return (
       <ClassNames>
@@ -573,7 +575,7 @@ export default class ListControl extends React.Component {
             )}
           >
             <ObjectWidgetTopBar
-              allowAdd={allowAdd}
+              allowAdd={field.get('allow_add', true)}
               onAdd={this.handleAdd}
               types={field.get(TYPES_KEY, null)}
               onAddType={type => this.handleAddType(type, resolveFieldKeyType(field))}
