@@ -41,6 +41,14 @@ You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the 
         <h4>Next.js Blog Template</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/wutali/nextjs-netlify-blog-template&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
+
+<div style="flex-basis: 33%">
+        <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
+         <a href="https://github.com/surjithctly/neat-starter"> <img style="display: flex" src="/img/11ty-logo.svg"/> </a>
+        </div>
+        <h4>Eleventy Starter</h4>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/surjithctly/neat-starter&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+    </div>
 </div>
 
 After clicking one of those buttons, authenticate with GitHub or GitLab and choose a repository name. Netlify then automatically creates a clone of the repository in your GitHub or GitLab account. Next, it builds and deploys the new site on Netlify, bringing you to the site dashboard after completing the build.
