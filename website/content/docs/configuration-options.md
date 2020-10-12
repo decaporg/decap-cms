@@ -354,9 +354,9 @@ fields:
 
 ### `editor`
 
-This setting changes options for the editor view of the collection. It has one option so far:
+This setting changes options for the editor view of a collection or a file inside a files collection. It has one option so far:
 
-* `preview`: set to `false` to disable the preview pane for this collection; defaults to `true`
+* `preview`: set to `false` to disable the preview pane for this collection or file; defaults to `true`
 
 **Example:**
 
