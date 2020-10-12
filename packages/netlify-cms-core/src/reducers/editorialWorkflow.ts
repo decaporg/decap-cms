@@ -71,11 +71,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       // Update Optimistically
       return state.setIn(
-        [
-          'entities',
-          `${action.payload!.collection}.${action.payload!.entry.get('slug')}`,
-          'isPersisting',
-        ],
+        ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isPersisting'],
         true,
       );
     }
@@ -89,7 +85,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
         );
         map.deleteIn([
           'entities',
-          `${action.payload!.collection}.${action.payload!.slug}`,
+          `${action.payload!.collection}.${action.payload!.entry.get('slug')}`,
           'isPersisting',
         ]);
         map.updateIn(['pages', 'ids'], List(), list =>
@@ -99,11 +95,7 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
 
     case UNPUBLISHED_ENTRY_PERSIST_FAILURE:
       return state.setIn(
-        [
-          'entities',
-          `${action.payload!.collection}.${action.payload!.entry.get('slug')}`,
-          'isPersisting',
-        ],
+        ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isPersisting'],
         false,
       );
 
@@ -140,23 +132,10 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
       );
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
-      return state.withMutations(map => {
-        map.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
-        map.deleteIn([
-          'entities',
-          `${action.payload!.collection}.${action.payload!.slug}`,
-          'isPublishing',
-        ]);
-      });
+      return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
     case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
-      return state.withMutations(map => {
-        map.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
-        map.setIn(
-          ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isPublishing'],
-          false,
-        );
-      });
+      return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
     case UNPUBLISHED_ENTRY_DELETE_REQUEST:
       return state.setIn(
@@ -165,23 +144,10 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
       );
 
     case UNPUBLISHED_ENTRY_DELETE_SUCCESS:
-      return state.withMutations(map => {
-        map.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
-        map.deleteIn([
-          'entities',
-          `${action.payload!.collection}.${action.payload!.slug}`,
-          'isDeleting',
-        ]);
-      });
+      return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
     case UNPUBLISHED_ENTRY_DELETE_FAILURE:
-      return state.withMutations(map => {
-        map.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
-        map.setIn(
-          ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isDeleting'],
-          false,
-        );
-      });
+      return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
     default:
       return state;

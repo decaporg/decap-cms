@@ -119,12 +119,12 @@ function unpublishedEntriesFailed(error: Error) {
   };
 }
 
-function unpublishedEntryPersisting(collection: Collection, entry: EntryMap) {
+function unpublishedEntryPersisting(collection: Collection, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_REQUEST,
     payload: {
       collection: collection.get('name'),
-      entry,
+      slug,
     },
   };
 }
@@ -139,27 +139,24 @@ function unpublishedEntryPersisted(collection: Collection, entry: EntryMap) {
   };
 }
 
-function unpublishedEntryPersistedFail(error: Error) {
+function unpublishedEntryPersistedFail(error: Error, collection: Collection, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_FAILURE,
-    payload: { error },
+    payload: {
+      error,
+      collection,
+      slug,
+    },
     error,
   };
 }
 
-function unpublishedEntryStatusChangeRequest(
-  collection: string,
-  slug: string,
-  oldStatus: Status,
-  newStatus: Status,
-) {
+function unpublishedEntryStatusChangeRequest(collection: string, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
     payload: {
       collection,
       slug,
-      oldStatus,
-      newStatus,
     },
   };
 }
@@ -167,7 +164,6 @@ function unpublishedEntryStatusChangeRequest(
 function unpublishedEntryStatusChangePersisted(
   collection: string,
   slug: string,
-  oldStatus: Status,
   newStatus: Status,
 ) {
   return {
@@ -175,7 +171,6 @@ function unpublishedEntryStatusChangePersisted(
     payload: {
       collection,
       slug,
-      oldStatus,
       newStatus,
     },
   };
@@ -356,7 +351,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const serializedEntry = getSerializedEntry(collection, entry);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 
-    dispatch(unpublishedEntryPersisting(collection, serializedEntry));
+    dispatch(unpublishedEntryPersisting(collection, entry.get('slug')));
     const persistAction = existingUnpublishedEntry
       ? backend.persistUnpublishedEntry
       : backend.persistEntry;
@@ -395,7 +390,9 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(unpublishedEntryPersistedFail(error)));
+      return Promise.reject(
+        dispatch(unpublishedEntryPersistedFail(error, collection, entry.get('slug'))),
+      );
     }
   };
 }
@@ -410,7 +407,7 @@ export function updateUnpublishedEntryStatus(
     if (oldStatus === newStatus) return;
     const state = getState();
     const backend = currentBackend(state.config);
-    dispatch(unpublishedEntryStatusChangeRequest(collection, slug, oldStatus, newStatus));
+    dispatch(unpublishedEntryStatusChangeRequest(collection, slug));
     backend
       .updateUnpublishedEntryStatus(collection, slug, newStatus)
       .then(() => {
@@ -423,7 +420,7 @@ export function updateUnpublishedEntryStatus(
             dismissAfter: 4000,
           }),
         );
-        dispatch(unpublishedEntryStatusChangePersisted(collection, slug, oldStatus, newStatus));
+        dispatch(unpublishedEntryStatusChangePersisted(collection, slug, newStatus));
       })
       .catch((error: Error) => {
         dispatch(
@@ -520,7 +517,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
     const backend = currentBackend(state.config);
     const entry = selectEntry(state, collection.get('name'), slug);
     const entryDraft = (Map().set('entry', entry) as unknown) as EntryDraft;
-    dispatch(unpublishedEntryPersisting(collection, entry));
+    dispatch(unpublishedEntryPersisting(collection, slug));
     return backend
       .deleteEntry(state, collection, slug)
       .then(() =>
@@ -553,7 +550,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
             dismissAfter: 8000,
           }),
         );
-        dispatch(unpublishedEntryPersistedFail(error));
+        dispatch(unpublishedEntryPersistedFail(error, collection, entry.get('slug')));
       });
   };
 }
