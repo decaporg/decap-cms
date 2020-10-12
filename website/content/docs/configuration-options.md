@@ -365,6 +365,8 @@ This setting changes options for the editor view of the collection. It has one o
      preview: false
 ```
 
+**Note**: Setting this as a top level configuration will set the default for all collections
+
 ### `summary`
 
 This setting allows the customization of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`. This option over-rides the default of `title` field and `identifier_field`.

@@ -419,6 +419,34 @@ describe('config', () => {
           ).toEqual(false);
         });
       });
+
+      describe('editor preview', () => {
+        it('should set editor preview honoring global config before and specific config after', () => {
+          const config = applyDefaults(
+            fromJS({
+              editor: {
+                preview: false,
+              },
+              collections: [
+                {
+                  fields: [{ name: 'title' }],
+                  folder: 'foo',
+                },
+                {
+                  editor: {
+                    preview: true,
+                  },
+                  fields: [{ name: 'title' }],
+                  folder: 'bar',
+                },
+              ],
+            }),
+          );
+
+          expect(config.getIn(['collections', 0, 'editor', 'preview'])).toEqual(false);
+          expect(config.getIn(['collections', 1, 'editor', 'preview'])).toEqual(true);
+        });
+      });
     });
 
     test('should convert camel case to snake case', () => {
