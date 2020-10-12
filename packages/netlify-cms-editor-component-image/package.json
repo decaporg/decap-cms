@@ -22,7 +22,7 @@
   "devDependencies": {
     "cross-env": "^7.0.0",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^4.0.0"
   },
   "peerDependencies": {
     "react": "^16.8.4"
