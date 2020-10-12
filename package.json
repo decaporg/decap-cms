@@ -163,7 +163,7 @@
     "typescript": "^3.7.2",
     "unist-util-visit": "^1.4.0",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3",
+    "webpack-cli": "^4.0.0",
     "webpack-dev-server": "^3.2.1"
   },
   "workspaces": {
