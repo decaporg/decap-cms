@@ -155,30 +155,31 @@ export const previewUrlFormatter = (
     return;
   }
 
-  /**
-   * Without a `previewPath` for the collection (via config), the preview URL
-   * will be the URL provided by the backend.
-   */
-  if (!collection.get('preview_path')) {
-    return baseUrl;
-  }
+  const basePath = trimEnd(baseUrl, '/');
 
   const isFileCollection = collection.get('type') === FILES;
   const file = isFileCollection ? getFileFromSlug(collection, entry.get('slug')) : undefined;
 
   const getPathTemplate = () => {
-    return file?.get('preview_path') ?? (collection.get('preview_path') as string);
+    return file?.get('preview_path') ?? collection.get('preview_path');
   };
   const getDateField = () => {
     return file?.get('preview_path_date_field') ?? collection.get('preview_path_date_field');
   };
 
   /**
-   * If a `previewPath` is provided for the collection, use it to construct the
+   * If a `previewPath` is provided for the collection/file, use it to construct the
    * URL path.
    */
-  const basePath = trimEnd(baseUrl, '/');
   const pathTemplate = getPathTemplate();
+
+  /**
+   * Without a `previewPath` for the collection/file (via config), the preview URL
+   * will be the URL provided by the backend.
+   */
+  if (!pathTemplate) {
+    return baseUrl;
+  }
 
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
