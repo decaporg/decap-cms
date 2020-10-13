@@ -370,15 +370,38 @@ describe('formatters', () => {
     });
 
     it('should return preview url for files in file collection', () => {
+      const file = Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
       expect(
         previewUrlFormatter(
           'https://www.example.com',
           Map({
             preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
             type: 'file_based_collection',
-            files: List([
-              Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' }),
-            ]),
+            files: List([file]),
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+        ),
+      ).toBe('https://www.example.com/backendslug/about-the-project/title');
+    });
+
+    it('should return preview url for files in file collection when defined on file-level only', () => {
+      const file = Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            type: 'file_based_collection',
+            files: List([file]),
           }),
           'backendSlug',
           slugConfig,
@@ -388,13 +411,18 @@ describe('formatters', () => {
     });
 
     it('should fall back to collection preview url for files in file collection', () => {
+      const file = Map({ name: 'about-file' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
       expect(
         previewUrlFormatter(
           'https://www.example.com',
           Map({
             preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
             type: 'file_based_collection',
-            files: List([Map({ name: 'about-file' })]),
+            files: List([file]),
           }),
           'backendSlug',
           slugConfig,
