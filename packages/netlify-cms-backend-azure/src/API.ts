@@ -320,6 +320,10 @@ export interface AzureApiConfig {
   initialWorkflowStatus: string;
 }
 
+// export AzureImplementationEntryAdapter(entry): ImplementationEntry {
+
+// }
+
 export default class API {
   apiRoot: string;
   apiVersion: string;
@@ -485,13 +489,25 @@ export default class API {
 
   listFiles = async (path: string, recursive = false) => {
     try {
-      const azureGitItem = await this.requestJSON<AzureGitItem>({
-        url: `${this.endpointUrl}/items/`,
-        params: {
+      let azureGitItemParams = {};
+
+      if (recursive) {
+        azureGitItemParams = {
+          version: this.branch,
+          scopePath: path,
+          recursionLevel: 'full',
+        };
+      } else {
+        azureGitItemParams = {
           version: this.branch,
           path,
-          recursionLevel: recursive ? 'full' : 'none',
-        }, // Azure
+          recursionLevel: 'none',
+        };
+      }
+
+      const azureGitItem = await this.requestJSON<AzureGitItem>({
+        url: `${this.endpointUrl}/items/`,
+        params: azureGitItemParams, // Azure
       });
 
       const azureGitTreeRef = await this.requestJSON<AzureGitTreeRef>(
@@ -505,11 +521,29 @@ export default class API {
         );
       }
 
-      azureTreeEntries.forEach((f: AzureGitTreeEntryRef) => {
-        f.relativePath = `${path}/${f.relativePath}`;
-      });
+      const processedAzureTreeEntries: AzureGitTreeEntryRef[] = [];
 
-      return azureTreeEntries;
+      for (const f of azureTreeEntries) {
+        f.relativePath = `${path}/${f.relativePath}`;
+        let entry: AzureGitTreeEntryRef | undefined = f;
+        // If AzureGitTreeEntryRef is still a tree object, we need to drill further to get to the blob
+        if (f.gitObjectType === 'tree') {
+          const azureGitNestedTreeRef = await this.requestJSON<AzureGitTreeRef>(f.url);
+
+          entry = azureGitNestedTreeRef.treeEntries
+            ? azureGitNestedTreeRef.treeEntries[0]
+            : undefined;
+
+          if (entry) {
+            entry.relativePath = `${f.relativePath}/${entry.relativePath}`;
+          }
+        }
+        if (entry) {
+          processedAzureTreeEntries.push(entry);
+        }
+      }
+
+      return processedAzureTreeEntries;
       // return azureTreeEntries.filter(
       //   file => file.gitObjectType === 'blob' || file.gitObjectType === 'tree',
       // ); // Azure

@@ -161,10 +161,13 @@ export default class Azure implements Implementation {
     return this.api!.listFiles(folder)
       .then(files => {
         if (extension && files) {
-          const filtered = files.filter(file =>
-            filterByExtension({ path: file.relativePath }, extension),
-          );
-          return filtered;
+          console.log('entriesByFolder extension', extension);
+          console.log('entriesByFolder files', files);
+          // const filtered = files.filter(file =>
+          //   filterByExtension({ path: file.relativePath }, extension),
+          // );
+          // console.log('entriesByFolder filtered', filtered);
+          // return filtered;
         }
         return files || [];
       })
@@ -222,6 +225,7 @@ export default class Azure implements Implementation {
   async getMedia(): Promise<ImplementationMediaFile[]> {
     return this.api!.listFiles(this.mediaFolder).then(async files => {
       if (files && files.length) {
+        console.log('getMedia files', files);
         return await Promise.all(
           files.map(async ({ objectId, relativePath, size, url }) => {
             const name: string = last(relativePath.split('/')) || '';
