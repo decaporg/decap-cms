@@ -5,6 +5,7 @@ import API, { API_NAME, AzureRepo, AzureGitTreeEntryRef } from './API';
 import {
   Credentials,
   Implementation,
+  ImplementationEntry,
   ImplementationFile,
   ImplementationMediaFile,
   DisplayURL,
@@ -161,13 +162,10 @@ export default class Azure implements Implementation {
     return this.api!.listFiles(folder)
       .then(files => {
         if (extension && files) {
-          console.log('entriesByFolder extension', extension);
-          console.log('entriesByFolder files', files);
-          // const filtered = files.filter(file =>
-          //   filterByExtension({ path: file.relativePath }, extension),
-          // );
-          // console.log('entriesByFolder filtered', filtered);
-          // return filtered;
+          const filtered = files.filter(file =>
+            filterByExtension({ path: file.relativePath }, extension),
+          );
+          return filtered;
         }
         return files || [];
       })
@@ -183,23 +181,32 @@ export default class Azure implements Implementation {
     return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
-  fetchFiles = (files: AzureGitTreeEntryRef[]) => {
+  adaptImplementationEntryForAzure(
+    entry: AzureGitTreeEntryRef,
+    data: string | Blob,
+  ): ImplementationEntry {
+    return {
+      data,
+      file: { path: entry.relativePath, id: entry.objectId },
+    };
+  }
+
+  fetchFiles = (files: AzureGitTreeEntryRef[]): ImplementationEntry[] => {
     const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises: Promise<
-      { file: AzureGitTreeEntryRef; data: string | Blob; error?: string } | { error: string }
-    >[] = [];
-    files.forEach((file: AzureGitTreeEntryRef) => {
+    const promises: Promise<ImplementationEntry>[] = [];
+    files.forEach((entry: AzureGitTreeEntryRef) => {
       promises.push(
         new Promise(resolve =>
           sem.take(() =>
-            this.api!.readFile(file.relativePath, file.objectId) // Azure
+            this.api!.readFile(entry.relativePath, entry.objectId) // Azure
               .then(data => {
-                resolve({ file, data });
+                const file = this.adaptImplementationEntryForAzure(entry, data);
+                resolve(file);
                 sem.leave();
               })
               .catch(() => {
                 sem.leave();
-                console.error(`failed to load file from Azure: ${file.relativePath}`);
+                console.error(`failed to load file from Azure: ${entry.relativePath}`);
               }),
           ),
         ),
@@ -214,7 +221,7 @@ export default class Azure implements Implementation {
   getEntry(path: string) {
     return this.api!.readFile(path).then(data => ({
       file: { path },
-      data: data as string,
+      data: data as string | Blob,
     }));
   }
 
@@ -225,7 +232,6 @@ export default class Azure implements Implementation {
   async getMedia(): Promise<ImplementationMediaFile[]> {
     return this.api!.listFiles(this.mediaFolder).then(async files => {
       if (files && files.length) {
-        console.log('getMedia files', files);
         return await Promise.all(
           files.map(async ({ objectId, relativePath, size, url }) => {
             const name: string = last(relativePath.split('/')) || '';

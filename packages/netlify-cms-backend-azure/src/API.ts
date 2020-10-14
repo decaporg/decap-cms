@@ -320,10 +320,6 @@ export interface AzureApiConfig {
   initialWorkflowStatus: string;
 }
 
-// export AzureImplementationEntryAdapter(entry): ImplementationEntry {
-
-// }
-
 export default class API {
   apiRoot: string;
   apiVersion: string;
@@ -362,7 +358,7 @@ export default class API {
 
     req = unsentRequest.withParams(
       {
-        'api-version': this.apiVersion,
+        'api-version': this.apiVersion + '-preview',
       },
       req,
     );
@@ -548,7 +544,7 @@ export default class API {
       //   file => file.gitObjectType === 'blob' || file.gitObjectType === 'tree',
       // ); // Azure
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -661,7 +657,7 @@ export default class API {
       diffs.map(async d => {
         const path = d.item.path;
         const newFile = d.changeType === 'add';
-        const id = await this.readFile(path, branch);
+        const id = d.item.objectId;
         return { id, path, newFile };
       }),
     );
