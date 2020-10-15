@@ -17,8 +17,6 @@ import {
   UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
   UNPUBLISHED_ENTRY_DELETE_SUCCESS,
-  UNPUBLISHED_ENTRY_DELETE_REQUEST,
-  UNPUBLISHED_ENTRY_DELETE_FAILURE,
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { EditorialWorkflowAction, EditorialWorkflow, Entities } from '../types/redux';
