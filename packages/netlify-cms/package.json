@@ -9,8 +9,8 @@
   "scripts": {
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
     "build": "cross-env NODE_ENV=production run-s webpack",
-    "build-preview": "cross-env NODE_ENV=production webpack-dev-server --open",
-    "develop": "webpack-dev-server --hot"
+    "build-preview": "cross-env NODE_ENV=production webpack serve --open",
+    "develop": "webpack serve --hot"
   },
   "keywords": [
     "netlify",
