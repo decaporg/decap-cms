@@ -134,6 +134,16 @@ const zh_Hant = {
     },
     editorWidgets: {
       markdown: {
+        bold: '粗體',
+        italic: '斜體',
+        code: '程式碼',
+        link: '連結',
+        linkPrompt: '輸入連結網址',
+        headings: '標題',
+        quote: '引言',
+        bulletedList: '項目符號清單',
+        numberedList: '編號清單',
+        addComponent: '加入元件',
         richText: 'Rich Text',
         markdown: 'Markdown',
       },

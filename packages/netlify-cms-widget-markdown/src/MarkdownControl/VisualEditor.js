@@ -101,7 +101,11 @@ export default class Editor extends React.Component {
     this.renderInline = renderInline();
     this.renderMark = renderMark();
     this.schema = schema({ voidCodeBlock: !!this.codeBlockComponent });
-    this.plugins = plugins({ getAsset: props.getAsset, resolveWidget: props.resolveWidget });
+    this.plugins = plugins({
+      getAsset: props.getAsset,
+      resolveWidget: props.resolveWidget,
+      t: props.t,
+    });
     this.state = {
       value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
     };
@@ -150,7 +154,9 @@ export default class Editor extends React.Component {
   };
 
   handleLinkClick = () => {
-    this.editor.toggleLink(() => window.prompt('Enter the URL of the link'));
+    this.editor.toggleLink(() =>
+      window.prompt(this.props.t('editor.editorWidgets.markdown.linkPrompt')),
+    );
   };
 
   hasMark = type => this.editor && this.editor.hasMark(type);

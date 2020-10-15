@@ -136,6 +136,16 @@ const en = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Bold',
+        italic: 'Italic',
+        code: 'Code',
+        link: 'Link',
+        linkPrompt: 'Enter the URL of the link',
+        headings: 'Headings',
+        quote: 'Quote',
+        bulletedList: 'Bulleted List',
+        numberedList: 'Numbered List',
+        addComponent: 'Add Component',
         richText: 'Rich Text',
         markdown: 'Markdown',
       },
