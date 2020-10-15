@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
-import { partial, isEmpty, isNumber } from 'lodash';
+import { partial, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
@@ -15,7 +15,7 @@ import {
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
 import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
@@ -274,26 +274,15 @@ export default class ListControl extends React.Component {
       return [];
     }
 
-    const minMaxError = messageKey => [
-      {
-        type: 'RANGE',
-        message: t(`editor.editorControlPane.widget.${messageKey}`, {
-          fieldLabel: field.get('label', field.get('name')),
-          minCount: min,
-          maxCount: max,
-          count: min,
-        }),
-      },
-    ];
+    const error = validations.validateMinMax(
+      t,
+      field.get('label', field.get('name')),
+      value,
+      min,
+      max,
+    );
 
-    if ([min, max, value?.size].every(isNumber) && (value.size < min || value.size > max)) {
-      return minMaxError(min === max ? 'rangeCountExact' : 'rangeCount');
-    } else if (isNumber(min) && min > 0 && value?.size && value.size < min) {
-      return minMaxError('rangeMin');
-    } else if (isNumber(max) && value?.size && value.size > max) {
-      return minMaxError('rangeMax');
-    }
-    return [];
+    return error ? [error] : [];
   };
 
   /**

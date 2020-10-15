@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, fromJS } from 'immutable';
-import { find, isNumber } from 'lodash';
+import { find } from 'lodash';
 import Select from 'react-select';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
+import { validations } from 'netlify-cms-lib-widgets';
 
 function optionToString(option) {
   return option && option.value ? option.value : null;
@@ -59,28 +60,20 @@ export default class SelectControl extends React.Component {
     const { field, value, t } = this.props;
     const min = field.get('min');
     const max = field.get('max');
-    const minMaxError = messageKey => ({
-      error: {
-        message: t(`editor.editorControlPane.widget.${messageKey}`, {
-          fieldLabel: field.get('label', field.get('name')),
-          minCount: min,
-          maxCount: max,
-          count: min,
-        }),
-      },
-    });
 
     if (!field.get('multiple')) {
       return { error: false };
     }
-    if ([min, max].every(isNumber) && value?.size && (value.size < min || value.size > max)) {
-      return minMaxError(min === max ? 'rangeCountExact' : 'rangeCount');
-    } else if (isNumber(min) && min > 0 && value?.size && value.size < min) {
-      return minMaxError('rangeMin');
-    } else if (isNumber(max) && value?.size && value.size > max) {
-      return minMaxError('rangeMax');
-    }
-    return { error: false };
+
+    const error = validations.validateMinMax(
+      t,
+      field.get('label', field.get('name')),
+      value,
+      min,
+      max,
+    );
+
+    return error ? { error } : { error: false };
   };
 
   handleChange = selectedOption => {
