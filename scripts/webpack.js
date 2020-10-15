@@ -32,6 +32,12 @@ const rules = () => ({
     exclude: [/node_modules/],
     use: 'svg-inline-loader',
   }),
+  mjs: () => ({
+    test: /\.m?js/,
+    resolve: {
+      fullySpecified: false,
+    },
+  }),
 });
 
 const plugins = () => {
@@ -118,6 +124,10 @@ const baseConfig = ({ target = isProduction ? 'umd' : 'umddir' } = {}) => ({
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
       moment$: 'moment/moment.js',
+    },
+    fallback: {
+      path: require.resolve('path-browserify'),
+      stream: require.resolve('stream-browserify'),
     },
   },
   plugins: Object.values(plugins()).map(plugin => plugin()),
