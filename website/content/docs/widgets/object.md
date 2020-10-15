@@ -11,6 +11,7 @@ The object widget allows you to group multiple widgets together, nested under a 
 
   * `default`: you can set defaults within each sub-field's configuration
   * `collapsed`: if added and labeled `true`, collapse the widget's content by default
+  * `summary`: specify the label displayed when the object is collapsed
   * `fields`: (**required**) a nested list of widget fields to include in your widget
 * **Example:**
 
@@ -18,6 +19,7 @@ The object widget allows you to group multiple widgets together, nested under a 
   - label: "Profile"
     name: "profile"
     widget: "object"
+    summary: '{{fields.name}}: {{fields.birthdate}}'
     fields:
       - {label: "Public", name: "public", widget: "boolean", default: true}
       - {label: "Name", name: "name", widget: "string"}
