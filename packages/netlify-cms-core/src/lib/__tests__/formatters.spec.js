@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 import {
   commitMessageFormatter,
   prepareSlug,
@@ -367,6 +367,68 @@ describe('formatters', () => {
           Map({ data: Map({ customDateField: date, slug: 'entrySlug', title: 'title' }) }),
         ),
       ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
+    });
+
+    it('should return preview url for files in file collection', () => {
+      const file = Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
+            type: 'file_based_collection',
+            files: List([file]),
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+        ),
+      ).toBe('https://www.example.com/backendslug/about-the-project/title');
+    });
+
+    it('should return preview url for files in file collection when defined on file-level only', () => {
+      const file = Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            type: 'file_based_collection',
+            files: List([file]),
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+        ),
+      ).toBe('https://www.example.com/backendslug/about-the-project/title');
+    });
+
+    it('should fall back to collection preview url for files in file collection', () => {
+      const file = Map({ name: 'about-file' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
+            type: 'file_based_collection',
+            files: List([file]),
+          }),
+          'backendSlug',
+          slugConfig,
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+        ),
+      ).toBe('https://www.example.com/backendslug/title/about-the-project');
     });
 
     it('should infer date field when preview_path_date_field is not configured', () => {
