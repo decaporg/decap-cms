@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import ListControl from '../ListControl';
 
@@ -53,6 +53,7 @@ describe('ListControl', () => {
       path: 'posts/index.md',
     }),
     forID: 'forID',
+    t: key => key,
   };
 
   beforeEach(() => {
@@ -628,5 +629,159 @@ describe('ListControl', () => {
     } finally {
       mock.mockRestore();
     }
+  });
+
+  it('should give validation error if below min elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([{ string: 'item 1' }]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeCount',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give min validation error if below min elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([{ string: 'item 1' }]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeMin',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give validation error if above max elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([
+        { string: 'item 1' },
+        { string: 'item 2' },
+        { string: 'item 3' },
+        { string: 'item 4' },
+      ]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeCount',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give max validation error if above max elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([
+        { string: 'item 1' },
+        { string: 'item 2' },
+        { string: 'item 3' },
+        { string: 'item 4' },
+      ]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeMax',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give no validation error if between min and max elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([{ string: 'item 1' }, { string: 'item 2' }, { string: 'item 3' }]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
+  });
+
+  it('should give no validation error if no elements and optional', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: false,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
   });
 });

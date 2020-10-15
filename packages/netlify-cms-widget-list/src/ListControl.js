@@ -15,7 +15,7 @@ import {
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
 import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 
 function valueToString(value) {
   return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
@@ -261,6 +261,28 @@ export default class ListControl extends React.Component {
     } else {
       this.props.validate();
     }
+    this.props.onValidateObject(this.props.forID, this.validateSize());
+  };
+
+  validateSize = () => {
+    const { field, value, t } = this.props;
+    const min = field.get('min');
+    const max = field.get('max');
+    const required = field.get('required', true);
+
+    if (!required && !value?.size) {
+      return [];
+    }
+
+    const error = validations.validateMinMax(
+      t,
+      field.get('label', field.get('name')),
+      value,
+      min,
+      max,
+    );
+
+    return error ? [error] : [];
   };
 
   /**

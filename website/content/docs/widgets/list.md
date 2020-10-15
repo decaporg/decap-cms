@@ -17,6 +17,8 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   * `label_singular`: the text to show on the add button
   * `field`: a single widget field to be repeated
   * `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
+  * `max`: maximum number of items in the list
+  * `min`: minimum number of items in the list
 * **Example** (`field`/`fields` not specified):
 
   ```yaml
@@ -80,4 +82,14 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     fields:
       - {label: Quote, name: quote, widget: string, default: "Everything is awesome!"}
       - {label: Author, name: author, widget: string }
+  ```
+
+* **Example** (with `max` & `min`):
+  ```yaml
+  - label: "Tags"
+    name: "tags"
+    widget: "list"
+    max: 3
+    min: 1
+    default: ["news"]
   ```
