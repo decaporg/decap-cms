@@ -1,22 +1,20 @@
-# attempt to adapt netlify-cms for dev.azure.com 
+# adapts netlify-cms for dev.azure.com 
 
-WARNING - This option is currently under construction and lightyears away from complete or any PROD use
-
-Feel welcome to contribute
+Contributors Welcome!
 
 ### why invest into a dev.azure.com connection
 
-netlify-cms is a smart open-source solution which already has connection to github, gitlab and bitbucket - that looks already quite well to cover a lot of use-cases - so why dev.azure.com ?
+`netlify-cms` is a smart, open-source solution which already has connection to github, gitlab and bitbucket - that looks already quite well to cover a lot of use-cases - so why `dev.azure.com`?
 
-dev.azure.com in combination with the forever-free services from portal.azure.com provides a very smart enviroment for lots of projects - just one piece is missing - a smart CMS and there is no smart solution in the Azure store.
+`dev.azure.com` in combination with the forever-free services from `portal.azure.com` provides a very smart enviroment for lots of projects - just one piece is missing - a smart CMS and there is no smart solution in the Azure store.
 
-* dev.azure.com has advantages over github as you can have your repositories private for free.
+* dev.azure.com has advantages over github as you can have free private repositories.
 
-* there is no need to setup and manage a serverless OAUTH-connector in AWS lambda or any identity service - just use AAD
+* there is no need to setup and manage a serverless OAUTH-connector in AWS lambda or any identity service - just use AAD (Azure ActiveDirectory)
 
 * Azure pipelines can start building your project when commiting anything in master branch - so no need to setup TravisCI separately
 
-* individuals will likely find everything they need in the free starter version, small-/medium companies can grow with the solution with reasonable costs - many enterprises have their entitlement already integrated so you can easily invite colleagues to your projects
+* individuals will likely find everything they need in the free starter version, small-medium companies can grow with the solution with reasonable costs - many enterprises have their entitlement already integrated so you can easily invite colleagues to your projects
 
 * there is a full-blown project environment with tasks, stories, epics, defect/issues - sprint and backlog management, kanban boards and calenders etc giving everything to manage a website for company or similar - fully integrated to an extend that you still miss on enterprise CMS which costs a fortune - you can even define your own style of agile process - the limit is only ... how much organisation and structure do you want
 
@@ -35,6 +33,7 @@ backend:
   repo: {org}/{project}/{repo}
   identity_url: https://login.microsoftonline.com/{tenantId}
   app_id: {appId}
+  preview_context: '-preview'
   
 site_url: "http://localhost:8080"
 ```
@@ -46,6 +45,7 @@ site_url: "http://localhost:8080"
 | repo         | Comprising your Azure DevOps organisation name, project, and repo           | `acme/project/jekyll`                  |
 | identity_url | OAuth identity endpoint: standard Microsoft, plus tenant ID                 | `https://login.microsoftonline.com/e38b796f-d5df-4529-82c3-345c0b37e406` |
 | app_id       | Follow instructions below to create an app, then add its client ID here     | `e38b796f-d5df-4529-82c3-345c0b37e406` |
+| preview_context | Required for editorial workflow. Value should be '-preview' |     |
 
 ## Development setup
 Note that these instruction are not specific to Azure DevOps.
@@ -87,7 +87,7 @@ Note that these instruction are not specific to Azure DevOps.
 
 When the dev environment starts, hit "Login" and sign in with an Azure AD account that has access to the Azure DevOps repo!
 
-#### Script version (not validated!)
+#### Script version
 *While it is possible to automate creation of the service principal as described below, it's usually easier to just do it in the portal. Also, the below scripts haven't been double checked to validate that they achieve the same as the instructions above*
 
 In case you have 'Azure CLT' (Command Line Tools) installed you should have an 'az' command in the commandline:
@@ -129,6 +129,8 @@ please pay attention to this output - should look like this:
 ```
 here we find the appId and tenant_id we need for the config.yml - but hold on, we are no done yet
 
+[read more here](https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest#az_ad_sp_create_for_rbac)
+
 ### change the app settings to allow creation of tokens
 
 take your appId from above and issue this command:
@@ -153,14 +155,6 @@ local testing and development (and contributing)
 
 ### get onto the latest dev
 
-```
-git clone https://github.com/chrismade/netlify-cms-backend-azure
-cd netlify-cms-backend-azure
-git checkout netlify-cms-backend-azure
-
-```
-please refer to 'chrismade' as long as these developments have not been merged into the netlify-master
-
 make sure you have all required settings for your specific Azure and dev.auzre.com environment made in
 ```
 dev-test/config.yml
@@ -183,11 +177,9 @@ if everything goes well you will see a message that you can access netlify-cms a
 http://localhost:8080
 
 ```
-enter this line in Chrome and start testing (working) - Firefox may not work, see known issues
+enter this line in Chrome and start testing (working) or Firefox (see known issues below)
 
 ### create test objects
-
-Since we cannot create - and persist - new objects directly you may want to create a few test objects in order to test the listing of existing objects and to jump into edit mode when you click on one of these.
 
 Go to https://dev.azure.com/ - log in, select a project and go to 'repo'. create an empty one just containing a README.md and '.gitigore' if there isn't any content already - then create a few test files (check in your config.yml - if you have the standard 'posts' and 'faq' the path is '_posts' and '_faq'). Double check you are on the 'master' branch.
 
@@ -212,7 +204,6 @@ Hint: The URL for the thumnail doesn't really matter - you can use anything you 
 
 ## known issues
 
-in its current state it is easier to describe the few things that is ( / seem to be) working
 
 ### working
 
@@ -220,16 +211,15 @@ in its current state it is easier to describe the few things that is ( / seem to
 * list existing (pre-created) entries in collections
 * click one entry from that list to open editor and find content as expected
 * images in media lib of type PNG
-
-### not yet working
-
-* user login via Azure seems to work, a very long and sane-looking token is created but any API call returns a HTML redirect to the login screen instead of the expected json output - that is an indicator that the AAD permissions for this app are still insufficient - workround is to create a PAT (Personal Access Token) in dev.azure.com and use basic auth until the token issue is fixed
+* user login via Azure is working, a very long and sane-looking token is created but any API call returns a HTML redirect to the login screen instead of the expected json output - that is an indicator that the AAD permissions for this app are still insufficient - workround is to create a PAT (Personal Access Token) in dev.azure.com and use basic auth until the token issue is fixed
 * mozilla/firefox javascript always falls into the .catch-path in function 'request' for the fetch - which is likely a header/cors issue - workaround: use chrome which doesn't show this behaviour
 * writing edited objects
 * create new objects/posts
 * upload media objects
 * editorial workflow
 * delete or rename
+
+### Not working
 * anything not yet explicitely mentioned as working  
 
 
