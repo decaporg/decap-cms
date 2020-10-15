@@ -267,6 +267,17 @@ export function applyDefaults(config) {
             );
           }
 
+          if (!collection.has('view_groups')) {
+            collection = collection.set('view_groups', fromJS([]));
+          } else {
+            collection = collection.set(
+              'view_groups',
+              collection
+                .get('view_groups')
+                .map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
+            );
+          }
+
           if (map.hasIn(['editor', 'preview']) && !collection.has('editor')) {
             collection = collection.setIn(['editor', 'preview'], map.getIn(['editor', 'preview']));
           }

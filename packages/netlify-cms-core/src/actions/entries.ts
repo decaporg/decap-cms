@@ -288,7 +288,6 @@ export function groupByField(collection: Collection, group: ViewGroup) {
   };
 }
 
-
 export function changeViewStyle(viewStyle: string) {
   return {
     type: CHANGE_VIEW_STYLE,

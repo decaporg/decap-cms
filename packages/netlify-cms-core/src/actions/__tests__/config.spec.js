@@ -528,6 +528,7 @@ describe('config', () => {
             meta: {},
             publish: true,
             view_filters: [],
+            view_groups: [],
           },
           {
             sortable_fields: [],
@@ -557,6 +558,7 @@ describe('config', () => {
             ],
             publish: true,
             view_filters: [],
+            view_groups: [],
           },
         ],
       });

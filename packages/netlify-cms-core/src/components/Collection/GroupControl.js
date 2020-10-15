@@ -21,8 +21,8 @@ const FilterButton = styled(StyledDropdownButton)`
   }
 `;
 
-const GroupControl = ({ viewFilters, t, onFilterClick, filter }) => {
-  const hasActiveFilter = filter
+const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
+  const hasActiveGroup = group
     ?.valueSeq()
     .toJS()
     .some(f => f.active === true);
@@ -33,7 +33,7 @@ const GroupControl = ({ viewFilters, t, onFilterClick, filter }) => {
         return (
           <FilterButton
             css={css`
-              color: ${hasActiveFilter ? colors.active : undefined};
+              color: ${hasActiveGroup ? colors.active : undefined};
             `}
           >
             {t('collection.collectionTop.groupBy')}
@@ -44,14 +44,14 @@ const GroupControl = ({ viewFilters, t, onFilterClick, filter }) => {
       dropdownTopOverlap="30px"
       dropdownPosition="left"
     >
-      {viewFilters.map(viewFilter => {
+      {viewGroups.map(viewGroup => {
         return (
           <DropdownCheckedItem
-            key={viewFilter.id}
-            label={viewFilter.label}
-            id={viewFilter.id}
-            checked={filter.getIn([viewFilter.id, 'active'], false)}
-            onClick={() => onFilterClick(viewFilter)}
+            key={viewGroup.id}
+            label={viewGroup.label}
+            id={viewGroup.id}
+            checked={group.getIn([viewGroup.id, 'active'], false)}
+            onClick={() => onGroupClick(viewGroup)}
           />
         );
       })}

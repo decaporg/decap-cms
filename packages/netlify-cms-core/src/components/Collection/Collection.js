@@ -12,8 +12,17 @@ import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import CollectionControls from './CollectionControls';
 import { sortByField, filterByField, changeViewStyle, groupByField } from '../../actions/entries';
-import { selectSortableFields, selectViewFilters, selectViewGroups } from '../../reducers/collections';
-import { selectEntriesSort, selectEntriesFilter, selectViewStyle } from '../../reducers/entries';
+import {
+  selectSortableFields,
+  selectViewFilters,
+  selectViewGroups,
+} from '../../reducers/collections';
+import {
+  selectEntriesSort,
+  selectEntriesFilter,
+  selectEntriesGroup,
+  selectViewStyle,
+} from '../../reducers/entries';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -145,6 +154,7 @@ function mapStateToProps(state, ownProps) {
   const viewFilters = selectViewFilters(collection);
   const viewGroups = selectViewGroups(collection);
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
+  const group = selectEntriesGroup(state.entries, collection.get('name'));
   const viewStyle = selectViewStyle(state.entries);
 
   return {
@@ -159,6 +169,7 @@ function mapStateToProps(state, ownProps) {
     viewFilters,
     viewGroups,
     filter,
+    group,
     viewStyle,
   };
 }

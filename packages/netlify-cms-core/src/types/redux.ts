@@ -373,6 +373,17 @@ export interface EntriesFilterFailurePayload {
   error: Error;
 }
 
+export interface EntriesGroupRequestPayload {
+  group: ViewGroup;
+  collection: string;
+}
+
+export interface EntriesGroupFailurePayload {
+  group: ViewGroup;
+  collection: string;
+  error: Error;
+}
+
 export interface ChangeViewStylePayload {
   style: string;
 }

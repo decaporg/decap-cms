@@ -43,10 +43,13 @@ import {
   Sort,
   SortDirection,
   Filter,
+  Group,
   FilterMap,
   EntriesFilterRequestPayload,
   EntriesFilterFailurePayload,
   ChangeViewStylePayload,
+  EntriesGroupRequestPayload,
+  EntriesGroupFailurePayload,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
@@ -242,6 +245,7 @@ const entries = (
       return newState;
     }
 
+    case GROUP_ENTRIES_SUCCESS:
     case FILTER_ENTRIES_SUCCESS:
     case SORT_ENTRIES_SUCCESS: {
       const payload = action.payload as { collection: string; entries: EntryObject[] };
@@ -301,6 +305,29 @@ const entries = (
       return newState;
     }
 
+    case GROUP_ENTRIES_REQUEST: {
+      const payload = action.payload as EntriesGroupRequestPayload;
+      const { collection, group } = payload;
+      const newState = state.withMutations(map => {
+        const current: FilterMap = map.getIn(['group', collection, group.id], fromJS(group));
+        map.setIn(
+          ['group', collection, current.get('id')],
+          current.set('active', !current.get('active')),
+        );
+      });
+      return newState;
+    }
+
+    case GROUP_ENTRIES_FAILURE: {
+      const payload = action.payload as EntriesGroupFailurePayload;
+      const { collection, group } = payload;
+      const newState = state.withMutations(map => {
+        map.deleteIn(['group', collection, group.id]);
+        map.setIn(['pages', collection, 'isFetching'], false);
+      });
+      return newState;
+    }
+
     case CHANGE_VIEW_STYLE: {
       const payload = (action.payload as unknown) as ChangeViewStylePayload;
       const { style } = payload;
@@ -326,6 +353,11 @@ export const selectEntriesFilter = (entries: Entries, collection: string) => {
   return filter?.get(collection) || Map();
 };
 
+export const selectEntriesGroup = (entries: Entries, collection: string) => {
+  const group = entries.get('group') as Group | undefined;
+  return group?.get(collection) || Map();
+};
+
 export const selectEntriesSortFields = (entries: Entries, collection: string) => {
   const sort = selectEntriesSort(entries, collection);
   const values =
@@ -341,6 +373,16 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
   const filter = selectEntriesFilter(entries, collection);
   const values =
     filter
+      ?.valueSeq()
+      .filter(v => v?.get('active') === true)
+      .toArray() || [];
+  return values;
+};
+
+export const selectEntriesGroupFields = (entries: Entries, collection: string) => {
+  const group = selectEntriesGroup(entries, collection);
+  const values =
+    group
       ?.valueSeq()
       .filter(v => v?.get('active') === true)
       .toArray() || [];
