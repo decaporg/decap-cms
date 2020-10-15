@@ -4,6 +4,7 @@ import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
 import FilterControl from './FilterControl';
 import { lengths } from 'netlify-cms-ui-default';
+import GroupControl from "./GroupControl";
 
 const CollectionControlsContainer = styled.div`
   display: flex;
@@ -25,6 +26,7 @@ const CollectionControls = ({
   onSortClick,
   sort,
   viewFilters,
+  viewGroups,
   onFilterClick,
   t,
   filter,
@@ -32,6 +34,14 @@ const CollectionControls = ({
   return (
     <CollectionControlsContainer>
       <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
+      {viewGroups.length > 0 && (
+        <GroupControl
+          viewGroups={viewGroups}
+          onFilterClick={onFilterClick}
+          t={t}
+          filter={filter}
+        />
+      )}
       {viewFilters.length > 0 && (
         <FilterControl
           viewFilters={viewFilters}

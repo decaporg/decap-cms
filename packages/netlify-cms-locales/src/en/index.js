@@ -47,6 +47,7 @@ const en = {
       searchResults: 'Search Results for "%{searchTerm}"',
       searchResultsInCollection: 'Search Results for "%{searchTerm}" in %{collection}',
       filterBy: 'Filter by',
+      groupBy: 'Group by',
     },
     entries: {
       loadingEntries: 'Loading Entries...',
