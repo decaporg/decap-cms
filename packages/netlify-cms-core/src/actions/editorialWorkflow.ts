@@ -144,7 +144,7 @@ function unpublishedEntryPersistedFail(error: Error, collection: Collection, slu
     type: UNPUBLISHED_ENTRY_PERSIST_FAILURE,
     payload: {
       error,
-      collection,
+      collection: collection.get('name'),
       slug,
     },
     error,
