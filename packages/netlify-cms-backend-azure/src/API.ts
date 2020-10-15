@@ -540,11 +540,9 @@ export default class API {
       }
 
       return processedAzureTreeEntries;
-      // return azureTreeEntries.filter(
-      //   file => file.gitObjectType === 'blob' || file.gitObjectType === 'tree',
-      // ); // Azure
     } catch (error) {
       console.error(error);
+      return [];
     }
   };
 
@@ -741,20 +739,19 @@ export default class API {
     }
   }
 
-  deleteFile(path: string, comment: string, branch = this.branch) {
-    return this.getRef(branch).then((ref: AzureRef) => {
-      const commit = new AzureCommit(comment);
-      commit.changes.delete(path);
+  async deleteFiles(paths: string[], comment: string) {
+    const ref = await this.getRef(this.branch);
+    const commit = new AzureCommit(comment);
+    paths.forEach(path => commit.changes.delete(path));
 
-      const push = new AzurePush(ref);
-      push.commits.push(commit);
+    const push = new AzurePush(ref);
+    push.commits.push(commit);
 
-      return this.requestJSON({
-        url: `${this.endpointUrl}/pushes`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        body: JSON.stringify(push),
-      });
+    return this.requestJSON({
+      url: `${this.endpointUrl}/pushes`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(push),
     });
   }
 

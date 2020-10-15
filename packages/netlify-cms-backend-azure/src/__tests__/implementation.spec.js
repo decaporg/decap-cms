@@ -22,56 +22,6 @@ describe('azure backend implementation', () => {
     jest.clearAllMocks();
   });
 
-  describe('forkExists', () => {
-    it('should return true when repo is fork and parent matches originRepo', async () => {
-      const azureImplementation = new AzureImplementation(config);
-      azureImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
-
-      global.fetch = jest.fn().mockResolvedValue({
-        // matching should be case-insensitive
-        json: () => ({ fork: true, parent: { full_name: 'OWNER/REPO' } }),
-      });
-
-      await expect(azureImplementation.forkExists({ token: 'token' })).resolves.toBe(true);
-
-      expect(azureImplementation.currentUser).toHaveBeenCalledTimes(1);
-      expect(azureImplementation.currentUser).toHaveBeenCalledWith({ token: 'token' });
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledWith('https://dev.azure.com/repos/login/repo', {
-        method: 'GET',
-        headers: {
-          Authorization: 'token token',
-        },
-        signal: expect.any(AbortSignal),
-      });
-    });
-
-    it('should return false when repo is not a fork', async () => {
-      const azureImplementation = new AzureImplementation(config);
-      azureImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
-
-      global.fetch = jest.fn().mockResolvedValue({
-        // matching should be case-insensitive
-        json: () => ({ fork: false }),
-      });
-
-      expect.assertions(1);
-      await expect(azureImplementation.forkExists({ token: 'token' })).resolves.toBe(false);
-    });
-
-    it("should return false when parent doesn't match originRepo", async () => {
-      const azureImplementation = new AzureImplementation(config);
-      azureImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
-
-      global.fetch = jest.fn().mockResolvedValue({
-        json: () => ({ fork: true, parent: { full_name: 'owner/other_repo' } }),
-      });
-
-      expect.assertions(1);
-      await expect(azureImplementation.forkExists({ token: 'token' })).resolves.toBe(false);
-    });
-  });
-
   describe('persistMedia', () => {
     const persistFiles = jest.fn();
     const mockAPI = {

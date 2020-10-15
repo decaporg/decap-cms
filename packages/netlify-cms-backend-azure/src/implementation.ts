@@ -1,11 +1,10 @@
 import { trimStart, trim, last } from 'lodash';
 import semaphore, { Semaphore } from 'semaphore';
 import AuthenticationPage from './AuthenticationPage';
-import API, { API_NAME, AzureRepo, AzureGitTreeEntryRef } from './API';
+import API, { API_NAME, AzureRepo } from './API';
 import {
   Credentials,
   Implementation,
-  ImplementationEntry,
   ImplementationFile,
   ImplementationMediaFile,
   DisplayURL,
@@ -26,16 +25,12 @@ import {
   UnpublishedEntryMediaFile,
   entriesByFiles,
   filterByExtension,
-  UnpublishedEntryDiff,
   branchFromContentKey,
+  entriesByFolder,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
-
-const voidReturn = () => {
-  return;
-};
 
 /**
  * Check a given status context string to determine if it provides a link to a
@@ -108,6 +103,23 @@ export default class Azure implements Implementation {
     this.lock = asyncLock();
   }
 
+  isGitBackend() {
+    return true;
+  }
+
+  async status() {
+    const auth =
+      (await this.api
+        ?.user()
+        .then(user => !!user)
+        .catch(e => {
+          console.warn('Failed getting Azure user', e);
+          return false;
+        })) || false;
+
+    return { auth: { status: auth }, api: { status: true, statusPage: '' } };
+  }
+
   authComponent() {
     return AuthenticationPage;
   }
@@ -158,19 +170,25 @@ export default class Azure implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  entriesByFolder(folder: string, extension: string) {
-    return this.api!.listFiles(folder)
-      .then(files => {
-        if (extension && files) {
-          const filtered = files.filter(file =>
-            filterByExtension({ path: file.relativePath }, extension),
-          );
-          return filtered;
-        }
-        return files || [];
-      })
-      .then(this.fetchFiles)
-      .catch(() => []);
+  async entriesByFolder(folder: string, extension: string) {
+    const listFiles = async () => {
+      const files = await this.api!.listFiles(folder);
+      const filtered = files.filter(file =>
+        filterByExtension({ path: file.relativePath }, extension),
+      );
+      return filtered.map(file => ({
+        id: file.objectId,
+        path: file.relativePath,
+      }));
+    };
+
+    const files = await entriesByFolder(
+      listFiles,
+      this.api!.readFile.bind(this.api!),
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
+    return files;
   }
 
   entriesByFiles(files: ImplementationFile[]) {
@@ -181,48 +199,13 @@ export default class Azure implements Implementation {
     return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
-  adaptImplementationEntryForAzure(
-    entry: AzureGitTreeEntryRef,
-    data: string | Blob,
-  ): ImplementationEntry {
-    return {
-      data,
-      file: { path: entry.relativePath, id: entry.objectId },
-    };
-  }
-
-  fetchFiles = (files: AzureGitTreeEntryRef[]): ImplementationEntry[] => {
-    const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-    const promises: Promise<ImplementationEntry>[] = [];
-    files.forEach((entry: AzureGitTreeEntryRef) => {
-      promises.push(
-        new Promise(resolve =>
-          sem.take(() =>
-            this.api!.readFile(entry.relativePath, entry.objectId) // Azure
-              .then(data => {
-                const file = this.adaptImplementationEntryForAzure(entry, data);
-                resolve(file);
-                sem.leave();
-              })
-              .catch(() => {
-                sem.leave();
-                console.error(`failed to load file from Azure: ${entry.relativePath}`);
-              }),
-          ),
-        ),
-      );
-    });
-    return Promise.all(promises).then(loadedEntryRefs =>
-      loadedEntryRefs.filter(loadedEntryRef => !loadedEntryRef.error),
-    );
-  };
-
   // Fetches a single entry.
-  getEntry(path: string) {
-    return this.api!.readFile(path).then(data => ({
+  async getEntry(path: string) {
+    const data = (await this.api!.readFile(path)) as string;
+    return {
       file: { path },
-      data: data as string | Blob,
-    }));
+      data,
+    };
   }
 
   /**
@@ -273,9 +256,9 @@ export default class Azure implements Implementation {
     };
   }
 
-  persistEntry(entry: Entry, options: PersistOptions): Promise<void> {
+  async persistEntry(entry: Entry, options: PersistOptions): Promise<void> {
     const mediaFiles: AssetProxy[] = entry.assets;
-    return this.api!.persistFiles(entry.dataFiles, mediaFiles, options).then(voidReturn);
+    await this.api!.persistFiles(entry.dataFiles, mediaFiles, options);
   }
 
   async persistMedia(
@@ -303,8 +286,8 @@ export default class Azure implements Implementation {
     };
   }
 
-  deleteFile(path: string, commitMessage: string): Promise<void> {
-    return this.api!.deleteFile(path, commitMessage).then(voidReturn);
+  async deleteFiles(paths: string[], commitMessage: string) {
+    await this.api!.deleteFiles(paths, commitMessage);
   }
 
   loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
@@ -352,9 +335,6 @@ export default class Azure implements Implementation {
     id?: string;
     collection?: string;
     slug?: string;
-    status: string;
-    diffs: UnpublishedEntryDiff[];
-    updatedAt: string;
   }) {
     if (id) {
       const data = await this.api!.retrieveUnpublishedEntryData(id);
