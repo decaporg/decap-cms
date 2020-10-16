@@ -31,7 +31,7 @@ import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '..
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
-import { hasI18n, serializeI18n } from '../lib/i18n';
+import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 
 const { notifSend } = notifActions;
 
@@ -689,8 +689,11 @@ export function createEmptyDraft(collection: Collection, search: string) {
       await waitForMediaLibraryToLoad(dispatch, getState());
     }
 
+    const i18nFields = createEmptyDraftI18nData(collection);
+
     let newEntry = createEntry(collection.get('name'), '', '', {
       data: dataFields,
+      i18n: i18nFields,
       mediaFiles: [],
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       meta: metaFields as any,
@@ -711,7 +714,7 @@ interface DraftEntryData {
     | (string | DraftEntryData | boolean | List<unknown>)[];
 }
 
-export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
+export function createEmptyDraftData(fields: EntryFields, withNameKey = true, i18nData = false) {
   return fields.reduce(
     (
       reduction: DraftEntryData | string | undefined | boolean | List<unknown>,
@@ -724,6 +727,13 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
       const name = item.get('name');
       const defaultValue = item.get('default', null);
       const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some(e => isEqual(val, e));
+
+      if (i18nData === true) {
+        const i18nField = item.get(I18N);
+        if (i18nField !== I18N_FIELD.DUPLICATE && i18nField !== I18N_FIELD.TRANSLATE) {
+          return acc;
+        }
+      }
 
       if (List.isList(subfields)) {
         const subDefaultValue = list
@@ -762,6 +772,21 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
     },
     {} as DraftEntryData,
   );
+}
+
+function createEmptyDraftI18nData(collection: Collection) {
+  if (!hasI18n(collection)) {
+    return {};
+  }
+
+  const fields = collection.get('fields', List());
+  const i18nDataFields = createEmptyDraftData(
+    fields.filter(f => !f!.get('meta')).toList(),
+    true,
+    true,
+  );
+
+  return duplicateDefaultI18nFields(collection, i18nDataFields);
 }
 
 export function getMediaAssets({ entry }: { entry: EntryMap }) {

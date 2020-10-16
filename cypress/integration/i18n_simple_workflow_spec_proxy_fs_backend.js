@@ -67,7 +67,12 @@ describe(`I18N Proxy Backend Simple Workflow - '${mode}' mode`, () => {
         i18n: {
           locales: ['en', 'de', 'fr'],
         },
-        collections: [{ i18n: true, fields: [{}, { i18n: true }, {}, { i18n: 'duplicate' }] }],
+        collections: [
+          {
+            i18n: true,
+            fields: [{}, { i18n: true }, {}, { i18n: 'duplicate' }],
+          },
+        ],
       },
       backend,
     );
