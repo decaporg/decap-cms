@@ -33,6 +33,7 @@ const CollectionControls = ({
   filter,
   group,
 }) => {
+  debugger;
   return (
     <CollectionControlsContainer>
       <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />

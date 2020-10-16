@@ -89,6 +89,7 @@ export class Collection extends React.Component {
       onFilterClick,
       onGroupClick,
       filter,
+      group,
       onChangeViewStyle,
       viewStyle,
     } = this.props;
@@ -134,6 +135,7 @@ export class Collection extends React.Component {
                 onFilterClick={onFilterClick}
                 onGroupClick={onGroupClick}
                 filter={filter}
+                group={group}
               />
             </>
           )}

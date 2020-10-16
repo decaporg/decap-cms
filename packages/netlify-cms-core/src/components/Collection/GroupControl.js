@@ -45,6 +45,7 @@ const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
       dropdownPosition="left"
     >
       {viewGroups.map(viewGroup => {
+        debugger;
         return (
           <DropdownCheckedItem
             key={viewGroup.id}
