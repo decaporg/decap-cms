@@ -433,7 +433,28 @@ export const selectEntries = (state: Entries, collection: Collection) => {
       .toList();
   }
 
+  const groups = selectEntriesGroupFields(state, collectionName);
+  debugger;
+  if (groups && groups.length > 0) {
+    entries = entries
+      .filter(e => {
+        const allMatched = groups.every(g => {
+          const pattern = g.get('pattern');
+          const field = g.get('field');
+          const data = e!.get('data') || Map();
+          const toMatch = data.getIn(keyToPathArray(field));
+          const matched =
+            toMatch !== undefined && new RegExp(String(pattern)).test(String(toMatch));
+          return matched;
+        });
+        return allMatched;
+      })
+      .toList();
+  }
+
   return entries;
+
+
 };
 
 export const selectEntryByPath = (state: Entries, collection: string, path: string) => {

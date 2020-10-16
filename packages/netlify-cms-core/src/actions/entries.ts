@@ -250,9 +250,9 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
 }
 
 export function groupByField(collection: Collection, group: ViewGroup) {
+  debugger;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
-    // if we're already fetching we update the filter key, but skip loading entries
     const isFetching = selectIsFetching(state.entries, collection.get('name'));
     dispatch({
       type: GROUP_ENTRIES_REQUEST,
