@@ -62,7 +62,7 @@ export default class ColorControl extends React.Component {
               style={{
                 position: 'absolute',
                 right: '6px',
-                zIndex: '3',
+                zIndex: '1000',
                 padding: '8px',
                 marginTop: '11px',
               }}
@@ -122,7 +122,7 @@ export default class ColorControl extends React.Component {
             // color picker container
             style={{
               position: 'absolute',
-              zIndex: '3',
+              zIndex: '1000',
               marginTop: '48px',
               marginLeft: '12px',
             }}
