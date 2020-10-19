@@ -49,7 +49,7 @@ import {
   EntriesFilterFailurePayload,
   ChangeViewStylePayload,
   EntriesGroupRequestPayload,
-  EntriesGroupFailurePayload, GroupOfEntries,
+  EntriesGroupFailurePayload, GroupOfEntries, GroupMap,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
@@ -379,11 +379,12 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
   return values;
 };
 
-export const selectEntriesGroupFields = (entries: Entries, collection: string) => {
+export const selectEntriesGroupField = (entries: Entries, collection: string) => {
   const group = selectEntriesGroup(entries, collection);
+
   const values =
     group
-      ?.valueSeq()
+    ?.valueSeq()
       .filter(v => v?.get('active') === true)
       .toArray() || [];
   return values;
@@ -437,10 +438,56 @@ export const selectEntries = (state: Entries, collection: Collection) => {
 
 };
 
+function evaluateEntryGroup(entry: EntryMap, selectedGroup: any):string {
+  let field = '';
+  let data = '';
+
+  if(selectedGroup && selectedGroup.length > 0){
+    selectedGroup.every(g => {
+      field = g.get('field');
+      data = entry!.get('data') || Map();
+    })
+
+  }
+  return field;
+}
+
 export const selectGroups = (state: Entries, collection: Collection) => {
-  const group1:GroupOfEntries = { title: "group1", paths: ['_posts/2020-10-20-post-number-5.md', '_posts/2020-10-20-post-number-6.md']};
-  const group2:GroupOfEntries = { title: "group2", paths: ['_posts/2020-10-20-post-number-18.md']};
-  return [group1, group2];
+  const collectionName = collection.get('name');
+  const slugs = selectPublishedSlugs(state, collectionName);
+  let entries =
+    slugs &&
+    (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
+
+  const groups:GroupOfEntries[] = [];
+  const selectedGroup = selectEntriesGroupField(state, collection.get('name'));
+
+  entries.map(entry => {
+    if(entry ===undefined){
+      return;
+    }
+    const groupTitle = evaluateEntryGroup(entry, selectedGroup);
+
+    let isFound = false;
+    groups.map(group => {
+      if(groupTitle === group.title){
+        group.paths.push(entry.get('path'));
+        isFound = true;
+      }
+    });
+
+    if(isFound === false){
+      groups.push(
+        {
+          title:  groupTitle,
+          paths: [entry.get('path')]
+        }
+      );
+    }
+
+  });
+
+  return groups;
 };
 
 

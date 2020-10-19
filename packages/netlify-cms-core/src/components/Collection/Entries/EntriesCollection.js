@@ -48,7 +48,6 @@ export class EntriesCollection extends React.Component {
   getGroupEntries = (entries, paths) => {
     return entries.filter((entry) =>
     {
-      console.log('result', entry.get('path'));
       return paths.includes(entry.get('path'));
     });
   }
