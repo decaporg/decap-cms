@@ -250,7 +250,6 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
 }
 
 export function groupByField(collection: Collection, group: ViewGroup) {
-  debugger;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const isFetching = selectIsFetching(state.entries, collection.get('name'));

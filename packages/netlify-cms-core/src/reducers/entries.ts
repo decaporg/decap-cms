@@ -49,7 +49,7 @@ import {
   EntriesFilterFailurePayload,
   ChangeViewStylePayload,
   EntriesGroupRequestPayload,
-  EntriesGroupFailurePayload,
+  EntriesGroupFailurePayload, GroupOfEntries,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
@@ -433,29 +433,16 @@ export const selectEntries = (state: Entries, collection: Collection) => {
       .toList();
   }
 
-  const groups = selectEntriesGroupFields(state, collectionName);
-  debugger;
-  if (groups && groups.length > 0) {
-    entries = entries
-      .filter(e => {
-        const allMatched = groups.every(g => {
-          const pattern = g.get('pattern');
-          const field = g.get('field');
-          const data = e!.get('data') || Map();
-          const toMatch = data.getIn(keyToPathArray(field));
-          const matched =
-            toMatch !== undefined && new RegExp(String(pattern)).test(String(toMatch));
-          return matched;
-        });
-        return allMatched;
-      })
-      .toList();
-  }
-
   return entries;
 
-
 };
+
+export const selectGroups = (state: Entries, collection: Collection) => {
+  const group1:GroupOfEntries = { title: "group1", paths: ['_posts/2020-10-20-post-number-5.md', '_posts/2020-10-20-post-number-6.md']};
+  const group2:GroupOfEntries = { title: "group2", paths: ['_posts/2020-10-20-post-number-18.md']};
+  return [group1, group2];
+};
+
 
 export const selectEntryByPath = (state: Entries, collection: string, path: string) => {
   const slugs = selectPublishedSlugs(state, collection);

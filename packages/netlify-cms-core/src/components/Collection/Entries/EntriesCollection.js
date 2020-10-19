@@ -8,7 +8,7 @@ import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
-import { selectEntries, selectEntriesLoaded, selectIsFetching } from '../../../reducers/entries';
+import { selectEntries, selectEntriesLoaded, selectIsFetching, selectGroups } from '../../../reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
 
@@ -17,6 +17,7 @@ export class EntriesCollection extends React.Component {
     collection: ImmutablePropTypes.map.isRequired,
     page: PropTypes.number,
     entries: ImmutablePropTypes.list,
+    groups: PropTypes.array,
     isFetching: PropTypes.bool.isRequired,
     viewStyle: PropTypes.string,
     cursor: PropTypes.object.isRequired,
@@ -44,21 +45,48 @@ export class EntriesCollection extends React.Component {
     traverseCollectionCursor(collection, action);
   };
 
-  render() {
-    const { collection, entries, isFetching, viewStyle, cursor, page } = this.props;
+  getGroupEntries = (entries, paths) => {
+    return entries.filter((entry) =>
+    {
+      console.log('result', entry.get('path'));
+      return paths.includes(entry.get('path'));
+    });
+  }
 
-    return (
-      <Entries
-        collections={collection}
-        entries={entries}
-        isFetching={isFetching}
-        collectionName={collection.get('label')}
-        viewStyle={viewStyle}
-        cursor={cursor}
-        handleCursorActions={partial(this.handleCursorActions, cursor)}
-        page={page}
-      />
-    );
+  render() {
+    const { collection, entries, groups, isFetching, viewStyle, cursor, page } = this.props;
+
+    if(groups.length > 0){
+      return groups.map((group) =>
+        <div key={group.title}>
+         <h1>{group.title}</h1>
+          <Entries
+            collections={collection}
+            entries={this.getGroupEntries(entries, group.paths)}
+            isFetching={isFetching}
+            collectionName={collection.get('label')}
+            viewStyle={viewStyle}
+            cursor={cursor}
+            handleCursorActions={partial(this.handleCursorActions, cursor)}
+            page={page}
+          />
+        </div>);
+    }
+    else {
+      return (
+        <Entries
+          collections={collection}
+          entries={entries}
+          isFetching={isFetching}
+          collectionName={collection.get('label')}
+          viewStyle={viewStyle}
+          cursor={cursor}
+          handleCursorActions={partial(this.handleCursorActions, cursor)}
+          page={page}
+        />
+      );
+    }
+
   }
 }
 
@@ -87,6 +115,7 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   let entries = selectEntries(state.entries, collection);
+  let groups = selectGroups(state.entries, collection);
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');
@@ -98,7 +127,7 @@ function mapStateToProps(state, ownProps) {
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
 
-  return { collection, page, entries, entriesLoaded, isFetching, viewStyle, cursor };
+  return { collection, page, entries, groups, entriesLoaded, isFetching, viewStyle, cursor };
 }
 
 const mapDispatchToProps = {

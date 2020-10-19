@@ -72,6 +72,8 @@ export type Filter = Map<string, Map<string, FilterMap>>; // collection.field.ac
 
 export type Group = Map<string, Map<string, GroupMap>>; // collection.field.active
 
+export type GroupOfEntries = { title: string; paths: string[] };
+
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
 export type Entries = StaticallyTypedRecord<{
