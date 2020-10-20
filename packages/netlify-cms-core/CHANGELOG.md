@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.33.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.32.0...netlify-cms-core@2.33.0) (2020-10-20)
+
+
+### Features
+
+* allow per-file preview_path in file collection ([#4413](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4413)) ([9e0b8ac](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9e0b8ac4b88908d953a9714732b906c8c349fa7e))
+
+
+
+
+
 # [2.32.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.31.0...netlify-cms-core@2.32.0) (2020-10-12)
 
 

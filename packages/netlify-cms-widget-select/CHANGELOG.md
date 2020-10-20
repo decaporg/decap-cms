@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.6.4...netlify-cms-widget-select@2.7.0) (2020-10-20)
+
+
+### Features
+
+* **widget-list:** add min max configuration ([#4394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/4394)) ([5fdfe40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/5fdfe40dd29e9e22c9ae7d6219bc057f7ea7280b))
+
+
+
+
+
 ## [2.6.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.6.3...netlify-cms-widget-select@2.6.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-widget-select

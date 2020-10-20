@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.4.0...netlify-cms-lib-widgets@1.5.0) (2020-10-20)
+
+
+### Features
+
+* **widget-list:** add min max configuration ([#4394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/issues/4394)) ([5fdfe40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/commit/5fdfe40dd29e9e22c9ae7d6219bc057f7ea7280b))
+
+
+
+
+
 # [1.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.3.5...netlify-cms-lib-widgets@1.4.0) (2020-09-28)
 
 

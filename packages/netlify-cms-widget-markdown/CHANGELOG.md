@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.6...netlify-cms-widget-markdown@2.12.7) (2020-10-20)
+
+
+### Bug Fixes
+
+* **locale:** remove hard coded strings ([#4432](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/4432)) ([a5750d7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/a5750d782e9b4f0060362459037086f4d2f18acf))
+
+
+
+
+
 ## [2.12.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.5...netlify-cms-widget-markdown@2.12.6) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown
