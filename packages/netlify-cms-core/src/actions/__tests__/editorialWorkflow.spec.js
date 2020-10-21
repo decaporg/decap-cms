@@ -1,4 +1,3 @@
-import { BEGIN, COMMIT, REVERT } from 'redux-optimist';
 import * as actions from '../editorialWorkflow';
 import { addAssets } from '../media';
 import configureMockStore from 'redux-mock-store';
@@ -126,7 +125,6 @@ describe('editorialWorkflow actions', () => {
             collection: 'posts',
             slug,
           },
-          optimist: { type: BEGIN, id: '000000000000000000000' },
         });
         expect(actions[1]).toEqual({
           type: 'MEDIA_LOAD_REQUEST',
@@ -146,7 +144,6 @@ describe('editorialWorkflow actions', () => {
             collection: 'posts',
             slug,
           },
-          optimist: { type: COMMIT, id: '000000000000000000000' },
         });
 
         expect(actions[4]).toEqual({
@@ -206,7 +203,6 @@ describe('editorialWorkflow actions', () => {
             collection: 'posts',
             slug,
           },
-          optimist: { type: BEGIN, id: '000000000000000000000' },
         });
         expect(actions[1]).toEqual({
           type: 'NOTIF_SEND',
@@ -220,7 +216,6 @@ describe('editorialWorkflow actions', () => {
             collection: 'posts',
             slug,
           },
-          optimist: { type: REVERT, id: '000000000000000000000' },
         });
       });
     });

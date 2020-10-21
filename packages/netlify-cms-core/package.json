@@ -62,7 +62,6 @@
     "react-window": "^1.8.5",
     "redux": "^4.0.5",
     "redux-notifications": "^4.0.1",
-    "redux-optimist": "^1.0.0",
     "redux-thunk": "^2.3.0",
     "sanitize-filename": "^1.6.1",
     "semaphore": "^1.0.5",
