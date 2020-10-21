@@ -636,8 +636,8 @@ describe('config', () => {
         ).toEqual({ structure: 'multiple_folders', locales: ['en', 'fr'], default_locale: 'fr' });
       });
 
-      it('should throw when i18n is set on files collection', () => {
-        expect(() =>
+      it('should set i18n value to translate on when i18n=true for field in files collection', () => {
+        expect(
           applyDefaults(
             fromJS({
               i18n: {
@@ -647,14 +647,19 @@ describe('config', () => {
               collections: [
                 {
                   files: [
-                    { name: 'file', file: 'file', fields: [{ name: 'title', widget: 'string' }] },
+                    {
+                      name: 'file',
+                      file: 'file',
+                      i18n: true,
+                      fields: [{ name: 'title', widget: 'string', i18n: true }],
+                    },
                   ],
                   i18n: true,
                 },
               ],
             }),
-          ),
-        ).toThrow('i18n configuration is not supported for files collection');
+          ).getIn(['collections', 0, 'files', 0, 'fields', 0, 'i18n']),
+        ).toEqual('translate');
       });
 
       it('should set i18n value to translate on field when i18n=true for field', () => {
