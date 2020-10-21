@@ -5,7 +5,7 @@ import { translate } from 'react-polyglot';
 import {
   buttons,
   Dropdown,
-  DropdownCheckedItem,
+  DropdownRadioItem,
   StyledDropdownButton,
   colors,
 } from 'netlify-cms-ui-default';
@@ -46,7 +46,7 @@ const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
     >
       {viewGroups.map(viewGroup => {
         return (
-          <DropdownCheckedItem
+          <DropdownRadioItem
             key={viewGroup.id}
             label={viewGroup.label}
             id={viewGroup.id}

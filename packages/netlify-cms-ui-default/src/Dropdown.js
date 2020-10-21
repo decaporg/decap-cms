@@ -141,10 +141,32 @@ const StyledDropdownCheckbox = ({ checked, id }) => (
   />
 );
 
+const StyledDropdownRadio = ({ checked, id }) => (
+  <input
+    readOnly
+    type="radio"
+    css={css`
+      margin-right: 10px;
+    `}
+    checked={checked}
+    id={id}
+  />
+);
+
+
 const DropdownCheckedItem = ({ label, id, checked, onClick }) => {
   return (
     <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={onClick}>
       <StyledDropdownCheckbox checked={checked} id={id} />
+      <span htmlFor={id}>{label}</span>
+    </StyledMenuItem>
+  );
+};
+
+const DropdownRadioItem = ({ label, id, checked, onClick }) => {
+  return (
+    <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={onClick}>
+      <StyledDropdownRadio checked={checked} id={id} />
       <span htmlFor={id}>{label}</span>
     </StyledMenuItem>
   );
@@ -157,10 +179,18 @@ DropdownCheckedItem.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
+DropdownRadioItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
 export {
   Dropdown as default,
   DropdownItem,
   DropdownCheckedItem,
+  DropdownRadioItem,
   DropdownButton,
   StyledDropdownButton,
 };

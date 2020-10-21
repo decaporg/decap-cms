@@ -440,16 +440,22 @@ export const selectEntries = (state: Entries, collection: Collection) => {
 
 function evaluateEntryGroup(entry: EntryMap, selectedGroup: any):string {
   let field = '';
-  let data = '';
+  let label = '';
+  let titleSuffix = '';
 
   if(selectedGroup && selectedGroup.length > 0){
     selectedGroup.every(g => {
       field = g.get('field');
-      data = entry!.get('data') || Map();
+      label = g.get('label');
+      debugger;
+      const data = entry!.get('data') || Map();
+      const fieldData = data.get(field).toString();
+      const pattern = new RegExp(g.get('pattern'));
+      const matched = fieldData.match(pattern); //todo: if there is no pattern, do not do that
+      titleSuffix = matched ? matched[0] : '';
     })
-
   }
-  return field;
+  return label + ' ' + titleSuffix;
 }
 
 export const selectGroups = (state: Entries, collection: Collection) => {
