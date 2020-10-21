@@ -634,7 +634,7 @@ describe('config', () => {
         ).toEqual({ structure: 'multiple_folders', locales: ['en', 'fr'], default_locale: 'fr' });
       });
 
-      it('should set i18n value to translate on when i18n=true for field in files collection', () => {
+      it('should set i18n value to translate on field when i18n=true for field in files collection', () => {
         expect(
           applyDefaults(
             fromJS({
