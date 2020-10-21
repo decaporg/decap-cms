@@ -130,9 +130,8 @@ collections:
 
 ### Limitations
 
-1. File collections are not supported.
-2. List widgets only support `i18n: true`. `i18n` configuration on sub fields is ignored.
-3. Object widgets only support `i18n: true` and `i18n` configuration should be done per field:
+1. List widgets only support `i18n: true`. `i18n` configuration on sub fields is ignored.
+2. Object widgets only support `i18n: true` and `i18n` configuration should be done per field:
 
 ```yaml
 - label: 'Object'
