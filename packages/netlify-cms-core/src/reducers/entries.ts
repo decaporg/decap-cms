@@ -49,7 +49,8 @@ import {
   EntriesFilterFailurePayload,
   ChangeViewStylePayload,
   EntriesGroupRequestPayload,
-  EntriesGroupFailurePayload, GroupOfEntries, GroupMap,
+  EntriesGroupFailurePayload,
+  GroupOfEntries,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
@@ -358,6 +359,12 @@ export const selectEntriesGroup = (entries: Entries, collection: string) => {
   return group?.get(collection) || Map();
 };
 
+export const selectEntriesGroupField = (entries: Entries, collection: string) => {
+  const groups = selectEntriesGroup(entries, collection);
+  const value = groups?.valueSeq().find(v => v?.get('active') === true);
+  return value;
+};
+
 export const selectEntriesSortFields = (entries: Entries, collection: string) => {
   const sort = selectEntriesSort(entries, collection);
   const values =
@@ -374,17 +381,6 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
   const values =
     filter
       ?.valueSeq()
-      .filter(v => v?.get('active') === true)
-      .toArray() || [];
-  return values;
-};
-
-export const selectEntriesGroupField = (entries: Entries, collection: string) => {
-  const group = selectEntriesGroup(entries, collection);
-
-  const values =
-    group
-    ?.valueSeq()
       .filter(v => v?.get('active') === true)
       .toArray() || [];
   return values;
@@ -435,25 +431,20 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   }
 
   return entries;
-
 };
 
-function evaluateEntryGroup(entry: EntryMap, selectedGroup: any):string {
+function evaluateEntryGroup(entry: EntryMap, selectedGroup: any): string {
   let field = '';
   let label = '';
   let titleSuffix = '';
-
-  if(selectedGroup && selectedGroup.length > 0){
-    selectedGroup.every(g => {
-      field = g.get('field');
-      label = g.get('label');
-      debugger;
-      const data = entry!.get('data') || Map();
-      const fieldData = data.get(field).toString();
-      const pattern = new RegExp(g.get('pattern'));
-      const matched = fieldData.match(pattern); //todo: if there is no pattern, do not do that
-      titleSuffix = matched ? matched[0] : '';
-    })
+  if (selectedGroup) {
+    field = selectedGroup.get('field');
+    label = selectedGroup.get('label');
+    const data = entry!.get('data') || Map();
+    const fieldData = data.get(field).toString();
+    const pattern = new RegExp(selectedGroup.get('pattern'));
+    const matched = fieldData.match(pattern); //todo: if there is no pattern, do not do that
+    titleSuffix = matched ? matched[0] : '';
   }
   return label + ' ' + titleSuffix;
 }
@@ -461,41 +452,37 @@ function evaluateEntryGroup(entry: EntryMap, selectedGroup: any):string {
 export const selectGroups = (state: Entries, collection: Collection) => {
   const collectionName = collection.get('name');
   const slugs = selectPublishedSlugs(state, collectionName);
-  let entries =
+  const entries =
     slugs &&
     (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
 
-  const groups:GroupOfEntries[] = [];
+  const groups: GroupOfEntries[] = [];
   const selectedGroup = selectEntriesGroupField(state, collection.get('name'));
 
   entries.map(entry => {
-    if(entry ===undefined){
+    if (entry === undefined) {
       return;
     }
     const groupTitle = evaluateEntryGroup(entry, selectedGroup);
 
     let isFound = false;
     groups.map(group => {
-      if(groupTitle === group.title){
+      if (groupTitle === group.title) {
         group.paths.push(entry.get('path'));
         isFound = true;
       }
     });
 
-    if(isFound === false){
-      groups.push(
-        {
-          title:  groupTitle,
-          paths: [entry.get('path')]
-        }
-      );
+    if (isFound === false) {
+      groups.push({
+        title: groupTitle,
+        paths: [entry.get('path')],
+      });
     }
-
   });
 
   return groups;
 };
-
 
 export const selectEntryByPath = (state: Entries, collection: string, path: string) => {
   const slugs = selectPublishedSlugs(state, collection);

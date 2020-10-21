@@ -28,6 +28,7 @@ exports[`Collection should render connected component 1`] = `
       />
       <mock-collection-controls
         filter="Map {}"
+        group="Map {}"
         sortablefields=""
         viewfilters=""
         viewgroups=""

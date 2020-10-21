@@ -105,9 +105,10 @@ const viewGroups = {
     properties: {
       label: { type: 'string' },
       field: { type: 'string' },
-      pattern: { //todo: this should be optional
+      pattern: {
+        //todo: this should be optional
         oneOf: [
-          { type: 'boolean' },//todo: we may not need
+          { type: 'boolean' }, //todo: we may not need
           {
             type: 'string',
           },

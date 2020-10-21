@@ -8,7 +8,12 @@ import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
-import { selectEntries, selectEntriesLoaded, selectIsFetching, selectGroups } from '../../../reducers/entries';
+import {
+  selectEntries,
+  selectEntriesLoaded,
+  selectIsFetching,
+  selectGroups,
+} from '../../../reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
 
@@ -46,19 +51,18 @@ export class EntriesCollection extends React.Component {
   };
 
   getGroupEntries = (entries, paths) => {
-    return entries.filter((entry) =>
-    {
+    return entries.filter(entry => {
       return paths.includes(entry.get('path'));
     });
-  }
+  };
 
   render() {
     const { collection, entries, groups, isFetching, viewStyle, cursor, page } = this.props;
 
-    if(groups.length > 0){
-      return groups.map((group) =>
+    if (groups && groups.length > 0) {
+      return groups.map(group => (
         <div key={group.title}>
-         <h1>{group.title}</h1>
+          <h1>{group.title}</h1>
           <Entries
             collections={collection}
             entries={this.getGroupEntries(entries, group.paths)}
@@ -69,9 +73,9 @@ export class EntriesCollection extends React.Component {
             handleCursorActions={partial(this.handleCursorActions, cursor)}
             page={page}
           />
-        </div>);
-    }
-    else {
+        </div>
+      ));
+    } else {
       return (
         <Entries
           collections={collection}
@@ -85,7 +89,6 @@ export class EntriesCollection extends React.Component {
         />
       );
     }
-
   }
 }
 
@@ -114,7 +117,7 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   let entries = selectEntries(state.entries, collection);
-  let groups = selectGroups(state.entries, collection);
+  const groups = selectGroups(state.entries, collection);
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');

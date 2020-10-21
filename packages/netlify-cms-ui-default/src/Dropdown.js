@@ -153,7 +153,6 @@ const StyledDropdownRadio = ({ checked, id }) => (
   />
 );
 
-
 const DropdownCheckedItem = ({ label, id, checked, onClick }) => {
   return (
     <StyledMenuItem isCheckedItem={true} isActive={checked} onClick={onClick}>
