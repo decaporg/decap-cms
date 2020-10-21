@@ -90,14 +90,33 @@ const setI18nDefaults = (i18n, collection) => {
 
     if (collectionI18n !== false) {
       // set default values for i18n fields
-      collection = collection.set('fields', traverseFields(collection.get('fields'), setI18nField));
+      if (collection.has('fields')) {
+        collection = collection.set(
+          'fields',
+          traverseFields(collection.get('fields'), setI18nField),
+        );
+      }
+
+      if (collection.has('files')) {
+        collection = collection.set('files', traverseFields(collection.get('files'), setI18nField));
+      }
     }
   } else {
     collection = collection.delete(I18N);
-    collection = collection.set(
-      'fields',
-      traverseFields(collection.get('fields'), field => field.delete(I18N)),
-    );
+
+    if (collection.has('fields')) {
+      collection = collection.set(
+        'fields',
+        traverseFields(collection.get('fields'), field => field.delete(I18N)),
+      );
+    }
+
+    if (collection.has('files')) {
+      collection = collection.set(
+        'files',
+        traverseFields(collection.get('files'), field => field.delete(I18N)),
+      );
+    }
   }
   return collection;
 };
@@ -244,9 +263,6 @@ export function applyDefaults(config) {
 
           const files = collection.get('files');
           if (files) {
-            if (i18n && collection.has(I18N)) {
-              throw new Error('i18n configuration is not supported for files collection');
-            }
             collection = collection.delete('nested');
             collection = collection.delete('meta');
             collection = collection.set(
@@ -258,9 +274,11 @@ export function applyDefaults(config) {
                   'fields',
                   traverseFields(file.get('fields'), setDefaultPublicFolder),
                 );
+                file = setI18nDefaults(i18n, file);
                 return file;
               }),
             );
+            collection = setI18nDefaults(i18n, collection);
           }
 
           if (!collection.has('sortable_fields')) {
