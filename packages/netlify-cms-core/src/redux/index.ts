@@ -13,9 +13,8 @@ declare global {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const store = createStore<State, any, {}, {}>(
-  (createRootReducer(history) as unknown) as Reducer<any, any>,
+const store = createStore<State | undefined, AnyAction, unknown, unknown>(
+  (createRootReducer(history) as unknown) as Reducer<State | undefined, AnyAction>,
   compose(
     applyMiddleware(
       routerMiddleware(history),

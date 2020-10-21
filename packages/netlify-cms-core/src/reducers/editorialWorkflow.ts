@@ -109,11 +109,10 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
           ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'status'],
           action.payload!.newStatus,
         );
-        map.deleteIn([
-          'entities',
-          `${action.payload!.collection}.${action.payload!.slug}`,
-          'isUpdatingStatus',
-        ]);
+        map.setIn(
+          ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isUpdatingStatus'],
+          false,
+        );
       });
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
