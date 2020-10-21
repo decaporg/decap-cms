@@ -647,7 +647,12 @@ describe('config', () => {
               collections: [
                 {
                   files: [
-                    { name: 'file', file: 'file', fields: [{ name: 'title', widget: 'string' }] },
+                    {
+                      name: 'file',
+                      file: 'file',
+                      i18n: true,
+                      fields: [{ name: 'title', widget: 'string', i18n: true }],
+                    },
                   ],
                   i18n: true,
                 },
