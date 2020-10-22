@@ -434,17 +434,25 @@ export const selectEntries = (state: Entries, collection: Collection) => {
 };
 
 function evaluateEntryGroup(entry: EntryMap, selectedGroup: any): string {
-  let field = '';
   let label = '';
   let titleSuffix = '';
   if (selectedGroup) {
-    field = selectedGroup.get('field');
     label = selectedGroup.get('label');
+    const field = selectedGroup.get('field');
     const data = entry!.get('data') || Map();
-    const fieldData = data.get(field).toString();
-    const pattern = new RegExp(selectedGroup.get('pattern'));
-    const matched = fieldData.match(pattern); //todo: if there is no pattern, do not do that
-    titleSuffix = matched ? matched[0] : '';
+    if(data.get(field) === undefined){
+      titleSuffix = 'other';//todo: 'other' should be get from the language variable
+    }else {
+      const fieldData = data.get(field).toString();
+      titleSuffix = fieldData;
+
+      if(selectedGroup.get('pattern')){
+        const pattern = new RegExp(selectedGroup.get('pattern'));
+        const matched = fieldData.match(pattern);
+        titleSuffix = matched ? matched[0] : '';
+      }
+    }
+
   }
   return label + ' ' + titleSuffix;
 }

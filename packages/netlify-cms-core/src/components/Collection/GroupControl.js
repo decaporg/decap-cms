@@ -10,7 +10,7 @@ import {
   colors,
 } from 'netlify-cms-ui-default';
 
-const FilterButton = styled(StyledDropdownButton)`
+const GroupButton = styled(StyledDropdownButton)`
   ${buttons.button};
   ${buttons.medium};
   ${buttons.grayText};
@@ -31,13 +31,13 @@ const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
     <Dropdown
       renderButton={() => {
         return (
-          <FilterButton
+          <GroupButton
             css={css`
               color: ${hasActiveGroup ? colors.active : undefined};
             `}
           >
             {t('collection.collectionTop.groupBy')}
-          </FilterButton>
+          </GroupButton>
         );
       }}
       closeOnSelection={false}
