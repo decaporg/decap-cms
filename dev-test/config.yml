@@ -1,9 +1,5 @@
 backend:
   name: test-repo
-  branch: master
-  repo: organization/project/repo # update with the path to your repo
-  identity_url: https://login.microsoftonline.com/{tenantId} # update tenantId
-  app_id: {appId} # update appId
 
 site_url: https://example.com
 
