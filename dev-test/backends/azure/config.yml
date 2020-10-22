@@ -1,7 +1,7 @@
 backend:
   name: azure
   branch: master
-  repo: owner/repo
+  repo: organization/project/repo
   identity_url: https://login.microsoftonline.com/{tenantId}
   app_id: {appId}
 

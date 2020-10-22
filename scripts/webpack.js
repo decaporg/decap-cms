@@ -20,11 +20,13 @@ const rules = () => ({
       },
     },
   }),
-  css: () => ({
-    test: /\.css$/,
-    include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(moduleNameToPath),
-    use: ['to-string-loader', 'css-loader'],
-  }),
+  css: () => [
+    {
+      test: /\.css$/,
+      include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(moduleNameToPath),
+      use: ['to-string-loader', 'css-loader'],
+    },
+  ],
   svg: () => ({
     test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
     exclude: [/node_modules/],

@@ -11,7 +11,6 @@ import {
   readFile,
   CMS_BRANCH_PREFIX,
   DEFAULT_PR_BODY,
-  DEFAULT_NETLIFY_CMS_LABEL_PREFIX,
   generateContentKey,
   parseContentKey,
   labelToStatus,
@@ -20,8 +19,8 @@ import {
   statusToLabel,
   PreviewState,
   readFileMetadata,
+  DataFile,
 } from 'netlify-cms-lib-util';
-import { DataFile } from 'netlify-cms-lib-util/src/implementation';
 
 export const API_NAME = 'Azure DevOps';
 
@@ -30,8 +29,8 @@ export class AzureRepo {
   project: string;
   name: string;
 
-  constructor(location?: string | null) {
-    if (!location || !/^[^/]+\/[^/]+(|\/[^/]+)$/gi.test(location)) {
+  constructor(location: string | null) {
+    if (!location || location.indexOf('/') === -1) {
       throw new Error(
         "An Azure repository must be specified in the format 'organisation/project', or 'organisation/project/repo'.",
       );
@@ -341,7 +340,7 @@ export default class API {
     this.squashMerges = config.squashMerges || true;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
     this.apiVersion = '5.1'; // Azure API version is recommended and sometimes even required
-    this.cmsLabelPrefix = CMS_BRANCH_PREFIX ? CMS_BRANCH_PREFIX : DEFAULT_NETLIFY_CMS_LABEL_PREFIX;
+    this.cmsLabelPrefix = CMS_BRANCH_PREFIX ? CMS_BRANCH_PREFIX : '/cms';
   }
 
   withAuthorizationHeaders = (req: ApiRequest) =>
@@ -421,12 +420,10 @@ export default class API {
       });
 
     const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) =>
-      isCMSLabel(l.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX),
+      isCMSLabel(l.name, this.cmsLabelPrefix),
     );
-    const labelText = prLabel
-      ? prLabel.name
-      : statusToLabel('draft', DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
-    const status = labelToStatus(labelText, DEFAULT_NETLIFY_CMS_LABEL_PREFIX);
+    const labelText = prLabel ? prLabel.name : statusToLabel('draft', this.cmsLabelPrefix);
+    const status = labelToStatus(labelText, this.cmsLabelPrefix);
 
     return { branch, collection, slug, path, status, mediaFiles };
   }
@@ -660,7 +657,7 @@ export default class API {
       }),
     );
     const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix));
-    const labelName = label && label.name ? label.name : DEFAULT_NETLIFY_CMS_LABEL_PREFIX;
+    const labelName = label && label.name ? label.name : this.cmsLabelPrefix;
     const status = labelToStatus(labelName, this.cmsLabelPrefix);
     const updatedAt = pullRequest.closedDate;
     return {
@@ -823,7 +820,7 @@ export default class API {
       description: DEFAULT_PR_BODY,
       labels: [
         {
-          name: statusToLabel(status, DEFAULT_NETLIFY_CMS_LABEL_PREFIX),
+          name: statusToLabel(status, this.cmsLabelPrefix),
         },
       ],
     };
@@ -900,9 +897,9 @@ export default class API {
 
     const labels = [
       ...mergeRequest.labels
-        .filter((label: AzurePRLabel) => !isCMSLabel(label.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX))
+        .filter((label: AzurePRLabel) => !isCMSLabel(label.name, this.cmsLabelPrefix))
         .map((label: AzurePRLabel) => label.name),
-      statusToLabel(newStatus, DEFAULT_NETLIFY_CMS_LABEL_PREFIX),
+      statusToLabel(newStatus, this.cmsLabelPrefix),
     ];
 
     await this.updatePullRequestLabels(mergeRequest, labels);
@@ -924,7 +921,7 @@ export default class API {
 
   async updatePullRequestLabels(pullRequest: AzurePullRequest, labels: string[]) {
     for (const l of pullRequest.labels) {
-      if (isCMSLabel(l.name, DEFAULT_NETLIFY_CMS_LABEL_PREFIX)) {
+      if (isCMSLabel(l.name, this.cmsLabelPrefix)) {
         await this.requestText({
           method: 'DELETE',
           url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
