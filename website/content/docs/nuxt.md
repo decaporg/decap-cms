@@ -188,7 +188,7 @@ export default {
 
 ### Example Blog Post
 
-To generate blog posts create _slug.vue file in the pages folder. by using `$content` you would get a json which you can use to display. But if you are using `markdown` to write your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features](<>).
+To generate blog posts create _slug.vue file in the pages folder. By using `$content` you would get a json which you can use to display. But if you are using `markdown` to write and store your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features](<>).
 
 ```javascript
 <template>
