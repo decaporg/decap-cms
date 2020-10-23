@@ -228,7 +228,7 @@ Since Nuxt 2.13+, nuxt export has a crawler feature integrated which will crawl 
 target: 'static'
 ```
 
-If you are using nuxt version below 2.14 you have to use generate option in nuxt/content module to generate pages
+If you are using **nuxt version below 2.14** you have to use generate option in nuxt/content module to generate pages
 
 ```javascript
 //nux.config.js
