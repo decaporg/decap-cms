@@ -168,9 +168,11 @@ This also gives a `<nuxt-content>` component which helps you display markdowm co
 
 ```javascript
 <template>
+  <div>
     <li v-for="post of posts" :key="post.slug">
       <NuxtLink :to="post.slug">{{ post.title }}</NuxtLink>
     </li>
+  </div>
 </template>
 
 <script>
