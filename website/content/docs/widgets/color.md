@@ -9,9 +9,9 @@ The color widget and saves it as a string.
 - **UI:** color picker
 - **Data type:** string
 - **Options:**
-  - `default`: accepts a string; defaults to an empty string
-  - `allowInput`: accepts a boolean, defaults to `false`
-  - `enableAlpha`: accepts a boolean, defaults to `false`
+  - `default`: accepts a string; defaults to an empty string. Sets the default value
+  - `allowInput`: accepts a boolean, defaults to `false`. Allows manual editing of the color input value
+  - `enableAlpha`: accepts a boolean, defaults to `false`. Enables Alpha editing
 - **Example:**
   ```yaml
   - { label: 'Color', name: 'color', widget: 'color' }
