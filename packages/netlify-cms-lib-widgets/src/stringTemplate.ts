@@ -3,10 +3,22 @@ import { Map } from 'immutable';
 import { basename, dirname, extname } from 'path';
 import { get, trimEnd } from 'lodash';
 
+const filters = [
+  { pattern: /^upper$/, transform: (str: string) => str.toUpperCase() },
+  {
+    pattern: /^lower$/,
+    transform: (str: string) => str.toLowerCase(),
+  },
+  {
+    pattern: /^date\('(.+)'\)$/,
+    transform: (str: string, match: RegExpMatchArray) => moment(str).format(match[1]),
+  },
+];
+
 const FIELD_PREFIX = 'fields.';
-const templateContentPattern = '([^}{\\|]+)';
+const templateContentPattern = '([^}{|]+)';
 const filterPattern = '( \\| ([^}{]+))?';
-const templateVariablePattern = `{{${templateContentPattern}${filterPattern}}}`; // prepends a Zero if the date has only 1 digit
+const templateVariablePattern = `{{${templateContentPattern}${filterPattern}}}`;
 
 // prepends a Zero if the date has only 1 digit
 function formatDate(date: number) {
@@ -111,6 +123,21 @@ function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
   return value;
 }
 
+function getFilterFunction(filterStr: string) {
+  if (filterStr) {
+    let match: RegExpMatchArray | null = null;
+    const filter = filters.find(filter => {
+      match = filterStr.match(filter.pattern);
+      return !!match;
+    });
+
+    if (filter) {
+      return (str: string) => filter.transform(str, match as RegExpMatchArray);
+    }
+  }
+  return null;
+}
+
 export function compileStringTemplate(
   template: string,
   date: Date | undefined | null,
@@ -118,23 +145,6 @@ export function compileStringTemplate(
   data = Map<string, unknown>(),
   processor?: (value: string) => string,
 ) {
-  function getFilterFunction(filter: string): ((input: {}) => string) | null {
-    if (!filter) {
-      return null;
-    } else if (filter === 'upper') {
-      return str => (str ? str.toString().toUpperCase() : '');
-    } else if (filter === 'lower') {
-      return str => (str ? str.toString().toLowerCase() : '');
-    } else if (filter.match(/date\('.*'\)/)) {
-      return str => {
-        const format = filter.replace(/date\('(.*)'\)/, '$1');
-        return moment(str).format(format);
-      };
-    } else {
-      return null;
-    }
-  }
-
   let missingRequiredDate;
 
   // Turn off date processing (support for replacements like `{{year}}`), by passing in
@@ -160,12 +170,13 @@ export function compileStringTemplate(
         replacement = data.getIn(keyToPathArray(key), '') as string;
       }
 
-      const filterFunction = getFilterFunction(filter);
-      if (filterFunction) {
-        replacement = filterFunction(replacement);
-      }
       if (processor) {
         return processor(replacement);
+      } else {
+        const filterFunction = getFilterFunction(filter);
+        if (filterFunction) {
+          replacement = filterFunction(replacement);
+        }
       }
 
       return replacement;
