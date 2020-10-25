@@ -1,12 +1,12 @@
 {
-  "name": "netlify-cms-widget-color",
+  "name": "netlify-cms-widget-colorstring",
   "description": "Widget for editing color strings in Netlify CMS.",
   "version": "1.0.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#color",
-  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-color",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-colorstring",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
-  "main": "dist/netlify-cms-widget-color.js",
+  "main": "dist/netlify-cms-widget-colorstring.js",
   "license": "MIT",
   "keywords": [
     "netlify",
