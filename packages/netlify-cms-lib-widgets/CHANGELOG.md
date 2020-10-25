@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.5.0...netlify-cms-lib-widgets@1.6.0) (2020-10-25)
+
+
+### Features
+
+* Support filters for template strings [#3677](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/issues/3677) ([#4396](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/issues/4396)) ([1fa108e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/commit/1fa108ee67b7e992a4d2a61cde13df7917e103be))
+
+
+
+
+
 # [1.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.4.0...netlify-cms-lib-widgets@1.5.0) (2020-10-20)
 
 

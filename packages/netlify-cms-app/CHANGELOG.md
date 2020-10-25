@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.12.28...netlify-cms-app@2.13.0) (2020-10-25)
+
+
+### Bug Fixes
+
+* **widget-color:** rename to colorstring ([#4496](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/4496)) ([fbc8963](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/fbc89637267f65ede25cd15ff6ed832ab3eb44dc))
+
+
+### Features
+
+* **widget-color:** add color widget ([#4437](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/4437)) ([fed0e82](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/fed0e82dd3d35c611b0ef58d2008d299f94102d9))
+
+
+
+
+
 ## [2.12.28](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.12.27...netlify-cms-app@2.12.28) (2020-10-20)
 
 **Note:** Version bump only for package netlify-cms-app
