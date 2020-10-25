@@ -239,17 +239,19 @@ export default class ListControl extends React.Component {
     const { value, onChange, field } = this.props;
     const addToTop = field.get('add_to_top', false);
 
+    const itemKey = uuid();
     this.setState({
       itemsCollapsed: addToTop
         ? [false, ...this.state.itemsCollapsed]
         : [...this.state.itemsCollapsed, false],
-      keys: addToTop ? [uuid(), ...this.state.keys] : [...this.state.keys, uuid()],
+      keys: addToTop ? [itemKey, ...this.state.keys] : [...this.state.keys, itemKey],
     });
 
+    const listValue = value || List();
     if (addToTop) {
-      onChange((value || List()).unshift(parsedValue));
+      onChange(listValue.unshift(parsedValue));
     } else {
-      onChange((value || List()).push(parsedValue));
+      onChange(listValue.push(parsedValue));
     }
   };
 
