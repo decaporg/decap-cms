@@ -180,16 +180,12 @@ export default class ListControl extends React.Component {
 
   handleAdd = e => {
     e.preventDefault();
-    const { value, onChange, field } = this.props;
+    const { field } = this.props;
     const parsedValue =
       this.getValueType() === valueTypes.SINGLE
         ? this.singleDefault()
         : fromJS(this.multipleDefault(field.get('fields')));
-    this.setState({
-      itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, uuid()],
-    });
-    onChange((value || List()).push(parsedValue));
+    this.addItem(parsedValue);
   };
 
   singleDefault = () => {
@@ -201,13 +197,8 @@ export default class ListControl extends React.Component {
   };
 
   handleAddType = (type, typeKey) => {
-    const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
-    this.setState({
-      itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, uuid()],
-    });
-    onChange((value || List()).push(parsedValue));
+    this.addItem(parsedValue);
   };
 
   mixedDefault = (typeKey, type) => {
@@ -242,6 +233,26 @@ export default class ListControl extends React.Component {
 
       return acc;
     }, initialValue);
+  };
+
+  addItem = parsedValue => {
+    const { value, onChange, field } = this.props;
+    const addToTop = field.get('add_to_top', false);
+
+    const itemKey = uuid();
+    this.setState({
+      itemsCollapsed: addToTop
+        ? [false, ...this.state.itemsCollapsed]
+        : [...this.state.itemsCollapsed, false],
+      keys: addToTop ? [itemKey, ...this.state.keys] : [...this.state.keys, itemKey],
+    });
+
+    const listValue = value || List();
+    if (addToTop) {
+      onChange(listValue.unshift(parsedValue));
+    } else {
+      onChange(listValue.push(parsedValue));
+    }
   };
 
   processControlRef = ref => {

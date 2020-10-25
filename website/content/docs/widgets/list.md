@@ -19,6 +19,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   * `fields`: a nested list of multiple widget fields to be included in each repeatable iteration
   * `max`: maximum number of items in the list
   * `min`: minimum number of items in the list
+  * `add_to_top`: when `true`, new entries will be added to the top of the list
 * **Example** (`field`/`fields` not specified):
 
   ```yaml
@@ -92,4 +93,11 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     max: 3
     min: 1
     default: ["news"]
+  ```
+* **Example** (`add_to_top` marked `true`):
+  ```yaml
+  - label: "Tags"
+    name: "tags"
+    widget: "list"
+    add_to_top: true
   ```
