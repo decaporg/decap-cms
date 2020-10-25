@@ -8,5 +8,5 @@ const Widget = (opts = {}) => ({
   ...opts,
 });
 
-export const NetlifyCmsWidgetColor = { Widget, controlComponent, previewComponent };
-export default NetlifyCmsWidgetColor;
+export const NetlifyCmsWidgetColorString = { Widget, controlComponent, previewComponent };
+export default NetlifyCmsWidgetColorString;
