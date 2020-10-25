@@ -1,7 +1,7 @@
 ---
-title: Nuxt
 group: Guides
 weight: 50
+title: Nuxt
 ---
 This guide will walk you through how to integrate Netlify CMS with Nuxt.
 
@@ -160,7 +160,7 @@ Then, add @nuxt/content to the modules section of nuxt.config.js:
 
 By adding nuxt content module you get `$content` injected into your whole app which you can use to fetch content from your content folder using `simple fetch api` or `nuxt asyncData` option.
 <br />
-This also gives a `<nuxt-content>` component which helps you display markdowm content with ease and also gives option of live editing in dev mode.
+This also gives a `<nuxt-content>` component which helps you display markdown content with ease and also gives option of live editing in dev mode.
 
 ### Example Blog Post List
 
