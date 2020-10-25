@@ -119,6 +119,14 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
       - { label: 'Date', name: 'date', widget: 'date' }
+      - { label: 'Color', name: 'color', widget: 'color' }
+      - {
+          label: 'Color string editable and alpha enabled',
+          name: 'colorEditable',
+          widget: 'color',
+          enableAlpha: true,
+          allowInput: true,
+        }
       - { label: 'Image', name: 'image', widget: 'image' }
       - { label: 'File', name: 'file', widget: 'file' }
       - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
