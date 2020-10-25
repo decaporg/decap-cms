@@ -3,7 +3,7 @@ label: 'Color'
 title: color
 ---
 
-The color widget and saves it as a string.
+The color widget translates a color picker to a color string.
 
 - **Name:** `color`
 - **UI:** color picker
