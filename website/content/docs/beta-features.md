@@ -510,7 +510,7 @@ collections:
       - { label: 'Publish Date', name: 'date', widget: 'datetime' }
 ```
 
-The above config will transform the title field to uppercase and format the date field using 'YYYY-MM-DD' format.
+The above config will transform the title field to uppercase and format the date field using `YYYY-MM-DD` format.
 Available transformations are `upper`, `lower` and `date('<format>')`
 
 
