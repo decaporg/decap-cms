@@ -493,6 +493,27 @@ Example config:
       max_file_size: 512000 # in bytes, only for default media library
 ```
 
+## Summary string template transformations
+
+You can apply transformations on fields in a summary string template using filter notation syntax.
+
+Example config:
+
+```yaml
+collections:
+  - name: 'posts'
+    label: 'Posts'
+    folder: '_posts'
+    summary: "{{title | upper}} - {{date | date('YYYY-MM-DD')}}"
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+```
+
+The above config will transform the title field to uppercase and format the date field using `YYYY-MM-DD` format.
+Available transformations are `upper`, `lower` and `date('<format>')`
+
+
 ## Registering to CMS Events
 
 You can execute a function when a specific CMS event occurs.
