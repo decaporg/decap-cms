@@ -33,7 +33,7 @@
     "netlify-cms-ui-default": "^2.6.0",
     "netlify-cms-widget-object": "^2.2.0",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4",
+    "react": "^17.0.0",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

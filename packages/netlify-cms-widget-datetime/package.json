@@ -25,6 +25,6 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "netlify-cms-widget-date": "^2.3.0",
-    "react": "^16.8.4"
+    "react": "^17.0.0"
   }
 }
