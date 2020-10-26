@@ -6,6 +6,11 @@ site_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
+i18n:
+  structure: single_file
+  locales: [en, sv]
+  default_locale: en
+
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
@@ -266,3 +271,104 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+
+  - name: 'i18n_posts' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'i18n Posts' # Used in the UI
+    label_singular: 'Post' # Used in the UI, ie: "New Post"
+    description: >
+      The description is a great place for tone setting, high level information, and editing
+      guidelines that are specific to a collection.
+    folder: '_i18n_posts'
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
+    create: true # Allow users to create new documents in this collection
+    i18n: true
+    view_filters:
+      - label: Posts With Index
+        field: title
+        pattern: 'This is post #'
+      - label: Posts Without Index
+        field: title
+        pattern: front matter post
+      - label: Drafts
+        field: draft
+        pattern: true
+
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1', i18n: true }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false, i18n: true }
+      - {
+          label: 'Publish Date',
+          name: 'date',
+          widget: 'datetime',
+          date_format: 'YYYY-MM-DD',
+          time_format: 'HH:mm',
+          format: 'YYYY-MM-DD HH:mm',
+          i18n: duplicate,
+        }
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
+        required: false
+        tagname: ''
+        i18n: duplicate
+
+      - {
+          label: 'Body',
+          name: 'body',
+          widget: 'markdown',
+          hint: 'Main content goes here.',
+          i18n: true,
+        }
+
+  - name: 'i18n_settings'
+    label: 'i18n Settings'
+    delete: false # Prevent users from deleting documents in this collection
+    editor:
+      preview: false
+    i18n: true
+    files:
+      - name: 'general'
+        label: 'Site Settings'
+        file: '_i18n_data/settings.json'
+        description: 'General Site Settings'
+        i18n: true
+        fields:
+          - { label: 'Global title', name: 'site_title', widget: 'string', i18n: true }
+          - label: 'Post Settings'
+            name: posts
+            widget: 'object'
+            i18n: true
+            fields:
+              - {
+                  label: 'Number of posts on frontpage',
+                  name: front_limit,
+                  widget: number,
+                  min: 1,
+                  max: 10,
+                  i18n: true,
+                }
+              - { label: 'Default Author', name: author, widget: string, i18n: true }
+              - {
+                  label: 'Default Thumbnail',
+                  name: thumb,
+                  widget: image,
+                  class: 'thumb',
+                  required: false,
+                  i18n: true,
+                }
+
+      - name: 'authors'
+        label: 'Authors'
+        file: '_i18n_data/authors.json'
+        description: 'Author descriptions'
+        i18n: true
+        fields:
+          - name: authors
+            label: Authors
+            label_singular: 'Author'
+            widget: list
+            i18n: true
+            fields:
+              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
+              - { label: 'Description', name: 'description', widget: 'markdown' }
