@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.13.0...netlify-cms-app@2.13.1) (2020-10-26)
+
+
+### Bug Fixes
+
+* **deps:** update color widget dependecy ([#4512](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/4512)) ([a0176e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/a0176e457223da65dddf983707704dd4441553a0))
+
+
+
+
+
 # [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.12.28...netlify-cms-app@2.13.0) (2020-10-25)
 
 
