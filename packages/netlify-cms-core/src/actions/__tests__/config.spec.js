@@ -634,6 +634,27 @@ describe('config', () => {
         ).toEqual({ structure: 'multiple_folders', locales: ['en', 'fr'], default_locale: 'fr' });
       });
 
+      it('should throw when i18n structure is not single_file on files collection', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  files: [
+                    { name: 'file', file: 'file', fields: [{ name: 'title', widget: 'string' }] },
+                  ],
+                  i18n: true,
+                },
+              ],
+            }),
+          ),
+        ).toThrow('i18n configuration for file collections is limited to single_file structures');
+      });
+
       it('should set i18n value to translate on field when i18n=true for field in files collection', () => {
         expect(
           applyDefaults(
@@ -652,7 +673,9 @@ describe('config', () => {
                       fields: [{ name: 'title', widget: 'string', i18n: true }],
                     },
                   ],
-                  i18n: true,
+                  i18n: {
+                    structure: 'single_file',
+                  },
                 },
               ],
             }),
