@@ -267,7 +267,7 @@ collections: # A list of collections the CMS should be able to edit
 
   - name: 'i18n_posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'i18n Posts' # Used in the UI
-    label_singular: 'Post' # Used in the UI, ie: "New Post"
+    label_singular: 'i18n Post' # Used in the UI, ie: "New Post"
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
