@@ -6,7 +6,7 @@ import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
-import { I18N, I18N_FIELD } from '../lib/i18n';
+import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -263,6 +263,17 @@ export function applyDefaults(config) {
 
           const files = collection.get('files');
           if (files) {
+            if (
+              i18n &&
+              collection.has(I18N) &&
+              i18n.get('structure') !== I18N_STRUCTURE.SINGLE_FILE &&
+              collection.getIn([I18N, 'structure']) !== I18N_STRUCTURE.SINGLE_FILE
+            ) {
+              throw new Error(
+                'i18n configuration for files collections is limited to single_file structures',
+              );
+            }
+
             collection = collection.delete('nested');
             collection = collection.delete('meta');
             collection = collection.set(
