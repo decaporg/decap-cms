@@ -7,7 +7,7 @@ publish_mode: editorial_workflow
 media_folder: assets/uploads
 
 i18n:
-  structure: single_file
+  structure: multiple_files
   locales: [en, sv]
   default_locale: en
 
@@ -319,7 +319,8 @@ collections: # A list of collections the CMS should be able to edit
     delete: false # Prevent users from deleting documents in this collection
     editor:
       preview: false
-    i18n: true
+    i18n:
+      structure: single_file
     files:
       - name: 'general'
         label: 'Site Settings'
@@ -353,7 +354,7 @@ collections: # A list of collections the CMS should be able to edit
 
       - name: 'authors'
         label: 'Authors'
-        file: '_i18n_data/authors.json'
+        file: '_i18n_data/authors.yml'
         description: 'Author descriptions'
         i18n: true
         fields:
