@@ -45,6 +45,7 @@ import {
   Filter,
   Group,
   FilterMap,
+  GroupMap,
   EntriesFilterRequestPayload,
   EntriesFilterFailurePayload,
   ChangeViewStylePayload,
@@ -310,7 +311,9 @@ const entries = (
       const payload = action.payload as EntriesGroupRequestPayload;
       const { collection, group } = payload;
       const newState = state.withMutations(map => {
-        const current: FilterMap = map.getIn(['group', collection, group.id], fromJS(group));
+        map.deleteIn(['group', collection]);
+
+        const current: GroupMap = map.getIn(['group', collection, group.id], fromJS(group));
         map.setIn(
           ['group', collection, current.get('id')],
           current.set('active', !current.get('active')),
@@ -440,19 +443,17 @@ function evaluateEntryGroup(entry: EntryMap, selectedGroup: any): string {
     label = selectedGroup.get('label');
     const field = selectedGroup.get('field');
     const data = entry!.get('data') || Map();
-    if(data.get(field) === undefined){
-      titleSuffix = 'other';//todo: 'other' should be get from the language variable
-    }else {
+    if (data.get(field) === undefined) {
+      titleSuffix = 'other'; //todo: 'other' should be get from the language variable
+    } else {
       const fieldData = data.get(field).toString();
       titleSuffix = fieldData;
-
-      if(selectedGroup.get('pattern')){
+      if (selectedGroup.get('pattern')) {
         const pattern = new RegExp(selectedGroup.get('pattern'));
         const matched = fieldData.match(pattern);
         titleSuffix = matched ? matched[0] : '';
       }
     }
-
   }
   return label + ' ' + titleSuffix;
 }

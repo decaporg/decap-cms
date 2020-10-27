@@ -5,7 +5,7 @@ import { translate } from 'react-polyglot';
 import {
   buttons,
   Dropdown,
-  DropdownRadioItem,
+  DropdownItem,
   StyledDropdownButton,
   colors,
 } from 'netlify-cms-ui-default';
@@ -29,29 +29,27 @@ const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
 
   return (
     <Dropdown
-      renderButton={() => {
-        return (
-          <GroupButton
-            css={css`
-              color: ${hasActiveGroup ? colors.active : undefined};
-            `}
-          >
-            {t('collection.collectionTop.groupBy')}
-          </GroupButton>
-        );
-      }}
+      renderButton={() => (
+        <GroupButton
+          css={css`
+            color: ${hasActiveGroup ? colors.active : undefined};
+          `}
+        >
+          {t('collection.collectionTop.groupBy')}
+        </GroupButton>
+      )}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
+      dropdownWidth="160px"
       dropdownPosition="left"
     >
       {viewGroups.map(viewGroup => {
         return (
-          <DropdownRadioItem
+          <DropdownItem
             key={viewGroup.id}
             label={viewGroup.label}
-            id={viewGroup.id}
-            checked={group.getIn([viewGroup.id, 'active'], false)}
             onClick={() => onGroupClick(viewGroup)}
+            isActive={group.getIn([viewGroup.id, 'active'], false)}
           />
         );
       })}
