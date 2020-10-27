@@ -275,7 +275,8 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
-    i18n: true
+    i18n:
+      structure: single_file
     view_filters:
       - label: Posts With Index
         field: title
