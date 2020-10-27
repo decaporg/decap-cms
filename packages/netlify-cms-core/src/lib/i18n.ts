@@ -244,7 +244,7 @@ const mergeValues = (
 };
 
 const mergeSingleFileValue = (entryValue: EntryValue, defaultLocale: string, locales: string[]) => {
-  const data = entryValue.data[defaultLocale];
+  const data = entryValue.data[defaultLocale] || {};
   const i18n = locales
     .filter(l => l !== defaultLocale)
     .map(l => ({ locale: l, value: entryValue.data[l] }))
