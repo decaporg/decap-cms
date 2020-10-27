@@ -654,7 +654,7 @@ describe('config', () => {
               ],
             }),
           ),
-        ).toThrow('i18n configuration for file collections is limited to single_file structures');
+        ).toThrow('i18n configuration for files collections is limited to single_file structures');
       });
 
       it('should set i18n value to translate on field when i18n=true for field in files collection', () => {
