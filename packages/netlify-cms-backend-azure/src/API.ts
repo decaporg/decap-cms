@@ -1,10 +1,11 @@
 import { Base64 } from 'js-base64';
-import { first, flow, partial, result, trim, trimStart } from 'lodash';
+import { flow, partial, result, trim, trimStart } from 'lodash';
 import {
   localForage,
   APIError,
   ApiRequest,
   unsentRequest,
+  requestWithBackoff,
   responseParser,
   AssetProxy,
   PersistOptions,
@@ -20,6 +21,7 @@ import {
   PreviewState,
   readFileMetadata,
   DataFile,
+  branchFromContentKey,
 } from 'netlify-cms-lib-util';
 
 export const API_NAME = 'Azure DevOps';
@@ -350,7 +352,7 @@ export default class API {
     req = unsentRequest.withHeaders(
       {
         'Content-Type': 'application/json; charset=utf-8',
-        Origin: '*',
+        // Origin: '*',
       },
       req,
     );
@@ -370,15 +372,16 @@ export default class API {
       unsentRequest.withRoot(this.apiRoot),
       this.withAuthorizationHeaders,
       this.withAzureFeatures,
-      // unsentRequest.withTimestamp,
+      unsentRequest.withNoCache,
     ])(req);
 
-  request = async (req: ApiRequest): Promise<Response> =>
-    flow([
-      this.buildRequest,
-      unsentRequest.performRequest,
-      p => p.catch((err: Error) => Promise.reject(new APIError(err.message, null, API_NAME))),
-    ])(req);
+  request = (req: ApiRequest): Promise<Response> => {
+    try {
+      return requestWithBackoff(this, req);
+    } catch (err) {
+      throw new APIError(err.message, null, API_NAME);
+    }
+  };
 
   responseToJSON = responseParser({ format: 'json', apiName: API_NAME });
   responseToBlob = responseParser({ format: 'blob', apiName: API_NAME });
@@ -402,31 +405,6 @@ export default class API {
       url: 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me',
     }) as Promise<AzureUser>;
   };
-
-  async retrieveMetadata(contentKey: string) {
-    const { collection, slug } = parseContentKey(contentKey);
-    const branch = this.branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchPullRequest(branch);
-
-    const diff = await this.getDifferences(mergeRequest.sourceRefName);
-    const path1 = diff.find(d => d.item.path.includes(slug));
-    const path = path1?.item.path as string;
-    const mediaFiles = diff
-      .filter(d => !d.item.isFolder)
-      .map(d => {
-        const path = d.item.path;
-        const id = d.item.objectId;
-        return { path, id };
-      });
-
-    const prLabel = mergeRequest.labels?.find((l: AzurePRLabel) =>
-      isCMSLabel(l.name, this.cmsLabelPrefix),
-    );
-    const labelText = prLabel ? prLabel.name : statusToLabel('draft', this.cmsLabelPrefix);
-    const status = labelToStatus(labelText, this.cmsLabelPrefix);
-
-    return { branch, collection, slug, path, status, mediaFiles };
-  }
 
   async readFileMetadata(
     path: string,
@@ -500,7 +478,7 @@ export default class API {
 
       const azureGitItem = await this.requestJSON<AzureGitItem>({
         url: `${this.endpointUrl}/items/`,
-        params: azureGitItemParams, // Azure
+        params: azureGitItemParams,
       });
 
       const azureGitTreeRef = await this.requestJSON<AzureGitTreeRef>(
@@ -537,9 +515,13 @@ export default class API {
       }
 
       return processedAzureTreeEntries;
-    } catch (error) {
-      console.error(error);
-      return [];
+    } catch (err) {
+      if (err && err.status === 404) {
+        console.log('This 404 was expected and handled appropriately.');
+        return [];
+      } else {
+        throw err;
+      }
     }
   };
 
@@ -556,9 +538,7 @@ export default class API {
       },
     });
 
-    return first(
-      refs.value.filter((b: AzureRef) => b.name == this.branchToRef(branch)),
-    ) as AzureRef;
+    return refs.value.find((b: AzureRef) => b.name == this.branchToRef(branch)) as AzureRef;
   }
 
   async deleteRef(ref: AzureRef): Promise<void> {
@@ -580,7 +560,7 @@ export default class API {
   uploadAndCommit(
     items: AzureCommitItem[],
     comment = 'Creating new files',
-    branch: string = this.branch,
+    branch = this.branch,
     newBranch = false,
   ) {
     return this.getRef(branch).then(async (ref: AzureRef) => {
@@ -626,26 +606,26 @@ export default class API {
     });
   }
 
-  async readUnpublishedBranchFile(contentKey: string) {
-    const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
-      contentKey,
-    );
-    const [fileData, isModification] = await Promise.all([
-      this.readFile(path, null, { branch }) as Promise<string>,
-      this.isFileExists(path, this.branch),
-    ]);
+  // async readUnpublishedBranchFile(contentKey: string) {
+  //   const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
+  //     contentKey,
+  //   );
+  //   const [fileData, isModification] = await Promise.all([
+  //     this.readFile(path, null, { branch }) as Promise<string>,
+  //     this.isFileExists(path, this.branch),
+  //   ]);
 
-    return {
-      slug,
-      metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
-      fileData,
-      isModification,
-    };
-  }
+  //   return {
+  //     slug,
+  //     metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
+  //     fileData,
+  //     isModification,
+  //   };
+  // }
 
   async retrieveUnpublishedEntryData(contentKey: string) {
     const { collection, slug } = parseContentKey(contentKey);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const diffs = await this.getDifferences(pullRequest.sourceRefName);
     const diffsWithIds = await Promise.all(
@@ -669,16 +649,16 @@ export default class API {
     };
   }
 
-  isUnpublishedEntryModification(path: string, branch: string) {
-    return this.readFile(path, null, { branch })
-      .then(() => true)
-      .catch((err: Error) => {
-        if (err.message && err.message === 'Not Found') {
-          return false;
-        }
-        throw err;
-      });
-  }
+  // isUnpublishedEntryModification(path: string, branch: string) {
+  //   return this.readFile(path, null, { branch })
+  //     .then(() => true)
+  //     .catch((err: Error) => {
+  //       if (err.message && err.message === 'Not Found') {
+  //         return false;
+  //       }
+  //       throw err;
+  //     });
+  // }
 
   /**
    * Retrieve statuses for a given SHA. Unrelated to the editorial workflow
@@ -687,7 +667,7 @@ export default class API {
   // async getStatuses(collection: string, slug: string) {
   async getStatuses(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     await this.getBranchPullRequest(branch);
 
@@ -750,14 +730,6 @@ export default class API {
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(push),
     });
-  }
-
-  contentKeyFromBranch(branch: string) {
-    return branch.substring(`${CMS_BRANCH_PREFIX}/`.length);
-  }
-
-  branchFromContentKey(contentKey: string) {
-    return `${CMS_BRANCH_PREFIX}/${contentKey}`;
   }
 
   async getPullRequests(sourceBranch?: string): Promise<AzurePullRequest[]> {
@@ -864,7 +836,7 @@ export default class API {
   ) {
     // assumes entry.dataFiles share the same slug
     const contentKey = generateContentKey(options.collectionName as string, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
 
     if (!unpublished) {
@@ -891,7 +863,7 @@ export default class API {
    */
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     const contentKey = generateContentKey(collection, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
 
     const mergeRequest = await this.getBranchPullRequest(branch);
 
@@ -907,14 +879,14 @@ export default class API {
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchPullRequest(branch);
     await this.abandonPullRequest(mergeRequest);
   }
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = generateContentKey(collectionName, slug);
-    const branch = this.branchFromContentKey(contentKey);
+    const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchPullRequest(branch);
     await this.completePullRequest(mergeRequest);
   }

@@ -27,6 +27,7 @@ import {
   filterByExtension,
   branchFromContentKey,
   entriesByFolder,
+  contentKeyFromBranch,
 } from 'netlify-cms-lib-util';
 import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
@@ -92,7 +93,13 @@ export default class Azure implements Implementation {
 
     this.api = this.options.API || null;
 
-    this.repo = new AzureRepo(config.backend.repo);
+    this.repo = config.backend.repo
+      ? new AzureRepo(config.backend.repo)
+      : {
+          org: '',
+          project: '',
+          name: '',
+        };
     this.branch = config.backend.branch || 'master';
     this.identityUrl = config.backend.identity_url || '';
     this.apiRoot = config.backend.api_root || 'https://dev.azure.com';
@@ -320,7 +327,7 @@ export default class Azure implements Implementation {
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>
-        branches.map(branch => this.api!.contentKeyFromBranch(branch)),
+        branches.map(branch => contentKeyFromBranch(branch)),
       );
 
     const ids = await unpublishedEntries(listEntriesKeys);

@@ -30,10 +30,13 @@ Here are some links to get you started:
 
 #### Step-by-step
 _NOTE:_ The following step-by-step was written by an early contributor to the azure-backend code and has not been verified, but it seems accurate and may be more direct than digging through all of the Azure documentation.
+
   1. Sign into https://portal.azure.com
   2. Search for "Azure Active Directory" (also known as AAD)
+
       1. Double check that you see the tenant associated with your Azure DevOps instance!
       2. If not, use the directory switcher in the top bar to go to the right directory.
+  
   3. In the Azure AD blade, find "App Registrations".
   4. Click "New registration"
   5. Enter a display name, for example: `Netlify CMS for Azure DevOps`
@@ -41,17 +44,22 @@ _NOTE:_ The following step-by-step was written by an early contributor to the az
   7. Enter your redirect URL, e.g. http://localhost:8080
   8. Press "OK" to create the app
   9. Go to "API permissions"
+  
       1. Click "Add a permission"
       2. Click "Azure DevOps"
       3. Under "Delegated permissions", check "user_impersonation"
       4. Click "Add permissions"
+  
   10. To save users having to consent, hit "Grant admin consent for (your tenant)"
   11. Go to "Authentication"
+
       1. Under "Web", find the "Implicit grant" section
       2. Check "Access tokens" and "Identity tokens"
       3. Enter "https://dev.azure.com/(yourorgname) in the redirect URIs list (*Note to self: check this is necessary!*)
       4. Click "Save"
+  
   12. Go to "Overview"
+  
       1. Note the "Application (client) ID" for the app_id config.yml setting.
       2. Note the "Directory (tenant) ID" to append to the identity_url setting.
 
