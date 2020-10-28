@@ -18,7 +18,11 @@ import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms
 import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 
 function valueToString(value) {
-  return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
+  if(value.isArray()){
+    return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
+  } else {
+    return value ? value.replace(/,([^\s]|$)/g, ', $1') : '';
+  }
 }
 
 const ObjectControl = NetlifyCmsWidgetObject.controlComponent;
