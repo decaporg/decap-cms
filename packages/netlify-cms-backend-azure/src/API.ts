@@ -55,7 +55,7 @@ interface AzureCommitAuthor {
   name: string;
   email: string;
 }
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-5.1#gititem
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-6.0#gititem
 interface AzureGitItem {
   // this is the response we see in Azure, but it is just documented as "Object[]" so it is inconsistent
   _links: {
@@ -88,7 +88,7 @@ export interface AzureGitTreeEntryRef {
   url: string;
 }
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-5.1#gitpullrequest
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-6.0#gitpullrequest
 interface AzureWebApiTagDefinition {
   active: boolean;
   id: string;
@@ -148,12 +148,12 @@ enum AzureAsyncPullRequestStatus {
   SUCCEEDED = 'succeeded',
 }
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-5.1#gitcommitdiffs
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.0#gitcommitdiffs
 interface AzureGitCommitDiffs {
   changes: AzureGitChange[];
 }
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-5.1#gitchange
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.0#gitchange
 interface AzureGitChange {
   changeId: number;
   item: AzureGitChangeItem; // string
@@ -326,7 +326,7 @@ export default class API {
   apiVersion: string;
   token?: string;
   branch: string;
-  squashMerges: boolean;
+  mergeStrategy: string;
   repo: AzureRepo;
   endpointUrl: string;
   initialWorkflowStatus: string;
@@ -339,9 +339,9 @@ export default class API {
     this.endpointUrl = `${this.apiRoot}/${this.repo?.org}/${this.repo?.project}/_apis/git/repositories/${this.repo?.name}`;
     this.token = token || undefined;
     this.branch = config.branch || 'master';
-    this.squashMerges = config.squashMerges || true;
+    this.mergeStrategy = config.squashMerges ? 'squash' : 'noFastForward';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
-    this.apiVersion = '5.1'; // Azure API version is recommended and sometimes even required
+    this.apiVersion = '6.0'; // Azure API version is recommended and sometimes even required
     this.cmsLabelPrefix = CMS_BRANCH_PREFIX ? CMS_BRANCH_PREFIX : '/cms';
   }
 
@@ -352,7 +352,6 @@ export default class API {
     req = unsentRequest.withHeaders(
       {
         'Content-Type': 'application/json; charset=utf-8',
-        // Origin: '*',
       },
       req,
     );
@@ -779,7 +778,7 @@ export default class API {
 
   /**
    * Creates a new pull request with a label of "draft", based on the target branch.
-   * See documentation at: https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/create?view=azure-devops-rest-5.1
+   * See documentation at: https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/create?view=azure-devops-rest-6.0
    * @param branch The branch to create the pull request from.
    * @param commitMessage A message to use as the title for the pull request.
    * @param status The status of the pull request.
@@ -900,7 +899,7 @@ export default class API {
             pullRequest.pullRequestId,
           )}/labels/${encodeURIComponent(l.id)}`,
           params: {
-            'api-version': '5.1-preview.1',
+            'api-version': '6.0-preview.1',
           },
         });
       }
@@ -913,7 +912,7 @@ export default class API {
           pullRequest.pullRequestId,
         )}/labels`,
         params: {
-          'api-version': '5.1-preview',
+          'api-version': '6.0-preview',
         },
         body: JSON.stringify({ name: l }),
       });
@@ -933,7 +932,7 @@ export default class API {
       completionOptions: {
         deleteSourceBranch: true,
         mergeCommitMessage: `Completed merge of ${pullRequest.title}`,
-        mergeStrategy: this.squashMerges ? 'squash' : 'noFastForward',
+        mergeStrategy: this.mergeStrategy,
       },
     };
 
