@@ -177,15 +177,10 @@ type AzureRefUpdate = {
   oldObjectId: string;
 };
 
-class AzureRef {
+type AzureRef = {
   name: string;
   objectId: string;
-
-  constructor(name: string, objectId: string) {
-    this.name = name;
-    this.objectId = objectId;
-  }
-}
+};
 
 class AzureItemContent {
   content: string;
@@ -568,7 +563,10 @@ export default class API {
       }
 
       if (newBranch) {
-        ref = new AzureRef(this.branchToRef(branch), ref.objectId);
+        ref = {
+          name: this.branchToRef(branch),
+          objectId: ref.objectId,
+        } as AzureRef;
       }
 
       const commit = new AzureCommit(comment);
@@ -968,8 +966,9 @@ export default class API {
     });
 
     // Also delete the source branch.
-    await this.deleteRef(
-      new AzureRef(pullRequest.sourceRefName, pullRequest.lastMergeSourceCommit.commitId),
-    );
+    await this.deleteRef({
+      name: pullRequest.sourceRefName,
+      objectId: pullRequest.lastMergeSourceCommit.commitId,
+    } as AzureRef);
   }
 }
