@@ -41,7 +41,7 @@ yarn add netlify-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gr
 npm add netlify-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
 ```
 
-Now that the plugins are installed, it's now time to setup the right configuration. Open the `gridsome.config.js` file and make sure it looks like this:
+Now that the plugins are installed, it's time to setup the configuration. Open the `gridsome.config.js` file and update its content to:
 
 ```js
 module.exports = {
@@ -50,10 +50,7 @@ module.exports = {
     remark: {
       externalLinksTarget: '_blank',
       externalLinksRel: ['nofollow', 'noopener', 'noreferrer'],
-      anchorClassName: 'icon icon-link',
-      plugins: [
-        // ...global plugins
-      ]
+      anchorClassName: 'icon icon-link'
     }
   },
 
@@ -62,12 +59,7 @@ module.exports = {
       use: '@gridsome/source-filesystem',
       options: {
         path: 'posts/**/*.md',
-        typeName: 'Post',
-        remark: {
-          plugins: [
-            // ...local plugins
-          ]
-        }
+        typeName: 'Post'
       }
     },
     {
@@ -80,7 +72,7 @@ module.exports = {
 }
 ```
 
-Please read [gridsome-plugin-netlify-cms](https://gridsome.org/plugins/gridsome-plugin-netlify-cms), [transformer-remark](https://gridsome.org/plugins/@gridsome/transformer-remark) for more information about the configurations.
+Please read [gridsome-plugin-netlify-cms](https://gridsome.org/plugins/gridsome-plugin-netlify-cms), [transformer-remark](https://gridsome.org/plugins/@gridsome/transformer-remark) for more information.
 
 ## Netlify CMS setup
 
@@ -91,16 +83,16 @@ Please read [gridsome-plugin-netlify-cms](https://gridsome.org/plugins/gridsome-
 Your `index.html` should look like this:
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Netlify CMS</title>
-</head>
-<body>
-  <script src="index.js" type="module"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Netlify CMS</title>
+  </head>
+  <body>
+    <script src="index.js" type="module"></script>
+  </body>
 </html>
 ```
 
@@ -114,8 +106,8 @@ Your `config.yml` for GitHub should look like this:
 
 ```yml
 backend:
-  name: github
-  repo: your_name/repo_name
+  name: git-gateway
+  branch: master
 
 media_folder: "static/uploads"
 public_folder: "/uploads"
@@ -131,6 +123,18 @@ collections:
       - {label: "Excerpt", name: "excerpt", widget: "string"}
       - {label: "Publish Date", name: "date", widget: "datetime"}
       - {label: "Body", name: "body", widget: "markdown"}
+```
+
+## Push to GitHub
+
+It's now time to commit your changes and push to GitHub.
+
+```javascript
+git init
+git add .
+git commit -m "Initial Commit"
+git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git
+git push -u origin master
 ```
 
 ## Add your repo to Netlify
