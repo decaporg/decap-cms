@@ -24,7 +24,7 @@ export default class AzureAuthenticationPage extends React.Component {
 
   componentDidMount() {
     this.auth = new ImplicitAuthenticator({
-      base_url: this.props.config.backend.identity_url.trim('/'),
+      base_url: `https://login.microsoftonline.com/${this.props.config.backend.tenant_id}`,
       auth_endpoint: 'oauth2/authorize',
       app_id: this.props.config.backend.app_id,
       clearHash: this.props.clearHash,
@@ -37,23 +37,24 @@ export default class AzureAuthenticationPage extends React.Component {
       }
       this.props.onLogin(data);
     });
-    // Obsolete Azure documentation claims resource is optional...
-    this.authSettings = {
-      scope: 'vso.code_full,user.read',
-      resource: '499b84ac-1321-427f-aa17-267ca6975798',
-      prompt: 'select_account',
-    };
   }
 
   handleLogin = e => {
     e.preventDefault();
-    this.auth.authenticate(this.authSettings, (err, data) => {
-      if (err) {
-        this.setState({ loginError: err.toString() });
-        return;
-      }
-      this.props.onLogin(data);
-    });
+    this.auth.authenticate(
+      {
+        scope: 'vso.code_full,user.read',
+        resource: '499b84ac-1321-427f-aa17-267ca6975798',
+        prompt: 'select_account',
+      },
+      (err, data) => {
+        if (err) {
+          this.setState({ loginError: err.toString() });
+          return;
+        }
+        this.props.onLogin(data);
+      },
+    );
   };
 
   render() {
@@ -71,6 +72,7 @@ export default class AzureAuthenticationPage extends React.Component {
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithAzure')}
           </React.Fragment>
         )}
+        t={t}
       />
     );
   }

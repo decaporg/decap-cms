@@ -1,7 +1,7 @@
 import { trimStart, trim, last } from 'lodash';
 import semaphore, { Semaphore } from 'semaphore';
 import AuthenticationPage from './AuthenticationPage';
-import API, { API_NAME, AzureRepo } from './API';
+import API, { API_NAME } from './API';
 import {
   Credentials,
   Implementation,
@@ -28,50 +28,48 @@ import {
   branchFromContentKey,
   entriesByFolder,
   contentKeyFromBranch,
+  getBlobSHA,
 } from 'netlify-cms-lib-util';
-import { getBlobSHA } from 'netlify-cms-lib-util/src';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
-/**
- * Check a given status context string to determine if it provides a link to a
- * deploy preview. Checks for an exact match against `previewContext` if given,
- * otherwise checks for inclusion of a value from `PREVIEW_CONTEXT_KEYWORDS`.
+const parseAzureRepo = (config: Config) => {
+  const { repo } = config.backend;
 
-function isPreviewContext(context, previewContext) {
-  if (previewContext) {
-    return context === previewContext;
+  if (typeof repo !== 'string') {
+    throw new Error('The Azure backend needs a "repo" in the backend configuration.');
   }
-  return PREVIEW_CONTEXT_KEYWORDS.some(keyword => context.includes(keyword));
-}
- */
 
-/**
- * Retrieve a deploy preview URL from an array of statuses. By default, a
- * matching status is inferred via `isPreviewContext`.
- *
- function getPreviewStatus(statuses, config) {
-  const previewContext = config.getIn(['backend', 'preview_context']);
-  return statuses.find(({ context }) => {
-    return isPreviewContext(context, previewContext);
-  });
-}
-**/
+  const parts = repo.split('/');
+  if (parts.length !== 3) {
+    throw new Error('The Azure backend must be in a the format of {org}/{project}/{repo}');
+  }
+
+  const [org, project, repoName] = repo;
+  return {
+    org,
+    project,
+    repoName,
+  };
+};
 
 export default class Azure implements Implementation {
   lock: AsyncLock;
-  api: API | null;
+  api?: API;
   options: {
-    proxied: boolean;
-    API: API | null;
     initialWorkflowStatus: string;
   };
-  identityUrl: string;
-  repo: AzureRepo;
+  repo: {
+    org: string;
+    project: string;
+    repoName: string;
+  };
   branch: string;
   apiRoot: string;
+  apiVersion: string;
   token: string | null;
   squashMerges: boolean;
+  cmsLabelPrefix: string;
   mediaFolder: string;
   previewContext: string;
 
@@ -79,32 +77,17 @@ export default class Azure implements Implementation {
 
   constructor(config: Config, options = {}) {
     this.options = {
-      proxied: false,
-      API: null,
       initialWorkflowStatus: '',
       ...options,
     };
 
-    if (!this.options.proxied) {
-      if (config.backend.repo === null || config.backend.repo === undefined) {
-        throw new Error('The Azure backend needs a "repo" in the backend configuration.');
-      }
-    }
-
-    this.api = this.options.API || null;
-
-    this.repo = config.backend.repo
-      ? new AzureRepo(config.backend.repo)
-      : {
-          org: '',
-          project: '',
-          name: '',
-        };
+    this.repo = parseAzureRepo(config);
     this.branch = config.backend.branch || 'master';
-    this.identityUrl = config.backend.identity_url || '';
     this.apiRoot = config.backend.api_root || 'https://dev.azure.com';
+    this.apiVersion = config.backend.api_version || '6.0-preview.1';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = trim(config.media_folder, '/');
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
@@ -116,8 +99,7 @@ export default class Azure implements Implementation {
 
   async status() {
     const auth =
-      (await this.api
-        ?.user()
+      (await this.api!.user()
         .then(user => !!user)
         .catch(e => {
           console.warn('Failed getting Azure user', e);
@@ -135,31 +117,22 @@ export default class Azure implements Implementation {
     return this.authenticate(user);
   }
 
-  /**
-   * Handle authentication by creating the Azure DevOps API object, which
-   * will be used for future operations. Also load details of the current
-   * user.
-   *
-   * @param state Oauth credentials containing implicit flow auth token.
-   */
   async authenticate(state: Credentials) {
     this.token = state.token as string;
     this.api = new API(
       {
         apiRoot: this.apiRoot,
+        apiVersion: this.apiVersion,
         repo: this.repo,
         branch: this.branch,
-        path: '/',
         squashMerges: this.squashMerges,
+        cmsLabelPrefix: this.cmsLabelPrefix,
         initialWorkflowStatus: this.options.initialWorkflowStatus,
       },
       this.token,
     );
 
-    // Get a JSON representation of the user object and capture the name and email
-    // address for later use on commits.
     const user = await this.api.user();
-    this.api!.commitAuthor = { name: user.displayName, email: user.emailAddress };
     return { name: user.displayName, token: state.token as string, ...user };
   }
 
@@ -206,7 +179,6 @@ export default class Azure implements Implementation {
     return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
   }
 
-  // Fetches a single entry.
   async getEntry(path: string) {
     const data = (await this.api!.readFile(path)) as string;
     return {
@@ -215,25 +187,16 @@ export default class Azure implements Implementation {
     };
   }
 
-  /**
-   * Lists all files in the media library, then downloads each one and provides its
-   * content as a blob URL.
-   */
-  async getMedia(): Promise<ImplementationMediaFile[]> {
-    return this.api!.listFiles(this.mediaFolder).then(async files => {
-      if (files && files.length) {
-        return await Promise.all(
-          files.map(async ({ objectId, relativePath, size, url }) => {
-            const name: string = last(relativePath.split('/')) || '';
-            const blobUrl = await this.getMediaDisplayURL({ id: objectId, path: relativePath });
-
-            return { id: objectId, name, size, displayURL: blobUrl || url, path: relativePath };
-          }),
-        );
-      } else {
-        return [];
-      }
-    });
+  async getMedia() {
+    const files = await this.api!.listFiles(this.mediaFolder);
+    const mediaFiles = await Promise.all(
+      files.map(async ({ objectId, relativePath, size, url }) => {
+        const name: string = last(relativePath.split('/')) || '';
+        const blobUrl = await this.getMediaDisplayURL({ id: objectId, path: relativePath });
+        return { id: objectId, name, size, displayURL: blobUrl || url, path: relativePath };
+      }),
+    );
+    return mediaFiles;
   }
 
   getMediaDisplayURL(displayURL: DisplayURL) {
@@ -297,25 +260,24 @@ export default class Azure implements Implementation {
     await this.api!.deleteFiles(paths, commitMessage);
   }
 
-  loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
+  async loadMediaFile(branch: string, file: UnpublishedEntryMediaFile) {
     const readFile = (
       path: string,
       id: string | null | undefined,
       { parseText }: { parseText: boolean },
     ) => this.api!.readFile(path, id, { branch, parseText });
 
-    return getMediaAsBlob(file.path, null, readFile).then(blob => {
-      const name = basename(file.path);
-      const fileObj = new File([blob], name);
-      return {
-        id: file.path,
-        displayURL: URL.createObjectURL(fileObj),
-        path: file.path,
-        name,
-        size: fileObj.size,
-        file: fileObj,
-      };
-    });
+    const blob = await getMediaAsBlob(file.path, null, readFile);
+    const name = basename(file.path);
+    const fileObj = new File([blob], name);
+    return {
+      id: file.path,
+      displayURL: URL.createObjectURL(fileObj),
+      path: file.path,
+      name,
+      size: fileObj.size,
+      file: fileObj,
+    };
   }
 
   async loadEntryMediaFiles(branch: string, files: UnpublishedEntryMediaFile[]) {
@@ -400,12 +362,6 @@ export default class Azure implements Implementation {
     );
   }
 
-  /**
-   * Uses Azure's Statuses API to retrieve statuses, infers which is for a
-   * deploy preview via `getPreviewStatus`. Returns the url provided by the
-   * status, as well as the status state, which should be one of 'success',
-   * 'pending', and 'failure'.
-   */
   async getDeployPreview(collection: string, slug: string) {
     try {
       const statuses = await this.api!.getStatuses(collection, slug);

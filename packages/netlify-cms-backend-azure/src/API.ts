@@ -1,5 +1,5 @@
 import { Base64 } from 'js-base64';
-import { flow, partial, result, trim, trimStart } from 'lodash';
+import { partial, result, trim, trimStart } from 'lodash';
 import {
   localForage,
   APIError,
@@ -10,8 +10,8 @@ import {
   AssetProxy,
   PersistOptions,
   readFile,
-  CMS_BRANCH_PREFIX,
   DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
   generateContentKey,
   parseContentKey,
   labelToStatus,
@@ -23,40 +23,18 @@ import {
   DataFile,
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
+import { dirname } from 'path';
 
 export const API_NAME = 'Azure DevOps';
 
-export class AzureRepo {
-  org: string;
-  project: string;
-  name: string;
-
-  constructor(location: string | null) {
-    if (!location || location.indexOf('/') === -1) {
-      throw new Error(
-        "An Azure repository must be specified in the format 'organisation/project', or 'organisation/project/repo'.",
-      );
-    }
-
-    const components = trim(location, '/').split('/', 3);
-    this.org = components[0];
-    this.project = components[1];
-    this.name = components[2] || components[1];
-  }
-}
-
-interface AzureUser {
+type AzureUser = {
   id: string;
   displayName: string;
   emailAddress: string;
-}
+};
 
-interface AzureCommitAuthor {
-  name: string;
-  email: string;
-}
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-6.0#gititem
-interface AzureGitItem {
+type AzureGitItem = {
   // this is the response we see in Azure, but it is just documented as "Object[]" so it is inconsistent
   _links: {
     tree: {
@@ -66,37 +44,37 @@ interface AzureGitItem {
   commitId: string;
   isFolder: boolean;
   isSymLink: boolean;
-}
+};
 
-interface AzureGitTreeRef {
-  _links: AzureReferenceLinks[];
-  url: string;
-  href: string;
-  treeEntries?: AzureGitTreeEntryRef[];
-}
-
-interface AzureReferenceLinks {
-  links: object[];
-  tree?: AzureGitTreeRef;
-}
-
-export interface AzureGitTreeEntryRef {
+type AzureGitTreeEntryRef = {
   gitObjectType: string;
   objectId: string;
   relativePath: string;
   size: number;
   url: string;
-}
+};
+
+type AzureGitTreeRef = {
+  _links: AzureReferenceLinks[];
+  url: string;
+  href: string;
+  treeEntries?: AzureGitTreeEntryRef[];
+};
+
+type AzureReferenceLinks = {
+  links: object[];
+  tree?: AzureGitTreeRef;
+};
 
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-6.0#gitpullrequest
-interface AzureWebApiTagDefinition {
+type AzureWebApiTagDefinition = {
   active: boolean;
   id: string;
   name: string;
   url: string;
-}
+};
 
-interface AzurePullRequest {
+type AzurePullRequest = {
   title: string;
   artifactId: string;
   closedDate: string;
@@ -107,7 +85,7 @@ interface AzurePullRequest {
   pullRequestId: number;
   labels: AzureWebApiTagDefinition[];
   sourceRefName: string;
-}
+};
 
 type AzurePullRequestStatusItem = {
   status: AzurePullRequestStatus;
@@ -130,7 +108,6 @@ enum AzureCommitChangeType {
 }
 
 enum AzureItemContentType {
-  RAW = 'rawtext',
   BASE64 = 'base64encoded',
 }
 
@@ -156,7 +133,7 @@ interface AzureGitCommitDiffs {
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.0#gitchange
 interface AzureGitChange {
   changeId: number;
-  item: AzureGitChangeItem; // string
+  item: AzureGitChangeItem;
   changeType: AzureCommitChangeType;
   originalPath: string;
   url: string;
@@ -172,202 +149,127 @@ interface AzureGitChangeItem {
   url: string;
 }
 
-type AzureRefUpdate = {
-  name: string;
-  oldObjectId: string;
-};
-
 type AzureRef = {
   name: string;
   objectId: string;
 };
 
-class AzureItemContent {
-  content: string;
-  contentType: AzureItemContentType;
-
-  constructor(content: string, type: AzureItemContentType) {
-    this.content = content;
-    this.contentType = type;
-  }
-}
-
-class AzureCommitChangeItem {
-  path: string;
-
-  constructor(path: string) {
-    this.path = path;
-  }
-}
-
-class AzureCommitChange {
-  changeType: AzureCommitChangeType;
-  item: AzureCommitChangeItem;
-
-  constructor(changeType: AzureCommitChangeType, path: string) {
-    this.changeType = changeType;
-    this.item = new AzureCommitChangeItem(path);
-  }
-}
-
-class AzureCommitAddChange extends AzureCommitChange {
-  newContent: AzureItemContent;
-
-  constructor(path: string, content: string, type: AzureItemContentType) {
-    super(AzureCommitChangeType.ADD, path);
-    this.newContent = new AzureItemContent(content, type);
-  }
-}
-
-class AzureCommitEditChange extends AzureCommitChange {
-  newContent: AzureItemContent;
-
-  constructor(path: string, content: string, type: AzureItemContentType) {
-    super(AzureCommitChangeType.EDIT, path);
-    this.newContent = new AzureItemContent(content, type);
-  }
-}
-
-class AzureCommitRenameChange extends AzureCommitChange {
-  sourceServerItem: string;
-
-  constructor(source: string, destination: string) {
-    super(AzureCommitChangeType.RENAME, destination);
-    this.sourceServerItem = source;
-  }
-}
-
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/**
- * Change list provides an easy way to create a range of different changes on a single
- * commit. Rename serves as move.
- */
-class AzureChangeList extends Array<AzureCommitChange> {
-  constructor() {
-    super();
+const getChangeItem = (item: AzureCommitItem) => {
+  switch (item.action) {
+    case AzureCommitChangeType.ADD:
+      return {
+        changeType: AzureCommitChangeType.ADD,
+        item: { path: item.path },
+        newContent: {
+          content: item.base64Content,
+          contentType: AzureItemContentType.BASE64,
+        },
+      };
+    case AzureCommitChangeType.EDIT:
+      return {
+        changeType: AzureCommitChangeType.EDIT,
+        item: { path: item.path },
+        newContent: {
+          content: item.base64Content,
+          contentType: AzureItemContentType.BASE64,
+        },
+      };
+    case AzureCommitChangeType.DELETE:
+      return {
+        changeType: AzureCommitChangeType.DELETE,
+        item: { path: item.path },
+      };
+    case AzureCommitChangeType.RENAME:
+      return {
+        changeType: AzureCommitChangeType.RENAME,
+        item: { path: item.path },
+        sourceServerItem: item.path,
+        ...(item.base64Content && {
+          newContent: {
+            content: item.base64Content,
+            contentType: AzureItemContentType.BASE64,
+          },
+        }),
+      };
+    default:
+      return {};
   }
-
-  addBase64(path: string, base64data: string) {
-    this.push(new AzureCommitAddChange(path, base64data, AzureItemContentType.BASE64));
-  }
-
-  addRawText(path: string, text: string) {
-    this.push(new AzureCommitAddChange(path, text, AzureItemContentType.RAW));
-  }
-
-  delete(path: string) {
-    this.push(new AzureCommitChange(AzureCommitChangeType.DELETE, path));
-  }
-
-  editBase64(path: string, base64data: string) {
-    this.push(new AzureCommitEditChange(path, base64data, AzureItemContentType.BASE64));
-  }
-
-  rename(source: string, destination: string) {
-    this.push(new AzureCommitRenameChange(source, destination));
-  }
-}
+};
 
 type AzureCommitItem = {
   action: AzureCommitChangeType;
-  base64Content: string;
+  base64Content?: string;
   path: string;
+  oldPath?: string;
 };
 
-class AzureCommit {
-  comment: string;
-  changes: AzureChangeList;
-
-  constructor(comment = 'Default commit comment') {
-    this.comment = comment;
-    this.changes = new AzureChangeList();
-  }
-}
-
-class AzurePush {
-  refUpdates: AzureRefUpdate[];
-  commits: AzureCommit[];
-
-  constructor(ref: AzureRef) {
-    this.refUpdates = [{ name: ref.name, oldObjectId: ref.objectId }];
-    this.commits = [];
-  }
-}
-
-class AzurePRLabel {
-  id: string;
-  name: string;
-
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.name = name;
-  }
-}
-
-export interface AzureApiConfig {
+interface AzureApiConfig {
   apiRoot: string;
-  repo: AzureRepo;
+  repo: { org: string; project: string; repoName: string };
   branch: string;
-  path: string;
   squashMerges: boolean;
   initialWorkflowStatus: string;
+  cmsLabelPrefix: string;
+  apiVersion: string;
 }
 
 export default class API {
-  apiRoot: string;
   apiVersion: string;
-  token?: string;
+  token: string;
   branch: string;
   mergeStrategy: string;
-  repo: AzureRepo;
   endpointUrl: string;
   initialWorkflowStatus: string;
-  commitAuthor?: AzureCommitAuthor;
   cmsLabelPrefix: string;
 
   constructor(config: AzureApiConfig, token: string) {
-    this.repo = config.repo;
-    this.apiRoot = trim(config.apiRoot, '/') || 'https://dev.azure.com';
-    this.endpointUrl = `${this.apiRoot}/${this.repo?.org}/${this.repo?.project}/_apis/git/repositories/${this.repo?.name}`;
-    this.token = token || undefined;
-    this.branch = config.branch || 'master';
+    const { repo } = config;
+    const apiRoot = trim(config.apiRoot, '/');
+    this.endpointUrl = `${apiRoot}/${repo.org}/${repo.project}/_apis/git/repositories/${repo.repoName}`;
+    this.token = token;
+    this.branch = config.branch;
     this.mergeStrategy = config.squashMerges ? 'squash' : 'noFastForward';
     this.initialWorkflowStatus = config.initialWorkflowStatus;
-    this.apiVersion = '6.0'; // Azure API version is recommended and sometimes even required
-    this.cmsLabelPrefix = CMS_BRANCH_PREFIX ? CMS_BRANCH_PREFIX : '/cms';
+    this.apiVersion = config.apiVersion;
+    this.cmsLabelPrefix = config.cmsLabelPrefix;
   }
 
-  withAuthorizationHeaders = (req: ApiRequest) =>
-    unsentRequest.withHeaders(this.token ? { Authorization: `Bearer ${this.token}` } : {}, req);
-
-  withAzureFeatures = (req: ApiRequest) => {
-    req = unsentRequest.withHeaders(
+  withHeaders = (req: ApiRequest) => {
+    const withHeaders = unsentRequest.withHeaders(
       {
+        Authorization: `Bearer ${this.token}`,
         'Content-Type': 'application/json; charset=utf-8',
       },
       req,
     );
+    return withHeaders;
+  };
 
-    req = unsentRequest.withParams(
+  withAzureFeatures = (req: ApiRequest) => {
+    const withParams = unsentRequest.withParams(
       {
-        'api-version': this.apiVersion + '-preview',
+        'api-version': this.apiVersion,
       },
       req,
     );
 
-    return req;
+    return withParams;
   };
 
-  buildRequest = (req: ApiRequest) =>
-    flow([
-      unsentRequest.withRoot(this.apiRoot),
-      this.withAuthorizationHeaders,
-      this.withAzureFeatures,
-      unsentRequest.withNoCache,
-    ])(req);
+  buildRequest = (req: ApiRequest) => {
+    const withHeaders = this.withHeaders(req);
+    const withAzureFeatures = this.withAzureFeatures(withHeaders);
+    if (withAzureFeatures.has('cache')) {
+      return withAzureFeatures;
+    } else {
+      const withNoCache = unsentRequest.withNoCache(withAzureFeatures);
+      return withNoCache;
+    }
+  };
 
   request = (req: ApiRequest): Promise<Response> => {
     try {
@@ -388,16 +290,13 @@ export default class API {
   fromBase64 = (str: string) => Base64.decode(str);
 
   branchToRef = (branch: string): string => `refs/heads/${branch}`;
-  refToBranch = (ref: string): string => ref.substr(11);
+  refToBranch = (ref: string): string => ref.substr('refs/heads/'.length);
 
-  /**
-   * Get the name of the current user by hitting the VS /me endpoint to
-   * return an AzureUser object.
-   */
-  user = (): Promise<AzureUser> => {
-    return this.requestJSON({
+  user = async () => {
+    const user = await this.requestJSON<AzureUser>({
       url: 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me',
-    }) as Promise<AzureUser>;
+    });
+    return user;
   };
 
   async readFileMetadata(
@@ -410,10 +309,10 @@ export default class API {
         const result = await this.request({
           url: `${this.endpointUrl}/commits/`,
           params: { 'searchCriteria.itemPath': path, 'searchCriteria.itemVersion.version': branch },
-          cache: 'no-store',
         });
 
-        const commit = (await this.responseToJSON(result))['value'][0];
+        const { value } = await this.responseToJSON(result);
+        const [commit] = value;
 
         return {
           author: commit.author.email || commit.author.name,
@@ -428,19 +327,11 @@ export default class API {
     return fileMetadata;
   }
 
-  /**
-   * Reads a single file from an Azure DevOps Git repository, using the 'items' endpoint,
-   * with the path to the desired file. Parses the response whether it's a string or blob,
-   * and then passes the retrieval function to the central readFile cache.
-   * @param path The repo-relative path of the file to read.
-   * @param sha  Null. Not used by the Azure implementation.
-   * @param opts Override options.
-   */
   readFile = async (
     path: string,
     sha?: string | null,
     { parseText = true, branch = this.branch } = {},
-  ): Promise<string | Blob> => {
+  ) => {
     const fetchContent = async () => {
       return await this.request({
         url: `${this.endpointUrl}/items/`,
@@ -452,23 +343,19 @@ export default class API {
     return await readFile(sha, fetchContent, localForage, parseText);
   };
 
-  listFiles = async (path: string, recursive = false) => {
+  listFiles = async (path: string, recursive = false, branch = this.branch) => {
     try {
-      let azureGitItemParams = {};
-
-      if (recursive) {
-        azureGitItemParams = {
-          version: this.branch,
-          scopePath: path,
-          recursionLevel: 'full',
-        };
-      } else {
-        azureGitItemParams = {
-          version: this.branch,
-          path,
-          recursionLevel: 'none',
-        };
-      }
+      const azureGitItemParams: Record<string, string> = recursive
+        ? {
+            version: branch,
+            scopePath: path,
+            recursionLevel: 'full',
+          }
+        : {
+            version: branch,
+            path,
+            recursionLevel: 'none',
+          };
 
       const azureGitItem = await this.requestJSON<AzureGitItem>({
         url: `${this.endpointUrl}/items/`,
@@ -519,11 +406,7 @@ export default class API {
     }
   };
 
-  /**
-   * Gets an AzureRef representing the HEAD commit of the specified branch.
-   * @param branch The name of the branch to get a commit ref for.
-   */
-  async getRef(branch: string = this.branch): Promise<AzureRef> {
+  async getRef(branch: string = this.branch) {
     const refs: { value: AzureRef[] } = await this.requestJSON({
       url: `${this.endpointUrl}/refs`,
       params: {
@@ -532,7 +415,7 @@ export default class API {
       },
     });
 
-    return refs.value.find((b: AzureRef) => b.name == this.branchToRef(branch)) as AzureRef;
+    return refs.value.find(b => b.name == this.branchToRef(branch))!;
   }
 
   async deleteRef(ref: AzureRef): Promise<void> {
@@ -551,74 +434,31 @@ export default class API {
     });
   }
 
-  uploadAndCommit(
+  async uploadAndCommit(
     items: AzureCommitItem[],
-    comment = 'Creating new files',
-    branch = this.branch,
-    newBranch = false,
+    message: string,
+    branch: string,
+    newBranch: boolean,
   ) {
-    return this.getRef(branch).then(async (ref: AzureRef) => {
-      if (ref == null) {
-        ref = await this.getRef(this.branch);
-      }
+    const ref = await this.getRef(newBranch ? branch : this.branch);
+    const refUpdate = {
+      name: this.branchToRef(branch),
+      oldObjectId: ref.objectId,
+    };
 
-      if (newBranch) {
-        ref = {
-          name: this.branchToRef(branch),
-          objectId: ref.objectId,
-        } as AzureRef;
-      }
+    const changes = items.map(item => getChangeItem(item));
+    const commit = [{ message, changes }];
+    const push = {
+      refUpdates: [refUpdate],
+      commits: [commit],
+    };
 
-      const commit = new AzureCommit(comment);
-
-      items.forEach((i: AzureCommitItem) => {
-        switch (i.action as AzureCommitChangeType) {
-          case AzureCommitChangeType.ADD:
-            commit.changes.addBase64(i.path, i.base64Content);
-            break;
-          case AzureCommitChangeType.EDIT:
-            commit.changes.editBase64(i.path, i.base64Content);
-            break;
-          case AzureCommitChangeType.DELETE:
-            commit.changes.delete(i.path);
-            break;
-          case AzureCommitChangeType.RENAME:
-            commit.changes.rename(i.path, i.path);
-            break;
-        }
-      });
-
-      // Only bother with a request if we're going to make changes.
-      if (commit.changes.length > 0) {
-        const push = new AzurePush(ref);
-        push.commits.push(commit);
-
-        return this.requestJSON({
-          url: `${this.endpointUrl}/pushes`,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
-          body: JSON.stringify(push),
-        });
-      }
+    return this.requestJSON({
+      url: `${this.endpointUrl}/pushes`,
+      method: 'POST',
+      body: JSON.stringify(push),
     });
   }
-
-  // async readUnpublishedBranchFile(contentKey: string) {
-  //   const { branch, collection, slug, path, status, mediaFiles } = await this.retrieveMetadata(
-  //     contentKey,
-  //   );
-  //   const [fileData, isModification] = await Promise.all([
-  //     this.readFile(path, null, { branch }) as Promise<string>,
-  //     this.isFileExists(path, this.branch),
-  //   ]);
-
-  //   return {
-  //     slug,
-  //     metaData: { branch, collection, objects: { entry: { path, mediaFiles } }, status },
-  //     fileData,
-  //     isModification,
-  //   };
-  // }
 
   async retrieveUnpublishedEntryData(contentKey: string) {
     const { collection, slug } = parseContentKey(contentKey);
@@ -646,26 +486,9 @@ export default class API {
     };
   }
 
-  // isUnpublishedEntryModification(path: string, branch: string) {
-  //   return this.readFile(path, null, { branch })
-  //     .then(() => true)
-  //     .catch((err: Error) => {
-  //       if (err.message && err.message === 'Not Found') {
-  //         return false;
-  //       }
-  //       throw err;
-  //     });
-  // }
-
-  /**
-   * Retrieve statuses for a given SHA. Unrelated to the editorial workflow
-   * concept of entry "status". Useful for things like deploy preview links.
-   */
-  // async getStatuses(collection: string, slug: string) {
   async getStatuses(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
     const branch = branchFromContentKey(contentKey);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     await this.getBranchPullRequest(branch);
 
     const statuses: AzurePullRequestStatusItem[] = [];
@@ -686,22 +509,46 @@ export default class API {
           this.isFileExists(file.path, branch),
         ]);
 
+        let action = AzureCommitChangeType.ADD;
+        let path = trimStart(file.path, '/');
+        let oldPath = undefined;
+        if (fileExists) {
+          oldPath = file.newPath && path;
+          action =
+            file.newPath && file.newPath !== oldPath
+              ? AzureCommitChangeType.RENAME
+              : AzureCommitChangeType.EDIT;
+          path = file.newPath ? trimStart(file.newPath, '/') : path;
+        }
+
         return {
-          action: fileExists ? AzureCommitChangeType.EDIT : AzureCommitChangeType.ADD,
+          action,
           base64Content,
-          path: trimStart(file.path, '/'),
-        };
+          path,
+          oldPath,
+        } as AzureCommitItem;
       }),
     );
-    return items as AzureCommitItem[];
+
+    // move children
+    for (const item of items.filter(i => i.oldPath && i.action === AzureCommitChangeType.RENAME)) {
+      const sourceDir = dirname(item.oldPath as string);
+      const destDir = dirname(item.path);
+      const children = await this.listFiles(sourceDir, true, branch);
+      children
+        .filter(f => f.relativePath !== item.oldPath)
+        .forEach(file => {
+          items.push({
+            action: AzureCommitChangeType.RENAME,
+            path: file.relativePath.replace(sourceDir, destDir),
+            oldPath: file.relativePath,
+          });
+        });
+    }
+
+    return items;
   }
 
-  /**
-   * Store a resource in the target repository.
-   * @param entry
-   * @param mediaFiles
-   * @param options
-   */
   async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = [...dataFiles, ...mediaFiles];
     if (options.useWorkflow) {
@@ -709,17 +556,25 @@ export default class API {
       return this.editorialWorkflowGit(files, slug, options);
     } else {
       const items = await this.getCommitItems(files, this.branch);
-      return this.uploadAndCommit(items, options.commitMessage);
+      return this.uploadAndCommit(items, options.commitMessage, this.branch, false);
     }
   }
 
-  async deleteFiles(paths: string[], comment: string) {
+  async deleteFiles(paths: string[], message: string) {
     const ref = await this.getRef(this.branch);
-    const commit = new AzureCommit(comment);
-    paths.forEach(path => commit.changes.delete(path));
+    const refUpdate = {
+      name: ref.name,
+      oldObjectId: ref.objectId,
+    };
 
-    const push = new AzurePush(ref);
-    push.commits.push(commit);
+    const changes = paths.map(path =>
+      getChangeItem({ action: AzureCommitChangeType.DELETE, path }),
+    );
+    const commit = [{ message, changes }];
+    const push = {
+      refUpdates: [refUpdate],
+      commits: [commit],
+    };
 
     return this.requestJSON({
       url: `${this.endpointUrl}/pushes`,
@@ -729,28 +584,23 @@ export default class API {
     });
   }
 
-  async getPullRequests(sourceBranch?: string): Promise<AzurePullRequest[]> {
+  async getPullRequests(sourceBranch?: string) {
     const pullRequests = await this.requestJSON<AzureArray<AzurePullRequest>>({
       url: `${this.endpointUrl}/pullrequests`,
       params: {
         'searchCriteria.status': 'active',
-        // eslint-disable-next-line @typescript-eslint/camelcase
         'searchCriteria.targetRefName': this.branchToRef(this.branch),
         'searchCriteria.includeLinks': false,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         ...(sourceBranch ? { 'searchCriteria.sourceRefName': this.branchToRef(sourceBranch) } : {}),
       },
     });
 
-    return pullRequests.value.filter(pr =>
-      pr.sourceRefName.startsWith(this.branchToRef(CMS_BRANCH_PREFIX)),
-    );
+    const filtered = pullRequests.value.filter(pr => {
+      return pr.labels.some(label => isCMSLabel(label.name, this.cmsLabelPrefix));
+    });
+    return filtered;
   }
 
-  /**
-   * Gets a list of all unpublished branches, which is a list of the pending
-   * merge requests projected to just their source branch names.
-   */
   async listUnpublishedBranches(): Promise<string[]> {
     const pullRequests = await this.getPullRequests();
     const branches = pullRequests.map(pr => this.refToBranch(pr.sourceRefName));
@@ -758,29 +608,21 @@ export default class API {
   }
 
   async isFileExists(path: string, branch: string) {
-    return await this.requestText({
-      url: `${this.endpointUrl}/items/`,
-      params: { version: branch, path },
-      cache: 'no-store',
-    })
-      .then(() => {
-        return true;
-      })
-      .catch(error => {
-        if (error instanceof APIError && error.status === 404) {
-          return false;
-        }
-        throw error;
+    try {
+      await this.requestText({
+        url: `${this.endpointUrl}/items/`,
+        params: { version: branch, path },
+        cache: 'no-store',
       });
+      return true;
+    } catch (error) {
+      if (error instanceof APIError && error.status === 404) {
+        return false;
+      }
+      throw error;
+    }
   }
 
-  /**
-   * Creates a new pull request with a label of "draft", based on the target branch.
-   * See documentation at: https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/create?view=azure-devops-rest-6.0
-   * @param branch The branch to create the pull request from.
-   * @param commitMessage A message to use as the title for the pull request.
-   * @param status The status of the pull request.
-   */
   async createPullRequest(branch: string, commitMessage: string, status: string) {
     const pr = {
       sourceRefName: this.branchToRef(branch),
@@ -804,7 +646,7 @@ export default class API {
     });
   }
 
-  async getBranchPullRequest(branch: string): Promise<AzurePullRequest> {
+  async getBranchPullRequest(branch: string) {
     const pullRequests = await this.getPullRequests(branch);
 
     if (pullRequests.length <= 0) {
@@ -814,8 +656,8 @@ export default class API {
     return pullRequests[0];
   }
 
-  async getDifferences(to: string): Promise<AzureGitChange[]> {
-    const result: AzureGitCommitDiffs = await this.requestJSON({
+  async getDifferences(to: string) {
+    const result = await this.requestJSON<AzureGitCommitDiffs>({
       url: `${this.endpointUrl}/diffs/commits`,
       params: {
         baseVersion: this.branch,
@@ -831,7 +673,6 @@ export default class API {
     slug: string,
     options: PersistOptions,
   ) {
-    // assumes entry.dataFiles share the same slug
     const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
@@ -839,7 +680,6 @@ export default class API {
     if (!unpublished) {
       const items = await this.getCommitItems(files, this.branch);
       await this.uploadAndCommit(items, options.commitMessage, branch, true);
-
       await this.createPullRequest(
         branch,
         options.commitMessage,
@@ -847,31 +687,22 @@ export default class API {
       );
     } else {
       const items = await this.getCommitItems(files, branch);
-      await this.uploadAndCommit(items, options.commitMessage, branch, true);
+      await this.uploadAndCommit(items, options.commitMessage, branch, false);
     }
   }
 
-  /**
-   * Gets a pull request and updates labels to allow it to move between different
-   * states in the editorial workflow.
-   * @param collection The Jekyll collection the item is in.
-   * @param slug The slug for the content item.
-   * @param newStatus The new status for the item.
-   */
   async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
     const contentKey = generateContentKey(collection, slug);
     const branch = branchFromContentKey(contentKey);
 
-    const mergeRequest = await this.getBranchPullRequest(branch);
+    const pullRequest = await this.getBranchPullRequest(branch);
 
-    const labels = [
-      ...mergeRequest.labels
-        .filter((label: AzurePRLabel) => !isCMSLabel(label.name, this.cmsLabelPrefix))
-        .map((label: AzurePRLabel) => label.name),
-      statusToLabel(newStatus, this.cmsLabelPrefix),
-    ];
+    const nonCmsLabels = pullRequest.labels
+      .filter(label => !isCMSLabel(label.name, this.cmsLabelPrefix))
+      .map(label => label.name);
 
-    await this.updatePullRequestLabels(mergeRequest, labels);
+    const labels = [...nonCmsLabels, statusToLabel(newStatus, this.cmsLabelPrefix)];
+    await this.updatePullRequestLabels(pullRequest, labels);
   }
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
@@ -889,47 +720,38 @@ export default class API {
   }
 
   async updatePullRequestLabels(pullRequest: AzurePullRequest, labels: string[]) {
-    for (const l of pullRequest.labels) {
-      if (isCMSLabel(l.name, this.cmsLabelPrefix)) {
-        await this.requestText({
+    const cmsLabels = pullRequest.labels.filter(l => isCMSLabel(l.name, this.cmsLabelPrefix));
+    await Promise.all(
+      cmsLabels.map(l => {
+        return this.requestText({
           method: 'DELETE',
           url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
             pullRequest.pullRequestId,
           )}/labels/${encodeURIComponent(l.id)}`,
-          params: {
-            'api-version': '6.0-preview.1',
-          },
         });
-      }
-    }
+      }),
+    );
 
-    for (const l of labels) {
-      await this.requestText({
-        method: 'POST',
-        url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
-          pullRequest.pullRequestId,
-        )}/labels`,
-        params: {
-          'api-version': '6.0-preview',
-        },
-        body: JSON.stringify({ name: l }),
-      });
-    }
+    await Promise.all(
+      labels.map(l => {
+        return this.requestText({
+          method: 'POST',
+          url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
+            pullRequest.pullRequestId,
+          )}/labels`,
+          body: JSON.stringify({ name: l }),
+        });
+      }),
+    );
   }
 
-  /**
-   * Completes the pull request, setting an appropriate merge commit message
-   * and ensuring that the source branch is also deleted.
-   * @param pullRequest The merge request provided by a previous GET operation.
-   */
   async completePullRequest(pullRequest: AzurePullRequest) {
-    // This is the minimum payload required to complete the pull request.
     const pullRequestCompletion = {
       status: AzurePullRequestStatus.COMPLETED,
       lastMergeSourceCommit: pullRequest.lastMergeSourceCommit,
       completionOptions: {
         deleteSourceBranch: true,
-        mergeCommitMessage: `Completed merge of ${pullRequest.title}`,
+        mergeCommitMessage: MERGE_COMMIT_MESSAGE,
         mergeStrategy: this.mergeStrategy,
       },
     };
@@ -950,10 +772,6 @@ export default class API {
     }
   }
 
-  /**
-   * Abandons the pull request status and ensuring that the source branch is also deleted.
-   * @param pullRequest The pull request provided by a previous GET operation.
-   */
   async abandonPullRequest(pullRequest: AzurePullRequest) {
     const pullRequestAbandon = {
       status: AzurePullRequestStatus.ABANDONED,
@@ -965,10 +783,9 @@ export default class API {
       body: JSON.stringify(pullRequestAbandon),
     });
 
-    // Also delete the source branch.
     await this.deleteRef({
       name: pullRequest.sourceRefName,
       objectId: pullRequest.lastMergeSourceCommit.commitId,
-    } as AzureRef);
+    });
   }
 }

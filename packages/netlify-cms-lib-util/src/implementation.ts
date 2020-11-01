@@ -106,6 +106,7 @@ export type Config = {
     auth_type?: string;
     app_id?: string;
     cms_label_prefix?: string;
+    api_version?: string;
   };
   media_folder: string;
   base_url?: string;
