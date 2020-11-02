@@ -16,7 +16,9 @@ Use single tenant mode and configure a redirect URL (e.g. http://localhost:8080)
 ```yaml
   backend:
     name: azure
+    branch: master
     repo: organization/project/repo # replace with actual path
     tenant_id: tenantId # replace tenantId
     app_id: appId # replace appId
+    api_version: '6.0'
 ```

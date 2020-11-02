@@ -24,7 +24,7 @@ export default class AzureAuthenticationPage extends React.Component {
 
   componentDidMount() {
     this.auth = new ImplicitAuthenticator({
-      base_url: this.props.config.backend.identity_url,
+      base_url: `https://login.microsoftonline.com/${this.props.config.backend.tenant_id}`,
       auth_endpoint: 'oauth2/authorize',
       app_id: this.props.config.backend.app_id,
       clearHash: this.props.clearHash,
