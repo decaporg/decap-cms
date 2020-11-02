@@ -341,6 +341,19 @@ export const getI18nDataFiles = (
   return dataFiles;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const duplicateDefaultI18nFields = (collection: Collection, dataFields: any) => {
+  const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  const i18nFields = Object.fromEntries(
+    locales
+      .filter(locale => locale !== defaultLocale)
+      .map(locale => [locale, { data: dataFields }]),
+  );
+
+  return i18nFields;
+};
+
 export const duplicateI18nFields = (
   entryDraft: EntryDraft,
   field: EntryField,
