@@ -669,6 +669,9 @@ const processValue = (unsafe: string) => {
   return escapeHtml(unsafe);
 };
 
+const getDataFields = (fields: EntryFields) => fields.filter(f => !f!.get('meta')).toList();
+const getMetaFields = (fields: EntryFields) => fields.filter(f => f!.get('meta') === true).toList();
+
 export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const params = new URLSearchParams(search);
@@ -679,8 +682,12 @@ export function createEmptyDraft(collection: Collection, search: string) {
     });
 
     const fields = collection.get('fields', List());
-    const dataFields = createEmptyDraftData(fields.filter(f => !f!.get('meta')).toList());
-    const metaFields = createEmptyDraftData(fields.filter(f => f!.get('meta') === true).toList());
+
+    const dataFields = getDataFields(fields);
+    const data = createEmptyDraftData(dataFields);
+
+    const metaFields = getMetaFields(fields);
+    const meta = createEmptyDraftData(metaFields);
 
     const state = getState();
     const backend = currentBackend(state.config);
@@ -689,14 +696,14 @@ export function createEmptyDraft(collection: Collection, search: string) {
       await waitForMediaLibraryToLoad(dispatch, getState());
     }
 
-    const i18nFields = createEmptyDraftI18nData(collection);
+    const i18nFields = createEmptyDraftI18nData(collection, dataFields);
 
     let newEntry = createEntry(collection.get('name'), '', '', {
-      data: dataFields,
+      data,
       i18n: i18nFields,
       mediaFiles: [],
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      meta: metaFields as any,
+      meta: meta as any,
     });
     newEntry = await backend.processEntry(state, collection, newEntry);
     dispatch(emptyDraftCreated(newEntry));
@@ -714,7 +721,11 @@ interface DraftEntryData {
     | (string | DraftEntryData | boolean | List<unknown>)[];
 }
 
-export function createEmptyDraftData(fields: EntryFields, withNameKey = true, i18nData = false) {
+export function createEmptyDraftData(
+  fields: EntryFields,
+  withNameKey = true,
+  skipField: (field: EntryField) => boolean = () => false,
+) {
   return fields.reduce(
     (
       reduction: DraftEntryData | string | undefined | boolean | List<unknown>,
@@ -722,23 +733,21 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true, i1
     ) => {
       const acc = reduction as DraftEntryData;
       const item = value as EntryField;
+
+      if (skipField(item)) {
+        return acc;
+      }
+
       const subfields = item.get('field') || item.get('fields');
       const list = item.get('widget') == 'list';
       const name = item.get('name');
       const defaultValue = item.get('default', null);
       const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some(e => isEqual(val, e));
 
-      if (i18nData === true) {
-        const i18nField = item.get(I18N);
-        if (i18nField !== I18N_FIELD.DUPLICATE && i18nField !== I18N_FIELD.TRANSLATE) {
-          return acc;
-        }
-      }
-
       if (List.isList(subfields)) {
         const subDefaultValue = list
-          ? [createEmptyDraftData(subfields as EntryFields)]
-          : createEmptyDraftData(subfields as EntryFields);
+          ? [createEmptyDraftData(subfields as EntryFields, withNameKey, skipField)]
+          : createEmptyDraftData(subfields as EntryFields, withNameKey, skipField);
         if (!isEmptyDefaultValue(subDefaultValue)) {
           acc[name] = subDefaultValue;
         } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
@@ -750,8 +759,8 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true, i1
 
       if (Map.isMap(subfields)) {
         const subDefaultValue = list
-          ? [createEmptyDraftData(List([subfields as EntryField]), false)]
-          : createEmptyDraftData(List([subfields as EntryField]));
+          ? [createEmptyDraftData(List([subfields as EntryField]), false, skipField)]
+          : createEmptyDraftData(List([subfields as EntryField]), withNameKey, skipField);
         if (!isEmptyDefaultValue(subDefaultValue)) {
           acc[name] = subDefaultValue;
         } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
@@ -774,19 +783,17 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true, i1
   );
 }
 
-function createEmptyDraftI18nData(collection: Collection) {
+function createEmptyDraftI18nData(collection: Collection, dataFields: EntryFields) {
   if (!hasI18n(collection)) {
     return {};
   }
 
-  const fields = collection.get('fields', List());
-  const i18nDataFields = createEmptyDraftData(
-    fields.filter(f => !f!.get('meta')).toList(),
-    true,
-    true,
-  );
+  const skipField = (field: EntryField) => {
+    return field.get(I18N) !== I18N_FIELD.DUPLICATE && field.get(I18N) !== I18N_FIELD.TRANSLATE;
+  };
 
-  return duplicateDefaultI18nFields(collection, i18nDataFields);
+  const i18nData = createEmptyDraftData(dataFields, true, skipField);
+  return duplicateDefaultI18nFields(collection, i18nData);
 }
 
 export function getMediaAssets({ entry }: { entry: EntryMap }) {

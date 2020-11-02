@@ -344,13 +344,12 @@ export const getI18nDataFiles = (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const duplicateDefaultI18nFields = (collection: Collection, dataFields: any) => {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
-  const i18nFields: { [locale: string]: object } = {};
 
-  locales
-    .filter(locale => locale !== defaultLocale)
-    .forEach(function(locale) {
-      i18nFields[locale] = { data: dataFields };
-    }, {});
+  const i18nFields = Object.fromEntries(
+    locales
+      .filter(locale => locale !== defaultLocale)
+      .map(locale => [locale, { data: dataFields }]),
+  );
 
   return i18nFields;
 };
