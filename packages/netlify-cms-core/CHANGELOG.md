@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.33.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.1...netlify-cms-core@2.33.2) (2020-11-02)
+
+
+### Bug Fixes
+
+* **i18n:** data is not duplicated for default value setting ([#4463](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4463)) ([1777665](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/177766594366ba202b953368e49de0b29a5ea9be))
+
+
+
+
+
 ## [2.33.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.0...netlify-cms-core@2.33.1) (2020-10-25)
 
 **Note:** Version bump only for package netlify-cms-core
