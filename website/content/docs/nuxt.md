@@ -51,8 +51,8 @@ public_folder: /img
 collections:
   - name: 'blog'
     label: 'Blog'
-    format: 'json'
     folder: 'content/blog'
+    format: 'frontmatter'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     editor:
@@ -64,7 +64,7 @@ collections:
       - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
-You can build whatever collections and content modeling you want. The important thing to note is the `format: 'json'` value on each collection. This is important for consuming content in Nuxt.
+You can build whatever collections and content modeling you want. The important thing to note is the `format: 'frontmatter'` value on each collection. This is important for consuming content in Nuxt with the [nuxt/content](https://content.nuxtjs.org) module.
 
 ### Add the `content/` directory to Nuxt
 
@@ -131,11 +131,11 @@ Back in your [Netlify dashboard](https://app.netlify.com/):
 4. Scroll down to **Services** and click **Enable Git Gateway**.
 
 **Accessing the CMS**
-Once you've reached this point, you should be able to access the CMS in your browser at `http://localhost:3000/admin`. You'll be prompted to add the URL of your Netlify site. Once you've added that URL, you can log in with an Identity account or with one of the External Providers you enabled in step 3 above. For the sake of this tutorial, you can create a blog post in the CMS, and publish it! Once you `git pull` in your project, the blog post will show up in the project at `content/blog/<slugified-blog-post-title>.json`.
+Once you've reached this point, you should be able to access the CMS in your browser at `http://localhost:3000/admin`. You'll be prompted to add the URL of your Netlify site. Once you've added that URL, you can log in with an Identity account or with one of the External Providers you enabled in step 3 above. For the sake of this tutorial, you can create a blog post in the CMS, and publish it! Once you `git pull` in your project, the blog post will show up in the project at `content/blog/<slugified-blog-post-title>.md`.
 
 ## Using nuxt/content
 
-Netlify CMS and [nuxt/content](https://content.nuxtjs.org) module just click together and complement each other to give you best authoring experience and developer experience respectively.
+Netlify CMS and [nuxt/content](https://content.nuxtjs.org) module click together and complement each other to give you best authoring experience and developer experience respectively.
 
 Adding nuxt/content dependency
 
@@ -168,9 +168,11 @@ This also gives a `<nuxt-content>` component which helps you display markdown co
 
 ```javascript
 <template>
+  <div>
     <li v-for="post of posts" :key="post.slug">
       <NuxtLink :to="post.slug">{{ post.title }}</NuxtLink>
     </li>
+  </div>
 </template>
 
 <script>
@@ -188,7 +190,7 @@ export default {
 
 ### Example Blog Post
 
-To generate blog posts create _slug.vue file in the pages folder. by using `$content` you would get a json which you can use to display. But if you are using `markdown` to write your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features](<>).
+To generate blog posts create a `_slug.vue` file in the pages folder. By using `$content` you would get a json which you can use to display. But if you are using `markdown` to write and store your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features](https://content.nuxtjs.org/).
 
 ```javascript
 <template>
@@ -226,7 +228,7 @@ Since Nuxt 2.13+, nuxt export has a crawler feature integrated which will crawl 
 target: 'static'
 ```
 
-If you are using nuxt version below 2.14 you have to use generate option in nuxt/content module to generate pages
+If you are using **nuxt version below 2.14** you have to use generate option in nuxt/content module to generate pages
 
 ```javascript
 //nux.config.js
