@@ -45,7 +45,7 @@ const parseAzureRepo = (config: Config) => {
     throw new Error('The Azure backend must be in a the format of {org}/{project}/{repo}');
   }
 
-  const [org, project, repoName] = repo;
+  const [org, project, repoName] = parts;
   return {
     org,
     project,
