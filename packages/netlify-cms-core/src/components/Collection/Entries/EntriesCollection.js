@@ -52,7 +52,7 @@ export class EntriesCollection extends React.Component {
 
   getGroupEntries = (entries, paths) => {
     return entries.filter(entry => {
-      return paths.includes(entry.get('path'));
+      return paths.has(entry.get('path'));
     });
   };
 
@@ -61,8 +61,8 @@ export class EntriesCollection extends React.Component {
 
     if (groups && groups.length > 0) {
       return groups.map(group => (
-        <div key={group.title}>
-          <h1>{group.title}</h1>
+        <div key={group.title} className={'group-' + group.title.split(' ')[1]}>
+          <h1 className="GroupTitle">{group.title}</h1>
           <Entries
             collections={collection}
             entries={this.getGroupEntries(entries, group.paths)}

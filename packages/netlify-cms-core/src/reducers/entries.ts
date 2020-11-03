@@ -311,9 +311,8 @@ const entries = (
       const payload = action.payload as EntriesGroupRequestPayload;
       const { collection, group } = payload;
       const newState = state.withMutations(map => {
-        map.deleteIn(['group', collection]);
-
         const current: GroupMap = map.getIn(['group', collection, group.id], fromJS(group));
+        map.deleteIn(['group', collection]);
         map.setIn(
           ['group', collection, current.get('id')],
           current.set('active', !current.get('active')),
@@ -468,24 +467,31 @@ export const selectGroups = (state: Entries, collection: Collection) => {
   const groups: GroupOfEntries[] = [];
   const selectedGroup = selectEntriesGroupField(state, collection.get('name'));
 
-  entries.map(entry => {
+  if (selectedGroup === undefined) {
+    return groups;
+  }
+
+  entries.forEach(entry => {
     if (entry === undefined) {
       return;
     }
     const groupTitle = evaluateEntryGroup(entry, selectedGroup);
-
     let isFound = false;
-    groups.map(group => {
+    groups.every(group => {
       if (groupTitle === group.title) {
-        group.paths.push(entry.get('path'));
+        group.paths.add(entry.get('path'));
         isFound = true;
+        return false;
       }
+      return true;
     });
 
     if (isFound === false) {
+      const paths = new Set<string>();
+      paths.add(entry.get('path'));
       groups.push({
         title: groupTitle,
-        paths: [entry.get('path')],
+        paths,
       });
     }
   });

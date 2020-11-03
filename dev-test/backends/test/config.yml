@@ -28,17 +28,16 @@ collections: # A list of collections the CMS should be able to edit
         field: draft
         pattern: true
     view_groups:
-      - label: "Date"
+      - label: Year
         field: date
-        pattern: 'DD-MM-YYYY'
-      - label: 'Country'
+        pattern: \d{4}
+      - label: Drafts
+        field: draft
+      - label: Country
         field: country
-        pattern: 'America'
-      - label: "Year"
-        field: date
-        pattern: "\\d{4}$"
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Country', name: 'country', widget: 'string', tagname: 'h1' }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
       - {
           label: 'Publish Date',
@@ -255,14 +254,3 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
-  - name: pages # a nested collection
-    label: Pages
-    label_singular: 'Page'
-    folder: _pages
-    create: true
-    nested: { depth: 100 }
-    fields:
-      - label: Title
-        name: title
-        widget: string
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
