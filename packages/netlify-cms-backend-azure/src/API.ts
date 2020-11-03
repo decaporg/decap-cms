@@ -33,7 +33,7 @@ type AzureUser = {
   emailAddress: string;
 };
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-6.0#gititem
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-6.1#gititem
 type AzureGitItem = {
   // this is the response we see in Azure, but it is just documented as "Object[]" so it is inconsistent
   _links: {
@@ -66,7 +66,7 @@ type AzureReferenceLinks = {
   tree?: AzureGitTreeRef;
 };
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-6.0#gitpullrequest
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-6.1#gitpullrequest
 type AzureWebApiTagDefinition = {
   active: boolean;
   id: string;
@@ -125,12 +125,12 @@ enum AzureAsyncPullRequestStatus {
   SUCCEEDED = 'succeeded',
 }
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.0#gitcommitdiffs
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.1#gitcommitdiffs
 interface AzureGitCommitDiffs {
   changes: AzureGitChange[];
 }
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.0#gitchange
+// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.1#gitchange
 interface AzureGitChange {
   changeId: number;
   item: AzureGitChangeItem;
@@ -203,6 +203,7 @@ const getChangeItem = (item: AzureCommitItem) => {
 type AzureCommitItem = {
   action: AzureCommitChangeType;
   base64Content?: string;
+  text?: string;
   path: string;
   oldPath?: string;
 };
@@ -250,9 +251,11 @@ export default class API {
   };
 
   withAzureFeatures = (req: ApiRequest) => {
+    // '-preview' is required to enable editorial workflow
+    // https://docs.microsoft.com/en-us/rest/api/azure/devops/pipelines/preview/preview?view=azure-devops-rest-6.1
     const withParams = unsentRequest.withParams(
       {
-        'api-version': this.apiVersion,
+        'api-version': `${this.apiVersion}-preview`,
       },
       req,
     );
@@ -372,7 +375,6 @@ export default class API {
           `Cannot list files, path ${path} is not a directory but a ${typeof azureTreeEntries}`,
         );
       }
-
       const processedAzureTreeEntries: AzureGitTreeEntryRef[] = [];
 
       for (const f of azureTreeEntries) {
@@ -436,26 +438,30 @@ export default class API {
 
   async uploadAndCommit(
     items: AzureCommitItem[],
-    message: string,
+    comment: string,
     branch: string,
     newBranch: boolean,
   ) {
     const ref = await this.getRef(newBranch ? branch : this.branch);
-    const refUpdate = {
-      name: this.branchToRef(branch),
-      oldObjectId: ref.objectId,
-    };
+
+    const refUpdate = [
+      {
+        name: this.branchToRef(branch),
+        oldObjectId: ref.objectId,
+      },
+    ];
 
     const changes = items.map(item => getChangeItem(item));
-    const commit = [{ message, changes }];
+    const commit = [{ comment, changes }];
     const push = {
-      refUpdates: [refUpdate],
-      commits: [commit],
+      refUpdates: refUpdate,
+      commits: commit,
     };
 
     return this.requestJSON({
       url: `${this.endpointUrl}/pushes`,
       method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(push),
     });
   }
@@ -556,6 +562,7 @@ export default class API {
       return this.editorialWorkflowGit(files, slug, options);
     } else {
       const items = await this.getCommitItems(files, this.branch);
+
       return this.uploadAndCommit(items, options.commitMessage, this.branch, false);
     }
   }
@@ -679,7 +686,8 @@ export default class API {
 
     if (!unpublished) {
       const items = await this.getCommitItems(files, this.branch);
-      await this.uploadAndCommit(items, options.commitMessage, branch, true);
+
+      await this.uploadAndCommit(items, options.commitMessage, branch, false);
       await this.createPullRequest(
         branch,
         options.commitMessage,
@@ -728,6 +736,9 @@ export default class API {
           url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
             pullRequest.pullRequestId,
           )}/labels/${encodeURIComponent(l.id)}`,
+          params: {
+            'api-version': `${this.apiVersion}-preview.1`,
+          },
         });
       }),
     );
