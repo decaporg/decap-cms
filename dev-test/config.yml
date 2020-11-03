@@ -27,33 +27,21 @@ collections:
     view_groups:
       - label: Year
         field: date
-        pattern: '\d{4}'
-      - label: Drafts
-        field: draft
-      - label: Country
-        field: country
-    fields:
-      - label: Title
-        name: title
-        widget: string
-        tagname: h1
-      - label: Country
-        name: country
-        widget: string
-        tagname: h1
-      - label: Draft
-        name: draft
-        widget: boolean
-        default: false
-      - label: Publish Date
-        name: date
-        widget: datetime
-        date_format: YYYY-MM-DD
-        time_format: 'HH:mm'
-        format: 'YYYY-MM-DD HH:mm'
-      - label: Cover Image
-        name: image
-        widget: image
+        pattern: \d{4}
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - {
+          label: 'Publish Date',
+          name: 'date',
+          widget: 'datetime',
+          date_format: 'YYYY-MM-DD',
+          time_format: 'HH:mm',
+          format: 'YYYY-MM-DD HH:mm',
+        }
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
         required: false
         tagname: ''
       - label: Body

@@ -31,10 +31,6 @@ collections: # A list of collections the CMS should be able to edit
       - label: Year
         field: date
         pattern: \d{4}
-      - label: Drafts
-        field: draft
-      - label: Country
-        field: country
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Country', name: 'country', widget: 'string', tagname: 'h1' }
