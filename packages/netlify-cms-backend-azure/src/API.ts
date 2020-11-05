@@ -77,7 +77,7 @@ type AzureWebApiTagDefinition = {
 type AzurePullRequest = {
   title: string;
   artifactId: string;
-  closedDate: string;
+  creationDate: string;
   isDraft: string;
   status: AzurePullRequestStatus;
   lastMergeSourceCommit: AzureGitChangeItem;
@@ -412,7 +412,7 @@ export default class API {
     const refs: { value: AzureRef[] } = await this.requestJSON({
       url: `${this.endpointUrl}/refs`,
       params: {
-        $top: '1', // There's only one, so keep the payload small
+        $top: '1', // There's only one ref, so keep the payload small
         filter: 'heads/' + branch,
       },
     });
@@ -482,7 +482,8 @@ export default class API {
     const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix));
     const labelName = label && label.name ? label.name : this.cmsLabelPrefix;
     const status = labelToStatus(labelName, this.cmsLabelPrefix);
-    const updatedAt = pullRequest.closedDate;
+    // Uses creationDate, as we do not have direct access to the updated date
+    const updatedAt = pullRequest.creationDate;
     return {
       collection,
       slug,
