@@ -567,7 +567,7 @@ export default class API {
     }
   }
 
-  async deleteFiles(paths: string[], message: string) {
+  async deleteFiles(paths: string[], comment: string) {
     const ref = await this.getRef(this.branch);
     const refUpdate = {
       name: ref.name,
@@ -577,7 +577,7 @@ export default class API {
     const changes = paths.map(path =>
       getChangeItem({ action: AzureCommitChangeType.DELETE, path }),
     );
-    const commit = [{ message, changes }];
+    const commit = { comment, changes };
     const push = {
       refUpdates: [refUpdate],
       commits: [commit],
