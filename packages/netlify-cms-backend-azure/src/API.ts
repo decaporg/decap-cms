@@ -77,6 +77,7 @@ type AzureWebApiTagDefinition = {
 type AzurePullRequest = {
   title: string;
   artifactId: string;
+  closedDate: string;
   creationDate: string;
   isDraft: string;
   status: AzurePullRequestStatus;
@@ -483,7 +484,7 @@ export default class API {
     const labelName = label && label.name ? label.name : this.cmsLabelPrefix;
     const status = labelToStatus(labelName, this.cmsLabelPrefix);
     // Uses creationDate, as we do not have direct access to the updated date
-    const updatedAt = pullRequest.creationDate;
+    const updatedAt = pullRequest.closedDate ? pullRequest.closedDate : pullRequest.creationDate;
     return {
       collection,
       slug,
