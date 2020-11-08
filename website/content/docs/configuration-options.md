@@ -210,6 +210,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `summary`: see detailed description below
 * `sortable_fields`: see detailed description below
 * `view_filters`: see detailed description below
+* `view_groups`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -421,4 +422,22 @@ Defaults to an empty list.
       - label: Drafts
         field: draft
         pattern: true
+```
+
+### `view_groups`
+
+An optional list of predefined view groups to show in the UI.
+
+Defaults to an empty list.
+
+**Example**
+
+```yaml
+    view_groups:
+      - label: Year
+        field: date
+        # groups items based on the value matched by the pattern
+        pattern: \d{4}
+      - label: Drafts
+        field: draft
 ```
