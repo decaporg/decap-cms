@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.34.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.2...netlify-cms-core@2.34.0) (2020-11-08)
+
+
+### Features
+
+* Add `group by` to collection view (Issue 3614) ([#4486](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4486)) ([e52e290](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e52e29034ec508e1b371e4a2a733418f0c813e60))
+
+
+
+
+
 ## [2.33.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.1...netlify-cms-core@2.33.2) (2020-11-02)
 
 
