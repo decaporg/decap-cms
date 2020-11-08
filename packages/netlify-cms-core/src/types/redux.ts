@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
-import { Map, List, OrderedMap } from 'immutable';
+import { Map, List, OrderedMap, Set } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
 import { MediaFile as BackendMediaFile } from '../backend';
 
@@ -72,7 +72,12 @@ export type Filter = Map<string, Map<string, FilterMap>>; // collection.field.ac
 
 export type Group = Map<string, Map<string, GroupMap>>; // collection.field.active
 
-export type GroupOfEntries = { title: string; paths: Set<string> };
+export type GroupOfEntries = {
+  id: string;
+  label: string;
+  value: string | boolean | undefined;
+  paths: Set<string>;
+};
 
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 

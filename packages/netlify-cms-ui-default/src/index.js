@@ -1,7 +1,6 @@
 import Dropdown, {
   DropdownItem,
   DropdownCheckedItem,
-  DropdownRadioItem,
   DropdownButton,
   StyledDropdownButton,
 } from './Dropdown';
@@ -36,7 +35,6 @@ export const NetlifyCmsUiDefault = {
   Dropdown,
   DropdownItem,
   DropdownCheckedItem,
-  DropdownRadioItem,
   DropdownButton,
   StyledDropdownButton,
   ListItemTopBar,
@@ -70,7 +68,6 @@ export {
   Dropdown,
   DropdownItem,
   DropdownCheckedItem,
-  DropdownRadioItem,
   DropdownButton,
   StyledDropdownButton,
   ListItemTopBar,

@@ -1,6 +1,11 @@
 import { fromJS } from 'immutable';
 import { Cursor } from 'netlify-cms-lib-util';
-import { ENTRIES_SUCCESS, SORT_ENTRIES_SUCCESS } from 'Actions/entries';
+import {
+  ENTRIES_SUCCESS,
+  SORT_ENTRIES_SUCCESS,
+  FILTER_ENTRIES_SUCCESS,
+  GROUP_ENTRIES_SUCCESS,
+} from 'Actions/entries';
 
 // Since pagination can be used for a variety of views (collections
 // and searches are the most common examples), we namespace cursors by
@@ -16,6 +21,8 @@ const cursors = (state = fromJS({ cursorsByType: { collectionEntries: {} } }), a
         Cursor.create(action.payload.cursor).store,
       );
     }
+    case FILTER_ENTRIES_SUCCESS:
+    case GROUP_ENTRIES_SUCCESS:
     case SORT_ENTRIES_SUCCESS: {
       return state.deleteIn(['cursorsByType', 'collectionEntries', action.payload.collection]);
     }

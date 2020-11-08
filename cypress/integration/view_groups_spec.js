@@ -1,16 +1,17 @@
 import { login } from '../utils/steps';
 
 const group = term => {
-  cy.get('[class*=GroupButton]').click();
+  cy.contains('span', 'Group by').click();
   cy.contains(term).click();
+  cy.contains('Contents').click();
 };
 
 const assertGroupsCount = count => {
-  cy.get('[class*=GroupTitle]').should('have.length', count);
+  cy.get('[class*=GroupContainer]').should('have.length', count);
 };
 
-const assertEachGroupCount = (className,count) => {
-  cy.get('[class='+ className +']').within(() => {
+const assertEachGroupCount = (id, count) => {
+  cy.get(`[id='${id}']`).within(() => {
     assertEntriesCount(count);
   });
 };
@@ -22,12 +23,6 @@ const assertEntriesCount = count => {
 const assertInEntries = text => {
   cy.get('[class*=ListCardLink]').within(() => {
     cy.contains('h2', text);
-  });
-};
-
-const assertNotInEntries = text => {
-  cy.get('[class*=ListCardLink]').within(() => {
-    cy.contains('h2', text).should('not.exist');
   });
 };
 
@@ -50,8 +45,8 @@ describe('View Group', () => {
     group('Year');
 
     assertGroupsCount(2);
-    assertEachGroupCount("group-2020", 20);
-    assertEachGroupCount("group-2015", 3);
+    assertEachGroupCount('Year2020', 20);
+    assertEachGroupCount('Year2015', 3);
 
     //disable group
     group('Year');
@@ -65,23 +60,12 @@ describe('View Group', () => {
     assertInEntries('This is a TOML front matter post');
 
     //enable group
-    group('Country');
-
-    assertEntriesCount(23);
-    assertGroupsCount(1);
-
-    //disable group
-    group('Country');
-
-    //enable group
     group('Drafts');
 
     assertEntriesCount(23);
     assertGroupsCount(3);
-    assertEachGroupCount("group-true", 10);
-    assertEachGroupCount("group-false", 10);
-    assertEachGroupCount("group-other", 3);
-
-
+    assertEachGroupCount('Draftstrue', 10);
+    assertEachGroupCount('Draftsfalse', 10);
+    assertEachGroupCount('missing_value', 3);
   });
 });

@@ -55,6 +55,10 @@ const en = {
       longerLoading: 'This might take several minutes',
       noEntries: 'No Entries',
     },
+    groups: {
+      other: 'Other',
+      negateLabel: 'Not %{label}',
+    },
     defaultFields: {
       author: {
         label: 'Author',

@@ -1,25 +1,7 @@
 import React from 'react';
-import { css } from '@emotion/core';
-import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import {
-  buttons,
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  colors,
-} from 'netlify-cms-ui-default';
-
-const GroupButton = styled(StyledDropdownButton)`
-  ${buttons.button};
-  ${buttons.medium};
-  ${buttons.grayText};
-  font-size: 14px;
-
-  &:after {
-    top: 11px;
-  }
-`;
+import { Dropdown, DropdownItem } from 'netlify-cms-ui-default';
+import { ControlButton } from './ControlButton';
 
 const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
   const hasActiveGroup = group
@@ -29,15 +11,11 @@ const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
 
   return (
     <Dropdown
-      renderButton={() => (
-        <GroupButton
-          css={css`
-            color: ${hasActiveGroup ? colors.active : undefined};
-          `}
-        >
-          {t('collection.collectionTop.groupBy')}
-        </GroupButton>
-      )}
+      renderButton={() => {
+        return (
+          <ControlButton active={hasActiveGroup} title={t('collection.collectionTop.groupBy')} />
+        );
+      }}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
       dropdownWidth="160px"

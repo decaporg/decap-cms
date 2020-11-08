@@ -1,4 +1,4 @@
-import { Map, List, fromJS, OrderedMap } from 'immutable';
+import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
 import {
   ENTRY_REQUEST,
@@ -55,7 +55,7 @@ import {
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once, sortBy, set, orderBy } from 'lodash';
+import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
 import { selectSortDataPath } from './collections';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
@@ -398,12 +398,17 @@ export const selectEntry = (state: Entries, collection: string, slug: string) =>
 export const selectPublishedSlugs = (state: Entries, collection: string) =>
   state.getIn(['pages', collection, 'ids'], List<string>());
 
-export const selectEntries = (state: Entries, collection: Collection) => {
-  const collectionName = collection.get('name');
+const getPublishedEntries = (state: Entries, collectionName: string) => {
   const slugs = selectPublishedSlugs(state, collectionName);
-  let entries =
+  const entries =
     slugs &&
     (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
+  return entries;
+};
+
+export const selectEntries = (state: Entries, collection: Collection) => {
+  const collectionName = collection.get('name');
+  let entries = getPublishedEntries(state, collectionName);
 
   const sortFields = selectEntriesSortFields(state, collectionName);
   if (sortFields && sortFields.length > 0) {
@@ -435,68 +440,73 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   return entries;
 };
 
-function evaluateEntryGroup(entry: EntryMap, selectedGroup: any): string {
-  let label = '';
-  let titleSuffix = '';
-  if (selectedGroup) {
-    label = selectedGroup.get('label');
-    const field = selectedGroup.get('field');
-    const data = entry!.get('data') || Map();
-    if (data.get(field) === undefined) {
-      titleSuffix = 'other'; //todo: 'other' should be get from the language variable
-    } else {
-      const fieldData = data.get(field).toString();
-      titleSuffix = fieldData;
-      if (selectedGroup.get('pattern')) {
-        const pattern = new RegExp(selectedGroup.get('pattern'));
-        const matched = fieldData.match(pattern);
-        titleSuffix = matched ? matched[0] : '';
-      }
-    }
+const getGroup = (entry: EntryMap, selectedGroup: GroupMap) => {
+  const label = selectedGroup.get('label');
+  const field = selectedGroup.get('field');
+
+  const fieldData = entry.getIn(['data', ...keyToPathArray(field)]);
+  if (fieldData === undefined) {
+    return {
+      id: 'missing_value',
+      label,
+      value: fieldData,
+    };
   }
-  return label + ' ' + titleSuffix;
-}
+
+  const dataAsString = String(fieldData);
+  if (selectedGroup.has('pattern')) {
+    const pattern = selectedGroup.get('pattern');
+    let value = '';
+    try {
+      const regex = new RegExp(pattern);
+      const matched = dataAsString.match(regex);
+      if (matched) {
+        value = matched[0];
+      }
+    } catch (e) {
+      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
+    }
+    return {
+      id: `${label}${value}`,
+      label,
+      value,
+    };
+  }
+
+  return {
+    id: `${label}${fieldData}`,
+    label,
+    value: typeof fieldData === 'boolean' ? fieldData : dataAsString,
+  };
+};
 
 export const selectGroups = (state: Entries, collection: Collection) => {
   const collectionName = collection.get('name');
-  const slugs = selectPublishedSlugs(state, collectionName);
-  const entries =
-    slugs &&
-    (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
+  const entries = getPublishedEntries(state, collectionName);
 
-  const groups: GroupOfEntries[] = [];
-  const selectedGroup = selectEntriesGroupField(state, collection.get('name'));
-
+  const selectedGroup = selectEntriesGroupField(state, collectionName);
   if (selectedGroup === undefined) {
-    return groups;
+    return [];
   }
 
-  entries.forEach(entry => {
-    if (entry === undefined) {
-      return;
-    }
-    const groupTitle = evaluateEntryGroup(entry, selectedGroup);
-    let isFound = false;
-    groups.every(group => {
-      if (groupTitle === group.title) {
-        group.paths.add(entry.get('path'));
-        isFound = true;
-        return false;
-      }
-      return true;
-    });
-
-    if (isFound === false) {
-      const paths = new Set<string>();
-      paths.add(entry.get('path'));
-      groups.push({
-        title: groupTitle,
-        paths,
-      });
-    }
+  let groups: Record<
+    string,
+    { id: string; label: string; value: string | boolean | undefined }
+  > = {};
+  const groupedEntries = groupBy(entries.toArray(), entry => {
+    const group = getGroup(entry, selectedGroup);
+    groups = { ...groups, [group.id]: group };
+    return group.id;
   });
 
-  return groups;
+  const groupsArray: GroupOfEntries[] = Object.entries(groupedEntries).map(([id, entries]) => {
+    return {
+      ...groups[id],
+      paths: Set(entries.map(entry => entry.get('path'))),
+    };
+  });
+
+  return groupsArray;
 };
 
 export const selectEntryByPath = (state: Entries, collection: string, path: string) => {
