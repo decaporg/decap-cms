@@ -1,4 +1,4 @@
-import { Map, List, fromJS, OrderedMap } from 'immutable';
+import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
 import {
   ENTRY_REQUEST,
@@ -14,6 +14,9 @@ import {
   FILTER_ENTRIES_REQUEST,
   FILTER_ENTRIES_SUCCESS,
   FILTER_ENTRIES_FAILURE,
+  GROUP_ENTRIES_REQUEST,
+  GROUP_ENTRIES_SUCCESS,
+  GROUP_ENTRIES_FAILURE,
   CHANGE_VIEW_STYLE,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
@@ -40,14 +43,19 @@ import {
   Sort,
   SortDirection,
   Filter,
+  Group,
   FilterMap,
+  GroupMap,
   EntriesFilterRequestPayload,
   EntriesFilterFailurePayload,
   ChangeViewStylePayload,
+  EntriesGroupRequestPayload,
+  EntriesGroupFailurePayload,
+  GroupOfEntries,
 } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once, sortBy, set, orderBy } from 'lodash';
+import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
 import { selectSortDataPath } from './collections';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
@@ -239,6 +247,7 @@ const entries = (
       return newState;
     }
 
+    case GROUP_ENTRIES_SUCCESS:
     case FILTER_ENTRIES_SUCCESS:
     case SORT_ENTRIES_SUCCESS: {
       const payload = action.payload as { collection: string; entries: EntryObject[] };
@@ -298,6 +307,30 @@ const entries = (
       return newState;
     }
 
+    case GROUP_ENTRIES_REQUEST: {
+      const payload = action.payload as EntriesGroupRequestPayload;
+      const { collection, group } = payload;
+      const newState = state.withMutations(map => {
+        const current: GroupMap = map.getIn(['group', collection, group.id], fromJS(group));
+        map.deleteIn(['group', collection]);
+        map.setIn(
+          ['group', collection, current.get('id')],
+          current.set('active', !current.get('active')),
+        );
+      });
+      return newState;
+    }
+
+    case GROUP_ENTRIES_FAILURE: {
+      const payload = action.payload as EntriesGroupFailurePayload;
+      const { collection, group } = payload;
+      const newState = state.withMutations(map => {
+        map.deleteIn(['group', collection, group.id]);
+        map.setIn(['pages', collection, 'isFetching'], false);
+      });
+      return newState;
+    }
+
     case CHANGE_VIEW_STYLE: {
       const payload = (action.payload as unknown) as ChangeViewStylePayload;
       const { style } = payload;
@@ -321,6 +354,17 @@ export const selectEntriesSort = (entries: Entries, collection: string) => {
 export const selectEntriesFilter = (entries: Entries, collection: string) => {
   const filter = entries.get('filter') as Filter | undefined;
   return filter?.get(collection) || Map();
+};
+
+export const selectEntriesGroup = (entries: Entries, collection: string) => {
+  const group = entries.get('group') as Group | undefined;
+  return group?.get(collection) || Map();
+};
+
+export const selectEntriesGroupField = (entries: Entries, collection: string) => {
+  const groups = selectEntriesGroup(entries, collection);
+  const value = groups?.valueSeq().find(v => v?.get('active') === true);
+  return value;
 };
 
 export const selectEntriesSortFields = (entries: Entries, collection: string) => {
@@ -354,12 +398,17 @@ export const selectEntry = (state: Entries, collection: string, slug: string) =>
 export const selectPublishedSlugs = (state: Entries, collection: string) =>
   state.getIn(['pages', collection, 'ids'], List<string>());
 
-export const selectEntries = (state: Entries, collection: Collection) => {
-  const collectionName = collection.get('name');
+const getPublishedEntries = (state: Entries, collectionName: string) => {
   const slugs = selectPublishedSlugs(state, collectionName);
-  let entries =
+  const entries =
     slugs &&
     (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
+  return entries;
+};
+
+export const selectEntries = (state: Entries, collection: Collection) => {
+  const collectionName = collection.get('name');
+  let entries = getPublishedEntries(state, collectionName);
 
   const sortFields = selectEntriesSortFields(state, collectionName);
   if (sortFields && sortFields.length > 0) {
@@ -389,6 +438,75 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   }
 
   return entries;
+};
+
+const getGroup = (entry: EntryMap, selectedGroup: GroupMap) => {
+  const label = selectedGroup.get('label');
+  const field = selectedGroup.get('field');
+
+  const fieldData = entry.getIn(['data', ...keyToPathArray(field)]);
+  if (fieldData === undefined) {
+    return {
+      id: 'missing_value',
+      label,
+      value: fieldData,
+    };
+  }
+
+  const dataAsString = String(fieldData);
+  if (selectedGroup.has('pattern')) {
+    const pattern = selectedGroup.get('pattern');
+    let value = '';
+    try {
+      const regex = new RegExp(pattern);
+      const matched = dataAsString.match(regex);
+      if (matched) {
+        value = matched[0];
+      }
+    } catch (e) {
+      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
+    }
+    return {
+      id: `${label}${value}`,
+      label,
+      value,
+    };
+  }
+
+  return {
+    id: `${label}${fieldData}`,
+    label,
+    value: typeof fieldData === 'boolean' ? fieldData : dataAsString,
+  };
+};
+
+export const selectGroups = (state: Entries, collection: Collection) => {
+  const collectionName = collection.get('name');
+  const entries = getPublishedEntries(state, collectionName);
+
+  const selectedGroup = selectEntriesGroupField(state, collectionName);
+  if (selectedGroup === undefined) {
+    return [];
+  }
+
+  let groups: Record<
+    string,
+    { id: string; label: string; value: string | boolean | undefined }
+  > = {};
+  const groupedEntries = groupBy(entries.toArray(), entry => {
+    const group = getGroup(entry, selectedGroup);
+    groups = { ...groups, [group.id]: group };
+    return group.id;
+  });
+
+  const groupsArray: GroupOfEntries[] = Object.entries(groupedEntries).map(([id, entries]) => {
+    return {
+      ...groups[id],
+      paths: Set(entries.map(entry => entry.get('path'))),
+    };
+  });
+
+  return groupsArray;
 };
 
 export const selectEntryByPath = (state: Entries, collection: string, path: string) => {

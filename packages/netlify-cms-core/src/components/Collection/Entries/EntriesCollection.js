@@ -2,21 +2,65 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import styled from '@emotion/styled';
+import { translate } from 'react-polyglot';
 import { partial } from 'lodash';
 import { Cursor } from 'netlify-cms-lib-util';
+import { colors } from 'netlify-cms-ui-default';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from 'Actions/entries';
-import { selectEntries, selectEntriesLoaded, selectIsFetching } from '../../../reducers/entries';
+import {
+  selectEntries,
+  selectEntriesLoaded,
+  selectIsFetching,
+  selectGroups,
+} from '../../../reducers/entries';
 import { selectCollectionEntriesCursor } from 'Reducers/cursors';
 import Entries from './Entries';
+
+const GroupHeading = styled.h2`
+  font-size: 23px;
+  font-weight: 600;
+  color: ${colors.textLead};
+`;
+
+const GroupContainer = styled.div``;
+
+const getGroupEntries = (entries, paths) => {
+  return entries.filter(entry => paths.has(entry.get('path')));
+};
+
+const getGroupTitle = (group, t) => {
+  const { label, value } = group;
+  if (value === undefined) {
+    return t('collection.groups.other');
+  }
+  if (typeof value === 'boolean') {
+    return value ? label : t('collection.groups.negateLabel', { label });
+  }
+  return `${label} ${value}`.trim();
+};
+
+const withGroups = (groups, entries, EntriesToRender, t) => {
+  return groups.map(group => {
+    const title = getGroupTitle(group, t);
+    return (
+      <GroupContainer key={group.id} id={group.id}>
+        <GroupHeading>{title}</GroupHeading>
+        <EntriesToRender entries={getGroupEntries(entries, group.paths)} />
+      </GroupContainer>
+    );
+  });
+};
 
 export class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     page: PropTypes.number,
     entries: ImmutablePropTypes.list,
+    groups: PropTypes.array,
     isFetching: PropTypes.bool.isRequired,
     viewStyle: PropTypes.string,
     cursor: PropTypes.object.isRequired,
@@ -45,20 +89,28 @@ export class EntriesCollection extends React.Component {
   };
 
   render() {
-    const { collection, entries, isFetching, viewStyle, cursor, page } = this.props;
+    const { collection, entries, groups, isFetching, viewStyle, cursor, page, t } = this.props;
 
-    return (
-      <Entries
-        collections={collection}
-        entries={entries}
-        isFetching={isFetching}
-        collectionName={collection.get('label')}
-        viewStyle={viewStyle}
-        cursor={cursor}
-        handleCursorActions={partial(this.handleCursorActions, cursor)}
-        page={page}
-      />
-    );
+    const EntriesToRender = ({ entries }) => {
+      return (
+        <Entries
+          collections={collection}
+          entries={entries}
+          isFetching={isFetching}
+          collectionName={collection.get('label')}
+          viewStyle={viewStyle}
+          cursor={cursor}
+          handleCursorActions={partial(this.handleCursorActions, cursor)}
+          page={page}
+        />
+      );
+    };
+
+    if (groups && groups.length > 0) {
+      return withGroups(groups, entries, EntriesToRender, t);
+    }
+
+    return <EntriesToRender entries={entries} />;
   }
 }
 
@@ -87,6 +139,7 @@ function mapStateToProps(state, ownProps) {
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
 
   let entries = selectEntries(state.entries, collection);
+  const groups = selectGroups(state.entries, collection);
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');
@@ -98,7 +151,7 @@ function mapStateToProps(state, ownProps) {
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
 
-  return { collection, page, entries, entriesLoaded, isFetching, viewStyle, cursor };
+  return { collection, page, entries, groups, entriesLoaded, isFetching, viewStyle, cursor };
 }
 
 const mapDispatchToProps = {
@@ -106,4 +159,6 @@ const mapDispatchToProps = {
   traverseCollectionCursor: actionTraverseCollectionCursor,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);
+const ConnectedEntriesCollection = connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);
+
+export default translate()(ConnectedEntriesCollection);

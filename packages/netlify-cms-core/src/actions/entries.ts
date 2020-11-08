@@ -20,6 +20,7 @@ import {
   EntryField,
   SortDirection,
   ViewFilter,
+  ViewGroup,
   Entry,
 } from '../types/redux';
 
@@ -53,6 +54,10 @@ export const SORT_ENTRIES_FAILURE = 'SORT_ENTRIES_FAILURE';
 export const FILTER_ENTRIES_REQUEST = 'FILTER_ENTRIES_REQUEST';
 export const FILTER_ENTRIES_SUCCESS = 'FILTER_ENTRIES_SUCCESS';
 export const FILTER_ENTRIES_FAILURE = 'FILTER_ENTRIES_FAILURE';
+
+export const GROUP_ENTRIES_REQUEST = 'GROUP_ENTRIES_REQUEST';
+export const GROUP_ENTRIES_SUCCESS = 'GROUP_ENTRIES_SUCCESS';
+export const GROUP_ENTRIES_FAILURE = 'GROUP_ENTRIES_FAILURE';
 
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
@@ -237,6 +242,44 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
         payload: {
           collection: collection.get('name'),
           filter,
+          error,
+        },
+      });
+    }
+  };
+}
+
+export function groupByField(collection: Collection, group: ViewGroup) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const isFetching = selectIsFetching(state.entries, collection.get('name'));
+    dispatch({
+      type: GROUP_ENTRIES_REQUEST,
+      payload: {
+        collection: collection.get('name'),
+        group,
+      },
+    });
+    if (isFetching) {
+      return;
+    }
+
+    try {
+      const entries = await getAllEntries(state, collection);
+      dispatch({
+        type: GROUP_ENTRIES_SUCCESS,
+        payload: {
+          collection: collection.get('name'),
+          group,
+          entries,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: GROUP_ENTRIES_FAILURE,
+        payload: {
+          collection: collection.get('name'),
+          group,
           error,
         },
       });

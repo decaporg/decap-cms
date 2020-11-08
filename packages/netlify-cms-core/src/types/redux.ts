@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
-import { Map, List, OrderedMap } from 'immutable';
+import { Map, List, OrderedMap, Set } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
 import { MediaFile as BackendMediaFile } from '../backend';
 
@@ -66,7 +66,18 @@ export type Sort = Map<string, SortMap>;
 
 export type FilterMap = StaticallyTypedRecord<ViewFilter & { active: boolean }>;
 
+export type GroupMap = StaticallyTypedRecord<ViewGroup & { active: boolean }>;
+
 export type Filter = Map<string, Map<string, FilterMap>>; // collection.field.active
+
+export type Group = Map<string, Map<string, GroupMap>>; // collection.field.active
+
+export type GroupOfEntries = {
+  id: string;
+  label: string;
+  value: string | boolean | undefined;
+  paths: Set<string>;
+};
 
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
@@ -75,6 +86,7 @@ export type Entries = StaticallyTypedRecord<{
   entities: Entities & EntitiesObject;
   sort: Sort;
   filter: Filter;
+  group: Group;
   viewStyle: string;
 }>;
 
@@ -152,6 +164,14 @@ export type ViewFilter = {
   pattern: string;
   id: string;
 };
+
+export type ViewGroup = {
+  label: string;
+  field: string;
+  pattern: string;
+  id: string;
+};
+
 type NestedObject = { depth: number };
 
 type Nested = StaticallyTypedRecord<NestedObject>;
@@ -194,6 +214,7 @@ type CollectionObject = {
   label: string;
   sortable_fields: List<string>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
+  view_groups: List<StaticallyTypedRecord<ViewGroup>>;
   nested?: Nested;
   meta?: Meta;
   i18n: i18n;
@@ -355,6 +376,17 @@ export interface EntriesFilterRequestPayload {
 
 export interface EntriesFilterFailurePayload {
   filter: ViewFilter;
+  collection: string;
+  error: Error;
+}
+
+export interface EntriesGroupRequestPayload {
+  group: ViewGroup;
+  collection: string;
+}
+
+export interface EntriesGroupFailurePayload {
+  group: ViewGroup;
   collection: string;
   error: Error;
 }

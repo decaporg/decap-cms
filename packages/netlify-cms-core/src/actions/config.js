@@ -112,6 +112,19 @@ const throwOnMissingDefaultLocale = i18n => {
   }
 };
 
+const setViewPatternsDefaults = (key, collection) => {
+  if (!collection.has(key)) {
+    collection = collection.set(key, fromJS([]));
+  } else {
+    collection = collection.set(
+      key,
+      collection.get(key).map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
+    );
+  }
+
+  return collection;
+};
+
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
@@ -256,16 +269,8 @@ export function applyDefaults(config) {
             collection = collection.set('sortable_fields', fromJS(defaultSortable));
           }
 
-          if (!collection.has('view_filters')) {
-            collection = collection.set('view_filters', fromJS([]));
-          } else {
-            collection = collection.set(
-              'view_filters',
-              collection
-                .get('view_filters')
-                .map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
-            );
-          }
+          collection = setViewPatternsDefaults('view_filters', collection);
+          collection = setViewPatternsDefaults('view_groups', collection);
 
           if (map.hasIn(['editor', 'preview']) && !collection.has('editor')) {
             collection = collection.setIn(['editor', 'preview'], map.getIn(['editor', 'preview']));

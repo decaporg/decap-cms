@@ -1,25 +1,7 @@
 import React from 'react';
-import { css } from '@emotion/core';
-import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import {
-  buttons,
-  Dropdown,
-  DropdownCheckedItem,
-  StyledDropdownButton,
-  colors,
-} from 'netlify-cms-ui-default';
-
-const FilterButton = styled(StyledDropdownButton)`
-  ${buttons.button};
-  ${buttons.medium};
-  ${buttons.grayText};
-  font-size: 14px;
-
-  &:after {
-    top: 11px;
-  }
-`;
+import { Dropdown, DropdownCheckedItem } from 'netlify-cms-ui-default';
+import { ControlButton } from './ControlButton';
 
 const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
   const hasActiveFilter = filter
@@ -31,13 +13,7 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
     <Dropdown
       renderButton={() => {
         return (
-          <FilterButton
-            css={css`
-              color: ${hasActiveFilter ? colors.active : undefined};
-            `}
-          >
-            {t('collection.collectionTop.filterBy')}
-          </FilterButton>
+          <ControlButton active={hasActiveFilter} title={t('collection.collectionTop.filterBy')} />
         );
       }}
       closeOnSelection={false}
