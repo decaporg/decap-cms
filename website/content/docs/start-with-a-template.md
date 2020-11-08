@@ -52,8 +52,8 @@ You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the 
         <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
           <img style="display: flex" src="/img/nuxt.svg"/>
         </div>
-        <h4>Nuxt.js Boilerplate</h4>
-        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/knogobert/ntn-boilerplate&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+        <h4>Nuxt.js Site Starter</h4>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/lukeocodes/nuxt-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
 </div>
 
