@@ -5187,6 +5187,11 @@ brorand@^1.0.1:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
   integrity sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=
 
+browser-or-node@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/browser-or-node/-/browser-or-node-1.3.0.tgz#f2a4e8568f60263050a6714b2cc236bb976647a7"
+  integrity sha512-0F2z/VSnLbmEeBcUrSuDH5l0HxTXdQQzLjkmBR4cYfvg1zJrKSlmIZFqyFR8oX0NrwPhy3c3HQ6i3OxMbew4Tg==
+
 browser-process-hrtime@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
@@ -12452,10 +12457,11 @@ mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4, mkdirp@^0.5.5, mkdir
     minimist "^1.2.5"
 
 mockserver-client@^5.8.0:
-  version "5.11.1"
-  resolved "https://registry.yarnpkg.com/mockserver-client/-/mockserver-client-5.11.1.tgz#96fc6ef9be0e10b9e00808a66bedae57dd38d963"
-  integrity sha512-UpNu2g0rHZVq+lrcz5E2pP8qhA/yV1OumcrQA7Un5IMSfcO88ysY+yXv4VL50+4ubsY/lLDO3qyEXVkj5O9qVw==
+  version "5.11.2"
+  resolved "https://registry.yarnpkg.com/mockserver-client/-/mockserver-client-5.11.2.tgz#67335ec77ac2922bc054afaeef599e5c5531b408"
+  integrity sha512-USUK+Fn+nRhygOY8fHrMOYYQk/rYfN0V5P3xdDLge4meGkhdDhUKPxyLk18xDAWKAlVdmaGv4uOj/Z5tU9g9TA==
   dependencies:
+    browser-or-node "^1.3.0"
     grunt-ts "^6.0.0-beta.22"
     q "~2.0"
     websocket "^1.0.30"
