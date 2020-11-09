@@ -6361,9 +6361,9 @@ copy-to-clipboard@^3.0.8:
     toggle-selection "^1.0.6"
 
 copy-webpack-plugin@^6.0.0:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-6.2.1.tgz#8015e4d5c5e637ab7b39c76daa9e03c7a4bf1ae5"
-  integrity sha512-VH2ZTMIBsx4p++Lmpg77adZ0KUyM5gFR/9cuTrbneNnJlcQXUFvsNariPqq2dq2kV3F2skHiDGPQCyKWy1+U0Q==
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-6.3.0.tgz#91820b63bbde7d73609accb86dab7e7386863f6f"
+  integrity sha512-kQ2cGGQLO6Ov2fe7rEGVxObI17dPeFkv8bRGnUAGZehOcrrObyAR9yWYlFGlJsyWM4EeuC/ytQNQkXxjYotMzg==
   dependencies:
     cacache "^15.0.5"
     fast-glob "^3.2.4"
