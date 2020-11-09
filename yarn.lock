@@ -8575,17 +8575,10 @@ follow-redirects@1.5.10:
   dependencies:
     debug "=3.1.0"
 
-follow-redirects@^1.0.0, follow-redirects@^1.10.0:
+follow-redirects@^1.0.0, follow-redirects@^1.10.0, follow-redirects@~1.13:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
   integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
-
-follow-redirects@~1.11:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.11.0.tgz#afa14f08ba12a52963140fe43212658897bc0ecb"
-  integrity sha512-KZm0V+ll8PfBrKwMzdo5D13b1bur9Iq9Zd/RMmAoQQcl2PxxFml8cxXPaaPYVbV0RjNjq1CU7zIzAOqtUPudmA==
-  dependencies:
-    debug "^3.0.0"
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -12461,11 +12454,11 @@ mockserver-client@^5.8.0:
     websocket "^1.0.30"
 
 mockserver-node@^5.8.0:
-  version "5.11.1"
-  resolved "https://registry.yarnpkg.com/mockserver-node/-/mockserver-node-5.11.1.tgz#208c224caad36bcb42cf3e92cc9087b42b73c26b"
-  integrity sha512-TuQQzeF0zqI4HRKyAQfU9ZNyhUx+ums7FqQPYnhZ/sC+TUjK6NqqO7IWgK8TjUiSzFXOqc9nLtHFwZym6s2mQA==
+  version "5.11.2"
+  resolved "https://registry.yarnpkg.com/mockserver-node/-/mockserver-node-5.11.2.tgz#37d18b9b7a9342c90710c96f071fbd654b283cb8"
+  integrity sha512-8Wh4Ph1EjdBfqa2S+0xOLxLXfWGxwhOxF2+iyoluZ4cdVWTA6fFUpBGYexGgoCpfAyKfD5adSJR76DM696xZiQ==
   dependencies:
-    follow-redirects "~1.11"
+    follow-redirects "~1.13"
     glob "^7.1.5"
     q "~2.0"
 
