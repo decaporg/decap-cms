@@ -6,17 +6,20 @@ type Config = GitHubConfig & {
   apiRoot: string;
   tokenPromise: () => Promise<string>;
   commitAuthor: { name: string };
+  committer: { name: string };
 };
 
 export default class API extends GithubAPI {
   tokenPromise: () => Promise<string>;
   commitAuthor: { name: string };
+  committer: { name: string };
 
   constructor(config: Config) {
     super(config);
     this.apiRoot = config.apiRoot;
     this.tokenPromise = config.tokenPromise;
     this.commitAuthor = config.commitAuthor;
+    this.committer = config.committer;
     this.repoURL = '';
     this.originRepoURL = '';
   }
@@ -91,11 +94,19 @@ export default class API extends GithubAPI {
       tree: string;
       parents: string[];
       author?: { name: string; date: string };
+      committer?: { name: string; date: string };
     } = {
       message,
       tree: changeTree.sha,
       parents: changeTree.parentSha ? [changeTree.parentSha] : [],
     };
+
+    if (this.committer) {
+      commitParams.committer = {
+        ...this.committer,
+        date: new Date().toISOString(),
+      };
+    }
 
     if (this.commitAuthor) {
       commitParams.author = {

@@ -333,6 +333,7 @@ export default class GitGateway implements Implementation {
         branch: this.branch,
         tokenPromise: this.tokenPromise!,
         commitAuthor: pick(userData, ['name', 'email']),
+        committer: pick(userData, ['name', 'email']),
         squashMerges: this.squashMerges,
         cmsLabelPrefix: this.cmsLabelPrefix,
         initialWorkflowStatus: this.options.initialWorkflowStatus,
