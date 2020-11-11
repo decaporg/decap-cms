@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.34.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.2...netlify-cms-core@2.34.0) (2020-11-08)
+
+
+### Features
+
+* Add `group by` to collection view (Issue 3614) ([#4486](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4486)) ([e52e290](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e52e29034ec508e1b371e4a2a733418f0c813e60))
+
+
+
+
+
+## [2.33.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.1...netlify-cms-core@2.33.2) (2020-11-02)
+
+
+### Bug Fixes
+
+* **i18n:** data is not duplicated for default value setting ([#4463](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4463)) ([1777665](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/177766594366ba202b953368e49de0b29a5ea9be))
+
+
+
+
+
+## [2.33.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.0...netlify-cms-core@2.33.1) (2020-10-25)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+# [2.33.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.32.0...netlify-cms-core@2.33.0) (2020-10-20)
+
+
+### Features
+
+* allow per-file preview_path in file collection ([#4413](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4413)) ([9e0b8ac](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9e0b8ac4b88908d953a9714732b906c8c349fa7e))
+
+
+
+
+
 # [2.32.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.31.0...netlify-cms-core@2.32.0) (2020-10-12)
 
 

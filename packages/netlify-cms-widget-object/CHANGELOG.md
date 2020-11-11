@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.5.6...netlify-cms-widget-object@2.6.0) (2020-10-20)
+
+
+### Features
+
+* **widget-object:** add "summary" [#4291](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/4291) ([#4398](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/issues/4398)) ([963e775](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/commit/963e775897cd1e9357e0af79812b430fa6fd2cdb))
+
+
+
+
+
 ## [2.5.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.5.5...netlify-cms-widget-object@2.5.6) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-widget-object

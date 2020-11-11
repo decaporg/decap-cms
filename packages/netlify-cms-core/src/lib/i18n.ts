@@ -1,6 +1,13 @@
 import { Map, List } from 'immutable';
 import { set, trimEnd, groupBy } from 'lodash';
-import { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
+import {
+  Collection,
+  Entry,
+  EntryDraft,
+  EntryField,
+  EntryMap,
+  i18n as i18nType,
+} from '../types/redux';
 import { selectEntrySlug } from '../reducers/collections';
 import { EntryValue } from '../valueObjects/Entry';
 
@@ -17,6 +24,15 @@ export enum I18N_FIELD {
   DUPLICATE = 'duplicate',
   NONE = 'none',
 }
+
+export const isI18nAllowed = (i18n: i18nType, collection: Collection) => {
+  return (
+    i18n &&
+    collection.has(I18N) &&
+    i18n.get('structure') !== I18N_STRUCTURE.SINGLE_FILE &&
+    collection.getIn([I18N, 'structure']) !== I18N_STRUCTURE.SINGLE_FILE
+  );
+};
 
 export const hasI18n = (collection: Collection) => {
   return collection.has(I18N);
@@ -339,6 +355,19 @@ export const getI18nDataFiles = (
   }, [] as { path: string; id: string; newFile: boolean }[]);
 
   return dataFiles;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const duplicateDefaultI18nFields = (collection: Collection, dataFields: any) => {
+  const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  const i18nFields = Object.fromEntries(
+    locales
+      .filter(locale => locale !== defaultLocale)
+      .map(locale => [locale, { data: dataFields }]),
+  );
+
+  return i18nFields;
 };
 
 export const duplicateI18nFields = (

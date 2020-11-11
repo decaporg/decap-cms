@@ -97,6 +97,21 @@ const viewFilters = {
   },
 };
 
+const viewGroups = {
+  type: 'array',
+  minItems: 1,
+  items: {
+    type: 'object',
+    properties: {
+      label: { type: 'string' },
+      field: { type: 'string' },
+      pattern: { type: 'string' },
+    },
+    additionalProperties: false,
+    required: ['label', 'field'],
+  },
+};
+
 /**
  * The schema had to be wrapped in a function to
  * fix a circular dependency problem for WebPack,
@@ -234,6 +249,7 @@ const getConfigSchema = () => ({
             },
           },
           view_filters: viewFilters,
+          view_groups: viewGroups,
           nested: {
             type: 'object',
             properties: {

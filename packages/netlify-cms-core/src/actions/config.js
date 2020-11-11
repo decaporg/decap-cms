@@ -6,7 +6,7 @@ import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
-import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
+import { I18N, I18N_FIELD, isI18nAllowed } from '../lib/i18n';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -131,6 +131,19 @@ const throwOnMissingDefaultLocale = i18n => {
   }
 };
 
+const setViewPatternsDefaults = (key, collection) => {
+  if (!collection.has(key)) {
+    collection = collection.set(key, fromJS([]));
+  } else {
+    collection = collection.set(
+      key,
+      collection.get(key).map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
+    );
+  }
+
+  return collection;
+};
+
 const defaults = {
   publish_mode: publishModes.SIMPLE,
 };
@@ -250,12 +263,7 @@ export function applyDefaults(config) {
 
           const files = collection.get('files');
           if (files) {
-            if (
-              i18n &&
-              collection.has(I18N) &&
-              i18n.get('structure') !== I18N_STRUCTURE.SINGLE_FILE &&
-              collection.getIn([I18N, 'structure']) !== I18N_STRUCTURE.SINGLE_FILE
-            ) {
+            if (isI18nAllowed(i18n, collection)) {
               throw new Error(
                 'i18n configuration for files collections is limited to single_file structures',
               );
@@ -285,16 +293,8 @@ export function applyDefaults(config) {
             collection = collection.set('sortable_fields', fromJS(defaultSortable));
           }
 
-          if (!collection.has('view_filters')) {
-            collection = collection.set('view_filters', fromJS([]));
-          } else {
-            collection = collection.set(
-              'view_filters',
-              collection
-                .get('view_filters')
-                .map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
-            );
-          }
+          collection = setViewPatternsDefaults('view_filters', collection);
+          collection = setViewPatternsDefaults('view_groups', collection);
 
           if (map.hasIn(['editor', 'preview']) && !collection.has('editor')) {
             collection = collection.setIn(['editor', 'preview'], map.getIn(['editor', 'preview']));

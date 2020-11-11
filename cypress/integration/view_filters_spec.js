@@ -1,10 +1,11 @@
 import { login } from '../utils/steps';
 
 const filter = term => {
-  cy.get('[class*=FilterButton]').click();
+  cy.contains('span', 'Filter by').click();
   cy.contains(term).click();
   cy.contains('Contents').click();
 };
+
 const assertEntriesCount = count => {
   cy.get('[class*=ListCardLink]').should('have.length', count);
 };

@@ -1,26 +1,8 @@
 import React from 'react';
-import { css } from '@emotion/core';
-import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import {
-  buttons,
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  colors,
-} from 'netlify-cms-ui-default';
+import { Dropdown, DropdownItem } from 'netlify-cms-ui-default';
 import { SortDirection } from '../../types/redux';
-
-const SortButton = styled(StyledDropdownButton)`
-  ${buttons.button};
-  ${buttons.medium};
-  ${buttons.grayText};
-  font-size: 14px;
-
-  &:after {
-    top: 11px;
-  }
-`;
+import { ControlButton } from './ControlButton';
 
 function nextSortDirection(direction) {
   switch (direction) {
@@ -54,15 +36,11 @@ const SortControl = ({ t, fields, onSortClick, sort }) => {
 
   return (
     <Dropdown
-      renderButton={() => (
-        <SortButton
-          css={css`
-            color: ${hasActiveSort ? colors.active : undefined};
-          `}
-        >
-          {t('collection.collectionTop.sortBy')}
-        </SortButton>
-      )}
+      renderButton={() => {
+        return (
+          <ControlButton active={hasActiveSort} title={t('collection.collectionTop.sortBy')} />
+        );
+      }}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
       dropdownWidth="160px"

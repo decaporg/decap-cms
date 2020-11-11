@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.7.0...netlify-cms-widget-list@2.8.0) (2020-10-25)
+
+
+### Bug Fixes
+
+* **widget-list:** don't split an empty string ([#4464](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4464)) ([f3a8eac](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/f3a8eac816710dbc639ad40b06742fa90885e613))
+
+
+### Features
+
+* add add_to_top option to list widget ([#4465](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4465)) ([4c962f9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/4c962f9149722074652c8939486650a4ddb1d7b3))
+
+
+
+
+
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.6.6...netlify-cms-widget-list@2.7.0) (2020-10-20)
+
+
+### Features
+
+* **widget-list:** add min max configuration ([#4394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4394)) ([5fdfe40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/5fdfe40dd29e9e22c9ae7d6219bc057f7ea7280b))
+
+
+
+
+
 ## [2.6.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.6.5...netlify-cms-widget-list@2.6.6) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-widget-list

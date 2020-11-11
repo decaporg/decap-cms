@@ -13,6 +13,10 @@ interface Options {
   updatedOn?: string;
   status?: string;
   meta?: { path?: string };
+  i18n?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [locale: string]: any;
+  };
 }
 
 export interface EntryValue {
@@ -51,6 +55,7 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     updatedOn: options.updatedOn || '',
     status: options.status || '',
     meta: options.meta || {},
+    i18n: options.i18n || {},
   };
 
   return returnObj;

@@ -47,12 +47,17 @@ const en = {
       searchResults: 'Search Results for "%{searchTerm}"',
       searchResultsInCollection: 'Search Results for "%{searchTerm}" in %{collection}',
       filterBy: 'Filter by',
+      groupBy: 'Group by',
     },
     entries: {
       loadingEntries: 'Loading Entries...',
       cachingEntries: 'Caching Entries...',
       longerLoading: 'This might take several minutes',
       noEntries: 'No Entries',
+    },
+    groups: {
+      other: 'Other',
+      negateLabel: 'Not %{label}',
     },
     defaultFields: {
       author: {

@@ -528,6 +528,7 @@ describe('config', () => {
             meta: {},
             publish: true,
             view_filters: [],
+            view_groups: [],
           },
           {
             sortable_fields: [],
@@ -557,6 +558,7 @@ describe('config', () => {
             ],
             publish: true,
             view_filters: [],
+            view_groups: [],
           },
         ],
       });
@@ -654,7 +656,49 @@ describe('config', () => {
           ),
         ).toThrow('i18n configuration for files collections is limited to single_file structures');
       });
+      
+      it('should throw when i18n structure is set to multiple_folders and contains a single file collection', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  files: [
+                    { name: 'file', file: 'file', fields: [{ name: 'title', widget: 'string' }] },
+                  ],
+                  i18n: true,
+                },
+              ],
+            }),
+          ),
+        ).toThrow('i18n configuration for files collections is limited to single_file structures');
+      });
 
+      it('should throw when i18n structure is set to multiple_files and contains a single file collection', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_files',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  files: [
+                    { name: 'file', file: 'file', fields: [{ name: 'title', widget: 'string' }] },
+                  ],
+                  i18n: true,
+                },
+              ],
+            }),
+          ),
+        ).toThrow('i18n configuration for files collections is limited to single_file structures');
+      });
+      
       it('should set i18n value to translate on field when i18n=true for field in files collection', () => {
         expect(
           applyDefaults(
