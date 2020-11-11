@@ -144,46 +144,6 @@ Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/
 7. PR's must be rebased before merge (feel free to ask for help).
 8. PR should be reviewed by two maintainers prior to merging.
 
-## Debugging
-
-First of all, you need to create a sample project with [Gatsby](https://www.netlifycms.org/docs/start-with-a-template/)(other starter templates can also use). 
-In the end, you should have a gatsby project deployed on Netlify cloud and source code in your local development environment.
-
-
-1- You need to find the `netlify-cms/dev-test` directory. Under this directory, you can see the `config.yml` file.
-
-In the `dev-test/config.yml` file, the backend name is `test-repo`. 
-To connect to GitHub, just copy the ***gatsby starter project’s*** config.yml file and paste it to the dev-test/config.yml file.
-
-2- Run `yarn start` command in your terminal.
-
-3- Go to `localhost:8080` with a browser. (The port can be different. You can see the proper link on the terminal when you run the `yarn start` command)
-
-4- Add a local storage entry `netlifySiteURL` of the deployed site URL on Netlify.
-
-   For this step;
-   
-   * Open a console in the browser
-   * Write the below command and press enter:
-   ```localStorage.setItem('netlifySiteURL', 'https://nilaysecretnotebook.netlify.app/');```
-   * To be sure, you can run this command as well:
-   ```localStorage.getItem('netlifySiteURL');```
-
-5- You should be able to log in via your Netlify Identity email/password.
-
-If you haven’t set any password for your website users, you should do these steps additionally;
-   * Login to [Netlify](https://app.netlify.com/login/email) and select your ***gatsby starter project***.
-   * In the ***Identity*** section find your user and set the password.
-   
-   When you go to `localhost:8080` , you will see the login form. 
-   Enter your credentials. 
-   
-   When you checked the console, you might see some errors like this:
-   
-   ```No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.```
-   
-   For the solution, you can use the [CORS unblock Chrome extension](https://add0n.com/access-control.html). 
-
 ## License
 
 By contributing to Netlify CMS, you agree that your contributions will be licensed
