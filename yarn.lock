@@ -7791,10 +7791,10 @@ eslint-plugin-cypress@^2.6.0:
   dependencies:
     globals "^11.12.0"
 
-eslint-plugin-emotion@^10.0.7:
-  version "10.0.27"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-emotion/-/eslint-plugin-emotion-10.0.27.tgz#577a4265cc679f7bb826437a92fb9d709928e0a7"
-  integrity sha512-0IG9KWmyQTAWZNM4WoGjFbdre1Xq6uMp2jYOSHvh3ZNcDfOjOLXeH3ky1MuWZlbWIHxz/Ed5DMGlJAeKnd26VA==
+eslint-plugin-emotion@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-emotion/-/eslint-plugin-emotion-11.0.0.tgz#67782d427dd4cb6787d00106a6c64331acb98992"
+  integrity sha512-SKYyFYRFgOQTtBetn1mTKC2V1J6sbTnJh2/giWzg/OaTBSvJFwew8OkoxA3R9IhyaXYyPE+1TWzRhUJvVvBjVA==
 
 eslint-plugin-import@^2.18.2:
   version "2.22.1"

@@ -128,7 +128,7 @@
     "dotenv": "^8.0.0",
     "eslint": "^7.0.0",
     "eslint-plugin-cypress": "^2.6.0",
-    "eslint-plugin-emotion": "^10.0.7",
+    "eslint-plugin-emotion": "^11.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.17.0",
