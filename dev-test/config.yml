@@ -143,6 +143,13 @@ collections: # A list of collections the CMS should be able to edit
           options: ['a', 'b', 'c'],
           multiple: true,
         }
+      - {
+          label: 'Select numeric',
+          name: 'select_numeric',
+          widget: 'select',
+          options:
+            [{ label: 'One', value: 1 }, { label: 'Two', value: 2 }, { label: 'Three', value: 3 }],
+        }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
       - label: 'Object'
         name: 'object'

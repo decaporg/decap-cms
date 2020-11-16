@@ -8,11 +8,12 @@ export default {
       items: {
         oneOf: [
           { type: 'string' },
+          { type: 'number' },
           {
             type: 'object',
             properties: {
               label: { type: 'string' },
-              value: { type: 'string' },
+              value: { oneOf: [{ type: 'string' }, { type: 'number' }] },
             },
             required: ['label', 'value'],
           },
