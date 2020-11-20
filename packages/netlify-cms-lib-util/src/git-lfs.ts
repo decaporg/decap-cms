@@ -103,7 +103,7 @@ export async function getLargeMediaFilteredMediaFiles(
   },
   mediaFiles: AssetProxy[],
 ) {
-  return await Promise.all(
+  const filteredMediaFiles = await Promise.all(
     mediaFiles.map(async mediaFile => {
       const { fileObj, path } = mediaFile;
       const fixedPath = path.startsWith('/') ? path.slice(1) : path;
@@ -115,4 +115,5 @@ export async function getLargeMediaFilteredMediaFiles(
       return { ...mediaFile, ...pointerFileDetails };
     }),
   );
+  return filteredMediaFiles.filter(mediaFile => mediaFile.fileObj?.name != '');
 }
