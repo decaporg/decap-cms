@@ -173,7 +173,7 @@ describe('registry', () => {
       });
 
       it(`should return an updated entry's DataMap`, async () => {
-        const { getEventListeners, registerEventListener, invokeEvent } = require('../registry');
+        const { registerEventListener, invokeEvent } = require('../registry');
 
         const event = 'preSave';
         const options = { hello: 'world' };
