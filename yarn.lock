@@ -6911,10 +6911,10 @@ debug@3.1.0, debug@=3.1.0:
   dependencies:
     ms "2.0.0"
 
-debug@4.2.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
-  integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
+debug@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
+  integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
   dependencies:
     ms "2.1.2"
 
@@ -6924,6 +6924,13 @@ debug@^3.0.0, debug@^3.1.0, debug@^3.1.1, debug@^3.2.5, debug@^3.2.6:
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
   dependencies:
     ms "^2.1.1"
+
+debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
+  integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
+  dependencies:
+    ms "2.1.2"
 
 debuglog@^1.0.1:
   version "1.0.1"
@@ -16515,13 +16522,13 @@ stackframe@^1.1.1:
   integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
 
 start-server-and-test@^1.7.11:
-  version "1.11.5"
-  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.11.5.tgz#692cb4c9cf8ba9a992ef8b0010f839041183f687"
-  integrity sha512-XUGifPzbJcgD6tqWMFvbxnra1KByRuiw6Oc9FHR3tPm7UxB70a4iFDIuXfOAFtMJLvOJuwB3gnMUZxko8gtLow==
+  version "1.11.6"
+  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.11.6.tgz#d1ddc41bc49a61302829eecc7b799ca98562ee9f"
+  integrity sha512-+0T83W/R7CVgIE2HJcrpJDleLt7Skc2Xj8jWWsItRGdpZwenAv0YtIpBEKoL64pwUtPAPoHuYUtvWUOfCRoVjg==
   dependencies:
     bluebird "3.7.2"
     check-more-types "2.24.0"
-    debug "4.2.0"
+    debug "4.3.1"
     execa "3.4.0"
     lazy-ass "1.6.0"
     ps-tree "1.2.0"
