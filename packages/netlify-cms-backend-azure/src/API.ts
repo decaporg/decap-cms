@@ -472,7 +472,6 @@ export default class API {
     return this.requestJSON({
       url: `${this.endpointUrl}/pushes`,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(push),
     });
   }
@@ -598,7 +597,6 @@ export default class API {
     return this.requestJSON({
       url: `${this.endpointUrl}/pushes`,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(push),
     });
   }
