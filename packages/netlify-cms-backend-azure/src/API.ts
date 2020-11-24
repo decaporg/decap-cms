@@ -28,9 +28,11 @@ import { dirname } from 'path';
 export const API_NAME = 'Azure DevOps';
 
 type AzureUser = {
-  id: string;
-  displayName: string;
-  emailAddress: string;
+  coreAttributes?: {
+    Avatar?: { value?: { value?: string } };
+    DisplayName?: { value?: string };
+    EmailAddress?: { value?: string };
+  };
 };
 
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-6.1#gititem
@@ -252,11 +254,9 @@ export default class API {
   };
 
   withAzureFeatures = (req: ApiRequest) => {
-    // '-preview' is required to enable editorial workflow
-    // https://docs.microsoft.com/en-us/rest/api/azure/devops/pipelines/preview/preview?view=azure-devops-rest-6.1
     const withParams = unsentRequest.withParams(
       {
-        'api-version': `${this.apiVersion}-preview`,
+        'api-version': `${this.apiVersion}`,
       },
       req,
     );
@@ -297,9 +297,19 @@ export default class API {
   refToBranch = (ref: string): string => ref.substr('refs/heads/'.length);
 
   user = async () => {
-    const user = await this.requestJSON<AzureUser>({
+    const result = await this.requestJSON<AzureUser>({
       url: 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me',
     });
+
+    const name = result.coreAttributes?.DisplayName?.value;
+    const email = result.coreAttributes?.EmailAddress?.value;
+    const url = result.coreAttributes?.Avatar?.value?.value;
+    const user = {
+      name: name || email || '',
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      avatar_url: `data:image/png;base64,${url}`,
+      email,
+    };
     return user;
   };
 
