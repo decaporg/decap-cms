@@ -28,6 +28,8 @@ import { dirname } from 'path';
 
 export const API_NAME = 'Azure DevOps';
 
+const API_VERSION = 'api-version';
+
 type AzureUser = {
   coreAttributes?: {
     Avatar?: { value?: { value?: string } };
@@ -260,12 +262,12 @@ export default class API {
   };
 
   withAzureFeatures = (req: Map<string, Map<string, string>>) => {
-    if (req.hasIn(['params', 'api-version'])) {
+    if (req.hasIn(['params', API_VERSION])) {
       return req;
     }
     const withParams = unsentRequest.withParams(
       {
-        'api-version': `${this.apiVersion}`,
+        [API_VERSION]: `${this.apiVersion}`,
       },
       req,
     );
@@ -308,7 +310,7 @@ export default class API {
   user = async () => {
     const result = await this.requestJSON<AzureUser>({
       url: 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me',
-      params: { 'api-version': '6.1-preview.2' },
+      params: { [API_VERSION]: '6.1-preview.2' },
     });
 
     const name = result.coreAttributes?.DisplayName?.value;
@@ -756,9 +758,6 @@ export default class API {
           url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(
             pullRequest.pullRequestId,
           )}/labels/${encodeURIComponent(l.id)}`,
-          params: {
-            'api-version': `${this.apiVersion}-preview.1`,
-          },
         });
       }),
     );
