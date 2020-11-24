@@ -23,10 +23,9 @@ backend:
 
 # when using the default proxy server port
 local_backend: true
-
 ```
 
-4. Optional: To use a non-default port, create a `.env` file in the project's root folder and add the following:
+4. Optional: To run the CMS proxy server on a non-default port, create a `.env` file in the project's root folder and add the following:
 
 ```ini
 # the non-default port to be used by the CMS proxy server (default is 8081)
