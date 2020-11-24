@@ -2,8 +2,8 @@ backend:
   name: azure
   branch: master
   repo: organization/project/repo # replace with actual path
-  identity_url: https://login.microsoftonline.com/{tenantId} # replace tenantId
-  app_id: {appId} # replace appId
+  tenant_id: tenantId # replace with your tenantId
+  app_id: appId # replace with your appId
 
 publish_mode: editorial_workflow
 media_folder: static/media
