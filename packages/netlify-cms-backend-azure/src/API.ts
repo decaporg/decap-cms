@@ -738,15 +738,15 @@ export default class API {
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = generateContentKey(collectionName, slug);
     const branch = branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchPullRequest(branch);
-    await this.abandonPullRequest(mergeRequest);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.abandonPullRequest(pullRequest);
   }
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = generateContentKey(collectionName, slug);
     const branch = branchFromContentKey(contentKey);
-    const mergeRequest = await this.getBranchPullRequest(branch);
-    await this.completePullRequest(mergeRequest);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.completePullRequest(pullRequest);
   }
 
   async updatePullRequestLabels(pullRequest: AzurePullRequest, labels: string[]) {
