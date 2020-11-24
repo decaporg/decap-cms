@@ -84,7 +84,7 @@ export default class Azure implements Implementation {
     this.repo = parseAzureRepo(config);
     this.branch = config.backend.branch || 'master';
     this.apiRoot = config.backend.api_root || 'https://dev.azure.com';
-    this.apiVersion = config.backend.api_version || '6.1-preview.1';
+    this.apiVersion = config.backend.api_version || '6.1-preview';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
