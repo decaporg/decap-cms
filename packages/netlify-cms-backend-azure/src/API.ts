@@ -23,6 +23,7 @@ import {
   DataFile,
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
+import { Map } from 'immutable';
 import { dirname } from 'path';
 
 export const API_NAME = 'Azure DevOps';
@@ -49,7 +50,7 @@ type AzureGitItem = {
 };
 
 type AzureGitTreeEntryRef = {
-  gitObjectType: string;
+  gitObjectType: AzureObjectType;
   objectId: string;
   relativePath: string;
   size: number;
@@ -126,6 +127,11 @@ enum AzureAsyncPullRequestStatus {
   QUEUED = 'queued',
   REJECTED = 'rejectedByPolicy',
   SUCCEEDED = 'succeeded',
+}
+
+enum AzureObjectType {
+  BLOB = 'blob',
+  TREE = 'tree',
 }
 
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/diffs/get?view=azure-devops-rest-6.1#gitcommitdiffs
@@ -253,7 +259,10 @@ export default class API {
     return withHeaders;
   };
 
-  withAzureFeatures = (req: ApiRequest) => {
+  withAzureFeatures = (req: Map<string, Map<string, string>>) => {
+    if (req.hasIn(['params', 'api-version'])) {
+      return req;
+    }
     const withParams = unsentRequest.withParams(
       {
         'api-version': `${this.apiVersion}`,
@@ -299,6 +308,7 @@ export default class API {
   user = async () => {
     const result = await this.requestJSON<AzureUser>({
       url: 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me',
+      params: { 'api-version': '6.1-preview.2' },
     });
 
     const name = result.coreAttributes?.DisplayName?.value;
@@ -392,7 +402,7 @@ export default class API {
         f.relativePath = `${path}/${f.relativePath}`;
         let entry: AzureGitTreeEntryRef | undefined = f;
         // If AzureGitTreeEntryRef is still a tree object, we need to drill further to get to the blob
-        if (f.gitObjectType === 'tree') {
+        if (f.gitObjectType === AzureObjectType.TREE) {
           const azureGitNestedTreeRef = await this.requestJSON<AzureGitTreeRef>(f.url);
 
           entry = azureGitNestedTreeRef.treeEntries
@@ -453,7 +463,7 @@ export default class API {
     branch: string,
     newBranch: boolean,
   ) {
-    const ref = await this.getRef(newBranch ? branch : this.branch);
+    const ref = await this.getRef(newBranch ? this.branch : branch);
 
     const refUpdate = [
       {
@@ -574,7 +584,7 @@ export default class API {
     } else {
       const items = await this.getCommitItems(files, this.branch);
 
-      return this.uploadAndCommit(items, options.commitMessage, this.branch, false);
+      return this.uploadAndCommit(items, options.commitMessage, this.branch, true);
     }
   }
 
@@ -682,7 +692,7 @@ export default class API {
       },
     });
 
-    return result.changes;
+    return result.changes.filter(d => d.item.gitObjectType === AzureObjectType.BLOB);
   }
 
   async editorialWorkflowGit(
@@ -697,7 +707,7 @@ export default class API {
     if (!unpublished) {
       const items = await this.getCommitItems(files, this.branch);
 
-      await this.uploadAndCommit(items, options.commitMessage, branch, false);
+      await this.uploadAndCommit(items, options.commitMessage, branch, true);
       await this.createPullRequest(
         branch,
         options.commitMessage,
