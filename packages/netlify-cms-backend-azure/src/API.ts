@@ -66,10 +66,21 @@ type AzurePullRequest = {
   sourceRefName: string;
 };
 
-type AzurePullRequestStatusItem = {
-  status: AzurePullRequestStatus;
-  name: string;
-  target_url: string;
+type AzurePullRequestCommit = { commitId: string };
+
+enum AzureCommitStatusState {
+  ERROR = 'error',
+  FAILED = 'failed',
+  NOT_APPLICABLE = 'notApplicable',
+  NOT_SET = 'notSet',
+  PENDING = 'pending',
+  SUCCEEDED = 'succeeded',
+}
+
+type AzureCommitStatus = {
+  context: { genre?: string | null; name: string };
+  state: AzureCommitStatusState;
+  targetUrl: string;
 };
 
 // This does not match Azure documentation, but it is what comes back from some calls
@@ -384,7 +395,7 @@ export default class API {
   };
 
   async getRef(branch: string = this.branch) {
-    const refs = await this.requestJSON<AzureArray<AzureRef>>({
+    const { value: refs } = await this.requestJSON<AzureArray<AzureRef>>({
       url: `${this.endpointUrl}/refs`,
       params: {
         $top: '1', // There's only one ref, so keep the payload small
@@ -392,7 +403,7 @@ export default class API {
       },
     });
 
-    return refs.value.find(b => b.name == this.branchToRef(branch))!;
+    return refs.find(b => b.name == this.branchToRef(branch))!;
   }
 
   async deleteRef(ref: AzureRef): Promise<void> {
@@ -467,18 +478,30 @@ export default class API {
     };
   }
 
+  async getPullRequestStatues(pullRequest: AzurePullRequest) {
+    const { value: commits } = await this.requestJSON<AzureArray<AzurePullRequestCommit>>({
+      url: `${this.endpointUrl}/pullrequests/${pullRequest.pullRequestId}/commits`,
+      params: {
+        $top: 1,
+      },
+    });
+    const { value: statuses } = await this.requestJSON<AzureArray<AzureCommitStatus>>({
+      url: `${this.endpointUrl}/commits/${commits[0].commitId}/statuses`,
+      params: { latestOnly: true },
+    });
+    return statuses;
+  }
+
   async getStatuses(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-
-    const statuses: AzurePullRequestStatusItem[] = [];
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    return statuses.map(({ name, status, target_url }) => ({
-      context: name,
-      state: status ? PreviewState.Success : PreviewState.Other,
+    const statuses = await this.getPullRequestStatues(pullRequest);
+    return statuses.map(({ context, state, targetUrl }) => ({
+      context: context.name,
+      state: state === AzureCommitStatusState.SUCCEEDED ? PreviewState.Success : PreviewState.Other,
       // eslint-disable-next-line @typescript-eslint/camelcase
-      target_url,
+      target_url: targetUrl,
     }));
   }
 
@@ -566,7 +589,7 @@ export default class API {
   }
 
   async getPullRequests(sourceBranch?: string) {
-    const pullRequests = await this.requestJSON<AzureArray<AzurePullRequest>>({
+    const { value: pullRequests } = await this.requestJSON<AzureArray<AzurePullRequest>>({
       url: `${this.endpointUrl}/pullrequests`,
       params: {
         'searchCriteria.status': 'active',
@@ -576,7 +599,7 @@ export default class API {
       },
     });
 
-    const filtered = pullRequests.value.filter(pr => {
+    const filtered = pullRequests.filter(pr => {
       return pr.labels.some(label => isCMSLabel(label.name, this.cmsLabelPrefix));
     });
     return filtered;
