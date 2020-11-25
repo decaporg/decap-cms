@@ -184,7 +184,7 @@ type MetaObject = {
 
 type Meta = StaticallyTypedRecord<MetaObject>;
 
-export type i18n = StaticallyTypedRecord<{
+type i18n = StaticallyTypedRecord<{
   structure: string;
   locales: string[];
   default_locale: string;

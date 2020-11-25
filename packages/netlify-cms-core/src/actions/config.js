@@ -6,7 +6,7 @@ import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
 import { resolveBackend } from 'coreSrc/backend';
-import { I18N, I18N_FIELD, isI18nAllowed } from '../lib/i18n';
+import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -68,57 +68,53 @@ const setI18nField = field => {
   return field;
 };
 
-const setI18nDefaults = (i18n, collection) => {
-  if (i18n && collection.has(I18N)) {
-    const collectionI18n = collection.get(I18N);
-    if (collectionI18n === true) {
-      collection = collection.set(I18N, i18n);
-    } else if (collectionI18n === false) {
-      collection = collection.delete(I18N);
+const setI18nDefaults = (defaultI18n, collectionOrFile) => {
+  if (defaultI18n && collectionOrFile.has(I18N)) {
+    const collectionOrFileI18n = collectionOrFile.get(I18N);
+    if (collectionOrFileI18n === true) {
+      collectionOrFile = collectionOrFile.set(I18N, defaultI18n);
+    } else if (collectionOrFileI18n === false) {
+      collectionOrFile = collectionOrFile.delete(I18N);
     } else {
-      const locales = collectionI18n.get('locales', i18n.get('locales'));
-      const defaultLocale = collectionI18n.get(
+      const locales = collectionOrFileI18n.get('locales', defaultI18n.get('locales'));
+      const defaultLocale = collectionOrFileI18n.get(
         'default_locale',
-        collectionI18n.has('locales') ? locales.first() : i18n.get('default_locale'),
+        collectionOrFileI18n.has('locales') ? locales.first() : defaultI18n.get('default_locale'),
       );
-      collection = collection.set(I18N, i18n.merge(collectionI18n));
-      collection = collection.setIn([I18N, 'locales'], locales);
-      collection = collection.setIn([I18N, 'default_locale'], defaultLocale);
+      collectionOrFile = collectionOrFile.set(I18N, defaultI18n.merge(collectionOrFileI18n));
+      collectionOrFile = collectionOrFile.setIn([I18N, 'locales'], locales);
+      collectionOrFile = collectionOrFile.setIn([I18N, 'default_locale'], defaultLocale);
 
-      throwOnMissingDefaultLocale(collection.get(I18N));
+      throwOnMissingDefaultLocale(collectionOrFile.get(I18N));
     }
 
-    if (collectionI18n !== false) {
+    if (collectionOrFileI18n !== false) {
       // set default values for i18n fields
-      if (collection.has('fields')) {
-        collection = collection.set(
+      if (collectionOrFile.has('fields')) {
+        collectionOrFile = collectionOrFile.set(
           'fields',
-          traverseFields(collection.get('fields'), setI18nField),
+          traverseFields(collectionOrFile.get('fields'), setI18nField),
         );
-      }
-
-      if (collection.has('files')) {
-        collection = collection.set('files', traverseFields(collection.get('files'), setI18nField));
       }
     }
   } else {
-    collection = collection.delete(I18N);
-
-    if (collection.has('fields')) {
-      collection = collection.set(
+    collectionOrFile = collectionOrFile.delete(I18N);
+    if (collectionOrFile.has('fields')) {
+      collectionOrFile = collectionOrFile.set(
         'fields',
-        traverseFields(collection.get('fields'), field => field.delete(I18N)),
-      );
-    }
-
-    if (collection.has('files')) {
-      collection = collection.set(
-        'files',
-        traverseFields(collection.get('files'), field => field.delete(I18N)),
+        traverseFields(collectionOrFile.get('fields'), field => field.delete(I18N)),
       );
     }
   }
-  return collection;
+  return collectionOrFile;
+};
+
+const throwOnInvalidFileCollectionStructure = i18n => {
+  if (i18n && i18n.get('structure') !== I18N_STRUCTURE.SINGLE_FILE) {
+    throw new Error(
+      `i18n configuration for files collections is limited to ${I18N_STRUCTURE.SINGLE_FILE} structure`,
+    );
+  }
 };
 
 const throwOnMissingDefaultLocale = i18n => {
@@ -230,6 +226,8 @@ export function applyDefaults(config) {
             collection = collection.set('publish', true);
           }
 
+          collection = setI18nDefaults(i18n, collection);
+
           const folder = collection.get('folder');
           if (folder) {
             if (collection.has('path') && !collection.has('media_folder')) {
@@ -257,17 +255,12 @@ export function applyDefaults(config) {
             } else {
               collection = collection.set('meta', Map());
             }
-
-            collection = setI18nDefaults(i18n, collection);
           }
 
           const files = collection.get('files');
           if (files) {
-            if (isI18nAllowed(i18n, collection)) {
-              throw new Error(
-                'i18n configuration for files collections is limited to single_file structures',
-              );
-            }
+            const collectionI18n = collection.get(I18N);
+            throwOnInvalidFileCollectionStructure(collectionI18n);
 
             collection = collection.delete('nested');
             collection = collection.delete('meta');
@@ -280,11 +273,11 @@ export function applyDefaults(config) {
                   'fields',
                   traverseFields(file.get('fields'), setDefaultPublicFolder),
                 );
-                file = setI18nDefaults(i18n, file);
+                file = setI18nDefaults(collectionI18n, file);
+                throwOnInvalidFileCollectionStructure(file.get(I18N));
                 return file;
               }),
             );
-            collection = setI18nDefaults(i18n, collection);
           }
 
           if (!collection.has('sortable_fields')) {
