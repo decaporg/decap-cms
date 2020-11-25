@@ -150,9 +150,9 @@ export default class Azure implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  async entriesByFolder(folder: string, extension: string) {
+  async entriesByFolder(folder: string, extension: string, depth: number) {
     const listFiles = async () => {
-      const files = await this.api!.listFiles(folder);
+      const files = await this.api!.listFiles(folder, depth > 1);
       const filtered = files.filter(file => filterByExtension({ path: file.path }, extension));
       return filtered.map(file => ({
         id: file.id,
@@ -160,21 +160,22 @@ export default class Azure implements Implementation {
       }));
     };
 
-    const files = await entriesByFolder(
+    const entries = await entriesByFolder(
       listFiles,
       this.api!.readFile.bind(this.api!),
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
     );
-    return files;
+    return entries;
   }
 
   entriesByFiles(files: ImplementationFile[]) {
-    const readFile = (path: string, id: string | null | undefined) => {
-      return this.api!.readFile(path, id) as Promise<string>;
-    };
-
-    return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
+    return entriesByFiles(
+      files,
+      this.api!.readFile.bind(this.api!),
+      this.api!.readFileMetadata.bind(this.api),
+      API_NAME,
+    );
   }
 
   async getEntry(path: string) {
@@ -186,7 +187,7 @@ export default class Azure implements Implementation {
   }
 
   async getMedia() {
-    const files = await this.api!.listFiles(this.mediaFolder);
+    const files = await this.api!.listFiles(this.mediaFolder, false);
     const mediaFiles = await Promise.all(
       files.map(async ({ id, path, name }) => {
         const blobUrl = await this.getMediaDisplayURL({ id, path });

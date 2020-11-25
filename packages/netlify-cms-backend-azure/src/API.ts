@@ -190,13 +190,7 @@ const getChangeItem = (item: AzureCommitItem) => {
       return {
         changeType: AzureCommitChangeType.RENAME,
         item: { path: item.path },
-        sourceServerItem: item.path,
-        ...(item.base64Content && {
-          newContent: {
-            content: item.base64Content,
-            contentType: AzureItemContentType.BASE64,
-          },
-        }),
+        sourceServerItem: item.oldPath,
       };
     default:
       return {};
@@ -363,24 +357,22 @@ export default class API {
     return readFile(sha, fetchContent, localForage, parseText);
   };
 
-  listFiles = async (path: string, recursive = false, branch = this.branch) => {
+  listFiles = async (path: string, recursive: boolean, branch = this.branch) => {
     try {
-      const azureGitItemParams = {
-        version: branch,
-        scopePath: path,
-        recursionLevel: recursive ? 'full' : 'oneLevel',
-      };
-
       const { value: items } = await this.requestJSON<AzureArray<AzureGitItem>>({
         url: `${this.endpointUrl}/items/`,
-        params: azureGitItemParams,
+        params: {
+          version: branch,
+          scopePath: path,
+          recursionLevel: recursive ? 'full' : 'oneLevel',
+        },
       });
 
       const files = items
         .filter(item => item.gitObjectType === AzureObjectType.BLOB)
         .map(file => ({
           id: file.objectId,
-          path: file.path,
+          path: trimStart(file.path, '/'),
           name: basename(file.path),
         }));
       return files;
@@ -438,10 +430,10 @@ export default class API {
     ];
 
     const changes = items.map(item => getChangeItem(item));
-    const commit = [{ comment, changes }];
+    const commits = [{ comment, changes }];
     const push = {
       refUpdates: refUpdate,
-      commits: commit,
+      commits,
     };
 
     return this.requestJSON({
@@ -458,8 +450,8 @@ export default class API {
     const diffs = await this.getDifferences(pullRequest.sourceRefName);
     const diffsWithIds = await Promise.all(
       diffs.map(async d => {
-        const path = d.item.path;
-        const newFile = d.changeType === 'add';
+        const path = trimStart(d.item.path, '/');
+        const newFile = d.changeType === AzureCommitChangeType.ADD;
         const id = d.item.objectId;
         return { id, path, newFile };
       }),
@@ -513,18 +505,12 @@ export default class API {
           this.isFileExists(file.path, branch),
         ]);
 
-        let action = AzureCommitChangeType.ADD;
-        let path = trimStart(file.path, '/');
-        let oldPath = undefined;
-        if (fileExists) {
-          oldPath = file.newPath && path;
-          action =
-            file.newPath && file.newPath !== oldPath
-              ? AzureCommitChangeType.RENAME
-              : AzureCommitChangeType.EDIT;
-          path = file.newPath ? trimStart(file.newPath, '/') : path;
-        }
+        const path = file.newPath || file.path;
+        const oldPath = file.path;
+        const renameOrEdit =
+          path !== oldPath ? AzureCommitChangeType.RENAME : AzureCommitChangeType.EDIT;
 
+        const action = fileExists ? renameOrEdit : AzureCommitChangeType.ADD;
         return {
           action,
           base64Content,
@@ -669,7 +655,11 @@ export default class API {
       },
     });
 
-    return result.changes.filter(d => d.item.gitObjectType === AzureObjectType.BLOB);
+    return result.changes.filter(
+      d =>
+        d.item.gitObjectType === AzureObjectType.BLOB &&
+        Object.values(AzureCommitChangeType).includes(d.changeType),
+    );
   }
 
   async editorialWorkflowGit(
