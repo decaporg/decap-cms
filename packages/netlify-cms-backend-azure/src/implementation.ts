@@ -1,4 +1,4 @@
-import { trimStart, trim, last } from 'lodash';
+import { trimStart, trim } from 'lodash';
 import semaphore, { Semaphore } from 'semaphore';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
@@ -153,12 +153,10 @@ export default class Azure implements Implementation {
   async entriesByFolder(folder: string, extension: string) {
     const listFiles = async () => {
       const files = await this.api!.listFiles(folder);
-      const filtered = files.filter(file =>
-        filterByExtension({ path: file.relativePath }, extension),
-      );
+      const filtered = files.filter(file => filterByExtension({ path: file.path }, extension));
       return filtered.map(file => ({
-        id: file.objectId,
-        path: file.relativePath,
+        id: file.id,
+        path: file.path,
       }));
     };
 
@@ -190,10 +188,9 @@ export default class Azure implements Implementation {
   async getMedia() {
     const files = await this.api!.listFiles(this.mediaFolder);
     const mediaFiles = await Promise.all(
-      files.map(async ({ objectId, relativePath, size, url }) => {
-        const name: string = last(relativePath.split('/')) || '';
-        const blobUrl = await this.getMediaDisplayURL({ id: objectId, path: relativePath });
-        return { id: objectId, name, size, displayURL: blobUrl || url, path: relativePath };
+      files.map(async ({ id, path, name }) => {
+        const blobUrl = await this.getMediaDisplayURL({ id, path });
+        return { id, name, displayURL: blobUrl, path };
       }),
     );
     return mediaFiles;

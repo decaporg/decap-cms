@@ -24,7 +24,7 @@ import {
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { Map } from 'immutable';
-import { dirname } from 'path';
+import { dirname, basename } from 'path';
 
 export const API_NAME = 'Azure DevOps';
 
@@ -38,37 +38,10 @@ type AzureUser = {
   };
 };
 
-// https://docs.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-6.1#gititem
 type AzureGitItem = {
-  // this is the response we see in Azure, but it is just documented as "Object[]" so it is inconsistent
-  _links: {
-    tree: {
-      href: string;
-    };
-  };
-  commitId: string;
-  isFolder: boolean;
-  isSymLink: boolean;
-};
-
-type AzureGitTreeEntryRef = {
-  gitObjectType: AzureObjectType;
   objectId: string;
-  relativePath: string;
-  size: number;
-  url: string;
-};
-
-type AzureGitTreeRef = {
-  _links: AzureReferenceLinks[];
-  url: string;
-  href: string;
-  treeEntries?: AzureGitTreeEntryRef[];
-};
-
-type AzureReferenceLinks = {
-  links: object[];
-  tree?: AzureGitTreeRef;
+  gitObjectType: AzureObjectType;
+  path: string;
 };
 
 // https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20request?view=azure-devops-rest-6.1#gitpullrequest
@@ -163,6 +136,14 @@ interface AzureGitChangeItem {
 type AzureRef = {
   name: string;
   objectId: string;
+};
+
+type AzureCommit = {
+  author: {
+    date: string;
+    email: string;
+    name: string;
+  };
 };
 
 function delay(ms: number) {
@@ -332,16 +313,18 @@ export default class API {
   ) {
     const fetchFileMetadata = async () => {
       try {
-        const result = await this.request({
+        const { value } = await this.requestJSON<AzureArray<AzureCommit>>({
           url: `${this.endpointUrl}/commits/`,
-          params: { 'searchCriteria.itemPath': path, 'searchCriteria.itemVersion.version': branch },
+          params: {
+            'searchCriteria.itemPath': path,
+            'searchCriteria.itemVersion.version': branch,
+            'searchCriteria.$top': 1,
+          },
         });
-
-        const { value } = await this.responseToJSON(result);
         const [commit] = value;
 
         return {
-          author: commit.author.email || commit.author.name,
+          author: commit.author.name || commit.author.email,
           updatedOn: commit.author.date,
         };
       } catch (error) {
@@ -353,74 +336,43 @@ export default class API {
     return fileMetadata;
   }
 
-  readFile = async (
+  readFile = (
     path: string,
     sha?: string | null,
     { parseText = true, branch = this.branch } = {},
   ) => {
-    const fetchContent = async () => {
-      return await this.request({
+    const fetchContent = () => {
+      return this.request({
         url: `${this.endpointUrl}/items/`,
         params: { version: branch, path },
         cache: 'no-store',
       }).then<Blob | string>(parseText ? this.responseToText : this.responseToBlob);
     };
 
-    return await readFile(sha, fetchContent, localForage, parseText);
+    return readFile(sha, fetchContent, localForage, parseText);
   };
 
   listFiles = async (path: string, recursive = false, branch = this.branch) => {
     try {
-      const azureGitItemParams: Record<string, string> = recursive
-        ? {
-            version: branch,
-            scopePath: path,
-            recursionLevel: 'full',
-          }
-        : {
-            version: branch,
-            path,
-            recursionLevel: 'none',
-          };
+      const azureGitItemParams = {
+        version: branch,
+        scopePath: path,
+        recursionLevel: recursive ? 'full' : 'oneLevel',
+      };
 
-      const azureGitItem = await this.requestJSON<AzureGitItem>({
+      const { value: items } = await this.requestJSON<AzureArray<AzureGitItem>>({
         url: `${this.endpointUrl}/items/`,
         params: azureGitItemParams,
       });
 
-      const azureGitTreeRef = await this.requestJSON<AzureGitTreeRef>(
-        azureGitItem._links.tree.href,
-      );
-
-      const azureTreeEntries = azureGitTreeRef.treeEntries || [];
-      if (!Array.isArray(azureTreeEntries)) {
-        throw new Error(
-          `Cannot list files, path ${path} is not a directory but a ${typeof azureTreeEntries}`,
-        );
-      }
-      const processedAzureTreeEntries: AzureGitTreeEntryRef[] = [];
-
-      for (const f of azureTreeEntries) {
-        f.relativePath = `${path}/${f.relativePath}`;
-        let entry: AzureGitTreeEntryRef | undefined = f;
-        // If AzureGitTreeEntryRef is still a tree object, we need to drill further to get to the blob
-        if (f.gitObjectType === AzureObjectType.TREE) {
-          const azureGitNestedTreeRef = await this.requestJSON<AzureGitTreeRef>(f.url);
-
-          entry = azureGitNestedTreeRef.treeEntries
-            ? azureGitNestedTreeRef.treeEntries[0]
-            : undefined;
-
-          if (entry) {
-            entry.relativePath = `${f.relativePath}/${entry.relativePath}`;
-          }
-        }
-        if (entry) {
-          processedAzureTreeEntries.push(entry);
-        }
-      }
-
-      return processedAzureTreeEntries;
+      const files = items
+        .filter(item => item.gitObjectType === AzureObjectType.BLOB)
+        .map(file => ({
+          id: file.objectId,
+          path: file.path,
+          name: basename(file.path),
+        }));
+      return files;
     } catch (err) {
       if (err && err.status === 404) {
         console.log('This 404 was expected and handled appropriately.');
@@ -432,7 +384,7 @@ export default class API {
   };
 
   async getRef(branch: string = this.branch) {
-    const refs: { value: AzureRef[] } = await this.requestJSON({
+    const refs = await this.requestJSON<AzureArray<AzureRef>>({
       url: `${this.endpointUrl}/refs`,
       params: {
         $top: '1', // There's only one ref, so keep the payload small
@@ -518,7 +470,7 @@ export default class API {
   async getStatuses(collection: string, slug: string) {
     const contentKey = generateContentKey(collection, slug);
     const branch = branchFromContentKey(contentKey);
-    await this.getBranchPullRequest(branch);
+    const pullRequest = await this.getBranchPullRequest(branch);
 
     const statuses: AzurePullRequestStatusItem[] = [];
     // eslint-disable-next-line @typescript-eslint/camelcase
@@ -565,12 +517,12 @@ export default class API {
       const destDir = dirname(item.path);
       const children = await this.listFiles(sourceDir, true, branch);
       children
-        .filter(f => f.relativePath !== item.oldPath)
+        .filter(file => file.path !== item.oldPath)
         .forEach(file => {
           items.push({
             action: AzureCommitChangeType.RENAME,
-            path: file.relativePath.replace(sourceDir, destDir),
-            oldPath: file.relativePath,
+            path: file.path.replace(sourceDir, destDir),
+            oldPath: file.path,
           });
         });
     }
