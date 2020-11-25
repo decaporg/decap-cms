@@ -27,6 +27,12 @@ collections: # A list of collections the CMS should be able to edit
       - label: Drafts
         field: draft
         pattern: true
+    view_groups:
+      - label: Year
+        field: date
+        pattern: \d{4}
+      - label: Drafts
+        field: draft
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
