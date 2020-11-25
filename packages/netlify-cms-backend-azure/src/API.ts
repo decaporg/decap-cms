@@ -561,10 +561,10 @@ export default class API {
     const changes = paths.map(path =>
       getChangeItem({ action: AzureCommitChangeType.DELETE, path }),
     );
-    const commit = { comment, changes };
+    const commits = [{ comment, changes }];
     const push = {
       refUpdates: [refUpdate],
-      commits: [commit],
+      commits,
     };
 
     return this.requestJSON({
@@ -759,11 +759,15 @@ export default class API {
 
     // We need to wait for Azure to complete the pull request to actually complete
     // Sometimes this is instant, but frequently it is 1-3 seconds
-    while (response.mergeStatus === 'queued') {
-      await delay(500);
+    const DELAY_MILLISECONDS = 500;
+    const MAX_ATTEMPTS = 10;
+    let attempt = 1;
+    while (response.mergeStatus === AzureAsyncPullRequestStatus.QUEUED && attempt <= MAX_ATTEMPTS) {
+      await delay(DELAY_MILLISECONDS);
       response = await this.requestJSON({
         url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(pullRequest.pullRequestId)}`,
       });
+      attempt = attempt + 1;
     }
   }
 
