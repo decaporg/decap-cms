@@ -15,7 +15,7 @@ interface API {
 export type ApiRequestObject = {
   url: string;
   params?: Record<string, string | boolean | number>;
-  method?: 'POST' | 'PUT' | 'DELETE' | 'HEAD';
+  method?: 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH';
   headers?: Record<string, string>;
   body?: string | FormData;
   cache?: 'no-store';

@@ -3,6 +3,7 @@ const en = {
     login: 'Login',
     loggingIn: 'Logging in...',
     loginWithNetlifyIdentity: 'Login with Netlify Identity',
+    loginWithAzure: 'Login with Azure',
     loginWithBitbucket: 'Login with Bitbucket',
     loginWithGitHub: 'Login with GitHub',
     loginWithGitLab: 'Login with GitLab',
