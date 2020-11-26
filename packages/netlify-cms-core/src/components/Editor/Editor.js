@@ -446,6 +446,10 @@ function mapStateToProps(state, ownProps) {
   const localBackup = entryDraft.get('localBackup');
   const draftKey = entryDraft.get('key');
   let editorBackLink = `/collections/${collectionName}`;
+  if (new URLSearchParams(ownProps.location.search).get('ref') === 'workflow') {
+    editorBackLink = `/workflow`;
+  }
+
   if (collection.has('nested') && slug) {
     const pathParts = slug.split('/');
     if (pathParts.length > 2) {
