@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.1...netlify-cms-widget-select@2.7.2) (2020-11-26)
+
+
+### Bug Fixes
+
+* **widget-select:** allow number value type ([#4599](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/4599)) ([9741a79](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/9741a79e4922553b69e1536d4e53f5fde45d30e1))
+
+
+
+
+
 ## [2.7.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.0...netlify-cms-widget-select@2.7.1) (2020-11-08)
 
 **Note:** Version bump only for package netlify-cms-widget-select

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.3.4...netlify-cms-default-exports@2.3.5) (2020-11-26)
+
+**Note:** Version bump only for package netlify-cms-default-exports
+
+
+
+
+
 ## [2.3.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.3.3...netlify-cms-default-exports@2.3.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-default-exports

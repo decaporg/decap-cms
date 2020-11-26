@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.35.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.34.0...netlify-cms-core@2.35.0) (2020-11-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency immer to v8 ([#4626](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4626)) ([5b4574e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5b4574efb1b1fa09a7e328d602b1e8becd02f5c3))
+
+
+### Features
+
+* i18n support for file collections - closes [#4483](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4483) ([#4634](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4634)) ([5306171](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/53061710a9e3b338781e34f11491eeb65d23b8d5))
+
+
+
+
+
 # [2.34.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.2...netlify-cms-core@2.34.0) (2020-11-08)
 
 
