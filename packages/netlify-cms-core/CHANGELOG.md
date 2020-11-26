@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.0...netlify-cms-core@2.36.1) (2020-11-26)
+
+
+### Bug Fixes
+
+* **editor:** add referrer param for the workflow page ([#4600](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4600)) ([562a8e0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/562a8e06b46244544bd3ecab9e5ee2237adb2108))
+* **events:** allow multiple event handlers to execute ([#4612](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4612)) ([70cd0ee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/70cd0eef8c98dfb286bc49e82ced9f6395135e7d))
+
+
+
+
+
 # [2.36.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.35.0...netlify-cms-core@2.36.0) (2020-11-26)
 
 
