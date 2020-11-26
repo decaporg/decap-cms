@@ -41,14 +41,7 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    const {
-      forID,
-      value,
-      onChange,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
 
     return (
       <input
