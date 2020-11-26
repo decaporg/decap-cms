@@ -226,13 +226,20 @@ export function registerEventListener({ name, handler }, options = {}) {
 export async function invokeEvent({ name, data }) {
   validateEventName(name);
   const handlers = registry.eventHandlers[name];
+
+  let _data = { ...data };
   for (const { handler, options } of handlers) {
     try {
-      return await handler(data, options);
+      const result = await handler(_data, options);
+      if (result !== undefined) {
+        const entry = _data.entry.set('data', result);
+        _data = { ...data, entry };
+      }
     } catch (e) {
       console.warn(`Failed running handler for event ${name} with message: ${e.message}`);
     }
   }
+  return _data.entry.get('data');
 }
 
 export function removeEventListener({ name, handler }) {
