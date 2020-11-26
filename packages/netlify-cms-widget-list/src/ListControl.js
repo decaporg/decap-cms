@@ -321,13 +321,12 @@ export default class ListControl extends React.Component {
     };
   }
 
-  handleRemove = (index, key, event) => {
+  handleRemove = (index, event) => {
     event.preventDefault();
-    const { itemsCollapsed, keys } = this.state;
+    const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, field, clearFieldErrors } = this.props;
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
-    const validations = this.validations;
 
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
     const parsedMetadata =
@@ -336,17 +335,16 @@ export default class ListControl extends React.Component {
         : metadata;
 
     itemsCollapsed.splice(index, 1);
-    keys.splice(index, 1);
+    // clear validations
+    this.validations = [];
 
-    this.setState({ itemsCollapsed: [...itemsCollapsed], keys: [...keys] });
+    this.setState({
+      itemsCollapsed: [...itemsCollapsed],
+      keys: Array.from({ length: value.size - 1 }, () => uuid()),
+    });
 
     onChange(value.remove(index), parsedMetadata);
     clearFieldErrors();
-
-    // Remove deleted item object validation
-    if (validations) {
-      this.validations = validations.filter(item => item.key !== key);
-    }
   };
 
   handleItemCollapseToggle = (index, event) => {
@@ -490,7 +488,7 @@ export default class ListControl extends React.Component {
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-          onRemove={partial(this.handleRemove, index, key)}
+          onRemove={partial(this.handleRemove, index)}
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
