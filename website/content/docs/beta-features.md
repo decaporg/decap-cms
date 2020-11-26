@@ -25,7 +25,7 @@ local_backend: true
 
 ```
 3. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
-    - If the default port (8081) is in use you will see an error message in the console. See [below](#configure-the-netlify-cms-proxy-server-port-number) to configure the Netlify CMS Proxy Server to use a different port number.
+    - If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
 4. Start your local development server (e.g. run `gatsby develop`).
 5. Open [http://localhost:8000/admin](http://localhost:8000/admin) to verify that your can administer your content locally.
 
