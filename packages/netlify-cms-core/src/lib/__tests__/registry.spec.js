@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -147,7 +147,7 @@ describe('registry', () => {
 
           registerEventListener({ name, handler }, options);
 
-          const data = { entry: Map({ data: Map() }) };
+          const data = { entry: fromJS({ data: {} }) };
           await invokeEvent({ name, data });
 
           expect(handler).toHaveBeenCalledTimes(1);
@@ -164,7 +164,7 @@ describe('registry', () => {
           registerEventListener({ name, handler }, options1);
           registerEventListener({ name, handler }, options2);
 
-          const data = { entry: Map({ data: Map() }) };
+          const data = { entry: fromJS({ data: {} }) };
           await invokeEvent({ name, data });
 
           expect(handler).toHaveBeenCalledTimes(2);
@@ -190,19 +190,14 @@ describe('registry', () => {
         registerEventListener({ name: event, handler: handler2 }, options);
 
         const data = {
-          entry: Map({
-            data: Map({
-              a: 'foo',
-              b: 'bar',
-            }),
-          }),
+          entry: fromJS({ data: { a: 'foo', b: 'bar' } }),
         };
 
         const dataAfterFirstHandlerExecution = {
-          entry: data.entry.setIn(['data', 'a'], 'test1'),
+          entry: fromJS({ data: { a: 'test1', b: 'bar' } }),
         };
         const dataAfterSecondHandlerExecution = {
-          entry: dataAfterFirstHandlerExecution.entry.setIn(['data', 'c'], 'test2'),
+          entry: fromJS({ data: { a: 'test1', b: 'bar', c: 'test2' } }),
         };
 
         const result = await invokeEvent({ name: event, data });
@@ -211,6 +206,27 @@ describe('registry', () => {
         expect(handler2).toHaveBeenCalledWith(dataAfterFirstHandlerExecution, options);
 
         expect(result).toEqual(dataAfterSecondHandlerExecution.entry.get('data'));
+      });
+
+      it('should allow multiple events to not return a value', async () => {
+        const { registerEventListener, invokeEvent } = require('../registry');
+
+        const event = 'prePublish';
+        const options = { hello: 'world' };
+        const handler1 = jest.fn();
+        const handler2 = jest.fn();
+
+        registerEventListener({ name: event, handler: handler1 }, options);
+        registerEventListener({ name: event, handler: handler2 }, options);
+
+        const data = {
+          entry: fromJS({ data: { a: 'foo', b: 'bar' } }),
+        };
+        const result = await invokeEvent({ name: event, data });
+
+        expect(handler1).toHaveBeenCalledWith(data, options);
+        expect(handler2).toHaveBeenCalledWith(data, options);
+        expect(result).toEqual(data.entry.get('data'));
       });
     });
   });
