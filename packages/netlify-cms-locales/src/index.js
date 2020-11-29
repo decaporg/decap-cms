@@ -1,4 +1,5 @@
 export { default as cs } from './cs';
+export { default as da } from './da';
 export { default as de } from './de';
 export { default as en } from './en';
 export { default as es } from './es';
