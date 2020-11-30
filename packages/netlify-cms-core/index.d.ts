@@ -50,6 +50,12 @@ declare module 'netlify-cms-core' {
 
   export type CmsSlugEncoding = 'unicode' | 'ascii';
 
+  export interface CmsI18nConfig {
+    structure: 'multiple_folders' | 'multiple_files' | 'single_file';
+    locales: string[];
+    default_locale?: string;
+  }
+
   export interface CmsField {
     name: string;
     label?: string;
@@ -58,6 +64,7 @@ declare module 'netlify-cms-core' {
     hint?: string;
     pattern?: [string, string];
     default?: any;
+    i18n?: boolean | 'translate' | 'duplicate';
 
     /** If widget === "code" */
     default_language?: string;
@@ -202,6 +209,7 @@ declare module 'netlify-cms-core' {
     media_folder?: string;
     public_folder?: string;
     sortable_fields?: string[];
+    i18n?: boolean | CmsI18nConfig;
 
     /**
      * @deprecated Use sortable_fields instead
@@ -220,6 +228,7 @@ declare module 'netlify-cms-core' {
     base_url?: string;
     auth_endpoint?: string;
     cms_label_prefix?: string;
+    squash_merges?: boolean;
   }
 
   export interface CmsSlug {
@@ -241,6 +250,7 @@ declare module 'netlify-cms-core' {
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
     slug?: CmsSlug;
+    i18n?: CmsI18nConfig;
   }
 
   export interface InitOptions {
