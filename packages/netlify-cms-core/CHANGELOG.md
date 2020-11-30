@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.2...netlify-cms-core@2.36.3) (2020-11-30)
+
+
+### Bug Fixes
+
+* **typings:** add types for boolean and color widgets ([#4663](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4663)) ([8772664](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8772664952dc6cc4b3e340f65bfb61215e1ebaef))
+
+
+
+
+
 ## [2.36.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.1...netlify-cms-core@2.36.2) (2020-11-30)
 
 
