@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/compare/netlify-cms-widget-string@2.2.7...netlify-cms-widget-string@2.2.8) (2020-11-30)
+
+
+### Bug Fixes
+
+* **widget-string:** fix cursor jumping to end of line ([#4607](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/issues/4607)) ([1413d04](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/commit/1413d04d7dc51156d975f9b2f604749cfbc32a73))
+
+
+
+
+
 ## [2.2.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string/compare/netlify-cms-widget-string@2.2.6...netlify-cms-widget-string@2.2.7) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-widget-string

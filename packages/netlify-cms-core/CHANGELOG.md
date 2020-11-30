@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.1...netlify-cms-core@2.36.2) (2020-11-30)
+
+
+### Bug Fixes
+
+* **typings:** discriminated types for widgets ([#4640](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4640)) ([63ea63d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/63ea63defe6e3b593e3ef299f2181a0d01a25e63))
+* added a TS type definition for local_backend schema field ([#4662](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4662)) ([f28038d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f28038d63692045639669530d40d1382762730f0))
+* **typings:** add i18n & squash_merges to typings ([#4639](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4639)) ([bbf6475](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/bbf64751fb7d65b571048aebef8fc47897a764ef))
+
+
+
+
+
 ## [2.36.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.0...netlify-cms-core@2.36.1) (2020-11-26)
 
 
