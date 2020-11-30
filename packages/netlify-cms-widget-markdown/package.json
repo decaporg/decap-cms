@@ -22,7 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "is-hotkey": "^0.1.4",
+    "is-hotkey": "^0.2.0",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
     "react-select": "^2.4.3",
