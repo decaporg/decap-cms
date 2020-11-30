@@ -78,7 +78,7 @@ const da = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} er påkrævet.',
-        regexPattern: "%{fieldLabel} matchede ikke: %{pattern}.",
+        regexPattern: '%{fieldLabel} matchede ikke: %{pattern}.',
         processing: '%{fieldLabel} behandles.',
         range: '%{fieldLabel} skal være mellem %{minValue} og %{maxValue}.',
         min: '%{fieldLabel} skal være mindst %{minValue}.',
@@ -96,20 +96,23 @@ const da = {
     },
     editor: {
       onLeavePage: 'Er du sikker på at du vil forlade siden?',
-      onUpdatingWithUnsavedChanges: 'Du har ændringer der ikke er gemt, gem disse før status ændres.',
+      onUpdatingWithUnsavedChanges:
+        'Du har ændringer der ikke er gemt, gem disse før status ændres.',
       onPublishingNotReady: 'Skift status til "Klar" inden publicering.',
       onPublishingWithUnsavedChanges: 'Du har ændringer der ikke er gemt, gem inden publicing.',
       onPublishing: 'Er du sikker på at du vil publicere dette dokument?',
       onUnpublishing: 'Er du sikker på at du vil afpublicere dette dokument?',
       onDeleteWithUnsavedChanges:
         'Er du sikker på at du vil slette dette tidliere publiceret dokument, samt dine nuværende ugemte ændringer fra denne session?',
-      onDeletePublishedEntry: 'Er du sikker på at du vil slette dette tidliere publiceret dokument?',
+      onDeletePublishedEntry:
+        'Er du sikker på at du vil slette dette tidliere publiceret dokument?',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         'Alle ikke publicerede ændringer til dette dokument vil blive slettet ligesom dine nuværende ugemte ændringer fra denne session. Er du sikker på at du vil slette?',
       onDeleteUnpublishedChanges:
         'Alle ikke publicerede ændringer til dette dokument vil blive slettet. Er du sikker på at du vil slette?',
       loadingEntry: 'Indlæser dokument...',
-      confirmLoadBackup: 'En lokal sikkerhedskopi blev gendannet for dette dokument, vil du anvende denne?',
+      confirmLoadBackup:
+        'En lokal sikkerhedskopi blev gendannet for dette dokument, vil du anvende denne?',
     },
     editorToolbar: {
       publishing: 'Publicerer...',
@@ -215,7 +218,7 @@ const da = {
     },
     errorBoundary: {
       title: 'Fejl',
-      details: "Der opstod en fejl - venligst ",
+      details: 'Der opstod en fejl - venligst ',
       reportIt: 'opret et issue på GitHub.',
       detailsHeading: 'Detalger',
       privacyWarning:
@@ -235,7 +238,8 @@ const da = {
       onFailToPersist: 'Dokumentet kunne ikke gemmes: %{details}',
       onFailToDelete: 'Dokumentet kunne ikke slettes: %{details}',
       onFailToUpdateStatus: 'Status kunne ikke opdateres: %{details}',
-      missingRequiredField: "Ups, du mangler et påkrævet felt. Udfyld de påkrævede felter før dokumentet gemmes.",
+      missingRequiredField:
+        'Ups, du mangler et påkrævet felt. Udfyld de påkrævede felter før dokumentet gemmes.',
       entrySaved: 'Dokumentet er gemt',
       entryPublished: 'Dokumentet er publiceret ',
       entryUnpublished: 'Dokumentet er afpubliceret',
