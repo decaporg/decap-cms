@@ -236,6 +236,11 @@ declare module 'netlify-cms-core' {
     clean_accents?: boolean;
   }
 
+  export interface CmsLocalBackend {
+    url?: string;
+    allowed_hosts?: string[];
+  }
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
@@ -251,6 +256,7 @@ declare module 'netlify-cms-core' {
     publish_mode?: CmsPublishMode;
     slug?: CmsSlug;
     i18n?: CmsI18nConfig;
+    local_backend?: boolean | CmsLocalBackend;
   }
 
   export interface InitOptions {
