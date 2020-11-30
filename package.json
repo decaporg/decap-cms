@@ -123,7 +123,7 @@
     "css-loader": "^3.0.0",
     "cypress": "^5.4.0",
     "cypress-file-upload": "^4.0.0",
-    "cypress-image-snapshot": "^3.1.1",
+    "cypress-image-snapshot": "^4.0.0",
     "cypress-jest-adapter": "^0.1.1",
     "cypress-plugin-tab": "^1.0.0",
     "dotenv": "^8.0.0",
