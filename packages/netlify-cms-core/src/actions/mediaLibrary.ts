@@ -44,6 +44,8 @@ export const MEDIA_DELETE_FAILURE = 'MEDIA_DELETE_FAILURE';
 export const MEDIA_DISPLAY_URL_REQUEST = 'MEDIA_DISPLAY_URL_REQUEST';
 export const MEDIA_DISPLAY_URL_SUCCESS = 'MEDIA_DISPLAY_URL_SUCCESS';
 export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
+export const MEDIA_FOLDER_UPDATE = 'MEDIA_FOLDER_UPDATE';
+export const DEFAULT_MEDIA_FOLDER = 'DEFAULT_MEDIA_FOLDER';
 
 export function createMediaLibrary(instance: MediaLibraryInstance) {
   const api = {
@@ -131,9 +133,19 @@ export function removeInsertedMedia(controlID: string) {
   return { type: MEDIA_REMOVE_INSERTED, payload: { controlID } };
 }
 
-export function loadMedia(
-  opts: { delay?: number; query?: string; page?: number; privateUpload?: boolean } = {},
-) {
+export function updateMediaFolder(selectedMediaFolder: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const currentMediaFolder = backend.updateMediaFolder(selectedMediaFolder);
+    const defaultMediaFolder = backend.getDefaultMediaFolder();
+    dispatch({ type: MEDIA_FOLDER_UPDATE, payload: { currentMediaFolder, defaultMediaFolder } });
+  };
+}
+
+export function loadMedia( 
+  opts: { delay?: number; query?: string; page?: number; privateUpload?: boolean } = {}
+  ) {
   const { delay = 0, query = '', page = 1, privateUpload } = opts;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
@@ -157,7 +169,6 @@ export function loadMedia(
       }
     }
     dispatch(mediaLoading(page));
-
     const loadFunction = () =>
       backend
         .getMedia()
@@ -262,6 +273,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else {
         const entry = state.entryDraft.get('entry');
         const collection = state.collections.get(entry?.get('collection'));
+        console.log(state);
         const path = selectMediaFilePath(state.config, collection, entry, fileName, field);
         assetProxy = createAssetProxy({
           file,
@@ -287,6 +299,8 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
         });
         return dispatch(addDraftEntryMediaFile(mediaFile));
       } else {
+        console.log('backend.persistMedia');
+        console.log(state.config);
         mediaFile = await backend.persistMedia(state.config, assetProxy);
       }
 

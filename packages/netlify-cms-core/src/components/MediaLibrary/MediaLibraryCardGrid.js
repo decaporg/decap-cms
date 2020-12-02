@@ -58,6 +58,7 @@ const CardWrapper = props => {
         loadDisplayURL={() => loadDisplayURL(file)}
         type={file.type}
         isViewableImage={file.isViewableImage}
+        isDirectory={file.isDirectory}
       />
     </div>
   );

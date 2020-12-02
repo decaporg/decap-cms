@@ -695,6 +695,41 @@ export default class API {
     }
   }
 
+  async listDirs(
+    path: string,
+    { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {},
+  ): Promise<{ type: string; id: string; name: string; path: string;  }[]> {
+    const folder = trim(path, '/');
+    try {
+      const result: Octokit.GitGetTreeResponse = await this.request(
+        `${repoURL}/git/trees/${branch}:${folder}`,
+        {
+          // GitHub API supports recursive=1 for getting the entire recursive tree
+          // or omitting it to get the non-recursive tree
+          params: depth > 1 ? { recursive: 1 } : {},
+        },
+      );
+      return (
+        result.tree
+          // filter only files and up to the required depth
+          .filter(file => file.type === 'tree' && file.path.split('/').length <= depth)
+          .map(file => ({
+            type: file.type,
+            id: file.sha,
+            name: basename(file.path),
+            path: `${folder}/${file.path}`,
+          }))
+      );
+    } catch (err) {
+      if (err && err.status === 404) {
+        console.log('This 404 was expected and handled appropriately.');
+        return [];
+      } else {
+        throw err;
+      }
+    }
+  }
+
   filterOpenAuthoringBranches = async (branch: string) => {
     try {
       const pullRequest = await this.getBranchPullRequest(branch);
