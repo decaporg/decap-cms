@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { colors, borders, lengths, shadows, effects } from 'netlify-cms-ui-default';
+import { colors, borders, lengths, shadows, effects, Icon } from 'netlify-cms-ui-default';
 
 const IMAGE_HEIGHT = 160;
 
@@ -77,8 +77,19 @@ class MediaLibraryCard extends React.Component {
       type,
       isViewableImage,
       isDraft,
+      isDirectory,
     } = this.props;
     const url = displayURL.get('url');
+    var cardImageWrapper = (<CardImageWrapper>
+      {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
+      {url && isViewableImage ? (
+        <CardImage src={url} />
+      ) : (
+        <CardFileIcon data-testid="card-file-icon">{type}</CardFileIcon>
+      )}
+    </CardImageWrapper>);
+    var cardDirectoryWrapper =  <Icon type="folder" />; 
+    var previewElement = isDirectory ? cardDirectoryWrapper : cardImageWrapper;
     return (
       <Card
         isSelected={isSelected}
@@ -89,21 +100,14 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
-        <CardImageWrapper>
-          {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
-          {url && isViewableImage ? (
-            <CardImage src={url} />
-          ) : (
-            <CardFileIcon data-testid="card-file-icon">{type}</CardFileIcon>
-          )}
-        </CardImageWrapper>
+        {previewElement}
         <CardText>{text}</CardText>
       </Card>
     );
   }
   componentDidMount() {
-    const { displayURL, loadDisplayURL } = this.props;
-    if (!displayURL.get('url')) {
+    const { displayURL, loadDisplayURL, isViewableImage } = this.props;
+    if (!displayURL.get('url') && isViewableImage) {
       loadDisplayURL();
     }
   }

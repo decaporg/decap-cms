@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryHeader from './MediaLibraryHeader';
+import MediaLibraryBreadcrumbs from './MediaLibraryBreadCrumbs';
 import { UploadButton, DeleteButton, DownloadButton, InsertButton } from './MediaLibraryButtons';
 
 const LibraryTop = styled.div`
@@ -37,6 +38,9 @@ const MediaLibraryTop = ({
   hasSelection,
   isPersisting,
   isDeleting,
+  handleBreadcrumbClick,
+  currentMediaFolder,
+  defaultMediaFolder,
 }) => {
   const shouldShowButtonLoader = isPersisting || isDeleting;
   const uploadEnabled = !shouldShowButtonLoader;
@@ -99,6 +103,13 @@ const MediaLibraryTop = ({
             </InsertButton>
           )}
         </ButtonsContainer>
+      </RowContainer>
+      <RowContainer>
+        <MediaLibraryBreadcrumbs
+          handleBreadcrumbClick={handleBreadcrumbClick}
+          currentMediaFolder={currentMediaFolder}
+          defaultMediaFolder={defaultMediaFolder}
+        />
       </RowContainer>
     </LibraryTop>
   );

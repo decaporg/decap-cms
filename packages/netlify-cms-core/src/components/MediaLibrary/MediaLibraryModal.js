@@ -26,7 +26,7 @@ const cardOutsideWidth = `300px`;
 
 const StyledModal = styled(Modal)`
   display: grid;
-  grid-template-rows: 120px auto;
+  grid-template-rows: 170px auto;
   width: calc(${cardOutsideWidth} + 20px);
   background-color: ${props => props.isPrivate && colors.grayDark};
 
@@ -87,10 +87,13 @@ const MediaLibraryModal = ({
   handleDownload,
   setScrollContainerRef,
   handleAssetClick,
+  handleBreadcrumbClick,
   handleLoadMore,
   loadDisplayURL,
   displayURLs,
   t,
+  currentMediaFolder,
+  defaultMediaFolder,
 }) => {
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
@@ -128,7 +131,11 @@ const MediaLibraryModal = ({
         hasSelection={hasSelection}
         isPersisting={isPersisting}
         isDeleting={isDeleting}
-      />
+        handleBreadcrumbClick={handleBreadcrumbClick}
+        currentMediaFolder={currentMediaFolder}
+        defaultMediaFolder={defaultMediaFolder}
+        />
+      
       {!shouldShowEmptyMessage ? null : (
         <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
       )}
@@ -189,6 +196,7 @@ MediaLibraryModal.propTypes = {
   handleInsert: PropTypes.func.isRequired,
   setScrollContainerRef: PropTypes.func.isRequired,
   handleAssetClick: PropTypes.func.isRequired,
+  handleBreadcrumbClick: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
   loadDisplayURL: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,

@@ -13,6 +13,7 @@ import {
   insertMedia as insertMediaAction,
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
+  updateMediaFolder as updateMediaFolderAction,
 } from 'Actions/mediaLibrary';
 import { selectMediaFiles } from 'Reducers/mediaLibrary';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
@@ -42,6 +43,7 @@ class MediaLibrary extends React.Component {
     privateUpload: PropTypes.bool,
     config: ImmutablePropTypes.map,
     loadMedia: PropTypes.func.isRequired,
+    updateMediaFolder: PropTypes.func.isRequired,
     dynamicSearchQuery: PropTypes.string,
     page: PropTypes.number,
     persistMedia: PropTypes.func.isRequired,
@@ -65,6 +67,7 @@ class MediaLibrary extends React.Component {
   };
 
   componentDidMount() {
+    this.props.updateMediaFolder();
     this.props.loadMedia();
   }
 
@@ -109,7 +112,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft }) => {
+      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft, type }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -121,11 +124,12 @@ class MediaLibrary extends React.Component {
           queryOrder,
           displayURL,
           draft,
+          isDirectory: type === 'tree',
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
       });
-
+      
     /**
      * Get the sort order for use with `lodash.orderBy`, and always add the
      * `queryOrder` sort as the lowest priority sort order.
@@ -144,9 +148,19 @@ class MediaLibrary extends React.Component {
    * Toggle asset selection on click.
    */
   handleAssetClick = asset => {
-    const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
-    this.setState({ selectedFile });
+    if (asset.isViewableImage) {
+      const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
+      this.setState({ selectedFile });
+    } else {
+      this.props.updateMediaFolder(asset.path);
+      this.props.loadMedia();
+    }
   };
+
+  handleBreadcrumbClick = path => {
+    this.props.updateMediaFolder(`${path}`);
+    this.props.loadMedia();
+  }
 
   /**
    * Upload a file.
@@ -304,9 +318,10 @@ class MediaLibrary extends React.Component {
       isPaginating,
       privateUpload,
       displayURLs,
+      currentMediaFolder,
+      defaultMediaFolder,
       t,
     } = this.props;
-
     return (
       <MediaLibraryModal
         isVisible={isVisible}
@@ -335,9 +350,12 @@ class MediaLibrary extends React.Component {
         handleDownload={this.handleDownload}
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
+        handleBreadcrumbClick={this.handleBreadcrumbClick}
         handleLoadMore={this.handleLoadMore}
         displayURLs={displayURLs}
         loadDisplayURL={this.loadDisplayURL}
+        currentMediaFolder={currentMediaFolder}
+        defaultMediaFolder={defaultMediaFolder}
         t={t}
       />
     );
@@ -364,6 +382,8 @@ const mapStateToProps = state => {
     page: mediaLibrary.get('page'),
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
+    currentMediaFolder: mediaLibrary.get('currentMediaFolder'),
+    defaultMediaFolder: mediaLibrary.get('defaultMediaFolder'),
     field,
   };
   return { ...mediaLibraryProps };
@@ -376,6 +396,7 @@ const mapDispatchToProps = {
   insertMedia: insertMediaAction,
   loadMediaDisplayURL: loadMediaDisplayURLAction,
   closeMediaLibrary: closeMediaLibraryAction,
+  updateMediaFolder: updateMediaFolderAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(translate()(MediaLibrary));

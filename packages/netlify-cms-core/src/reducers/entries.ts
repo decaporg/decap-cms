@@ -762,9 +762,10 @@ export const selectMediaFilePath = (
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
-
+  console.log('mediaPath');
+  console.log(mediaPath);
   const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
-
+  console.log(mediaFolder);
   return join(mediaFolder, basename(mediaPath));
 };
 
