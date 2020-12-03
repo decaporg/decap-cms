@@ -165,7 +165,7 @@ To connect to GitHub, just copy the ***gatsby starter project’s*** config.yml 
    
    * Open a console in the browser
    * Write the below command and press enter:
-   ```localStorage.setItem('netlifySiteURL', 'https://nilaysecretnotebook.netlify.app/');```
+   ```localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/');```
    * To be sure, you can run this command as well:
    ```localStorage.getItem('netlifySiteURL');```
 
