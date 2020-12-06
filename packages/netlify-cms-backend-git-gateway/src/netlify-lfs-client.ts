@@ -1,4 +1,5 @@
 import { flow, fromPairs, map } from 'lodash/fp';
+import { isPlainObject, isEmpty } from 'lodash';
 import minimatch from 'minimatch';
 import { ApiRequest, PointerFile, unsentRequest } from 'netlify-cms-lib-util';
 
@@ -46,25 +47,41 @@ const resourceExists = async (
   // to fit
 };
 
-const getTransofrmationsParams = (t: ImageTransformations) =>
-  `?nf_resize=${t.nf_resize}&w=${t.w}&h=${t.h}`;
+const getTransofrmationsParams = (t: boolean | ImageTransformations) => {
+  if (isPlainObject(t) && !isEmpty(t)) {
+    const { nf_resize: resize, w, h } = t as ImageTransformations;
+    return `?nf_resize=${resize}&w=${w}&h=${h}`;
+  }
+  return '';
+};
 
-const getDownloadURL = (
+const getDownloadURL = async (
   { rootURL, transformImages: t, makeAuthorizedRequest }: ClientConfig,
   { sha }: PointerFile,
-) =>
-  makeAuthorizedRequest(
-    `${rootURL}/origin/${sha}${
-      t && Object.keys(t).length > 0 ? getTransofrmationsParams(t as ImageTransformations) : ''
-    }`,
-  )
-    .then(res => (res.ok ? res : Promise.reject(res)))
-    .then(res => res.blob())
-    .then(blob => URL.createObjectURL(blob))
-    .catch((err: Error) => {
-      console.error(err);
-      return Promise.resolve('');
-    });
+) => {
+  try {
+    const transformation = getTransofrmationsParams(t);
+    const transformedPromise = makeAuthorizedRequest(`${rootURL}/origin/${sha}${transformation}`);
+    const [transformed, original] = await Promise.all([
+      transformedPromise,
+      // if transformation is defined, we need to load the original so we have the correct meta data
+      transformation ? makeAuthorizedRequest(`${rootURL}/origin/${sha}`) : transformedPromise,
+    ]);
+    if (!transformed.ok) {
+      const error = await transformed.json();
+      throw new Error(
+        `Failed getting large media for sha '${sha}': '${error.code} - ${error.msg}'`,
+      );
+    }
+
+    const transformedBlob = await transformed.blob();
+    const url = URL.createObjectURL(transformedBlob);
+    return { url, blob: transformation ? await original.blob() : transformedBlob };
+  } catch (error) {
+    console.error(error);
+    return { url: '', blob: new Blob() };
+  }
+};
 
 const uploadOperation = (objects: PointerFile[]) => ({
   operation: 'upload',
@@ -77,15 +94,17 @@ const getResourceUploadURLs = async (
     rootURL,
     makeAuthorizedRequest,
   }: { rootURL: string; makeAuthorizedRequest: MakeAuthorizedRequest },
-  objects: PointerFile[],
+  pointerFiles: PointerFile[],
 ) => {
   const response = await makeAuthorizedRequest({
     url: `${rootURL}/objects/batch`,
     method: 'POST',
     headers: defaultContentHeaders,
-    body: JSON.stringify(uploadOperation(objects)),
+    body: JSON.stringify(uploadOperation(pointerFiles)),
   });
-  return (await response.json()).objects.map(
+
+  const { objects } = await response.json();
+  const uploadUrls = objects.map(
     (object: { error?: { message: string }; actions: { upload: { href: string } } }) => {
       if (object.error) {
         throw new Error(object.error.message);
@@ -93,6 +112,7 @@ const getResourceUploadURLs = async (
       return object.actions.upload.href;
     },
   );
+  return uploadUrls;
 };
 
 const uploadBlob = (uploadURL: string, blob: Blob) =>
@@ -132,7 +152,7 @@ const clientFns: Record<string, Function> = {
 export type Client = {
   resourceExists: (pointer: PointerFile) => Promise<boolean | undefined>;
   getResourceUploadURLs: (objects: PointerFile[]) => Promise<string>;
-  getDownloadURL: (pointer: PointerFile) => Promise<string>;
+  getDownloadURL: (pointer: PointerFile) => Promise<{ url: string; blob: Blob }>;
   uploadResource: (pointer: PointerFile, blob: Blob) => Promise<string>;
   matchPath: (path: string) => boolean;
   patterns: string[];

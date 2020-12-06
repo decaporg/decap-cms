@@ -1,22 +1,26 @@
 import { API as GithubAPI } from 'netlify-cms-backend-github';
-import { Config as GitHubConfig } from 'netlify-cms-backend-github/src/API';
+import { Config as GitHubConfig, Diff } from 'netlify-cms-backend-github/src/API';
 import { APIError, FetchError } from 'netlify-cms-lib-util';
+import { Octokit } from '@octokit/rest';
 
 type Config = GitHubConfig & {
   apiRoot: string;
   tokenPromise: () => Promise<string>;
   commitAuthor: { name: string };
+  isLargeMedia: (filename: string) => Promise<boolean>;
 };
 
 export default class API extends GithubAPI {
   tokenPromise: () => Promise<string>;
   commitAuthor: { name: string };
+  isLargeMedia: (filename: string) => Promise<boolean>;
 
   constructor(config: Config) {
     super(config);
     this.apiRoot = config.apiRoot;
     this.tokenPromise = config.tokenPromise;
     this.commitAuthor = config.commitAuthor;
+    this.isLargeMedia = config.isLargeMedia;
     this.repoURL = '';
     this.originRepoURL = '';
   }
@@ -112,5 +116,13 @@ export default class API extends GithubAPI {
 
   nextUrlProcessor() {
     return (url: string) => url.replace(/^(?:[a-z]+:\/\/.+?\/.+?\/.+?\/)/, `${this.apiRoot}/`);
+  }
+
+  async diffFromFile(file: Octokit.ReposCompareCommitsResponseFilesItem): Promise<Diff> {
+    const diff = await super.diffFromFile(file);
+    return {
+      ...diff,
+      binary: diff.binary || (await this.isLargeMedia(file.filename)),
+    };
   }
 }
