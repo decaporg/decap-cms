@@ -18,8 +18,6 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
-  MEDIA_FOLDER_UPDATE,
-  DEFAULT_MEDIA_FOLDER,
 } from '../actions/mediaLibrary';
 import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
@@ -211,16 +209,6 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
           .deleteIn([...displayURLPath, 'url'])
       );
     }
-
-    case MEDIA_FOLDER_UPDATE: {
-      // zzz not sure what this is doing?
-      return state.withMutations(map => {
-        map.set('currentMediaFolder', action.payload.currentMediaFolder);
-        map.set('defaultMediaFolder', action.payload.defaultMediaFolder);
-        map.set('isLoading', false);
-      });
-    }
-
     default:
       return state;
   }
@@ -245,6 +233,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
   } else {
     files = mediaLibrary.get('files') || [];
   }
+
   return files;
 }
 

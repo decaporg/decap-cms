@@ -18,7 +18,14 @@ import {
 } from 'netlify-cms-lib-util';
 import { trim, trimStart } from 'lodash';
 import introspectionQueryResultData from './fragmentTypes';
-import API, { Config, BlobArgs, API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
+import API, {
+  Config,
+  BlobArgs,
+  API_NAME,
+  PullRequestState,
+  MOCK_PULL_REQUEST,
+  TreeFileType,
+} from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
 import { GraphQLError } from 'graphql';
@@ -35,7 +42,7 @@ interface TreeEntry {
   object?: {
     entries: TreeEntry[];
   };
-  type: 'blob' | 'tree';
+  type: TreeFileType;
   name: string;
   sha: string;
   blob?: {
@@ -47,7 +54,7 @@ interface TreeFile {
   path: string;
   id: string;
   size: number;
-  type: string;
+  type: TreeFileType;
   name: string;
 }
 
@@ -337,22 +344,24 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  getAllFiles(entries: TreeEntry[], path: string) {
+  getAllFiles(entries: TreeEntry[], path: string, types: TreeFileType[]) {
     const allFiles: TreeFile[] = entries.reduce((acc, item) => {
-      if (item.type === 'tree') {
+      const itemToAdd = {
+        name: item.name,
+        type: item.type,
+        id: item.sha,
+        path: `${path}/${item.name}`,
+        size: item.blob ? item.blob.size : 0,
+      };
+      if (item.type === TreeFileType.BLOB) {
+        return [...acc, itemToAdd];
+      }
+
+      if (item.type === TreeFileType.TREE) {
         const entries = item.object?.entries || [];
-        return [...acc, ...this.getAllFiles(entries, `${path}/${item.name}`)];
-      } else if (item.type === 'blob') {
-        return [
-          ...acc,
-          {
-            name: item.name,
-            type: item.type,
-            id: item.sha,
-            path: `${path}/${item.name}`,
-            size: item.blob ? item.blob.size : 0,
-          },
-        ];
+        const currentDir = types.includes(TreeFileType.TREE) ? [itemToAdd] : [];
+        const subFiles = this.getAllFiles(entries, `${path}/${item.name}`, types);
+        return [...acc, ...currentDir, ...subFiles];
       }
 
       return acc;
@@ -360,7 +369,10 @@ export default class GraphQLAPI extends API {
     return allFiles;
   }
 
-  async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
+  async listFiles(
+    path: string,
+    { repoURL = this.repoURL, branch = this.branch, depth = 1, types = [TreeFileType.BLOB] } = {},
+  ) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const folder = trim(path, '/');
     const { data } = await this.query({
@@ -369,7 +381,7 @@ export default class GraphQLAPI extends API {
     });
 
     if (data.repository.object) {
-      const allFiles = this.getAllFiles(data.repository.object.entries, folder);
+      const allFiles = this.getAllFiles(data.repository.object.entries, folder, types);
       return allFiles;
     } else {
       return [];

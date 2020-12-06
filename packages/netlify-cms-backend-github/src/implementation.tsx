@@ -34,7 +34,7 @@ import {
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
 import { Octokit } from '@octokit/rest';
-import API, { API_NAME } from './API';
+import API, { API_NAME, TreeFileType } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
@@ -69,8 +69,7 @@ export default class GitHub implements Implementation {
   useOpenAuthoring?: boolean;
   branch: string;
   apiRoot: string;
-  defaultMediaFolder: string;
-  currentMediaFolder: string;
+  mediaFolder: string;
   previewContext: string;
   token: string | null;
   squashMerges: boolean;
@@ -116,8 +115,7 @@ export default class GitHub implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.useGraphql = config.backend.use_graphql || false;
-    this.defaultMediaFolder = config.media_folder;
-    this.currentMediaFolder = config.media_folder;
+    this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
   }
@@ -438,25 +436,24 @@ export default class GitHub implements Implementation {
       .catch(() => ({ file: { path, id: null }, data: '' }));
   }
 
-  updateMediaFolder(path: string) {
-    this.currentMediaFolder = path || this.currentMediaFolder;
-    return this.currentMediaFolder;
-  }
-
-  getDefaultMediaFolder() {
-    return this.defaultMediaFolder;
-  }
-
-  getMedia(currentMediaFolder = this.currentMediaFolder) {
-    return Promise.all([this.api!.listDirs(currentMediaFolder), this.api!.listFiles(currentMediaFolder)]).then(result => {
-      return result[0].map(({ id, name, path, type }) => {
-        return { id, name, displayURL: { id, path }, path, type };
-      }).concat(result[1].map(({ id, name, size, path, type }) => {
-        // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
-        // for private repositories
-        return { id, name, size, displayURL: { id, path }, path, type };
-      }));
-    })
+  async getMedia(mediaFolder = this.mediaFolder) {
+    const files = await this.api!.listFiles(mediaFolder, {
+      types: [TreeFileType.BLOB, TreeFileType.TREE],
+      depth: 100,
+    });
+    const withDisplayUrls = files.map(({ id, name, size, path, type }) => {
+      // load media using getMediaDisplayURL to avoid token expiration with GitHub raw content urls
+      // for private repositories
+      return {
+        id,
+        name,
+        size,
+        displayURL: { id, path },
+        path,
+        isDirectory: type === TreeFileType.TREE,
+      };
+    });
+    return withDisplayUrls;
   }
 
   async getMediaFile(path: string) {
@@ -497,12 +494,9 @@ export default class GitHub implements Implementation {
   }
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
-    console.log({...mediaFile});
     try {
       await this.api!.persistFiles([], [mediaFile], options);
       const { sha, path, fileObj } = mediaFile as AssetProxy & { sha: string };
-      console.log(mediaFile);
-      console.log(path)
       const displayURL = URL.createObjectURL(fileObj);
       return {
         id: sha,

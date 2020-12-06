@@ -55,8 +55,13 @@ export interface Config {
   cmsLabelPrefix: string;
 }
 
+export enum TreeFileType {
+  TREE = 'tree',
+  BLOB = 'blob',
+}
+
 interface TreeFile {
-  type: 'blob' | 'tree';
+  type: TreeFileType;
   sha: string;
   path: string;
   raw?: string;
@@ -383,7 +388,9 @@ export default class API {
             this.request(`${this.repoURL}/git/trees`, {
               method: 'POST',
               body: JSON.stringify({
-                tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: item.sha }],
+                tree: [
+                  { path: 'README.md', mode: '100644', type: TreeFileType.BLOB, sha: item.sha },
+                ],
               }),
             }),
           )
@@ -661,8 +668,8 @@ export default class API {
 
   async listFiles(
     path: string,
-    { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {},
-  ): Promise<{ type: string; id: string; name: string; path: string; size: number }[]> {
+    { repoURL = this.repoURL, branch = this.branch, depth = 1, types = [TreeFileType.BLOB] } = {},
+  ): Promise<{ type: TreeFileType; id: string; name: string; path: string; size: number }[]> {
     const folder = trim(path, '/');
     try {
       const result: Octokit.GitGetTreeResponse = await this.request(
@@ -676,48 +683,16 @@ export default class API {
       return (
         result.tree
           // filter only files and up to the required depth
-          .filter(file => file.type === 'blob' && file.path.split('/').length <= depth)
+          .filter(
+            file =>
+              types.includes(file.type as TreeFileType) && file.path.split('/').length <= depth,
+          )
           .map(file => ({
-            type: file.type,
+            type: file.type as TreeFileType,
             id: file.sha,
             name: basename(file.path),
             path: `${folder}/${file.path}`,
             size: file.size!,
-          }))
-      );
-    } catch (err) {
-      if (err && err.status === 404) {
-        console.log('This 404 was expected and handled appropriately.');
-        return [];
-      } else {
-        throw err;
-      }
-    }
-  }
-
-  async listDirs(
-    path: string,
-    { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {},
-  ): Promise<{ type: string; id: string; name: string; path: string;  }[]> {
-    const folder = trim(path, '/');
-    try {
-      const result: Octokit.GitGetTreeResponse = await this.request(
-        `${repoURL}/git/trees/${branch}:${folder}`,
-        {
-          // GitHub API supports recursive=1 for getting the entire recursive tree
-          // or omitting it to get the non-recursive tree
-          params: depth > 1 ? { recursive: 1 } : {},
-        },
-      );
-      return (
-        result.tree
-          // filter only files and up to the required depth
-          .filter(file => file.type === 'tree' && file.path.split('/').length <= depth)
-          .map(file => ({
-            type: file.type,
-            id: file.sha,
-            name: basename(file.path),
-            path: `${folder}/${file.path}`,
           }))
       );
     } catch (err) {
@@ -1404,7 +1379,7 @@ export default class API {
       const entry = {
         path: trimStart(file.path, '/'),
         mode: '100644',
-        type: 'blob',
+        type: TreeFileType.BLOB,
         sha: file.sha,
       } as TreeEntry;
 
@@ -1426,14 +1401,14 @@ export default class API {
         tree.push({
           path: file.path,
           mode: '100644',
-          type: 'blob',
+          type: TreeFileType.BLOB,
           sha: null,
         });
         // create in new path
         tree.push({
           path: file.path.replace(sourceDir, destDir),
           mode: '100644',
-          type: 'blob',
+          type: TreeFileType.BLOB,
           sha: file.path === from ? sha : file.id,
         });
       }
