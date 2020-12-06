@@ -134,8 +134,8 @@ const MediaLibraryModal = ({
         handleBreadcrumbClick={handleBreadcrumbClick}
         currentMediaFolder={currentMediaFolder}
         defaultMediaFolder={defaultMediaFolder}
-        />
-      
+      />
+
       {!shouldShowEmptyMessage ? null : (
         <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
       )}

@@ -13,9 +13,9 @@ import {
   insertMedia as insertMediaAction,
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
-  updateMediaFolder as updateMediaFolderAction,
 } from 'Actions/mediaLibrary';
 import { selectMediaFiles } from 'Reducers/mediaLibrary';
+import { dirname } from 'path';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
@@ -43,13 +43,13 @@ class MediaLibrary extends React.Component {
     privateUpload: PropTypes.bool,
     config: ImmutablePropTypes.map,
     loadMedia: PropTypes.func.isRequired,
-    updateMediaFolder: PropTypes.func.isRequired,
     dynamicSearchQuery: PropTypes.string,
     page: PropTypes.number,
     persistMedia: PropTypes.func.isRequired,
     deleteMedia: PropTypes.func.isRequired,
     insertMedia: PropTypes.func.isRequired,
     closeMediaLibrary: PropTypes.func.isRequired,
+    defaultMediaFolder: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
   };
 
@@ -67,7 +67,6 @@ class MediaLibrary extends React.Component {
   };
 
   componentDidMount() {
-    this.props.updateMediaFolder();
     this.props.loadMedia();
   }
 
@@ -112,7 +111,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft, type }) => {
+      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft, isDirectory }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -124,12 +123,12 @@ class MediaLibrary extends React.Component {
           queryOrder,
           displayURL,
           draft,
-          isDirectory: type === 'tree',
+          isDirectory,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
       });
-      
+
     /**
      * Get the sort order for use with `lodash.orderBy`, and always add the
      * `queryOrder` sort as the lowest priority sort order.
@@ -148,19 +147,17 @@ class MediaLibrary extends React.Component {
    * Toggle asset selection on click.
    */
   handleAssetClick = asset => {
-    if (asset.isViewableImage) {
+    if (asset.isDirectory) {
+      this.setState({ currentMediaFolder: asset.path });
+    } else {
       const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
       this.setState({ selectedFile });
-    } else {
-      this.props.updateMediaFolder(asset.path);
-      this.props.loadMedia();
     }
   };
 
-  handleBreadcrumbClick = path => {
-    this.props.updateMediaFolder(`${path}`);
-    this.props.loadMedia();
-  }
+  handleBreadcrumbClick = currentMediaFolder => {
+    this.setState({ currentMediaFolder });
+  };
 
   /**
    * Upload a file.
@@ -318,15 +315,18 @@ class MediaLibrary extends React.Component {
       isPaginating,
       privateUpload,
       displayURLs,
-      currentMediaFolder,
       defaultMediaFolder,
       t,
     } = this.props;
+
+    const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
+    const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
+
     return (
       <MediaLibraryModal
         isVisible={isVisible}
         canInsert={canInsert}
-        files={files}
+        files={currentDirFiles}
         dynamicSearch={dynamicSearch}
         dynamicSearchActive={dynamicSearchActive}
         forImage={forImage}
@@ -351,11 +351,11 @@ class MediaLibrary extends React.Component {
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
         handleBreadcrumbClick={this.handleBreadcrumbClick}
+        currentMediaFolder={currentMediaFolder}
+        defaultMediaFolder={defaultMediaFolder}
         handleLoadMore={this.handleLoadMore}
         displayURLs={displayURLs}
         loadDisplayURL={this.loadDisplayURL}
-        currentMediaFolder={currentMediaFolder}
-        defaultMediaFolder={defaultMediaFolder}
         t={t}
       />
     );
@@ -363,7 +363,7 @@ class MediaLibrary extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { mediaLibrary } = state;
+  const { mediaLibrary, config } = state;
   const field = mediaLibrary.get('field');
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
@@ -382,9 +382,8 @@ const mapStateToProps = state => {
     page: mediaLibrary.get('page'),
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
-    currentMediaFolder: mediaLibrary.get('currentMediaFolder'),
-    defaultMediaFolder: mediaLibrary.get('defaultMediaFolder'),
     field,
+    defaultMediaFolder: config.get('media_folder'),
   };
   return { ...mediaLibraryProps };
 };
@@ -396,7 +395,6 @@ const mapDispatchToProps = {
   insertMedia: insertMediaAction,
   loadMediaDisplayURL: loadMediaDisplayURLAction,
   closeMediaLibrary: closeMediaLibraryAction,
-  updateMediaFolder: updateMediaFolderAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(translate()(MediaLibrary));

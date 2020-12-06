@@ -80,15 +80,17 @@ class MediaLibraryCard extends React.Component {
       isDirectory,
     } = this.props;
     const url = displayURL.get('url');
-    var cardImageWrapper = (<CardImageWrapper>
-      {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
-      {url && isViewableImage ? (
-        <CardImage src={url} />
-      ) : (
-        <CardFileIcon data-testid="card-file-icon">{type}</CardFileIcon>
-      )}
-    </CardImageWrapper>);
-    var cardDirectoryWrapper =  <Icon type="folder" />; 
+    var cardImageWrapper = (
+      <CardImageWrapper>
+        {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
+        {url && isViewableImage ? (
+          <CardImage src={url} />
+        ) : (
+          <CardFileIcon data-testid="card-file-icon">{type}</CardFileIcon>
+        )}
+      </CardImageWrapper>
+    );
+    var cardDirectoryWrapper = <Icon type="folder" />;
     var previewElement = isDirectory ? cardDirectoryWrapper : cardImageWrapper;
     return (
       <Card
