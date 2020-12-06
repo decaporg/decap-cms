@@ -162,7 +162,8 @@ export default class GitGateway implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = config.media_folder;
-    this.transformImages = config.backend.use_large_media_transforms_in_media_library || true;
+    const { use_large_media_transforms_in_media_library: transformImages = true } = config.backend;
+    this.transformImages = transformImages;
 
     const netlifySiteURL = localStorage.getItem('netlifySiteURL');
     this.apiUrl = getEndpoint(config.backend.identity_url || defaults.identity, netlifySiteURL);
@@ -333,6 +334,7 @@ export default class GitGateway implements Implementation {
         branch: this.branch,
         tokenPromise: this.tokenPromise!,
         commitAuthor: pick(userData, ['name', 'email']),
+        isLargeMedia: (filename: string) => this.isLargeMediaFile(filename),
         squashMerges: this.squashMerges,
         cmsLabelPrefix: this.cmsLabelPrefix,
         initialWorkflowStatus: this.options.initialWorkflowStatus,
@@ -400,19 +402,24 @@ export default class GitGateway implements Implementation {
     return this.backend!.unpublishedEntryDataFile(collection, slug, path, id);
   }
 
-  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+  async isLargeMediaFile(path: string) {
     const client = await this.getLargeMediaClient();
-    if (client.enabled && client.matchPath(path)) {
+    return client.enabled && client.matchPath(path);
+  }
+
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+    const isLargeMedia = await this.isLargeMediaFile(path);
+    if (isLargeMedia) {
       const branch = this.backend!.getBranch(collection, slug);
-      const url = await this.getLargeMediaDisplayURL({ path, id }, branch);
+      const { url, blob } = await this.getLargeMediaDisplayURL({ path, id }, branch);
       return {
         id,
         name: basename(path),
         path,
         url,
         displayURL: url,
-        file: new File([], name),
-        size: 0,
+        file: new File([blob], name),
+        size: blob.size,
       };
     } else {
       return this.backend!.unpublishedEntryMediaFile(collection, slug, path, id);
@@ -496,20 +503,20 @@ export default class GitGateway implements Implementation {
     const pointerFile = parsePointerFile(entry.data);
     if (!pointerFile.sha) {
       console.warn(`Failed parsing pointer file ${path}`);
-      return path;
+      return { url: path, blob: new Blob() };
     }
 
     const client = await this.getLargeMediaClient();
-    const url = await client.getDownloadURL(pointerFile);
-    return url;
+    const { url, blob } = await client.getDownloadURL(pointerFile);
+    return { url, blob };
   }
 
   async getMediaDisplayURL(displayURL: DisplayURL) {
     const { path, id } = displayURL as DisplayURLObject;
-    const client = await this.getLargeMediaClient();
-    if (client.enabled && client.matchPath(path)) {
-      const largeMediaUrl = await this.getLargeMediaDisplayURL({ path, id });
-      return largeMediaUrl;
+    const isLargeMedia = await this.isLargeMediaFile(path);
+    if (isLargeMedia) {
+      const { url } = await this.getLargeMediaDisplayURL({ path, id });
+      return url;
     }
     if (typeof displayURL === 'string') {
       return displayURL;
@@ -520,15 +527,17 @@ export default class GitGateway implements Implementation {
   }
 
   async getMediaFile(path: string) {
-    const client = await this.getLargeMediaClient();
-    if (client.enabled && client.matchPath(path)) {
-      const url = await this.getLargeMediaDisplayURL({ path, id: null });
+    const isLargeMedia = await this.isLargeMediaFile(path);
+    if (isLargeMedia) {
+      const { url, blob } = await this.getLargeMediaDisplayURL({ path, id: null });
       return {
         id: url,
         name: basename(path),
         path,
         url,
         displayURL: url,
+        file: new File([blob], name),
+        size: blob.size,
       };
     }
     return this.backend!.getMediaFile(path);
@@ -549,15 +558,19 @@ export default class GitGateway implements Implementation {
     const displayURL = URL.createObjectURL(fileObj);
     const client = await this.getLargeMediaClient();
     const fixedPath = path.startsWith('/') ? path.slice(1) : path;
-    if (!client.enabled || !client.matchPath(fixedPath)) {
-      return this.backend!.persistMedia(mediaFile, options);
+    const isLargeMedia = await this.isLargeMediaFile(fixedPath);
+    if (isLargeMedia) {
+      const persistMediaArgument = await getPointerFileForMediaFileObj(
+        client,
+        fileObj as File,
+        path,
+      );
+      return {
+        ...(await this.backend!.persistMedia(persistMediaArgument, options)),
+        displayURL,
+      };
     }
-
-    const persistMediaArgument = await getPointerFileForMediaFileObj(client, fileObj as File, path);
-    return {
-      ...(await this.backend!.persistMedia(persistMediaArgument, options)),
-      displayURL,
-    };
+    return await this.backend!.persistMedia(mediaFile, options);
   }
   deleteFiles(paths: string[], commitMessage: string) {
     return this.backend!.deleteFiles(paths, commitMessage);
