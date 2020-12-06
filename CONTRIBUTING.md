@@ -7,20 +7,17 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 
 ## Setup
 
-> Install Node.js (LTS) on your system: [https://nodejs.org/](https://nodejs.org/)
-
-> Install yarn on your system: [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install)
+> Install [Node.js (LTS)](https://nodejs.org/) and [yarn](https://yarnpkg.com/en/docs/install) on your system.
 
 ### Install dependencies
 
-> Only required on the first run, subsequent runs can use `yarn start` to both
-> bootstrap and run the development server.
+> Only required on the first run, subsequent runs can use `yarn start` to both bootstrap and run the development server.
 
 ```sh
-$ git clone https://github.com/netlify/netlify-cms
-$ cd netlify-cms
-$ yarn
-$ yarn bootstrap
+git clone https://github.com/netlify/netlify-cms
+cd netlify-cms
+yarn
+yarn bootstrap
 ```
 
 ### Run locally
@@ -146,43 +143,45 @@ Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/
 
 ## Debugging
 
-First of all, you need to create a sample project with [Gatsby](https://www.netlifycms.org/docs/start-with-a-template/)(other starter templates can also use). 
-In the end, you should have a gatsby project deployed on Netlify cloud and source code in your local development environment.
+`yarn start` spawns a development server and uses `dev-test/config.yml` and `dev-test/index.html` to serve the CMS.
+In order to debug a specific issue follow the next steps:
 
+1. Replace `dev-test/config.yml` with the relevant `config.yml`
 
-1- You need to find the `netlify-cms/dev-test` directory. Under this directory, you can see the `config.yml` file.
+2. Change the content of `dev-test/index.html` to:
 
-In the `dev-test/config.yml` file, the backend name is `test-repo`. 
-To connect to GitHub, just copy the ***gatsby starter project’s*** config.yml file and paste it to the dev-test/config.yml file.
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Netlify CMS</title>
+  </head>
+  <body>
+    <script src="dist/netlify-cms.js"></script>
+    <!-- <script>
+      // this is the place to add CMS customizations if you need to, e.g.
+      CMS.registerPreviewTemplate('posts', PostPreview);
+    </script> -->
+  </body>
+</html>
+```
 
-2- Run `yarn start` command in your terminal.
+3. Run `yarn start`
+4. Open `http://localhost:8080/` in the browser and you should have access to the CMS
 
-3- Go to `localhost:8080` with a browser. (The port can be different. You can see the proper link on the terminal when you run the `yarn start` command)
+### Debugging Git Gateway
 
-4- Add a local storage entry `netlifySiteURL` of the deployed site URL on Netlify.
+When debugging the CMS with Git Gateway you must:
 
-   For this step;
-   
-   * Open a console in the browser
-   * Write the below command and press enter:
-   ```localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/');```
-   * To be sure, you can run this command as well:
-   ```localStorage.getItem('netlifySiteURL');```
+1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&stack=cms)
+2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
-5- You should be able to log in via your Netlify Identity email/password.
-
-If you haven’t set any password for your website users, you should do these steps additionally;
-   * Login to [Netlify](https://app.netlify.com/login/email) and select your ***gatsby starter project***.
-   * In the ***Identity*** section find your user and set the password.
-   
-   When you go to `localhost:8080` , you will see the login form. 
-   Enter your credentials. 
-   
-   When you checked the console, you might see some errors like this:
-   
-   ```No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.```
-   
-   For the solution, you can use the [CORS unblock Chrome extension](https://add0n.com/access-control.html). 
+    1. Open `http://localhost:8080/` in the browser
+    2. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
+    3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
+    4. Refresh the page
+    5. You should be able to log in via your Netlify Identity email/password
 
 ## License
 
