@@ -3,6 +3,7 @@ const pt = {
     login: 'Entrar',
     loggingIn: 'Entrando...',
     loginWithNetlifyIdentity: 'Entrar com o Netlify Identity',
+    loginWithAzure: 'Entrar com o Azure',
     loginWithBitbucket: 'Entrar com o Bitbucket',
     loginWithGitHub: 'Entrar com o GitHub',
     loginWithGitLab: 'Entrar com o GitLab',
@@ -47,12 +48,17 @@ const pt = {
       searchResults: 'Resultados da busca por "%{searchTerm}"',
       searchResultsInCollection: 'Resultados da busca por "%{searchTerm}" em %{collection}',
       filterBy: 'Filtrar por',
+      groupBy: 'Agrupar por',
     },
     entries: {
       loadingEntries: 'Carregando Entradas',
       cachingEntries: 'Armazenando Entradas em Cache',
       longerLoading: 'Isso pode levar alguns minutos',
       noEntries: 'Nenhuma Entrada',
+    },
+    groups:{
+      other: 'Outros',
+      negateLabel: 'Não %{label}',
     },
     defaultFields: {
       author: {
@@ -135,6 +141,16 @@ const pt = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Negrito',
+        italic: 'Itálico',
+        code: 'Código',
+        link: 'Link',
+        linkPrompt: 'Insira a URL do link',
+        headings: 'Títulos',
+        quote: 'Citação',
+        bulletedList: 'Ponto Lista',
+        numberedList: 'Lista Enumerada',
+        addComponent: 'Adicionar Componente',
         richText: 'Rich Text',
         markdown: 'Markdown',
       },
