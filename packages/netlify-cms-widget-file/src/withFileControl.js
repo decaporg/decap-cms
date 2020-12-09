@@ -62,6 +62,12 @@ const FileWidgetButton = styled.button`
   ${components.badge};
 `;
 
+const FileWidgetButtonUrl = styled.button`
+  ${buttons.button};
+  ${components.badge};
+  margin-top: 12px;
+`;
+
 const FileWidgetButtonRemove = styled.button`
   ${buttons.button};
   ${components.badgeDanger};
@@ -174,6 +180,14 @@ export default function withFileControl({ forImage } = {}) {
       });
     };
 
+    handleUrl = subject => e => {
+      e.preventDefault();
+
+      const url = window.prompt(this.props.t(`editor.editorWidgets.${subject}.promptUrl`));
+
+      return this.props.onChange(url);
+    }
+
     handleRemove = e => {
       e.preventDefault();
       this.props.onClearMediaControl(this.controlID);
@@ -266,9 +280,14 @@ export default function withFileControl({ forImage } = {}) {
     renderNoSelection = subject => {
       const { t } = this.props;
       return (
-        <FileWidgetButton onClick={this.handleChange}>
-          {t(`editor.editorWidgets.${subject}.choose`)}
-        </FileWidgetButton>
+        <>
+          <FileWidgetButton onClick={this.handleChange}>
+            {t(`editor.editorWidgets.${subject}.choose`)}
+          </FileWidgetButton>
+          <FileWidgetButtonUrl onClick={this.handleUrl(subject)}>
+            {t(`editor.editorWidgets.${subject}.chooseUrl`)}
+          </FileWidgetButtonUrl>
+        </>
       );
     };
 
