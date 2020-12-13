@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.0...netlify-cms-lib-util@2.12.1) (2020-12-13)
+
+
+### Bug Fixes
+
+* **lib-util:** update js-sha256 import ([#4699](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/4699)) ([60f7e0b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/60f7e0bba67c6555acba3e04039c49f10cf51f6b))
+
+
+
+
+
 # [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.11.5...netlify-cms-lib-util@2.12.0) (2020-11-26)
 
 

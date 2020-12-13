@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.3...netlify-cms-core@2.36.4) (2020-12-13)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
 ## [2.36.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.2...netlify-cms-core@2.36.3) (2020-11-30)
 
 
