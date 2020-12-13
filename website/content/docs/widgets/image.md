@@ -13,11 +13,12 @@ The image widget allows editors to upload an image or select an existing one fro
   * `media_library`: settings to apply when opening a media library is opened by the
     current widget
 
-    * `allow_multiple`: *(default: `true`)* when set to `false`, if the media library extension supports it, multiple selection will be disabled
-    * `config`: a configuration object passed directly to the media library; check the documentation of your media library extension for available `config` options.
+  * `allow_multiple`: *(default: `true`)* when set to `false`, if the media library extension supports it, multiple selection will be disabled
+  * `config`: a configuration object passed directly to the media library; check the documentation of your media library extension for available `config` options.
+  * `media_folder` (Beta): file path where uploaded images will be saved specific to this control. Paths can be relative to a collection folder (e.g. `images` will add the image to a sub-folder in the collection folder) or absolute with reference to the base of the repo which needs to begin with `/` (e.g `/static/images` will save uploaded images to the static folder in a sub folder named `images`)  
 * **Example:**
 
-  ```yaml
+```yaml
   - label: "Featured Image"
     name: "thumbnail"
     widget: "image"
@@ -25,4 +26,4 @@ The image widget allows editors to upload an image or select an existing one fro
     media_library:
       config:
         multiple: true
-  ```
+```
