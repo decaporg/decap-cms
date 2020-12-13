@@ -3,6 +3,7 @@ import { StaticallyTypedRecord } from './immutable';
 import { Map, List, OrderedMap, Set } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
 import { MediaFile as BackendMediaFile } from '../backend';
+import { Auth } from '../reducers/auth';
 
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
@@ -295,6 +296,7 @@ export type Status = StaticallyTypedRecord<{
 }>;
 
 export interface State {
+  auth: Auth;
   config: Config;
   cursors: Cursors;
   collections: Collections;
