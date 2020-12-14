@@ -14,8 +14,8 @@ export type Status = StaticallyTypedRecord<{
 const defaultState = fromJS({
   isFetching: false,
   status: {
-    auth: { status: false },
-    api: { status: false, statusPage: '' },
+    auth: { status: true },
+    api: { status: true, statusPage: '' },
   },
   error: undefined,
 }) as Status;
