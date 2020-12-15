@@ -4,6 +4,7 @@ import { Map, List, OrderedMap, Set } from 'immutable';
 import AssetProxy from '../valueObjects/AssetProxy';
 import { MediaFile as BackendMediaFile } from '../backend';
 import { Auth } from '../reducers/auth';
+import { Status } from '../reducers/status';
 
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
@@ -289,11 +290,6 @@ export type Search = StaticallyTypedRecord<{
 }>;
 
 export type Cursors = StaticallyTypedRecord<{}>;
-
-export type Status = StaticallyTypedRecord<{
-  isFetching: boolean;
-  status: StaticallyTypedRecord<{ auth: boolean }>;
-}>;
 
 export interface State {
   auth: Auth;

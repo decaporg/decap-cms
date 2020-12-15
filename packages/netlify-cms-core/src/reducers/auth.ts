@@ -20,9 +20,9 @@ export const defaultState = fromJS({
   isFetching: false,
   user: undefined,
   error: undefined,
-});
+}) as Auth;
 
-const auth = (state = defaultState as Auth, action: AuthAction) => {
+const auth = (state = defaultState, action: AuthAction) => {
   switch (action.type) {
     case AUTH_REQUEST:
       return state.set('isFetching', true);

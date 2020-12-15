@@ -1,16 +1,26 @@
-import { Map, fromJS } from 'immutable';
-import { AnyAction } from 'redux';
-import { STATUS_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../actions/status';
-import { Status } from '../types/redux';
+import { fromJS } from 'immutable';
+import { STATUS_REQUEST, STATUS_SUCCESS, STATUS_FAILURE, StatusAction } from '../actions/status';
+import { StaticallyTypedRecord } from '../types/immutable';
 
-interface StatusAction extends AnyAction {
-  payload: {
-    status: { auth: { status: boolean }; api: { status: boolean; statusPage: string } };
-    error?: Error;
-  };
-}
+export type Status = StaticallyTypedRecord<{
+  isFetching: boolean;
+  status: StaticallyTypedRecord<{
+    auth: StaticallyTypedRecord<{ status: boolean }>;
+    api: StaticallyTypedRecord<{ status: boolean; statusPage: string }>;
+  }>;
+  error: Error | undefined;
+}>;
 
-const status = (state = Map(), action: StatusAction) => {
+const defaultState = fromJS({
+  isFetching: false,
+  status: {
+    auth: { status: true },
+    api: { status: true, statusPage: '' },
+  },
+  error: undefined,
+}) as Status;
+
+const status = (state = defaultState, action: StatusAction) => {
   switch (action.type) {
     case STATUS_REQUEST:
       return state.set('isFetching', true);
@@ -30,7 +40,7 @@ const status = (state = Map(), action: StatusAction) => {
 };
 
 export const selectStatus = (status: Status) => {
-  return status.get('status')?.toJS() || {};
+  return status.get('status').toJS();
 };
 
 export default status;
