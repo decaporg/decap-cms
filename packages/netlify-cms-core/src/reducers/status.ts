@@ -1,46 +1,37 @@
-import { fromJS } from 'immutable';
+import { produce } from 'immer';
 import { STATUS_REQUEST, STATUS_SUCCESS, STATUS_FAILURE, StatusAction } from '../actions/status';
-import { StaticallyTypedRecord } from '../types/immutable';
 
-export type Status = StaticallyTypedRecord<{
+export type Status = {
   isFetching: boolean;
-  status: StaticallyTypedRecord<{
-    auth: StaticallyTypedRecord<{ status: boolean }>;
-    api: StaticallyTypedRecord<{ status: boolean; statusPage: string }>;
-  }>;
+  status: {
+    auth: { status: boolean };
+    api: { status: boolean; statusPage: string };
+  };
   error: Error | undefined;
-}>;
+};
 
-const defaultState = fromJS({
+const defaultState: Status = {
   isFetching: false,
   status: {
     auth: { status: true },
     api: { status: true, statusPage: '' },
   },
   error: undefined,
-}) as Status;
+};
 
-const status = (state = defaultState, action: StatusAction) => {
+const status = produce((draft: Status, action: StatusAction) => {
   switch (action.type) {
     case STATUS_REQUEST:
-      return state.set('isFetching', true);
+      draft.isFetching = true;
+      break;
     case STATUS_SUCCESS:
-      return state.withMutations(map => {
-        map.set('isFetching', false);
-        map.set('status', fromJS(action.payload.status));
-      });
+      draft.isFetching = false;
+      draft.status = action.payload.status;
+      break;
     case STATUS_FAILURE:
-      return state.withMutations(map => {
-        map.set('isFetching', false);
-        map.set('error', action.payload.error);
-      });
-    default:
-      return state;
+      draft.isFetching = false;
+      draft.error = action.payload.error;
   }
-};
-
-export const selectStatus = (status: Status) => {
-  return status.get('status').toJS();
-};
+}, defaultState);
 
 export default status;
