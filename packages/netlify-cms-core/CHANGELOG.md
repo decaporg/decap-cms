@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.4...netlify-cms-core@2.36.5) (2020-12-15)
+
+
+### Bug Fixes
+
+* **i18n:** enable filtering when i18n is enabled ([#4708](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4708)) ([a843c16](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a843c169a10a1f73e00755a917f127975708a685))
+* **typings:** make 'status' state slice more typesafe ([#4709](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4709)) ([df97aec](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/df97aec9aab0d19fe06c8b8545e4bc660e25119a))
+
+
+
+
+
 ## [2.36.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.3...netlify-cms-core@2.36.4) (2020-12-13)
 
 **Note:** Version bump only for package netlify-cms-core
