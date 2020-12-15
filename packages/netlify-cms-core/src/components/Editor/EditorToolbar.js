@@ -233,7 +233,7 @@ class EditorToolbar extends React.Component {
     onDuplicate: PropTypes.func.isRequired,
     onPublishAndNew: PropTypes.func.isRequired,
     onPublishAndDuplicate: PropTypes.func.isRequired,
-    user: ImmutablePropTypes.map.isRequired,
+    user: PropTypes.object,
     hasChanged: PropTypes.bool,
     displayUrl: PropTypes.string,
     collection: ImmutablePropTypes.map.isRequired,
@@ -606,7 +606,7 @@ class EditorToolbar extends React.Component {
         <ToolbarSectionMeta>
           <SettingsDropdown
             displayUrl={displayUrl}
-            imageUrl={user.get('avatar_url')}
+            imageUrl={user?.avatar_url}
             onLogoutClick={onLogoutClick}
           />
         </ToolbarSectionMeta>

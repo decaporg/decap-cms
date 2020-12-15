@@ -216,7 +216,7 @@ class Header extends React.Component {
             <SettingsDropdown
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
-              imageUrl={user.get('avatar_url')}
+              imageUrl={user?.avatar_url}
               onLogoutClick={onLogoutClick}
             />
           </AppHeaderActions>
