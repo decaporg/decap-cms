@@ -487,7 +487,7 @@ export class Backend {
 
     if (hasI18n(collection)) {
       const extension = selectFolderEntryExtension(collection);
-      const groupedEntries = groupEntries(collection, extension, entries);
+      const groupedEntries = groupEntries(collection, extension, filteredEntries);
       return groupedEntries;
     }
 
