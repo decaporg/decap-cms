@@ -19,18 +19,18 @@ const defaultState: Status = {
   error: undefined,
 };
 
-const status = produce((draft: Status, action: StatusAction) => {
+const status = produce((state: Status, action: StatusAction) => {
   switch (action.type) {
     case STATUS_REQUEST:
-      draft.isFetching = true;
+      state.isFetching = true;
       break;
     case STATUS_SUCCESS:
-      draft.isFetching = false;
-      draft.status = action.payload.status;
+      state.isFetching = false;
+      state.status = action.payload.status;
       break;
     case STATUS_FAILURE:
-      draft.isFetching = false;
-      draft.error = action.payload.error;
+      state.isFetching = false;
+      state.error = action.payload.error;
   }
 }, defaultState);
 

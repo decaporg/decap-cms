@@ -21,23 +21,23 @@ export const defaultState: Auth = {
   error: undefined,
 };
 
-const auth = produce((draft: Auth, action: AuthAction) => {
+const auth = produce((state: Auth, action: AuthAction) => {
   switch (action.type) {
     case AUTH_REQUEST:
-      draft.isFetching = true;
+      state.isFetching = true;
       break;
     case AUTH_SUCCESS:
-      draft.user = action.payload;
+      state.user = action.payload;
       break;
     case AUTH_FAILURE:
-      draft.error = action.payload && action.payload.toString();
+      state.error = action.payload && action.payload.toString();
       break;
     case AUTH_REQUEST_DONE:
-      draft.isFetching = false;
+      state.isFetching = false;
       break;
     case LOGOUT:
-      draft.user = undefined;
-      draft.isFetching = false;
+      state.user = undefined;
+      state.isFetching = false;
   }
 }, defaultState);
 
