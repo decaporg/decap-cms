@@ -1,7 +1,7 @@
 ---
-title: NextJS
 group: Guides
 weight: 40
+title: NextJS
 ---
 This guide will help you get started using Netlify CMS with NextJS.
 
@@ -152,7 +152,7 @@ Paste HTML for Netlify CMS into your `public/admin/index.html` file (check out t
 </head>
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@2.9.7/dist/netlify-cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 </body>
 </html>
 ```
