@@ -214,9 +214,9 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
-  sortable_fields?: List<string>;
-  view_filters?: List<StaticallyTypedRecord<ViewFilter>>;
-  view_groups?: List<StaticallyTypedRecord<ViewGroup>>;
+  sortable_fields: List<string>;
+  view_filters: List<StaticallyTypedRecord<ViewFilter>>;
+  view_groups: List<StaticallyTypedRecord<ViewGroup>>;
   nested?: Nested;
   meta?: Meta;
   i18n: i18n;
