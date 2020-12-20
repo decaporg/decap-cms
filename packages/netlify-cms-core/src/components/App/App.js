@@ -73,13 +73,13 @@ const RouteInCollection = ({ collections, render, ...props }) => {
 
 class App extends React.Component {
   static propTypes = {
-    auth: ImmutablePropTypes.map,
+    auth: PropTypes.object.isRequired,
     config: ImmutablePropTypes.map,
     collections: ImmutablePropTypes.orderedMap,
     loadConfig: PropTypes.func.isRequired,
     loginUser: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
-    user: ImmutablePropTypes.map,
+    user: PropTypes.object,
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
     siteId: PropTypes.string,
@@ -129,9 +129,8 @@ class App extends React.Component {
         <Notifs CustomComponent={Toast} />
         {React.createElement(backend.authComponent(), {
           onLogin: this.handleLogin.bind(this),
-          error: auth && auth.get('error'),
-          isFetching: auth && auth.get('isFetching'),
-          inProgress: (auth && auth.get('isFetching')) || false,
+          error: auth.error,
+          inProgress: auth.isFetching,
           siteId: this.props.config.getIn(['backend', 'site_domain']),
           base_url: this.props.config.getIn(['backend', 'base_url'], null),
           authEndpoint: this.props.config.getIn(['backend', 'auth_endpoint']),
@@ -262,7 +261,7 @@ class App extends React.Component {
 
 function mapStateToProps(state) {
   const { auth, config, collections, globalUI, mediaLibrary } = state;
-  const user = auth && auth.get('user');
+  const user = auth.user;
   const isFetching = globalUI.get('isFetching');
   const publishMode = config && config.get('publish_mode');
   const useMediaLibrary = !mediaLibrary.get('externalLibrary');

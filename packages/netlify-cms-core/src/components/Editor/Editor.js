@@ -67,7 +67,7 @@ export class Editor extends React.Component {
     deployPreview: ImmutablePropTypes.map,
     loadDeployPreview: PropTypes.func.isRequired,
     currentStatus: PropTypes.string,
-    user: ImmutablePropTypes.map.isRequired,
+    user: PropTypes.object,
     location: PropTypes.shape({
       pathname: PropTypes.string,
       search: PropTypes.string,
@@ -432,7 +432,7 @@ function mapStateToProps(state, ownProps) {
   const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
-  const user = auth && auth.get('user');
+  const user = auth.user;
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.get('display_url');
   const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;

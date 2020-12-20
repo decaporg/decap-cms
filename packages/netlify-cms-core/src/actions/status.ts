@@ -1,8 +1,8 @@
-import { State } from '../types/redux';
-import { currentBackend } from '../backend';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { actions as notifActions } from 'redux-notifications';
+import { State } from '../types/redux';
+import { currentBackend } from '../backend';
 
 const { notifSend, notifDismiss } = notifActions;
 
@@ -37,7 +37,7 @@ export function checkBackendStatus() {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     try {
       const state = getState();
-      if (state.status.get('isFetching')) {
+      if (state.status.isFetching) {
         return;
       }
 

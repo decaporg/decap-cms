@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { produce } from 'immer';
 import { User } from 'netlify-cms-lib-util';
 import {
   AUTH_REQUEST,
@@ -8,35 +8,37 @@ import {
   LOGOUT,
   AuthAction,
 } from '../actions/auth';
-import { StaticallyTypedRecord } from '../types/immutable';
 
-export type Auth = StaticallyTypedRecord<{
+export type Auth = {
   isFetching: boolean;
-  user: StaticallyTypedRecord<User> | undefined;
+  user: User | undefined;
   error: string | undefined;
-}>;
+};
 
-export const defaultState = fromJS({
+export const defaultState: Auth = {
   isFetching: false,
   user: undefined,
   error: undefined,
-}) as Auth;
+};
 
-const auth = (state = defaultState, action: AuthAction) => {
+const auth = produce((state: Auth, action: AuthAction) => {
   switch (action.type) {
     case AUTH_REQUEST:
-      return state.set('isFetching', true);
+      state.isFetching = true;
+      break;
     case AUTH_SUCCESS:
-      return state.set('user', fromJS(action.payload));
+      state.user = action.payload;
+      break;
     case AUTH_FAILURE:
-      return state.set('error', action.payload && action.payload.toString());
+      state.error = action.payload && action.payload.toString();
+      break;
     case AUTH_REQUEST_DONE:
-      return state.set('isFetching', false);
+      state.isFetching = false;
+      break;
     case LOGOUT:
-      return state.set('user', undefined).set('isFetching', false);
-    default:
-      return state;
+      state.user = undefined;
+      state.isFetching = false;
   }
-};
+}, defaultState);
 
 export default auth;
