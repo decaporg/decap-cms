@@ -14,7 +14,7 @@ import { colors } from 'netlify-cms-ui-default';
  * Responsive styling needs to be overhauled. Current setup requires specifying
  * widths per breakpoint.
  */
-const cardWidth = `280px`;
+const cardWidth = `240px`;
 const cardHeight = `240px`;
 const cardMargin = `10px`;
 
@@ -75,6 +75,7 @@ const MediaLibraryModal = ({
   privateUpload,
   query,
   selectedFile,
+  selectedAssets,
   handleFilter,
   handleQuery,
   toTableData,
@@ -87,6 +88,7 @@ const MediaLibraryModal = ({
   handleDownload,
   setScrollContainerRef,
   handleAssetClick,
+  handleAssetCheckboxChange,
   handleBreadcrumbClick,
   handleLoadMore,
   loadDisplayURL,
@@ -143,7 +145,9 @@ const MediaLibraryModal = ({
         setScrollContainerRef={setScrollContainerRef}
         mediaItems={tableData}
         isSelectedFile={file => selectedFile.key === file.key}
+        isSelectedAsset={file => (selectedAssets || []).filter(selectedAsset => selectedAsset.key === file.key).length > 0}
         onAssetClick={handleAssetClick}
+        onAssetCheckboxClick={handleAssetCheckboxChange}
         canLoadMore={hasNextPage}
         onLoadMore={handleLoadMore}
         isPaginating={isPaginating}
@@ -196,6 +200,7 @@ MediaLibraryModal.propTypes = {
   handleInsert: PropTypes.func.isRequired,
   setScrollContainerRef: PropTypes.func.isRequired,
   handleAssetClick: PropTypes.func.isRequired,
+  handleAssetCheckboxChange: PropTypes.func.isRequired,
   handleBreadcrumbClick: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
   loadDisplayURL: PropTypes.func.isRequired,
