@@ -47,7 +47,6 @@ const CardWrapper = props => {
       
       <MediaLibraryCard
         key={file.key}
-        // isSelected={isSelectedFile(file)}
         isSelected={isSelectedAsset(file)}
         text={file.name}
         onClick={() => onAssetClick(file)}
