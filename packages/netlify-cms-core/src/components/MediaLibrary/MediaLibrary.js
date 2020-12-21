@@ -171,6 +171,8 @@ class MediaLibrary extends React.Component {
     event.persist();
     event.stopPropagation();
     event.preventDefault();
+    const { defaultMediaFolder } = this.props;
+    const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
     const { persistMedia, privateUpload, config, t, field } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
@@ -184,7 +186,7 @@ class MediaLibrary extends React.Component {
         }),
       );
     } else {
-      await persistMedia(file, { privateUpload, field });
+      await persistMedia(file, { privateUpload, field, currentMediaFolder });
 
       this.setState({ selectedFile: this.props.files[0] });
 
@@ -321,7 +323,6 @@ class MediaLibrary extends React.Component {
 
     const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
-
     return (
       <MediaLibraryModal
         isVisible={isVisible}

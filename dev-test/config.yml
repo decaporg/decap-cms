@@ -1,10 +1,11 @@
 backend:
-  name: test-repo
+  name: github
+  repo: andrew-paterson/netlify-cms-hugo-test-site
 
 site_url: https://example.com
 
 publish_mode: editorial_workflow
-media_folder: assets/uploads
+media_folder: static/images
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
@@ -13,7 +14,9 @@ collections: # A list of collections the CMS should be able to edit
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
-    folder: '_posts'
+    folder: 'content/posts'
+    media_folder: '/static/images/posts'
+    public_folder: '/images/posts'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection

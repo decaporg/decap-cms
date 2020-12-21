@@ -730,7 +730,11 @@ export const selectMediaFolder = (
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
+  currentMediaFolder: string,
 ) => {
+  if (currentMediaFolder) {
+    return trim(currentMediaFolder, '/')
+  }
   const name = 'media_folder';
   let mediaFolder = config.get(name);
 
@@ -748,7 +752,6 @@ export const selectMediaFolder = (
         : join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
     }
   }
-
   return trim(mediaFolder, '/');
 };
 
@@ -758,12 +761,13 @@ export const selectMediaFilePath = (
   entryMap: EntryMap | undefined,
   mediaPath: string,
   field: EntryField | undefined,
+  currentMediaFolder: string,
 ) => {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
 
-  const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
+  const mediaFolder = selectMediaFolder(config, collection, entryMap, field, currentMediaFolder);
 
   return join(mediaFolder, basename(mediaPath));
 };
