@@ -112,7 +112,6 @@ class MediaLibraryCard extends React.Component {
       displayURL,
       text,
       onClick,
-      onAssetCheckboxClick,
       onChecked,
       draftText,
       width,
@@ -152,7 +151,7 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
-        <input type="checkbox" onChange={onChecked} checked={isSelected} />
+        <input type="checkbox" onClick={onChecked} checked={isSelected} readOnly />
         {previewElement}
         <CardText>
           <ObjectName>{text}</ObjectName>

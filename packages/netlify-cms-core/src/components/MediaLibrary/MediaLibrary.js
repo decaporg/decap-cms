@@ -143,23 +143,15 @@ class MediaLibrary extends React.Component {
     this.props.closeMediaLibrary();
   };
 
-  /**
-   * Toggle asset selection on click.
-   */
-  handleAssetClick = asset => {
-    // console.log('handleAssetClick');
-    // if (asset.isDirectory) {
-    //   this.setState({ currentMediaFolder: asset.path });
-    // } else {
-    //   const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
-    //   this.setState({ selectedFile });
-    // }
-  };
+  isSelectedAsset = asset => {
+    return (this.state.selectedAssets || []).filter(selectedAsset => {
+      return selectedAsset.key === asset.key
+    }).length > 0;
+  }
 
-  handleAssetCheckboxChange = (asset, event) => {
-    console.log('handleAssetCheckboxChange')
+  updateSelectedAssets = (asset) =>  {
     let selectedAssets = this.state.selectedAssets || [];
-    if (event.target.checked) {
+    if (!this.isSelectedAsset(asset)) {
       selectedAssets.push(asset)
     } else {
       selectedAssets = selectedAssets.filter(selectedAsset => {
@@ -167,11 +159,23 @@ class MediaLibrary extends React.Component {
       })
     }
     this.setState({ selectedAssets });
+  }
+
+  handleAssetCheckboxChange = (asset, event) => {
     event.stopPropagation();
+    this.updateSelectedAssets(asset);
+  };
+
+  handleAssetClick = asset => {
+    if (asset.isDirectory) {
+      this.setState({ currentMediaFolder: asset.path, selectedAssets: [] });
+    } else {
+      this.updateSelectedAssets(asset);
+    }
   };
 
   handleBreadcrumbClick = currentMediaFolder => {
-    this.setState({ currentMediaFolder });
+    this.setState({ currentMediaFolder, selectedAssets: [] });
   };
 
   /**
