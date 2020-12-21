@@ -27,7 +27,7 @@
   "dependencies": {
     "@iarna/toml": "2.2.5",
     "ajv": "^6.10.0",
-    "ajv-errors": "^1.0.1",
+    "ajv-errors": "^2.0.0",
     "ajv-keywords": "^3.4.1",
     "connected-react-router": "^6.8.0",
     "copy-text-to-clipboard": "^2.0.0",
