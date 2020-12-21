@@ -147,12 +147,27 @@ class MediaLibrary extends React.Component {
    * Toggle asset selection on click.
    */
   handleAssetClick = asset => {
-    if (asset.isDirectory) {
-      this.setState({ currentMediaFolder: asset.path });
+    // console.log('handleAssetClick');
+    // if (asset.isDirectory) {
+    //   this.setState({ currentMediaFolder: asset.path });
+    // } else {
+    //   const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
+    //   this.setState({ selectedFile });
+    // }
+  };
+
+  handleAssetCheckboxChange = (asset, event) => {
+    console.log('handleAssetCheckboxChange')
+    let selectedAssets = this.state.selectedAssets || [];
+    if (event.target.checked) {
+      selectedAssets.push(asset)
     } else {
-      const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
-      this.setState({ selectedFile });
+      selectedAssets = selectedAssets.filter(selectedAsset => {
+        return selectedAsset.key !== asset.key;
+      })
     }
+    this.setState({ selectedAssets });
+    event.stopPropagation();
   };
 
   handleBreadcrumbClick = currentMediaFolder => {
@@ -323,11 +338,12 @@ class MediaLibrary extends React.Component {
 
     const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
+    const currentDirFilesOrderedByTreeType = (currentDirFiles || []).filter(file => file.isDirectory).concat((currentDirFiles || []).filter(file => !file.isDirectory));
     return (
       <MediaLibraryModal
         isVisible={isVisible}
         canInsert={canInsert}
-        files={currentDirFiles}
+        files={currentDirFilesOrderedByTreeType}
         dynamicSearch={dynamicSearch}
         dynamicSearchActive={dynamicSearchActive}
         forImage={forImage}
@@ -339,6 +355,7 @@ class MediaLibrary extends React.Component {
         privateUpload={privateUpload}
         query={this.state.query}
         selectedFile={this.state.selectedFile}
+        selectedAssets={this.state.selectedAssets}
         handleFilter={this.filterImages}
         handleQuery={this.queryFilter}
         toTableData={this.toTableData}
@@ -351,6 +368,7 @@ class MediaLibrary extends React.Component {
         handleDownload={this.handleDownload}
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
+        handleAssetCheckboxChange={this.handleAssetCheckboxChange}
         handleBreadcrumbClick={this.handleBreadcrumbClick}
         currentMediaFolder={currentMediaFolder}
         defaultMediaFolder={defaultMediaFolder}

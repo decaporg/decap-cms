@@ -33,7 +33,7 @@ const CardImageWrapper = styled.div`
 const CardImage = styled.img`
   width: 100%;
   height: ${IMAGE_HEIGHT}px;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 2px 2px 0 0;
 `;
 
@@ -46,12 +46,35 @@ const CardFileIcon = styled.div`
   font-size: 3em;
 `;
 
-const CardText = styled.p`
+const CardDirctoryWrapper = styled.div`
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 2px 2px 0 0;
+  padding: 1em;
+  font-size: 3em;
+  background: #eee;
+`;
+
+const CardText = styled.div`
   color: ${colors.text};
   padding: 8px;
-  margin-top: 20px;
+  font-size: 0.8em;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const ObjectName = styled.div`
+  color: ${colors.text};
+  font-weight: 600;
   overflow-wrap: break-word;
   line-height: 1.3 !important;
+  text-align: left;
+`;
+
+const ImageMeta = styled.div`
+  text-align: left;
 `;
 
 const DraftText = styled.p`
@@ -62,6 +85,26 @@ const DraftText = styled.p`
   border-radius: ${lengths.borderRadius} 0px ${lengths.borderRadius} 0;
 `;
 
+function readableFileSize(numberOfBytes) {
+  let readableSize;
+  let units;
+  numberOfBytes = numberOfBytes || 0;
+  if (numberOfBytes >= 0 && numberOfBytes < 1000) {
+    readableSize = numberOfBytes;
+    units = ' bytes';
+  } else if (numberOfBytes >= 1000 && numberOfBytes < 1000000) {
+    readableSize = Math.ceil(numberOfBytes / 1000);
+    units = ' KB';
+  } else if (numberOfBytes >= 1000000 && numberOfBytes < 1000000000) {
+    readableSize = (numberOfBytes / 1000000).toFixed(2);
+    units = ' MB';
+  } else if (numberOfBytes >= 1000000000) {
+    readableSize = (numberOfBytes / 1000000000).toFixed(2);
+    units = ' GB';
+  }
+  return readableSize + units;
+}
+
 class MediaLibraryCard extends React.Component {
   render() {
     const {
@@ -69,6 +112,8 @@ class MediaLibraryCard extends React.Component {
       displayURL,
       text,
       onClick,
+      onAssetCheckboxClick,
+      onChecked,
       draftText,
       width,
       height,
@@ -78,6 +123,7 @@ class MediaLibraryCard extends React.Component {
       isViewableImage,
       isDraft,
       isDirectory,
+      size
     } = this.props;
     const url = displayURL.get('url');
     var cardImageWrapper = (
@@ -90,8 +136,12 @@ class MediaLibraryCard extends React.Component {
         )}
       </CardImageWrapper>
     );
-    var cardDirectoryWrapper = <Icon type="folder" />;
-    var previewElement = isDirectory ? cardDirectoryWrapper : cardImageWrapper;
+    var cardDirectoryEl = (
+      <CardDirctoryWrapper>
+        <Icon type="folder" size="xlarge" />
+      </CardDirctoryWrapper>
+    );
+    var previewElement = isDirectory ? cardDirectoryEl : cardImageWrapper;
     return (
       <Card
         isSelected={isSelected}
@@ -102,8 +152,12 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
+        <input type="checkbox" onChange={onChecked} checked={isSelected} />
         {previewElement}
-        <CardText>{text}</CardText>
+        <CardText>
+          <ObjectName>{text}</ObjectName>
+          {isViewableImage ? <ImageMeta>{type} - {readableFileSize(size)}</ImageMeta> : null}
+        </CardText>
       </Card>
     );
   }
@@ -119,7 +173,7 @@ MediaLibraryCard.propTypes = {
   isSelected: PropTypes.bool,
   displayURL: ImmutablePropTypes.map.isRequired,
   text: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,  
   draftText: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,

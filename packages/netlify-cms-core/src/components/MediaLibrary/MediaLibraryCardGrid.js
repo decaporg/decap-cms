@@ -16,7 +16,9 @@ const CardWrapper = props => {
     data: {
       mediaItems,
       isSelectedFile,
+      isSelectedAsset,
       onAssetClick,
+      onAssetCheckboxClick,
       cardDraftText,
       cardWidth,
       cardHeight,
@@ -32,7 +34,6 @@ const CardWrapper = props => {
     return null;
   }
   const file = mediaItems[index];
-
   return (
     <div
       style={{
@@ -43,11 +44,14 @@ const CardWrapper = props => {
         height: style.height - gutter,
       }}
     >
+      
       <MediaLibraryCard
         key={file.key}
-        isSelected={isSelectedFile(file)}
+        // isSelected={isSelectedFile(file)}
+        isSelected={isSelectedAsset(file)}
         text={file.name}
         onClick={() => onAssetClick(file)}
+        onChecked={(event) => {onAssetCheckboxClick(file, event)}}
         isDraft={file.draft}
         draftText={cardDraftText}
         width={cardWidth}
@@ -59,6 +63,7 @@ const CardWrapper = props => {
         type={file.type}
         isViewableImage={file.isViewableImage}
         isDirectory={file.isDirectory}
+        size={file.size}
       />
     </div>
   );
@@ -101,7 +106,9 @@ const PaginatedGrid = ({
   setScrollContainerRef,
   mediaItems,
   isSelectedFile,
+  isSelectedAsset,
   onAssetClick,
+  onAssetCheckboxClick,
   cardDraftText,
   cardWidth,
   cardHeight,
@@ -120,7 +127,8 @@ const PaginatedGrid = ({
         {mediaItems.map(file => (
           <MediaLibraryCard
             key={file.key}
-            isSelected={isSelectedFile(file)}
+            // isSelected={isSelectedFile(file)}
+            isSelected={isSelectedAsset(file)}
             text={file.name}
             onClick={() => onAssetClick(file)}
             isDraft={file.draft}
@@ -133,6 +141,7 @@ const PaginatedGrid = ({
             loadDisplayURL={() => loadDisplayURL(file)}
             type={file.type}
             isViewableImage={file.isViewableImage}
+            onAssetCheckboxClick={onAssetCheckboxClick}
           />
         ))}
         {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}
