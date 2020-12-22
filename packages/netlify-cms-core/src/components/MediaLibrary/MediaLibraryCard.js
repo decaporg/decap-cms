@@ -177,7 +177,8 @@ class MediaLibraryCard extends React.Component {
       isViewableImage,
       isDraft,
       isDirectory,
-      size
+      size,
+      hasChildren
     } = this.props;
     const url = displayURL.get('url');
     var cardImageWrapper = (
@@ -192,7 +193,7 @@ class MediaLibraryCard extends React.Component {
     );
     var cardDirectoryEl = (
       <CardDirctoryWrapper>
-        <Icon type="folder" size="xlarge" />
+        <Icon type="folder" size="max" />
       </CardDirctoryWrapper>
     );
     var previewElement = isDirectory ? cardDirectoryEl : cardImageWrapper;
@@ -206,15 +207,17 @@ class MediaLibraryCard extends React.Component {
         tabIndex="-1"
         isPrivate={isPrivate}
       >
-        <CheckboxContainer>
-          <AssetCheckbox type="checkbox" onClick={onChecked} checked={isSelected} readOnly />
-        </CheckboxContainer>
+        {!hasChildren ? (
+          <CheckboxContainer>
+            <AssetCheckbox type="checkbox" onClick={onChecked} checked={isSelected} readOnly />
+          </CheckboxContainer>
+        ) : null}
+        
         {previewElement}
         <CardText>
           <ObjectName>{text}</ObjectName>
           {isViewableImage ? <ImageMeta>{type} - {readableFileSize(size)}</ImageMeta> : null}
         </CardText>
-
       </Card>
     );
   }
