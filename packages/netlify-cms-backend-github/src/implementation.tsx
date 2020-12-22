@@ -451,6 +451,7 @@ export default class GitHub implements Implementation {
         displayURL: { id, path },
         path,
         isDirectory: type === TreeFileType.TREE,
+        hasChildren: files.filter(file => file.path.startsWith(path)).length > 1
       };
     });
     return withDisplayUrls;

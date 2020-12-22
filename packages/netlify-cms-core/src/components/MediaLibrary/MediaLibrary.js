@@ -111,7 +111,7 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft, isDirectory }) => {
+      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft, isDirectory, hasChildren }) => {
         const ext = fileExtension(name).toLowerCase();
         return {
           key,
@@ -124,6 +124,7 @@ class MediaLibrary extends React.Component {
           displayURL,
           draft,
           isDirectory,
+          hasChildren,
           isImage: IMAGE_EXTENSIONS.includes(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
@@ -230,16 +231,19 @@ class MediaLibrary extends React.Component {
   /**
    * Removes the selected file from the backend.
    */
-  handleDelete = () => {
-    const { selectedFile } = this.state;
+  handleDelete = async () => {
+    const { selectedAssets } = this.state;
     const { files, deleteMedia, privateUpload, t } = this.props;
     if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
       return;
     }
-    const file = files.find(file => selectedFile.key === file.key);
-    deleteMedia(file, { privateUpload }).then(() => {
-      this.setState({ selectedFile: {} });
-    });
+    const filesToDelete = selectedAssets.map(selectedAsset => 
+      files.find(file => selectedAsset.key === file.key)
+    )
+    for (const file of filesToDelete) {
+      await deleteMedia(file, { privateUpload });
+    }
+    this.setState({ selectedAssets: [] });
   };
 
   /**

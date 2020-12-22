@@ -62,6 +62,7 @@ const CardWrapper = props => {
         type={file.type}
         isViewableImage={file.isViewableImage}
         isDirectory={file.isDirectory}
+        hasChildren={file.hasChildren}
         size={file.size}
       />
     </div>
