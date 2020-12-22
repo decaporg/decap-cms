@@ -112,7 +112,7 @@ const MediaLibraryModal = ({
     (!hasFilteredFiles && t('mediaLibrary.mediaLibraryModal.noImagesFound')) ||
     (!hasSearchResults && t('mediaLibrary.mediaLibraryModal.noResults'));
 
-  const hasSelection = hasMedia && !isEmpty(selectedFile);
+  const hasSelection = hasMedia && (selectedAssets || []).length > 0;
 
   return (
     <StyledModal isOpen={isVisible} onClose={handleClose} isPrivate={privateUpload}>
