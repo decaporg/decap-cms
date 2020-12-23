@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.22.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.21.0...netlify-cms-locales@1.22.0) (2020-12-23)
+
+
+### Features
+
+* **locales:** add Lithuanian translation ([#4761](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4761)) ([18444cb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/18444cb839bb1599636fd300d5747796ba54648c))
+
+
+
+
+
 # [1.21.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.20.0...netlify-cms-locales@1.21.0) (2020-11-30)
 
 
