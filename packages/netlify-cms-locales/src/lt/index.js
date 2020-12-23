@@ -78,7 +78,8 @@ const lt = {
     editorControlPane: {
       widget: {
         required: 'Privaloma užpildyti laukelį %{fieldLabel}.',
-        regexPattern: "%{fieldLabel} laukelis neatitiko konfigūracijoje nustatytų taisyklių: %{pattern}.",
+        regexPattern:
+          '%{fieldLabel} laukelis neatitiko konfigūracijoje nustatytų taisyklių: %{pattern}.',
         processing: 'Apdorojame %{fieldLabel}.',
         range: '%{fieldLabel} turi būti tarp %{minValue} ir %{maxValue}.',
         min: '%{fieldLabel} turi būti bent %{minValue}.',
@@ -96,9 +97,11 @@ const lt = {
     },
     editor: {
       onLeavePage: 'Ar tikrai norite uždaryti šį puslapį?',
-      onUpdatingWithUnsavedChanges: 'Turite neišsaugotų pakeitimų! Prašome išsaugoti prieš pakeičiant statusą.',
+      onUpdatingWithUnsavedChanges:
+        'Turite neišsaugotų pakeitimų! Prašome išsaugoti prieš pakeičiant statusą.',
       onPublishingNotReady: 'Prieš publikuojant, privalote pakeisti statusą į „Paruošta“.',
-      onPublishingWithUnsavedChanges: 'Yra neišsaugotų pakeitimų, prašome išsaugoti juos prieš publikuojant.',
+      onPublishingWithUnsavedChanges:
+        'Yra neišsaugotų pakeitimų, prašome išsaugoti juos prieš publikuojant.',
       onPublishing: 'Ae tikrai norite publikuoti šį įrašą?',
       onUnpublishing: 'Tikrai norite panaikinti publikavimo statusą?',
       onDeleteWithUnsavedChanges:
@@ -109,7 +112,8 @@ const lt = {
       onDeleteUnpublishedChanges:
         'Visi Jūsų pakeitimai įraše bus panaikinti. Ar tikrai norite trinti jį?',
       loadingEntry: 'Kraunamas įrašas...',
-      confirmLoadBackup: 'Radome Jūsų įrenginyje išsaugota juodraštį šiam įrašui, ar norite jį atgaivinti ir naudoti?',
+      confirmLoadBackup:
+        'Radome Jūsų įrenginyje išsaugota juodraštį šiam įrašui, ar norite jį atgaivinti ir naudoti?',
     },
     editorToolbar: {
       publishing: 'Publikuojama...',
@@ -190,7 +194,8 @@ const lt = {
     },
     mediaLibrary: {
       onDelete: 'Ar jūs tikrai norite ištrinti pasirinktą mediją?',
-      fileTooLarge: 'Failas per didelis.\nNustatymuose (konfigūracijoje) nurodyta, kad failai negali viršyti %{size} kB.',
+      fileTooLarge:
+        'Failas per didelis.\nNustatymuose (konfigūracijoje) nurodyta, kad failai negali viršyti %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Kraunama...',
@@ -215,7 +220,7 @@ const lt = {
     },
     errorBoundary: {
       title: 'Klaida',
-      details: "Buvo klaida - jeigu galite, prašome ",
+      details: 'Buvo klaida - jeigu galite, prašome ',
       reportIt: 'pranešti apie techninę problemą „GitHub“ puslapyje.',
       detailsHeading: 'Detalės',
       privacyWarning:
@@ -235,7 +240,8 @@ const lt = {
       onFailToPersist: 'Nepavyko išlaikyti įrašo: %{details}',
       onFailToDelete: 'Nepayvko ištrinti: %{details}',
       onFailToUpdateStatus: 'Nepavyko pakeisti statusą: %{details}',
-      missingRequiredField: "Pasitikrinkite — kažkurio (ar kelių) laukelių neužpildėte. Tai padarius galėsite išsaugoti įrašą.",
+      missingRequiredField:
+        'Pasitikrinkite — kažkurio (ar kelių) laukelių neužpildėte. Tai padarius galėsite išsaugoti įrašą.',
       entrySaved: 'Įrašas išsaugotos',
       entryPublished: 'Įrašas publikuotas',
       entryUnpublished: 'Įrašas nepublikuotas',
@@ -244,7 +250,8 @@ const lt = {
       entryUpdated: 'Įrašo statusas pakeistas',
       onDeleteUnpublishedChanges: 'Nepublikuoti pakeitimai ištrinti',
       onFailToAuth: 'Nepavyko prisijungti: %{details}',
-      onLoggedOut: 'Mes jus atjungėme. Jeigu yra poreikis, sukurkite duomenų atsarginę kopiją. Galite tiesiog iš naujo prisijungti.',
+      onLoggedOut:
+        'Mes jus atjungėme. Jeigu yra poreikis, sukurkite duomenų atsarginę kopiją. Galite tiesiog iš naujo prisijungti.',
       onBackendDown:
         'Deja, serveris šiuo metu neveikia. Bandykite iš naujo dar sykį arba šiek tiek vėliau. Detalės: %{details}',
     },
