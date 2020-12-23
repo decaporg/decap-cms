@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 export default class StringControl extends React.Component {
   static propTypes = {
+    field: ImmutablePropTypes.map.isRequired,
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
     value: PropTypes.node,
@@ -36,8 +38,25 @@ export default class StringControl extends React.Component {
   }
 
   handleChange = e => {
-    this._sel = e.target.selectionStart;
-    this.props.onChange(e.target.value);
+    const { onChange, field } = this.props;
+    const trim = field.get('trim', false);
+    let sel = e.target.selectionStart;
+
+    if (trim) {
+      const beforeTrimmed = e.target.value;
+      const trimmed = beforeTrimmed.trim();
+      const offset = beforeTrimmed.indexOf(trimmed);
+
+      sel = sel - offset;
+
+      e.target.value = trimmed;
+
+      this._el.setSelectionRange(sel, sel);
+    }
+
+    this._sel = sel;
+
+    onChange(e.target.value);
   };
 
   render() {
