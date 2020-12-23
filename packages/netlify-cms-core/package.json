@@ -86,6 +86,7 @@
     "react-immutable-proptypes": "^2.1.0"
   },
   "devDependencies": {
+    "@types/redux-mock-store": "^1.0.2",
     "redux-mock-store": "^1.5.3"
   }
 }

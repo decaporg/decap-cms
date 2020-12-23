@@ -1,11 +1,18 @@
 import { Map } from 'immutable';
-import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { mocked } from 'ts-jest/utils';
+import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
+import { selectMediaFilePath } from '../../reducers/entries';
+import { State } from '../../types/redux';
 import AssetProxy from '../../valueObjects/AssetProxy';
 
 const middlewares = [thunk];
-const mockStore = configureMockStore(middlewares);
+const mockStore = configureMockStore<Partial<State>, ThunkDispatch<State, {}, AnyAction>>(
+  middlewares,
+);
+const mockedSelectMediaFilePath = mocked(selectMediaFilePath);
 
 jest.mock('../../reducers/entries');
 jest.mock('../mediaLibrary');
@@ -19,9 +26,9 @@ describe('media', () => {
   });
 
   describe('getAsset', () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     global.URL = { createObjectURL: jest.fn() };
-
-    const { selectMediaFilePath } = require('../../reducers/entries');
 
     beforeEach(() => {
       jest.resetAllMocks();
@@ -30,8 +37,12 @@ describe('media', () => {
     it('should return empty asset for null path', () => {
       const store = mockStore({});
 
-      const payload = { collection: null, entryPath: null, path: null };
+      const payload = { collection: null, entryPath: null, entry: null, path: null };
 
+      // TODO change to proper payload when immutable is removed
+      //  from 'collections' and 'entries' state slices
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
       expect(actions).toHaveLength(0);
@@ -42,22 +53,30 @@ describe('media', () => {
       const path = 'static/media/image.png';
       const asset = new AssetProxy({ file: new File([], 'empty'), path });
       const store = mockStore({
+        // TODO change to proper store data when immutable is removed
+        //  from 'config' state slice
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
         config: Map(),
-        medias: Map({
-          [path]: { asset },
-        }),
+        medias: {
+          [path]: { asset, isLoading: false, error: null },
+        },
       });
 
-      selectMediaFilePath.mockReturnValue(path);
+      mockedSelectMediaFilePath.mockReturnValue(path);
       const payload = { collection: Map(), entry: Map({ path: 'entryPath' }), path };
 
+      // TODO change to proper payload when immutable is removed
+      //  from 'collections' and 'entries' state slices
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
       expect(actions).toHaveLength(0);
 
       expect(result).toBe(asset);
-      expect(selectMediaFilePath).toHaveBeenCalledTimes(1);
-      expect(selectMediaFilePath).toHaveBeenCalledWith(
+      expect(mockedSelectMediaFilePath).toHaveBeenCalledTimes(1);
+      expect(mockedSelectMediaFilePath).toHaveBeenCalledWith(
         store.getState().config,
         payload.collection,
         payload.entry,
@@ -71,12 +90,16 @@ describe('media', () => {
 
       const asset = new AssetProxy({ url: path, path });
       const store = mockStore({
-        medias: Map({}),
+        medias: {},
       });
 
-      selectMediaFilePath.mockReturnValue(path);
+      mockedSelectMediaFilePath.mockReturnValue(path);
       const payload = { collection: null, entryPath: null, path };
 
+      // TODO change to proper payload when immutable is removed
+      //  from 'collections' state slice
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
       expect(actions).toHaveLength(1);
@@ -90,12 +113,16 @@ describe('media', () => {
     it('should return empty asset and initiate load when not in medias state', () => {
       const path = 'static/media/image.png';
       const store = mockStore({
-        medias: Map({}),
+        medias: {},
       });
 
-      selectMediaFilePath.mockReturnValue(path);
+      mockedSelectMediaFilePath.mockReturnValue(path);
       const payload = { path };
 
+      // TODO change to proper payload when immutable is removed
+      //  from 'collections' and 'entries' state slices
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
       expect(actions).toHaveLength(1);
@@ -110,12 +137,22 @@ describe('media', () => {
       const path = 'static/media/image.png';
       const resolvePath = 'resolvePath';
       const store = mockStore({
-        medias: Map({ [resolvePath]: { error: true } }),
+        medias: {
+          [resolvePath]: {
+            asset: undefined,
+            error: new Error('test'),
+            isLoading: false,
+          },
+        },
       });
 
-      selectMediaFilePath.mockReturnValue(resolvePath);
+      mockedSelectMediaFilePath.mockReturnValue(resolvePath);
       const payload = { path };
 
+      // TODO change to proper payload when immutable is removed
+      //  from 'collections' and 'entries' state slices
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
 

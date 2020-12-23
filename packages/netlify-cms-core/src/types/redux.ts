@@ -1,10 +1,10 @@
 import { Action } from 'redux';
 import { StaticallyTypedRecord } from './immutable';
 import { Map, List, OrderedMap, Set } from 'immutable';
-import AssetProxy from '../valueObjects/AssetProxy';
 import { MediaFile as BackendMediaFile } from '../backend';
 import { Auth } from '../reducers/auth';
 import { Status } from '../reducers/status';
+import { Medias } from '../reducers/medias';
 
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
@@ -226,10 +226,6 @@ export type Collection = StaticallyTypedRecord<CollectionObject>;
 
 export type Collections = StaticallyTypedRecord<{ [path: string]: Collection & CollectionObject }>;
 
-export type Medias = StaticallyTypedRecord<{
-  [path: string]: { asset: AssetProxy | undefined; isLoading: boolean; error: Error | null };
-}>;
-
 export interface MediaLibraryInstance {
   show: (args: {
     id?: string;
@@ -306,10 +302,6 @@ export interface State {
   search: Search;
   notifs: { message: { key: string }; kind: string; id: number }[];
   status: Status;
-}
-
-export interface MediasAction extends Action<string> {
-  payload: string | AssetProxy | AssetProxy[] | { path: string } | { path: string; error: Error };
 }
 
 export interface ConfigAction extends Action<string> {
