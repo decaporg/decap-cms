@@ -4,15 +4,15 @@ import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
 import { SlugConfig } from '../types/redux';
 
-function getUrl(urlString: string, direct: boolean) {
+function getUrl(urlString: string, direct?: boolean) {
   return `${direct ? '/#' : ''}${urlString}`;
 }
 
-export function getCollectionUrl(collectionName: string, direct: boolean) {
+export function getCollectionUrl(collectionName: string, direct?: boolean) {
   return getUrl(`/collections/${collectionName}`, direct);
 }
 
-export function getNewEntryUrl(collectionName: string, direct: boolean) {
+export function getNewEntryUrl(collectionName: string, direct?: boolean) {
   return getUrl(`/collections/${collectionName}/new`, direct);
 }
 
