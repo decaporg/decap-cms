@@ -4,10 +4,11 @@ import {
   uniqueItemProperties,
   instanceof as instanceOf,
   prohibited,
-} from 'ajv-keywords/keywords';
+} from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
 import { getWidgets } from 'Lib/registry';
+import uuid from 'uuid/v4';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
 
 const localeType = { type: 'string', minLength: 2, maxLength: 10, pattern: '^[a-zA-Z-_]+$' };
@@ -42,38 +43,41 @@ const i18nField = {
 /**
  * Config for fields in both file and folder collections.
  */
-const fieldsConfig = () => ({
-  $id: 'fields',
-  type: 'array',
-  minItems: 1,
-  items: {
-    // ------- Each field: -------
-    $id: 'field',
-    type: 'object',
-    properties: {
-      name: { type: 'string' },
-      label: { type: 'string' },
-      widget: { type: 'string' },
-      required: { type: 'boolean' },
-      i18n: i18nField,
-      hint: { type: 'string' },
-      pattern: {
-        type: 'array',
-        minItems: 2,
-        items: [{ oneOf: [{ type: 'string' }, { instanceof: 'RegExp' }] }, { type: 'string' }],
+const fieldsConfig = () => {
+  const id = uuid();
+  return {
+    $id: `fields_${id}`,
+    type: 'array',
+    minItems: 1,
+    items: {
+      // ------- Each field: -------
+      $id: `field_${id}`,
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        label: { type: 'string' },
+        widget: { type: 'string' },
+        required: { type: 'boolean' },
+        i18n: i18nField,
+        hint: { type: 'string' },
+        pattern: {
+          type: 'array',
+          minItems: 2,
+          items: [{ oneOf: [{ type: 'string' }, { instanceof: 'RegExp' }] }, { type: 'string' }],
+        },
+        field: { $ref: `field_${id}` },
+        fields: { $ref: `fields_${id}` },
+        types: { $ref: `fields_${id}` },
       },
-      field: { $ref: 'field' },
-      fields: { $ref: 'fields' },
-      types: { $ref: 'fields' },
+      select: { $data: '0/widget' },
+      selectCases: {
+        ...getWidgetSchemas(),
+      },
+      required: ['name'],
     },
-    select: { $data: '0/widget' },
-    selectCases: {
-      ...getWidgetSchemas(),
-    },
-    required: ['name'],
-  },
-  uniqueItemProperties: ['name'],
-});
+    uniqueItemProperties: ['name'],
+  };
+};
 
 const viewFilters = {
   type: 'array',
@@ -347,7 +351,7 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true });
+  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true, strict: false });
   uniqueItemProperties(ajv);
   select(ajv);
   instanceOf(ajv);
