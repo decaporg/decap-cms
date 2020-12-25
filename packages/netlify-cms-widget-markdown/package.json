@@ -1,28 +1,35 @@
 {
-  "name": "netlify-cms-widget-markdown",
-  "description": "Widget for editing markdown in Netlify CMS.",
-  "version": "2.12.8",
-  "homepage": "https://www.netlifycms.org/docs/widgets/#markdown",
-  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown",
-  "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "module": "dist/esm/index.js",
-  "main": "dist/netlify-cms-widget-markdown.js",
-  "license": "MIT",
-  "keywords": [
-    "netlify",
-    "netlify-cms",
-    "widget",
-    "markdown",
-    "editor"
-  ],
-  "sideEffects": false,
-  "scripts": {
-    "develop": "yarn build:esm --watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  "_from": "netlify-cms-widget-markdown@^2.12.8",
+  "_id": "netlify-cms-widget-markdown@2.12.8",
+  "_inBundle": false,
+  "_integrity": "sha512-ndgzjNBd/3JBO5Te7gfZgYdxJxR94GKGfH0mq3iLKBkiVtz+WLqV3372QaCea4QkVuoGdRlBqi1KH5CGBWqepg==",
+  "_location": "/netlify-cms-widget-markdown",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "netlify-cms-widget-markdown@^2.12.8",
+    "name": "netlify-cms-widget-markdown",
+    "escapedName": "netlify-cms-widget-markdown",
+    "rawSpec": "^2.12.8",
+    "saveSpec": null,
+    "fetchSpec": "^2.12.8"
   },
+  "_requiredBy": [
+    "/netlify-cms-app"
+  ],
+  "_resolved": "https://registry.npmjs.org/netlify-cms-widget-markdown/-/netlify-cms-widget-markdown-2.12.8.tgz",
+  "_shasum": "6d3e39730c333b7462ed638640d4669f9f3b0a4d",
+  "_spec": "netlify-cms-widget-markdown@^2.12.8",
+  "_where": "/home/b3ef_/opensource/huntr/fix/xss/huntr-hugo-cms/node_modules/netlify-cms-app",
+  "bugs": {
+    "url": "https://github.com/netlify/netlify-cms/issues"
+  },
+  "bundleDependencies": false,
   "dependencies": {
+    "dompurify": "^2.2.6",
     "is-hotkey": "^0.2.0",
+    "jsdom": "^16.4.0",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
     "react-select": "^2.4.3",
@@ -41,6 +48,26 @@
     "unist-builder": "^1.0.3",
     "unist-util-visit-parents": "^2.0.1"
   },
+  "deprecated": false,
+  "description": "Widget for editing markdown in Netlify CMS.",
+  "devDependencies": {
+    "commonmark": "^0.29.0",
+    "commonmark-spec": "^0.29.0",
+    "slate-hyperscript": "^0.13.3"
+  },
+  "gitHead": "74d5569bd3daf7cb878435432d9d4545001e7f82",
+  "homepage": "https://www.netlifycms.org/docs/widgets/#markdown",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "markdown",
+    "editor"
+  ],
+  "license": "MIT",
+  "main": "dist/netlify-cms-widget-markdown.js",
+  "module": "dist/esm/index.js",
+  "name": "netlify-cms-widget-markdown",
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
@@ -52,9 +79,15 @@
     "react-dom": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"
   },
-  "devDependencies": {
-    "commonmark": "^0.29.0",
-    "commonmark-spec": "^0.29.0",
-    "slate-hyperscript": "^0.13.3"
-  }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown"
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward",
+    "develop": "yarn build:esm --watch"
+  },
+  "sideEffects": false,
+  "version": "2.12.8"
 }
