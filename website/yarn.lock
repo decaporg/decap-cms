@@ -966,10 +966,19 @@
     globals "^11.1.0"
     lodash "^4.17.19"
 
-"@babel/types@^7.0.0-beta.49", "@babel/types@^7.10.4", "@babel/types@^7.10.5", "@babel/types@^7.12.1", "@babel/types@^7.12.10", "@babel/types@^7.12.11", "@babel/types@^7.12.5", "@babel/types@^7.12.6", "@babel/types@^7.12.7", "@babel/types@^7.4.4", "@babel/types@^7.7.0":
+"@babel/types@^7.0.0-beta.49", "@babel/types@^7.10.4", "@babel/types@^7.10.5", "@babel/types@^7.12.1", "@babel/types@^7.12.10", "@babel/types@^7.12.11", "@babel/types@^7.12.6", "@babel/types@^7.12.7", "@babel/types@^7.4.4", "@babel/types@^7.7.0":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.12.11.tgz#a86e4d71e30a9b6ee102590446c98662589283ce"
   integrity sha512-ukA9SQtKThINm++CX1CwmliMrE54J6nIYB5XTwL5f/CLFW9owfls+YSU8tVW15RQ2w+a3fSbPjC6HdQNtWZkiA==
+  dependencies:
+    "@babel/helper-validator-identifier" "^7.12.11"
+    lodash "^4.17.19"
+    to-fast-properties "^2.0.0"
+
+"@babel/types@^7.12.5":
+  version "7.12.12"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.12.12.tgz#4608a6ec313abbd87afa55004d373ad04a96c299"
+  integrity sha512-lnIX7piTxOH22xE7fDXDbSHg9MM1/6ORnafpJmov5rs0kX5g4BZxeXNJLXsMRiO0U5Rb8/FvMS6xlTnTHvxonQ==
   dependencies:
     "@babel/helper-validator-identifier" "^7.12.11"
     lodash "^4.17.19"
@@ -1629,9 +1638,9 @@
     form-data "^3.0.0"
 
 "@types/node@*", "@types/node@>=6":
-  version "14.14.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.14.tgz#f7fd5f3cc8521301119f63910f0fb965c7d761ae"
-  integrity sha512-UHnOPWVWV1z+VV8k6L1HhG7UbGBgIdghqF3l9Ny9ApPghbjICXkUJSd/b9gOgQfjM1r+37cipdw/HJ3F6ICEnQ==
+  version "14.14.16"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.16.tgz#3cc351f8d48101deadfed4c9e4f116048d437b4b"
+  integrity sha512-naXYePhweTi+BMv11TgioE2/FXU4fSl29HAH1ffxVciNsH3rYXjNP2yM8wqmSm7jS20gM8TIklKiTen+1iVncw==
 
 "@types/node@^8.5.7":
   version "8.10.66"
@@ -1736,9 +1745,9 @@
   integrity sha512-S9q47ByT2pPvD65IvrWp7qppVMpk9WGMbVq9wbWZOHg6tnXSD4vyhao6nOSBwwfDdV2p3Kx9evA9vI+XWTfDvw==
 
 "@types/zen-observable@^0.8.0":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.1.tgz#5668c0bce55a91f2b9566b1d8a4c0a8dbbc79764"
-  integrity sha512-wmk0xQI6Yy7Fs/il4EpOcflG4uonUpYGqvZARESLc2oy4u69fkatFLbJOeW4Q6awO15P4rduAe6xkwHevpXcUQ==
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.2.tgz#808c9fa7e4517274ed555fa158f2de4b4f468e71"
+  integrity sha512-HrCIVMLjE1MOozVoD86622S7aunluLb2PJdPfb3nYiEtohm8mIB/vyv0Fd37AdeMFrTUQXEunw78YloMA3Qilg==
 
 "@typescript-eslint/eslint-plugin@^2.24.0":
   version "2.34.0"
@@ -9329,9 +9338,9 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
 netlify-cms-app@^2.11.31:
-  version "2.14.7"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.7.tgz#746feee7276f66e5c43ab11537142ac478f6eb95"
-  integrity sha512-dWf3gOGz3iJyI6mVq1FUl9GwUpQ3AmzUORi/Z4S/7I8c1ezm+7QuTb4QOskJibbjT9PxqA0WPmylicHIVJraLg==
+  version "2.14.8"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.8.tgz#e472cb8cdffb7995f88b323704617c0f1a3e3761"
+  integrity sha512-WW5BNGsN21BSCkQhr5cFiFnpTTvfc0hxFgElBtAd0Evt9xmZLaTywNzLy3FJRkJJMVJ8PskhYYcck76i/NCdng==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -9344,11 +9353,11 @@ netlify-cms-app@^2.11.31:
     netlify-cms-backend-github "^2.11.7"
     netlify-cms-backend-gitlab "^2.9.5"
     netlify-cms-backend-test "^2.10.5"
-    netlify-cms-core "^2.36.6"
+    netlify-cms-core "^2.36.7"
     netlify-cms-editor-component-image "^2.6.7"
     netlify-cms-lib-auth "^2.3.0"
     netlify-cms-lib-util "^2.12.1"
-    netlify-cms-locales "^1.21.0"
+    netlify-cms-locales "^1.22.0"
     netlify-cms-ui-default "^2.12.0"
     netlify-cms-widget-boolean "^2.3.4"
     netlify-cms-widget-code "^1.2.4"
@@ -9426,10 +9435,10 @@ netlify-cms-backend-test@^2.10.5:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.10.5.tgz#b06cf3adc425841d89689c1bf0c0658949fc48c9"
   integrity sha512-YHuMfAuzmDKd89YvMNfZh4F0DhGYGJVBVEV5H/MgOkPQcREG9SdLNjDyBcr/Y7mpjlu6MwR3s71BgMWIlFGpJg==
 
-netlify-cms-core@^2.36.6:
-  version "2.36.6"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.36.6.tgz#1a135da6c565a457c1d280fd06319873f678e184"
-  integrity sha512-mOXL2ZQnJyEp1nW41cb3UXDebBm9l2MwOw6pc4/ggxD4GKazyGlaSwqqYkswCg05cfm5GMj6lNE+4sTEmR4veQ==
+netlify-cms-core@^2.36.7:
+  version "2.36.7"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.36.7.tgz#d5040266c3259d31a508418c65dedff161dddc26"
+  integrity sha512-ptpnzI5QuLGp22JXHz+AQ3qA5Z/eHd0zayweCtnJx9I872jdnA9EVHXOPVnwWjV18dxEBbeuDcvvz4TqxLLnhA==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "^6.10.0"
@@ -9495,10 +9504,10 @@ netlify-cms-lib-util@^2.12.1:
     localforage "^1.7.3"
     semaphore "^1.1.0"
 
-netlify-cms-locales@^1.21.0:
-  version "1.21.0"
-  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.21.0.tgz#b7a53d5f36433f826860bc0cee25142f4d99e0ea"
-  integrity sha512-B7GhYS+aH8fBLEqk9Ht/Fu08OKkIxx9POHR6Got19Kq5TfB6hpFbaxI0bBPL036mQ+l5TpHVl44XIPGMTL+XkA==
+netlify-cms-locales@^1.22.0:
+  version "1.22.0"
+  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.22.0.tgz#903ba073f2343f0bc7486c80d7c6a3fdb9d905c5"
+  integrity sha512-Al/sm4GS3a02nizo2MxkWnYQpKM6Lu1iFSoKoQ3FAnWunD8TCe8pZvGsS7XhPEct2o3xSQvbu+o/zcJYMLQ8kg==
 
 netlify-cms-ui-default@^2.12.0:
   version "2.12.0"
