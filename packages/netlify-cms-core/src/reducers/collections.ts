@@ -403,7 +403,8 @@ export const selectSortableFields = (collection: Collection, t: (key: string) =>
   const fields = collection
     .get('sortable_fields')
     .toArray()
-    .map(key => {
+    .map(sortField => {
+      let key = sortField.get('field');
       if (key === COMMIT_DATE) {
         return { key, field: { name: key, label: t('collection.defaultFields.updatedOn.label') } };
       }
@@ -412,10 +413,10 @@ export const selectSortableFields = (collection: Collection, t: (key: string) =>
         return { key, field: { name: key, label: t('collection.defaultFields.author.label') } };
       }
 
-      return { key, field: field?.toJS() };
+      return { key, field: field?.toJS(), direction: sortField.get('direction')};
     })
     .filter(item => !!item.field)
-    .map(item => ({ ...item.field, key: item.key }));
+    .map(item => ({ ...item.field, key: item.key, direction: item.direction }));
 
   return fields;
 };

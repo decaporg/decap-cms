@@ -116,6 +116,19 @@ const viewGroups = {
   },
 };
 
+const sortableFields = {
+  type: 'array',
+  minItems: 1,
+  items: {
+    type: 'object',
+    properties: {
+      field: { type: 'string' },
+      direction: { type: 'string' },
+    },
+    required: ['field'],
+  },
+};
+
 /**
  * The schema had to be wrapped in a function to
  * fix a circular dependency problem for WebPack,
@@ -240,18 +253,8 @@ const getConfigSchema = () => ({
             },
           },
           fields: fieldsConfig(),
-          sortable_fields: {
-            type: 'array',
-            items: {
-              type: 'string',
-            },
-          },
-          sortableFields: {
-            type: 'array',
-            items: {
-              type: 'string',
-            },
-          },
+          sortable_fields: sortableFields,
+          sortableFields: sortableFields,
           view_filters: viewFilters,
           view_groups: viewGroups,
           nested: {

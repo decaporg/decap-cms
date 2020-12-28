@@ -49,10 +49,18 @@ export class Collection extends React.Component {
     isSingleSearchResult: PropTypes.bool,
     collection: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
-    sortableFields: PropTypes.array,
     sort: ImmutablePropTypes.orderedMap,
     onSortClick: PropTypes.func.isRequired,
   };
+
+  componentDidMount(){
+
+    const { sortableFields } = this.props;
+    debugger;
+    const defaultSortedField = sortableFields.find(field => field.direction !== undefined);
+    this.props.onSortClick(defaultSortedField.key, defaultSortedField.direction);
+
+  }
 
   renderEntriesCollection = () => {
     const { collection, filterTerm, viewStyle } = this.props;
@@ -183,6 +191,7 @@ const mapDispatchToProps = {
   groupByField,
 };
 
+// TODO ezeroglu
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,
