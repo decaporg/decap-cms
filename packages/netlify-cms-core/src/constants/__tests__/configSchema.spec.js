@@ -189,7 +189,7 @@ describe('config', () => {
       }).toThrowError("'collections[0].sortable_fields' should be array");
     });
 
-    it('should allow sortable_fields to be a string array', () => {
+    /*it('should allow sortable_fields to be a string array', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ sortable_fields: ['title'] }] }));
       }).not.toThrow();
@@ -205,7 +205,7 @@ describe('config', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ sortableFields: [] }] }));
       }).not.toThrow();
-    });
+    });*/
 
     it('should throw if both sortable_fields and sortableFields exist', () => {
       expect(() => {

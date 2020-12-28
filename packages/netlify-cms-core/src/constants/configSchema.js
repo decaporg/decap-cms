@@ -116,7 +116,7 @@ const viewGroups = {
   },
 };
 
-const sortableFields = {
+const sortableFieldsType = {
   type: 'array',
   minItems: 1,
   items: {
@@ -253,8 +253,8 @@ const getConfigSchema = () => ({
             },
           },
           fields: fieldsConfig(),
-          sortable_fields: sortableFields,
-          sortableFields: sortableFields,
+          sortable_fields: sortableFieldsType,
+          sortableFields: sortableFieldsType,
           view_filters: viewFilters,
           view_groups: viewGroups,
           nested: {

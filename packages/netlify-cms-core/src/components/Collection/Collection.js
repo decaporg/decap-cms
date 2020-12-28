@@ -53,13 +53,14 @@ export class Collection extends React.Component {
     onSortClick: PropTypes.func.isRequired,
   };
 
-  componentDidMount(){
-
+  componentDidMount() {
     const { sortableFields } = this.props;
-    debugger;
-    const defaultSortedField = sortableFields.find(field => field.direction !== undefined);
-    this.props.onSortClick(defaultSortedField.key, defaultSortedField.direction);
-
+    if (sortableFields) {
+      const defaultSortedField = sortableFields.find(field => field.direction !== undefined);
+      if (defaultSortedField) {
+        this.props.onSortClick(defaultSortedField.title, defaultSortedField.direction);
+      }
+    }
   }
 
   renderEntriesCollection = () => {

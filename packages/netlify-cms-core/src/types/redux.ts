@@ -176,6 +176,11 @@ export type ViewGroup = {
   id: string;
 };
 
+export type SortableField = {
+  field: string;
+  direction: string;
+};
+
 type NestedObject = { depth: number };
 
 type Nested = StaticallyTypedRecord<NestedObject>;
@@ -216,7 +221,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
-  sortable_fields: List<string>;
+  sortable_fields: List<StaticallyTypedRecord<SortableField>>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   view_groups: List<StaticallyTypedRecord<ViewGroup>>;
   nested?: Nested;
