@@ -3,8 +3,7 @@ group: Accounts
 weight: 20
 title: Azure
 ---
-
-For repositories stored on Azure, the `azure` backend allows CMS users to log in directly with their Azure account. Note that all users must have write access to your content repository for this to work.
+For repositories stored on Azure, the `azure` backend allows CMS users to log in directly with their Azure account. Note that all users must have write access to your content repository for this to work.0
 
 In order to get Netlify-CMS working with Azure DevOps, you need a Tenant Id and an Application Id.
 
@@ -28,5 +27,4 @@ backend:
 ### Limitations
 
 1. Pagination is not supported so some endpoints might return missing data
-
 2. Nested collection are partially supported as Azure doesn't allow [renaming and editing](https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pushes/create?view=azure-devops-rest-6.1&source=docs#rename-a-file) in a single operation
