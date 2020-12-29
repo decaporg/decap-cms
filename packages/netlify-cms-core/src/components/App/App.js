@@ -103,11 +103,6 @@ class App extends React.Component {
     );
   }
 
-  componentDidMount() {
-    const { loadConfig } = this.props;
-    loadConfig();
-  }
-
   handleLogin(credentials) {
     this.props.loginUser(credentials);
   }

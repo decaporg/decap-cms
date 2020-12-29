@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 import history from 'Routing/history';
 import store from 'ReduxStore';
-import { mergeConfig } from 'Actions/config';
+import { mergeConfig, loadConfig } from 'Actions/config';
 import { getPhrases } from 'Lib/phrases';
 import { selectLocale } from 'Reducers/config';
 import { I18n } from 'react-polyglot';
@@ -75,6 +75,8 @@ function bootstrap(opts = {}) {
   if (config) {
     store.dispatch(mergeConfig(config));
   }
+
+  store.dispatch(loadConfig());
 
   /**
    * Create connected root component.
