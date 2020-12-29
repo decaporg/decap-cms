@@ -69,15 +69,15 @@ export const selectInferredField = (
   if (!fields || !inferableField) return null;
   // Try to return a field of the specified type with one of the synonyms
   const mainTypeFields = fields
-  .filter(f => (f.widget || 'string') === inferableField.type)
-  .map(f => f.name);
+    .filter(f => (f.widget || 'string') === inferableField.type)
+    .map(f => f.name);
   field = mainTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
   if (field && field.length > 0) return field[0];
 
   // Try to return a field for each of the specified secondary types
   const secondaryTypeFields = fields
-  .filter(f => inferableField.secondaryTypes.indexOf(f.widget || 'string') !== -1)
-  .map(f => f.name);
+    .filter(f => inferableField.secondaryTypes.indexOf(f.widget || 'string') !== -1)
+    .map(f => f.name);
   field = secondaryTypeFields.filter(f => inferableField.synonyms.indexOf(f) !== -1);
   if (field && field.length > 0) return field[0];
 
