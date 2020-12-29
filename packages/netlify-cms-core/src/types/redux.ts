@@ -290,7 +290,7 @@ export type Cursors = StaticallyTypedRecord<{}>;
 
 export interface State {
   auth: Auth;
-  config: Config;
+  config: CmsConfig;
   cursors: Cursors;
   collections: Collections;
   deploys: Deploys;
@@ -305,21 +305,10 @@ export interface State {
   status: Status;
 }
 
-export interface ConfigAction extends Action<string> {
-  payload: Map<string, boolean>;
-}
-
 export interface Integration {
   hooks: string[];
   collections?: string | string[];
   provider: string;
-}
-
-export interface IntegrationsAction extends Action<string> {
-  payload: StaticallyTypedRecord<{
-    integrations: List<Integration>;
-    collections: StaticallyTypedRecord<{ name: string }>[];
-  }>;
 }
 
 interface EntryPayload {
@@ -403,12 +392,8 @@ export interface EntriesAction extends Action<string> {
   };
 }
 
-export interface CollectionsAction extends Action<string> {
-  payload?: StaticallyTypedRecord<{ collections: List<Collection> }>;
-}
-
 export interface EditorialWorkflowAction extends Action<string> {
-  payload?: StaticallyTypedRecord<{ publish_mode: string }> & {
+  payload?: CmsConfig & {
     collection: string;
     entry: { slug: string };
   } & {
@@ -704,23 +689,23 @@ export interface CmsFieldMeta {
 export type CmsField = CmsFieldBase &
   (
     | ({ fields?: undefined; field?: undefined; types?: undefined } & (
-    | CmsFieldBoolean
-    | CmsFieldCode
-    | CmsFieldColor
-    | CmsFieldDateTime
-    | CmsFieldFileOrImage
-    | CmsFieldMap
-    | CmsFieldMarkdown
-    | CmsFieldNumber
-    | CmsFieldRelation
-    | CmsFieldSelect
-    | CmsFieldHidden
-    | CmsFieldStringOrText
-    | CmsFieldMeta
-    ))
+        | CmsFieldBoolean
+        | CmsFieldCode
+        | CmsFieldColor
+        | CmsFieldDateTime
+        | CmsFieldFileOrImage
+        | CmsFieldMap
+        | CmsFieldMarkdown
+        | CmsFieldNumber
+        | CmsFieldRelation
+        | CmsFieldSelect
+        | CmsFieldHidden
+        | CmsFieldStringOrText
+        | CmsFieldMeta
+      ))
     | ({ field?: undefined; types?: undefined } & CmsFieldObject)
     | CmsFieldList
-    );
+  );
 
 export interface CmsCollectionFile {
   name: string;

@@ -137,7 +137,7 @@ class Workflow extends Component {
 
 function mapStateToProps(state) {
   const { collections, config, globalUI } = state;
-  const isEditorialWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const isEditorialWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
   const isOpenAuthoring = globalUI.get('useOpenAuthoring', false);
   const returnObj = { collections, isEditorialWorkflow, isOpenAuthoring };
 

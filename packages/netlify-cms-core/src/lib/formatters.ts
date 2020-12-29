@@ -5,14 +5,13 @@ import { stringTemplate } from 'netlify-cms-lib-widgets';
 import {
   selectIdentifier,
   selectField,
-  COMMIT_AUTHOR,
-  COMMIT_DATE,
   selectInferedField,
   getFileFromSlug,
 } from '../reducers/collections';
-import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
+import { Collection, CmsConfig, CmsSlug, EntryMap } from '../types/redux';
 import { stripIndent } from 'common-tags';
 import { FILES } from '../constants/collectionTypes';
+import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
 
 const {
   compileStringTemplate,
@@ -22,14 +21,14 @@ const {
   addFileTemplateFields,
 } = stringTemplate;
 
-const commitMessageTemplates = Map({
+const commitMessageTemplates = {
   create: 'Create {{collection}} “{{slug}}”',
   update: 'Update {{collection}} “{{slug}}”',
   delete: 'Delete {{collection}} “{{slug}}”',
   uploadMedia: 'Upload “{{path}}”',
   deleteMedia: 'Delete “{{path}}”',
   openAuthoring: '{{message}}',
-});
+} as const;
 
 const variableRegex = /\{\{([^}]+)\}\}/g;
 
@@ -42,16 +41,14 @@ type Options = {
 };
 
 export const commitMessageFormatter = (
-  type: string,
-  config: Config,
+  type: keyof typeof commitMessageTemplates,
+  config: CmsConfig,
   { slug, path, collection, authorLogin, authorName }: Options,
   isOpenAuthoring?: boolean,
 ) => {
-  const templates = commitMessageTemplates.merge(
-    config.getIn(['backend', 'commit_messages'], Map<string, string>()),
-  );
+  const templates = { ...commitMessageTemplates, ...(config.backend.commit_messages || {}) };
 
-  const commitMessage = templates.get(type).replace(variableRegex, (_, variable) => {
+  const commitMessage = templates[type].replace(variableRegex, (_, variable) => {
     switch (variable) {
       case 'slug':
         return slug || '';
@@ -73,7 +70,7 @@ export const commitMessageFormatter = (
     return commitMessage;
   }
 
-  const message = templates.get('openAuthoring').replace(variableRegex, (_, variable) => {
+  const message = templates.openAuthoring.replace(variableRegex, (_, variable) => {
     switch (variable) {
       case 'message':
         return commitMessage;
@@ -105,9 +102,9 @@ export const prepareSlug = (slug: string) => {
   );
 };
 
-export const getProcessSegment = (slugConfig: SlugConfig, ignoreValues: string[] = []) => {
+export const getProcessSegment = (slugConfig?: CmsSlug, ignoreValues?: string[]) => {
   return (value: string) =>
-    ignoreValues.includes(value)
+    ignoreValues && ignoreValues.includes(value)
       ? value
       : flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)])(value);
 };
@@ -115,7 +112,7 @@ export const getProcessSegment = (slugConfig: SlugConfig, ignoreValues: string[]
 export const slugFormatter = (
   collection: Collection,
   entryData: Map<string, unknown>,
-  slugConfig: SlugConfig,
+  slugConfig?: CmsSlug,
 ) => {
   const slugTemplate = collection.get('slug') || '{{slug}}';
 
@@ -144,8 +141,8 @@ export const previewUrlFormatter = (
   baseUrl: string,
   collection: Collection,
   slug: string,
-  slugConfig: SlugConfig,
   entry: EntryMap,
+  slugConfig?: CmsSlug,
 ) => {
   /**
    * Preview URL can't be created without `baseUrl`. This makes preview URLs
@@ -242,7 +239,7 @@ export const folderFormatter = (
   collection: Collection,
   defaultFolder: string,
   folderKey: string,
-  slugConfig: SlugConfig,
+  slugConfig?: CmsSlug,
 ) => {
   if (!entry || !entry.get('data')) {
     return folderTemplate;

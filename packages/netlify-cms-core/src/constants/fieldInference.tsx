@@ -1,13 +1,13 @@
 import React from 'react';
 
-export const IDENTIFIER_FIELDS = ['title', 'path'];
+export const IDENTIFIER_FIELDS = ['title', 'path'] as const;
 
-export const SORTABLE_FIELDS = ['title', 'date', 'author', 'description'];
+export const SORTABLE_FIELDS = ['title', 'date', 'author', 'description'] as const;
 
 export const INFERABLE_FIELDS = {
   title: {
     type: 'string',
-    secondaryTypes: [],
+    secondaryTypes: [] as string[],
     synonyms: ['title', 'name', 'label', 'headline', 'header'],
     defaultPreview: (value: React.ReactNode) => <h1>{value}</h1>, // eslint-disable-line react/display-name
     fallbackToFirstField: true,
@@ -15,7 +15,7 @@ export const INFERABLE_FIELDS = {
   },
   shortTitle: {
     type: 'string',
-    secondaryTypes: [],
+    secondaryTypes: [] as string[],
     synonyms: ['short_title', 'shortTitle', 'short'],
     defaultPreview: (value: React.ReactNode) => <h2>{value}</h2>, // eslint-disable-line react/display-name
     fallbackToFirstField: false,
@@ -23,7 +23,7 @@ export const INFERABLE_FIELDS = {
   },
   author: {
     type: 'string',
-    secondaryTypes: [],
+    secondaryTypes: [] as string[],
     synonyms: ['author', 'name', 'by', 'byline', 'owner'],
     defaultPreview: (value: React.ReactNode) => <strong>{value}</strong>, // eslint-disable-line react/display-name
     fallbackToFirstField: false,
@@ -59,7 +59,7 @@ export const INFERABLE_FIELDS = {
   },
   image: {
     type: 'image',
-    secondaryTypes: [],
+    secondaryTypes: [] as string[],
     synonyms: [
       'image',
       'thumbnail',

@@ -1,36 +1,55 @@
-import { Map } from 'immutable';
-import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from '../actions/config';
-import { Config, ConfigAction } from '../types/redux';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { produce } from 'immer';
+import deepmerge from 'deepmerge';
+import {
+  CONFIG_REQUEST,
+  CONFIG_SUCCESS,
+  CONFIG_FAILURE,
+  CONFIG_MERGE,
+  ConfigAction,
+} from '../actions/config';
+import { EDITORIAL_WORKFLOW, SIMPLE } from '../constants/publishModes';
+import { CmsConfig } from '../types/redux';
 
-const defaultState: Map<string, boolean | string> = Map({ isFetching: true });
+export const defaultState: CmsConfig = {
+  backend: {},
+  collections: [],
+  publish_mode: SIMPLE,
+  locale: 'en',
+  slug: {
+    encoding: 'unicode',
+    clean_accents: false,
+    sanitize_replacement: '-',
+  },
+  error: undefined,
+  isFetching: false,
+};
 
-const config = (state = defaultState, action: ConfigAction) => {
+const config = produce((state = defaultState, action: ConfigAction) => {
   switch (action.type) {
     case CONFIG_MERGE:
-      return state.mergeDeep(action.payload);
+      return deepmerge(state, action.payload);
     case CONFIG_REQUEST:
-      return state.set('isFetching', true);
+      state.isFetching = true;
+      break;
     case CONFIG_SUCCESS:
       /**
        * The loadConfig action merges any existing config into the loaded config
        * before firing this action (so the resulting config can be validated),
        * so we don't have to merge it here.
        */
-      return action.payload.delete('isFetching');
+      return {
+        ...action.payload,
+        isFetching: false,
+        error: undefined,
+      };
     case CONFIG_FAILURE:
-      return state.withMutations(s => {
-        s.delete('isFetching');
-        s.set('error', action.payload.toString());
-      });
-    default:
-      return state;
+      state.isFetching = false;
+      state.error = action.payload.toString();
   }
-};
+}, defaultState);
 
-export const selectLocale = (state: Config) => state.get('locale', 'en') as string;
+export const selectLocale = (state: CmsConfig) => state.locale || 'en';
 
-export const selectUseWorkflow = (state: Config) =>
-  state.get('publish_mode') === EDITORIAL_WORKFLOW;
+export const selectUseWorkflow = (state: CmsConfig) => state.publish_mode === EDITORIAL_WORKFLOW;
 
 export default config;

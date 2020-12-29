@@ -74,7 +74,7 @@ const SuggestionItem = styled.li(
   padding: 6px 6px 6px 32px;
   cursor: pointer;
   position: relative;
-  
+
   &:hover {
     color: ${colors.active};
     background-color: ${colors.activeBackground};
@@ -88,7 +88,7 @@ const SuggestionDivider = styled.div`
 
 class CollectionSearch extends React.Component {
   static propTypes = {
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map,
     searchTerm: PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,

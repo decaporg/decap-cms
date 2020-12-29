@@ -1,7 +1,6 @@
 import React from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { render } from '@testing-library/react';
-import { fromJS } from 'immutable';
 import { oneLineTrim } from 'common-tags';
 
 const WithError = () => {
@@ -24,7 +23,7 @@ Object.defineProperty(
 );
 
 describe('Editor', () => {
-  const config = fromJS({ backend: { name: 'github' } });
+  const config = { backend: { name: 'github' } };
 
   const props = { t: jest.fn(key => key), config };
 
