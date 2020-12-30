@@ -58,7 +58,7 @@ export class Collection extends React.Component {
     if (sortableFields) {
       const defaultSortedField = sortableFields.find(field => field.direction !== undefined);
       if (defaultSortedField) {
-        this.props.onSortClick(defaultSortedField.title, defaultSortedField.direction);
+        this.props.onSortClick(defaultSortedField.key, defaultSortedField.direction);
       }
     }
   }
@@ -192,7 +192,6 @@ const mapDispatchToProps = {
   groupByField,
 };
 
-// TODO ezeroglu
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...stateProps,

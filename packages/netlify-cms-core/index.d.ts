@@ -295,7 +295,7 @@ declare module 'netlify-cms-core' {
     path?: string;
     media_folder?: string;
     public_folder?: string;
-    sortable_fields?: string[];
+    sortable_fields?: object[];
     i18n?: boolean | CmsI18nConfig;
 
     /**

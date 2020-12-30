@@ -382,9 +382,9 @@ export const selectDefaultSortableFields = (
   backend: Backend,
   hasIntegration: boolean,
 ) => {
-  let defaultSortable = SORTABLE_FIELDS.map((type: string) => {
-    const field = selectInferedField(collection, type);
-    if (backend.isGitBackend() && type === 'author' && !field && !hasIntegration) {
+  let defaultSortable = SORTABLE_FIELDS.map(type => {
+    const field = selectInferedField(collection, type.field);
+    if (backend.isGitBackend() && type.field === 'author' && !field && !hasIntegration) {
       // default to commit author if not author field is found
       return COMMIT_AUTHOR;
     }
@@ -396,7 +396,13 @@ export const selectDefaultSortableFields = (
     defaultSortable = [COMMIT_DATE, ...defaultSortable];
   }
 
-  return defaultSortable as string[];
+  defaultSortable = defaultSortable as string[];
+  const defaultSortableObject = [];
+  for (let i = 0; i < defaultSortable.length; i++) {
+    defaultSortableObject[i] = { field: defaultSortable[i] };
+  }
+
+  return defaultSortableObject;
 };
 
 export const selectSortableFields = (collection: Collection, t: (key: string) => string) => {
