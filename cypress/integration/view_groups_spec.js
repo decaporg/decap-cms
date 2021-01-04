@@ -45,7 +45,8 @@ describe('View Group', () => {
     group('Year');
 
     assertGroupsCount(2);
-    assertEachGroupCount('Year2020', 20);
+    const year = new Date().getFullYear();
+    assertEachGroupCount(`Year${year}`, 20);
     assertEachGroupCount('Year2015', 3);
 
     //disable group
