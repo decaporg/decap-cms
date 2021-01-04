@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.7...netlify-cms-core@2.36.8) (2021-01-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v7 ([#4748](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4748)) ([a3f95b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a3f95b0d241544c512a68c04e2202de84d47ab4b))
+
+
+
+
+
 ## [2.36.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.6...netlify-cms-core@2.36.7) (2020-12-23)
 
 **Note:** Version bump only for package netlify-cms-core
