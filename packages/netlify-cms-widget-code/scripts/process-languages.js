@@ -9,7 +9,7 @@ const outputPath = '../data/languages.json';
 async function fetchData() {
   const filePath = path.resolve(__dirname, rawDataPath);
   const fileContent = await fs.readFile(filePath);
-  return yaml.safeLoad(fileContent);
+  return yaml.load(fileContent);
 }
 
 function outputData(data) {
