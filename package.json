@@ -140,7 +140,7 @@
     "jest": "^26.1.0",
     "jest-cli": "^26.1.0",
     "jest-emotion": "^10.0.32",
-    "js-yaml": "^3.13.1",
+    "js-yaml": "^4.0.0",
     "mockserver-client": "^5.8.0",
     "mockserver-node": "^5.8.0",
     "ncp": "^2.0.0",
