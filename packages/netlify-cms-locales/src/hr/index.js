@@ -283,4 +283,3 @@ const hr = {
 };
 
 export default hr;
-
