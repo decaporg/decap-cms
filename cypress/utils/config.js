@@ -19,9 +19,9 @@ async function copyBackendFiles(backend) {
 async function updateConfig(configModifier) {
   const configFile = path.join(devTestDirectory, 'config.yml');
   const configContent = await fs.readFile(configFile);
-  const config = yaml.safeLoad(configContent);
+  const config = yaml.load(configContent);
   await configModifier(config);
-  await fs.writeFileSync(configFile, yaml.safeDump(config));
+  await fs.writeFileSync(configFile, yaml.dump(config));
 }
 
 async function switchVersion(version) {

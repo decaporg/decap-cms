@@ -31,7 +31,7 @@
     "gatsby-transformer-json": "2.8.0",
     "gatsby-transformer-remark": "2.13.1",
     "gatsby-transformer-yaml": "2.8.0",
-    "js-yaml": "^3.13.1",
+    "js-yaml": "^4.0.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "netlify-cms-app": "^2.11.31",
