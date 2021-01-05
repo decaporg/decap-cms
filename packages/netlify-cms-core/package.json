@@ -61,6 +61,7 @@
     "react-waypoint": "^9.0.3",
     "react-window": "^1.8.5",
     "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
     "redux-notifications": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "sanitize-filename": "^1.6.1",
