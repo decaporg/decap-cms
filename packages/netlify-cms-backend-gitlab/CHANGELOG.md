@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.5...netlify-cms-backend-gitlab@2.9.6) (2021-01-05)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** skip creating a CI pipeline when rebasing merge request ([#4802](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/4802)) ([ce11dd2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/ce11dd23753fd7bb502c299058b83701f20058b2)), closes [#4786](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/4786)
+
+
+
+
+
 ## [2.9.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.4...netlify-cms-backend-gitlab@2.9.5) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-backend-gitlab

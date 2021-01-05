@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.8...netlify-cms-core@2.36.9) (2021-01-05)
+
+
+### Bug Fixes
+
+* **typing:** add `registerEventListener` to CMS interface ([#4804](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4804)) ([5c265c1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5c265c1352e11f44faf52093d4bec0d6676bfc58))
+
+
+
+
+
 ## [2.36.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.7...netlify-cms-core@2.36.8) (2021-01-04)
 
 

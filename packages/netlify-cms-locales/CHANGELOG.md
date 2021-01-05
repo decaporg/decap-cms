@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.23.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.22.0...netlify-cms-locales@1.23.0) (2021-01-05)
+
+
+### Bug Fixes
+
+* **locales-de:** fix newButton  translation ([#4778](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4778)) ([#4801](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4801)) ([567438f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/567438fdd1aa775fd09a6a5de13e79c9d783e0d6))
+
+
+### Features
+
+* **locales:** add Croatian translation ([#4775](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4775)) ([a92d53f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/a92d53f88914fb73dd109686ee28c6240432f690))
+
+
+
+
+
 # [1.22.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.21.0...netlify-cms-locales@1.22.0) (2020-12-23)
 
 
