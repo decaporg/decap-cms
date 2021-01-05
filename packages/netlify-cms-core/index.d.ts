@@ -403,6 +403,13 @@ declare module 'netlify-cms-core' {
     config?: CmsMediaLibraryOptions;
   }
 
+  export interface CmsEventListener {
+    name: 'prePublish' | 'postPublish' | 'preUnpublish' | 'postUnpublish' | 'preSave' | 'postSave';
+    handler: { entry: Map<string, any>; author: { login: string; name: string } };
+  }
+
+  export type CmsEventListenerOptions = any; // TODO: type properly
+
   export type CmsLocalePhrases = any; // TODO: type properly
 
   export interface CmsRegistry {
@@ -455,6 +462,10 @@ declare module 'netlify-cms-core' {
     init: (options?: InitOptions) => void;
     registerBackend: (name: string, backendClass: CmsBackendClass) => void;
     registerEditorComponent: (options: EditorComponentOptions) => void;
+    registerEventListener: (
+      eventListener: CmsEventListener,
+      options: CmsEventListenerOptions,
+    ) => void;
     registerLocale: (locale: string, phrases: CmsLocalePhrases) => void;
     registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
     registerPreviewStyle: (filePath: string, options?: PreviewStyleOptions) => void;
