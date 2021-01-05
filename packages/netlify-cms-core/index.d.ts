@@ -2,7 +2,6 @@
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { List, Map } from 'immutable';
-  import { EntryMap } from './types/redux';
 
   export type CmsBackendType =
     | 'azure'
@@ -405,8 +404,8 @@ declare module 'netlify-cms-core' {
   }
 
   export interface CmsEventListener {
-    name: string;
-    handler: { entry: EntryMap; author: { login: string; name: string } };
+    name: 'prePublish' | 'postPublish' | 'preUnpublish' | 'postUnpublish' | 'preSave' | 'postSave';
+    handler: { entry: Map<string, any>; author: { login: string; name: string } };
   }
 
   export type CmsEventListenerOptions = any; // TODO: type properly
