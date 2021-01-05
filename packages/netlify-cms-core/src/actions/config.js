@@ -11,7 +11,6 @@ import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
 export const CONFIG_FAILURE = 'CONFIG_FAILURE';
-export const CONFIG_MERGE = 'CONFIG_MERGE';
 
 const getConfigUrl = () => {
   const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
@@ -300,8 +299,9 @@ export function applyDefaults(config) {
 }
 
 function mergePreloadedConfig(preloadedConfig, loadedConfig) {
-  const map = fromJS(loadedConfig) || Map();
-  return preloadedConfig ? preloadedConfig.mergeDeep(map) : map;
+  const preloadedConfigMap = preloadedConfig ? fromJS(preloadedConfig) : Map();
+  const loadedConfigMap = loadedConfig ? fromJS(loadedConfig) : Map();
+  return preloadedConfigMap.mergeDeep(loadedConfigMap);
 }
 
 export function parseConfig(data) {
@@ -348,16 +348,6 @@ export function configFailed(err) {
     error: 'Error loading config',
     payload: err,
   };
-}
-
-export function configDidLoad(config) {
-  return dispatch => {
-    dispatch(configLoaded(config));
-  };
-}
-
-export function mergeConfig(config) {
-  return { type: CONFIG_MERGE, payload: config };
 }
 
 export async function detectProxyServer(localBackend) {
@@ -416,17 +406,16 @@ export async function handleLocalBackend(mergedConfig) {
   return mergedConfig;
 }
 
-export function loadConfig() {
+export function loadConfig(preloadedConfig) {
   if (window.CMS_CONFIG) {
-    return configDidLoad(fromJS(window.CMS_CONFIG));
+    return configLoaded(fromJS(window.CMS_CONFIG));
   }
-  return async (dispatch, getState) => {
+  return async dispatch => {
     dispatch(configLoading());
 
     try {
-      const preloadedConfig = getState().config;
       const configUrl = getConfigUrl();
-      const isPreloaded = preloadedConfig && preloadedConfig.size > 1;
+      const isPreloaded = preloadedConfig && Object.keys(preloadedConfig).length > 1;
       const loadedConfig =
         preloadedConfig && preloadedConfig.get('load_config_file') === false
           ? {}
@@ -443,7 +432,7 @@ export function loadConfig() {
 
       const config = applyDefaults(normalizeConfig(mergedConfig));
 
-      dispatch(configDidLoad(config));
+      dispatch(configLoaded(config));
       dispatch(authenticateUser());
     } catch (err) {
       dispatch(configFailed(err));

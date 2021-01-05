@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, CONFIG_MERGE } from '../actions/config';
+import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE } from '../actions/config';
 import { Config, ConfigAction } from '../types/redux';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
@@ -7,8 +7,6 @@ const defaultState: Map<string, boolean | string> = Map({ isFetching: true });
 
 const config = (state = defaultState, action: ConfigAction) => {
   switch (action.type) {
-    case CONFIG_MERGE:
-      return state.mergeDeep(action.payload);
     case CONFIG_REQUEST:
       return state.set('isFetching', true);
     case CONFIG_SUCCESS:
@@ -17,7 +15,7 @@ const config = (state = defaultState, action: ConfigAction) => {
        * before firing this action (so the resulting config can be validated),
        * so we don't have to merge it here.
        */
-      return action.payload.delete('isFetching');
+      return action.payload;
     case CONFIG_FAILURE:
       return state.withMutations(s => {
         s.delete('isFetching');
