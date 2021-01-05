@@ -2,6 +2,7 @@
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { List, Map } from 'immutable';
+  import { EntryMap } from './types/redux';
 
   export type CmsBackendType =
     | 'azure'
