@@ -41,7 +41,7 @@ const de = {
     collectionTop: {
       sortBy: 'Sortieren nach',
       viewAs: 'Anzeigen als',
-      newButton: 'Neue(r) %{collectionLabel}',
+      newButton: 'Neue(r/s) %{collectionLabel}',
       ascending: 'Aufsteigend',
       descending: 'Absteigend',
       searchResults: 'Suchergebnisse für "%{searchTerm}"',
