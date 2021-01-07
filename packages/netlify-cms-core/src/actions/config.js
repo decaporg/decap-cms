@@ -1,5 +1,6 @@
 import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
+import deepmerge from 'deepmerge';
 import { trimStart, trim, get, isPlainObject } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
@@ -298,12 +299,6 @@ export function applyDefaults(config) {
     });
 }
 
-function mergePreloadedConfig(preloadedConfig, loadedConfig) {
-  const preloadedConfigMap = preloadedConfig ? fromJS(preloadedConfig) : Map();
-  const loadedConfigMap = loadedConfig ? fromJS(loadedConfig) : Map();
-  return preloadedConfigMap.mergeDeep(loadedConfigMap);
-}
-
 export function parseConfig(data) {
   const config = yaml.parse(data, { maxAliasCount: -1, prettyErrors: true, merge: true });
   if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
@@ -378,30 +373,33 @@ export async function detectProxyServer(localBackend) {
   return {};
 }
 
-export async function handleLocalBackend(mergedConfig) {
-  if (mergedConfig.has('local_backend')) {
-    const { proxyUrl, publish_modes, type } = await detectProxyServer(
-      mergedConfig.toJS().local_backend,
+export async function handleLocalBackend(originalConfig) {
+  if (!originalConfig.local_backend) {
+    return originalConfig;
+  }
+
+  const { proxyUrl, publish_modes, type } = await detectProxyServer(originalConfig.local_backend);
+
+  if (!proxyUrl) {
+    return originalConfig;
+  }
+
+  let mergedConfig = deepmerge(originalConfig, {
+    backend: { name: 'proxy', proxy_url: proxyUrl },
+  });
+
+  if (
+    mergedConfig.publish_mode &&
+    publish_modes &&
+    !publish_modes.includes(mergedConfig.publish_mode)
+  ) {
+    const newPublishMode = publish_modes[0];
+    mergedConfig = deepmerge(mergedConfig, {
+      publish_mode: newPublishMode,
+    });
+    console.log(
+      `'${mergedConfig.publish_mode}' is not supported by '${type}' backend, switching to '${newPublishMode}'`,
     );
-    if (proxyUrl) {
-      mergedConfig = mergePreloadedConfig(mergedConfig, {
-        backend: { name: 'proxy', proxy_url: proxyUrl },
-      });
-      if (
-        mergedConfig.has('publish_mode') &&
-        !publish_modes.includes(mergedConfig.get('publish_mode'))
-      ) {
-        const newPublishMode = publish_modes[0];
-        console.log(
-          `'${mergedConfig.get(
-            'publish_mode',
-          )}' is not supported by '${type}' backend, switching to '${newPublishMode}'`,
-        );
-        mergedConfig = mergePreloadedConfig(mergedConfig, {
-          publish_mode: newPublishMode,
-        });
-      }
-    }
   }
   return mergedConfig;
 }
@@ -424,13 +422,13 @@ export function loadConfig(preloadedConfig) {
       /**
        * Merge any existing configuration so the result can be validated.
        */
-      let mergedConfig = mergePreloadedConfig(preloadedConfig, loadedConfig);
+      let mergedConfig = deepmerge(preloadedConfig, loadedConfig);
 
-      validateConfig(mergedConfig.toJS());
+      validateConfig(mergedConfig);
 
       mergedConfig = await handleLocalBackend(mergedConfig);
 
-      const config = applyDefaults(normalizeConfig(mergedConfig));
+      const config = applyDefaults(normalizeConfig(fromJS(mergedConfig)));
 
       dispatch(configLoaded(config));
       dispatch(authenticateUser());
