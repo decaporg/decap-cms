@@ -217,7 +217,14 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
     const entry = state.entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
-    const path = selectMediaFilePath(state.config, collection, entry, fileName, field, currentMediaFolder);
+    const path = selectMediaFilePath(
+      state.config,
+      collection,
+      entry,
+      fileName,
+      field,
+      currentMediaFolder,
+    );
     const existingFile = files.find(existingFile => existingFile.path.toLowerCase() === path);
     const editingDraft = selectEditingDraft(state.entryDraft);
 
@@ -264,7 +271,14 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else {
         const entry = state.entryDraft.get('entry');
         const collection = state.collections.get(entry?.get('collection'));
-        const path = selectMediaFilePath(state.config, collection, entry, fileName, field, currentMediaFolder);
+        const path = selectMediaFilePath(
+          state.config,
+          collection,
+          entry,
+          fileName,
+          field,
+          currentMediaFolder,
+        );
         assetProxy = createAssetProxy({
           file,
           path,
@@ -414,6 +428,7 @@ export function mediaLoading(page: number) {
 interface MediaOptions {
   privateUpload?: boolean;
   field?: EntryField;
+  currentMediaFolder?: string;
 }
 
 export function mediaLoaded(files: ImplementationMediaFile[], opts: MediaOptions = {}) {

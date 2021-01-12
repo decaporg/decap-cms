@@ -111,24 +111,37 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft, isDirectory, hasChildren }) => {
-        const ext = fileExtension(name).toLowerCase();
-        return {
+      files.map(
+        ({
           key,
-          id,
           name,
-          path,
-          type: ext.toUpperCase(),
+          id,
           size,
+          path,
           queryOrder,
           displayURL,
           draft,
           isDirectory,
           hasChildren,
-          isImage: IMAGE_EXTENSIONS.includes(ext),
-          isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
-        };
-      });
+        }) => {
+          const ext = fileExtension(name).toLowerCase();
+          return {
+            key,
+            id,
+            name,
+            path,
+            type: ext.toUpperCase(),
+            size,
+            queryOrder,
+            displayURL,
+            draft,
+            isDirectory,
+            hasChildren,
+            isImage: IMAGE_EXTENSIONS.includes(ext),
+            isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
+          };
+        },
+      );
 
     /**
      * Get the sort order for use with `lodash.orderBy`, and always add the
@@ -145,22 +158,24 @@ class MediaLibrary extends React.Component {
   };
 
   isSelectedAsset = asset => {
-    return (this.state.selectedAssets || []).filter(selectedAsset => {
-      return selectedAsset.key === asset.key
-    }).length > 0;
-  }
+    return (
+      (this.state.selectedAssets || []).filter(selectedAsset => {
+        return selectedAsset.key === asset.key;
+      }).length > 0
+    );
+  };
 
-  updateSelectedAssets = (asset) =>  {
+  updateSelectedAssets = asset => {
     let selectedAssets = this.state.selectedAssets || [];
     if (!this.isSelectedAsset(asset)) {
-      selectedAssets.push(asset)
+      selectedAssets.push(asset);
     } else {
       selectedAssets = selectedAssets.filter(selectedAsset => {
         return selectedAsset.key !== asset.key;
-      })
+      });
     }
     this.setState({ selectedAssets });
-  }
+  };
 
   handleAssetCheckboxChange = (asset, event) => {
     event.stopPropagation();
@@ -237,9 +252,9 @@ class MediaLibrary extends React.Component {
     if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
       return;
     }
-    const filesToDelete = selectedAssets.map(selectedAsset => 
-      files.find(file => selectedAsset.key === file.key)
-    )
+    const filesToDelete = selectedAssets.map(selectedAsset =>
+      files.find(file => selectedAsset.key === file.key),
+    );
     for (const file of filesToDelete) {
       await deleteMedia(file, { privateUpload });
     }
@@ -346,7 +361,9 @@ class MediaLibrary extends React.Component {
 
     const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
-    const currentDirFilesOrderedByTreeType = (currentDirFiles || []).filter(file => file.isDirectory).concat((currentDirFiles || []).filter(file => !file.isDirectory));
+    const currentDirFilesOrderedByTreeType = (currentDirFiles || [])
+      .filter(file => file.isDirectory)
+      .concat((currentDirFiles || []).filter(file => !file.isDirectory));
     return (
       <MediaLibraryModal
         isVisible={isVisible}

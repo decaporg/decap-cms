@@ -730,10 +730,10 @@ export const selectMediaFolder = (
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-  currentMediaFolder: string,
+  currentMediaFolder?: string,
 ) => {
   if (currentMediaFolder) {
-    return trim(currentMediaFolder, '/')
+    return trim(currentMediaFolder, '/');
   }
   const name = 'media_folder';
   let mediaFolder = config.get(name);
@@ -761,7 +761,7 @@ export const selectMediaFilePath = (
   entryMap: EntryMap | undefined,
   mediaPath: string,
   field: EntryField | undefined,
-  currentMediaFolder: string,
+  currentMediaFolder?: string,
 ) => {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;

@@ -2,7 +2,7 @@
 
 exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
 <DocumentFragment>
-  .emotion-8 {
+  .emotion-16 {
   width: 100px;
   height: 240px;
   margin: 10px;
@@ -10,13 +10,63 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
+  position: relative;
 }
 
-.emotion-8:focus {
+.emotion-16:focus {
   outline: none;
 }
 
-.emotion-4 {
+.emotion-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.emotion-0 {
+  display: inline-block;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  cursor: pointer;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0 !important;
+  background: transparent !important;
+  border-width: 0 !important;
+}
+
+.emotion-0:after {
+  border: 1px solid #fff;
+  content: '';
+  background-color: rgba(0,0,0,0.2);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0px;
+}
+
+.emotion-0:hover:after {
+  border-color: #33BCB0;
+}
+
+.emotion-0:checked:after,
+.emotion-0.checked:after {
+  background: #33BCB0 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 28"  class="single-colour tick"><path fill="%23fff" d="M13 28c-0.7 0-1.3-0.2-1.9-0.7l-10-8c-1.3-1-1.5-2.9-0.5-4.2 1-1.3 2.9-1.5 4.2-0.5l7.9 6.3L32.9 0.9c1.2-1.2 3.1-1.2 4.2 0 1.2 1.2 1.2 3.1 0 4.2l-22 22C14.5 27.7 13.8 28 13 28z"/></svg>') no-repeat center 6px;
+  background-size: 13px;
+}
+
+.emotion-0:focus:after,
+.emotion-0:focus:checked:after {
+  border-color: #fff;
+}
+
+.emotion-8 {
   height: 162px;
   background-color: #f2f2f2;
   background-size: 16px 16px;
@@ -27,22 +77,43 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
   position: relative;
 }
 
-.emotion-2 {
+.emotion-6 {
   width: 100%;
   height: 160px;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 2px 2px 0 0;
 }
 
-.emotion-6 {
+.emotion-14 {
   color: #798291;
   padding: 8px;
-  margin-top: 20px;
-  overflow-wrap: break-word;
-  line-height: 1.3 !important;
+  font-size: 0.8em;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 
-.emotion-0 {
+.emotion-10 {
+  color: #798291;
+  font-weight: 600;
+  overflow-wrap: break-word;
+  line-height: 1.3 !important;
+  text-align: left;
+}
+
+.emotion-12 {
+  text-align: left;
+}
+
+.emotion-4 {
   color: #70399f;
   background-color: #f6d8ff;
   position: absolute;
@@ -51,78 +122,7 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
 }
 
 <div
-    class="emotion-8 emotion-9"
-    height="240px"
-    tabindex="-1"
-    width="100px"
-  >
-    <div
-      class="emotion-4 emotion-5"
-    >
-      <p
-        class="emotion-0 emotion-1"
-        data-testid="draft-text"
-      >
-        Draft
-      </p>
-      <img
-        class="emotion-2 emotion-3"
-        src="url"
-      />
-    </div>
-    <p
-      class="emotion-6 emotion-7"
-    >
-      image.png
-    </p>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
-<DocumentFragment>
-  .emotion-6 {
-  width: 100px;
-  height: 240px;
-  margin: 10px;
-  border: solid 2px #dfdfe3;
-  border-radius: 5px;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.emotion-6:focus {
-  outline: none;
-}
-
-.emotion-2 {
-  height: 162px;
-  background-color: #f2f2f2;
-  background-size: 16px 16px;
-  background-position: 0 0,8px 8px;
-  background-image: linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 ) , linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 );
-  box-shadow: inset 0 0 4px rgba(68,74,87,0.3);
-  border-bottom: solid 2px #dfdfe3;
-  position: relative;
-}
-
-.emotion-0 {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-  border-radius: 2px 2px 0 0;
-}
-
-.emotion-4 {
-  color: #798291;
-  padding: 8px;
-  margin-top: 20px;
-  overflow-wrap: break-word;
-  line-height: 1.3 !important;
-}
-
-<div
-    class="emotion-6 emotion-7"
+    class="emotion-16 emotion-17"
     height="240px"
     tabindex="-1"
     width="100px"
@@ -130,23 +130,47 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
     <div
       class="emotion-2 emotion-3"
     >
-      <img
+      <input
         class="emotion-0 emotion-1"
+        readonly=""
+        type="checkbox"
+      />
+    </div>
+    <div
+      class="emotion-8 emotion-9"
+    >
+      <p
+        class="emotion-4 emotion-5"
+        data-testid="draft-text"
+      >
+        Draft
+      </p>
+      <img
+        class="emotion-6 emotion-7"
         src="url"
       />
     </div>
-    <p
-      class="emotion-4 emotion-5"
+    <div
+      class="emotion-14 emotion-15"
     >
-      image.png
-    </p>
+      <div
+        class="emotion-10 emotion-11"
+      >
+        image.png
+      </div>
+      <div
+        class="emotion-12 emotion-13"
+      >
+         - 0 bytes
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
 
-exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
+exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
 <DocumentFragment>
-  .emotion-6 {
+  .emotion-14 {
   width: 100px;
   height: 240px;
   margin: 10px;
@@ -154,13 +178,63 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
+  position: relative;
 }
 
-.emotion-6:focus {
+.emotion-14:focus {
   outline: none;
 }
 
 .emotion-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.emotion-0 {
+  display: inline-block;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  cursor: pointer;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0 !important;
+  background: transparent !important;
+  border-width: 0 !important;
+}
+
+.emotion-0:after {
+  border: 1px solid #fff;
+  content: '';
+  background-color: rgba(0,0,0,0.2);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0px;
+}
+
+.emotion-0:hover:after {
+  border-color: #33BCB0;
+}
+
+.emotion-0:checked:after,
+.emotion-0.checked:after {
+  background: #33BCB0 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 28"  class="single-colour tick"><path fill="%23fff" d="M13 28c-0.7 0-1.3-0.2-1.9-0.7l-10-8c-1.3-1-1.5-2.9-0.5-4.2 1-1.3 2.9-1.5 4.2-0.5l7.9 6.3L32.9 0.9c1.2-1.2 3.1-1.2 4.2 0 1.2 1.2 1.2 3.1 0 4.2l-22 22C14.5 27.7 13.8 28 13 28z"/></svg>') no-repeat center 6px;
+  background-size: 13px;
+}
+
+.emotion-0:focus:after,
+.emotion-0:focus:checked:after {
+  border-color: #fff;
+}
+
+.emotion-6 {
   height: 162px;
   background-color: #f2f2f2;
   background-size: 16px 16px;
@@ -172,14 +246,185 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
 }
 
 .emotion-4 {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 2px 2px 0 0;
+}
+
+.emotion-12 {
   color: #798291;
   padding: 8px;
-  margin-top: 20px;
+  font-size: 0.8em;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.emotion-8 {
+  color: #798291;
+  font-weight: 600;
   overflow-wrap: break-word;
   line-height: 1.3 !important;
+  text-align: left;
+}
+
+.emotion-10 {
+  text-align: left;
+}
+
+<div
+    class="emotion-14 emotion-15"
+    height="240px"
+    tabindex="-1"
+    width="100px"
+  >
+    <div
+      class="emotion-2 emotion-3"
+    >
+      <input
+        class="emotion-0 emotion-1"
+        readonly=""
+        type="checkbox"
+      />
+    </div>
+    <div
+      class="emotion-6 emotion-7"
+    >
+      <img
+        class="emotion-4 emotion-5"
+        src="url"
+      />
+    </div>
+    <div
+      class="emotion-12 emotion-13"
+    >
+      <div
+        class="emotion-8 emotion-9"
+      >
+        image.png
+      </div>
+      <div
+        class="emotion-10 emotion-11"
+      >
+         - 0 bytes
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
+<DocumentFragment>
+  .emotion-12 {
+  width: 100px;
+  height: 240px;
+  margin: 10px;
+  border: solid 2px #dfdfe3;
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.emotion-12:focus {
+  outline: none;
+}
+
+.emotion-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .emotion-0 {
+  display: inline-block;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  cursor: pointer;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0 !important;
+  background: transparent !important;
+  border-width: 0 !important;
+}
+
+.emotion-0:after {
+  border: 1px solid #fff;
+  content: '';
+  background-color: rgba(0,0,0,0.2);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0px;
+}
+
+.emotion-0:hover:after {
+  border-color: #33BCB0;
+}
+
+.emotion-0:checked:after,
+.emotion-0.checked:after {
+  background: #33BCB0 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 28"  class="single-colour tick"><path fill="%23fff" d="M13 28c-0.7 0-1.3-0.2-1.9-0.7l-10-8c-1.3-1-1.5-2.9-0.5-4.2 1-1.3 2.9-1.5 4.2-0.5l7.9 6.3L32.9 0.9c1.2-1.2 3.1-1.2 4.2 0 1.2 1.2 1.2 3.1 0 4.2l-22 22C14.5 27.7 13.8 28 13 28z"/></svg>') no-repeat center 6px;
+  background-size: 13px;
+}
+
+.emotion-0:focus:after,
+.emotion-0:focus:checked:after {
+  border-color: #fff;
+}
+
+.emotion-6 {
+  height: 162px;
+  background-color: #f2f2f2;
+  background-size: 16px 16px;
+  background-position: 0 0,8px 8px;
+  background-image: linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 ) , linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 );
+  box-shadow: inset 0 0 4px rgba(68,74,87,0.3);
+  border-bottom: solid 2px #dfdfe3;
+  position: relative;
+}
+
+.emotion-10 {
+  color: #798291;
+  padding: 8px;
+  font-size: 0.8em;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.emotion-8 {
+  color: #798291;
+  font-weight: 600;
+  overflow-wrap: break-word;
+  line-height: 1.3 !important;
+  text-align: left;
+}
+
+.emotion-4 {
   width: 100%;
   height: 160px;
   object-fit: cover;
@@ -189,7 +434,7 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
 }
 
 <div
-    class="emotion-6 emotion-7"
+    class="emotion-12 emotion-13"
     height="240px"
     tabindex="-1"
     width="100px"
@@ -197,18 +442,31 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
     <div
       class="emotion-2 emotion-3"
     >
-      <div
+      <input
         class="emotion-0 emotion-1"
+        readonly=""
+        type="checkbox"
+      />
+    </div>
+    <div
+      class="emotion-6 emotion-7"
+    >
+      <div
+        class="emotion-4 emotion-5"
         data-testid="card-file-icon"
       >
         Not Viewable
       </div>
     </div>
-    <p
-      class="emotion-4 emotion-5"
+    <div
+      class="emotion-10 emotion-11"
     >
-      image.png
-    </p>
+      <div
+        class="emotion-8 emotion-9"
+      >
+        image.png
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
