@@ -3087,9 +3087,9 @@ cacheable-request@^6.0.0:
     responselike "^1.0.2"
 
 call-bind@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.1.tgz#29aca9151f8ddcfd5b9b786898f005f425e88567"
-  integrity sha512-tvAvUwNcRikl3RVF20X9lsYmmepsovzTWeJiXjO0PkJp15uy/6xKFZOQtuiSULwYW+6ToZBprphCgWXC2dSgcQ==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz#b1d4e89e688119c3c9a903ad30abb2f6a919be3c"
+  integrity sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==
   dependencies:
     function-bind "^1.1.1"
     get-intrinsic "^1.0.2"
@@ -9320,9 +9320,9 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
 netlify-cms-app@^2.11.31:
-  version "2.14.10"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.10.tgz#fa0649ef400bcc25ee41d4fa7577f7c73ebb6514"
-  integrity sha512-1joyUKdzotKHVFvmZlt962I6yDQ594mQqOl8++UuxcV+gvCJcg/V5xQ5milGLOPtLkhBGbG93tzIHXNHRz2J7g==
+  version "2.14.11"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.11.tgz#c701932ca425107fd5e385d9a11cd68a3a0228ad"
+  integrity sha512-C8oxIoCUD6qJ/Vn3/Ira9SFe/8Vl7Ebk4JQRWaVdPX+XztMRKvHzBjv+MzUubzDb320XqgcPIngq/ZvdPCRCjA==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -9335,11 +9335,11 @@ netlify-cms-app@^2.11.31:
     netlify-cms-backend-github "^2.11.7"
     netlify-cms-backend-gitlab "^2.9.6"
     netlify-cms-backend-test "^2.10.5"
-    netlify-cms-core "^2.36.9"
+    netlify-cms-core "^2.36.10"
     netlify-cms-editor-component-image "^2.6.7"
     netlify-cms-lib-auth "^2.3.0"
     netlify-cms-lib-util "^2.12.1"
-    netlify-cms-locales "^1.23.0"
+    netlify-cms-locales "^1.23.1"
     netlify-cms-ui-default "^2.12.0"
     netlify-cms-widget-boolean "^2.3.4"
     netlify-cms-widget-code "^1.2.5"
@@ -9417,10 +9417,10 @@ netlify-cms-backend-test@^2.10.5:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.10.5.tgz#b06cf3adc425841d89689c1bf0c0658949fc48c9"
   integrity sha512-YHuMfAuzmDKd89YvMNfZh4F0DhGYGJVBVEV5H/MgOkPQcREG9SdLNjDyBcr/Y7mpjlu6MwR3s71BgMWIlFGpJg==
 
-netlify-cms-core@^2.36.9:
-  version "2.36.9"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.36.9.tgz#61cdb93d400a8949e81baf99055ea3f669f74784"
-  integrity sha512-kdUBMe42/fG0dfqdmkELP0OcmsRNh0g95LmA8iTKSF7hJCXP5+hBwBmLXdQ37wfo1pN8viu05P0gtI/W86qwWQ==
+netlify-cms-core@^2.36.10:
+  version "2.36.10"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.36.10.tgz#107843027863cbaec9d36910080db951c385280a"
+  integrity sha512-SbHzmo4cCNzUOJBMwnklVPItCPOTlm9fY9K+Iw7ijA2z08hPi0btfTjqzALI/k0Pq0dkQ1U097zAg0bVzV54kQ==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "^7.0.0"
@@ -9458,6 +9458,7 @@ netlify-cms-core@^2.36.9:
     react-waypoint "^9.0.3"
     react-window "^1.8.5"
     redux "^4.0.5"
+    redux-devtools-extension "^2.13.8"
     redux-notifications "^4.0.1"
     redux-thunk "^2.3.0"
     sanitize-filename "^1.6.1"
@@ -9486,10 +9487,10 @@ netlify-cms-lib-util@^2.12.1:
     localforage "^1.7.3"
     semaphore "^1.1.0"
 
-netlify-cms-locales@^1.23.0:
-  version "1.23.0"
-  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.23.0.tgz#736bb22c8404bb8be3e04797d4fdff3c5b6801d2"
-  integrity sha512-3x+7al5OParC29IPPR4glAgO2KTMzpgGelxfHyhUNEAy7AdxaT8cqwCk6PBTtvMpU/jHQyy1/5EPEYqB/hG/ZA==
+netlify-cms-locales@^1.23.1:
+  version "1.23.1"
+  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.23.1.tgz#6564fc5ece1d4cec0ab6120ea88878922d213b5a"
+  integrity sha512-nvdrBaqT20hPTcpGYn/Aj6jAqXSJxxx7rhDyOMSPAfXzdzz+xeLGD/KEuXIYnf+optfWQ0OWKRR8yc5KBVunFg==
 
 netlify-cms-ui-default@^2.12.0:
   version "2.12.0"
@@ -11805,6 +11806,11 @@ recursive-readdir@2.2.1:
   integrity sha1-kO8jHQd4xc4JPJpI105cVCLROpk=
   dependencies:
     minimatch "3.0.3"
+
+redux-devtools-extension@^2.13.8:
+  version "2.13.8"
+  resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.8.tgz#37b982688626e5e4993ff87220c9bbb7cd2d96e1"
+  integrity sha512-8qlpooP2QqPtZHQZRhx3x3OP5skEV1py/zUdMY28WNAocbafxdG2tRD1MWE7sp8obGMNYuLWanhhQ7EQvT1FBg==
 
 redux-notifications@^4.0.1:
   version "4.0.1"
