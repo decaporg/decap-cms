@@ -158,6 +158,7 @@ const en = {
       image: {
         choose: 'Choose an image',
         chooseUrl: 'Insert from URL',
+        replaceUrl: 'Replace with URL',
         promptUrl: 'Enter the URL of the image',
         chooseDifferent: 'Choose different image',
         remove: 'Remove image',
@@ -165,6 +166,7 @@ const en = {
       file: {
         choose: 'Choose a file',
         chooseUrl: 'Insert from URL',
+        replaceUrl: 'Replace with URL',
         promptUrl: 'Enter the URL of the file',
         chooseDifferent: 'Choose different file',
         remove: 'Remove file',

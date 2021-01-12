@@ -50,7 +50,7 @@ const FileLink = styled.a`
 `;
 
 const FileLinks = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 `;
 
 const FileLinkList = styled.ul`
@@ -60,18 +60,12 @@ const FileLinkList = styled.ul`
 const FileWidgetButton = styled.button`
   ${buttons.button};
   ${components.badge};
-`;
-
-const FileWidgetButtonUrl = styled.button`
-  ${buttons.button};
-  ${components.badge};
-  margin-top: 12px;
+  margin-bottom: 12px;
 `;
 
 const FileWidgetButtonRemove = styled.button`
   ${buttons.button};
   ${components.badgeDanger};
-  margin-top: 12px;
 `;
 
 function isMultiple(value) {
@@ -269,6 +263,9 @@ export default function withFileControl({ forImage } = {}) {
             <FileWidgetButton onClick={this.handleChange}>
               {t(`editor.editorWidgets.${subject}.chooseDifferent`)}
             </FileWidgetButton>
+            <FileWidgetButton onClick={this.handleUrl(subject)}>
+              {t(`editor.editorWidgets.${subject}.replaceUrl`)}
+            </FileWidgetButton>
             <FileWidgetButtonRemove onClick={this.handleRemove}>
               {t(`editor.editorWidgets.${subject}.remove`)}
             </FileWidgetButtonRemove>
@@ -284,9 +281,9 @@ export default function withFileControl({ forImage } = {}) {
           <FileWidgetButton onClick={this.handleChange}>
             {t(`editor.editorWidgets.${subject}.choose`)}
           </FileWidgetButton>
-          <FileWidgetButtonUrl onClick={this.handleUrl(subject)}>
+          <FileWidgetButton onClick={this.handleUrl(subject)}>
             {t(`editor.editorWidgets.${subject}.chooseUrl`)}
-          </FileWidgetButtonUrl>
+          </FileWidgetButton>
         </>
       );
     };
