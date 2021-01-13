@@ -1,7 +1,7 @@
 import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
-import { trimStart, trim, get, isPlainObject } from 'lodash';
+import { trimStart, trim, get, isPlainObject, isEmpty } from 'lodash';
 import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
@@ -309,17 +309,17 @@ export function parseConfig(data) {
   return config;
 }
 
-async function getConfig(file, isPreloaded) {
+async function getConfigYaml(file, hasManualConfig) {
   const response = await fetch(file, { credentials: 'same-origin' }).catch(err => err);
   if (response instanceof Error || response.status !== 200) {
-    if (isPreloaded) return parseConfig('');
+    if (hasManualConfig) return parseConfig('');
     throw new Error(`Failed to load config.yml (${response.status || response})`);
   }
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
   if (!isYaml) {
     console.log(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
-    if (isPreloaded) return parseConfig('');
+    if (hasManualConfig) return parseConfig('');
   }
   return parseConfig(await response.text());
 }
@@ -404,7 +404,7 @@ export async function handleLocalBackend(originalConfig) {
   return mergedConfig;
 }
 
-export function loadConfig(preloadedConfig) {
+export function loadConfig(manualConfig = {}) {
   if (window.CMS_CONFIG) {
     return configLoaded(fromJS(window.CMS_CONFIG));
   }
@@ -413,16 +413,14 @@ export function loadConfig(preloadedConfig) {
 
     try {
       const configUrl = getConfigUrl();
-      const isPreloaded = preloadedConfig && Object.keys(preloadedConfig).length > 1;
-      const loadedConfig =
-        preloadedConfig && preloadedConfig.get('load_config_file') === false
+      const hasManualConfig = !isEmpty(manualConfig);
+      const configYaml =
+        manualConfig.load_config_file === false
           ? {}
-          : await getConfig(configUrl, isPreloaded);
+          : await getConfigYaml(configUrl, hasManualConfig);
 
-      /**
-       * Merge any existing configuration so the result can be validated.
-       */
-      let mergedConfig = deepmerge(preloadedConfig, loadedConfig);
+      // Merge manual config into the config.yml one
+      let mergedConfig = deepmerge(configYaml, manualConfig);
 
       validateConfig(mergedConfig);
 
