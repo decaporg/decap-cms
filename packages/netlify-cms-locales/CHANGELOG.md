@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.24.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.23.1...netlify-cms-locales@1.24.0) (2021-01-14)
+
+
+### Features
+
+* **widget-file:** allow adding file from url ([#4700](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4700)) ([9e277ad](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/9e277ad851ea598405e02a7c11624f337da18260))
+
+
+
+
+
 ## [1.23.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.23.0...netlify-cms-locales@1.23.1) (2021-01-12)
 
 
