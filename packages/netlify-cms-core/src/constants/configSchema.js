@@ -351,7 +351,7 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, jsonPointers: true, $data: true, strict: false });
+  const ajv = new AJV({ allErrors: true, $data: true, strict: false });
   uniqueItemProperties(ajv);
   select(ajv);
   instanceOf(ajv);
