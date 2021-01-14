@@ -428,7 +428,10 @@ export function loadConfig(manualConfig = {}, onLoad) {
       const config = applyDefaults(normalizeConfig(fromJS(mergedConfig)));
 
       dispatch(configLoaded(config));
-      onLoad()
+
+      if (typeof onLoad === 'function') {
+        onLoad();
+      }
     } catch (err) {
       dispatch(configFailed(err));
       throw err;

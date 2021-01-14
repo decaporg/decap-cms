@@ -73,9 +73,11 @@ function bootstrap(opts = {}) {
    * config.yml if it exists, and any portion that produces a conflict will be
    * overwritten.
    */
-  store.dispatch(loadConfig(config, function onLoad() {
-    store.dispatch(authenticateUser())
-  }));
+  store.dispatch(
+    loadConfig(config, function onLoad() {
+      store.dispatch(authenticateUser());
+    }),
+  );
 
   /**
    * Create connected root component.
