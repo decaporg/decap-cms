@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
+import {
+  Icon,
+  Dropdown,
+  DropdownItem,
+  DropdownButton,
+  colors,
+  colorsRaw,
+} from 'netlify-cms-ui-default';
 import { stripProtocol } from 'Lib/urlHelper';
 
 const styles = {
@@ -17,7 +24,7 @@ const AvatarDropdownButton = styled(DropdownButton)`
   display: inline-block;
   padding: 8px;
   cursor: pointer;
-  color: #1e2532;
+  color: ${colorsRaw.grayDark};
   background-color: transparent;
 `;
 
@@ -28,21 +35,21 @@ const AvatarImage = styled.img`
 const AvatarPlaceholderIcon = styled(Icon)`
   ${styles.avatarImage};
   height: 32px;
-  color: #1e2532;
+  color: ${colorsRaw.grayDark};
   background-color: ${colors.textFieldBorder};
 `;
 
 const AppHeaderSiteLink = styled.a`
   font-size: 14px;
   font-weight: 400;
-  color: #7b8290;
+  color: ${colorsRaw.gray};
   padding: 10px 16px;
 `;
 
 const AppHeaderTestRepoIndicator = styled.a`
   font-size: 14px;
   font-weight: 400;
-  color: #7b8290;
+  color: #${colorsRaw.gray};
   padding: 10px 16px;
 `;
 

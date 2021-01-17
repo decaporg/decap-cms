@@ -33,6 +33,7 @@ const fonts = {
 const colorsRaw = {
   white: '#fff',
   grayLight: '#eff0f4',
+  grayMiddle: '#e6e6e6',
   gray: '#798291',
   grayDark: '#313d3e',
   blue: '#3a69c7',
@@ -75,10 +76,10 @@ const colors = {
   warnBackground: colorsRaw.yellow,
   errorText: colorsRaw.red,
   errorBackground: colorsRaw.redLight,
-  textFieldBorder: '#dfdfe3',
-  controlLabel: '#7a8291',
-  checkerboardLight: '#f2f2f2',
-  checkerboardDark: '#e6e6e6',
+  textFieldBorder: colorsRaw.grayLight,
+  controlLabel: colorsRaw.gray,
+  checkerboardLight: colorsRaw.grayLight,
+  checkerboardDark: colorsRaw.grayMiddle,
   mediaDraftText: colorsRaw.purple,
   mediaDraftBackground: colorsRaw.purpleLight,
 };
@@ -174,7 +175,7 @@ const textBadge = css`
 const card = css`
   ${shadows.dropMain};
   border-radius: 5px;
-  background-color: #fff;
+  background-color: ${colorsRaw.white};
 `;
 
 const buttons = {
@@ -210,8 +211,8 @@ const buttons = {
 
     &:focus,
     &:hover {
+      background-color: ${colorsRaw.gray};
       color: ${colorsRaw.white};
-      background-color: #555a65;
     }
   `,
   grayText: css`
@@ -219,7 +220,7 @@ const buttons = {
     color: ${colorsRaw.gray};
   `,
   green: css`
-    background-color: #aae31f;
+    background-color: ${colorsRaw.greenLight};
     color: ${colorsRaw.green};
   `,
   lightRed: css`
@@ -277,7 +278,7 @@ const components = {
   badgeDanger: css`
     ${backgroundBadge};
     color: ${colorsRaw.red};
-    background-color: #fbe0d7;
+    background-color: ${colorsRaw.redLight};
   `,
   textBadge: css`
     ${textBadge};
@@ -330,7 +331,7 @@ const components = {
     border-radius: 0;
     color: ${colorsRaw.gray};
     font-weight: 500;
-    border-bottom: 1px solid #eaebf1;
+    border-bottom: 1px solid ${colorsRaw.grayLight};
     padding: 8px 14px;
     display: flex;
     justify-content: space-between;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import CSSTransition from 'react-transition-group/CSSTransition';
-import { colors, zIndex } from './styles';
+import { colors, colorsRaw, zIndex } from './styles';
 
 const styles = {
   disabled: css`
@@ -44,7 +44,7 @@ const LoaderText = styled.div`
   width: auto !important;
   height: auto !important;
   text-align: center;
-  color: #767676;
+  color: ${colorsRaw.grayDark};
   margin-top: 55px;
   line-height: 35px;
 `;

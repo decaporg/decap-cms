@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors } from 'netlify-cms-ui-default';
+import { Icon, components, colors, colorsRaw } from 'netlify-cms-ui-default';
 import { searchCollections } from 'Actions/collections';
 import CollectionSearch from './CollectionSearch';
 import NestedCollection from './NestedCollection';
@@ -14,7 +14,7 @@ const styles = {
   sidebarNavLinkActive: css`
     color: ${colors.active};
     background-color: ${colors.activeBackground};
-    border-left-color: #4863c6;
+    border-left-color: ${colors.active};
   `,
 };
 
@@ -48,7 +48,7 @@ const SidebarNavLink = styled(NavLink)`
   font-weight: 500;
   align-items: center;
   padding: 8px 12px;
-  border-left: 2px solid #fff;
+  border-left: 2px solid ${colorsRaw.white};
   z-index: -1;
 
   ${Icon} {

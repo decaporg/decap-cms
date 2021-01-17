@@ -66,7 +66,7 @@ export const DownloadButton = styled.button`
       &:focus,
       &:hover {
         color: ${colorsRaw.white};
-        background-color: #555a65;
+        background-color: ${colorsRaw.grayDark};
       }
     `}
 `;

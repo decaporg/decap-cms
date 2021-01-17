@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { css, Global, ClassNames } from '@emotion/core';
 import ReactModal from 'react-modal';
-import { transitions, shadows, lengths, zIndex } from 'netlify-cms-ui-default';
+import { transitions, shadows, lengths, zIndex, colorsRaw } from 'netlify-cms-ui-default';
 
 const ReactModalGlobalStyles = () => (
   <Global
@@ -17,7 +17,7 @@ const ReactModalGlobalStyles = () => (
 const styleStrings = {
   modalBody: `
     ${shadows.dropDeep};
-    background-color: #fff;
+    background-color: ${colorsRaw.white};
     border-radius: ${lengths.borderRadius};
     height: 80%;
     text-align: center;

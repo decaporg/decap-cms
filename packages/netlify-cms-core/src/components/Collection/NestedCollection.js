@@ -8,7 +8,7 @@ import { dirname, sep } from 'path';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 import { selectEntries } from '../../reducers/entries';
-import { Icon, colors, components } from 'netlify-cms-ui-default';
+import { Icon, colors, components, colorsRaw } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { sortBy } from 'lodash';
@@ -48,7 +48,7 @@ const TreeNavLink = styled(NavLink)`
   align-items: center;
   padding: 8px;
   padding-left: ${props => props.depth * 20 + 12}px;
-  border-left: 2px solid #fff;
+  border-left: 2px solid ${colorsRaw.white};
 
   ${Icon} {
     margin-right: 8px;
@@ -61,7 +61,7 @@ const TreeNavLink = styled(NavLink)`
     &.${props.activeClassName} {
       color: ${colors.active};
       background-color: ${colors.activeBackground};
-      border-left-color: #4863c6;
+      border-left-color: ${colorsRaw.blue};
     }
   `};
 `;

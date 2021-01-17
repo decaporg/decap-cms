@@ -57,7 +57,7 @@ const ToolbarContainer = styled.div`
   width: 100%;
   min-width: 800px;
   z-index: ${zIndex.zIndex300};
-  background-color: #fff;
+  background-color: ${colorsRaw.white};
   height: 66px;
   display: flex;
   justify-content: space-between;
@@ -88,7 +88,7 @@ const ToolbarSectionBackLink = styled(Link)`
 
   &:hover,
   &:focus {
-    background-color: #f1f2f4;
+    background-color: ${colorsRaw.grayLight};
   }
 `;
 

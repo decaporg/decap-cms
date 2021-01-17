@@ -15,6 +15,7 @@ import {
   shadows,
   buttons,
   zIndex,
+  colorsRaw,
 } from 'netlify-cms-ui-default';
 import SettingsDropdown from 'UI/SettingsDropdown';
 import { connect } from 'react-redux';
@@ -53,7 +54,7 @@ const AppHeaderContent = styled.div`
 const AppHeaderButton = styled.button`
   ${buttons.button};
   background: none;
-  color: #7b8290;
+  color: ${colorsRaw.grayDark};
   font-family: inherit;
   font-size: 16px;
   font-weight: 500;
@@ -63,7 +64,7 @@ const AppHeaderButton = styled.button`
 
   ${Icon} {
     margin-right: 4px;
-    color: #b3b9c4;
+    color: ${colorsRaw.gray};
   }
 
   &:hover,
