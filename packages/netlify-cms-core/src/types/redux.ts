@@ -135,6 +135,7 @@ export type EntryField = StaticallyTypedRecord<{
   default: string | null | boolean | List<unknown>;
   media_folder?: string;
   public_folder?: string;
+  disable_media_folder_navigation?: string;
   comment?: string;
   meta?: boolean;
   i18n: 'translate' | 'duplicate' | 'none';

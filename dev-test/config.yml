@@ -16,7 +16,6 @@ collections: # A list of collections the CMS should be able to edit
       guidelines that are specific to a collection.
     folder: 'content/posts'
     media_folder: '/static/images/one'
-    disable_media_folder_navigation: false
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
@@ -47,11 +46,18 @@ collections: # A list of collections the CMS should be able to edit
           time_format: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
         }
+      - label: 'Other Image'
+        name: 'other'
+        widget: 'image'
+        required: false
+        tagname: ''
       - label: 'Cover Image'
         name: 'image'
         widget: 'image'
         required: false
         tagname: ''
+        media_folder: '/static/images/one/one-deeper'
+        disable_media_folder_navigation: true
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
