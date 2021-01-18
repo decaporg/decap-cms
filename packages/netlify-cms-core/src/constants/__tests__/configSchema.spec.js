@@ -334,7 +334,9 @@ describe('config', () => {
               ],
             }),
           );
-        }).toThrowError("'search_fields' should be array\n'display_fields' should be array");
+        }).toThrowError(
+          "'collections[0].fields[1].fields[1].search_fields' should be array\n'collections[0].fields[1].fields[1].display_fields' should be array",
+        );
       });
 
       it('should not throw if nested relation display_fields and search_fields are arrays', () => {
@@ -378,7 +380,7 @@ describe('config', () => {
     it('should throw if collection meta is an empty object', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ meta: {} }] }));
-      }).toThrowError("'collections[0].meta' should NOT have fewer than 1 properties");
+      }).toThrowError("'collections[0].meta' should NOT have fewer than 1 items");
     });
 
     it('should throw if collection meta is an empty object', () => {
@@ -475,7 +477,7 @@ describe('config', () => {
               },
             }),
           );
-        }).toThrowError(`'i18n.locales[1]' should NOT be shorter than 2 characters`);
+        }).toThrowError(`'i18n.locales[1]' should NOT have fewer than 2 characters`);
       });
 
       it('should throw error when locale is more than 10 characters', () => {
@@ -488,7 +490,7 @@ describe('config', () => {
               },
             }),
           );
-        }).toThrowError(`'i18n.locales[1]' should NOT be longer than 10 characters`);
+        }).toThrowError(`'i18n.locales[1]' should NOT have more than 10 characters`);
       });
 
       it('should allow valid locales strings', () => {

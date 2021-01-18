@@ -209,7 +209,7 @@ class WorkflowList extends React.Component {
           );
           const slug = entry.get('slug');
           const collectionName = entry.get('collection');
-          const editLink = `collections/${collectionName}/entries/${slug}`;
+          const editLink = `collections/${collectionName}/entries/${slug}?ref=workflow`;
           const ownStatus = entry.get('status');
           const collection = collections.find(
             collection => collection.get('name') === collectionName,

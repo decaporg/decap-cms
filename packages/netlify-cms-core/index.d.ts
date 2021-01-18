@@ -3,7 +3,13 @@ declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { List, Map } from 'immutable';
 
-  export type CmsBackendType = 'git-gateway' | 'github' | 'gitlab' | 'bitbucket' | 'test-repo';
+  export type CmsBackendType =
+    | 'azure'
+    | 'git-gateway'
+    | 'github'
+    | 'gitlab'
+    | 'bitbucket'
+    | 'test-repo';
 
   export type CmsMapWidgetType = 'Point' | 'LineString' | 'Polygon';
 
@@ -44,22 +50,48 @@ declare module 'netlify-cms-core' {
 
   export type CmsSlugEncoding = 'unicode' | 'ascii';
 
-  export interface CmsField {
+  export interface CmsI18nConfig {
+    structure: 'multiple_folders' | 'multiple_files' | 'single_file';
+    locales: string[];
+    default_locale?: string;
+  }
+
+  export interface CmsFieldBase {
     name: string;
     label?: string;
-    widget?: string;
     required?: boolean;
     hint?: string;
     pattern?: [string, string];
+    i18n?: boolean | 'translate' | 'duplicate';
+  }
+
+  export interface CmsFieldBoolean {
+    widget: 'boolean';
+    default?: boolean;
+  }
+
+  export interface CmsFieldCode {
+    widget: 'code';
     default?: any;
 
-    /** If widget === "code" */
     default_language?: string;
     allow_language_selection?: boolean;
     keys?: { code: string; lang: string };
     output_code_only?: boolean;
+  }
 
-    /** If widget === "datetime" */
+  export interface CmsFieldColor {
+    widget: 'color';
+    default?: string;
+
+    allowInput?: boolean;
+    enableAlpha?: boolean;
+  }
+
+  export interface CmsFieldDateTime {
+    widget: 'datetime';
+    default?: string;
+
     format?: string;
     date_format?: boolean | string;
     time_format?: boolean | string;
@@ -77,60 +109,102 @@ declare module 'netlify-cms-core' {
      * @deprecated Use picker_utc instead
      */
     pickerUtc?: boolean;
+  }
 
-    /** If widget === "file" || widget === "image" */
+  export interface CmsFieldFileOrImage {
+    widget: 'file' | 'image';
+    default?: string;
+
     media_library?: CmsMediaLibrary;
     allow_multiple?: boolean;
     config?: any;
+  }
 
-    /** If widget === "object" || widget === "list" */
-    fields?: CmsField[];
+  export interface CmsFieldObject {
+    widget: 'object';
+    default?: any;
+
     collapsed?: boolean;
+    summary?: string;
+    fields: CmsField[];
+  }
 
-    /** If widget === "list" */
-    field?: CmsField;
+  export interface CmsFieldList {
+    widget: 'list';
+    default?: any;
+
     allow_add?: boolean;
+    collapsed?: boolean;
     summary?: string;
     minimize_collapsed?: boolean;
     label_singular?: string;
-    types?: CmsField[];
+    field?: CmsField;
+    fields?: CmsField[];
+    max?: number;
+    min?: number;
+    add_to_top?: boolean;
+    types?: (CmsFieldBase & CmsFieldObject)[];
+  }
 
-    /** If widget === "map" */
+  export interface CmsFieldMap {
+    widget: 'map';
+    default?: string;
+
     decimals?: number;
     type?: CmsMapWidgetType;
+  }
 
-    /** If widget === "markdown" */
+  export interface CmsFieldMarkdown {
+    widget: 'markdown';
+    default?: string;
+
     minimal?: boolean;
     buttons?: CmsMarkdownWidgetButton[];
     editor_components?: string[];
+    modes?: ('raw' | 'rich_text')[];
 
     /**
      * @deprecated Use editor_components instead
      */
     editorComponents?: string[];
+  }
 
-    /** If widget === "number" */
+  export interface CmsFieldNumber {
+    widget: 'number';
+    default?: string | number;
+
     value_type?: 'int' | 'float' | string;
+    min?: number;
+    max?: number;
+
     step?: number;
 
     /**
      * @deprecated Use valueType instead
      */
     valueType?: 'int' | 'float' | string;
+  }
 
-    /** If widget === "number" || widget === "select" */
+  export interface CmsFieldSelect {
+    widget: 'select';
+    default?: string | string[];
+
+    options: string[] | CmsSelectWidgetOptionObject[];
+    multiple?: boolean;
     min?: number;
     max?: number;
+  }
 
-    /** If widget === "relation" || widget === "select" */
-    multiple?: boolean;
+  export interface CmsFieldRelation {
+    widget: 'relation';
+    default?: string | string[];
 
-    /** If widget === "relation" */
-    collection?: string;
-    value_field?: string;
-    search_fields?: string[];
+    collection: string;
+    value_field: string;
+    search_fields: string[];
     file?: string;
     display_fields?: string[];
+    multiple?: boolean;
     options_length?: number;
 
     /**
@@ -149,10 +223,36 @@ declare module 'netlify-cms-core' {
      * @deprecated Use options_length instead
      */
     optionsLength?: number;
-
-    /** If widget === "select" */
-    options?: string[] | CmsSelectWidgetOptionObject[];
   }
+
+  export interface CmsFieldHidden {
+    widget: 'hidden';
+    default?: any;
+  }
+
+  export interface CmsFieldStringOrText {
+    // This is the default widget, so declaring its type is optional.
+    widget?: 'string' | 'text';
+    default?: string;
+  }
+
+  export type CmsField = CmsFieldBase &
+    (
+      | CmsFieldBoolean
+      | CmsFieldCode
+      | CmsFieldColor
+      | CmsFieldDateTime
+      | CmsFieldFileOrImage
+      | CmsFieldList
+      | CmsFieldMap
+      | CmsFieldMarkdown
+      | CmsFieldNumber
+      | CmsFieldObject
+      | CmsFieldRelation
+      | CmsFieldSelect
+      | CmsFieldHidden
+      | CmsFieldStringOrText
+    );
 
   export interface CmsCollectionFile {
     name: string;
@@ -196,6 +296,7 @@ declare module 'netlify-cms-core' {
     media_folder?: string;
     public_folder?: string;
     sortable_fields?: string[];
+    i18n?: boolean | CmsI18nConfig;
 
     /**
      * @deprecated Use sortable_fields instead
@@ -214,11 +315,17 @@ declare module 'netlify-cms-core' {
     base_url?: string;
     auth_endpoint?: string;
     cms_label_prefix?: string;
+    squash_merges?: boolean;
   }
 
   export interface CmsSlug {
     encoding?: CmsSlugEncoding;
     clean_accents?: boolean;
+  }
+
+  export interface CmsLocalBackend {
+    url?: string;
+    allowed_hosts?: string[];
   }
 
   export interface CmsConfig {
@@ -235,6 +342,8 @@ declare module 'netlify-cms-core' {
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
     slug?: CmsSlug;
+    i18n?: CmsI18nConfig;
+    local_backend?: boolean | CmsLocalBackend;
   }
 
   export interface InitOptions {
@@ -294,6 +403,13 @@ declare module 'netlify-cms-core' {
     config?: CmsMediaLibraryOptions;
   }
 
+  export interface CmsEventListener {
+    name: 'prePublish' | 'postPublish' | 'preUnpublish' | 'postUnpublish' | 'preSave' | 'postSave';
+    handler: { entry: Map<string, any>; author: { login: string; name: string } };
+  }
+
+  export type CmsEventListenerOptions = any; // TODO: type properly
+
   export type CmsLocalePhrases = any; // TODO: type properly
 
   export interface CmsRegistry {
@@ -346,6 +462,10 @@ declare module 'netlify-cms-core' {
     init: (options?: InitOptions) => void;
     registerBackend: (name: string, backendClass: CmsBackendClass) => void;
     registerEditorComponent: (options: EditorComponentOptions) => void;
+    registerEventListener: (
+      eventListener: CmsEventListener,
+      options: CmsEventListenerOptions,
+    ) => void;
     registerLocale: (locale: string, phrases: CmsLocalePhrases) => void;
     registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
     registerPreviewStyle: (filePath: string, options?: PreviewStyleOptions) => void;

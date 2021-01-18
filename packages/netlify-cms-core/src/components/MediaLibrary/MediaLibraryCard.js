@@ -110,7 +110,7 @@ const AssetCheckbox = styled.input`
   border-width: 0 !important;
   &:after {
     border: 1px solid ${inputBorderColor};
-    content: "";
+    content: '';
     background-color: ${inputBackgroundColor};
     width: ${radioButtonCheckboxWidthHeight};
     height: ${radioButtonCheckboxWidthHeight};
@@ -118,18 +118,19 @@ const AssetCheckbox = styled.input`
     position: absolute;
     top: 0;
     left: 0px;
-    
-  }
-  &:checked:after, &.checked:after {
-    background: ${radioCheckboxSelectedBackgroundColor} ${svgDataRriIconTick} no-repeat ${radioCheckboxSelectedBackgroundPosition};
-    background-size: ${radioCheckboxSelectedBackgroundSize};
-
-  }
-  &:focus:after, &:focus:checked:after {
-    border-color: ${inputFocusBorderColor};
   }
   &:hover:after {
-    border-color ${inputHoverBorderColor};
+    border-color: ${inputHoverBorderColor};
+  }
+  &:checked:after,
+  &.checked:after {
+    background: ${radioCheckboxSelectedBackgroundColor} ${svgDataRriIconTick} no-repeat
+      ${radioCheckboxSelectedBackgroundPosition};
+    background-size: ${radioCheckboxSelectedBackgroundSize};
+  }
+  &:focus:after,
+  &:focus:checked:after {
+    border-color: ${inputFocusBorderColor};
   }
 `;
 
@@ -178,7 +179,7 @@ class MediaLibraryCard extends React.Component {
       isDraft,
       isDirectory,
       size,
-      hasChildren
+      hasChildren,
     } = this.props;
     const url = displayURL.get('url');
     var cardImageWrapper = (
@@ -212,11 +213,15 @@ class MediaLibraryCard extends React.Component {
             <AssetCheckbox type="checkbox" onClick={onChecked} checked={isSelected} readOnly />
           </CheckboxContainer>
         ) : null}
-        
+
         {previewElement}
         <CardText>
           <ObjectName>{text}</ObjectName>
-          {isViewableImage ? <ImageMeta>{type} - {readableFileSize(size)}</ImageMeta> : null}
+          {isViewableImage ? (
+            <ImageMeta>
+              {type} - {readableFileSize(size)}
+            </ImageMeta>
+          ) : null}
         </CardText>
       </Card>
     );

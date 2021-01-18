@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.2.4...netlify-cms-widget-code@1.2.5) (2021-01-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency js-yaml to v4 ([#4797](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/issues/4797)) ([bda604b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/commit/bda604b389071ab2dd31a7107841aa7fcafdc04f))
+
+
+
+
+
 ## [1.2.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.2.3...netlify-cms-widget-code@1.2.4) (2020-09-15)
 
 

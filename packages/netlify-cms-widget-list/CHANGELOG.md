@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.0...netlify-cms-widget-list@2.8.1) (2020-11-26)
+
+
+### Bug Fixes
+
+* list markdown widgets ([#4492](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4492)) ([4789d20](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/4789d205386f589c3556df32700df25ad078904f))
+
+
+
+
+
 # [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.7.0...netlify-cms-widget-list@2.8.0) (2020-10-25)
 
 

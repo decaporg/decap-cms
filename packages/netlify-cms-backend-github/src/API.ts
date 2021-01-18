@@ -159,22 +159,11 @@ const getTreeFiles = (files: GitHubCompareFiles) => {
   return treeFiles;
 };
 
-type Diff = {
+export type Diff = {
   path: string;
   newFile: boolean;
   sha: string;
   binary: boolean;
-};
-
-const diffFromFile = (diff: Octokit.ReposCompareCommitsResponseFilesItem): Diff => {
-  return {
-    path: diff.filename,
-    newFile: diff.status === 'added',
-    sha: diff.sha,
-    // media files diffs don't have a patch attribute, except svg files
-    // renamed files don't have a patch attribute too
-    binary: (diff.status !== 'renamed' && !diff.patch) || diff.filename.endsWith('.svg'),
-  };
 };
 
 let migrationNotified = false;
@@ -588,7 +577,7 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
-    const diffs = files.map(diffFromFile);
+    const diffs = await Promise.all(files.map(file => this.diffFromFile(file)));
     const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix)) as {
       name: string;
     };
@@ -953,6 +942,18 @@ export default class API {
     });
   }
 
+  // async since it is overridden in a child class
+  async diffFromFile(diff: Octokit.ReposCompareCommitsResponseFilesItem): Promise<Diff> {
+    return {
+      path: diff.filename,
+      newFile: diff.status === 'added',
+      sha: diff.sha,
+      // media files diffs don't have a patch attribute, except svg files
+      // renamed files don't have a patch attribute too
+      binary: (diff.status !== 'renamed' && !diff.patch) || diff.filename.endsWith('.svg'),
+    };
+  }
+
   async editorialWorkflowGit(
     files: TreeFile[],
     slug: string,
@@ -984,7 +985,7 @@ export default class API {
         await this.getHeadReference(branch),
       );
 
-      const diffs = diffFiles.map(diffFromFile);
+      const diffs = await Promise.all(diffFiles.map(file => this.diffFromFile(file)));
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
       for (const diff of diffs.filter(d => d.binary)) {

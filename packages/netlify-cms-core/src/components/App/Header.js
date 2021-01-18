@@ -113,7 +113,7 @@ const AppHeaderNavList = styled.ul`
 
 class Header extends React.Component {
   static propTypes = {
-    user: ImmutablePropTypes.map.isRequired,
+    user: PropTypes.object.isRequired,
     collections: ImmutablePropTypes.orderedMap.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
@@ -216,7 +216,7 @@ class Header extends React.Component {
             <SettingsDropdown
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
-              imageUrl={user.get('avatar_url')}
+              imageUrl={user?.avatar_url}
               onLogoutClick={onLogoutClick}
             />
           </AppHeaderActions>

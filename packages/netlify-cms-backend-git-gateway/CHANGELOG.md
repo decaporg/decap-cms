@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.7...netlify-cms-backend-git-gateway@2.11.8) (2020-12-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ini to v2 ([#4722](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/4722)) ([e14ace3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/e14ace373b11510159a9b4d3f977d27ed886b288))
+
+
+
+
+
+## [2.11.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.6...netlify-cms-backend-git-gateway@2.11.7) (2020-12-06)
+
+
+### Bug Fixes
+
+* **large-media:** mark pointer files as binary ([#4678](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/4678)) ([7697b90](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/7697b907d7bae750f4ec041a184188aa46995320))
+
+
+
+
+
 ## [2.11.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.5...netlify-cms-backend-git-gateway@2.11.6) (2020-10-12)
 
 

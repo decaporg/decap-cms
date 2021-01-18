@@ -3,6 +3,135 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.9...netlify-cms-core@2.36.10) (2021-01-12)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.36.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.8...netlify-cms-core@2.36.9) (2021-01-05)
+
+
+### Bug Fixes
+
+* **typing:** add `registerEventListener` to CMS interface ([#4804](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4804)) ([5c265c1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5c265c1352e11f44faf52093d4bec0d6676bfc58))
+
+
+
+
+
+## [2.36.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.7...netlify-cms-core@2.36.8) (2021-01-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v7 ([#4748](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4748)) ([a3f95b0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a3f95b0d241544c512a68c04e2202de84d47ab4b))
+
+
+
+
+
+## [2.36.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.6...netlify-cms-core@2.36.7) (2020-12-23)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.36.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.5...netlify-cms-core@2.36.6) (2020-12-20)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.36.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.4...netlify-cms-core@2.36.5) (2020-12-15)
+
+
+### Bug Fixes
+
+* **i18n:** enable filtering when i18n is enabled ([#4708](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4708)) ([a843c16](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/a843c169a10a1f73e00755a917f127975708a685))
+* **typings:** make 'status' state slice more typesafe ([#4709](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4709)) ([df97aec](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/df97aec9aab0d19fe06c8b8545e4bc660e25119a))
+
+
+
+
+
+## [2.36.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.3...netlify-cms-core@2.36.4) (2020-12-13)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.36.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.2...netlify-cms-core@2.36.3) (2020-11-30)
+
+
+### Bug Fixes
+
+* **typings:** add types for boolean and color widgets ([#4663](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4663)) ([8772664](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8772664952dc6cc4b3e340f65bfb61215e1ebaef))
+
+
+
+
+
+## [2.36.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.1...netlify-cms-core@2.36.2) (2020-11-30)
+
+
+### Bug Fixes
+
+* **typings:** discriminated types for widgets ([#4640](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4640)) ([63ea63d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/63ea63defe6e3b593e3ef299f2181a0d01a25e63))
+* added a TS type definition for local_backend schema field ([#4662](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4662)) ([f28038d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f28038d63692045639669530d40d1382762730f0))
+* **typings:** add i18n & squash_merges to typings ([#4639](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4639)) ([bbf6475](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/bbf64751fb7d65b571048aebef8fc47897a764ef))
+
+
+
+
+
+## [2.36.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.0...netlify-cms-core@2.36.1) (2020-11-26)
+
+
+### Bug Fixes
+
+* **editor:** add referrer param for the workflow page ([#4600](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4600)) ([562a8e0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/562a8e06b46244544bd3ecab9e5ee2237adb2108))
+* **events:** allow multiple event handlers to execute ([#4612](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4612)) ([70cd0ee](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/70cd0eef8c98dfb286bc49e82ced9f6395135e7d))
+
+
+
+
+
+# [2.36.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.35.0...netlify-cms-core@2.36.0) (2020-11-26)
+
+
+### Features
+
+* add azure devops backend ([#4427](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4427)) ([4e6dc88](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/4e6dc88efb1dae4cf6137730c3b4fb6d0f75a8cc))
+
+
+
+
+
+# [2.35.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.34.0...netlify-cms-core@2.35.0) (2020-11-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency immer to v8 ([#4626](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4626)) ([5b4574e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5b4574efb1b1fa09a7e328d602b1e8becd02f5c3))
+
+
+### Features
+
+* i18n support for file collections - closes [#4483](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4483) ([#4634](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4634)) ([5306171](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/53061710a9e3b338781e34f11491eeb65d23b8d5))
+
+
+
+
+
 # [2.34.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.33.2...netlify-cms-core@2.34.0) (2020-11-08)
 
 

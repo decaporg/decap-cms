@@ -410,7 +410,7 @@ EditorInterface.propTypes = {
   unPublish: PropTypes.func.isRequired,
   onDuplicate: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
-  user: ImmutablePropTypes.map.isRequired,
+  user: PropTypes.object,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,

@@ -3,6 +3,7 @@ const nl = {
     login: 'Inloggen',
     loggingIn: 'Inloggen...',
     loginWithNetlifyIdentity: 'Inloggen met Netlify Identity',
+    loginWithAzure: 'Inloggen met Azure',
     loginWithBitbucket: 'Inloggen met Bitbucket',
     loginWithGitHub: 'Inloggen met GitHub',
     loginWithGitLab: 'Inloggen met GitLab',

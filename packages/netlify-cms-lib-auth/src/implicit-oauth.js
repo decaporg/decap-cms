@@ -42,7 +42,16 @@ export default class ImplicitAuthenticator {
     authURL.searchParams.set('response_type', 'token');
     authURL.searchParams.set('scope', options.scope);
 
+    if (options.prompt != null && options.prompt != undefined) {
+      authURL.searchParams.set('prompt', options.prompt);
+    }
+
+    if (options.resource != null && options.resource != undefined) {
+      authURL.searchParams.set('resource', options.resource);
+    }
+
     const state = JSON.stringify({ auth_type: 'implicit', nonce: createNonce() });
+
     authURL.searchParams.set('state', state);
 
     document.location.assign(authURL.href);

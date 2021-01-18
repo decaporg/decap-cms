@@ -678,7 +678,7 @@ export default class API {
   async rebaseMergeRequest(mergeRequest: GitLabMergeRequest) {
     let rebase: GitLabMergeRebase = await this.requestJSON({
       method: 'PUT',
-      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/rebase`,
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/rebase?skip_ci=true`,
     });
 
     let i = 1;

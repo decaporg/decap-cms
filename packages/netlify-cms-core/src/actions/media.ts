@@ -16,27 +16,27 @@ export const LOAD_ASSET_SUCCESS = 'LOAD_ASSET_SUCCESS';
 export const LOAD_ASSET_FAILURE = 'LOAD_ASSET_FAILURE';
 
 export function addAssets(assets: AssetProxy[]) {
-  return { type: ADD_ASSETS, payload: assets };
+  return { type: ADD_ASSETS, payload: assets } as const;
 }
 
 export function addAsset(assetProxy: AssetProxy) {
-  return { type: ADD_ASSET, payload: assetProxy };
+  return { type: ADD_ASSET, payload: assetProxy } as const;
 }
 
 export function removeAsset(path: string) {
-  return { type: REMOVE_ASSET, payload: path };
+  return { type: REMOVE_ASSET, payload: path } as const;
 }
 
 export function loadAssetRequest(path: string) {
-  return { type: LOAD_ASSET_REQUEST, payload: { path } };
+  return { type: LOAD_ASSET_REQUEST, payload: { path } } as const;
 }
 
 export function loadAssetSuccess(path: string) {
-  return { type: LOAD_ASSET_SUCCESS, payload: { path } };
+  return { type: LOAD_ASSET_SUCCESS, payload: { path } } as const;
 }
 
 export function loadAssetFailure(path: string, error: Error) {
-  return { type: LOAD_ASSET_FAILURE, payload: { path, error } };
+  return { type: LOAD_ASSET_FAILURE, payload: { path, error } } as const;
 }
 
 export function loadAsset(resolvedPath: string) {
@@ -97,7 +97,7 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
     const state = getState();
     const resolvedPath = selectMediaFilePath(state.config, collection, entry, path, field);
 
-    let { asset, isLoading, error } = state.medias.get(resolvedPath) || {};
+    let { asset, isLoading, error } = state.medias[resolvedPath] || {};
     if (isLoading) {
       return emptyAsset;
     }
@@ -125,3 +125,12 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
     return asset;
   };
 }
+
+export type MediasAction = ReturnType<
+  | typeof addAssets
+  | typeof addAsset
+  | typeof removeAsset
+  | typeof loadAssetRequest
+  | typeof loadAssetSuccess
+  | typeof loadAssetFailure
+>;

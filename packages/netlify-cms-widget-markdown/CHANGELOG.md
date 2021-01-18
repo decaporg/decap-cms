@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.7...netlify-cms-widget-markdown@2.12.8) (2020-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency is-hotkey to ^0.2.0 ([#4652](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/4652)) ([7828e15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/7828e15453e55b5201f23b58817d73ecbd30a912))
+
+
+
+
+
 ## [2.12.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.6...netlify-cms-widget-markdown@2.12.7) (2020-10-20)
 
 

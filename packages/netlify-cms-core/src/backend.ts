@@ -334,11 +334,11 @@ export class Backend {
       auth: { status: boolean };
       api: { status: boolean; statusPage: string };
     } = {
-      auth: { status: false },
-      api: { status: false, statusPage: '' },
+      auth: { status: true },
+      api: { status: true, statusPage: '' },
     };
     for (let i = 1; i <= attempts; i++) {
-      status = await this.implementation!.status();
+      status = await this.implementation.status();
       // return on first success
       if (Object.values(status).every(s => s.status === true)) {
         return status;
@@ -487,7 +487,7 @@ export class Backend {
 
     if (hasI18n(collection)) {
       const extension = selectFolderEntryExtension(collection);
-      const groupedEntries = groupEntries(collection, extension, entries);
+      const groupedEntries = groupEntries(collection, extension, filteredEntries);
       return groupedEntries;
     }
 

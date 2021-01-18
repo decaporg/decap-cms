@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Map } from 'immutable';
-import { isEmpty } from 'lodash';
 import { translate } from 'react-polyglot';
 import { Modal } from 'UI';
 import MediaLibraryTop from './MediaLibraryTop';
@@ -74,7 +73,6 @@ const MediaLibraryModal = ({
   isPaginating,
   privateUpload,
   query,
-  selectedFile,
   selectedAssets,
   handleFilter,
   handleQuery,
@@ -144,8 +142,9 @@ const MediaLibraryModal = ({
       <MediaLibraryCardGrid
         setScrollContainerRef={setScrollContainerRef}
         mediaItems={tableData}
-        isSelectedFile={file => selectedFile.key === file.key}
-        isSelectedAsset={file => (selectedAssets || []).filter(selectedAsset => selectedAsset.key === file.key).length > 0}
+        isSelectedAsset={file =>
+          (selectedAssets || []).filter(selectedAsset => selectedAsset.key === file.key).length > 0
+        }
         onAssetClick={handleAssetClick}
         onAssetCheckboxClick={handleAssetCheckboxChange}
         canLoadMore={hasNextPage}

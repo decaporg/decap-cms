@@ -400,6 +400,33 @@ describe('i18n', () => {
         raw: '',
       });
     });
+
+    it('should default to empty data object when file is empty and structure is I18N_STRUCTURE.SINGLE_FILE', async () => {
+      const data = {
+        'src/content/index.md': {
+          slug: 'index',
+          path: 'src/content/index.md',
+          data: {},
+        },
+      };
+      const getEntryValue = jest.fn(path => Promise.resolve(data[path]));
+
+      await expect(
+        i18n.getI18nEntry(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales, default_locale },
+          }),
+          ...args,
+          getEntryValue,
+        ),
+      ).resolves.toEqual({
+        slug: 'index',
+        path: 'src/content/index.md',
+        data: {},
+        i18n: {},
+        raw: '',
+      });
+    });
   });
 
   describe('groupEntries', () => {

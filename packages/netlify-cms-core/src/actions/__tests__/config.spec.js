@@ -636,7 +636,33 @@ describe('config', () => {
         ).toEqual({ structure: 'multiple_folders', locales: ['en', 'fr'], default_locale: 'fr' });
       });
 
-      it('should throw when i18n is set on files collection', () => {
+      it('should throw when i18n structure is not single_file on files collection', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  files: [
+                    {
+                      name: 'file',
+                      file: 'file',
+                      i18n: true,
+                      fields: [{ name: 'title', widget: 'string', i18n: true }],
+                    },
+                  ],
+                  i18n: true,
+                },
+              ],
+            }),
+          ),
+        ).toThrow('i18n configuration for files collections is limited to single_file structure');
+      });
+
+      it('should throw when i18n structure is set to multiple_folders and contains a single file collection', () => {
         expect(() =>
           applyDefaults(
             fromJS({
@@ -654,7 +680,56 @@ describe('config', () => {
               ],
             }),
           ),
-        ).toThrow('i18n configuration is not supported for files collection');
+        ).toThrow('i18n configuration for files collections is limited to single_file structure');
+      });
+
+      it('should throw when i18n structure is set to multiple_files and contains a single file collection', () => {
+        expect(() =>
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_files',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  files: [
+                    { name: 'file', file: 'file', fields: [{ name: 'title', widget: 'string' }] },
+                  ],
+                  i18n: true,
+                },
+              ],
+            }),
+          ),
+        ).toThrow('i18n configuration for files collections is limited to single_file structure');
+      });
+
+      it('should set i18n value to translate on field when i18n=true for field in files collection', () => {
+        expect(
+          applyDefaults(
+            fromJS({
+              i18n: {
+                structure: 'multiple_folders',
+                locales: ['en', 'de'],
+              },
+              collections: [
+                {
+                  files: [
+                    {
+                      name: 'file',
+                      file: 'file',
+                      i18n: true,
+                      fields: [{ name: 'title', widget: 'string', i18n: true }],
+                    },
+                  ],
+                  i18n: {
+                    structure: 'single_file',
+                  },
+                },
+              ],
+            }),
+          ).getIn(['collections', 0, 'files', 0, 'fields', 0, 'i18n']),
+        ).toEqual('translate');
       });
 
       it('should set i18n value to translate on field when i18n=true for field', () => {

@@ -15,8 +15,7 @@ collections: # A list of collections the CMS should be able to edit
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
     folder: 'content/posts'
-    media_folder: '/static/images/posts'
-    public_folder: '/images/posts'
+    media_folder: '/static/images/one'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
