@@ -154,6 +154,7 @@ class MediaLibrary extends React.Component {
   };
 
   handleClose = () => {
+    this.setState({ currentMediaFolder: null});
     this.props.closeMediaLibrary();
   };
 
