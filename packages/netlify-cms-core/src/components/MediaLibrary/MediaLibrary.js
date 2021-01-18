@@ -101,7 +101,7 @@ class MediaLibrary extends React.Component {
   filterImages = files => {
     return files.filter(file => {
       const ext = fileExtension(file.name).toLowerCase();
-      return IMAGE_EXTENSIONS.includes(ext);
+      return IMAGE_EXTENSIONS.includes(ext) || file.isDirectory;
     });
   };
 

@@ -227,9 +227,13 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const entry = entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
-    files = entryFiles
-      .filter(f => dirname(f.path) === mediaFolder)
-      .map(file => ({ key: file.id, ...file }));
+    if (collection.get('disable_media_folder_navigation')) {
+      files = entryFiles
+      .filter(f => { return (dirname(f.path) === mediaFolder) && !f.isDirectory})
+    } else {
+      files = entryFiles;
+    }
+    files = files.map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
   }

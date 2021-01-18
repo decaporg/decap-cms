@@ -199,6 +199,7 @@ type CollectionObject = {
   fields: EntryFields;
   isFetching: boolean;
   media_folder?: string;
+  disable_media_folder_navigation?: string;
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
