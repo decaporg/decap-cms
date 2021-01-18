@@ -2,16 +2,34 @@ import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
 import { trimStart, trim, get, isPlainObject, isEmpty } from 'lodash';
-import * as publishModes from 'Constants/publishModes';
-import { validateConfig } from 'Constants/configSchema';
+import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
+import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
 import { getIntegrations, selectIntegration } from '../reducers/integrations';
-import { resolveBackend } from 'coreSrc/backend';
+import { resolveBackend } from '../backend';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
 export const CONFIG_FAILURE = 'CONFIG_FAILURE';
+
+function traverseFieldsMutable(fields, updater, done = () => false) {
+  if (done()) {
+    return;
+  }
+
+  for (let i = 0, l = fields.length; i < l; i += 1) {
+    const field = fields[i];
+    updater(field);
+    if (field.fields) {
+      traverseFieldsMutable(field.fields, updater, done);
+    } else if (field.field) {
+      traverseFieldsMutable([field.field], updater, done);
+    } else if (field.types) {
+      traverseFieldsMutable(field.types, updater, done);
+    }
+  }
+}
 
 const getConfigUrl = () => {
   const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
@@ -32,7 +50,7 @@ const setDefaultPublicFolder = map => {
   return map;
 };
 
-const setSnakeCaseConfig = field => {
+function setSnakeCaseConfig(field) {
   // Mapping between existing camelCase and its snake_case counterpart
   const widgetKeyMap = {
     dateFormat: 'date_format',
@@ -46,18 +64,16 @@ const setSnakeCaseConfig = field => {
     optionsLength: 'options_length',
   };
 
-  Object.entries(widgetKeyMap).forEach(([camel, snake]) => {
-    if (field.has(camel)) {
-      field = field.set(snake, field.get(camel));
+  const widgetKeyMapEntries = Object.entries(widgetKeyMap);
+  for (const [camel, snake] of widgetKeyMapEntries) {
+    if (camel in field) {
+      field[snake] = field[camel];
       console.warn(
-        `Field ${field.get(
-          'name',
-        )} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
+        `Field ${field.name} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
       );
     }
-  });
-  return field;
-};
+  }
+}
 
 const setI18nField = field => {
   if (field.get(I18N) === true) {
@@ -141,7 +157,7 @@ const setViewPatternsDefaults = (key, collection) => {
 };
 
 const defaults = {
-  publish_mode: publishModes.SIMPLE,
+  publish_mode: SIMPLE_PUBLISH_MODE,
 };
 
 const hasIntegration = (config, collection) => {
@@ -151,45 +167,35 @@ const hasIntegration = (config, collection) => {
 };
 
 export function normalizeConfig(config) {
-  return Map(config).withMutations(map => {
-    map.set(
-      'collections',
-      map.get('collections').map(collection => {
-        const folder = collection.get('folder');
-        if (folder) {
-          collection = collection.set(
-            'fields',
-            traverseFields(collection.get('fields'), setSnakeCaseConfig),
-          );
-        }
+  const collections = config.collections || [];
+  for (let i = 0, l = collections.length; i < l; i += 1) {
+    const collection = collections[i];
+    const { folder, files } = collection;
 
-        const files = collection.get('files');
-        if (files) {
-          collection = collection.set(
-            'files',
-            files.map(file => {
-              file = file.set('fields', traverseFields(file.get('fields'), setSnakeCaseConfig));
-              return file;
-            }),
-          );
-        }
+    if (folder) {
+      if (collection.fields) {
+        traverseFieldsMutable(collection.fields, setSnakeCaseConfig);
+      }
+    }
 
-        if (collection.has('sortableFields')) {
-          collection = collection
-            .set('sortable_fields', collection.get('sortableFields'))
-            .delete('sortableFields');
+    if (files) {
+      for (let j = 0, ll = files.length; j < ll; j += 1) {
+        const file = files[j];
+        traverseFieldsMutable(file.fields, setSnakeCaseConfig);
+      }
+    }
 
-          console.warn(
-            `Collection ${collection.get(
-              'name',
-            )} is using a deprecated configuration 'sortableFields'. Please use 'sortable_fields'`,
-          );
-        }
+    if (collection.sortableFields) {
+      collection.sortable_fields = collection.sortableFields;
+      delete collection.sortableFields;
 
-        return collection;
-      }),
-    );
-  });
+      console.warn(
+        `Collection ${collection.name} is using a deprecated configuration 'sortableFields'. Please use 'sortable_fields'`,
+      );
+    }
+  }
+
+  return config;
 }
 
 export function applyDefaults(config) {
@@ -383,35 +389,29 @@ export async function detectProxyServer(localBackend) {
   return {};
 }
 
-export async function handleLocalBackend(originalConfig) {
-  if (!originalConfig.local_backend) {
-    return originalConfig;
+export async function handleLocalBackend(config) {
+  if (!config.local_backend) {
+    return config;
   }
 
-  const { proxyUrl, publish_modes, type } = await detectProxyServer(originalConfig.local_backend);
+  const { proxyUrl, publish_modes, type } = await detectProxyServer(config.local_backend);
 
   if (!proxyUrl) {
-    return originalConfig;
+    return config;
   }
 
-  let mergedConfig = deepmerge(originalConfig, {
-    backend: { name: 'proxy', proxy_url: proxyUrl },
-  });
+  config.backend.name = 'proxy';
+  config.backend.proxy_url = proxyUrl;
 
-  if (
-    mergedConfig.publish_mode &&
-    publish_modes &&
-    !publish_modes.includes(mergedConfig.publish_mode)
-  ) {
+  if (config.publish_mode && publish_modes && !publish_modes.includes(config.publish_mode)) {
     const newPublishMode = publish_modes[0];
-    mergedConfig = deepmerge(mergedConfig, {
-      publish_mode: newPublishMode,
-    });
+    config.publish_mode = newPublishMode;
     console.log(
-      `'${mergedConfig.publish_mode}' is not supported by '${type}' backend, switching to '${newPublishMode}'`,
+      `'${config.publish_mode}' is not supported by '${type}' backend, switching to '${newPublishMode}'`,
     );
   }
-  return mergedConfig;
+
+  return config;
 }
 
 export function loadConfig(manualConfig = {}, onLoad) {
@@ -430,13 +430,16 @@ export function loadConfig(manualConfig = {}, onLoad) {
           : await getConfigYaml(configUrl, hasManualConfig);
 
       // Merge manual config into the config.yml one
-      let mergedConfig = deepmerge(configYaml, manualConfig);
+      const mergedConfig = deepmerge(configYaml, manualConfig);
 
       validateConfig(mergedConfig);
 
-      mergedConfig = await handleLocalBackend(mergedConfig);
+      // We're mutating loaded config object, but this is fine,
+      // because we're doing it before it becomes a part of the app state
+      await handleLocalBackend(mergedConfig);
+      normalizeConfig(mergedConfig);
 
-      const config = applyDefaults(normalizeConfig(fromJS(mergedConfig)));
+      const config = applyDefaults(fromJS(mergedConfig));
 
       dispatch(configLoaded(config));
 
