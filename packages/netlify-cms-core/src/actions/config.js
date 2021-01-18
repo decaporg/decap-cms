@@ -2,7 +2,6 @@ import yaml from 'yaml';
 import { Map, fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
 import { trimStart, trim, get, isPlainObject, isEmpty } from 'lodash';
-import { authenticateUser } from 'Actions/auth';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
@@ -404,7 +403,7 @@ export async function handleLocalBackend(originalConfig) {
   return mergedConfig;
 }
 
-export function loadConfig(manualConfig = {}) {
+export function loadConfig(manualConfig = {}, onLoad) {
   if (window.CMS_CONFIG) {
     return configLoaded(fromJS(window.CMS_CONFIG));
   }
@@ -429,7 +428,10 @@ export function loadConfig(manualConfig = {}) {
       const config = applyDefaults(normalizeConfig(fromJS(mergedConfig)));
 
       dispatch(configLoaded(config));
-      dispatch(authenticateUser());
+
+      if (typeof onLoad === 'function') {
+        onLoad();
+      }
     } catch (err) {
       dispatch(configFailed(err));
       throw err;
