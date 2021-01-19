@@ -44,6 +44,8 @@ export type Config = StaticallyTypedRecord<{
   site_url?: string;
   show_preview_links?: boolean;
   isFetching?: boolean;
+  integrations: List<Integration>;
+  collections: List<StaticallyTypedRecord<{ name: string }>>;
 }>;
 
 type PagesObject = {
@@ -315,10 +317,7 @@ export interface Integration {
 }
 
 export interface IntegrationsAction extends Action<string> {
-  payload: StaticallyTypedRecord<{
-    integrations: List<Integration>;
-    collections: StaticallyTypedRecord<{ name: string }>[];
-  }>;
+  payload: Config;
 }
 
 interface EntryPayload {

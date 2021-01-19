@@ -5,6 +5,7 @@ import { trimStart, trim, get, isPlainObject, isEmpty } from 'lodash';
 import * as publishModes from 'Constants/publishModes';
 import { validateConfig } from 'Constants/configSchema';
 import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
+import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from 'coreSrc/backend';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 
@@ -141,6 +142,12 @@ const setViewPatternsDefaults = (key, collection) => {
 
 const defaults = {
   publish_mode: publishModes.SIMPLE,
+};
+
+const hasIntegration = (config, collection) => {
+  const integrations = getIntegrations(config);
+  const integration = selectIntegration(integrations, collection.get('name'), 'listEntries');
+  return !!integration;
 };
 
 export function normalizeConfig(config) {
@@ -281,7 +288,11 @@ export function applyDefaults(config) {
 
           if (!collection.has('sortable_fields')) {
             const backend = resolveBackend(config);
-            const defaultSortable = selectDefaultSortableFields(collection, backend);
+            const defaultSortable = selectDefaultSortableFields(
+              collection,
+              backend,
+              hasIntegration(map, collection),
+            );
             collection = collection.set('sortable_fields', fromJS(defaultSortable));
           }
 
