@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.11...netlify-cms-core@2.36.12) (2021-01-19)
+
+
+### Bug Fixes
+
+* **integration-asset-store:** fix react-waypoint import ([#4848](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4848)) ([6611cb5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/6611cb5253dbb12c944d178a761fcbe51011fc97))
+* remove redundant ajv option ([#4840](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4840)) ([10fb767](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/10fb7677c1618754499af6c8e4a081c73b08197d))
+
+
+
+
+
 ## [2.36.11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.10...netlify-cms-core@2.36.11) (2021-01-14)
 
 **Note:** Version bump only for package netlify-cms-core
