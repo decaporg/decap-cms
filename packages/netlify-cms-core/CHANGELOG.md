@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.13](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.12...netlify-cms-core@2.36.13) (2021-01-19)
+
+
+### Bug Fixes
+
+* **list-entries-integration:** don't show commit date & author default sort ([#4849](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4849)) ([529186a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/529186a7cf94abcd663ad78b7788bd2dbad6ff79))
+
+
+
+
+
 ## [2.36.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.11...netlify-cms-core@2.36.12) (2021-01-19)
 
 
