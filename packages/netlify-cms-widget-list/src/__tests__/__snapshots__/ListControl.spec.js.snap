@@ -11,7 +11,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -141,7 +141,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -199,7 +199,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -240,7 +240,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -370,7 +370,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -428,7 +428,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -457,7 +457,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -498,7 +498,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -603,7 +603,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   display: block;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -687,7 +687,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="true"
           data-testid="styled-list-item-top-bar-2"
         >
@@ -739,7 +739,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -869,7 +869,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -927,7 +927,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -956,7 +956,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -997,7 +997,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1127,7 +1127,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -1185,7 +1185,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -1214,7 +1214,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -1255,7 +1255,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1386,7 +1386,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   display: block;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -1444,7 +1444,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="true"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -1473,7 +1473,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="true"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -1514,7 +1514,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1695,7 +1695,7 @@ exports[`ListControl should render list with nested object 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1826,7 +1826,7 @@ exports[`ListControl should render list with nested object 1`] = `
   display: block;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -1884,7 +1884,7 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="true"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -1913,7 +1913,7 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="true"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -1954,7 +1954,7 @@ exports[`ListControl should render list with nested object with collapse = false
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2084,7 +2084,7 @@ exports[`ListControl should render list with nested object with collapse = false
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: #eff0f4;
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -2142,7 +2142,7 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -2171,7 +2171,7 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1ncmqvh-StyledListItemTopBar e14bfka81"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >

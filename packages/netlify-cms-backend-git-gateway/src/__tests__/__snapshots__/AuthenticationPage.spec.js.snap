@@ -157,8 +157,8 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
 
 .emotion-2:focus,
 .emotion-2:hover {
+  background-color: #798291;
   color: #fff;
-  background-color: #555a65;
 }
 
 .emotion-2[disabled] {
@@ -248,8 +248,8 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
 
 .emotion-2:focus,
 .emotion-2:hover {
+  background-color: #798291;
   color: #fff;
-  background-color: #555a65;
 }
 
 .emotion-2[disabled] {

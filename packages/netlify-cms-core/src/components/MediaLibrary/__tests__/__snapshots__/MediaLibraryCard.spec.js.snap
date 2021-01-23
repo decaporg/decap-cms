@@ -6,7 +6,7 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
   width: 100px;
   height: 240px;
   margin: 10px;
-  border: solid 2px #dfdfe3;
+  border: solid 2px #eff0f4;
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
@@ -18,12 +18,12 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
 
 .emotion-4 {
   height: 162px;
-  background-color: #f2f2f2;
+  background-color: #eff0f4;
   background-size: 16px 16px;
   background-position: 0 0,8px 8px;
   background-image: linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 ) , linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 );
   box-shadow: inset 0 0 4px rgba(68,74,87,0.3);
-  border-bottom: solid 2px #dfdfe3;
+  border-bottom: solid 2px #eff0f4;
   position: relative;
 }
 
@@ -85,7 +85,7 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
   width: 100px;
   height: 240px;
   margin: 10px;
-  border: solid 2px #dfdfe3;
+  border: solid 2px #eff0f4;
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
@@ -97,12 +97,12 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
 
 .emotion-2 {
   height: 162px;
-  background-color: #f2f2f2;
+  background-color: #eff0f4;
   background-size: 16px 16px;
   background-position: 0 0,8px 8px;
   background-image: linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 ) , linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 );
   box-shadow: inset 0 0 4px rgba(68,74,87,0.3);
-  border-bottom: solid 2px #dfdfe3;
+  border-bottom: solid 2px #eff0f4;
   position: relative;
 }
 
@@ -150,7 +150,7 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
   width: 100px;
   height: 240px;
   margin: 10px;
-  border: solid 2px #dfdfe3;
+  border: solid 2px #eff0f4;
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
@@ -162,12 +162,12 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
 
 .emotion-2 {
   height: 162px;
-  background-color: #f2f2f2;
+  background-color: #eff0f4;
   background-size: 16px 16px;
   background-position: 0 0,8px 8px;
   background-image: linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 ) , linear-gradient( 45deg, #e6e6e6 25%, transparent 25%, transparent 75%, #e6e6e6 75%, #e6e6e6 );
   box-shadow: inset 0 0 4px rgba(68,74,87,0.3);
-  border-bottom: solid 2px #dfdfe3;
+  border-bottom: solid 2px #eff0f4;
   position: relative;
 }
 

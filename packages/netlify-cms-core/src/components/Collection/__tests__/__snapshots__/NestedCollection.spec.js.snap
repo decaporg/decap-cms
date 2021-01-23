@@ -30,7 +30,7 @@ exports[`NestedCollection should render connected component 1`] = `
 .emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 .emotion-4 {
@@ -135,7 +135,7 @@ exports[`NestedCollection should render connected component 1`] = `
 .emotion-4.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 <a
@@ -204,7 +204,7 @@ exports[`NestedCollection should render connected component 1`] = `
 .emotion-4.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 <a
@@ -259,7 +259,7 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
 .emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 .emotion-4 {
@@ -364,7 +364,7 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
 .emotion-4.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 <a
@@ -433,7 +433,7 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
 .emotion-4.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 <a
@@ -488,7 +488,7 @@ exports[`NestedCollection should render correctly with no entries 1`] = `
 .emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 .emotion-4 {

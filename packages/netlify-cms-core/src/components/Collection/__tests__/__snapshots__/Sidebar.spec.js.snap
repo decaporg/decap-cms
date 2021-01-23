@@ -180,7 +180,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
 .emotion-2.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
-  border-left-color: #4863c6;
+  border-left-color: #3a69c7;
 }
 
 <aside
