@@ -23,7 +23,9 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "common-tags": "^1.8.0"
+    "common-tags": "^1.8.0",
+    "react-sortable-hoc": "^1.0.0",
+    "array-move": "3.0.1"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
