@@ -30,7 +30,7 @@ backend:
 
 ## Client-Side Implicit Grant (GitLab)
 
-**Note:** This method is not recommended see [here](https://about.gitlab.com/releases/2021/01/07/security-release-gitlab-13-7-2-released/#upgrade-note) for more information.
+**Note:** This method is not recommended and will be deprecated both [by GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) and [in the OAuth 2.1 specification](https://oauth.net/2.1/) in the future.
 
 With GitLab's Implicit Grant, users can authenticate with GitLab directly from the client. To do this:
 
