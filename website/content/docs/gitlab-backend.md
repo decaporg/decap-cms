@@ -30,6 +30,8 @@ backend:
 
 ## Client-Side Implicit Grant (GitLab)
 
+**Note:** This method is not recommended see [here](https://about.gitlab.com/releases/2021/01/07/security-release-gitlab-13-7-2-released/#upgrade-note) for more information.
+
 With GitLab's Implicit Grant, users can authenticate with GitLab directly from the client. To do this:
 
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application and uncheck the **Confidential** checkbox. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
