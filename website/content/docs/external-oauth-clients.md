@@ -16,8 +16,7 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@Herohtar](https://github.com/Herohtar)       | GitHub, GitHub Enterprise | Firebase Cloud Function | [Repo](https://github.com/Herohtar/netlify-cms-oauth-firebase)                                                                               |
 | [@abcalderon3](https://github.com/abcalderon3) | GitHub, GitHub Enterprise | Google Cloud Function with Python | [Repo](https://github.com/abcalderon3/netlify-cms-oauth-client-cloud-function)                                                     |
 | [@TSV-Zorneding-1920](https://github.com/TSV-Zorneding-1920) | GitHub, GitHub Enterprise | PHP | [Repo](https://github.com/TSV-Zorneding-1920/netlify-cms-oauth-provider-php)                                                                       |
-| [@mcdeck](https://github.com/mcdeck)           | GitHub, GitHub Enterprise | PHP                     | [Repo](https://github.com/mcdeck/netlify-cms-oauth-provider-php), [Blog](https://www.van-porten.de/blog/2021/01/netlify-auth-provider/)      |
 | [@bericp1](https://github.com/bericp1)         | GitHub, GitHub Enterprise | Node.js, Zeit Now Serverless | [Repo](https://github.com/bericp1/netlify-cms-oauth-provider-node)                                                                      |
-
+| [@mcdeck](https://github.com/mcdeck)           | GitHub, GitHub Enterprise | PHP                     | [Repo](https://github.com/mcdeck/netlify-cms-oauth-provider-php), [Blog](https://www.van-porten.de/blog/2021/01/netlify-auth-provider/)      |
 
 Check each project's documentation for instructions on installation and usage.
