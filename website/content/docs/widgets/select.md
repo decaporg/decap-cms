@@ -41,9 +41,11 @@ The select widget allows you to pick a string value from a dropdown menu.
     name: "airport-code"
     widget: "select"
     options:
-      - { label: "Chicago", value: "ORD" }
-      - { label: "Paris", value: "CDG" }
-      - { label: "Tokyo", value: "HND" }
+      [
+        { label: 'Chicago', value: 'ORD' },
+        { label: 'Paris', value: 'CDG' },
+        { label: 'Tokyo', value: 'HND' },
+      ],
   ```
 
   Selecting the `Chicago` option, will save the value as:
