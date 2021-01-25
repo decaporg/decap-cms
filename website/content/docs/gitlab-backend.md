@@ -9,12 +9,12 @@ For repositories stored on GitLab, the `gitlab` backend allows CMS users to log 
 
 The GitLab API allows for two types of OAuth2 flows:
 
-* [Web Application Flow](https://docs.gitlab.com/ce/api/oauth2.html#web-application-flow), which works much like the GitHub OAuth flow described above.
-* [Implicit Grant](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant-flow), which operates *without* the need for an authentication server.
+* [Authorization Code Flow](https://docs.gitlab.com/ce/api/oauth2.html#authorization-code-flow), which works much like the GitHub OAuth flow described above.
+* [Implicit Grant Flow](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant-flow), which operates *without* the need for an authentication server.
 
-## Web Application Flow with Netlify
+## Authorization Code Flow with Netlify
 
-When using GitLab's Web Application Flow for authentication, you can use Netlify to handle the server-side authentication requests.
+When using GitLab's Authorization Code Flow for authentication, you can use Netlify to handle the server-side authentication requests.
 
 To enable it:
 
@@ -30,9 +30,11 @@ backend:
 
 ## Client-Side Implicit Grant (GitLab)
 
+**Note:** This method is not recommended and will be deprecated both [by GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) and [in the OAuth 2.1 specification](https://oauth.net/2.1/) in the future.
+
 With GitLab's Implicit Grant, users can authenticate with GitLab directly from the client. To do this:
 
-1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
+1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application and uncheck the **Confidential** checkbox. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
 2. GitLab gives you an **Application ID**. Copy this ID and enter it in your Netlify CMS `config.yml` file, along with the following settings:
 
    ```yaml
