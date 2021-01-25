@@ -4,7 +4,7 @@ weight: 60
 title: External OAuth Clients
 ---
 
-If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you can use one of the community-maintained projects below. Feel free to hit the "Edit this page" button if you'd like to add yours!
+If you would like to host your own OAuth authentication rather than use Netlify's service or implicit grant, you can use one of the community-maintained projects below. Feel free to hit the "Edit this page" button if you'd like to add yours!
 
 | Author                                                       | Supported Git hosts       | Language(s)/Platform(s)           | Link                                                                                                                                         |
 | ------------------------------------------------------------ | ------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
