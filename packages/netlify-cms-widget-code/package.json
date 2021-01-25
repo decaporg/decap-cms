@@ -33,6 +33,6 @@
   },
   "dependencies": {
     "react-codemirror2": "^7.0.0",
-    "react-select": "^2.4.3"
+    "react-select": "^4.0.0"
   }
 }
