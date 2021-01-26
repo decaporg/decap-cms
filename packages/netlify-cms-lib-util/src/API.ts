@@ -57,15 +57,16 @@ export const requestWithBackoff = async (
       throw new Error(text);
     } else if (response.status === 403) {
       // GitHub too many requests
-      const { message } = await response.json().catch(() => ({ message: '' }));
-      if (message.match('API rate limit exceeded')) {
+      const json = await response.json().catch(() => ({ message: '' }));
+      if (json.message.match('API rate limit exceeded')) {
         const now = new Date();
         const nextWindowInSeconds = response.headers.has('X-RateLimit-Reset')
           ? parseInt(response.headers.get('X-RateLimit-Reset')!)
           : now.getTime() / 1000 + 60;
 
-        throw new RateLimitError(message, nextWindowInSeconds);
+        throw new RateLimitError(json.message, nextWindowInSeconds);
       }
+      response.json = () => Promise.resolve(json);
     }
     return response;
   } catch (err) {
