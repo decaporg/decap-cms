@@ -20,56 +20,60 @@ The select widget allows you to pick a string value from a dropdown menu.
   * `multiple`: accepts a boolean; defaults to `false`
   * `min`: minimum number of items; ignored if **multiple** is  `false`
   * `max`: maximum number of items; ignored if **multiple** is  `false`
+
 * **Example** (options as strings):
 
-  ```yaml
-  - label: "Align Content"
-    name: "align"
-    widget: "select"
-    options: ["left", "center", "right"]
-  ```
+```yaml
+- label: "Align Content"
+  name: "align"
+  widget: "select"
+  options: ["left", "center", "right"]
+```
 
-  Selecting the `center` option, will save the value as:
+Selecting the `center` option, will save the value as:
 
-  ```yaml
-  align: "center"
-  ```
+```yaml
+align: "center"
+```
+
 * **Example** (options as objects):
 
-  ```yaml
-  - label: "City"
-    name: "airport-code"
-    widget: "select"
-    options:
-      - { label: "Chicago", value: "ORD" }
-      - { label: "Paris", value: "CDG" }
-      - { label: "Tokyo", value: "HND" }
-  ```
+```yaml
+- label: "City"
+  name: "airport-code"
+  widget: "select"
+  options:
+    - { label: "Chicago", value: "ORD" }
+    - { label: "Paris", value: "CDG" }
+    - { label: "Tokyo", value: "HND" }
+```
 
-  Selecting the `Chicago` option, will save the value as:
+Selecting the `Chicago` option, will save the value as:
 
-  ```yaml
-  airport-code: "ORD"
-  ```
+```yaml
+airport-code: "ORD"
+```
+
 * **Example** (multiple):
 
-  ```yaml
-  - label: "Tags"
-    name: "tags"
-    widget: "select"
-    multiple: true
-    options: ["Design", "UX", "Dev"]
-    default: ["Design"]
-  ```
+```yaml
+- label: "Tags"
+  name: "tags"
+  widget: "select"
+  multiple: true
+  options: ["Design", "UX", "Dev"]
+  default: ["Design"]
+```
+
 * **Example** (min/max):
 
-  ```yaml
-  - label: "Tags"
-    name: "tags"
-    widget: "select"
-    multiple: true
-    min: 1
-    max: 3
-    options: ["Design", "UX", "Dev"]
-    default: ["Design"]
-  ```
+```yaml
+- label: "Tags"
+  name: "tags"
+  widget: "select"
+  multiple: true
+  min: 1
+  max: 3
+  options: ["Design", "UX", "Dev"]
+  default: ["Design"]
+```
