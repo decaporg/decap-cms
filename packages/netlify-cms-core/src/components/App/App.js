@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { loadConfig } from 'Actions/config';
 import { loginUser, logoutUser } from 'Actions/auth';
 import { currentBackend } from 'coreSrc/backend';
 import { createNewEntry } from 'Actions/collections';
@@ -76,7 +75,6 @@ class App extends React.Component {
     auth: PropTypes.object.isRequired,
     config: ImmutablePropTypes.map,
     collections: ImmutablePropTypes.orderedMap,
-    loadConfig: PropTypes.func.isRequired,
     loginUser: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
     user: PropTypes.object,
@@ -101,11 +99,6 @@ class App extends React.Component {
         </div>
       </ErrorContainer>
     );
-  }
-
-  componentDidMount() {
-    const { loadConfig } = this.props;
-    loadConfig();
   }
 
   handleLogin(credentials) {
@@ -280,7 +273,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   openMediaLibrary,
-  loadConfig,
   loginUser,
   logoutUser,
 };

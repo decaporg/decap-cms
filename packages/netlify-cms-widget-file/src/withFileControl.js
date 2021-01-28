@@ -60,12 +60,12 @@ const FileLinkList = styled.ul`
 const FileWidgetButton = styled.button`
   ${buttons.button};
   ${components.badge};
+  margin-bottom: 12px;
 `;
 
 const FileWidgetButtonRemove = styled.button`
   ${buttons.button};
   ${components.badgeDanger};
-  margin-top: 12px;
 `;
 
 function isMultiple(value) {
@@ -174,6 +174,14 @@ export default function withFileControl({ forImage } = {}) {
       });
     };
 
+    handleUrl = subject => e => {
+      e.preventDefault();
+
+      const url = window.prompt(this.props.t(`editor.editorWidgets.${subject}.promptUrl`));
+
+      return this.props.onChange(url);
+    };
+
     handleRemove = e => {
       e.preventDefault();
       this.props.onClearMediaControl(this.controlID);
@@ -255,6 +263,9 @@ export default function withFileControl({ forImage } = {}) {
             <FileWidgetButton onClick={this.handleChange}>
               {t(`editor.editorWidgets.${subject}.chooseDifferent`)}
             </FileWidgetButton>
+            <FileWidgetButton onClick={this.handleUrl(subject)}>
+              {t(`editor.editorWidgets.${subject}.replaceUrl`)}
+            </FileWidgetButton>
             <FileWidgetButtonRemove onClick={this.handleRemove}>
               {t(`editor.editorWidgets.${subject}.remove`)}
             </FileWidgetButtonRemove>
@@ -266,9 +277,14 @@ export default function withFileControl({ forImage } = {}) {
     renderNoSelection = subject => {
       const { t } = this.props;
       return (
-        <FileWidgetButton onClick={this.handleChange}>
-          {t(`editor.editorWidgets.${subject}.choose`)}
-        </FileWidgetButton>
+        <>
+          <FileWidgetButton onClick={this.handleChange}>
+            {t(`editor.editorWidgets.${subject}.choose`)}
+          </FileWidgetButton>
+          <FileWidgetButton onClick={this.handleUrl(subject)}>
+            {t(`editor.editorWidgets.${subject}.chooseUrl`)}
+          </FileWidgetButton>
+        </>
       );
     };
 

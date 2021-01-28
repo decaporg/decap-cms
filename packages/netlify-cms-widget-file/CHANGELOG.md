@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.7.4...netlify-cms-widget-file@2.8.0) (2021-01-14)
+
+
+### Features
+
+* **widget-file:** allow adding file from url ([#4700](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/4700)) ([9e277ad](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/9e277ad851ea598405e02a7c11624f337da18260))
+
+
+
+
+
 ## [2.7.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.7.3...netlify-cms-widget-file@2.7.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-widget-file

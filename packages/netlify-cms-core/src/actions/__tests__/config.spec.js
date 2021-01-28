@@ -938,15 +938,13 @@ describe('config', () => {
         }),
       });
 
-      const config = fromJS({ local_backend: true, backend: { name: 'github' } });
+      const config = { local_backend: true, backend: { name: 'github' } };
       const actual = await handleLocalBackend(config);
 
-      expect(actual).toEqual(
-        fromJS({
-          local_backend: true,
-          backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
-        }),
-      );
+      expect(actual).toEqual({
+        local_backend: true,
+        backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
+      });
     });
 
     it('should replace publish mode when not supported by proxy', async () => {
@@ -959,20 +957,18 @@ describe('config', () => {
         }),
       });
 
-      const config = fromJS({
+      const config = {
         local_backend: true,
         publish_mode: 'editorial_workflow',
         backend: { name: 'github' },
-      });
+      };
       const actual = await handleLocalBackend(config);
 
-      expect(actual).toEqual(
-        fromJS({
-          local_backend: true,
-          publish_mode: 'simple',
-          backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
-        }),
-      );
+      expect(actual).toEqual({
+        local_backend: true,
+        publish_mode: 'simple',
+        backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
+      });
     });
   });
 });

@@ -5,7 +5,8 @@ import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 import history from 'Routing/history';
 import store from 'ReduxStore';
-import { mergeConfig } from 'Actions/config';
+import { loadConfig } from 'Actions/config';
+import { authenticateUser } from 'Actions/auth';
 import { getPhrases } from 'Lib/phrases';
 import { selectLocale } from 'Reducers/config';
 import { I18n } from 'react-polyglot';
@@ -72,9 +73,11 @@ function bootstrap(opts = {}) {
    * config.yml if it exists, and any portion that produces a conflict will be
    * overwritten.
    */
-  if (config) {
-    store.dispatch(mergeConfig(config));
-  }
+  store.dispatch(
+    loadConfig(config, function onLoad() {
+      store.dispatch(authenticateUser());
+    }),
+  );
 
   /**
    * Create connected root component.
