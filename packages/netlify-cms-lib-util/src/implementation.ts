@@ -18,6 +18,7 @@ export interface ImplementationMediaFile {
   draft?: boolean;
   url?: string;
   file?: File;
+  isDirectory?: boolean;
 }
 
 export interface UnpublishedEntryMediaFile {

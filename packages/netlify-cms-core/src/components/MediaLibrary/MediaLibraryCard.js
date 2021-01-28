@@ -238,7 +238,7 @@ MediaLibraryCard.propTypes = {
   isSelected: PropTypes.bool,
   displayURL: ImmutablePropTypes.map.isRequired,
   text: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,  
+  onClick: PropTypes.func.isRequired,
   draftText: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,

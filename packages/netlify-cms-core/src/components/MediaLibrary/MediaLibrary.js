@@ -154,7 +154,7 @@ class MediaLibrary extends React.Component {
   };
 
   handleClose = () => {
-    this.setState({ currentMediaFolder: null});
+    this.setState({ currentMediaFolder: null });
     this.props.closeMediaLibrary();
   };
 
@@ -342,16 +342,19 @@ class MediaLibrary extends React.Component {
   };
 
   deriveCurrentMediaFolder(files = []) {
-    var shortestPath = files.map(file => {
-      return {
-        path: file.path,
-        segments: file.path.split('/')
-      }
-    }).sort((a,b) => {
-      return a.segments.length-b.segments.length;
-    })[0] || {};
+    var shortestPath =
+      files
+        .map(file => {
+          return {
+            path: file.path,
+            segments: file.path.split('/'),
+          };
+        })
+        .sort((a, b) => {
+          return a.segments.length - b.segments.length;
+        })[0] || {};
     var length = shortestPath.segments ? shortestPath.segments.length - 1 : 0;
-    return (shortestPath.segments || []).slice(0,length).join('/');
+    return (shortestPath.segments || []).slice(0, length).join('/');
   }
 
   render() {
@@ -373,7 +376,8 @@ class MediaLibrary extends React.Component {
       t,
     } = this.props;
 
-    const currentMediaFolder = this.state.currentMediaFolder || this.deriveCurrentMediaFolder(files);
+    const currentMediaFolder =
+      this.state.currentMediaFolder || this.deriveCurrentMediaFolder(files);
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
     const currentDirFilesOrderedByTreeType = (currentDirFiles || [])
       .filter(file => file.isDirectory)

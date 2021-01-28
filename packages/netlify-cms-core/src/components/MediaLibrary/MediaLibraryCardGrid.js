@@ -43,7 +43,6 @@ const CardWrapper = props => {
         height: style.height - gutter,
       }}
     >
-      
       <MediaLibraryCard
         key={file.key}
         isSelected={isSelectedAsset(file)}

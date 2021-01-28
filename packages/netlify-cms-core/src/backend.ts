@@ -251,6 +251,7 @@ export interface MediaFile {
   url?: string;
   file?: File;
   field?: EntryField;
+  isDirectory?: boolean;
 }
 
 interface BackupEntry {
