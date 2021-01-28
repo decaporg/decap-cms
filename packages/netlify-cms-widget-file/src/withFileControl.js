@@ -25,7 +25,7 @@ const ImageWrapper = styled.div`
   overflow: hidden;
   ${effects.checkerboard};
   ${shadows.inset};
-  cursor: pointer;
+  cursor: ${props => (props.sortable ? 'pointer' : 'auto')};
 `;
 
 const StyledImage = styled.img`
@@ -38,7 +38,7 @@ const Image = props => <StyledImage role="presentation" {...props} />;
 
 const SortableImage = SortableElement(({ itemValue, getAsset, field }) => {
   return (
-    <ImageWrapper>
+    <ImageWrapper sortable>
       <Image src={getAsset(itemValue, field) || ''} />
     </ImageWrapper>
   );
