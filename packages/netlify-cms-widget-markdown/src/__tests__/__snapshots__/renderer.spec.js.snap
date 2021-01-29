@@ -15,6 +15,36 @@ exports[`Markdown Preview renderer HTML rendering should render HTML 1`] = `
 />
 `;
 
+exports[`Markdown Preview renderer HTML sanitization should not sanitize HTML 1`] = `
+.emotion-0 {
+  margin: 15px 2px;
+}
+
+<div
+  className="emotion-0 emotion-1"
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": "<img src=\\"foobar.png\\" onerror=\\"alert('hello')\\">",
+    }
+  }
+/>
+`;
+
+exports[`Markdown Preview renderer HTML sanitization should sanitize HTML 1`] = `
+.emotion-0 {
+  margin: 15px 2px;
+}
+
+<div
+  className="emotion-0 emotion-1"
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": "<img src=\\"foobar.png\\">",
+    }
+  }
+/>
+`;
+
 exports[`Markdown Preview renderer Markdown rendering Code should render code 1`] = `
 .emotion-0 {
   margin: 15px 2px;
