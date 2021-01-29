@@ -2,12 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
+import { css } from '@emotion/core';
 import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-default';
 import { basename } from 'netlify-cms-lib-util';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -22,6 +25,7 @@ const ImageWrapper = styled.div`
   overflow: hidden;
   ${effects.checkerboard};
   ${shadows.inset};
+  cursor: ${props => (props.sortable ? 'pointer' : 'auto')};
 `;
 
 const StyledImage = styled.img`
@@ -32,10 +36,34 @@ const StyledImage = styled.img`
 
 const Image = props => <StyledImage role="presentation" {...props} />;
 
-const MultiImageWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
+const SortableImage = SortableElement(({ itemValue, getAsset, field }) => {
+  return (
+    <ImageWrapper sortable>
+      <Image src={getAsset(itemValue, field) || ''} />
+    </ImageWrapper>
+  );
+});
+
+const SortableMultiImageWrapper = SortableContainer(({ items, getAsset, field }) => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        flex-wrap: wrap;
+      `}
+    >
+      {items.map((itemValue, index) => (
+        <SortableImage
+          key={`item-${itemValue}`}
+          index={index}
+          itemValue={itemValue}
+          getAsset={getAsset}
+          field={field}
+        />
+      ))}
+    </div>
+  );
+});
 
 const FileLink = styled.a`
   margin-bottom: 20px;
@@ -188,6 +216,12 @@ export default function withFileControl({ forImage } = {}) {
       return this.props.onChange('');
     };
 
+    onSortEnd = ({ oldIndex, newIndex }) => {
+      const { value } = this.props;
+      const newValue = arrayMove(value, oldIndex, newIndex);
+      return this.props.onChange(newValue);
+    };
+
     getValidateValue = () => {
       const { value } = this.props;
       if (value) {
@@ -235,13 +269,14 @@ export default function withFileControl({ forImage } = {}) {
 
       if (isMultiple(value)) {
         return (
-          <MultiImageWrapper>
-            {value.map(val => (
-              <ImageWrapper key={val}>
-                <Image src={getAsset(val, field) || ''} />
-              </ImageWrapper>
-            ))}
-          </MultiImageWrapper>
+          <SortableMultiImageWrapper
+            items={value}
+            onSortEnd={this.onSortEnd}
+            getAsset={getAsset}
+            field={field}
+            axis="xy"
+            lockToContainerEdges={true}
+          ></SortableMultiImageWrapper>
         );
       }
 
