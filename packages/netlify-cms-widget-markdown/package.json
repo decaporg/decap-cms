@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "dompurify": "^2.2.6",
-    "jsdom": "^16.4.0",
     "is-hotkey": "^0.2.0",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
