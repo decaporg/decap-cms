@@ -351,6 +351,18 @@ describe('Frontmatter', () => {
       });
     });
 
+    it('should parse JSON with { } delimiters ending with a nested object', () => {
+      expect(
+        FrontmatterInfer.fromFile(
+          '{\n  "title": "The Title",\n  "nested": {\n    "inside": "Inside prop"\n  }\n}\nContent',
+        ),
+      ).toEqual({
+        title: 'The Title',
+        nested: { inside: 'Inside prop' },
+        body: 'Content',
+      });
+    });
+
     it('should stringify JSON with { } delimiters when it is explicitly set as the format without a custom delimiter', () => {
       expect(
         frontmatterJSON().toFile({
