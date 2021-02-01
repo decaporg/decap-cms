@@ -9268,9 +9268,9 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
 netlify-cms-app@^2.11.31:
-  version "2.14.15"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.15.tgz#e801d15d2d49e09411f98c4b977d1d0c633cffbf"
-  integrity sha512-29ahYer4FpU07yqZwZizw6HlYYpAT8kjcnsIRfyVVFSYV8CDUbKiAuHKj9xa0Z/IOve0P6okJPn1+g4SI7Qr7w==
+  version "2.14.16"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.16.tgz#e063be35cc3374930368f9be9f64fd3149e972b4"
+  integrity sha512-2fTaIdUJli9l4vIeE8PmLettvDOpKx/LbdyoR6bzeOmdKKybvT8tdKvmRz+xjsiCds9eEOux7QAEcrifTZsG+g==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -9281,7 +9281,7 @@ netlify-cms-app@^2.11.31:
     netlify-cms-backend-bitbucket "^2.12.5"
     netlify-cms-backend-git-gateway "^2.11.8"
     netlify-cms-backend-github "^2.11.7"
-    netlify-cms-backend-gitlab "^2.9.6"
+    netlify-cms-backend-gitlab "^2.9.7"
     netlify-cms-backend-test "^2.10.5"
     netlify-cms-core "^2.36.14"
     netlify-cms-editor-component-image "^2.6.7"
@@ -9352,10 +9352,10 @@ netlify-cms-backend-github@^2.11.7:
     js-base64 "^3.0.0"
     semaphore "^1.1.0"
 
-netlify-cms-backend-gitlab@^2.9.6:
-  version "2.9.6"
-  resolved "https://registry.yarnpkg.com/netlify-cms-backend-gitlab/-/netlify-cms-backend-gitlab-2.9.6.tgz#c20f73d881954c111fdf0434af3c344a1fe4b30f"
-  integrity sha512-H/8rQ28CGHdxmvwX8YUgvXcQFuT5jtXfw09v5hv72Y7CsL34LYdTs0Q6zrI7UK/LhmbKgudDwmUYCN4Hn4x5bw==
+netlify-cms-backend-gitlab@^2.9.7:
+  version "2.9.7"
+  resolved "https://registry.yarnpkg.com/netlify-cms-backend-gitlab/-/netlify-cms-backend-gitlab-2.9.7.tgz#f25d276ee60f8b8d368926ae94e215aa259b2515"
+  integrity sha512-gyMkTrtbQAlvcVXx9D7QggTMb6KxVbOL/36Cc+l3QudSOnI/FmToR9qQXH4jixVxKNJ2JLvdDjhzTFWtiPaoMA==
   dependencies:
     js-base64 "^3.0.0"
     semaphore "^1.1.0"
