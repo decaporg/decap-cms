@@ -9268,9 +9268,9 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
 netlify-cms-app@^2.11.31:
-  version "2.14.16"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.16.tgz#e063be35cc3374930368f9be9f64fd3149e972b4"
-  integrity sha512-2fTaIdUJli9l4vIeE8PmLettvDOpKx/LbdyoR6bzeOmdKKybvT8tdKvmRz+xjsiCds9eEOux7QAEcrifTZsG+g==
+  version "2.14.17"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.17.tgz#a2aa4be07bc522523e68e52840987e138d13340b"
+  integrity sha512-gpBKP1d1vuGt3W/AybtjEGGw73s9jY9ecCsDkoWVqUFAQRbOu5gIpTHvqYskHuH91YJ7yank201bMgkQyGYHIg==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -9283,7 +9283,7 @@ netlify-cms-app@^2.11.31:
     netlify-cms-backend-github "^2.11.7"
     netlify-cms-backend-gitlab "^2.9.7"
     netlify-cms-backend-test "^2.10.5"
-    netlify-cms-core "^2.36.14"
+    netlify-cms-core "^2.36.15"
     netlify-cms-editor-component-image "^2.6.7"
     netlify-cms-lib-auth "^2.3.0"
     netlify-cms-lib-util "^2.12.2"
@@ -9365,10 +9365,10 @@ netlify-cms-backend-test@^2.10.5:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.10.5.tgz#b06cf3adc425841d89689c1bf0c0658949fc48c9"
   integrity sha512-YHuMfAuzmDKd89YvMNfZh4F0DhGYGJVBVEV5H/MgOkPQcREG9SdLNjDyBcr/Y7mpjlu6MwR3s71BgMWIlFGpJg==
 
-netlify-cms-core@^2.36.14:
-  version "2.36.14"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.36.14.tgz#602484ffd74df3dffca13ac30f368c558ae82747"
-  integrity sha512-k4nDcyfl5/mQnAnVcYagc9dNFhs8bR8aMXWzhKklZslzJ0tjsPTqib8GQesAaWjnEzkTxEXRZWgqY32rtvd7CA==
+netlify-cms-core@^2.36.15:
+  version "2.36.15"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.36.15.tgz#4f45b036586595d86d95f3b1ef08f6690c0ce04c"
+  integrity sha512-aD4kjvSj5RfLjoJjPL3nGYjXCmwqn/PZIerLbgMicmhxz7qNLC+lrDzve/6xF1oINnjDsi8lq7EbfAdeJd8DFQ==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "^7.0.0"
