@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.6...netlify-cms-backend-gitlab@2.9.7) (2021-02-01)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** increase rebase timeout ([#4905](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/4905)) ([d9d6860](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/d9d686025fe848fe460917cdef1934dea3295c9d))
+
+
+
+
+
 ## [2.9.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.5...netlify-cms-backend-gitlab@2.9.6) (2021-01-05)
 
 
