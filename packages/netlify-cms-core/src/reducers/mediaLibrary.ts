@@ -71,6 +71,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
           privateUpload,
           config: libConfig,
           controlMedia: Map(),
+          displayURLs: Map(),
           field,
         });
       }
