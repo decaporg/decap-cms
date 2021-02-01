@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.14](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.13...netlify-cms-core@2.36.14) (2021-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency copy-text-to-clipboard to v3 ([#4902](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4902)) ([e7000b4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e7000b4b20243682ea98d2aa1cadb6524e87d63e))
+
+
+
+
+
 ## [2.36.13](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.12...netlify-cms-core@2.36.13) (2021-01-19)
 
 
