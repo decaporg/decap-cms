@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.36.15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.14...netlify-cms-core@2.36.15) (2021-02-01)
+
+
+### Bug Fixes
+
+* add missing displayURLs to state ([#4910](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4910)) ([f035014](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f0350141271dde34f3f54bf330198ec9992bd577))
+
+
+
+
+
 ## [2.36.14](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.13...netlify-cms-core@2.36.14) (2021-02-01)
 
 
