@@ -10,4 +10,5 @@ module.exports = {
   },
   testURL: 'http://localhost:8080',
   snapshotSerializers: ['jest-emotion'],
+  transformIgnorePatterns: ['node_modules/(?!copy-text-to-clipboard)'],
 };
