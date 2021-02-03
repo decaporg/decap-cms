@@ -2,5 +2,5 @@
   "extends": ["github>netlify/renovate-config:default"],
   "ignorePresets": [":prHourlyLimit2"],
   "semanticCommits": true,
-  "masterIssue": true
+  "dependencyDashboard": true
 }
