@@ -193,6 +193,11 @@ const en = {
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Draft',
+      copy: 'Copy',
+      copyUrl: 'Copy URL',
+      copyPath: 'Copy Path',
+      copyName: 'Copy Name',
+      copied: 'Copied',
     },
     mediaLibrary: {
       onDelete: 'Are you sure you want to delete selected media?',

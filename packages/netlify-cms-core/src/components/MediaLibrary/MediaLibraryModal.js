@@ -128,6 +128,7 @@ const MediaLibraryModal = ({
         hasSelection={hasSelection}
         isPersisting={isPersisting}
         isDeleting={isDeleting}
+        selectedFile={selectedFile}
       />
       {!shouldShowEmptyMessage ? null : (
         <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />

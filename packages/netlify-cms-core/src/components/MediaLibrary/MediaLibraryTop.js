@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import MediaLibrarySearch from './MediaLibrarySearch';
 import MediaLibraryHeader from './MediaLibraryHeader';
-import { UploadButton, DeleteButton, DownloadButton, InsertButton } from './MediaLibraryButtons';
+import {
+  UploadButton,
+  DeleteButton,
+  DownloadButton,
+  CopyToClipBoardButton,
+  InsertButton,
+} from './MediaLibraryButtons';
 
 const LibraryTop = styled.div`
   position: relative;
@@ -37,12 +43,11 @@ const MediaLibraryTop = ({
   hasSelection,
   isPersisting,
   isDeleting,
+  selectedFile,
 }) => {
   const shouldShowButtonLoader = isPersisting || isDeleting;
   const uploadEnabled = !shouldShowButtonLoader;
   const deleteEnabled = !shouldShowButtonLoader && hasSelection;
-  const downloadEnabled = hasSelection;
-  const insertEnabled = hasSelection;
 
   const uploadButtonLabel = isPersisting
     ? t('mediaLibrary.mediaLibraryModal.uploading')
@@ -66,11 +71,14 @@ const MediaLibraryTop = ({
           isPrivate={privateUpload}
         />
         <ButtonsContainer>
-          <DownloadButton
-            onClick={onDownload}
-            disabled={!downloadEnabled}
-            focused={downloadEnabled}
-          >
+          <CopyToClipBoardButton
+            disabled={!hasSelection}
+            path={selectedFile.path}
+            name={selectedFile.name}
+            draft={selectedFile.draft}
+            t={t}
+          />
+          <DownloadButton onClick={onDownload} disabled={!hasSelection}>
             {downloadButtonLabel}
           </DownloadButton>
           <UploadButton
@@ -94,7 +102,7 @@ const MediaLibraryTop = ({
             {deleteButtonLabel}
           </DeleteButton>
           {!canInsert ? null : (
-            <InsertButton onClick={onInsert} disabled={!insertEnabled}>
+            <InsertButton onClick={onInsert} disabled={!hasSelection}>
               {insertButtonLabel}
             </InsertButton>
           )}
@@ -121,6 +129,14 @@ MediaLibraryTop.propTypes = {
   hasSelection: PropTypes.bool.isRequired,
   isPersisting: PropTypes.bool,
   isDeleting: PropTypes.bool,
+  selectedFile: PropTypes.oneOfType([
+    PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      draft: PropTypes.bool.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+    PropTypes.shape({}),
+  ]),
 };
 
 export default MediaLibraryTop;
