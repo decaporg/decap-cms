@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.37.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.15...netlify-cms-core@2.37.0) (2021-02-03)
+
+
+### Features
+
+* **media-library:** add copy to clipboard, allow avif ([#4914](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4914)) ([4b73e11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/4b73e11db0627f4046d5e23e2fa3b53b3f6788de))
+
+
+
+
+
 ## [2.36.15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.14...netlify-cms-core@2.36.15) (2021-02-01)
 
 
