@@ -21,7 +21,17 @@ import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
  * Extensions used to determine which files to show when the media library is
  * accessed from an image insertion field.
  */
-const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
+const IMAGE_EXTENSIONS_VIEWABLE = [
+  'jpg',
+  'jpeg',
+  'webp',
+  'gif',
+  'png',
+  'bmp',
+  'tiff',
+  'svg',
+  'avif',
+];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 class MediaLibrary extends React.Component {

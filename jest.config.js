@@ -7,6 +7,7 @@ module.exports = {
     'netlify-cms-backend-github': '<rootDir>/packages/netlify-cms-backend-github/src/index.ts',
     'netlify-cms-lib-widgets': '<rootDir>/packages/netlify-cms-lib-widgets/src/index.ts',
     'netlify-cms-widget-object': '<rootDir>/packages/netlify-cms-widget-object/src/index.js',
+    '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
   },
   testURL: 'http://localhost:8080',
   snapshotSerializers: ['jest-emotion'],
