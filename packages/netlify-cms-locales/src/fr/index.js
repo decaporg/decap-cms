@@ -159,19 +159,19 @@ const fr = {
         markdown: 'Markdown',
       },
       image: {
-        choose: 'Choisissez une image',
+        choose: 'Choisir une image',
         chooseUrl: 'Insérer depuis une adresse web',
         replaceUrl: 'Remplacer avec une adresse web',
         promptUrl: "Entrez l'adresse web de l'image",
-        chooseDifferent: 'Choisissez une image différente',
+        chooseDifferent: 'Choisir une image différente',
         remove: "Supprimer l'image",
       },
       file: {
-        choose: 'Choisissez un fichier',
+        choose: 'Choisir un fichier',
         chooseUrl: 'Insérer depuis une adresse web',
         replaceUrl: 'Remplacer depuis une adresse web',
         promptUrl: "Entrez l'adresse web du fichier",
-        chooseDifferent: 'Choisissez un fichier différent',
+        chooseDifferent: 'Choisir un fichier différent',
         remove: 'Effacer le fichier',
       },
       unknownControl: {
