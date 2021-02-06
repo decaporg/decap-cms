@@ -161,7 +161,7 @@ const fr = {
       image: {
         choose: 'Choisissez une image',
         chooseUrl: 'Insérer depuis une adresse web',
-        replaceUrl: 'Remplacer avec une adresse web',
+        replaceUrl: 'Remplacer depuis une adresse web',
         promptUrl: "Entrez l'adresse web de l'image",
         chooseDifferent: 'Choisissez une image différente',
         remove: "Supprimer l'image",
