@@ -169,7 +169,7 @@ const fr = {
       file: {
         choose: 'Choisissez un fichier',
         chooseUrl: 'Insérer depuis une adresse web',
-        replaceUrl: 'Remplacer avec une adresse web',
+        replaceUrl: 'Remplacer depuis une adresse web',
         promptUrl: "Entrez l'adresse web du fichier",
         chooseDifferent: 'Choisissez un fichier différent',
         remove: 'Effacer le fichier',
