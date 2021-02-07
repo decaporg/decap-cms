@@ -33,7 +33,7 @@ import {
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
-const parseAzureRepo = (config: Config) => {
+function parseAzureRepo(config: Config) {
   const { repo } = config.backend;
 
   if (typeof repo !== 'string') {
@@ -51,7 +51,7 @@ const parseAzureRepo = (config: Config) => {
     project,
     repoName,
   };
-};
+}
 
 export default class Azure implements Implementation {
   lock: AsyncLock;
