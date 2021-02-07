@@ -13,23 +13,20 @@ export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
 export const CONFIG_FAILURE = 'CONFIG_FAILURE';
 
-function traverseFieldsMutable(fields, updater, done = () => false) {
-  if (done()) {
-    return;
-  }
-
-  for (let i = 0, l = fields.length; i < l; i += 1) {
-    const field = fields[i];
-    updater(field);
-    if (field.fields) {
-      traverseFieldsMutable(field.fields, updater, done);
-    } else if (field.field) {
-      traverseFieldsMutable([field.field], updater, done);
-    } else if (field.types) {
-      traverseFieldsMutable(field.types, updater, done);
+const traverseFieldsJS = (fields, updater) => {
+  return fields.map(field => {
+    let newField = updater(field);
+    if (newField.fields) {
+      newField = { ...newField, fields: traverseFieldsJS(newField.fields, updater) };
+    } else if (newField.field) {
+      newField = { ...newField, field: traverseFieldsJS([newField.field], updater)[0] };
+    } else if (newField.types) {
+      newField = { ...newField, types: traverseFieldsJS(newField.types, updater) };
     }
-  }
-}
+
+    return newField;
+  });
+};
 
 const getConfigUrl = () => {
   const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
@@ -50,30 +47,31 @@ const setDefaultPublicFolder = map => {
   return map;
 };
 
-function setSnakeCaseConfig(field) {
-  // Mapping between existing camelCase and its snake_case counterpart
-  const widgetKeyMap = {
-    dateFormat: 'date_format',
-    timeFormat: 'time_format',
-    pickerUtc: 'picker_utc',
-    editorComponents: 'editor_components',
-    valueType: 'value_type',
-    valueField: 'value_field',
-    searchFields: 'search_fields',
-    displayFields: 'display_fields',
-    optionsLength: 'options_length',
-  };
+// Mapping between existing camelCase and its snake_case counterpart
+const WIDGET_KEY_MAP = {
+  dateFormat: 'date_format',
+  timeFormat: 'time_format',
+  pickerUtc: 'picker_utc',
+  editorComponents: 'editor_components',
+  valueType: 'value_type',
+  valueField: 'value_field',
+  searchFields: 'search_fields',
+  displayFields: 'display_fields',
+  optionsLength: 'options_length',
+};
 
-  const widgetKeyMapEntries = Object.entries(widgetKeyMap);
-  for (const [camel, snake] of widgetKeyMapEntries) {
-    if (camel in field) {
-      field[snake] = field[camel];
-      console.warn(
-        `Field ${field.name} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
-      );
-    }
-  }
-}
+const setSnakeCaseConfig = field => {
+  const deprecatedKeys = Object.keys(WIDGET_KEY_MAP).filter(camel => camel in field);
+  const snakeValues = deprecatedKeys.map(camel => {
+    const snake = WIDGET_KEY_MAP[camel];
+    console.warn(
+      `Field ${field.name} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
+    );
+    return { [snake]: field[camel] };
+  });
+
+  return Object.assign({}, field, ...snakeValues);
+};
 
 const setI18nField = field => {
   if (field.get(I18N) === true) {
@@ -167,35 +165,38 @@ const hasIntegration = (config, collection) => {
 };
 
 export function normalizeConfig(config) {
-  const collections = config.collections || [];
-  for (let i = 0, l = collections.length; i < l; i += 1) {
-    const collection = collections[i];
-    const { folder, files } = collection;
+  const { collections = [] } = config;
 
-    if (folder) {
-      if (collection.fields) {
-        traverseFieldsMutable(collection.fields, setSnakeCaseConfig);
-      }
+  const normalizedCollections = collections.map(collection => {
+    const { fields, files } = collection;
+
+    let normalizedCollection = collection;
+    if (fields) {
+      const normalizedFields = traverseFieldsJS(fields, setSnakeCaseConfig);
+      normalizedCollection = { ...normalizedCollection, fields: normalizedFields };
     }
 
     if (files) {
-      for (let j = 0, ll = files.length; j < ll; j += 1) {
-        const file = files[j];
-        traverseFieldsMutable(file.fields, setSnakeCaseConfig);
-      }
+      const normalizedFiles = files.map(file => {
+        const normalizedFileFields = traverseFieldsJS(file.fields, setSnakeCaseConfig);
+        return { ...file, fields: normalizedFileFields };
+      });
+      normalizedCollection = { ...normalizedCollection, files: normalizedFiles };
     }
 
-    if (collection.sortableFields) {
-      collection.sortable_fields = collection.sortableFields;
-      delete collection.sortableFields;
+    if (normalizedCollection.sortableFields) {
+      const { sortableFields, ...rest } = normalizedCollection;
+      normalizedCollection = { ...rest, sortable_fields: sortableFields };
 
       console.warn(
         `Collection ${collection.name} is using a deprecated configuration 'sortableFields'. Please use 'sortable_fields'`,
       );
     }
-  }
 
-  return config;
+    return normalizedCollection;
+  });
+
+  return { ...config, collections: normalizedCollections };
 }
 
 export function applyDefaults(config) {
@@ -389,30 +390,37 @@ export async function detectProxyServer(localBackend) {
   return {};
 }
 
-export async function handleLocalBackend(config) {
+const getPublishMode = (config, publishModes, backendType) => {
+  if (config.publish_mode && publishModes && !publishModes.includes(config.publish_mode)) {
+    const newPublishMode = publishModes[0];
+    console.log(
+      `'${config.publish_mode}' is not supported by '${backendType}' backend, switching to '${newPublishMode}'`,
+    );
+    return newPublishMode;
+  }
+
+  return config.publish_mode;
+};
+
+export const handleLocalBackend = async config => {
   if (!config.local_backend) {
     return config;
   }
 
-  const { proxyUrl, publish_modes, type } = await detectProxyServer(config.local_backend);
+  const { proxyUrl, publish_modes: publishModes, type: backendType } = await detectProxyServer(
+    config.local_backend,
+  );
 
   if (!proxyUrl) {
     return config;
   }
 
-  config.backend.name = 'proxy';
-  config.backend.proxy_url = proxyUrl;
-
-  if (config.publish_mode && publish_modes && !publish_modes.includes(config.publish_mode)) {
-    const newPublishMode = publish_modes[0];
-    config.publish_mode = newPublishMode;
-    console.log(
-      `'${config.publish_mode}' is not supported by '${type}' backend, switching to '${newPublishMode}'`,
-    );
-  }
-
-  return config;
-}
+  return {
+    ...config,
+    publish_mode: getPublishMode(config, publishModes, backendType),
+    backend: { ...config.backend, name: 'proxy', proxy_url: proxyUrl },
+  };
+};
 
 export function loadConfig(manualConfig = {}, onLoad) {
   if (window.CMS_CONFIG) {
@@ -434,12 +442,10 @@ export function loadConfig(manualConfig = {}, onLoad) {
 
       validateConfig(mergedConfig);
 
-      // We're mutating loaded config object, but this is fine,
-      // because we're doing it before it becomes a part of the app state
-      await handleLocalBackend(mergedConfig);
-      normalizeConfig(mergedConfig);
+      const withLocalBackend = await handleLocalBackend(mergedConfig);
+      const normalizedConfig = normalizeConfig(withLocalBackend);
 
-      const config = applyDefaults(fromJS(mergedConfig));
+      const config = applyDefaults(fromJS(normalizedConfig));
 
       dispatch(configLoaded(config));
 
