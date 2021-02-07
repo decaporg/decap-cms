@@ -22,12 +22,13 @@ jest.mock('netlify-cms-ui-default', () => {
 const middlewares = [];
 const mockStore = configureStore(middlewares);
 
-const renderWithRedux = (component, { store } = {}) => {
+function renderWithRedux(component, { store } = {}) {
   function Wrapper({ children }) {
     return <Provider store={store}>{children}</Provider>;
   }
+
   return render(component, { wrapper: Wrapper });
-};
+}
 
 describe('NestedCollection', () => {
   const collection = fromJS({

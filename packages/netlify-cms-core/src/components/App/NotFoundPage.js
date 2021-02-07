@@ -8,11 +8,13 @@ const NotFoundContainer = styled.div`
   margin: ${lengths.pageMargin};
 `;
 
-const NotFoundPage = ({ t }) => (
-  <NotFoundContainer>
-    <h2>{t('app.notFoundPage.header')}</h2>
-  </NotFoundContainer>
-);
+function NotFoundPage({ t }) {
+  return (
+    <NotFoundContainer>
+      <h2>{t('app.notFoundPage.header')}</h2>
+    </NotFoundContainer>
+  );
+}
 
 NotFoundPage.propTypes = {
   t: PropTypes.func.isRequired,

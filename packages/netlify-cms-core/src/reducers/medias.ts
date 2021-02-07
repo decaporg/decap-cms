@@ -57,7 +57,8 @@ const medias = produce((state: Medias, action: MediasAction) => {
   }
 }, defaultState);
 
-export const selectIsLoadingAsset = (state: Medias) =>
-  Object.values(state).some(state => state.isLoading);
+export function selectIsLoadingAsset(state: Medias) {
+  return Object.values(state).some(state => state.isLoading);
+}
 
 export default medias;

@@ -16,7 +16,7 @@ const NoEntriesMessage = styled(PaginationMessage)`
   margin-top: 16px;
 `;
 
-const Entries = ({
+function Entries({
   collections,
   entries,
   isFetching,
@@ -25,7 +25,7 @@ const Entries = ({
   handleCursorActions,
   t,
   page,
-}) => {
+}) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
     t('collection.entries.cachingEntries'),
@@ -56,7 +56,7 @@ const Entries = ({
   }
 
   return <NoEntriesMessage>{t('collection.entries.noEntries')}</NoEntriesMessage>;
-};
+}
 
 Entries.propTypes = {
   collections: ImmutablePropTypes.iterable.isRequired,

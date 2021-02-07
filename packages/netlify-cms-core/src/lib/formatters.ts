@@ -41,12 +41,12 @@ type Options = {
   authorName?: string;
 };
 
-export const commitMessageFormatter = (
+export function commitMessageFormatter(
   type: string,
   config: Config,
   { slug, path, collection, authorLogin, authorName }: Options,
   isOpenAuthoring?: boolean,
-) => {
+) {
   const templates = commitMessageTemplates.merge(
     config.getIn(['backend', 'commit_messages'], Map<string, string>()),
   );
@@ -88,9 +88,9 @@ export const commitMessageFormatter = (
   });
 
   return message;
-};
+}
 
-export const prepareSlug = (slug: string) => {
+export function prepareSlug(slug: string) {
   return (
     slug
       .trim()
@@ -103,20 +103,20 @@ export const prepareSlug = (slug: string) => {
       // Replace periods with dashes.
       .replace(/[.]/g, '-')
   );
-};
+}
 
-export const getProcessSegment = (slugConfig: SlugConfig, ignoreValues: string[] = []) => {
+export function getProcessSegment(slugConfig: SlugConfig, ignoreValues: string[] = []) {
   return (value: string) =>
     ignoreValues.includes(value)
       ? value
       : flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)])(value);
-};
+}
 
-export const slugFormatter = (
+export function slugFormatter(
   collection: Collection,
   entryData: Map<string, unknown>,
   slugConfig: SlugConfig,
-) => {
+) {
   const slugTemplate = collection.get('slug') || '{{slug}}';
 
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
@@ -138,15 +138,15 @@ export const slugFormatter = (
       value === slug ? value : processSegment(value),
     );
   }
-};
+}
 
-export const previewUrlFormatter = (
+export function previewUrlFormatter(
   baseUrl: string,
   collection: Collection,
   slug: string,
   slugConfig: SlugConfig,
   entry: EntryMap,
-) => {
+) {
   /**
    * Preview URL can't be created without `baseUrl`. This makes preview URLs
    * optional for backends that don't support them.
@@ -160,12 +160,13 @@ export const previewUrlFormatter = (
   const isFileCollection = collection.get('type') === FILES;
   const file = isFileCollection ? getFileFromSlug(collection, entry.get('slug')) : undefined;
 
-  const getPathTemplate = () => {
+  function getPathTemplate() {
     return file?.get('preview_path') ?? collection.get('preview_path');
-  };
-  const getDateField = () => {
+  }
+
+  function getDateField() {
     return file?.get('preview_path_date_field') ?? collection.get('preview_path_date_field');
-  };
+  }
 
   /**
    * If a `previewPath` is provided for the collection/file, use it to construct the
@@ -209,13 +210,9 @@ export const previewUrlFormatter = (
 
   const previewPath = trimStart(compiledPath, ' /');
   return `${basePath}/${previewPath}`;
-};
+}
 
-export const summaryFormatter = (
-  summaryTemplate: string,
-  entry: EntryMap,
-  collection: Collection,
-) => {
+export function summaryFormatter(summaryTemplate: string, entry: EntryMap, collection: Collection) {
   let entryData = entry.get('data');
   const date =
     parseDateFromEntry(
@@ -234,16 +231,16 @@ export const summaryFormatter = (
   }
   const summary = compileStringTemplate(summaryTemplate, date, identifier, entryData);
   return summary;
-};
+}
 
-export const folderFormatter = (
+export function folderFormatter(
   folderTemplate: string,
   entry: EntryMap | undefined,
   collection: Collection,
   defaultFolder: string,
   folderKey: string,
   slugConfig: SlugConfig,
-) => {
+) {
   if (!entry || !entry.get('data')) {
     return folderTemplate;
   }
@@ -268,4 +265,4 @@ export const folderFormatter = (
   );
 
   return mediaFolder;
-};
+}

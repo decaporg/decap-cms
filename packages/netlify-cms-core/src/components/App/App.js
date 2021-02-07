@@ -48,16 +48,16 @@ const ErrorCodeBlock = styled.pre`
   line-height: 1.5;
 `;
 
-const getDefaultPath = collections => {
+function getDefaultPath(collections) {
   const first = collections.filter(collection => collection.get('hide') !== true).first();
   if (first) {
     return `/collections/${first.get('name')}`;
   } else {
     throw new Error('Could not find a non hidden collection');
   }
-};
+}
 
-const RouteInCollection = ({ collections, render, ...props }) => {
+function RouteInCollection({ collections, render, ...props }) {
   const defaultPath = getDefaultPath(collections);
   return (
     <Route
@@ -68,7 +68,7 @@ const RouteInCollection = ({ collections, render, ...props }) => {
       }}
     />
   );
-};
+}
 
 class App extends React.Component {
   static propTypes = {

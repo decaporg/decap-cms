@@ -7,7 +7,7 @@ interface Acc {
   hooks: Record<string, string | Record<string, string>>;
 }
 
-export const getIntegrations = (config: Config) => {
+export function getIntegrations(config: Config) {
   const integrations: Integration[] = config.get('integrations', List()).toJS() || [];
   const newState = integrations.reduce(
     (acc, integration) => {
@@ -38,9 +38,9 @@ export const getIntegrations = (config: Config) => {
     { providers: {}, hooks: {} } as Acc,
   );
   return fromJS(newState);
-};
+}
 
-const integrations = (state = null, action: IntegrationsAction): Integrations | null => {
+function integrations(state = null, action: IntegrationsAction): Integrations | null {
   switch (action.type) {
     case CONFIG_SUCCESS: {
       return getIntegrations(action.payload);
@@ -48,11 +48,12 @@ const integrations = (state = null, action: IntegrationsAction): Integrations | 
     default:
       return state;
   }
-};
+}
 
-export const selectIntegration = (state: Integrations, collection: string | null, hook: string) =>
-  collection
+export function selectIntegration(state: Integrations, collection: string | null, hook: string) {
+  return collection
     ? state.getIn(['hooks', collection, hook], false)
     : state.getIn(['hooks', hook], false);
+}
 
 export default integrations;

@@ -354,7 +354,7 @@ class MediaLibrary extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
   const { mediaLibrary } = state;
   const field = mediaLibrary.get('field');
   const mediaLibraryProps = {
@@ -377,7 +377,7 @@ const mapStateToProps = state => {
     field,
   };
   return { ...mediaLibraryProps };
-};
+}
 
 const mapDispatchToProps = {
   loadMedia: loadMediaAction,

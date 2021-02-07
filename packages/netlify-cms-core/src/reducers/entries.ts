@@ -95,11 +95,11 @@ const loadSort = once(() => {
   return Map() as Sort;
 });
 
-const clearSort = () => {
+function clearSort() {
   localStorage.removeItem(storageSortKey);
-};
+}
 
-const persistSort = (sort: Sort | undefined) => {
+function persistSort(sort: Sort | undefined) {
   if (sort) {
     const storageSort: StorageSort = {};
     sort.keySeq().forEach(key => {
@@ -117,7 +117,7 @@ const persistSort = (sort: Sort | undefined) => {
   } else {
     clearSort();
   }
-};
+}
 
 const loadViewStyle = once(() => {
   const viewStyle = localStorage.getItem(viewStyleKey);
@@ -129,22 +129,22 @@ const loadViewStyle = once(() => {
   return VIEW_STYLE_LIST;
 });
 
-const clearViewStyle = () => {
+function clearViewStyle() {
   localStorage.removeItem(viewStyleKey);
-};
+}
 
-const persistViewStyle = (viewStyle: string | undefined) => {
+function persistViewStyle(viewStyle: string | undefined) {
   if (viewStyle) {
     localStorage.setItem(viewStyleKey, viewStyle);
   } else {
     clearViewStyle();
   }
-};
+}
 
-const entries = (
+function entries(
   state = Map({ entities: Map(), pages: Map(), sort: loadSort(), viewStyle: loadViewStyle() }),
   action: EntriesAction,
-) => {
+) {
   switch (action.type) {
     case ENTRY_REQUEST: {
       const payload = action.payload as EntryRequestPayload;
@@ -344,30 +344,30 @@ const entries = (
     default:
       return state;
   }
-};
+}
 
-export const selectEntriesSort = (entries: Entries, collection: string) => {
+export function selectEntriesSort(entries: Entries, collection: string) {
   const sort = entries.get('sort') as Sort | undefined;
   return sort?.get(collection);
-};
+}
 
-export const selectEntriesFilter = (entries: Entries, collection: string) => {
+export function selectEntriesFilter(entries: Entries, collection: string) {
   const filter = entries.get('filter') as Filter | undefined;
   return filter?.get(collection) || Map();
-};
+}
 
-export const selectEntriesGroup = (entries: Entries, collection: string) => {
+export function selectEntriesGroup(entries: Entries, collection: string) {
   const group = entries.get('group') as Group | undefined;
   return group?.get(collection) || Map();
-};
+}
 
-export const selectEntriesGroupField = (entries: Entries, collection: string) => {
+export function selectEntriesGroupField(entries: Entries, collection: string) {
   const groups = selectEntriesGroup(entries, collection);
   const value = groups?.valueSeq().find(v => v?.get('active') === true);
   return value;
-};
+}
 
-export const selectEntriesSortFields = (entries: Entries, collection: string) => {
+export function selectEntriesSortFields(entries: Entries, collection: string) {
   const sort = selectEntriesSort(entries, collection);
   const values =
     sort
@@ -376,9 +376,9 @@ export const selectEntriesSortFields = (entries: Entries, collection: string) =>
       .toArray() || [];
 
   return values;
-};
+}
 
-export const selectEntriesFilterFields = (entries: Entries, collection: string) => {
+export function selectEntriesFilterFields(entries: Entries, collection: string) {
   const filter = selectEntriesFilter(entries, collection);
   const values =
     filter
@@ -386,27 +386,29 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
       .filter(v => v?.get('active') === true)
       .toArray() || [];
   return values;
-};
+}
 
-export const selectViewStyle = (entries: Entries) => {
+export function selectViewStyle(entries: Entries) {
   return entries.get('viewStyle');
-};
+}
 
-export const selectEntry = (state: Entries, collection: string, slug: string) =>
-  state.getIn(['entities', `${collection}.${slug}`]);
+export function selectEntry(state: Entries, collection: string, slug: string) {
+  return state.getIn(['entities', `${collection}.${slug}`]);
+}
 
-export const selectPublishedSlugs = (state: Entries, collection: string) =>
-  state.getIn(['pages', collection, 'ids'], List<string>());
+export function selectPublishedSlugs(state: Entries, collection: string) {
+  return state.getIn(['pages', collection, 'ids'], List<string>());
+}
 
-const getPublishedEntries = (state: Entries, collectionName: string) => {
+function getPublishedEntries(state: Entries, collectionName: string) {
   const slugs = selectPublishedSlugs(state, collectionName);
   const entries =
     slugs &&
     (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
   return entries;
-};
+}
 
-export const selectEntries = (state: Entries, collection: Collection) => {
+export function selectEntries(state: Entries, collection: Collection) {
   const collectionName = collection.get('name');
   let entries = getPublishedEntries(state, collectionName);
 
@@ -438,9 +440,9 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   }
 
   return entries;
-};
+}
 
-const getGroup = (entry: EntryMap, selectedGroup: GroupMap) => {
+function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
   const label = selectedGroup.get('label');
   const field = selectedGroup.get('field');
 
@@ -478,9 +480,9 @@ const getGroup = (entry: EntryMap, selectedGroup: GroupMap) => {
     label,
     value: typeof fieldData === 'boolean' ? fieldData : dataAsString,
   };
-};
+}
 
-export const selectGroups = (state: Entries, collection: Collection) => {
+export function selectGroups(state: Entries, collection: Collection) {
   const collectionName = collection.get('name');
   const entries = getPublishedEntries(state, collectionName);
 
@@ -507,37 +509,37 @@ export const selectGroups = (state: Entries, collection: Collection) => {
   });
 
   return groupsArray;
-};
+}
 
-export const selectEntryByPath = (state: Entries, collection: string, path: string) => {
+export function selectEntryByPath(state: Entries, collection: string, path: string) {
   const slugs = selectPublishedSlugs(state, collection);
   const entries =
     slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
 
   return entries && entries.find(e => e?.get('path') === path);
-};
+}
 
-export const selectEntriesLoaded = (state: Entries, collection: string) => {
+export function selectEntriesLoaded(state: Entries, collection: string) {
   return !!state.getIn(['pages', collection]);
-};
+}
 
-export const selectIsFetching = (state: Entries, collection: string) => {
+export function selectIsFetching(state: Entries, collection: string) {
   return state.getIn(['pages', collection, 'isFetching'], false);
-};
+}
 
 const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 
-const getFileField = (collectionFiles: CollectionFiles, slug: string | undefined) => {
+function getFileField(collectionFiles: CollectionFiles, slug: string | undefined) {
   const file = collectionFiles.find(f => f?.get('name') === slug);
   return file;
-};
+}
 
-const hasCustomFolder = (
+function hasCustomFolder(
   folderKey: 'media_folder' | 'public_folder',
   collection: Collection | null,
   slug: string | undefined,
   field: EntryField | undefined,
-) => {
+) {
   if (!collection) {
     return false;
   }
@@ -558,9 +560,9 @@ const hasCustomFolder = (
   }
 
   return false;
-};
+}
 
-const traverseFields = (
+function traverseFields(
   folderKey: 'media_folder' | 'public_folder',
   config: Config,
   collection: Collection,
@@ -568,7 +570,7 @@ const traverseFields = (
   field: EntryField,
   fields: EntryField[],
   currentFolder: string,
-): string | null => {
+): string | null {
   const matchedField = fields.filter(f => f === field)[0];
   if (matchedField) {
     return folderFormatter(
@@ -632,15 +634,15 @@ const traverseFields = (
   }
 
   return null;
-};
+}
 
-const evaluateFolder = (
+function evaluateFolder(
   folderKey: 'media_folder' | 'public_folder',
   config: Config,
   collection: Collection,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-) => {
+) {
   let currentFolder = config.get(folderKey);
 
   // add identity template if doesn't exist
@@ -723,14 +725,14 @@ const evaluateFolder = (
   }
 
   return currentFolder;
-};
+}
 
-export const selectMediaFolder = (
+export function selectMediaFolder(
   config: Config,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-) => {
+) {
   const name = 'media_folder';
   let mediaFolder = config.get(name);
 
@@ -750,15 +752,15 @@ export const selectMediaFolder = (
   }
 
   return trim(mediaFolder, '/');
-};
+}
 
-export const selectMediaFilePath = (
+export function selectMediaFilePath(
   config: Config,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   mediaPath: string,
   field: EntryField | undefined,
-) => {
+) {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
@@ -766,15 +768,15 @@ export const selectMediaFilePath = (
   const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
 
   return join(mediaFolder, basename(mediaPath));
-};
+}
 
-export const selectMediaFilePublicPath = (
+export function selectMediaFilePublicPath(
   config: Config,
   collection: Collection | null,
   mediaPath: string,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-) => {
+) {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
@@ -789,12 +791,12 @@ export const selectMediaFilePublicPath = (
   }
 
   return join(publicFolder, basename(mediaPath));
-};
+}
 
-export const selectEditingDraft = (state: EntryDraft) => {
+export function selectEditingDraft(state: EntryDraft) {
   const entry = state.get('entry');
   const workflowDraft = entry && !entry.isEmpty();
   return workflowDraft;
-};
+}
 
 export default entries;

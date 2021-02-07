@@ -19,7 +19,7 @@ import 'what-input';
 
 const ROOT_ID = 'nc-root';
 
-const TranslatedApp = ({ locale, config }) => {
+function TranslatedApp({ locale, config }) {
   return (
     <I18n locale={locale} messages={getPhrases(locale)}>
       <ErrorBoundary showBackup config={config}>
@@ -29,11 +29,11 @@ const TranslatedApp = ({ locale, config }) => {
       </ErrorBoundary>
     </I18n>
   );
-};
+}
 
-const mapDispatchToProps = state => {
+function mapDispatchToProps(state) {
   return { locale: selectLocale(state.config), config: state.config };
-};
+}
 
 const ConnectedTranslatedApp = connect(mapDispatchToProps)(TranslatedApp);
 
@@ -82,14 +82,16 @@ function bootstrap(opts = {}) {
   /**
    * Create connected root component.
    */
-  const Root = () => (
-    <>
-      <GlobalStyles />
-      <Provider store={store}>
-        <ConnectedTranslatedApp />
-      </Provider>
-    </>
-  );
+  function Root() {
+    return (
+      <>
+        <GlobalStyles />
+        <Provider store={store}>
+          <ConnectedTranslatedApp />
+        </Provider>
+      </>
+    );
+  }
 
   /**
    * Render application root.

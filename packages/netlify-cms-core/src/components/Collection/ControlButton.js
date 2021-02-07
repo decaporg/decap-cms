@@ -14,7 +14,7 @@ const Button = styled(StyledDropdownButton)`
   }
 `;
 
-export const ControlButton = ({ active, title }) => {
+export function ControlButton({ active, title }) {
   return (
     <Button
       css={css`
@@ -24,4 +24,4 @@ export const ControlButton = ({ active, title }) => {
       {title}
     </Button>
   );
-};
+}

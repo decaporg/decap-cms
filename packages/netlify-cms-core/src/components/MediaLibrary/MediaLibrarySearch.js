@@ -35,18 +35,20 @@ const SearchIcon = styled(Icon)`
   transform: translate(0, -50%);
 `;
 
-const MediaLibrarySearch = ({ value, onChange, onKeyDown, placeholder, disabled }) => (
-  <SearchContainer>
-    <SearchIcon type="search" size="small" />
-    <SearchInput
-      value={value}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-      placeholder={placeholder}
-      disabled={disabled}
-    />
-  </SearchContainer>
-);
+function MediaLibrarySearch({ value, onChange, onKeyDown, placeholder, disabled }) {
+  return (
+    <SearchContainer>
+      <SearchIcon type="search" size="small" />
+      <SearchInput
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        placeholder={placeholder}
+        disabled={disabled}
+      />
+    </SearchContainer>
+  );
+}
 
 MediaLibrarySearch.propTypes = {
   value: PropTypes.string,

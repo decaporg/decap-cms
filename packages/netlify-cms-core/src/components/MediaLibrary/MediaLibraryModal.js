@@ -60,7 +60,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const MediaLibraryModal = ({
+function MediaLibraryModal({
   isVisible,
   canInsert,
   files,
@@ -91,7 +91,7 @@ const MediaLibraryModal = ({
   loadDisplayURL,
   displayURLs,
   t,
-}) => {
+}) {
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
   const tableData = toTableData(queriedFiles);
@@ -152,7 +152,7 @@ const MediaLibraryModal = ({
       />
     </StyledModal>
   );
-};
+}
 
 export const fileShape = {
   displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,

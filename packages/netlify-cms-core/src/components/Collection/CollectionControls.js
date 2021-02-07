@@ -19,7 +19,7 @@ const CollectionControlsContainer = styled.div`
   }
 `;
 
-const CollectionControls = ({
+function CollectionControls({
   viewStyle,
   onChangeViewStyle,
   sortableFields,
@@ -32,7 +32,7 @@ const CollectionControls = ({
   t,
   filter,
   group,
-}) => {
+}) {
   return (
     <CollectionControlsContainer>
       <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
@@ -52,6 +52,6 @@ const CollectionControls = ({
       )}
     </CollectionControlsContainer>
   );
-};
+}
 
 export default CollectionControls;

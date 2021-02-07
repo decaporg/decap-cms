@@ -13,7 +13,7 @@ export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
 export const CONFIG_FAILURE = 'CONFIG_FAILURE';
 
-const traverseFieldsJS = (fields, updater) => {
+function traverseFieldsJS(fields, updater) {
   return fields.map(field => {
     let newField = updater(field);
     if (newField.fields) {
@@ -26,9 +26,9 @@ const traverseFieldsJS = (fields, updater) => {
 
     return newField;
   });
-};
+}
 
-const getConfigUrl = () => {
+function getConfigUrl() {
   const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
   const configLinkEl = document.querySelector('link[rel="cms-config-url"]');
   const isValidLink = configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
@@ -38,14 +38,14 @@ const getConfigUrl = () => {
     return link;
   }
   return 'config.yml';
-};
+}
 
-const setDefaultPublicFolder = map => {
+function setDefaultPublicFolder(map) {
   if (map.has('media_folder') && !map.has('public_folder')) {
     map = map.set('public_folder', map.get('media_folder'));
   }
   return map;
-};
+}
 
 // Mapping between existing camelCase and its snake_case counterpart
 const WIDGET_KEY_MAP = {
@@ -60,7 +60,7 @@ const WIDGET_KEY_MAP = {
   optionsLength: 'options_length',
 };
 
-const setSnakeCaseConfig = field => {
+function setSnakeCaseConfig(field) {
   const deprecatedKeys = Object.keys(WIDGET_KEY_MAP).filter(camel => camel in field);
   const snakeValues = deprecatedKeys.map(camel => {
     const snake = WIDGET_KEY_MAP[camel];
@@ -71,18 +71,18 @@ const setSnakeCaseConfig = field => {
   });
 
   return Object.assign({}, field, ...snakeValues);
-};
+}
 
-const setI18nField = field => {
+function setI18nField(field) {
   if (field.get(I18N) === true) {
     field = field.set(I18N, I18N_FIELD.TRANSLATE);
   } else if (field.get(I18N) === false || !field.has(I18N)) {
     field = field.set(I18N, I18N_FIELD.NONE);
   }
   return field;
-};
+}
 
-const setI18nDefaults = (defaultI18n, collectionOrFile) => {
+function setI18nDefaults(defaultI18n, collectionOrFile) {
   if (defaultI18n && collectionOrFile.has(I18N)) {
     const collectionOrFileI18n = collectionOrFile.get(I18N);
     if (collectionOrFileI18n === true) {
@@ -121,17 +121,17 @@ const setI18nDefaults = (defaultI18n, collectionOrFile) => {
     }
   }
   return collectionOrFile;
-};
+}
 
-const throwOnInvalidFileCollectionStructure = i18n => {
+function throwOnInvalidFileCollectionStructure(i18n) {
   if (i18n && i18n.get('structure') !== I18N_STRUCTURE.SINGLE_FILE) {
     throw new Error(
       `i18n configuration for files collections is limited to ${I18N_STRUCTURE.SINGLE_FILE} structure`,
     );
   }
-};
+}
 
-const throwOnMissingDefaultLocale = i18n => {
+function throwOnMissingDefaultLocale(i18n) {
   if (i18n && !i18n.get('locales').includes(i18n.get('default_locale'))) {
     throw new Error(
       `i18n locales '${i18n.get('locales').join(', ')}' are missing the default locale ${i18n.get(
@@ -139,9 +139,9 @@ const throwOnMissingDefaultLocale = i18n => {
       )}`,
     );
   }
-};
+}
 
-const setViewPatternsDefaults = (key, collection) => {
+function setViewPatternsDefaults(key, collection) {
   if (!collection.has(key)) {
     collection = collection.set(key, fromJS([]));
   } else {
@@ -152,17 +152,17 @@ const setViewPatternsDefaults = (key, collection) => {
   }
 
   return collection;
-};
+}
 
 const defaults = {
   publish_mode: SIMPLE_PUBLISH_MODE,
 };
 
-const hasIntegration = (config, collection) => {
+function hasIntegration(config, collection) {
   const integrations = getIntegrations(config);
   const integration = selectIntegration(integrations, collection.get('name'), 'listEntries');
   return !!integration;
-};
+}
 
 export function normalizeConfig(config) {
   const { collections = [] } = config;
@@ -390,7 +390,7 @@ export async function detectProxyServer(localBackend) {
   return {};
 }
 
-const getPublishMode = (config, publishModes, backendType) => {
+function getPublishMode(config, publishModes, backendType) {
   if (config.publish_mode && publishModes && !publishModes.includes(config.publish_mode)) {
     const newPublishMode = publishModes[0];
     console.log(
@@ -400,9 +400,9 @@ const getPublishMode = (config, publishModes, backendType) => {
   }
 
   return config.publish_mode;
-};
+}
 
-export const handleLocalBackend = async config => {
+export async function handleLocalBackend(config) {
   if (!config.local_backend) {
     return config;
   }
@@ -421,7 +421,7 @@ export const handleLocalBackend = async config => {
     ...(publishMode && { publish_mode: publishMode }),
     backend: { ...config.backend, name: 'proxy', proxy_url: proxyUrl },
   };
-};
+}
 
 export function loadConfig(manualConfig = {}, onLoad) {
   if (window.CMS_CONFIG) {

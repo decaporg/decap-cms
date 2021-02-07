@@ -6,18 +6,20 @@ import { translate } from 'react-polyglot';
 import reduxNotificationsStyles from 'redux-notifications/lib/styles.css';
 import { shadows, colors, lengths, zIndex } from 'netlify-cms-ui-default';
 
-const ReduxNotificationsGlobalStyles = () => (
-  <Global
-    styles={css`
-      ${reduxNotificationsStyles};
+function ReduxNotificationsGlobalStyles() {
+  return (
+    <Global
+      styles={css`
+        ${reduxNotificationsStyles};
 
-      .notif__container {
-        z-index: ${zIndex.zIndex10000};
-        white-space: pre-wrap;
-      }
-    `}
-  />
-);
+        .notif__container {
+          z-index: ${zIndex.zIndex10000};
+          white-space: pre-wrap;
+        }
+      `}
+    />
+  );
+}
 
 const styles = {
   toast: css`
@@ -47,12 +49,14 @@ const styles = {
   `,
 };
 
-const Toast = ({ kind, message, t }) => (
-  <div css={[styles.toast, styles[kind]]}>
-    <ReduxNotificationsGlobalStyles />
-    {t(message.key, { details: message.details })}
-  </div>
-);
+function Toast({ kind, message, t }) {
+  return (
+    <div css={[styles.toast, styles[kind]]}>
+      <ReduxNotificationsGlobalStyles />
+      {t(message.key, { details: message.details })}
+    </div>
+  );
+}
 
 Toast.propTypes = {
   kind: PropTypes.oneOf(['info', 'success', 'warning', 'danger']).isRequired,

@@ -4,7 +4,7 @@ import moment from 'moment';
 import AssetProxy from 'ValueObjects/AssetProxy';
 import { sortKeys } from './helpers';
 
-const outputReplacer = (key, value) => {
+function outputReplacer(key, value) {
   if (moment.isMoment(value)) {
     return value.format(value._f);
   }
@@ -17,7 +17,7 @@ const outputReplacer = (key, value) => {
   }
   // Return `false` to use default (`undefined` would delete key).
   return false;
-};
+}
 
 export default {
   fromFile(content) {

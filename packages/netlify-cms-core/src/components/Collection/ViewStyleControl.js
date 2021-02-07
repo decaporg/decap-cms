@@ -27,7 +27,7 @@ const ViewControlsButton = styled.button`
   }
 `;
 
-const ViewStyleControl = ({ viewStyle, onChangeViewStyle }) => {
+function ViewStyleControl({ viewStyle, onChangeViewStyle }) {
   return (
     <ViewControlsSection>
       <ViewControlsButton
@@ -44,6 +44,6 @@ const ViewStyleControl = ({ viewStyle, onChangeViewStyle }) => {
       </ViewControlsButton>
     </ViewControlsSection>
   );
-};
+}
 
 export default ViewStyleControl;

@@ -10,10 +10,11 @@ import {
 // Since pagination can be used for a variety of views (collections
 // and searches are the most common examples), we namespace cursors by
 // their type before storing them in the state.
-export const selectCollectionEntriesCursor = (state, collectionName) =>
-  new Cursor(state.getIn(['cursorsByType', 'collectionEntries', collectionName]));
+export function selectCollectionEntriesCursor(state, collectionName) {
+  return new Cursor(state.getIn(['cursorsByType', 'collectionEntries', collectionName]));
+}
 
-const cursors = (state = fromJS({ cursorsByType: { collectionEntries: {} } }), action) => {
+function cursors(state = fromJS({ cursorsByType: { collectionEntries: {} } }), action) {
   switch (action.type) {
     case ENTRIES_SUCCESS: {
       return state.setIn(
@@ -29,6 +30,6 @@ const cursors = (state = fromJS({ cursorsByType: { collectionEntries: {} } }), a
     default:
       return state;
   }
-};
+}
 
 export default cursors;
