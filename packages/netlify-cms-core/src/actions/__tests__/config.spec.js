@@ -10,7 +10,7 @@ import {
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
-jest.mock('coreSrc/backend', () => {
+jest.mock('../../backend', () => {
   return {
     resolveBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
   };
@@ -452,8 +452,8 @@ describe('config', () => {
     test('should convert camel case to snake case', () => {
       expect(
         applyDefaults(
-          normalizeConfig(
-            fromJS({
+          fromJS(
+            normalizeConfig({
               collections: [
                 {
                   sortableFields: ['title'],
@@ -922,7 +922,7 @@ describe('config', () => {
       window.location = { hostname: 'localhost' };
       global.fetch = jest.fn().mockRejectedValue(new Error());
 
-      const config = fromJS({ local_backend: true, backend: { name: 'github' } });
+      const config = { local_backend: true, backend: { name: 'github' } };
       const actual = await handleLocalBackend(config);
 
       expect(actual).toEqual(config);
