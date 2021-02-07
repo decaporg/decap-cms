@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.37.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.37.0...netlify-cms-core@2.37.1) (2021-02-07)
+
+
+### Bug Fixes
+
+* json FM ending with object parse error ([#4909](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4909)) ([60454bb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/60454bb4dea3122c8b63ed9d00ef8c8ce5016281))
+
+
+
+
+
+# [2.37.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.15...netlify-cms-core@2.37.0) (2021-02-03)
+
+
+### Features
+
+* **media-library:** add copy to clipboard, allow avif ([#4914](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4914)) ([4b73e11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/4b73e11db0627f4046d5e23e2fa3b53b3f6788de))
+
+
+
+
+
+## [2.36.15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.14...netlify-cms-core@2.36.15) (2021-02-01)
+
+
+### Bug Fixes
+
+* add missing displayURLs to state ([#4910](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4910)) ([f035014](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f0350141271dde34f3f54bf330198ec9992bd577))
+
+
+
+
+
+## [2.36.14](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.13...netlify-cms-core@2.36.14) (2021-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency copy-text-to-clipboard to v3 ([#4902](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4902)) ([e7000b4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/e7000b4b20243682ea98d2aa1cadb6524e87d63e))
+
+
+
+
+
 ## [2.36.13](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.12...netlify-cms-core@2.36.13) (2021-01-19)
 
 

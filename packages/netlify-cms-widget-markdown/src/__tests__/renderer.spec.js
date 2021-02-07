@@ -1,6 +1,7 @@
 import React from 'react';
 import { create, act } from 'react-test-renderer';
 import { padStart } from 'lodash';
+import { Map } from 'immutable';
 import MarkdownPreview from '../MarkdownPreview';
 import { markdownToHtml } from '../serializers';
 
@@ -210,6 +211,46 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       await act(async () => {
         root = create(
           <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        );
+      });
+
+      expect(root.toJSON()).toMatchSnapshot();
+    });
+  });
+
+  describe('HTML sanitization', () => {
+    it('should sanitize HTML', async () => {
+      const value = `<img src="foobar.png" onerror="alert('hello')">`;
+      const field = Map({ sanitize_preview: true });
+
+      let root;
+      await act(async () => {
+        root = create(
+          <MarkdownPreview
+            value={value}
+            getAsset={jest.fn()}
+            resolveWidget={jest.fn()}
+            field={field}
+          />,
+        );
+      });
+
+      expect(root.toJSON()).toMatchSnapshot();
+    });
+
+    it('should not sanitize HTML', async () => {
+      const value = `<img src="foobar.png" onerror="alert('hello')">`;
+      const field = Map({ sanitize_preview: false });
+
+      let root;
+      await act(async () => {
+        root = create(
+          <MarkdownPreview
+            value={value}
+            getAsset={jest.fn()}
+            resolveWidget={jest.fn()}
+            field={field}
+          />,
         );
       });
 

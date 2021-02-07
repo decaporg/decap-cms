@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.26.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.25.0...netlify-cms-locales@1.26.0) (2021-02-07)
+
+
+### Features
+
+* **locale-fr:** add missing translations ([#4921](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4921)) ([7e2ce1a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/7e2ce1ab6f708423cd0ad53125384e35eb3bc04b))
+* **locale-ru:** add missing translations ([#4922](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4922)) ([e481e6e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/e481e6e296b907c4926209edbdd8bc1ca2252fe9))
+
+
+
+
+
+# [1.25.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.24.0...netlify-cms-locales@1.25.0) (2021-02-03)
+
+
+### Features
+
+* **media-library:** add copy to clipboard, allow avif ([#4914](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4914)) ([4b73e11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/4b73e11db0627f4046d5e23e2fa3b53b3f6788de))
+
+
+
+
+
 # [1.24.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.23.1...netlify-cms-locales@1.24.0) (2021-01-14)
 
 

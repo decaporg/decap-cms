@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.8.0...netlify-cms-widget-file@2.9.0) (2021-02-01)
+
+
+### Features
+
+* **widget-image:** enable images ordering ([#4857](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/4857)) ([30c1195](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/30c11954d586c43a00c8c61fa467873bfe1ed1fc))
+
+
+
+
+
 # [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.7.4...netlify-cms-widget-file@2.8.0) (2021-01-14)
 
 

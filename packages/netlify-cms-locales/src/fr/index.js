@@ -3,6 +3,7 @@ const fr = {
     login: 'Se connecter',
     loggingIn: 'Connexion en cours...',
     loginWithNetlifyIdentity: 'Se connecter avec Netlify Identity',
+    loginWithAzure: 'Se connecter avec Azure',
     loginWithBitbucket: 'Se connecter avec Bitbucket',
     loginWithGitHub: 'Se connecter avec GitHub',
     loginWithGitLab: 'Se connecter avec GitLab',
@@ -48,12 +49,17 @@ const fr = {
       searchResultsInCollection:
         'Résultats de la recherche pour "%{searchTerm}" dans %{collection}',
       filterBy: 'Filtrer par',
+      groupBy: 'Grouper par',
     },
     entries: {
       loadingEntries: 'Chargement des entrées',
       cachingEntries: 'Mise en cache des entrées',
       longerLoading: 'Cela peut prendre quelques minutes',
       noEntries: 'Aucune entrée',
+    },
+    groups: {
+      other: 'Autre',
+      negateLabel: 'Non %{label}',
     },
     defaultFields: {
       author: {
@@ -85,6 +91,9 @@ const fr = {
         invalidPath: `'%{path}' n'est pas un chemin valide`,
         pathExists: `Le chemin '%{path}' existe déjà`,
       },
+      i18n: {
+        writingInLocale: 'Écrire en %{locale}',
+      },
     },
     editor: {
       onLeavePage: 'Voulez-vous vraiment quitter cette page ?',
@@ -93,6 +102,7 @@ const fr = {
       onPublishingNotReady: 'Veuillez mettre à jour le statut à "Prêt" avant de publier.',
       onPublishingWithUnsavedChanges: 'Veuillez enregistrer vos modifications avant de publier.',
       onPublishing: 'Voulez-vous vraiment publier cette entrée ?',
+      onUnpublishing: 'Voulez-vous vraiment dépublier cette entrée ?',
       onDeleteWithUnsavedChanges:
         'Voulez-vous vraiment supprimer cette entrée publiée ainsi que vos modifications non enregistrées de cette session ?',
       onDeletePublishedEntry: 'Voulez-vous vraiment supprimer cette entrée publiée ?',
@@ -135,17 +145,33 @@ const fr = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Gras',
+        italic: 'Italique',
+        code: 'Code',
+        link: 'Lien',
+        linkPrompt: "Entrer l'adresse web du lien",
+        headings: 'Titres',
+        quote: 'Citation',
+        bulletedList: 'Liste à puces',
+        numberedList: 'Liste numérotée',
+        addComponent: 'Ajouter un composant',
         richText: 'Texte enrichi',
         markdown: 'Markdown',
       },
       image: {
-        choose: 'Choisissez une image',
-        chooseDifferent: 'Choisissez une image différente',
+        choose: 'Choisir une image',
+        chooseUrl: 'Insérer depuis une adresse web',
+        replaceUrl: 'Remplacer depuis une adresse web',
+        promptUrl: "Entrer l'adresse web de l'image",
+        chooseDifferent: 'Choisir une image différente',
         remove: "Supprimer l'image",
       },
       file: {
-        choose: 'Choisissez un fichier',
-        chooseDifferent: 'Choisissez un fichier différent',
+        choose: 'Choisir un fichier',
+        chooseUrl: 'Insérer depuis une adresse web',
+        replaceUrl: 'Remplacer depuis une adresse web',
+        promptUrl: "Entrer l'adresse web du fichier",
+        chooseDifferent: 'Choisir un fichier différent',
         remove: 'Effacer le fichier',
       },
       unknownControl: {
@@ -170,6 +196,11 @@ const fr = {
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Brouillon',
+      copy: 'Copier',
+      copyUrl: "Copier l'adresse web",
+      copyPath: "Copier le chemin d'accès",
+      copyName: 'Copier le nom',
+      copied: 'Copié',
     },
     mediaLibrary: {
       onDelete: 'Voulez-vous vraiment supprimer la ressource sélectionné ?',
@@ -200,7 +231,7 @@ const fr = {
     errorBoundary: {
       title: 'Erreur',
       details: 'Une erreur est survenue, veuillez ',
-      reportIt: 'la signaler.',
+      reportIt: 'la signaler sur GitHub.',
       detailsHeading: 'Détails',
       privacyWarning:
         "Ouvrir une issue la préremplie avec le message d'erreur et des données de déboggage.\nMerci de vérifier l'exactitude des informations et de supprimer toute donnée sensible si nécessaire.",
@@ -240,7 +271,7 @@ const fr = {
       workflowHeading: 'Flux éditorial',
       newPost: 'Nouvel article',
       description:
-        '%{smart_count} entrée en attente de revue, %{readyCount} prête(s) à être publiée(s). |||| %{smart_count} entrées en attente de revue, %{readyCount} prête(s) à être publiée(s). ',
+        '%{smart_count} entrée(s) en attente de revue, %{readyCount} prête(s) à être publiée(s). |||| %{smart_count} entrée(s) en attente de revue, %{readyCount} prête(s) à être publiée(s). ',
       dateFormat: 'MMMM D',
     },
     workflowCard: {

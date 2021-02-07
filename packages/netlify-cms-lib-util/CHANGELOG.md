@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.1...netlify-cms-lib-util@2.12.2) (2021-02-01)
+
+
+### Bug Fixes
+
+* **backend:** allow calling 'json' again on 403 failure ([#4880](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/4880)) ([1034086](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/1034086ff603e28e3a37c8157a74cbc625f658f9))
+
+
+
+
+
 ## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.0...netlify-cms-lib-util@2.12.1) (2020-12-13)
 
 

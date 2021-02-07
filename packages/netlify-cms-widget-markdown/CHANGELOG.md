@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.8...netlify-cms-widget-markdown@2.12.9) (2021-02-01)
+
+
+### Bug Fixes
+
+* **security-markdown-widget:** allow sanitization of preview content ([#4886](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/4886)) ([27aec85](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/27aec85550c0be52c55f7b33314ecd52727fdcb5))
+
+
+
+
+
 ## [2.12.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.7...netlify-cms-widget-markdown@2.12.8) (2020-11-30)
 
 

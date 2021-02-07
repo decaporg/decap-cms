@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-file",
   "description": "Widget for uploading files in Netlify CMS.",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#file",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -23,7 +23,9 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "common-tags": "^1.8.0"
+    "array-move": "3.0.1",
+    "common-tags": "^1.8.0",
+    "react-sortable-hoc": "^1.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",

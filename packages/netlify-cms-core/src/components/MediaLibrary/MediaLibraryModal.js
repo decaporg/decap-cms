@@ -94,6 +94,7 @@ const MediaLibraryModal = ({
   t,
   currentMediaFolder,
   defaultMediaFolder,
+  selectedFile,
 }) => {
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
@@ -134,6 +135,7 @@ const MediaLibraryModal = ({
         handleBreadcrumbClick={handleBreadcrumbClick}
         currentMediaFolder={currentMediaFolder}
         defaultMediaFolder={defaultMediaFolder}
+        selectedFile={selectedFile}
       />
 
       {!shouldShowEmptyMessage ? null : (

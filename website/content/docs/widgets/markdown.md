@@ -16,6 +16,7 @@ The markdown widget provides a full fledged text editor allowing users to format
   * `buttons`: an array of strings representing the formatting buttons to display (all shown by default). Buttons include: `bold`, `italic`, `code`, `link`, `heading-one`, `heading-two`, `heading-three`, `heading-four`, `heading-five`, `heading-six`, `quote`, `bulleted-list`, and `numbered-list`.
   * `editor_components`: an array of strings representing the names of editor components to display (all shown by default). Netlify CMS includes `image` and `code-block` editor components by default, and custom components may be [created and registered](/docs/custom-widgets/#registereditorcomponent).
   * `modes`: an array of strings representing the names of allowed editor modes. Possible modes are `raw` and `rich_text`. A toggle button appears in the toolbar when more than one mode is available.
+  * `sanitize_preview`: accepts a boolean value, `false` by default. Sanitizes markdown preview to prevent XSS attacks - might alter the preview content.
 * **Example:**
 
   ```yaml

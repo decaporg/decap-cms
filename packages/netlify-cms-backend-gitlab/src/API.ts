@@ -691,7 +691,7 @@ export default class API {
           include_rebase_in_progress: true,
         },
       });
-      if (!rebase.rebase_in_progress || i > 10) {
+      if (!rebase.rebase_in_progress || i > 30) {
         break;
       }
       i++;

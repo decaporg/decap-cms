@@ -13,10 +13,7 @@ const parsers = {
       let JSONinput = input.trim();
       // Fix JSON if leading and trailing brackets were trimmed.
       if (JSONinput.substr(0, 1) !== '{') {
-        JSONinput = '{' + JSONinput;
-      }
-      if (JSONinput.substr(-1) !== '}') {
-        JSONinput = JSONinput + '}';
+        JSONinput = '{' + JSONinput + '}';
       }
       return jsonFormatter.fromFile(JSONinput);
     },

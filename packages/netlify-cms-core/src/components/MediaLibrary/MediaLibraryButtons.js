@@ -1,7 +1,11 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { FileUploadButton } from 'UI';
-import { buttons, colors, colorsRaw, shadows, zIndex } from 'netlify-cms-ui-default';
+import copyToClipboard from 'copy-text-to-clipboard';
+import { isAbsolutePath } from 'netlify-cms-lib-util';
+import { buttons, shadows, zIndex } from 'netlify-cms-ui-default';
 
 const styles = {
   button: css`
@@ -55,18 +59,77 @@ export const InsertButton = styled.button`
   ${buttons.green};
 `;
 
-export const DownloadButton = styled.button`
+const ActionButton = styled.button`
   ${styles.button};
-  background-color: ${colors.button};
-  color: ${colors.buttonText};
-
   ${props =>
-    props.focused === true &&
+    !props.disabled &&
     css`
-      &:focus,
-      &:hover {
-        color: ${colorsRaw.white};
-        background-color: #555a65;
-      }
+      ${buttons.gray}
     `}
 `;
+
+export const DownloadButton = ActionButton;
+
+export class CopyToClipBoardButton extends React.Component {
+  mounted = false;
+  timeout;
+
+  state = {
+    copied: false,
+  };
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
+  handleCopy = () => {
+    clearTimeout(this.timeout);
+    const { path, draft, name } = this.props;
+    copyToClipboard(isAbsolutePath(path) || !draft ? path : name);
+    this.setState({ copied: true });
+    this.timeout = setTimeout(() => this.mounted && this.setState({ copied: false }), 1500);
+  };
+
+  getTitle = () => {
+    const { t, path, draft } = this.props;
+    if (this.state.copied) {
+      return t('mediaLibrary.mediaLibraryCard.copied');
+    }
+
+    if (!path) {
+      return t('mediaLibrary.mediaLibraryCard.copy');
+    }
+
+    if (isAbsolutePath(path)) {
+      return t('mediaLibrary.mediaLibraryCard.copyUrl');
+    }
+
+    if (draft) {
+      return t('mediaLibrary.mediaLibraryCard.copyName');
+    }
+
+    return t('mediaLibrary.mediaLibraryCard.copyPath');
+  };
+
+  render() {
+    const { disabled } = this.props;
+
+    return (
+      <ActionButton disabled={disabled} onClick={this.handleCopy}>
+        {this.getTitle()}
+      </ActionButton>
+    );
+  }
+}
+
+CopyToClipBoardButton.propTypes = {
+  disabled: PropTypes.bool.isRequired,
+  draft: PropTypes.bool,
+  path: PropTypes.string,
+  name: PropTypes.string,
+  t: PropTypes.func.isRequired,
+};
