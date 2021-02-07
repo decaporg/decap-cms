@@ -17,5 +17,6 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@TSV-Zorneding-1920](https://github.com/TSV-Zorneding-1920) | GitHub, GitHub Enterprise         | PHP                               | [Repo](https://github.com/TSV-Zorneding-1920/netlify-cms-oauth-provider-php)                                                                 |
 | [@bericp1](https://github.com/bericp1)                       | GitHub, GitHub Enterprise         | Node.js, Zeit Now Serverless      | [Repo](https://github.com/bericp1/netlify-cms-oauth-provider-node)                                                                           |
 | [@mcdeck](https://github.com/mcdeck)                         | GitHub, GitHub Enterprise, GitLab | PHP                               | [Repo](https://github.com/mcdeck/netlify-cms-oauth-provider-php), [Blog](https://www.van-porten.de/blog/2021/01/netlify-auth-provider/)      |
+| [@deepbass](https://github.com/deepbass)                     | GitHub, GitHub Enterprise         | Node.js Azure Functions           | [Repo](https://github.com/deepbass/serverless-cms-azure), [Blog](https://www.danielbass.dev/building-a-serverless-cms-on-azure-with-netlify-cms-and-gatsby/)      |
 
 Check each project's documentation for instructions on installation and usage.
