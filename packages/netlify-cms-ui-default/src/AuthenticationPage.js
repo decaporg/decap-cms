@@ -30,20 +30,20 @@ const NetlifyCreditIcon = styled(Icon)`
   bottom: 10px;
 `;
 
-const CustomLogoIcon = ({ url }) => {
+function CustomLogoIcon({ url }) {
   return (
     <CustomIconWrapper>
       <img src={url} alt="Logo" />
     </CustomIconWrapper>
   );
-};
+}
 
-const renderPageLogo = logoUrl => {
+function renderPageLogo(logoUrl) {
   if (logoUrl) {
     return <CustomLogoIcon url={logoUrl} />;
   }
   return <NetlifyLogoIcon size="300px" type="netlify-cms" />;
-};
+}
 
 const LoginButton = styled.button`
   ${buttons.button};
@@ -61,7 +61,7 @@ const LoginButton = styled.button`
   position: relative;
 `;
 
-const AuthenticationPage = ({
+function AuthenticationPage({
   onLogin,
   loginDisabled,
   loginErrorMessage,
@@ -70,7 +70,7 @@ const AuthenticationPage = ({
   logoUrl,
   siteUrl,
   t,
-}) => {
+}) {
   return (
     <StyledAuthenticationPage>
       {renderPageLogo(logoUrl)}
@@ -85,7 +85,7 @@ const AuthenticationPage = ({
       {logoUrl ? <NetlifyCreditIcon size="100px" type="netlify-cms" /> : null}
     </StyledAuthenticationPage>
   );
-};
+}
 
 AuthenticationPage.propTypes = {
   onLogin: PropTypes.func,

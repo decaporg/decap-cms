@@ -414,93 +414,95 @@ const zIndex = {
   zIndex99999: 99999,
 };
 
-const GlobalStyles = () => (
-  <Global
-    styles={css`
-      *,
-      *:before,
-      *:after {
-        box-sizing: border-box;
-      }
+function GlobalStyles() {
+  return (
+    <Global
+      styles={css`
+        *,
+        *:before,
+        *:after {
+          box-sizing: border-box;
+        }
 
-      :focus {
-        outline: -webkit-focus-ring-color auto ${lengths.borderRadius};
-      }
+        :focus {
+          outline: -webkit-focus-ring-color auto ${lengths.borderRadius};
+        }
 
-      /**
+        /**
        * Don't show outlines if the user is utilizing mouse rather than keyboard.
        */
-      [data-whatintent='mouse'] *:focus {
-        outline: none;
-      }
+        [data-whatintent='mouse'] *:focus {
+          outline: none;
+        }
 
-      input {
-        border: 0;
-      }
+        input {
+          border: 0;
+        }
 
-      body {
-        font-family: ${fonts.primary};
-        font-weight: normal;
-        background-color: ${colors.background};
-        color: ${colors.text};
-        margin: 0;
-      }
+        body {
+          font-family: ${fonts.primary};
+          font-weight: normal;
+          background-color: ${colors.background};
+          color: ${colors.text};
+          margin: 0;
+        }
 
-      ul,
-      ol {
-        padding-left: 0;
-      }
+        ul,
+        ol {
+          padding-left: 0;
+        }
 
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6,
-      p {
-        font-family: ${fonts.primary};
-        color: ${colors.textLead};
-        font-size: 15px;
-        line-height: 1.5;
-        margin-top: 0;
-      }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+          font-family: ${fonts.primary};
+          color: ${colors.textLead};
+          font-size: 15px;
+          line-height: 1.5;
+          margin-top: 0;
+        }
 
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-weight: 500;
-      }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          font-weight: 500;
+        }
 
-      h1 {
-        font-size: 24px;
-        letter-spacing: 0.4px;
-        color: ${colors.textLead};
-      }
+        h1 {
+          font-size: 24px;
+          letter-spacing: 0.4px;
+          color: ${colors.textLead};
+        }
 
-      a,
-      button {
-        font-size: 14px;
-        font-weight: 500;
-      }
+        a,
+        button {
+          font-size: 14px;
+          font-weight: 500;
+        }
 
-      a {
-        color: ${colors.text};
-        text-decoration: none;
-      }
+        a {
+          color: ${colors.text};
+          text-decoration: none;
+        }
 
-      img {
-        max-width: 100%;
-      }
+        img {
+          max-width: 100%;
+        }
 
-      textarea {
-        resize: none;
-      }
-    `}
-  />
-);
+        textarea {
+          resize: none;
+        }
+      `}
+    />
+  );
+}
 
 export {
   fonts,

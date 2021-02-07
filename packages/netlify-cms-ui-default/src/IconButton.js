@@ -22,16 +22,18 @@ const ButtonRound = styled.button`
   padding: 0;
 `;
 
-const IconButton = ({ size, isActive, type, onClick, className, title }) => (
-  <ButtonRound
-    size={size}
-    isActive={isActive}
-    className={className}
-    onClick={onClick}
-    title={title}
-  >
-    <Icon type={type} size={size} />
-  </ButtonRound>
-);
+function IconButton({ size, isActive, type, onClick, className, title }) {
+  return (
+    <ButtonRound
+      size={size}
+      isActive={isActive}
+      className={className}
+      onClick={onClick}
+      title={title}
+    >
+      <Icon type={type} size={size} />
+    </ButtonRound>
+  );
+}
 
 export default IconButton;
