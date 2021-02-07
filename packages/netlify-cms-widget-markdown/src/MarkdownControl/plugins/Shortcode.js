@@ -1,6 +1,6 @@
 import { Text, Block } from 'slate';
 
-const createShortcodeBlock = shortcodeConfig => {
+function createShortcodeBlock(shortcodeConfig) {
   // Handle code block component
   if (shortcodeConfig.type === 'code-block') {
     return Block.create({ type: shortcodeConfig.type, data: { shortcodeNew: true } });
@@ -25,23 +25,25 @@ const createShortcodeBlock = shortcodeConfig => {
     },
     nodes,
   });
-};
+}
 
-const Shortcode = ({ defaultType }) => ({
-  commands: {
-    insertShortcode(editor, shortcodeConfig) {
-      const block = createShortcodeBlock(shortcodeConfig);
-      const { focusBlock } = editor.value;
+function Shortcode({ defaultType }) {
+  return {
+    commands: {
+      insertShortcode(editor, shortcodeConfig) {
+        const block = createShortcodeBlock(shortcodeConfig);
+        const { focusBlock } = editor.value;
 
-      if (focusBlock.text === '' && focusBlock.type === defaultType) {
-        editor.replaceNodeByKey(focusBlock.key, block);
-      } else {
-        editor.insertBlock(block);
-      }
+        if (focusBlock.text === '' && focusBlock.type === defaultType) {
+          editor.replaceNodeByKey(focusBlock.key, block);
+        } else {
+          editor.insertBlock(block);
+        }
 
-      editor.focus();
+        editor.focus();
+      },
     },
-  },
-});
+  };
+}
 
 export default Shortcode;

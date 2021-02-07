@@ -28,11 +28,19 @@ const markMap = {
   inlineCode: 'code',
 };
 
-const isInline = node => node.object === 'inline';
-const isText = node => node.object === 'text';
-const isMarksEqual = (node1, node2) => isEqual(node1.marks, node2.marks);
+function isInline(node) {
+  return node.object === 'inline';
+}
 
-export const wrapInlinesWithTexts = children => {
+function isText(node) {
+  return node.object === 'text';
+}
+
+function isMarksEqual(node1, node2) {
+  return isEqual(node1.marks, node2.marks);
+}
+
+export function wrapInlinesWithTexts(children) {
   if (children.length <= 0) {
     return children;
   }
@@ -63,9 +71,9 @@ export const wrapInlinesWithTexts = children => {
   }
 
   return children;
-};
+}
 
-export const mergeAdjacentTexts = children => {
+export function mergeAdjacentTexts(children) {
   if (children.length <= 0) {
     return children;
   }
@@ -96,7 +104,7 @@ export const mergeAdjacentTexts = children => {
   }
 
   return mergedChildren;
-};
+}
 
 /**
  * A Remark plugin for converting an MDAST to Slate Raw AST. Remark plugins

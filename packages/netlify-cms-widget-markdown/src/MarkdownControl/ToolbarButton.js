@@ -23,16 +23,18 @@ const StyledToolbarButton = styled.button`
   }
 `;
 
-const ToolbarButton = ({ type, label, icon, onClick, isActive, disabled }) => (
-  <StyledToolbarButton
-    isActive={isActive}
-    onClick={e => onClick && onClick(e, type)}
-    title={label}
-    disabled={disabled}
-  >
-    {icon ? <Icon type={icon} /> : label}
-  </StyledToolbarButton>
-);
+function ToolbarButton({ type, label, icon, onClick, isActive, disabled }) {
+  return (
+    <StyledToolbarButton
+      isActive={isActive}
+      onClick={e => onClick && onClick(e, type)}
+      title={label}
+      disabled={disabled}
+    >
+      {icon ? <Icon type={icon} /> : label}
+    </StyledToolbarButton>
+  );
+}
 
 ToolbarButton.propTypes = {
   type: PropTypes.string,
