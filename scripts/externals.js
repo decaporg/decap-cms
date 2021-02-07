@@ -6,8 +6,8 @@ const path = require('path');
  * netlify-cms-something to NetlifyCmsSomething
  * @param {} string
  */
-const toGlobalName = name =>
-  `${name}`
+function toGlobalName(name) {
+  return `${name}`
     .replace(new RegExp(/[-_/]+/, 'g'), ' ')
     .replace(new RegExp(/[^\w\s]/, 'g'), '')
     .replace(
@@ -16,6 +16,7 @@ const toGlobalName = name =>
     )
     .replace(new RegExp(/\s/, 'g'), '')
     .replace(new RegExp(/\w/), s => s.toUpperCase());
+}
 
 const packages = fs.readdirSync(path.resolve(__dirname, '../packages'));
 
