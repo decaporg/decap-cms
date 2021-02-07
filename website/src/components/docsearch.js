@@ -26,7 +26,7 @@ const SearchField = styled.input`
   outline: 0;
 `;
 
-const DocSearch = () => {
+function DocSearch() {
   const [enabled, setEnabled] = useState(true);
 
   useEffect(() => {
@@ -51,6 +51,6 @@ const DocSearch = () => {
       <SearchField type="search" placeholder="Search the docs" id="algolia-search" />
     </SearchForm>
   );
-};
+}
 
 export default memo(DocSearch);

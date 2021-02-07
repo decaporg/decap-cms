@@ -62,12 +62,12 @@ const NavLink = styled(Link)`
   }
 `;
 
-const DocsNav = ({ items, location }) => {
+function DocsNav({ items, location }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
+  function toggleMenu() {
     setMenuOpen(isOpen => !isOpen);
-  };
+  }
 
   return (
     <Menu>
@@ -94,7 +94,7 @@ const DocsNav = ({ items, location }) => {
       </MenuContent>
     </Menu>
   );
-};
+}
 
 export default DocsNav;
 

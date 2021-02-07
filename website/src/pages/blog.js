@@ -11,40 +11,42 @@ import Lead from '../components/lead';
 
 import theme from '../theme';
 
-const Blog = ({ data }) => (
-  <Layout>
-    <Helmet>
-      <title>Blog</title>
-      <meta name="description" content="Recent news and updates about Netlify CMS." />
-    </Helmet>
-    <Page>
-      <Container size="sm">
-        <h1>Netlify CMS Blog</h1>
-        {data.allMarkdownRemark.edges.map(({ node }) => (
-          <article
-            key={node.id}
-            css={css`
-              margin-bottom: ${theme.space[5]};
-            `}
-          >
-            <h2
+function Blog({ data }) {
+  return (
+    <Layout>
+      <Helmet>
+        <title>Blog</title>
+        <meta name="description" content="Recent news and updates about Netlify CMS." />
+      </Helmet>
+      <Page>
+        <Container size="sm">
+          <h1>Netlify CMS Blog</h1>
+          {data.allMarkdownRemark.edges.map(({ node }) => (
+            <article
+              key={node.id}
               css={css`
-                margin-bottom: 0;
+                margin-bottom: ${theme.space[5]};
               `}
             >
-              <Link to={node.fields.slug}>{node.frontmatter.title}</Link>
-            </h2>
-            <MetaInfo>
-              by {node.frontmatter.author} on {node.frontmatter.date}
-            </MetaInfo>
-            <Lead>{node.frontmatter.description}</Lead>
-          </article>
-        ))}
-        {/* TODO: pagination */}
-      </Container>
-    </Page>
-  </Layout>
-);
+              <h2
+                css={css`
+                  margin-bottom: 0;
+                `}
+              >
+                <Link to={node.fields.slug}>{node.frontmatter.title}</Link>
+              </h2>
+              <MetaInfo>
+                by {node.frontmatter.author} on {node.frontmatter.date}
+              </MetaInfo>
+              <Lead>{node.frontmatter.description}</Lead>
+            </article>
+          ))}
+          {/* TODO: pagination */}
+        </Container>
+      </Page>
+    </Layout>
+  );
+}
 
 export default Blog;
 
