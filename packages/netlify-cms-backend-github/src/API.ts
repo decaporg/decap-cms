@@ -129,12 +129,15 @@ type MediaFile = {
   path: string;
 };
 
-const withCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
-  pr.labels.some(l => isCMSLabel(l.name, cmsLabelPrefix));
-const withoutCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
-  pr.labels.every(l => !isCMSLabel(l.name, cmsLabelPrefix));
+function withCmsLabel(pr: GitHubPull, cmsLabelPrefix: string) {
+  return pr.labels.some(l => isCMSLabel(l.name, cmsLabelPrefix));
+}
 
-const getTreeFiles = (files: GitHubCompareFiles) => {
+function withoutCmsLabel(pr: GitHubPull, cmsLabelPrefix: string) {
+  return pr.labels.every(l => !isCMSLabel(l.name, cmsLabelPrefix));
+}
+
+function getTreeFiles(files: GitHubCompareFiles) {
   const treeFiles = files.reduce((arr, file) => {
     if (file.status === 'removed') {
       // delete the file
@@ -152,7 +155,7 @@ const getTreeFiles = (files: GitHubCompareFiles) => {
   }, [] as { sha: string | null; path: string }[]);
 
   return treeFiles;
-};
+}
 
 export type Diff = {
   path: string;
@@ -446,7 +449,7 @@ export default class API {
       headers: { Accept: 'application/vnd.github.v3.raw' },
     };
 
-    const errorHandler = (err: Error) => {
+    function errorHandler(err: Error) {
       if (err.message === 'Not Found') {
         console.log(
           '%c %s does not have metadata',
@@ -455,7 +458,7 @@ export default class API {
         );
       }
       throw err;
-    };
+    }
 
     if (!this.useOpenAuthoring) {
       const result = await this.request(

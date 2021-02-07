@@ -69,14 +69,14 @@ type GraphQLPullRequest = {
   };
 };
 
-const transformPullRequest = (pr: GraphQLPullRequest) => {
+function transformPullRequest(pr: GraphQLPullRequest) {
   return {
     ...pr,
     labels: pr.labels.nodes,
     head: { ref: pr.headRefName, sha: pr.headRefOid, repo: { fork: pr.repository.isFork } },
     base: { ref: pr.baseRefName, sha: pr.baseRefOid },
   };
-};
+}
 
 type Error = GraphQLError & { type: string };
 
