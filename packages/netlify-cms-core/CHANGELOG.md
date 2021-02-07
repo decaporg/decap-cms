@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.37.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.37.0...netlify-cms-core@2.37.1) (2021-02-07)
+
+
+### Bug Fixes
+
+* json FM ending with object parse error ([#4909](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4909)) ([60454bb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/60454bb4dea3122c8b63ed9d00ef8c8ce5016281))
+
+
+
+
+
 # [2.37.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.36.15...netlify-cms-core@2.37.0) (2021-02-03)
 
 
