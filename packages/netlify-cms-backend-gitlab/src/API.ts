@@ -171,14 +171,14 @@ type GitLabCommit = {
   message: string;
 };
 
-export const getMaxAccess = (groups: { group_access_level: number }[]) => {
+export function getMaxAccess(groups: { group_access_level: number }[]) {
   return groups.reduce((previous, current) => {
     if (current.group_access_level > previous.group_access_level) {
       return current;
     }
     return previous;
   }, groups[0]);
-};
+}
 
 export default class API {
   apiRoot: string;

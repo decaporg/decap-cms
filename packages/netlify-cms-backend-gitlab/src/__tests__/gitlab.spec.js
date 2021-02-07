@@ -8,7 +8,7 @@ import AuthenticationPage from '../AuthenticationPage';
 
 const { Backend, LocalStorageAuthStore } = jest.requireActual('netlify-cms-core/src/backend');
 
-const generateEntries = (path, length) => {
+function generateEntries(path, length) {
   const entries = Array.from({ length }, (val, idx) => {
     const count = idx + 1;
     const id = `00${count}`.slice(-3);
@@ -37,7 +37,7 @@ const generateEntries = (path, length) => {
       {},
     ),
   };
-};
+}
 
 const manyEntries = generateEntries('many-entries', 500);
 
@@ -222,8 +222,10 @@ describe('gitlab backend', () => {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
     const url = `${backend.implementation.apiRoot}${basePath}`;
-    const link = linkPage =>
-      `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
+
+    function link(linkPage) {
+      return `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
+    }
 
     const linkHeader = oneLine`
       ${link(1)}; rel="first",
