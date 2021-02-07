@@ -149,7 +149,7 @@ const fr = {
         italic: 'Italique',
         code: 'Code',
         link: 'Lien',
-        linkPrompt: "Entrez l'adresse web du lien",
+        linkPrompt: "Entrer l'adresse web du lien",
         headings: 'Titres',
         quote: 'Citation',
         bulletedList: 'Liste à puces',
