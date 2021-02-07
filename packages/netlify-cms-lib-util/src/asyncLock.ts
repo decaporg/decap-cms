@@ -2,10 +2,10 @@ import semaphore from 'semaphore';
 
 export type AsyncLock = { release: () => void; acquire: () => Promise<boolean> };
 
-export const asyncLock = (): AsyncLock => {
+export function asyncLock(): AsyncLock {
   let lock = semaphore(1);
 
-  const acquire = (timeout = 15000) => {
+  function acquire(timeout = 15000) {
     const promise = new Promise<boolean>(resolve => {
       // this makes sure a caller doesn't gets stuck forever awaiting on the lock
       const timeoutId = setTimeout(() => {
@@ -21,9 +21,9 @@ export const asyncLock = (): AsyncLock => {
     });
 
     return promise;
-  };
+  }
 
-  const release = () => {
+  function release() {
     try {
       // suppress too many calls to leave error
       lock.leave();
@@ -37,7 +37,7 @@ export const asyncLock = (): AsyncLock => {
         lock = semaphore(1);
       }
     }
-  };
+  }
 
   return { acquire, release };
-};
+}
