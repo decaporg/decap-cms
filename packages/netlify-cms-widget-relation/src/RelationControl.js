@@ -8,9 +8,11 @@ import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { FixedSizeList } from 'react-window';
 
-const Option = ({ index, style, data }) => <div style={style}>{data.options[index]}</div>;
+function Option({ index, style, data }) {
+  return <div style={style}>{data.options[index]}</div>;
+}
 
-const MenuList = props => {
+function MenuList(props) {
   if (props.isLoading || props.options.length <= 0 || !Array.isArray(props.children)) {
     return props.children;
   }
@@ -28,7 +30,7 @@ const MenuList = props => {
       {Option}
     </FixedSizeList>
   );
-};
+}
 
 function optionToString(option) {
   return option && option.value ? option.value : '';
