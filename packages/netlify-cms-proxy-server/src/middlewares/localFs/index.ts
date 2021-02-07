@@ -23,7 +23,7 @@ type FsOptions = {
   logger: winston.Logger;
 };
 
-export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
+export function localFsMiddleware({ repoPath, logger }: FsOptions) {
   return async function(req: express.Request, res: express.Response) {
     try {
       const { body } = req;
@@ -138,21 +138,21 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
       res.status(500).json({ error: 'Unknown error' });
     }
   };
-};
+}
 
-export const getSchema = ({ repoPath }: { repoPath: string }) => {
+export function getSchema({ repoPath }: { repoPath: string }) {
   const schema = defaultSchema({ path: pathTraversal(repoPath) });
   return schema;
-};
+}
 
 type Options = {
   logger: winston.Logger;
 };
 
-export const registerMiddleware = async (app: express.Express, options: Options) => {
+export async function registerMiddleware(app: express.Express, options: Options) {
   const { logger } = options;
   const repoPath = path.resolve(process.env.GIT_REPO_DIRECTORY || process.cwd());
   app.post('/api/v1', joi(getSchema({ repoPath })));
   app.post('/api/v1', localFsMiddleware({ repoPath, logger }));
   logger.info(`Netlify CMS File System Proxy Server configured with ${repoPath}`);
-};
+}

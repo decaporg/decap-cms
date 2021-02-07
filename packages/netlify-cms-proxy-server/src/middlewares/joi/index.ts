@@ -29,7 +29,7 @@ const requiredBool = Joi.bool().required();
 const collection = requiredString;
 const slug = requiredString;
 
-export const defaultSchema = ({ path = requiredString } = {}) => {
+export function defaultSchema({ path = requiredString } = {}) {
   const defaultParams = Joi.object({
     branch: requiredString,
   });
@@ -234,19 +234,17 @@ export const defaultSchema = ({ path = requiredString } = {}) => {
     action: Joi.valid(...allowedActions).required(),
     params,
   });
-};
+}
 
-export const joi = (schema: Joi.Schema) => (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  const { error } = schema.validate(req.body, { allowUnknown: true });
-  if (error) {
-    const { details } = error;
-    const message = details.map(i => i.message).join(',');
-    res.status(422).json({ error: message });
-  } else {
-    next();
-  }
-};
+export function joi(schema: Joi.Schema) {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const { error } = schema.validate(req.body, { allowUnknown: true });
+    if (error) {
+      const { details } = error;
+      const message = details.map(i => i.message).join(',');
+      res.status(422).json({ error: message });
+    } else {
+      next();
+    }
+  };
+}

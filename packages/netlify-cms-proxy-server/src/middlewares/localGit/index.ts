@@ -40,7 +40,7 @@ import { pathTraversal } from '../joi/customValidators';
 import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
 
-const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
+async function commit(git: simpleGit.SimpleGit, commitMessage: string) {
   await git.add('.');
   await git.commit(commitMessage, undefined, {
     // setting the value to a string passes name=value
@@ -48,14 +48,14 @@ const commit = async (git: simpleGit.SimpleGit, commitMessage: string) => {
     '--no-verify': null,
     '--no-gpg-sign': null,
   });
-};
+}
 
-const getCurrentBranch = async (git: simpleGit.SimpleGit) => {
+async function getCurrentBranch(git: simpleGit.SimpleGit) {
   const currentBranch = await git.branchLocal().then(summary => summary.current);
   return currentBranch;
-};
+}
 
-const runOnBranch = async <T>(git: simpleGit.SimpleGit, branch: string, func: () => Promise<T>) => {
+async function runOnBranch<T>(git: simpleGit.SimpleGit, branch: string, func: () => Promise<T>) {
   const currentBranch = await getCurrentBranch(git);
   try {
     if (currentBranch !== branch) {
@@ -66,22 +66,24 @@ const runOnBranch = async <T>(git: simpleGit.SimpleGit, branch: string, func: ()
   } finally {
     await git.checkout(currentBranch);
   }
-};
+}
 
-const branchDescription = (branch: string) => `branch.${branch}.description`;
+function branchDescription(branch: string) {
+  return `branch.${branch}.description`;
+}
 
 type GitOptions = {
   repoPath: string;
   logger: winston.Logger;
 };
 
-const commitEntry = async (
+async function commitEntry(
   git: simpleGit.SimpleGit,
   repoPath: string,
   dataFiles: DataFile[],
   assets: Asset[],
   commitMessage: string,
-) => {
+) {
   // save entry content
   await Promise.all(
     dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
@@ -98,9 +100,9 @@ const commitEntry = async (
 
   // commits files
   await commit(git, commitMessage);
-};
+}
 
-const rebase = async (git: simpleGit.SimpleGit, branch: string) => {
+async function rebase(git: simpleGit.SimpleGit, branch: string) {
   const gpgSign = await git.raw(['config', 'commit.gpgsign']);
   try {
     if (gpgSign === 'true') {
@@ -112,9 +114,9 @@ const rebase = async (git: simpleGit.SimpleGit, branch: string) => {
       await git.addConfig('commit.gpgsign', gpgSign);
     }
   }
-};
+}
 
-const merge = async (git: simpleGit.SimpleGit, from: string, to: string) => {
+async function merge(git: simpleGit.SimpleGit, from: string, to: string) {
   const gpgSign = await git.raw(['config', 'commit.gpgsign']);
   try {
     if (gpgSign === 'true') {
@@ -126,14 +128,14 @@ const merge = async (git: simpleGit.SimpleGit, from: string, to: string) => {
       await git.addConfig('commit.gpgsign', gpgSign);
     }
   }
-};
+}
 
-const isBranchExists = async (git: simpleGit.SimpleGit, branch: string) => {
+async function isBranchExists(git: simpleGit.SimpleGit, branch: string) {
   const branchExists = await git.branchLocal().then(({ all }) => all.includes(branch));
   return branchExists;
-};
+}
 
-const getDiffs = async (git: simpleGit.SimpleGit, source: string, dest: string) => {
+async function getDiffs(git: simpleGit.SimpleGit, source: string, dest: string) {
   const rawDiff = await git.diff([source, dest]);
   const diffs = parse(rawDiff).map(d => {
     const oldPath = d.oldPath?.replace(/b\//, '') || '';
@@ -150,22 +152,22 @@ const getDiffs = async (git: simpleGit.SimpleGit, source: string, dest: string) 
     };
   });
   return diffs;
-};
+}
 
-export const validateRepo = async ({ repoPath }: { repoPath: string }) => {
+export async function validateRepo({ repoPath }: { repoPath: string }) {
   const git = simpleGit(repoPath).silent(false);
   const isRepo = await git.checkIsRepo();
   if (!isRepo) {
     throw Error(`${repoPath} is not a valid git repository`);
   }
-};
+}
 
-export const getSchema = ({ repoPath }: { repoPath: string }) => {
+export function getSchema({ repoPath }: { repoPath: string }) {
   const schema = defaultSchema({ path: pathTraversal(repoPath) });
   return schema;
-};
+}
 
-export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
+export function localGitMiddleware({ repoPath, logger }: GitOptions) {
   const git = simpleGit(repoPath).silent(false);
 
   // we can only perform a single git operation at any given time
@@ -443,17 +445,17 @@ export const localGitMiddleware = ({ repoPath, logger }: GitOptions) => {
       release && release();
     }
   };
-};
+}
 
 type Options = {
   logger: winston.Logger;
 };
 
-export const registerMiddleware = async (app: express.Express, options: Options) => {
+export async function registerMiddleware(app: express.Express, options: Options) {
   const { logger } = options;
   const repoPath = path.resolve(process.env.GIT_REPO_DIRECTORY || process.cwd());
   await validateRepo({ repoPath });
   app.post('/api/v1', joi(getSchema({ repoPath })));
   app.post('/api/v1', localGitMiddleware({ repoPath, logger }));
   logger.info(`Netlify CMS Git Proxy Server configured with ${repoPath}`);
-};
+}
