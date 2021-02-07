@@ -415,9 +415,10 @@ export const handleLocalBackend = async config => {
     return config;
   }
 
+  const publishMode = getPublishMode(config, publishModes, backendType);
   return {
     ...config,
-    publish_mode: getPublishMode(config, publishModes, backendType),
+    ...(publishMode && { publish_mode: publishMode }),
     backend: { ...config.backend, name: 'proxy', proxy_url: proxyUrl },
   };
 };
