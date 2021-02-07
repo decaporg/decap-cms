@@ -15,8 +15,9 @@ type ClientConfig = {
   transformImages: ImageTransformations | boolean;
 };
 
-export const matchPath = ({ patterns }: ClientConfig, path: string) =>
-  patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
+export function matchPath({ patterns }: ClientConfig, path: string) {
+  return patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
+}
 
 //
 // API interactions
@@ -26,10 +27,10 @@ const defaultContentHeaders = {
   ['Content-Type']: 'application/vnd.git-lfs+json',
 };
 
-const resourceExists = async (
+async function resourceExists(
   { rootURL, makeAuthorizedRequest }: ClientConfig,
   { sha, size }: PointerFile,
-) => {
+) {
   const response = await makeAuthorizedRequest({
     url: `${rootURL}/verify`,
     method: 'POST',
@@ -45,20 +46,20 @@ const resourceExists = async (
 
   // TODO: what kind of error to throw here? APIError doesn't seem
   // to fit
-};
+}
 
-const getTransofrmationsParams = (t: boolean | ImageTransformations) => {
+function getTransofrmationsParams(t: boolean | ImageTransformations) {
   if (isPlainObject(t) && !isEmpty(t)) {
     const { nf_resize: resize, w, h } = t as ImageTransformations;
     return `?nf_resize=${resize}&w=${w}&h=${h}`;
   }
   return '';
-};
+}
 
-const getDownloadURL = async (
+async function getDownloadURL(
   { rootURL, transformImages: t, makeAuthorizedRequest }: ClientConfig,
   { sha }: PointerFile,
-) => {
+) {
   try {
     const transformation = getTransofrmationsParams(t);
     const transformedPromise = makeAuthorizedRequest(`${rootURL}/origin/${sha}${transformation}`);
@@ -81,21 +82,23 @@ const getDownloadURL = async (
     console.error(error);
     return { url: '', blob: new Blob() };
   }
-};
+}
 
-const uploadOperation = (objects: PointerFile[]) => ({
-  operation: 'upload',
-  transfers: ['basic'],
-  objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha })),
-});
+function uploadOperation(objects: PointerFile[]) {
+  return {
+    operation: 'upload',
+    transfers: ['basic'],
+    objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha })),
+  };
+}
 
-const getResourceUploadURLs = async (
+async function getResourceUploadURLs(
   {
     rootURL,
     makeAuthorizedRequest,
   }: { rootURL: string; makeAuthorizedRequest: MakeAuthorizedRequest },
   pointerFiles: PointerFile[],
-) => {
+) {
   const response = await makeAuthorizedRequest({
     url: `${rootURL}/objects/batch`,
     method: 'POST',
@@ -113,19 +116,20 @@ const getResourceUploadURLs = async (
     },
   );
   return uploadUrls;
-};
+}
 
-const uploadBlob = (uploadURL: string, blob: Blob) =>
-  unsentRequest.fetchWithTimeout(uploadURL, {
+function uploadBlob(uploadURL: string, blob: Blob) {
+  return unsentRequest.fetchWithTimeout(uploadURL, {
     method: 'PUT',
     body: blob,
   });
+}
 
-const uploadResource = async (
+async function uploadResource(
   clientConfig: ClientConfig,
   { sha, size }: PointerFile,
   resource: Blob,
-) => {
+) {
   const existingFile = await resourceExists(clientConfig, { sha, size });
   if (existingFile) {
     return sha;
@@ -133,13 +137,14 @@ const uploadResource = async (
   const [uploadURL] = await getResourceUploadURLs(clientConfig, [{ sha, size }]);
   await uploadBlob(uploadURL, resource);
   return sha;
-};
+}
 
 //
 // Create Large Media client
 
-const configureFn = (config: ClientConfig, fn: Function) => (...args: unknown[]) =>
-  fn(config, ...args);
+function configureFn(config: ClientConfig, fn: Function) {
+  return (...args: unknown[]) => fn(config, ...args);
+}
 
 const clientFns: Record<string, Function> = {
   resourceExists,
@@ -159,7 +164,7 @@ export type Client = {
   enabled: boolean;
 };
 
-export const getClient = (clientConfig: ClientConfig) => {
+export function getClient(clientConfig: ClientConfig) {
   return flow([
     Object.keys,
     map((key: string) => [key, configureFn(clientConfig, clientFns[key])]),
@@ -170,4 +175,4 @@ export const getClient = (clientConfig: ClientConfig) => {
       enabled: clientConfig.enabled,
     }),
   ])(clientFns);
-};
+}
