@@ -23,11 +23,13 @@ function getEmotionCache() {
   return emotionCache;
 }
 
-const PreviewContainer = ({ children, highlight }) => (
-  <CacheProvider value={getEmotionCache()}>
-    <Layout>{highlight ? <Highlight>{children}</Highlight> : children}</Layout>
-  </CacheProvider>
-);
+function PreviewContainer({ children, highlight }) {
+  return (
+    <CacheProvider value={getEmotionCache()}>
+      <Layout>{highlight ? <Highlight>{children}</Highlight> : children}</Layout>
+    </CacheProvider>
+  );
+}
 
 class Highlight extends React.Component {
   constructor(props) {
@@ -56,7 +58,7 @@ class Highlight extends React.Component {
   }
 }
 
-const BlogPostPreview = ({ entry, widgetFor }) => {
+function BlogPostPreview({ entry, widgetFor }) {
   const data = entry.get('data');
   return (
     <PreviewContainer highlight={true}>
@@ -68,56 +70,64 @@ const BlogPostPreview = ({ entry, widgetFor }) => {
       />
     </PreviewContainer>
   );
-};
+}
 
-const CommunityPreview = ({ entry }) => {
+function CommunityPreview({ entry }) {
   const { title, headline, subhead, sections } = entry.get('data').toJS();
   return (
     <PreviewContainer>
       <Community title={title} headline={headline} subhead={subhead} sections={sections} />
     </PreviewContainer>
   );
-};
+}
 
-const DocsPreview = ({ entry, widgetFor }) => (
-  <PreviewContainer highlight={true}>
-    <DocsTemplate title={entry.getIn(['data', 'title'])} body={widgetFor('body')} />
-  </PreviewContainer>
-);
+function DocsPreview({ entry, widgetFor }) {
+  return (
+    <PreviewContainer highlight={true}>
+      <DocsTemplate title={entry.getIn(['data', 'title'])} body={widgetFor('body')} />
+    </PreviewContainer>
+  );
+}
 
-const WidgetDocPreview = ({ entry, widgetFor }) => (
-  <PreviewContainer highlight={true}>
-    <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')} />
-  </PreviewContainer>
-);
+function WidgetDocPreview({ entry, widgetFor }) {
+  return (
+    <PreviewContainer highlight={true}>
+      <WidgetDoc visible={true} label={entry.get('label')} body={widgetFor('body')} />
+    </PreviewContainer>
+  );
+}
 
-const ReleasePreview = ({ entry }) => (
-  <PreviewContainer highlight={true}>
-    <WhatsNew
-      updates={entry
-        .getIn(['data', 'updates'])
-        .map(release => ({
-          version: release.get('version'),
-          date: dayjs(release.get('date')).format('MMMM D, YYYY'),
-          description: release.get('description'),
-        }))
-        .toJS()}
-    />
-  </PreviewContainer>
-);
+function ReleasePreview({ entry }) {
+  return (
+    <PreviewContainer highlight={true}>
+      <WhatsNew
+        updates={entry
+          .getIn(['data', 'updates'])
+          .map(release => ({
+            version: release.get('version'),
+            date: dayjs(release.get('date')).format('MMMM D, YYYY'),
+            description: release.get('description'),
+          }))
+          .toJS()}
+      />
+    </PreviewContainer>
+  );
+}
 
-const NotificationPreview = ({ entry }) => (
-  <PreviewContainer>
-    {entry
-      .getIn(['data', 'notifications'])
-      .filter(notif => notif.get('published'))
-      .map((notif, idx) => (
-        <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
-          {notif.get('message')}
-        </Notification>
-      ))}
-  </PreviewContainer>
-);
+function NotificationPreview({ entry }) {
+  return (
+    <PreviewContainer>
+      {entry
+        .getIn(['data', 'notifications'])
+        .filter(notif => notif.get('published'))
+        .map((notif, idx) => (
+          <Notification key={idx} url={notif.get('url')} loud={notif.get('loud')}>
+            {notif.get('message')}
+          </Notification>
+        ))}
+    </PreviewContainer>
+  );
+}
 
 CMS.registerPreviewTemplate('blog', BlogPostPreview);
 siteConfig.menu.docs.forEach(group => {

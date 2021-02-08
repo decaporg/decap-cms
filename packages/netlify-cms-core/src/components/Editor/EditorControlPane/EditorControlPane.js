@@ -50,7 +50,7 @@ const StyledDropdown = styled(Dropdown)`
   margin-bottom: 20px;
 `;
 
-const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange, t }) => {
+function LocaleDropdown({ locales, selectedLocale, onLocaleChange, t }) {
   return (
     <StyledDropdown
       renderButton={() => {
@@ -77,9 +77,9 @@ const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange, t }) => {
       ))}
     </StyledDropdown>
   );
-};
+}
 
-const getFieldValue = ({ field, entry, isTranslatable, locale }) => {
+function getFieldValue({ field, entry, isTranslatable, locale }) {
   if (field.get('meta')) {
     return entry.getIn(['meta', field.get('name')]);
   }
@@ -90,7 +90,7 @@ const getFieldValue = ({ field, entry, isTranslatable, locale }) => {
   }
 
   return entry.getIn(['data', field.get('name')]);
-};
+}
 
 export default class ControlPane extends React.Component {
   state = {

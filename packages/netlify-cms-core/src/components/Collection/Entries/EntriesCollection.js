@@ -28,11 +28,11 @@ const GroupHeading = styled.h2`
 
 const GroupContainer = styled.div``;
 
-const getGroupEntries = (entries, paths) => {
+function getGroupEntries(entries, paths) {
   return entries.filter(entry => paths.has(entry.get('path')));
-};
+}
 
-const getGroupTitle = (group, t) => {
+function getGroupTitle(group, t) {
   const { label, value } = group;
   if (value === undefined) {
     return t('collection.groups.other');
@@ -41,9 +41,9 @@ const getGroupTitle = (group, t) => {
     return value ? label : t('collection.groups.negateLabel', { label });
   }
   return `${label} ${value}`.trim();
-};
+}
 
-const withGroups = (groups, entries, EntriesToRender, t) => {
+function withGroups(groups, entries, EntriesToRender, t) {
   return groups.map(group => {
     const title = getGroupTitle(group, t);
     return (
@@ -53,7 +53,7 @@ const withGroups = (groups, entries, EntriesToRender, t) => {
       </GroupContainer>
     );
   });
-};
+}
 
 export class EntriesCollection extends React.Component {
   static propTypes = {
@@ -114,7 +114,7 @@ export class EntriesCollection extends React.Component {
   }
 }
 
-export const filterNestedEntries = (path, collectionFolder, entries) => {
+export function filterNestedEntries(path, collectionFolder, entries) {
   const filtered = entries.filter(e => {
     const entryPath = e.get('path').substring(collectionFolder.length + 1);
     if (!entryPath.startsWith(path)) {
@@ -132,7 +132,7 @@ export const filterNestedEntries = (path, collectionFolder, entries) => {
     }
   });
   return filtered;
-};
+}
 
 function mapStateToProps(state, ownProps) {
   const { collection, viewStyle, filterTerm } = ownProps;

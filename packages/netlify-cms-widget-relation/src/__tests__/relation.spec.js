@@ -4,7 +4,10 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
 
 jest.mock('react-window', () => {
-  const FixedSizeList = props => props.itemData.options;
+  function FixedSizeList(props) {
+    return props.itemData.options;
+  }
+
   return {
     FixedSizeList,
   };
@@ -45,7 +48,7 @@ const nestedFieldConfig = {
   value_field: 'title',
 };
 
-const generateHits = length => {
+function generateHits(length) {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
     const slug = `post-number-${idx + 1}`;
@@ -89,7 +92,7 @@ const generateHits = length => {
       data: { title: 'JSON post', slug: 'post-json', body: 'Body json' },
     },
   ];
-};
+}
 
 const simpleFileCollectionHits = [{ data: { categories: ['category 1', 'category 2'] } }];
 

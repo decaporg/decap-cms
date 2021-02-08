@@ -30,9 +30,13 @@ function FileContent(props) {
   return <FileLink key={value} path={value} href={getAsset(value, field)} />;
 }
 
-const FilePreview = props => (
-  <WidgetPreviewContainer>{props.value ? <FileContent {...props} /> : null}</WidgetPreviewContainer>
-);
+function FilePreview(props) {
+  return (
+    <WidgetPreviewContainer>
+      {props.value ? <FileContent {...props} /> : null}
+    </WidgetPreviewContainer>
+  );
+}
 
 FilePreview.propTypes = {
   getAsset: PropTypes.func.isRequired,

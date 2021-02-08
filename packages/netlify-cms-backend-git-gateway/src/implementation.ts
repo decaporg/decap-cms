@@ -121,11 +121,11 @@ interface NetlifyUser extends Credentials {
   user_metadata: { full_name: string; avatar_url: string };
 }
 
-const apiGet = async (path: string) => {
+async function apiGet(path: string) {
   const apiRoot = 'https://api.netlify.com/api/v1/sites';
   const response = await fetch(`${apiRoot}/${path}`).then(res => res.json());
   return response;
-};
+}
 
 export default class GitGateway implements Implementation {
   config: Config;

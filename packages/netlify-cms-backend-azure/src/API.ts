@@ -161,7 +161,7 @@ function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const getChangeItem = (item: AzureCommitItem) => {
+function getChangeItem(item: AzureCommitItem) {
   switch (item.action) {
     case AzureCommitChangeType.ADD:
       return {
@@ -195,7 +195,7 @@ const getChangeItem = (item: AzureCommitItem) => {
     default:
       return {};
   }
-};
+}
 
 type AzureCommitItem = {
   action: AzureCommitChangeType;

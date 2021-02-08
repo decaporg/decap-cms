@@ -72,13 +72,13 @@ const valueTypes = {
   MIXED: 'MIXED',
 };
 
-const handleSummary = (summary, entry, label, item) => {
+function handleSummary(summary, entry, label, item) {
   const data = stringTemplate.addFileTemplateFields(
     entry.get('path'),
     item.set('fields.label', label),
   );
   return stringTemplate.compileStringTemplate(summary, null, '', data);
-};
+}
 
 export default class ListControl extends React.Component {
   validations = [];

@@ -4,15 +4,17 @@ import { css, Global, ClassNames } from '@emotion/core';
 import ReactModal from 'react-modal';
 import { transitions, shadows, lengths, zIndex } from 'netlify-cms-ui-default';
 
-const ReactModalGlobalStyles = () => (
-  <Global
-    styles={css`
-      .ReactModal__Body--open {
-        overflow: hidden;
-      }
-    `}
-  />
-);
+function ReactModalGlobalStyles() {
+  return (
+    <Global
+      styles={css`
+        .ReactModal__Body--open {
+          overflow: hidden;
+        }
+      `}
+    />
+  );
+}
 
 const styleStrings = {
   modalBody: `

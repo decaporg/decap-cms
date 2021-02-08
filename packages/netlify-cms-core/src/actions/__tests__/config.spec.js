@@ -817,14 +817,14 @@ describe('config', () => {
   });
 
   describe('detectProxyServer', () => {
-    const assetFetchCalled = (url = 'http://localhost:8081/api/v1') => {
+    function assetFetchCalled(url = 'http://localhost:8081/api/v1') {
       expect(global.fetch).toHaveBeenCalledTimes(1);
       expect(global.fetch).toHaveBeenCalledWith(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'info' }),
       });
-    };
+    }
 
     beforeEach(() => {
       delete window.location;

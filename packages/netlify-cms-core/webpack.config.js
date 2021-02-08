@@ -8,13 +8,13 @@ const versionPlugin = new webpack.DefinePlugin({
   NETLIFY_CMS_CORE_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
 });
 
-const configs = () => {
+function configs() {
   return getConfig().map(config => {
     return {
       ...config,
       plugins: [...config.plugins, versionPlugin],
     };
   });
-};
+}
 
 module.exports = configs();

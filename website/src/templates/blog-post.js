@@ -11,25 +11,27 @@ import Markdown from '../components/markdown';
 import MetaInfo from '../components/meta-info';
 import Page from '../components/page';
 
-export const BlogPostTemplate = ({ title, author, date, body, html }) => (
-  <Container size="sm">
-    <Page as="article">
-      <h1
-        css={css`
-          margin-bottom: 0;
-        `}
-      >
-        {title}
-      </h1>
-      <MetaInfo>
-        by {author} on {date}
-      </MetaInfo>
-      <Markdown body={body} html={html} />
-    </Page>
-  </Container>
-);
+export function BlogPostTemplate({ title, author, date, body, html }) {
+  return (
+    <Container size="sm">
+      <Page as="article">
+        <h1
+          css={css`
+            margin-bottom: 0;
+          `}
+        >
+          {title}
+        </h1>
+        <MetaInfo>
+          by {author} on {date}
+        </MetaInfo>
+        <Markdown body={body} html={html} />
+      </Page>
+    </Container>
+  );
+}
 
-const BlogPost = ({ data }) => {
+function BlogPost({ data }) {
   const { html, frontmatter } = data.markdownRemark;
   const {
     author,
@@ -57,7 +59,7 @@ const BlogPost = ({ data }) => {
       <BlogPostTemplate title={title} author={author} date={date} html={html} />
     </Layout>
   );
-};
+}
 
 export default BlogPost;
 

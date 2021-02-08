@@ -60,37 +60,39 @@ const Info = styled.div`
   }
 `;
 
-const Footer = ({ buttons }) => (
-  <Root>
-    <Container>
-      <FooterGrid>
-        <FooterButtons>
-          {buttons.map(btn => (
-            <SocialButton href={btn.url} key={btn.url}>
-              {btn.name}
-            </SocialButton>
-          ))}
-        </FooterButtons>
-        <Info>
-          <p>
-            <a
-              href="https://github.com/netlify/netlify-cms/blob/master/LICENSE"
-              className="text-link"
-            >
-              Distributed under MIT License
-            </a>{' '}
-            ·{' '}
-            <a
-              href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md"
-              className="text-link"
-            >
-              Code of Conduct
-            </a>
-          </p>
-        </Info>
-      </FooterGrid>
-    </Container>
-  </Root>
-);
+function Footer({ buttons }) {
+  return (
+    <Root>
+      <Container>
+        <FooterGrid>
+          <FooterButtons>
+            {buttons.map(btn => (
+              <SocialButton href={btn.url} key={btn.url}>
+                {btn.name}
+              </SocialButton>
+            ))}
+          </FooterButtons>
+          <Info>
+            <p>
+              <a
+                href="https://github.com/netlify/netlify-cms/blob/master/LICENSE"
+                className="text-link"
+              >
+                Distributed under MIT License
+              </a>{' '}
+              ·{' '}
+              <a
+                href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md"
+                className="text-link"
+              >
+                Code of Conduct
+              </a>
+            </p>
+          </Info>
+        </FooterGrid>
+      </Container>
+    </Root>
+  );
+}
 
 export default Footer;

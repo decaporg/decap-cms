@@ -5,7 +5,7 @@ import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 const defaultState: Map<string, boolean | string> = Map({ isFetching: true });
 
-const config = (state = defaultState, action: ConfigAction) => {
+function config(state = defaultState, action: ConfigAction) {
   switch (action.type) {
     case CONFIG_REQUEST:
       return state.set('isFetching', true);
@@ -24,11 +24,14 @@ const config = (state = defaultState, action: ConfigAction) => {
     default:
       return state;
   }
-};
+}
 
-export const selectLocale = (state: Config) => state.get('locale', 'en') as string;
+export function selectLocale(state: Config) {
+  return state.get('locale', 'en') as string;
+}
 
-export const selectUseWorkflow = (state: Config) =>
-  state.get('publish_mode') === EDITORIAL_WORKFLOW;
+export function selectUseWorkflow(state: Config) {
+  return state.get('publish_mode') === EDITORIAL_WORKFLOW;
+}
 
 export default config;

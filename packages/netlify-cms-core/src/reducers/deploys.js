@@ -5,7 +5,7 @@ import {
   DEPLOY_PREVIEW_FAILURE,
 } from 'Actions/deploys';
 
-const deploys = (state = Map({ deploys: Map() }), action) => {
+function deploys(state = Map({ deploys: Map() }), action) {
   switch (action.type) {
     case DEPLOY_PREVIEW_REQUEST: {
       const { collection, slug } = action.payload;
@@ -37,9 +37,10 @@ const deploys = (state = Map({ deploys: Map() }), action) => {
     default:
       return state;
   }
-};
+}
 
-export const selectDeployPreview = (state, collection, slug) =>
-  state.getIn(['deploys', `${collection}.${slug}`]);
+export function selectDeployPreview(state, collection, slug) {
+  return state.getIn(['deploys', `${collection}.${slug}`]);
+}
 
 export default deploys;

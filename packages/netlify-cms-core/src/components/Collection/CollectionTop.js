@@ -35,7 +35,7 @@ const CollectionTopDescription = styled.p`
   margin-bottom: 0;
 `;
 
-const getCollectionProps = collection => {
+function getCollectionProps(collection) {
   const collectionLabel = collection.get('label');
   const collectionLabelSingular = collection.get('label_singular');
   const collectionDescription = collection.get('description');
@@ -45,9 +45,9 @@ const getCollectionProps = collection => {
     collectionLabelSingular,
     collectionDescription,
   };
-};
+}
 
-const CollectionTop = ({ collection, newEntryUrl, t }) => {
+function CollectionTop({ collection, newEntryUrl, t }) {
   const { collectionLabel, collectionLabelSingular, collectionDescription } = getCollectionProps(
     collection,
     t,
@@ -70,7 +70,7 @@ const CollectionTop = ({ collection, newEntryUrl, t }) => {
       ) : null}
     </CollectionTopContainer>
   );
-};
+}
 
 CollectionTop.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,

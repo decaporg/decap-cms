@@ -65,7 +65,7 @@ const ContribList = styled.div`
   }
 `;
 
-const HomePage = ({ data }) => {
+function HomePage({ data }) {
   const landing = data.landing.childDataYaml;
   const updates = data.updates.childDataYaml;
   const contribs = data.contribs.childDataJson;
@@ -182,7 +182,7 @@ const HomePage = ({ data }) => {
       </HomeSection>
     </Layout>
   );
-};
+}
 
 export const pageQuery = graphql`
   query homeQuery {

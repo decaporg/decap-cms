@@ -200,12 +200,12 @@ type ReadFile = (
 
 type ReadFileMetadata = (path: string, id: string | null | undefined) => Promise<FileMetadata>;
 
-const fetchFiles = async (
+async function fetchFiles(
   files: ImplementationFile[],
   readFile: ReadFile,
   readFileMetadata: ReadFileMetadata,
   apiName: string,
-) => {
+) {
   const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
   const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
   files.forEach(file => {
@@ -231,28 +231,28 @@ const fetchFiles = async (
   return Promise.all(promises).then(loadedEntries =>
     loadedEntries.filter(loadedEntry => !(loadedEntry as { error: boolean }).error),
   ) as Promise<ImplementationEntry[]>;
-};
+}
 
-export const entriesByFolder = async (
+export async function entriesByFolder(
   listFiles: () => Promise<ImplementationFile[]>,
   readFile: ReadFile,
   readFileMetadata: ReadFileMetadata,
   apiName: string,
-) => {
+) {
   const files = await listFiles();
   return fetchFiles(files, readFile, readFileMetadata, apiName);
-};
+}
 
-export const entriesByFiles = async (
+export async function entriesByFiles(
   files: ImplementationFile[],
   readFile: ReadFile,
   readFileMetadata: ReadFileMetadata,
   apiName: string,
-) => {
+) {
   return fetchFiles(files, readFile, readFileMetadata, apiName);
-};
+}
 
-export const unpublishedEntries = async (listEntriesKeys: () => Promise<string[]>) => {
+export async function unpublishedEntries(listEntriesKeys: () => Promise<string[]>) {
   try {
     const keys = await listEntriesKeys();
     return keys;
@@ -262,14 +262,14 @@ export const unpublishedEntries = async (listEntriesKeys: () => Promise<string[]
     }
     throw error;
   }
-};
+}
 
-export const blobToFileObj = (name: string, blob: Blob) => {
+export function blobToFileObj(name: string, blob: Blob) {
   const options = name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
   return new File([blob], name, options);
-};
+}
 
-export const getMediaAsBlob = async (path: string, id: string | null, readFile: ReadFile) => {
+export async function getMediaAsBlob(path: string, id: string | null, readFile: ReadFile) {
   let blob: Blob;
   if (path.match(/.svg$/)) {
     const text = (await readFile(path, id, { parseText: true })) as string;
@@ -278,13 +278,13 @@ export const getMediaAsBlob = async (path: string, id: string | null, readFile: 
     blob = (await readFile(path, id, { parseText: false })) as Blob;
   }
   return blob;
-};
+}
 
-export const getMediaDisplayURL = async (
+export async function getMediaDisplayURL(
   displayURL: DisplayURL,
   readFile: ReadFile,
   semaphore: Semaphore,
-) => {
+) {
   const { path, id } = displayURL as DisplayURLObject;
   return new Promise<string>((resolve, reject) =>
     semaphore.take(() =>
@@ -294,9 +294,9 @@ export const getMediaDisplayURL = async (
         .finally(() => semaphore.leave()),
     ),
   );
-};
+}
 
-export const runWithLock = async (lock: AsyncLock, func: Function, message: string) => {
+export async function runWithLock(lock: AsyncLock, func: Function, message: string) {
   try {
     const acquired = await lock.acquire();
     if (!acquired) {
@@ -308,7 +308,7 @@ export const runWithLock = async (lock: AsyncLock, func: Function, message: stri
   } finally {
     lock.release();
   }
-};
+}
 
 const LOCAL_KEY = 'git.local';
 
@@ -324,9 +324,9 @@ type GetKeyArgs = {
   depth: number;
 };
 
-const getLocalKey = ({ branch, folder, extension, depth }: GetKeyArgs) => {
+function getLocalKey({ branch, folder, extension, depth }: GetKeyArgs) {
   return `${LOCAL_KEY}.${branch}.${folder}.${extension}.${depth}`;
-};
+}
 
 type PersistLocalTreeArgs = GetKeyArgs & {
   localForage: LocalForage;
@@ -337,32 +337,32 @@ type GetLocalTreeArgs = GetKeyArgs & {
   localForage: LocalForage;
 };
 
-export const persistLocalTree = async ({
+export async function persistLocalTree({
   localForage,
   localTree,
   branch,
   folder,
   extension,
   depth,
-}: PersistLocalTreeArgs) => {
+}: PersistLocalTreeArgs) {
   await localForage.setItem<LocalTree>(
     getLocalKey({ branch, folder, extension, depth }),
     localTree,
   );
-};
+}
 
-export const getLocalTree = async ({
+export async function getLocalTree({
   localForage,
   branch,
   folder,
   extension,
   depth,
-}: GetLocalTreeArgs) => {
+}: GetLocalTreeArgs) {
   const localTree = await localForage.getItem<LocalTree>(
     getLocalKey({ branch, folder, extension, depth }),
   );
   return localTree;
-};
+}
 
 type GetDiffFromLocalTreeMethods = {
   getDifferences: (
@@ -387,14 +387,14 @@ type GetDiffFromLocalTreeArgs = GetDiffFromLocalTreeMethods & {
   depth: number;
 };
 
-const getDiffFromLocalTree = async ({
+async function getDiffFromLocalTree({
   branch,
   localTree,
   folder,
   getDifferences,
   filterFile,
   getFileId,
-}: GetDiffFromLocalTreeArgs) => {
+}: GetDiffFromLocalTreeArgs) {
   const diff = await getDifferences(branch.sha, localTree.head);
   const diffFiles = diff
     .filter(d => d.oldPath?.startsWith(folder) || d.newPath?.startsWith(folder))
@@ -441,7 +441,7 @@ const getDiffFromLocalTree = async ({
   );
 
   return diffFilesWithIds;
-};
+}
 
 type AllEntriesByFolderArgs = GetKeyArgs &
   GetDiffFromLocalTreeMethods & {
@@ -458,7 +458,7 @@ type AllEntriesByFolderArgs = GetKeyArgs &
     localForage: LocalForage;
   };
 
-export const allEntriesByFolder = async ({
+export async function allEntriesByFolder({
   listAllFiles,
   readFile,
   readFileMetadata,
@@ -473,8 +473,8 @@ export const allEntriesByFolder = async ({
   getDifferences,
   getFileId,
   filterFile,
-}: AllEntriesByFolderArgs) => {
-  const listAllFilesAndPersist = async () => {
+}: AllEntriesByFolderArgs) {
+  async function listAllFilesAndPersist() {
     const files = await listAllFiles(folder, extension, depth);
     const branch = await getDefaultBranch();
     await persistLocalTree({
@@ -489,9 +489,9 @@ export const allEntriesByFolder = async ({
       folder,
     });
     return files;
-  };
+  }
 
-  const listFiles = async () => {
+  async function listFiles() {
     const localTree = await getLocalTree({ localForage, branch, folder, extension, depth });
     if (localTree) {
       const branch = await getDefaultBranch();
@@ -526,8 +526,6 @@ export const allEntriesByFolder = async ({
         // return local copy
         return localTree.files;
       } else {
-        // refresh local copy
-        const identity = (file: { path: string }) => file.path;
         const deleted = diff.reduce((acc, d) => {
           acc[d.path] = d.deleted;
           return acc;
@@ -536,9 +534,9 @@ export const allEntriesByFolder = async ({
           unionBy(
             diff.filter(d => !deleted[d.path]),
             localTree.files.filter(f => !deleted[f.path]),
-            identity,
+            file => file.path,
           ),
-          identity,
+          file => file.path,
         );
 
         await persistLocalTree({
@@ -555,8 +553,8 @@ export const allEntriesByFolder = async ({
     } else {
       return listAllFilesAndPersist();
     }
-  };
+  }
 
   const files = await listFiles();
   return fetchFiles(files, readFile, readFileMetadata, apiName);
-};
+}

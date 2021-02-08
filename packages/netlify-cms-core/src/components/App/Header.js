@@ -26,20 +26,22 @@ const styles = {
   `,
 };
 
-const AppHeader = props => (
-  <header
-    css={css`
-      ${shadows.dropMain};
-      position: sticky;
-      width: 100%;
-      top: 0;
-      background-color: ${colors.foreground};
-      z-index: ${zIndex.zIndex300};
-      height: ${lengths.topBarHeight};
-    `}
-    {...props}
-  />
-);
+function AppHeader(props) {
+  return (
+    <header
+      css={css`
+        ${shadows.dropMain};
+        position: sticky;
+        width: 100%;
+        top: 0;
+        background-color: ${colors.foreground};
+        z-index: ${zIndex.zIndex300};
+        height: ${lengths.topBarHeight};
+      `}
+      {...props}
+    />
+  );
+}
 
 const AppHeaderContent = styled.div`
   display: flex;

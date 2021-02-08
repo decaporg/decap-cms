@@ -2,7 +2,7 @@ import unified from 'unified';
 import markdownToRemark from 'remark-parse';
 import remarkAllowHtmlEntities from '../remarkAllowHtmlEntities';
 
-const process = markdown => {
+function process(markdown) {
   const mdast = unified()
     .use(markdownToRemark)
     .use(remarkAllowHtmlEntities)
@@ -18,7 +18,7 @@ const process = markdown => {
    * ]}
    */
   return mdast.children[0].children[0].value;
-};
+}
 
 describe('remarkAllowHtmlEntities', () => {
   it('should not decode HTML entities', () => {

@@ -13,12 +13,13 @@ jest.mock('../Sidebar', () => 'mock-sidebar');
 const middlewares = [];
 const mockStore = configureStore(middlewares);
 
-const renderWithRedux = (component, { store } = {}) => {
+function renderWithRedux(component, { store } = {}) {
   function Wrapper({ children }) {
     return <Provider store={store}>{children}</Provider>;
   }
+
   return render(component, { wrapper: Wrapper });
-};
+}
 
 describe('Collection', () => {
   const collection = fromJS({

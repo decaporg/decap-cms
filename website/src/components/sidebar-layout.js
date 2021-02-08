@@ -10,19 +10,21 @@ const Children = styled.div`
   padding-left: 2rem;
 `;
 
-const SidebarLayout = ({ sidebar, children }) => (
-  <Page
-    css={css`
-      ${mq[1]} {
-        display: grid;
-        grid-template-columns: ${sidebar ? '300px' : ''} minmax(0, 1fr);
-        grid-gap: 2rem;
-      }
-    `}
-  >
-    {sidebar && <div>{sidebar}</div>}
-    <Children>{children}</Children>
-  </Page>
-);
+function SidebarLayout({ sidebar, children }) {
+  return (
+    <Page
+      css={css`
+        ${mq[1]} {
+          display: grid;
+          grid-template-columns: ${sidebar ? '300px' : ''} minmax(0, 1fr);
+          grid-gap: 2rem;
+        }
+      `}
+    >
+      {sidebar && <div>{sidebar}</div>}
+      <Children>{children}</Children>
+    </Page>
+  );
+}
 
 export default SidebarLayout;

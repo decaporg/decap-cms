@@ -21,16 +21,18 @@ const Text = styled.div`
   margin: 0 auto;
 `;
 
-const HomeSection = ({ title, text, children, ...props }) => (
-  <Page as="section" {...props}>
-    <Container>
-      <Header>
-        <Title>{title}</Title>
-        {text && <Text>{text}</Text>}
-      </Header>
-      {children}
-    </Container>
-  </Page>
-);
+function HomeSection({ title, text, children, ...props }) {
+  return (
+    <Page as="section" {...props}>
+      <Container>
+        <Header>
+          <Title>{title}</Title>
+          {text && <Text>{text}</Text>}
+        </Header>
+        {children}
+      </Container>
+    </Page>
+  );
+}
 
 export default HomeSection;

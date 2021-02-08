@@ -74,13 +74,13 @@ function deleteFile(path: string, tree: RepoTree) {
 
 const pageSize = 10;
 
-const getCursor = (
+function getCursor(
   folder: string,
   extension: string,
   entries: ImplementationEntry[],
   index: number,
   depth: number,
-) => {
+) {
   const count = entries.length;
   const pageCount = Math.floor(count / pageSize);
   return Cursor.create({
@@ -91,16 +91,16 @@ const getCursor = (
     meta: { index, count, pageSize, pageCount },
     data: { folder, extension, index, pageCount, depth },
   });
-};
+}
 
-export const getFolderFiles = (
+export function getFolderFiles(
   tree: RepoTree,
   folder: string,
   extension: string,
   depth: number,
   files = [] as RepoFile[],
   path = folder,
-) => {
+) {
   if (depth <= 0) {
     return files;
   }
@@ -118,7 +118,7 @@ export const getFolderFiles = (
   });
 
   return files;
-};
+}
 
 export default class TestBackend implements Implementation {
   mediaFolder: string;

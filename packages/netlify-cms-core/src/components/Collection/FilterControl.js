@@ -3,7 +3,7 @@ import { translate } from 'react-polyglot';
 import { Dropdown, DropdownCheckedItem } from 'netlify-cms-ui-default';
 import { ControlButton } from './ControlButton';
 
-const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
+function FilterControl({ viewFilters, t, onFilterClick, filter }) {
   const hasActiveFilter = filter
     ?.valueSeq()
     .toJS()
@@ -33,6 +33,6 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
       })}
     </Dropdown>
   );
-};
+}
 
 export default translate()(FilterControl);

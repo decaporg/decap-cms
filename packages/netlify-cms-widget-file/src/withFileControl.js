@@ -34,7 +34,9 @@ const StyledImage = styled.img`
   object-fit: contain;
 `;
 
-const Image = props => <StyledImage role="presentation" {...props} />;
+function Image(props) {
+  return <StyledImage role="presentation" {...props} />;
+}
 
 const SortableImage = SortableElement(({ itemValue, getAsset, field }) => {
   return (

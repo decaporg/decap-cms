@@ -7,7 +7,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import { buttons } from 'netlify-cms-ui-default';
 
-const NowButton = ({ t, handleChange }) => {
+function NowButton({ t, handleChange }) {
   return (
     <div
       css={css`
@@ -33,7 +33,7 @@ const NowButton = ({ t, handleChange }) => {
       </button>
     </div>
   );
-};
+}
 
 export default class DateTimeControl extends React.Component {
   static propTypes = {

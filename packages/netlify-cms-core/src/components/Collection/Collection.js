@@ -183,7 +183,7 @@ const mapDispatchToProps = {
   groupByField,
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...stateProps,
     ...ownProps,
@@ -193,7 +193,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onGroupClick: group => dispatchProps.groupByField(stateProps.collection, group),
     onChangeViewStyle: viewStyle => dispatchProps.changeViewStyle(viewStyle),
   };
-};
+}
 
 const ConnectedCollection = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Collection);
 

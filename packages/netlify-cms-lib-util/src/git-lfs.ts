@@ -10,9 +10,18 @@ export interface PointerFile {
   sha: string;
 }
 
-const splitIntoLines = (str: string) => str.split('\n');
-const splitIntoWords = (str: string) => str.split(/\s+/g);
-const isNonEmptyString = (str: string) => str !== '';
+function splitIntoLines(str: string) {
+  return str.split('\n');
+}
+
+function splitIntoWords(str: string) {
+  return str.split(/\s+/g);
+}
+
+function isNonEmptyString(str: string) {
+  return str !== '';
+}
+
 const withoutEmptyLines = flow([map((str: string) => str.trim()), filter(isNonEmptyString)]);
 export const parsePointerFile: (data: string) => PointerFile = flow([
   splitIntoLines,
@@ -29,9 +38,11 @@ export const parsePointerFile: (data: string) => PointerFile = flow([
 //
 // .gitattributes file parsing
 
-const removeGitAttributesCommentsFromLine = (line: string) => line.split('#')[0];
+function removeGitAttributesCommentsFromLine(line: string) {
+  return line.split('#')[0];
+}
 
-const parseGitPatternAttribute = (attributeString: string) => {
+function parseGitPatternAttribute(attributeString: string) {
   // There are three kinds of attribute settings:
   // - a key=val pair sets an attribute to a specific value
   // - a key without a value and a leading hyphen sets an attribute to false
@@ -44,7 +55,7 @@ const parseGitPatternAttribute = (attributeString: string) => {
     return [attributeString.slice(1), false];
   }
   return [attributeString, true];
-};
+}
 
 const parseGitPatternAttributes = flow([map(parseGitPatternAttribute), fromPairs]);
 
@@ -69,11 +80,13 @@ export const getLargeMediaPatternsFromGitAttributesFile = flow([
   map(([pattern]) => pattern),
 ]);
 
-export const createPointerFile = ({ size, sha }: PointerFile) => `\
+export function createPointerFile({ size, sha }: PointerFile) {
+  return `\
 version https://git-lfs.github.com/spec/v1
 oid sha256:${sha}
 size ${size}
 `;
+}
 
 export async function getPointerFileForMediaFileObj(
   client: { uploadResource: (pointer: PointerFile, resource: Blob) => Promise<string> },

@@ -116,7 +116,7 @@ const ColumnCount = styled.p`
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
 
-const getColumnHeaderText = (columnName, t) => {
+function getColumnHeaderText(columnName, t) {
   switch (columnName) {
     case 'draft':
       return t('workflow.workflowList.draftHeader');
@@ -125,7 +125,7 @@ const getColumnHeaderText = (columnName, t) => {
     case 'pending_publish':
       return t('workflow.workflowList.readyHeader');
   }
-};
+}
 
 class WorkflowList extends React.Component {
   static propTypes = {

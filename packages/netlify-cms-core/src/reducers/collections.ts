@@ -22,7 +22,7 @@ import { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;
 
-const collections = (state = null, action: CollectionsAction) => {
+function collections(state = null, action: CollectionsAction) {
   switch (action.type) {
     case CONFIG_SUCCESS: {
       const configCollections = action.payload
@@ -49,7 +49,7 @@ const collections = (state = null, action: CollectionsAction) => {
     default:
       return state;
   }
-};
+}
 
 const selectors = {
   [FOLDER]: {
@@ -120,7 +120,7 @@ const selectors = {
   },
 };
 
-const getFieldsWithMediaFolders = (fields: EntryField[]) => {
+function getFieldsWithMediaFolders(fields: EntryField[]) {
   const fieldsWithMediaFolders = fields.reduce((acc, f) => {
     if (f.has('media_folder')) {
       acc = [...acc, f];
@@ -141,16 +141,16 @@ const getFieldsWithMediaFolders = (fields: EntryField[]) => {
   }, [] as EntryField[]);
 
   return fieldsWithMediaFolders;
-};
+}
 
-export const getFileFromSlug = (collection: Collection, slug: string) => {
+export function getFileFromSlug(collection: Collection, slug: string) {
   return collection
     .get('files')
     ?.toArray()
     .find(f => f.get('name') === slug);
-};
+}
 
-export const selectFieldsWithMediaFolders = (collection: Collection, slug: string) => {
+export function selectFieldsWithMediaFolders(collection: Collection, slug: string) {
   if (collection.has('folder')) {
     const fields = collection.get('fields').toArray();
     return getFieldsWithMediaFolders(fields);
@@ -163,9 +163,9 @@ export const selectFieldsWithMediaFolders = (collection: Collection, slug: strin
   }
 
   return [];
-};
+}
 
-export const selectMediaFolders = (state: State, collection: Collection, entry: EntryMap) => {
+export function selectMediaFolders(state: State, collection: Collection, entry: EntryMap) {
   const fields = selectFieldsWithMediaFolders(collection, entry.get('slug'));
   const folders = fields.map(f => selectMediaFolder(state.config, collection, entry, f));
   if (collection.has('files')) {
@@ -181,26 +181,41 @@ export const selectMediaFolders = (state: State, collection: Collection, entry: 
   }
 
   return Set(folders).toArray();
-};
+}
 
-export const selectFields = (collection: Collection, slug: string) =>
-  selectors[collection.get('type')].fields(collection, slug);
-export const selectFolderEntryExtension = (collection: Collection) =>
-  selectors[FOLDER].entryExtension(collection);
-export const selectFileEntryLabel = (collection: Collection, slug: string) =>
-  selectors[FILES].entryLabel(collection, slug);
-export const selectEntryPath = (collection: Collection, slug: string) =>
-  selectors[collection.get('type')].entryPath(collection, slug);
-export const selectEntrySlug = (collection: Collection, path: string) =>
-  selectors[collection.get('type')].entrySlug(collection, path);
-export const selectAllowNewEntries = (collection: Collection) =>
-  selectors[collection.get('type')].allowNewEntries(collection);
-export const selectAllowDeletion = (collection: Collection) =>
-  selectors[collection.get('type')].allowDeletion(collection);
-export const selectTemplateName = (collection: Collection, slug: string) =>
-  selectors[collection.get('type')].templateName(collection, slug);
+export function selectFields(collection: Collection, slug: string) {
+  return selectors[collection.get('type')].fields(collection, slug);
+}
 
-export const getFieldsNames = (fields: EntryField[], prefix = '') => {
+export function selectFolderEntryExtension(collection: Collection) {
+  return selectors[FOLDER].entryExtension(collection);
+}
+
+export function selectFileEntryLabel(collection: Collection, slug: string) {
+  return selectors[FILES].entryLabel(collection, slug);
+}
+
+export function selectEntryPath(collection: Collection, slug: string) {
+  return selectors[collection.get('type')].entryPath(collection, slug);
+}
+
+export function selectEntrySlug(collection: Collection, path: string) {
+  return selectors[collection.get('type')].entrySlug(collection, path);
+}
+
+export function selectAllowNewEntries(collection: Collection) {
+  return selectors[collection.get('type')].allowNewEntries(collection);
+}
+
+export function selectAllowDeletion(collection: Collection) {
+  return selectors[collection.get('type')].allowDeletion(collection);
+}
+
+export function selectTemplateName(collection: Collection, slug: string) {
+  return selectors[collection.get('type')].templateName(collection, slug);
+}
+
+export function getFieldsNames(fields: EntryField[], prefix = '') {
   let names = fields.map(f => `${prefix}${f.get('name')}`);
 
   fields.forEach((f, index) => {
@@ -217,9 +232,9 @@ export const getFieldsNames = (fields: EntryField[], prefix = '') => {
   });
 
   return names;
-};
+}
 
-export const selectField = (collection: Collection, key: string) => {
+export function selectField(collection: Collection, key: string) {
   const array = keyToPathArray(key);
   let name: string | undefined;
   let field;
@@ -236,13 +251,13 @@ export const selectField = (collection: Collection, key: string) => {
   }
 
   return field;
-};
+}
 
-export const traverseFields = (
+export function traverseFields(
   fields: List<EntryField>,
   updater: (field: EntryField) => EntryField,
   done = () => false,
-) => {
+) {
   if (done()) {
     return fields;
   }
@@ -268,20 +283,21 @@ export const traverseFields = (
     .toList() as List<EntryField>;
 
   return fields;
-};
+}
 
-export const updateFieldByKey = (
+export function updateFieldByKey(
   collection: Collection,
   key: string,
   updater: (field: EntryField) => EntryField,
-) => {
+) {
   const selected = selectField(collection, key);
   if (!selected) {
     return collection;
   }
 
   let updated = false;
-  const updateAndBreak = (f: EntryField) => {
+
+  function updateAndBreak(f: EntryField) {
     const field = f as EntryField;
     if (field === selected) {
       updated = true;
@@ -289,7 +305,7 @@ export const updateFieldByKey = (
     } else {
       return field;
     }
-  };
+  }
 
   collection = collection.set(
     'fields',
@@ -297,18 +313,18 @@ export const updateFieldByKey = (
   );
 
   return collection;
-};
+}
 
-export const selectIdentifier = (collection: Collection) => {
+export function selectIdentifier(collection: Collection) {
   const identifier = collection.get('identifier_field');
   const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
   const fieldNames = getFieldsNames(collection.get('fields', List<EntryField>()).toArray());
   return identifierFields.find(id =>
     fieldNames.find(name => name?.toLowerCase().trim() === id.toLowerCase().trim()),
   );
-};
+}
 
-export const selectInferedField = (collection: Collection, fieldName: string) => {
+export function selectInferedField(collection: Collection, fieldName: string) {
   if (fieldName === 'title' && collection.get('identifier_field')) {
     return selectIdentifier(collection);
   }
@@ -355,9 +371,9 @@ export const selectInferedField = (collection: Collection, fieldName: string) =>
   }
 
   return null;
-};
+}
 
-export const selectEntryCollectionTitle = (collection: Collection, entry: EntryMap) => {
+export function selectEntryCollectionTitle(collection: Collection, entry: EntryMap) {
   // prefer formatted summary over everything else
   const summaryTemplate = collection.get('summary');
   if (summaryTemplate) return summaryFormatter(summaryTemplate, entry, collection);
@@ -372,16 +388,16 @@ export const selectEntryCollectionTitle = (collection: Collection, entry: EntryM
   const entryData = entry.get('data');
   const titleField = selectInferedField(collection, 'title');
   return titleField && entryData.getIn(keyToPathArray(titleField));
-};
+}
 
 export const COMMIT_AUTHOR = 'commit_author';
 export const COMMIT_DATE = 'commit_date';
 
-export const selectDefaultSortableFields = (
+export function selectDefaultSortableFields(
   collection: Collection,
   backend: Backend,
   hasIntegration: boolean,
-) => {
+) {
   let defaultSortable = SORTABLE_FIELDS.map((type: string) => {
     const field = selectInferedField(collection, type);
     if (backend.isGitBackend() && type === 'author' && !field && !hasIntegration) {
@@ -397,9 +413,9 @@ export const selectDefaultSortableFields = (
   }
 
   return defaultSortable as string[];
-};
+}
 
-export const selectSortableFields = (collection: Collection, t: (key: string) => string) => {
+export function selectSortableFields(collection: Collection, t: (key: string) => string) {
   const fields = collection
     .get('sortable_fields')
     .toArray()
@@ -418,9 +434,9 @@ export const selectSortableFields = (collection: Collection, t: (key: string) =>
     .map(item => ({ ...item.field, key: item.key }));
 
   return fields;
-};
+}
 
-export const selectSortDataPath = (collection: Collection, key: string) => {
+export function selectSortDataPath(collection: Collection, key: string) {
   if (key === COMMIT_DATE) {
     return 'updatedOn';
   } else if (key === COMMIT_AUTHOR && !selectField(collection, key)) {
@@ -428,19 +444,19 @@ export const selectSortDataPath = (collection: Collection, key: string) => {
   } else {
     return `data.${key}`;
   }
-};
+}
 
-export const selectViewFilters = (collection: Collection) => {
+export function selectViewFilters(collection: Collection) {
   const viewFilters = collection.get('view_filters').toJS() as ViewFilter[];
   return viewFilters;
-};
+}
 
-export const selectViewGroups = (collection: Collection) => {
+export function selectViewGroups(collection: Collection) {
   const viewGroups = collection.get('view_groups').toJS() as ViewGroup[];
   return viewGroups;
-};
+}
 
-export const selectFieldsComments = (collection: Collection, entryMap: EntryMap) => {
+export function selectFieldsComments(collection: Collection, entryMap: EntryMap) {
   let fields: EntryField[] = [];
   if (collection.has('folder')) {
     fields = collection.get('fields').toArray();
@@ -458,15 +474,15 @@ export const selectFieldsComments = (collection: Collection, entryMap: EntryMap)
   });
 
   return comments;
-};
+}
 
-export const selectHasMetaPath = (collection: Collection) => {
+export function selectHasMetaPath(collection: Collection) {
   return (
     collection.has('folder') &&
     collection.get('type') === FOLDER &&
     collection.has('meta') &&
     collection.get('meta')?.has('path')
   );
-};
+}
 
 export default collections;

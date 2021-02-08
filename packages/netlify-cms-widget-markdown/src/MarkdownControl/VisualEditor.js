@@ -15,7 +15,8 @@ import { renderBlock, renderInline, renderMark } from './renderers';
 import plugins from './plugins/visual';
 import schema from './schema';
 
-const visualEditorStyles = ({ minimal }) => `
+function visualEditorStyles({ minimal }) {
+  return `
   position: relative;
   overflow: hidden;
   overflow-x: auto;
@@ -30,26 +31,27 @@ const visualEditorStyles = ({ minimal }) => `
   flex-direction: column;
   z-index: ${zIndex.zIndex100};
 `;
+}
 
 const InsertionPoint = styled.div`
   flex: 1 1 auto;
   cursor: text;
 `;
 
-const createEmptyRawDoc = () => {
+function createEmptyRawDoc() {
   const emptyText = Text.create('');
   const emptyBlock = Block.create({ object: 'block', type: 'paragraph', nodes: [emptyText] });
   return { nodes: [emptyBlock] };
-};
+}
 
-const createSlateValue = (rawValue, { voidCodeBlock }) => {
+function createSlateValue(rawValue, { voidCodeBlock }) {
   const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock });
   const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
   const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
-};
+}
 
-export const mergeMediaConfig = (editorComponents, field) => {
+export function mergeMediaConfig(editorComponents, field) {
   // merge editor media library config to image components
   if (editorComponents.has('image')) {
     const imageComponent = editorComponents.get('image');
@@ -79,7 +81,7 @@ export const mergeMediaConfig = (editorComponents, field) => {
       );
     }
   }
-};
+}
 
 export default class Editor extends React.Component {
   constructor(props) {

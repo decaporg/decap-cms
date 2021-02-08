@@ -95,7 +95,7 @@ export const ControlHint = styled.p`
   transition: color ${transitions.main};
 `;
 
-const LabelComponent = ({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) => {
+function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
   const label = `${field.get('label', field.get('name'))}`;
   const labelComponent = (
     <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
@@ -104,7 +104,7 @@ const LabelComponent = ({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   );
 
   return labelComponent;
-};
+}
 
 class EditorControl extends React.Component {
   static propTypes = {
@@ -334,13 +334,13 @@ class EditorControl extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
   const { collections, entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
-  const loadEntry = async (collectionName, slug) => {
+  async function loadEntry(collectionName, slug) {
     const targetCollection = collections.get(collectionName);
     if (targetCollection) {
       const loadedEntry = await tryLoadEntry(state, targetCollection, slug);
@@ -348,7 +348,7 @@ const mapStateToProps = state => {
     } else {
       throw new Error(`Can't find collection '${collectionName}'`);
     }
-  };
+  }
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
@@ -361,9 +361,9 @@ const mapStateToProps = state => {
     loadEntry,
     validateMetaField: (field, value, t) => validateMetaField(state, collection, field, value, t),
   };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
   const creators = bindActionCreators(
     {
       openMediaLibrary,
@@ -381,16 +381,16 @@ const mapDispatchToProps = dispatch => {
     ...creators,
     boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
   };
-};
+}
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entry),
   };
-};
+}
 
 const ConnectedEditorControl = connect(
   mapStateToProps,

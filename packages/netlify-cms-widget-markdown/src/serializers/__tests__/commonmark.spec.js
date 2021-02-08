@@ -68,10 +68,12 @@ const onlys = [
  */
 const reader = new commonmark.Parser();
 const writer = new commonmark.HtmlRenderer();
-const parseWithCommonmark = markdown => {
+
+function parseWithCommonmark(markdown) {
   const parsed = reader.parse(markdown);
   return writer.render(parsed);
-};
+}
+
 const parse = flow([markdownToSlate, slateToMarkdown]);
 
 /**

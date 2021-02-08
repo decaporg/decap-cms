@@ -1,7 +1,7 @@
 import yaml from 'yaml';
 import { sortKeys } from './helpers';
 
-const addComments = (items, comments, prefix = '') => {
+function addComments(items, comments, prefix = '') {
   items.forEach(item => {
     if (item.key !== undefined) {
       const itemKey = item.key.toString();
@@ -15,7 +15,7 @@ const addComments = (items, comments, prefix = '') => {
       }
     }
   });
-};
+}
 
 const timestampTag = {
   identify: value => value instanceof Date,

@@ -38,10 +38,12 @@ const Notif = styled.a`
   }
 `;
 
-const Notification = ({ url, loud, children }) => (
-  <Notif href={url} loud={loud} target="_blank" rel="noopener noreferrer">
-    {children}
-  </Notif>
-);
+function Notification({ url, loud, children }) {
+  return (
+    <Notif href={url} loud={loud} target="_blank" rel="noopener noreferrer">
+      {children}
+    </Notif>
+  );
+}
 
 export default Notification;

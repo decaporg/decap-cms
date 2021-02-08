@@ -82,10 +82,10 @@ export function boundGetAsset(
   collection: Collection,
   entry: EntryMap,
 ) {
-  const bound = (path: string, field: EntryField) => {
+  function bound(path: string, field: EntryField) {
     const asset = dispatch(getAsset({ collection, entry, path, field }));
     return asset;
-  };
+  }
 
   return bound;
 }

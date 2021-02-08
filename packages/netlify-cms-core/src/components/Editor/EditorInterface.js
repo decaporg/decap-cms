@@ -41,33 +41,35 @@ const EditorToggle = styled(IconButton)`
   margin-bottom: 12px;
 `;
 
-const ReactSplitPaneGlobalStyles = () => (
-  <Global
-    styles={css`
-      .Resizer.vertical {
-        width: 21px;
-        cursor: col-resize;
-        position: relative;
-        transition: background-color ${transitions.main};
-
-        &:before {
-          content: '';
-          width: 2px;
-          height: 100%;
+function ReactSplitPaneGlobalStyles() {
+  return (
+    <Global
+      styles={css`
+        .Resizer.vertical {
+          width: 21px;
+          cursor: col-resize;
           position: relative;
-          left: 10px;
-          background-color: ${colors.textFieldBorder};
-          display: block;
-        }
+          transition: background-color ${transitions.main};
 
-        &:hover,
-        &:active {
-          background-color: ${colorsRaw.GrayLight};
+          &:before {
+            content: '';
+            width: 2px;
+            height: 100%;
+            position: relative;
+            left: 10px;
+            background-color: ${colors.textFieldBorder};
+            display: block;
+          }
+
+          &:hover,
+          &:active {
+            background-color: ${colorsRaw.GrayLight};
+          }
         }
-      }
-    `}
-  />
-);
+      `}
+    />
+  );
+}
 
 const StyledSplitPane = styled(SplitPane)`
   ${styles.splitPane};
@@ -121,13 +123,13 @@ const ViewControls = styled.div`
   z-index: ${zIndex.zIndex299};
 `;
 
-const EditorContent = ({
+function EditorContent({
   i18nVisible,
   previewVisible,
   editor,
   editorWithEditor,
   editorWithPreview,
-}) => {
+}) {
   if (i18nVisible) {
     return editorWithEditor;
   } else if (previewVisible) {
@@ -135,7 +137,7 @@ const EditorContent = ({
   } else {
     return <NoPreviewContainer>{editor}</NoPreviewContainer>;
   }
-};
+}
 
 function isPreviewEnabled(collection, entry) {
   if (collection.get('type') === FILES) {

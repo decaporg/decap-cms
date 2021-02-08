@@ -208,6 +208,10 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     return { leadingWhitespace, centerNodes, trailingWhitespace };
   }
 
+  function createText(text) {
+    return text && u('html', text);
+  }
+
   function convertInlineAndTextChildren(nodes = []) {
     const convertedNodes = [];
     let remainingNodes = nodes;
@@ -243,7 +247,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
             remainingNodes = remainder;
             continue;
           }
-          const createText = text => text && u('html', text);
+
           const normalizedNodes = [
             createText(leadingWhitespace),
             markNode,

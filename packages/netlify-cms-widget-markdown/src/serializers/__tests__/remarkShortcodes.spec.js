@@ -2,7 +2,10 @@ import { remarkParseShortcodes } from '../remarkShortcodes';
 
 // Stub of Remark Parser
 function process(value, plugins, processEat = () => {}) {
-  const eat = () => processEat;
+  function eat() {
+    return processEat;
+  }
+
   function Parser() {}
   Parser.prototype.blockTokenizers = {};
   Parser.prototype.blockMethods = [];

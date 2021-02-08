@@ -48,7 +48,7 @@ export function parseDateFromEntry(entry: Map<string, unknown>, dateFieldName?: 
 
 export const SLUG_MISSING_REQUIRED_DATE = 'SLUG_MISSING_REQUIRED_DATE';
 
-export const keyToPathArray = (key?: string) => {
+export function keyToPathArray(key?: string) {
   if (!key) {
     return [];
   }
@@ -72,9 +72,9 @@ export const keyToPathArray = (key?: string) => {
     parts.push(currentStr.join(separator));
   }
   return parts;
-};
+}
 
-export const expandPath = ({
+export function expandPath({
   data,
   path,
   paths = [],
@@ -82,7 +82,7 @@ export const expandPath = ({
   data: Record<string, unknown>;
   path: string;
   paths?: string[];
-}) => {
+}) {
   if (path.endsWith('.*')) {
     path = path + '.';
   }
@@ -107,7 +107,7 @@ export const expandPath = ({
   }
 
   return paths;
-};
+}
 
 // Allow `fields.` prefix in placeholder to override built in replacements
 // like "slug" and "year" with values from fields of the same name.
@@ -210,11 +210,7 @@ export function extractTemplateVars(template: string) {
  *   eg: `addFileTemplateFields('foo/bar/baz.ext', fields, 'foo')`
  *       will result in: `{ dirname: 'bar', filename: 'baz', extension: 'ext' }`
  */
-export const addFileTemplateFields = (
-  entryPath: string,
-  fields: Map<string, string>,
-  folder = '',
-) => {
+export function addFileTemplateFields(entryPath: string, fields: Map<string, string>, folder = '') {
   if (!entryPath) {
     return fields;
   }
@@ -229,4 +225,4 @@ export const addFileTemplateFields = (
   });
 
   return fields;
-};
+}

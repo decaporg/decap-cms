@@ -5,14 +5,19 @@ import { Map, List } from 'immutable';
 import { oneLine } from 'common-tags';
 import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
-const truthy = () => ({ error: false });
+function truthy() {
+  return { error: false };
+}
 
-const isEmpty = value =>
-  value === null ||
-  value === undefined ||
-  (Object.prototype.hasOwnProperty.call(value, 'length') && value.length === 0) ||
-  (value.constructor === Object && Object.keys(value).length === 0) ||
-  (List.isList(value) && value.size === 0);
+function isEmpty(value) {
+  return (
+    value === null ||
+    value === undefined ||
+    (Object.prototype.hasOwnProperty.call(value, 'length') && value.length === 0) ||
+    (value.constructor === Object && Object.keys(value).length === 0) ||
+    (List.isList(value) && value.size === 0)
+  );
+}
 
 export default class Widget extends Component {
   static propTypes = {

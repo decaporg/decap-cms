@@ -10,7 +10,9 @@ import { localForage } from 'netlify-cms-lib-util';
 import { buttons, colors } from 'netlify-cms-ui-default';
 
 const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?';
-const getIssueTemplate = ({ version, provider, browser, config }) => `
+
+function getIssueTemplate({ version, provider, browser, config }) {
+  return `
 **Describe the bug**
 
 **To Reproduce**
@@ -31,8 +33,9 @@ ${config}
 
 **Additional context**
 `;
+}
 
-const buildIssueTemplate = ({ config }) => {
+function buildIssueTemplate({ config }) {
   let version = '';
   if (typeof NETLIFY_CMS_VERSION === 'string') {
     version = `netlify-cms@${NETLIFY_CMS_VERSION}`;
@@ -47,9 +50,9 @@ const buildIssueTemplate = ({ config }) => {
   });
 
   return template;
-};
+}
 
-const buildIssueUrl = ({ title, config }) => {
+function buildIssueUrl({ title, config }) {
   try {
     const body = buildIssueTemplate({ config });
 
@@ -63,7 +66,7 @@ const buildIssueUrl = ({ title, config }) => {
     console.log(e);
     return `${ISSUE_URL}template=bug_report.md`;
   }
-};
+}
 
 const ErrorBoundaryContainer = styled.div`
   padding: 40px;
@@ -107,7 +110,7 @@ const CopyButton = styled.button`
   margin: 12px 0;
 `;
 
-const RecoveredEntry = ({ entry, t }) => {
+function RecoveredEntry({ entry, t }) {
   console.log(entry);
   return (
     <>
@@ -122,7 +125,7 @@ const RecoveredEntry = ({ entry, t }) => {
       </pre>
     </>
   );
-};
+}
 
 export class ErrorBoundary extends React.Component {
   static propTypes = {

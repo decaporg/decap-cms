@@ -145,7 +145,7 @@ const NOTIFS_QUERY = graphql`
   }
 `;
 
-const Header = ({ hasHeroBelow }) => {
+function Header({ hasHeroBelow }) {
   const [scrolled, setScrolled] = useState(false);
   const [isNavOpen, setNavOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -159,23 +159,23 @@ const Header = ({ hasHeroBelow }) => {
     };
   }, []);
 
-  const handleScroll = () => {
+  function handleScroll() {
     const currentWindowPos = document.documentElement.scrollTop || document.body.scrollTop;
 
     const scrolled = currentWindowPos > 0;
 
     setScrolled(scrolled);
-  };
+  }
 
-  const handleMenuBtnClick = () => {
+  function handleMenuBtnClick() {
     setNavOpen(s => !s);
     setSearchOpen(false);
-  };
+  }
 
-  const handleSearchBtnClick = () => {
+  function handleSearchBtnClick() {
     setSearchOpen(s => !s);
     setNavOpen(false);
-  };
+  }
 
   return (
     <StaticQuery query={NOTIFS_QUERY}>
@@ -241,6 +241,6 @@ const Header = ({ hasHeroBelow }) => {
       }}
     </StaticQuery>
   );
-};
+}
 
 export default Header;

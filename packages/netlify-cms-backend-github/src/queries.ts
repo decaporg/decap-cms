@@ -62,7 +62,7 @@ export const statues = gql`
   ${fragments.object}
 `;
 
-const buildFilesQuery = (depth = 1) => {
+function buildFilesQuery(depth = 1) {
   const PLACE_HOLDER = 'PLACE_HOLDER';
   let query = oneLine`
     ...ObjectParts
@@ -93,21 +93,23 @@ const buildFilesQuery = (depth = 1) => {
   query = query.replace(PLACE_HOLDER, '');
 
   return query;
-};
+}
 
-export const files = (depth: number) => gql`
-  query files($owner: String!, $name: String!, $expression: String!) {
-    repository(owner: $owner, name: $name) {
-      ...RepositoryParts
-      object(expression: $expression) {
-        ${buildFilesQuery(depth)}
+export function files(depth: number) {
+  return gql`
+    query files($owner: String!, $name: String!, $expression: String!) {
+      repository(owner: $owner, name: $name) {
+        ...RepositoryParts
+        object(expression: $expression) {
+          ${buildFilesQuery(depth)}
+        }
       }
     }
-  }
-  ${fragments.repository}
-  ${fragments.object}
-  ${fragments.fileEntry}
-`;
+    ${fragments.repository}
+    ${fragments.object}
+    ${fragments.fileEntry}
+  `;
+}
 
 const branchQueryPart = `
 branch: ref(qualifiedName: $qualifiedName) {

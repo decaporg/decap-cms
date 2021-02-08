@@ -38,12 +38,14 @@ describe.skip('slate', () => {
         </document>
       </value>
     );
-    const fn = editor => {
+
+    function fn(editor) {
       editor
         .deleteBackward()
         .insertText('b')
         .setBlocks('heading-one');
-    };
+    }
+
     const [actual, expected] = run(input, output, fn);
     expect(actual).toEqual(expected);
   });

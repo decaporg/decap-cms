@@ -10,10 +10,16 @@ const MODE_STORAGE_KEY = 'cms.md-mode';
 // TODO: passing the editorControl and components like this is horrible, should
 // be handled through Redux and a separate registry store for instances
 let editorControl;
+// eslint-disable-next-line func-style
 let _getEditorComponents = () => [];
 
-export const getEditorControl = () => editorControl;
-export const getEditorComponents = () => _getEditorComponents();
+export function getEditorControl() {
+  return editorControl;
+}
+
+export function getEditorComponents() {
+  return _getEditorComponents();
+}
 
 export default class MarkdownControl extends React.Component {
   static propTypes = {

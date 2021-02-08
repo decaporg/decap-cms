@@ -460,7 +460,9 @@ describe('collections', () => {
         ],
       });
 
-      const updater = field => field.set('default', 'default');
+      function updater(field) {
+        return field.set('default', 'default');
+      }
 
       expect(updateFieldByKey(collection, 'non-existent', updater)).toBe(collection);
       expect(updateFieldByKey(collection, 'title', updater)).toEqual(

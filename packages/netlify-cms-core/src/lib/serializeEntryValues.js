@@ -20,7 +20,7 @@ import { getWidgetValueSerializer } from './registry';
  * registered deserialization handlers run on entry load, and serialization
  * handlers run on persist.
  */
-const runSerializer = (values, fields, method) => {
+function runSerializer(values, fields, method) {
   /**
    * Reduce the list of fields to a map where keys are field names and values
    * are field values, serializing the values of fields whose widgets have
@@ -63,12 +63,12 @@ const runSerializer = (values, fields, method) => {
   serializedData = values.mergeDeep(serializedData);
 
   return serializedData;
-};
+}
 
-export const serializeValues = (values, fields) => {
+export function serializeValues(values, fields) {
   return runSerializer(values, fields, 'serialize');
-};
+}
 
-export const deserializeValues = (values, fields) => {
+export function deserializeValues(values, fields) {
   return runSerializer(values, fields, 'deserialize');
-};
+}
