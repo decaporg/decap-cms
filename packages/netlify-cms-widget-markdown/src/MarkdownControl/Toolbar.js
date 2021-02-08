@@ -105,9 +105,9 @@ export default class Toolbar extends React.Component {
       plugins,
       disabled,
       onSubmit,
-      hasMark = () => {},
-      hasInline = () => {},
-      hasBlock = () => {},
+      hasMark = () => { },
+      hasInline = () => { },
+      hasBlock = () => { },
       editorComponents,
       t,
     } = this.props;
@@ -235,7 +235,7 @@ export default class Toolbar extends React.Component {
             <ToolbarDropdownWrapper>
               <Dropdown
                 dropdownTopOverlap="36px"
-                dropdownWidth="110px"
+                dropdownWidth="max-content"
                 renderButton={() => (
                   <DropdownButton>
                     <ToolbarButton
