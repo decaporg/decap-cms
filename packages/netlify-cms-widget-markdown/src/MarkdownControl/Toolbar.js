@@ -105,9 +105,9 @@ export default class Toolbar extends React.Component {
       plugins,
       disabled,
       onSubmit,
-      hasMark = () => { },
-      hasInline = () => { },
-      hasBlock = () => { },
+      hasMark = () => {},
+      hasInline = () => {},
+      hasBlock = () => {},
       editorComponents,
       t,
     } = this.props;
