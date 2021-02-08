@@ -114,6 +114,11 @@ const fr = {
       confirmLoadBackup:
         "Une sauvegarde locale a été trouvée pour cette entrée. Voulez-vous l'utiliser",
     },
+    editorInterface: {
+      toggleI18n: 'Édition multi-langues',
+      togglePreview: 'Aperçu',
+      toggleScrollSync: 'Défilement synchronisé',
+    },
     editorToolbar: {
       publishing: 'Publication...',
       publish: 'Publier',
