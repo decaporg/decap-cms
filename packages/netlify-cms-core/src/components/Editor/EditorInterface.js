@@ -358,7 +358,7 @@ class EditorInterface extends Component {
                 onClick={this.handleToggleI18n}
                 size="large"
                 type="page"
-                title="Toggle i18n"
+                title={t('editor.editorInterface.toggleI18n')}
                 marginTop="70px"
               />
             )}
@@ -368,7 +368,7 @@ class EditorInterface extends Component {
                 onClick={this.handleTogglePreview}
                 size="large"
                 type="eye"
-                title="Toggle preview"
+                title={t('editor.editorInterface.togglePreview')}
               />
             )}
             {scrollSyncVisible && (
@@ -377,7 +377,7 @@ class EditorInterface extends Component {
                 onClick={this.handleToggleScrollSync}
                 size="large"
                 type="scroll"
-                title="Sync scrolling"
+                title={t('editor.editorInterface.toggleScrollSync')}
               />
             )}
           </ViewControls>
