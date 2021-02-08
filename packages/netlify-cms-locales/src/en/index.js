@@ -111,6 +111,11 @@ const en = {
       loadingEntry: 'Loading entry...',
       confirmLoadBackup: 'A local backup was recovered for this entry, would you like to use it?',
     },
+    editorInterface: {
+      toggleI18n: 'Toggle i18n',
+      togglePreview: 'Toggle preview',
+      toggleScrollSync: 'Sync scrolling',
+    },
     editorToolbar: {
       publishing: 'Publishing...',
       publish: 'Publish',
