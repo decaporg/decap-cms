@@ -101,3 +101,9 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           MACHINE_COUNT: 8
           MACHINE_INDEX: ${{ matrix.machine }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cypress-results-${{ matrix.machine }}
+          path: |
+            cypress/screenshots
+            cypress/videos
