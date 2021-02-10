@@ -1,13 +1,15 @@
 import yaml from 'yaml';
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
+import { produce } from 'immer';
 import { trimStart, trim, get, isPlainObject, isEmpty } from 'lodash';
 import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
 import { validateConfig } from '../constants/configSchema';
-import { selectDefaultSortableFields, traverseFields } from '../reducers/collections';
+import { selectDefaultSortableFields } from '../reducers/collections';
 import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from '../backend';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
+import { FILES, FOLDER } from '../constants/collectionTypes';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -40,11 +42,11 @@ function getConfigUrl() {
   return 'config.yml';
 }
 
-function setDefaultPublicFolder(map) {
-  if (map.has('media_folder') && !map.has('public_folder')) {
-    map = map.set('public_folder', map.get('media_folder'));
+function setDefaultPublicFolderForField(field) {
+  if ('media_folder' in field && !field.public_folder) {
+    return { ...field, public_folder: field.media_folder };
   }
-  return map;
+  return field;
 }
 
 // Mapping between existing camelCase and its snake_case counterpart
@@ -74,57 +76,42 @@ function setSnakeCaseConfig(field) {
 }
 
 function setI18nField(field) {
-  if (field.get(I18N) === true) {
-    field = field.set(I18N, I18N_FIELD.TRANSLATE);
-  } else if (field.get(I18N) === false || !field.has(I18N)) {
-    field = field.set(I18N, I18N_FIELD.NONE);
+  if (field[I18N] === true) {
+    return { ...field, [I18N]: I18N_FIELD.TRANSLATE };
+  } else if (field[I18N] === false || !field[I18N]) {
+    return { ...field, [I18N]: I18N_FIELD.NONE };
   }
   return field;
 }
 
-function setI18nDefaults(defaultI18n, collectionOrFile) {
-  if (defaultI18n && collectionOrFile.has(I18N)) {
-    const collectionOrFileI18n = collectionOrFile.get(I18N);
-    if (collectionOrFileI18n === true) {
-      collectionOrFile = collectionOrFile.set(I18N, defaultI18n);
-    } else if (collectionOrFileI18n === false) {
-      collectionOrFile = collectionOrFile.delete(I18N);
-    } else {
-      const locales = collectionOrFileI18n.get('locales', defaultI18n.get('locales'));
-      const defaultLocale = collectionOrFileI18n.get(
-        'default_locale',
-        collectionOrFileI18n.has('locales') ? locales.first() : defaultI18n.get('default_locale'),
-      );
-      collectionOrFile = collectionOrFile.set(I18N, defaultI18n.merge(collectionOrFileI18n));
-      collectionOrFile = collectionOrFile.setIn([I18N, 'locales'], locales);
-      collectionOrFile = collectionOrFile.setIn([I18N, 'default_locale'], defaultLocale);
-
-      throwOnMissingDefaultLocale(collectionOrFile.get(I18N));
-    }
-
-    if (collectionOrFileI18n !== false) {
-      // set default values for i18n fields
-      if (collectionOrFile.has('fields')) {
-        collectionOrFile = collectionOrFile.set(
-          'fields',
-          traverseFields(collectionOrFile.get('fields'), setI18nField),
-        );
-      }
-    }
+function getI18nDefaults(collectionOrFileI18n, defaultI18n) {
+  if (typeof collectionOrFileI18n === 'boolean') {
+    return defaultI18n;
   } else {
-    collectionOrFile = collectionOrFile.delete(I18N);
-    if (collectionOrFile.has('fields')) {
-      collectionOrFile = collectionOrFile.set(
-        'fields',
-        traverseFields(collectionOrFile.get('fields'), field => field.delete(I18N)),
-      );
-    }
+    const locales = collectionOrFileI18n.locales || defaultI18n.locales;
+    const defaultLocale = collectionOrFileI18n.default_locale || locales[0];
+    const mergedI18n = deepmerge(defaultI18n, collectionOrFileI18n);
+    mergedI18n.locales = locales;
+    mergedI18n.default_locale = defaultLocale;
+    throwOnMissingDefaultLocale(mergedI18n);
+    return mergedI18n;
   }
-  return collectionOrFile;
+}
+
+function setI18nDefaultsForFields(collectionOrFileFields, hasI18n) {
+  if (hasI18n) {
+    return traverseFieldsJS(collectionOrFileFields, setI18nField);
+  } else {
+    return traverseFieldsJS(collectionOrFileFields, field => {
+      const newField = { ...field };
+      delete newField[I18N];
+      return newField;
+    });
+  }
 }
 
 function throwOnInvalidFileCollectionStructure(i18n) {
-  if (i18n && i18n.get('structure') !== I18N_STRUCTURE.SINGLE_FILE) {
+  if (i18n && i18n.structure !== I18N_STRUCTURE.SINGLE_FILE) {
     throw new Error(
       `i18n configuration for files collections is limited to ${I18N_STRUCTURE.SINGLE_FILE} structure`,
     );
@@ -132,35 +119,19 @@ function throwOnInvalidFileCollectionStructure(i18n) {
 }
 
 function throwOnMissingDefaultLocale(i18n) {
-  if (i18n && !i18n.get('locales').includes(i18n.get('default_locale'))) {
+  if (i18n && i18n.default_locale && !i18n.locales.includes(i18n.default_locale)) {
     throw new Error(
-      `i18n locales '${i18n.get('locales').join(', ')}' are missing the default locale ${i18n.get(
-        'default_locale',
-      )}`,
+      `i18n locales '${i18n.locales.join(', ')}' are missing the default locale ${
+        i18n.default_locale
+      }`,
     );
   }
 }
-
-function setViewPatternsDefaults(key, collection) {
-  if (!collection.has(key)) {
-    collection = collection.set(key, fromJS([]));
-  } else {
-    collection = collection.set(
-      key,
-      collection.get(key).map(v => v.set('id', `${v.get('field')}__${v.get('pattern')}`)),
-    );
-  }
-
-  return collection;
-}
-
-const defaults = {
-  publish_mode: SIMPLE_PUBLISH_MODE,
-};
 
 function hasIntegration(config, collection) {
-  const integrations = getIntegrations(config);
-  const integration = selectIntegration(integrations, collection.get('name'), 'listEntries');
+  // TODO remove fromJS when Immutable is removed from the integrations state slice
+  const integrations = getIntegrations(fromJS(config));
+  const integration = selectIntegration(integrations, collection.name, 'listEntries');
   return !!integration;
 }
 
@@ -199,121 +170,164 @@ export function normalizeConfig(config) {
   return { ...config, collections: normalizedCollections };
 }
 
-export function applyDefaults(config) {
-  return Map(defaults)
-    .mergeDeep(config)
-    .withMutations(map => {
-      // Use `site_url` as default `display_url`.
-      if (!map.get('display_url') && map.get('site_url')) {
-        map.set('display_url', map.get('site_url'));
+export function applyDefaults(originalConfig) {
+  return produce(originalConfig, config => {
+    config.publish_mode = config.publish_mode || SIMPLE_PUBLISH_MODE;
+    config.slug = config.slug || {};
+    config.collections = config.collections || [];
+
+    // Use `site_url` as default `display_url`.
+    if (!config.display_url && config.site_url) {
+      config.display_url = config.site_url;
+    }
+
+    // Use media_folder as default public_folder.
+    const defaultPublicFolder = `/${trimStart(config.media_folder, '/')}`;
+    if (!('public_folder' in config)) {
+      config.public_folder = defaultPublicFolder;
+    }
+
+    // default values for the slug config
+    if (!('encoding' in config.slug)) {
+      config.slug.encoding = 'unicode';
+    }
+
+    if (!('clean_accents' in config.slug)) {
+      config.slug.clean_accents = false;
+    }
+
+    if (!('sanitize_replacement' in config.slug)) {
+      config.slug.sanitize_replacement = '-';
+    }
+
+    const i18n = config[I18N];
+    const hasI18n = Boolean(i18n);
+    if (hasI18n) {
+      i18n.default_locale = i18n.default_locale || i18n.locales[0];
+    }
+
+    throwOnMissingDefaultLocale(i18n);
+
+    const backend = resolveBackend(config);
+
+    for (const collection of config.collections) {
+      if (!('publish' in collection)) {
+        collection.publish = true;
       }
 
-      // Use media_folder as default public_folder.
-      const defaultPublicFolder = `/${trimStart(map.get('media_folder'), '/')}`;
-      if (!map.has('public_folder')) {
-        map.set('public_folder', defaultPublicFolder);
+      const collectionHasI18n = Boolean(collection[I18N]);
+      if (hasI18n && collectionHasI18n) {
+        collection[I18N] = getI18nDefaults(collection[I18N], i18n);
+      } else {
+        delete collection[I18N];
       }
 
-      // default values for the slug config
-      if (!map.getIn(['slug', 'encoding'])) {
-        map.setIn(['slug', 'encoding'], 'unicode');
+      if (collection.fields) {
+        collection.fields = setI18nDefaultsForFields(collection.fields, collectionHasI18n);
       }
 
-      if (!map.getIn(['slug', 'clean_accents'])) {
-        map.setIn(['slug', 'clean_accents'], false);
+      const { folder, files, view_filters, view_groups, meta } = collection;
+
+      if (folder) {
+        collection.type = FOLDER;
+
+        if (collection.path && !collection.media_folder) {
+          // default value for media folder when using the path config
+          collection.media_folder = '';
+        }
+
+        if ('media_folder' in collection && !collection.public_folder) {
+          collection.public_folder = collection.media_folder;
+        }
+
+        if (collection.fields) {
+          collection.fields = traverseFieldsJS(collection.fields, setDefaultPublicFolderForField);
+        }
+
+        collection.folder = trim(folder, '/');
+
+        if (meta && meta.path) {
+          const metaField = {
+            name: 'path',
+            meta: true,
+            required: true,
+            ...meta.path,
+          };
+          collection.fields = [metaField, ...(collection.fields || [])];
+        }
       }
 
-      if (!map.getIn(['slug', 'sanitize_replacement'])) {
-        map.setIn(['slug', 'sanitize_replacement'], '-');
-      }
+      if (files) {
+        collection.type = FILES;
 
-      let i18n = config.get(I18N);
-      i18n = i18n?.set('default_locale', i18n.get('default_locale', i18n.get('locales').first()));
-      throwOnMissingDefaultLocale(i18n);
+        // after we invoked setI18nDefaults,
+        // i18n property can't be boolean anymore
+        const collectionI18n = collection[I18N];
+        throwOnInvalidFileCollectionStructure(collectionI18n);
 
-      // Strip leading slash from collection folders and files
-      map.set(
-        'collections',
-        map.get('collections').map(collection => {
-          if (!collection.has('publish')) {
-            collection = collection.set('publish', true);
+        delete collection.nested;
+        delete collection.meta;
+
+        for (const file of files) {
+          file.file = trimStart(file.file, '/');
+
+          if ('media_folder' in file && !file.public_folder) {
+            file.public_folder = file.media_folder;
           }
 
-          collection = setI18nDefaults(i18n, collection);
+          if (file.fields) {
+            file.fields = traverseFieldsJS(file.fields, setDefaultPublicFolderForField);
+          }
 
-          const folder = collection.get('folder');
-          if (folder) {
-            if (collection.has('path') && !collection.has('media_folder')) {
-              // default value for media folder when using the path config
-              collection = collection.set('media_folder', '');
+          const fileHasI18n = Boolean(file[I18N]);
+
+          if (fileHasI18n) {
+            if (collectionI18n) {
+              file[I18N] = getI18nDefaults(file[I18N], collectionI18n);
             }
-            collection = setDefaultPublicFolder(collection);
-            collection = collection.set(
-              'fields',
-              traverseFields(collection.get('fields'), setDefaultPublicFolder),
-            );
-            collection = collection.set('folder', trim(folder, '/'));
-            if (collection.has('meta')) {
-              const fields = collection.get('fields');
-              const metaFields = [];
-              collection.get('meta').forEach((value, key) => {
-                const field = value.withMutations(map => {
-                  map.set('name', key);
-                  map.set('meta', true);
-                  map.set('required', true);
-                });
-                metaFields.push(field);
-              });
-              collection = collection.set('fields', fromJS([]).concat(metaFields, fields));
-            } else {
-              collection = collection.set('meta', Map());
-            }
+          } else {
+            delete file[I18N];
           }
 
-          const files = collection.get('files');
-          if (files) {
-            const collectionI18n = collection.get(I18N);
-            throwOnInvalidFileCollectionStructure(collectionI18n);
-
-            collection = collection.delete('nested');
-            collection = collection.delete('meta');
-            collection = collection.set(
-              'files',
-              files.map(file => {
-                file = file.set('file', trimStart(file.get('file'), '/'));
-                file = setDefaultPublicFolder(file);
-                file = file.set(
-                  'fields',
-                  traverseFields(file.get('fields'), setDefaultPublicFolder),
-                );
-                file = setI18nDefaults(collectionI18n, file);
-                throwOnInvalidFileCollectionStructure(file.get(I18N));
-                return file;
-              }),
-            );
+          if (file.fields) {
+            file.fields = setI18nDefaultsForFields(file.fields, fileHasI18n);
           }
 
-          if (!collection.has('sortable_fields')) {
-            const backend = resolveBackend(config);
-            const defaultSortable = selectDefaultSortableFields(
-              collection,
-              backend,
-              hasIntegration(map, collection),
-            );
-            collection = collection.set('sortable_fields', fromJS(defaultSortable));
-          }
+          // after we invoked setI18nDefaults,
+          // i18n property can't be boolean anymore
+          const fileI18n = file[I18N];
+          throwOnInvalidFileCollectionStructure(fileI18n);
+        }
+      }
 
-          collection = setViewPatternsDefaults('view_filters', collection);
-          collection = setViewPatternsDefaults('view_groups', collection);
+      if (!collection.sortable_fields) {
+        collection.sortable_fields = selectDefaultSortableFields(
+          // TODO remove fromJS when Immutable is removed from the collections state slice
+          fromJS(collection),
+          backend,
+          hasIntegration(config, collection),
+        );
+      }
 
-          if (map.hasIn(['editor', 'preview']) && !collection.has('editor')) {
-            collection = collection.setIn(['editor', 'preview'], map.getIn(['editor', 'preview']));
-          }
+      collection.view_filters = (view_filters || []).map(filter => {
+        return {
+          ...filter,
+          id: `${filter.field}__${filter.pattern}`,
+        };
+      });
 
-          return collection;
-        }),
-      );
-    });
+      collection.view_groups = (view_groups || []).map(group => {
+        return {
+          ...group,
+          id: `${group.field}__${group.pattern}`,
+        };
+      });
+
+      if (config.editor && !collection.editor) {
+        collection.editor = { preview: config.editor.preview };
+      }
+    }
+  });
 }
 
 export function parseConfig(data) {
@@ -446,9 +460,9 @@ export function loadConfig(manualConfig = {}, onLoad) {
       const withLocalBackend = await handleLocalBackend(mergedConfig);
       const normalizedConfig = normalizeConfig(withLocalBackend);
 
-      const config = applyDefaults(fromJS(normalizedConfig));
+      const config = applyDefaults(normalizedConfig);
 
-      dispatch(configLoaded(config));
+      dispatch(configLoaded(fromJS(config)));
 
       if (typeof onLoad === 'function') {
         onLoad();
