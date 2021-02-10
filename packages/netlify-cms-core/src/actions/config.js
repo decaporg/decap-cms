@@ -208,7 +208,7 @@ export function applyDefaults(originalConfig) {
 
     throwOnMissingDefaultLocale(i18n);
 
-    const backend = resolveBackend(config);
+    const backend = resolveBackend(fromJS(config));
 
     for (const collection of config.collections) {
       if (!('publish' in collection)) {
