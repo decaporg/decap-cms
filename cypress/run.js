@@ -38,4 +38,4 @@ const runCypress = async () => {
   }
 };
 
-runCypress().catch(error => console.error(error));
+runCypress();
