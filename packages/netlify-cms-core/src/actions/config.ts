@@ -2,7 +2,9 @@ import yaml from 'yaml';
 import { fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
 import { produce } from 'immer';
-import { trimStart, trim, get, isPlainObject, isEmpty } from 'lodash';
+import { trimStart, trim, isEmpty } from 'lodash';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
 import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
@@ -10,20 +12,43 @@ import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from '../backend';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 import { FILES, FOLDER } from '../constants/collectionTypes';
+import {
+  CmsCollection,
+  CmsConfig,
+  CmsField,
+  CmsFieldBase,
+  CmsFieldObject,
+  CmsFieldList,
+  CmsI18nConfig,
+  CmsPublishMode,
+  CmsLocalBackend,
+  State,
+} from '../types/redux';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
 export const CONFIG_FAILURE = 'CONFIG_FAILURE';
 
-function traverseFieldsJS(fields, updater) {
+function isObjectField(field: CmsField): field is CmsFieldBase & CmsFieldObject {
+  return 'fields' in (field as CmsFieldObject);
+}
+
+function isFieldList(field: CmsField): field is CmsFieldBase & CmsFieldList {
+  return 'types' in (field as CmsFieldList) || 'field' in (field as CmsFieldList);
+}
+
+function traverseFieldsJS<Field extends CmsField>(
+  fields: Field[],
+  updater: <T extends CmsField>(field: T) => T,
+): Field[] {
   return fields.map(field => {
-    let newField = updater(field);
-    if (newField.fields) {
-      newField = { ...newField, fields: traverseFieldsJS(newField.fields, updater) };
-    } else if (newField.field) {
-      newField = { ...newField, field: traverseFieldsJS([newField.field], updater)[0] };
-    } else if (newField.types) {
-      newField = { ...newField, types: traverseFieldsJS(newField.types, updater) };
+    const newField = updater(field);
+    if (isObjectField(newField)) {
+      return { ...newField, fields: traverseFieldsJS(newField.fields, updater) };
+    } else if (isFieldList(newField) && newField.field) {
+      return { ...newField, field: traverseFieldsJS([newField.field], updater)[0] };
+    } else if (isFieldList(newField) && newField.types) {
+      return { ...newField, types: traverseFieldsJS(newField.types, updater) };
     }
 
     return newField;
@@ -31,18 +56,20 @@ function traverseFieldsJS(fields, updater) {
 }
 
 function getConfigUrl() {
-  const validTypes = { 'text/yaml': 'yaml', 'application/x-yaml': 'yaml' };
-  const configLinkEl = document.querySelector('link[rel="cms-config-url"]');
-  const isValidLink = configLinkEl && validTypes[configLinkEl.type] && get(configLinkEl, 'href');
-  if (isValidLink) {
-    const link = get(configLinkEl, 'href');
-    console.log(`Using config file path: "${link}"`);
-    return link;
-  }
-  return 'config.yml';
+  const validTypes: { [type: string]: string | undefined } = {
+    'text/yaml': 'yaml',
+    'application/x-yaml': 'yaml',
+  };
+  const configLinkEl = document.querySelector<HTMLLinkElement>('link[rel="cms-config-url"]');
+  const configLinkType = configLinkEl && configLinkEl.getAttribute('type');
+  const configLinkHref = configLinkEl && configLinkEl.getAttribute('href');
+  const configUrl =
+    configLinkType && configLinkHref && validTypes[configLinkType] ? configLinkHref : 'config.yml';
+  console.log(`Using config file path: "${configUrl}"`);
+  return configUrl;
 }
 
-function setDefaultPublicFolderForField(field) {
+function setDefaultPublicFolderForField<T extends CmsField>(field: T) {
   if ('media_folder' in field && !field.public_folder) {
     return { ...field, public_folder: field.media_folder };
   }
@@ -60,22 +87,28 @@ const WIDGET_KEY_MAP = {
   searchFields: 'search_fields',
   displayFields: 'display_fields',
   optionsLength: 'options_length',
-};
+} as const;
 
-function setSnakeCaseConfig(field) {
-  const deprecatedKeys = Object.keys(WIDGET_KEY_MAP).filter(camel => camel in field);
-  const snakeValues = deprecatedKeys.map(camel => {
-    const snake = WIDGET_KEY_MAP[camel];
-    console.warn(
-      `Field ${field.name} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
-    );
-    return { [snake]: field[camel] };
-  });
+function setSnakeCaseConfig<T extends CmsField>(field: T) {
+  const deprecatedKeys = Object.keys(WIDGET_KEY_MAP) as ReadonlyArray<keyof typeof WIDGET_KEY_MAP>;
+  const newField = { ...field } as T;
 
-  return Object.assign({}, field, ...snakeValues);
+  for (const camelKey of deprecatedKeys) {
+    const snakeKey = WIDGET_KEY_MAP[camelKey];
+    if (camelKey in field) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore seems like it's impossible to make TS happy in this case
+      newField[snakeKey] = field[camelKey];
+      console.warn(
+        `Field ${field.name} is using a deprecated configuration '${camelKey}'. Please use '${snakeKey}'`,
+      );
+    }
+  }
+
+  return newField;
 }
 
-function setI18nField(field) {
+function setI18nField<T extends CmsField>(field: T) {
   if (field[I18N] === true) {
     return { ...field, [I18N]: I18N_FIELD.TRANSLATE };
   } else if (field[I18N] === false || !field[I18N]) {
@@ -84,13 +117,16 @@ function setI18nField(field) {
   return field;
 }
 
-function getI18nDefaults(collectionOrFileI18n, defaultI18n) {
+function getI18nDefaults(
+  collectionOrFileI18n: boolean | CmsI18nConfig,
+  defaultI18n: CmsI18nConfig,
+) {
   if (typeof collectionOrFileI18n === 'boolean') {
     return defaultI18n;
   } else {
     const locales = collectionOrFileI18n.locales || defaultI18n.locales;
     const defaultLocale = collectionOrFileI18n.default_locale || locales[0];
-    const mergedI18n = deepmerge(defaultI18n, collectionOrFileI18n);
+    const mergedI18n: CmsI18nConfig = deepmerge(defaultI18n, collectionOrFileI18n);
     mergedI18n.locales = locales;
     mergedI18n.default_locale = defaultLocale;
     throwOnMissingDefaultLocale(mergedI18n);
@@ -98,7 +134,7 @@ function getI18nDefaults(collectionOrFileI18n, defaultI18n) {
   }
 }
 
-function setI18nDefaultsForFields(collectionOrFileFields, hasI18n) {
+function setI18nDefaultsForFields(collectionOrFileFields: CmsField[], hasI18n: boolean) {
   if (hasI18n) {
     return traverseFieldsJS(collectionOrFileFields, setI18nField);
   } else {
@@ -110,7 +146,7 @@ function setI18nDefaultsForFields(collectionOrFileFields, hasI18n) {
   }
 }
 
-function throwOnInvalidFileCollectionStructure(i18n) {
+function throwOnInvalidFileCollectionStructure(i18n?: CmsI18nConfig) {
   if (i18n && i18n.structure !== I18N_STRUCTURE.SINGLE_FILE) {
     throw new Error(
       `i18n configuration for files collections is limited to ${I18N_STRUCTURE.SINGLE_FILE} structure`,
@@ -118,7 +154,7 @@ function throwOnInvalidFileCollectionStructure(i18n) {
   }
 }
 
-function throwOnMissingDefaultLocale(i18n) {
+function throwOnMissingDefaultLocale(i18n?: CmsI18nConfig) {
   if (i18n && i18n.default_locale && !i18n.locales.includes(i18n.default_locale)) {
     throw new Error(
       `i18n locales '${i18n.locales.join(', ')}' are missing the default locale ${
@@ -128,14 +164,14 @@ function throwOnMissingDefaultLocale(i18n) {
   }
 }
 
-function hasIntegration(config, collection) {
+function hasIntegration(config: CmsConfig, collection: CmsCollection) {
   // TODO remove fromJS when Immutable is removed from the integrations state slice
   const integrations = getIntegrations(fromJS(config));
   const integration = selectIntegration(integrations, collection.name, 'listEntries');
   return !!integration;
 }
 
-export function normalizeConfig(config) {
+export function normalizeConfig(config: CmsConfig) {
   const { collections = [] } = config;
 
   const normalizedCollections = collections.map(collection => {
@@ -170,7 +206,7 @@ export function normalizeConfig(config) {
   return { ...config, collections: normalizedCollections };
 }
 
-export function applyDefaults(originalConfig) {
+export function applyDefaults(originalConfig: CmsConfig) {
   return produce(originalConfig, config => {
     config.publish_mode = config.publish_mode || SIMPLE_PUBLISH_MODE;
     config.slug = config.slug || {};
@@ -201,13 +237,14 @@ export function applyDefaults(originalConfig) {
     }
 
     const i18n = config[I18N];
-    const hasI18n = Boolean(i18n);
-    if (hasI18n) {
+
+    if (i18n) {
       i18n.default_locale = i18n.default_locale || i18n.locales[0];
     }
 
     throwOnMissingDefaultLocale(i18n);
 
+    // TODO remove fromJS when Immutable is removed from backend
     const backend = resolveBackend(fromJS(config));
 
     for (const collection of config.collections) {
@@ -215,15 +252,20 @@ export function applyDefaults(originalConfig) {
         collection.publish = true;
       }
 
-      const collectionHasI18n = Boolean(collection[I18N]);
-      if (hasI18n && collectionHasI18n) {
-        collection[I18N] = getI18nDefaults(collection[I18N], i18n);
+      let collectionI18n = collection[I18N];
+
+      if (i18n && collectionI18n) {
+        collectionI18n = getI18nDefaults(collectionI18n, i18n);
+        collection[I18N] = collectionI18n;
       } else {
+        collectionI18n = undefined;
         delete collection[I18N];
       }
 
+      throwOnInvalidFileCollectionStructure(collectionI18n);
+
       if (collection.fields) {
-        collection.fields = setI18nDefaultsForFields(collection.fields, collectionHasI18n);
+        collection.fields = setI18nDefaultsForFields(collection.fields, Boolean(collectionI18n));
       }
 
       const { folder, files, view_filters, view_groups, meta } = collection;
@@ -260,11 +302,6 @@ export function applyDefaults(originalConfig) {
       if (files) {
         collection.type = FILES;
 
-        // after we invoked setI18nDefaults,
-        // i18n property can't be boolean anymore
-        const collectionI18n = collection[I18N];
-        throwOnInvalidFileCollectionStructure(collectionI18n);
-
         delete collection.nested;
         delete collection.meta;
 
@@ -279,24 +316,21 @@ export function applyDefaults(originalConfig) {
             file.fields = traverseFieldsJS(file.fields, setDefaultPublicFolderForField);
           }
 
-          const fileHasI18n = Boolean(file[I18N]);
+          let fileI18n = file[I18N];
 
-          if (fileHasI18n) {
-            if (collectionI18n) {
-              file[I18N] = getI18nDefaults(file[I18N], collectionI18n);
-            }
+          if (fileI18n && collectionI18n) {
+            fileI18n = getI18nDefaults(fileI18n, collectionI18n);
+            file[I18N] = fileI18n;
           } else {
+            fileI18n = undefined;
             delete file[I18N];
           }
 
-          if (file.fields) {
-            file.fields = setI18nDefaultsForFields(file.fields, fileHasI18n);
-          }
-
-          // after we invoked setI18nDefaults,
-          // i18n property can't be boolean anymore
-          const fileI18n = file[I18N];
           throwOnInvalidFileCollectionStructure(fileI18n);
+
+          if (file.fields) {
+            file.fields = setI18nDefaultsForFields(file.fields, Boolean(fileI18n));
+          }
         }
       }
 
@@ -330,32 +364,41 @@ export function applyDefaults(originalConfig) {
   });
 }
 
-export function parseConfig(data) {
+export function parseConfig(data: string) {
   const config = yaml.parse(data, { maxAliasCount: -1, prettyErrors: true, merge: true });
-  if (typeof CMS_ENV === 'string' && config[CMS_ENV]) {
-    Object.keys(config[CMS_ENV]).forEach(key => {
-      config[key] = config[CMS_ENV][key];
-    });
+  if (
+    typeof window !== 'undefined' &&
+    typeof window.CMS_ENV === 'string' &&
+    config[window.CMS_ENV]
+  ) {
+    const configKeys = Object.keys(config[window.CMS_ENV]) as ReadonlyArray<keyof CmsConfig>;
+    for (const key of configKeys) {
+      config[key] = config[window.CMS_ENV][key] as CmsConfig[keyof CmsConfig];
+    }
   }
-  return config;
+  return config as Partial<CmsConfig>;
 }
 
-async function getConfigYaml(file, hasManualConfig) {
-  const response = await fetch(file, { credentials: 'same-origin' }).catch(err => err);
-  if (response instanceof Error || response.status !== 200) {
-    if (hasManualConfig) return parseConfig('');
-    throw new Error(`Failed to load config.yml (${response.status || response})`);
+async function getConfigYaml(file: string, hasManualConfig: boolean) {
+  const response = await fetch(file, { credentials: 'same-origin' });
+  if (!response.ok || response.status !== 200) {
+    if (hasManualConfig) {
+      return {};
+    }
+    throw new Error(`Failed to load config.yml (${response.status})`);
   }
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
   if (!isYaml) {
-    console.log(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
-    if (hasManualConfig) return parseConfig('');
+    if (hasManualConfig) {
+      return {};
+    }
+    throw new Error(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
   }
   return parseConfig(await response.text());
 }
 
-export function configLoaded(config) {
+export function configLoaded(config: CmsConfig) {
   return {
     type: CONFIG_SUCCESS,
     payload: config,
@@ -368,7 +411,7 @@ export function configLoading() {
   };
 }
 
-export function configFailed(err) {
+export function configFailed(err: Error) {
   return {
     type: CONFIG_FAILURE,
     error: 'Error loading config',
@@ -376,35 +419,53 @@ export function configFailed(err) {
   };
 }
 
-export async function detectProxyServer(localBackend) {
-  const allowedHosts = ['localhost', '127.0.0.1', ...(localBackend?.allowed_hosts || [])];
-  if (allowedHosts.includes(location.hostname)) {
-    let proxyUrl;
-    const defaultUrl = 'http://localhost:8081/api/v1';
-    if (localBackend === true) {
+export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend) {
+  const allowedHosts = [
+    'localhost',
+    '127.0.0.1',
+    ...(typeof localBackend === 'boolean' || !localBackend ? [] : localBackend.allowed_hosts || []),
+  ];
+
+  if (!allowedHosts.includes(location.hostname)) {
+    return {};
+  }
+
+  let proxyUrl;
+  const defaultUrl = 'http://localhost:8081/api/v1';
+
+  if (localBackend) {
+    if (typeof localBackend === 'boolean') {
       proxyUrl = defaultUrl;
-    } else if (isPlainObject(localBackend)) {
+    } else {
       proxyUrl = localBackend.url || defaultUrl.replace('localhost', location.hostname);
     }
-    try {
-      console.log(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
-      const { repo, publish_modes, type } = await fetch(`${proxyUrl}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'info' }),
-      }).then(res => res.json());
-      if (typeof repo === 'string' && Array.isArray(publish_modes) && typeof type === 'string') {
-        console.log(`Detected Netlify CMS Proxy Server at '${proxyUrl}' with repo: '${repo}'`);
-        return { proxyUrl, publish_modes, type };
-      }
-    } catch {
-      console.log(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
-    }
   }
-  return {};
+  try {
+    console.log(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
+    const res = await fetch(`${proxyUrl}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'info' }),
+    });
+    const { repo, publish_modes, type } = (await res.json()) as {
+      repo?: string;
+      publish_modes?: CmsPublishMode[];
+      type?: string;
+    };
+    if (typeof repo === 'string' && Array.isArray(publish_modes) && typeof type === 'string') {
+      console.log(`Detected Netlify CMS Proxy Server at '${proxyUrl}' with repo: '${repo}'`);
+      return { proxyUrl, publish_modes, type };
+    } else {
+      console.log(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
+      return {};
+    }
+  } catch {
+    console.log(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
+    return {};
+  }
 }
 
-function getPublishMode(config, publishModes, backendType) {
+function getPublishMode(config: CmsConfig, publishModes?: CmsPublishMode[], backendType?: string) {
   if (config.publish_mode && publishModes && !publishModes.includes(config.publish_mode)) {
     const newPublishMode = publishModes[0];
     console.log(
@@ -416,32 +477,34 @@ function getPublishMode(config, publishModes, backendType) {
   return config.publish_mode;
 }
 
-export async function handleLocalBackend(config) {
-  if (!config.local_backend) {
-    return config;
+export async function handleLocalBackend(originalConfig: CmsConfig) {
+  if (!originalConfig.local_backend) {
+    return originalConfig;
   }
 
   const { proxyUrl, publish_modes: publishModes, type: backendType } = await detectProxyServer(
-    config.local_backend,
+    originalConfig.local_backend,
   );
 
   if (!proxyUrl) {
-    return config;
+    return originalConfig;
   }
 
-  const publishMode = getPublishMode(config, publishModes, backendType);
-  return {
-    ...config,
-    ...(publishMode && { publish_mode: publishMode }),
-    backend: { ...config.backend, name: 'proxy', proxy_url: proxyUrl },
-  };
+  return produce(originalConfig, config => {
+    config.backend.name = 'proxy';
+    config.backend.proxy_url = proxyUrl;
+
+    if (config.publish_mode) {
+      config.publish_mode = getPublishMode(config, publishModes, backendType);
+    }
+  });
 }
 
-export function loadConfig(manualConfig = {}, onLoad) {
+export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => unknown) {
   if (window.CMS_CONFIG) {
     return configLoaded(fromJS(window.CMS_CONFIG));
   }
-  return async dispatch => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
     dispatch(configLoading());
 
     try {

@@ -529,21 +529,21 @@ describe('config', () => {
         expect(
           applyDefaults({
             i18n: {
-              structure: 'multiple_folders',
+              structure: 'single_file',
               locales: ['en', 'de'],
             },
             collections: [
               { folder: 'foo', i18n: true, fields: [{ name: 'title', widget: 'string' }] },
             ],
           }).collections[0].i18n,
-        ).toEqual({ structure: 'multiple_folders', locales: ['en', 'de'], default_locale: 'en' });
+        ).toEqual({ structure: 'single_file', locales: ['en', 'de'], default_locale: 'en' });
       });
 
       it('should not set root i18n on collection when collection i18n is not set', () => {
         expect(
           applyDefaults({
             i18n: {
-              structure: 'multiple_folders',
+              structure: 'single_file',
               locales: ['en', 'de'],
             },
             collections: [{ folder: 'foo', fields: [{ name: 'title', widget: 'string' }] }],
@@ -555,7 +555,7 @@ describe('config', () => {
         expect(
           applyDefaults({
             i18n: {
-              structure: 'multiple_folders',
+              structure: 'single_file',
               locales: ['en', 'de'],
             },
             collections: [
@@ -569,7 +569,7 @@ describe('config', () => {
         expect(
           applyDefaults({
             i18n: {
-              structure: 'multiple_folders',
+              structure: 'single_file',
               locales: ['en', 'de'],
               default_locale: 'en',
             },
@@ -581,7 +581,7 @@ describe('config', () => {
               },
             ],
           }).collections[0].i18n,
-        ).toEqual({ structure: 'multiple_folders', locales: ['en', 'fr'], default_locale: 'fr' });
+        ).toEqual({ structure: 'single_file', locales: ['en', 'fr'], default_locale: 'fr' });
       });
 
       it('should throw when i18n structure is not single_file on files collection', () => {
@@ -650,7 +650,7 @@ describe('config', () => {
         expect(
           applyDefaults({
             i18n: {
-              structure: 'multiple_folders',
+              structure: 'single_file',
               locales: ['en', 'de'],
             },
             collections: [
@@ -676,7 +676,7 @@ describe('config', () => {
         expect(
           applyDefaults({
             i18n: {
-              structure: 'multiple_folders',
+              structure: 'single_file',
               locales: ['en', 'de'],
             },
             collections: [
@@ -694,7 +694,7 @@ describe('config', () => {
         expect(
           applyDefaults({
             i18n: {
-              structure: 'multiple_folders',
+              structure: 'single_file',
               locales: ['en', 'de'],
             },
             collections: [

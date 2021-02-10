@@ -2,6 +2,7 @@
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { List, Map } from 'immutable';
+  import { FILES, FOLDER } from '../constants/collectionTypes';
 
   export type CmsBackendType =
     | 'azure'
@@ -9,7 +10,8 @@ declare module 'netlify-cms-core' {
     | 'github'
     | 'gitlab'
     | 'bitbucket'
-    | 'test-repo';
+    | 'test-repo'
+    | 'proxy';
 
   export type CmsMapWidgetType = 'Point' | 'LineString' | 'Polygon';
 
@@ -62,7 +64,10 @@ declare module 'netlify-cms-core' {
     required?: boolean;
     hint?: string;
     pattern?: [string, string];
-    i18n?: boolean | 'translate' | 'duplicate';
+    i18n?: boolean | 'translate' | 'duplicate' | 'none';
+    media_folder?: string;
+    public_folder?: string;
+    comment?: string;
   }
 
   export interface CmsFieldBoolean {
@@ -236,6 +241,15 @@ declare module 'netlify-cms-core' {
     default?: string;
   }
 
+  export interface CmsFieldMeta {
+    name: string;
+    label: string;
+    widget: string;
+    required: boolean;
+    index_file: string;
+    meta: boolean;
+  }
+
   export type CmsField = CmsFieldBase &
     (
       | CmsFieldBoolean
@@ -252,6 +266,7 @@ declare module 'netlify-cms-core' {
       | CmsFieldSelect
       | CmsFieldHidden
       | CmsFieldStringOrText
+      | CmsFieldMeta
     );
 
   export interface CmsCollectionFile {
@@ -261,6 +276,25 @@ declare module 'netlify-cms-core' {
     fields: CmsField[];
     label_singular?: string;
     description?: string;
+    preview_path?: string;
+    preview_path_date_field?: string;
+    i18n?: boolean | CmsI18nConfig;
+    media_folder?: string;
+    public_folder?: string;
+  }
+
+  export interface ViewFilter {
+    label: string;
+    field: string;
+    pattern: string;
+    id: string;
+  }
+
+  export interface ViewGroup {
+    label: string;
+    field: string;
+    pattern: string;
+    id: string;
   }
 
   export interface CmsCollection {
@@ -280,6 +314,12 @@ declare module 'netlify-cms-core' {
     editor?: {
       preview?: boolean;
     };
+    publish?: boolean;
+    nested?: {
+      depth: number;
+    };
+    type: typeof FOLDER | typeof FILES;
+    meta?: { path?: { label: string; widget: string; index_file: string } };
 
     /**
      * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -296,6 +336,8 @@ declare module 'netlify-cms-core' {
     media_folder?: string;
     public_folder?: string;
     sortable_fields?: string[];
+    view_filters?: ViewFilter[];
+    view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
 
     /**
@@ -316,11 +358,13 @@ declare module 'netlify-cms-core' {
     auth_endpoint?: string;
     cms_label_prefix?: string;
     squash_merges?: boolean;
+    proxy_url?: string;
   }
 
   export interface CmsSlug {
     encoding?: CmsSlugEncoding;
     clean_accents?: boolean;
+    sanitize_replacement?: string;
   }
 
   export interface CmsLocalBackend {
@@ -341,9 +385,13 @@ declare module 'netlify-cms-core' {
     media_folder_relative?: boolean;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
+    load_config_file?: boolean;
     slug?: CmsSlug;
     i18n?: CmsI18nConfig;
     local_backend?: boolean | CmsLocalBackend;
+    editor?: {
+      preview?: boolean;
+    };
   }
 
   export interface InitOptions {
