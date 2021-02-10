@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.38.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.37.2...netlify-cms-core@2.38.0) (2021-02-10)
+
+
+### Features
+
+* **locale:** Make editor interface buttons translatable ([#4938](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4938)) ([c023653](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c0236536ddec23216de9554f859339cd6eb7c553))
+
+
+
+
+
 ## [2.37.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.37.1...netlify-cms-core@2.37.2) (2021-02-07)
 
 **Note:** Version bump only for package netlify-cms-core
