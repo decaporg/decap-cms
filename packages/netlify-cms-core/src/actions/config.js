@@ -201,8 +201,8 @@ export function applyDefaults(originalConfig) {
     }
 
     const i18n = config[I18N];
-
-    if (i18n) {
+    const hasI18n = Boolean(i18n);
+    if (hasI18n) {
       i18n.default_locale = i18n.default_locale || i18n.locales[0];
     }
 
@@ -210,19 +210,14 @@ export function applyDefaults(originalConfig) {
 
     const backend = resolveBackend(config);
 
-    for (let i = 0, l = config.collections.length; i < l; i += 1) {
-      const collection = config.collections[i];
-
+    for (const collection of config.collections) {
       if (!('publish' in collection)) {
         collection.publish = true;
       }
 
       const collectionHasI18n = Boolean(collection[I18N]);
-
-      if (collectionHasI18n) {
-        if (i18n) {
-          collection[I18N] = getI18nDefaults(collection[I18N], i18n);
-        }
+      if (hasI18n && collectionHasI18n) {
+        collection[I18N] = getI18nDefaults(collection[I18N], i18n);
       } else {
         delete collection[I18N];
       }
@@ -273,8 +268,7 @@ export function applyDefaults(originalConfig) {
         delete collection.nested;
         delete collection.meta;
 
-        for (let j = 0, ll = files.length; j < ll; j += 1) {
-          const file = files[j];
+        for (const file of files) {
           file.file = trimStart(file.file, '/');
 
           if ('media_folder' in file && !file.public_folder) {
