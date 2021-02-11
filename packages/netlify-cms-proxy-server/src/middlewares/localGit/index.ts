@@ -155,7 +155,7 @@ async function getDiffs(git: simpleGit.SimpleGit, source: string, dest: string) 
 }
 
 export async function validateRepo({ repoPath }: { repoPath: string }) {
-  const git = simpleGit(repoPath).silent(false);
+  const git = simpleGit(repoPath);
   const isRepo = await git.checkIsRepo();
   if (!isRepo) {
     throw Error(`${repoPath} is not a valid git repository`);
@@ -168,7 +168,7 @@ export function getSchema({ repoPath }: { repoPath: string }) {
 }
 
 export function localGitMiddleware({ repoPath, logger }: GitOptions) {
-  const git = simpleGit(repoPath).silent(false);
+  const git = simpleGit(repoPath);
 
   // we can only perform a single git operation at any given time
   const mutex = withTimeout(new Mutex(), 3000, new Error('Request timed out'));
