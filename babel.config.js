@@ -74,7 +74,7 @@ const defaultPlugins = [
   ],
 ];
 
-const presets = () => {
+function presets() {
   return [
     '@babel/preset-react',
     '@babel/preset-env',
@@ -86,9 +86,9 @@ const presets = () => {
     ],
     '@babel/typescript',
   ];
-};
+}
 
-const plugins = () => {
+function plugins() {
   if (isESM) {
     return [
       ...defaultPlugins,
@@ -129,7 +129,7 @@ const plugins = () => {
   }
 
   return defaultPlugins;
-};
+}
 
 module.exports = {
   presets: presets(),

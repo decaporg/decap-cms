@@ -8,12 +8,14 @@ const LOADING_IGNORE_LIST = [
   'STATUS_FAILURE',
 ];
 
-const ignoreWhenLoading = action => LOADING_IGNORE_LIST.some(type => action.type.includes(type));
+function ignoreWhenLoading(action) {
+  return LOADING_IGNORE_LIST.some(type => action.type.includes(type));
+}
 
-/*
+/**
  * Reducer for some global UI state that we want to share between components
- * */
-const globalUI = (state = Map({ isFetching: false, useOpenAuthoring: false }), action) => {
+ */
+function globalUI(state = Map({ isFetching: false, useOpenAuthoring: false }), action) {
   // Generic, global loading indicator
   if (!ignoreWhenLoading(action) && action.type.includes('REQUEST')) {
     return state.set('isFetching', true);
@@ -26,6 +28,6 @@ const globalUI = (state = Map({ isFetching: false, useOpenAuthoring: false }), a
     return state.set('useOpenAuthoring', true);
   }
   return state;
-};
+}
 
 export default globalUI;

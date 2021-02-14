@@ -40,17 +40,19 @@ const StyledCommunityChannelsList = styled.ul`
   }
 `;
 
-const CommunityChannelsList = ({ channels }) => (
-  <StyledCommunityChannelsList>
-    {channels.map(({ title, description, url }, idx) => (
-      <li key={idx}>
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          <strong>{title}</strong>
-          <p>{description}</p>
-        </a>
-      </li>
-    ))}
-  </StyledCommunityChannelsList>
-);
+function CommunityChannelsList({ channels }) {
+  return (
+    <StyledCommunityChannelsList>
+      {channels.map(({ title, description, url }, idx) => (
+        <li key={idx}>
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            <strong>{title}</strong>
+            <p>{description}</p>
+          </a>
+        </li>
+      ))}
+    </StyledCommunityChannelsList>
+  );
+}
 
 export default CommunityChannelsList;

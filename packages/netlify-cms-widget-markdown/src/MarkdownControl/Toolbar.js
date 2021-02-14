@@ -113,7 +113,11 @@ export default class Toolbar extends React.Component {
     } = this.props;
     const isVisible = this.isVisible;
     const showEditorComponents = !editorComponents || editorComponents.size >= 1;
-    const showPlugin = ({ id }) => (editorComponents ? editorComponents.includes(id) : true);
+
+    function showPlugin({ id }) {
+      return editorComponents ? editorComponents.includes(id) : true;
+    }
+
     const pluginsList = plugins ? plugins.toList().filter(showPlugin) : List();
 
     const headingOptions = {
@@ -235,7 +239,7 @@ export default class Toolbar extends React.Component {
             <ToolbarDropdownWrapper>
               <Dropdown
                 dropdownTopOverlap="36px"
-                dropdownWidth="110px"
+                dropdownWidth="max-content"
                 renderButton={() => (
                   <DropdownButton>
                     <ToolbarButton

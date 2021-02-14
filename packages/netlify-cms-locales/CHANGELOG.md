@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.27.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.26.0...netlify-cms-locales@1.27.0) (2021-02-10)
+
+
+### Bug Fixes
+
+* **locale-fr:** change translation + missing ? ([#4944](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4944)) ([79f5a07](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/79f5a0719fdcfb33d47435ca62b714b1f1a6b186))
+
+
+### Features
+
+* **locale:** Make editor interface buttons translatable ([#4938](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/4938)) ([c023653](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/c0236536ddec23216de9554f859339cd6eb7c553))
+
+
+
+
+
 # [1.26.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.25.0...netlify-cms-locales@1.26.0) (2021-02-07)
 
 

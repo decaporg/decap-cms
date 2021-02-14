@@ -1,22 +1,24 @@
 import { isNumber } from 'lodash';
 import { List } from 'immutable';
 
-export const validateMinMax = (
+export function validateMinMax(
   t: (key: string, options: unknown) => string,
   fieldLabel: string,
   value?: List<unknown>,
   min?: number,
   max?: number,
-) => {
-  const minMaxError = (messageKey: string) => ({
-    type: 'RANGE',
-    message: t(`editor.editorControlPane.widget.${messageKey}`, {
-      fieldLabel,
-      minCount: min,
-      maxCount: max,
-      count: min,
-    }),
-  });
+) {
+  function minMaxError(messageKey: string) {
+    return {
+      type: 'RANGE',
+      message: t(`editor.editorControlPane.widget.${messageKey}`, {
+        fieldLabel,
+        minCount: min,
+        maxCount: max,
+        count: min,
+      }),
+    };
+  }
 
   if ([min, max, value?.size].every(isNumber) && (value!.size < min! || value!.size > max!)) {
     return minMaxError(min === max ? 'rangeCountExact' : 'rangeCount');
@@ -25,4 +27,4 @@ export const validateMinMax = (
   } else if (isNumber(max) && value?.size && value.size > max) {
     return minMaxError('rangeMax');
   }
-};
+}

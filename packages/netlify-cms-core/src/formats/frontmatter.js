@@ -51,12 +51,13 @@ function inferFrontmatterFormat(str) {
   }
 }
 
-export const getFormatOpts = format =>
-  ({
+export function getFormatOpts(format) {
+  return {
     yaml: { language: 'yaml', delimiters: '---' },
     toml: { language: 'toml', delimiters: '+++' },
     json: { language: 'json', delimiters: ['{', '}'] },
-  }[format]);
+  }[format];
+}
 
 class FrontmatterFormatter {
   constructor(format, customDelimiter) {
@@ -99,6 +100,15 @@ class FrontmatterFormatter {
 }
 
 export const FrontmatterInfer = new FrontmatterFormatter();
-export const frontmatterYAML = customDelimiter => new FrontmatterFormatter('yaml', customDelimiter);
-export const frontmatterTOML = customDelimiter => new FrontmatterFormatter('toml', customDelimiter);
-export const frontmatterJSON = customDelimiter => new FrontmatterFormatter('json', customDelimiter);
+
+export function frontmatterYAML(customDelimiter) {
+  return new FrontmatterFormatter('yaml', customDelimiter);
+}
+
+export function frontmatterTOML(customDelimiter) {
+  return new FrontmatterFormatter('toml', customDelimiter);
+}
+
+export function frontmatterJSON(customDelimiter) {
+  return new FrontmatterFormatter('json', customDelimiter);
+}

@@ -186,14 +186,14 @@ export const API_NAME = 'Bitbucket';
 
 const APPLICATION_JSON = 'application/json; charset=utf-8';
 
-const replace404WithEmptyResponse = (err: FetchError) => {
+function replace404WithEmptyResponse(err: FetchError) {
   if (err && err.status === 404) {
     console.log('This 404 was expected and handled appropriately.');
     return { size: 0, values: [] as BitBucketFile[] } as BitBucketSrcResult;
   } else {
     return Promise.reject(err);
   }
-};
+}
 
 export default class API {
   apiRoot: string;

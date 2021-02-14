@@ -112,7 +112,12 @@ const fr = {
         'Toutes les modifications non publiées de cette entrée seront supprimées. Voulez-vous toujours supprimer ?',
       loadingEntry: "Chargement de l'entrée...",
       confirmLoadBackup:
-        "Une sauvegarde locale a été trouvée pour cette entrée. Voulez-vous l'utiliser",
+        "Une sauvegarde locale a été trouvée pour cette entrée. Voulez-vous l'utiliser ?",
+    },
+    editorInterface: {
+      toggleI18n: 'Édition multilingue',
+      togglePreview: 'Aperçu',
+      toggleScrollSync: 'Défilement synchronisé',
     },
     editorToolbar: {
       publishing: 'Publication...',

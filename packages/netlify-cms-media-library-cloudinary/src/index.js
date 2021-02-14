@@ -58,10 +58,10 @@ async function init({ options = {}, handleInsert } = {}) {
 
   await loadScript('https://media-library.cloudinary.com/global/all.js');
 
-  const insertHandler = data => {
+  function insertHandler(data) {
     const assets = data.assets.map(asset => getAssetUrl(asset, resolvedOptions));
     handleInsert(providedConfig.multiple || assets.length > 1 ? assets : assets[0]);
-  };
+  }
 
   const mediaLibrary = window.cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
 

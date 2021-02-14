@@ -154,7 +154,7 @@ export function entriesFailed(collection: Collection, error: Error) {
   };
 }
 
-const getAllEntries = async (state: State, collection: Collection) => {
+async function getAllEntries(state: State, collection: Collection) {
   const backend = currentBackend(state.config);
   const integration = selectIntegration(state, collection.get('name'), 'listEntries');
   const provider: Backend = integration
@@ -162,7 +162,7 @@ const getAllEntries = async (state: State, collection: Collection) => {
     : backend;
   const entries = await provider.listAllEntries(collection);
   return entries;
-};
+}
 
 export function sortByField(
   collection: Collection,
@@ -555,7 +555,7 @@ const appendActions = fromJS({
   ['append_next']: { action: 'next', append: true },
 });
 
-const addAppendActionsToCursor = (cursor: Cursor) => {
+function addAppendActionsToCursor(cursor: Cursor) {
   return Cursor.create(cursor).updateStore('actions', (actions: Set<string>) => {
     return actions.union(
       appendActions
@@ -563,7 +563,7 @@ const addAppendActionsToCursor = (cursor: Cursor) => {
         .keySeq(),
     );
   });
-};
+}
 
 export function loadEntries(collection: Collection, page = 0) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -692,16 +692,16 @@ export function traverseCollectionCursor(collection: Collection, action: string)
   };
 }
 
-const escapeHtml = (unsafe: string) => {
+function escapeHtml(unsafe: string) {
   return unsafe
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-};
+}
 
-const processValue = (unsafe: string) => {
+function processValue(unsafe: string) {
   if (['true', 'True', 'TRUE'].includes(unsafe)) {
     return true;
   }
@@ -710,10 +710,15 @@ const processValue = (unsafe: string) => {
   }
 
   return escapeHtml(unsafe);
-};
+}
 
-const getDataFields = (fields: EntryFields) => fields.filter(f => !f!.get('meta')).toList();
-const getMetaFields = (fields: EntryFields) => fields.filter(f => f!.get('meta') === true).toList();
+function getDataFields(fields: EntryFields) {
+  return fields.filter(f => !f!.get('meta')).toList();
+}
+
+function getMetaFields(fields: EntryFields) {
+  return fields.filter(f => f!.get('meta') === true).toList();
+}
 
 export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -785,7 +790,10 @@ export function createEmptyDraftData(
       const list = item.get('widget') == 'list';
       const name = item.get('name');
       const defaultValue = item.get('default', null);
-      const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some(e => isEqual(val, e));
+
+      function isEmptyDefaultValue(val: unknown) {
+        return [[{}], {}].some(e => isEqual(val, e));
+      }
 
       if (List.isList(subfields)) {
         const subDefaultValue = list
@@ -831,9 +839,9 @@ function createEmptyDraftI18nData(collection: Collection, dataFields: EntryField
     return {};
   }
 
-  const skipField = (field: EntryField) => {
+  function skipField(field: EntryField) {
     return field.get(I18N) !== I18N_FIELD.DUPLICATE && field.get(I18N) !== I18N_FIELD.TRANSLATE;
-  };
+  }
 
   const i18nData = createEmptyDraftData(dataFields, true, skipField);
   return duplicateDefaultI18nFields(collection, i18nData);
@@ -850,23 +858,25 @@ export function getMediaAssets({ entry }: { entry: EntryMap }) {
   return assets;
 }
 
-export const getSerializedEntry = (collection: Collection, entry: Entry) => {
+export function getSerializedEntry(collection: Collection, entry: Entry) {
   /**
    * Serialize the values of any fields with registered serializers, and
    * update the entry and entryDraft with the serialized values.
    */
   const fields = selectFields(collection, entry.get('slug'));
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const serializeData = (data: any) => {
+  function serializeData(data: any) {
     return serializeValues(data, fields);
-  };
+  }
+
   const serializedData = serializeData(entry.get('data'));
   let serializedEntry = entry.set('data', serializedData);
   if (hasI18n(collection)) {
     serializedEntry = serializeI18n(collection, serializedEntry, serializeData);
   }
   return serializedEntry;
-};
+}
 
 export function persistEntry(collection: Collection) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -982,11 +992,11 @@ export function deleteEntry(collection: Collection, slug: string) {
   };
 }
 
-const getPathError = (
+function getPathError(
   path: string | undefined,
   key: string,
   t: (key: string, args: Record<string, unknown>) => string,
-) => {
+) {
   return {
     error: {
       type: ValidationErrorTypes.CUSTOM,
@@ -995,7 +1005,7 @@ const getPathError = (
       }),
     },
   };
-};
+}
 
 export function validateMetaField(
   state: State,

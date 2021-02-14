@@ -248,24 +248,24 @@ PreviewPane.propTypes = {
   getAsset: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
   return { isLoadingAsset, config: state.config };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
   return {
     boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
   };
-};
+}
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     getAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
   };
-};
+}
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(PreviewPane);

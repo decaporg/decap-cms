@@ -2,13 +2,13 @@ import { defaultSchema, joi } from '.';
 import express from 'express';
 import Joi from '@hapi/joi';
 
-const assetFailure = (result: Joi.ValidationResult, expectedMessage: string) => {
+function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
   expect(error).not.toBeNull();
   expect(error!.details).toHaveLength(1);
   const message = error!.details.map(({ message }) => message)[0];
   expect(message).toBe(expectedMessage);
-};
+}
 
 const defaultParams = {
   branch: 'master',

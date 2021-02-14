@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.9...netlify-cms-widget-markdown@2.12.10) (2021-02-10)
+
+
+### Bug Fixes
+
+* **widget-markdown:** set toolbar item dropdown width to 'max-content' ([ecbf82e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/ecbf82e961217869a2354e520cd7ccbfa8151c18))
+
+
+
+
+
 ## [2.12.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.8...netlify-cms-widget-markdown@2.12.9) (2021-02-01)
 
 

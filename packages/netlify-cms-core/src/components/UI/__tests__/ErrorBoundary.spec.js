@@ -4,9 +4,9 @@ import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import { oneLineTrim } from 'common-tags';
 
-const WithError = () => {
+function WithError() {
   throw new Error('Some unknown error');
-};
+}
 
 jest.spyOn(console, 'error').mockImplementation(() => ({}));
 

@@ -23,7 +23,7 @@ const defaultState = Map({
   queryHits: Map({}),
 });
 
-const entries = (state = defaultState, action) => {
+function entries(state = defaultState, action) {
   switch (action.type) {
     case SEARCH_CLEAR:
       return defaultState;
@@ -84,6 +84,6 @@ const entries = (state = defaultState, action) => {
     default:
       return state;
   }
-};
+}
 
 export default entries;

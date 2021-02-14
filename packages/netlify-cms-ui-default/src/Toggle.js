@@ -44,7 +44,7 @@ const ToggleBackground = styled.span`
   background-color: ${colors.active};
 `;
 
-const Toggle = ({
+function Toggle({
   id,
   active,
   onChange,
@@ -54,26 +54,28 @@ const Toggle = ({
   Container = ToggleContainer,
   Background = ToggleBackground,
   Handle = ToggleHandle,
-}) => (
-  <ReactToggled on={active} onToggle={onChange}>
-    {({ on, getTogglerProps }) => (
-      <Container
-        id={id}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        className={className}
-        {...getTogglerProps({
-          role: 'switch',
-          'aria-checked': on.toString(),
-          'aria-expanded': null,
-        })}
-      >
-        <Background isActive={on} />
-        <Handle isActive={on} />
-      </Container>
-    )}
-  </ReactToggled>
-);
+}) {
+  return (
+    <ReactToggled on={active} onToggle={onChange}>
+      {({ on, getTogglerProps }) => (
+        <Container
+          id={id}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          className={className}
+          {...getTogglerProps({
+            role: 'switch',
+            'aria-checked': on.toString(),
+            'aria-expanded': null,
+          })}
+        >
+          <Background isActive={on} />
+          <Handle isActive={on} />
+        </Container>
+      )}
+    </ReactToggled>
+  );
+}
 
 Toggle.propTypes = {
   id: PropTypes.string,

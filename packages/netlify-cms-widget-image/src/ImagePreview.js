@@ -10,11 +10,11 @@ const StyledImage = styled(({ src }) => <img src={src || ''} role="presentation"
   height: auto;
 `;
 
-const StyledImageAsset = ({ getAsset, value, field }) => {
+function StyledImageAsset({ getAsset, value, field }) {
   return <StyledImage src={getAsset(value, field)} />;
-};
+}
 
-const ImagePreviewContent = props => {
+function ImagePreviewContent(props) {
   const { value, getAsset, field } = props;
   if (Array.isArray(value) || List.isList(value)) {
     return value.map(val => (
@@ -22,15 +22,15 @@ const ImagePreviewContent = props => {
     ));
   }
   return <StyledImageAsset {...props} />;
-};
+}
 
-const ImagePreview = props => {
+function ImagePreview(props) {
   return (
     <WidgetPreviewContainer>
       {props.value ? <ImagePreviewContent {...props} /> : null}
     </WidgetPreviewContainer>
   );
-};
+}
 
 ImagePreview.propTypes = {
   getAsset: PropTypes.func.isRequired,

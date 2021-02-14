@@ -28,14 +28,16 @@ const LibraryTitle = styled.h1`
   color: ${props => props.isPrivate && colors.textFieldBorder};
 `;
 
-const MediaLibraryHeader = ({ onClose, title, isPrivate }) => (
-  <div>
-    <CloseButton onClick={onClose}>
-      <Icon type="close" />
-    </CloseButton>
-    <LibraryTitle isPrivate={isPrivate}>{title}</LibraryTitle>
-  </div>
-);
+function MediaLibraryHeader({ onClose, title, isPrivate }) {
+  return (
+    <div>
+      <CloseButton onClick={onClose}>
+        <Icon type="close" />
+      </CloseButton>
+      <LibraryTitle isPrivate={isPrivate}>{title}</LibraryTitle>
+    </div>
+  );
+}
 
 MediaLibraryHeader.propTypes = {
   onClose: PropTypes.func.isRequired,

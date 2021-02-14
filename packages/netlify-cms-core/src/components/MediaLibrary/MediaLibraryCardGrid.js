@@ -8,7 +8,7 @@ import { colors } from 'netlify-cms-ui-default';
 import { FixedSizeGrid as Grid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-const CardWrapper = props => {
+function CardWrapper(props) {
   const {
     rowIndex,
     columnIndex,
@@ -67,9 +67,9 @@ const CardWrapper = props => {
       />
     </div>
   );
-};
+}
 
-const VirtualizedGrid = props => {
+function VirtualizedGrid(props) {
   const { mediaItems, setScrollContainerRef } = props;
 
   return (
@@ -100,9 +100,9 @@ const VirtualizedGrid = props => {
       </AutoSizer>
     </CardGridContainer>
   );
-};
+}
 
-const PaginatedGrid = ({
+function PaginatedGrid({
   setScrollContainerRef,
   mediaItems,
   isSelectedAsset,
@@ -119,7 +119,7 @@ const PaginatedGrid = ({
   onLoadMore,
   isPaginating,
   paginatingMessage,
-}) => {
+}) {
   return (
     <CardGridContainer ref={setScrollContainerRef}>
       <CardGrid>
@@ -149,7 +149,7 @@ const PaginatedGrid = ({
       )}
     </CardGridContainer>
   );
-};
+}
 
 const CardGridContainer = styled.div`
   overflow-y: auto;
@@ -168,13 +168,13 @@ const PaginatingMessage = styled.h1`
   color: ${props => props.isPrivate && colors.textFieldBorder};
 `;
 
-const MediaLibraryCardGrid = props => {
+function MediaLibraryCardGrid(props) {
   const { canLoadMore, isPaginating } = props;
   if (canLoadMore || isPaginating) {
     return <PaginatedGrid {...props} />;
   }
   return <VirtualizedGrid {...props} />;
-};
+}
 
 MediaLibraryCardGrid.propTypes = {
   setScrollContainerRef: PropTypes.func.isRequired,

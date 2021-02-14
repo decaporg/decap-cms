@@ -71,13 +71,13 @@ import {
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
-const updateAssetProxies = (
+function updateAssetProxies(
   assetProxies: AssetProxy[],
   config: Config,
   collection: Collection,
   entryDraft: EntryDraft,
   path: string,
-) => {
+) {
   assetProxies.map(asset => {
     // update media files path based on entry path
     const oldPath = asset.path;
@@ -90,7 +90,7 @@ const updateAssetProxies = (
     );
     asset.path = newPath;
   });
-};
+}
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -118,7 +118,7 @@ function getEntryBackupKey(collectionName?: string, slug?: string) {
   return `${baseKey}.${collectionName}${suffix}`;
 }
 
-const getEntryField = (field: string, entry: EntryValue) => {
+function getEntryField(field: string, entry: EntryValue) {
   const value = get(entry.data, field);
   if (value) {
     return String(value);
@@ -131,19 +131,21 @@ const getEntryField = (field: string, entry: EntryValue) => {
       return '';
     }
   }
-};
+}
 
-export const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
-  searchFields.reduce((acc, field) => {
-    const value = getEntryField(field, entry);
-    if (value) {
-      return `${acc} ${value}`;
-    } else {
-      return acc;
-    }
-  }, '');
+export function extractSearchFields(searchFields: string[]) {
+  return (entry: EntryValue) =>
+    searchFields.reduce((acc, field) => {
+      const value = getEntryField(field, entry);
+      if (value) {
+        return `${acc} ${value}`;
+      } else {
+        return acc;
+      }
+    }, '');
+}
 
-export const expandSearchEntries = (entries: EntryValue[], searchFields: string[]) => {
+export function expandSearchEntries(entries: EntryValue[], searchFields: string[]) {
   // expand the entries for the purpose of the search
   const expandedEntries = entries.reduce((acc, e) => {
     const expandedFields = searchFields.reduce((acc, f) => {
@@ -160,9 +162,9 @@ export const expandSearchEntries = (entries: EntryValue[], searchFields: string[
   }, [] as (EntryValue & { field: string })[]);
 
   return expandedEntries;
-};
+}
 
-export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]) => {
+export function mergeExpandedEntries(entries: (EntryValue & { field: string })[]) {
   // merge the search results by slug and only keep data that matched the search
   const fields = entries.map(f => f.field);
   const arrayPaths: Record<string, Set<string>> = {};
@@ -214,20 +216,20 @@ export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]
   });
 
   return Object.values(merged);
-};
+}
 
-const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) => {
+function sortByScore(a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) {
   if (a.score > b.score) return -1;
   if (a.score < b.score) return 1;
   return 0;
-};
+}
 
-export const slugFromCustomPath = (collection: Collection, customPath: string) => {
+export function slugFromCustomPath(collection: Collection, customPath: string) {
   const folderPath = collection.get('folder', '') as string;
   const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
   const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
   return slug;
-};
+}
 
 interface AuthStore {
   retrieve: () => User;
@@ -281,15 +283,15 @@ type Implementation = BackendImplementation & {
   init: (config: ImplementationConfig, options: ImplementationInitOptions) => Implementation;
 };
 
-const prepareMetaPath = (path: string, collection: Collection) => {
+function prepareMetaPath(path: string, collection: Collection) {
   if (!selectHasMetaPath(collection)) {
     return path;
   }
   const dir = dirname(path);
   return dir.substr(collection.get('folder')!.length + 1) || '/';
-};
+}
 
-const collectionDepth = (collection: Collection) => {
+function collectionDepth(collection: Collection) {
   let depth;
   depth =
     collection.get('nested')?.get('depth') || getPathDepth(collection.get('path', '') as string);
@@ -299,7 +301,7 @@ const collectionDepth = (collection: Collection) => {
   }
 
   return depth;
-};
+}
 
 export class Backend {
   implementation: Implementation;

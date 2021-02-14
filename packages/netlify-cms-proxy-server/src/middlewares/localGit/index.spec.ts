@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import Joi from '@hapi/joi';
 import express from 'express';
+import winston from 'winston';
 import { validateRepo, getSchema, localGitMiddleware } from '.';
 
 jest.mock('netlify-cms-lib-util', () => jest.fn());
 jest.mock('simple-git/promise');
 
-const assetFailure = (result: Joi.ValidationResult, expectedMessage: string) => {
+function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
   expect(error).not.toBeNull();
   expect(error!.details).toHaveLength(1);
   const message = error!.details.map(({ message }) => message)[0];
   expect(message).toBe(expectedMessage);
-};
+}
 
 const defaultParams = {
   branch: 'master',
@@ -139,7 +140,7 @@ describe('localGitMiddleware', () => {
         },
       } as express.Request;
 
-      await localGitMiddleware({ repoPath })(req, res);
+      await localGitMiddleware({ repoPath, logger: winston.createLogger() })(req, res);
 
       expect(status).toHaveBeenCalledTimes(1);
       expect(status).toHaveBeenCalledWith(422);

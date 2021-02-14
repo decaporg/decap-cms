@@ -35,7 +35,7 @@ const initialState = Map({
   key: '',
 });
 
-const entryDraftReducer = (state = Map(), action) => {
+function entryDraftReducer(state = Map(), action) {
   switch (action.type) {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
@@ -180,9 +180,9 @@ const entryDraftReducer = (state = Map(), action) => {
     default:
       return state;
   }
-};
+}
 
-export const selectCustomPath = (collection, entryDraft) => {
+export function selectCustomPath(collection, entryDraft) {
   if (!selectHasMetaPath(collection)) {
     return;
   }
@@ -192,6 +192,6 @@ export const selectCustomPath = (collection, entryDraft) => {
   const extension = selectFolderEntryExtension(collection);
   const customPath = path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
   return customPath;
-};
+}
 
 export default entryDraftReducer;

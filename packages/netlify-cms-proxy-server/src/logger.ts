@@ -6,10 +6,10 @@ type LogOptions = {
   level: string;
 };
 
-export const createLogger = ({ level }: LogOptions) => {
+export function createLogger({ level }: LogOptions) {
   return winston.createLogger({
     level,
     format: combine(colorize(), simple()),
     transports: [new winston.transports.Console()],
   });
-};
+}

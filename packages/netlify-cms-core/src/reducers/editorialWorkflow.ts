@@ -21,7 +21,7 @@ import {
 import { CONFIG_SUCCESS } from '../actions/config';
 import { EditorialWorkflowAction, EditorialWorkflow, Entities } from '../types/redux';
 
-const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
+function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
   switch (action.type) {
     case CONFIG_SUCCESS: {
       const publishMode = action.payload && action.payload.get('publish_mode');
@@ -137,27 +137,25 @@ const unpublishedEntries = (state = Map(), action: EditorialWorkflowAction) => {
     default:
       return state;
   }
-};
+}
 
-export const selectUnpublishedEntry = (
-  state: EditorialWorkflow,
-  collection: string,
-  slug: string,
-) => state && state.getIn(['entities', `${collection}.${slug}`]);
+export function selectUnpublishedEntry(state: EditorialWorkflow, collection: string, slug: string) {
+  return state && state.getIn(['entities', `${collection}.${slug}`]);
+}
 
-export const selectUnpublishedEntriesByStatus = (state: EditorialWorkflow, status: string) => {
+export function selectUnpublishedEntriesByStatus(state: EditorialWorkflow, status: string) {
   if (!state) return null;
   const entities = state.get('entities') as Entities;
   return entities.filter(entry => entry.get('status') === status).valueSeq();
-};
+}
 
-export const selectUnpublishedSlugs = (state: EditorialWorkflow, collection: string) => {
+export function selectUnpublishedSlugs(state: EditorialWorkflow, collection: string) {
   if (!state.get('entities')) return null;
   const entities = state.get('entities') as Entities;
   return entities
     .filter((_v, k) => startsWith(k as string, `${collection}.`))
     .map(entry => entry.get('slug'))
     .valueSeq();
-};
+}
 
 export default unpublishedEntries;

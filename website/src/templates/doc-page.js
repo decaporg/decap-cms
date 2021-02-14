@@ -18,19 +18,22 @@ function filenameFromPath(p) {
     .split('.')[0];
 }
 
-const toMenu = (menu, nav) =>
-  menu.map(group => ({
+function toMenu(menu, nav) {
+  return menu.map(group => ({
     title: group.title,
     group: nav.group.find(g => g.fieldValue === group.name),
   }));
+}
 
-const DocsSidebar = ({ docsNav, location }) => (
-  <aside>
-    <DocsNav items={docsNav} location={location} />
-  </aside>
-);
+function DocsSidebar({ docsNav, location }) {
+  return (
+    <aside>
+      <DocsNav items={docsNav} location={location} />
+    </aside>
+  );
+}
 
-export const DocsTemplate = ({
+export function DocsTemplate({
   title,
   filename,
   body,
@@ -41,20 +44,22 @@ export const DocsTemplate = ({
   docsNav,
   location,
   group,
-}) => (
-  <Container size="md">
-    <SidebarLayout sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}>
-      <article data-docs-content>
-        {filename && <EditLink collection={`docs_${group}`} filename={filename} />}
-        <h1>{title}</h1>
-        <Markdown body={body} html={html} />
-        {showWidgets && <Widgets widgets={widgets} location={location} />}
-      </article>
-    </SidebarLayout>
-  </Container>
-);
+}) {
+  return (
+    <Container size="md">
+      <SidebarLayout sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}>
+        <article data-docs-content>
+          {filename && <EditLink collection={`docs_${group}`} filename={filename} />}
+          <h1>{title}</h1>
+          <Markdown body={body} html={html} />
+          {showWidgets && <Widgets widgets={widgets} location={location} />}
+        </article>
+      </SidebarLayout>
+    </Container>
+  );
+}
 
-const DocPage = ({ data, location }) => {
+function DocPage({ data, location }) {
   const {
     nav,
     page: { frontmatter, html, fields },
@@ -83,7 +88,7 @@ const DocPage = ({ data, location }) => {
       />
     </Layout>
   );
-};
+}
 
 export const pageQuery = graphql`
   query docPage($slug: String!) {

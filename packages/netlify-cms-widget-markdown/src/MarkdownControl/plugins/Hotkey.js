@@ -14,7 +14,7 @@ export const HOT_KEY_MAP = {
   link: 'mod+k',
 };
 
-const Hotkey = (key, fn) => {
+function Hotkey(key, fn) {
   return {
     onKeyDown(event, editor, next) {
       if (!isHotkey(key, event)) {
@@ -24,6 +24,6 @@ const Hotkey = (key, fn) => {
       editor.command(fn);
     },
   };
-};
+}
 
 export default Hotkey;

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.9...netlify-cms-proxy-server@1.3.10) (2021-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency async-mutex to ^0.3.0 ([#4932](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/4932)) ([f608a81](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/f608a81f19681a4265ea8875ad50c585926c9113))
+
+
+
+
+
 ## [1.3.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.8...netlify-cms-proxy-server@1.3.9) (2021-02-01)
 
 **Note:** Version bump only for package netlify-cms-proxy-server

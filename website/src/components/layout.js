@@ -28,14 +28,16 @@ const LAYOUT_QUERY = graphql`
   }
 `;
 
-export const LayoutTemplate = ({ children }) => (
-  <ThemeProvider theme={theme}>
-    <GlobalStyles />
-    {children}
-  </ThemeProvider>
-);
+export function LayoutTemplate({ children }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      {children}
+    </ThemeProvider>
+  );
+}
 
-const Layout = ({ hasPageHero, children }) => {
+function Layout({ hasPageHero, children }) {
   return (
     <StaticQuery query={LAYOUT_QUERY}>
       {data => {
@@ -63,6 +65,6 @@ const Layout = ({ hasPageHero, children }) => {
       }}
     </StaticQuery>
   );
-};
+}
 
 export default Layout;

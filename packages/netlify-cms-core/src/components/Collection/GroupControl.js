@@ -3,7 +3,7 @@ import { translate } from 'react-polyglot';
 import { Dropdown, DropdownItem } from 'netlify-cms-ui-default';
 import { ControlButton } from './ControlButton';
 
-const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
+function GroupControl({ viewGroups, t, onGroupClick, group }) {
   const hasActiveGroup = group
     ?.valueSeq()
     .toJS()
@@ -33,6 +33,6 @@ const GroupControl = ({ viewGroups, t, onGroupClick, group }) => {
       })}
     </Dropdown>
   );
-};
+}
 
 export default translate()(GroupControl);

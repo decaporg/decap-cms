@@ -18,6 +18,12 @@ interface MediaLibrary {
   }) => MediaLibraryInstance;
 }
 
+function handleInsert(url: string) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  return store.dispatch(insertMedia(url, undefined));
+}
+
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
   const lib = (getMediaLibrary(name) as unknown) as MediaLibrary | undefined;
   if (!lib) {
@@ -26,9 +32,6 @@ const initializeMediaLibrary = once(async function initializeMediaLibrary(name, 
     );
     store.dispatch(configFailed(err));
   } else {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    const handleInsert = (url: string) => store.dispatch(insertMedia(url, undefined));
     const instance = await lib.init({ options, handleInsert });
     store.dispatch(createMediaLibrary(instance));
   }

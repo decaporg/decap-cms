@@ -64,7 +64,7 @@ const CalDates = styled.p`
 
 const CalCta = styled.div``;
 
-const EventBox = ({ title, cta }) => {
+function EventBox({ title, cta }) {
   const [loading, setLoading] = useState(true);
   const [eventDate, setEventDate] = useState('');
 
@@ -121,6 +121,6 @@ const EventBox = ({ title, cta }) => {
       </CalCta>
     </Root>
   );
-};
+}
 
 export default EventBox;

@@ -23,7 +23,11 @@ const defaultConfig = {
  */
 function isFileGroup(files) {
   const basePatternString = `~${files.length}/nth/`;
-  const mapExpression = (val, idx) => new RegExp(`${basePatternString}${idx}/$`);
+
+  function mapExpression(val, idx) {
+    return new RegExp(`${basePatternString}${idx}/$`);
+  }
+
   const expressions = Array.from({ length: files.length }, mapExpression);
   return expressions.every(exp => files.some(url => exp.test(url)));
 }
@@ -80,7 +84,7 @@ function openDialog({ files, config, handleInsert, settings = {} }) {
     );
   }
 
-  const buildUrl = fileInfo => {
+  function buildUrl(fileInfo) {
     const { cdnUrl, name, isImage } = fileInfo;
 
     let url =
@@ -92,7 +96,7 @@ function openDialog({ files, config, handleInsert, settings = {} }) {
     }
 
     return url;
-  };
+  }
 
   uploadcare.openDialog(files, config).done(({ promise, files }) => {
     const isGroup = Boolean(files);

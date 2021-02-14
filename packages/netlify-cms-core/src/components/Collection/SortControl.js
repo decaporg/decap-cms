@@ -28,7 +28,7 @@ const sortIconDirections = {
   [SortDirection.Descending]: 'down',
 };
 
-const SortControl = ({ t, fields, onSortClick, sort }) => {
+function SortControl({ t, fields, onSortClick, sort }) {
   const hasActiveSort = sort
     ?.valueSeq()
     .toJS()
@@ -62,6 +62,6 @@ const SortControl = ({ t, fields, onSortClick, sort }) => {
       })}
     </Dropdown>
   );
-};
+}
 
 export default translate()(SortControl);

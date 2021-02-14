@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.9.0...netlify-cms-widget-file@2.9.1) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-widget-file
+
+
+
+
+
 # [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.8.0...netlify-cms-widget-file@2.9.0) (2021-02-01)
 
 

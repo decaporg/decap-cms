@@ -27,7 +27,7 @@ const ButtonsContainer = styled.div`
   flex-shrink: 0;
 `;
 
-const MediaLibraryTop = ({
+function MediaLibraryTop({
   t,
   onClose,
   privateUpload,
@@ -48,7 +48,7 @@ const MediaLibraryTop = ({
   currentMediaFolder,
   defaultMediaFolder,
   selectedFile,
-}) => {
+}) {
   const shouldShowButtonLoader = isPersisting || isDeleting;
   const uploadEnabled = !shouldShowButtonLoader;
   const deleteEnabled = !shouldShowButtonLoader && hasSelection;
@@ -121,7 +121,7 @@ const MediaLibraryTop = ({
       </RowContainer>
     </LibraryTop>
   );
-};
+}
 
 MediaLibraryTop.propTypes = {
   t: PropTypes.func.isRequired,

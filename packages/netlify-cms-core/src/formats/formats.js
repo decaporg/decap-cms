@@ -28,8 +28,8 @@ export const extensionFormatters = {
   html: FrontmatterInfer,
 };
 
-const formatByName = (name, customDelimiter) =>
-  ({
+function formatByName(name, customDelimiter) {
+  return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
     toml: tomlFormatter,
@@ -38,7 +38,8 @@ const formatByName = (name, customDelimiter) =>
     'json-frontmatter': frontmatterJSON(customDelimiter),
     'toml-frontmatter': frontmatterTOML(customDelimiter),
     'yaml-frontmatter': frontmatterYAML(customDelimiter),
-  }[name]);
+  }[name];
+}
 
 export function resolveFormat(collection, entry) {
   // Check for custom delimiter

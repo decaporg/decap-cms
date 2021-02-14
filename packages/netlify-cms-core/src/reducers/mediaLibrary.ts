@@ -51,7 +51,7 @@ const defaultState: {
   config: Map(),
 };
 
-const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => {
+function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
   switch (action.type) {
     case MEDIA_LIBRARY_CREATE:
       return state.withMutations(map => {
@@ -213,7 +213,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
     default:
       return state;
   }
-};
+}
 
 export function selectMediaFiles(state: State, field?: EntryField) {
   const { mediaLibrary, entryDraft } = state;
