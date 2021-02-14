@@ -36,7 +36,7 @@ export type CmsMarkdownWidgetButton =
 
 export interface CmsSelectWidgetOptionObject {
   label: string;
-  value: any;
+  value: unknown;
 }
 
 export type CmsCollectionFormatType =
@@ -80,7 +80,7 @@ export interface CmsFieldBoolean {
 
 export interface CmsFieldCode {
   widget: 'code';
-  default?: any;
+  default?: unknown;
 
   default_language?: string;
   allow_language_selection?: boolean;
@@ -125,12 +125,12 @@ export interface CmsFieldFileOrImage {
 
   media_library?: CmsMediaLibrary;
   allow_multiple?: boolean;
-  config?: any;
+  config?: unknown;
 }
 
 export interface CmsFieldObject {
   widget: 'object';
-  default?: any;
+  default?: unknown;
 
   collapsed?: boolean;
   summary?: string;
@@ -139,7 +139,7 @@ export interface CmsFieldObject {
 
 export interface CmsFieldList {
   widget: 'list';
-  default?: any;
+  default?: unknown;
 
   allow_add?: boolean;
   collapsed?: boolean;
@@ -235,7 +235,7 @@ export interface CmsFieldRelation {
 
 export interface CmsFieldHidden {
   widget: 'hidden';
-  default?: any;
+  default?: unknown;
 }
 
 export interface CmsFieldStringOrText {
@@ -334,7 +334,7 @@ export interface CmsCollection {
 
   frontmatter_delimiter?: string[] | string;
   fields?: CmsField[];
-  filter?: { field: string; value: any };
+  filter?: { field: string; value: unknown };
   path?: string;
   media_folder?: string;
   public_folder?: string;
@@ -397,7 +397,7 @@ export interface CmsConfig {
   };
 }
 
-export type CmsMediaLibraryOptions = any; // TODO: type properly
+export type CmsMediaLibraryOptions = unknown; // TODO: type properly
 
 export interface CmsMediaLibrary {
   name: string;
