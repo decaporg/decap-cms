@@ -56,17 +56,16 @@ function traverseFieldsJS<Field extends CmsField>(
 }
 
 function getConfigUrl() {
-  const validTypes: { [type: string]: string | undefined } = {
+  const validTypes: { [type: string]: string } = {
     'text/yaml': 'yaml',
     'application/x-yaml': 'yaml',
   };
   const configLinkEl = document.querySelector<HTMLLinkElement>('link[rel="cms-config-url"]');
-  const configLinkType = configLinkEl && configLinkEl.getAttribute('type');
-  const configLinkHref = configLinkEl && configLinkEl.getAttribute('href');
-  const configUrl =
-    configLinkType && configLinkHref && validTypes[configLinkType] ? configLinkHref : 'config.yml';
-  console.log(`Using config file path: "${configUrl}"`);
-  return configUrl;
+  if (configLinkEl && validTypes[configLinkEl.type] && configLinkEl.href) {
+    console.log(`Using config file path: "${configLinkEl.href}"`);
+    return configLinkEl?.href;
+  }
+  return 'config.yml';
 }
 
 function setDefaultPublicFolderForField<T extends CmsField>(field: T) {
