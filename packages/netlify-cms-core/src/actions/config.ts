@@ -63,7 +63,7 @@ function getConfigUrl() {
   const configLinkEl = document.querySelector<HTMLLinkElement>('link[rel="cms-config-url"]');
   if (configLinkEl && validTypes[configLinkEl.type] && configLinkEl.href) {
     console.log(`Using config file path: "${configLinkEl.href}"`);
-    return configLinkEl?.href;
+    return configLinkEl.href;
   }
   return 'config.yml';
 }
