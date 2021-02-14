@@ -420,7 +420,7 @@ export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend
   const allowedHosts = [
     'localhost',
     '127.0.0.1',
-    ...(typeof localBackend === 'boolean' || !localBackend ? [] : localBackend.allowed_hosts || []),
+    ...(typeof localBackend === 'boolean' ? [] : localBackend?.allowed_hosts || []),
   ];
 
   if (!allowedHosts.includes(location.hostname)) {
