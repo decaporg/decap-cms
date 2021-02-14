@@ -376,12 +376,13 @@ export function parseConfig(data: string) {
 }
 
 async function getConfigYaml(file: string, hasManualConfig: boolean) {
-  const response = await fetch(file, { credentials: 'same-origin' });
-  if (!response.ok || response.status !== 200) {
+  const response = await fetch(file, { credentials: 'same-origin' }).catch(error => error as Error);
+  if (response instanceof Error || response.status !== 200) {
     if (hasManualConfig) {
       return {};
     }
-    throw new Error(`Failed to load config.yml (${response.status})`);
+    const message = response instanceof Error ? response.message : response.status;
+    throw new Error(`Failed to load config.yml (${message})`);
   }
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
