@@ -1,11 +1,15 @@
 import { stripIndent } from 'common-tags';
+import { fromJS } from 'immutable';
 import {
+  loadConfig,
   parseConfig,
   normalizeConfig,
   applyDefaults,
   detectProxyServer,
   handleLocalBackend,
 } from '../config';
+
+import yaml from 'js-yaml';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -14,6 +18,7 @@ jest.mock('../../backend', () => {
     resolveBackend: jest.fn(() => ({ isGitBackend: jest.fn(() => true) })),
   };
 });
+jest.mock('../../constants/configSchema');
 
 describe('config', () => {
   describe('parseConfig', () => {
@@ -900,6 +905,90 @@ describe('config', () => {
         local_backend: true,
         publish_mode: 'simple',
         backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
+      });
+    });
+  });
+
+  describe('loadConfig', () => {
+    beforeEach(() => {
+      document.querySelector = jest.fn();
+      global.fetch = jest.fn();
+    });
+
+    test(`should fetch default 'config.yml'`, async () => {
+      const dispatch = jest.fn();
+
+      global.fetch.mockResolvedValue({
+        status: 200,
+        text: () => Promise.resolve(yaml.dump({ backend: { repo: 'test-repo' } })),
+        headers: new Headers(),
+      });
+      await loadConfig()(dispatch);
+
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledWith('config.yml', { credentials: 'same-origin' });
+
+      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(dispatch).toHaveBeenCalledWith({ type: 'CONFIG_REQUEST' });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'CONFIG_SUCCESS',
+        payload: fromJS({
+          backend: { repo: 'test-repo' },
+          collections: [],
+          publish_mode: 'simple',
+          slug: { encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' },
+          public_folder: '/',
+        }),
+      });
+    });
+
+    test(`should fetch from custom 'config.yml'`, async () => {
+      const dispatch = jest.fn();
+
+      document.querySelector.mockReturnValue({ type: 'text/yaml', href: 'custom-config.yml' });
+      global.fetch.mockResolvedValue({
+        status: 200,
+        text: () => Promise.resolve(yaml.dump({ backend: { repo: 'github' } })),
+        headers: new Headers(),
+      });
+      await loadConfig()(dispatch);
+
+      expect(document.querySelector).toHaveBeenCalledTimes(1);
+      expect(document.querySelector).toHaveBeenCalledWith('link[rel="cms-config-url"]');
+
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledWith('custom-config.yml', {
+        credentials: 'same-origin',
+      });
+
+      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(dispatch).toHaveBeenCalledWith({ type: 'CONFIG_REQUEST' });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'CONFIG_SUCCESS',
+        payload: fromJS({
+          backend: { repo: 'github' },
+          collections: [],
+          publish_mode: 'simple',
+          slug: { encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' },
+          public_folder: '/',
+        }),
+      });
+    });
+
+    test(`should throw on failure to fetch 'config.yml'`, async () => {
+      const dispatch = jest.fn();
+
+      global.fetch.mockRejectedValue(new Error('Failed to fetch'));
+      await expect(() => loadConfig()(dispatch)).rejects.toEqual(
+        new Error('Failed to load config.yml (Failed to fetch)'),
+      );
+
+      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(dispatch).toHaveBeenCalledWith({ type: 'CONFIG_REQUEST' });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'CONFIG_FAILURE',
+        error: 'Error loading config',
+        payload: new Error('Failed to load config.yml (Failed to fetch)'),
       });
     });
   });
