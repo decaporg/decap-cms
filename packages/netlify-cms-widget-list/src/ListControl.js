@@ -32,12 +32,12 @@ const StyledListItemTopBar = styled(ListItemTopBar)`
 `;
 
 const NestedObjectLabel = styled.div`
-  display: ${props => (props.collapsed ? 'block' : 'none')};
+  display: 'block';
   border-top: 0;
   color: ${props => (props.error ? colors.errorText : 'inherit')};
   background-color: ${colors.textFieldBorder};
   padding: 13px;
-  border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
+  border-radius: ${props => (props.collapsed ? `0 0 ${lengths.borderRadius} ${lengths.borderRadius}` : '0')};
 `;
 
 const styleStrings = {
