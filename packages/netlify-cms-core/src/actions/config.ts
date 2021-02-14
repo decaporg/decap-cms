@@ -258,8 +258,6 @@ export function applyDefaults(originalConfig: CmsConfig) {
         delete collection[I18N];
       }
 
-      throwOnInvalidFileCollectionStructure(collectionI18n);
-
       if (collection.fields) {
         collection.fields = setI18nDefaultsForFields(collection.fields, Boolean(collectionI18n));
       }
@@ -297,6 +295,8 @@ export function applyDefaults(originalConfig: CmsConfig) {
 
       if (files) {
         collection.type = FILES;
+
+        throwOnInvalidFileCollectionStructure(collectionI18n);
 
         delete collection.nested;
         delete collection.meta;
