@@ -386,10 +386,10 @@ async function getConfigYaml(file: string, hasManualConfig: boolean) {
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
   if (!isYaml) {
+    console.log(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
     if (hasManualConfig) {
       return {};
     }
-    throw new Error(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
   }
   return parseConfig(await response.text());
 }
