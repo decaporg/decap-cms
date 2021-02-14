@@ -89,22 +89,19 @@ const WIDGET_KEY_MAP = {
 } as const;
 
 function setSnakeCaseConfig<T extends CmsField>(field: T) {
-  const deprecatedKeys = Object.keys(WIDGET_KEY_MAP) as ReadonlyArray<keyof typeof WIDGET_KEY_MAP>;
-  const newField = { ...field } as T;
+  const deprecatedKeys = Object.keys(WIDGET_KEY_MAP).filter(
+    camel => camel in field,
+  ) as ReadonlyArray<keyof typeof WIDGET_KEY_MAP>;
 
-  for (const camelKey of deprecatedKeys) {
-    const snakeKey = WIDGET_KEY_MAP[camelKey];
-    if (camelKey in field) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore seems like it's impossible to make TS happy in this case
-      newField[snakeKey] = field[camelKey];
-      console.warn(
-        `Field ${field.name} is using a deprecated configuration '${camelKey}'. Please use '${snakeKey}'`,
-      );
-    }
-  }
+  const snakeValues = deprecatedKeys.map(camel => {
+    const snake = WIDGET_KEY_MAP[camel];
+    console.warn(
+      `Field ${field.name} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
+    );
+    return { [snake]: (field as Record<string, unknown>)[camel] };
+  });
 
-  return newField;
+  return Object.assign({}, field, ...snakeValues) as T;
 }
 
 function setI18nField<T extends CmsField>(field: T) {
