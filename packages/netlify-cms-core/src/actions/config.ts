@@ -423,20 +423,16 @@ export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend
     ...(typeof localBackend === 'boolean' ? [] : localBackend?.allowed_hosts || []),
   ];
 
-  if (!allowedHosts.includes(location.hostname)) {
+  if (!allowedHosts.includes(location.hostname) || !localBackend) {
     return {};
   }
 
-  let proxyUrl;
   const defaultUrl = 'http://localhost:8081/api/v1';
+  const proxyUrl =
+    localBackend === true
+      ? defaultUrl
+      : localBackend.url || defaultUrl.replace('localhost', location.hostname);
 
-  if (localBackend) {
-    if (typeof localBackend === 'boolean') {
-      proxyUrl = defaultUrl;
-    } else {
-      proxyUrl = localBackend.url || defaultUrl.replace('localhost', location.hostname);
-    }
-  }
   try {
     console.log(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
     const res = await fetch(`${proxyUrl}`, {
