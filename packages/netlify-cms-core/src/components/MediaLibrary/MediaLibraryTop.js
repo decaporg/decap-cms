@@ -106,7 +106,7 @@ function MediaLibraryTop({
         />
         <MediaLibraryCreateFolder
           onKeyDown={onCreateFolder}
-          placeholder='Create folder' // TODO multilingual
+          placeholder={t('mediaLibrary.mediaLibraryModal.createFolder')}
           folders={folders}
         />
         <ButtonsContainer>
