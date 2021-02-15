@@ -116,7 +116,7 @@ const AppHeaderNavList = styled.ul`
 class Header extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
     openMediaLibrary: PropTypes.func.isRequired,

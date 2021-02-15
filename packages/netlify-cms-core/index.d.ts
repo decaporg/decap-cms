@@ -355,6 +355,14 @@ declare module 'netlify-cms-core' {
     cms_label_prefix?: string;
     squash_merges?: boolean;
     proxy_url?: string;
+    commit_messages?: {
+      create?: string;
+      update?: string;
+      delete?: string;
+      uploadMedia?: string;
+      deleteMedia?: string;
+      openAuthoring?: string;
+    };
   }
 
   export interface CmsSlug {
@@ -382,12 +390,22 @@ declare module 'netlify-cms-core' {
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
     load_config_file?: boolean;
+    integrations?: {
+      hooks: string[];
+      provider: string;
+      collections?: '*' | string[];
+      applicationID?: string;
+      apiKey?: string;
+      getSignedFormURL?: string;
+    }[];
     slug?: CmsSlug;
     i18n?: CmsI18nConfig;
     local_backend?: boolean | CmsLocalBackend;
     editor?: {
       preview?: boolean;
     };
+    error: string | undefined;
+    isFetching: boolean;
   }
 
   export interface InitOptions {

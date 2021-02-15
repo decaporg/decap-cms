@@ -1,4 +1,5 @@
 import { List, Map, fromJS } from 'immutable';
+import deepmerge from 'deepmerge';
 import {
   commitMessageFormatter,
   prepareSlug,
@@ -7,15 +8,18 @@ import {
   summaryFormatter,
   folderFormatter,
 } from '../formatters';
+import { defaultState as defaultConfigState } from '../../reducers/config';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.mock('../../reducers/collections');
 
 describe('formatters', () => {
   describe('commitMessageFormatter', () => {
-    const config = {
-      getIn: jest.fn(),
-    };
+    const defaultConfig = deepmerge(defaultConfigState, {
+      backend: {
+        name: 'git-gateway',
+      },
+    });
 
     const collection = {
       get: jest.fn().mockReturnValue('Collection'),
@@ -27,7 +31,7 @@ describe('formatters', () => {
 
     it('should return default commit message on create', () => {
       expect(
-        commitMessageFormatter('create', config, {
+        commitMessageFormatter('create', defaultConfig, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -40,7 +44,7 @@ describe('formatters', () => {
       collection.get.mockReturnValueOnce('Collections');
 
       expect(
-        commitMessageFormatter('update', config, {
+        commitMessageFormatter('update', defaultConfig, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -50,7 +54,7 @@ describe('formatters', () => {
 
     it('should return default commit message on delete', () => {
       expect(
-        commitMessageFormatter('delete', config, {
+        commitMessageFormatter('delete', defaultConfig, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -60,7 +64,7 @@ describe('formatters', () => {
 
     it('should return default commit message on uploadMedia', () => {
       expect(
-        commitMessageFormatter('uploadMedia', config, {
+        commitMessageFormatter('uploadMedia', defaultConfig, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -70,7 +74,7 @@ describe('formatters', () => {
 
     it('should return default commit message on deleteMedia', () => {
       expect(
-        commitMessageFormatter('deleteMedia', config, {
+        commitMessageFormatter('deleteMedia', defaultConfig, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -79,11 +83,13 @@ describe('formatters', () => {
     });
 
     it('should log warning on unknown variable', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          create: 'Create {{collection}} “{{slug}}” with "{{unknown variable}}"',
-        }),
-      );
+      const config = deepmerge(defaultConfig, {
+        backend: {
+          commit_messages: {
+            create: 'Create {{collection}} “{{slug}}” with "{{unknown variable}}"',
+          },
+        },
+      });
       expect(
         commitMessageFormatter('create', config, {
           slug: 'doc-slug',
@@ -98,12 +104,13 @@ describe('formatters', () => {
     });
 
     it('should return custom commit message on update', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          update: 'Custom commit message',
-        }),
-      );
-
+      const config = deepmerge(defaultConfig, {
+        backend: {
+          commit_messages: {
+            update: 'Custom commit message',
+          },
+        },
+      });
       expect(
         commitMessageFormatter('update', config, {
           slug: 'doc-slug',
@@ -114,12 +121,13 @@ describe('formatters', () => {
     });
 
     it('should use empty values if "authorLogin" and "authorName" are missing in commit message', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          update: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
-        }),
-      );
-
+      const config = deepmerge(defaultConfig, {
+        backend: {
+          commit_messages: {
+            update: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
+          },
+        },
+      });
       expect(
         commitMessageFormatter(
           'update',
@@ -135,12 +143,13 @@ describe('formatters', () => {
     });
 
     it('should return custom create message with author information', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
-        }),
-      );
-
+      const config = deepmerge(defaultConfig, {
+        backend: {
+          commit_messages: {
+            create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
+          },
+        },
+      });
       expect(
         commitMessageFormatter(
           'create',
@@ -158,12 +167,13 @@ describe('formatters', () => {
     });
 
     it('should return custom open authoring message', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
-        }),
-      );
-
+      const config = deepmerge(defaultConfig, {
+        backend: {
+          commit_messages: {
+            openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
+          },
+        },
+      });
       expect(
         commitMessageFormatter(
           'create',
@@ -181,12 +191,13 @@ describe('formatters', () => {
     });
 
     it('should use empty values if "authorLogin" and "authorName" are missing in open authoring message', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
-        }),
-      );
-
+      const config = deepmerge(defaultConfig, {
+        backend: {
+          commit_messages: {
+            openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
+          },
+        },
+      });
       expect(
         commitMessageFormatter(
           'create',
@@ -202,12 +213,13 @@ describe('formatters', () => {
     });
 
     it('should log warning on unknown variable in open authoring template', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          openAuthoring: '{{author-email}}: {{message}}',
-        }),
-      );
-
+      const config = deepmerge(defaultConfig, {
+        backend: {
+          commit_messages: {
+            openAuthoring: '{{author-email}}: {{message}}',
+          },
+        },
+      });
       commitMessageFormatter(
         'create',
         config,
@@ -246,11 +258,11 @@ describe('formatters', () => {
     });
   });
 
-  const slugConfig = Map({
+  const slugConfig = {
     encoding: 'unicode',
     clean_accents: false,
     sanitize_replacement: '-',
-  });
+  };
 
   describe('slugFormatter', () => {
     const date = new Date('2020-01-01');
@@ -363,8 +375,8 @@ describe('formatters', () => {
             preview_path_date_field: 'customDateField',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({ customDateField: date, slug: 'entrySlug', title: 'title' }) }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
     });
@@ -384,8 +396,8 @@ describe('formatters', () => {
             files: List([file]),
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/backendslug/about-the-project/title');
     });
@@ -404,8 +416,8 @@ describe('formatters', () => {
             files: List([file]),
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/backendslug/about-the-project/title');
     });
@@ -425,8 +437,8 @@ describe('formatters', () => {
             files: List([file]),
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/backendslug/title/about-the-project');
     });
@@ -444,8 +456,8 @@ describe('formatters', () => {
             preview_path: '{{year}}/{{month}}/{{slug}}/{{title}}/{{fields.slug}}',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({ date, slug: 'entrySlug', title: 'title' }) }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/2020/01/backendslug/title/entryslug');
     });
@@ -458,8 +470,8 @@ describe('formatters', () => {
             preview_path: 'posts/{{filename}}.{{extension}}',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}), path: 'src/content/posts/title.md' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/posts/title.md');
     });
@@ -473,8 +485,8 @@ describe('formatters', () => {
             preview_path: 'portfolio/{{dirname}}',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}), path: '_portfolio/i-am-the-slug.md' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/portfolio/');
     });
@@ -490,8 +502,8 @@ describe('formatters', () => {
             meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}), path: '_portfolio/drawing/i-am-the-slug/index.md' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/portfolio/drawing/i-am-the-slug');
     });
@@ -507,8 +519,8 @@ describe('formatters', () => {
             preview_path_date_field: 'date',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}) }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com');
 

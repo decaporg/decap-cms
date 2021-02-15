@@ -2,7 +2,7 @@ import url from 'url';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
-import { SlugConfig } from '../types/redux';
+import { CmsSlug } from '../types/redux';
 
 function getUrl(urlString: string, direct?: boolean) {
   return `${direct ? '/#' : ''}${urlString}`;
@@ -16,7 +16,7 @@ export function getNewEntryUrl(collectionName: string, direct?: boolean) {
   return getUrl(`/collections/${collectionName}/new`, direct);
 }
 
-export function addParams(urlString: string, params: {}) {
+export function addParams(urlString: string, params: Record<string, string>) {
   const parsedUrl = url.parse(urlString, true);
   parsedUrl.query = { ...parsedUrl.query, ...params };
   return url.format(parsedUrl);
@@ -64,7 +64,12 @@ export function getCharReplacer(encoding: string, replacement: string) {
   return (char: string) => (validChar(char) ? char : replacement);
 }
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeURI(str: string, { replacement = '', encoding = 'unicode' } = {}) {
+export function sanitizeURI(
+  str: string,
+  options?: { replacement: CmsSlug['sanitize_replacement']; encoding: CmsSlug['encoding'] },
+) {
+  const { replacement = '', encoding = 'unicode' } = options || {};
+
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
@@ -79,21 +84,18 @@ export function sanitizeURI(str: string, { replacement = '', encoding = 'unicode
     .join('');
 }
 
-export function sanitizeChar(char: string, options: SlugConfig) {
-  const encoding = options.get('encoding');
-  const replacement = options.get('sanitize_replacement');
-
+export function sanitizeChar(char: string, options?: CmsSlug) {
+  const { encoding = 'unicode', sanitize_replacement: replacement = '' } = options || {};
   return getCharReplacer(encoding, replacement)(char);
 }
 
-export function sanitizeSlug(str: string, options: SlugConfig) {
+export function sanitizeSlug(str: string, options?: CmsSlug) {
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
 
-  const encoding = options.get('encoding');
-  const stripDiacritics = options.get('clean_accents');
-  const replacement = options.get('sanitize_replacement');
+  const { encoding, clean_accents: stripDiacritics, sanitize_replacement: replacement } =
+    options || {};
 
   const sanitizedSlug = flow([
     ...(stripDiacritics ? [diacritics.remove] : []),

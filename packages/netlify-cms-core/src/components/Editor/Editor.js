@@ -434,8 +434,8 @@ function mapStateToProps(state, ownProps) {
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const user = auth.user;
   const hasChanged = entryDraft.get('hasChanged');
-  const displayUrl = config.get('display_url');
-  const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
+  const displayUrl = config.display_url;
+  const hasWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
   const useOpenAuthoring = globalUI.get('useOpenAuthoring', false);
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);

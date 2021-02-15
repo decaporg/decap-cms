@@ -1,12 +1,13 @@
-import { fromJS } from 'immutable';
 import integrations from '../integrations';
+import { defaultState as defaultConfig } from '../../reducers/config';
 import { CONFIG_SUCCESS } from '../../actions/config';
+import { FOLDER } from '../../constants/collectionTypes';
 
 describe('integrations', () => {
   it('should return default state when no integrations', () => {
     const result = integrations(null, {
       type: CONFIG_SUCCESS,
-      payload: fromJS({ integrations: [] }),
+      payload: { ...defaultConfig, integrations: [] },
     });
     expect(result && result.toJS()).toEqual({
       providers: {},
@@ -17,7 +18,8 @@ describe('integrations', () => {
   it('should return hooks and providers map when has integrations', () => {
     const result = integrations(null, {
       type: CONFIG_SUCCESS,
-      payload: fromJS({
+      payload: {
+        ...defaultConfig,
         integrations: [
           {
             hooks: ['listEntries'],
@@ -39,8 +41,12 @@ describe('integrations', () => {
             getSignedFormURL: 'https://asset.store.com/signedUrl',
           },
         ],
-        collections: [{ name: 'posts' }, { name: 'pages' }, { name: 'faq' }],
-      }),
+        collections: [
+          { name: 'posts', label: 'Posts', type: FOLDER },
+          { name: 'pages', label: 'Pages', type: FOLDER },
+          { name: 'faq', label: 'FAQ', type: FOLDER },
+        ],
+      },
     });
 
     expect(result && result.toJS()).toEqual({
