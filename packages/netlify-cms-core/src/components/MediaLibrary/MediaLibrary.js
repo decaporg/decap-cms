@@ -272,6 +272,30 @@ class MediaLibrary extends React.Component {
     this.setState({ selectedAssets: [] });
   };
 
+  handleCreateFolder = dirName => {
+    this.setState({ isLoading: true})
+    function byteToHex(byte) {
+      return ('0' + byte.toString(16)).slice(-2);
+    }
+    function generateId(len = 40) {
+      var arr = new Uint8Array(len / 2);
+      window.crypto.getRandomValues(arr);
+      return Array.from(arr, byteToHex).join("");
+    }
+    const { defaultMediaFolder } = this.props;
+    const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
+    this.props.files.push({
+      id: generateId(40),
+      hasChildren: false,
+      key: generateId(40),
+      name: dirName,
+      path: `${currentMediaFolder}/${dirName}`,
+      displayURL: {path: `${currentMediaFolder}/${dirName}`},
+      isDirectory: true
+    });
+    this.setState({ isLoading: false})
+  }
+
   /**
    * Downloads the selected file.
    */
@@ -389,14 +413,15 @@ class MediaLibrary extends React.Component {
     const currentMediaFolder =
       this.state.currentMediaFolder || this.deriveCurrentMediaFolder(files);
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
-    const currentDirFilesOrderedByTreeType = (currentDirFiles || [])
-      .filter(file => file.isDirectory)
+    const currentDirFolders = (currentDirFiles || []).filter(file => file.isDirectory);
+    const currentDirFilesOrderedByTreeType = currentDirFolders
       .concat((currentDirFiles || []).filter(file => !file.isDirectory));
     return (
       <MediaLibraryModal
         isVisible={isVisible}
         canInsert={canInsert}
         files={currentDirFilesOrderedByTreeType}
+        folders={currentDirFolders}
         dynamicSearch={dynamicSearch}
         dynamicSearchActive={dynamicSearchActive}
         forImage={forImage}
@@ -417,6 +442,7 @@ class MediaLibrary extends React.Component {
         handleSearchKeyDown={this.handleSearchKeyDown}
         handlePersist={this.handlePersist}
         handleDelete={this.handleDelete}
+        handleCreateFolder={this.handleCreateFolder}
         handleInsert={this.handleInsert}
         handleDownload={this.handleDownload}
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}

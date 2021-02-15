@@ -33,6 +33,7 @@ import iconMediaAlt from './media-alt.svg';
 import iconNetlify from './netlify.svg';
 import iconNetlifyCms from './netlify-cms-logo.svg';
 import iconNewTab from './new-tab.svg';
+import iconNotAllowed from './not-allowed.svg';
 import iconPage from './page.svg';
 import iconPages from './pages.svg';
 import iconPagesAlt from './pages-alt.svg';
@@ -83,6 +84,7 @@ const images = {
   netlify: iconNetlify,
   'netlify-cms': iconNetlifyCms,
   'new-tab': iconNewTab,
+  'not-allowed': iconNotAllowed,
   page: iconPage,
   pages: iconPages,
   'pages-alt': iconPagesAlt,

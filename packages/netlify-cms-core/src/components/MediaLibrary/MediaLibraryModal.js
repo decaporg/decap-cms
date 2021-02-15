@@ -63,6 +63,7 @@ function MediaLibraryModal({
   isVisible,
   canInsert,
   files,
+  folders,
   dynamicSearch,
   dynamicSearchActive,
   forImage,
@@ -82,6 +83,7 @@ function MediaLibraryModal({
   handleSearchKeyDown,
   handlePersist,
   handleDelete,
+  handleCreateFolder,
   handleInsert,
   handleDownload,
   setScrollContainerRef,
@@ -127,6 +129,7 @@ function MediaLibraryModal({
         onSearchKeyDown={handleSearchKeyDown}
         searchDisabled={!dynamicSearchActive && !hasFilteredFiles}
         onDelete={handleDelete}
+        onCreateFolder={handleCreateFolder}
         canInsert={canInsert}
         onInsert={handleInsert}
         hasSelection={hasSelection}
@@ -136,6 +139,7 @@ function MediaLibraryModal({
         currentMediaFolder={currentMediaFolder}
         defaultMediaFolder={defaultMediaFolder}
         selectedFile={selectedFile}
+        folders={folders}
       />
 
       {!shouldShowEmptyMessage ? null : (
@@ -199,6 +203,7 @@ MediaLibraryModal.propTypes = {
   handlePersist: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleInsert: PropTypes.func.isRequired,
+  handleCreateFolder: PropTypes.func.isRequired,
   setScrollContainerRef: PropTypes.func.isRequired,
   handleAssetClick: PropTypes.func.isRequired,
   handleAssetCheckboxChange: PropTypes.func.isRequired,
