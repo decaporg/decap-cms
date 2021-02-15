@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.0...netlify-cms-core@2.38.1) (2021-02-15)
+
+
+### Bug Fixes
+
+* convert config before passing to resolveBackend ([#4948](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4948)) ([9dd64a7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9dd64a78b9bc4249da8d88c26ade09a7852489eb))
+
+
+
+
+
 # [2.38.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.37.2...netlify-cms-core@2.38.0) (2021-02-10)
 
 
