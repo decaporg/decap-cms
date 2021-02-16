@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.1...netlify-cms-core@2.38.2) (2021-02-16)
+
+
+### Bug Fixes
+
+* **typings:** incorrect import in index.d.ts ([#4962](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4962)) ([10cb14f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/10cb14f8d55fedc905b242b59ecafda826c9b7d2))
+
+
+
+
+
 ## [2.38.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.0...netlify-cms-core@2.38.1) (2021-02-15)
 
 
