@@ -2,7 +2,7 @@
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { List, Map } from 'immutable';
-  import { FILES, FOLDER } from '../constants/collectionTypes';
+  import { FILES, FOLDER } from 'netlify-cms-core/src/constants/collectionTypes';
 
   export type CmsBackendType =
     | 'azure'
