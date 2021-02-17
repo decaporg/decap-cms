@@ -19,7 +19,7 @@ export const defaultState: CmsConfig = {
   isFetching: false,
 };
 
-const config = produce((state = defaultState, action: ConfigAction) => {
+const config = produce((state: CmsConfig, action: ConfigAction) => {
   switch (action.type) {
     case CONFIG_REQUEST:
       state.isFetching = true;
