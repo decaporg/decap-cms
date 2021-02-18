@@ -22,13 +22,13 @@ backend:
 
 # when using the default proxy server port
 local_backend: true
-
 ```
 
 3. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
-    - If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
+
+   * If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
 4. Start your local development server (e.g. run `gatsby develop`).
-5. Open [http://localhost:8000/admin](http://localhost:8000/admin) to verify that your can administer your content locally.
+5. Open <http://localhost:8000/admin> to verify that your can administer your content locally.
 
 **Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 
@@ -51,9 +51,7 @@ local_backend:
   url: http://localhost:8082/api/v1
   # when accessing the local site from a host other than 'localhost' or '127.0.0.1'
   allowed_hosts: ['192.168.0.1']
-
 ```
-
 
 ## GitLab and BitBucket Editorial Workflow Support
 
@@ -614,3 +612,5 @@ collections:
     # moving an existing entry will move the entire sub tree of the entry to the new location
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
 ```
+
+**Note:** Nested collections work poperly only with `slug/index.md` directory structure. If you use `slug.md` approach, you might see some unwanted results.
