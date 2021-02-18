@@ -31,6 +31,6 @@ Example | Tools | Type | Source | More info |
 [Netlify CMS and OAuth server on AWS](https://github.com/pulumi/examples/tree/master/aws-ts-netlify-cms-and-oauth) | Netlify, Pulumi, AWS | blog | [pulumi/examples/aws-ts-netlify-cms-and-oauth](https://github.com/pulumi/examples/tree/master/aws-ts-netlify-cms-and-oauth) | [blog post](https://www.pulumi.com/blog/deploying-the-infrastructure-of-oauth-server-for-cms-app/)
 [Eleventy Starter Boilerplate](https://creativedesignsguru.com/demo/Eleventy-Starter-Boilerplate/eleventy-starter-boilerplate-presentation/) | Eleventy, Netlify | demo | [ixartz/Eleventy-Starter-Boilerplate](https://github.com/ixartz/Eleventy-Starter-Boilerplate) | [read me](https://github.com/ixartz/Eleventy-Starter-Boilerplate)
 [Nuxt, Tailwind & NetlifyCMS Boilerplate](https://ntn-boilerplate.netlify.app/) | Vue, Nuxt | demo | [Knogobert/ntn-boilerplate](https://github.com/Knogobert/ntn-boilerplate) | [read me](https://github.com/Knogobert/ntn-boilerplate#readme)
-[Gatsby & Netlify CMS Personal portfolio](https://github.com/robertcoopercode/gatsby-netlify-cms) | Gatsby | portfolio | [EarlGeorge/React-Gatsby](https://github.com/EarlGeorge/React-Gatsby/blob/master/README.md) | [readme]
+[Gatsby & Netlify CMS Personal portfolio](https://kind-mestorf-5a2bc0.netlify.com/) | Gatsby | portfolio | [EarlGeorge/React-Gatsby](https://github.com/EarlGeorge/React-Gatsby/blob/master/README.md) | [readme]
 
 
