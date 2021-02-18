@@ -613,4 +613,17 @@ collections:
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
 ```
 
-**Note:** Nested collections work poperly only with `slug/index.md` directory structure. If you use `slug.md` approach, you might see some unwanted results.
+Nested collections expect the following directory structure:
+```
+content
+└── pages
+    ├── authors
+    │   ├── author-1
+    │   │   └── index.md
+    │   └── index.md
+    ├── index.md
+    └── posts
+        ├── hello-world
+        │   └── index.md
+        └── index.md
+```
