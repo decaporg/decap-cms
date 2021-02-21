@@ -291,7 +291,7 @@ declare module 'netlify-cms-core' {
   export interface ViewGroup {
     label: string;
     field: string;
-    pattern: string;
+    pattern?: string;
   }
 
   export interface CmsCollection {
