@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.2...netlify-cms-core@2.38.3) (2021-02-22)
+
+
+### Bug Fixes
+
+* **types:** fix user-facing config types in netlify-cms-core ([#4985](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4985)) ([85dd871](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/85dd8714d937c2ccafdb85de320758a4f245f9b3))
+
+
+
+
+
 ## [2.38.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.1...netlify-cms-core@2.38.2) (2021-02-16)
 
 
