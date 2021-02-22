@@ -2,7 +2,6 @@
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { List, Map } from 'immutable';
-  import { FILES, FOLDER } from 'netlify-cms-core/src/constants/collectionTypes';
 
   export type CmsBackendType =
     | 'azure'
@@ -287,14 +286,12 @@ declare module 'netlify-cms-core' {
     label: string;
     field: string;
     pattern: string;
-    id: string;
   }
 
   export interface ViewGroup {
     label: string;
     field: string;
-    pattern: string;
-    id: string;
+    pattern?: string;
   }
 
   export interface CmsCollection {
@@ -318,7 +315,6 @@ declare module 'netlify-cms-core' {
     nested?: {
       depth: number;
     };
-    type: typeof FOLDER | typeof FILES;
     meta?: { path?: { label: string; widget: string; index_file: string } };
 
     /**
