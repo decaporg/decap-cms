@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.3...netlify-cms-core@2.38.4) (2021-02-23)
+
+
+### Bug Fixes
+
+* **core:** typedef: globalStyles should not be required in CmsWidgetParam ([#4990](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4990)) ([8563fd6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8563fd6914126bcbbe405fe9b396f9a129a8d2b0))
+
+
+
+
+
 ## [2.38.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.2...netlify-cms-core@2.38.3) (2021-02-22)
 
 

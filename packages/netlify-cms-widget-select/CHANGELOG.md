@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.3...netlify-cms-widget-select@2.7.4) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-select
+
+
+
+
+
 ## [2.7.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.2...netlify-cms-widget-select@2.7.3) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-widget-select
