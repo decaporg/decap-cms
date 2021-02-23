@@ -37,7 +37,7 @@
     "netlify-cms-backend-git-gateway": "^2.11.10",
     "netlify-cms-backend-github": "^2.11.9",
     "netlify-cms-backend-gitlab": "^2.9.9",
-    "netlify-cms-backend-test": "^2.10.7",
+    "netlify-cms-backend-test": "^2.10.6",
     "netlify-cms-core": "^2.38.4",
     "netlify-cms-editor-component-image": "^2.6.7",
     "netlify-cms-lib-auth": "^2.3.0",
