@@ -33,7 +33,7 @@
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "netlify-cms-backend-azure": "^1.1.2",
-    "netlify-cms-backend-bitbucket": "^2.12.8",
+    "netlify-cms-backend-bitbucket": "^2.12.7",
     "netlify-cms-backend-git-gateway": "^2.11.10",
     "netlify-cms-backend-github": "^2.11.9",
     "netlify-cms-backend-gitlab": "^2.9.9",
