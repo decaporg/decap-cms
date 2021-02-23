@@ -47,7 +47,7 @@
     "netlify-cms-widget-boolean": "^2.3.6",
     "netlify-cms-widget-code": "^1.2.7",
     "netlify-cms-widget-colorstring": "^1.0.3",
-    "netlify-cms-widget-date": "^2.5.7",
+    "netlify-cms-widget-date": "^2.5.6",
     "netlify-cms-widget-datetime": "^2.6.7",
     "netlify-cms-widget-file": "^2.9.2",
     "netlify-cms-widget-image": "^2.7.6",
