@@ -34,7 +34,7 @@
     "js-yaml": "^4.0.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "netlify-cms-app": "^2.14.24",
+    "netlify-cms-app": "^2.14.25",
     "prismjs": "^1.21.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
