@@ -27,7 +27,7 @@
     "@emotion/styled": "^10.0.27",
     "immutable": "^3.7.6",
     "netlify-cms-ui-default": "^2.12.1",
-    "netlify-cms-widget-file": "^2.9.1",
+    "netlify-cms-widget-file": "^2.9.2",
     "prop-types": "^15.7.2",
     "react": "^16.8.4"
   }
