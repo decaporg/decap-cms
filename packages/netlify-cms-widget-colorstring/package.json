@@ -27,7 +27,7 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "netlify-cms-ui-default": "^2.6.0",
+    "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.4"
   }
