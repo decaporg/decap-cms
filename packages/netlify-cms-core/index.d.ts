@@ -429,7 +429,7 @@ declare module 'netlify-cms-core' {
     name: string;
     controlComponent: ComponentType<any>;
     previewComponent?: ComponentType<any>;
-    globalStyles: any;
+    globalStyles?: any;
   }
 
   export interface CmsWidget {
