@@ -231,7 +231,7 @@ target: 'static'
 If you are using **nuxt version below 2.14** you have to use generate option in nuxt/content module to generate pages
 
 ```javascript
-//nux.config.js
+//nuxt.config.js
 export default {
   modules: [,
     '@nuxt/content'
