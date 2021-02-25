@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.4...netlify-cms-core@2.38.5) (2021-02-25)
+
+
+### Bug Fixes
+
+* **core:** ensure GridCardLink fills entire card ([#5017](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5017)) ([b7f91d7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b7f91d70787078322e4829be929055213529688b))
+
+
+
+
+
 ## [2.38.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.3...netlify-cms-core@2.38.4) (2021-02-23)
 
 
