@@ -9,7 +9,10 @@ The list widget allows you to create a repeatable item in the UI which saves as 
 * **Data type:** list of widget values
 * **Options:**
 
-  * `default`: you may specify a list of strings to populate the basic text field, but declare defaults on the child widgets if you are specifying `fields`;
+  * `default`: you may specify a list of strings to populate the basic text
+    field, or an array of list items for lists using the `fields` option. If no
+    default is declared when using `field` or `fields`, will default to a single
+    list item using the defaults on the child widgets
   * `allow_add`: `false` hides the button to add additional items
   * `collapsed`: when `true`, the entries collapse by default
   * `summary`: specify the label displayed on collapsed entries
@@ -62,6 +65,21 @@ The list widget allows you to create a repeatable item in the UI which saves as 
           - {label: Name, name: name, widget: string, default: "Emmet"}
           - {label: Avatar, name: avatar, widget: image, default: "/img/emmet.jpg"}
   ```
+
+  * **Example** (with `default`):
+
+  ```yaml
+  - label: "Gallery"
+    name: "galleryImages"
+    widget: "list"
+    fields:
+      - { label: "Source", name: "src", widget: "string" }
+      - { label: "Alt Text", name: "alt", widget: "string" }
+    default:
+      - { src: "/img/tenis.jpg", alt: "Tenis" }
+      - { src: "/img/footbar.jpg", alt: "Football" }
+  ```
+  
 * **Example** (`collapsed` marked `false`):
 
   ```yaml

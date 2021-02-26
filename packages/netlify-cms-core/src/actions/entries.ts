@@ -796,27 +796,31 @@ export function createEmptyDraftData(
       }
 
       if (List.isList(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(subfields as EntryFields, withNameKey, skipField)]
-          : createEmptyDraftData(subfields as EntryFields, withNameKey, skipField);
-        if (!isEmptyDefaultValue(subDefaultValue)) {
-          acc[name] = subDefaultValue;
-        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
-          // allow setting an empty list as a default
+        if (list && List.isList(defaultValue)) {
           acc[name] = defaultValue;
+        } else {
+          const subDefaultValue = list
+            ? [createEmptyDraftData(subfields as EntryFields, withNameKey, skipField)]
+            : createEmptyDraftData(subfields as EntryFields, withNameKey, skipField);
+            
+          if (!isEmptyDefaultValue(subDefaultValue)) {
+            acc[name] = subDefaultValue;
+          }
         }
         return acc;
       }
 
       if (Map.isMap(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(List([subfields as EntryField]), false, skipField)]
-          : createEmptyDraftData(List([subfields as EntryField]), withNameKey, skipField);
-        if (!isEmptyDefaultValue(subDefaultValue)) {
-          acc[name] = subDefaultValue;
-        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
-          // allow setting an empty list as a default
+        if (list && List.isList(defaultValue)) {
           acc[name] = defaultValue;
+        } else {
+          const subDefaultValue = list
+            ? [createEmptyDraftData(List([subfields as EntryField]), false, skipField)]
+            : createEmptyDraftData(List([subfields as EntryField]), withNameKey, skipField);
+            
+          if (!isEmptyDefaultValue(subDefaultValue)) {
+            acc[name] = subDefaultValue;
+          }
         }
         return acc;
       }
