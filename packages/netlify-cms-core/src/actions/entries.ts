@@ -802,7 +802,7 @@ export function createEmptyDraftData(
           const subDefaultValue = list
             ? [createEmptyDraftData(subfields as EntryFields, withNameKey, skipField)]
             : createEmptyDraftData(subfields as EntryFields, withNameKey, skipField);
-            
+
           if (!isEmptyDefaultValue(subDefaultValue)) {
             acc[name] = subDefaultValue;
           }
@@ -817,7 +817,7 @@ export function createEmptyDraftData(
           const subDefaultValue = list
             ? [createEmptyDraftData(List([subfields as EntryField]), false, skipField)]
             : createEmptyDraftData(List([subfields as EntryField]), withNameKey, skipField);
-            
+
           if (!isEmptyDefaultValue(subDefaultValue)) {
             acc[name] = subDefaultValue;
           }
