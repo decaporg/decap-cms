@@ -404,8 +404,6 @@ declare module 'netlify-cms-core' {
     editor?: {
       preview?: boolean;
     };
-    error: string | undefined;
-    isFetching: boolean;
   }
 
   export interface InitOptions {
