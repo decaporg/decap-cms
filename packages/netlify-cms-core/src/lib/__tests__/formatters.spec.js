@@ -1,5 +1,4 @@
 import { List, Map, fromJS } from 'immutable';
-import deepmerge from 'deepmerge';
 import {
   commitMessageFormatter,
   prepareSlug,
@@ -8,30 +7,27 @@ import {
   summaryFormatter,
   folderFormatter,
 } from '../formatters';
-import { defaultState as defaultConfigState } from '../../reducers/config';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.mock('../../reducers/collections');
 
 describe('formatters', () => {
   describe('commitMessageFormatter', () => {
-    const defaultConfig = deepmerge(defaultConfigState, {
+    const config = {
       backend: {
         name: 'git-gateway',
       },
-    });
-
-    const collection = {
-      get: jest.fn().mockReturnValue('Collection'),
     };
 
     beforeEach(() => {
       jest.clearAllMocks();
     });
 
-    it('should return default commit message on create', () => {
+    it('should return default commit message on create, label_singular', () => {
+      const collection = Map({ label_singular: 'Collection' });
+
       expect(
-        commitMessageFormatter('create', defaultConfig, {
+        commitMessageFormatter('create', config, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -39,12 +35,11 @@ describe('formatters', () => {
       ).toEqual('Create Collection “doc-slug”');
     });
 
-    it('should return default commit message on create', () => {
-      collection.get.mockReturnValueOnce(undefined);
-      collection.get.mockReturnValueOnce('Collections');
+    it('should return default commit message on create, label', () => {
+      const collection = Map({ label: 'Collections' });
 
       expect(
-        commitMessageFormatter('update', defaultConfig, {
+        commitMessageFormatter('update', config, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -53,8 +48,10 @@ describe('formatters', () => {
     });
 
     it('should return default commit message on delete', () => {
+      const collection = Map({ label_singular: 'Collection' });
+
       expect(
-        commitMessageFormatter('delete', defaultConfig, {
+        commitMessageFormatter('delete', config, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -63,8 +60,10 @@ describe('formatters', () => {
     });
 
     it('should return default commit message on uploadMedia', () => {
+      const collection = Map({});
+
       expect(
-        commitMessageFormatter('uploadMedia', defaultConfig, {
+        commitMessageFormatter('uploadMedia', config, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -73,8 +72,10 @@ describe('formatters', () => {
     });
 
     it('should return default commit message on deleteMedia', () => {
+      const collection = Map({});
+
       expect(
-        commitMessageFormatter('deleteMedia', defaultConfig, {
+        commitMessageFormatter('deleteMedia', config, {
           slug: 'doc-slug',
           path: 'file-path',
           collection,
@@ -83,13 +84,14 @@ describe('formatters', () => {
     });
 
     it('should log warning on unknown variable', () => {
-      const config = deepmerge(defaultConfig, {
+      const config = {
         backend: {
           commit_messages: {
             create: 'Create {{collection}} “{{slug}}” with "{{unknown variable}}"',
           },
         },
-      });
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter('create', config, {
           slug: 'doc-slug',
@@ -104,13 +106,14 @@ describe('formatters', () => {
     });
 
     it('should return custom commit message on update', () => {
-      const config = deepmerge(defaultConfig, {
+      const config = {
         backend: {
           commit_messages: {
             update: 'Custom commit message',
           },
         },
-      });
+      };
+      const collection = Map({});
       expect(
         commitMessageFormatter('update', config, {
           slug: 'doc-slug',
@@ -121,13 +124,14 @@ describe('formatters', () => {
     });
 
     it('should use empty values if "authorLogin" and "authorName" are missing in commit message', () => {
-      const config = deepmerge(defaultConfig, {
+      const config = {
         backend: {
           commit_messages: {
             update: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
           },
         },
-      });
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'update',
@@ -143,13 +147,14 @@ describe('formatters', () => {
     });
 
     it('should return custom create message with author information', () => {
-      const config = deepmerge(defaultConfig, {
+      const config = {
         backend: {
           commit_messages: {
             create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
           },
         },
-      });
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'create',
@@ -167,13 +172,14 @@ describe('formatters', () => {
     });
 
     it('should return custom open authoring message', () => {
-      const config = deepmerge(defaultConfig, {
+      const config = {
         backend: {
           commit_messages: {
             openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
           },
         },
-      });
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'create',
@@ -191,13 +197,14 @@ describe('formatters', () => {
     });
 
     it('should use empty values if "authorLogin" and "authorName" are missing in open authoring message', () => {
-      const config = deepmerge(defaultConfig, {
+      const config = {
         backend: {
           commit_messages: {
             openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
           },
         },
-      });
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'create',
@@ -213,13 +220,14 @@ describe('formatters', () => {
     });
 
     it('should log warning on unknown variable in open authoring template', () => {
-      const config = deepmerge(defaultConfig, {
+      const config = {
         backend: {
           commit_messages: {
             openAuthoring: '{{author-email}}: {{message}}',
           },
         },
-      });
+      };
+      const collection = Map({ label_singular: 'Collection' });
       commitMessageFormatter(
         'create',
         config,

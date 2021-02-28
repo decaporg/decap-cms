@@ -1,22 +1,10 @@
 import { produce } from 'immer';
 import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, ConfigAction } from '../actions/config';
-import { EDITORIAL_WORKFLOW, SIMPLE } from '../constants/publishModes';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import { CmsConfig } from '../types/redux';
 
-export const defaultState: CmsConfig = {
-  backend: {
-    name: 'test-repo',
-  },
-  collections: [],
-  publish_mode: SIMPLE,
-  locale: 'en',
-  slug: {
-    encoding: 'unicode',
-    clean_accents: false,
-    sanitize_replacement: '-',
-  },
-  error: undefined,
-  isFetching: false,
+const defaultState = {
+  isFetching: true,
 };
 
 const config = produce((state: CmsConfig, action: ConfigAction) => {

@@ -8,7 +8,6 @@ import {
 } from '../backend';
 import registry from '../lib/registry';
 import { FOLDER, FILES } from '../constants/collectionTypes';
-import { defaultState as defaultConfig } from '../reducers/config';
 
 jest.mock('../lib/registry');
 jest.mock('netlify-cms-lib-util');
@@ -131,14 +130,8 @@ describe('Backend', () => {
       const implementation = {
         init: jest.fn(() => implementation),
       };
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       const collection = Map({
         name: 'posts',
@@ -158,14 +151,7 @@ describe('Backend', () => {
       const implementation = {
         init: jest.fn(() => implementation),
       };
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
-
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       const collection = Map({
         name: 'posts',
@@ -185,14 +171,8 @@ describe('Backend', () => {
       const implementation = {
         init: jest.fn(() => implementation),
       };
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       const collection = Map({
         name: 'posts',
@@ -231,14 +211,8 @@ describe('Backend', () => {
       const implementation = {
         init: jest.fn(() => implementation),
       };
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       const collection = Map({
         name: 'posts',
@@ -286,14 +260,8 @@ describe('Backend', () => {
       const implementation = {
         init: jest.fn(() => implementation),
       };
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       backend.entryToRaw = jest.fn().mockReturnValue('');
 
@@ -318,14 +286,8 @@ describe('Backend', () => {
       const implementation = {
         init: jest.fn(() => implementation),
       };
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       backend.entryToRaw = jest.fn().mockReturnValue('content');
 
@@ -362,15 +324,10 @@ describe('Backend', () => {
         init: jest.fn(() => implementation),
         persistMedia: jest.fn().mockResolvedValue(persistMediaResult),
       };
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
+      const config = { backend: { name: 'github' } };
 
-      const user = { login: 'login', name: 'name' };
       const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const user = { login: 'login', name: 'name' };
       backend.currentUser = jest.fn().mockResolvedValue(user);
 
       const file = { path: 'static/media/image.png' };
@@ -399,14 +356,10 @@ describe('Backend', () => {
         unpublishedEntryMediaFile: jest.fn().mockResolvedValueOnce({ id: '1' }),
       };
       const config = {
-        ...defaultConfig,
         media_folder: 'static/images',
-        backend: {
-          name: 'github',
-        },
       };
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config, backendName: 'github' });
 
       const collection = fromJS({
         name: 'posts',
@@ -451,13 +404,6 @@ describe('Backend', () => {
       const { sanitizeSlug } = require('../lib/urlHelper');
       sanitizeSlug.mockReturnValue('some-post-title');
 
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
-
       const implementation = {
         init: jest.fn(() => implementation),
         getEntry: jest.fn(() => Promise.resolve()),
@@ -480,7 +426,7 @@ describe('Backend', () => {
         title: 'some post title',
       });
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
         'sub_dir/some-post-title',
@@ -491,13 +437,6 @@ describe('Backend', () => {
       const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
       sanitizeSlug.mockReturnValue('some-post-title');
       sanitizeChar.mockReturnValue('-');
-
-      const config = {
-        ...defaultConfig,
-        backend: {
-          name: 'github',
-        },
-      };
 
       const implementation = {
         init: jest.fn(() => implementation),
@@ -524,7 +463,7 @@ describe('Backend', () => {
         title: 'some post title',
       });
 
-      const backend = new Backend(implementation, { config, backendName: config.backend.name });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
       await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
         'sub_dir/some-post-title-1',
@@ -634,16 +573,10 @@ describe('Backend', () => {
     const implementation = {
       init: jest.fn(() => implementation),
     };
-    const config = {
-      ...defaultConfig,
-      backend: {
-        name: 'github',
-      },
-    };
 
     let backend;
     beforeEach(() => {
-      backend = new Backend(implementation, { config, backendName: config.backend.name });
+      backend = new Backend(implementation, { config: {}, backendName: 'github' });
       backend.listAllEntries = jest.fn(collection => {
         if (collection.get('name') === 'posts') {
           return Promise.resolve(posts);
