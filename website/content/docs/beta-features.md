@@ -98,6 +98,26 @@ collections:
     i18n: true
 ```
 
+When using a file collection, you must also enable i18n for each individual file:
+
+```yaml
+collections:
+  - name: pages
+    label: Pages
+    # Configure i18n for this collection.
+    i18n:
+      structure: single_file
+      locales: [en, de, fr]
+    files:
+      - name: about
+        label: About Page
+        file: site/content/about.yml
+        # Enable i18n for this file.
+        i18n: true
+        fields:
+          - { label: Title, name: title, widget: string, i18n: true }
+```
+
 ### Field level configuration
 
 ```yaml
