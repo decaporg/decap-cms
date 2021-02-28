@@ -643,7 +643,7 @@ function evaluateFolder(
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
 ) {
-  let currentFolder = config[folderKey];
+  let currentFolder = config[folderKey]!;
 
   // add identity template if doesn't exist
   if (!collection.has(folderKey)) {
@@ -657,9 +657,6 @@ function evaluateFolder(
       collection.get(folderKey)!,
       entryMap,
       collection,
-      // TODO can't figure out how to handle this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore according to config type media_folder can be undefined
       currentFolder,
       folderKey,
       config.slug,
@@ -705,9 +702,6 @@ function evaluateFolder(
       collection.get(folderKey)!,
       entryMap,
       collection,
-      // TODO can't figure out how to handle this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore according to config type media_folder can be undefined
       currentFolder,
       folderKey,
       config.slug,
@@ -788,7 +782,7 @@ export function selectMediaFilePublicPath(
   }
 
   const name = 'public_folder';
-  let publicFolder = config[name];
+  let publicFolder = config[name]!;
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
@@ -796,9 +790,6 @@ export function selectMediaFilePublicPath(
     publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
   }
 
-  // TODO can't figure out how to handle this
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
   return join(publicFolder, basename(mediaPath));
 }
 
