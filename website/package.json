@@ -51,7 +51,7 @@
     "markdownlint-cli": "^0.26.0"
   },
   "resolutions": {
-    "mini-css-extract-plugin": "0.11.2"
+    "mini-css-extract-plugin": "0.12.0"
   },
   "private": true
 }
