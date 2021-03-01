@@ -14,10 +14,10 @@
   "homepage": "https://www.netlifycms.org/",
   "license": "MIT",
   "dependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/core": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
     "dayjs": "^1.8.23",
-    "emotion-theming": "^10.0.27",
+    "emotion-theming": "^11.0.0",
     "gatsby": "2.32.4",
     "gatsby-plugin-catch-links": "2.10.0",
     "gatsby-plugin-emotion": "^4.2.0",
