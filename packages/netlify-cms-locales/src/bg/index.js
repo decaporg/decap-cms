@@ -75,9 +75,6 @@ const bg = {
         optional: 'незадължителен',
       },
     },
-    /**
-джаджа: {задължително: "% {fieldLabel} е задължително.", regexPattern: "% {fieldLabel} не съвпада с модела:% {pattern}.", обработка: "% {fieldLabel} се обработва.", диапазон: „% {fieldLabel} трябва да бъде между% {minValue} и% {maxValue}.“, min: „% {fieldLabel} трябва да бъде поне% {minValue}.“, max: „% {fieldLabel} трябва да бъде% {maxValue } или по-малко. ", rangeCount:"% {fieldLabel} трябва да има между% {minCount} и% {maxCount} елемент (и). ", rangeCountExact:"% {fieldLabel} трябва да има точно% {count} елемент (и) . ", minCount:"% {fieldLabel} трябва да бъде поне% {minCount} елемент (и). ", maxCount:"% {fieldLabel} трябва да бъде% {maxCount} или по-малко елемент (и). ", invalidPath:` '% {path}' не е валиден път`, pathExists: `Път '% {path}' вече съществува`,}, i18n: {writingInLocale:" Писане в% {locale} ",},
-     */
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} е задължително.',
