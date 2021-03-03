@@ -24,3 +24,4 @@ export { default as vi } from './vi';
 export { default as zh_Hant } from './zh_Hant';
 export { default as ko } from './ko';
 export { default as hr } from './hr';
+export { default as bg } from './bg';
