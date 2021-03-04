@@ -634,7 +634,7 @@ collections:
 ```
 
 Nested collections expect the following directory structure:
-```
+```bash
 content
 └── pages
     ├── authors
