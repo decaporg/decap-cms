@@ -15,7 +15,7 @@ Use angle brackets for placeholders. Tell the reader what a placeholder represen
 
 1. Display information about a cli command:
 
-```
+```bash
 npm install <package-name>
 ```
 
