@@ -48,7 +48,7 @@ const ja = {
       searchResults: '「%{searchTerm}」の検索結果',
       searchResultsInCollection: '%{collection}内の「%{searchTerm}」の検索結果',
       filterBy: '絞り込み',
-      groupBy: 'グルーピング'
+      groupBy: 'グルーピング',
     },
     entries: {
       loadingEntries: 'エントリを読み込み中',
