@@ -128,12 +128,12 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
       );
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
-    case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
       return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
     case UNPUBLISHED_ENTRY_DELETE_SUCCESS:
       return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
+    case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
     default:
       return state;
   }
