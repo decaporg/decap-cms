@@ -7,7 +7,6 @@ import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
 import {
-  CmsCollection,
   Collection,
   Collections,
   CollectionFiles,
