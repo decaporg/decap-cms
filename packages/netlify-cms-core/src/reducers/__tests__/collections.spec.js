@@ -31,16 +31,31 @@ describe('collections', () => {
             },
           ],
         }),
-      ),
-    ).toEqual(
-      fromJS({
-        posts: {
-          name: 'posts',
-          folder: '_posts',
-          fields: [{ name: 'title', widget: 'string' }],
-        },
+      ).toJS(),
+    ).toEqual({
+      posts: {
+        name: 'posts',
+        folder: '_posts',
+        fields: [{ name: 'title', widget: 'string' }],
+      },
+    });
+  });
+
+  it('should maintain config collections order', () => {
+    const collectionsData = new Array(1000).fill(0).map((_, index) => ({
+      name: `collection_${index}`,
+      folder: `collection_${index}`,
+      fields: [{ name: 'title', widget: 'string' }],
+    }));
+
+    const newState = collections(
+      undefined,
+      configLoaded({
+        collections: collectionsData,
       }),
     );
+    const keyArray = newState.keySeq().toArray();
+    expect(keyArray).toEqual(collectionsData.map(({ name }) => name));
   });
 
   describe('selectAllowDeletions', () => {

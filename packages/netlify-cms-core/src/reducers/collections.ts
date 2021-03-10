@@ -1,4 +1,4 @@
-import { List, Set, fromJS } from 'immutable';
+import { List, Set, fromJS, OrderedMap } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS, ConfigAction } from '../actions/config';
@@ -29,10 +29,11 @@ function collections(state = defaultState, action: ConfigAction) {
   switch (action.type) {
     case CONFIG_SUCCESS: {
       const collections = action.payload.collections;
-      const newState = Object.fromEntries(
-        collections.map(collection => [collection.name, collection]),
-      );
-      return fromJS(newState);
+      let newState = OrderedMap({});
+      collections.forEach(collection => {
+        newState = newState.set(collection.name, fromJS(collection));
+      });
+      return newState;
     }
     default:
       return state;
