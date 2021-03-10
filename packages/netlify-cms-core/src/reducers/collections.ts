@@ -30,10 +30,9 @@ function collections(state = defaultState, action: ConfigAction) {
   switch (action.type) {
     case CONFIG_SUCCESS: {
       const collections = action.payload.collections;
-      const newState: { [name: string]: CmsCollection } = {};
-      for (const collection of collections) {
-        newState[collection.name] = collection;
-      }
+      const newState = Object.fromEntries(
+        collections.map(collection => [collection.name, collection]),
+      );
       return fromJS(newState);
     }
     default:

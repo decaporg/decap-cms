@@ -1,14 +1,13 @@
 import integrations from '../integrations';
-import { defaultState as defaultConfig } from '../../reducers/config';
-import { CONFIG_SUCCESS } from '../../actions/config';
+import { CONFIG_SUCCESS, ConfigAction } from '../../actions/config';
 import { FOLDER } from '../../constants/collectionTypes';
 
 describe('integrations', () => {
   it('should return default state when no integrations', () => {
     const result = integrations(null, {
       type: CONFIG_SUCCESS,
-      payload: { ...defaultConfig, integrations: [] },
-    });
+      payload: { integrations: [] },
+    } as ConfigAction);
     expect(result && result.toJS()).toEqual({
       providers: {},
       hooks: {},
@@ -19,7 +18,6 @@ describe('integrations', () => {
     const result = integrations(null, {
       type: CONFIG_SUCCESS,
       payload: {
-        ...defaultConfig,
         integrations: [
           {
             hooks: ['listEntries'],
@@ -47,7 +45,7 @@ describe('integrations', () => {
           { name: 'faq', label: 'FAQ', type: FOLDER },
         ],
       },
-    });
+    } as ConfigAction);
 
     expect(result && result.toJS()).toEqual({
       providers: {
