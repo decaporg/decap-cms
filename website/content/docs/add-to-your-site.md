@@ -29,7 +29,7 @@ If your generator isn't listed here, you can check its documentation, or as a sh
 
 Inside the `admin` folder, you'll create two files:
 
-```x
+```bash
 admin
  ├ index.html
  └ config.yml

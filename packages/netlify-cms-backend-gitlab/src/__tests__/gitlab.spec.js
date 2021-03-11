@@ -175,7 +175,7 @@ describe('gitlab backend', () => {
       },
       {
         backendName: 'gitlab',
-        config: fromJS(config),
+        config,
         authStore,
       },
     );
@@ -401,7 +401,7 @@ describe('gitlab backend', () => {
 
       const entry = await backend.getEntry(
         {
-          config: fromJS({}),
+          config: {},
           integrations: fromJS([]),
           entryDraft: fromJS({}),
           mediaLibrary: fromJS({}),

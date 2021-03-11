@@ -223,7 +223,7 @@ CMS.registerEditorComponent({
             widget: "string"
         },
     ],
-    pattern: /{{< gist ([a-zA-Z0-9]+) ([a-zA-Z0-9]+) >}}/,
+    pattern: /^{{< gist ([a-zA-Z0-9]+) ([a-zA-Z0-9]+) >}}/,
     fromBlock: function(match) {
         return {
             username: match[1],
@@ -234,7 +234,7 @@ CMS.registerEditorComponent({
         return `{{< gist ${obj.username} ${obj.gid} >}}`;
     },
     toPreview: function(obj) {
-        return `{{< gist ${obj.username} ${obj.gid} >}}`;
+        return '<a href="https://gist.github.com/' + obj.username + '/' + obj.id + '">gist</a>';
     },
 });
 ```

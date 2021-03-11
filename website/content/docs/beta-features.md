@@ -22,13 +22,13 @@ backend:
 
 # when using the default proxy server port
 local_backend: true
-
 ```
 
 3. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
-    - If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
+
+   * If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
 4. Start your local development server (e.g. run `gatsby develop`).
-5. Open [http://localhost:8000/admin](http://localhost:8000/admin) to verify that your can administer your content locally.
+5. Open <http://localhost:8000/admin> to verify that your can administer your content locally.
 
 **Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 
@@ -51,9 +51,7 @@ local_backend:
   url: http://localhost:8082/api/v1
   # when accessing the local site from a host other than 'localhost' or '127.0.0.1'
   allowed_hosts: ['192.168.0.1']
-
 ```
-
 
 ## GitLab and BitBucket Editorial Workflow Support
 
@@ -98,6 +96,26 @@ collections:
     # same as the top level, but all fields are optional and defaults to the top level
     # can also be a boolean to accept the top level defaults
     i18n: true
+```
+
+When using a file collection, you must also enable i18n for each individual file:
+
+```yaml
+collections:
+  - name: pages
+    label: Pages
+    # Configure i18n for this collection.
+    i18n:
+      structure: single_file
+      locales: [en, de, fr]
+    files:
+      - name: about
+        label: About Page
+        file: site/content/about.yml
+        # Enable i18n for this file.
+        i18n: true
+        fields:
+          - { label: Title, name: title, widget: string, i18n: true }
 ```
 
 ### Field level configuration
@@ -613,4 +631,19 @@ collections:
     # adding a meta object with a path property allows editing the path of entries
     # moving an existing entry will move the entire sub tree of the entry to the new location
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+```
+
+Nested collections expect the following directory structure:
+```bash
+content
+└── pages
+    ├── authors
+    │   ├── author-1
+    │   │   └── index.md
+    │   └── index.md
+    ├── index.md
+    └── posts
+        ├── hello-world
+        │   └── index.md
+        └── index.md
 ```

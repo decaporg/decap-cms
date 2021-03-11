@@ -4,12 +4,7 @@ import { graphql } from 'gatsby';
 import 'prismjs/themes/prism-tomorrow.css';
 
 import Layout from '../components/layout';
-import DocsNav from '../components/docs-nav';
-import Container from '../components/container';
-import SidebarLayout from '../components/sidebar-layout';
-import EditLink from '../components/edit-link';
-import Widgets from '../components/widgets';
-import Markdown from '../components/markdown';
+import DocsTemplate from '../components/docs-template';
 
 function filenameFromPath(p) {
   return p
@@ -23,40 +18,6 @@ function toMenu(menu, nav) {
     title: group.title,
     group: nav.group.find(g => g.fieldValue === group.name),
   }));
-}
-
-function DocsSidebar({ docsNav, location }) {
-  return (
-    <aside>
-      <DocsNav items={docsNav} location={location} />
-    </aside>
-  );
-}
-
-export function DocsTemplate({
-  title,
-  filename,
-  body,
-  html,
-  showWidgets,
-  widgets,
-  showSidebar,
-  docsNav,
-  location,
-  group,
-}) {
-  return (
-    <Container size="md">
-      <SidebarLayout sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}>
-        <article data-docs-content>
-          {filename && <EditLink collection={`docs_${group}`} filename={filename} />}
-          <h1>{title}</h1>
-          <Markdown body={body} html={html} />
-          {showWidgets && <Widgets widgets={widgets} location={location} />}
-        </article>
-      </SidebarLayout>
-    </Container>
-  );
 }
 
 function DocPage({ data, location }) {

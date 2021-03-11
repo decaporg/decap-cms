@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-date",
   "description": "Widget for editing dates in Netlify CMS.",
-  "version": "2.5.6",
+  "version": "2.5.7",
   "homepage": "https://www.netlifycms.org/docs/widgets/#date",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -28,7 +28,7 @@
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
     "moment": "^2.24.0",
-    "netlify-cms-ui-default": "^2.6.0",
+    "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"

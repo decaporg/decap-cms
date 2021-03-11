@@ -28,7 +28,7 @@ const Text = styled.p`
 function FeatureItem({ feature, description, imgpath, kind }) {
   return (
     <Box>
-      {imgpath && <img src={require(`../img/${imgpath}`)} alt="" />}
+      {imgpath && <img src={require(`../img/${imgpath}`).default} alt="" />}
       <Title kind={kind}>
         <Markdownify source={feature} />
       </Title>

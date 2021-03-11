@@ -852,7 +852,12 @@ export function getMediaAssets({ entry }: { entry: EntryMap }) {
   const assets = filesArray
     .filter(file => file.get('draft'))
     .map(file =>
-      createAssetProxy({ path: file.get('path'), file: file.get('file'), url: file.get('url') }),
+      createAssetProxy({
+        path: file.get('path'),
+        file: file.get('file'),
+        url: file.get('url'),
+        field: file.get('field'),
+      }),
     );
 
   return assets;
@@ -1020,7 +1025,7 @@ export function validateMetaField(
     }
     const sanitizedPath = (value as string)
       .split('/')
-      .map(getProcessSegment(state.config.get('slug')))
+      .map(getProcessSegment(state.config.slug))
       .join('/');
 
     if (value !== sanitizedPath) {

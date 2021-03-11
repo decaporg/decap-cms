@@ -1,4 +1,6 @@
 const path = require('path');
+const { extendDefaultPlugins } = require('svgo');
+
 const appVersion = require('./packages/netlify-cms-app/package.json').version;
 const coreVersion = require('./packages/netlify-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -74,6 +76,15 @@ const defaultPlugins = [
   ],
 ];
 
+const svgo = {
+  plugins: extendDefaultPlugins([
+    {
+      name: 'removeViewBox',
+      active: false,
+    },
+  ]),
+};
+
 function presets() {
   return [
     '@babel/preset-react',
@@ -102,9 +113,7 @@ function plugins() {
       [
         'inline-react-svg',
         {
-          svgo: {
-            plugins: [{ removeViewBox: false }],
-          },
+          svgo,
         },
       ],
     ];
@@ -116,9 +125,7 @@ function plugins() {
       [
         'inline-react-svg',
         {
-          svgo: {
-            plugins: [{ removeViewBox: false }],
-          },
+          svgo,
         },
       ],
     ];

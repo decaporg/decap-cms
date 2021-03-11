@@ -1,19 +1,20 @@
-import { List, Set } from 'immutable';
+import { List, Set, fromJS, OrderedMap } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
-import { CONFIG_SUCCESS } from '../actions/config';
+import { CONFIG_SUCCESS, ConfigAction } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
+import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
 import {
-  CollectionsAction,
   Collection,
+  Collections,
   CollectionFiles,
   EntryField,
-  State,
   EntryMap,
   ViewFilter,
   ViewGroup,
+  CmsConfig,
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -22,29 +23,17 @@ import { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;
 
-function collections(state = null, action: CollectionsAction) {
+const defaultState: Collections = fromJS({});
+
+function collections(state = defaultState, action: ConfigAction) {
   switch (action.type) {
     case CONFIG_SUCCESS: {
-      const configCollections = action.payload
-        ? action.payload.get('collections')
-        : List<Collection>();
-
-      return (
-        configCollections
-          .toOrderedMap()
-          .map(item => {
-            const collection = item as Collection;
-            if (collection.has('folder')) {
-              return collection.set('type', FOLDER);
-            }
-            if (collection.has('files')) {
-              return collection.set('type', FILES);
-            }
-          })
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-          // @ts-ignore
-          .mapKeys((key: string, collection: Collection) => collection.get('name'))
-      );
+      const collections = action.payload.collections;
+      let newState = OrderedMap({});
+      collections.forEach(collection => {
+        newState = newState.set(collection.name, fromJS(collection));
+      });
+      return newState;
     }
     default:
       return state;
@@ -165,19 +154,19 @@ export function selectFieldsWithMediaFolders(collection: Collection, slug: strin
   return [];
 }
 
-export function selectMediaFolders(state: State, collection: Collection, entry: EntryMap) {
+export function selectMediaFolders(config: CmsConfig, collection: Collection, entry: EntryMap) {
   const fields = selectFieldsWithMediaFolders(collection, entry.get('slug'));
-  const folders = fields.map(f => selectMediaFolder(state.config, collection, entry, f));
+  const folders = fields.map(f => selectMediaFolder(config, collection, entry, f));
   if (collection.has('files')) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     if (file) {
-      folders.unshift(selectMediaFolder(state.config, collection, entry, undefined));
+      folders.unshift(selectMediaFolder(config, collection, entry, undefined));
     }
   }
   if (collection.has('media_folder')) {
     // stop evaluating media folders at collection level
     collection = collection.delete('files');
-    folders.unshift(selectMediaFolder(state.config, collection, entry, undefined));
+    folders.unshift(selectMediaFolder(config, collection, entry, undefined));
   }
 
   return Set(folders).toArray();
@@ -317,10 +306,10 @@ export function updateFieldByKey(
 
 export function selectIdentifier(collection: Collection) {
   const identifier = collection.get('identifier_field');
-  const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : IDENTIFIER_FIELDS;
-  const fieldNames = getFieldsNames(collection.get('fields', List<EntryField>()).toArray());
+  const identifierFields = identifier ? [identifier, ...IDENTIFIER_FIELDS] : [...IDENTIFIER_FIELDS];
+  const fieldNames = getFieldsNames(collection.get('fields', List()).toArray());
   return identifierFields.find(id =>
-    fieldNames.find(name => name?.toLowerCase().trim() === id.toLowerCase().trim()),
+    fieldNames.find(name => name.toLowerCase().trim() === id.toLowerCase().trim()),
   );
 }
 
@@ -389,9 +378,6 @@ export function selectEntryCollectionTitle(collection: Collection, entry: EntryM
   const titleField = selectInferedField(collection, 'title');
   return titleField && entryData.getIn(keyToPathArray(titleField));
 }
-
-export const COMMIT_AUTHOR = 'commit_author';
-export const COMMIT_DATE = 'commit_date';
 
 export function selectDefaultSortableFields(
   collection: Collection,

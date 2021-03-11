@@ -2,7 +2,6 @@
 declare module 'netlify-cms-core' {
   import React, { ComponentType } from 'react';
   import { List, Map } from 'immutable';
-  import { FILES, FOLDER } from '../constants/collectionTypes';
 
   export type CmsBackendType =
     | 'azure'
@@ -287,14 +286,12 @@ declare module 'netlify-cms-core' {
     label: string;
     field: string;
     pattern: string;
-    id: string;
   }
 
   export interface ViewGroup {
     label: string;
     field: string;
-    pattern: string;
-    id: string;
+    pattern?: string;
   }
 
   export interface CmsCollection {
@@ -318,7 +315,6 @@ declare module 'netlify-cms-core' {
     nested?: {
       depth: number;
     };
-    type: typeof FOLDER | typeof FILES;
     meta?: { path?: { label: string; widget: string; index_file: string } };
 
     /**
@@ -359,6 +355,14 @@ declare module 'netlify-cms-core' {
     cms_label_prefix?: string;
     squash_merges?: boolean;
     proxy_url?: string;
+    commit_messages?: {
+      create?: string;
+      update?: string;
+      delete?: string;
+      uploadMedia?: string;
+      deleteMedia?: string;
+      openAuthoring?: string;
+    };
   }
 
   export interface CmsSlug {
@@ -386,6 +390,14 @@ declare module 'netlify-cms-core' {
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
     load_config_file?: boolean;
+    integrations?: {
+      hooks: string[];
+      provider: string;
+      collections?: '*' | string[];
+      applicationID?: string;
+      apiKey?: string;
+      getSignedFormURL?: string;
+    }[];
     slug?: CmsSlug;
     i18n?: CmsI18nConfig;
     local_backend?: boolean | CmsLocalBackend;
@@ -433,7 +445,7 @@ declare module 'netlify-cms-core' {
     name: string;
     controlComponent: ComponentType<any>;
     previewComponent?: ComponentType<any>;
-    globalStyles: any;
+    globalStyles?: any;
   }
 
   export interface CmsWidget {

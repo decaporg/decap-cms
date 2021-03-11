@@ -48,7 +48,7 @@ export class Collection extends React.Component {
     isSearchResults: PropTypes.bool,
     isSingleSearchResult: PropTypes.bool,
     collection: ImmutablePropTypes.map.isRequired,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     sortableFields: PropTypes.array,
     sort: ImmutablePropTypes.orderedMap,
     onSortClick: PropTypes.func.isRequired,

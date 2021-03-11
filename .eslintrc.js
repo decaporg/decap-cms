@@ -4,8 +4,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:cypress/recommended',
-    'prettier/react',
-    'prettier/babel',
     'prettier',
   ],
   env: {
@@ -53,7 +51,7 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:cypress/recommended',
         'plugin:@typescript-eslint/recommended',
-        'prettier/@typescript-eslint',
+        'prettier',
         'plugin:import/errors',
         'plugin:import/warnings',
         'plugin:import/typescript',

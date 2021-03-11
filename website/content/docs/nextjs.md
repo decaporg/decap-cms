@@ -196,7 +196,7 @@ Create a new repository at GitHub (or one of the other supported git services) a
 
 Now is probably also a good time to add a `.gitignore` file:
 
-```
+```bash
 .next/
 node_modules/
 /npm-debug.log

@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.29](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.28...netlify-cms-app@2.14.29) (2021-03-11)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.28](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.27...netlify-cms-app@2.14.28) (2021-03-11)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.27](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.26...netlify-cms-app@2.14.27) (2021-03-10)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.26](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.25...netlify-cms-app@2.14.26) (2021-02-25)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.25](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.24...netlify-cms-app@2.14.25) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.24](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.23...netlify-cms-app@2.14.24) (2021-02-22)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.23](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.22...netlify-cms-app@2.14.23) (2021-02-16)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.22](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.21...netlify-cms-app@2.14.22) (2021-02-15)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
 ## [2.14.21](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.20...netlify-cms-app@2.14.21) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-app
