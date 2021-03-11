@@ -1,13 +1,11 @@
 import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
 import { reducer as notifReducer } from 'redux-notifications';
 import reducers from './index';
 
-function createRootReducer(history) {
+function createRootReducer() {
   return combineReducers({
     ...reducers,
     notifs: notifReducer,
-    router: connectRouter(history),
   });
 }
 
