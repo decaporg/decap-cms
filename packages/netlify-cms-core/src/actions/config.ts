@@ -240,8 +240,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
 
     throwOnMissingDefaultLocale(i18n);
 
-    // TODO remove fromJS when Immutable is removed from backend
-    const backend = resolveBackend(fromJS(config));
+    const backend = resolveBackend(config);
 
     for (const collection of config.collections) {
       if (!('publish' in collection)) {
@@ -399,13 +398,13 @@ export function configLoaded(config: CmsConfig) {
   return {
     type: CONFIG_SUCCESS,
     payload: config,
-  };
+  } as const;
 }
 
 export function configLoading() {
   return {
     type: CONFIG_REQUEST,
-  };
+  } as const;
 }
 
 export function configFailed(err: Error) {
@@ -413,7 +412,7 @@ export function configFailed(err: Error) {
     type: CONFIG_FAILURE,
     error: 'Error loading config',
     payload: err,
-  };
+  } as const;
 }
 
 export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend) {
@@ -495,7 +494,7 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
 
 export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => unknown) {
   if (window.CMS_CONFIG) {
-    return configLoaded(fromJS(window.CMS_CONFIG));
+    return configLoaded(window.CMS_CONFIG);
   }
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
     dispatch(configLoading());
@@ -518,7 +517,7 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
 
       const config = applyDefaults(normalizedConfig);
 
-      dispatch(configLoaded(fromJS(config)));
+      dispatch(configLoaded(config));
 
       if (typeof onLoad === 'function') {
         onLoad();
@@ -529,3 +528,7 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
     }
   };
 }
+
+export type ConfigAction = ReturnType<
+  typeof configLoading | typeof configLoaded | typeof configFailed
+>;

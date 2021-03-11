@@ -362,6 +362,14 @@ export interface CmsBackend {
   cms_label_prefix?: string;
   squash_merges?: boolean;
   proxy_url?: string;
+  commit_messages?: {
+    create?: string;
+    update?: string;
+    delete?: string;
+    uploadMedia?: string;
+    deleteMedia?: string;
+    openAuthoring?: string;
+  };
 }
 
 export interface CmsSlug {
@@ -389,12 +397,22 @@ export interface CmsConfig {
   media_library?: CmsMediaLibrary;
   publish_mode?: CmsPublishMode;
   load_config_file?: boolean;
+  integrations?: {
+    hooks: string[];
+    provider: string;
+    collections?: '*' | string[];
+    applicationID?: string;
+    apiKey?: string;
+    getSignedFormURL?: string;
+  }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
   };
+  error: string | undefined;
+  isFetching: boolean;
 }
 
 export type CmsMediaLibraryOptions = unknown; // TODO: type properly
@@ -675,7 +693,7 @@ export type Cursors = StaticallyTypedRecord<{}>;
 
 export interface State {
   auth: Auth;
-  config: Config;
+  config: CmsConfig;
   cursors: Cursors;
   collections: Collections;
   deploys: Deploys;
@@ -690,18 +708,10 @@ export interface State {
   status: Status;
 }
 
-export interface ConfigAction extends Action<string> {
-  payload: Map<string, boolean>;
-}
-
 export interface Integration {
   hooks: string[];
   collections?: string | string[];
   provider: string;
-}
-
-export interface IntegrationsAction extends Action<string> {
-  payload: Config;
 }
 
 interface EntryPayload {
@@ -785,12 +795,8 @@ export interface EntriesAction extends Action<string> {
   };
 }
 
-export interface CollectionsAction extends Action<string> {
-  payload?: StaticallyTypedRecord<{ collections: List<Collection> }>;
-}
-
 export interface EditorialWorkflowAction extends Action<string> {
-  payload?: StaticallyTypedRecord<{ publish_mode: string }> & {
+  payload?: CmsConfig & {
     collection: string;
     entry: { slug: string };
   } & {

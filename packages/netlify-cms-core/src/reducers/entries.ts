@@ -27,7 +27,7 @@ import {
   EntriesSuccessPayload,
   EntryObject,
   Entries,
-  Config,
+  CmsConfig,
   Collection,
   EntryFailurePayload,
   EntryDeletePayload,
@@ -564,7 +564,7 @@ function hasCustomFolder(
 
 function traverseFields(
   folderKey: 'media_folder' | 'public_folder',
-  config: Config,
+  config: CmsConfig,
   collection: Collection,
   entryMap: EntryMap | undefined,
   field: EntryField,
@@ -579,7 +579,7 @@ function traverseFields(
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
   }
 
@@ -594,7 +594,7 @@ function traverseFields(
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
     let fieldFolder = null;
     if (f.has('fields')) {
@@ -638,12 +638,12 @@ function traverseFields(
 
 function evaluateFolder(
   folderKey: 'media_folder' | 'public_folder',
-  config: Config,
+  config: CmsConfig,
   collection: Collection,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
 ) {
-  let currentFolder = config.get(folderKey);
+  let currentFolder = config[folderKey]!;
 
   // add identity template if doesn't exist
   if (!collection.has(folderKey)) {
@@ -659,7 +659,7 @@ function evaluateFolder(
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
 
     let file = getFileField(collection.get('files')!, entryMap?.get('slug'));
@@ -676,7 +676,7 @@ function evaluateFolder(
         collection,
         currentFolder,
         folderKey,
-        config.get('slug'),
+        config.slug,
       );
 
       if (field) {
@@ -704,7 +704,7 @@ function evaluateFolder(
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
 
     if (field) {
@@ -728,13 +728,13 @@ function evaluateFolder(
 }
 
 export function selectMediaFolder(
-  config: Config,
+  config: CmsConfig,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
 ) {
   const name = 'media_folder';
-  let mediaFolder = config.get(name);
+  let mediaFolder = config[name];
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
@@ -755,7 +755,7 @@ export function selectMediaFolder(
 }
 
 export function selectMediaFilePath(
-  config: Config,
+  config: CmsConfig,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   mediaPath: string,
@@ -771,7 +771,7 @@ export function selectMediaFilePath(
 }
 
 export function selectMediaFilePublicPath(
-  config: Config,
+  config: CmsConfig,
   collection: Collection | null,
   mediaPath: string,
   entryMap: EntryMap | undefined,
@@ -782,7 +782,7 @@ export function selectMediaFilePublicPath(
   }
 
   const name = 'public_folder';
-  let publicFolder = config.get(name);
+  let publicFolder = config[name]!;
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 

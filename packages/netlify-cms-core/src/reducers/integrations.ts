@@ -1,14 +1,14 @@
-import { fromJS, List } from 'immutable';
-import { CONFIG_SUCCESS } from '../actions/config';
-import { Integrations, IntegrationsAction, Integration, Config } from '../types/redux';
+import { fromJS } from 'immutable';
+import { CONFIG_SUCCESS, ConfigAction } from '../actions/config';
+import { Integrations, CmsConfig } from '../types/redux';
 
 interface Acc {
   providers: Record<string, {}>;
   hooks: Record<string, string | Record<string, string>>;
 }
 
-export function getIntegrations(config: Config) {
-  const integrations: Integration[] = config.get('integrations', List()).toJS() || [];
+export function getIntegrations(config: CmsConfig) {
+  const integrations = config.integrations || [];
   const newState = integrations.reduce(
     (acc, integration) => {
       const { hooks, collections, provider, ...providerData } = integration;
@@ -20,12 +20,7 @@ export function getIntegrations(config: Config) {
         return acc;
       }
       const integrationCollections =
-        collections === '*'
-          ? config
-              .get('collections')
-              .map(collection => collection!.get('name'))
-              .toArray()
-          : (collections as string[]);
+        collections === '*' ? config.collections.map(collection => collection.name) : collections;
       integrationCollections.forEach(collection => {
         hooks.forEach(hook => {
           acc.hooks[collection]
@@ -40,7 +35,9 @@ export function getIntegrations(config: Config) {
   return fromJS(newState);
 }
 
-function integrations(state = null, action: IntegrationsAction): Integrations | null {
+const defaultState = fromJS({ providers: {}, hooks: {} });
+
+function integrations(state = defaultState, action: ConfigAction): Integrations | null {
   switch (action.type) {
     case CONFIG_SUCCESS: {
       return getIntegrations(action.payload);

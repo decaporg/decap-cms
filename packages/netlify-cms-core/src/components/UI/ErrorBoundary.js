@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
 import yaml from 'yaml';
@@ -44,9 +43,9 @@ function buildIssueTemplate({ config }) {
   }
   const template = getIssueTemplate({
     version,
-    provider: config.getIn(['backend', 'name']),
+    provider: config.backend.name,
     browser: navigator.userAgent,
-    config: yaml.stringify(config.toJS()),
+    config: yaml.stringify(config),
   });
 
   return template;
@@ -131,7 +130,7 @@ export class ErrorBoundary extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     t: PropTypes.func.isRequired,
-    config: ImmutablePropTypes.map.isRequired,
+    config: PropTypes.object.isRequired,
   };
 
   state = {

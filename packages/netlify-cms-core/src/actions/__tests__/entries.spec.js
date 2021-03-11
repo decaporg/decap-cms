@@ -395,13 +395,13 @@ describe('entries', () => {
 
   describe('validateMetaField', () => {
     const state = {
-      config: fromJS({
+      config: {
         slug: {
           encoding: 'unicode',
           clean_accents: false,
           sanitize_replacement: '-',
         },
-      }),
+      },
       entries: fromJS([]),
     };
     const collection = fromJS({

@@ -135,7 +135,7 @@ class WorkflowList extends React.Component {
     handleDelete: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     isOpenAuthoring: PropTypes.bool,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
