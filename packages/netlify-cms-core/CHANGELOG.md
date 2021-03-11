@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.6...netlify-cms-core@2.38.7) (2021-03-11)
+
+
+### Bug Fixes
+
+* entry disappears from workflow screen on failing to merge pull request ([#5085](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5085)) ([20e89cc](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/20e89cc5e2d90821c5fa7bb9d455597c0a3e9d80))
+* field based media_folder ([#5095](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5095)) ([c64f8f7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c64f8f720c071f342f52ed3ae23332bc39096893))
+
+
+
+
+
 ## [2.38.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.5...netlify-cms-core@2.38.6) (2021-03-11)
 
 **Note:** Version bump only for package netlify-cms-core
