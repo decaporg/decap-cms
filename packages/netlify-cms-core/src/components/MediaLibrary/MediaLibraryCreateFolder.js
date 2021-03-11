@@ -38,7 +38,7 @@ const CreateFolderIcon = styled(Icon)`
 class MediaLibraryCreateFolder extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: '', icon: 'folder'};
+    this.state = { value: '', icon: 'folder' };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -46,14 +46,17 @@ class MediaLibraryCreateFolder extends React.Component {
 
   handleChange(event) {
     const { folders } = this.props;
-    this.setState({value: event.target.value, folderExists: folders.find(folder => folder.name === event.target.value)});
+    this.setState({
+      value: event.target.value,
+      folderExists: folders.find(folder => folder.name === event.target.value),
+    });
   }
 
   handleKeyDown(event) {
     const { onKeyDown } = this.props;
     if (event.key === 'Enter' && !this.state.folderExists) {
       onKeyDown(this.state.value);
-      this.setState({value: ''});
+      this.setState({ value: '' });
     }
   }
 
