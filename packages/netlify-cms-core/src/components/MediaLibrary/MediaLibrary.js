@@ -482,7 +482,7 @@ function mapStateToProps(state) {
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
     field,
-    defaultMediaFolder: config.get('media_folder'),
+    defaultMediaFolder: config.media_folder,
   };
   return { ...mediaLibraryProps };
 }
