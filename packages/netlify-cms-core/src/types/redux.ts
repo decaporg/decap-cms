@@ -816,24 +816,3 @@ export interface EditorialWorkflowAction extends Action<string> {
     newStatus: string;
   };
 }
-
-export interface MediaLibraryAction extends Action<string> {
-  payload: MediaLibraryInstance & {
-    controlID: string;
-    forImage: boolean;
-    privateUpload: boolean;
-    config: Map<string, string>;
-    field?: EntryField;
-  } & { mediaPath: string | string[] } & { page: number } & {
-    files: MediaFile[];
-    page: number;
-    canPaginate: boolean;
-    dynamicSearch: boolean;
-    dynamicSearchQuery: boolean;
-  } & {
-    file: MediaFile;
-    privateUpload: boolean;
-  } & {
-    file: { id: string; key: string; privateUpload: boolean };
-  } & { key: string } & { url: string } & { err: Error };
-}
