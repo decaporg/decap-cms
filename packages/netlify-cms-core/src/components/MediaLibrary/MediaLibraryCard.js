@@ -182,7 +182,7 @@ class MediaLibraryCard extends React.Component {
       hasChildren,
     } = this.props;
     const url = displayURL.get('url');
-    var cardImageWrapper = (
+    const cardImageWrapper = (
       <CardImageWrapper>
         {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
         {url && isViewableImage ? (
@@ -192,12 +192,12 @@ class MediaLibraryCard extends React.Component {
         )}
       </CardImageWrapper>
     );
-    var cardDirectoryEl = (
+    const cardDirectoryEl = (
       <CardDirctoryWrapper>
         <Icon type="folder" size="max" />
       </CardDirctoryWrapper>
     );
-    var previewElement = isDirectory ? cardDirectoryEl : cardImageWrapper;
+    const previewElement = isDirectory ? cardDirectoryEl : cardImageWrapper;
     return (
       <Card
         isSelected={isSelected}
