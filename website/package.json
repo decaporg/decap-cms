@@ -21,7 +21,7 @@
     "emotion-theming": "^10.0.27",
     "gatsby": "3.0.3",
     "gatsby-plugin-catch-links": "3.0.0",
-    "gatsby-plugin-emotion": "^4.2.0",
+    "gatsby-plugin-emotion": "^6.0.0",
     "gatsby-plugin-manifest": "3.0.0",
     "gatsby-plugin-netlify-cms": "^5.0.0",
     "gatsby-plugin-react-helmet": "4.0.0",
