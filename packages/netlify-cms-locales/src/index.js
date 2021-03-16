@@ -25,3 +25,4 @@ export { default as zh_Hant } from './zh_Hant';
 export { default as ko } from './ko';
 export { default as hr } from './hr';
 export { default as bg } from './bg';
+export { default as zh_Hans } from './zh_Hans';
