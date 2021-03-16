@@ -65,6 +65,9 @@ function StyledMenuItem({ isActive, isCheckedItem = false, ...props }) {
           color: ${colors.active};
           background-color: ${colors.activeBackground};
         }
+        &.active {
+          text-decoration: underline;
+        }
       `}
       {...props}
     />
