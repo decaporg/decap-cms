@@ -18,6 +18,7 @@ import {
   removeInsertedMedia,
   clearMediaControl,
   removeMediaControl,
+  persistMedia,
 } from 'Actions/mediaLibrary';
 import Widget from './Widget';
 import { validateMetaField } from '../../../actions/entries';
@@ -123,6 +124,7 @@ class EditorControl extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     addAsset: PropTypes.func.isRequired,
     removeInsertedMedia: PropTypes.func.isRequired,
+    persistMedia: PropTypes.func.isRequired,
     onValidate: PropTypes.func,
     processControlRef: PropTypes.func,
     controlRef: PropTypes.func,
@@ -182,6 +184,7 @@ class EditorControl extends React.Component {
       removeMediaControl,
       addAsset,
       removeInsertedMedia,
+      persistMedia,
       onValidate,
       processControlRef,
       controlRef,
@@ -294,6 +297,7 @@ class EditorControl extends React.Component {
               onClearMediaControl={clearMediaControl}
               onRemoveMediaControl={removeMediaControl}
               onRemoveInsertedMedia={removeInsertedMedia}
+              onPersistMedia={persistMedia}
               onAddAsset={addAsset}
               getAsset={boundGetAsset}
               hasActiveStyle={isSelected || this.state.styleActive}
@@ -370,6 +374,7 @@ function mapDispatchToProps(dispatch) {
       clearMediaControl,
       removeMediaControl,
       removeInsertedMedia,
+      persistMedia,
       addAsset,
       query,
       clearSearch,
