@@ -78,7 +78,7 @@ const ro = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel}” este obligatoriu.',
-        regexPattern: "%{fieldLabel} nu se potrivește după modelul: %{pattern}.",
+        regexPattern: '%{fieldLabel} nu se potrivește după modelul: %{pattern}.',
         processing: '%{fieldLabel} se procesează.',
         range: '%{fieldLabel} poate fi între %{minValue} și %{maxValue}.',
         min: '%{fieldLabel} poate fi mai mare sau egal cu %{minValue}.',
@@ -96,9 +96,11 @@ const ro = {
     },
     editor: {
       onLeavePage: 'Ești sigur/ă că dorești să părăsești pagina?',
-      onUpdatingWithUnsavedChanges: 'Există modificări nesalvate! Te rugăm salvează înainte de a actualiza statusul.',
+      onUpdatingWithUnsavedChanges:
+        'Există modificări nesalvate! Te rugăm salvează înainte de a actualiza statusul.',
       onPublishingNotReady: 'Actualizează statusul la „Gata” înainte de publicare.',
-      onPublishingWithUnsavedChanges: 'Există modificări nesalvate, salvează-le înainte de publicare.',
+      onPublishingWithUnsavedChanges:
+        'Există modificări nesalvate, salvează-le înainte de publicare.',
       onPublishing: 'Ești sigur/ă că dorești să publici acest articol?',
       onUnpublishing: 'Ești sigur/ă că dorești să anulezi publicarea acestui articol?',
       onDeleteWithUnsavedChanges:
@@ -109,7 +111,8 @@ const ro = {
       onDeleteUnpublishedChanges:
         'Toate modificările nepublicate din acest articol vor fi șterse. Continui cu ștergerea?',
       loadingEntry: 'Se încarcă...',
-      confirmLoadBackup: 'Un backup local a fost recuperat pentru această intrare, dorești să îl folosești?',
+      confirmLoadBackup:
+        'Un backup local a fost recuperat pentru această intrare, dorești să îl folosești?',
     },
     editorInterface: {
       toggleI18n: 'Comută limba',
@@ -177,10 +180,10 @@ const ro = {
         remove: 'Șterge fișier',
       },
       unknownControl: {
-        noControl: "Widget-ul „%{widget}” nu are configurări valabile.",
+        noControl: 'Widget-ul „%{widget}” nu are configurări valabile.',
       },
       unknownPreview: {
-        noPreview: "Nu există previzualizare pentru widget-ul „%{widget}”.",
+        noPreview: 'Nu există previzualizare pentru widget-ul „%{widget}”.',
       },
       headingOptions: {
         headingOne: 'Titlu 1',
@@ -231,7 +234,7 @@ const ro = {
     },
     errorBoundary: {
       title: 'Eroare',
-      details: "A apărut o eroare - te rugăm ",
+      details: 'A apărut o eroare - te rugăm ',
       reportIt: 'Deschide o problemă pe GitHub.',
       detailsHeading: 'Detalii',
       privacyWarning:
@@ -251,7 +254,7 @@ const ro = {
       onFailToPersist: 'A eșuat persistarea intrării: %{details}',
       onFailToDelete: 'A eșuat ștergerea intrării: %{details}',
       onFailToUpdateStatus: 'A eșuat actualizarea status-ului: %{details}',
-      missingRequiredField: "Oops, ai ratat un câmp obligatoriu. Completează-l pentru a salva.",
+      missingRequiredField: 'Oops, ai ratat un câmp obligatoriu. Completează-l pentru a salva.',
       entrySaved: 'Intrare salvată',
       entryPublished: 'Intrare publicată',
       entryUnpublished: 'Publicare anulată',
@@ -261,8 +264,7 @@ const ro = {
       onDeleteUnpublishedChanges: 'Modificări nepublicate șterse',
       onFailToAuth: '%{details}',
       onLoggedOut: 'Ai fost delogat, te rugăm salvează orice date și autentifică-te din nou.',
-      onBackendDown:
-        'Există probleme la server. Vezi %{details} pentru mai multe informații.',
+      onBackendDown: 'Există probleme la server. Vezi %{details} pentru mai multe informații.',
     },
   },
   workflow: {
