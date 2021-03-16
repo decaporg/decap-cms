@@ -149,7 +149,7 @@ const ro = {
       markdown: {
         bold: 'Bold',
         italic: 'Italic',
-        code: 'Code',
+        code: 'Cod sursă',
         link: 'Link',
         linkPrompt: 'Scrie URL-ul',
         headings: 'Titluri',
