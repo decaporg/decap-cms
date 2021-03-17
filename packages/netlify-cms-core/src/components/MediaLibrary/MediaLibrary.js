@@ -168,36 +168,16 @@ class MediaLibrary extends React.Component {
     this.props.closeMediaLibrary();
   };
 
-  isSelectedAsset = asset => {
-    return (
-      (this.state.selectedAssets || []).filter(selectedAsset => {
-        return selectedAsset.key === asset.key;
-      }).length > 0
-    );
-  };
-
-  updateSelectedAssets = asset => {
-    let selectedAssets = this.state.selectedAssets || [];
-    if (!this.isSelectedAsset(asset)) {
-      selectedAssets.push(asset);
-    } else {
-      selectedAssets = selectedAssets.filter(selectedAsset => {
-        return selectedAsset.key !== asset.key;
-      });
-    }
-    this.setState({ selectedAssets });
-  };
-
-  handleAssetCheckboxChange = (asset, event) => {
-    event.stopPropagation();
-    this.updateSelectedAssets(asset);
+  updateSelectedFile = asset => {
+    const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
+    this.setState({ selectedFile });
   };
 
   handleAssetClick = asset => {
     if (asset.isDirectory) {
       this.setState({ currentMediaFolder: asset.path, selectedAssets: [] });
     } else {
-      this.updateSelectedAssets(asset);
+      this.updateSelectedFile(asset);
     }
   };
 
@@ -257,19 +237,16 @@ class MediaLibrary extends React.Component {
   /**
    * Removes the selected file from the backend.
    */
-  handleDelete = async () => {
-    const { selectedAssets } = this.state;
+  handleDelete = () => {
+    const { selectedFile } = this.state;
     const { files, deleteMedia, privateUpload, t } = this.props;
     if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
       return;
     }
-    const filesToDelete = selectedAssets.map(selectedAsset =>
-      files.find(file => selectedAsset.key === file.key),
-    );
-    for (const file of filesToDelete) {
-      await deleteMedia(file, { privateUpload });
-    }
-    this.setState({ selectedAssets: [] });
+    const file = files.find(file => selectedFile.key === file.key);
+    deleteMedia(file, { privateUpload }).then(() => {
+      this.setState({ selectedFile: {} });
+    });
   };
 
   handleCreateFolder = dirName => {
@@ -433,7 +410,6 @@ class MediaLibrary extends React.Component {
         privateUpload={privateUpload}
         query={this.state.query}
         selectedFile={this.state.selectedFile}
-        selectedAssets={this.state.selectedAssets}
         handleFilter={this.filterImages}
         handleQuery={this.queryFilter}
         toTableData={this.toTableData}
@@ -447,7 +423,6 @@ class MediaLibrary extends React.Component {
         handleDownload={this.handleDownload}
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
-        handleAssetCheckboxChange={this.handleAssetCheckboxChange}
         handleBreadcrumbClick={this.handleBreadcrumbClick}
         currentMediaFolder={currentMediaFolder}
         defaultMediaFolder={defaultMediaFolder}

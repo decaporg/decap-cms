@@ -15,9 +15,8 @@ function CardWrapper(props) {
     style,
     data: {
       mediaItems,
-      isSelectedAsset,
+      isSelectedFile,
       onAssetClick,
-      onAssetCheckboxClick,
       cardDraftText,
       cardWidth,
       cardHeight,
@@ -33,6 +32,7 @@ function CardWrapper(props) {
     return null;
   }
   const file = mediaItems[index];
+  
   return (
     <div
       style={{
@@ -45,12 +45,10 @@ function CardWrapper(props) {
     >
       <MediaLibraryCard
         key={file.key}
-        isSelected={isSelectedAsset(file)}
+        isSelected={isSelectedFile(file)}
         text={file.name}
         onClick={() => onAssetClick(file)}
-        onChecked={event => {
-          onAssetCheckboxClick(file, event);
-        }}
+   
         isDraft={file.draft}
         draftText={cardDraftText}
         width={cardWidth}
@@ -105,9 +103,8 @@ function VirtualizedGrid(props) {
 function PaginatedGrid({
   setScrollContainerRef,
   mediaItems,
-  isSelectedAsset,
+  isSelectedFile,
   onAssetClick,
-  onAssetCheckboxClick,
   cardDraftText,
   cardWidth,
   cardHeight,
@@ -126,7 +123,7 @@ function PaginatedGrid({
         {mediaItems.map(file => (
           <MediaLibraryCard
             key={file.key}
-            isSelected={isSelectedAsset(file)}
+            isSelected={isSelectedFile(file)}
             text={file.name}
             onClick={() => onAssetClick(file)}
             isDraft={file.draft}
@@ -139,7 +136,6 @@ function PaginatedGrid({
             loadDisplayURL={() => loadDisplayURL(file)}
             type={file.type}
             isViewableImage={file.isViewableImage}
-            onAssetCheckboxClick={onAssetCheckboxClick}
           />
         ))}
         {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}
@@ -188,6 +184,7 @@ MediaLibraryCardGrid.propTypes = {
       draft: PropTypes.bool,
     }),
   ).isRequired,
+  isSelectedFile: PropTypes.func.isRequired,
   onAssetClick: PropTypes.func.isRequired,
   canLoadMore: PropTypes.bool,
   onLoadMore: PropTypes.func.isRequired,

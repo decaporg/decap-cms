@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Map } from 'immutable';
+import { isEmpty } from 'lodash';
 import { translate } from 'react-polyglot';
 import { Modal } from 'UI';
 import MediaLibraryTop from './MediaLibraryTop';
@@ -74,7 +75,7 @@ function MediaLibraryModal({
   isPaginating,
   privateUpload,
   query,
-  selectedAssets,
+  selectedFile,
   handleFilter,
   handleQuery,
   toTableData,
@@ -88,7 +89,6 @@ function MediaLibraryModal({
   handleDownload,
   setScrollContainerRef,
   handleAssetClick,
-  handleAssetCheckboxChange,
   handleBreadcrumbClick,
   handleLoadMore,
   loadDisplayURL,
@@ -96,7 +96,6 @@ function MediaLibraryModal({
   t,
   currentMediaFolder,
   defaultMediaFolder,
-  selectedFile,
 }) {
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
@@ -113,7 +112,7 @@ function MediaLibraryModal({
     (!hasFilteredFiles && t('mediaLibrary.mediaLibraryModal.noImagesFound')) ||
     (!hasSearchResults && t('mediaLibrary.mediaLibraryModal.noResults'));
 
-  const hasSelection = hasMedia && (selectedAssets || []).length > 0;
+    const hasSelection = hasMedia && !isEmpty(selectedFile);
 
   return (
     <StyledModal isOpen={isVisible} onClose={handleClose} isPrivate={privateUpload}>
@@ -148,11 +147,8 @@ function MediaLibraryModal({
       <MediaLibraryCardGrid
         setScrollContainerRef={setScrollContainerRef}
         mediaItems={tableData}
-        isSelectedAsset={file =>
-          (selectedAssets || []).filter(selectedAsset => selectedAsset.key === file.key).length > 0
-        }
+        isSelectedFile={file => selectedFile.key === file.key}
         onAssetClick={handleAssetClick}
-        onAssetCheckboxClick={handleAssetCheckboxChange}
         canLoadMore={hasNextPage}
         onLoadMore={handleLoadMore}
         isPaginating={isPaginating}
@@ -206,7 +202,6 @@ MediaLibraryModal.propTypes = {
   handleCreateFolder: PropTypes.func.isRequired,
   setScrollContainerRef: PropTypes.func.isRequired,
   handleAssetClick: PropTypes.func.isRequired,
-  handleAssetCheckboxChange: PropTypes.func.isRequired,
   handleBreadcrumbClick: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
   loadDisplayURL: PropTypes.func.isRequired,
