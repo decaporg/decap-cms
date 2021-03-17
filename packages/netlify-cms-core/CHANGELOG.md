@@ -3,6 +3,81 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.6...netlify-cms-core@2.38.7) (2021-03-11)
+
+
+### Bug Fixes
+
+* entry disappears from workflow screen on failing to merge pull request ([#5085](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5085)) ([20e89cc](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/20e89cc5e2d90821c5fa7bb9d455597c0a3e9d80))
+* field based media_folder ([#5095](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5095)) ([c64f8f7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c64f8f720c071f342f52ed3ae23332bc39096893))
+
+
+
+
+
+## [2.38.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.5...netlify-cms-core@2.38.6) (2021-03-11)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.38.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.4...netlify-cms-core@2.38.5) (2021-02-25)
+
+
+### Bug Fixes
+
+* **core:** ensure GridCardLink fills entire card ([#5017](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5017)) ([b7f91d7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b7f91d70787078322e4829be929055213529688b))
+
+
+
+
+
+## [2.38.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.3...netlify-cms-core@2.38.4) (2021-02-23)
+
+
+### Bug Fixes
+
+* **core:** typedef: globalStyles should not be required in CmsWidgetParam ([#4990](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4990)) ([8563fd6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/8563fd6914126bcbbe405fe9b396f9a129a8d2b0))
+
+
+
+
+
+## [2.38.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.2...netlify-cms-core@2.38.3) (2021-02-22)
+
+
+### Bug Fixes
+
+* **types:** fix user-facing config types in netlify-cms-core ([#4985](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4985)) ([85dd871](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/85dd8714d937c2ccafdb85de320758a4f245f9b3))
+
+
+
+
+
+## [2.38.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.1...netlify-cms-core@2.38.2) (2021-02-16)
+
+
+### Bug Fixes
+
+* **typings:** incorrect import in index.d.ts ([#4962](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4962)) ([10cb14f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/10cb14f8d55fedc905b242b59ecafda826c9b7d2))
+
+
+
+
+
+## [2.38.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.0...netlify-cms-core@2.38.1) (2021-02-15)
+
+
+### Bug Fixes
+
+* convert config before passing to resolveBackend ([#4948](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/4948)) ([9dd64a7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/9dd64a78b9bc4249da8d88c26ade09a7852489eb))
+
+
+
+
+
 # [2.38.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.37.2...netlify-cms-core@2.38.0) (2021-02-10)
 
 

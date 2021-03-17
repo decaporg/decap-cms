@@ -1,5 +1,4 @@
 import { stripIndent } from 'common-tags';
-import { fromJS } from 'immutable';
 import {
   loadConfig,
   parseConfig,
@@ -932,13 +931,13 @@ describe('config', () => {
       expect(dispatch).toHaveBeenCalledWith({ type: 'CONFIG_REQUEST' });
       expect(dispatch).toHaveBeenCalledWith({
         type: 'CONFIG_SUCCESS',
-        payload: fromJS({
+        payload: {
           backend: { repo: 'test-repo' },
           collections: [],
           publish_mode: 'simple',
           slug: { encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' },
           public_folder: '/',
-        }),
+        },
       });
     });
 
@@ -965,13 +964,13 @@ describe('config', () => {
       expect(dispatch).toHaveBeenCalledWith({ type: 'CONFIG_REQUEST' });
       expect(dispatch).toHaveBeenCalledWith({
         type: 'CONFIG_SUCCESS',
-        payload: fromJS({
+        payload: {
           backend: { repo: 'github' },
           collections: [],
           publish_mode: 'simple',
           slug: { encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' },
           public_folder: '/',
-        }),
+        },
       });
     });
 

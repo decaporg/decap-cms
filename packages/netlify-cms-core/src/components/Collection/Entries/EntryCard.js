@@ -36,6 +36,8 @@ const GridCard = styled.li`
 
 const GridCardLink = styled(Link)`
   display: block;
+  height: 100%;
+  outline-offset: -2px;
   &,
   &:hover {
     background-color: ${colors.foreground};

@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-map",
   "description": "Widget for editing spatial data in Netlify CMS.",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "homepage": "https://www.netlifycms.org/docs/widgets/#map",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -24,7 +24,7 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "lodash": "^4.17.11",
-    "netlify-cms-ui-default": "^2.6.0",
+    "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-immutable-proptypes": "^2.1.0"

@@ -1,5 +1,5 @@
-import { OrderedMap, fromJS } from 'immutable';
-import { configLoaded } from 'Actions/config';
+import { fromJS, Map } from 'immutable';
+import { configLoaded } from '../../actions/config';
 import collections, {
   selectAllowDeletion,
   selectEntryPath,
@@ -11,39 +11,51 @@ import collections, {
   selectField,
   updateFieldByKey,
 } from '../collections';
-import { FILES, FOLDER } from 'Constants/collectionTypes';
+import { FILES, FOLDER } from '../../constants/collectionTypes';
 
 describe('collections', () => {
   it('should handle an empty state', () => {
-    expect(collections(undefined, {})).toEqual(null);
+    expect(collections(undefined, {})).toEqual(Map());
   });
 
   it('should load the collections from the config', () => {
     expect(
       collections(
         undefined,
-        configLoaded(
-          fromJS({
-            collections: [
-              {
-                name: 'posts',
-                folder: '_posts',
-                fields: [{ name: 'title', widget: 'string' }],
-              },
-            ],
-          }),
-        ),
-      ),
-    ).toEqual(
-      OrderedMap({
-        posts: fromJS({
-          name: 'posts',
-          folder: '_posts',
-          fields: [{ name: 'title', widget: 'string' }],
-          type: FOLDER,
+        configLoaded({
+          collections: [
+            {
+              name: 'posts',
+              folder: '_posts',
+              fields: [{ name: 'title', widget: 'string' }],
+            },
+          ],
         }),
+      ).toJS(),
+    ).toEqual({
+      posts: {
+        name: 'posts',
+        folder: '_posts',
+        fields: [{ name: 'title', widget: 'string' }],
+      },
+    });
+  });
+
+  it('should maintain config collections order', () => {
+    const collectionsData = new Array(1000).fill(0).map((_, index) => ({
+      name: `collection_${index}`,
+      folder: `collection_${index}`,
+      fields: [{ name: 'title', widget: 'string' }],
+    }));
+
+    const newState = collections(
+      undefined,
+      configLoaded({
+        collections: collectionsData,
       }),
     );
+    const keyArray = newState.keySeq().toArray();
+    expect(keyArray).toEqual(collectionsData.map(({ name }) => name));
   });
 
   describe('selectAllowDeletions', () => {
@@ -234,11 +246,11 @@ describe('collections', () => {
       sanitize_replacement: '-',
     };
 
-    const config = fromJS({ slug, media_folder: '/static/img' });
+    const config = { slug, media_folder: '/static/img' };
     it('should return fields and collection folders', () => {
       expect(
         selectMediaFolders(
-          { config },
+          config,
           fromJS({
             folder: 'posts',
             media_folder: '{{media_folder}}/general/',
@@ -265,7 +277,7 @@ describe('collections', () => {
     it('should return fields, file and collection folders', () => {
       expect(
         selectMediaFolders(
-          { config },
+          config,
           fromJS({
             media_folder: '{{media_folder}}/general/',
             files: [

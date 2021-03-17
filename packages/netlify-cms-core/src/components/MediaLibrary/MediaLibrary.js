@@ -250,14 +250,14 @@ class MediaLibrary extends React.Component {
   };
 
   handleCreateFolder = dirName => {
-    this.setState({ isLoading: true})
+    this.setState({ isLoading: true });
     function byteToHex(byte) {
       return ('0' + byte.toString(16)).slice(-2);
     }
     function generateId(len = 40) {
       var arr = new Uint8Array(len / 2);
       window.crypto.getRandomValues(arr);
-      return Array.from(arr, byteToHex).join("");
+      return Array.from(arr, byteToHex).join('');
     }
     const { defaultMediaFolder } = this.props;
     const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
@@ -267,11 +267,11 @@ class MediaLibrary extends React.Component {
       key: generateId(40),
       name: dirName,
       path: `${currentMediaFolder}/${dirName}`,
-      displayURL: {path: `${currentMediaFolder}/${dirName}`},
-      isDirectory: true
+      displayURL: { path: `${currentMediaFolder}/${dirName}` },
+      isDirectory: true,
     });
-    this.setState({ isLoading: false})
-  }
+    this.setState({ isLoading: false });
+  };
 
   /**
    * Downloads the selected file.
@@ -391,8 +391,9 @@ class MediaLibrary extends React.Component {
       this.state.currentMediaFolder || this.deriveCurrentMediaFolder(files);
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
     const currentDirFolders = (currentDirFiles || []).filter(file => file.isDirectory);
-    const currentDirFilesOrderedByTreeType = currentDirFolders
-      .concat((currentDirFiles || []).filter(file => !file.isDirectory));
+    const currentDirFilesOrderedByTreeType = currentDirFolders.concat(
+      (currentDirFiles || []).filter(file => !file.isDirectory),
+    );
     return (
       <MediaLibraryModal
         isVisible={isVisible}
@@ -456,7 +457,7 @@ function mapStateToProps(state) {
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
     field,
-    defaultMediaFolder: config.get('media_folder'),
+    defaultMediaFolder: config.media_folder,
   };
   return { ...mediaLibraryProps };
 }

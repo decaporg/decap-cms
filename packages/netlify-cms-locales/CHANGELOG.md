@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.28.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.27.0...netlify-cms-locales@1.28.0) (2021-03-10)
+
+
+### Features
+
+* update locale (ja) ([#5084](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5084)) ([bebf4a8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/bebf4a80b6d18dc50981da6b4546151c78c0fd5b))
+* **locale:** add bulgarian locale ([#5054](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5054)) ([776e2a2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/776e2a2a8dda489644c1630c7c64ccba61edcfd5))
+
+
+
+
+
 # [1.27.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.26.0...netlify-cms-locales@1.27.0) (2021-02-10)
 
 

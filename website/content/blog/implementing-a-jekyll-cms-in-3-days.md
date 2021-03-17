@@ -6,7 +6,7 @@ description: >-
   website. Using Netlify CMS they added content management to a Jekyll site in
   three days.
 twitter_image: /img/netlify-cms.png
-date: '2019-06-06'
+date: 2019-06-06T12:00:00.000Z
 canonical_url: https://www.dwolla.com/updates/implementing-netlify-cms/
 ---
 
@@ -61,7 +61,7 @@ If you were using the built-in Jekyll gems and build process that GitHub provide
 <figure>
   <figcaption>Gemfile</figcaption>
 
-  ```x
+  ```bash
   source "https://rubygems.org"
   gem 'github-pages'
   ```
@@ -70,7 +70,7 @@ If you were using the built-in Jekyll gems and build process that GitHub provide
 <figure>
   <figcaption>netlify.toml</figcaption>
 
-  ```x
+  ```bash
   [build]
   publish = "_site/"
   command = "jekyll build"
@@ -83,7 +83,7 @@ Once you’re satisfied that everything looks good and is deploying correctly fr
 
 Netlify CMS itself consists of a [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application) built with [React](https://reactjs.org/) that lives in an admin folder on your site. For Jekyll, it goes right at the root of your project. It will contain two files:
 
-```x
+```bash
 admin
  ├ index.html
  └ config.yml

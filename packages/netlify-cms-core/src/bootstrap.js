@@ -1,10 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider, connect } from 'react-redux';
-import { Route } from 'react-router-dom';
-import { ConnectedRouter } from 'connected-react-router';
-import history from 'Routing/history';
+import { Route, Router } from 'react-router-dom';
 import store from 'ReduxStore';
+import history from 'Routing/history';
 import { loadConfig } from 'Actions/config';
 import { authenticateUser } from 'Actions/auth';
 import { getPhrases } from 'Lib/phrases';
@@ -23,9 +22,9 @@ function TranslatedApp({ locale, config }) {
   return (
     <I18n locale={locale} messages={getPhrases(locale)}>
       <ErrorBoundary showBackup config={config}>
-        <ConnectedRouter history={history}>
+        <Router history={history}>
           <Route component={App} />
-        </ConnectedRouter>
+        </Router>
       </ErrorBoundary>
     </I18n>
   );

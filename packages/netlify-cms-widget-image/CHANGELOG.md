@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.7.6...netlify-cms-widget-image@2.7.7) (2021-02-25)
+
+**Note:** Version bump only for package netlify-cms-widget-image
+
+
+
+
+
+## [2.7.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.7.5...netlify-cms-widget-image@2.7.6) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-image
+
+
+
+
+
 ## [2.7.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.7.4...netlify-cms-widget-image@2.7.5) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-widget-image

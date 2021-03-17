@@ -52,17 +52,17 @@ Users who _do_ have write access to the original repository continue to use the 
 ## Linking to specific entries in the CMS
 Open authoring often includes some sort of "Edit this page" link on the live site. Netlify CMS supports this via the **edit** path:
 
-```
+```js
 /#/edit/{collectionName}/{entryName}
 ```
 
 For the entry named "general" in the "settings" file collection
-```
+```html
 https://www.example.com/path-to-cms/#/edit/settings/general
 ```
 
 For blog post "test.md" in the "posts" folder collection
-```
+```html
 https://www.example.com/path-to-cms/#/edit/posts/test
 ```
 
