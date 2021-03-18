@@ -15,6 +15,7 @@ export { default as nb_no } from './nb_no';
 export { default as nn_no } from './nn_no';
 export { default as pl } from './pl';
 export { default as pt } from './pt';
+export { default as ro } from './ro';
 export { default as ru } from './ru';
 export { default as sv } from './sv';
 export { default as th } from './th';
