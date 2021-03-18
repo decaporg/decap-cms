@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.7...netlify-cms-core@2.38.8) (2021-03-18)
+
+
+### Bug Fixes
+
+* proper type for media library action ([#5100](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5100)) ([387fcbf](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/387fcbf05b2152811f7e797c26565161dd2f3f81))
+
+
+
+
+
 ## [2.38.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.6...netlify-cms-core@2.38.7) (2021-03-11)
 
 
