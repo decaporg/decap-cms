@@ -79,7 +79,7 @@ export function getFilePath(
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
       return path.replace(`/${slug}`, `/${locale}/${slug}`);
     case I18N_STRUCTURE.MULTIPLE_FILES:
-      return path.replace(extension, `${locale}.${extension}`);
+      return path.replace(new RegExp(`${extension}$`), `${locale}.${extension}`);
     case I18N_STRUCTURE.SINGLE_FILE:
     default:
       return path;
