@@ -1,10 +1,11 @@
 ---
-title: Netlify Large Media
 group: Media
 weight: 20
+title: Netlify Large Media
 ---
+[Netlify Large Media](https://www.netlify.com/features/large-media/) is a [Git LFS](https://git-lfs.github.com/) implementation for repositorieZZZZ connected to Netlify sites. This means that you can use Git to work with large asset files like images, audio, and video, without bloating your repository. It does this by replacing the asset files in your repository with text pointer files, then uploading the assets to the Netlify Large Media storage service.
 
-[Netlify Large Media](https://www.netlify.com/features/large-media/) is a [Git LFS](https://git-lfs.github.com/) implementation for repositories connected to Netlify sites. This means that you can use Git to work with large asset files like images, audio, and video, without bloating your repository. It does this by replacing the asset files in your repository with text pointer files, then uploading the assets to the Netlify Large Media storage service.
+![](/img/gatsby.svg)
 
 If you have a Netlify site with Large Media enabled, Netlify CMS (version 2.6.0 and above) will handle Large Media asset files seamlessly, in the same way as files stored directly in the repository.
 
@@ -12,9 +13,9 @@ If you have a Netlify site with Large Media enabled, Netlify CMS (version 2.6.0 
 
 To use Netlify Large Media with Netlify CMS, you will need to do the following:
 
-- [Upgrade Netlify CMS](/docs/update-the-cms-version/) to version 2.6.0 or above.
-- Configure Netlify CMS to use the [Git Gateway backend with Netlify Identity](/docs/git-gateway-backend/#git-gateway-with-netlify-identity).
-- Configure the Netlify site and connected repository to use Large Media, following the [Large Media docs on Netlify](https://www.netlify.com/docs/large-media/).
+* [Upgrade Netlify CMS](/docs/update-the-cms-version/) to version 2.6.0 or above.
+* Configure Netlify CMS to use the [Git Gateway backend with Netlify Identity](/docs/git-gateway-backend/#git-gateway-with-netlify-identity).
+* Configure the Netlify site and connected repository to use Large Media, following the [Large Media docs on Netlify](https://www.netlify.com/docs/large-media/).
 
 When these are complete, you can use Netlify CMS as normal, and the configured asset files will automatically be handled by Netlify Large Media.
 
