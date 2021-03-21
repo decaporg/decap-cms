@@ -20,10 +20,9 @@ const deploys = produce((state: Deploys, action: DeploysAction) => {
   switch (action.type) {
     case DEPLOY_PREVIEW_REQUEST: {
       const { collection, slug } = action.payload;
-      state[`${collection}.${slug}`] = {
-        ...state[`${collection}.${slug}`],
-        isFetching: true,
-      };
+      const key = `${collection}.${slug}`;
+      state[key] = state[key] || {};
+      state[key].isFetching = true;
       break;
     }
 
