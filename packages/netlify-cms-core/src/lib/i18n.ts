@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable';
-import { set, trimEnd, groupBy } from 'lodash';
+import { set, trimEnd, groupBy, escapeRegExp } from 'lodash';
 import { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
 import { selectEntrySlug } from '../reducers/collections';
 import { EntryValue } from '../valueObjects/Entry';
@@ -79,7 +79,7 @@ export function getFilePath(
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
       return path.replace(`/${slug}`, `/${locale}/${slug}`);
     case I18N_STRUCTURE.MULTIPLE_FILES:
-      return path.replace(new RegExp(`${extension}$`), `${locale}.${extension}`);
+      return path.replace(new RegExp(`${escapeRegExp(extension)}$`), `${locale}.${extension}`);
     case I18N_STRUCTURE.SINGLE_FILE:
     default:
       return path;

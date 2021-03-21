@@ -130,23 +130,40 @@ describe('i18n', () => {
   });
 
   describe('getFilePath', () => {
-    const args = ['md', 'src/content/index.md', 'index', 'de'];
     it('should return directory path based on locale when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
-      expect(i18n.getFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, ...args)).toEqual(
-        'src/content/de/index.md',
-      );
+      expect(
+        i18n.getFilePath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
+          'md',
+          'src/content/index.md',
+          'index',
+          'de',
+        ),
+      ).toEqual('src/content/de/index.md');
     });
 
     it('should return file path based on locale when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
-      expect(i18n.getFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, ...args)).toEqual(
-        'src/content/index.de.md',
-      );
+      expect(
+        i18n.getFilePath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FILES,
+          'md',
+          'src/content/file-with-md-in-the-name.md',
+          'file-with-md-in-the-name',
+          'de',
+        ),
+      ).toEqual('src/content/file-with-md-in-the-name.de.md');
     });
 
     it('should not modify path when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
-      expect(i18n.getFilePath(i18n.I18N_STRUCTURE.SINGLE_FILE, ...args)).toEqual(
-        'src/content/index.md',
-      );
+      expect(
+        i18n.getFilePath(
+          i18n.I18N_STRUCTURE.SINGLE_FILE,
+          'md',
+          'src/content/index.md',
+          'index',
+          'de',
+        ),
+      ).toEqual('src/content/index.md');
     });
   });
 
