@@ -4,7 +4,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { Map } from 'immutable';
 import { Link } from 'react-router-dom';
 import {
   Icon,
@@ -244,7 +243,7 @@ class EditorToolbar extends React.Component {
     isModification: PropTypes.bool,
     currentStatus: PropTypes.string,
     onLogoutClick: PropTypes.func.isRequired,
-    deployPreview: ImmutablePropTypes.map,
+    deployPreview: PropTypes.object,
     loadDeployPreview: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     editorBackLink: PropTypes.string.isRequired,
@@ -276,15 +275,13 @@ class EditorToolbar extends React.Component {
   };
 
   renderDeployPreviewControls = label => {
-    const { deployPreview = Map(), loadDeployPreview, t } = this.props;
-    const url = deployPreview.get('url');
-    const status = deployPreview.get('status');
+    const { deployPreview = {}, loadDeployPreview, t } = this.props;
+    const { url, status, isFetching } = deployPreview;
 
     if (!status) {
       return;
     }
 
-    const isFetching = deployPreview.get('isFetching');
     const deployPreviewReady = status === 'SUCCESS' && !isFetching;
     return (
       <PreviewButtonContainer>

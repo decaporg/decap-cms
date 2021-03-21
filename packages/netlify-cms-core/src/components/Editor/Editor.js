@@ -64,7 +64,7 @@ export class Editor extends React.Component {
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
     loadEntries: PropTypes.func.isRequired,
-    deployPreview: ImmutablePropTypes.map,
+    deployPreview: PropTypes.object,
     loadDeployPreview: PropTypes.func.isRequired,
     currentStatus: PropTypes.string,
     user: PropTypes.object,

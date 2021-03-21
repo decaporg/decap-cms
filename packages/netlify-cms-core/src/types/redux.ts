@@ -6,6 +6,7 @@ import { MediaFile as BackendMediaFile } from '../backend';
 import { Auth } from '../reducers/auth';
 import { Status } from '../reducers/status';
 import { Medias } from '../reducers/medias';
+import { Deploys } from '../reducers/deploys';
 
 export type CmsBackendType =
   | 'azure'
@@ -509,8 +510,6 @@ export type Entries = StaticallyTypedRecord<{
   group: Group;
   viewStyle: string;
 }>;
-
-export type Deploys = StaticallyTypedRecord<{}>;
 
 export type EditorialWorkflow = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
