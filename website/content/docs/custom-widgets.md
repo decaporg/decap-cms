@@ -293,6 +293,7 @@ Here is the content of `package.json` that you will have at the end:
      output: {
        path: path.resolve(__dirname, 'public'),
      },
+     optimization: { minimize: false },
      module: {
        rules: [
          {
@@ -307,7 +308,7 @@ Here is the content of `package.json` that you will have at the end:
          },
          {
            test: /\.css$/,
-           loader: ['style-loader', 'css-loader'],
+           use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
          },
        ],
      },
