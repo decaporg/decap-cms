@@ -21,6 +21,7 @@ const deploys = produce((state: Deploys, action: DeploysAction) => {
     case DEPLOY_PREVIEW_REQUEST: {
       const { collection, slug } = action.payload;
       state[`${collection}.${slug}`] = {
+        ...state[`${collection}.${slug}`],
         isFetching: true,
       };
       break;
