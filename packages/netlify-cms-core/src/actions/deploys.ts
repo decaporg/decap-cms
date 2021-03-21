@@ -1,6 +1,9 @@
 import { actions as notifActions } from 'redux-notifications';
-import { currentBackend } from 'coreSrc/backend';
-import { selectDeployPreview } from 'Reducers';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { currentBackend } from '../backend';
+import { selectDeployPreview } from '../reducers';
+import { Collection, Entry, State } from '../types/redux';
 
 const { notifSend } = notifActions;
 
@@ -8,53 +11,65 @@ export const DEPLOY_PREVIEW_REQUEST = 'DEPLOY_PREVIEW_REQUEST';
 export const DEPLOY_PREVIEW_SUCCESS = 'DEPLOY_PREVIEW_SUCCESS';
 export const DEPLOY_PREVIEW_FAILURE = 'DEPLOY_PREVIEW_FAILURE';
 
-export function deployPreviewLoading(collection, slug) {
+function deployPreviewLoading(collection: string, slug: string) {
   return {
     type: DEPLOY_PREVIEW_REQUEST,
     payload: {
-      collection: collection.get('name'),
+      collection,
       slug,
     },
-  };
+  } as const;
 }
 
-export function deployPreviewLoaded(collection, slug, { url, status }) {
+function deployPreviewLoaded(
+  collection: string,
+  slug: string,
+  deploy: { url: string | undefined; status: string },
+) {
+  const { url, status } = deploy;
   return {
     type: DEPLOY_PREVIEW_SUCCESS,
     payload: {
-      collection: collection.get('name'),
+      collection,
       slug,
       url,
       status,
     },
-  };
+  } as const;
 }
 
-export function deployPreviewError(collection, slug) {
+function deployPreviewError(collection: string, slug: string) {
   return {
     type: DEPLOY_PREVIEW_FAILURE,
     payload: {
-      collection: collection.get('name'),
+      collection,
       slug,
     },
-  };
+  } as const;
 }
 
 /**
  * Requests a deploy preview object from the registered backend.
  */
-export function loadDeployPreview(collection, slug, entry, published, opts) {
-  return async (dispatch, getState) => {
+export function loadDeployPreview(
+  collection: Collection,
+  slug: string,
+  entry: Entry,
+  published: boolean,
+  opts?: { maxAttempts?: number; interval?: number },
+) {
+  return async (dispatch: ThunkDispatch<State, undefined, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    const collectionName = collection.get('name');
 
     // Exit if currently fetching
-    const deployState = selectDeployPreview(state, collection, slug);
-    if (deployState && deployState.get('isFetching')) {
+    const deployState = selectDeployPreview(state, collectionName, slug);
+    if (deployState && deployState.isFetching) {
       return;
     }
 
-    dispatch(deployPreviewLoading(collection, slug));
+    dispatch(deployPreviewLoading(collectionName, slug));
 
     try {
       /**
@@ -65,9 +80,9 @@ export function loadDeployPreview(collection, slug, entry, published, opts) {
         ? backend.getDeploy(collection, slug, entry)
         : await backend.getDeployPreview(collection, slug, entry, opts);
       if (deploy) {
-        return dispatch(deployPreviewLoaded(collection, slug, deploy));
+        return dispatch(deployPreviewLoaded(collectionName, slug, deploy));
       }
-      return dispatch(deployPreviewError(collection, slug));
+      return dispatch(deployPreviewError(collectionName, slug));
     } catch (error) {
       console.error(error);
       dispatch(
@@ -80,7 +95,11 @@ export function loadDeployPreview(collection, slug, entry, published, opts) {
           dismissAfter: 8000,
         }),
       );
-      dispatch(deployPreviewError(collection, slug));
+      dispatch(deployPreviewError(collectionName, slug));
     }
   };
 }
+
+export type DeploysAction = ReturnType<
+  typeof deployPreviewLoading | typeof deployPreviewLoaded | typeof deployPreviewError
+>;

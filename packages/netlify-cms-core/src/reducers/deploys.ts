@@ -1,46 +1,50 @@
-import { Map, fromJS } from 'immutable';
+import { produce } from 'immer';
 import {
   DEPLOY_PREVIEW_REQUEST,
   DEPLOY_PREVIEW_SUCCESS,
   DEPLOY_PREVIEW_FAILURE,
-} from 'Actions/deploys';
+  DeploysAction,
+} from '../actions/deploys';
 
-function deploys(state = Map({ deploys: Map() }), action) {
+export type Deploys = {
+  [key: string]: {
+    isFetching: boolean;
+    url?: string;
+    status?: string;
+  };
+};
+
+const defaultState: Deploys = {};
+
+const deploys = produce((state: Deploys, action: DeploysAction) => {
   switch (action.type) {
     case DEPLOY_PREVIEW_REQUEST: {
       const { collection, slug } = action.payload;
-      return state.setIn(['deploys', `${collection}.${slug}`, 'isFetching'], true);
+      state[`${collection}.${slug}`] = {
+        isFetching: true,
+      };
+      break;
     }
 
     case DEPLOY_PREVIEW_SUCCESS: {
       const { collection, slug, url, status } = action.payload;
-      return state.setIn(
-        ['deploys', `${collection}.${slug}`],
-        fromJS({
-          isFetching: false,
-          url,
-          status,
-        }),
-      );
+      const key = `${collection}.${slug}`;
+      state[key].isFetching = false;
+      state[key].url = url;
+      state[key].status = status;
+      break;
     }
 
     case DEPLOY_PREVIEW_FAILURE: {
       const { collection, slug } = action.payload;
-      return state.setIn(
-        ['deploys', `${collection}.${slug}`],
-        fromJS({
-          isFetching: false,
-        }),
-      );
+      state[`${collection}.${slug}`].isFetching = false;
+      break;
     }
-
-    default:
-      return state;
   }
-}
+}, defaultState);
 
-export function selectDeployPreview(state, collection, slug) {
-  return state.getIn(['deploys', `${collection}.${slug}`]);
+export function selectDeployPreview(state: Deploys, collection: string, slug: string) {
+  return state[`${collection}.${slug}`];
 }
 
 export default deploys;
