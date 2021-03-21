@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.8...netlify-cms-core@2.38.9) (2021-03-21)
+
+
+### Bug Fixes
+
+* i18n regex logic ([#5136](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5136)) ([b0c0ea6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b0c0ea60c2a2c64f312ab56110438b4d822a11a9))
+
+
+
+
+
 ## [2.38.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.7...netlify-cms-core@2.38.8) (2021-03-18)
 
 
