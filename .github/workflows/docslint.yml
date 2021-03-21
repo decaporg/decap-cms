@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - '*'
 
     paths:
       - '.github/workflows/docslint.yml'
