@@ -100,6 +100,7 @@ jobs:
           MACHINE_COUNT: 8
           MACHINE_INDEX: ${{ matrix.machine }}
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
           name: cypress-results-${{ matrix.machine }}
           path: |
