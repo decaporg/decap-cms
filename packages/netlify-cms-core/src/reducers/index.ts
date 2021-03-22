@@ -1,3 +1,4 @@
+import { List } from 'immutable';
 import auth from './auth';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
@@ -50,12 +51,14 @@ export function selectPublishedSlugs(state: State, collection: string) {
 }
 
 export function selectSearchedEntries(state: State, availableCollections: string[]) {
-  const searchItems = state.search.get('entryIds');
   // only return search results for actually available collections
   return (
-    searchItems &&
-    searchItems
+    List(state.search.entryIds)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore probably bug in Immutable types
       .filter(({ collection }) => availableCollections.indexOf(collection) !== -1)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore probably bug in Immutable types
       .map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug))
   );
 }

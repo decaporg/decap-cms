@@ -356,8 +356,8 @@ function mapStateToProps(state) {
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
-    isFetching: state.search.get('isFetching'),
-    queryHits: state.search.get('queryHits'),
+    isFetching: state.search.isFetching,
+    queryHits: state.search.queryHits,
     config: state.config,
     entry,
     collection,

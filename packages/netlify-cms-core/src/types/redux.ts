@@ -7,6 +7,7 @@ import { Auth } from '../reducers/auth';
 import { Status } from '../reducers/status';
 import { Medias } from '../reducers/medias';
 import { Deploys } from '../reducers/deploys';
+import { Search } from '../reducers/search';
 
 export type CmsBackendType =
   | 'azure'
@@ -673,19 +674,6 @@ export type Hook = string | boolean;
 export type Integrations = StaticallyTypedRecord<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   hooks: { [collectionOrHook: string]: any };
-}>;
-
-interface SearchItem {
-  collection: string;
-  slug: string;
-}
-
-export type Search = StaticallyTypedRecord<{
-  entryIds?: SearchItem[];
-  isFetching: boolean;
-  term: string | null;
-  collections: List<string> | null;
-  page: number;
 }>;
 
 export type Cursors = StaticallyTypedRecord<{}>;

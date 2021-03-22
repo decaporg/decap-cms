@@ -1,89 +1,88 @@
-import { Map, List } from 'immutable';
+import { produce } from 'immer';
 
 import {
-  SEARCH_ENTRIES_REQUEST,
-  SEARCH_ENTRIES_SUCCESS,
+  QUERY_FAILURE,
   QUERY_REQUEST,
   QUERY_SUCCESS,
   SEARCH_CLEAR,
-} from 'Actions/search';
+  SEARCH_ENTRIES_FAILURE,
+  SEARCH_ENTRIES_REQUEST,
+  SEARCH_ENTRIES_SUCCESS,
+  SearchAction,
+} from '../actions/search';
+import { EntryValue } from '../valueObjects/Entry';
 
-let loadedEntries;
-let response;
-let page;
-let searchTerm;
-let searchCollections;
+export type Search = {
+  isFetching: boolean;
+  term: string;
+  collections: string[];
+  page: number;
+  entryIds: { collection: string; slug: string }[];
+  queryHits: Record<string, EntryValue[]>;
+  error: Error | undefined;
+};
 
-const defaultState = Map({
+const defaultState: Search = {
   isFetching: false,
-  term: null,
-  collections: null,
+  term: '',
+  collections: [],
   page: 0,
-  entryIds: List([]),
-  queryHits: Map({}),
-});
+  entryIds: [],
+  queryHits: {},
+  error: undefined,
+};
 
-function entries(state = defaultState, action) {
+const search = produce((state: Search, action: SearchAction) => {
   switch (action.type) {
     case SEARCH_CLEAR:
       return defaultState;
 
-    case SEARCH_ENTRIES_REQUEST:
-      if (action.payload.searchTerm !== state.get('term')) {
-        return state.withMutations(map => {
-          map.set('isFetching', true);
-          map.set('term', action.payload.searchTerm);
-          map.set('collections', List(action.payload.searchCollections));
-          map.set('page', action.payload.page);
-        });
-      }
-      return state;
+    case SEARCH_ENTRIES_REQUEST: {
+      const { page, searchTerm, searchCollections } = action.payload;
+      state.isFetching = true;
+      state.term = searchTerm;
+      state.collections = searchCollections;
+      state.page = page;
+      break;
+    }
 
-    case SEARCH_ENTRIES_SUCCESS:
-      loadedEntries = action.payload.entries;
-      page = action.payload.page;
-      searchTerm = action.payload.searchTerm;
-      searchCollections = action.payload.searchCollections;
-      return state.withMutations(map => {
-        const entryIds = List(
-          loadedEntries.map(entry => ({ collection: entry.collection, slug: entry.slug })),
-        );
-        map.set('isFetching', false);
-        map.set('fetchID', null);
-        map.set('page', page);
-        map.set('term', searchTerm);
-        map.set('collections', List(searchCollections));
-        map.set(
-          'entryIds',
-          !page || isNaN(page) || page === 0
-            ? entryIds
-            : map.get('entryIds', List()).concat(entryIds),
-        );
-      });
+    case SEARCH_ENTRIES_SUCCESS: {
+      const { entries, page } = action.payload;
+      const entryIds = entries.map(entry => ({ collection: entry.collection, slug: entry.slug }));
+      state.isFetching = false;
+      state.page = page;
+      state.entryIds =
+        !page || isNaN(page) || page === 0 ? entryIds : state.entryIds.concat(entryIds);
+      break;
+    }
 
-    case QUERY_REQUEST:
-      if (action.payload.searchTerm !== state.get('term')) {
-        return state.withMutations(map => {
-          map.set('isFetching', action.payload.namespace ? true : false);
-          map.set('fetchID', action.payload.namespace);
-          map.set('term', action.payload.searchTerm);
-        });
-      }
-      return state;
+    case SEARCH_ENTRIES_FAILURE: {
+      const { error } = action.payload;
+      state.isFetching = false;
+      state.error = error;
+      break;
+    }
 
-    case QUERY_SUCCESS:
-      searchTerm = action.payload.searchTerm;
-      response = action.payload.response;
-      return state.withMutations(map => {
-        map.set('isFetching', false);
-        map.set('fetchID', null);
-        map.set('term', searchTerm);
-        map.mergeIn(['queryHits'], Map({ [action.payload.namespace]: response.hits }));
-      });
+    case QUERY_REQUEST: {
+      const { searchTerm } = action.payload;
+      state.isFetching = true;
+      state.term = searchTerm;
+      break;
+    }
 
-    default:
-      return state;
+    case QUERY_SUCCESS: {
+      const { namespace, hits } = action.payload;
+      state.isFetching = false;
+      state.queryHits[namespace] = hits;
+      break;
+    }
+
+    case QUERY_FAILURE: {
+      const { error } = action.payload;
+      state.isFetching = false;
+      state.error = error;
+    }
   }
-}
+}, defaultState);
 
-export default entries;
+export default search;
