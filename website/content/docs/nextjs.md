@@ -21,7 +21,7 @@ npm init -y
 npm install --save react react-dom next
 
 # Install webpack loader for Markdown (Use version 3+)
-npm install --save-dev frontmatter-markdown-loader
+npm install --save-dev frontmatter-markdown-loader @babel/core @babel/preset-react
 
 # Create folder for pages (default for NextJS), and add a index file
 mkdir pages
