@@ -441,14 +441,7 @@ declare module 'netlify-cms-core' {
     init: (args: any) => CmsBackendClass;
   }
 
-  export interface CmsWidgetParam {
-    name: string;
-    controlComponent: ComponentType<any>;
-    previewComponent?: ComponentType<any>;
-    globalStyles?: any;
-  }
-
-  export interface CmsWidgetControlProps<T = any> {
+    export interface CmsWidgetControlProps<T = any> {
     value: T;
     field: Map<string, any>;
     onChange: (value: T) => void;
@@ -465,9 +458,16 @@ declare module 'netlify-cms-core' {
     fieldsMetaData: Map<string, any>;
   }
 
+  export interface CmsWidgetParam {
+    name: string;
+    controlComponent: CmsWidgetControlProps;
+    previewComponent?: CmsWidgetPreviewProps;
+    globalStyles?: any;
+  }
+
   export interface CmsWidget {
-    control: ComponentType<any>;
-    preview?: ComponentType<any>;
+    control: CmsWidgetControlProps;
+    preview?: CmsWidgetPreviewProps;
     globalStyles?: any;
   }
 
