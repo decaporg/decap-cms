@@ -441,7 +441,7 @@ declare module 'netlify-cms-core' {
     init: (args: any) => CmsBackendClass;
   }
 
-    export interface CmsWidgetControlProps<T = any> {
+  export interface CmsWidgetControlProps<T = any> {
     value: T;
     field: Map<string, any>;
     onChange: (value: T) => void;
