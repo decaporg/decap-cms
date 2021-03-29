@@ -327,8 +327,8 @@ function getWidgetSchemas() {
 class ConfigError extends Error {
   constructor(errors, ...args) {
     const message = errors
-      .map(({ message, dataPath }) => {
-        const dotPath = dataPath
+      .map(({ message, instancePath }) => {
+        const dotPath = instancePath
           .slice(1)
           .split('/')
           .map(seg => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))
@@ -366,7 +366,7 @@ export function validateConfig(config) {
       switch (e.keyword) {
         // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
         case 'uniqueItemProperties': {
-          const path = e.dataPath || '';
+          const path = e.instancePath || '';
           let newError = e;
           if (path.endsWith('/fields')) {
             newError = { ...e, message: 'fields names must be unique' };
@@ -378,12 +378,12 @@ export function validateConfig(config) {
           return newError;
         }
         case 'instanceof': {
-          const path = e.dataPath || '';
+          const path = e.instancePath || '';
           let newError = e;
           if (/fields\/\d+\/pattern\/\d+/.test(path)) {
             newError = {
               ...e,
-              message: 'should be a regular expression',
+              message: 'must be a regular expression',
             };
           }
           return newError;
