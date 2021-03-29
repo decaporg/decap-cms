@@ -217,7 +217,7 @@ export class PreviewPane extends React.Component {
     const initialContent = `
 <!DOCTYPE html>
 <html>
-  <head><base target="_blank"/></head>
+  <head><base target="_blank" href="/" /></head>
   <body><div></div></body>
 </html>
 `;
