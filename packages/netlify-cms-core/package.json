@@ -27,7 +27,7 @@
   "dependencies": {
     "@iarna/toml": "2.2.5",
     "ajv": "^7.0.0",
-    "ajv-errors": "^2.0.0",
+    "ajv-errors": "^3.0.0",
     "ajv-keywords": "^4.0.0",
     "copy-text-to-clipboard": "^3.0.0",
     "deepmerge": "^4.2.2",
