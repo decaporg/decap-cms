@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.39.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.10...netlify-cms-core@2.39.0) (2021-03-30)
+
+
+### Bug Fixes
+
+* [#5143](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5143) added types for registerWidget() ([#5158](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5158)) ([ec1ba5f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ec1ba5ff0b8cddf9b804e37ace6d329ff713b93c))
+* **deps:** update dependency ajv to v8 ([#5178](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5178)) ([f470fdf](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f470fdf32d02084af5c03522e6a3f0c8c0f92dc4))
+
+
+### Features
+
+* [#5082](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5082) add persistMedia function in widget props ([#5124](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5124)) ([21bb212](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/21bb2128eee79e1dd407cff1a53910ee4be4ef69))
+
+
+
+
+
 ## [2.38.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.9...netlify-cms-core@2.38.10) (2021-03-21)
 
 **Note:** Version bump only for package netlify-cms-core
