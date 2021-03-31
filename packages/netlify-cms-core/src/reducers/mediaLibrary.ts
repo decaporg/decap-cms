@@ -243,7 +243,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const entry = entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
-    let disableMediaFolderNav = true;
+    let disableMediaFolderNav = false;
 
     if (field && field.has('disable_media_folder_navigation')) {
       disableMediaFolderNav = field.get('disable_media_folder_navigation', true);
