@@ -42,18 +42,23 @@ const nl = {
     collectionTop: {
       sortBy: 'Sorteer op',
       viewAs: 'Bekijk als',
-      newButton: 'Nieuwe %{collectionLabel}',
+      newButton: 'Voeg %{collectionLabel} toe',
       ascending: 'Oplopend',
       descending: 'Aflopend',
       searchResults: 'Zoekresultaten voor "%{searchTerm}"',
       searchResultsInCollection: 'Zoekresultaten voor "%{searchTerm}" in %{collection}',
       filterBy: 'Filteren op',
+      groupBy: 'Groepeer op',
     },
     entries: {
       loadingEntries: 'Items laden',
       cachingEntries: 'Items cachen',
       longerLoading: 'Dit kan een paar minuten duren',
       noEntries: 'Geen items',
+    },
+    groups: {
+      other: 'Anders',
+      negateLabel: 'Geen %{label}',
     },
     defaultFields: {
       author: {
@@ -83,6 +88,9 @@ const nl = {
         minCount: '%{fieldLabel} moet tenminste %{minCount} item(s) bevatten.',
         maxCount: '%{fieldLabel} moet hoogstens %{maxCount} item(s) bevatten.',
       },
+      i18n: {
+        writingInLocale: '%{locale} aan het bewerken',
+      },
     },
     editor: {
       onLeavePage: 'Weet je zeker dat je deze pagina wilt verlaten?',
@@ -92,6 +100,7 @@ const nl = {
       onPublishingWithUnsavedChanges:
         'Er zijn nog niet-opgeslagen wijzigingen. Bewaar deze voordat u publiceert.',
       onPublishing: 'Weet u zeker dat u dit item wil publiceren?',
+      onUnpublishing: 'Weet u zeker dat u de publicatie voor dit item ongedaan wilt maken?',
       onDeleteWithUnsavedChanges:
         'Weet u zeker dat u dit gepubliceerde item en uw niet-opgeslagen wijzigingen uit de huidige sessie wilt verwijderen?',
       onDeletePublishedEntry: 'Weet u zeker dat u dit gepubliceerde item wilt verwijderen?',
@@ -101,6 +110,11 @@ const nl = {
         'Alle niet-gepubliceerde wijzigingen in dit item worden verwijderd. Wilt u nog steeds verwijderen?',
       loadingEntry: 'Item laden...',
       confirmLoadBackup: 'Voor dit item is een lokale back-up hersteld, wilt u deze gebruiken?',
+    },
+    editorInterface: {
+      toggleI18n: 'Wissel i18n',
+      togglePreview: 'Wissel voorvertoning',
+      toggleScrollSync: 'Synchroniseer scrollen',
     },
     editorToolbar: {
       publishing: 'Publiceren...',
@@ -133,16 +147,32 @@ const nl = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Vet',
+        italic: 'Cursief',
+        code: 'Code',
+        link: 'Link',
+        linkPrompt: 'Voer de URL in',
+        headings: 'Hoofdtekst',
+        quote: 'Quote',
+        bulletedList: 'Lijst met opsommingstekens',
+        numberedList: 'Genummerde lijst',
+        addComponent: 'Voeg component toe',
         richText: 'Rijke tekst',
         markdown: 'Markdown',
       },
       image: {
         choose: 'Kies een afbeelding',
+        chooseUrl: 'Voeg toe via URL',
+        replaceUrl: 'Vervang met URL',
+        promptUrl: 'Voer de URL van de afbeelding in',
         chooseDifferent: 'Kies een andere afbeelding',
         remove: 'Verwijder afbeelding',
       },
       file: {
         choose: 'Kies een bestand',
+        chooseUrl: 'Voeg toe via URL',
+        replaceUrl: 'Vervang met URL',
+        promptUrl: 'Voer de URL van het bestand in',
         chooseDifferent: 'Kies een ander bestand',
         remove: 'Verwijder bestand',
       },
@@ -168,6 +198,11 @@ const nl = {
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Concept',
+      copy: 'Kopieer',
+      copyUrl: 'Kopieer URL',
+      copyPath: 'Kopieer pad',
+      copyName: 'Kopieer naam',
+      copied: 'Gekopieerd',
     },
     mediaLibrary: {
       onDelete: 'Weet u zeker dat u de geselecteerde media wilt verwijderen?',
@@ -226,6 +261,9 @@ const nl = {
       entryUpdated: 'Status van item geüpdatet',
       onDeleteUnpublishedChanges: 'Niet-gepubliceerde wijzigingen verwijderd',
       onFailToAuth: '%{details}',
+      onLoggedOut: 'Je bent uitgelogd, back-up alstublieft uw data log daarna in',
+      onBackendDown:
+        'De backend-service ondervindt een storing. Zie% {details} voor meer informatie',
     },
   },
   workflow: {
