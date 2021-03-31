@@ -9922,10 +9922,10 @@ immer@1.10.0:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha512-O3sR1/opvCDGLEVcvrGTMtLac8GJ5IwZC4puPrLuRj3l7ICKvkmA0vGuU9OW8mV9WIBRnaxp5GJh9IEAaNOoYg==
 
-immer@^8.0.0:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.4.tgz#3a21605a4e2dded852fb2afd208ad50969737b7a"
-  integrity sha512-jMfL18P+/6P6epANRvRk6q8t+3gGhqsJ9EuJ25AXE+9bNTYtssvzeYbEd0mXRYWCmmXSIbnlpz6vd6iJlmGGGQ==
+immer@^9.0.0:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.1.tgz#1116368e051f9a0fd188c5136b6efb74ed69c57f"
+  integrity sha512-7CCw1DSgr8kKYXTYOI1qMM/f5qxT5vIVMeGLDCDX8CSxsggr1Sjdoha4OhsP0AZ1UvWbyZlILHvLjaynuu02Mg==
 
 immutable@^3.7.6:
   version "3.8.2"
