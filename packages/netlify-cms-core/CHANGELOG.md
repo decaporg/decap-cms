@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.39.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.0...netlify-cms-core@2.39.1) (2021-04-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency immer to v9 ([#5149](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5149)) ([fb543bd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/fb543bd929fe47bf0c611c88a177ae51ea94ebb5))
+
+
+
+
+
 # [2.39.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.10...netlify-cms-core@2.39.0) (2021-03-30)
 
 

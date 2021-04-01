@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.12.1...netlify-cms-ui-default@2.12.2) (2021-04-01)
+
+
+### Bug Fixes
+
+* **widget-markdown:** improve UX in Markdown editor - link editing and selected heading underline ([#5104](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/5104)) ([dde1a9d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/dde1a9db5483912f626f13239d7a3d06d6c4e05c))
+
+
+
+
+
 ## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.12.0...netlify-cms-ui-default@2.12.1) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-ui-default
