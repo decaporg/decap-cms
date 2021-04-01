@@ -97,6 +97,7 @@ const StyledLi = styled.li`
 
 const StyledA = styled.a`
   text-decoration: underline;
+  font-size: inherit;
 `;
 
 const StyledHr = styled.hr`
