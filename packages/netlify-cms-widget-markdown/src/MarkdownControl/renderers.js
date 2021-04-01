@@ -237,13 +237,10 @@ function NumberedList(props) {
 function Link(props) {
   const data = props.node.get('data');
   const url = data.get('url');
+  const title = data.get('title') || url;
 
-  // title doesn't seem to return anything
-  // const title = data.get('title');
-
-  // added url as title for easier url discovery
   return (
-    <StyledA href={url} title={url} {...props.attributes}>
+    <StyledA href={url} title={title} {...props.attributes}>
       {props.children}
     </StyledA>
   );

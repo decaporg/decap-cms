@@ -11,14 +11,18 @@ function Link({ type }) {
 
           const url = getUrl(link.data.url);
 
-          // remove url if it was removed by the user
-          if (url === '') editor.unwrapInline(type);
-
-          // if selection is empty, replace the old link
-          if (url && isCollapsed) editor.setInlines({ data: { url } });
+          if (url) {
+            // replace the old link
+            return editor.setInlines({ data: { url } });
+          } else {
+            // remove url if it was removed by the user
+            return editor.unwrapInline(type);
+          }
         } else {
           const url = getUrl();
-          if (!url) return;
+          if (!url) {
+            return;
+          }
 
           return isCollapsed
             ? editor.insertInline({
