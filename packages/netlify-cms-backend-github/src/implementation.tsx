@@ -272,7 +272,7 @@ export default class GitHub implements Implementation {
 
     // Origin maintainers should be able to use the CMS normally. If alwaysFork
     // is enabled we always fork (and avoid the origin maintainer check)
-    if (!this.alwaysForkEnabled && await this.userIsOriginMaintainer({ token })) {
+    if (!this.alwaysForkEnabled && (await this.userIsOriginMaintainer({ token }))) {
       this.repo = this.originRepo;
       this.useOpenAuthoring = false;
       return Promise.resolve();
