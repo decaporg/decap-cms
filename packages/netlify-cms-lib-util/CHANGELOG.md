@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.3...netlify-cms-lib-util@2.13.0) (2021-04-04)
+
+
+### Features
+
+* **open-authoring:** add alwaysFork option ([#5204](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/5204)) ([7b19e30](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/7b19e30dd2a310dbc20ccb6fcca45d5cbde1014b))
+
+
+
+
+
 ## [2.12.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.2...netlify-cms-lib-util@2.12.3) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-lib-util
