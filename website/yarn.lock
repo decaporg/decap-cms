@@ -8878,10 +8878,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.14.36:
-  version "2.14.36"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.36.tgz#9245c0387067500a9b4549d429ab223393985cf6"
-  integrity sha512-ZhLSpeXJPBRaNfzszs/jBWNOLvZnhDsYNWCkpZjsZ8QrvQBzJpD2Q3FAChPB7hmYDE+35TLVYs5PT9DNJZD0Vg==
+netlify-cms-app@^2.14.37:
+  version "2.14.37"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.37.tgz#d02fd02ea410159299337c5f6e157554a28cd55b"
+  integrity sha512-+4GjHgHFkV8qe2QyP1aDNsko7n2IQNFnW9tYMoidhWl2h9wh0O+QoRgis/smdbeid5tdkACRF5OI0a688JSMAg==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8891,13 +8891,13 @@ netlify-cms-app@^2.14.36:
     netlify-cms-backend-azure "^1.1.2"
     netlify-cms-backend-bitbucket "^2.12.8"
     netlify-cms-backend-git-gateway "^2.11.11"
-    netlify-cms-backend-github "^2.11.9"
+    netlify-cms-backend-github "^2.12.0"
     netlify-cms-backend-gitlab "^2.9.9"
     netlify-cms-backend-test "^2.10.7"
     netlify-cms-core "^2.39.1"
     netlify-cms-editor-component-image "^2.6.7"
     netlify-cms-lib-auth "^2.3.0"
-    netlify-cms-lib-util "^2.12.3"
+    netlify-cms-lib-util "^2.13.0"
     netlify-cms-locales "^1.29.1"
     netlify-cms-ui-default "^2.12.2"
     netlify-cms-widget-boolean "^2.3.6"
@@ -8948,10 +8948,10 @@ netlify-cms-backend-git-gateway@^2.11.11:
     jwt-decode "^3.0.0"
     minimatch "^3.0.4"
 
-netlify-cms-backend-github@^2.11.9:
-  version "2.11.9"
-  resolved "https://registry.yarnpkg.com/netlify-cms-backend-github/-/netlify-cms-backend-github-2.11.9.tgz#fbcc3b2baa3ac2ad352af128b6fd0f38ff5c0351"
-  integrity sha512-6mGSzcKjkBALAVDSEGbK6BHhtYwrWGI7K9+iEuRXRPP4og1mTvsVGHr2eHS90LldNMbJXiD1XfOoTerWaNKBfw==
+netlify-cms-backend-github@^2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/netlify-cms-backend-github/-/netlify-cms-backend-github-2.12.0.tgz#35d47976912bede1ac00c7950b247c13e7aba732"
+  integrity sha512-PVBwIdBvECUPSRzEsIVxxVqh56bJaXsOpU6qLUK4jy1Nb8coPE14ZutPyNAUp7jQAcyAlm3/pHW2cA9ujhn13w==
   dependencies:
     apollo-cache-inmemory "^1.6.2"
     apollo-client "^2.6.3"
@@ -9037,10 +9037,10 @@ netlify-cms-lib-auth@^2.3.0:
   resolved "https://registry.yarnpkg.com/netlify-cms-lib-auth/-/netlify-cms-lib-auth-2.3.0.tgz#0bf539bb1988721195b08e2df645e8d8851347ea"
   integrity sha512-+428eI/EkRSchRslhtWagjgtbgN+CZhhHMUXTDmpjqPiRVCYeIfKDubDI2yUa2PVIATGFr0Z/v7tJQSdKDop5w==
 
-netlify-cms-lib-util@^2.12.3:
-  version "2.12.3"
-  resolved "https://registry.yarnpkg.com/netlify-cms-lib-util/-/netlify-cms-lib-util-2.12.3.tgz#af455dbe920dfdd4c502dda1547a7d5b58439f8a"
-  integrity sha512-K9rvFltQc4oiAf2NA7vLo6LmlMF4BQz2Y2cgG2S8bawRGxID0USUeC85tbo8weABfvajLp5WuV1FaKGNDV/nXg==
+netlify-cms-lib-util@^2.13.0:
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/netlify-cms-lib-util/-/netlify-cms-lib-util-2.13.0.tgz#76c68cc93771f16c9fd68e2855f4723aa37d22f2"
+  integrity sha512-HpemRvyMGC0bOnkx6N0mK+rSwafqGFXl3/XdOn5T2y/2+8Eu2ECcBDxF1hjbYKEAKmmfosPhQCLsB4P/M/ld2w==
   dependencies:
     js-sha256 "^0.9.0"
     localforage "^1.7.3"
