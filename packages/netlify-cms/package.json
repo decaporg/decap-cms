@@ -5,7 +5,6 @@
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/netlify/netlify-cms",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
-  "module": "dist/esm/index.js",
   "main": "dist/netlify-cms.js",
   "scripts": {
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
