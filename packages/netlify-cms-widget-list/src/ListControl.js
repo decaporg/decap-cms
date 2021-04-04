@@ -383,6 +383,12 @@ export default class ListControl extends React.Component {
 
   objectLabel(item) {
     const { field, entry } = this.props;
+    if (!Map.isMap(item)) {
+      console.warn(
+        `'${field.get('name')}' field item value value should be a map but is a '${typeof item}'`,
+      );
+      return;
+    }
     const valueType = this.getValueType();
     switch (valueType) {
       case valueTypes.MIXED: {
