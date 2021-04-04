@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.107](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.106...netlify-cms@2.10.107) (2021-04-04)
+
+
+### Bug Fixes
+
+* **netlify-cms-package:** remove module field ([#5207](https://github.com/netlify/netlify-cms/issues/5207)) ([c7c3928](https://github.com/netlify/netlify-cms/commit/c7c39287ba66e3896ef57d7c3dc4934030d49c68))
+
+
+
+
+
 ## [2.10.106](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.105...netlify-cms@2.10.106) (2021-04-04)
 
 
