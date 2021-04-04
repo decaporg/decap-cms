@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.106](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.105...netlify-cms@2.10.106) (2021-04-04)
+
+
+### Bug Fixes
+
+* generate esm correctly ([#5087](https://github.com/netlify/netlify-cms/issues/5087)) ([9b1546f](https://github.com/netlify/netlify-cms/commit/9b1546f131772185b3d39d18b6e57dc41ff5c7ca))
+
+
+
+
+
 ## [2.10.105](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.104...netlify-cms@2.10.105) (2021-04-01)
 
 **Note:** Version bump only for package netlify-cms
