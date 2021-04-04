@@ -93,6 +93,7 @@ export type Config = {
   backend: {
     repo?: string | null;
     open_authoring?: boolean;
+    always_fork?: boolean;
     branch?: string;
     api_root?: string;
     squash_merges?: boolean;
