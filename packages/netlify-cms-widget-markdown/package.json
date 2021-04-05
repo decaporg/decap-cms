@@ -56,6 +56,6 @@
   "devDependencies": {
     "commonmark": "^0.29.0",
     "commonmark-spec": "^0.29.0",
-    "slate-hyperscript": "^0.13.3"
+    "slate-hyperscript": "^0.62.0"
   }
 }

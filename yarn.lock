@@ -16313,12 +16313,12 @@ slate-hotkeys@^0.2.9:
     is-hotkey "0.1.4"
     slate-dev-environment "^0.2.2"
 
-slate-hyperscript@^0.13.3:
-  version "0.13.9"
-  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.13.9.tgz#474327b3e0fa942578d73d94e7dd9a9506489c5b"
-  integrity sha512-VckpITrnUmeXryJwT9TgN6B+8oO2H6iZQ9Qnn9XWYMHoMR2ekOj6bChgw1r9K9+RA3EcJLQculW5vSel+yHDpg==
+slate-hyperscript@^0.62.0:
+  version "0.62.0"
+  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.62.0.tgz#ff6f86e94936fbf90f8ec07d2ae8fbcd7e45a927"
+  integrity sha512-PbtxrrIr4qPvtPmKli4/FnvQFjf8zmnF0kyNeDQGHvUzpHnsoSYHM/i4POye3/qt5d8WGukiJBPL03QsIW+SIw==
   dependencies:
-    is-plain-object "^2.0.4"
+    is-plain-object "^3.0.0"
 
 slate-plain-serializer@^0.7.1, slate-plain-serializer@^0.7.11:
   version "0.7.13"
