@@ -771,7 +771,6 @@ interface DraftEntryData {
 
 export function createEmptyDraftData(
   fields: EntryFields,
-  withNameKey = true,
   skipField: (field: EntryField) => boolean = () => false,
 ) {
   return fields.reduce(
@@ -800,8 +799,8 @@ export function createEmptyDraftData(
           acc[name] = defaultValue;
         } else {
           const subDefaultValue = list
-            ? [createEmptyDraftData(subfields as EntryFields, withNameKey, skipField)]
-            : createEmptyDraftData(subfields as EntryFields, withNameKey, skipField);
+            ? [createEmptyDraftData(subfields as EntryFields, skipField)]
+            : createEmptyDraftData(subfields as EntryFields, skipField);
 
           if (!isEmptyDefaultValue(subDefaultValue)) {
             acc[name] = subDefaultValue;
@@ -815,8 +814,8 @@ export function createEmptyDraftData(
           acc[name] = defaultValue;
         } else {
           const subDefaultValue = list
-            ? [createEmptyDraftData(List([subfields as EntryField]), false, skipField)]
-            : createEmptyDraftData(List([subfields as EntryField]), withNameKey, skipField);
+            ? [createEmptyDraftData(List([subfields as EntryField]), skipField)]
+            : createEmptyDraftData(List([subfields as EntryField]), skipField);
 
           if (!isEmptyDefaultValue(subDefaultValue)) {
             acc[name] = subDefaultValue;
@@ -826,9 +825,6 @@ export function createEmptyDraftData(
       }
 
       if (defaultValue !== null) {
-        if (!withNameKey) {
-          return defaultValue;
-        }
         acc[name] = defaultValue;
       }
 
@@ -847,7 +843,7 @@ function createEmptyDraftI18nData(collection: Collection, dataFields: EntryField
     return field.get(I18N) !== I18N_FIELD.DUPLICATE && field.get(I18N) !== I18N_FIELD.TRANSLATE;
   }
 
-  const i18nData = createEmptyDraftData(dataFields, true, skipField);
+  const i18nData = createEmptyDraftData(dataFields, skipField);
   return duplicateDefaultI18nFields(collection, i18nData);
 }
 

@@ -218,7 +218,7 @@ describe('entries', () => {
           field: { name: 'url', widget: 'text', default: 'https://image.png' },
         },
       ]);
-      expect(createEmptyDraftData(fields)).toEqual({ images: ['https://image.png'] });
+      expect(createEmptyDraftData(fields)).toEqual({ images: [{ url: 'https://image.png' }] });
     });
 
     it('should use fields default when no list default is provided', () => {
@@ -290,6 +290,26 @@ describe('entries', () => {
         },
       ]);
       expect(createEmptyDraftData(fields)).toEqual({});
+    });
+
+    it('should populate nested fields', () => {
+      const fields = fromJS([
+        {
+          name: 'names',
+          widget: 'list',
+          field: {
+            name: 'object',
+            widget: 'object',
+            fields: [
+              { name: 'first', widget: 'string', default: 'first' },
+              { name: 'second', widget: 'string', default: 'second' },
+            ],
+          },
+        },
+      ]);
+      expect(createEmptyDraftData(fields)).toEqual({
+        names: [{ object: { first: 'first', second: 'second' } }],
+      });
     });
   });
 
