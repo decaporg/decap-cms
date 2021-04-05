@@ -25,8 +25,8 @@
     "semaphore": "^1.1.0"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@emotion/core": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "netlify-cms-lib-auth": "^2.3.0",
