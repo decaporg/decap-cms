@@ -794,28 +794,18 @@ export function createEmptyDraftData(
         return [[{}], {}].some(e => isEqual(val, e));
       }
 
-      if (List.isList(subfields)) {
+      const hasSubfields = List.isList(subfields) || Map.isMap(subfields);
+      if (hasSubfields) {
         if (list && List.isList(defaultValue)) {
           acc[name] = defaultValue;
         } else {
-          const subDefaultValue = list
-            ? [createEmptyDraftData(subfields as EntryFields, skipField)]
-            : createEmptyDraftData(subfields as EntryFields, skipField);
+          const asList = List.isList(subfields)
+            ? (subfields as EntryFields)
+            : List([subfields as EntryField]);
 
-          if (!isEmptyDefaultValue(subDefaultValue)) {
-            acc[name] = subDefaultValue;
-          }
-        }
-        return acc;
-      }
-
-      if (Map.isMap(subfields)) {
-        if (list && List.isList(defaultValue)) {
-          acc[name] = defaultValue;
-        } else {
           const subDefaultValue = list
-            ? [createEmptyDraftData(List([subfields as EntryField]), skipField)]
-            : createEmptyDraftData(List([subfields as EntryField]), skipField);
+            ? [createEmptyDraftData(asList, skipField)]
+            : createEmptyDraftData(asList, skipField);
 
           if (!isEmptyDefaultValue(subDefaultValue)) {
             acc[name] = subDefaultValue;
