@@ -52,15 +52,9 @@ export function selectPublishedSlugs(state: State, collection: string) {
 
 export function selectSearchedEntries(state: State, availableCollections: string[]) {
   // only return search results for actually available collections
-  return (
-    List(state.search.entryIds)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore probably bug in Immutable types
-      .filter(({ collection }) => availableCollections.indexOf(collection) !== -1)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore probably bug in Immutable types
-      .map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug))
-  );
+  return List(state.search.entryIds)
+    .filter(entryId => availableCollections.indexOf(entryId!.collection) !== -1)
+    .map(entryId => fromEntries.selectEntry(state.entries, entryId!.collection, entryId!.slug));
 }
 
 export function selectDeployPreview(state: State, collection: string, slug: string) {
