@@ -14,7 +14,7 @@ import {
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
-import { selectMediaFiles } from 'Reducers/mediaLibrary';
+import { selectMediaFiles, getStartingMediaFolder, getMediaFolderNavDisabled } from 'Reducers/mediaLibrary';
 import { dirname } from 'path';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
@@ -352,22 +352,6 @@ class MediaLibrary extends React.Component {
     return matchFiles;
   };
 
-  deriveCurrentMediaFolder(files = []) {
-    var shortestPath =
-      files
-        .map(file => {
-          return {
-            path: file.path,
-            segments: file.path.split('/'),
-          };
-        })
-        .sort((a, b) => {
-          return a.segments.length - b.segments.length;
-        })[0] || {};
-    var length = shortestPath.segments ? shortestPath.segments.length - 1 : 0;
-    return (shortestPath.segments || []).slice(0, length).join('/');
-  }
-
   render() {
     const {
       isVisible,
@@ -384,11 +368,13 @@ class MediaLibrary extends React.Component {
       privateUpload,
       displayURLs,
       defaultMediaFolder,
+      startingMediaFolder,
+      mediaFolderNavDisabled,
       t,
     } = this.props;
 
     const currentMediaFolder =
-      this.state.currentMediaFolder || this.deriveCurrentMediaFolder(files);
+      this.state.currentMediaFolder || startingMediaFolder;
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
     const currentDirFolders = (currentDirFiles || []).filter(file => file.isDirectory);
     const currentDirFilesOrderedByTreeType = currentDirFolders.concat(
@@ -427,6 +413,7 @@ class MediaLibrary extends React.Component {
         handleBreadcrumbClick={this.handleBreadcrumbClick}
         currentMediaFolder={currentMediaFolder}
         defaultMediaFolder={defaultMediaFolder}
+        mediaFolderNavDisabled={mediaFolderNavDisabled}
         handleLoadMore={this.handleLoadMore}
         displayURLs={displayURLs}
         loadDisplayURL={this.loadDisplayURL}
@@ -443,6 +430,8 @@ function mapStateToProps(state) {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
     files: selectMediaFiles(state, field),
+    startingMediaFolder: getStartingMediaFolder(state, field),
+    mediaFolderNavDisabled: getMediaFolderNavDisabled(state, field),
     displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
     dynamicSearchActive: mediaLibrary.get('dynamicSearchActive'),

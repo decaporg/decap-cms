@@ -49,6 +49,7 @@ function MediaLibraryTop({
   handleBreadcrumbClick,
   currentMediaFolder,
   defaultMediaFolder,
+  mediaFolderNavDisabled,
   selectedFile,
   folders,
 }) {
@@ -104,11 +105,15 @@ function MediaLibraryTop({
           placeholder={t('mediaLibrary.mediaLibraryModal.search')}
           disabled={searchDisabled}
         />
-        <MediaLibraryCreateFolder
-          onKeyDown={onCreateFolder}
-          placeholder={t('mediaLibrary.mediaLibraryModal.createFolder')}
-          folders={folders}
-        />
+        {!mediaFolderNavDisabled ? (
+          <MediaLibraryCreateFolder
+            onKeyDown={onCreateFolder}
+            placeholder={t('mediaLibrary.mediaLibraryModal.createFolder')}
+            folders={folders}
+          />
+        ) : (
+          null
+        )}
         <ButtonsContainer>
           <DeleteButton onClick={onDelete} disabled={!deleteEnabled}>
             {deleteButtonLabel}
@@ -125,6 +130,7 @@ function MediaLibraryTop({
           handleBreadcrumbClick={handleBreadcrumbClick}
           currentMediaFolder={currentMediaFolder}
           defaultMediaFolder={defaultMediaFolder}
+          mediaFolderNavDisabled={mediaFolderNavDisabled}
         />
       </RowContainer>
     </LibraryTop>

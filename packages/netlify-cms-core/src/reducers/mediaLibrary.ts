@@ -229,40 +229,35 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state;
   }
 }
-
-export function selectMediaFiles(state: State, field?: EntryField) {
-  const { mediaLibrary, entryDraft } = state;
+export function getStartingMediaFolder(state: State, field?: EntryField) {
   const editingDraft = selectEditingDraft(state.entryDraft);
+  const { entryDraft } = state;
+  const entry = entryDraft.get('entry');
+  const collection = state.collections.get(entry?.get('collection'));
   const integration = selectIntegration(state, null, 'assetStore');
-
-  let files;
   if (editingDraft && !integration) {
-    const entryFiles = entryDraft
-      .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
-      .toJS() as MediaFile[];
-    const entry = entryDraft.get('entry');
-    const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
-    let disableMediaFolderNav = false;
-
-    if (field && field.has('disable_media_folder_navigation')) {
-      disableMediaFolderNav = field.get('disable_media_folder_navigation', true);
-    } else if (collection && collection.has('disable_media_folder_navigation')) {
-      disableMediaFolderNav = collection.get('disable_media_folder_navigation', true);
-    }
-    if (disableMediaFolderNav) {
-      files = entryFiles.filter(f => {
-        return dirname(f.path) === mediaFolder && !f.isDirectory;
-      });
-    } else {
-      files = entryFiles;
-    }
-    files = files.map(file => ({ key: file.id, ...file }));
-  } else {
-    files = mediaLibrary.get('files') || [];
+    return mediaFolder;
   }
+  return null;
+}
 
-  return files;
+export function getMediaFolderNavDisabled(state: State, field?: EntryField) {
+  let disableMediaFolderNav = false;
+  const { entryDraft } = state;
+  const entry = entryDraft.get('entry');
+  const collection = state.collections.get(entry?.get('collection'));
+  if (field && field.has('disable_media_folder_navigation')) {
+    disableMediaFolderNav = field.get('disable_media_folder_navigation', true);
+  } else if (collection && collection.has('disable_media_folder_navigation')) {
+    disableMediaFolderNav = collection.get('disable_media_folder_navigation', true);
+  }
+  return disableMediaFolderNav;
+}
+
+export function selectMediaFiles(state: State) {
+  const { mediaLibrary } = state;
+  return mediaLibrary.get('files') || [];
 }
 
 export function selectMediaFileByPath(state: State, path: string) {

@@ -17,6 +17,13 @@ const BreadCrumbsItemLabel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 6px 8px;
+`;
+
+const BreadCrumbsItemButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   padding: 6px 8px;
   background: #eff0f4;
@@ -31,7 +38,7 @@ const BreadCrumbsItemDivider = styled.div`
 
 class MediaLibraryBreadcrumbs extends React.Component {
   render() {
-    const { handleBreadcrumbClick, currentMediaFolder, defaultMediaFolder } = this.props;
+    const { handleBreadcrumbClick, currentMediaFolder, defaultMediaFolder, mediaFolderNavDisabled } = this.props;
     var hiddenPath = trim(defaultMediaFolder, '/')
       .split('/')
       .slice(0, -1)
@@ -48,9 +55,15 @@ class MediaLibraryBreadcrumbs extends React.Component {
     this.BreadCrumbsContent = breadcrumbsArray.map((item, index) => {
       return (
         <BreadCrumbsItem key={index}>
-          <BreadCrumbsItemLabel onClick={() => handleBreadcrumbClick(item.path)}>
-            {item.isDefaultMediaDirectory ? <Icon type="home" /> : item.label}
-          </BreadCrumbsItemLabel>
+          {mediaFolderNavDisabled ? (
+            <BreadCrumbsItemLabel>
+              {item.isDefaultMediaDirectory ? <Icon type="home" /> : item.label}
+            </BreadCrumbsItemLabel>
+          ) : (
+            <BreadCrumbsItemButton onClick={() => handleBreadcrumbClick(item.path)}>
+              {item.isDefaultMediaDirectory ? <Icon type="home" /> : item.label}
+            </BreadCrumbsItemButton>
+          )}
           <BreadCrumbsItemDivider>/</BreadCrumbsItemDivider>
         </BreadCrumbsItem>
       );

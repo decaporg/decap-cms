@@ -33,20 +33,20 @@ const CardImageWrapper = styled.div`
 const CardImage = styled.img`
   width: 100%;
   height: ${IMAGE_HEIGHT}px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 2px 2px 0 0;
 `;
 
 const CardFileIcon = styled.div`
   width: 100%;
   height: 160px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 2px 2px 0 0;
   padding: 1em;
   font-size: 3em;
 `;
 
-const CardDirctoryWrapper = styled.div`
+const CardDirectoryWrapper = styled.div`
   width: 100%;
   height: 160px;
   object-fit: cover;
@@ -88,6 +88,7 @@ class MediaLibraryCard extends React.Component {
       isViewableImage,
       isDraft,
       isDirectory,
+      mediaFolderNavDisabled,
     } = this.props;
     const url = displayURL.get('url');
     const cardImageWrapper = (
@@ -101,20 +102,22 @@ class MediaLibraryCard extends React.Component {
       </CardImageWrapper>
     );
     const cardDirectoryEl = (
-      <CardDirctoryWrapper>
+      <CardDirectoryWrapper>
         <Icon type="folder" size="max" />
-      </CardDirctoryWrapper>
+      </CardDirectoryWrapper>
     );
+    const disabled = isDirectory && mediaFolderNavDisabled;
     const previewElement = isDirectory ? cardDirectoryEl : cardImageWrapper;
     return (
       <Card
         isSelected={isSelected}
-        onClick={onClick}
+        onClick={!disabled ? onClick : null}
         width={width}
         height={height}
         margin={margin}
         tabIndex="-1"
         isPrivate={isPrivate}
+        disabled={disabled}
       >
         {previewElement}
         <CardText>{text}</CardText>

@@ -96,6 +96,7 @@ function MediaLibraryModal({
   t,
   currentMediaFolder,
   defaultMediaFolder,
+  mediaFolderNavDisabled,
 }) {
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
@@ -137,6 +138,7 @@ function MediaLibraryModal({
         handleBreadcrumbClick={handleBreadcrumbClick}
         currentMediaFolder={currentMediaFolder}
         defaultMediaFolder={defaultMediaFolder}
+        mediaFolderNavDisabled={mediaFolderNavDisabled}
         selectedFile={selectedFile}
         folders={folders}
       />
@@ -160,6 +162,7 @@ function MediaLibraryModal({
         isPrivate={privateUpload}
         loadDisplayURL={loadDisplayURL}
         displayURLs={displayURLs}
+        mediaFolderNavDisabled={mediaFolderNavDisabled}
       />
     </StyledModal>
   );
