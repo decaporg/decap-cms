@@ -1,3 +1,4 @@
+import { List } from 'immutable';
 import auth from './auth';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
@@ -50,14 +51,10 @@ export function selectPublishedSlugs(state: State, collection: string) {
 }
 
 export function selectSearchedEntries(state: State, availableCollections: string[]) {
-  const searchItems = state.search.get('entryIds');
   // only return search results for actually available collections
-  return (
-    searchItems &&
-    searchItems
-      .filter(({ collection }) => availableCollections.indexOf(collection) !== -1)
-      .map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug))
-  );
+  return List(state.search.entryIds)
+    .filter(entryId => availableCollections.indexOf(entryId!.collection) !== -1)
+    .map(entryId => fromEntries.selectEntry(state.entries, entryId!.collection, entryId!.slug));
 }
 
 export function selectDeployPreview(state: State, collection: string, slug: string) {

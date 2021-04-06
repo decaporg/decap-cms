@@ -18,6 +18,7 @@ import {
   removeInsertedMedia,
   clearMediaControl,
   removeMediaControl,
+  persistMedia,
 } from 'Actions/mediaLibrary';
 import Widget from './Widget';
 import { validateMetaField } from '../../../actions/entries';
@@ -123,11 +124,12 @@ class EditorControl extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     addAsset: PropTypes.func.isRequired,
     removeInsertedMedia: PropTypes.func.isRequired,
+    persistMedia: PropTypes.func.isRequired,
     onValidate: PropTypes.func,
     processControlRef: PropTypes.func,
     controlRef: PropTypes.func,
     query: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    queryHits: PropTypes.object,
     isFetching: PropTypes.bool,
     clearSearch: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
@@ -182,6 +184,7 @@ class EditorControl extends React.Component {
       removeMediaControl,
       addAsset,
       removeInsertedMedia,
+      persistMedia,
       onValidate,
       processControlRef,
       controlRef,
@@ -294,6 +297,7 @@ class EditorControl extends React.Component {
               onClearMediaControl={clearMediaControl}
               onRemoveMediaControl={removeMediaControl}
               onRemoveInsertedMedia={removeInsertedMedia}
+              onPersistMedia={persistMedia}
               onAddAsset={addAsset}
               getAsset={boundGetAsset}
               hasActiveStyle={isSelected || this.state.styleActive}
@@ -307,7 +311,7 @@ class EditorControl extends React.Component {
               editorControl={ConnectedEditorControl}
               query={query}
               loadEntry={loadEntry}
-              queryHits={queryHits}
+              queryHits={queryHits[this.uniqueFieldId] || []}
               clearSearch={clearSearch}
               clearFieldErrors={clearFieldErrors}
               isFetching={isFetching}
@@ -352,8 +356,8 @@ function mapStateToProps(state) {
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
-    isFetching: state.search.get('isFetching'),
-    queryHits: state.search.get('queryHits'),
+    isFetching: state.search.isFetching,
+    queryHits: state.search.queryHits,
     config: state.config,
     entry,
     collection,
@@ -370,6 +374,7 @@ function mapDispatchToProps(dispatch) {
       clearMediaControl,
       removeMediaControl,
       removeInsertedMedia,
+      persistMedia,
       addAsset,
       query,
       clearSearch,

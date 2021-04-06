@@ -97,6 +97,7 @@ const StyledLi = styled.li`
 
 const StyledA = styled.a`
   text-decoration: underline;
+  font-size: inherit;
 `;
 
 const StyledHr = styled.hr`
@@ -237,7 +238,8 @@ function NumberedList(props) {
 function Link(props) {
   const data = props.node.get('data');
   const url = data.get('url');
-  const title = data.get('title');
+  const title = data.get('title') || url;
+
   return (
     <StyledA href={url} title={title} {...props.attributes}>
       {props.children}

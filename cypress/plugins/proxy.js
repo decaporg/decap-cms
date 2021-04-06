@@ -9,7 +9,7 @@ const initRepo = async dir => {
   await fs.remove(dir);
   await fs.mkdirp(dir);
   const git = getGitClient(dir);
-  await git.init();
+  await git.init({ '--initial-branch': 'main' });
   await git.addConfig('user.email', 'cms-cypress-test@netlify.com');
   await git.addConfig('user.name', 'cms-cypress-test');
 

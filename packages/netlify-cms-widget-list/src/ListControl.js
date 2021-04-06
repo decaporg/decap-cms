@@ -80,6 +80,17 @@ function handleSummary(summary, entry, label, item) {
   return stringTemplate.compileStringTemplate(summary, null, '', data);
 }
 
+function validateItem(field, item) {
+  if (!Map.isMap(item)) {
+    console.warn(
+      `'${field.get('name')}' field item value value should be a map but is a '${typeof item}'`,
+    );
+    return false;
+  }
+
+  return true;
+}
+
 export default class ListControl extends React.Component {
   validations = [];
 
@@ -386,6 +397,9 @@ export default class ListControl extends React.Component {
     const valueType = this.getValueType();
     switch (valueType) {
       case valueTypes.MIXED: {
+        if (!validateItem(field, item)) {
+          return;
+        }
         const itemType = getTypedFieldForValue(field, item);
         const label = itemType.get('label', itemType.get('name'));
         // each type can have its own summary, but default to the list summary if exists
@@ -402,6 +416,9 @@ export default class ListControl extends React.Component {
         return labelReturn;
       }
       case valueTypes.MULTIPLE: {
+        if (!validateItem(field, item)) {
+          return;
+        }
         const multiFields = field.get('fields');
         const labelField = multiFields && multiFields.first();
         const value = item.get(labelField.get('name'));

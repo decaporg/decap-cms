@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.29.0...netlify-cms-locales@1.29.1) (2021-03-31)
+
+
+### Bug Fixes
+
+* **locale-nl:** Add missing locales ([#5192](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5192)) ([2f67f19](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/2f67f1963641297bc28499c52095cd53aeb74d87))
+
+
+
+
+
+# [1.29.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.28.0...netlify-cms-locales@1.29.0) (2021-03-18)
+
+
+### Features
+
+* **locale:** add zh_Hans locale ([#5132](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5132)) ([e2ad39c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/e2ad39cb4959e2676eb87e58ecf4d065037b73c4))
+* **locale:** Added Romanian Locale ([#5128](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5128)) ([69f145b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/69f145b7470f3e17f424512b6c80786e20fde711))
+
+
+
+
+
 # [1.28.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.27.0...netlify-cms-locales@1.28.0) (2021-03-10)
 
 

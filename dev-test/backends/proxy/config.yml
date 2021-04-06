@@ -1,6 +1,6 @@
 backend:
   name: github
-  branch: master
+  branch: main
   repo: owner/repo
 
 publish_mode: editorial_workflow

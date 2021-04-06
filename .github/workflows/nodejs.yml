@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - '*'
 
     paths-ignore:
       - 'website/**'
@@ -30,15 +28,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
@@ -102,6 +91,7 @@ jobs:
           MACHINE_COUNT: 8
           MACHINE_INDEX: ${{ matrix.machine }}
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
           name: cypress-results-${{ matrix.machine }}
           path: |

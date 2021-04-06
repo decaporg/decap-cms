@@ -1,5 +1,9 @@
 {
   "baseUrl": "http://localhost:8080",
   "projectId": "dzqjxb",
-  "testFiles": "*spec*.js"
+  "testFiles": "*spec*.js",
+  "retries": {
+    "runMode": 2,
+    "openMode": 0
+  }
 }

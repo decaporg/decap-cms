@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.2.7...netlify-cms-widget-code@1.2.8) (2021-03-30)
+
+
+### Bug Fixes
+
+* add !important to codeMirror height ([#5127](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/issues/5127)) ([50ab350](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/commit/50ab3504e533353bfefc65480edf8a53bb497acf))
+
+
+
+
+
 ## [1.2.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.2.6...netlify-cms-widget-code@1.2.7) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-widget-code

@@ -156,8 +156,8 @@ export default class Editor extends React.Component {
   };
 
   handleLinkClick = () => {
-    this.editor.toggleLink(() =>
-      window.prompt(this.props.t('editor.editorWidgets.markdown.linkPrompt')),
+    this.editor.toggleLink(oldUrl =>
+      window.prompt(this.props.t('editor.editorWidgets.markdown.linkPrompt'), oldUrl),
     );
   };
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.11.9...netlify-cms-backend-github@2.12.0) (2021-04-04)
+
+
+### Features
+
+* **open-authoring:** add alwaysFork option ([#5204](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/issues/5204)) ([7b19e30](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/7b19e30dd2a310dbc20ccb6fcca45d5cbde1014b))
+
+
+
+
+
 ## [2.11.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.11.8...netlify-cms-backend-github@2.11.9) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-backend-github

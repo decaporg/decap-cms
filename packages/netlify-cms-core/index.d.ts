@@ -441,16 +441,33 @@ declare module 'netlify-cms-core' {
     init: (args: any) => CmsBackendClass;
   }
 
+  export interface CmsWidgetControlProps<T = any> {
+    value: T;
+    field: Map<string, any>;
+    onChange: (value: T) => void;
+    forID: string;
+    classNameWrapper: string;
+  }
+
+  export interface CmsWidgetPreviewProps<T = any> {
+    value: T;
+    field: Map<string, any>;
+    metadata: Map<string, any>;
+    getAsset: GetAssetFunction;
+    entry: Map<string, any>;
+    fieldsMetaData: Map<string, any>;
+  }
+
   export interface CmsWidgetParam {
     name: string;
-    controlComponent: ComponentType<any>;
-    previewComponent?: ComponentType<any>;
+    controlComponent: CmsWidgetControlProps;
+    previewComponent?: CmsWidgetPreviewProps;
     globalStyles?: any;
   }
 
   export interface CmsWidget {
-    control: ComponentType<any>;
-    preview?: ComponentType<any>;
+    control: CmsWidgetControlProps;
+    preview?: CmsWidgetPreviewProps;
     globalStyles?: any;
   }
 
@@ -535,8 +552,8 @@ declare module 'netlify-cms-core' {
     ) => void;
     registerWidget: (
       widget: string | CmsWidgetParam,
-      control?: ComponentType<any>,
-      preview?: ComponentType<any>,
+      control?: ComponentType<CmsWidgetControlProps> | string,
+      preview?: ComponentType<CmsWidgetPreviewProps>,
     ) => void;
     registerWidgetValueSerializer: (
       widgetName: string,

@@ -422,7 +422,7 @@ EditorInterface.propTypes = {
   isModification: PropTypes.bool,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
-  deployPreview: ImmutablePropTypes.map,
+  deployPreview: PropTypes.object,
   loadDeployPreview: PropTypes.func.isRequired,
   draftKey: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,

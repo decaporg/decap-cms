@@ -67,6 +67,7 @@ export default class GitHub implements Implementation {
   repo?: string;
   openAuthoringEnabled: boolean;
   useOpenAuthoring?: boolean;
+  alwaysForkEnabled: boolean;
   branch: string;
   apiRoot: string;
   mediaFolder: string;
@@ -109,6 +110,7 @@ export default class GitHub implements Implementation {
     } else {
       this.repo = this.originRepo = config.backend.repo || '';
     }
+    this.alwaysForkEnabled = config.backend.always_fork || false;
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
@@ -268,8 +270,9 @@ export default class GitHub implements Implementation {
     }
     const token = userData.token as string;
 
-    // Origin maintainers should be able to use the CMS normally
-    if (await this.userIsOriginMaintainer({ token })) {
+    // Origin maintainers should be able to use the CMS normally. If alwaysFork
+    // is enabled we always fork (and avoid the origin maintainer check)
+    if (!this.alwaysForkEnabled && (await this.userIsOriginMaintainer({ token }))) {
       this.repo = this.originRepo;
       this.useOpenAuthoring = false;
       return Promise.resolve();

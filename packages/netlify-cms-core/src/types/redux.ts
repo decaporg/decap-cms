@@ -6,6 +6,8 @@ import { MediaFile as BackendMediaFile } from '../backend';
 import { Auth } from '../reducers/auth';
 import { Status } from '../reducers/status';
 import { Medias } from '../reducers/medias';
+import { Deploys } from '../reducers/deploys';
+import { Search } from '../reducers/search';
 
 export type CmsBackendType =
   | 'azure'
@@ -510,8 +512,6 @@ export type Entries = StaticallyTypedRecord<{
   viewStyle: string;
 }>;
 
-export type Deploys = StaticallyTypedRecord<{}>;
-
 export type EditorialWorkflow = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
   entities: Entities & EntitiesObject;
@@ -676,19 +676,6 @@ export type Hook = string | boolean;
 export type Integrations = StaticallyTypedRecord<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   hooks: { [collectionOrHook: string]: any };
-}>;
-
-interface SearchItem {
-  collection: string;
-  slug: string;
-}
-
-export type Search = StaticallyTypedRecord<{
-  entryIds?: SearchItem[];
-  isFetching: boolean;
-  term: string | null;
-  collections: List<string> | null;
-  page: number;
 }>;
 
 export type Cursors = StaticallyTypedRecord<{}>;
