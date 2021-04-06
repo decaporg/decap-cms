@@ -91,7 +91,7 @@ export default class RelationControl extends React.Component {
     value: PropTypes.node,
     field: ImmutablePropTypes.map,
     query: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    queryHits: PropTypes.array,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,

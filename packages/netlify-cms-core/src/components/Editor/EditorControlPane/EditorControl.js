@@ -129,7 +129,7 @@ class EditorControl extends React.Component {
     processControlRef: PropTypes.func,
     controlRef: PropTypes.func,
     query: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    queryHits: PropTypes.object,
     isFetching: PropTypes.bool,
     clearSearch: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
