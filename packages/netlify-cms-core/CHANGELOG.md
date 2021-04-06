@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.39.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.1...netlify-cms-core@2.39.2) (2021-04-06)
+
+
+### Bug Fixes
+
+* allow any default list as default value for list widgets ([#5030](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5030)) ([83c2354](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/83c235423e76023fe10f167c8f9087cba7a4c922))
+
+
+
+
+
 ## [2.39.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.0...netlify-cms-core@2.39.1) (2021-04-01)
 
 

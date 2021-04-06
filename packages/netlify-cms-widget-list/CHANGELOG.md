@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.4...netlify-cms-widget-list@2.8.5) (2021-04-06)
+
+
+### Bug Fixes
+
+* allow any default list as default value for list widgets ([#5030](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/5030)) ([83c2354](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/83c235423e76023fe10f167c8f9087cba7a4c922))
+
+
+
+
+
 ## [2.8.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.3...netlify-cms-widget-list@2.8.4) (2021-02-25)
 
 **Note:** Version bump only for package netlify-cms-widget-list
