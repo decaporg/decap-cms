@@ -137,7 +137,7 @@ const numberFieldsHits = [
 class RelationController extends React.Component {
   state = {
     value: this.props.value,
-    queryHits: {},
+    queryHits: [],
   };
 
   mounted = false;
@@ -154,9 +154,8 @@ class RelationController extends React.Component {
     this.setState({ ...this.state, value });
   });
 
-  setQueryHits = jest.fn(hits => {
+  setQueryHits = jest.fn(queryHits => {
     if (this.mounted) {
-      const queryHits = { 'relation-field': hits };
       this.setState({ ...this.state, queryHits });
     }
   });
