@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable';
+import { Map } from 'immutable';
 import uuid from 'uuid/v4';
 import {
   MEDIA_LIBRARY_OPEN,
@@ -26,11 +26,9 @@ import {
   State,
   MediaLibraryInstance,
   MediaFile,
-  MediaFileMap,
   DisplayURLState,
   EntryField,
 } from '../types/redux';
-import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;

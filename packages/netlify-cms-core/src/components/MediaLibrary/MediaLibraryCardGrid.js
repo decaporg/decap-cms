@@ -33,7 +33,7 @@ function CardWrapper(props) {
     return null;
   }
   const file = mediaItems[index];
-  
+
   return (
     <div
       style={{
@@ -49,7 +49,6 @@ function CardWrapper(props) {
         isSelected={isSelectedFile(file)}
         text={file.name}
         onClick={() => onAssetClick(file)}
-   
         isDraft={file.draft}
         draftText={cardDraftText}
         width={cardWidth}
@@ -140,7 +139,6 @@ function PaginatedGrid({
             type={file.type}
             isViewableImage={file.isViewableImage}
             mediaFolderNavDisabled={mediaFolderNavDisabled}
-
           />
         ))}
         {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}

@@ -111,9 +111,7 @@ function MediaLibraryTop({
             placeholder={t('mediaLibrary.mediaLibraryModal.createFolder')}
             folders={folders}
           />
-        ) : (
-          null
-        )}
+        ) : null}
         <ButtonsContainer>
           <DeleteButton onClick={onDelete} disabled={!deleteEnabled}>
             {deleteButtonLabel}

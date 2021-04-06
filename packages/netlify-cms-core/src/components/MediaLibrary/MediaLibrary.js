@@ -14,7 +14,11 @@ import {
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from 'Actions/mediaLibrary';
-import { selectMediaFiles, getStartingMediaFolder, getMediaFolderNavDisabled } from 'Reducers/mediaLibrary';
+import {
+  selectMediaFiles,
+  getStartingMediaFolder,
+  getMediaFolderNavDisabled,
+} from 'Reducers/mediaLibrary';
 import { dirname } from 'path';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
@@ -373,8 +377,7 @@ class MediaLibrary extends React.Component {
       t,
     } = this.props;
 
-    const currentMediaFolder =
-      this.state.currentMediaFolder || startingMediaFolder;
+    const currentMediaFolder = this.state.currentMediaFolder || startingMediaFolder;
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
     const currentDirFolders = (currentDirFiles || []).filter(file => file.isDirectory);
     const currentDirFilesOrderedByTreeType = currentDirFolders.concat(

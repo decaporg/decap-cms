@@ -38,7 +38,12 @@ const BreadCrumbsItemDivider = styled.div`
 
 class MediaLibraryBreadcrumbs extends React.Component {
   render() {
-    const { handleBreadcrumbClick, currentMediaFolder, defaultMediaFolder, mediaFolderNavDisabled } = this.props;
+    const {
+      handleBreadcrumbClick,
+      currentMediaFolder,
+      defaultMediaFolder,
+      mediaFolderNavDisabled,
+    } = this.props;
     var hiddenPath = trim(defaultMediaFolder, '/')
       .split('/')
       .slice(0, -1)
