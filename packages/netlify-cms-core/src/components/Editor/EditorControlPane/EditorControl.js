@@ -129,7 +129,7 @@ class EditorControl extends React.Component {
     processControlRef: PropTypes.func,
     controlRef: PropTypes.func,
     query: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    queryHits: PropTypes.object,
     isFetching: PropTypes.bool,
     clearSearch: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
@@ -311,7 +311,7 @@ class EditorControl extends React.Component {
               editorControl={ConnectedEditorControl}
               query={query}
               loadEntry={loadEntry}
-              queryHits={queryHits}
+              queryHits={queryHits[this.uniqueFieldId] || []}
               clearSearch={clearSearch}
               clearFieldErrors={clearFieldErrors}
               isFetching={isFetching}
@@ -356,8 +356,8 @@ function mapStateToProps(state) {
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
-    isFetching: state.search.get('isFetching'),
-    queryHits: state.search.get('queryHits'),
+    isFetching: state.search.isFetching,
+    queryHits: state.search.queryHits,
     config: state.config,
     entry,
     collection,
