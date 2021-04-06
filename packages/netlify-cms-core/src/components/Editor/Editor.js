@@ -436,7 +436,7 @@ function mapStateToProps(state, ownProps) {
   const hasChanged = entryDraft.get('hasChanged');
   const displayUrl = config.display_url;
   const hasWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
-  const useOpenAuthoring = globalUI.get('useOpenAuthoring', false);
+  const useOpenAuthoring = globalUI.useOpenAuthoring;
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unPublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
