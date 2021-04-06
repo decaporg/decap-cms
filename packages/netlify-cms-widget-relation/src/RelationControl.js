@@ -240,8 +240,7 @@ export default class RelationControl extends React.Component {
     const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 
-    const hits = queryHits[forID] || [];
-    const queryOptions = this.parseHitOptions(hits);
+    const queryOptions = this.parseHitOptions(queryHits);
     const options = uniqOptions(this.state.initialOptions, queryOptions);
     const selectedValue = getSelectedValue({
       options,

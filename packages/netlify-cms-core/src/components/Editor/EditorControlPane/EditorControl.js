@@ -311,7 +311,7 @@ class EditorControl extends React.Component {
               editorControl={ConnectedEditorControl}
               query={query}
               loadEntry={loadEntry}
-              queryHits={queryHits}
+              queryHits={queryHits[this.uniqueFieldId] || []}
               clearSearch={clearSearch}
               clearFieldErrors={clearFieldErrors}
               isFetching={isFetching}
