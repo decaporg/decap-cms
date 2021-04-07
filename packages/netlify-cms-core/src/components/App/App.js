@@ -255,7 +255,7 @@ class App extends React.Component {
 function mapStateToProps(state) {
   const { auth, config, collections, globalUI, mediaLibrary } = state;
   const user = auth.user;
-  const isFetching = globalUI.get('isFetching');
+  const isFetching = globalUI.isFetching;
   const publishMode = config.publish_mode;
   const useMediaLibrary = !mediaLibrary.get('externalLibrary');
   const showMediaButton = mediaLibrary.get('showMediaButton');
