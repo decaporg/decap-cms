@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.29.1...netlify-cms-locales@1.29.2) (2021-04-07)
+
+
+### Bug Fixes
+
+* **locale-ca:** update Catalan translation ([#5222](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5222)) ([3211f94](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/3211f94f4ae55cc008bc28325a5387722657cd2c))
+
+
+
+
+
 ## [1.29.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.29.0...netlify-cms-locales@1.29.1) (2021-03-31)
 
 
