@@ -1,5 +1,11 @@
-import { Map } from 'immutable';
-import { USE_OPEN_AUTHORING } from 'Actions/auth';
+import { AnyAction } from 'redux';
+import { produce } from 'immer';
+import { USE_OPEN_AUTHORING } from '../actions/auth';
+
+export type GlobalUI = {
+  isFetching: boolean;
+  useOpenAuthoring: boolean;
+};
 
 const LOADING_IGNORE_LIST = [
   'DEPLOY_PREVIEW',
@@ -8,26 +14,30 @@ const LOADING_IGNORE_LIST = [
   'STATUS_FAILURE',
 ];
 
-function ignoreWhenLoading(action) {
+function ignoreWhenLoading(action: AnyAction) {
   return LOADING_IGNORE_LIST.some(type => action.type.includes(type));
 }
+
+const defaultState: GlobalUI = {
+  isFetching: false,
+  useOpenAuthoring: false,
+};
 
 /**
  * Reducer for some global UI state that we want to share between components
  */
-function globalUI(state = Map({ isFetching: false, useOpenAuthoring: false }), action) {
+const globalUI = produce((state: GlobalUI, action: AnyAction) => {
   // Generic, global loading indicator
   if (!ignoreWhenLoading(action) && action.type.includes('REQUEST')) {
-    return state.set('isFetching', true);
+    state.isFetching = true;
   } else if (
     !ignoreWhenLoading(action) &&
     (action.type.includes('SUCCESS') || action.type.includes('FAILURE'))
   ) {
-    return state.set('isFetching', false);
+    state.isFetching = false;
   } else if (action.type === USE_OPEN_AUTHORING) {
-    return state.set('useOpenAuthoring', true);
+    state.useOpenAuthoring = true;
   }
-  return state;
-}
+}, defaultState);
 
 export default globalUI;
