@@ -8,6 +8,7 @@ import { Status } from '../reducers/status';
 import { Medias } from '../reducers/medias';
 import { Deploys } from '../reducers/deploys';
 import { Search } from '../reducers/search';
+import { GlobalUI } from '../reducers/globalUI';
 
 export type CmsBackendType =
   | 'azure'
@@ -686,6 +687,7 @@ export interface State {
   cursors: Cursors;
   collections: Collections;
   deploys: Deploys;
+  globalUI: GlobalUI;
   editorialWorkflow: EditorialWorkflow;
   entries: Entries;
   entryDraft: EntryDraft;
