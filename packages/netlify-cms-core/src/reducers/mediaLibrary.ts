@@ -228,16 +228,15 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
   }
 }
 export function getStartingMediaFolder(state: State, field?: EntryField) {
-  const editingDraft = selectEditingDraft(state.entryDraft);
   const { entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = state.collections.get(entry?.get('collection'));
   const integration = selectIntegration(state, null, 'assetStore');
-  if (editingDraft && !integration) {
-    const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
-    return mediaFolder;
+  if (integration) {
+    return null;
   }
-  return null;
+  const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
+  return mediaFolder;
 }
 
 export function getMediaFolderNavDisabled(state: State, field?: EntryField) {
