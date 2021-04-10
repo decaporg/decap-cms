@@ -16,6 +16,8 @@ The relation widget allows you to reference items from another collection. It pr
   * `display_fields`: list of one or more names of fields in the referenced collection that will render in the autocomplete menu of the control. Defaults to `value_field`. Syntax to reference nested fields is similar to that of *value_field*.
   * `default`: accepts any widget data type; defaults to an empty string
   * `multiple` : accepts a boolean, defaults to `false`
+  * `min`: minimum number of items; ignored if **multiple** is  `false`
+  * `max`: maximum number of items; ignored if **multiple** is  `false`
   * `options_length`: accepts integer to override number of options presented to user. Defaults to `20`.
 * **Referencing a folder collection example** (assuming a separate "authors" collection with "name" and "twitterHandle" fields with subfields "first" and "last" for the "name" field):
 

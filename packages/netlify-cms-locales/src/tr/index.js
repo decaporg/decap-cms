@@ -63,8 +63,8 @@ const tr = {
         max: '%{fieldLabel}, %{maxValue} veya daha az olmalı.',
         rangeCount: '%{fieldLabel}, %{minCount} ve %{maxCount} öğeleri arasında olmalı.',
         rangeCountExact: '%{fieldLabel}, %{count} öğe olmalıdır.',
-        minCount: '%{fieldLabel}, en az %{minCount} öğe olmalıdır.',
-        maxCount: '%{fieldLabel}, %{maxCount} veya daha az öğe olmalıdır.',
+        rangeMin: '%{fieldLabel}, en az %{minCount} öğe olmalıdır.',
+        rangeMax: '%{fieldLabel}, %{maxCount} veya daha az öğe olmalıdır.',
       },
     },
     editor: {

@@ -94,7 +94,9 @@ function generateHits(length) {
   ];
 }
 
-const simpleFileCollectionHits = [{ data: { categories: ['category 1', 'category 2'] } }];
+const simpleFileCollectionHits = [
+  { data: { categories: ['category 1', 'category 2', 'category 3'] } },
+];
 
 const nestedFileCollectionHits = [
   {
@@ -134,6 +136,14 @@ const numberFieldsHits = [
   },
 ];
 
+function clickClearButton(container) {
+  const allSvgs = container.querySelectorAll('svg');
+  const clear = allSvgs[allSvgs.length - 2];
+
+  fireEvent.mouseDown(clear, {
+    button: 0,
+  });
+}
 class RelationController extends React.Component {
   state = {
     value: this.props.value,
@@ -201,7 +211,7 @@ class RelationController extends React.Component {
 }
 
 function setup({ field, value }) {
-  let renderArgs;
+  let renderArgs, ref;
   const setActiveSpy = jest.fn();
   const setInactiveSpy = jest.fn();
 
@@ -220,6 +230,7 @@ function setup({ field, value }) {
             classNameWrapper=""
             setActiveStyle={setActiveSpy}
             setInactiveStyle={setInactiveSpy}
+            ref={widgetRef => (ref = widgetRef)}
           />
         );
       }}
@@ -233,6 +244,7 @@ function setup({ field, value }) {
     ...renderArgs,
     setActiveSpy,
     setInactiveSpy,
+    ref,
     input,
   };
 }
@@ -476,6 +488,196 @@ describe('Relation widget', () => {
         expect(getByText('category 1')).toBeInTheDocument();
         expect(getByText('category 2')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('validation', () => {
+    const relationOptions = simpleFileCollectionHits[0]['data']['categories'];
+
+    function validate(setupOpts) {
+      const { ref } = setup(setupOpts);
+      const { error } = ref.isValid();
+      return error?.message;
+    }
+    it('should fail with less items than min allows', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 2,
+        }),
+        defaultValue: fromJS([relationOptions[0]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeMin"`);
+    });
+    it('should fail with more items than max allows', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          max: 1,
+        }),
+        defaultValue: fromJS([relationOptions[0], relationOptions[1]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeMax"`);
+    });
+    it('should enforce min when both min and max are set', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 2,
+          max: 3,
+        }),
+        defaultValue: fromJS([relationOptions[0]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeCount"`);
+    });
+    it('should enforce max when both min and max are set', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 1,
+          max: 2,
+        }),
+        defaultValue: fromJS([relationOptions[0], relationOptions[1], relationOptions[2]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(`"editor.editorControlPane.widget.rangeCount"`);
+    });
+    it('should enforce min and max when they are the same value', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 2,
+          max: 2,
+        }),
+        defaultValue: fromJS([relationOptions[0], relationOptions[1], relationOptions[2]]),
+      };
+      expect(validate(opts)).toMatchInlineSnapshot(
+        `"editor.editorControlPane.widget.rangeCountExact"`,
+      );
+    });
+    it('should pass when min is met', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 1,
+        }),
+        defaultValue: fromJS([relationOptions[0]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should pass when max is met', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          max: 1,
+        }),
+        defaultValue: fromJS([relationOptions[0]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should pass when both min and max are met', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 2,
+          max: 3,
+        }),
+        defaultValue: fromJS([relationOptions[0], relationOptions[1]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should pass when both min and max are met, and are the same value', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 2,
+          max: 2,
+        }),
+        defaultValue: fromJS([relationOptions[0], relationOptions[1]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should not fail on min/max if multiple is not true', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 2,
+          max: 2,
+        }),
+        defaultValue: fromJS([relationOptions[0]]),
+      };
+      expect(validate(opts)).toBeUndefined();
+    });
+    it('should not fail for empty field (should work for optional field)', () => {
+      const opts = {
+        field: fromJS({
+          name: 'categories',
+          collection: 'file',
+          file: 'simple_file',
+          value_field: 'categories.*',
+          display_fields: ['categories.*'],
+          multiple: true,
+          min: 2,
+        }),
+      };
+      const { ref, input, getByText, container } = setup(opts);
+      expect(ref.isValid().error?.message).toBeUndefined();
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText('foo'));
+      expect(ref.isValid().error?.message).toMatchInlineSnapshot(
+        `"editor.editorControlPane.widget.rangeMin"`,
+      );
+      clickClearButton(container);
+      expect(ref.isValid().error?.message).toBeUndefined();
     });
   });
 });
