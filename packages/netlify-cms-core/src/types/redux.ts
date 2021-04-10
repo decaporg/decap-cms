@@ -6,6 +6,9 @@ import { MediaFile as BackendMediaFile } from '../backend';
 import { Auth } from '../reducers/auth';
 import { Status } from '../reducers/status';
 import { Medias } from '../reducers/medias';
+import { Deploys } from '../reducers/deploys';
+import { Search } from '../reducers/search';
+import { GlobalUI } from '../reducers/globalUI';
 
 export type CmsBackendType =
   | 'azure'
@@ -362,6 +365,14 @@ export interface CmsBackend {
   cms_label_prefix?: string;
   squash_merges?: boolean;
   proxy_url?: string;
+  commit_messages?: {
+    create?: string;
+    update?: string;
+    delete?: string;
+    uploadMedia?: string;
+    deleteMedia?: string;
+    openAuthoring?: string;
+  };
 }
 
 export interface CmsSlug {
@@ -389,12 +400,22 @@ export interface CmsConfig {
   media_library?: CmsMediaLibrary;
   publish_mode?: CmsPublishMode;
   load_config_file?: boolean;
+  integrations?: {
+    hooks: string[];
+    provider: string;
+    collections?: '*' | string[];
+    applicationID?: string;
+    apiKey?: string;
+    getSignedFormURL?: string;
+  }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
   };
+  error: string | undefined;
+  isFetching: boolean;
 }
 
 export type CmsMediaLibraryOptions = unknown; // TODO: type properly
@@ -491,8 +512,6 @@ export type Entries = StaticallyTypedRecord<{
   group: Group;
   viewStyle: string;
 }>;
-
-export type Deploys = StaticallyTypedRecord<{}>;
 
 export type EditorialWorkflow = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
@@ -658,27 +677,15 @@ export type Integrations = StaticallyTypedRecord<{
   hooks: { [collectionOrHook: string]: any };
 }>;
 
-interface SearchItem {
-  collection: string;
-  slug: string;
-}
-
-export type Search = StaticallyTypedRecord<{
-  entryIds?: SearchItem[];
-  isFetching: boolean;
-  term: string | null;
-  collections: List<string> | null;
-  page: number;
-}>;
-
 export type Cursors = StaticallyTypedRecord<{}>;
 
 export interface State {
   auth: Auth;
-  config: Config;
+  config: CmsConfig;
   cursors: Cursors;
   collections: Collections;
   deploys: Deploys;
+  globalUI: GlobalUI;
   editorialWorkflow: EditorialWorkflow;
   entries: Entries;
   entryDraft: EntryDraft;
@@ -690,18 +697,10 @@ export interface State {
   status: Status;
 }
 
-export interface ConfigAction extends Action<string> {
-  payload: Map<string, boolean>;
-}
-
 export interface Integration {
   hooks: string[];
   collections?: string | string[];
   provider: string;
-}
-
-export interface IntegrationsAction extends Action<string> {
-  payload: Config;
 }
 
 interface EntryPayload {
@@ -785,12 +784,8 @@ export interface EntriesAction extends Action<string> {
   };
 }
 
-export interface CollectionsAction extends Action<string> {
-  payload?: StaticallyTypedRecord<{ collections: List<Collection> }>;
-}
-
 export interface EditorialWorkflowAction extends Action<string> {
-  payload?: StaticallyTypedRecord<{ publish_mode: string }> & {
+  payload?: CmsConfig & {
     collection: string;
     entry: { slug: string };
   } & {
@@ -807,25 +802,4 @@ export interface EditorialWorkflowAction extends Action<string> {
     slug: string;
     newStatus: string;
   };
-}
-
-export interface MediaLibraryAction extends Action<string> {
-  payload: MediaLibraryInstance & {
-    controlID: string;
-    forImage: boolean;
-    privateUpload: boolean;
-    config: Map<string, string>;
-    field?: EntryField;
-  } & { mediaPath: string | string[] } & { page: number } & {
-    files: MediaFile[];
-    page: number;
-    canPaginate: boolean;
-    dynamicSearch: boolean;
-    dynamicSearchQuery: boolean;
-  } & {
-    file: MediaFile;
-    privateUpload: boolean;
-  } & {
-    file: { id: string; key: string; privateUpload: boolean };
-  } & { key: string } & { url: string } & { err: Error };
 }

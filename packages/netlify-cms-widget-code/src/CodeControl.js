@@ -275,7 +275,7 @@ export default class CodeControl extends React.Component {
                 overflow: hidden;
 
                 .CodeMirror {
-                  height: auto;
+                  height: auto !important;
                   cursor: text;
                   min-height: 300px;
                 }

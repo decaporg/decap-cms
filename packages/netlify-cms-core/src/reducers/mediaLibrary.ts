@@ -18,12 +18,12 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
+  MediaLibraryAction,
 } from '../actions/mediaLibrary';
 import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
 import {
   State,
-  MediaLibraryAction,
   MediaLibraryInstance,
   MediaFile,
   MediaFileMap,
@@ -41,7 +41,7 @@ const defaultState: {
   controlID?: string;
   page?: number;
   files?: MediaFile[];
-  config: Map<string, string>;
+  config: Map<string, unknown>;
   field?: EntryField;
 } = {
   isVisible: false,
@@ -58,6 +58,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('externalLibrary', action.payload);
         map.set('showMediaButton', action.payload.enableStandalone());
       });
+
     case MEDIA_LIBRARY_OPEN: {
       const { controlID, forImage, privateUpload, config, field } = action.payload;
       const libConfig = config || Map();
@@ -85,8 +86,10 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('field', field);
       });
     }
+
     case MEDIA_LIBRARY_CLOSE:
       return state.set('isVisible', false);
+
     case MEDIA_INSERT: {
       const { mediaPath } = action.payload;
       const controlID = state.get('controlID');
@@ -94,15 +97,18 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.setIn(['controlMedia', controlID], mediaPath);
       });
     }
+
     case MEDIA_REMOVE_INSERTED: {
       const controlID = action.payload.controlID;
       return state.setIn(['controlMedia', controlID], '');
     }
+
     case MEDIA_LOAD_REQUEST:
       return state.withMutations(map => {
         map.set('isLoading', true);
         map.set('isPaginating', action.payload.page > 1);
       });
+
     case MEDIA_LOAD_SUCCESS: {
       const {
         files = [],
@@ -135,6 +141,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         }
       });
     }
+
     case MEDIA_LOAD_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -142,8 +149,10 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       }
       return state.set('isLoading', false);
     }
+
     case MEDIA_PERSIST_REQUEST:
       return state.set('isPersisting', true);
+
     case MEDIA_PERSIST_SUCCESS: {
       const { file, privateUpload } = action.payload;
       const privateUploadChanged = state.get('privateUpload') !== privateUpload;
@@ -158,6 +167,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('isPersisting', false);
       });
     }
+
     case MEDIA_PERSIST_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -165,10 +175,13 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       }
       return state.set('isPersisting', false);
     }
+
     case MEDIA_DELETE_REQUEST:
       return state.set('isDeleting', true);
+
     case MEDIA_DELETE_SUCCESS: {
-      const { id, key, privateUpload } = action.payload.file;
+      const { file, privateUpload } = action.payload;
+      const { key, id } = file;
       const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
         return state;
@@ -181,6 +194,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('isDeleting', false);
       });
     }
+
     case MEDIA_DELETE_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -210,6 +224,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
           .deleteIn([...displayURLPath, 'url'])
       );
     }
+
     default:
       return state;
   }

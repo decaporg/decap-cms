@@ -167,7 +167,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -396,7 +396,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -655,7 +655,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -895,7 +895,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1153,7 +1153,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1412,7 +1412,7 @@ exports[`ListControl should render list with fields with default collapse ("true
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1653,7 +1653,7 @@ exports[`ListControl should render list with fields with default collapse ("true
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1852,7 +1852,7 @@ exports[`ListControl should render list with nested object 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -2110,7 +2110,7 @@ exports[`ListControl should render list with nested object with collapse = false
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>

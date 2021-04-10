@@ -64,7 +64,7 @@ export class Editor extends React.Component {
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
     loadEntries: PropTypes.func.isRequired,
-    deployPreview: ImmutablePropTypes.map,
+    deployPreview: PropTypes.object,
     loadDeployPreview: PropTypes.func.isRequired,
     currentStatus: PropTypes.string,
     user: PropTypes.object,
@@ -434,9 +434,9 @@ function mapStateToProps(state, ownProps) {
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const user = auth.user;
   const hasChanged = entryDraft.get('hasChanged');
-  const displayUrl = config.get('display_url');
-  const hasWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  const useOpenAuthoring = globalUI.get('useOpenAuthoring', false);
+  const displayUrl = config.display_url;
+  const hasWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
+  const useOpenAuthoring = globalUI.useOpenAuthoring;
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
   const unPublishedEntry = selectUnpublishedEntry(state, collectionName, slug);

@@ -146,6 +146,28 @@ describe('entries', () => {
       expect(createEmptyDraftData(fields)).toEqual({ images: fromJS([]) });
     });
 
+    it('should allow a complex array as list default for a single field list', () => {
+      const fields = fromJS([
+        {
+          name: 'images',
+          widget: 'list',
+          default: [
+            {
+              url: 'https://image.png',
+            },
+          ],
+          field: { name: 'url', widget: 'text' },
+        },
+      ]);
+      expect(createEmptyDraftData(fields)).toEqual({
+        images: fromJS([
+          {
+            url: 'https://image.png',
+          },
+        ]),
+      });
+    });
+
     it('should allow an empty array as list default for a fields list', () => {
       const fields = fromJS([
         {
@@ -161,78 +183,49 @@ describe('entries', () => {
       expect(createEmptyDraftData(fields)).toEqual({ images: fromJS([]) });
     });
 
-    it('should not allow setting a non empty array as a default value for a single field list', () => {
+    it('should allow a complex array as list default for a fields list', () => {
       const fields = fromJS([
         {
           name: 'images',
           widget: 'list',
-          default: [{ name: 'url' }, { other: 'field' }],
-          field: { name: 'url', widget: 'text' },
-        },
-      ]);
-      expect(createEmptyDraftData(fields)).toEqual({});
-    });
-
-    it('should not allow setting a non empty array as a default value for a fields list', () => {
-      const fields = fromJS([
-        {
-          name: 'images',
-          widget: 'list',
-          default: [{ name: 'url' }, { other: 'field' }],
+          default: [
+            {
+              title: 'default image',
+              url: 'https://image.png',
+            },
+          ],
           fields: [
             { name: 'title', widget: 'text' },
             { name: 'url', widget: 'text' },
           ],
         },
       ]);
-      expect(createEmptyDraftData(fields)).toEqual({});
-    });
-
-    it('should set default value for list field widget', () => {
-      const fields = fromJS([
-        {
-          name: 'images',
-          widget: 'list',
-          field: { name: 'url', widget: 'text', default: 'https://image.png' },
-        },
-      ]);
-      expect(createEmptyDraftData(fields)).toEqual({ images: ['https://image.png'] });
-    });
-
-    it('should override list default with field default', () => {
-      const fields = fromJS([
-        {
-          name: 'images',
-          widget: 'list',
-          default: [],
-          field: { name: 'url', widget: 'text', default: 'https://image.png' },
-        },
-      ]);
-      expect(createEmptyDraftData(fields)).toEqual({ images: ['https://image.png'] });
-    });
-
-    it('should set default values for list fields widget', () => {
-      const fields = fromJS([
-        {
-          name: 'images',
-          widget: 'list',
-          fields: [
-            { name: 'title', widget: 'text', default: 'default image' },
-            { name: 'url', widget: 'text', default: 'https://image.png' },
-          ],
-        },
-      ]);
       expect(createEmptyDraftData(fields)).toEqual({
-        images: [{ title: 'default image', url: 'https://image.png' }],
+        images: fromJS([
+          {
+            title: 'default image',
+            url: 'https://image.png',
+          },
+        ]),
       });
     });
 
-    it('should override list default with fields default', () => {
+    it('should use field default when no list default is provided', () => {
       const fields = fromJS([
         {
           name: 'images',
           widget: 'list',
-          default: [],
+          field: { name: 'url', widget: 'text', default: 'https://image.png' },
+        },
+      ]);
+      expect(createEmptyDraftData(fields)).toEqual({ images: [{ url: 'https://image.png' }] });
+    });
+
+    it('should use fields default when no list default is provided', () => {
+      const fields = fromJS([
+        {
+          name: 'images',
+          widget: 'list',
           fields: [
             { name: 'title', widget: 'text', default: 'default image' },
             { name: 'url', widget: 'text', default: 'https://image.png' },
@@ -297,6 +290,26 @@ describe('entries', () => {
         },
       ]);
       expect(createEmptyDraftData(fields)).toEqual({});
+    });
+
+    it('should populate nested fields', () => {
+      const fields = fromJS([
+        {
+          name: 'names',
+          widget: 'list',
+          field: {
+            name: 'object',
+            widget: 'object',
+            fields: [
+              { name: 'first', widget: 'string', default: 'first' },
+              { name: 'second', widget: 'string', default: 'second' },
+            ],
+          },
+        },
+      ]);
+      expect(createEmptyDraftData(fields)).toEqual({
+        names: [{ object: { first: 'first', second: 'second' } }],
+      });
     });
   });
 
@@ -395,13 +408,13 @@ describe('entries', () => {
 
   describe('validateMetaField', () => {
     const state = {
-      config: fromJS({
+      config: {
         slug: {
           encoding: 'unicode',
           clean_accents: false,
           sanitize_replacement: '-',
         },
-      }),
+      },
       entries: fromJS([]),
     };
     const collection = fromJS({

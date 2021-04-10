@@ -73,8 +73,8 @@ function RouteInCollection({ collections, render, ...props }) {
 class App extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-    config: ImmutablePropTypes.map,
-    collections: ImmutablePropTypes.orderedMap,
+    config: PropTypes.object.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     loginUser: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
     user: PropTypes.object,
@@ -94,7 +94,7 @@ class App extends React.Component {
         <h1>{t('app.app.errorHeader')}</h1>
         <div>
           <strong>{t('app.app.configErrors')}:</strong>
-          <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
+          <ErrorCodeBlock>{config.error}</ErrorCodeBlock>
           <span>{t('app.app.checkConfigYml')}</span>
         </div>
       </ErrorContainer>
@@ -124,10 +124,10 @@ class App extends React.Component {
           onLogin: this.handleLogin.bind(this),
           error: auth.error,
           inProgress: auth.isFetching,
-          siteId: this.props.config.getIn(['backend', 'site_domain']),
-          base_url: this.props.config.getIn(['backend', 'base_url'], null),
-          authEndpoint: this.props.config.getIn(['backend', 'auth_endpoint']),
-          config: this.props.config.toJS(),
+          siteId: this.props.config.backend.site_domain,
+          base_url: this.props.config.backend.base_url,
+          authEndpoint: this.props.config.backend.auth_endpoint,
+          config: this.props.config,
           clearHash: () => history.replace('/'),
           t,
         })}
@@ -158,11 +158,11 @@ class App extends React.Component {
       return null;
     }
 
-    if (config.get('error')) {
+    if (config.error) {
       return this.configError(config);
     }
 
-    if (config.get('isFetching')) {
+    if (config.isFetching) {
       return <Loader active>{t('app.app.loadingConfig')}</Loader>;
     }
 
@@ -183,8 +183,8 @@ class App extends React.Component {
           onLogoutClick={logoutUser}
           openMediaLibrary={openMediaLibrary}
           hasWorkflow={hasWorkflow}
-          displayUrl={config.get('display_url')}
-          isTestRepo={config.getIn(['backend', 'name']) === 'test-repo'}
+          displayUrl={config.display_url}
+          isTestRepo={config.backend.name === 'test-repo'}
           showMediaButton={showMediaButton}
         />
         <AppMainContainer>
@@ -255,8 +255,8 @@ class App extends React.Component {
 function mapStateToProps(state) {
   const { auth, config, collections, globalUI, mediaLibrary } = state;
   const user = auth.user;
-  const isFetching = globalUI.get('isFetching');
-  const publishMode = config && config.get('publish_mode');
+  const isFetching = globalUI.isFetching;
+  const publishMode = config.publish_mode;
   const useMediaLibrary = !mediaLibrary.get('externalLibrary');
   const showMediaButton = mediaLibrary.get('showMediaButton');
   return {

@@ -24,7 +24,7 @@ import { EditorialWorkflowAction, EditorialWorkflow, Entities } from '../types/r
 function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
   switch (action.type) {
     case CONFIG_SUCCESS: {
-      const publishMode = action.payload && action.payload.get('publish_mode');
+      const publishMode = action.payload && action.payload.publish_mode;
       if (publishMode === EDITORIAL_WORKFLOW) {
         //  Editorial workflow state is explicitly initiated after the config.
         return Map({ entities: Map(), pages: Map() });
@@ -128,12 +128,12 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
       );
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
-    case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
       return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
     case UNPUBLISHED_ENTRY_DELETE_SUCCESS:
       return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
 
+    case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
     default:
       return state;
   }

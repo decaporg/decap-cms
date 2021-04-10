@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.11...netlify-cms-widget-markdown@2.12.12) (2021-04-01)
+
+
+### Bug Fixes
+
+* **widget-markdown:** improve UX in Markdown editor - link editing and selected heading underline ([#5104](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/5104)) ([dde1a9d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/dde1a9db5483912f626f13239d7a3d06d6c4e05c))
+
+
+
+
+
 ## [2.12.11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.10...netlify-cms-widget-markdown@2.12.11) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown

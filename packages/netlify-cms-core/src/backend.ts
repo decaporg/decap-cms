@@ -1,6 +1,26 @@
 import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
 import { List, Map, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
+import {
+  localForage,
+  Cursor,
+  CURSOR_COMPATIBILITY_SYMBOL,
+  EditorialWorkflowError,
+  Implementation as BackendImplementation,
+  DisplayURL,
+  ImplementationEntry,
+  Credentials,
+  User,
+  getPathDepth,
+  blobToFileObj,
+  asyncLock,
+  AsyncLock,
+  UnpublishedEntry,
+  DataFile,
+  UnpublishedEntryDiff,
+} from 'netlify-cms-lib-util';
+import { basename, join, extname, dirname } from 'path';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
 import { selectMediaFilePath, selectEntry } from './reducers/entries';
@@ -21,35 +41,14 @@ import { createEntry, EntryValue } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
-import {
-  localForage,
-  Cursor,
-  CURSOR_COMPATIBILITY_SYMBOL,
-  EditorialWorkflowError,
-  Implementation as BackendImplementation,
-  DisplayURL,
-  ImplementationEntry,
-  Credentials,
-  User,
-  getPathDepth,
-  Config as ImplementationConfig,
-  blobToFileObj,
-  asyncLock,
-  AsyncLock,
-  UnpublishedEntry,
-  DataFile,
-  UnpublishedEntryDiff,
-} from 'netlify-cms-lib-util';
-import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
 import {
-  Collection,
+  CmsConfig,
   EntryMap,
-  Config,
   FilterRule,
-  Collections,
   EntryDraft,
+  Collection,
+  Collections,
   CollectionFile,
   State,
   EntryField,
@@ -73,7 +72,7 @@ const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
 function updateAssetProxies(
   assetProxies: AssetProxy[],
-  config: Config,
+  config: CmsConfig,
   collection: Collection,
   entryDraft: EntryDraft,
   path: string,
@@ -238,9 +237,9 @@ interface AuthStore {
 }
 
 interface BackendOptions {
-  backendName?: string;
-  authStore?: AuthStore | null;
-  config?: Config;
+  backendName: string;
+  config: CmsConfig;
+  authStore?: AuthStore;
 }
 
 export interface MediaFile {
@@ -263,7 +262,7 @@ interface BackupEntry {
 }
 
 interface PersistArgs {
-  config: Config;
+  config: CmsConfig;
   collection: Collection;
   entryDraft: EntryDraft;
   assetProxies: AssetProxy[];
@@ -279,7 +278,7 @@ interface ImplementationInitOptions {
 }
 
 type Implementation = BackendImplementation & {
-  init: (config: ImplementationConfig, options: ImplementationInitOptions) => Implementation;
+  init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
 };
 
 function prepareMetaPath(path: string, collection: Collection) {
@@ -305,24 +304,21 @@ function collectionDepth(collection: Collection) {
 export class Backend {
   implementation: Implementation;
   backendName: string;
-  authStore: AuthStore | null;
-  config: Config;
+  config: CmsConfig;
+  authStore?: AuthStore;
   user?: User | null;
   backupSync: AsyncLock;
 
-  constructor(
-    implementation: Implementation,
-    { backendName, authStore = null, config }: BackendOptions = {},
-  ) {
+  constructor(implementation: Implementation, { backendName, authStore, config }: BackendOptions) {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
-    this.config = config as Config;
-    this.implementation = implementation.init(this.config.toJS(), {
+    this.config = config;
+    this.implementation = implementation.init(this.config, {
       useWorkflow: selectUseWorkflow(this.config),
       updateUserCredentials: this.updateUserCredentials,
       initialWorkflowStatus: status.first(),
     });
-    this.backendName = backendName as string;
+    this.backendName = backendName;
     this.authStore = authStore;
     if (this.implementation === null) {
       throw new Error('Cannot instantiate a Backend with no implementation');
@@ -436,11 +432,11 @@ export class Backend {
   async generateUniqueSlug(
     collection: Collection,
     entryData: Map<string, unknown>,
-    config: Config,
+    config: CmsConfig,
     usedSlugs: List<string>,
     customPath: string | undefined,
   ) {
-    const slugConfig = config.get('slug');
+    const slugConfig = config.slug;
     let slug: string;
     if (customPath) {
       slug = slugFromCustomPath(collection, customPath);
@@ -944,7 +940,7 @@ export class Backend {
 
   async processEntry(state: State, collection: Collection, entry: EntryValue) {
     const integration = selectIntegration(state.integrations, null, 'assetStore');
-    const mediaFolders = selectMediaFolders(state, collection, fromJS(entry));
+    const mediaFolders = selectMediaFolders(state.config, collection, fromJS(entry));
     if (mediaFolders.length > 0 && !integration) {
       const files = await Promise.all(
         mediaFolders.map(folder => this.implementation.getMedia(folder)),
@@ -978,14 +974,14 @@ export class Backend {
      * If `site_url` is undefined or `show_preview_links` in the config is set to false, do nothing.
      */
 
-    const baseUrl = this.config.get('site_url');
+    const baseUrl = this.config.site_url;
 
-    if (!baseUrl || this.config.get('show_preview_links') === false) {
+    if (!baseUrl || this.config.show_preview_links === false) {
       return;
     }
 
     return {
-      url: previewUrlFormatter(baseUrl, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(baseUrl, collection, slug, entry, this.config.slug),
       status: 'SUCCESS',
     };
   }
@@ -1005,7 +1001,7 @@ export class Backend {
      * If the registered backend does not provide a `getDeployPreview` method, or
      * `show_preview_links` in the config is set to false, do nothing.
      */
-    if (!this.implementation.getDeployPreview || this.config.get('show_preview_links') === false) {
+    if (!this.implementation.getDeployPreview || this.config.show_preview_links === false) {
       return;
     }
 
@@ -1019,7 +1015,7 @@ export class Backend {
       count++;
       deployPreview = await this.implementation.getDeployPreview(collection.get('name'), slug);
       if (!deployPreview) {
-        await new Promise(resolve => setTimeout(() => resolve(), interval));
+        await new Promise(resolve => setTimeout(() => resolve(undefined), interval));
       }
     }
 
@@ -1034,7 +1030,7 @@ export class Backend {
       /**
        * Create a URL using the collection `preview_path`, if provided.
        */
-      url: previewUrlFormatter(deployPreview.url, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(deployPreview.url, collection, slug, entry, this.config.slug),
       /**
        * Always capitalize the status for consistency.
        */
@@ -1182,7 +1178,7 @@ export class Backend {
     await this.invokeEventWithEntry('postSave', entry);
   }
 
-  async persistMedia(config: Config, file: AssetProxy) {
+  async persistMedia(config: CmsConfig, file: AssetProxy) {
     const user = (await this.currentUser()) as User;
     const options = {
       commitMessage: commitMessageFormatter(
@@ -1233,7 +1229,7 @@ export class Backend {
     await this.invokePostUnpublishEvent(entry);
   }
 
-  async deleteMedia(config: Config, path: string) {
+  async deleteMedia(config: CmsConfig, path: string) {
     const user = (await this.currentUser()) as User;
     const commitMessage = commitMessageFormatter(
       'deleteMedia',
@@ -1310,12 +1306,12 @@ export class Backend {
   }
 }
 
-export function resolveBackend(config: Config) {
-  const name = config.getIn(['backend', 'name']);
-  if (name == null) {
+export function resolveBackend(config: CmsConfig) {
+  if (!config.backend.name) {
     throw new Error('No backend defined in configuration');
   }
 
+  const { name } = config.backend;
   const authStore = new LocalStorageAuthStore();
 
   const backend = getBackend(name);
@@ -1329,7 +1325,7 @@ export function resolveBackend(config: Config) {
 export const currentBackend = (function() {
   let backend: Backend;
 
-  return (config: Config) => {
+  return (config: CmsConfig) => {
     if (backend) {
       return backend;
     }

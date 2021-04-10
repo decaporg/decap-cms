@@ -1,37 +1,35 @@
-import { Map } from 'immutable';
-import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE } from '../actions/config';
-import { Config, ConfigAction } from '../types/redux';
+import { produce } from 'immer';
+import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, ConfigAction } from '../actions/config';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { CmsConfig } from '../types/redux';
 
-const defaultState: Map<string, boolean | string> = Map({ isFetching: true });
+const defaultState = {
+  isFetching: true,
+};
 
-function config(state = defaultState, action: ConfigAction) {
+const config = produce((state: CmsConfig, action: ConfigAction) => {
   switch (action.type) {
     case CONFIG_REQUEST:
-      return state.set('isFetching', true);
+      state.isFetching = true;
+      break;
     case CONFIG_SUCCESS:
-      /**
-       * The loadConfig action merges any existing config into the loaded config
-       * before firing this action (so the resulting config can be validated),
-       * so we don't have to merge it here.
-       */
-      return action.payload;
+      return {
+        ...action.payload,
+        isFetching: false,
+        error: undefined,
+      };
     case CONFIG_FAILURE:
-      return state.withMutations(s => {
-        s.delete('isFetching');
-        s.set('error', action.payload.toString());
-      });
-    default:
-      return state;
+      state.isFetching = false;
+      state.error = action.payload.toString();
   }
+}, defaultState);
+
+export function selectLocale(state: CmsConfig) {
+  return state.locale || 'en';
 }
 
-export function selectLocale(state: Config) {
-  return state.get('locale', 'en') as string;
-}
-
-export function selectUseWorkflow(state: Config) {
-  return state.get('publish_mode') === EDITORIAL_WORKFLOW;
+export function selectUseWorkflow(state: CmsConfig) {
+  return state.publish_mode === EDITORIAL_WORKFLOW;
 }
 
 export default config;

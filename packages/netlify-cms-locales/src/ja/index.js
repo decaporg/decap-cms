@@ -3,6 +3,7 @@ const ja = {
     login: 'ログイン',
     loggingIn: 'ログインしています...',
     loginWithNetlifyIdentity: 'Netlify Identity でログインする',
+    loginWithAzure: 'Azure でログインする',
     loginWithBitbucket: 'Bitbucket でログインする',
     loginWithGitHub: 'GitHub でログインする',
     loginWithGitLab: 'GitLab でログインする',
@@ -47,12 +48,17 @@ const ja = {
       searchResults: '「%{searchTerm}」の検索結果',
       searchResultsInCollection: '%{collection}内の「%{searchTerm}」の検索結果',
       filterBy: '絞り込み',
+      groupBy: 'グルーピング',
     },
     entries: {
       loadingEntries: 'エントリを読み込み中',
       cachingEntries: 'エントリをキャッシュ中',
       longerLoading: '少々お待ちください',
       noEntries: 'エントリがありません',
+    },
+    groups: {
+      other: 'その他',
+      negateLabel: '%{label}以外',
     },
     defaultFields: {
       author: {
@@ -84,6 +90,9 @@ const ja = {
         invalidPath: `'%{path}'は有効なパスではありません。`,
         pathExists: `'%{path}'というパスはすでに存在しています。`,
       },
+      i18n: {
+        writingInLocale: '言語: %{locale}',
+      },
     },
     editor: {
       onLeavePage: 'このページから遷移しますか？',
@@ -102,6 +111,11 @@ const ja = {
         '公開されていない変更も削除されますが、このエントリを削除しますか？',
       loadingEntry: 'エントリの読込中...',
       confirmLoadBackup: 'ローカルのバックアップが復旧できました。利用しますか？',
+    },
+    editorInterface: {
+      toggleI18n: '言語を切り替える',
+      togglePreview: 'プレビュー表示を切り替える',
+      toggleScrollSync: 'スクロール同期を切り替える',
     },
     editorToolbar: {
       publishing: '公開しています...',
@@ -134,16 +148,32 @@ const ja = {
     },
     editorWidgets: {
       markdown: {
+        bold: '太字',
+        italic: '斜体',
+        code: 'コード',
+        link: 'リンク',
+        linkPrompt: 'リンクのURLを入力してください',
+        headings: '見出し',
+        quote: '引用',
+        bulletedList: '箇条書き',
+        numberedList: '番号付きリスト',
+        addComponent: 'コンポーネント追加',
         richText: 'リッチテキスト',
         markdown: 'マークダウン',
       },
       image: {
         choose: '画像を選択',
+        chooseUrl: 'URLを入力する',
+        replaceUrl: 'URLを変更する',
+        promptUrl: '画像のURLを入力してください',
         chooseDifferent: '他の画像を選択',
         remove: '画像を削除',
       },
       file: {
         choose: 'ファイルを選択',
+        chooseUrl: 'URLを入力する',
+        replaceUrl: 'URLを変更する',
+        promptUrl: 'ファイルのURLを入力してください',
         chooseDifferent: '他のファイルを選択',
         remove: 'ファイルを削除',
       },
@@ -169,6 +199,11 @@ const ja = {
   mediaLibrary: {
     mediaLibraryCard: {
       draft: '下書き',
+      copy: 'コピー',
+      copyUrl: 'URLをコピー',
+      copyPath: 'パスをコピー',
+      copyName: '名前をコピー',
+      copied: 'コピーしました',
     },
     mediaLibrary: {
       onDelete: '選択しているデータを削除しますか？',

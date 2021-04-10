@@ -90,9 +90,8 @@ export default class RelationControl extends React.Component {
     forID: PropTypes.string.isRequired,
     value: PropTypes.node,
     field: ImmutablePropTypes.map,
-    fetchID: PropTypes.string,
     query: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    queryHits: PropTypes.array,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
@@ -139,7 +138,7 @@ export default class RelationControl extends React.Component {
       const metadata = {};
       const searchFieldsArray = getSearchFieldArray(field.get('search_fields'));
       const { payload } = await query(forID, collection, searchFieldsArray, '', file);
-      const hits = payload.response?.hits || [];
+      const hits = payload.hits || [];
       const options = this.parseHitOptions(hits);
       const initialOptions = initialSearchValues
         .map(v => {
@@ -241,7 +240,7 @@ export default class RelationControl extends React.Component {
     const file = field.get('file');
 
     query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
-      const hits = payload.response?.hits || [];
+      const hits = payload.hits || [];
       const options = this.parseHitOptions(hits);
       const uniq = uniqOptions(this.state.initialOptions, options);
       callback(uniq);
@@ -261,8 +260,7 @@ export default class RelationControl extends React.Component {
     const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 
-    const hits = queryHits.get(forID, []);
-    const queryOptions = this.parseHitOptions(hits);
+    const queryOptions = this.parseHitOptions(queryHits);
     const options = uniqOptions(this.state.initialOptions, queryOptions);
     const selectedValue = getSelectedValue({
       options,

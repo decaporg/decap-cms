@@ -1,5 +1,5 @@
 import React from 'react';
-import { fromJS, Map } from 'immutable';
+import { fromJS } from 'immutable';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { NetlifyCmsWidgetRelation } from '../';
 
@@ -138,7 +138,7 @@ const numberFieldsHits = [
 class RelationController extends React.Component {
   state = {
     value: this.props.value,
-    queryHits: Map(),
+    queryHits: [],
   };
 
   mounted = false;
@@ -155,9 +155,8 @@ class RelationController extends React.Component {
     this.setState({ ...this.state, value });
   });
 
-  setQueryHits = jest.fn(hits => {
+  setQueryHits = jest.fn(queryHits => {
     if (this.mounted) {
-      const queryHits = Map().set('relation-field', hits);
       this.setState({ ...this.state, queryHits });
     }
   });
@@ -187,7 +186,7 @@ class RelationController extends React.Component {
 
     this.setQueryHits(hits);
 
-    return Promise.resolve({ payload: { response: { hits } } });
+    return Promise.resolve({ payload: { hits } });
   });
 
   render() {

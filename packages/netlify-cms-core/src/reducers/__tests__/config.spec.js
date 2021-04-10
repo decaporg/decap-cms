@@ -1,29 +1,38 @@
-import { Map } from 'immutable';
-import { configLoaded, configLoading, configFailed } from 'Actions/config';
-import config, { selectLocale } from 'Reducers/config';
+import { configLoaded, configLoading, configFailed } from '../../actions/config';
+import config, { selectLocale } from '../config';
 
 describe('config', () => {
   it('should handle an empty state', () => {
-    expect(config(undefined, {})).toEqual(Map({ isFetching: true }));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore config reducer doesn't accept empty action
+    expect(config(undefined, {})).toEqual({ isFetching: true });
   });
 
   it('should handle an update', () => {
-    expect(config(Map({ a: 'b', c: 'd' }), configLoaded(Map({ a: 'changed', e: 'new' })))).toEqual(
-      Map({ a: 'changed', e: 'new' }),
-    );
+    expect(
+      config({ isFetching: true }, configLoaded({ locale: 'fr', backend: { name: 'proxy' } })),
+    ).toEqual({
+      locale: 'fr',
+      backend: { name: 'proxy' },
+      isFetching: false,
+      error: undefined,
+    });
   });
 
   it('should mark the config as loading', () => {
-    expect(config(undefined, configLoading())).toEqual(Map({ isFetching: true }));
+    expect(config({ isFetching: false }, configLoading())).toEqual({ isFetching: true });
   });
 
   it('should handle an error', () => {
-    expect(config(Map(), configFailed(new Error('Config could not be loaded')))).toEqual(
-      Map({ error: 'Error: Config could not be loaded' }),
-    );
+    expect(
+      config({ isFetching: true }, configFailed(new Error('Config could not be loaded'))),
+    ).toEqual({
+      error: 'Error: Config could not be loaded',
+      isFetching: false,
+    });
   });
 
   it('should default to "en" locale', () => {
-    expect(selectLocale(Map())).toEqual('en');
+    expect(selectLocale({})).toEqual('en');
   });
 });

@@ -3,6 +3,111 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.39.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.3...netlify-cms-core@2.39.4) (2021-04-07)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.39.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.2...netlify-cms-core@2.39.3) (2021-04-07)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.39.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.1...netlify-cms-core@2.39.2) (2021-04-06)
+
+
+### Bug Fixes
+
+* allow any default list as default value for list widgets ([#5030](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5030)) ([83c2354](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/83c235423e76023fe10f167c8f9087cba7a4c922))
+
+
+
+
+
+## [2.39.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.0...netlify-cms-core@2.39.1) (2021-04-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency immer to v9 ([#5149](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5149)) ([fb543bd](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/fb543bd929fe47bf0c611c88a177ae51ea94ebb5))
+
+
+
+
+
+# [2.39.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.10...netlify-cms-core@2.39.0) (2021-03-30)
+
+
+### Bug Fixes
+
+* [#5143](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5143) added types for registerWidget() ([#5158](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5158)) ([ec1ba5f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/ec1ba5ff0b8cddf9b804e37ace6d329ff713b93c))
+* **deps:** update dependency ajv to v8 ([#5178](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5178)) ([f470fdf](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/f470fdf32d02084af5c03522e6a3f0c8c0f92dc4))
+
+
+### Features
+
+* [#5082](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5082) add persistMedia function in widget props ([#5124](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5124)) ([21bb212](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/21bb2128eee79e1dd407cff1a53910ee4be4ef69))
+
+
+
+
+
+## [2.38.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.9...netlify-cms-core@2.38.10) (2021-03-21)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.38.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.8...netlify-cms-core@2.38.9) (2021-03-21)
+
+
+### Bug Fixes
+
+* i18n regex logic ([#5136](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5136)) ([b0c0ea6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b0c0ea60c2a2c64f312ab56110438b4d822a11a9))
+
+
+
+
+
+## [2.38.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.7...netlify-cms-core@2.38.8) (2021-03-18)
+
+
+### Bug Fixes
+
+* proper type for media library action ([#5100](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5100)) ([387fcbf](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/387fcbf05b2152811f7e797c26565161dd2f3f81))
+
+
+
+
+
+## [2.38.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.6...netlify-cms-core@2.38.7) (2021-03-11)
+
+
+### Bug Fixes
+
+* entry disappears from workflow screen on failing to merge pull request ([#5085](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5085)) ([20e89cc](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/20e89cc5e2d90821c5fa7bb9d455597c0a3e9d80))
+* field based media_folder ([#5095](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5095)) ([c64f8f7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/c64f8f720c071f342f52ed3ae23332bc39096893))
+
+
+
+
+
+## [2.38.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.5...netlify-cms-core@2.38.6) (2021-03-11)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
 ## [2.38.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.38.4...netlify-cms-core@2.38.5) (2021-02-25)
 
 

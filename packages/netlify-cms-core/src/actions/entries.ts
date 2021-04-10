@@ -771,7 +771,6 @@ interface DraftEntryData {
 
 export function createEmptyDraftData(
   fields: EntryFields,
-  withNameKey = true,
   skipField: (field: EntryField) => boolean = () => false,
 ) {
   return fields.reduce(
@@ -795,36 +794,27 @@ export function createEmptyDraftData(
         return [[{}], {}].some(e => isEqual(val, e));
       }
 
-      if (List.isList(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(subfields as EntryFields, withNameKey, skipField)]
-          : createEmptyDraftData(subfields as EntryFields, withNameKey, skipField);
-        if (!isEmptyDefaultValue(subDefaultValue)) {
-          acc[name] = subDefaultValue;
-        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
-          // allow setting an empty list as a default
+      const hasSubfields = List.isList(subfields) || Map.isMap(subfields);
+      if (hasSubfields) {
+        if (list && List.isList(defaultValue)) {
           acc[name] = defaultValue;
-        }
-        return acc;
-      }
+        } else {
+          const asList = List.isList(subfields)
+            ? (subfields as EntryFields)
+            : List([subfields as EntryField]);
 
-      if (Map.isMap(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(List([subfields as EntryField]), false, skipField)]
-          : createEmptyDraftData(List([subfields as EntryField]), withNameKey, skipField);
-        if (!isEmptyDefaultValue(subDefaultValue)) {
-          acc[name] = subDefaultValue;
-        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
-          // allow setting an empty list as a default
-          acc[name] = defaultValue;
+          const subDefaultValue = list
+            ? [createEmptyDraftData(asList, skipField)]
+            : createEmptyDraftData(asList, skipField);
+
+          if (!isEmptyDefaultValue(subDefaultValue)) {
+            acc[name] = subDefaultValue;
+          }
         }
         return acc;
       }
 
       if (defaultValue !== null) {
-        if (!withNameKey) {
-          return defaultValue;
-        }
         acc[name] = defaultValue;
       }
 
@@ -843,7 +833,7 @@ function createEmptyDraftI18nData(collection: Collection, dataFields: EntryField
     return field.get(I18N) !== I18N_FIELD.DUPLICATE && field.get(I18N) !== I18N_FIELD.TRANSLATE;
   }
 
-  const i18nData = createEmptyDraftData(dataFields, true, skipField);
+  const i18nData = createEmptyDraftData(dataFields, skipField);
   return duplicateDefaultI18nFields(collection, i18nData);
 }
 
@@ -852,7 +842,12 @@ export function getMediaAssets({ entry }: { entry: EntryMap }) {
   const assets = filesArray
     .filter(file => file.get('draft'))
     .map(file =>
-      createAssetProxy({ path: file.get('path'), file: file.get('file'), url: file.get('url') }),
+      createAssetProxy({
+        path: file.get('path'),
+        file: file.get('file'),
+        url: file.get('url'),
+        field: file.get('field'),
+      }),
     );
 
   return assets;
@@ -1020,7 +1015,7 @@ export function validateMetaField(
     }
     const sanitizedPath = (value as string)
       .split('/')
-      .map(getProcessSegment(state.config.get('slug')))
+      .map(getProcessSegment(state.config.slug))
       .join('/');
 
     if (value !== sanitizedPath) {

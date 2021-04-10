@@ -5,7 +5,7 @@ description: >-
   Netlify CMS, the open source, headless CMS that provides a user-friendly UI
   around your Git repository, can now be used with GitLab in addition to
   GitHub.
-date: '2018-06-13'
+date: 2018-06-13T00:00:10.000Z
 ---
 Netlify CMS is releasing support for GitLab as a backend, creating the world's first completely open source stack for Git-based content editing.
 

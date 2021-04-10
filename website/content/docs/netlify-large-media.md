@@ -32,7 +32,7 @@ In repositories enabled with Netlify Large Media, Netlify CMS will use the image
 
 You can disable the automatic image transformations with the `use_large_media_transforms_in_media_library` configuration setting, nested under `backend` in the CMS `config.yml` file:
 
-```
+```yaml
 backend:
   name: git-gateway
   ## Set to false to prevent transforming images in media gallery view

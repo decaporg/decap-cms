@@ -70,7 +70,7 @@ You can build whatever collections and content modeling you want. The important 
 
 In your root directory, you can create a new directory `content/`. As you might guess, this is where our content will live. Your filesystem should look about like this, so far:
 
-```sh
+```bash
 root/
 ├ content/
 ├ components/
