@@ -95,7 +95,7 @@ function generateHits(length) {
 }
 
 const simpleFileCollectionHits = [
-  { data: { categories: ['category 1', 'category 2', 'category 3'] } },
+  { data: { categories: ['category 1', 'category 2'] } },
 ];
 
 const nestedFileCollectionHits = [
