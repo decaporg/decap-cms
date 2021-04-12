@@ -1,11 +1,23 @@
-# Docs coming soon!
+# Backend Github
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+This is `github graphql` file manager.
 
-In the meantime, you can:
+## Has `scripts`, `Api`, `GraphQLApi`, `Backend` and `AuthenticationPage`.
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-backend-github/README.md)!
+`Api` - wrapper for github `REST-API`.
+
+`GraphQLApi` - `Api` with `ApolloClient`.
+
+`Scripts` create `src/fragmentTypes.js` by fetch github graphql schema.
+
+`AuthenticationPage` is component for [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) login by:
+- netlify
+- or fork repo.
+
+`Backend` is domain-specific file manager based on `Api`.
+
+Look at tests or types for more info.
+
+## What `domain-specific file manager` mean?
+
+Look at [lib-util](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) for interface description.

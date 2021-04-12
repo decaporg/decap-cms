@@ -1,11 +1,20 @@
-# Docs coming soon!
+# Backend Test
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+This is `in-memory` file manager.
 
-In the meantime, you can:
+## Has `Backend` and `AuthenticationPage`.
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-backend-test/README.md)!
+`AuthenticationPage` is component which allow skip `login screen` for demo purposes.
+
+`Backend` is domain-specific file manager based on simple JS objects:
+
+```js
+window.repoFiles // json file-system three
+window.repoFilesUnpublished // flat file list
+```
+
+Look at tests or types for more info.
+
+## What `domain-specific file manager` mean?
+
+Look at [lib-util](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) for interface description.

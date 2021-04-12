@@ -9,3 +9,7 @@ In the meantime, you can:
    site](https://www.netlifycms.org) for more info.
 2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
 3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-lib-util/README.md)!
+
+## Domain-specific file manager
+
+Known as `Implementation` - abstract type for all `Backend` in `netlify-cms-backend-*`. It is a set of high-level methods for managing the Repository and Media files.

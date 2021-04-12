@@ -1,11 +1,18 @@
-# Docs coming soon!
+# Backend Azure
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+This is `azure REST-API` file manager.
 
-In the meantime, you can:
+## Has `Api`, `Backend` and `AuthenticationPage`.
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-backend-azure/README.md)!
+`Api` - wrapper for azure `REST-API`.
+
+`AuthenticationPage` is component for [lib-auth](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-lib-auth/README.md) login by:
+- azure app endpoint, from `config.backend`.
+
+`Backend` is domain-specific file manager based on `Api`.
+
+Look at tests or types for more info.
+
+## What `domain-specific file manager` mean?
+
+Look at [lib-util](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-lib-util/README.md) for interface description.

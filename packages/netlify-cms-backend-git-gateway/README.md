@@ -1,11 +1,20 @@
-# Docs coming soon!
+# Git gateway
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+This is `all git backends with Netlify` file manager.
 
-In the meantime, you can:
+## Has `Api`, `Backend` and `AuthenticationPage`.
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-backend-git-gateway/README.md)!
+`Api` and `Backend` from backend-[github](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/README.md)/[gitlab](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/README.md)/[bitbacket](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbacket/README.md) extended with Netlify-specific `LargeMedia(LFS)` and `JWT` auth.
+
+`Backend` is domain-specific file manager based on `Api`.
+
+`AuthenticationPage` is component for login by:
+- `window.netlifyIdentity`
+- or [GoTrue](https://github.com/netlify/gotrue-js) with `config.backend.identity_url` from `Backend`.
+
+Look at tests or types for more info.
+
+## What `domain-specific file manager` mean?
+
+Look at [lib-util](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) for interface description.
+
