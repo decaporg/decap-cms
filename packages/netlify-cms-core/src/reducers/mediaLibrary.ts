@@ -261,7 +261,6 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const entryFiles = entryDraft
       .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
       .toJS() as MediaFile[];
-    console.log(entryFiles);
     const entry = entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
