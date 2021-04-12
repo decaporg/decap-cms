@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import uuid from 'uuid/v4';
 import {
   MEDIA_LIBRARY_OPEN,
@@ -26,9 +26,11 @@ import {
   State,
   MediaLibraryInstance,
   MediaFile,
+  MediaFileMap,
   DisplayURLState,
   EntryField,
 } from '../types/redux';
+import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;
@@ -227,7 +229,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state;
   }
 }
-export function getStartingMediaFolder(state: State, field?: EntryField) {
+export function getInitialMediaFolder(state: State, field?: EntryField) {
   const { entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = state.collections.get(entry?.get('collection'));
@@ -235,8 +237,7 @@ export function getStartingMediaFolder(state: State, field?: EntryField) {
   if (integration) {
     return null;
   }
-  const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
-  return mediaFolder;
+  return selectMediaFolder(state.config, collection, entry, field);
 }
 
 export function getMediaFolderNavDisabled(state: State, field?: EntryField) {
@@ -244,17 +245,39 @@ export function getMediaFolderNavDisabled(state: State, field?: EntryField) {
   const { entryDraft } = state;
   const entry = entryDraft.get('entry');
   const collection = state.collections.get(entry?.get('collection'));
-  if (field && field.has('disable_media_folder_navigation')) {
-    disableMediaFolderNav = field.get('disable_media_folder_navigation', true);
-  } else if (collection && collection.has('disable_media_folder_navigation')) {
-    disableMediaFolderNav = collection.get('disable_media_folder_navigation', true);
+  if (field && field.has('media_folder')) {
+    disableMediaFolderNav = field.get('media_folder') ? true : false;
+  } else if (collection && collection.has('media_folder')) {
+    disableMediaFolderNav = collection.get('media_folder') ? true : false;
   }
   return disableMediaFolderNav;
 }
-
-export function selectMediaFiles(state: State) {
-  const { mediaLibrary } = state;
-  return mediaLibrary.get('files') || [];
+export function selectMediaFiles(state: State, field?: EntryField) {
+  const { mediaLibrary, entryDraft } = state;
+  const editingDraft = selectEditingDraft(state.entryDraft);
+  const integration = selectIntegration(state, null, 'assetStore');
+  let files;
+  if (editingDraft && !integration) {
+    const entryFiles = entryDraft
+      .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
+      .toJS() as MediaFile[];
+    console.log(entryFiles);
+    const entry = entryDraft.get('entry');
+    const collection = state.collections.get(entry?.get('collection'));
+    const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
+    const uniqMediaFiles: MediaFile[] = [];
+    entryFiles.concat(mediaLibrary.get('files') || []).forEach(mediaFile => {
+      if (!(uniqMediaFiles.find(uniqueMediaFile => uniqueMediaFile.id === mediaFile.id))) {
+        uniqMediaFiles.push(mediaFile);
+      }
+    });
+    files = uniqMediaFiles
+      .filter(f => f.path.startsWith(mediaFolder))
+      .map(file => ({ key: file.id, ...file }))
+  } else {
+    files = mediaLibrary.get('files') || [];
+  }
+  return files;
 }
 
 export function selectMediaFileByPath(state: State, path: string) {

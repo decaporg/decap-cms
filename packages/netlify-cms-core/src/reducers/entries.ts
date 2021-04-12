@@ -783,8 +783,7 @@ export function selectMediaFilePublicPath(
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
-  const mediaFolder = config['media_folder']!;
-  const relativePath = `/${mediaPath}`.replace(mediaFolder, '');
+
   const name = 'public_folder';
   let publicFolder = config[name]!;
 
@@ -793,8 +792,7 @@ export function selectMediaFilePublicPath(
   if (customFolder) {
     publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
   }
-
-  return join(publicFolder, relativePath);
+  return join(publicFolder, basename(mediaPath));
 }
 
 export function selectEditingDraft(state: EntryDraft) {

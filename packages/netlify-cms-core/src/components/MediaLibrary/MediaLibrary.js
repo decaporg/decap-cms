@@ -16,7 +16,7 @@ import {
 } from 'Actions/mediaLibrary';
 import {
   selectMediaFiles,
-  getStartingMediaFolder,
+  getInitialMediaFolder,
   getMediaFolderNavDisabled,
 } from 'Reducers/mediaLibrary';
 import { dirname } from 'path';
@@ -201,8 +201,8 @@ class MediaLibrary extends React.Component {
     event.persist();
     event.stopPropagation();
     event.preventDefault();
-    const { defaultMediaFolder } = this.props;
-    const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
+    const { initialMediaFolder } = this.props;
+    const currentMediaFolder = this.state.currentMediaFolder || initialMediaFolder;
     const { persistMedia, privateUpload, config, t, field } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
@@ -372,12 +372,12 @@ class MediaLibrary extends React.Component {
       privateUpload,
       displayURLs,
       defaultMediaFolder,
-      startingMediaFolder,
+      initialMediaFolder,
       mediaFolderNavDisabled,
       t,
     } = this.props;
 
-    const currentMediaFolder = this.state.currentMediaFolder || startingMediaFolder;
+    const currentMediaFolder = this.state.currentMediaFolder || initialMediaFolder;
     const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
     const currentDirFolders = (currentDirFiles || []).filter(file => file.isDirectory);
     const currentDirFilesOrderedByTreeType = currentDirFolders.concat(
@@ -433,7 +433,7 @@ function mapStateToProps(state) {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
     files: selectMediaFiles(state, field),
-    startingMediaFolder: getStartingMediaFolder(state, field),
+    initialMediaFolder: getInitialMediaFolder(state, field),
     mediaFolderNavDisabled: getMediaFolderNavDisabled(state, field),
     displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
