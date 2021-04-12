@@ -5,7 +5,7 @@ import { Async as AsyncSelect } from 'react-select';
 import { find, isEmpty, last, debounce, get, uniqBy } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 import { FixedSizeList } from 'react-window';
 
 function Option({ index, style, data }) {
@@ -95,6 +95,26 @@ export default class RelationControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
+  };
+
+  isValid = () => {
+    const { field, value, t } = this.props;
+    const min = field.get('min');
+    const max = field.get('max');
+
+    if (!this.isMultiple()) {
+      return { error: false };
+    }
+
+    const error = validations.validateMinMax(
+      t,
+      field.get('label', field.get('name')),
+      value,
+      min,
+      max,
+    );
+
+    return error ? { error } : { error: false };
   };
 
   shouldComponentUpdate(nextProps) {

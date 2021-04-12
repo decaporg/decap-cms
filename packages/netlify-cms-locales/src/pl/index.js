@@ -74,8 +74,8 @@ const pl = {
         max: '%{fieldLabel} musi być %{maxValue} lub mniej.',
         rangeCount: '%{fieldLabel} musi mieć od %{minCount} do %{maxCount} elementów',
         rangeCountExact: '%{fieldLabel} musi mieć %{count} elementów',
-        minCount: '%{fieldLabel} musi mieć przynajmniej %{minCount} elementów',
-        maxCount: '%{fieldLabel} może mieć maksymalnie %{maxCount} elementów',
+        rangeMin: '%{fieldLabel} musi mieć przynajmniej %{minCount} elementów',
+        rangeMax: '%{fieldLabel} może mieć maksymalnie %{maxCount} elementów',
       },
     },
     editor: {

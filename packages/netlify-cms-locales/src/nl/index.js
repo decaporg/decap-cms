@@ -85,8 +85,8 @@ const nl = {
         max: '%{fieldLabel} moet hoogstens %{maxValue} bevatten.',
         rangeCount: '%{fieldLabel} moet tussen %{minCount} en %{maxCount} item(s) bevatten.',
         rangeCountExact: '%{fieldLabel} moet exact %{count} item(s) bevatten.',
-        minCount: '%{fieldLabel} moet tenminste %{minCount} item(s) bevatten.',
-        maxCount: '%{fieldLabel} moet hoogstens %{maxCount} item(s) bevatten.',
+        rangeMin: '%{fieldLabel} moet tenminste %{minCount} item(s) bevatten.',
+        rangeMax: '%{fieldLabel} moet hoogstens %{maxCount} item(s) bevatten.',
       },
       i18n: {
         writingInLocale: '%{locale} aan het bewerken',

@@ -133,7 +133,6 @@ const numberFieldsHits = [
     },
   },
 ];
-
 class RelationController extends React.Component {
   state = {
     value: this.props.value,
