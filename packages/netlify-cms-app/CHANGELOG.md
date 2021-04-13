@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.42](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.41...netlify-cms-app@2.14.42) (2021-04-13)
+
+
+### Bug Fixes
+
+* add missing dependencies ([#5265](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5265)) ([1e12e20](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/1e12e208d4a797dff2031d8b52369cf14a39cfeb))
+
+
+
+
+
 ## [2.14.41](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.40...netlify-cms-app@2.14.41) (2021-04-13)
 
 **Note:** Version bump only for package netlify-cms-app
