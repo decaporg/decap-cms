@@ -30,6 +30,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
+    "codemirror": "^5.46.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
