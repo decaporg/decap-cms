@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.30.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.29.2...netlify-cms-locales@1.30.0) (2021-04-13)
+
+
+### Features
+
+* add min and max fields to relation widget (resolves [#5026](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5026)) ([#5238](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5238)) ([fe117e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/fe117e472e18079e4f65ca2dfa5c258040cf93f9))
+
+
+
+
+
 ## [1.29.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.29.1...netlify-cms-locales@1.29.2) (2021-04-07)
 
 
