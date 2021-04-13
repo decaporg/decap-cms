@@ -372,7 +372,7 @@ export default class API {
 
     return `${CMS_BRANCH_PREFIX}/${collection}`;
   }
-  
+
   checkMetadataRef() {
     return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms`)
       .then(response => response.object)
