@@ -12,6 +12,14 @@ const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
 `;
 
+const clientSideAuthenticators = {
+  pkce: ({ base_url, auth_endpoint, app_id, auth_token_endpoint }) =>
+    new PkceAuthenticator({ base_url, auth_endpoint, app_id, auth_token_endpoint }),
+
+  implicit: ({ base_url, auth_endpoint, app_id, clearHash }) =>
+    new ImplicitAuthenticator({ base_url, auth_endpoint, app_id, clearHash }),
+};
+
 export default class GitLabAuthenticationPage extends React.Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
@@ -34,29 +42,15 @@ export default class GitLabAuthenticationPage extends React.Component {
       app_id = '',
     } = this.props.config.backend;
 
-    if (authType === 'implicit') {
-      this.auth = new ImplicitAuthenticator({
-        base_url,
-        auth_endpoint,
-        app_id,
-        clearHash: this.props.clearHash,
-      });
-      // Complete implicit authentication if we were redirected back to from the provider.
-      this.auth.completeAuth((err, data) => {
-        if (err) {
-          this.setState({ loginError: err.toString() });
-          return;
-        }
-        this.props.onLogin(data);
-      });
-    } else if (authType === 'pkce') {
-      console.log('pkce');
-      this.auth = new PkceAuthenticator({
+    if (clientSideAuthenticators[authType]) {
+      this.auth = clientSideAuthenticators[authType]({
         base_url,
         auth_endpoint,
         app_id,
         auth_token_endpoint: 'oauth/token',
+        clearHash: this.props.clearHash,
       });
+      // Complete implicit authentication if we were redirected back to from the provider.
       this.auth.completeAuth((err, data) => {
         if (err) {
           this.setState({ loginError: err.toString() });

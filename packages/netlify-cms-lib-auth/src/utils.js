@@ -1,4 +1,5 @@
 import uuid from 'uuid/v4';
+
 export function createNonce() {
   const nonce = uuid();
   window.sessionStorage.setItem('netlify-cms-auth', JSON.stringify({ nonce }));

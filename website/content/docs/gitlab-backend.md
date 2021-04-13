@@ -11,7 +11,7 @@ The GitLab API allows for three types of OAuth2 flows:
 
 * [Authorization Code Flow](https://docs.gitlab.com/ce/api/oauth2.html#authorization-code-flow), which works much like the GitHub OAuth flow described above.
 * [Authorization Code with PKCE Flow](https://docs.gitlab.com/ce/api/oauth2.html#authorization-code-with-proof-key-for-code-exchange-pkce), which operates *without* the need for an authentication server.
-* DEPRECATED! [Implicit Grant Flow](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant-flow), which operates *without* the need for an authentication server.
+* (DEPRECATED [Implicit Grant Flow](https://docs.gitlab.com/ce/api/oauth2.html#implicit-grant-flow), which operates *without* the need for an authentication server.
 
 ## Authorization Code Flow with Netlify
 
@@ -30,7 +30,7 @@ backend:
 ```
 
 
-## Client-Side PKCE Authorization (GitLab) 
+## Client-Side PKCE Authorization
 
 With GitLab's PKCE authorization, users can authenticate with GitLab directly from the client. To do this:
 
@@ -58,11 +58,7 @@ With GitLab's PKCE authorization, users can authenticate with GitLab directly fr
      auth_endpoint: oauth/authorize
    ```
 
-**Note:** In both cases, GitLab also provides you with a client secret. You should *never* store this in your repo or reveal it in the client.
-
-
-
-## DEPRECATED! Client-Side Implicit Grant (GitLab) 
+## (DEPRECATED) Client-Side Implicit Grant
 
 **Note:** This method is not recommended and will be deprecated both [by GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) and [in the OAuth 2.1 specification](https://oauth.net/2.1/) in the future.
 
@@ -92,4 +88,4 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
      auth_endpoint: oauth/authorize
    ```
 
-**Note:** In both cases, GitLab also provides you with a client secret. You should *never* store this in your repo or reveal it in the client.
+**Note:** In all cases, GitLab also provides you with a client secret. You should *never* store this in your repo or reveal it in the client.
