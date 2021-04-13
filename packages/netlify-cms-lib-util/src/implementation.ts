@@ -94,6 +94,7 @@ export type Config = {
     repo?: string | null;
     open_authoring?: boolean;
     always_fork?: boolean;
+    single_branch_per_collection?: boolean;
     branch?: string;
     api_root?: string;
     squash_merges?: boolean;

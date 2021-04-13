@@ -48,6 +48,7 @@ export interface Config {
   token?: string;
   branch?: string;
   useOpenAuthoring?: boolean;
+  singleBranchPerCollection?: boolean;
   repo?: string;
   originRepo?: string;
   squashMerges: boolean;
@@ -171,6 +172,7 @@ export default class API {
   token: string;
   branch: string;
   useOpenAuthoring?: boolean;
+  singleBranchPerCollection?: boolean;
   repo: string;
   originRepo: string;
   repoOwner: string;
@@ -193,6 +195,7 @@ export default class API {
     this.token = config.token || '';
     this.branch = config.branch || 'master';
     this.useOpenAuthoring = config.useOpenAuthoring;
+    this.singleBranchPerCollection = config.singleBranchPerCollection;
     this.repo = config.repo || '';
     this.originRepo = config.originRepo || this.repo;
     this.repoURL = `/repos/${this.repo}`;
@@ -360,6 +363,16 @@ export default class API {
     return parseContentKey(contentKey.substring(this.repo.length + 1));
   }
 
+  branchFromContentKey(contentKey: string) {
+    if (!this.singleBranchPerCollection) {
+      return branchFromContentKey(contentKey);
+    }
+
+    const { collection } = this.parseContentKey(contentKey);
+
+    return `${CMS_BRANCH_PREFIX}/${collection}`;
+  }
+  
   checkMetadataRef() {
     return this.request(`${this.repoURL}/git/refs/meta/_netlify_cms`)
       .then(response => response.object)
@@ -570,7 +583,7 @@ export default class API {
 
   async retrieveUnpublishedEntryData(contentKey: string) {
     const { collection, slug } = this.parseContentKey(contentKey);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
     const diffs = await Promise.all(files.map(file => this.diffFromFile(file)));
@@ -850,7 +863,7 @@ export default class API {
    */
   async getStatuses(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const sha = pullRequest.head.sha;
     const resp: { statuses: GitHubCommitStatus[] } = await this.request(
@@ -954,7 +967,7 @@ export default class API {
     options: PersistOptions,
   ) {
     const contentKey = this.generateContentKey(options.collectionName as string, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
     if (!unpublished) {
       const branchData = await this.getDefaultBranch();
@@ -1098,7 +1111,7 @@ export default class API {
 
   async updateUnpublishedEntryStatus(collectionName: string, slug: string, newStatus: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
 
     if (!this.useOpenAuthoring) {
@@ -1117,7 +1130,7 @@ export default class API {
           await this.openPR(pullRequest.number);
         }
       } else if (newStatus === 'pending_review') {
-        const branch = branchFromContentKey(contentKey);
+        const branch = this.branchFromContentKey(contentKey);
         // get the first commit message as the pr title
         const diff = await this.getDifferences(this.branch, await this.getHeadReference(branch));
         const title = diff.commits[0]?.commit?.message || API.DEFAULT_COMMIT_MESSAGE;
@@ -1128,7 +1141,7 @@ export default class API {
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
     if (pullRequest.number !== MOCK_PULL_REQUEST) {
@@ -1139,7 +1152,7 @@ export default class API {
 
   async publishUnpublishedEntry(collectionName: string, slug: string) {
     const contentKey = this.generateContentKey(collectionName, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
     await this.mergePR(pullRequest);
@@ -1445,7 +1458,7 @@ export default class API {
 
   async getUnpublishedEntrySha(collection: string, slug: string) {
     const contentKey = this.generateContentKey(collection, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     return pullRequest.head.sha;
   }

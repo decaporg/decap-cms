@@ -68,6 +68,7 @@ export default class GitHub implements Implementation {
   openAuthoringEnabled: boolean;
   useOpenAuthoring?: boolean;
   alwaysForkEnabled: boolean;
+  singleBranchPerCollection: boolean;
   branch: string;
   apiRoot: string;
   mediaFolder: string;
@@ -111,6 +112,7 @@ export default class GitHub implements Implementation {
       this.repo = this.originRepo = config.backend.repo || '';
     }
     this.alwaysForkEnabled = config.backend.always_fork || false;
+    this.singleBranchPerCollection = config.backend.single_branch_per_collection || false;
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
@@ -305,6 +307,7 @@ export default class GitHub implements Implementation {
       squashMerges: this.squashMerges,
       cmsLabelPrefix: this.cmsLabelPrefix,
       useOpenAuthoring: this.useOpenAuthoring,
+      singleBranchPerCollection: this.singleBranchPerCollection,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
     });
     const user = await this.api!.user();
