@@ -16,7 +16,8 @@ To enable basic GitHub authentication:
 backend:
   name: github
   repo: owner-name/repo-name # Path to your GitHub repository
-  branch: main
+  # optional, defaults to master
+  # branch: main
 ```
 
 ## Specifying a status for deploy previews
