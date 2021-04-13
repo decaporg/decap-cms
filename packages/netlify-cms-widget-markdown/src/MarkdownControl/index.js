@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 
@@ -11,7 +11,7 @@ const MODE_STORAGE_KEY = 'cms.md-mode';
 // be handled through Redux and a separate registry store for instances
 let editorControl;
 // eslint-disable-next-line func-style
-let _getEditorComponents = () => [];
+let _getEditorComponents = () => Map();
 
 export function getEditorControl() {
   return editorControl;
