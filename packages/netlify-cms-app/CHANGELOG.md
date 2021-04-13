@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.43](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.42...netlify-cms-app@2.14.43) (2021-04-13)
+
+
+### Bug Fixes
+
+* add missing code codemirror deps ([#5267](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5267)) ([0aa7766](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/0aa7766ad6584961e09805825d46551aebfab6a2))
+
+
+
+
+
 ## [2.14.42](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.41...netlify-cms-app@2.14.42) (2021-04-13)
 
 
