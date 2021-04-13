@@ -1,9 +1,8 @@
 ---
-title: GitHub
 group: Accounts
 weight: 30
+title: GitHub
 ---
-
 For repositories stored on GitHub, the `github` backend allows CMS users to log in directly with their GitHub account. Note that all users must have push access to your content repository for this to work.
 
 Because Github [requires a server](https://github.com/netlify/netlify-cms/issues/663#issuecomment-335023723) for authentication, Netlify facilitates basic GitHub authentication.
@@ -17,6 +16,7 @@ To enable basic GitHub authentication:
 backend:
   name: github
   repo: owner-name/repo-name # Path to your GitHub repository
+  branch: main
 ```
 
 ## Specifying a status for deploy previews
