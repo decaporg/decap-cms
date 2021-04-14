@@ -8855,10 +8855,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.14.44:
-  version "2.14.44"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.44.tgz#84ff164050a3e99a26bb708fa50d3b9cc62d98e3"
-  integrity sha512-RhwVFVwgv39UY5cYCXwO6DRUqZAIBwAQ6CrHCXyBc+QbbMrPhu7jjBupxnV/VWDeMjDeNGuysvBtQhl9fM0HoQ==
+netlify-cms-app@^2.14.45:
+  version "2.14.45"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.45.tgz#5eb8aabe6ea139701e578037753e4c7892f7c4c6"
+  integrity sha512-aThoee8+i5yq3aQn/BwMne7WqwZgGUZ+pdiWTH72Po4Wnrbe2oCLtj823jXiH7IU1lu93uAkNViZes5gblTmNw==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
