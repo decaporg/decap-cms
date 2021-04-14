@@ -8,9 +8,7 @@ Netlify's [gateway](https://github.com/netlify/git-gateway) to hosted git APIs.
 
 `Api` and `Implementation` from backend-[github](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/README.md)/[gitlab](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/README.md)/[bitbacket](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbacket/README.md) extended with Netlify-specific `LargeMedia(LFS)` and `JWT` auth.
 
-`AuthenticationPage` - A component uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and facilitates authentication flows for:
-- `window.netlifyIdentity`
-- or [GoTrue](https://github.com/netlify/gotrue-js) with `config.backend.identity_url` from `Implementation`.
+`AuthenticationPage` - uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and implements Netlify Identity authentication flow.
 
 Look at tests or types for more info.
 

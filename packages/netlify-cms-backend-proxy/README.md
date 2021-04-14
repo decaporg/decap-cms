@@ -4,6 +4,6 @@ Facilitates [local development](https://www.netlifycms.org/docs/beta-features/#w
 
 ## Code structure
 
-`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md). Just `RPC` wrapper for `proxyUrl`.
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md). An `RPC` wrapper for `netlify-cms-proxy-server`.
 
-`AuthenticationPage` - A component, not specific.
+`AuthenticationPage` - a mock authentication page

@@ -8,9 +8,6 @@ An abstraction layer between the CMS and [Bitbucket](https://docs.microsoft.com/
 
 `Api` - A wrapper for Bitbucket REST API.
 
-`AuthenticationPage` - A component uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and facilitates authentication flows for:
-- bitbucket
-- netlify
-- or custom bitbucket endpoint, from `config.backend`.
+`AuthenticationPage` - uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) to facilitate OAuth and implicit authentication.
 
 Look at tests or types for more info.

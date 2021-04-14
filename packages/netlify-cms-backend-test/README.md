@@ -8,7 +8,7 @@ Used for demo purposes only.
 `Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on simple JS objects:
 
 ```js
-window.repoFiles // json file-system three
+window.repoFiles // json file-system tree
 window.repoFilesUnpublished // flat file list
 ```
 

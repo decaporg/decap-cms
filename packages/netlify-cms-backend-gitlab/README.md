@@ -8,9 +8,6 @@ An abstraction layer between the CMS and [GitLab](https://docs.gitlab.com/ee/api
 
 `Api` - A wrapper for GitLab REST API.
 
-`AuthenticationPage` - A component uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and facilitates authentication flows for:
-- gitlab
-- netlify
-- or custom gitlab endpoint, from `config.backend`.
+`AuthenticationPage` - A component uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) to facilitate OAuth, PKCE and implicit authentication.
 
 Look at tests or types for more info.
