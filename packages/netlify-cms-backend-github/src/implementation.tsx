@@ -610,7 +610,7 @@ export default class GitHub implements Implementation {
 
   getBranch(collection: string, slug: string) {
     const contentKey = this.api!.generateContentKey(collection, slug);
-    const branch = branchFromContentKey(contentKey);
+    const branch = this.api!.branchFromContentKey(contentKey);
     return branch;
   }
 

@@ -369,7 +369,6 @@ export default class API {
     }
 
     const { collection } = this.parseContentKey(contentKey);
-
     return `${CMS_BRANCH_PREFIX}/${collection}`;
   }
 
