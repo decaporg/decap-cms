@@ -1,11 +1,26 @@
-# Docs coming soon!
+# Git Gateway
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+Netlify's [gateway](https://github.com/netlify/git-gateway) to hosted git APIs.
 
-In the meantime, you can:
+## Code structure
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-backend-git-gateway/README.md)!
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on `Api`.
+
+`Api` and `Implementation` from backend-[github](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/README.md)/[gitlab](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/README.md)/[bitbacket](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbacket/README.md) extended with Netlify-specific `LargeMedia(LFS)` and `JWT` auth.
+
+`AuthenticationPage` - uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and implements Netlify Identity authentication flow.
+
+Look at tests or types for more info.
+
+## Debugging
+
+When debugging the CMS with Git Gateway you must:
+
+1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&stack=cms)
+2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
+
+    1. Open `http://localhost:8080/` in the browser
+    2. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
+    3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
+    4. Refresh the page
+    5. You should be able to log in via your Netlify Identity email/password
