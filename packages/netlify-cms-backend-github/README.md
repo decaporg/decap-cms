@@ -1,23 +1,19 @@
-# Backend Github
+# Github backend
 
-This is `github graphql` file manager.
+An abstraction layer between the CMS and [Github](https://docs.github.com/en/rest)
 
-## Has `scripts`, `Api`, `GraphQLApi`, `Backend` and `AuthenticationPage`.
+## Code structure
 
-`Api` - wrapper for github `REST-API`.
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on `Api`.
 
-`GraphQLApi` - `Api` with `ApolloClient`.
+`Api` - A wrapper for Github REST API.
 
-`Scripts` create `src/fragmentTypes.js` by fetch github graphql schema.
+`GraphQLApi` - `Api` with `ApolloClient`. [Api docs](https://docs.github.com/en/graphql) and [netlify docs](https://www.netlifycms.org/docs/beta-features/#github-graphql-api).
 
-`AuthenticationPage` is component for [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) login by:
+`AuthenticationPage` -  A component uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and facilitates authentication flows for:
 - netlify
 - or fork repo.
 
-`Backend` is domain-specific file manager based on `Api`.
+`Scripts` create `src/fragmentTypes.js` by fetch Github graphql schema.
 
 Look at tests or types for more info.
-
-## What `domain-specific file manager` mean?
-
-Look at [lib-util](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) for interface description.

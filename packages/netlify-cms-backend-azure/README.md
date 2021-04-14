@@ -1,18 +1,13 @@
-# Backend Azure
+# Azure backend
 
-This is `azure REST-API` file manager.
+An abstraction layer between the CMS and [Azure DevOps](https://docs.microsoft.com/en-us/rest/api/azure/devops/git/)
 
-## Has `Api`, `Backend` and `AuthenticationPage`.
+## Code structure
 
-`Api` - wrapper for azure `REST-API`.
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on `Api`.
 
-`AuthenticationPage` is component for [lib-auth](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-lib-auth/README.md) login by:
-- azure app endpoint, from `config.backend`.
+`Api` - A wrapper for Azure REST API.
 
-`Backend` is domain-specific file manager based on `Api`.
+`AuthenticationPage` - A component facilitates Azure authentication flow. Uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md).
 
 Look at tests or types for more info.
-
-## What `domain-specific file manager` mean?
-
-Look at [lib-util](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-lib-util/README.md) for interface description.

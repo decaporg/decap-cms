@@ -1,20 +1,17 @@
-# Backend Test
+# Test backend
 
-This is `in-memory` file manager.
+The backend behind https://cms-demo.netlify.com/.
+Used for demo purposes only.
 
-## Has `Backend` and `AuthenticationPage`.
+## Code structure
 
-`AuthenticationPage` is component which allow skip `login screen` for demo purposes.
-
-`Backend` is domain-specific file manager based on simple JS objects:
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on simple JS objects:
 
 ```js
 window.repoFiles // json file-system three
 window.repoFilesUnpublished // flat file list
 ```
 
+`AuthenticationPage` - A component which allow skip `login screen` for demo purposes.
+
 Look at tests or types for more info.
-
-## What `domain-specific file manager` mean?
-
-Look at [lib-util](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) for interface description.

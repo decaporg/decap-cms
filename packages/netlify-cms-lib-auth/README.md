@@ -1,3 +1,3 @@
-# Backend Lib Auth
+# Lib Auth
 
-This is auth router for `AuthenticationPage` in `netlify-cms-backend-*`.
+Shared components to handle OAuth and implicit authentication flows.

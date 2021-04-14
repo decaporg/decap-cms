@@ -1,20 +1,16 @@
-# Backend Gitlab
+# GitLab backend
 
-This is `gitlab REST-API` file manager.
+An abstraction layer between the CMS and [GitLab](https://docs.gitlab.com/ee/api/README.html)
 
-## Has `Api`, `Backend` and `AuthenticationPage`.
+## Code structure
 
-`Api` - wrapper for gitlab `REST-API`.
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on `Api`. With [Editorial Workflow](https://www.netlifycms.org/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support) uses merge requests labels to track unpublished entries statuses.
 
-`AuthenticationPage` is component for [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) login by:
+`Api` - A wrapper for GitLab REST API.
+
+`AuthenticationPage` - A component uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and facilitates authentication flows for:
 - gitlab
 - netlify
 - or custom gitlab endpoint, from `config.backend`.
 
-`Backend` is domain-specific file manager based on `Api`.
-
 Look at tests or types for more info.
-
-## What `domain-specific file manager` mean?
-
-Look at [lib-util](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) for interface description.

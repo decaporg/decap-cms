@@ -1,13 +1,9 @@
-# Backend Proxy
+# Proxy backend
 
-This is `RPC-proxy` file manager.
+Facilitates [local development](https://www.netlifycms.org/docs/beta-features/#working-with-a-local-git-repository).
 
-## Has `Backend` and `AuthenticationPage`.
+## Code structure
 
-`AuthenticationPage` is component, not specific.
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md). Just `RPC` wrapper for `proxyUrl`.
 
-`Backend` is domain-specific file manager. Just `RPC` wrapper for `proxyUrl`.
-
-## What `domain-specific file manager` mean?
-
-Look at [lib-util](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) for interface description.
+`AuthenticationPage` - A component, not specific.
