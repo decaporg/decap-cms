@@ -15,7 +15,7 @@ function generateVerifierCode() {
   // characters that can be used for codeVerifer
   // excludes _~ as if included would cause an uneven distribution as char.length would no longer be a factor of 256
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.';
-  const randomValues = window.crypto.getRandomValues(new Uint8Array(128));
+  const randomValues = Array.from(window.crypto.getRandomValues(new Uint8Array(128)));
   return randomValues
     .map(val => {
       return chars[val % chars.length];
