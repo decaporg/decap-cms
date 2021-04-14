@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.45](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.44...netlify-cms-app@2.14.45) (2021-04-14)
+
+
+### Bug Fixes
+
+* Revert "fix: generate esm correctly ([#5087](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5087))" ([#5271](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5271)) ([72c3765](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/72c3765ff7e04a1dadc77f49b53a2e2da0181026))
+
+
+
+
+
 ## [2.14.44](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.43...netlify-cms-app@2.14.44) (2021-04-14)
 
 **Note:** Version bump only for package netlify-cms-app
