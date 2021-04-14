@@ -612,6 +612,7 @@ type CollectionObject = {
   type: 'file_based_collection' | 'folder_based_collection';
   extension?: string;
   format?: string;
+  frontmatter_delimiter?: List<string> | string | [string, string];
   create?: boolean;
   delete?: boolean;
   identifier_field?: string;

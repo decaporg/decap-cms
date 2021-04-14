@@ -3,7 +3,15 @@ import { get } from 'lodash';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+import {
+  FrontmatterInfer,
+  frontmatterJSON,
+  frontmatterTOML,
+  frontmatterYAML,
+  Delimiter,
+} from './frontmatter';
+import { Collection, EntryObject } from '../types/redux';
+import { EntryValue } from '../valueObjects/Entry';
 
 export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
 
@@ -28,7 +36,20 @@ export const extensionFormatters = {
   html: FrontmatterInfer,
 };
 
-function formatByName(name, customDelimiter) {
+function formatByName(name: string, customDelimiter?: Delimiter) {
+  if (
+    name !== 'yml' &&
+    name !== 'yaml' &&
+    name !== 'toml' &&
+    name !== 'json' &&
+    name !== 'frontmatter' &&
+    name !== 'json-frontmatter' &&
+    name !== 'toml-frontmatter' &&
+    name !== 'yaml-frontmatter'
+  ) {
+    return FrontmatterInfer;
+  }
+
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
@@ -41,11 +62,17 @@ function formatByName(name, customDelimiter) {
   }[name];
 }
 
-export function resolveFormat(collection, entry) {
+function frontmatterDelimiterIsList(
+  frontmatterDelimiter?: Delimiter | List<string>,
+): frontmatterDelimiter is List<string> {
+  return List.isList(frontmatterDelimiter);
+}
+
+export function resolveFormat(collection: Collection, entry: EntryObject | EntryValue) {
   // Check for custom delimiter
   const frontmatter_delimiter = collection.get('frontmatter_delimiter');
-  const customDelimiter = List.isList(frontmatter_delimiter)
-    ? frontmatter_delimiter.toArray()
+  const customDelimiter = frontmatterDelimiterIsList(frontmatter_delimiter)
+    ? (frontmatter_delimiter.toArray() as [string, string])
     : frontmatter_delimiter;
 
   // If the format is specified in the collection, use that format.
@@ -58,7 +85,9 @@ export function resolveFormat(collection, entry) {
   const filePath = entry && entry.path;
   if (filePath) {
     const fileExtension = filePath.split('.').pop();
-    return get(extensionFormatters, fileExtension);
+    if (fileExtension) {
+      return get(extensionFormatters, fileExtension);
+    }
   }
 
   // If creating a new file, and an `extension` is specified in the
