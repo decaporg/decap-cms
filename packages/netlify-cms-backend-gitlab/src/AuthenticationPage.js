@@ -1,12 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { NetlifyAuthenticator, ImplicitAuthenticator } from 'netlify-cms-lib-auth';
+import {
+  NetlifyAuthenticator,
+  ImplicitAuthenticator,
+  PkceAuthenticator,
+} from 'netlify-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
 
 const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
 `;
+
+const clientSideAuthenticators = {
+  pkce: ({ base_url, auth_endpoint, app_id, auth_token_endpoint }) =>
+    new PkceAuthenticator({ base_url, auth_endpoint, app_id, auth_token_endpoint }),
+
+  implicit: ({ base_url, auth_endpoint, app_id, clearHash }) =>
+    new ImplicitAuthenticator({ base_url, auth_endpoint, app_id, clearHash }),
+};
 
 export default class GitLabAuthenticationPage extends React.Component {
   static propTypes = {
@@ -30,11 +42,12 @@ export default class GitLabAuthenticationPage extends React.Component {
       app_id = '',
     } = this.props.config.backend;
 
-    if (authType === 'implicit') {
-      this.auth = new ImplicitAuthenticator({
+    if (clientSideAuthenticators[authType]) {
+      this.auth = clientSideAuthenticators[authType]({
         base_url,
         auth_endpoint,
         app_id,
+        auth_token_endpoint: 'oauth/token',
         clearHash: this.props.clearHash,
       });
       // Complete implicit authentication if we were redirected back to from the provider.
