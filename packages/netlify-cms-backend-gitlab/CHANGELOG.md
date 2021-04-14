@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.9...netlify-cms-backend-gitlab@2.10.0) (2021-04-14)
+
+
+### Features
+
+* Adds PKCE authentication for GitLab closes [#5236](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/5236) ([#5239](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/5239)) ([829409e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/829409e0bc03b4591ee6b59d9895adc4e7190037))
+
+
+
+
+
 ## [2.9.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.8...netlify-cms-backend-gitlab@2.9.9) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-backend-gitlab
