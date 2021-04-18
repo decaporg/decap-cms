@@ -1,5 +1,6 @@
 export function sortKeys<Item extends unknown>(
   sortedKeys: string[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selector: (a: Item) => string = (a: any) => a,
 ) {
   return (a: Item, b: Item) => {
