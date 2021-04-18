@@ -10,7 +10,7 @@ import {
   frontmatterYAML,
   Delimiter,
 } from './frontmatter';
-import { Collection, EntryObject } from '../types/redux';
+import { Collection, EntryObject, Format } from '../types/redux';
 import { EntryValue } from '../valueObjects/Entry';
 
 export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
@@ -36,20 +36,7 @@ export const extensionFormatters = {
   html: FrontmatterInfer,
 };
 
-function formatByName(name: string, customDelimiter?: Delimiter) {
-  if (
-    name !== 'yml' &&
-    name !== 'yaml' &&
-    name !== 'toml' &&
-    name !== 'json' &&
-    name !== 'frontmatter' &&
-    name !== 'json-frontmatter' &&
-    name !== 'toml-frontmatter' &&
-    name !== 'yaml-frontmatter'
-  ) {
-    return FrontmatterInfer;
-  }
-
+function formatByName(name: Format, customDelimiter?: Delimiter) {
   return {
     yml: yamlFormatter,
     yaml: yamlFormatter,
