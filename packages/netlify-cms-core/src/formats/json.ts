@@ -1,9 +1,9 @@
 export default {
-  fromFile(content) {
+  fromFile(content: string) {
     return JSON.parse(content);
   },
 
-  toFile(data) {
+  toFile(data: object) {
     return JSON.stringify(data, null, 2);
   },
 };

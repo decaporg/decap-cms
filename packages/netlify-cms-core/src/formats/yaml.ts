@@ -1,7 +1,8 @@
 import yaml from 'yaml';
 import { sortKeys } from './helpers';
+import { YAMLMap, YAMLSeq, Pair, Node } from 'yaml/types';
 
-function addComments(items, comments, prefix = '') {
+function addComments(items: Array<Pair>, comments: Record<string, string>, prefix = '') {
   items.forEach(item => {
     if (item.key !== undefined) {
       const itemKey = item.key.toString();
@@ -18,7 +19,7 @@ function addComments(items, comments, prefix = '') {
 }
 
 const timestampTag = {
-  identify: value => value instanceof Date,
+  identify: (value: unknown) => value instanceof Date,
   default: true,
   tag: '!timestamp',
   test: RegExp(
@@ -29,20 +30,20 @@ const timestampTag = {
     'Z' + // Z
       '$',
   ),
-  resolve: str => new Date(str),
-  stringify: value => value.toISOString(),
-};
+  resolve: (str: string) => new Date(str),
+  stringify: (value: Node) => (value as Date).toISOString(),
+} as const;
 
 export default {
-  fromFile(content) {
+  fromFile(content: string) {
     if (content && content.trim().endsWith('---')) {
       content = content.trim().slice(0, -3);
     }
     return yaml.parse(content, { customTags: [timestampTag] });
   },
 
-  toFile(data, sortedKeys = [], comments = {}) {
-    const contents = yaml.createNode(data);
+  toFile(data: object, sortedKeys: string[] = [], comments: Record<string, string> = {}) {
+    const contents = yaml.createNode(data) as YAMLMap | YAMLSeq;
 
     addComments(contents.items, comments);
 

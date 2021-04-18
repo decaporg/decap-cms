@@ -9,6 +9,7 @@ import { Medias } from '../reducers/medias';
 import { Deploys } from '../reducers/deploys';
 import { Search } from '../reducers/search';
 import { GlobalUI } from '../reducers/globalUI';
+import { formatExtensions } from '../formats/formats';
 
 export type CmsBackendType =
   | 'azure'
@@ -597,6 +598,8 @@ type i18n = StaticallyTypedRecord<{
   default_locale: string;
 }>;
 
+export type Format = keyof typeof formatExtensions;
+
 type CollectionObject = {
   name: string;
   folder?: string;
@@ -611,7 +614,8 @@ type CollectionObject = {
   filter?: FilterRule;
   type: 'file_based_collection' | 'folder_based_collection';
   extension?: string;
-  format?: string;
+  format?: Format;
+  frontmatter_delimiter?: List<string> | string | [string, string];
   create?: boolean;
   delete?: boolean;
   identifier_field?: string;
