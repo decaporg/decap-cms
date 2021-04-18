@@ -24,4 +24,6 @@ addMatchImageSnapshotCommand({
   capture: 'viewport',
 });
 
+Cypress.on('uncaught:exception', () => false);
+
 import './commands';
