@@ -48,7 +48,10 @@ class MediaLibraryBreadcrumbs extends React.Component {
       .split('/')
       .slice(0, -1)
       .join('/');
-    var currentMediaFolderParts = trim((currentMediaFolder || '').replace(hiddenPath, ''), '/').split('/');
+    var currentMediaFolderParts = trim(
+      (currentMediaFolder || '').replace(hiddenPath, ''),
+      '/',
+    ).split('/');
     var breadcrumbsArray = currentMediaFolderParts.map((part, index) => {
       return {
         isDefaultMediaDirectory: index === 0,

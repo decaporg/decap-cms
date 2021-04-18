@@ -30,7 +30,6 @@ import {
   DisplayURLState,
   EntryField,
 } from '../types/redux';
-import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;
@@ -261,19 +260,18 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const entryFiles = entryDraft
       .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
       .toJS() as MediaFile[];
-    console.log(entryFiles);
     const entry = entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
     const uniqMediaFiles: MediaFile[] = [];
     entryFiles.concat(mediaLibrary.get('files') || []).forEach(mediaFile => {
-      if (!(uniqMediaFiles.find(uniqueMediaFile => uniqueMediaFile.id === mediaFile.id))) {
+      if (!uniqMediaFiles.find(uniqueMediaFile => uniqueMediaFile.id === mediaFile.id)) {
         uniqMediaFiles.push(mediaFile);
       }
     });
     files = uniqMediaFiles
       .filter(f => f.path.startsWith(mediaFolder))
-      .map(file => ({ key: file.id, ...file }))
+      .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
   }
