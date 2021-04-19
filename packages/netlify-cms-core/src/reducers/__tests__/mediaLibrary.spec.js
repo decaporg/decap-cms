@@ -59,6 +59,7 @@ describe('mediaLibrary', () => {
         { id: 3, path: '/static/images/posts/index.png' },
       ],
       data: {},
+      mediaLibrary: {},
     });
     const state = {
       config: {},
@@ -98,6 +99,7 @@ describe('mediaLibrary', () => {
       entryDraft: fromJS({
         entry,
       }),
+      mediaLibrary: {},
     };
 
     expect(selectMediaFiles(state, imageField)).toEqual([
