@@ -727,16 +727,31 @@ function evaluateFolder(
   return currentFolder;
 }
 
+export function getMediaFolderConfig(
+  config: CmsConfig,
+  collection: Collection | null,
+  entryMap: EntryMap | undefined,
+  field: EntryField | undefined,
+) {
+  return evaluateFolder('media_folder', config, collection!, entryMap, field);
+}
+
+export function getPublicFolderConfig(
+  config: CmsConfig,
+  collection: Collection | null,
+  entryMap: EntryMap | undefined,
+  field: EntryField | undefined,
+) {
+  return evaluateFolder('public_folder', config, collection!, entryMap, field);
+}
+
 export function selectMediaFolder(
   config: CmsConfig,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-  currentMediaFolder?: string,
 ) {
-  if (currentMediaFolder) {
-    return trim(currentMediaFolder, '/');
-  }
+
   const name = 'media_folder';
   let mediaFolder = config[name];
 
@@ -756,20 +771,31 @@ export function selectMediaFolder(
   return trim(mediaFolder, '/');
 }
 
+export function selectCurrentMediaFolder(
+  config: CmsConfig,
+  collection: Collection | null,
+  entryMap: EntryMap | undefined,
+  mediaPath: string,
+  field: EntryField | undefined,
+  ) {
+  const mediaFolder = trim(getMediaFolderConfig(config, collection, entryMap, field), '/');
+  const publicFolder = trim(getPublicFolderConfig(config, collection, entryMap, field), '/');
+  mediaPath = trim(mediaPath, '/');
+  return publicFolder ? dirname(join(mediaFolder, mediaPath.replace(publicFolder, ''))) : dirname(mediaPath);
+}
+
 export function selectMediaFilePath(
   config: CmsConfig,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   mediaPath: string,
   field: EntryField | undefined,
-  currentMediaFolder?: string,
 ) {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
 
-  const mediaFolder = selectMediaFolder(config, collection, entryMap, field, currentMediaFolder);
-
+  const mediaFolder = selectCurrentMediaFolder(config, collection, entryMap, mediaPath, field);
   return join(mediaFolder, basename(mediaPath));
 }
 
@@ -792,7 +818,14 @@ export function selectMediaFilePublicPath(
   if (customFolder) {
     publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
   }
-  return join(publicFolder, basename(mediaPath));
+
+  let mediaFolder = config['media_folder']!;
+  const customMediaFolder = hasCustomFolder('media_folder', collection, entryMap?.get('slug'), field);
+
+  if (customMediaFolder) {
+    mediaFolder = evaluateFolder('media_folder', config, collection!, entryMap, field);
+  }
+  return join(publicFolder, mediaPath.replace(trim(mediaFolder, '/'), ''));
 }
 
 export function selectEditingDraft(state: EntryDraft) {

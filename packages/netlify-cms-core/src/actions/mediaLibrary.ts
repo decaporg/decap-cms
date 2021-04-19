@@ -224,7 +224,6 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       entry,
       fileName,
       field,
-      currentMediaFolder,
     );
     const existingFile = files.find(existingFile => existingFile.path.toLowerCase() === path);
     const editingDraft = selectEditingDraft(state.entryDraft);
@@ -278,7 +277,6 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
           entry,
           fileName,
           field,
-          currentMediaFolder,
         );
         assetProxy = createAssetProxy({
           file,

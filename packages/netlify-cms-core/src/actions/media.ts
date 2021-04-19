@@ -96,7 +96,6 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
 
     const state = getState();
     const resolvedPath = selectMediaFilePath(state.config, collection, entry, path, field);
-
     let { asset, isLoading, error } = state.medias[resolvedPath] || {};
     if (isLoading) {
       return emptyAsset;
