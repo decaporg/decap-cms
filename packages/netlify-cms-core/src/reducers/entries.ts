@@ -727,22 +727,21 @@ function evaluateFolder(
   return currentFolder;
 }
 
-export function getMediaFolderConfig(
+export function selectPublicFolder(
   config: CmsConfig,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
 ) {
-  return evaluateFolder('media_folder', config, collection!, entryMap, field);
-}
+  const name = 'public_folder';
+  let publicFolder = config[name];
 
-export function getPublicFolderConfig(
-  config: CmsConfig,
-  collection: Collection | null,
-  entryMap: EntryMap | undefined,
-  field: EntryField | undefined,
-) {
-  return evaluateFolder('public_folder', config, collection!, entryMap, field);
+  const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
+  if (customFolder) {
+    publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
+
+  }
+  return trim(publicFolder, '/');
 }
 
 export function selectMediaFolder(
@@ -778,8 +777,8 @@ export function selectCurrentMediaFolder(
   mediaPath: string,
   field: EntryField | undefined,
   ) {
-  const mediaFolder = trim(getMediaFolderConfig(config, collection, entryMap, field), '/');
-  const publicFolder = trim(getPublicFolderConfig(config, collection, entryMap, field), '/');
+  const mediaFolder = trim(selectMediaFolder(config, collection, entryMap, field), '/');
+  const publicFolder = trim(selectPublicFolder(config, collection, entryMap, field), '/');
   mediaPath = trim(mediaPath, '/');
   return publicFolder ? dirname(join(mediaFolder, mediaPath.replace(publicFolder, ''))) : dirname(mediaPath);
 }
