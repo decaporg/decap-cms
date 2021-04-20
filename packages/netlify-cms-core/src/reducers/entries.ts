@@ -739,7 +739,6 @@ export function selectPublicFolder(
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
   if (customFolder) {
     publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
-
   }
   return trim(publicFolder, '/');
 }
@@ -777,10 +776,10 @@ export function selectCurrentMediaFolder(
   mediaPath: string,
   field: EntryField | undefined,
   ) {
-  const mediaFolder = trim(selectMediaFolder(config, collection, entryMap, field), '/');
-  const publicFolder = trim(selectPublicFolder(config, collection, entryMap, field), '/');
+  const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
+  const publicFolder = selectPublicFolder(config, collection, entryMap, field);
   mediaPath = trim(mediaPath, '/');
-  return publicFolder ? dirname(join(mediaFolder, mediaPath.replace(publicFolder, ''))) : dirname(mediaPath);
+  return mediaPath.startsWith(publicFolder) ? dirname(join(mediaFolder, mediaPath.replace(publicFolder, ''))) : dirname(mediaPath);
 }
 
 export function selectMediaFilePath(
@@ -789,12 +788,13 @@ export function selectMediaFilePath(
   entryMap: EntryMap | undefined,
   mediaPath: string,
   field: EntryField | undefined,
+  currentMediaFolder?: string,
 ) {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
 
-  const mediaFolder = selectCurrentMediaFolder(config, collection, entryMap, mediaPath, field);
+  const mediaFolder = currentMediaFolder ? currentMediaFolder : selectCurrentMediaFolder(config, collection, entryMap, mediaPath, field);
   return join(mediaFolder, basename(mediaPath));
 }
 
