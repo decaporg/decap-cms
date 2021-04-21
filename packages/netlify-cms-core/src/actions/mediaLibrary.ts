@@ -286,6 +286,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
           field,
         });
       }
+
       dispatch(addAsset(assetProxy));
 
       let mediaFile: ImplementationMediaFile;
