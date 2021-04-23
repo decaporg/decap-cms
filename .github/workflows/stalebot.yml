@@ -1,0 +1,18 @@
+name: 'Mark and close stale issues in the repo'
+on:
+  schedule:
+    - cron: '30 1 * * *' # runs daily at 1:30 https://crontab.guru/#30_1_*_*_*
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v3.0.18
+        with:
+          exempt-issue-labels: 'WIP,security,action_item,never_stale'
+          days-before-issue-stale: 365
+          stale-issue-label: 'stale'
+          stale-issue-message: 'This issue has been automatically marked as stale because it has not had activity in 1 year. It will be closed in 7 days if no further activity occurs. Thanks!'
+          days-before-issue-close: 7
+          close-issue-message: 'This issue was closed because it had no activity for over 60 days.'
+          days-before-pr-close: -1
