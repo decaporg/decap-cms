@@ -233,7 +233,7 @@ Copy and paste the following into the collections array in `config.yml`
 
 ### Navigation
 
-The last aspect of our Jekyll blog we might want to bring under the control of Netlify CMS is our Navigation menu. Our Jekyll tutorial blog has a file `_data/navigation.yml` that defines the links rendered by `_includes/navigation.yml`. It looks like this.
+The last aspect of our Jekyll blog we might want to bring under the control of Netlify CMS is our Navigation menu. Our Jekyll tutorial blog has a file `_data/navigation.yml` that defines the links rendered by `_includes/navigation.html`. It looks like this.
 
 ```yaml
 # _data/navigation.yml
