@@ -24,7 +24,7 @@
   "dependencies": {
     "dompurify": "^2.2.6",
     "is-hotkey": "^0.2.0",
-    "mdast-util-definitions": "^1.2.3",
+    "mdast-util-definitions": "^5.0.0",
     "mdast-util-to-string": "^1.0.5",
     "react-select": "^2.4.3",
     "rehype-parse": "^6.0.0",
