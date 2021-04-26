@@ -778,9 +778,19 @@ export function selectCurrentMediaFolder(
   const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
   const publicFolder = trim(selectPublicFolder(config, collection, entryMap, field), '/');
   mediaPath = trim(mediaPath, '/');
-  return mediaPath.startsWith(publicFolder)
+
+  let currentMediaFolder = mediaPath.startsWith(publicFolder)
     ? dirname(join(mediaFolder, mediaPath.replace(publicFolder, '')))
     : dirname(mediaPath);
+
+  const customFolder = hasCustomFolder('media_folder', collection, entryMap?.get('slug'), field);
+  if (customFolder) {
+    const folder = evaluateFolder('media_folder', config, collection!, entryMap, field);
+    if (!folder.startsWith('/')) {
+      currentMediaFolder = mediaFolder;
+    }
+  }
+  return currentMediaFolder;
 }
 
 export function selectMediaFilePath(
