@@ -45,7 +45,7 @@
     "react-dnd": "^7.3.2",
     "react-dnd-html5-backend": "^7.2.0",
     "react-dom": "^16.8.4",
-    "react-frame-component": "^4.1.0",
+    "react-frame-component": "^5.0.0",
     "react-hot-loader": "^4.8.0",
     "react-immutable-proptypes": "^2.1.0",
     "react-is": "16.13.1",
