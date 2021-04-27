@@ -73,7 +73,7 @@ public_folder: "/images/uploads"
 
 Based on the settings above, if a user used an image widget field called `avatar` to upload and select an image called `philosoraptor.png`, the image would be saved to the repository at `/static/images/uploads/philosoraptor.png`, and the `avatar` field for the file would be set to `/images/uploads/philosoraptor.png`.
 
-This setting can be set to an absolute url e.g. `https://netlify.com/media` should you wish, however in general this is not advisable as content should have relative paths to other content.
+This setting can be set to an absolute URL e.g. `https://netlify.com/media` should you wish, however in general this is not advisable as content should have relative paths to other content.
 
 ## Media Library
 
