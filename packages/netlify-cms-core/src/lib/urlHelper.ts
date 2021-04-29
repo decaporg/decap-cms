@@ -1,4 +1,5 @@
 import url from 'url';
+import urlJoin from 'url-join';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
@@ -114,4 +115,8 @@ export function sanitizeSlug(str: string, options?: CmsSlug) {
     .replace(trailingReplacement, '');
 
   return normalizedSlug;
+}
+
+export function joinUrlPath(base: string, ...path: string[]) {
+  return urlJoin(base, ...path);
 }
