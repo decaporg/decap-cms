@@ -393,7 +393,7 @@ class EditorToolbar extends React.Component {
           </PublishedToolbarButton>
         )}
       >
-        {(canDelete && canPublish) && (
+        {canDelete && canPublish && (
           <DropdownItem
             label={t('editor.editorToolbar.unpublish')}
             icon="arrow"
@@ -537,7 +537,7 @@ class EditorToolbar extends React.Component {
 
     const canCreate = collection.get('create');
     const canPublish = collection.get('publish') && !useOpenAuthoring;
-    const canDelete = collection.get('delete',  true)
+    const canDelete = collection.get('delete', true);
 
     if (currentStatus) {
       return (
