@@ -118,5 +118,5 @@ export function sanitizeSlug(str: string, options?: CmsSlug) {
 }
 
 export function joinUrlPath(base: string, ...path: string[]) {
-  return urlJoin(base, ...path)
+  return urlJoin(base, ...path);
 }

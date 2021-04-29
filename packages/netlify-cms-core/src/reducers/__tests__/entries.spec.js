@@ -439,7 +439,11 @@ describe('entries', () => {
       expect(
         selectMediaFilePublicPath(
           { public_folder: 'https://www.netlify.com/media' },
-          fromJS({ name: 'posts', folder: 'posts', public_folder: 'https://www.netlify.com/media' }),
+          fromJS({
+            name: 'posts',
+            folder: 'posts',
+            public_folder: 'https://www.netlify.com/media',
+          }),
           'image.png',
           undefined,
           undefined,
