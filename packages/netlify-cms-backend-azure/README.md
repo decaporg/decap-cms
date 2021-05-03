@@ -1,11 +1,13 @@
-# Docs coming soon!
+# Azure backend
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+An abstraction layer between the CMS and [Azure DevOps](https://docs.microsoft.com/en-us/rest/api/azure/devops/git/)
 
-In the meantime, you can:
+## Code structure
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-backend-azure/README.md)!
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on `Api`.
+
+`Api` - A wrapper for Azure DevOps REST API.
+
+`AuthenticationPage` - facilitates implicit authentication flow. Uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md).
+
+Look at tests or types for more info.

@@ -59,6 +59,7 @@ import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
 import { selectSortDataPath } from './collections';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
+import { joinUrlPath } from '../lib/urlHelper';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -818,7 +819,7 @@ export function removeMediaFolderFromPath(
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
 ) {
-  const trimmedMediaPath = trim(mediaPath, '/')
+  const trimmedMediaPath = trim(mediaPath, '/');
   let mediaFolder = selectMediaFolder(config, collection, entryMap, field);
   if (!mediaFolder || mediaFolder === '') {
     mediaFolder = selectPublicFolder(config, collection, entryMap, field) || '';
@@ -840,7 +841,18 @@ export function selectMediaFilePublicPath(
   }
 
   const publicFolder = selectPublicFolder(config, collection, entryMap, field) || '';
-  return join(publicFolder, removeMediaFolderFromPath(config, collection, mediaPath, entryMap, field));
+
+  if (isAbsolutePath(publicFolder)) {
+    return joinUrlPath(
+      publicFolder,
+      removeMediaFolderFromPath(config, collection, mediaPath, entryMap, field),
+    );
+  }
+
+  return join(
+    publicFolder,
+    removeMediaFolderFromPath(config, collection, mediaPath, entryMap, field),
+  );
 }
 
 // export function selectMediaFilePublicPath(

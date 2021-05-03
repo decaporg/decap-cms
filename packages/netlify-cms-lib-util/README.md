@@ -1,11 +1,22 @@
-# Docs coming soon!
+# Lib Util
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+Shared utilities to handle various `netlify-cms-backend-*` backends operations.
 
-In the meantime, you can:
+## Code structure
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-lib-util/README.md)!
+This structure should be the same for backends.
+
+At first, look at `Implementation`. This is File Management System API and has factory method for `AuthComponent`.
+
+### File Management System API
+
+An abstraction layer between the CMS and Git-repository manager API.
+
+Used as backend in [cms-core](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/README.md).
+
+### Low-level abstractions for Git-repository manager API:
+
+- `API` - used for Entry files
+- `git-lfs` - used for Media files
+- and over halpful utilities
+

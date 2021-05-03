@@ -74,8 +74,8 @@ const nn_no = {
         max: '%{fieldLabel} må vera %{maxValue} eller mindre.',
         rangeCount: '%{fieldLabel} må ha mellom %{minCount} og %{maxCount} element.',
         rangeCountExact: '%{fieldLabel} må ha nøyaktig %{count} element.',
-        minCount: '%{fieldLabel} må minst ha %{minCount} element.',
-        maxCount: '%{fieldLabel} må ha %{maxCount} eller færre element.',
+        rangeMin: '%{fieldLabel} må minst ha %{minCount} element.',
+        rangeMax: '%{fieldLabel} må ha %{maxCount} eller færre element.',
       },
     },
     editor: {

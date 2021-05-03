@@ -74,8 +74,8 @@ const sv = {
         max: '%{fieldLabel} måste vara %{maxValue} eller mindre.',
         rangeCount: '%{fieldLabel} måste ha mellan %{minCount} och %{maxCount} element.',
         rangeCountExact: '%{fieldLabel} måste ha exakt %{count} element.',
-        minCount: '%{fieldLabel} måste ha åtminstone %{minCount} element.',
-        maxCount: '%{fieldLabel} måste ha %{maxCount} eller färre element.',
+        rangeMin: '%{fieldLabel} måste ha åtminstone %{minCount} element.',
+        rangeMax: '%{fieldLabel} måste ha %{maxCount} eller färre element.',
       },
     },
     editor: {

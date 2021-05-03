@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.39.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.7...netlify-cms-core@2.39.8) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-waypoint to v10 ([#5329](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5329)) ([fc908b7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/fc908b7489bb3167998af372c68628e1b609e6cf))
+
+
+
+
+
+## [2.39.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.6...netlify-cms-core@2.39.7) (2021-04-29)
+
+
+### Bug Fixes
+
+* allow absolute urls in public_folder ([#5311](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5311)) ([d1bcbe0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/d1bcbe0a4c06e1ecc6ab1b46e7b16b8eac41bf8a))
+* Remove `Unpublish` UI button if  collection has a `delete: false`. ([#3887](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/3887)) ([#5314](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5314)) ([724d172](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/724d172cf03256782e764cf8abb0b3920c6da435))
+* **deps:** update dependency react-frame-component to v5 ([#5299](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5299)) ([b8eea35](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b8eea354795729f89e9603d1a8344cb52954bb92))
+
+
+
+
+
+## [2.39.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.5...netlify-cms-core@2.39.6) (2021-04-18)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.39.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.4...netlify-cms-core@2.39.5) (2021-04-13)
+
+
+### Bug Fixes
+
+* add missing dependencies ([#5265](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5265)) ([1e12e20](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/1e12e208d4a797dff2031d8b52369cf14a39cfeb))
+
+
+
+
+
 ## [2.39.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.3...netlify-cms-core@2.39.4) (2021-04-07)
 
 **Note:** Version bump only for package netlify-cms-core

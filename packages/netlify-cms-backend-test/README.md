@@ -1,11 +1,17 @@
-# Docs coming soon!
+# Test backend
 
-Netlify CMS was recently converted from a single npm package to a "monorepo" of over 20 packages.
-That's over 20 Readme's! We haven't created one for this package yet, but we will soon.
+The backend behind https://cms-demo.netlify.com/.
+Used for demo purposes only.
 
-In the meantime, you can:
+## Code structure
 
-1. Check out the [main readme](https://github.com/netlify/netlify-cms/#readme) or the [documentation
-   site](https://www.netlifycms.org) for more info.
-2. Reach out to the [community chat](https://netlifycms.org/chat/) if you need help.
-3. Help out and [write the readme yourself](https://github.com/netlify/netlify-cms/edit/master/packages/netlify-cms-backend-test/README.md)!
+`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on simple JS objects:
+
+```js
+window.repoFiles // json file-system tree
+window.repoFilesUnpublished // flat file list
+```
+
+`AuthenticationPage` - A component which allow skip `login screen` for demo purposes.
+
+Look at tests or types for more info.

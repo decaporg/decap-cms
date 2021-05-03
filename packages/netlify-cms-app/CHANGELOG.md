@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.48](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.47...netlify-cms-app@2.14.48) (2021-05-03)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.47](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.46...netlify-cms-app@2.14.47) (2021-04-29)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.46](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.45...netlify-cms-app@2.14.46) (2021-04-18)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.45](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.44...netlify-cms-app@2.14.45) (2021-04-14)
+
+
+### Bug Fixes
+
+* Revert "fix: generate esm correctly ([#5087](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5087))" ([#5271](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5271)) ([72c3765](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/72c3765ff7e04a1dadc77f49b53a2e2da0181026))
+
+
+
+
+
+## [2.14.44](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.43...netlify-cms-app@2.14.44) (2021-04-14)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.14.43](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.42...netlify-cms-app@2.14.43) (2021-04-13)
+
+
+### Bug Fixes
+
+* add missing code codemirror deps ([#5267](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5267)) ([0aa7766](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/0aa7766ad6584961e09805825d46551aebfab6a2))
+
+
+
+
+
+## [2.14.42](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.41...netlify-cms-app@2.14.42) (2021-04-13)
+
+
+### Bug Fixes
+
+* add missing dependencies ([#5265](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5265)) ([1e12e20](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/1e12e208d4a797dff2031d8b52369cf14a39cfeb))
+
+
+
+
+
+## [2.14.41](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.40...netlify-cms-app@2.14.41) (2021-04-13)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
 ## [2.14.40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.39...netlify-cms-app@2.14.40) (2021-04-07)
 
 **Note:** Version bump only for package netlify-cms-app

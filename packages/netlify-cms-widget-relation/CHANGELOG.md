@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.10...netlify-cms-widget-relation@2.9.0) (2021-04-13)
+
+
+### Features
+
+* add min and max fields to relation widget (resolves [#5026](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5026)) ([#5238](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5238)) ([fe117e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/fe117e472e18079e4f65ca2dfa5c258040cf93f9))
+
+
+
+
+
 ## [2.8.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.9...netlify-cms-widget-relation@2.8.10) (2021-04-07)
 
 **Note:** Version bump only for package netlify-cms-widget-relation

@@ -3,7 +3,7 @@ group: Accounts
 weight: 60
 title: External OAuth Clients
 ---
-If you would like to facilitate your own OAuth authentication rather than use Netlify's service or implicit grant, you can use one of the community-maintained projects below. Feel free to hit the "Edit this page" button if you'd like to add yours!
+If you would like to facilitate your own OAuth authentication rather than use Netlify's service or a client side flow like implicit or PKCE, you can use one of the community-maintained projects below. Feel free to hit the "Edit this page" button if you'd like to add yours!
 
 | Author                                                       | Supported Git hosts               | Language(s)/Platform(s)           | Link                                                                                                                                                         |
 | ------------------------------------------------------------ | --------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -18,5 +18,6 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@bericp1](https://github.com/bericp1)                       | GitHub, GitHub Enterprise         | Node.js, Vercel Serverless        | [Repo](https://github.com/bericp1/netlify-cms-oauth-provider-node)                                                                                           |
 | [@mcdeck](https://github.com/mcdeck)                         | GitHub, GitHub Enterprise, GitLab | PHP                               | [Repo](https://github.com/mcdeck/netlify-cms-oauth-provider-php), [Blog](https://www.van-porten.de/blog/2021/01/netlify-auth-provider/)                      |
 | [@deepbass](https://github.com/deepbass)                     | GitHub, GitHub Enterprise         | Node.js Azure Functions           | [Repo](https://github.com/deepbass/serverless-cms-azure), [Blog](https://www.danielbass.dev/building-a-serverless-cms-on-azure-with-netlify-cms-and-gatsby/) |
+| [@adrian-ub](https://github.com/adrian-ub) | GitHub, GitLab | TypeScript | [Repo](https://github.com/ublabs/netlify-cms-oauth) |
 
 Check each project's documentation for instructions on installation and usage.
