@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 const RightControlPanelContainer = styled.div`
@@ -15,8 +15,8 @@ const Tab = styled.div`
   cursor: pointer;
   line-height: 1;
   text-align: center;
-  color: ${(props) => props.isActive ? "#fff" : "#3a69c7"};
-  background-color: ${(props) => props.isActive ? "#149fff" : "#fff"};
+  color: ${props => (props.isActive ? '#fff' : '#3a69c7')};
+  background-color: ${props => (props.isActive ? '#149fff' : '#fff')};
 `;
 
 export default function RightControlPane(props) {
@@ -33,10 +33,16 @@ export default function RightControlPane(props) {
     <>
       <RightControlPanelContainer>
         {tabs.map(tab => (
-          <Tab key={tab.key} isActive={tab.key === activeTab} onClick={() => handleTabClick(tab.key)}>{tab.title}</Tab>
+          <Tab
+            key={tab.key}
+            isActive={tab.key === activeTab}
+            onClick={() => handleTabClick(tab.key)}
+          >
+            {tab.title}
+          </Tab>
         ))}
       </RightControlPanelContainer>
       {activeTabContent ? activeTabContent : null}
     </>
-  )
+  );
 }

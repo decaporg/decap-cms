@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import styled from '@emotion/styled';
 
 const NoteListContainer = styled.div`
@@ -45,9 +45,7 @@ const NoteTextContainer = styled.div`
 `;
 
 export function AuthorImage() {
-  return (
-    <ImageContainer>Img</ImageContainer>
-  )
+  return <ImageContainer>Img</ImageContainer>;
 }
 
 export function NoteToolbar(props) {
@@ -58,54 +56,56 @@ export function NoteToolbar(props) {
       <p>commented on</p>
       <p>{createdAt}</p>
     </NoteToolbarContainer>
-  )
+  );
 }
 
 export function Note(props) {
-  const { note: { key, value, author, createdAt } } = props;
+  const {
+    note: { key, value, author, createdAt },
+  } = props;
   return (
     <NoteContainer key={key}>
       <AuthorImage author={author} />
       <NoteInfoContainer>
         <NoteToolbar author={author} createdAt={createdAt} />
-        <NoteTextContainer>
-          {value}
-        </NoteTextContainer>
+        <NoteTextContainer>{value}</NoteTextContainer>
       </NoteInfoContainer>
     </NoteContainer>
-  )
+  );
 }
 
 export default function NoteList() {
   const notes = [
     {
       key: 1,
-      author: "Bob",
-      createdAt: "2021:04:21T00:00:00.000Z",
-      value: "This is a comment"
+      author: 'Bob',
+      createdAt: '2021:04:21T00:00:00.000Z',
+      value: 'This is a comment',
     },
     {
       key: 2,
-      author: "Bob",
-      createdAt: "2021:04:21T00:00:00.000Z",
-      value: "This is a comment"
+      author: 'Bob',
+      createdAt: '2021:04:21T00:00:00.000Z',
+      value: 'This is a comment',
     },
     {
       key: 3,
-      author: "Bob",
-      createdAt: "2021:04:21T00:00:00.000Z",
-      value: "This is a comment"
+      author: 'Bob',
+      createdAt: '2021:04:21T00:00:00.000Z',
+      value: 'This is a comment',
     },
     {
       key: 4,
-      author: "Bob",
-      createdAt: "2021:04:21T00:00:00.000Z",
-      value: "This is a comment"
-    }
-  ]
+      author: 'Bob',
+      createdAt: '2021:04:21T00:00:00.000Z',
+      value: 'This is a comment',
+    },
+  ];
   return (
     <NoteListContainer>
-      {notes.map(note => <Note key={note.key} note={note} />)}
+      {notes.map(note => (
+        <Note key={note.key} note={note} />
+      ))}
     </NoteListContainer>
-  )
+  );
 }
