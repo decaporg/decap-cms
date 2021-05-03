@@ -63,31 +63,7 @@ collections:
 
 Netlify CMS stores content in your online Git repository. Therefore, to make content changes, users need to authenticate with the corresponding Git provider to prove that they have read and write access to that content.
 
-Apps deployed with Netlify can leverage the following two authentication services: Netlify Identity and Git Gateway.
-
-Netlify Identity allows us to manage and authenticate users on the Netlify CMS app without requiring them to be users of Netlify or any other serivce. Git Gateway lets them edit our site conten through Netlify CMS without having accounts on GitHub or GitLab. Our content editors won't even know that they are pushing changes to a Github repository.
-
-1. Visit your Netlify dashboard. Select the site and navigate to **Site Settings > Identity** and select **Enable Identity service**.
-2. Under **Registration preferences**, select either **Open** or **Invite only**. For the purpose of this tutorial, leave it open for convenience.
-3. If you like to allow a one-click login process through a third-party services like Google, Github etc, choose the services you'd like to use under **External providers**.
-4. Scroll down to **Services > Git Gateway** and click **Enable Git Gateway**. Leave everything else as default.
-
-### Add Netlify Identity widget
-
-In the `admin/index.html`, add the script for loading the Netlify Identity widget inside the `<head>` tag. This widget requires visitors to the `/admin` route to log in or sign up before they can access Netlify CMS.
-
-```
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Content Manager</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  </head>
-  <!-- -->
-</html>
-```
+Follow the directions in the Introduction section to [enable Netlify Identity and Git Gateway services](https://www.netlifycms.org/docs/add-to-your-site/#enable-identity-and-git-gateway) for the backend, then [add the Identity widget](https://www.netlifycms.org/docs/add-to-your-site/#add-the-netlify-identity-widget) to render a login portal on the frontend.
 
 ## CMS Configuration
 
