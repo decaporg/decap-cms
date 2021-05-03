@@ -8874,10 +8874,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.14.47:
-  version "2.14.47"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.47.tgz#6deffb288175f280b48cbcbccf9e96a1b07c16f7"
-  integrity sha512-tCrUOeQX4ZDDeDLlO4DQAIzrN/K9WtgSeDDLmAFwDIspnU+9XbhIahV4LFOPixtk85UkkurGzFz21KJRY7NTCw==
+netlify-cms-app@^2.14.48:
+  version "2.14.48"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.14.48.tgz#94f829528eab18fa1c25f81e4b6e6a77b0afc6c3"
+  integrity sha512-3A2gRY7VRVUGGGjIyFIoM+Cx8AI3a0AJuJFyuk0ZUA+yuflOFnFp2gwvFZvmoCHgFEtlXf+SJjkOGWE1RUkEJA==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8892,7 +8892,7 @@ netlify-cms-app@^2.14.47:
     netlify-cms-backend-gitlab "^2.10.0"
     netlify-cms-backend-proxy "^1.1.7"
     netlify-cms-backend-test "^2.10.7"
-    netlify-cms-core "^2.39.7"
+    netlify-cms-core "^2.39.8"
     netlify-cms-editor-component-image "^2.6.7"
     netlify-cms-lib-auth "^2.4.0"
     netlify-cms-lib-util "^2.13.0"
@@ -8980,10 +8980,10 @@ netlify-cms-backend-test@^2.10.7:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.10.7.tgz#8ba5e87fc340b580fdafc1d3d9a6b213cba9830b"
   integrity sha512-AoCLHVUocXLSzfXJwn4CeqqKph1lIeyzQcsjJN6Je5r2UU66fiayG+skhu3RjudeKiIfmA4Cf/p0Ay9ooRkxOg==
 
-netlify-cms-core@^2.39.7:
-  version "2.39.7"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.39.7.tgz#a4bdc0ac0804dfa03ff69ae8aac6dae5aca13505"
-  integrity sha512-cEVYgjQcLe9NBgz0y8OkkpWQlMjv5blVrw+SxK2fRT9ArZodLxv55boI8Qe09V+V9AWKEFslcxHA6dI63MXlQQ==
+netlify-cms-core@^2.39.8:
+  version "2.39.8"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.39.8.tgz#0ee0f37383ea3e02970bc5091bfe26d20b9ca024"
+  integrity sha512-l91n81j6wlVMA+SGk/dGBS2JQR8TsFCROgFlEQkYxILuEX7xT+yUYbi7aCcMdQVUbORekxxlYG81UHiL2ydDxA==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "^8.0.0"
@@ -9018,7 +9018,7 @@ netlify-cms-core@^2.39.7:
     react-split-pane "^0.1.85"
     react-topbar-progress-indicator "^4.0.0"
     react-virtualized-auto-sizer "^1.0.2"
-    react-waypoint "^9.0.3"
+    react-waypoint "^10.0.0"
     react-window "^1.8.5"
     redux "^4.0.5"
     redux-devtools-extension "^2.13.8"
@@ -10865,12 +10865,12 @@ react-input-autosize@^2.2.1:
   dependencies:
     prop-types "^15.5.8"
 
-react-is@16.13.1, react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.6.3, react-is@^16.7.0, react-is@^16.8.1:
+react-is@16.13.1, react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-is@^17.0.0:
+react-is@^17.0.0, react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
@@ -11074,14 +11074,15 @@ react-virtualized-auto-sizer@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.5.tgz#9eeeb8302022de56fbd7a860b08513120ce36509"
   integrity sha512-kivjYVWX15TX2IUrm8F1jaCEX8EXrpy3DD+u41WGqJ1ZqbljWpiwscV+VxOM1l7sSIM1jwi2LADjhhAJkJ9dxA==
 
-react-waypoint@^9.0.3:
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/react-waypoint/-/react-waypoint-9.0.3.tgz#176aa4686b33eb40d0d48d361c468f0367167958"
-  integrity sha512-NRmyjW8CUBNNl4WpvBqLDgBs18rFUsixeHVHrRrFlWTdOlWP7eiDjptqlR/cJAPLD6RwP5XFCm3bi9OiofN3nA==
+react-waypoint@^10.0.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/react-waypoint/-/react-waypoint-10.1.0.tgz#6ab522a61bd52946260e4a78b3182759a97b40ec"
+  integrity sha512-wiVF0lTslVm27xHbnvUUADUrcDjrQxAp9lEYGExvcoEBScYbXu3Kt++pLrfj6CqOeeRAL4HcX8aANVLSn6bK0Q==
   dependencies:
+    "@babel/runtime" "^7.12.5"
     consolidated-events "^1.1.0 || ^2.0.0"
     prop-types "^15.0.0"
-    react-is "^16.6.3"
+    react-is "^17.0.1"
 
 react-window@^1.8.5:
   version "1.8.6"
