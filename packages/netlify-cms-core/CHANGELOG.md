@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.39.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.7...netlify-cms-core@2.39.8) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-waypoint to v10 ([#5329](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5329)) ([fc908b7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/fc908b7489bb3167998af372c68628e1b609e6cf))
+
+
+
+
+
 ## [2.39.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.6...netlify-cms-core@2.39.7) (2021-04-29)
 
 
