@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.40.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.8...netlify-cms-core@2.40.0-beta.0) (2021-05-03)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([946d418](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/946d418d6d50d6b3c93b2b25b730322bd4e7ae2b))
+
+
+
+
+
 ## [2.39.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.7...netlify-cms-core@2.39.8) (2021-05-03)
 
 

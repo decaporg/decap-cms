@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.12.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.11...netlify-cms-backend-git-gateway@2.12.0-beta.0) (2021-05-03)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([946d418](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/946d418d6d50d6b3c93b2b25b730322bd4e7ae2b))
+
+
+
+
+
 ## [2.11.11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.10...netlify-cms-backend-git-gateway@2.11.11) (2021-02-25)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway

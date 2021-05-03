@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.3.5...netlify-cms-default-exports@2.4.0-beta.0) (2021-05-03)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([946d418](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/commit/946d418d6d50d6b3c93b2b25b730322bd4e7ae2b))
+
+
+
+
+
 ## [2.3.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.3.4...netlify-cms-default-exports@2.3.5) (2020-11-26)
 
 **Note:** Version bump only for package netlify-cms-default-exports

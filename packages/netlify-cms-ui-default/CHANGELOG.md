@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.12.2...netlify-cms-ui-default@2.13.0-beta.0) (2021-05-03)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([946d418](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/946d418d6d50d6b3c93b2b25b730322bd4e7ae2b))
+
+
+
+
+
 ## [2.12.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.12.1...netlify-cms-ui-default@2.12.2) (2021-04-01)
 
 

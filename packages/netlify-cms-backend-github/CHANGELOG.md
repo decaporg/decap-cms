@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0-beta.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.12.0...netlify-cms-backend-github@2.13.0-beta.0) (2021-05-03)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([946d418](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/commit/946d418d6d50d6b3c93b2b25b730322bd4e7ae2b))
+
+
+
+
+
 # [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/compare/netlify-cms-backend-github@2.11.9...netlify-cms-backend-github@2.12.0) (2021-04-04)
 
 
