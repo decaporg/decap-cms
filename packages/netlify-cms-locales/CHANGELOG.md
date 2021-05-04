@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.30.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.30.0...netlify-cms-locales@1.30.1) (2021-05-04)
+
+
+### Bug Fixes
+
+* **locale:** add missing keys to 'sv' locale ([#5341](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5341)) ([7f7fa40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/7f7fa401ad83620b7f90205b8bd1f7b658cc53ad))
+
+
+
+
+
 # [1.30.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.29.2...netlify-cms-locales@1.30.0) (2021-04-13)
 
 
