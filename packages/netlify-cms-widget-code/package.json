@@ -29,7 +29,7 @@
     "codemirror": "^5.46.0",
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.12.1",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   },
   "dependencies": {
     "react-codemirror2": "^7.0.0",
