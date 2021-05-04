@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.11.0...netlify-cms-backend-gitlab@2.11.1) (2021-05-04)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** increase merge requests fetched to 100 ([#5320](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/5320)) ([0a1b00d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/0a1b00d8b29a065b7d72fbb1744eb787da3b916e))
+
+
+
+
+
 # [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.10.0...netlify-cms-backend-gitlab@2.11.0) (2021-05-04)
 
 
