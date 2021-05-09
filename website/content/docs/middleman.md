@@ -128,6 +128,7 @@ For the purpose of this guide we will deploy to Netlify from a GitHub repository
 ```yml
 backend:
   name: git-gateway
+  branch: main # Branch to update (optional; defaults to master)
 
 media_folder: source/images/uploads
 public_folder: /images/uploads
@@ -154,7 +155,7 @@ git init
 git add .
 git commit -m "Initial Commit"
 git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git
-git push -u origin master
+git push -u origin main
 ```
 
 ### Add your repo to Netlify

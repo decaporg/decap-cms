@@ -49,7 +49,7 @@ Create a file `admin/config.yml` in the root of your repo - it should look like 
 
 backend:
   name: git-gateway
-  branch: master # Branch to update (optional; defaults to master)
+  branch: main # Branch to update (optional; defaults to master)
 media_folder: 'assets/uploads'
 collections:
   - name: 'blog'
