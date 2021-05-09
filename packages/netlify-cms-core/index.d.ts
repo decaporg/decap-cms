@@ -482,7 +482,13 @@ declare module 'netlify-cms-core' {
 
   export interface CmsEventListener {
     name: 'prePublish' | 'postPublish' | 'preUnpublish' | 'postUnpublish' | 'preSave' | 'postSave';
-    handler: { entry: Map<string, any>; author: { login: string; name: string } };
+    handler: ({
+      entry,
+      author,
+    }: {
+      entry: Map<string, any>;
+      author: { login: string; name: string };
+    }) => any;
   }
 
   export type CmsEventListenerOptions = any; // TODO: type properly
