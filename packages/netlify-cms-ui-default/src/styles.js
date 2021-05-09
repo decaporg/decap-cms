@@ -492,6 +492,10 @@ function GlobalStyles() {
           text-decoration: none;
         }
 
+        button {
+          font-family: inherit;
+        }
+
         img {
           max-width: 100%;
         }
