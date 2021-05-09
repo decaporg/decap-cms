@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.4.6...netlify-cms-widget-map@1.5.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
 ## [1.4.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.4.5...netlify-cms-widget-map@1.4.6) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-widget-map

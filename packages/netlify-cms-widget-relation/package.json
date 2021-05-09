@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-relation",
   "description": "Widget for linking related entries in Netlify CMS.",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#relation",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -33,7 +33,7 @@
     "netlify-cms-lib-widgets": "^1.6.1",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4",
+    "react": "^16.8.4 || ^17.0.0",
     "uuid": "^3.3.2"
   }
 }

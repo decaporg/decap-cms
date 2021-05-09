@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/compare/netlify-cms-editor-component-image@2.6.7...netlify-cms-editor-component-image@2.7.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
 ## [2.6.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-editor-component-image/compare/netlify-cms-editor-component-image@2.6.6...netlify-cms-editor-component-image@2.6.7) (2020-10-12)
 
 **Note:** Version bump only for package netlify-cms-editor-component-image

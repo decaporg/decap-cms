@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-string",
   "description": "Widget for editing plain string values in Netlify CMS.",
-  "version": "2.2.10",
+  "version": "2.3.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#string",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-string",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -23,6 +23,6 @@
   "peerDependencies": {
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }

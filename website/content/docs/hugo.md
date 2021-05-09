@@ -86,7 +86,7 @@ In the `config.yml` file, you can add this basic configuration — you can custo
 ```yaml
 backend:
   name: git-gateway
-  branch: master # Branch to update (optional; defaults to master)
+  branch: main # Branch to update (optional; defaults to master)
 media_folder: static/img
 public_folder: /img
 collections:
@@ -115,7 +115,7 @@ git init # Initialize a git repository
 git add . # Add every file
 git commit -m "Initial Commit" # Commit every file with the message 'Initial Commit'
 git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git # Create a new repo on GitHub and add it to this project as a remote repository.
-git push -u origin master # Push your changes
+git push -u origin main # Push your changes
 ```
 
 ### Deploying With Netlify

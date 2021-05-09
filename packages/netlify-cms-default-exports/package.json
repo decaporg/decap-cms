@@ -1,6 +1,6 @@
 {
   "name": "netlify-cms-default-exports",
-  "version": "2.3.5",
+  "version": "2.4.0",
   "description": "NetlifyCMS default exports",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-default-exports",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -30,7 +30,7 @@
     "uuid": "^3.3.2"
   },
   "peerDependencies": {
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0",
+    "react-dom": "^16.8.4 || ^17.0.0"
   }
 }

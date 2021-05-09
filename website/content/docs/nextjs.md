@@ -164,7 +164,7 @@ Paste the following configuration into your `public/admin/config.yml` file:
 ```yaml
 backend:
   name: git-gateway
-  branch: master
+  branch: main # Branch to update (optional; defaults to master)
 media_folder: public/img
 public_folder: img
 collections:

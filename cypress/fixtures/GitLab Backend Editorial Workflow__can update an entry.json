@@ -503,7 +503,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master",
     "headers": {
       "Content-Type": "application/json",
       "Content-Length": "2",
@@ -539,7 +539,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Content-Length": "2",
@@ -684,7 +684,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -824,7 +824,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -895,7 +895,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -966,7 +966,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1066,7 +1066,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1137,7 +1137,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1172,7 +1172,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1207,7 +1207,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1314,7 +1314,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1385,7 +1385,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1491,7 +1491,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1674,7 +1674,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1745,7 +1745,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -1816,7 +1816,7 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests?state=opened&labels=Any&per_page=100&target_branch=master&source_branch=cms/posts/1970-01-01-first-title",
     "headers": {
       "Content-Type": "application/json",
       "Content-Length": "2",

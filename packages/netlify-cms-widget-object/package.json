@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-object",
   "description": "Widget for displaying an object of fields for Netlify CMS.",
-  "version": "2.6.2",
+  "version": "2.7.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#object",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -29,7 +29,7 @@
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4",
+    "react": "^16.8.4 || ^17.0.0",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

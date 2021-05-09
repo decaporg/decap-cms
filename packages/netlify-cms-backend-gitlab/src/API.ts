@@ -552,6 +552,7 @@ export default class API {
       params: {
         state: 'opened',
         labels: 'Any',
+        per_page: 100,
         // eslint-disable-next-line @typescript-eslint/camelcase
         target_branch: this.branch,
         // eslint-disable-next-line @typescript-eslint/camelcase

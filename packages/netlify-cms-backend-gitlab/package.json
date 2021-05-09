@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-gitlab",
   "description": "GitLab backend for Netlify CMS",
-  "version": "2.10.0",
+  "version": "2.11.1",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
@@ -32,6 +32,6 @@
     "netlify-cms-lib-util": "^2.12.3",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }
