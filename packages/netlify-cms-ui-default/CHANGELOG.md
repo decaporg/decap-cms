@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.13.0...netlify-cms-ui-default@2.13.1) (2021-05-09)
+
+
+### Bug Fixes
+
+* buttons use inherited font stack ([#5344](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/5344)) ([2143cd3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/2143cd30fd410098f629902c8ca1ce75535f5a54))
+
+
+
+
+
 # [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.12.2...netlify-cms-ui-default@2.13.0) (2021-05-04)
 
 
