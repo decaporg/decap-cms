@@ -43,7 +43,7 @@ For your `static/admin/config.yml` file, you can put in a basic starter config:
 ```yaml
 backend:
   name: git-gateway
-  branch: main
+  branch: main # Branch to update (optional; defaults to master)
 
 media_folder: static/img
 public_folder: /img
