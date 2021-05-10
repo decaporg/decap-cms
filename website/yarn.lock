@@ -10929,9 +10929,9 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
 react-markdown@^6.0.0:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-6.0.1.tgz#755a78840bdb32a6fa3fb2c33874005c6ac6c3b5"
-  integrity sha512-JNOIU+6xrG+eOwZu9UNZxDAc1bNBCpI8mueQNx5NwZWRbSrcD25FllhKHxyUkXhpdu3r/eg1hrLKCtCq9/uIrw==
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-6.0.2.tgz#d89be45c278b1e5f0196f851fffb11e30c69f027"
+  integrity sha512-Et2AjXAsbmPP1nLQQRqmVgcqzfwcz8uQJ8VAdADs8Nk/aaUA0YeU9RDLuCtD+GwajCnm/+Iiu2KPmXzmD/M3vA==
   dependencies:
     "@types/hast" "^2.0.0"
     "@types/unist" "^2.0.3"
@@ -10945,6 +10945,7 @@ react-markdown@^6.0.0:
     style-to-object "^0.3.0"
     unified "^9.0.0"
     unist-util-visit "^2.0.0"
+    vfile "^4.0.0"
 
 react-modal@^3.8.1:
   version "3.13.1"
