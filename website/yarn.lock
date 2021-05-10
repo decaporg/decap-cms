@@ -8922,10 +8922,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.2:
-  version "2.15.2"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.2.tgz#d0e32510fede928feeefd5ca64b87228924895f1"
-  integrity sha512-qLRlNXGvOMg5ny/9qu00VAY+QTrXJUlZ5TcJC7hLbBdSnB+/2F9HmLXVxxbw2exIChV889+5T7G3szEgkIv8jw==
+netlify-cms-app@^2.15.3:
+  version "2.15.3"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.3.tgz#d9cc575df3d288f9dffecdac26782edea816fc51"
+  integrity sha512-QwaZitfLttZOHe6TG9WZqTNWir2xm1GwUVIfe63TN4aRlxyWM+U7tgofctTgL10PnbZgSnvkgDRvCSnfR9EFmA==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8946,7 +8946,7 @@ netlify-cms-app@^2.15.2:
     netlify-cms-lib-util "^2.13.0"
     netlify-cms-lib-widgets "^1.6.1"
     netlify-cms-locales "^1.30.1"
-    netlify-cms-ui-default "^2.13.0"
+    netlify-cms-ui-default "^2.13.1"
     netlify-cms-widget-boolean "^2.4.0"
     netlify-cms-widget-code "^1.3.0"
     netlify-cms-widget-colorstring "^1.1.0"
@@ -9109,10 +9109,10 @@ netlify-cms-locales@^1.30.1:
   resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.30.1.tgz#28063d71bddd4f56c77211539069258f06826298"
   integrity sha512-AUFrTIj+5zPApVJD8FZFYpKkDsaqM3w1q5GMriU3on4I7U0e8UxYv16bunJrzMXNtTfoIm+GgVZtrQwM5/lCAw==
 
-netlify-cms-ui-default@^2.13.0:
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/netlify-cms-ui-default/-/netlify-cms-ui-default-2.13.0.tgz#31295db6c64c47c27f7687daca373b6c39a3d1f1"
-  integrity sha512-0wU1ja5HOw+wJtlw8fx2laUF7Yu+aFk6UP19/riEA9RxDmqWEQvRVvCQdjgR412z1RO/ljVBMda5ahpDjppZhQ==
+netlify-cms-ui-default@^2.13.1:
+  version "2.13.1"
+  resolved "https://registry.yarnpkg.com/netlify-cms-ui-default/-/netlify-cms-ui-default-2.13.1.tgz#0a01330519ecf35e1c9cf6c7ef70174f2934466d"
+  integrity sha512-yM2f7hUvx5KqhMiRd6rYbX2iu3284OmzrDPxgwVQ8JZ9OUrvEP0NNqfkoTgrkFICfvY50ALmts3K/LIPCPfkRg==
   dependencies:
     react-aria-menubutton "^6.0.0"
     react-toggled "^1.1.2"
