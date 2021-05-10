@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.40.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.0...netlify-cms-core@2.40.1) (2021-05-10)
+
+
+### Bug Fixes
+
+* type for CmsEventListener handler property ([#5353](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5353)) ([db66c7e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/db66c7e8ddb6c6969f4f9d786bd7981514e01f2d))
+
+
+
+
+
 # [2.40.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.8...netlify-cms-core@2.40.0) (2021-05-04)
 
 
