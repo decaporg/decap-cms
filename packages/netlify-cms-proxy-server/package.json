@@ -25,7 +25,7 @@
     "@hapi/joi": "^17.0.2",
     "async-mutex": "^0.3.0",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "simple-git": "^2.0.0",
