@@ -10,14 +10,14 @@ import { colors } from 'netlify-cms-ui-default';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
-} from 'Actions/entries';
+} from '../../../actions/entries';
 import {
   selectEntries,
   selectEntriesLoaded,
   selectIsFetching,
   selectGroups,
 } from '../../../reducers/entries';
-import { selectCollectionEntriesCursor } from 'Reducers/cursors';
+import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
 import Entries from './Entries';
 
 const GroupHeading = styled.h2`

@@ -11,4 +11,4 @@ const store = createStore<State | undefined, AnyAction, unknown, unknown>(
   composeWithDevTools(applyMiddleware(thunkMiddleware as ThunkMiddleware<State>, waitUntilAction)),
 );
 
-export default store;
+export { store };

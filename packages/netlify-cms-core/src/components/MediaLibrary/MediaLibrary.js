@@ -13,8 +13,8 @@ import {
   insertMedia as insertMediaAction,
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
-} from 'Actions/mediaLibrary';
-import { selectMediaFiles } from 'Reducers/mediaLibrary';
+} from '../../actions/mediaLibrary';
+import { selectMediaFiles } from '../../reducers/mediaLibrary';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**

@@ -14,4 +14,4 @@ export function navigateToEntry(collectionName: string, slug: string) {
   return history.replace(`/collections/${collectionName}/entries/${slug}`);
 }
 
-export default history;
+export { history };

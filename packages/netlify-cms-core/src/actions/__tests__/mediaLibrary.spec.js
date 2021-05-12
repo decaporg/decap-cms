@@ -59,7 +59,7 @@ describe('mediaLibrary', () => {
     });
   });
 
-  const { currentBackend } = require('coreSrc/backend');
+  const { currentBackend } = require('../../backend');
 
   const backend = {
     persistMedia: jest.fn(() => ({ id: 'id' })),
