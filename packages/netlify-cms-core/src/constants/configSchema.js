@@ -6,8 +6,8 @@ import {
   prohibited,
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
-import { formatExtensions, frontmatterFormats, extensionFormatters } from 'Formats/formats';
-import { getWidgets } from 'Lib/registry';
+import { formatExtensions, frontmatterFormats, extensionFormatters } from '../formats/formats';
+import { getWidgets } from '../lib/registry';
 import uuid from 'uuid/v4';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
 

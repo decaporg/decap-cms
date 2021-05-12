@@ -16,8 +16,8 @@ import {
   buttons,
   zIndex,
 } from 'netlify-cms-ui-default';
-import { status } from 'Constants/publishModes';
-import SettingsDropdown from 'UI/SettingsDropdown';
+import { status } from '../../constants/publishModes';
+import { SettingsDropdown } from '../UI';
 
 const styles = {
   noOverflow: css`

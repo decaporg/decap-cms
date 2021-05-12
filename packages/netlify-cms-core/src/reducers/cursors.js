@@ -5,7 +5,7 @@ import {
   SORT_ENTRIES_SUCCESS,
   FILTER_ENTRIES_SUCCESS,
   GROUP_ENTRIES_SUCCESS,
-} from 'Actions/entries';
+} from '../actions/entries';
 
 // Since pagination can be used for a variety of views (collections
 // and searches are the most common examples), we namespace cursors by

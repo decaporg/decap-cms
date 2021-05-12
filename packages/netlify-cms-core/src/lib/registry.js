@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import produce from 'immer';
 import { oneLine } from 'common-tags';
-import EditorComponent from 'ValueObjects/EditorComponent';
+import EditorComponent from '../valueObjects/EditorComponent';
 
 const allowedEvents = [
   'prePublish',

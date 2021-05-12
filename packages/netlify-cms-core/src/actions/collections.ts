@@ -1,4 +1,4 @@
-import history from '../routing/history';
+import { history } from '../routing/history';
 import { getCollectionUrl, getNewEntryUrl } from '../lib/urlHelper';
 
 export function searchCollections(query: string, collection: string) {
