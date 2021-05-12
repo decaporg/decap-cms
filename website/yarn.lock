@@ -8920,10 +8920,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.4:
-  version "2.15.4"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.4.tgz#d7e87cae2b64277e4842f00e6add16cebe3d470e"
-  integrity sha512-oisXtYtsFIhvYYifwo/Q8zbX0YKfL44npyBTynrlZZCfamKa5Gg1TJLI5ibe0eaP70JrPnh07OYpVDnwd3qPqQ==
+netlify-cms-app@^2.15.5:
+  version "2.15.5"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.5.tgz#fffb5c02ccad1d43b5bd57dcf8463c5a4cd48012"
+  integrity sha512-W7DjgnL2BDq2DDz/0Upcpfa0rkK0iOX4tPzvUi5cGbkttcpkp52wPTVRuQQ29h0SNvCIJzk67mUcwguVkRoM+w==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8938,7 +8938,7 @@ netlify-cms-app@^2.15.4:
     netlify-cms-backend-gitlab "^2.11.1"
     netlify-cms-backend-proxy "^1.2.0"
     netlify-cms-backend-test "^2.11.0"
-    netlify-cms-core "^2.40.1"
+    netlify-cms-core "^2.40.2"
     netlify-cms-editor-component-image "^2.7.0"
     netlify-cms-lib-auth "^2.4.0"
     netlify-cms-lib-util "^2.13.0"
@@ -9026,10 +9026,10 @@ netlify-cms-backend-test@^2.11.0:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.11.0.tgz#e7f61b3688d61dc7951c1e3eb120b90516de3900"
   integrity sha512-6GLpg94YUH6ttPg2JaC7x8ZD/cpXGR0P9n7PaJUbwXpmYj/ZMyT6+iKs8aAbfyX3OzaAQEv8gkFl6ths5+cUFg==
 
-netlify-cms-core@^2.40.1:
-  version "2.40.1"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.40.1.tgz#169201d703cbefe786b595814dea7565856c2c2d"
-  integrity sha512-CR5hBTEM89x0hwz5t1if80M3+qYloeTQcP8Jem4HUVkO9wKuo32FEmF9Mp+8IR2TZsPadi8odwB86LfcyIhRWQ==
+netlify-cms-core@^2.40.2:
+  version "2.40.2"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.40.2.tgz#bbaa2ccc1be2546b493ab5248d4636e48a1f64a8"
+  integrity sha512-w1UU/yyIykmi1wdIaJnOXbB+8Ltus9oRe6Y9kNO8JwQHlDsYa7zoUR1/PK/pcPPajq6Pb20bfWCC5dezr08fmQ==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "8.1.0"
@@ -9059,7 +9059,7 @@ netlify-cms-core@^2.40.1:
     react-polyglot "^0.7.0"
     react-redux "^7.2.0"
     react-router-dom "^5.2.0"
-    react-scroll-sync "^0.8.0"
+    react-scroll-sync "^0.9.0"
     react-sortable-hoc "^1.0.0"
     react-split-pane "^0.1.85"
     react-topbar-progress-indicator "^4.0.0"
@@ -11026,10 +11026,12 @@ react-router@5.2.0:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-scroll-sync@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/react-scroll-sync/-/react-scroll-sync-0.8.0.tgz#61fabed2afc47d41e6938819d620799da3610548"
-  integrity sha512-Ms9srm41UM+lWexuqdocXjqaqqt6ZRSFxcudgB0sYhC7Or+m12WemTwY8BaQCRf7hA8zHDk55FHvMkqsH7gF+w==
+react-scroll-sync@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/react-scroll-sync/-/react-scroll-sync-0.9.0.tgz#81ddea7a667092807c0150924a201eceed5979fe"
+  integrity sha512-IaMUSTbarj9mhjVtBl9I45Er8gQqV8rdb9A0eK77JJ8MvnLcFIlnoiXVx1NS9ACy9QELq7xCTxdIVEdhDV9R0Q==
+  dependencies:
+    prop-types "^15.5.7"
 
 react-select@^2.4.2, react-select@^2.4.3:
   version "2.4.4"
