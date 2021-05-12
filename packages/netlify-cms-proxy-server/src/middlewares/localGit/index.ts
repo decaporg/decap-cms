@@ -12,6 +12,9 @@ import {
   parseContentKey,
 } from 'netlify-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
+import simpleGit from 'simple-git/promise';
+import { Mutex, withTimeout } from 'async-mutex';
+
 import { defaultSchema, joi } from '../joi';
 import type {
   EntriesByFolderParams,
@@ -33,9 +36,6 @@ import type {
   UnpublishedEntryDataFileParams,
   UnpublishedEntryMediaFileParams,
 } from '../types';
-// eslint-disable-next-line import/default
-import simpleGit from 'simple-git/promise';
-import { Mutex, withTimeout } from 'async-mutex';
 import { pathTraversal } from '../joi/customValidators';
 import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';

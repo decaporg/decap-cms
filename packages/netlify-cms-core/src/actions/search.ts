@@ -1,6 +1,7 @@
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import { isEqual } from 'lodash';
+
 import type { State } from '../types/redux';
 import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';

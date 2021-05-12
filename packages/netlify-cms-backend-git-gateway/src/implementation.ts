@@ -31,6 +31,7 @@ import {
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
+
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';

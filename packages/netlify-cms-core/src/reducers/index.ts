@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+
 import auth from './auth';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';

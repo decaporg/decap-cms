@@ -2,6 +2,9 @@ import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
 import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { basename, getBlobSHA } from 'netlify-cms-lib-util';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+
 import { currentBackend } from '../backend';
 import type AssetProxy from '../valueObjects/AssetProxy';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
@@ -23,8 +26,6 @@ import type {
   MediaLibraryInstance,
   EntryField,
 } from '../types/redux';
-import type { AnyAction } from 'redux';
-import type { ThunkDispatch } from 'redux-thunk';
 import { waitUntilWithTimeout } from './waitUntil';
 
 const { notifSend } = notifActions;

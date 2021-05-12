@@ -1,5 +1,9 @@
 import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
+import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
+import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
 import {
   ENTRY_REQUEST,
   ENTRY_SUCCESS,
@@ -54,10 +58,7 @@ import type {
 } from '../types/redux';
 import { SortDirection } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
-import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
 import { selectSortDataPath } from './collections';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
 import { joinUrlPath } from '../lib/urlHelper';
 

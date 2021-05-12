@@ -1,5 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
 import { startsWith } from 'lodash';
+
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import {
   UNPUBLISHED_ENTRY_REQUEST,

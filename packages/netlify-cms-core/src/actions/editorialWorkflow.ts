@@ -2,6 +2,9 @@ import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import type { ThunkDispatch } from 'redux-thunk';
 import { Map, List } from 'immutable';
+import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
+import type { AnyAction } from 'redux';
+
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
   selectPublishedSlugs,
@@ -12,7 +15,6 @@ import {
 import { selectEditingDraft } from '../reducers/entries';
 import type { Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
-import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import {
   loadEntry,
   entryDeleted,
@@ -33,7 +35,6 @@ import type {
   EntryDraft,
   MediaFile,
 } from '../types/redux';
-import type { AnyAction } from 'redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import { navigateToEntry } from '../routing/history';
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import type Joi from '@hapi/joi';
+
 import { getSchema } from '.';
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {

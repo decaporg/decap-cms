@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+
 import type { ConfigAction } from '../actions/config';
 import { CONFIG_SUCCESS } from '../actions/config';
 import type { Integrations, CmsConfig } from '../types/redux';

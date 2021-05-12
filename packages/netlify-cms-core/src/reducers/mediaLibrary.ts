@@ -1,5 +1,7 @@
 import { Map, List } from 'immutable';
 import uuid from 'uuid/v4';
+import { dirname } from 'path';
+
 import type { MediaLibraryAction } from '../actions/mediaLibrary';
 import {
   MEDIA_LIBRARY_OPEN,
@@ -30,7 +32,6 @@ import type {
   DisplayURLState,
   EntryField,
 } from '../types/redux';
-import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;

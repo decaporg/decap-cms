@@ -1,4 +1,5 @@
 import matter from 'gray-matter';
+
 import tomlFormatter from './toml';
 import yamlFormatter from './yaml';
 import jsonFormatter from './json';

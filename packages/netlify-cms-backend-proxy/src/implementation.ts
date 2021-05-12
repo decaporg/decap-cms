@@ -14,6 +14,7 @@ import {
   unsentRequest,
   blobToFileObj,
 } from 'netlify-cms-lib-util';
+
 import AuthenticationPage from './AuthenticationPage';
 
 async function serializeAsset(assetProxy: AssetProxy) {

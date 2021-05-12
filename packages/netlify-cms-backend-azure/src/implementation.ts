@@ -1,8 +1,6 @@
 import { trimStart, trim } from 'lodash';
 import type { Semaphore } from 'semaphore';
 import semaphore from 'semaphore';
-import AuthenticationPage from './AuthenticationPage';
-import API, { API_NAME } from './API';
 import type {
   Credentials,
   Implementation,
@@ -33,6 +31,9 @@ import {
   contentKeyFromBranch,
   getBlobSHA,
 } from 'netlify-cms-lib-util';
+
+import AuthenticationPage from './AuthenticationPage';
+import API, { API_NAME } from './API';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 

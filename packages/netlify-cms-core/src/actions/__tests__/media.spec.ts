@@ -4,6 +4,7 @@ import type { ThunkDispatch } from 'redux-thunk';
 import thunk from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import { mocked } from 'ts-jest/utils';
+
 import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
 import { selectMediaFilePath } from '../../reducers/entries';
 import type { State } from '../../types/redux';

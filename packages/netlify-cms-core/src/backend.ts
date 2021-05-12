@@ -24,6 +24,7 @@ import {
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
 import { selectMediaFilePath, selectEntry } from './reducers/entries';

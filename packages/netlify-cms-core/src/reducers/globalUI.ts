@@ -1,5 +1,6 @@
 import type { AnyAction } from 'redux';
 import { produce } from 'immer';
+
 import { USE_OPEN_AUTHORING } from '../actions/auth';
 
 export type GlobalUI = {

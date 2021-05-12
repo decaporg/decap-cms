@@ -1,6 +1,7 @@
 import { flow, fromPairs } from 'lodash';
 import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
+
 import unsentRequest from './unsentRequest';
 import APIError from './APIError';
 

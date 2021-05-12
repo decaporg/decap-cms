@@ -2,6 +2,11 @@ import type { Set } from 'immutable';
 import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
+import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import { Cursor } from 'netlify-cms-lib-util';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
+
 import { serializeValues } from '../lib/serializeEntryValues';
 import type { Backend } from '../backend';
 import { currentBackend } from '../backend';
@@ -9,8 +14,6 @@ import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectFields, updateFieldByKey } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
-import { Cursor } from 'netlify-cms-lib-util';
 import type { EntryValue } from '../valueObjects/Entry';
 import { createEntry } from '../valueObjects/Entry';
 import type AssetProxy from '../valueObjects/AssetProxy';
@@ -28,9 +31,6 @@ import type {
   Entry,
 } from '../types/redux';
 import { SortDirection } from '../types/redux';
-
-import type { ThunkDispatch } from 'redux-thunk';
-import type { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';

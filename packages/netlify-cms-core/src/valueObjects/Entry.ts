@@ -1,4 +1,5 @@
 import { isBoolean } from 'lodash';
+
 import type { MediaFile } from '../backend';
 
 interface Options {

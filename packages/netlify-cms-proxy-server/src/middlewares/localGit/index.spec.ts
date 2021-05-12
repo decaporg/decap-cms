@@ -2,6 +2,7 @@
 import type Joi from '@hapi/joi';
 import type express from 'express';
 import winston from 'winston';
+
 import { validateRepo, getSchema, localGitMiddleware } from '.';
 
 jest.mock('netlify-cms-lib-util', () => jest.fn());

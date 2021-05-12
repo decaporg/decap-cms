@@ -5,6 +5,7 @@ import { produce } from 'immer';
 import { trimStart, trim, isEmpty } from 'lodash';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
+
 import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
 import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';

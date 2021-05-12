@@ -56,6 +56,7 @@ module.exports = {
         'plugin:import/warnings',
         'plugin:import/typescript',
       ],
+      plugins: ['eslint-plugin-import-helpers'],
       parserOptions: {
         ecmaVersion: 2018,
         sourceType: 'module',
@@ -66,6 +67,13 @@ module.exports = {
       rules: {
         'no-duplicate-imports': [0], // handled by @typescript-eslint
         'require-atomic-updates': [0],
+        'import-helpers/order-imports': [
+          'error',
+          {
+            newlinesBetween: 'always',
+            groups: [['module'], ['parent', 'sibling', 'index']],
+          },
+        ],
         'import/no-unresolved': [
           'error',
           {

@@ -1,6 +1,7 @@
 import type { Semaphore } from 'semaphore';
 import semaphore from 'semaphore';
 import { unionBy, sortBy } from 'lodash';
+
 import type Cursor from './Cursor';
 import type { AsyncLock } from './asyncLock';
 import type { FileMetadata } from './API';

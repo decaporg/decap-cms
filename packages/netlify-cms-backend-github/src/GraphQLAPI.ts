@@ -18,13 +18,14 @@ import {
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { trim, trimStart } from 'lodash';
+import type { GraphQLError } from 'graphql';
+import type { Octokit } from '@octokit/rest';
+
 import introspectionQueryResultData from './fragmentTypes';
 import type { Config, BlobArgs } from './API';
 import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
-import type { GraphQLError } from 'graphql';
-import type { Octokit } from '@octokit/rest';
 
 const NO_CACHE = 'no-cache';
 const CACHE_FIRST = 'cache-first';

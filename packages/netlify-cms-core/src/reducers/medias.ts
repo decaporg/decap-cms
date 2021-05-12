@@ -1,4 +1,5 @@
 import { produce } from 'immer';
+
 import type { MediasAction } from '../actions/media';
 import {
   ADD_ASSETS,

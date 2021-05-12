@@ -18,6 +18,7 @@ import {
   basename,
 } from 'netlify-cms-lib-util';
 import { extname, dirname } from 'path';
+
 import AuthenticationPage from './AuthenticationPage';
 
 type RepoFile = { path: string; content: string | AssetProxy };

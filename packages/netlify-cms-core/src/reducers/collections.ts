@@ -1,5 +1,7 @@
 import { List, Set, fromJS, OrderedMap } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
 import consoleError from '../lib/consoleError';
 import type { ConfigAction } from '../actions/config';
 import { CONFIG_SUCCESS } from '../actions/config';
@@ -18,7 +20,6 @@ import type {
   CmsConfig,
 } from '../types/redux';
 import { selectMediaFolder } from './entries';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { summaryFormatter } from '../lib/formatters';
 import type { Backend } from '../backend';
 

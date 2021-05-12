@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 import { get } from 'lodash';
+
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';

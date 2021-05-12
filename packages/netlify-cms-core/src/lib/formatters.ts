@@ -1,7 +1,9 @@
 import type { Map } from 'immutable';
 import { flow, partialRight, trimEnd, trimStart } from 'lodash';
-import { sanitizeSlug } from './urlHelper';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stripIndent } from 'common-tags';
+
+import { sanitizeSlug } from './urlHelper';
 import {
   selectIdentifier,
   selectField,
@@ -9,7 +11,6 @@ import {
   getFileFromSlug,
 } from '../reducers/collections';
 import type { Collection, CmsConfig, CmsSlug, EntryMap } from '../types/redux';
-import { stripIndent } from 'common-tags';
 import { FILES } from '../constants/collectionTypes';
 import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
 

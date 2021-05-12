@@ -37,6 +37,7 @@ import {
   filterByExtension,
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
+
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
 
