@@ -89,6 +89,7 @@ module.exports = {
         '@typescript-eslint/ban-types': [0], // TODO enable in future
         '@typescript-eslint/consistent-type-imports': 'error',
         '@typescript-eslint/no-non-null-assertion': [0],
+        '@typescript-eslint/explicit-module-boundary-types': [0],
         '@typescript-eslint/explicit-function-return-type': [0],
         '@typescript-eslint/no-use-before-define': [
           'error',
