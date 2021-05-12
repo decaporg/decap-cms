@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.40.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.1...netlify-cms-core@2.40.2) (2021-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-scroll-sync to ^0.9.0 ([#5370](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5370)) ([bd9adda](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/bd9adda64adbbea4a8c6c036c5f450250b272bb1))
+
+
+
+
+
 ## [2.40.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.0...netlify-cms-core@2.40.1) (2021-05-10)
 
 
