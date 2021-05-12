@@ -1,29 +1,32 @@
 import trimStart from 'lodash/trimStart';
-import semaphore, { Semaphore } from 'semaphore';
+import type { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { trim } from 'lodash';
 import { stripIndent } from 'common-tags';
-import {
-  CURSOR_COMPATIBILITY_SYMBOL,
-  basename,
+import type {
   Entry,
   AssetProxy,
   PersistOptions,
   Cursor,
   Implementation,
   DisplayURL,
-  entriesByFolder,
-  entriesByFiles,
-  getMediaDisplayURL,
-  getMediaAsBlob,
   User,
   Credentials,
   Config,
   ImplementationFile,
+  UnpublishedEntryMediaFile,
+  AsyncLock,
+} from 'netlify-cms-lib-util';
+import {
+  CURSOR_COMPATIBILITY_SYMBOL,
+  basename,
+  entriesByFolder,
+  entriesByFiles,
+  getMediaDisplayURL,
+  getMediaAsBlob,
   unpublishedEntries,
   getPreviewStatus,
-  UnpublishedEntryMediaFile,
   asyncLock,
-  AsyncLock,
   runWithLock,
   getBlobSHA,
   blobToFileObj,
@@ -178,7 +181,7 @@ export default class GitLab implements Implementation {
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
     );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;

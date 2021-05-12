@@ -1,23 +1,27 @@
 import { Base64 } from 'js-base64';
-import semaphore, { Semaphore } from 'semaphore';
+import type { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { initial, last, partial, result, trimStart, trim } from 'lodash';
 import { oneLine } from 'common-tags';
+import type {
+  AssetProxy,
+  DataFile,
+  PersistOptions,
+  FetchError,
+  ApiRequest,
+} from 'netlify-cms-lib-util';
 import {
   getAllResponses,
   APIError,
   EditorialWorkflowError,
   localForage,
   basename,
-  AssetProxy,
-  DataFile,
-  PersistOptions,
   readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
   PreviewState,
-  FetchError,
   parseContentKey,
   branchFromContentKey,
   isCMSLabel,
@@ -26,11 +30,10 @@ import {
   contentKeyFromBranch,
   requestWithBackoff,
   unsentRequest,
-  ApiRequest,
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
-import { Octokit } from '@octokit/rest';
+import type { Octokit } from '@octokit/rest';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 type GitCreateTreeParamsTree = Octokit.GitCreateTreeParamsTree;
@@ -492,7 +495,6 @@ export default class API {
           ...(head ? { head: await this.getHeadReference(head) } : {}),
           base: this.branch,
           state,
-          // eslint-disable-next-line @typescript-eslint/camelcase
           per_page: 100,
         },
       },
@@ -858,7 +860,6 @@ export default class API {
     );
     return resp.statuses.map(s => ({
       context: s.context,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       target_url: s.target_url,
       state:
         s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
@@ -1306,10 +1307,8 @@ export default class API {
         {
           method: 'PUT',
           body: JSON.stringify({
-            // eslint-disable-next-line @typescript-eslint/camelcase
             commit_message: MERGE_COMMIT_MESSAGE,
             sha: pullrequest.head.sha,
-            // eslint-disable-next-line @typescript-eslint/camelcase
             merge_method: this.mergeMethod,
           }),
         },
@@ -1415,7 +1414,6 @@ export default class API {
   async createTree(baseSha: string, tree: TreeEntry[]) {
     const result: Octokit.GitCreateTreeResponse = await this.request(`${this.repoURL}/git/trees`, {
       method: 'POST',
-      // eslint-disable-next-line @typescript-eslint/camelcase
       body: JSON.stringify({ base_tree: baseSha, tree }),
     });
     return result;

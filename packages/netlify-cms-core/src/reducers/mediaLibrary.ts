@@ -1,5 +1,6 @@
 import { Map, List } from 'immutable';
 import uuid from 'uuid/v4';
+import type { MediaLibraryAction } from '../actions/mediaLibrary';
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
@@ -18,11 +19,10 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
-  MediaLibraryAction,
 } from '../actions/mediaLibrary';
 import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
-import {
+import type {
   State,
   MediaLibraryInstance,
   MediaFile,

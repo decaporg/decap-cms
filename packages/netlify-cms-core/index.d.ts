@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'netlify-cms-core' {
-  import React, { ComponentType } from 'react';
-  import { List, Map } from 'immutable';
+  import type { ComponentType } from 'react';
+  import React from 'react';
+  import type { List, Map } from 'immutable';
 
   export type CmsBackendType =
     | 'azure'

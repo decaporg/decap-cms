@@ -1,28 +1,31 @@
 import { trimStart, trim } from 'lodash';
-import semaphore, { Semaphore } from 'semaphore';
+import type { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
-import {
+import type {
   Credentials,
   Implementation,
   ImplementationFile,
   ImplementationMediaFile,
   DisplayURL,
-  basename,
   Entry,
   AssetProxy,
   PersistOptions,
+  Config,
+  AsyncLock,
+  User,
+  UnpublishedEntryMediaFile,
+} from 'netlify-cms-lib-util';
+import {
+  basename,
   getMediaDisplayURL,
   generateContentKey,
   getMediaAsBlob,
-  Config,
   getPreviewStatus,
   asyncLock,
-  AsyncLock,
   runWithLock,
-  User,
   unpublishedEntries,
-  UnpublishedEntryMediaFile,
   entriesByFiles,
   filterByExtension,
   branchFromContentKey,

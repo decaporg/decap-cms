@@ -1,8 +1,8 @@
 import { Map, List } from 'immutable';
 import { set, trimEnd, groupBy, escapeRegExp } from 'lodash';
-import { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
+import type { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
 import { selectEntrySlug } from '../reducers/collections';
-import { EntryValue } from '../valueObjects/Entry';
+import type { EntryValue } from '../valueObjects/Entry';
 
 export const I18N = 'i18n';
 

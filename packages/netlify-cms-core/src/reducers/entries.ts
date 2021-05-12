@@ -20,7 +20,7 @@ import {
   CHANGE_VIEW_STYLE,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
-import {
+import type {
   EntriesAction,
   EntryRequestPayload,
   EntrySuccessPayload,
@@ -41,7 +41,6 @@ import {
   SortMap,
   SortObject,
   Sort,
-  SortDirection,
   Filter,
   Group,
   FilterMap,
@@ -53,6 +52,7 @@ import {
   EntriesGroupFailurePayload,
   GroupOfEntries,
 } from '../types/redux';
+import { SortDirection } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
 import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';

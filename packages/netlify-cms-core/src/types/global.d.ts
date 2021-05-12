@@ -1,4 +1,4 @@
-import { CmsConfig } from './redux';
+import type { CmsConfig } from './redux';
 
 declare global {
   interface Window {

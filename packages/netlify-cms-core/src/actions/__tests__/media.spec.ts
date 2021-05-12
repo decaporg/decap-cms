@@ -1,11 +1,12 @@
 import { Map } from 'immutable';
 import configureMockStore from 'redux-mock-store';
-import thunk, { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import thunk from 'redux-thunk';
+import type { AnyAction } from 'redux';
 import { mocked } from 'ts-jest/utils';
 import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
 import { selectMediaFilePath } from '../../reducers/entries';
-import { State } from '../../types/redux';
+import type { State } from '../../types/redux';
 import AssetProxy from '../../valueObjects/AssetProxy';
 
 const middlewares = [thunk];
@@ -25,7 +26,7 @@ describe('media', () => {
   });
 
   describe('getAsset', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     global.URL = { createObjectURL: jest.fn() };
 
@@ -40,7 +41,7 @@ describe('media', () => {
 
       // TODO change to proper payload when immutable is removed
       //  from 'collections' and 'entries' state slices
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
@@ -54,7 +55,7 @@ describe('media', () => {
       const store = mockStore({
         // TODO change to proper store data when immutable is removed
         //  from 'config' state slice
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         config: Map(),
         medias: {
@@ -67,7 +68,7 @@ describe('media', () => {
 
       // TODO change to proper payload when immutable is removed
       //  from 'collections' and 'entries' state slices
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
@@ -97,7 +98,7 @@ describe('media', () => {
 
       // TODO change to proper payload when immutable is removed
       //  from 'collections' state slice
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
@@ -120,7 +121,7 @@ describe('media', () => {
 
       // TODO change to proper payload when immutable is removed
       //  from 'collections' and 'entries' state slices
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();
@@ -150,7 +151,7 @@ describe('media', () => {
 
       // TODO change to proper payload when immutable is removed
       //  from 'collections' and 'entries' state slices
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const result = store.dispatch(getAsset(payload));
       const actions = store.getActions();

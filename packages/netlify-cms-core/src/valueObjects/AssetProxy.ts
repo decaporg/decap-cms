@@ -1,4 +1,4 @@
-import { EntryField } from '../types/redux';
+import type { EntryField } from '../types/redux';
 
 interface AssetProxyArgs {
   path: string;

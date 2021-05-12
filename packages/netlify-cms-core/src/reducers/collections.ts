@@ -1,12 +1,13 @@
 import { List, Set, fromJS, OrderedMap } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
 import consoleError from '../lib/consoleError';
-import { CONFIG_SUCCESS, ConfigAction } from '../actions/config';
+import type { ConfigAction } from '../actions/config';
+import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
-import {
+import type {
   Collection,
   Collections,
   CollectionFiles,
@@ -19,7 +20,7 @@ import {
 import { selectMediaFolder } from './entries';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { summaryFormatter } from '../lib/formatters';
-import { Backend } from '../backend';
+import type { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;
 

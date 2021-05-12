@@ -1,13 +1,14 @@
-import winston from 'winston';
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import type { Logger } from 'winston';
+import type { Express } from 'express';
 
 export type Options = {
-  logger: winston.Logger;
+  logger: Logger;
 };
 
-export function registerCommonMiddlewares(app: express.Express, options: Options) {
+export function registerCommonMiddlewares(app: Express, options: Options) {
   const { logger } = options;
   const stream = {
     write: (message: string) => {
