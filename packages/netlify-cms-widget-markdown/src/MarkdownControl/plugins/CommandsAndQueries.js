@@ -71,6 +71,18 @@ function CommandsAndQueries({ defaultType }) {
       hasInline(editor, type) {
         return editor.value.inlines.some(node => node.type === type);
       },
+      hasQuote(editor, quoteLabel) {
+        const { value } = editor;
+        const { document, blocks } = value;
+        return blocks.some(node => {
+          const { key: descendantNodeKey } = node;
+          const parent = document.getClosest(
+            descendantNodeKey,
+            parentNode => parentNode.type === quoteLabel,
+          );
+          return !!parent;
+        });
+      },
     },
     commands: {
       toggleBlock(editor, type) {
