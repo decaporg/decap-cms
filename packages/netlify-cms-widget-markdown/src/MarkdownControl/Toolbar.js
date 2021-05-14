@@ -108,6 +108,7 @@ export default class Toolbar extends React.Component {
       hasMark = () => {},
       hasInline = () => {},
       hasBlock = () => {},
+      hasQuote = () => {},
       editorComponents,
       t,
     } = this.props;
@@ -211,7 +212,7 @@ export default class Toolbar extends React.Component {
               label={t('editor.editorWidgets.markdown.quote')}
               icon="quote"
               onClick={this.handleBlockClick}
-              isActive={hasBlock('quote')}
+              isActive={hasQuote('quote')}
               disabled={disabled}
             />
           )}
