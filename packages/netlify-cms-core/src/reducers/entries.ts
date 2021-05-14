@@ -24,6 +24,12 @@ import {
   CHANGE_VIEW_STYLE,
 } from '../actions/entries';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
+import { SortDirection } from '../types/redux';
+import { folderFormatter } from '../lib/formatters';
+import { selectSortDataPath } from './collections';
+import { VIEW_STYLE_LIST } from '../constants/collectionViews';
+import { joinUrlPath } from '../lib/urlHelper';
+
 import type {
   EntriesAction,
   EntryRequestPayload,
@@ -56,11 +62,6 @@ import type {
   EntriesGroupFailurePayload,
   GroupOfEntries,
 } from '../types/redux';
-import { SortDirection } from '../types/redux';
-import { folderFormatter } from '../lib/formatters';
-import { selectSortDataPath } from './collections';
-import { VIEW_STYLE_LIST } from '../constants/collectionViews';
-import { joinUrlPath } from '../lib/urlHelper';
 
 const { keyToPathArray } = stringTemplate;
 

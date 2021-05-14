@@ -1,5 +1,15 @@
 import { attempt, isError, take, unset, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
+import {
+  EditorialWorkflowError,
+  Cursor,
+  CURSOR_COMPATIBILITY_SYMBOL,
+  basename,
+} from 'netlify-cms-lib-util';
+import { extname, dirname } from 'path';
+
+import AuthenticationPage from './AuthenticationPage';
+
 import type {
   Implementation,
   Entry,
@@ -11,15 +21,6 @@ import type {
   ImplementationFile,
   DataFile,
 } from 'netlify-cms-lib-util';
-import {
-  EditorialWorkflowError,
-  Cursor,
-  CURSOR_COMPATIBILITY_SYMBOL,
-  basename,
-} from 'netlify-cms-lib-util';
-import { extname, dirname } from 'path';
-
-import AuthenticationPage from './AuthenticationPage';
 
 type RepoFile = { path: string; content: string | AssetProxy };
 type RepoTree = { [key: string]: RepoFile | RepoTree };

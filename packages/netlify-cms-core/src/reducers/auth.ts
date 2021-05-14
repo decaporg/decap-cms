@@ -1,7 +1,5 @@
 import { produce } from 'immer';
-import type { User } from 'netlify-cms-lib-util';
 
-import type { AuthAction } from '../actions/auth';
 import {
   AUTH_REQUEST,
   AUTH_SUCCESS,
@@ -9,6 +7,9 @@ import {
   AUTH_REQUEST_DONE,
   LOGOUT,
 } from '../actions/auth';
+
+import type { User } from 'netlify-cms-lib-util';
+import type { AuthAction } from '../actions/auth';
 
 export type Auth = {
   isFetching: boolean;

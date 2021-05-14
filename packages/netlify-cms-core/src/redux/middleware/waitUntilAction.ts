@@ -8,7 +8,6 @@
  * blocks until the condition is met.
  */
 import type { Middleware, MiddlewareAPI, Dispatch, AnyAction } from 'redux';
-
 import type { State } from '../../types/redux';
 
 export const WAIT_UNTIL_ACTION = 'WAIT_UNTIL_ACTION';

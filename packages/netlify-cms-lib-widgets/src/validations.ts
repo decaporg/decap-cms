@@ -1,4 +1,5 @@
 import { isNumber } from 'lodash';
+
 import type { List } from 'immutable';
 
 export function validateMinMax(

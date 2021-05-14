@@ -20,6 +20,7 @@ import {
   UNPUBLISHED_ENTRY_DELETE_SUCCESS,
 } from '../actions/editorialWorkflow';
 import { CONFIG_SUCCESS } from '../actions/config';
+
 import type { EditorialWorkflowAction, EditorialWorkflow, Entities } from '../types/redux';
 
 function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {

@@ -1,7 +1,8 @@
 import yaml from 'yaml';
-import type { YAMLMap, YAMLSeq, Pair, Node } from 'yaml/types';
 
 import { sortKeys } from './helpers';
+
+import type { YAMLMap, YAMLSeq, Pair, Node } from 'yaml/types';
 
 function addComments(items: Array<Pair>, comments: Record<string, string>, prefix = '') {
   items.forEach(item => {

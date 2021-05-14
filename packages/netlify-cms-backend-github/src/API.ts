@@ -1,15 +1,7 @@
 import { Base64 } from 'js-base64';
-import type { Semaphore } from 'semaphore';
 import semaphore from 'semaphore';
 import { initial, last, partial, result, trimStart, trim } from 'lodash';
 import { oneLine } from 'common-tags';
-import type {
-  AssetProxy,
-  DataFile,
-  PersistOptions,
-  FetchError,
-  ApiRequest,
-} from 'netlify-cms-lib-util';
 import {
   getAllResponses,
   APIError,
@@ -33,6 +25,15 @@ import {
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
+
+import type {
+  AssetProxy,
+  DataFile,
+  PersistOptions,
+  FetchError,
+  ApiRequest,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;

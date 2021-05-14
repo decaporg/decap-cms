@@ -1,7 +1,7 @@
+import { defaultSchema, joi } from '.';
+
 import type express from 'express';
 import type Joi from '@hapi/joi';
-
-import { defaultSchema, joi } from '.';
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;

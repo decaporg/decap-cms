@@ -1,3 +1,5 @@
+const tsconfig = require('./tsconfig.json');
+
 module.exports = {
   parser: 'babel-eslint',
   extends: [
@@ -56,7 +58,6 @@ module.exports = {
         'plugin:import/warnings',
         'plugin:import/typescript',
       ],
-      plugins: ['eslint-plugin-import-helpers'],
       parserOptions: {
         ecmaVersion: 2018,
         sourceType: 'module',
@@ -67,23 +68,17 @@ module.exports = {
       rules: {
         'no-duplicate-imports': [0], // handled by @typescript-eslint
         'require-atomic-updates': [0],
-        'import-helpers/order-imports': [
+        'import/order': [
           'error',
           {
-            newlinesBetween: 'always',
-            groups: [['module'], ['parent', 'sibling', 'index']],
+            'newlines-between': 'always',
+            groups: [['builtin', 'external'], ['internal', 'parent', 'sibling', 'index'], ['type']],
           },
         ],
         'import/no-unresolved': [
           'error',
           {
-            ignore: [
-              'netlify-cms-lib-util',
-              'netlify-cms-lib-widgets',
-              'netlify-cms-backend-github',
-              'netlify-cms-backend-gitlab',
-              'netlify-cms-backend-bitbucket',
-            ],
+            ignore: Object.keys(tsconfig.compilerOptions.paths),
           },
         ],
         '@typescript-eslint/ban-types': [0], // TODO enable in future

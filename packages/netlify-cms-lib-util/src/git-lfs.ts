@@ -4,6 +4,7 @@
 import { filter, flow, fromPairs, map } from 'lodash/fp';
 
 import getBlobSHA from './getBlobSHA';
+
 import type { AssetProxy } from './implementation';
 
 export interface PointerFile {

@@ -1,6 +1,5 @@
 import { produce } from 'immer';
 
-import type { MediasAction } from '../actions/media';
 import {
   ADD_ASSETS,
   ADD_ASSET,
@@ -9,6 +8,8 @@ import {
   LOAD_ASSET_SUCCESS,
   LOAD_ASSET_FAILURE,
 } from '../actions/media';
+
+import type { MediasAction } from '../actions/media';
 import type AssetProxy from '../valueObjects/AssetProxy';
 
 export type Medias = {

@@ -1,11 +1,4 @@
 import { flow, get } from 'lodash';
-import type {
-  ApiRequest,
-  AssetProxy,
-  PersistOptions,
-  FetchError,
-  DataFile,
-} from 'netlify-cms-lib-util';
 import {
   localForage,
   unsentRequest,
@@ -33,6 +26,14 @@ import {
 import { dirname } from 'path';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
+
+import type {
+  ApiRequest,
+  AssetProxy,
+  PersistOptions,
+  FetchError,
+  DataFile,
+} from 'netlify-cms-lib-util';
 
 interface Config {
   apiRoot?: string;

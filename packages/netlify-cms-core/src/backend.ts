@@ -1,18 +1,6 @@
 import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
-import type { Map } from 'immutable';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
-import type {
-  Implementation as BackendImplementation,
-  DisplayURL,
-  ImplementationEntry,
-  Credentials,
-  User,
-  AsyncLock,
-  UnpublishedEntry,
-  DataFile,
-  UnpublishedEntryDiff,
-} from 'netlify-cms-lib-util';
 import {
   localForage,
   Cursor,
@@ -41,24 +29,11 @@ import {
   selectFieldsComments,
   selectHasMetaPath,
 } from './reducers/collections';
-import type { EntryValue } from './valueObjects/Entry';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import { status } from './constants/publishModes';
-import type {
-  CmsConfig,
-  EntryMap,
-  FilterRule,
-  EntryDraft,
-  Collection,
-  Collections,
-  CollectionFile,
-  State,
-  EntryField,
-} from './types/redux';
-import type AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
 import {
@@ -72,6 +47,32 @@ import {
   getI18nBackup,
   formatI18nBackup,
 } from './lib/i18n';
+
+import type AssetProxy from './valueObjects/AssetProxy';
+import type {
+  CmsConfig,
+  EntryMap,
+  FilterRule,
+  EntryDraft,
+  Collection,
+  Collections,
+  CollectionFile,
+  State,
+  EntryField,
+} from './types/redux';
+import type { EntryValue } from './valueObjects/Entry';
+import type {
+  Implementation as BackendImplementation,
+  DisplayURL,
+  ImplementationEntry,
+  Credentials,
+  User,
+  AsyncLock,
+  UnpublishedEntry,
+  DataFile,
+  UnpublishedEntryDiff,
+} from 'netlify-cms-lib-util';
+import type { Map } from 'immutable';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 

@@ -1,11 +1,12 @@
 import { produce } from 'immer';
 
-import type { DeploysAction } from '../actions/deploys';
 import {
   DEPLOY_PREVIEW_REQUEST,
   DEPLOY_PREVIEW_SUCCESS,
   DEPLOY_PREVIEW_FAILURE,
 } from '../actions/deploys';
+
+import type { DeploysAction } from '../actions/deploys';
 
 export type Deploys = {
   [key: string]: {

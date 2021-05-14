@@ -1,22 +1,7 @@
 import trimStart from 'lodash/trimStart';
-import type { Semaphore } from 'semaphore';
 import semaphore from 'semaphore';
 import { trim } from 'lodash';
 import { stripIndent } from 'common-tags';
-import type {
-  Entry,
-  AssetProxy,
-  PersistOptions,
-  Cursor,
-  Implementation,
-  DisplayURL,
-  User,
-  Credentials,
-  Config,
-  ImplementationFile,
-  UnpublishedEntryMediaFile,
-  AsyncLock,
-} from 'netlify-cms-lib-util';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
@@ -40,6 +25,22 @@ import {
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
+
+import type {
+  Entry,
+  AssetProxy,
+  PersistOptions,
+  Cursor,
+  Implementation,
+  DisplayURL,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  UnpublishedEntryMediaFile,
+  AsyncLock,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 

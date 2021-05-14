@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import type Joi from '@hapi/joi';
-import type express from 'express';
 import winston from 'winston';
 
 import { validateRepo, getSchema, localGitMiddleware } from '.';
+
+import type Joi from '@hapi/joi';
+import type express from 'express';
 
 jest.mock('netlify-cms-lib-util', () => jest.fn());
 jest.mock('simple-git/promise');

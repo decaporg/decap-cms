@@ -1,25 +1,27 @@
-import type { Set } from 'immutable';
 import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
-import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { Cursor } from 'netlify-cms-lib-util';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { AnyAction } from 'redux';
 
 import { serializeValues } from '../lib/serializeEntryValues';
-import type { Backend } from '../backend';
 import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectFields, updateFieldByKey } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import type { EntryValue } from '../valueObjects/Entry';
 import { createEntry } from '../valueObjects/Entry';
-import type AssetProxy from '../valueObjects/AssetProxy';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { addAssets, getAsset } from './media';
+import { SortDirection } from '../types/redux';
+import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
+import { waitUntil } from './waitUntil';
+import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
+import { selectCustomPath } from '../reducers/entryDraft';
+import { navigateToEntry } from '../routing/history';
+import { getProcessSegment } from '../lib/formatters';
+import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
+
 import type {
   Collection,
   EntryMap,
@@ -30,14 +32,13 @@ import type {
   ViewGroup,
   Entry,
 } from '../types/redux';
-import { SortDirection } from '../types/redux';
-import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
-import { waitUntil } from './waitUntil';
-import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
-import { selectCustomPath } from '../reducers/entryDraft';
-import { navigateToEntry } from '../routing/history';
-import { getProcessSegment } from '../lib/formatters';
-import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
+import type AssetProxy from '../valueObjects/AssetProxy';
+import type { EntryValue } from '../valueObjects/Entry';
+import type { Backend } from '../backend';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import type { Set } from 'immutable';
 
 const { notifSend } = notifActions;
 
