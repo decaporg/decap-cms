@@ -21,13 +21,19 @@ The process for adding Netlify CMS to your site can vary between different gener
 
 ## Adding Netlify CMS to your site
 
+Netlify CMS is a single page app installed at the `/admin` route of your static site. This means that all actions like authentication, creating, editing and saving posts happen on the `/admin` page powered by Javascript. The app doesn't need to reload during the usage and users can enjoy its fast responsiveness.
+
 The frontend of the app contains the following major components:
 
 - A dashboard for managing content
 - A rich text editor built with [Slate](https://github.com/ianstormtaylor/slate) that supports Markdown syntax
 - A preview pane that renders the content while it's being edited
 
-Some site generators (e.g. Gatsby) come with plugins that simplify the installation of the Netlify CMS app.
+Installing Netlify CMS on your website is straightforward. Some site generators like Gatsby and Gridsome come with custom plugins that simplies this process.
+
+Even if your generator doesn't, installation typically just requires an `index.html` file and a YAML configuration file. The index file contains two scripts: one loads Netlify CMS from a CDN and builds it, and the other enables Netlify Identity, an authentication service.
+
+For more information, please refer to the section for your static site generator in the table of content.
 
 ## Authenticate CMS users with a backend
 
