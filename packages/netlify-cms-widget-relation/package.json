@@ -22,7 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "react-select": "^2.4.2",
+    "react-select": "^4.0.0",
     "react-window": "^1.8.5"
   },
   "peerDependencies": {
