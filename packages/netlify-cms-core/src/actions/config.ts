@@ -69,7 +69,7 @@ function getConfigUrl() {
 }
 
 function setDefaultPublicFolderForField<T extends CmsField>(field: T) {
-  if ('media_folder' in field && !field.public_folder) {
+  if ('media_folder' in field && !('public_folder' in field)) {
     return { ...field, public_folder: field.media_folder };
   }
   return field;
@@ -271,7 +271,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
           collection.media_folder = '';
         }
 
-        if ('media_folder' in collection && !collection.public_folder) {
+        if ('media_folder' in collection && !('public_folder' in collection)) {
           collection.public_folder = collection.media_folder;
         }
 
@@ -303,7 +303,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
         for (const file of files) {
           file.file = trimStart(file.file, '/');
 
-          if ('media_folder' in file && !file.public_folder) {
+          if ('media_folder' in file && !('public_folder' in file)) {
             file.public_folder = file.media_folder;
           }
 

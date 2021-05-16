@@ -214,7 +214,7 @@ describe('config', () => {
           ).toEqual('static/images/docs');
         });
 
-        it('should not overwrite collection public_folder if set', () => {
+        it('should not overwrite collection public_folder if set to non empty string', () => {
           expect(
             applyDefaults({
               collections: [
@@ -227,6 +227,21 @@ describe('config', () => {
               ],
             }).collections[0].public_folder,
           ).toEqual('images/docs');
+        });
+
+        it('should not overwrite collection public_folder if set to empty string', () => {
+          expect(
+            applyDefaults({
+              collections: [
+                {
+                  folder: 'foo',
+                  media_folder: 'static/images/docs',
+                  public_folder: '',
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }).collections[0].public_folder,
+          ).toEqual('');
         });
 
         it("should set collection media_folder and public_folder to an empty string when collection path exists, but collection media_folder doesn't", () => {
