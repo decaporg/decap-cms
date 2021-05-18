@@ -26,7 +26,6 @@
     "is-hotkey": "^0.2.0",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^1.0.5",
-    "react-select": "^2.4.3",
     "rehype-parse": "^6.0.0",
     "rehype-remark": "^8.0.0",
     "rehype-stringify": "^7.0.0",
