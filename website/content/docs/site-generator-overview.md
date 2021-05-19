@@ -36,11 +36,20 @@ Even if your generator doesn't, installation typically just requires an `index.h
 
 For more information, please refer to the section for your static site generator in the table of content.
 
-## Authenticate CMS users with a backend
+## Secure access to Netlify CMS
 
-Netlify CMS doesn't store your site content. Think of it as a middleman that allows your CMS users to make changes to your Git repository without having an account with GitHub, GitLab etc.
+Since Netlify CMS is a frontend app, anyone can visit it at the `/admin` route of your published website. But not everyone should be able to access the admin interface and make changes to your site content.
 
-To achieve that, Netlify CMS needs to make sure that users have the write access to an online Git repository. This means the backend of the app is just JavaScript code that authenticates users with the Git provider which stores the site project.
+Preventing unauthorized access to your CMS is done through authentication, which requires setting up a backend.
+
+You can write your own backend, or deploy your site to Netlify and get two features that simplify this process:
+
+- [Netlify Identity](https://www.netlify.com/docs/identity/), an authentication service
+- [Git Gateway](https://www.netlifycms.org/docs/git-gateway-backend), an intermediary between the CMS and your Git repository. This means you can do things like having your users log into the CMS admin their accounts on popular social platforms instead of requiring them to have a Github account.
+
+Both projects are open source and you can host them yourselves.
+
+If you decide to use Netlify hosting, you can read more aobut how to enable Netlify Identity and Git Gateway [in this section](https://www.netlifycms.org/docs/add-to-your-site/#authentication/).
 
 The authentication process requires a server and setting up a backend. You can write your own backend, or deploy your site to Netlify and get two authentication micro-services that simplify this process: Netlify Identity and Git Gateway.
 
