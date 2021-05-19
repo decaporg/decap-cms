@@ -63,6 +63,11 @@ These are only two of many things you need to inform Netlify CMS, and you do it 
 
 Once you've made your first post with Netlify CMS, head to your site repository and you'll find the latest commit containing the file with your post content.
 
-The integration process doesn't stop. Going back to your published site, you'll notice that even though you have a new file in your repository, it's not anywhere on your site. That's because Netlify CMS doesn't go beyond creating the raw content, which is one reason why it is able to work with many static site generator.
+But the integration process doesn't stop here. Going back to your published site, you'll notice that even though you have a new file in your repository, it's not anywhere on your site. That's because Netlify CMS doesn't go beyond creating the raw content, which is one reason why it is able to work with many static site generator.
 
-It is up to developers to determine how to build the raw content into something useful and delightful on the frontend. To learn how to process raw content from Netlify CMS, go to the section for your site generator in the Table of Content and follow its instructions.
+Netlify CMS manages your content, and provides editorial and admin features, but it doesn't deliver content. It only makes your content available through an API.
+
+It is up to developers to determine how to build the raw content into something useful and delightful on the frontend.
+
+To learn how to query raw content managed by Netlify CMS and reformat them for delivery to end users, please refer the dedicated section for your site generator in the Table of Content.
+
