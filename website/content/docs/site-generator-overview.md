@@ -51,13 +51,13 @@ Both projects are open source and you can host them yourselves.
 
 If you decide to use Netlify hosting, you can read more aobut how to enable Netlify Identity and Git Gateway [in this section](https://www.netlifycms.org/docs/add-to-your-site/#authentication/).
 
-The authentication process requires a server and setting up a backend. You can write your own backend, or deploy your site to Netlify and get two authentication micro-services that simplify this process: Netlify Identity and Git Gateway.
+## Add configurations for Netlify CMS
 
-It is also helpful to remember that Netlify CMS works in production. Every time the repository changes, whether in the source codes or raw content, the website is rebuilt and redeployed automatically.
+Although at this point you can log in, you can't do much yet! Netlify CMS only manages your content. It has no clue about the Git provider and repository it should use to save your content.
 
-For experimentation, you can run Netlify CMS locally, albeit with a catch. Each content edit through Netlify CMS results in a new commit to your remote repository. This means that you will need to pull changes from your remote each time to see them in the locally served site.
+Netlify CMS also doesn't know about the structure of various content types that your website is going to have, and the relationship between them.
 
-For more information, read the Authentication section in the [Add to Your Site page](https://www.netlifycms.org/docs/add-to-your-site/).
+These are only two of many things you need to inform Netlify CMS, and you do it through a special file at `config.yml`. A CMS is usually highly website-specific, and this file is where you can custom Netlify CMS to the liking of your developers and editors. You can learn how to specify configuration options for Netlify CMS [here](https://www.netlifycms.org/docs/configuration-options/#header).
 
 ## Render Netlify CMS output on the frontend
 
