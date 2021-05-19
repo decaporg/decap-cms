@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.40.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.3...netlify-cms-core@2.40.4) (2021-05-19)
+
+
+### Bug Fixes
+
+* **config:** allow empty public folder for collection,file,field ([#5391](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5391)) ([558b21f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/558b21f7002e3239d7632674fe57886425f7e15b))
+
+
+
+
+
 ## [2.40.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.2...netlify-cms-core@2.40.3) (2021-05-12)
 
 
