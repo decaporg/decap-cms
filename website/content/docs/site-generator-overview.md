@@ -13,11 +13,12 @@ A common pain point with static site generators is that they are hard to use for
 
 Netlify CMS fills this gap. You can integrate it into any site built with a common static site generator, including but not limited to Gatsby, Hugo, Jekyll, Next.js, Nuxt.js, Middleman and Gridsome. This allows non-technical editors to create and edit content through a solid user interface, abstracting any Git related operations.
 
-The process for adding Netlify CMS to your site can vary between different generators. As a general approach, it has three main steps:
+The process for adding Netlify CMS to your site can vary between different generators. As a general approach, it has four main steps:
 
-1. Adding Netlify CMS to your site under the `/admin` route of the published site
-2. Setting up a backend to authenticate CMS users with the Git provider that hosts your source code
-3. Rendering the Netlify CMS generated content as web pages
+1. Install Netlify CMS under the `/admin` route of your website
+2. Secure access to your website's Netlify CMS
+3. Add configurations for Netlify CMS
+4. Render the content provided by Netlify CMS as web pages
 
 ## Adding Netlify CMS to your site
 
