@@ -516,9 +516,12 @@ declare module 'netlify-cms-core' {
     };
   }
 
-  type GetAssetFunction = (
-    asset: string,
-  ) => { url: string; path: string; field?: any; fileObj: File };
+  type GetAssetFunction = (asset: string) => {
+    url: string;
+    path: string;
+    field?: any;
+    fileObj: File;
+  };
 
   export type PreviewTemplateComponentProps = {
     entry: Map<string, any>;

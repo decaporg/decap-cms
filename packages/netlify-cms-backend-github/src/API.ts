@@ -310,10 +310,10 @@ export default class API {
     let responseStatus = 500;
 
     try {
-      const req = (unsentRequest.fromFetchArguments(url, {
+      const req = unsentRequest.fromFetchArguments(url, {
         ...options,
         headers,
-      }) as unknown) as ApiRequest;
+      }) as unknown as ApiRequest;
       const response = await requestWithBackoff(this, req);
       responseStatus = response.status;
       const parsedResponse = await parser(response);
@@ -366,8 +366,7 @@ export default class API {
       .catch(() => {
         // Meta ref doesn't exist
         const readme = {
-          raw:
-            '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.',
+          raw: '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.',
         };
 
         return this.uploadBlob(readme)
@@ -808,7 +807,8 @@ export default class API {
     let branches: string[];
     if (this.useOpenAuthoring) {
       // open authoring branches can exist without a pr
-      const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.getOpenAuthoringBranches();
+      const cmsBranches: Octokit.GitListMatchingRefsResponse =
+        await this.getOpenAuthoringBranches();
       branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
       // filter irrelevant branches
       const branchesWithFilter = await Promise.all(
@@ -1036,7 +1036,7 @@ export default class API {
         author,
         committer,
       );
-      return (newCommit as unknown) as GitHubCompareCommit;
+      return newCommit as unknown as GitHubCompareCommit;
     } else {
       return commit;
     }

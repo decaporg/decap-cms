@@ -7,7 +7,7 @@ import { State } from '../types/redux';
 import { Reducer } from 'react';
 
 const store = createStore<State | undefined, AnyAction, unknown, unknown>(
-  (createRootReducer() as unknown) as Reducer<State | undefined, AnyAction>,
+  createRootReducer() as unknown as Reducer<State | undefined, AnyAction>,
   composeWithDevTools(applyMiddleware(thunkMiddleware as ThunkMiddleware<State>, waitUntilAction)),
 );
 

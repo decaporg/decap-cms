@@ -1322,7 +1322,7 @@ export function resolveBackend(config: CmsConfig) {
   }
 }
 
-export const currentBackend = (function() {
+export const currentBackend = (function () {
   let backend: Backend;
 
   return (config: CmsConfig) => {

@@ -28,14 +28,8 @@ export default class TextControl extends React.Component {
   }
 
   render() {
-    const {
-      forID,
-      value,
-      onChange,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { forID, value, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
+      this.props;
 
     return (
       <Textarea

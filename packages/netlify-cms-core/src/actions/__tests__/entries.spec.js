@@ -436,9 +436,9 @@ describe('entries', () => {
     });
 
     it('should not return error on meta path field', () => {
-      expect(
-        validateMetaField(null, null, fromJS({ meta: true, name: 'other' }), null, t),
-      ).toEqual({ error: false });
+      expect(validateMetaField(null, null, fromJS({ meta: true, name: 'other' }), null, t)).toEqual(
+        { error: false },
+      );
     });
 
     it('should return error on empty path', () => {

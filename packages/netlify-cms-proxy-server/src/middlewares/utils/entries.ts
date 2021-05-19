@@ -3,10 +3,7 @@ import path from 'path';
 import { promises as fs } from 'fs';
 
 function sha256(buffer: Buffer) {
-  return crypto
-    .createHash('sha256')
-    .update(buffer)
-    .digest('hex');
+  return crypto.createHash('sha256').update(buffer).digest('hex');
 }
 
 // normalize windows os path format

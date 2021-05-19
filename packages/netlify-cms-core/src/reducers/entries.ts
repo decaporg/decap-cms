@@ -105,10 +105,9 @@ function persistSort(sort: Sort | undefined) {
     const storageSort: StorageSort = {};
     sort.keySeq().forEach(key => {
       const collection = key as string;
-      const sortObjects = (sort
-        .get(collection)
-        .valueSeq()
-        .toJS() as SortObject[]).map((value, index) => ({ ...value, index }));
+      const sortObjects = (sort.get(collection).valueSeq().toJS() as SortObject[]).map(
+        (value, index) => ({ ...value, index }),
+      );
 
       sortObjects.forEach(value => {
         set(storageSort, [collection, value.key], value);
@@ -333,7 +332,7 @@ function entries(
     }
 
     case CHANGE_VIEW_STYLE: {
-      const payload = (action.payload as unknown) as ChangeViewStylePayload;
+      const payload = action.payload as unknown as ChangeViewStylePayload;
       const { style } = payload;
       const newState = state.withMutations(map => {
         map.setIn(['viewStyle'], style);
@@ -492,10 +491,8 @@ export function selectGroups(state: Entries, collection: Collection) {
     return [];
   }
 
-  let groups: Record<
-    string,
-    { id: string; label: string; value: string | boolean | undefined }
-  > = {};
+  let groups: Record<string, { id: string; label: string; value: string | boolean | undefined }> =
+    {};
   const groupedEntries = groupBy(entries.toArray(), entry => {
     const group = getGroup(entry, selectedGroup);
     groups = { ...groups, [group.id]: group };

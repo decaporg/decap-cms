@@ -132,9 +132,7 @@ export function defaultSchema({ path = requiredString } = {}) {
             cmsLabelPrefix: Joi.string().optional(),
             entry: dataFile, // entry is kept for backwards compatibility
             dataFiles: Joi.array().items(dataFile),
-            assets: Joi.array()
-              .items(asset)
-              .required(),
+            assets: Joi.array().items(asset).required(),
             options: Joi.object({
               collectionName: Joi.string(),
               commitMessage: requiredString,
@@ -207,10 +205,7 @@ export function defaultSchema({ path = requiredString } = {}) {
         is: 'deleteFiles',
         then: defaultParams
           .keys({
-            paths: Joi.array()
-              .items(path)
-              .min(1)
-              .required(),
+            paths: Joi.array().items(path).min(1).required(),
             options: Joi.object({
               commitMessage: requiredString,
             }).required(),

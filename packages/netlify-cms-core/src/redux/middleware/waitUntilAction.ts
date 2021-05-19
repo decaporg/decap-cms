@@ -51,13 +51,14 @@ export const waitUntilAction: Middleware<{}, State, Dispatch> = ({
     }
   }
 
-  return (next: Dispatch<AnyAction>) => (action: AnyAction): null | AnyAction => {
-    if (action.type === WAIT_UNTIL_ACTION) {
-      pending.push(action as WaitAction);
-      return null;
-    }
-    const result = next(action);
-    checkPending(action);
-    return result;
-  };
+  return (next: Dispatch<AnyAction>) =>
+    (action: AnyAction): null | AnyAction => {
+      if (action.type === WAIT_UNTIL_ACTION) {
+        pending.push(action as WaitAction);
+        return null;
+      }
+      const result = next(action);
+      checkPending(action);
+      return result;
+    };
 };

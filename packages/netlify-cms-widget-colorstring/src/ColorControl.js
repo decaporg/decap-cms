@@ -111,15 +111,8 @@ export default class ColorControl extends React.Component {
     this.props.onChange(formattedColor);
   };
   render() {
-    const {
-      forID,
-      value,
-      field,
-      onChange,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { forID, value, field, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
+      this.props;
 
     const allowInput = field.get('allowInput', false);
 

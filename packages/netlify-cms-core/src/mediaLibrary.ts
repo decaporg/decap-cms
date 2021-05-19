@@ -25,7 +25,7 @@ function handleInsert(url: string) {
 }
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
-  const lib = (getMediaLibrary(name) as unknown) as MediaLibrary | undefined;
+  const lib = getMediaLibrary(name) as unknown as MediaLibrary | undefined;
   if (!lib) {
     const err = new Error(
       `Missing external media library '${name}'. Please use 'registerMediaLibrary' to register it.`,

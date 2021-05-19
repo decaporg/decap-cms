@@ -601,7 +601,7 @@ describe('joi', () => {
     } as express.Request;
     const json = jest.fn();
     const status = jest.fn(() => ({ json }));
-    const res: express.Response = ({ status } as unknown) as express.Response;
+    const res: express.Response = { status } as unknown as express.Response;
 
     joi(defaultSchema())(req, res, next);
 

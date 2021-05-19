@@ -368,30 +368,15 @@ describe('collections', () => {
       });
 
       expect(selectField(collection, 'en.title')).toBe(
-        collection
-          .get('fields')
-          .get(0)
-          .get('fields')
-          .get(0),
+        collection.get('fields').get(0).get('fields').get(0),
       );
 
       expect(selectField(collection, 'it.title.subTitle')).toBe(
-        collection
-          .get('fields')
-          .get(2)
-          .get('field')
-          .get('fields')
-          .get(0),
+        collection.get('fields').get(2).get('field').get('fields').get(0),
       );
 
       expect(selectField(collection, 'fr.title.variableType')).toBe(
-        collection
-          .get('fields')
-          .get(3)
-          .get('fields')
-          .get(0)
-          .get('types')
-          .get(0),
+        collection.get('fields').get(3).get('fields').get(0).get('types').get(0),
       );
     });
   });

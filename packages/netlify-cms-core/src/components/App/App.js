@@ -25,7 +25,7 @@ import Header from './Header';
 
 TopBarProgress.config({
   barColors: {
-    '0': colors.active,
+    0: colors.active,
     '1.0': colors.active,
   },
   shadowBlur: 0,

@@ -277,9 +277,9 @@ export default class BitbucketBackend implements Implementation {
   }
 
   apiRequestFunction = async (req: ApiRequest) => {
-    const token = (this.refreshedTokenPromise
-      ? await this.refreshedTokenPromise
-      : this.token) as string;
+    const token = (
+      this.refreshedTokenPromise ? await this.refreshedTokenPromise : this.token
+    ) as string;
 
     const authorizedRequest = unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req);
     const response: Response = await unsentRequest.performRequest(authorizedRequest);

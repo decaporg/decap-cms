@@ -4,9 +4,7 @@ import remarkStripTrailingBreaks from '../remarkStripTrailingBreaks';
 
 function process(children) {
   const tree = u('root', children);
-  const strippedMdast = unified()
-    .use(remarkStripTrailingBreaks)
-    .runSync(tree);
+  const strippedMdast = unified().use(remarkStripTrailingBreaks).runSync(tree);
 
   return strippedMdast.children;
 }
