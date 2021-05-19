@@ -71,3 +71,6 @@ It is up to developers to determine how to build the raw content into something 
 
 To learn how to query raw content managed by Netlify CMS and reformat them for delivery to end users, please refer the dedicated section for your site generator in the Table of Content.
 
+## Use Netlify CMS for local development
+
+If you are experimenting with Netlify CMS or testing things out, you can connect it to a local Git repository instead of a live one. Learn how to do it [here](https://www.netlifycms.org/docs/beta-features/#working-with-a-local-git-repository).
