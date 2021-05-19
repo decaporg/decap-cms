@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.13.2...netlify-cms-ui-default@2.13.3) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-aria-menubutton to v7 ([#5382](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/5382)) ([8ec9ba0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/8ec9ba0747dcae8561d5f530b76897724574d941))
+
+
+
+
+
 ## [2.13.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.13.1...netlify-cms-ui-default@2.13.2) (2021-05-19)
 
 
