@@ -20,14 +20,13 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [15.x]
-
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '*'
+          check-latest: true
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
@@ -43,7 +42,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - uses: actions/upload-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
+          name: dev-test-website-${{ runner.os }}
           path: dev-test
 
   e2e-with-cypress:
@@ -53,15 +52,15 @@ jobs:
     strategy:
       matrix:
         machine: [1, 2, 3, 4, 5, 6, 7, 8]
-        node-version: [15.x]
       fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '*'
+          check-latest: true
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -73,7 +72,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - uses: actions/download-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
+          name: dev-test-website-${{ runner.os }}
           path: dev-test
       - name: npm install
         run: |
