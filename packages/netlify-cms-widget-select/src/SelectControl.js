@@ -79,7 +79,7 @@ export default class SelectControl extends React.Component {
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
     const isMultiple = field.get('multiple', false);
-    const isEmpty = selectedOption === null;
+    const isEmpty = isMultiple ? !selectedOption?.length : !selectedOption;
 
     if (field.get('required') && isEmpty && isMultiple) {
       onChange(List());
