@@ -248,15 +248,8 @@ export default class RelationControl extends React.Component {
   }, 500);
 
   render() {
-    const {
-      value,
-      field,
-      forID,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-      queryHits,
-    } = this.props;
+    const { value, field, forID, classNameWrapper, setActiveStyle, setInactiveStyle, queryHits } =
+      this.props;
     const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 

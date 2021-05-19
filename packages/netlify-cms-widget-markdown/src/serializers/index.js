@@ -72,9 +72,7 @@ export function markdownToRemark(markdown) {
   /**
    * Further transform the MDAST with plugins.
    */
-  const result = unified()
-    .use(remarkSquashReferences)
-    .runSync(parsed);
+  const result = unified().use(remarkSquashReferences).runSync(parsed);
 
   return result;
 }
@@ -173,9 +171,7 @@ export function markdownToHtml(markdown, { getAsset, resolveWidget } = {}) {
  * pastes.
  */
 export function htmlToSlate(html) {
-  const hast = unified()
-    .use(htmlToRehype, { fragment: true })
-    .parse(html);
+  const hast = unified().use(htmlToRehype, { fragment: true }).parse(html);
 
   const mdast = unified()
     .use(rehypePaperEmoji)

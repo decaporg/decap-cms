@@ -519,7 +519,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
     const state = getState();
     const backend = currentBackend(state.config);
     const entry = selectEntry(state, collection.get('name'), slug);
-    const entryDraft = (Map().set('entry', entry) as unknown) as EntryDraft;
+    const entryDraft = Map().set('entry', entry) as unknown as EntryDraft;
     dispatch(unpublishedEntryPersisting(collection, slug));
     return backend
       .deleteEntry(state, collection, slug)

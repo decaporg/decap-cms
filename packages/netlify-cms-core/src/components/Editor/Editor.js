@@ -192,7 +192,7 @@ export class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createBackup = debounce(function(entry, collection) {
+  createBackup = debounce(function (entry, collection) {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
@@ -202,14 +202,8 @@ export class Editor extends React.Component {
   };
 
   handleChangeStatus = newStatusName => {
-    const {
-      entryDraft,
-      updateUnpublishedEntryStatus,
-      collection,
-      slug,
-      currentStatus,
-      t,
-    } = this.props;
+    const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus, t } =
+      this.props;
     if (entryDraft.get('hasChanged')) {
       window.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
       return;
@@ -318,15 +312,8 @@ export class Editor extends React.Component {
   };
 
   handleDeleteUnpublishedChanges = async () => {
-    const {
-      entryDraft,
-      collection,
-      slug,
-      deleteUnpublishedEntry,
-      loadEntry,
-      isModification,
-      t,
-    } = this.props;
+    const { entryDraft, collection, slug, deleteUnpublishedEntry, loadEntry, isModification, t } =
+      this.props;
     if (
       entryDraft.get('hasChanged') &&
       !window.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))

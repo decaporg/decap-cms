@@ -9,15 +9,8 @@ import BlogPostTemplate from '../components/blog-post-template';
 
 function BlogPost({ data }) {
   const { html, frontmatter } = data.markdownRemark;
-  const {
-    author,
-    title,
-    date,
-    description,
-    meta_description,
-    twitter_image,
-    canonical_url,
-  } = frontmatter;
+  const { author, title, date, description, meta_description, twitter_image, canonical_url } =
+    frontmatter;
   const { siteUrl } = data.site.siteMetadata;
   const twitterImageUrl =
     twitter_image && `${trimEnd(siteUrl, '/')}/${trimStart(twitter_image, '/')}`;

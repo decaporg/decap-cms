@@ -17,14 +17,8 @@ function BooleanBackground({ isActive, ...props }) {
 
 export default class BooleanControl extends React.Component {
   render() {
-    const {
-      value,
-      forID,
-      onChange,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { value, forID, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
+      this.props;
     return (
       <div className={classNameWrapper}>
         <Toggle

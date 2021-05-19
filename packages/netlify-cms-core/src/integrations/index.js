@@ -20,7 +20,7 @@ export function resolveIntegrations(interationsConfig, getToken) {
   return integrationInstances;
 }
 
-export const getIntegrationProvider = (function() {
+export const getIntegrationProvider = (function () {
   let integrations = null;
 
   return (interationsConfig, getToken, provider) => {

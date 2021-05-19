@@ -287,10 +287,7 @@ describe('gitlab backend', () => {
   function interceptFiles(backend, path) {
     const api = mockApi(backend);
     const url = `${expectedRepoUrl}/repository/files/${encodeURIComponent(path)}/raw`;
-    api
-      .get(url)
-      .query(true)
-      .reply(200, mockRepo.files[path]);
+    api.get(url).query(true).reply(200, mockRepo.files[path]);
 
     api
       .get(`${expectedRepoUrl}/repository/commits`)
@@ -391,10 +388,7 @@ describe('gitlab backend', () => {
 
     it('returns an entry from folder collection', async () => {
       const entryTree = mockRepo.tree[collectionContentConfig.folder][0];
-      const slug = entryTree.path
-        .split('/')
-        .pop()
-        .replace('.md', '');
+      const slug = entryTree.path.split('/').pop().replace('.md', '');
 
       interceptFiles(backend, entryTree.path);
       interceptCollection(backend, collectionContentConfig);

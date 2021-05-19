@@ -233,11 +233,8 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
           const node = markNodes[0];
           convertedNodes.push(convertInlineNode(node, convertInlineAndTextChildren(node.nodes)));
         } else {
-          const {
-            leadingWhitespace,
-            trailingWhitespace,
-            centerNodes,
-          } = normalizeFlankingWhitespace(markNodes);
+          const { leadingWhitespace, trailingWhitespace, centerNodes } =
+            normalizeFlankingWhitespace(markNodes);
           const children = convertInlineAndTextChildren(centerNodes);
           const markNode = u(markMap[markType], children);
 

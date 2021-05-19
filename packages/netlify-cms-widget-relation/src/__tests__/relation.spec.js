@@ -382,10 +382,10 @@ describe('Relation widget', () => {
 
     expect(onChangeSpy).toHaveBeenCalledTimes(2);
     expect(onChangeSpy).toHaveBeenCalledWith(1, {
-      numbers: { numbers_collection: { '1': { index: 1, slug: 'post-1', title: 'post # 1' } } },
+      numbers: { numbers_collection: { 1: { index: 1, slug: 'post-1', title: 'post # 1' } } },
     });
     expect(onChangeSpy).toHaveBeenCalledWith(2, {
-      numbers: { numbers_collection: { '2': { index: 2, slug: 'post-2', title: 'post # 2' } } },
+      numbers: { numbers_collection: { 2: { index: 2, slug: 'post-2', title: 'post # 2' } } },
     });
   });
 

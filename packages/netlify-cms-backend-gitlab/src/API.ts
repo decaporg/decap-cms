@@ -245,10 +245,8 @@ export default class API {
   MAINTAINER_ACCESS = 40;
 
   hasWriteAccess = async () => {
-    const {
-      shared_with_groups: sharedWithGroups,
-      permissions,
-    }: GitLabRepo = await this.requestJSON(this.repoURL);
+    const { shared_with_groups: sharedWithGroups, permissions }: GitLabRepo =
+      await this.requestJSON(this.repoURL);
 
     const { project_access: projectAccess, group_access: groupAccess } = permissions;
     if (projectAccess && projectAccess.access_level >= this.WRITE_ACCESS) {

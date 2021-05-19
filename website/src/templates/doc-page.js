@@ -7,10 +7,7 @@ import Layout from '../components/layout';
 import DocsTemplate from '../components/docs-template';
 
 function filenameFromPath(p) {
-  return p
-    .split('/')
-    .slice(-1)[0]
-    .split('.')[0];
+  return p.split('/').slice(-1)[0].split('.')[0];
 }
 
 function toMenu(menu, nav) {

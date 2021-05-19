@@ -173,7 +173,7 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
   // we can only perform a single git operation at any given time
   const mutex = withTimeout(new Mutex(), 3000, new Error('Request timed out'));
 
-  return async function(req: express.Request, res: express.Response) {
+  return async function (req: express.Request, res: express.Response) {
     let release;
     try {
       release = await mutex.acquire();
@@ -345,12 +345,8 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
           break;
         }
         case 'updateUnpublishedEntryStatus': {
-          const {
-            collection,
-            slug,
-            newStatus,
-            cmsLabelPrefix,
-          } = body.params as UpdateUnpublishedEntryStatusParams;
+          const { collection, slug, newStatus, cmsLabelPrefix } =
+            body.params as UpdateUnpublishedEntryStatusParams;
           const contentKey = generateContentKey(collection, slug);
           const cmsBranch = branchFromContentKey(contentKey);
           const description = statusToLabel(newStatus, cmsLabelPrefix || '');

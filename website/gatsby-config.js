@@ -57,7 +57,7 @@ module.exports = {
               noInlineHighlight: true,
             },
           },
-        ]
+        ],
       },
     },
     'gatsby-transformer-yaml',

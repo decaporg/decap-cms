@@ -54,7 +54,7 @@ function getFile(path: string, tree: RepoTree) {
   while (obj && segments.length) {
     obj = obj[segments.shift() as string] as RepoTree;
   }
-  return ((obj as unknown) as RepoFile) || {};
+  return (obj as unknown as RepoFile) || {};
 }
 
 function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
@@ -146,7 +146,7 @@ export default class TestBackend implements Implementation {
   }
 
   authenticate() {
-    return (Promise.resolve() as unknown) as Promise<User>;
+    return Promise.resolve() as unknown as Promise<User>;
   }
 
   logout() {

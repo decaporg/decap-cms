@@ -24,7 +24,7 @@ type FsOptions = {
 };
 
 export function localFsMiddleware({ repoPath, logger }: FsOptions) {
-  return async function(req: express.Request, res: express.Response) {
+  return async function (req: express.Request, res: express.Response) {
     try {
       const { body } = req;
 

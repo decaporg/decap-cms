@@ -537,9 +537,9 @@ export default class GitHub implements Implementation {
     }
 
     const readFile = (path: string, id: string | null | undefined) =>
-      this.api!.readFile(path, id, { repoURL: this.api!.originRepoURL }).catch(() => '') as Promise<
-        string
-      >;
+      this.api!.readFile(path, id, { repoURL: this.api!.originRepoURL }).catch(
+        () => '',
+      ) as Promise<string>;
 
     const entries = await entriesByFiles(
       result.files,

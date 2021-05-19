@@ -3,10 +3,7 @@ import markdownToRemark from 'remark-parse';
 import remarkAllowHtmlEntities from '../remarkAllowHtmlEntities';
 
 function process(markdown) {
-  const mdast = unified()
-    .use(markdownToRemark)
-    .use(remarkAllowHtmlEntities)
-    .parse(markdown);
+  const mdast = unified().use(markdownToRemark).use(remarkAllowHtmlEntities).parse(markdown);
 
   /**
    * The MDAST will look like:

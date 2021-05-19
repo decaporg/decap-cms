@@ -9,9 +9,8 @@ import { State } from '../../types/redux';
 import AssetProxy from '../../valueObjects/AssetProxy';
 
 const middlewares = [thunk];
-const mockStore = configureMockStore<Partial<State>, ThunkDispatch<State, {}, AnyAction>>(
-  middlewares,
-);
+const mockStore =
+  configureMockStore<Partial<State>, ThunkDispatch<State, {}, AnyAction>>(middlewares);
 const mockedSelectMediaFilePath = mocked(selectMediaFilePath);
 
 jest.mock('../../reducers/entries');

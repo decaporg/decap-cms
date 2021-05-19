@@ -80,7 +80,7 @@ export default class ProxyBackend implements Implementation {
   }
 
   authenticate() {
-    return (Promise.resolve() as unknown) as Promise<User>;
+    return Promise.resolve() as unknown as Promise<User>;
   }
 
   logout() {
