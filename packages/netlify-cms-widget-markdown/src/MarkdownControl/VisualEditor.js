@@ -165,6 +165,7 @@ export default class Editor extends React.Component {
   hasInline = type => this.editor && this.editor.hasInline(type);
   hasBlock = type => this.editor && this.editor.hasBlock(type);
   hasQuote = type => this.editor && this.editor.hasQuote(type);
+  hasListItems = type => this.editor && this.editor.hasListItems(type);
 
   handleToggleMode = () => {
     this.props.onMode('raw');
@@ -220,6 +221,7 @@ export default class Editor extends React.Component {
             hasInline={this.hasInline}
             hasBlock={this.hasBlock}
             hasQuote={this.hasQuote}
+            hasListItems={this.hasListItems}
             isShowModeToggle={isShowModeToggle}
             t={t}
             disabled={isDisabled}
