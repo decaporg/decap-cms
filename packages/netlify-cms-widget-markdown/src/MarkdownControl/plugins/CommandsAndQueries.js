@@ -83,6 +83,25 @@ function CommandsAndQueries({ defaultType }) {
           return !!parent;
         });
       },
+      hasListItems(editor, listType) {
+        const { value } = editor;
+        const { document, blocks } = value;
+        return blocks.some(node => {
+          const { key: lowestNodeKey, type: lowestNodeType } = node;
+          if (lowestNodeType !== 'paragraph') return false;
+          const parent = document.getClosest(
+            lowestNodeKey,
+            parentNode => parentNode.type === 'list-item',
+          );
+          if (!parent) return false;
+          const { key: parentNodeKey } = parent;
+          const grandParent = document.getClosest(
+            parentNodeKey,
+            grandParentNode => grandParentNode.type === listType,
+          );
+          return !!grandParent;
+        });
+      },
     },
     commands: {
       toggleBlock(editor, type) {
