@@ -109,6 +109,7 @@ export default class Toolbar extends React.Component {
       hasInline = () => {},
       hasBlock = () => {},
       hasQuote = () => {},
+      hasListItems = () => {},
       editorComponents,
       t,
     } = this.props;
@@ -222,7 +223,7 @@ export default class Toolbar extends React.Component {
               label={t('editor.editorWidgets.markdown.bulletedList')}
               icon="list-bulleted"
               onClick={this.handleBlockClick}
-              isActive={hasBlock('bulleted-list')}
+              isActive={hasListItems('bulleted-list')}
               disabled={disabled}
             />
           )}
@@ -232,7 +233,7 @@ export default class Toolbar extends React.Component {
               label={t('editor.editorWidgets.markdown.numberedList')}
               icon="list-numbered"
               onClick={this.handleBlockClick}
-              isActive={hasBlock('numbered-list')}
+              isActive={hasListItems('numbered-list')}
               disabled={disabled}
             />
           )}
