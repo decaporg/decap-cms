@@ -167,7 +167,7 @@ export default class RelationControl extends React.Component {
     const { onChange, field } = this.props;
 
     if (this.isMultiple()) {
-      const options = selectedOption || [];
+      const options = selectedOption;
       this.setState({ initialOptions: options.filter(Boolean) });
       const value = options.map(optionToString);
       const metadata =
