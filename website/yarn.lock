@@ -1464,6 +1464,21 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
+"@react-dnd/asap@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@react-dnd/asap/-/asap-4.0.0.tgz#b300eeed83e9801f51bd66b0337c9a6f04548651"
+  integrity sha512-0XhqJSc6pPoNnf8DhdsPHtUhRzZALVzYMTzRwV4VI6DJNJ/5xxfL9OQUwb8IH5/2x7lSf7nAZrnzUD+16VyOVQ==
+
+"@react-dnd/invariant@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@react-dnd/invariant/-/invariant-2.0.0.tgz#09d2e81cd39e0e767d7da62df9325860f24e517e"
+  integrity sha512-xL4RCQBCBDJ+GRwKTFhGUW8GXa4yoDfJrPbLblc3U09ciS+9ZJXJ3Qrcs/x2IODOdIE5kQxvMmE2UKyqUictUw==
+
+"@react-dnd/shallowequal@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@react-dnd/shallowequal/-/shallowequal-2.0.0.tgz#a3031eb54129f2c66b2753f8404266ec7bf67f0a"
+  integrity sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==
+
 "@sideway/address@^4.1.0":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.2.tgz#811b84333a335739d3969cfc434736268170cad1"
@@ -1626,7 +1641,7 @@
   dependencies:
     "@types/unist" "*"
 
-"@types/hoist-non-react-statics@^3.3.0", "@types/hoist-non-react-statics@^3.3.1":
+"@types/hoist-non-react-statics@^3.3.0":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
   integrity sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
@@ -2473,11 +2488,6 @@ arrify@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-2.0.1.tgz#c9655e9331e0abcd588d2a7cad7e9956f66701fa"
   integrity sha512-3duEwti880xqi4eAMN8AyR4a0ByT90zoYdLlevfrvU43vb0YZwZVfxOgxWrLXXXpyugL0hNZc9G6BiB5B3nUug==
-
-asap@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
-  integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 assign-symbols@^1.0.0:
   version "1.0.0"
@@ -4149,14 +4159,14 @@ direction@^0.1.5:
   resolved "https://registry.yarnpkg.com/direction/-/direction-0.1.5.tgz#ce5d797f97e26f8be7beff53f7dc40e1c1a9ec4c"
   integrity sha1-zl15f5fib4vnvv9T99xA4cGp7Ew=
 
-dnd-core@^7.7.0:
-  version "7.7.0"
-  resolved "https://registry.yarnpkg.com/dnd-core/-/dnd-core-7.7.0.tgz#3166aefc8c5b85ca4ade4ae836712a3108975fab"
-  integrity sha512-+YqwflWEY1MEAEl2QiEiRaglYkCwIZryyQwximQGuTOm/ns7fS6Lg/i7OCkrtjM10D5FhArf/VUHIL4ZaRBK0g==
+dnd-core@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/dnd-core/-/dnd-core-14.0.0.tgz#973ab3470d0a9ac5a0fa9021c4feba93ad12347d"
+  integrity sha512-wTDYKyjSqWuYw3ZG0GJ7k+UIfzxTNoZLjDrut37PbcPGNfwhlKYlPUqjAKUjOOv80izshUiqusaKgJPItXSevA==
   dependencies:
-    asap "^2.0.6"
-    invariant "^2.2.4"
-    redux "^4.0.1"
+    "@react-dnd/asap" "^4.0.0"
+    "@react-dnd/invariant" "^2.0.0"
+    redux "^4.0.5"
 
 dns-equal@^1.0.0:
   version "1.0.0"
@@ -6905,7 +6915,7 @@ into-stream@^3.1.0:
     from2 "^2.1.1"
     p-is-promise "^1.1.0"
 
-invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.2, invariant@^2.2.3, invariant@^2.2.4:
+invariant@^2.0.0, invariant@^2.2.2, invariant@^2.2.3, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -8759,10 +8769,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.9:
-  version "2.15.9"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.9.tgz#0645f91e647e45c29a7e855c74e0f29a039fd4b5"
-  integrity sha512-E4xxScjin9nygNM5ZGcoO8BB8GSqFM6b+Y9QMkJrwtAlRBjvRVr9Bg7kv9uFsC+tGQv51LSXB878iuScMHQ9Xw==
+netlify-cms-app@^2.15.10:
+  version "2.15.10"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.10.tgz#6ce29e88f6fbc6304251f9b85f80f9ce49deb934"
+  integrity sha512-PUqUeGKdcrAOq3XO3fE6CNeooYVNgSZOCvMXwVr1U9r25eUgci8xnnNQCdumyi/saBWqpOWiLac+ueiLFgdQUw==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8777,7 +8787,7 @@ netlify-cms-app@^2.15.9:
     netlify-cms-backend-gitlab "^2.11.2"
     netlify-cms-backend-proxy "^1.2.1"
     netlify-cms-backend-test "^2.11.1"
-    netlify-cms-core "^2.40.5"
+    netlify-cms-core "^2.40.6"
     netlify-cms-editor-component-image "^2.7.0"
     netlify-cms-lib-auth "^2.4.1"
     netlify-cms-lib-util "^2.13.1"
@@ -8865,10 +8875,10 @@ netlify-cms-backend-test@^2.11.1:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.11.1.tgz#533e2c3faa05477b9512e73b28b9374df4b78faf"
   integrity sha512-Rwae2IuYEpEOjxN4m6MmN2Wyr4qu9ExQDX3kEdxchExy+guWWRL4veyGRP66q0jJonKCqyG2ziiHXBJc6V0J6g==
 
-netlify-cms-core@^2.40.5:
-  version "2.40.5"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.40.5.tgz#97c339e08b2d694b0c0f33d2fe2722ed11c07e92"
-  integrity sha512-W8Sx2URuowhXkPpLuWxF1sc3yYNm2nD1B6FPebhaKG7nZIheCCnBEVLOdtco7efvUpe+sAIbFcF8oKEatmvCtA==
+netlify-cms-core@^2.40.6:
+  version "2.40.6"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.40.6.tgz#32e0593d33c805fc1ce6bf4096a8ad9f58f354a7"
+  integrity sha512-NkMFvTqWgyTyvS9/wCcwYPCuvHT2e/yvPOZqELL7aP5jipr9F4jxGCREC50nm44uvzQEXk93EkupiDRivOgfrA==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "8.1.0"
@@ -8887,8 +8897,8 @@ netlify-cms-core@^2.40.5:
     node-polyglot "^2.3.0"
     prop-types "^15.7.2"
     react "^16.8.4"
-    react-dnd "^7.3.2"
-    react-dnd-html5-backend "^7.2.0"
+    react-dnd "^14.0.0"
+    react-dnd-html5-backend "^14.0.0"
     react-dom "^16.8.4"
     react-frame-component "^5.0.0"
     react-hot-loader "^4.8.0"
@@ -10574,23 +10584,23 @@ react-dev-utils@^11.0.3:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
-react-dnd-html5-backend@^7.2.0:
-  version "7.7.0"
-  resolved "https://registry.yarnpkg.com/react-dnd-html5-backend/-/react-dnd-html5-backend-7.7.0.tgz#e2b8ea61a1bc34ba743b89cafcda6213b006c06a"
-  integrity sha512-JgKmWOxqorFyfGPeWV+SAPhVGFe6+LrOR24jETE9rrYZU5hCppzwK9ujjS508kWibeDvbfEgi9j5qC2wB1/MoQ==
+react-dnd-html5-backend@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/react-dnd-html5-backend/-/react-dnd-html5-backend-14.0.0.tgz#28d660a2ad1e07447c34a65cd25f7de8f1657194"
+  integrity sha512-2wAQqRFC1hbRGmk6+dKhOXsyQQOn3cN8PSZyOUeOun9J8t3tjZ7PS2+aFu7CVu2ujMDwTJR3VTwZh8pj2kCv7g==
   dependencies:
-    dnd-core "^7.7.0"
+    dnd-core "14.0.0"
 
-react-dnd@^7.3.2:
-  version "7.7.0"
-  resolved "https://registry.yarnpkg.com/react-dnd/-/react-dnd-7.7.0.tgz#9d983331ecf87ba33d058d861e6ca9adb8253a2e"
-  integrity sha512-anpJDKMgdXE6kXvtBFmIAe1fuaexpVy7meUyNjiTfCnjQ1mRvnttGTVvcW9fMKijsUQYadiyvzd3BRxteFuVXg==
+react-dnd@^14.0.0:
+  version "14.0.2"
+  resolved "https://registry.yarnpkg.com/react-dnd/-/react-dnd-14.0.2.tgz#57266baec92b887301f81fa3b77f87168d159733"
+  integrity sha512-JoEL78sBCg8SzjOKMlkR70GWaPORudhWuTNqJ56lb2P8Vq0eM2+er3ZrMGiSDhOmzaRPuA9SNBz46nHCrjn11A==
   dependencies:
-    "@types/hoist-non-react-statics" "^3.3.1"
-    dnd-core "^7.7.0"
-    hoist-non-react-statics "^3.3.0"
-    invariant "^2.1.0"
-    shallowequal "^1.1.0"
+    "@react-dnd/invariant" "^2.0.0"
+    "@react-dnd/shallowequal" "^2.0.0"
+    dnd-core "14.0.0"
+    fast-deep-equal "^3.1.3"
+    hoist-non-react-statics "^3.3.2"
 
 react-dom@^16.8.4:
   version "16.14.0"
@@ -11038,7 +11048,7 @@ redux-thunk@^2.3.0:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
-redux@^4.0.0, redux@^4.0.1, redux@^4.0.5:
+redux@^4.0.0, redux@^4.0.5:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.1.0.tgz#eb049679f2f523c379f1aff345c8612f294c88d4"
   integrity sha512-uI2dQN43zqLWCt6B/BMGRMY6db7TTY4qeHHfGeKb3EOhmOKjU3KdWvNLJyqaHRksv/ErdNH7cFZWg9jXtewy4g==
