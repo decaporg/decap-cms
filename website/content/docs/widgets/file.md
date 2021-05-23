@@ -16,7 +16,7 @@ The file widget allows editors to upload a file or select an existing one from t
     * `allow_multiple`: *(default: `true`)* when set to `false`, prevents multiple selection for any media library extension, but must be supported by the extension in use
     * `config`: a configuration object that will be passed directly to the media library being
       used - available options are determined by the library
-    * `media_folder` (Beta): file path where uploaded file will be saved specific to this control. Paths can be relative to a collection folder (e.g. `images` will add the image to a sub-folder in the collection folder) or absolute with reference to the base of the repo which needs to begin with `/` (e.g `/static/files` will save uploaded images to the `static` folder in a sub folder named `files`)
+    * `media_folder` (Beta): file path where uploaded files will be saved specific to this control. Paths can be relative to a collection folder (e.g. `files` will add the file to a sub-folder in the collection folder) or absolute with reference to the base of the repo which needs to begin with `/` (e.g `/static/files` will save uploaded files to the `static` folder in a sub folder named `files`)
 * **Example:**
 
   ```yaml
