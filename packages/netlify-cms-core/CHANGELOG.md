@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.40.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.5...netlify-cms-core@2.40.6) (2021-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update react-dnd monorepo (major) ([#5405](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5405)) ([5974ee8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5974ee83112658e86a265049a72a577cafbb93a4))
+
+
+
+
+
 ## [2.40.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.4...netlify-cms-core@2.40.5) (2021-05-19)
 
 **Note:** Version bump only for package netlify-cms-core
