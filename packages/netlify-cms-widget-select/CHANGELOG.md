@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.8.1...netlify-cms-widget-select@2.8.2) (2021-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-select to v4 ([#5417](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/5417)) ([03362ef](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/03362ef5ab87c6fe5c964da5c5a18099b73a3fc6))
+
+
+
+
+
 ## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.8.0...netlify-cms-widget-select@2.8.1) (2021-05-19)
 
 
