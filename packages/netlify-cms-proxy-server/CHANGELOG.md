@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.16](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.15...netlify-cms-proxy-server@1.3.16) (2021-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v10 ([#5433](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/5433)) ([1d44a5c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/1d44a5c0b94ab8512278ffc877f2daeeb8159593))
+
+
+
+
+
 ## [1.3.15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.14...netlify-cms-proxy-server@1.3.15) (2021-05-19)
 
 **Note:** Version bump only for package netlify-cms-proxy-server
