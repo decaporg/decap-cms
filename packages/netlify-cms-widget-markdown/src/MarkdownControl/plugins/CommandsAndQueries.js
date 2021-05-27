@@ -76,11 +76,12 @@ function CommandsAndQueries({ defaultType }) {
         const { document, blocks } = value;
         return blocks.some(node => {
           const { key: descendantNodeKey } = node;
-          const parent = document.getClosest(
-            descendantNodeKey,
-            parentNode => parentNode.type === quoteLabel,
-          );
-          return !!parent;
+          /* When focusing a quote block, the actual block that gets the focus is the paragraph block whose parent is a `quote` block.
+          Hence, we need to get its parent and check if its type is `quote`. This parent will always be defined because every block in the editor
+          has a Document object as parent by default.
+          */
+          const parent = document.getParent(descendantNodeKey);
+          return parent.type === quoteLabel;
         });
       },
       hasListItems(editor, listType) {
