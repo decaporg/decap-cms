@@ -88,19 +88,23 @@ function CommandsAndQueries({ defaultType }) {
         const { value } = editor;
         const { document, blocks } = value;
         return blocks.some(node => {
-          const { key: lowestNodeKey, type: lowestNodeType } = node;
-          if (lowestNodeType !== 'paragraph') return false;
-          const parent = document.getClosest(
-            lowestNodeKey,
-            parentNode => parentNode.type === 'list-item',
-          );
-          if (!parent) return false;
-          const { key: parentNodeKey } = parent;
-          const grandParent = document.getClosest(
-            parentNodeKey,
-            grandParentNode => grandParentNode.type === listType,
-          );
-          return !!grandParent;
+          const { key: lowestNodeKey } = node;
+          /* A list block has the following structure:
+          <ol>
+            <li>
+              <p>Coffee</p>
+            </li>
+            <li>
+              <p>Tea</p>
+            </li>
+          </li>
+          The block that gets the focus is the lowest node, aka paragraph. Hence we need to check if the block in focus
+          is of type `paragraph`. If not, return immediately.
+          */
+          // if (lowestNodeType !== 'paragraph') return false;
+          const parent = document.getParent(lowestNodeKey);
+          const grandparent = document.getParent(parent.key);
+          return parent.type === 'list-item' && grandparent?.type === listType;
         });
       },
     },
