@@ -550,7 +550,7 @@ declare module 'netlify-cms-core' {
     registerEditorComponent: (options: EditorComponentOptions) => void;
     registerEventListener: (
       eventListener: CmsEventListener,
-      options: CmsEventListenerOptions,
+      options?: CmsEventListenerOptions,
     ) => void;
     registerLocale: (locale: string, phrases: CmsLocalePhrases) => void;
     registerMediaLibrary: (mediaLibrary: CmsMediaLibrary, options?: CmsMediaLibraryOptions) => void;
