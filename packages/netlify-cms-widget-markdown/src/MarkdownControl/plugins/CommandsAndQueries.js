@@ -97,11 +97,8 @@ function CommandsAndQueries({ defaultType }) {
             <li>
               <p>Tea</p>
             </li>
-          </li>
-          The block that gets the focus is the lowest node, aka paragraph. Hence we need to check if the block in focus
-          is of type `paragraph`. If not, return immediately.
+          </ol>
           */
-          // if (lowestNodeType !== 'paragraph') return false;
           const parent = document.getParent(lowestNodeKey);
           const grandparent = document.getParent(parent.key);
           return parent.type === 'list-item' && grandparent?.type === listType;
