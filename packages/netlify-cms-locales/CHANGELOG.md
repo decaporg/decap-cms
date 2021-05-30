@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.30.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.30.1...netlify-cms-locales@1.30.2) (2021-05-30)
+
+
+### Bug Fixes
+
+* **locales-nb_no:** fix spelling in deleteEntry ([#5442](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5442)) ([f296e40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/f296e40d6fc4399c3b898799b4e008d4d04aceba))
+
+
+
+
+
 ## [1.30.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.30.0...netlify-cms-locales@1.30.1) (2021-05-04)
 
 

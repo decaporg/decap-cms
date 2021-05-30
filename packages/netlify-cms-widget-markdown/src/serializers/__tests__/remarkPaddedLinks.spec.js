@@ -12,10 +12,7 @@ function input(markdown) {
 }
 
 function output(markdown) {
-  return unified()
-    .use(markdownToRemark)
-    .use(remarkToMarkdown)
-    .processSync(markdown).contents;
+  return unified().use(markdownToRemark).use(remarkToMarkdown).processSync(markdown).contents;
 }
 
 describe('remarkPaddedLinks', () => {

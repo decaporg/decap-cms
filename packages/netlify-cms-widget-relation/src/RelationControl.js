@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Async as AsyncSelect } from 'react-select';
+import AsyncSelect from 'react-select/async';
 import { find, isEmpty, last, debounce, get, uniqBy } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
@@ -165,17 +165,16 @@ export default class RelationControl extends React.Component {
 
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
-    let value;
-    let metadata;
 
-    if (Array.isArray(selectedOption)) {
-      this.setState({ initialOptions: selectedOption.filter(Boolean) });
-      value = selectedOption.map(optionToString);
-      metadata =
-        (!isEmpty(selectedOption) && {
+    if (this.isMultiple()) {
+      const options = selectedOption;
+      this.setState({ initialOptions: options.filter(Boolean) });
+      const value = options.map(optionToString);
+      const metadata =
+        (!isEmpty(options) && {
           [field.get('name')]: {
             [field.get('collection')]: {
-              [last(value)]: last(selectedOption).data,
+              [last(value)]: last(options).data,
             },
           },
         }) ||
@@ -183,8 +182,8 @@ export default class RelationControl extends React.Component {
       onChange(fromJS(value), metadata);
     } else {
       this.setState({ initialOptions: [selectedOption].filter(Boolean) });
-      value = optionToString(selectedOption);
-      metadata = selectedOption && {
+      const value = optionToString(selectedOption);
+      const metadata = selectedOption && {
         [field.get('name')]: {
           [field.get('collection')]: { [value]: selectedOption.data },
         },
@@ -248,15 +247,8 @@ export default class RelationControl extends React.Component {
   }, 500);
 
   render() {
-    const {
-      value,
-      field,
-      forID,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-      queryHits,
-    } = this.props;
+    const { value, field, forID, classNameWrapper, setActiveStyle, setInactiveStyle, queryHits } =
+      this.props;
     const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.11.0...netlify-cms-backend-test@2.11.1) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-backend-test
+
+
+
+
+
 # [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.10.7...netlify-cms-backend-test@2.11.0) (2021-05-04)
 
 

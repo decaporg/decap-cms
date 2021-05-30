@@ -1,6 +1,6 @@
-import ReactDNDHTML5Backend from 'react-dnd-html5-backend';
+import { HTML5Backend as ReactDNDHTML5Backend } from 'react-dnd-html5-backend';
 import {
-  DragDropContext as ReactDNDDragDropContext,
+  DndProvider as ReactDNDProvider,
   DragSource as ReactDNDDragSource,
   DropTarget as ReactDNDDropTarget,
 } from 'react-dnd';
@@ -53,6 +53,14 @@ DropTarget.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
-export function HTML5DragDrop(component) {
-  return ReactDNDDragDropContext(ReactDNDHTML5Backend)(component);
+export function HTML5DragDrop(WrappedComponent) {
+  return class HTML5DragDrop extends React.Component {
+    render() {
+      return (
+        <ReactDNDProvider backend={ReactDNDHTML5Backend}>
+          <WrappedComponent {...this.props} />
+        </ReactDNDProvider>
+      );
+    }
+  };
 }

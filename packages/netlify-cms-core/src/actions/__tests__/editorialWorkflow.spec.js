@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fromJS } from 'immutable';
 
-jest.mock('coreSrc/backend');
+jest.mock('../../backend');
 jest.mock('../../valueObjects/AssetProxy');
 jest.mock('netlify-cms-lib-util');
 jest.mock('uuid/v4', () => {
@@ -33,8 +33,8 @@ describe('editorialWorkflow actions', () => {
 
   describe('loadUnpublishedEntry', () => {
     it('should load unpublished entry', () => {
-      const { currentBackend } = require('coreSrc/backend');
-      const { createAssetProxy } = require('ValueObjects/AssetProxy');
+      const { currentBackend } = require('../../backend');
+      const { createAssetProxy } = require('../../valueObjects/AssetProxy');
 
       const assetProxy = { name: 'name', path: 'path' };
       const entry = { mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }] };
@@ -91,7 +91,7 @@ describe('editorialWorkflow actions', () => {
 
   describe('publishUnpublishedEntry', () => {
     it('should publish unpublished entry and report success', () => {
-      const { currentBackend } = require('coreSrc/backend');
+      const { currentBackend } = require('../../backend');
 
       const entry = {};
       const backend = {
@@ -176,7 +176,7 @@ describe('editorialWorkflow actions', () => {
     });
 
     it('should publish unpublished entry and report error', () => {
-      const { currentBackend } = require('coreSrc/backend');
+      const { currentBackend } = require('../../backend');
 
       const error = new Error('failed to publish entry');
       const backend = {

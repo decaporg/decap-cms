@@ -3,6 +3,96 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.40.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.8...netlify-cms-core@2.40.9) (2021-05-30)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.40.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.7...netlify-cms-core@2.40.8) (2021-05-30)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.40.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.6...netlify-cms-core@2.40.7) (2021-05-30)
+
+
+### Bug Fixes
+
+* **types:** mark registerEventListener options as optional ([#5443](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5443)) ([3f351ea](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/3f351ea745a9a464d695c2574d43c9894db3fea9))
+
+
+
+
+
+## [2.40.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.5...netlify-cms-core@2.40.6) (2021-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update react-dnd monorepo (major) ([#5405](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5405)) ([5974ee8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/5974ee83112658e86a265049a72a577cafbb93a4))
+
+
+
+
+
+## [2.40.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.4...netlify-cms-core@2.40.5) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.40.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.3...netlify-cms-core@2.40.4) (2021-05-19)
+
+
+### Bug Fixes
+
+* **config:** allow empty public folder for collection,file,field ([#5391](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5391)) ([558b21f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/558b21f7002e3239d7632674fe57886425f7e15b))
+
+
+
+
+
+## [2.40.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.2...netlify-cms-core@2.40.3) (2021-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-sortable-hoc to v2 ([#5371](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5371)) ([b5dabc2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/b5dabc212953348bee83d41c36ca1f949c87b6b5))
+
+
+
+
+
+## [2.40.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.1...netlify-cms-core@2.40.2) (2021-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-scroll-sync to ^0.9.0 ([#5370](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5370)) ([bd9adda](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/bd9adda64adbbea4a8c6c036c5f450250b272bb1))
+
+
+
+
+
+## [2.40.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.0...netlify-cms-core@2.40.1) (2021-05-10)
+
+
+### Bug Fixes
+
+* type for CmsEventListener handler property ([#5353](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/issues/5353)) ([db66c7e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/db66c7e8ddb6c6969f4f9d786bd7981514e01f2d))
+
+
+
+
+
 # [2.40.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.39.8...netlify-cms-core@2.40.0) (2021-05-04)
 
 

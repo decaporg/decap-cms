@@ -287,7 +287,7 @@ export function selectMediaFileByPath(state: State, path: string) {
 export function selectMediaDisplayURL(state: State, id: string) {
   const displayUrlState = state.mediaLibrary.getIn(
     ['displayURLs', id],
-    (Map() as unknown) as DisplayURLState,
+    Map() as unknown as DisplayURLState,
   );
   return displayUrlState;
 }

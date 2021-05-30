@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.10.0...netlify-cms-widget-file@2.10.1) (2021-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-sortable-hoc to v2 ([#5371](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/5371)) ([b5dabc2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/b5dabc212953348bee83d41c36ca1f949c87b6b5))
+
+
+
+
+
 # [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.9.2...netlify-cms-widget-file@2.10.0) (2021-05-04)
 
 

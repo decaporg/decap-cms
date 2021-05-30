@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.2...netlify-cms-widget-relation@2.10.3) (2021-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-select to v4 ([#5417](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5417)) ([03362ef](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/03362ef5ab87c6fe5c964da5c5a18099b73a3fc6))
+
+
+
+
+
+## [2.10.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.1...netlify-cms-widget-relation@2.10.2) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
+
+
+
+
+## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.0...netlify-cms-widget-relation@2.10.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update react-select to v3 ([#5394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5394)) ([03be13c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/03be13c1e87b318fd10ae6f6ab54cd2634fb9662))
+
+
+
+
+
 # [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.9.0...netlify-cms-widget-relation@2.10.0) (2021-05-04)
 
 

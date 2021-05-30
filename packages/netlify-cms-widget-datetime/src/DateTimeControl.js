@@ -20,11 +20,11 @@ function NowButton({ t, handleChange }) {
     >
       <button
         css={css`
-    ${buttons.button}
-    ${buttons.default}
+          ${buttons.button}
+          ${buttons.default}
     ${buttons.lightBlue}
     ${buttons.small}
-`}
+        `}
         onClick={() => {
           handleChange(moment());
         }}
@@ -125,7 +125,7 @@ export default class DateTimeControl extends React.Component {
     }
   };
 
-  onBlur = datetime => {
+  onClose = datetime => {
     const { setInactiveStyle } = this.props;
 
     if (!this.isValidDate(datetime)) {
@@ -157,8 +157,8 @@ export default class DateTimeControl extends React.Component {
           timeFormat={timeFormat}
           value={moment(value, format)}
           onChange={this.handleChange}
-          onFocus={setActiveStyle}
-          onBlur={this.onBlur}
+          onOpen={setActiveStyle}
+          onClose={this.onClose}
           inputProps={{ className: classNameWrapper, id: forID }}
           utc={this.pickerUtc}
         />

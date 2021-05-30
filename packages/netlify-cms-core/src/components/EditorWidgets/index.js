@@ -1,4 +1,4 @@
-import { registerWidget } from 'Lib/registry';
+import { registerWidget } from '../../lib/registry';
 import UnknownControl from './Unknown/UnknownControl';
 import UnknownPreview from './Unknown/UnknownPreview';
 

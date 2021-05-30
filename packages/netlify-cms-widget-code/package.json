@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-code",
   "description": "Widget for editing code in Netlify CMS",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "homepage": "https://www.netlifycms.org/docs/widgets/#code",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -33,6 +33,6 @@
   },
   "dependencies": {
     "react-codemirror2": "^7.0.0",
-    "react-select": "^2.4.3"
+    "react-select": "^4.0.0"
   }
 }

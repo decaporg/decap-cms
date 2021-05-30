@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-date",
   "description": "Widget for editing dates in Netlify CMS.",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#date",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -22,7 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "react-datetime": "^2.16.3"
+    "react-datetime": "^3.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",

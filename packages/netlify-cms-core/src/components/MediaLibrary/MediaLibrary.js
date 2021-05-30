@@ -13,12 +13,12 @@ import {
   insertMedia as insertMediaAction,
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
-} from 'Actions/mediaLibrary';
+} from '../../actions/mediaLibrary';
 import {
   selectMediaFiles,
   getInitialMediaFolder,
   getMediaFolderNavDisabled,
-} from 'Reducers/mediaLibrary';
+} from '../../reducers/mediaLibrary';
 import { dirname } from 'path';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 

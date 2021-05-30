@@ -3,7 +3,7 @@ import { mocked } from 'ts-jest/utils';
 
 jest.mock('history');
 
-const history = ({ push: jest.fn(), replace: jest.fn() } as unknown) as History;
+const history = { push: jest.fn(), replace: jest.fn() } as unknown as History;
 const mockedCreateHashHistory = mocked(createHashHistory);
 mockedCreateHashHistory.mockReturnValue(history);
 

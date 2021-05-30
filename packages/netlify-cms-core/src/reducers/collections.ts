@@ -144,10 +144,7 @@ export function selectFieldsWithMediaFolders(collection: Collection, slug: strin
     const fields = collection.get('fields').toArray();
     return getFieldsWithMediaFolders(fields);
   } else if (collection.has('files')) {
-    const fields =
-      getFileFromSlug(collection, slug)
-        ?.get('fields')
-        .toArray() || [];
+    const fields = getFileFromSlug(collection, slug)?.get('fields').toArray() || [];
     return getFieldsWithMediaFolders(fields);
   }
 
@@ -317,16 +314,18 @@ export function selectInferedField(collection: Collection, fieldName: string) {
   if (fieldName === 'title' && collection.get('identifier_field')) {
     return selectIdentifier(collection);
   }
-  const inferableField = (INFERABLE_FIELDS as Record<
-    string,
-    {
-      type: string;
-      synonyms: string[];
-      secondaryTypes: string[];
-      fallbackToFirstField: boolean;
-      showError: boolean;
-    }
-  >)[fieldName];
+  const inferableField = (
+    INFERABLE_FIELDS as Record<
+      string,
+      {
+        type: string;
+        synonyms: string[];
+        secondaryTypes: string[];
+        fallbackToFirstField: boolean;
+        showError: boolean;
+      }
+    >
+  )[fieldName];
   const fields = collection.get('fields');
   let field;
 

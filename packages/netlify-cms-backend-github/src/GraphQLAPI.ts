@@ -307,7 +307,7 @@ export default class GraphQLAPI extends API {
 
     const mapped = pullRequests.nodes.map(transformPullRequest);
 
-    return ((mapped as unknown) as Octokit.PullsListResponseItem[]).filter(
+    return (mapped as unknown as Octokit.PullsListResponseItem[]).filter(
       pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
     );
   }
@@ -685,7 +685,7 @@ export default class GraphQLAPI extends API {
       },
     });
     const { pullRequest } = data!.createPullRequest;
-    return (transformPullRequest(pullRequest) as unknown) as Octokit.PullsCreateResponse;
+    return transformPullRequest(pullRequest) as unknown as Octokit.PullsCreateResponse;
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {

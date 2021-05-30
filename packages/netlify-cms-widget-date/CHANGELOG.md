@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.6.0...netlify-cms-widget-date@2.6.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-datetime to v3 ([#5383](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/5383)) ([a2735b5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/a2735b5fd68470821841f608ce2123e8ce74c4e0))
+
+
+
+
+
 # [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.5.7...netlify-cms-widget-date@2.6.0) (2021-05-04)
 
 
