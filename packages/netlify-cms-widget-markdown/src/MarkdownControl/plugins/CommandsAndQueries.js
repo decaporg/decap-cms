@@ -71,6 +71,39 @@ function CommandsAndQueries({ defaultType }) {
       hasInline(editor, type) {
         return editor.value.inlines.some(node => node.type === type);
       },
+      hasQuote(editor, quoteLabel) {
+        const { value } = editor;
+        const { document, blocks } = value;
+        return blocks.some(node => {
+          const { key: descendantNodeKey } = node;
+          /* When focusing a quote block, the actual block that gets the focus is the paragraph block whose parent is a `quote` block.
+          Hence, we need to get its parent and check if its type is `quote`. This parent will always be defined because every block in the editor
+          has a Document object as parent by default.
+          */
+          const parent = document.getParent(descendantNodeKey);
+          return parent.type === quoteLabel;
+        });
+      },
+      hasListItems(editor, listType) {
+        const { value } = editor;
+        const { document, blocks } = value;
+        return blocks.some(node => {
+          const { key: lowestNodeKey } = node;
+          /* A list block has the following structure:
+          <ol>
+            <li>
+              <p>Coffee</p>
+            </li>
+            <li>
+              <p>Tea</p>
+            </li>
+          </ol>
+          */
+          const parent = document.getParent(lowestNodeKey);
+          const grandparent = document.getParent(parent.key);
+          return parent.type === 'list-item' && grandparent?.type === listType;
+        });
+      },
     },
     commands: {
       toggleBlock(editor, type) {
