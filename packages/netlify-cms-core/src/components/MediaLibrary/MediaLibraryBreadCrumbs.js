@@ -44,15 +44,12 @@ class MediaLibraryBreadcrumbs extends React.Component {
       defaultMediaFolder,
       mediaFolderNavDisabled,
     } = this.props;
-    var hiddenPath = trim(defaultMediaFolder, '/')
-      .split('/')
-      .slice(0, -1)
-      .join('/');
-    var currentMediaFolderParts = trim(
+    const hiddenPath = trim(defaultMediaFolder, '/').split('/').slice(0, -1).join('/');
+    const currentMediaFolderParts = trim(
       (currentMediaFolder || '').replace(hiddenPath, ''),
       '/',
     ).split('/');
-    var breadcrumbsArray = currentMediaFolderParts.map((part, index) => {
+    const breadcrumbsArray = currentMediaFolderParts.map((part, index) => {
       return {
         isDefaultMediaDirectory: index === 0,
         path: `${hiddenPath}/${currentMediaFolderParts.slice(0, index + 1).join('/')}`,
