@@ -18,7 +18,7 @@ jest.mock('netlify-cms-ui-default', () => {
     Loader: props => <mock-loader {...props} />,
   };
 });
-jest.mock('Routing/history');
+jest.mock('../../../routing/history');
 
 describe('Editor', () => {
   const props = {

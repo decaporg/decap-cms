@@ -1,3 +1,10 @@
+const fs = require('fs');
+
+const packages = fs
+  .readdirSync(`${__dirname}/packages`, { withFileTypes: true })
+  .filter(dirent => dirent.isDirectory())
+  .map(dirent => dirent.name);
+
 module.exports = {
   parser: 'babel-eslint',
   extends: [
@@ -5,6 +12,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:cypress/recommended',
     'prettier',
+    'plugin:import/recommended',
   ],
   env: {
     es6: true,
@@ -22,6 +30,7 @@ module.exports = {
   rules: {
     'no-console': [0],
     'react/prop-types': [0],
+    'import/no-named-as-default': 0,
     'no-duplicate-imports': 'error',
     '@emotion/no-vanilla': 'error',
     '@emotion/import-from-emotion': 'error',
@@ -41,6 +50,12 @@ module.exports = {
     react: {
       version: 'detect',
     },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
+    'import/core-modules': [...packages, 'netlify-cms-app/dist/esm'],
   },
   overrides: [
     {
@@ -52,8 +67,7 @@ module.exports = {
         'plugin:cypress/recommended',
         'plugin:@typescript-eslint/recommended',
         'prettier',
-        'plugin:import/errors',
-        'plugin:import/warnings',
+        'plugin:import/recommended',
         'plugin:import/typescript',
       ],
       parserOptions: {
@@ -65,7 +79,7 @@ module.exports = {
       },
       rules: {
         'require-atomic-updates': [0],
-        'import/no-unresolved': [0],
+        'import/no-named-as-default': 0,
         '@typescript-eslint/no-non-null-assertion': [0],
         '@typescript-eslint/camelcase': [0],
         '@typescript-eslint/explicit-function-return-type': [0],
@@ -73,6 +87,12 @@ module.exports = {
           'error',
           { functions: false, classes: true, variables: true },
         ],
+      },
+    },
+    {
+      files: ['website/**/*'],
+      rules: {
+        'import/no-unresolved': [0],
       },
     },
   ],

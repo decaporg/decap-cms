@@ -16,12 +16,12 @@ import {
   ENTRY_DELETE_SUCCESS,
   ADD_DRAFT_ENTRY_MEDIA_FILE,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
-} from 'Actions/entries';
+} from '../actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
-} from 'Actions/editorialWorkflow';
+} from '../actions/editorialWorkflow';
 import { get } from 'lodash';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { join } from 'path';

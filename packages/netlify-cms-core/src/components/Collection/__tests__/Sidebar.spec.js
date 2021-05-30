@@ -14,7 +14,7 @@ jest.mock('netlify-cms-ui-default', () => {
 
 jest.mock('../NestedCollection', () => 'nested-collection');
 jest.mock('../CollectionSearch', () => 'collection-search');
-jest.mock('Actions/collections');
+jest.mock('../../../actions/collections');
 
 describe('Sidebar', () => {
   const props = {
