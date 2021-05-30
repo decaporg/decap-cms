@@ -308,6 +308,7 @@ declare module 'netlify-cms-core' {
     preview_path_date_field?: string;
     create?: boolean;
     delete?: boolean;
+    hide?: boolean;
     editor?: {
       preview?: boolean;
     };
