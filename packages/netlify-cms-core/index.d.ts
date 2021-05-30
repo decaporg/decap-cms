@@ -535,8 +535,8 @@ declare module 'netlify-cms-core' {
     config: Map<string, any>;
     fields: List<Map<string, any>>;
     isLoadingAsset: boolean;
-    window: Window
-    document: Document
+    window: Window;
+    document: Document;
   };
 
   export interface CMS {
