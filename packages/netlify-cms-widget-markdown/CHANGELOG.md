@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.2...netlify-cms-widget-markdown@2.13.3) (2021-05-30)
+
+
+### Bug Fixes
+
+* **widget-markdown:** fix quote block and list highlighting ([#5422](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/5422)) ([b9624fc](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/b9624fc67376cd6c6850f9b1adbfa5c80f2a0ac0))
+
+
+
+
+
 ## [2.13.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.1...netlify-cms-widget-markdown@2.13.2) (2021-05-19)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown
