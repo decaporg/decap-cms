@@ -107,7 +107,7 @@ const nb_no = {
       deleteUnpublishedChanges: 'Slett upubliserte endringer',
       deleteUnpublishedEntry: 'Slett upublisert innlegg',
       deletePublishedEntry: 'Slett publisert innlegg',
-      deleteEntry: 'Sletter innlegg',
+      deleteEntry: 'Slett innlegg',
       saving: 'Lagrer...',
       save: 'Lagre',
       deleting: 'Sletter...',
