@@ -1,4 +1,4 @@
-import express from 'express';
+import type express from 'express';
 import Joi from '@hapi/joi';
 
 const allowedActions = [

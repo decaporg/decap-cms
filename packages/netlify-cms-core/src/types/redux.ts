@@ -1,15 +1,15 @@
-import { Action } from 'redux';
-import { StaticallyTypedRecord } from './immutable';
-import { Map, List, OrderedMap, Set } from 'immutable';
-import { FILES, FOLDER } from '../constants/collectionTypes';
-import { MediaFile as BackendMediaFile } from '../backend';
-import { Auth } from '../reducers/auth';
-import { Status } from '../reducers/status';
-import { Medias } from '../reducers/medias';
-import { Deploys } from '../reducers/deploys';
-import { Search } from '../reducers/search';
-import { GlobalUI } from '../reducers/globalUI';
-import { formatExtensions } from '../formats/formats';
+import type { Action } from 'redux';
+import type { StaticallyTypedRecord } from './immutable';
+import type { Map, List, OrderedMap, Set } from 'immutable';
+import type { FILES, FOLDER } from '../constants/collectionTypes';
+import type { MediaFile as BackendMediaFile } from '../backend';
+import type { Auth } from '../reducers/auth';
+import type { Status } from '../reducers/status';
+import type { Medias } from '../reducers/medias';
+import type { Deploys } from '../reducers/deploys';
+import type { Search } from '../reducers/search';
+import type { GlobalUI } from '../reducers/globalUI';
+import type { formatExtensions } from '../formats/formats';
 
 export type CmsBackendType =
   | 'azure'

@@ -1,12 +1,8 @@
-import semaphore, { Semaphore } from 'semaphore';
+import type { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { trimStart } from 'lodash';
 import { stripIndent } from 'common-tags';
-import {
-  CURSOR_COMPATIBILITY_SYMBOL,
-  filterByExtension,
-  unsentRequest,
-  basename,
-  getBlobSHA,
+import type {
   Entry,
   ApiRequest,
   Cursor,
@@ -14,23 +10,30 @@ import {
   PersistOptions,
   DisplayURL,
   Implementation,
-  entriesByFolder,
-  entriesByFiles,
   User,
   Credentials,
-  getMediaDisplayURL,
-  getMediaAsBlob,
   Config,
   ImplementationFile,
+  AsyncLock,
+  FetchError,
+} from 'netlify-cms-lib-util';
+import {
+  CURSOR_COMPATIBILITY_SYMBOL,
+  filterByExtension,
+  unsentRequest,
+  basename,
+  getBlobSHA,
+  entriesByFolder,
+  entriesByFiles,
+  getMediaDisplayURL,
+  getMediaAsBlob,
   unpublishedEntries,
   runWithLock,
-  AsyncLock,
   asyncLock,
   getPreviewStatus,
   getLargeMediaPatternsFromGitAttributesFile,
   getPointerFileForMediaFileObj,
   getLargeMediaFilteredMediaFiles,
-  FetchError,
   blobToFileObj,
   contentKeyFromBranch,
   generateContentKey,

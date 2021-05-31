@@ -3,8 +3,8 @@ import { fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
 import { produce } from 'immer';
 import { trimStart, trim, isEmpty } from 'lodash';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
 import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
 import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
@@ -12,7 +12,7 @@ import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from '../backend';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 import { FILES, FOLDER } from '../constants/collectionTypes';
-import {
+import type {
   CmsCollection,
   CmsConfig,
   CmsField,

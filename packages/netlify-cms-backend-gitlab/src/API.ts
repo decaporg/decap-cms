@@ -1,3 +1,10 @@
+import type {
+  ApiRequest,
+  DataFile,
+  AssetProxy,
+  PersistOptions,
+  FetchError,
+} from 'netlify-cms-lib-util';
 import {
   localForage,
   parseLinkHeader,
@@ -5,10 +12,6 @@ import {
   then,
   APIError,
   Cursor,
-  ApiRequest,
-  DataFile,
-  AssetProxy,
-  PersistOptions,
   readFile,
   CMS_BRANCH_PREFIX,
   generateContentKey,
@@ -24,7 +27,6 @@ import {
   branchFromContentKey,
   requestWithBackoff,
   readFileMetadata,
-  FetchError,
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';

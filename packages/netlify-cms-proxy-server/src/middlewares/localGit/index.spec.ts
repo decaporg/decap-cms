@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import Joi from '@hapi/joi';
-import express from 'express';
+import type Joi from '@hapi/joi';
+import type express from 'express';
 import winston from 'winston';
 import { validateRepo, getSchema, localGitMiddleware } from '.';
 

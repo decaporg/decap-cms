@@ -1,4 +1,4 @@
-import winston from 'winston';
+import type winston from 'winston';
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';

@@ -3,7 +3,7 @@
 
 import { filter, flow, fromPairs, map } from 'lodash/fp';
 import getBlobSHA from './getBlobSHA';
-import { AssetProxy } from './implementation';
+import type { AssetProxy } from './implementation';
 
 export interface PointerFile {
   size: number;

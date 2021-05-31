@@ -1,4 +1,4 @@
-import {
+import type {
   Entry,
   AssetProxy,
   PersistOptions,
@@ -6,10 +6,12 @@ import {
   Config,
   Implementation,
   ImplementationFile,
+  UnpublishedEntry,
+} from 'netlify-cms-lib-util';
+import {
   EditorialWorkflowError,
   APIError,
   unsentRequest,
-  UnpublishedEntry,
   blobToFileObj,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';

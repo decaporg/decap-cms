@@ -1,4 +1,11 @@
 import { flow, get } from 'lodash';
+import type {
+  ApiRequest,
+  AssetProxy,
+  PersistOptions,
+  FetchError,
+  DataFile,
+} from 'netlify-cms-lib-util';
 import {
   localForage,
   unsentRequest,
@@ -7,9 +14,6 @@ import {
   basename,
   Cursor,
   APIError,
-  ApiRequest,
-  AssetProxy,
-  PersistOptions,
   readFile,
   CMS_BRANCH_PREFIX,
   generateContentKey,
@@ -20,13 +24,11 @@ import {
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
   PreviewState,
-  FetchError,
   parseContentKey,
   branchFromContentKey,
   requestWithBackoff,
   readFileMetadata,
   throwOnConflictingBranches,
-  DataFile,
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
 import { oneLine } from 'common-tags';

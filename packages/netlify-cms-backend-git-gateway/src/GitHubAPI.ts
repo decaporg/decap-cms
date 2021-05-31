@@ -1,7 +1,8 @@
 import { API as GithubAPI } from 'netlify-cms-backend-github';
-import { Config as GitHubConfig, Diff } from 'netlify-cms-backend-github/src/API';
-import { APIError, FetchError } from 'netlify-cms-lib-util';
-import { Octokit } from '@octokit/rest';
+import type { Config as GitHubConfig, Diff } from 'netlify-cms-backend-github/src/API';
+import type { FetchError } from 'netlify-cms-lib-util';
+import { APIError } from 'netlify-cms-lib-util';
+import type { Octokit } from '@octokit/rest';
 
 type Config = GitHubConfig & {
   apiRoot: string;

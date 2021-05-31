@@ -1,23 +1,26 @@
 import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
-import { List, Map, fromJS, Set } from 'immutable';
+import type { Map } from 'immutable';
+import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
-import {
-  localForage,
-  Cursor,
-  CURSOR_COMPATIBILITY_SYMBOL,
-  EditorialWorkflowError,
+import type {
   Implementation as BackendImplementation,
   DisplayURL,
   ImplementationEntry,
   Credentials,
   User,
-  getPathDepth,
-  blobToFileObj,
-  asyncLock,
   AsyncLock,
   UnpublishedEntry,
   DataFile,
   UnpublishedEntryDiff,
+} from 'netlify-cms-lib-util';
+import {
+  localForage,
+  Cursor,
+  CURSOR_COMPATIBILITY_SYMBOL,
+  EditorialWorkflowError,
+  getPathDepth,
+  blobToFileObj,
+  asyncLock,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -37,12 +40,13 @@ import {
   selectFieldsComments,
   selectHasMetaPath,
 } from './reducers/collections';
-import { createEntry, EntryValue } from './valueObjects/Entry';
+import type { EntryValue } from './valueObjects/Entry';
+import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import { status } from './constants/publishModes';
-import {
+import type {
   CmsConfig,
   EntryMap,
   FilterRule,
@@ -53,7 +57,7 @@ import {
   State,
   EntryField,
 } from './types/redux';
-import AssetProxy from './valueObjects/AssetProxy';
+import type AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
 import {

@@ -1,31 +1,36 @@
-import { fromJS, List, Map, Set } from 'immutable';
+import type { Set } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { serializeValues } from '../lib/serializeEntryValues';
-import { currentBackend, Backend } from '../backend';
+import type { Backend } from '../backend';
+import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { selectFields, updateFieldByKey } from '../reducers/collections';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
-import { createEntry, EntryValue } from '../valueObjects/Entry';
-import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
+import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import { Cursor } from 'netlify-cms-lib-util';
+import type { EntryValue } from '../valueObjects/Entry';
+import { createEntry } from '../valueObjects/Entry';
+import type AssetProxy from '../valueObjects/AssetProxy';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { addAssets, getAsset } from './media';
-import {
+import type {
   Collection,
   EntryMap,
   State,
   EntryFields,
   EntryField,
-  SortDirection,
   ViewFilter,
   ViewGroup,
   Entry,
 } from '../types/redux';
+import { SortDirection } from '../types/redux';
 
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';

@@ -7,7 +7,7 @@ import { getMediaLibrary } from './lib/registry';
 import { store } from './redux';
 import { configFailed } from './actions/config';
 import { createMediaLibrary, insertMedia } from './actions/mediaLibrary';
-import { MediaLibraryInstance } from './types/redux';
+import type { MediaLibraryInstance } from './types/redux';
 
 type MediaLibraryOptions = {};
 

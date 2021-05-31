@@ -1,23 +1,27 @@
 import { Base64 } from 'js-base64';
-import semaphore, { Semaphore } from 'semaphore';
+import type { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { initial, last, partial, result, trimStart, trim } from 'lodash';
 import { oneLine } from 'common-tags';
+import type {
+  AssetProxy,
+  DataFile,
+  PersistOptions,
+  FetchError,
+  ApiRequest,
+} from 'netlify-cms-lib-util';
 import {
   getAllResponses,
   APIError,
   EditorialWorkflowError,
   localForage,
   basename,
-  AssetProxy,
-  DataFile,
-  PersistOptions,
   readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
   PreviewState,
-  FetchError,
   parseContentKey,
   branchFromContentKey,
   isCMSLabel,
@@ -26,11 +30,10 @@ import {
   contentKeyFromBranch,
   requestWithBackoff,
   unsentRequest,
-  ApiRequest,
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
-import { Octokit } from '@octokit/rest';
+import type { Octokit } from '@octokit/rest';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 type GitCreateTreeParamsTree = Octokit.GitCreateTreeParamsTree;

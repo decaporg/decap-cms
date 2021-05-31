@@ -1,14 +1,12 @@
 import { Base64 } from 'js-base64';
 import { partial, result, trim, trimStart } from 'lodash';
+import type { ApiRequest, AssetProxy, PersistOptions, DataFile } from 'netlify-cms-lib-util';
 import {
   localForage,
   APIError,
-  ApiRequest,
   unsentRequest,
   requestWithBackoff,
   responseParser,
-  AssetProxy,
-  PersistOptions,
   readFile,
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
@@ -20,10 +18,9 @@ import {
   statusToLabel,
   PreviewState,
   readFileMetadata,
-  DataFile,
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
-import { Map } from 'immutable';
+import type { Map } from 'immutable';
 import { dirname, basename } from 'path';
 
 export const API_NAME = 'Azure DevOps';
