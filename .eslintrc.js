@@ -78,8 +78,6 @@ module.exports = {
         },
       },
       rules: {
-        'require-atomic-updates': [0],
-        'import/no-named-as-default': 0,
         '@typescript-eslint/no-non-null-assertion': [0],
         '@typescript-eslint/camelcase': [0],
         '@typescript-eslint/explicit-function-return-type': [0],

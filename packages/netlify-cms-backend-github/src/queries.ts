@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 import { oneLine } from 'common-tags';
 import * as fragments from './fragments';
 
