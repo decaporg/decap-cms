@@ -14,6 +14,7 @@ import {
   components,
   shadows,
 } from 'netlify-cms-ui-default';
+
 import { createNewEntry } from '../../actions/collections';
 import {
   loadUnpublishedEntries,

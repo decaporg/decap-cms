@@ -1,7 +1,9 @@
 import { produce } from 'immer';
-import type { ConfigAction } from '../actions/config';
+
 import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE } from '../actions/config';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+
+import type { ConfigAction } from '../actions/config';
 import type { CmsConfig } from '../types/redux';
 
 const defaultState = {

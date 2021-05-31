@@ -1,6 +1,4 @@
-import type { QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
 import { ApolloClient } from 'apollo-client';
-import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import {
   InMemoryCache,
   defaultDataIdFromObject,
@@ -18,11 +16,15 @@ import {
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { trim, trimStart } from 'lodash';
+
 import introspectionQueryResultData from './fragmentTypes';
-import type { Config, BlobArgs } from './API';
 import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
+
+import type { Config, BlobArgs } from './API';
+import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
+import type { QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
 import type { GraphQLError } from 'graphql';
 import type { Octokit } from '@octokit/rest';
 

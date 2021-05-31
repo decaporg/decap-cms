@@ -1,5 +1,6 @@
 //import { Text, Inline } from 'slate';
 import isHotkey from 'is-hotkey';
+
 import CommandsAndQueries from './CommandsAndQueries';
 import ListPlugin from './List';
 import LineBreak from './LineBreak';

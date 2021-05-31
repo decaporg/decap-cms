@@ -4,6 +4,7 @@ import { Provider, connect } from 'react-redux';
 import { Route, Router } from 'react-router-dom';
 import { GlobalStyles } from 'netlify-cms-ui-default';
 import { I18n } from 'react-polyglot';
+
 import { store } from './redux';
 import { history } from './routing/history';
 import { loadConfig } from './actions/config';

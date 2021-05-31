@@ -1,13 +1,15 @@
 import { Map } from 'immutable';
 import configureMockStore from 'redux-mock-store';
-import type { ThunkDispatch } from 'redux-thunk';
 import thunk from 'redux-thunk';
-import type { AnyAction } from 'redux';
 import { mocked } from 'ts-jest/utils';
+
 import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
 import { selectMediaFilePath } from '../../reducers/entries';
-import type { State } from '../../types/redux';
 import AssetProxy from '../../valueObjects/AssetProxy';
+
+import type { State } from '../../types/redux';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
 
 const middlewares = [thunk];
 const mockStore =

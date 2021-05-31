@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { List } from 'immutable';
+
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
-import { List } from 'immutable';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 

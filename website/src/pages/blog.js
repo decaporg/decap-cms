@@ -8,7 +8,6 @@ import Container from '../components/container';
 import MetaInfo from '../components/meta-info';
 import Page from '../components/page';
 import Lead from '../components/lead';
-
 import theme from '../theme';
 
 function Blog({ data }) {

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Loader } from 'netlify-cms-ui-default';
 import { translate } from 'react-polyglot';
 import { debounce } from 'lodash';
+
 import { history, navigateToCollection, navigateToNewEntry } from '../../routing/history';
 import { logoutUser } from '../../actions/auth';
 import {

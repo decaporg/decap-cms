@@ -1,22 +1,6 @@
-import type { Semaphore } from 'semaphore';
 import semaphore from 'semaphore';
 import { trimStart } from 'lodash';
 import { stripIndent } from 'common-tags';
-import type {
-  Entry,
-  ApiRequest,
-  Cursor,
-  AssetProxy,
-  PersistOptions,
-  DisplayURL,
-  Implementation,
-  User,
-  Credentials,
-  Config,
-  ImplementationFile,
-  AsyncLock,
-  FetchError,
-} from 'netlify-cms-lib-util';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   filterByExtension,
@@ -43,9 +27,27 @@ import {
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
+
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
 import { GitLfsClient } from './git-lfs-client';
+
+import type {
+  Entry,
+  ApiRequest,
+  Cursor,
+  AssetProxy,
+  PersistOptions,
+  DisplayURL,
+  Implementation,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  AsyncLock,
+  FetchError,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 

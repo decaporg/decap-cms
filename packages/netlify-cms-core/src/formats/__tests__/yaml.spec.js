@@ -1,5 +1,6 @@
-import yaml from '../yaml';
 import { stripIndent } from 'common-tags';
+
+import yaml from '../yaml';
 
 describe('yaml', () => {
   describe('fromFile', () => {

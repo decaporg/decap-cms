@@ -2,6 +2,7 @@ import { List } from 'immutable';
 import { castArray, throttle, get } from 'lodash';
 import { Range, Block } from 'slate';
 import isHotkey from 'is-hotkey';
+
 import { assertType } from './util';
 
 function ListPlugin({ defaultType, unorderedListType, orderedListType }) {

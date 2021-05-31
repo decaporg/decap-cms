@@ -1,5 +1,6 @@
-import type express from 'express';
 import Joi from '@hapi/joi';
+
+import type express from 'express';
 
 const allowedActions = [
   'info',

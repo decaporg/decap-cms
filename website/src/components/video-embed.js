@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 import theme from '../theme';
-
 import screenshotEditor from '../img/screenshot-editor.jpg';
 
 const VideoLink = styled.a`

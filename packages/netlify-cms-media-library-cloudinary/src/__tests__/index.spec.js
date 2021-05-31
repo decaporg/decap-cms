@@ -1,4 +1,5 @@
 import { queryHelpers, waitForElement } from '@testing-library/dom';
+
 import cloudinary from '../index';
 
 describe('cloudinary media library', () => {

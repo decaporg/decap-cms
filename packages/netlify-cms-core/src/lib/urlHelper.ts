@@ -3,6 +3,7 @@ import urlJoin from 'url-join';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
+
 import type { CmsSlug } from '../types/redux';
 
 function getUrl(urlString: string, direct?: boolean) {

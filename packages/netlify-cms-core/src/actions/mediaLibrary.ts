@@ -1,9 +1,8 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
 import { basename, getBlobSHA } from 'netlify-cms-lib-util';
+
 import { currentBackend } from '../backend';
-import type AssetProxy from '../valueObjects/AssetProxy';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
 import {
@@ -16,6 +15,8 @@ import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
+import { waitUntilWithTimeout } from './waitUntil';
+
 import type {
   State,
   MediaFile,
@@ -25,7 +26,8 @@ import type {
 } from '../types/redux';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
-import { waitUntilWithTimeout } from './waitUntil';
+import type AssetProxy from '../valueObjects/AssetProxy';
+import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
 
 const { notifSend } = notifActions;
 

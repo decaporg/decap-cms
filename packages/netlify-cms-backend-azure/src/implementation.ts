@@ -1,22 +1,5 @@
 import { trimStart, trim } from 'lodash';
-import type { Semaphore } from 'semaphore';
 import semaphore from 'semaphore';
-import AuthenticationPage from './AuthenticationPage';
-import API, { API_NAME } from './API';
-import type {
-  Credentials,
-  Implementation,
-  ImplementationFile,
-  ImplementationMediaFile,
-  DisplayURL,
-  Entry,
-  AssetProxy,
-  PersistOptions,
-  Config,
-  AsyncLock,
-  User,
-  UnpublishedEntryMediaFile,
-} from 'netlify-cms-lib-util';
 import {
   basename,
   getMediaDisplayURL,
@@ -32,6 +15,25 @@ import {
   entriesByFolder,
   contentKeyFromBranch,
   getBlobSHA,
+} from 'netlify-cms-lib-util';
+
+import AuthenticationPage from './AuthenticationPage';
+import API, { API_NAME } from './API';
+
+import type { Semaphore } from 'semaphore';
+import type {
+  Credentials,
+  Implementation,
+  ImplementationFile,
+  ImplementationMediaFile,
+  DisplayURL,
+  Entry,
+  AssetProxy,
+  PersistOptions,
+  Config,
+  AsyncLock,
+  User,
+  UnpublishedEntryMediaFile,
 } from 'netlify-cms-lib-util';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;

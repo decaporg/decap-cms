@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
 import { Map } from 'immutable';
+
 import { selectFields, selectInferedField } from '../../../reducers/collections';
 import EntryCard from './EntryCard';
 

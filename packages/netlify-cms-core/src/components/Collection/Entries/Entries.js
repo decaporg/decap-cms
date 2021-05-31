@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import { Loader, lengths } from 'netlify-cms-ui-default';
+
 import EntryListing from './EntryListing';
 
 const PaginationMessage = styled.div`

@@ -8,13 +8,14 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
+import { Loader, colors } from 'netlify-cms-ui-default';
+
 import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
 import { Toast } from '../UI';
-import { Loader, colors } from 'netlify-cms-ui-default';
 import { history } from '../../routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import Collection from '../Collection/Collection';

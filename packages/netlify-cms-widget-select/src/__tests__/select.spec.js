@@ -1,6 +1,7 @@
 import React from 'react';
 import { fromJS, List } from 'immutable';
 import { render, fireEvent } from '@testing-library/react';
+
 import { NetlifyCmsWidgetSelect } from '../';
 
 const SelectControl = NetlifyCmsWidgetSelect.controlComponent;

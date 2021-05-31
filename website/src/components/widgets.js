@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 
 import WidgetDoc from './widget-doc';
 import Button from './button';
-
 import theme from '../theme';
 
 const WidgetsNav = styled.nav`

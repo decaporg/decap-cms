@@ -1,7 +1,8 @@
 import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
-import type { ThunkDispatch } from 'redux-thunk';
 import { Map, List } from 'immutable';
+import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
+
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
   selectPublishedSlugs,
@@ -10,9 +11,7 @@ import {
   selectUnpublishedEntry,
 } from '../reducers';
 import { selectEditingDraft } from '../reducers/entries';
-import type { Status } from '../constants/publishModes';
 import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
-import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 import {
   loadEntry,
   entryDeleted,
@@ -25,6 +24,8 @@ import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
+import { navigateToEntry } from '../routing/history';
+
 import type {
   Collection,
   EntryMap,
@@ -35,7 +36,8 @@ import type {
 } from '../types/redux';
 import type { AnyAction } from 'redux';
 import type { EntryValue } from '../valueObjects/Entry';
-import { navigateToEntry } from '../routing/history';
+import type { Status } from '../constants/publishModes';
+import type { ThunkDispatch } from 'redux-thunk';
 
 const { notifSend } = notifActions;
 

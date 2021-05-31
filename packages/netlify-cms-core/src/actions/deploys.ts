@@ -1,8 +1,10 @@
 import { actions as notifActions } from 'redux-notifications';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { AnyAction } from 'redux';
+
 import { currentBackend } from '../backend';
 import { selectDeployPreview } from '../reducers';
+
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
 import type { Collection, Entry, State } from '../types/redux';
 
 const { notifSend } = notifActions;

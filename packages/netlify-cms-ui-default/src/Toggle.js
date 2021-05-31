@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import ReactToggled from 'react-toggled';
+
 import { colors, colorsRaw, shadows, transitions } from './styles';
 
 const ToggleContainer = styled.button`

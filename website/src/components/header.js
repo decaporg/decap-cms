@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, graphql, StaticQuery } from 'gatsby';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-
 import GitHubButton from 'react-github-btn';
+
 import Container from './container';
 import Notifications from './notifications';
 import DocSearch from './docsearch';
-
 import logo from '../img/netlify-cms-logo.svg';
 import searchIcon from '../img/search.svg';
-
 import theme from '../theme';
 import { mq } from '../utils';
 

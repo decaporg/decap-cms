@@ -1,6 +1,5 @@
 // Core
 import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
-
 // Backends
 import { AzureBackend } from 'netlify-cms-backend-azure';
 import { GitHubBackend } from 'netlify-cms-backend-github';
@@ -9,7 +8,6 @@ import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway';
 import { BitbucketBackend } from 'netlify-cms-backend-bitbucket';
 import { TestBackend } from 'netlify-cms-backend-test';
 import { ProxyBackend } from 'netlify-cms-backend-proxy';
-
 // Widgets
 import NetlifyCmsWidgetString from 'netlify-cms-widget-string';
 import NetlifyCmsWidgetNumber from 'netlify-cms-widget-number';
@@ -27,10 +25,8 @@ import NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
 import NetlifyCmsWidgetDatetime from 'netlify-cms-widget-datetime';
 import NetlifyCmsWidgetCode from 'netlify-cms-widget-code';
 import NetlifyCmsWidgetColorString from 'netlify-cms-widget-colorstring';
-
 // Editor Components
 import image from 'netlify-cms-editor-component-image';
-
 // Locales
 import * as locales from 'netlify-cms-locales';
 

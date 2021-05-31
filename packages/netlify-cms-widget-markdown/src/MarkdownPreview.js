@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
-import { markdownToHtml } from './serializers';
 import DOMPurify from 'dompurify';
+
+import { markdownToHtml } from './serializers';
 class MarkdownPreview extends React.Component {
   static propTypes = {
     getAsset: PropTypes.func.isRequired,

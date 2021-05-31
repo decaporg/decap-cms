@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List } from 'immutable';
 import { oneLine } from 'common-tags';
+
 import ValidationErrorTypes from '../../../constants/validationErrorTypes';
 
 function truthy() {

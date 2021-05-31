@@ -1,5 +1,6 @@
-import { serializeValues, deserializeValues } from '../serializeEntryValues';
 import { fromJS } from 'immutable';
+
+import { serializeValues, deserializeValues } from '../serializeEntryValues';
 
 const values = fromJS({ title: 'New Post', unknown: 'Unknown Field' });
 const fields = fromJS([{ name: 'title', widget: 'string' }]);

@@ -1,6 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { List, Map } from 'immutable';
+
 import { insertMedia, persistMedia, deleteMedia } from '../mediaLibrary';
 
 jest.mock('../../backend');

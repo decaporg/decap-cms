@@ -3,6 +3,7 @@ import { fromJS } from 'immutable';
 import { oneLine, stripIndent } from 'common-tags';
 import nock from 'nock';
 import { Cursor } from 'netlify-cms-lib-util';
+
 import Gitlab from '../implementation';
 import AuthenticationPage from '../AuthenticationPage';
 

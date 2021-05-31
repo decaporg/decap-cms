@@ -1,4 +1,6 @@
 import { stripIndent } from 'common-tags';
+import yaml from 'js-yaml';
+
 import {
   loadConfig,
   parseConfig,
@@ -7,8 +9,6 @@ import {
   detectProxyServer,
   handleLocalBackend,
 } from '../config';
-
-import yaml from 'js-yaml';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});

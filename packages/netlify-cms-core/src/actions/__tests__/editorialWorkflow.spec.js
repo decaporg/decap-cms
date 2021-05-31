@@ -1,8 +1,9 @@
-import * as actions from '../editorialWorkflow';
-import { addAssets } from '../media';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fromJS } from 'immutable';
+
+import { addAssets } from '../media';
+import * as actions from '../editorialWorkflow';
 
 jest.mock('../../backend');
 jest.mock('../../valueObjects/AssetProxy');

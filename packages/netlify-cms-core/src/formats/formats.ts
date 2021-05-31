@@ -1,10 +1,12 @@
 import { List } from 'immutable';
 import { get } from 'lodash';
+
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import type { Delimiter } from './frontmatter';
 import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+
+import type { Delimiter } from './frontmatter';
 import type { Collection, EntryObject, Format } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
 

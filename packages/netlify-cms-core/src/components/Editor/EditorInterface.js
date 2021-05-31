@@ -13,6 +13,7 @@ import {
   zIndex,
 } from 'netlify-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';

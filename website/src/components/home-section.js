@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 
 import Container from './container';
 import Page from './page';
-
 import theme from '../theme';
 
 const Header = styled.header`
