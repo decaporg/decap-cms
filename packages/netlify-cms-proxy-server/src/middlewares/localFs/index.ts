@@ -32,7 +32,6 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
         case 'info': {
           res.json({
             repo: path.basename(repoPath),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             publish_modes: ['simple'],
             type: 'local_fs',
           });

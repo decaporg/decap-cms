@@ -303,7 +303,6 @@ export default class API {
       try {
         const result: GitLabCommit[] = await this.requestJSON({
           url: `${this.repoURL}/repository/commits`,
-          // eslint-disable-next-line @typescript-eslint/camelcase
           params: { path, ref_name: this.branch },
         });
         const commit = result[0];
@@ -398,7 +397,6 @@ export default class API {
     let { cursor, entries: initialEntries } = await this.fetchCursorAndEntries({
       url: `${this.repoURL}/repository/tree`,
       // Get the maximum number of entries per page
-      // eslint-disable-next-line @typescript-eslint/camelcase
       params: { path, ref: branch, per_page: 100, recursive },
     });
     entries.push(...initialEntries);
@@ -427,9 +425,7 @@ export default class API {
   ) {
     const actions = items.map(item => ({
       action: item.action,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       file_path: item.path,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       ...(item.oldPath ? { previous_path: item.oldPath } : {}),
       ...(item.base64Content !== undefined
         ? { content: item.base64Content, encoding: 'base64' }
@@ -438,17 +434,13 @@ export default class API {
 
     const commitParams: CommitsParams = {
       branch,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commit_message: commitMessage,
       actions,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       ...(newBranch ? { start_branch: this.branch } : {}),
     };
     if (this.commitAuthor) {
       const { name, email } = this.commitAuthor;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_name = name;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_email = email;
     }
 
@@ -530,13 +522,10 @@ export default class API {
 
   deleteFiles = (paths: string[], commitMessage: string) => {
     const branch = this.branch;
-    // eslint-disable-next-line @typescript-eslint/camelcase
     const commitParams: CommitsParams = { commit_message: commitMessage, branch };
     if (this.commitAuthor) {
       const { name, email } = this.commitAuthor;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_name = name;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_email = email;
     }
 
@@ -553,9 +542,7 @@ export default class API {
         state: 'opened',
         labels: 'Any',
         per_page: 100,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         target_branch: this.branch,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         ...(sourceBranch ? { source_branch: sourceBranch } : {}),
       },
     });
@@ -688,7 +675,6 @@ export default class API {
       rebase = await this.requestJSON({
         url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
         params: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
           include_rebase_in_progress: true,
         },
       });
@@ -710,14 +696,11 @@ export default class API {
       method: 'POST',
       url: `${this.repoURL}/merge_requests`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         source_branch: branch,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         target_branch: this.branch,
         title: commitMessage,
         description: DEFAULT_PR_BODY,
         labels: statusToLabel(status, this.cmsLabelPrefix),
-        // eslint-disable-next-line @typescript-eslint/camelcase
         remove_source_branch: true,
         squash: this.squashMerges,
       },
@@ -792,12 +775,9 @@ export default class API {
       method: 'PUT',
       url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/merge`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         merge_commit_message: MERGE_COMMIT_MESSAGE,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         squash_commit_message: MERGE_COMMIT_MESSAGE,
         squash: this.squashMerges,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         should_remove_source_branch: true,
       },
     });
@@ -815,7 +795,6 @@ export default class API {
       method: 'PUT',
       url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         state_event: 'close',
       },
     });
@@ -866,11 +845,9 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const statuses: GitLabCommitStatus[] = await this.getMergeRequestStatues(mergeRequest, branch);
-    // eslint-disable-next-line @typescript-eslint/camelcase
     return statuses.map(({ name, status, target_url }) => ({
       context: name,
       state: status === GitLabCommitStatuses.Success ? PreviewState.Success : PreviewState.Other,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       target_url,
     }));
   }

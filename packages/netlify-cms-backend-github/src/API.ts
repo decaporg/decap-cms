@@ -495,7 +495,6 @@ export default class API {
           ...(head ? { head: await this.getHeadReference(head) } : {}),
           base: this.branch,
           state,
-          // eslint-disable-next-line @typescript-eslint/camelcase
           per_page: 100,
         },
       },
@@ -861,7 +860,6 @@ export default class API {
     );
     return resp.statuses.map(s => ({
       context: s.context,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       target_url: s.target_url,
       state:
         s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
@@ -1309,10 +1307,8 @@ export default class API {
         {
           method: 'PUT',
           body: JSON.stringify({
-            // eslint-disable-next-line @typescript-eslint/camelcase
             commit_message: MERGE_COMMIT_MESSAGE,
             sha: pullrequest.head.sha,
-            // eslint-disable-next-line @typescript-eslint/camelcase
             merge_method: this.mergeMethod,
           }),
         },
@@ -1418,7 +1414,6 @@ export default class API {
   async createTree(baseSha: string, tree: TreeEntry[]) {
     const result: Octokit.GitCreateTreeResponse = await this.request(`${this.repoURL}/git/trees`, {
       method: 'POST',
-      // eslint-disable-next-line @typescript-eslint/camelcase
       body: JSON.stringify({ base_tree: baseSha, tree }),
     });
     return result;

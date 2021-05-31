@@ -19,7 +19,7 @@ interface MediaLibrary {
 }
 
 function handleInsert(url: string) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return store.dispatch(insertMedia(url, undefined));
 }

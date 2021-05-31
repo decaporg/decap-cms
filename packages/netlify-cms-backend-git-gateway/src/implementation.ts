@@ -328,7 +328,6 @@ export default class GitGateway implements Implementation {
       const userData = {
         name: user.user_metadata.full_name || user.email.split('@').shift()!,
         email: user.email,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         avatar_url: user.user_metadata.avatar_url,
         metadata: user.user_metadata,
       };
@@ -478,10 +477,7 @@ export default class GitGateway implements Implementation {
           rootURL: this.netlifyLargeMediaURL,
           makeAuthorizedRequest: this.requestFunction,
           patterns,
-          transformImages: this.transformImages
-            ? // eslint-disable-next-line @typescript-eslint/camelcase
-              { nf_resize: 'fit', w: 560, h: 320 }
-            : false,
+          transformImages: this.transformImages ? { nf_resize: 'fit', w: 560, h: 320 } : false,
         });
       },
     );

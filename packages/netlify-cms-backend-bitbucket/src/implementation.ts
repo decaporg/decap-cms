@@ -223,9 +223,7 @@ export default class BitbucketBackend implements Implementation {
       name: user.display_name,
       login: user.username,
       token: state.token,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       avatar_url: user.links.avatar.href,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       refresh_token: state.refresh_token,
     };
   }
@@ -241,27 +239,23 @@ export default class BitbucketBackend implements Implementation {
     // instantiating a new Authenticator on each refresh isn't ideal,
     if (!this.authenticator) {
       const cfg = {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         base_url: this.baseUrl,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         site_id: this.siteId,
       };
       this.authenticator = new NetlifyAuthenticator(cfg);
     }
 
-    this.refreshedTokenPromise = this.authenticator! // eslint-disable-next-line @typescript-eslint/camelcase
-      .refresh({ provider: 'bitbucket', refresh_token: this.refreshToken as string })
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      .then(({ token, refresh_token }) => {
-        this.token = token;
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        this.refreshToken = refresh_token;
-        this.refreshedTokenPromise = undefined;
+    this.refreshedTokenPromise = this.authenticator!.refresh({
+      provider: 'bitbucket',
+      refresh_token: this.refreshToken as string,
+    }).then(({ token, refresh_token }) => {
+      this.token = token;
+      this.refreshToken = refresh_token;
+      this.refreshedTokenPromise = undefined;
 
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        this.updateUserCredentials({ token, refresh_token });
-        return token;
-      });
+      this.updateUserCredentials({ token, refresh_token });
+      return token;
+    });
 
     return this.refreshedTokenPromise;
   }
@@ -323,7 +317,7 @@ export default class BitbucketBackend implements Implementation {
       API_NAME,
     );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;

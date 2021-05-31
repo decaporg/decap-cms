@@ -78,9 +78,13 @@ module.exports = {
         },
       },
       rules: {
+        'no-duplicate-imports': [0], // handled by @typescript-eslint
+        '@typescript-eslint/ban-types': [0], // TODO enable in future
         '@typescript-eslint/no-non-null-assertion': [0],
-        '@typescript-eslint/camelcase': [0],
+        '@typescript-eslint/consistent-type-imports': 'error',
         '@typescript-eslint/explicit-function-return-type': [0],
+        '@typescript-eslint/explicit-module-boundary-types': [0],
+        '@typescript-eslint/no-duplicate-imports': 'error',
         '@typescript-eslint/no-use-before-define': [
           'error',
           { functions: false, classes: true, variables: true },

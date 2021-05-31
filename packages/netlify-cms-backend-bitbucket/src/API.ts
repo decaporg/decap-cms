@@ -375,7 +375,6 @@ export default class API {
     const result: BitBucketSrcResult = await this.requestJSON({
       url: `${this.repoURL}/src/${node}/${path}`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         max_depth: depth,
         pagelen,
       },
@@ -555,7 +554,6 @@ export default class API {
           },
         },
         description: DEFAULT_PR_BODY,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         close_source_branch: true,
       }),
     });
@@ -655,8 +653,8 @@ export default class API {
       params: {
         pagelen: 50,
         q: oneLine`
-        source.repository.full_name = "${this.repo}" 
-        AND state = "${BitBucketPullRequestState.OPEN}" 
+        source.repository.full_name = "${this.repo}"
+        AND state = "${BitBucketPullRequestState.OPEN}"
         AND destination.branch.name = "${this.branch}"
         AND comment_count > 0
         AND ${sourceQuery}
@@ -727,9 +725,7 @@ export default class API {
       headers: { 'Content-Type': APPLICATION_JSON },
       body: JSON.stringify({
         message: MERGE_COMMIT_MESSAGE,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         close_source_branch: true,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         merge_strategy: this.mergeStrategy,
       }),
     });
@@ -789,7 +785,6 @@ export default class API {
         state === BitBucketPullRequestStatusState.Successful
           ? PreviewState.Success
           : PreviewState.Other,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       target_url: url,
     }));
   }
