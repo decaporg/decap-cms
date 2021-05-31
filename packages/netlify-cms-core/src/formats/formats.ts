@@ -3,15 +3,10 @@ import { get } from 'lodash';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
-import {
-  FrontmatterInfer,
-  frontmatterJSON,
-  frontmatterTOML,
-  frontmatterYAML,
-  Delimiter,
-} from './frontmatter';
-import { Collection, EntryObject, Format } from '../types/redux';
-import { EntryValue } from '../valueObjects/Entry';
+import type { Delimiter } from './frontmatter';
+import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+import type { Collection, EntryObject, Format } from '../types/redux';
+import type { EntryValue } from '../valueObjects/Entry';
 
 export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
 

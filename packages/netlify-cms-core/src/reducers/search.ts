@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import type { SearchAction } from '../actions/search';
 import {
   QUERY_FAILURE,
   QUERY_REQUEST,
@@ -8,9 +9,8 @@ import {
   SEARCH_ENTRIES_FAILURE,
   SEARCH_ENTRIES_REQUEST,
   SEARCH_ENTRIES_SUCCESS,
-  SearchAction,
 } from '../actions/search';
-import { EntryValue } from '../valueObjects/Entry';
+import type { EntryValue } from '../valueObjects/Entry';
 
 export type Search = {
   isFetching: boolean;

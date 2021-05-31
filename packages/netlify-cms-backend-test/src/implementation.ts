@@ -1,10 +1,6 @@
 import { attempt, isError, take, unset, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
-import {
-  EditorialWorkflowError,
-  Cursor,
-  CURSOR_COMPATIBILITY_SYMBOL,
-  basename,
+import type {
   Implementation,
   Entry,
   ImplementationEntry,
@@ -14,6 +10,12 @@ import {
   Config,
   ImplementationFile,
   DataFile,
+} from 'netlify-cms-lib-util';
+import {
+  EditorialWorkflowError,
+  Cursor,
+  CURSOR_COMPATIBILITY_SYMBOL,
+  basename,
 } from 'netlify-cms-lib-util';
 import { extname, dirname } from 'path';
 import AuthenticationPage from './AuthenticationPage';
@@ -199,7 +201,7 @@ export default class TestBackend implements Implementation {
     }));
     const cursor = getCursor(folder, extension, entries, 0, depth);
     const ret = take(entries, pageSize);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return Promise.resolve(ret);

@@ -1,39 +1,42 @@
 import * as React from 'react';
-import semaphore, { Semaphore } from 'semaphore';
+import type { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import trimStart from 'lodash/trimStart';
 import { stripIndent } from 'common-tags';
-import {
-  CURSOR_COMPATIBILITY_SYMBOL,
-  Cursor,
-  asyncLock,
-  basename,
+import type {
   AsyncLock,
   Implementation,
   AssetProxy,
   PersistOptions,
   DisplayURL,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  UnpublishedEntryMediaFile,
+  Entry,
+} from 'netlify-cms-lib-util';
+import {
+  CURSOR_COMPATIBILITY_SYMBOL,
+  Cursor,
+  asyncLock,
+  basename,
   getBlobSHA,
   entriesByFolder,
   entriesByFiles,
   unpublishedEntries,
-  User,
   getMediaDisplayURL,
   getMediaAsBlob,
-  Credentials,
   filterByExtension,
-  Config,
-  ImplementationFile,
   getPreviewStatus,
-  UnpublishedEntryMediaFile,
   runWithLock,
   blobToFileObj,
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
-  Entry,
 } from 'netlify-cms-lib-util';
 import AuthenticationPage from './AuthenticationPage';
-import { Octokit } from '@octokit/rest';
+import type { Octokit } from '@octokit/rest';
 import API, { API_NAME } from './API';
 import GraphQLAPI from './GraphQLAPI';
 
@@ -391,7 +394,7 @@ export default class GitHub implements Implementation {
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
     );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;

@@ -1,5 +1,5 @@
-import winston from 'winston';
-import express from 'express';
+import type winston from 'winston';
+import type express from 'express';
 import path from 'path';
 import { promises as fs } from 'fs';
 import {
@@ -13,7 +13,7 @@ import {
 } from 'netlify-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
 import { defaultSchema, joi } from '../joi';
-import {
+import type {
   EntriesByFolderParams,
   EntriesByFilesParams,
   GetEntryParams,
@@ -181,7 +181,6 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
       if (body.action === 'info') {
         res.json({
           repo: path.basename(repoPath),
-          // eslint-disable-next-line @typescript-eslint/camelcase
           publish_modes: ['simple', 'editorial_workflow'],
           type: 'local_git',
         });

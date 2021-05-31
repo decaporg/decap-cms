@@ -1,9 +1,9 @@
-import winston from 'winston';
-import express from 'express';
+import type winston from 'winston';
+import type express from 'express';
 import path from 'path';
 import { defaultSchema, joi } from '../joi';
 import { pathTraversal } from '../joi/customValidators';
-import {
+import type {
   EntriesByFolderParams,
   EntriesByFilesParams,
   GetEntryParams,
@@ -32,7 +32,6 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
         case 'info': {
           res.json({
             repo: path.basename(repoPath),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             publish_modes: ['simple'],
             type: 'local_fs',
           });

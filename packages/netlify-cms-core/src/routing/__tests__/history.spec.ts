@@ -1,4 +1,5 @@
-import { createHashHistory, History } from 'history';
+import type { History } from 'history';
+import { createHashHistory } from 'history';
 import { mocked } from 'ts-jest/utils';
 
 jest.mock('history');

@@ -1,4 +1,5 @@
-import { asyncLock, AsyncLock } from './asyncLock';
+import type { AsyncLock } from './asyncLock';
+import { asyncLock } from './asyncLock';
 import unsentRequest from './unsentRequest';
 import APIError from './APIError';
 

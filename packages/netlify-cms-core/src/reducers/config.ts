@@ -1,7 +1,8 @@
 import { produce } from 'immer';
-import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE, ConfigAction } from '../actions/config';
+import type { ConfigAction } from '../actions/config';
+import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE } from '../actions/config';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
-import { CmsConfig } from '../types/redux';
+import type { CmsConfig } from '../types/redux';
 
 const defaultState = {
   isFetching: true,

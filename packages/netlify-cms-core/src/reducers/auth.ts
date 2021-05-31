@@ -1,12 +1,12 @@
 import { produce } from 'immer';
-import { User } from 'netlify-cms-lib-util';
+import type { User } from 'netlify-cms-lib-util';
+import type { AuthAction } from '../actions/auth';
 import {
   AUTH_REQUEST,
   AUTH_SUCCESS,
   AUTH_FAILURE,
   AUTH_REQUEST_DONE,
   LOGOUT,
-  AuthAction,
 } from '../actions/auth';
 
 export type Auth = {
