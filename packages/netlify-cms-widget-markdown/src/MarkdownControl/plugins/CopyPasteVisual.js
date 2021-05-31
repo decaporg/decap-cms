@@ -2,6 +2,7 @@ import { Document } from 'slate';
 import { setEventTransfer } from 'slate-react';
 import base64 from 'slate-base64-serializer';
 import isHotkey from 'is-hotkey';
+
 import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../../serializers';
 
 function CopyPasteVisual({ getAsset, resolveWidget }) {

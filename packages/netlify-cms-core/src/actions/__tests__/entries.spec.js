@@ -1,4 +1,7 @@
 import { fromJS, Map } from 'immutable';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import {
   createEmptyDraft,
   createEmptyDraftData,
@@ -7,8 +10,6 @@ import {
   getMediaAssets,
   validateMetaField,
 } from '../entries';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import AssetProxy from '../../valueObjects/AssetProxy';
 
 jest.mock('../../backend');

@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from '@emotion/core';
 import { Map, fromJS } from 'immutable';
 import { omit } from 'lodash';
+
 import { getEditorControl, getEditorComponents } from '../index';
 
 export default class Shortcode extends React.Component {

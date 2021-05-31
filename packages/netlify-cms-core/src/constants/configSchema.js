@@ -6,9 +6,10 @@ import {
   prohibited,
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
+import uuid from 'uuid/v4';
+
 import { formatExtensions, frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
-import uuid from 'uuid/v4';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
 
 const localeType = { type: 'string', minLength: 2, maxLength: 10, pattern: '^[a-zA-Z-_]+$' };

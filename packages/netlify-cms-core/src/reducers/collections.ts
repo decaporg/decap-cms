@@ -1,12 +1,16 @@
 import { List, Set, fromJS, OrderedMap } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
 import consoleError from '../lib/consoleError';
-import type { ConfigAction } from '../actions/config';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
+import { selectMediaFolder } from './entries';
+import { summaryFormatter } from '../lib/formatters';
+
 import type {
   Collection,
   Collections,
@@ -17,9 +21,7 @@ import type {
   ViewGroup,
   CmsConfig,
 } from '../types/redux';
-import { selectMediaFolder } from './entries';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-import { summaryFormatter } from '../lib/formatters';
+import type { ConfigAction } from '../actions/config';
 import type { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;

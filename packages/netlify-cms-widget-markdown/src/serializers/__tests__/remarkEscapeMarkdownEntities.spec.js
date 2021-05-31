@@ -1,5 +1,6 @@
 import unified from 'unified';
 import u from 'unist-builder';
+
 import remarkEscapeMarkdownEntities from '../remarkEscapeMarkdownEntities';
 
 function process(text) {

@@ -1,7 +1,8 @@
 import { fromJS } from 'immutable';
-import { searchEntries } from '../search';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
+import { searchEntries } from '../search';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

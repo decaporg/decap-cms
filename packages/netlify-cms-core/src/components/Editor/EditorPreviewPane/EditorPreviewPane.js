@@ -5,10 +5,11 @@ import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
+import { connect } from 'react-redux';
+
 import { resolveWidget, getPreviewTemplate, getPreviewStyles } from '../../../lib/registry';
 import { ErrorBoundary } from '../../UI';
 import { selectTemplateName, selectInferedField, selectField } from '../../../reducers/collections';
-import { connect } from 'react-redux';
 import { boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { INFERABLE_FIELDS } from '../../../constants/fieldInference';

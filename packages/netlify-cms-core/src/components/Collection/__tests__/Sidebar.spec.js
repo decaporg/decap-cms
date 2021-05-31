@@ -1,8 +1,9 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { Sidebar } from '../Sidebar';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
+
+import { Sidebar } from '../Sidebar';
 
 jest.mock('netlify-cms-ui-default', () => {
   const actual = jest.requireActual('netlify-cms-ui-default');

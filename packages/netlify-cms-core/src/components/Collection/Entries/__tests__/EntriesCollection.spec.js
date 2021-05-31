@@ -1,12 +1,13 @@
 import React from 'react';
-import ConnectedEntriesCollection, {
-  EntriesCollection,
-  filterNestedEntries,
-} from '../EntriesCollection';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
+
+import ConnectedEntriesCollection, {
+  EntriesCollection,
+  filterNestedEntries,
+} from '../EntriesCollection';
 
 jest.mock('../Entries', () => 'mock-entries');
 

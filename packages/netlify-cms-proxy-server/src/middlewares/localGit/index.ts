@@ -1,5 +1,3 @@
-import type winston from 'winston';
-import type express from 'express';
 import path from 'path';
 import { promises as fs } from 'fs';
 import {
@@ -12,7 +10,14 @@ import {
   parseContentKey,
 } from 'netlify-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
+import simpleGit from 'simple-git/promise';
+import { Mutex, withTimeout } from 'async-mutex';
+
 import { defaultSchema, joi } from '../joi';
+import { pathTraversal } from '../joi/customValidators';
+import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
+import { entriesFromFiles, readMediaFile } from '../utils/entries';
+
 import type {
   EntriesByFolderParams,
   EntriesByFilesParams,
@@ -33,12 +38,8 @@ import type {
   UnpublishedEntryDataFileParams,
   UnpublishedEntryMediaFileParams,
 } from '../types';
-// eslint-disable-next-line import/default
-import simpleGit from 'simple-git/promise';
-import { Mutex, withTimeout } from 'async-mutex';
-import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
-import { entriesFromFiles, readMediaFile } from '../utils/entries';
+import type express from 'express';
+import type winston from 'winston';
 
 async function commit(git: simpleGit.SimpleGit, commitMessage: string) {
   await git.add('.');

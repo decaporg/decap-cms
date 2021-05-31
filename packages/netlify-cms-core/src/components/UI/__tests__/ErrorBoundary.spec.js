@@ -1,7 +1,8 @@
 import React from 'react';
-import { ErrorBoundary } from '../ErrorBoundary';
 import { render } from '@testing-library/react';
 import { oneLineTrim } from 'common-tags';
+
+import { ErrorBoundary } from '../ErrorBoundary';
 
 function WithError() {
   throw new Error('Some unknown error');

@@ -1,5 +1,8 @@
 import { Map, List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
+import { get } from 'lodash';
+import { join } from 'path';
+
 import {
   DRAFT_CREATE_FROM_ENTRY,
   DRAFT_CREATE_EMPTY,
@@ -22,9 +25,7 @@ import {
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
 } from '../actions/editorialWorkflow';
-import { get } from 'lodash';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
-import { join } from 'path';
 import { getDataPath, duplicateI18nFields } from '../lib/i18n';
 
 const initialState = Map({

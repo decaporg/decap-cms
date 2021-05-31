@@ -7,6 +7,7 @@ import { translate } from 'react-polyglot';
 import { partial } from 'lodash';
 import { Cursor } from 'netlify-cms-lib-util';
 import { colors } from 'netlify-cms-ui-default';
+
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,

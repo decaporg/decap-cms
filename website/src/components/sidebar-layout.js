@@ -1,9 +1,9 @@
 import React from 'react';
 import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 
 import Page from './page';
 import { mq } from '../utils';
-import styled from '@emotion/styled';
 
 const Children = styled.div`
   overflow: auto;

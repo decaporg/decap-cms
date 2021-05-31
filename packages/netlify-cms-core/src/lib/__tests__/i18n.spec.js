@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+
 import * as i18n from '../i18n';
 
 jest.mock('../../reducers/collections', () => {

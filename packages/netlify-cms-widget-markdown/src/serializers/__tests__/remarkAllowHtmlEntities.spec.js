@@ -1,5 +1,6 @@
 import unified from 'unified';
 import markdownToRemark from 'remark-parse';
+
 import remarkAllowHtmlEntities from '../remarkAllowHtmlEntities';
 
 function process(markdown) {

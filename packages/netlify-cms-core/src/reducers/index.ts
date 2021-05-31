@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+
 import auth from './auth';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
@@ -13,6 +14,7 @@ import mediaLibrary from './mediaLibrary';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import status from './status';
+
 import type { Status } from '../constants/publishModes';
 import type { State, Collection } from '../types/redux';
 

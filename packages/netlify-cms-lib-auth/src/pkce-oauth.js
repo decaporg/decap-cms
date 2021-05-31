@@ -1,5 +1,6 @@
 import trim from 'lodash/trim';
 import trimEnd from 'lodash/trimEnd';
+
 import { createNonce, validateNonce, isInsecureProtocol } from './utils';
 
 async function sha256(text) {

@@ -2,20 +2,6 @@ import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { get, pick, intersection } from 'lodash';
 import ini from 'ini';
-import type {
-  ApiRequest,
-  AssetProxy,
-  PersistOptions,
-  Entry,
-  Cursor,
-  Implementation,
-  DisplayURL,
-  User,
-  Credentials,
-  Config,
-  ImplementationFile,
-  DisplayURLObject,
-} from 'netlify-cms-lib-util';
 import {
   APIError,
   unsentRequest,
@@ -31,11 +17,27 @@ import {
 import { GitHubBackend } from 'netlify-cms-backend-github';
 import { GitLabBackend } from 'netlify-cms-backend-gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from 'netlify-cms-backend-bitbucket';
+
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
-import type { Client } from './netlify-lfs-client';
 import { getClient } from './netlify-lfs-client';
+
+import type { Client } from './netlify-lfs-client';
+import type {
+  ApiRequest,
+  AssetProxy,
+  PersistOptions,
+  Entry,
+  Cursor,
+  Implementation,
+  DisplayURL,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  DisplayURLObject,
+} from 'netlify-cms-lib-util';
 
 const STATUS_PAGE = 'https://www.netlifystatus.com';
 const GIT_GATEWAY_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;

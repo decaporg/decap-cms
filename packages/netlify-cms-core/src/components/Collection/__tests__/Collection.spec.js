@@ -1,9 +1,10 @@
 import React from 'react';
-import ConnectedCollection, { Collection } from '../Collection';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
+
+import ConnectedCollection, { Collection } from '../Collection';
 
 jest.mock('../Entries/EntriesCollection', () => 'mock-entries-collection');
 jest.mock('../CollectionTop', () => 'mock-collection-top');

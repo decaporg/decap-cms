@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import Select from 'react-select';
 import isHotkey from 'is-hotkey';
 import { text, shadows, zIndex } from 'netlify-cms-ui-default';
+
 import SettingsButton from './SettingsButton';
 import languageSelectStyles from './languageSelectStyles';
 

@@ -1,6 +1,5 @@
 import { produce } from 'immer';
 
-import type { SearchAction } from '../actions/search';
 import {
   QUERY_FAILURE,
   QUERY_REQUEST,
@@ -10,6 +9,8 @@ import {
   SEARCH_ENTRIES_REQUEST,
   SEARCH_ENTRIES_SUCCESS,
 } from '../actions/search';
+
+import type { SearchAction } from '../actions/search';
 import type { EntryValue } from '../valueObjects/Entry';
 
 export type Search = {

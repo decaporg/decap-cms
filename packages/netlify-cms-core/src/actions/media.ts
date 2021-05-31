@@ -1,12 +1,14 @@
-import type AssetProxy from '../valueObjects/AssetProxy';
-import { createAssetProxy } from '../valueObjects/AssetProxy';
-import type { Collection, State, EntryMap, EntryField } from '../types/redux';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { AnyAction } from 'redux';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
+
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectMediaFilePath } from '../reducers/entries';
 import { selectMediaFileByPath } from '../reducers/mediaLibrary';
 import { getMediaFile, waitForMediaLibraryToLoad, getMediaDisplayURL } from './mediaLibrary';
+
+import type AssetProxy from '../valueObjects/AssetProxy';
+import type { Collection, State, EntryMap, EntryField } from '../types/redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
 
 export const ADD_ASSETS = 'ADD_ASSETS';
 export const ADD_ASSET = 'ADD_ASSET';

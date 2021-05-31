@@ -1,4 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
+
 import {
   resolveBackend,
   Backend,

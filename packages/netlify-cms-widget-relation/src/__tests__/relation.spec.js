@@ -1,6 +1,7 @@
 import React from 'react';
 import { fromJS } from 'immutable';
 import { render, fireEvent, waitFor } from '@testing-library/react';
+
 import { NetlifyCmsWidgetRelation } from '../';
 
 jest.mock('react-window', () => {

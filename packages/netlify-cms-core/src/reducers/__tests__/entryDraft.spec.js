@@ -1,4 +1,5 @@
 import { Map, fromJS } from 'immutable';
+
 import * as actions from '../../actions/entries';
 import reducer from '../entryDraft';
 

@@ -1,21 +1,7 @@
 import * as React from 'react';
-import type { Semaphore } from 'semaphore';
 import semaphore from 'semaphore';
 import trimStart from 'lodash/trimStart';
 import { stripIndent } from 'common-tags';
-import type {
-  AsyncLock,
-  Implementation,
-  AssetProxy,
-  PersistOptions,
-  DisplayURL,
-  User,
-  Credentials,
-  Config,
-  ImplementationFile,
-  UnpublishedEntryMediaFile,
-  Entry,
-} from 'netlify-cms-lib-util';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   Cursor,
@@ -35,10 +21,26 @@ import {
   unsentRequest,
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
+
 import AuthenticationPage from './AuthenticationPage';
-import type { Octokit } from '@octokit/rest';
 import API, { API_NAME } from './API';
 import GraphQLAPI from './GraphQLAPI';
+
+import type { Octokit } from '@octokit/rest';
+import type {
+  AsyncLock,
+  Implementation,
+  AssetProxy,
+  PersistOptions,
+  DisplayURL,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  UnpublishedEntryMediaFile,
+  Entry,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 

@@ -1,10 +1,3 @@
-import type {
-  ApiRequest,
-  DataFile,
-  AssetProxy,
-  PersistOptions,
-  FetchError,
-} from 'netlify-cms-lib-util';
 import {
   localForage,
   parseLinkHeader,
@@ -33,6 +26,14 @@ import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
 import { dirname } from 'path';
+
+import type {
+  ApiRequest,
+  DataFile,
+  AssetProxy,
+  PersistOptions,
+  FetchError,
+} from 'netlify-cms-lib-util';
 
 export const API_NAME = 'GitLab';
 

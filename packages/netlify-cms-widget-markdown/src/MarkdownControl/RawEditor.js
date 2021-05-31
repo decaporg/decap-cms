@@ -9,6 +9,7 @@ import { Editor as Slate, setEventTransfer } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import isHotkey from 'is-hotkey';
 import { lengths, fonts } from 'netlify-cms-ui-default';
+
 import { markdownToHtml } from '../serializers';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';

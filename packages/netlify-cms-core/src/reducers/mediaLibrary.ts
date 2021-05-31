@@ -1,6 +1,7 @@
 import { Map, List } from 'immutable';
 import uuid from 'uuid/v4';
-import type { MediaLibraryAction } from '../actions/mediaLibrary';
+import { dirname } from 'path';
+
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
@@ -22,6 +23,8 @@ import {
 } from '../actions/mediaLibrary';
 import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
+
+import type { MediaLibraryAction } from '../actions/mediaLibrary';
 import type {
   State,
   MediaLibraryInstance,
@@ -30,7 +33,6 @@ import type {
   DisplayURLState,
   EntryField,
 } from '../types/redux';
-import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;

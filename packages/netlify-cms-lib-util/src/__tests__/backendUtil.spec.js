@@ -1,6 +1,7 @@
-import { parseLinkHeader, getAllResponses, getPathDepth, filterByExtension } from '../backendUtil';
 import { oneLine } from 'common-tags';
 import nock from 'nock';
+
+import { parseLinkHeader, getAllResponses, getPathDepth, filterByExtension } from '../backendUtil';
 
 describe('parseLinkHeader', () => {
   it('should return the right rel urls', () => {

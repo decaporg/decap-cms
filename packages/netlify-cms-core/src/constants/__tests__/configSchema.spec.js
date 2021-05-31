@@ -1,4 +1,5 @@
 import { merge } from 'lodash';
+
 import { validateConfig } from '../configSchema';
 
 jest.mock('../../lib/registry');

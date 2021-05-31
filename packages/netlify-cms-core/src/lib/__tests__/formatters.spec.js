@@ -1,4 +1,5 @@
 import { List, Map, fromJS } from 'immutable';
+
 import {
   commitMessageFormatter,
   prepareSlug,

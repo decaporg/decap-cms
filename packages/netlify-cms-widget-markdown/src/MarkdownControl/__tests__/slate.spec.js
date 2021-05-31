@@ -1,7 +1,8 @@
 /** @jsx h */
 
-import h from '../../../test-helpers/h';
 import { Editor } from 'slate';
+
+import h from '../../../test-helpers/h';
 import plugins from '../plugins/visual';
 import schema from '../schema';
 

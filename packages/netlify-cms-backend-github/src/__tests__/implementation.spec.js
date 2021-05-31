@@ -1,5 +1,6 @@
-import GitHubImplementation from '../implementation';
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+
+import GitHubImplementation from '../implementation';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
 

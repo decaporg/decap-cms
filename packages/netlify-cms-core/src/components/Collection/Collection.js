@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 import { lengths, components } from 'netlify-cms-ui-default';
+
 import { getNewEntryUrl } from '../../lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';

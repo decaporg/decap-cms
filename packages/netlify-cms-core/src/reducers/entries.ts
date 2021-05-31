@@ -1,5 +1,13 @@
 import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
+import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
+import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
+import { SortDirection } from '../types/redux';
+import { folderFormatter } from '../lib/formatters';
+import { selectSortDataPath } from './collections';
+import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
   ENTRY_REQUEST,
   ENTRY_SUCCESS,
@@ -19,7 +27,9 @@ import {
   GROUP_ENTRIES_FAILURE,
   CHANGE_VIEW_STYLE,
 } from '../actions/entries';
-import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
+import { VIEW_STYLE_LIST } from '../constants/collectionViews';
+import { joinUrlPath } from '../lib/urlHelper';
+
 import type {
   EntriesAction,
   EntryRequestPayload,
@@ -52,14 +62,6 @@ import type {
   EntriesGroupFailurePayload,
   GroupOfEntries,
 } from '../types/redux';
-import { SortDirection } from '../types/redux';
-import { folderFormatter } from '../lib/formatters';
-import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
-import { selectSortDataPath } from './collections';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-import { VIEW_STYLE_LIST } from '../constants/collectionViews';
-import { joinUrlPath } from '../lib/urlHelper';
 
 const { keyToPathArray } = stringTemplate;
 

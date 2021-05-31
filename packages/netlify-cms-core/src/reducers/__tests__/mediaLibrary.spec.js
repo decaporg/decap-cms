@@ -1,4 +1,5 @@
 import { Map, fromJS } from 'immutable';
+
 import { mediaDeleted } from '../../actions/mediaLibrary';
 import mediaLibrary, {
   selectMediaFiles,
