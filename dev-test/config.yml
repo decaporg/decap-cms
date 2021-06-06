@@ -5,11 +5,26 @@ site_url: https://example.com
 
 publish_mode: editorial_workflow
 media_folder: assets/uploads
+locale: cs
+i18n:
+  # Required and can be one of multiple_folders, multiple_files or single_file
+  # multiple_folders - persists files in `<folder>/<locale>/<slug>.<extension>`
+  # multiple_files - persists files in `<folder>/<slug>.<locale>.<extension>`
+  # single_file - persists a single file in `<folder>/<slug>.<extension>`
+  structure: multiple_folders
+
+  # Required - a list of locales to show in the editor UI
+  locales: [en, cs]
+
+  # Optional, defaults to the first item in locales.
+  # The locale to be used for fields validation and as a baseline for the entry.
+  default_locale: cs
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
+    i18n: true
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
@@ -36,6 +51,7 @@ collections: # A list of collections the CMS should be able to edit
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - { label: "Tags", name: "tags", widget: "list", min: 0, max: 2}
       - {
           label: 'Publish Date',
           name: 'date',
@@ -121,7 +137,7 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
       - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
-      - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
+      - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!', min: 1, max: 7 }
       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
       - { label: 'Date', name: 'date', widget: 'date' }
