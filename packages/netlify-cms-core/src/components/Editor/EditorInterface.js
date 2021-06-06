@@ -270,18 +270,11 @@ class EditorInterface extends Component {
       </ControlPaneContainer>
     );
 
-
     const previewEntry = collectionI18nEnabled
       ? getPreviewEntry(entry, leftPanelLocale, defaultLocale)
       : entry;
 
-
     const tabElements = [
-      {
-        key: 'notes',
-        title: 'Notes',
-        content: <EditorNotesPane />,
-      },
       {
         key: 'preview',
         title: 'Preview',
@@ -293,6 +286,11 @@ class EditorInterface extends Component {
             fieldsMetaData={fieldsMetaData}
           />
         ),
+      },
+      {
+        key: 'notes',
+        title: 'Notes',
+        content: <EditorNotesPane />,
       },
     ];
 
