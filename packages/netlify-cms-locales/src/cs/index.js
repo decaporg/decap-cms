@@ -38,7 +38,7 @@ const cs = {
       collections: 'Kolekce',
       allCollections: 'Všechny kolekce',
       searchAll: 'Hledat',
-      searchIn: 'Hledat v',    
+      searchIn: 'Hledat v',
     },
     collectionTop: {
       sortBy: 'Seřadit podle',
@@ -262,8 +262,7 @@ const cs = {
       onDeleteUnpublishedChanges: 'Nepublikované změny byly smazány',
       onFailToAuth: '%{details}',
       onLoggedOut: 'Byli jste odhlášeni, prosím zálohujte všechna data a znova se přihlašte',
-      onBackendDown:
-        'Backend zaznamenal výpadek. Podívejte se do %{details} pro více informací.',
+      onBackendDown: 'Backend zaznamenal výpadek. Podívejte se do %{details} pro více informací.',
     },
   },
   workflow: {
