@@ -59,6 +59,7 @@ import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
 import { selectSortDataPath } from './collections';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
+import { joinUrlPath } from '../lib/urlHelper';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -788,6 +789,10 @@ export function selectMediaFilePublicPath(
 
   if (customFolder) {
     publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
+  }
+
+  if (isAbsolutePath(publicFolder)) {
+    return joinUrlPath(publicFolder, basename(mediaPath));
   }
 
   return join(publicFolder, basename(mediaPath));

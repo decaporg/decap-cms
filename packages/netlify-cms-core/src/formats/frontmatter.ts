@@ -3,11 +3,13 @@ import tomlFormatter from './toml';
 import yamlFormatter from './yaml';
 import jsonFormatter from './json';
 
-enum Language {
-  YAML = 'yaml',
-  TOML = 'toml',
-  JSON = 'json',
-}
+const Languages = {
+  YAML: 'yaml',
+  TOML: 'toml',
+  JSON: 'json',
+} as const;
+
+type Language = typeof Languages[keyof typeof Languages];
 
 export type Delimiter = string | [string, string];
 type Format = { language: Language; delimiters: Delimiter };
@@ -58,11 +60,11 @@ function inferFrontmatterFormat(str: string) {
   }
   switch (firstLine) {
     case '---':
-      return getFormatOpts(Language.YAML);
+      return getFormatOpts(Languages.YAML);
     case '+++':
-      return getFormatOpts(Language.TOML);
+      return getFormatOpts(Languages.TOML);
     case '{':
-      return getFormatOpts(Language.JSON);
+      return getFormatOpts(Languages.JSON);
     default:
       console.warn('Unrecognized front-matter format.');
   }
@@ -74,9 +76,9 @@ export function getFormatOpts(format?: Language, customDelimiter?: Delimiter) {
   }
 
   const formats: { [key in Language]: Format } = {
-    yaml: { language: Language.YAML, delimiters: '---' },
-    toml: { language: Language.TOML, delimiters: '+++' },
-    json: { language: Language.JSON, delimiters: ['{', '}'] },
+    yaml: { language: Languages.YAML, delimiters: '---' },
+    toml: { language: Languages.TOML, delimiters: '+++' },
+    json: { language: Languages.JSON, delimiters: ['{', '}'] },
   };
 
   const { language, delimiters } = formats[format];
@@ -113,7 +115,7 @@ export class FrontmatterFormatter {
     const { body = '', ...meta } = data;
 
     // Stringify to YAML if the format was not set
-    const format = this.format || getFormatOpts(Language.YAML);
+    const format = this.format || getFormatOpts(Languages.YAML);
 
     // gray-matter always adds a line break at the end which trips our
     // change detection logic
@@ -134,13 +136,13 @@ export class FrontmatterFormatter {
 export const FrontmatterInfer = new FrontmatterFormatter();
 
 export function frontmatterYAML(customDelimiter?: Delimiter) {
-  return new FrontmatterFormatter(Language.YAML, customDelimiter);
+  return new FrontmatterFormatter(Languages.YAML, customDelimiter);
 }
 
 export function frontmatterTOML(customDelimiter?: Delimiter) {
-  return new FrontmatterFormatter(Language.TOML, customDelimiter);
+  return new FrontmatterFormatter(Languages.TOML, customDelimiter);
 }
 
 export function frontmatterJSON(customDelimiter?: Delimiter) {
-  return new FrontmatterFormatter(Language.JSON, customDelimiter);
+  return new FrontmatterFormatter(Languages.JSON, customDelimiter);
 }

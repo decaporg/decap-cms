@@ -378,7 +378,7 @@ class EditorToolbar extends React.Component {
     );
   };
 
-  renderExistingEntryWorkflowPublishControls = ({ canCreate, canPublish }) => {
+  renderExistingEntryWorkflowPublishControls = ({ canCreate, canPublish, canDelete }) => {
     const { unPublish, onDuplicate, isPersisting, t } = this.props;
 
     return canPublish || canCreate ? (
@@ -393,7 +393,7 @@ class EditorToolbar extends React.Component {
           </PublishedToolbarButton>
         )}
       >
-        {canPublish && (
+        {canDelete && canPublish && (
           <DropdownItem
             label={t('editor.editorToolbar.unpublish')}
             icon="arrow"
@@ -537,6 +537,7 @@ class EditorToolbar extends React.Component {
 
     const canCreate = collection.get('create');
     const canPublish = collection.get('publish') && !useOpenAuthoring;
+    const canDelete = collection.get('delete', true);
 
     if (currentStatus) {
       return (
@@ -555,7 +556,7 @@ class EditorToolbar extends React.Component {
       return (
         <>
           {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          {this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish })}
+          {this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })}
         </>
       );
     }
