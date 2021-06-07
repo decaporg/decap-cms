@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.31.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.30.2...netlify-cms-locales@1.31.0) (2021-06-07)
+
+
+### Features
+
+* updating czech translation ([#5473](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/issues/5473)) ([e249f9f](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/commit/e249f9f7f7e687b49345cea75b4272e6df791c76))
+
+
+
+
+
 ## [1.30.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales/compare/netlify-cms-locales@1.30.1...netlify-cms-locales@1.30.2) (2021-05-30)
 
 
