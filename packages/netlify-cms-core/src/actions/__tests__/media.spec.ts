@@ -12,8 +12,9 @@ import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 
 const middlewares = [thunk];
-const mockStore =
-  configureMockStore<Partial<State>, ThunkDispatch<State, {}, AnyAction>>(middlewares);
+const mockStore = configureMockStore<Partial<State>, ThunkDispatch<State, {}, AnyAction>>(
+  middlewares,
+);
 const mockedSelectMediaFilePath = mocked(selectMediaFilePath);
 
 jest.mock('../../reducers/entries');
