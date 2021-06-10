@@ -11,11 +11,15 @@ const NotesContainer = styled.div`
   height: calc(100% - 48px);
 `;
 
-export default function EditorNotesPane() {
-  return (
-    <NotesContainer>
-      <NoteList />
-      <CreateNote />
-    </NotesContainer>
-  );
+class EditorNotesPane extends React.Component() {
+  render() {
+    return (
+      <NotesContainer>
+        <NoteList />
+        <CreateNote />
+      </NotesContainer>
+    );
+  }
 }
+
+export default EditorNotesPane;

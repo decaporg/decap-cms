@@ -59,53 +59,68 @@ export function NoteToolbar(props) {
   );
 }
 
-export function Note(props) {
-  const {
-    note: { key, value, author, createdAt },
-  } = props;
-  return (
-    <NoteContainer key={key}>
-      <AuthorImage author={author} />
-      <NoteInfoContainer>
-        <NoteToolbar author={author} createdAt={createdAt} />
-        <NoteTextContainer>{value}</NoteTextContainer>
-      </NoteInfoContainer>
-    </NoteContainer>
-  );
+export class Note extends React.Component {
+  render() {
+    const {
+      note: { key, value, author, createdAt },
+    } = this.props;
+    return (
+      <NoteContainer key={key}>
+        <AuthorImage author={author} />
+        <NoteInfoContainer>
+          <NoteToolbar author={author} createdAt={createdAt} />
+          <NoteTextContainer>{value}</NoteTextContainer>
+        </NoteInfoContainer>
+      </NoteContainer>
+    );
+  }
 }
 
-export default function NoteList() {
-  const notes = [
-    {
-      key: 1,
-      author: 'Bob',
-      createdAt: '2021:04:21T00:00:00.000Z',
-      value: 'This is a comment',
-    },
-    {
-      key: 2,
-      author: 'Bob',
-      createdAt: '2021:04:21T00:00:00.000Z',
-      value: 'This is a comment',
-    },
-    {
-      key: 3,
-      author: 'Bob',
-      createdAt: '2021:04:21T00:00:00.000Z',
-      value: 'This is a comment',
-    },
-    {
-      key: 4,
-      author: 'Bob',
-      createdAt: '2021:04:21T00:00:00.000Z',
-      value: 'This is a comment',
-    },
-  ];
-  return (
-    <NoteListContainer>
-      {notes.map(note => (
-        <Note key={note.key} note={note} />
-      ))}
-    </NoteListContainer>
-  );
+class NoteList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      notes: [],
+    };
+  }
+
+  componentDidMount() {}
+
+  render() {
+    const notes = [
+      {
+        key: 1,
+        author: 'Bob',
+        createdAt: '2021:04:21T00:00:00.000Z',
+        value: 'This is a comment',
+      },
+      {
+        key: 2,
+        author: 'Bob',
+        createdAt: '2021:04:21T00:00:00.000Z',
+        value: 'This is a comment',
+      },
+      {
+        key: 3,
+        author: 'Bob',
+        createdAt: '2021:04:21T00:00:00.000Z',
+        value: 'This is a comment',
+      },
+      {
+        key: 4,
+        author: 'Bob',
+        createdAt: '2021:04:21T00:00:00.000Z',
+        value: 'This is a comment',
+      },
+    ];
+    return (
+      <NoteListContainer>
+        {notes.map(note => (
+          <Note key={note.key} note={note} />
+        ))}
+      </NoteListContainer>
+    );
+  }
 }
+
+export default NoteList;
