@@ -347,6 +347,7 @@ declare module 'netlify-cms-core' {
     name: CmsBackendType;
     auth_scope?: CmsAuthScope;
     open_authoring?: boolean;
+    always_fork?: boolean
     repo?: string;
     branch?: string;
     api_root?: string;
