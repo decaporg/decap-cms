@@ -87,7 +87,7 @@
     "@commitlint/cli": "^12.0.0",
     "@commitlint/config-conventional": "^12.0.0",
     "@emotion/eslint-plugin": "^11.0.0",
-    "@octokit/rest": "^16.28.7",
+    "@octokit/rest": "^18.0.0",
     "@storybook/addon-actions": "^5.3.6",
     "@storybook/addon-links": "^5.3.6",
     "@storybook/react": "^5.3.6",
