@@ -103,6 +103,21 @@ function schema({ voidCodeBlock } = {}) {
         match: [{ object: 'block', type: 'list-item' }],
         next: [{ type: 'list-item' }],
         parent: [{ type: 'bulleted-list' }, { type: 'numbered-list' }],
+        normalize: (editor, error) => {
+          const {document} = editor.value;
+          const {child} = error;
+          const sibling = document.getNextSibling(child.key)
+          switch(error.code) {
+            /* When the next sibling node in a list block is not of `list-item` type, move it out of the list block
+             and into the top-level document block as a direct child.
+            */
+            case 'next_sibling_type_invalid':
+              editor.moveNodeByKey(sibling.key, document.key, document.nodes.size)
+              return
+          }
+          
+          
+        }
       },
 
       /**
