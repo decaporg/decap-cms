@@ -101,6 +101,7 @@ function schema({ voidCodeBlock } = {}) {
        */
       {
         match: [{ object: 'block', type: 'list-item' }],
+        next: [{ type: 'list-item' }],
         parent: [{ type: 'bulleted-list' }, { type: 'numbered-list' }],
       },
 
