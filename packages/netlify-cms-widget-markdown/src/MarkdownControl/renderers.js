@@ -87,13 +87,7 @@ const StyledUl = styled.ul`
 const StyledOl = StyledUl.withComponent('ol');
 
 const StyledLi = styled.li`
-  & > p:first-child {
-    margin-top: 8px;
-  }
-
-  & > p:last-child {
-    margin-bottom: 8px;
-  }
+  margin-top: 8px;
 `;
 
 const StyledA = styled.a`
