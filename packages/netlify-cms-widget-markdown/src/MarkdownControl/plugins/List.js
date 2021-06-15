@@ -4,6 +4,7 @@ import { Range, Block } from 'slate';
 import isHotkey from 'is-hotkey';
 
 import { assertType } from './util';
+import {SLATE_LIST_BLOCK_TYPES as LIST_SCHEMA} from '../../types'
 
 function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
   const LIST_TYPES = [orderedListType, unorderedListType];
