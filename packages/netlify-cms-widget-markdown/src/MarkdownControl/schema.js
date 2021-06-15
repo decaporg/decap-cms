@@ -73,7 +73,6 @@ function schema({ voidCodeBlock } = {}) {
       {
         match: [
           { object: 'block', type: 'quote' },
-          { object: 'block', type: 'list-item' },
         ],
         nodes: [
           {
