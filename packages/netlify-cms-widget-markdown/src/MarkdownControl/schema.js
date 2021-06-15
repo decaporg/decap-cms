@@ -143,7 +143,7 @@ function schema({ voidCodeBlock } = {}) {
       },
 
       /**
-       * Bulleted List
+       * Bulleted List rules. These ensure that a bulleted list can only contain list items and never paragraph, or any other block types.
        */
       {
         match: [{ object: 'block', type: 'bulleted-list' }],
