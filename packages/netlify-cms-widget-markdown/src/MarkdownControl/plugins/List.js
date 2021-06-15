@@ -198,106 +198,110 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
         }
       },
     },
-    onKeyDown(event, editor, next) {
-      // Handle Backspace
-      if (isHotkey('backspace', event) && editor.value.selection.isCollapsed) {
-        // If beginning block is not of default type, do nothing
-        if (editor.value.startBlock.type !== defaultType) {
-          return next();
-        }
-        const listOrListItem = editor.getListOrListItem();
-        const isListItem = listOrListItem && listOrListItem.type === 'list-item';
+    /** This onKeyDown handler only applies when a list item block contains a paragraph block, which is no longer the case.
+      * TODO: rewrite the onKeyDown handler for Tab and Backspace key. The Enter key is already handled in
+      * BreakToDefaultBlock plugin because it is loaded after this List plugin and will override whatever behaviour is defined here.
+    */
+    // onKeyDown(event, editor, next) {
+    //   // Handle Backspace
+    //   if (isHotkey('backspace', event) && editor.value.selection.isCollapsed) {
+    //     // If beginning block is not of default type, do nothing
+    //     if (editor.value.startBlock.type !== defaultType) {
+    //       return next();
+    //     }
+    //     const listOrListItem = editor.getListOrListItem();
+    //     const isListItem = listOrListItem && listOrListItem.type === 'list-item';
 
-        // If immediate block is a list item, unwrap it
-        if (isListItem && editor.value.selection.start.isAtStartOfNode(listOrListItem)) {
-          const listItem = listOrListItem;
-          const previousSibling = editor.value.document.getPreviousSibling(listItem.key);
+    //     // If immediate block is a list item, unwrap it
+    //     if (isListItem && editor.value.selection.start.isAtStartOfNode(listOrListItem)) {
+    //       const listItem = listOrListItem;
+    //       const previousSibling = editor.value.document.getPreviousSibling(listItem.key);
 
-          // If this isn't the first item in the list, merge into previous list item
-          if (previousSibling && previousSibling.type === 'list-item') {
-            return editor.mergeNodeByKey(listItem.key);
-          }
-          return editor.unwrapListItem(listItem);
-        }
+    //       // If this isn't the first item in the list, merge into previous list item
+    //       if (previousSibling && previousSibling.type === 'list-item') {
+    //         return editor.mergeNodeByKey(listItem.key);
+    //       }
+    //       return editor.unwrapListItem(listItem);
+    //     }
 
-        return next();
-      }
+    //     return next();
+    //   }
 
-      // Handle Tab
-      if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
-        const isTab = isHotkey('tab', event);
-        const isShiftTab = !isTab;
-        event.preventDefault();
+    //   // Handle Tab
+    //   if (isHotkey('tab', event) || isHotkey('shift+tab', event)) {
+    //     const isTab = isHotkey('tab', event);
+    //     const isShiftTab = !isTab;
+    //     event.preventDefault();
 
-        const listOrListItem = editor.getListOrListItem({ force: true });
-        if (!listOrListItem) {
-          return next();
-        }
+    //     const listOrListItem = editor.getListOrListItem({ force: true });
+    //     if (!listOrListItem) {
+    //       return next();
+    //     }
 
-        if (listOrListItem.type === 'list-item') {
-          const listItem = listOrListItem;
-          if (isTab) {
-            return editor.indentListItems(listItem);
-          }
-          if (isShiftTab) {
-            return editor.unindentListItems(listItem);
-          }
-        } else {
-          const list = listOrListItem;
-          if (isTab) {
-            const listItems = editor.getSelectedChildren(list);
-            return editor.indentListItems(listItems);
-          }
-          if (isShiftTab) {
-            const listItems = editor.getSelectedChildren(list);
-            return editor.unindentListItems(listItems);
-          }
-        }
-        return next();
-      }
+    //     if (listOrListItem.type === 'list-item') {
+    //       const listItem = listOrListItem;
+    //       if (isTab) {
+    //         return editor.indentListItems(listItem);
+    //       }
+    //       if (isShiftTab) {
+    //         return editor.unindentListItems(listItem);
+    //       }
+    //     } else {
+    //       const list = listOrListItem;
+    //       if (isTab) {
+    //         const listItems = editor.getSelectedChildren(list);
+    //         return editor.indentListItems(listItems);
+    //       }
+    //       if (isShiftTab) {
+    //         const listItems = editor.getSelectedChildren(list);
+    //         return editor.unindentListItems(listItems);
+    //       }
+    //     }
+    //     return next();
+    //   }
 
-      // Handle Enter
-      if (isHotkey('enter', event)) {
-        const listOrListItem = editor.getListOrListItem();
-        if (!listOrListItem) {
-          return next();
-        }
+    //   // Handle Enter
+    //   if (isHotkey('enter', event)) {
+    //     const listOrListItem = editor.getListOrListItem();
+    //     if (!listOrListItem) {
+    //       return next();
+    //     }
 
-        if (editor.value.selection.isExpanded) {
-          editor.delete();
-        }
+    //     if (editor.value.selection.isExpanded) {
+    //       editor.delete();
+    //     }
 
-        if (listOrListItem.type === 'list-item') {
-          const listItem = listOrListItem;
+    //     if (listOrListItem.type === 'list-item') {
+    //       const listItem = listOrListItem;
 
-          // If focus is at start of list item, unwrap the entire list item.
-          if (editor.atStartOf(listItem)) {
-            return editor.unwrapListItem(listItem);
-          }
+    //       // If focus is at start of list item, unwrap the entire list item.
+    //       if (editor.atStartOf(listItem)) {
+    //         return editor.unwrapListItem(listItem);
+    //       }
 
-          // If focus is at start of a subsequent block in the list item, move
-          // everything after the cursor in the current list item to a new list
-          // item.
-          if (editor.atStartOf(editor.value.startBlock)) {
-            const newListItem = Block.create('list-item');
-            const range = Range.create(editor.value.selection).moveEndToEndOfNode(listItem);
+    //       // If focus is at start of a subsequent block in the list item, move
+    //       // everything after the cursor in the current list item to a new list
+    //       // item.
+    //       if (editor.atStartOf(editor.value.startBlock)) {
+    //         const newListItem = Block.create('list-item');
+    //         const range = Range.create(editor.value.selection).moveEndToEndOfNode(listItem);
 
-            return editor.withoutNormalizing(() => {
-              editor.wrapBlockAtRange(range, newListItem).unwrapNodeByKey(newListItem.key);
-            });
-          }
+    //         return editor.withoutNormalizing(() => {
+    //           editor.wrapBlockAtRange(range, newListItem).unwrapNodeByKey(newListItem.key);
+    //         });
+    //       }
 
-          return next();
-        } else {
-          const list = listOrListItem;
-          if (list.nodes.size === 0) {
-            return editor.removeNodeByKey(list.key);
-          }
-        }
-        return next();
-      }
-      return next();
-    },
+    //       return next();
+    //     } else {
+    //       const list = listOrListItem;
+    //       if (list.nodes.size === 0) {
+    //         return editor.removeNodeByKey(list.key);
+    //       }
+    //     }
+    //     return next();
+    //   }
+    //   return next();
+    // },
   };
 }
 
