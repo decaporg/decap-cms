@@ -153,48 +153,26 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
         if (!LIST_TYPES.includes(type)) {
           throw Error(`${type} is not a valid list type, must be one of: ${LIST_TYPES}`);
         }
-        const { startBlock } = editor.value;
-        const target = editor.getBlockContainer();
-
-        switch (get(target, 'type')) {
-          case 'bulleted-list':
-          case 'numbered-list': {
-            const list = target;
-            if (list.type !== type) {
-              const newListType = oppositeListType(target.type);
-              const newList = Block.create(newListType);
-              editor.withoutNormalizing(() => {
-                editor.wrapBlock(newList).unwrapNodeByKey(newList.key);
-              });
-            } else {
-              editor.withoutNormalizing(() => {
-                list.nodes.forEach(listItem => {
-                  if (editor.isSelected(listItem)) {
-                    editor.unwrapListItem(listItem);
-                  }
-                });
-              });
-            }
-            break;
-          }
-
-          case 'list-item': {
-            const listItem = target;
-            const list = editor.value.document.getParent(listItem.key);
-            if (!editor.isFirstChild(startBlock)) {
-              editor.wrapInList(type);
-            } else if (list.type !== type) {
-              editor.toggleListItemType(listItem);
-            } else {
-              editor.unwrapListItem(listItem);
-            }
-            break;
-          }
-
-          default: {
-            editor.wrapInList(type);
-            break;
-          }
+        const { blocks, document } = editor.value;
+        const isListItem = editor.hasBlock('list-item');
+        console.log({ isListItem });
+        const isItemOfGivenListType = blocks.some(block => {
+          // Get the closest parent of the focused block that is either bulleted-list or numbered-list, depending on the `type` parameter passed in
+          const list = document.getClosest(block.key, parent => parent.type === type);
+          return !!list;
+        });
+        if (isListItem && isItemOfGivenListType) {
+          editor.withoutNormalizing(() => {
+            editor.setBlocks(defaultType).unwrapBlock(type);
+          });
+        } else if (isListItem) {
+          editor.withoutNormalizing(() => {
+            editor.unwrapBlock(type === LIST_TYPES[0] ? LIST_TYPES[1] : LIST_TYPES[0]).wrapBlock(type)
+          })
+        } else {
+          editor.withoutNormalizing(() => {
+            editor.setBlocks(LIST_SCHEMA.children).wrapBlock(type);
+          }); 
         }
       },
     },
