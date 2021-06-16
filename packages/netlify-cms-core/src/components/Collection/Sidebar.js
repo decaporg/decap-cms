@@ -70,6 +70,7 @@ export class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map,
+    isSearchEnabled: PropTypes.bool,
     searchTerm: PropTypes.string,
     filterTerm: PropTypes.string,
     t: PropTypes.func.isRequired,
@@ -103,17 +104,18 @@ export class Sidebar extends React.Component {
   };
 
   render() {
-    const { collections, collection, searchTerm, t, filterTerm } = this.props;
-
+    const { collections, collection, isSearchEnabled, searchTerm, t, filterTerm } = this.props;
     return (
       <SidebarContainer>
         <SidebarHeading>{t('collection.sidebar.collections')}</SidebarHeading>
-        <CollectionSearch
-          searchTerm={searchTerm}
-          collections={collections}
-          collection={collection}
-          onSubmit={(query, collection) => searchCollections(query, collection)}
-        />
+        {isSearchEnabled && (
+          <CollectionSearch
+            searchTerm={searchTerm}
+            collections={collections}
+            collection={collection}
+            onSubmit={(query, collection) => searchCollections(query, collection)}
+          />
+        )}
         <SidebarNavList>
           {collections
             .toList()
