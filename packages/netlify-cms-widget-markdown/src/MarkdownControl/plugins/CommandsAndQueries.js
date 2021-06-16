@@ -1,5 +1,7 @@
 import { isArray, tail, castArray } from 'lodash';
 
+import {SLATE_LIST_BLOCK_TYPES as listTypes} from '../../types'
+
 function CommandsAndQueries({ defaultType }) {
   return {
     queries: {
@@ -84,25 +86,16 @@ function CommandsAndQueries({ defaultType }) {
           return parent.type === quoteLabel;
         });
       },
-      hasListItems(editor, listType) {
-        const { value } = editor;
-        const { document, blocks } = value;
-        return blocks.some(node => {
-          const { key: lowestNodeKey } = node;
-          /* A list block has the following structure:
-          <ol>
-            <li>
-              <p>Coffee</p>
-            </li>
-            <li>
-              <p>Tea</p>
-            </li>
-          </ol>
-          */
-          const parent = document.getParent(lowestNodeKey);
-          const grandparent = document.getParent(parent.key);
-          return parent.type === 'list-item' && grandparent?.type === listType;
-        });
+      hasListItems(editor, type) {
+        let ans = false;
+        const {value: {document, blocks}} = editor;
+        if (blocks.size > 0) {
+          // Check if at least one block node in the block array is of type `list-item`
+          const isListItem = blocks.some(node => node.type === listTypes.children);
+          const parent = document.getParent(blocks.first().key);
+          ans = isListItem && parent && parent.type === type;
+        }
+        return ans;
       },
     },
     commands: {
