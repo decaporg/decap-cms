@@ -1,10 +1,9 @@
 import { List } from 'immutable';
-import { castArray, throttle, get } from 'lodash';
-import { Range, Block } from 'slate';
-import isHotkey from 'is-hotkey';
+import { castArray, throttle } from 'lodash';
+import { Block } from 'slate';
 
 import { assertType } from './util';
-import {SLATE_LIST_BLOCK_TYPES as LIST_SCHEMA} from '../../types'
+import { SLATE_LIST_BLOCK_TYPES as LIST_SCHEMA } from '../../types';
 
 function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
   const LIST_TYPES = [orderedListType, unorderedListType];
@@ -167,19 +166,21 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
           });
         } else if (isListItem) {
           editor.withoutNormalizing(() => {
-            editor.unwrapBlock(type === LIST_TYPES[0] ? LIST_TYPES[1] : LIST_TYPES[0]).wrapBlock(type)
-          })
+            editor
+              .unwrapBlock(type === LIST_TYPES[0] ? LIST_TYPES[1] : LIST_TYPES[0])
+              .wrapBlock(type);
+          });
         } else {
           editor.withoutNormalizing(() => {
             editor.setBlocks(LIST_SCHEMA.children).wrapBlock(type);
-          }); 
+          });
         }
       },
     },
     /** This onKeyDown handler only applies when a list item block contains a paragraph block, which is no longer the case.
-      * TODO: rewrite the onKeyDown handler for Tab and Backspace key. The Enter key is already handled in
-      * BreakToDefaultBlock plugin because it is loaded after this List plugin and will override whatever behaviour is defined here.
-    */
+     * TODO: rewrite the onKeyDown handler for Tab and Backspace key. The Enter key is already handled in
+     * BreakToDefaultBlock plugin because it is loaded after this List plugin and will override whatever behaviour is defined here.
+     */
     // onKeyDown(event, editor, next) {
     //   // Handle Backspace
     //   if (isHotkey('backspace', event) && editor.value.selection.isCollapsed) {

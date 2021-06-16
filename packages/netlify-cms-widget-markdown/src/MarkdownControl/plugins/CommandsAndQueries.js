@@ -1,6 +1,6 @@
 import { isArray, tail, castArray } from 'lodash';
 
-import {SLATE_LIST_BLOCK_TYPES as listTypes} from '../../types'
+import { SLATE_LIST_BLOCK_TYPES as listTypes } from '../../types';
 
 function CommandsAndQueries({ defaultType }) {
   return {
@@ -88,7 +88,9 @@ function CommandsAndQueries({ defaultType }) {
       },
       hasListItems(editor, type) {
         let ans = false;
-        const {value: {document, blocks}} = editor;
+        const {
+          value: { document, blocks },
+        } = editor;
         if (blocks.size > 0) {
           // Check if at least one block node in the block array is of type `list-item`
           const isListItem = blocks.some(node => node.type === listTypes.children);
