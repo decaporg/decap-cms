@@ -290,7 +290,7 @@ class EditorInterface extends Component {
       {
         key: 'notes',
         title: 'Notes',
-        content: <EditorNotesPane />,
+        content: <EditorNotesPane draftKey={draftKey} hasWorkflow={hasWorkflow} />,
       },
     ];
 
