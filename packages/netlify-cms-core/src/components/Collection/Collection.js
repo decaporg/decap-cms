@@ -152,7 +152,7 @@ export class Collection extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
-  const isSearchEnabled = state.config.search != false;
+  const isSearchEnabled = state.config && state.config.search != false;
   const { isSearchResults, match, t } = ownProps;
   const { name, searchTerm = '', filterTerm = '' } = match.params;
   const collection = name ? collections.get(name) : collections.first();

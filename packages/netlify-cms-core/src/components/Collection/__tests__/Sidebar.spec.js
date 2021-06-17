@@ -20,6 +20,7 @@ jest.mock('../../../actions/collections');
 describe('Sidebar', () => {
   const props = {
     searchTerm: '',
+    isSearchEnabled: true,
     t: jest.fn(key => key),
   };
   it('should render sidebar with a simple collection', () => {
