@@ -6266,10 +6266,10 @@ commondir@^1.0.1:
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
   integrity sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=
 
-commonmark-spec@^0.29.0:
-  version "0.29.0"
-  resolved "https://registry.yarnpkg.com/commonmark-spec/-/commonmark-spec-0.29.0.tgz#5fbfe052f060a0020fbf1ecc917e51cbc0f1fb67"
-  integrity sha512-jmvWU8f4BFfg10eOBrhZwTqRlfSYTkhGAuaFDlfPOCF6d/bgSSV3xPlpw4e7AzCwj7sUDzDsLS7ceLsmIpFV8w==
+commonmark-spec@^0.30.0:
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/commonmark-spec/-/commonmark-spec-0.30.0.tgz#f8ff08385af0a88fb8d26202cf648f475febca69"
+  integrity sha512-f12+blWaOUf5FI+huhZXNFUr4IljCJKAEd3JhCCnzRfDYcFxK5j9K6ldQ/nH6RAEYQHiMJf0tnyYndbywQvhWA==
 
 commonmark@^0.30.0:
   version "0.30.0"
