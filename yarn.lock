@@ -6271,10 +6271,10 @@ commonmark-spec@^0.29.0:
   resolved "https://registry.yarnpkg.com/commonmark-spec/-/commonmark-spec-0.29.0.tgz#5fbfe052f060a0020fbf1ecc917e51cbc0f1fb67"
   integrity sha512-jmvWU8f4BFfg10eOBrhZwTqRlfSYTkhGAuaFDlfPOCF6d/bgSSV3xPlpw4e7AzCwj7sUDzDsLS7ceLsmIpFV8w==
 
-commonmark@^0.29.0:
-  version "0.29.3"
-  resolved "https://registry.yarnpkg.com/commonmark/-/commonmark-0.29.3.tgz#bb1d5733bfe3ea213b412f33f16439cc12999c2c"
-  integrity sha512-fvt/NdOFKaL2gyhltSy6BC4LxbbxbnPxBMl923ittqO/JBM0wQHaoYZliE4tp26cRxX/ZZtRsJlZzQrVdUkXAA==
+commonmark@^0.30.0:
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/commonmark/-/commonmark-0.30.0.tgz#38811dc7bbf0f59d277ae09054d4d73a332f2e45"
+  integrity sha512-j1yoUo4gxPND1JWV9xj5ELih0yMv1iCWDG6eEQIPLSWLxzCXiFoyS7kvB+WwU+tZMf4snwJMMtaubV0laFpiBA==
   dependencies:
     entities "~2.0"
     mdurl "~1.0.1"
