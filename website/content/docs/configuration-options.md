@@ -159,9 +159,10 @@ When a translation for the selected locale is missing the English one will be us
 show_preview_links: false
 ```
 
-## Disable search
+## Search
 
-The search functionality makes a request for each entry in the collection. If there are lots of entries, it can hit the GitHub API request limit. Until a better solution for this problem is found, setting this option to false will hide the search.
+The search functionally requires loading all collection(s) entries, which can exhaust rate limits on large repositories.
+It can be disabled by setting the top level `search` property to `false`.
 
 Defaults to `true`
 

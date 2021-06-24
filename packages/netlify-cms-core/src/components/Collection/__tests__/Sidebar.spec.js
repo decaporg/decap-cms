@@ -75,9 +75,7 @@ describe('Sidebar', () => {
   });
 
   it('should render sidebar without search', () => {
-    const collections = fromJS([
-      { name: 'posts', label: 'Posts', nested: { depth: 10 } },
-    ]).toOrderedMap();
+    const collections = fromJS([{ name: 'posts', label: 'Posts' }]).toOrderedMap();
     const { asFragment } = render(
       <MemoryRouter>
         <Sidebar {...props} collections={collections} isSearchEnabled={false} />
