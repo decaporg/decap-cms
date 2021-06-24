@@ -50,11 +50,7 @@ function CollectionControls({
       )}
 
       {sortableFields.length > 0 && (
-        <SortControl
-          fields={sortableFields}
-          sort={sort}
-          onSortClick={onSortClick}
-        />
+        <SortControl fields={sortableFields} sort={sort} onSortClick={onSortClick} />
       )}
     </CollectionControlsContainer>
   );
