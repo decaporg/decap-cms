@@ -20,6 +20,7 @@ jest.mock('../../../actions/collections');
 describe('Sidebar', () => {
   const props = {
     searchTerm: '',
+    isSearchEnabled: true,
     t: jest.fn(key => key),
   };
   it('should render sidebar with a simple collection', () => {
@@ -67,6 +68,17 @@ describe('Sidebar', () => {
     const { asFragment } = render(
       <MemoryRouter>
         <Sidebar {...props} collections={collections} filterTerm="dir1/dir2" />
+      </MemoryRouter>,
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should render sidebar without search', () => {
+    const collections = fromJS([{ name: 'posts', label: 'Posts' }]).toOrderedMap();
+    const { asFragment } = render(
+      <MemoryRouter>
+        <Sidebar {...props} collections={collections} isSearchEnabled={false} />
       </MemoryRouter>,
     );
 

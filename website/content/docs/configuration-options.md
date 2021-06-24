@@ -159,6 +159,20 @@ When a translation for the selected locale is missing the English one will be us
 show_preview_links: false
 ```
 
+## Search
+
+The search functionally requires loading all collection(s) entries, which can exhaust rate limits on large repositories.
+It can be disabled by setting the top level `search` property to `false`.
+
+Defaults to `true`
+
+**Example:**
+
+```yaml
+search: false
+```
+
+
 ## Slug Type
 
 The `slug` option allows you to change how filenames for entries are created and sanitized. It also applies to filenames of media inserted via the default media library.\
