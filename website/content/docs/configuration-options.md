@@ -161,7 +161,7 @@ show_preview_links: false
 
 ## Disable search
 
-When a collection has a lot of entries, the search functionality can sometimes make too many requests and hit the GitHub API limit. Until a better solution for this problem is found, setting this option to false will  hide the search.
+The search functionality makes a request for each entry in the collection. If there are lots of entries, it can hit the GitHub API request limit. Until a better solution for this problem is found, setting this option to false will hide the search.
 
 Defaults to `true`
 
