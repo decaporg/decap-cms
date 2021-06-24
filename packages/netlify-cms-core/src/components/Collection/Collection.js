@@ -127,7 +127,6 @@ export class Collection extends React.Component {
             <>
               <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
               <CollectionControls
-                isSearchEnabled={isSearchEnabled}
                 viewStyle={viewStyle}
                 onChangeViewStyle={onChangeViewStyle}
                 sortableFields={sortableFields}

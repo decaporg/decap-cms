@@ -21,7 +21,6 @@ const CollectionControlsContainer = styled.div`
 `;
 
 function CollectionControls({
-  isSearchEnabled,
   viewStyle,
   onChangeViewStyle,
   sortableFields,
@@ -49,12 +48,12 @@ function CollectionControls({
           filter={filter}
         />
       )}
-      {isSearchEnabled && sortableFields.length > 0 && (
+
+      {sortableFields.length > 0 && (
         <SortControl
           fields={sortableFields}
           sort={sort}
           onSortClick={onSortClick}
-          isSearchEnabled={isSearchEnabled}
         />
       )}
     </CollectionControlsContainer>
