@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.41.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.12...netlify-cms-core@2.41.0) (2021-06-24)
+
+
+### Features
+
+* make search optional ([58bfa2d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/commit/58bfa2d96efd6d14410cb9c453b8291b90008562))
+
+
+
+
+
 ## [2.40.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.11...netlify-cms-core@2.40.12) (2021-06-10)
 
 **Note:** Version bump only for package netlify-cms-core
