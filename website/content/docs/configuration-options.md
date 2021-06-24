@@ -159,6 +159,19 @@ When a translation for the selected locale is missing the English one will be us
 show_preview_links: false
 ```
 
+## Disable search
+
+When a collection has a lot of entries, the search functionality can sometimes make too many requests and hit the GitHub API limit. Until a better solution for this problem is found, setting this option to false will  hide the search.
+
+Defaults to `true`
+
+**Example:**
+
+```yaml
+search: false
+```
+
+
 ## Slug Type
 
 The `slug` option allows you to change how filenames for entries are created and sanitized. It also applies to filenames of media inserted via the default media library.\
