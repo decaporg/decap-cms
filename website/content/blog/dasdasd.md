@@ -3,7 +3,7 @@ title: dasdasd
 author: asdasd
 description: sadadasdasd
 meta_description: aasdsadasdl
-twitter_image: sadasd.pt
+twitter_image: /img/11ty-logo.svg
 date: 2021-06-30T15:07:32.071Z
 ---
 asd
