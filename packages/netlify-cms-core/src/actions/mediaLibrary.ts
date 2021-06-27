@@ -91,12 +91,18 @@ export function openMediaLibrary(
     field?: EntryField;
   } = {},
 ) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const mediaLibrary = state.mediaLibrary.get('externalLibrary');
     if (mediaLibrary) {
       const { controlID: id, value, config = Map(), allowMultiple, forImage } = payload;
-      mediaLibrary.show({ id, value, config: config.toJS(), allowMultiple, imagesOnly: forImage });
+      await mediaLibrary.show({
+        id,
+        value,
+        config: config.toJS(),
+        allowMultiple,
+        imagesOnly: forImage,
+      });
     }
     dispatch(mediaLibraryOpened(payload));
   };

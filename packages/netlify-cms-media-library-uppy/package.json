@@ -1,0 +1,30 @@
+{
+  "name": "netlify-cms-media-library-uppy",
+  "description": "Uppy integration for Netlify CMS",
+  "version": "0.5.10",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-media-library-uppy",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-media-library-uppy.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "uppy",
+    "media",
+    "assets",
+    "files",
+    "uploads"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "dependencies": {
+    "@uppy/core": "^1.19.1",
+    "@uppy/dashboard": "^1.20.1",
+    "file-type": "^16.5.0"
+  }
+}

@@ -642,7 +642,7 @@ export interface MediaLibraryInstance {
     config: StaticallyTypedRecord<{}>;
     allowMultiple?: boolean;
     imagesOnly?: boolean;
-  }) => void;
+  }) => Promise<void>;
   hide: () => void;
   onClearControl: (args: { id: string }) => void;
   onRemoveControl: (args: { id: string }) => void;

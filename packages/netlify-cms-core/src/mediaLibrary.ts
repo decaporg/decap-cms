@@ -7,9 +7,10 @@ import { once } from 'lodash';
 import { getMediaLibrary } from './lib/registry';
 import { store } from './redux';
 import { configFailed } from './actions/config';
-import { createMediaLibrary, insertMedia } from './actions/mediaLibrary';
+import { createMediaLibrary, insertMedia, persistMedia, loadMedia } from './actions/mediaLibrary';
+import { selectMediaFiles } from './reducers/mediaLibrary';
 
-import type { MediaLibraryInstance } from './types/redux';
+import type { MediaLibraryInstance, State, MediaFile } from './types/redux';
 
 type MediaLibraryOptions = {};
 
@@ -17,6 +18,9 @@ interface MediaLibrary {
   init: (args: {
     options: MediaLibraryOptions;
     handleInsert: (url: string) => void;
+    handlePersist: (file: File) => void;
+    handleLoadMedia: () => void;
+    handleGetMedia: (state: State) => MediaFile[];
   }) => MediaLibraryInstance;
 }
 
@@ -24,6 +28,22 @@ function handleInsert(url: string) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return store.dispatch(insertMedia(url, undefined));
+}
+
+function handlePersist(file: File) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return store.dispatch(persistMedia(file));
+}
+
+function handleLoadMedia() {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return store.dispatch(loadMedia());
+}
+
+function handleGetMedia() {
+  return selectMediaFiles(store.getState()!);
 }
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
@@ -34,7 +54,13 @@ const initializeMediaLibrary = once(async function initializeMediaLibrary(name, 
     );
     store.dispatch(configFailed(err));
   } else {
-    const instance = await lib.init({ options, handleInsert });
+    const instance = await lib.init({
+      options,
+      handleInsert,
+      handlePersist,
+      handleLoadMedia,
+      handleGetMedia,
+    });
     store.dispatch(createMediaLibrary(instance));
   }
 });
