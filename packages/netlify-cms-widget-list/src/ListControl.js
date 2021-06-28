@@ -8,7 +8,13 @@ import { partial, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
-import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths, FieldLabel } from 'netlify-cms-ui-default';
+import {
+  ListItemTopBar,
+  ObjectWidgetTopBar,
+  colors,
+  lengths,
+  FieldLabel,
+} from 'netlify-cms-ui-default';
 import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 
 import {
@@ -503,7 +509,7 @@ export default class ListControl extends React.Component {
       resolveWidget,
       parentIds,
       forID,
-      t
+      t,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
