@@ -2,7 +2,7 @@
 
 exports[`ListControl should add to list when add button is clicked 1`] = `
 <DocumentFragment>
-  .emotion-20 {
+  .emotion-18 {
   padding: 0 14px 14px;
 }
 
@@ -103,40 +103,6 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   height: 100%;
 }
 
-.emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -163,15 +129,15 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -181,7 +147,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 }
 
 <div
-    class="classNameWrapper emotion-20"
+    class="classNameWrapper emotion-18"
     id="forID"
   >
     <div
@@ -230,13 +196,8 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -247,7 +208,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           No string
         </div>
@@ -270,7 +231,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 
 exports[`ListControl should remove from list when remove button is clicked 1`] = `
 <DocumentFragment>
-  .emotion-26 {
+  .emotion-22 {
   padding: 0 14px 14px;
 }
 
@@ -371,40 +332,6 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   height: 100%;
 }
 
-.emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -431,15 +358,15 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -449,7 +376,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 }
 
 <div
-    class="classNameWrapper emotion-26"
+    class="classNameWrapper emotion-22"
     id="forID"
   >
     <div
@@ -498,13 +425,8 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -515,7 +437,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 1
         </div>
@@ -532,13 +454,8 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         />
       </div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -549,7 +466,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 2
         </div>
@@ -572,7 +489,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 
 exports[`ListControl should remove from list when remove button is clicked 2`] = `
 <DocumentFragment>
-  .emotion-20 {
+  .emotion-18 {
   padding: 0 14px 14px;
 }
 
@@ -673,50 +590,16 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
   padding-bottom: 0;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
 .emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
-.emotion-16 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -752,7 +635,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
 }
 
 <div
-    class="classNameWrapper emotion-20"
+    class="classNameWrapper emotion-18"
     id="forID"
   >
     <div
@@ -801,13 +684,8 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="true"
@@ -818,7 +696,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 2
         </div>
@@ -852,7 +730,7 @@ exports[`ListControl should render empty list 1`] = `
 
 exports[`ListControl should render list with fields with collapse = "false" and default minimize_collapsed ("false") 1`] = `
 <DocumentFragment>
-  .emotion-26 {
+  .emotion-22 {
   padding: 0 14px 14px;
 }
 
@@ -953,40 +831,6 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
-.emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -1013,15 +857,15 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -1031,7 +875,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 <div
-    class="classNameWrapper emotion-26"
+    class="classNameWrapper emotion-22"
     id="forID"
   >
     <div
@@ -1080,13 +924,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -1097,7 +936,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 1
         </div>
@@ -1114,13 +953,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         />
       </div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -1131,7 +965,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 2
         </div>
@@ -1154,7 +988,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 
 exports[`ListControl should render list with fields with collapse = "false" and default minimize_collapsed = "true" 1`] = `
 <DocumentFragment>
-  .emotion-26 {
+  .emotion-22 {
   padding: 0 14px 14px;
 }
 
@@ -1255,40 +1089,6 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
-.emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -1315,15 +1115,15 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -1333,7 +1133,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 <div
-    class="classNameWrapper emotion-26"
+    class="classNameWrapper emotion-22"
     id="forID"
   >
     <div
@@ -1382,13 +1182,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -1399,7 +1194,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 1
         </div>
@@ -1416,13 +1211,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         />
       </div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -1433,7 +1223,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 2
         </div>
@@ -1456,7 +1246,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 
 exports[`ListControl should render list with fields with default collapse ("true") and minimize_collapsed ("false") 1`] = `
 <DocumentFragment>
-  .emotion-26 {
+  .emotion-22 {
   padding: 0 14px 14px;
 }
 
@@ -1583,50 +1373,16 @@ exports[`ListControl should render list with fields with default collapse ("true
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
   padding-bottom: 0;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
 .emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
-.emotion-16 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -1636,7 +1392,7 @@ exports[`ListControl should render list with fields with default collapse ("true
 }
 
 <div
-    class="classNameWrapper emotion-26"
+    class="classNameWrapper emotion-22"
     id="forID"
   >
     <div
@@ -1685,13 +1441,8 @@ exports[`ListControl should render list with fields with default collapse ("true
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="true"
@@ -1702,7 +1453,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 1
         </div>
@@ -1719,13 +1470,8 @@ exports[`ListControl should render list with fields with default collapse ("true
         />
       </div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="true"
@@ -1736,7 +1482,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           item 2
         </div>
@@ -1940,7 +1686,7 @@ exports[`ListControl should render list with fields with default collapse ("true
 
 exports[`ListControl should render list with nested object 1`] = `
 <DocumentFragment>
-  .emotion-26 {
+  .emotion-22 {
   padding: 0 14px 14px;
 }
 
@@ -2067,50 +1813,16 @@ exports[`ListControl should render list with nested object 1`] = `
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
   padding-bottom: 0;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
 .emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
-.emotion-16 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -2120,7 +1832,7 @@ exports[`ListControl should render list with nested object 1`] = `
 }
 
 <div
-    class="classNameWrapper emotion-26"
+    class="classNameWrapper emotion-22"
     id="forID"
   >
     <div
@@ -2169,13 +1881,8 @@ exports[`ListControl should render list with nested object 1`] = `
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="true"
@@ -2186,7 +1893,7 @@ exports[`ListControl should render list with nested object 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           Object
         </div>
@@ -2203,13 +1910,8 @@ exports[`ListControl should render list with nested object 1`] = `
         />
       </div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="true"
@@ -2220,7 +1922,7 @@ exports[`ListControl should render list with nested object 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           Object
         </div>
@@ -2243,7 +1945,7 @@ exports[`ListControl should render list with nested object 1`] = `
 
 exports[`ListControl should render list with nested object with collapse = false 1`] = `
 <DocumentFragment>
-  .emotion-26 {
+  .emotion-22 {
   padding: 0 14px 14px;
 }
 
@@ -2344,40 +2046,6 @@ exports[`ListControl should render list with nested object with collapse = false
   height: 100%;
 }
 
-.emotion-14 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #7a8291;
-  color: #7a8291;
-  background-color: #dfdfe3;
-  display: inline-block;
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 3px 6px 2px;
-  margin: 0;
-  -webkit-transition: all .2s ease;
-  transition: all .2s ease;
-  position: relative;
-}
-
-.emotion-14:before,
-.emotion-14:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -4px;
-  height: 100%;
-  width: 4px;
-  background-color: inherit;
-}
-
-.emotion-14:after {
-  border-bottom-left-radius: 3px;
-  background-color: #fff;
-}
-
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -2404,15 +2072,15 @@ exports[`ListControl should render list with nested object with collapse = false
   height: 100%;
 }
 
-.emotion-18 {
+.emotion-16 {
   margin-top: 18px;
 }
 
-.emotion-18:first-of-type {
+.emotion-16:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -2422,7 +2090,7 @@ exports[`ListControl should render list with nested object with collapse = false
 }
 
 <div
-    class="classNameWrapper emotion-26"
+    class="classNameWrapper emotion-22"
     id="forID"
   >
     <div
@@ -2471,13 +2139,8 @@ exports[`ListControl should render list with nested object with collapse = false
     </div>
     <div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -2488,7 +2151,7 @@ exports[`ListControl should render list with nested object with collapse = false
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           Object
         </div>
@@ -2505,13 +2168,8 @@ exports[`ListControl should render list with nested object with collapse = false
         />
       </div>
       <div
-        class="emotion-18 emotion-19"
+        class="emotion-16 emotion-17"
       >
-        <label
-          class="emotion-14 emotion-15"
-        >
-          List 
-        </label>
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="false"
@@ -2522,7 +2180,7 @@ exports[`ListControl should render list with nested object with collapse = false
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-16 emotion-17"
+          class="emotion-14 emotion-15"
         >
           Object
         </div>
