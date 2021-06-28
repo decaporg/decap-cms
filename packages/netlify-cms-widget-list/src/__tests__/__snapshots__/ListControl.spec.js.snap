@@ -234,6 +234,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-22"
         >
           List 
         </label>
@@ -502,6 +503,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-23"
         >
           List 
         </label>
@@ -536,6 +538,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-23"
         >
           List 
         </label>
@@ -805,6 +808,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-23"
         >
           List 
         </label>
@@ -1084,6 +1088,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-19"
         >
           List 
         </label>
@@ -1118,6 +1123,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-19"
         >
           List 
         </label>
@@ -1386,6 +1392,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-21"
         >
           List 
         </label>
@@ -1420,6 +1427,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-21"
         >
           List 
         </label>
@@ -1689,6 +1697,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-18"
         >
           List 
         </label>
@@ -1723,6 +1732,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-18"
         >
           List 
         </label>
@@ -2173,6 +2183,7 @@ exports[`ListControl should render list with nested object 1`] = `
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-3"
         >
           List 
         </label>
@@ -2207,6 +2218,7 @@ exports[`ListControl should render list with nested object 1`] = `
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-3"
         >
           List 
         </label>
@@ -2475,6 +2487,7 @@ exports[`ListControl should render list with nested object with collapse = false
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-4"
         >
           List 
         </label>
@@ -2509,6 +2522,7 @@ exports[`ListControl should render list with nested object with collapse = false
       >
         <label
           class="emotion-14 emotion-15"
+          for="list-field-4"
         >
           List 
         </label>
