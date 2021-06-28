@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
-import { partial, isEmpty } from 'lodash';
+import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
@@ -180,6 +180,7 @@ export default class ListControl extends React.Component {
     }
   };
 
+  uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
   /**
    * Always update so that each nested widget has the option to update. This is
    * required because ControlHOC provides a default `shouldComponentUpdate`
@@ -525,7 +526,6 @@ export default class ListControl extends React.Component {
         return this.renderErroneousTypedItem(index, item);
       }
     }
-
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
