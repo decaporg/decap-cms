@@ -268,7 +268,8 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
 
         if (listOrListItem.type === 'list-item') {
           const listItem = listOrListItem;
-
+          console.log({listItem})
+          const {value: {document}} = editor;
           // If focus is at start of list item, unwrap the entire list item.
           if (editor.atStartOf(listItem)) {
             return editor.unwrapListItem(listItem);
@@ -285,7 +286,11 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
               editor.wrapBlockAtRange(range, newListItem).unwrapNodeByKey(newListItem.key);
             });
           }
-
+          const list = document.getParent(listItem.key)
+          if (LIST_TYPES.includes(list.type)) {
+            const newListItem = Block.create({type: 'list-item', nodes: [Block.create('paragraph')]})
+            return editor.insertNodeByKey(list.key, list.nodes.size, newListItem).moveToEndOfDocument()
+          }
           return next();
         } else {
           const list = listOrListItem;
