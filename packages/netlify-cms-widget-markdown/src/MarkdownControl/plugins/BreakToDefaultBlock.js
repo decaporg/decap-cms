@@ -13,8 +13,8 @@ function BreakToDefaultBlock({ defaultType }) {
         return next();
       }
       /** If the block that receives the Enter key is a child of a list item block, we'll
-        * skip this plugin and create a new list item block underneath instead.
-      */
+       * skip this plugin and create a new list item block underneath instead.
+       */
       const parent = document.getParent(startBlock.key);
       if (parent.type === 'list-item') return next();
       if (selection.start.isAtEndOfNode(startBlock) && startBlock.type !== defaultType) {
