@@ -116,7 +116,7 @@ const AppHeaderNavList = styled.ul`
 
 const Logo = styled.img`
   height: ${lengths.topBarLogoHeight};
-`
+`;
 
 class Header extends React.Component {
   static propTypes = {
@@ -222,11 +222,7 @@ class Header extends React.Component {
                 ))}
               </Dropdown>
             )}
-            {
-              logoUrl ?
-                <Logo src={logoUrl} alt="logo"/>
-              : ""
-            }
+            {logoUrl ? <Logo src={logoUrl} alt="logo" /> : ''}
             <SettingsDropdown
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
