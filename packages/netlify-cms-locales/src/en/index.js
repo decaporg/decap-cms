@@ -131,8 +131,10 @@ const en = {
       deleteEntry: 'Delete entry',
       saving: 'Saving...',
       save: 'Save',
-      statusInfoTooltipDraft: ' Entry status is set to draft. To finalize and submit it for review, set the status to ‘In review’',
-      statusInfoTooltipInReview: ' Your changes are being reviewed, no further actions are required. However, you can still make additional changes while it is being reviewed.',
+      statusInfoTooltipDraft:
+        ' Entry status is set to draft. To finalize and submit it for review, set the status to ‘In review’',
+      statusInfoTooltipInReview:
+        ' Your changes are being reviewed, no further actions are required. However, you can still make additional changes while it is being reviewed.',
       deleting: 'Deleting...',
       updating: 'Updating...',
       setStatus: 'Set status',
