@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 
 import { Editor } from '../Editor';
+import EditorToolbar from '../EditorToolbar';
 
 jest.mock('lodash/debounce', () => {
   const flush = jest.fn();
@@ -215,5 +216,9 @@ describe('Editor', () => {
       fromJS({ mediaFiles: [{ id: '1' }] }),
       props.collection,
     );
+  });
+  it('should hide delete entry button if open authoring', () => {
+    const { asFragment } = render(<EditorToolbar {...props} useOpenAuthoring={true} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 });
