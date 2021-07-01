@@ -54,9 +54,9 @@ const TooltipText = styled.div`
   /* Position the tooltip text */
   position: absolute;
   z-index: 1;
-  top: 125%;
+  top: 145%;
   left: 50%;
-  margin-left: -10rem;
+  margin-left: -160px;
 
   /* Fade in tooltip */
   opacity: 0;
