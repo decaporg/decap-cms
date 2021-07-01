@@ -47,7 +47,6 @@ const TooltipText = styled.div`
   background-color: #555;
   color: #fff;
   text-align: unset;
-  padding: 5px 0;
   border-radius: 6px;
   padding: 5px;
 
