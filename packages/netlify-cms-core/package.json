@@ -26,7 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "2.2.5",
-    "ajv": "8.1.0",
+    "ajv": "8.6.1",
     "ajv-errors": "^3.0.0",
     "ajv-keywords": "^5.0.0",
     "copy-text-to-clipboard": "^3.0.0",
