@@ -291,7 +291,7 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     renderSelection = subject => {
-      const { t } = this.props;
+      const { t, field } = this.props;
       return (
         <div>
           {forImage ? this.renderImages() : null}
@@ -300,9 +300,11 @@ export default function withFileControl({ forImage } = {}) {
             <FileWidgetButton onClick={this.handleChange}>
               {t(`editor.editorWidgets.${subject}.chooseDifferent`)}
             </FileWidgetButton>
-            <FileWidgetButton onClick={this.handleUrl(subject)}>
-              {t(`editor.editorWidgets.${subject}.replaceUrl`)}
-            </FileWidgetButton>
+            {field.get('choose_url', true) ? (
+              <FileWidgetButton onClick={this.handleUrl(subject)}>
+                {t(`editor.editorWidgets.${subject}.replaceUrl`)}
+              </FileWidgetButton>
+            ) : null}
             <FileWidgetButtonRemove onClick={this.handleRemove}>
               {t(`editor.editorWidgets.${subject}.remove`)}
             </FileWidgetButtonRemove>
@@ -312,15 +314,17 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     renderNoSelection = subject => {
-      const { t } = this.props;
+      const { t, field } = this.props;
       return (
         <>
           <FileWidgetButton onClick={this.handleChange}>
             {t(`editor.editorWidgets.${subject}.choose`)}
           </FileWidgetButton>
-          <FileWidgetButton onClick={this.handleUrl(subject)}>
-            {t(`editor.editorWidgets.${subject}.chooseUrl`)}
-          </FileWidgetButton>
+          {field.get('choose_url', true) ? (
+            <FileWidgetButton onClick={this.handleUrl(subject)}>
+              {t(`editor.editorWidgets.${subject}.chooseUrl`)}
+            </FileWidgetButton>
+          ) : null}
         </>
       );
     };
