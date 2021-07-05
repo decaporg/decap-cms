@@ -215,7 +215,7 @@ const StatusDropdownItem = styled(DropdownItem)`
   }
 `;
 
-class EditorToolbar extends React.Component {
+export class EditorToolbar extends React.Component {
   static propTypes = {
     isPersisting: PropTypes.bool,
     isPublishing: PropTypes.bool,
