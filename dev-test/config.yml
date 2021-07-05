@@ -47,7 +47,6 @@ collections: # A list of collections the CMS should be able to edit
       - label: 'Cover Image'
         name: 'image'
         widget: 'image'
-        choose_url: true
         required: false
         tagname: ''
 
