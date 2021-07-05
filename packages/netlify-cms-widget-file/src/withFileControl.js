@@ -304,9 +304,7 @@ export default function withFileControl({ forImage } = {}) {
               <FileWidgetButton onClick={this.handleUrl(subject)}>
                 {t(`editor.editorWidgets.${subject}.replaceUrl`)}
               </FileWidgetButton>
-            ) : (
-              ''
-            )}
+            ) : null}
             <FileWidgetButtonRemove onClick={this.handleRemove}>
               {t(`editor.editorWidgets.${subject}.remove`)}
             </FileWidgetButtonRemove>
@@ -326,9 +324,7 @@ export default function withFileControl({ forImage } = {}) {
             <FileWidgetButton onClick={this.handleUrl(subject)}>
               {t(`editor.editorWidgets.${subject}.chooseUrl`)}
             </FileWidgetButton>
-          ) : (
-            ''
-          )}
+          ) : null}
         </>
       );
     };
