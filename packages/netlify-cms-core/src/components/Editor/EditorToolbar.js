@@ -104,15 +104,6 @@ const ToolbarSectionMain = styled.div`
   padding: 0 10px;
 `;
 
-const ToolbarSubSectionFirst = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
-  justify-content: flex-end;
-`;
-
 const ToolbarSectionBackLink = styled(Link)`
   ${styles.toolbarSection};
   border-right-width: 1px;
@@ -559,13 +550,25 @@ export class EditorToolbar extends React.Component {
     return this.renderNewEntrySimplePublishControls({ canCreate });
   };
 
-  renderWorkflowSaveControls = () => {
+  renderSaveButton = () => {
+    const { onPersist, hasChanged, isPersisting, t } = this.props;
+
+    return (
+      <SaveButton
+        disabled={!hasChanged}
+        key="save-button"
+        onClick={() => hasChanged && onPersist()}
+      >
+        {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
+      </SaveButton>
+    );
+  };
+
+  renderDeleteButton = () => {
     const {
-      onPersist,
       onDelete,
       onDeleteUnpublishedChanges,
       showDelete,
-      hasChanged,
       hasUnpublishedChanges,
       useOpenAuthoring,
       isPersisting,
@@ -584,23 +587,14 @@ export class EditorToolbar extends React.Component {
         t('editor.editorToolbar.deleteUnpublishedEntry')) ||
       (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
-    return [
-      <SaveButton
-        disabled={!hasChanged}
-        key="save-button"
-        onClick={() => hasChanged && onPersist()}
+    return (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
+      <DeleteButton
+        key="delete-button"
+        onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
       >
-        {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
-      </SaveButton>,
-      (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
-        <DeleteButton
-          key="delete-button"
-          onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
-        >
-          {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
-        </DeleteButton>
-      ),
-    ];
+        {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
+      </DeleteButton>
+    );
   };
 
   renderWorkflowPublishControls = () => {
@@ -663,14 +657,13 @@ export class EditorToolbar extends React.Component {
           </div>
         </ToolbarSectionBackLink>
         <ToolbarSectionMain>
-          <ToolbarSubSectionFirst>
-            {hasWorkflow ? this.renderWorkflowSaveControls() : this.renderSimpleSaveControls()}
-          </ToolbarSubSectionFirst>
-          <ToolbarSubSectionLast>
-            {hasWorkflow
-              ? this.renderWorkflowPublishControls()
-              : this.renderSimplePublishControls()}
-          </ToolbarSubSectionLast>
+          {hasWorkflow
+            ? [
+                this.renderSaveButton(),
+                this.renderWorkflowPublishControls(),
+                this.renderDeleteButton(),
+              ]
+            : [this.renderSimpleSaveControls(), this.renderSimplePublishControls()]}
         </ToolbarSectionMain>
         <ToolbarSectionMeta>
           <SettingsDropdown
