@@ -94,6 +94,10 @@ export const ControlHint = styled.p`
   color: ${props =>
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
   transition: color ${transitions.main};
+
+  & > * {
+    font-size: 12px;
+  }
 `;
 
 function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
@@ -327,9 +331,11 @@ class EditorControl extends React.Component {
               isFieldHidden={isFieldHidden}
             />
             {fieldHint && (
-              <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
-                {fieldHint}
-              </ControlHint>
+              <ControlHint
+                active={isSelected || this.state.styleActive}
+                error={hasErrors}
+                dangerouslySetInnerHTML={{ __html: fieldHint }}
+              />
             )}
           </ControlContainer>
         )}
