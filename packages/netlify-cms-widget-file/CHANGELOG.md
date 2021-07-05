@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-file@2.10.1...netlify-cms-widget-file@2.11.0) (2021-07-05)
+
+
+### Features
+
+* image widget insert from url should be optional ([#5572](https://github.com/netlify/netlify-cms/issues/5572)) ([18724ff](https://github.com/netlify/netlify-cms/commit/18724ff991c4b8b16de1df40511dad368578a4b2))
+
+
+
+
+
 ## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.10.0...netlify-cms-widget-file@2.10.1) (2021-05-12)
 
 
