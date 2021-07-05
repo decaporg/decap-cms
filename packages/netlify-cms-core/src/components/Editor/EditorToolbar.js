@@ -215,7 +215,7 @@ const StatusDropdownItem = styled(DropdownItem)`
   }
 `;
 
-class EditorToolbar extends React.Component {
+export class EditorToolbar extends React.Component {
   static propTypes = {
     isPersisting: PropTypes.bool,
     isPublishing: PropTypes.bool,
@@ -502,6 +502,7 @@ class EditorToolbar extends React.Component {
       showDelete,
       hasChanged,
       hasUnpublishedChanges,
+      useOpenAuthoring,
       isPersisting,
       isDeleting,
       isNewEntry,
@@ -522,7 +523,7 @@ class EditorToolbar extends React.Component {
       <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
-      !showDelete && !hasUnpublishedChanges && !isModification ? null : (
+      (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
           onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
