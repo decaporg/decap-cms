@@ -17,6 +17,7 @@ The file widget allows editors to upload a file or select an existing one from t
     * `config`: a configuration object that will be passed directly to the media library being
       used - available options are determined by the library
     * `media_folder` (Beta): file path where uploaded files will be saved specific to this control. Paths can be relative to a collection folder (e.g. `files` will add the file to a sub-folder in the collection folder) or absolute with reference to the base of the repo which needs to begin with `/` (e.g `/static/files` will save uploaded files to the `static` folder in a sub folder named `files`)
+    * `choose_url`: *(default: `true`)* when set to `false`, the "Insert from URL" button will be hidden
 * **Example:**
 
   ```yaml
