@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.14.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.13.4...netlify-cms-ui-default@2.14.0) (2021-07-06)
+
+
+### Features
+
+* **open-authoring:** add hover tooltip ([#5567](https://github.com/netlify/netlify-cms/issues/5567)) ([1822815](https://github.com/netlify/netlify-cms/commit/1822815118b9d35fce8e65a8424f2cb748253ac3))
+
+
+
+
+
 ## [2.13.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/compare/netlify-cms-ui-default@2.13.3...netlify-cms-ui-default@2.13.4) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-ui-default

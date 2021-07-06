@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.43.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.42.0...netlify-cms-core@2.43.0) (2021-07-06)
+
+
+### Features
+
+* **open-authoring:** add hover tooltip ([#5567](https://github.com/netlify/netlify-cms/issues/5567)) ([1822815](https://github.com/netlify/netlify-cms/commit/1822815118b9d35fce8e65a8424f2cb748253ac3))
+
+
+
+
+
 # [2.42.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.41.0...netlify-cms-core@2.42.0) (2021-07-06)
 
 
