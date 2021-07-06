@@ -136,7 +136,7 @@ const fr = {
       save: 'Enregistrer',
       deleting: 'Suppression...',
       updating: 'Mise à jour...',
-      setStatus: 'Statut: %{status}',
+      status: 'Statut: %{status}',
       backCollection: ' Écriture dans la collection %{collectionLabel}',
       unsavedChanges: 'Modifications non enregistrées',
       changesSaved: 'Modifications enregistrées',
