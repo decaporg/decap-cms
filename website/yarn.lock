@@ -8759,10 +8759,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.21:
-  version "2.15.21"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.21.tgz#d574aff52bc87257bba8e97190e439a469e4920e"
-  integrity sha512-SohDG+KdYaDlJFfWGRQVjPOcUA7WRkNnEFl+rvgf5Pt6+U2ks2uzOn+cUq6xhlKGWjMn+OQoMEv2Wyfr9ixfnw==
+netlify-cms-app@^2.15.23:
+  version "2.15.23"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.23.tgz#3cc0fc8b28f4abb97ad292c419f31a6a53a3bfe2"
+  integrity sha512-WIcfaKRlpL51okEf9QjagACqRjU9/Vj5PioJMh4c1nqiYbsjXZo1lOlAVW9DBSvV/mtJo+RpIiimyaIzofx+uw==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8777,13 +8777,13 @@ netlify-cms-app@^2.15.21:
     netlify-cms-backend-gitlab "^2.11.4"
     netlify-cms-backend-proxy "^1.2.3"
     netlify-cms-backend-test "^2.11.3"
-    netlify-cms-core "^2.41.0"
+    netlify-cms-core "^2.43.0"
     netlify-cms-editor-component-image "^2.7.0"
     netlify-cms-lib-auth "^2.4.2"
     netlify-cms-lib-util "^2.13.3"
     netlify-cms-lib-widgets "^1.6.3"
-    netlify-cms-locales "^1.31.0"
-    netlify-cms-ui-default "^2.13.4"
+    netlify-cms-locales "^1.32.0"
+    netlify-cms-ui-default "^2.14.0"
     netlify-cms-widget-boolean "^2.4.1"
     netlify-cms-widget-code "^1.3.3"
     netlify-cms-widget-colorstring "^1.1.1"
@@ -8865,10 +8865,10 @@ netlify-cms-backend-test@^2.11.3:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.11.3.tgz#1a92b6bf139d705c725effbdd9a05462481aa0c4"
   integrity sha512-L7WXjryPcZ8immIkrdDauZjqiOrKS5NIcc6ewP9QI1BrZr2jeqwDpeN2/45fPdg/TRxtRA3ik3MuKXXLJRJ0MQ==
 
-netlify-cms-core@^2.41.0:
-  version "2.41.0"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.41.0.tgz#1b82859acc0dd04ae46e5a3e0e451343b9a63220"
-  integrity sha512-xS4/kPoNHna9lXWWHr03BomOred+pMs4f8bAbNIC1T+USd2UPXlSYMnWD4Yv8KzAUjj/YQk/yR2SyPjmUwR6hQ==
+netlify-cms-core@^2.43.0:
+  version "2.43.0"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.43.0.tgz#87f4e00a5839012fcd253a43765a7bb98e5081f3"
+  integrity sha512-Q+BTY+IORLzFf7KQNaBz9jkyqrvUCmcIBgKqDCOUz4eoAAEE1gTiibzv1WX7nOhXTnv5gg/iHW/wE2J5cvj+MQ==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "8.1.0"
@@ -8941,15 +8941,15 @@ netlify-cms-lib-widgets@^1.6.3:
   resolved "https://registry.yarnpkg.com/netlify-cms-lib-widgets/-/netlify-cms-lib-widgets-1.6.3.tgz#06bd3c364b1552a9640815e3ca0d72b56faf1544"
   integrity sha512-/35bTvzuEOEOLeY+gQkgBMUu4NQz2gf3ItITUZtBNIbHhN0z6RiGtqVPmQu2PPcqzQXf+IUbhr2VVLUN6a/tpg==
 
-netlify-cms-locales@^1.31.0:
-  version "1.31.0"
-  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.31.0.tgz#63529a789e93212a615badd3c776a4f19de90c37"
-  integrity sha512-JQMpIFbio7RJO37+2jN9v4ZTuQa8jlNAnhUVNUf2kEaErfb0yDeuTfdEhRsFnLwYg7/laNpWtlxjSOcBDkbQWA==
+netlify-cms-locales@^1.32.0:
+  version "1.32.0"
+  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.32.0.tgz#a0c839165cbf2f078ccf7d89509629e8feb90286"
+  integrity sha512-edqj2E7SzVC0NQv4AmfxW9sf6BU498bNHiNieB8Of8+1s0/KwNKOHoPyNo4efu/WhYKciiQhK75Wdr/GXdB/6Q==
 
-netlify-cms-ui-default@^2.13.4:
-  version "2.13.4"
-  resolved "https://registry.yarnpkg.com/netlify-cms-ui-default/-/netlify-cms-ui-default-2.13.4.tgz#3f975dd1ede21737d4de6c6d4262d34b26948529"
-  integrity sha512-CD1yjgAwLQ8H7ZlCskKxowH55hzc+9qwc4Zd0Zy0CBYpo4wIUnN+ZJymO4R21IBgitbG2feCwmVOq+zmmvokTg==
+netlify-cms-ui-default@^2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/netlify-cms-ui-default/-/netlify-cms-ui-default-2.14.0.tgz#9cfcd177b4ab555651722db96e86058bed5ef2cd"
+  integrity sha512-8TBYukdwr1nM/vz9xZy8F6KHZIRAPvWDS2c2QzXi5fyX7faO7cq/84QdPC+q5GXlbwg6FhyhqDfi3KisnVcAEw==
   dependencies:
     react-aria-menubutton "^7.0.0"
     react-toggled "^1.1.2"
