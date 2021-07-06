@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.42.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.41.0...netlify-cms-core@2.42.0) (2021-07-06)
+
+
+### Features
+
+* hide delete entry if open authoring ([#5568](https://github.com/netlify/netlify-cms/issues/5568)) ([9e4fd37](https://github.com/netlify/netlify-cms/commit/9e4fd37d1127af2916d04db5c0fff7bb45efe473))
+
+
+
+
+
 # [2.41.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core/compare/netlify-cms-core@2.40.12...netlify-cms-core@2.41.0) (2021-06-24)
 
 
