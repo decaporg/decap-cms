@@ -145,8 +145,10 @@ function deleteWorkflowEntry({ title }) {
   assertNotification(notifications.deletedUnpublished);
 }
 
+const STATUS_BUTTON_TEXT = 'Status:';
+
 function assertWorkflowStatusInEditor(status) {
-  cy.contains('[role="button"]', 'Set status').as('setStatusButton');
+  cy.contains('[role="button"]', STATUS_BUTTON_TEXT).as('setStatusButton');
   cy.get('@setStatusButton')
     .parent()
     .within(() => {
@@ -209,7 +211,7 @@ function assertWorkflowStatus({ title }, status) {
 }
 
 function updateWorkflowStatusInEditor(newStatus) {
-  selectDropdownItem('Set status', newStatus);
+  selectDropdownItem(STATUS_BUTTON_TEXT, newStatus);
   assertNotification(notifications.updated);
 }
 
