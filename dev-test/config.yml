@@ -50,7 +50,7 @@ collections: # A list of collections the CMS should be able to edit
         required: false
         tagname: ''
 
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here. <a href="http://example.com">Can include HTML!</a>' }
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI

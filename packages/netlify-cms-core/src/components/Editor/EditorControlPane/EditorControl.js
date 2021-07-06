@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import ReactMarkdown from 'react-markdown';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
@@ -331,11 +332,11 @@ class EditorControl extends React.Component {
               isFieldHidden={isFieldHidden}
             />
             {fieldHint && (
-              <ControlHint
-                active={isSelected || this.state.styleActive}
-                error={hasErrors}
-                dangerouslySetInnerHTML={{ __html: fieldHint }}
-              />
+              <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
+                <ReactMarkdown allowedElements={['a', 'strong', 'i', 'p']}>
+                  {fieldHint}
+                </ReactMarkdown>
+              </ControlHint>
             )}
           </ControlContainer>
         )}
