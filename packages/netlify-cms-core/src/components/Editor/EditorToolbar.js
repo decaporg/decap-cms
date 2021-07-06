@@ -41,6 +41,40 @@ const styles = {
   `,
 };
 
+const TooltipText = styled.div`
+  visibility: hidden;
+  width: 321px;
+  background-color: #555;
+  color: #fff;
+  text-align: unset;
+  border-radius: 6px;
+  padding: 5px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  top: 145%;
+  left: 50%;
+  margin-left: -320px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+`;
+
+const Tooltip = styled.div`
+  position: relative;
+  display: inline-block;
+  &:hover + ${TooltipText} {
+    visibility: visible;
+    opacity: 0.9;
+  }
+`;
+
+const TooltipContainer = styled.div`
+  position: relative;
+`;
+
 const DropdownButton = styled(StyledDropdownButton)`
   ${styles.noOverflow}
   @media (max-width: 1200px) {
@@ -301,40 +335,64 @@ export class EditorToolbar extends React.Component {
     );
   };
 
+  renderStatusInfoTooltip = () => {
+    const { t, currentStatus } = this.props;
+
+    const statusToLocaleKey = {
+      [status.get('DRAFT')]: 'statusInfoTooltipDraft',
+      [status.get('PENDING_REVIEW')]: 'statusInfoTooltipInReview',
+    };
+
+    const statusKey = Object.keys(statusToLocaleKey).find(key => key === currentStatus);
+    return (
+      <TooltipContainer>
+        <Tooltip>
+          <Icon type="info-circle" size="small" className="tooltip" />
+        </Tooltip>
+        {statusKey && (
+          <TooltipText>{t(`editor.editorToolbar.${statusToLocaleKey[statusKey]}`)}</TooltipText>
+        )}
+      </TooltipContainer>
+    );
+  };
+
   renderWorkflowStatusControls = () => {
     const { isUpdatingStatus, onChangeStatus, currentStatus, t, useOpenAuthoring } = this.props;
     return (
-      <ToolbarDropdown
-        dropdownTopOverlap="40px"
-        dropdownWidth="120px"
-        renderButton={() => (
-          <StatusButton>
-            {isUpdatingStatus
-              ? t('editor.editorToolbar.updating')
-              : t('editor.editorToolbar.setStatus')}
-          </StatusButton>
-        )}
-      >
-        <StatusDropdownItem
-          label={t('editor.editorToolbar.draft')}
-          onClick={() => onChangeStatus('DRAFT')}
-          icon={currentStatus === status.get('DRAFT') ? 'check' : null}
-        />
-        <StatusDropdownItem
-          label={t('editor.editorToolbar.inReview')}
-          onClick={() => onChangeStatus('PENDING_REVIEW')}
-          icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
-        />
-        {useOpenAuthoring ? (
-          ''
-        ) : (
+      <>
+        <ToolbarDropdown
+          dropdownTopOverlap="40px"
+          dropdownWidth="120px"
+          renderButton={() => (
+            <StatusButton>
+              {isUpdatingStatus
+                ? t('editor.editorToolbar.updating')
+                : t('editor.editorToolbar.setStatus')}
+            </StatusButton>
+          )}
+        >
           <StatusDropdownItem
-            label={t('editor.editorToolbar.ready')}
-            onClick={() => onChangeStatus('PENDING_PUBLISH')}
-            icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
+            label={t('editor.editorToolbar.draft')}
+            onClick={() => onChangeStatus('DRAFT')}
+            icon={currentStatus === status.get('DRAFT') ? 'check' : null}
           />
-        )}
-      </ToolbarDropdown>
+          <StatusDropdownItem
+            label={t('editor.editorToolbar.inReview')}
+            onClick={() => onChangeStatus('PENDING_REVIEW')}
+            icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
+          />
+          {useOpenAuthoring ? (
+            ''
+          ) : (
+            <StatusDropdownItem
+              label={t('editor.editorToolbar.ready')}
+              onClick={() => onChangeStatus('PENDING_PUBLISH')}
+              icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
+            />
+          )}
+        </ToolbarDropdown>
+        {useOpenAuthoring && this.renderStatusInfoTooltip()}
+      </>
     );
   };
 

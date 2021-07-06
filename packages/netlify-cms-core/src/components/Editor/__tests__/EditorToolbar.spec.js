@@ -4,21 +4,6 @@ import { fromJS } from 'immutable';
 
 import { EditorToolbar } from '../EditorToolbar';
 
-jest.mock('netlify-cms-ui-default', () => ({
-  // eslint-disable-next-line react/display-name
-  Icon: props => <mock-icon {...props} />,
-  // eslint-disable-next-line react/display-name
-  Dropdown: props => <mock-dropdown {...props} />,
-  // eslint-disable-next-line react/display-name
-  DropdownItem: props => <mock-dropdown-item {...props} />,
-  // eslint-disable-next-line react/display-name
-  StyledDropdownButton: props => <mock-dropdown-button {...props} />,
-  colorsRaw: {},
-  colors: {},
-  components: {},
-  buttons: {},
-  zIndex: {},
-}));
 jest.mock('../../UI', () => ({
   // eslint-disable-next-line react/display-name
   SettingsDropdown: props => <mock-settings-dropdown {...props} />,
@@ -111,6 +96,20 @@ describe('EditorToolbar', () => {
         />,
       );
       expect(asFragment()).toMatchSnapshot();
+    });
+
+    ['draft', 'pending_review', 'pending_publish'].forEach(status => {
+      it(`should render with status=${status},useOpenAuthoring=${useOpenAuthoring}`, () => {
+        const { asFragment } = render(
+          <EditorToolbar
+            {...props}
+            hasWorkflow={true}
+            currentStatus={status}
+            useOpenAuthoring={useOpenAuthoring}
+          />,
+        );
+        expect(asFragment()).toMatchSnapshot();
+      });
     });
   });
 });
