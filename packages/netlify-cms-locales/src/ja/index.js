@@ -134,7 +134,7 @@ const ja = {
       save: '保存',
       deleting: '削除しています...',
       updating: '更新しています...',
-      setStatus: 'ステータスを変更する',
+      status: 'ステータスを: %{status}',
       backCollection: '%{collectionLabel}のエントリを作成中',
       unsavedChanges: '未保存',
       changesSaved: '保存済',

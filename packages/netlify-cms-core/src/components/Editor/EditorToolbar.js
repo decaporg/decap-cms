@@ -359,26 +359,22 @@ export class EditorToolbar extends React.Component {
   renderWorkflowStatusControls = () => {
     const { isUpdatingStatus, onChangeStatus, currentStatus, t, useOpenAuthoring } = this.props;
 
-    let buttonText = '';
+    const statusToTranslation = {
+      [status.get('DRAFT')]: t('editor.editorToolbar.draft'),
+      [status.get('PENDING_REVIEW')]: t('editor.editorToolbar.inReview'),
+      [status.get('PENDING_PUBLISH')]: t('editor.editorToolbar.ready'),
+    };
 
-    if (currentStatus === status.get('DRAFT')) {
-      buttonText = t('editor.editorToolbar.draft');
-    } else if (currentStatus === status.get('PENDING_REVIEW')) {
-      buttonText = t('editor.editorToolbar.inReview');
-    } else if (currentStatus === status.get('PENDING_PUBLISH')) {
-      buttonText = t('editor.editorToolbar.ready');
-    } else {
-      buttonText = isUpdatingStatus
-        ? t('editor.editorToolbar.updating')
-        : t('editor.editorToolbar.setStatus');
-    }
+    const buttonText = isUpdatingStatus
+      ? t('editor.editorToolbar.updating')
+      : t('editor.editorToolbar.status', { status: statusToTranslation[currentStatus] });
 
     return (
       <>
         <ToolbarDropdown
           dropdownTopOverlap="40px"
           dropdownWidth="120px"
-          renderButton={() => <StatusButton>{`Current status: ${buttonText}`}</StatusButton>}
+          renderButton={() => <StatusButton>{buttonText}</StatusButton>}
         >
           <StatusDropdownItem
             label={t('editor.editorToolbar.draft')}

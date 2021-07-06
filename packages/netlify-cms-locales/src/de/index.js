@@ -126,7 +126,7 @@ const de = {
       save: 'Speichern',
       deleting: 'Löschen...',
       updating: 'Aktualisieren...',
-      setStatus: 'Status setzen',
+      status: 'Status: %{status}',
       backCollection: 'Zurück zu allen %{collectionLabel}',
       unsavedChanges: 'Ungespeicherte Änderungen',
       changesSaved: 'Änderungen gespeichert',

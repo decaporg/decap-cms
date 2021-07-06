@@ -133,7 +133,7 @@ const nl = {
       save: 'Opslaan',
       deleting: 'Verwijderen...',
       updating: 'Bijwerken...',
-      setStatus: 'Stel status in',
+      status: 'Status: %{status}',
       backCollection: ' Terug naar %{collectionLabel}',
       unsavedChanges: 'Niet-opgeslagen wijzigingen',
       changesSaved: 'Wijzigingen opgeslagen',

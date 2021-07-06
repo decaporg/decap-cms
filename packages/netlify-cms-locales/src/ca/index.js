@@ -134,7 +134,7 @@ const ca = {
       save: 'Guardar',
       deleting: 'Eliminant...',
       updating: 'Actualizant...',
-      setStatus: 'Actualizar estat',
+      status: 'Estat: %{status}',
       backCollection: ' Escrivint a la colecció %{collectionLabel}',
       unsavedChanges: 'Canvis no guardats',
       changesSaved: 'Canvis guardats',

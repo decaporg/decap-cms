@@ -137,7 +137,7 @@ const en = {
         'Entry is being reviewed, no further actions are required. However, you can still make additional changes while it is being reviewed.',
       deleting: 'Deleting...',
       updating: 'Updating...',
-      setStatus: 'Set status',
+      status: 'Status: %{status}',
       backCollection: ' Writing in %{collectionLabel} collection',
       unsavedChanges: 'Unsaved Changes',
       changesSaved: 'Changes saved',

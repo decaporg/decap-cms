@@ -85,7 +85,7 @@ const hu = {
       save: 'Mentés',
       deleting: 'Törlés...',
       updating: 'Frissítés...',
-      setStatus: 'Állapot beállitása',
+      status: 'Beállitása: %{status}',
       backCollection: ' Írás a %{collectionLabel} gyűjteménybe',
       unsavedChanges: 'Nemmentett változtatások',
       changesSaved: 'Változások elmentve',

@@ -113,7 +113,7 @@ const pl = {
       save: 'Zapisz',
       deleting: 'Usuwanie...',
       updating: 'Uaktualnianie...',
-      setStatus: 'Ustaw status',
+      status: 'Status: %{status}',
       backCollection: ' Edycja treści w zbiorze %{collectionLabel}',
       unsavedChanges: 'Niezapisane zmiany',
       changesSaved: 'Zmiany zapisane',

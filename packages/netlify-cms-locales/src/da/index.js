@@ -131,7 +131,7 @@ const da = {
       save: 'Gem',
       deleting: 'Sletter...',
       updating: 'Updaterer...',
-      setStatus: 'Sæt status',
+      status: 'Status: %{status}',
       backCollection: ' Skriver til %{collectionLabel} samlingen',
       unsavedChanges: 'Ugemte ændringer',
       changesSaved: 'Ændringer gemt',

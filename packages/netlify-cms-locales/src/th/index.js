@@ -123,7 +123,7 @@ const th = {
       save: 'บันทึก',
       deleting: 'กำลังลบ...',
       updating: 'กำลังอัปเดต...',
-      setStatus: 'เซ็ตสถานะ',
+      status: 'สถานะ: %{status}',
       backCollection: ' เขียนในกลุ่ม %{collectionLabel}',
       unsavedChanges: 'การเปลี่ยนแปลงยังไม่ได้บันทึก',
       changesSaved: 'การเปลี่ยนเปลงถูกบันทึกแล้ว',

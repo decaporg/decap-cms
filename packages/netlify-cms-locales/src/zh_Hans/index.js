@@ -131,7 +131,7 @@ const zh_Hans = {
       save: '保存',
       deleting: '正在删除...',
       updating: '正在更新...',
-      setStatus: '设置状态',
+      status: '状态: %{status}',
       backCollection: '正在集合“%{collectionLabel}”中编写',
       unsavedChanges: '含未保存的修改',
       changesSaved: '修改已保存',
