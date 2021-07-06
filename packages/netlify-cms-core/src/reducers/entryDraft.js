@@ -147,14 +147,14 @@ function entryDraftReducer(state = Map(), action) {
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
-      return state.setIn(['entry', 'isUpdatingStatus'], false);
+      return state.deleteIn(['entry', 'isUpdatingStatus']);
 
     case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
       return state.setIn(['entry', 'isPublishing'], true);
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
     case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
-      return state.setIn(['entry', 'isPublishing'], false);
+      return state.deleteIn(['entry', 'isPublishing']);
 
     case ENTRY_PERSIST_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
