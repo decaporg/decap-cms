@@ -55,23 +55,11 @@ const TooltipText = styled.div`
   z-index: 1;
   top: 145%;
   left: 50%;
-  margin-left: -160px;
+  margin-left: -320px;
 
   /* Fade in tooltip */
   opacity: 0;
   transition: opacity 0.3s;
-
-  /* Arrow */
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #555 transparent;
-  }
 `;
 
 const Tooltip = styled.div`
@@ -348,20 +336,22 @@ export class EditorToolbar extends React.Component {
   };
 
   renderStatusInfoTooltip = () => {
-    const { t } = this.props;
+    const { t, currentStatus } = this.props;
+
+    const statusToLocaleKey = {
+      [status.get('DRAFT')]: 'statusInfoTooltipDraft',
+      [status.get('PENDING_REVIEW')]: 'statusInfoTooltipInReview',
+    };
+
+    const statusKey = Object.keys(statusToLocaleKey).find(key => key === currentStatus);
     return (
       <TooltipContainer>
         <Tooltip>
           <Icon type="info-circle" size="small" className="tooltip" />
         </Tooltip>
-        <TooltipText>
-          <strong>{t('editor.editorToolbar.draft')}:</strong>
-          {t('editor.editorToolbar.statusInfoTooltipDraft')}
-          <br />
-          <br />
-          <strong>{t('editor.editorToolbar.inReview')}:</strong>
-          {t('editor.editorToolbar.statusInfoTooltipInReview')}
-        </TooltipText>
+        {statusKey && (
+          <TooltipText>{t(`editor.editorToolbar.${statusToLocaleKey[statusKey]}`)}</TooltipText>
+        )}
       </TooltipContainer>
     );
   };
