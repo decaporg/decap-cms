@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.33.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.32.0...netlify-cms-locales@1.33.0) (2021-07-07)
+
+
+### Features
+
+* show current status in status button ([#5574](https://github.com/netlify/netlify-cms/issues/5574)) ([fbc3728](https://github.com/netlify/netlify-cms/commit/fbc3728294b7eb23fb65cb47b3892c92d39b8148))
+
+
+
+
+
 # [1.32.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.31.0...netlify-cms-locales@1.32.0) (2021-07-06)
 
 
