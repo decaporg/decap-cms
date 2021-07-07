@@ -90,8 +90,13 @@ export class CopyToClipBoardButton extends React.Component {
   handleCopy = () => {
     clearTimeout(this.timeout);
     const { draft, name } = this.props;
-    const path = this.props.path.charAt(0) !== '/' ? `/${this.props.path}` : this.props.path;
-    copyToClipboard(isAbsolutePath(path) || !draft ? path : name);
+    let path = this.props.path;
+    if (isAbsolutePath(path)) {
+      copyToClipboard(path);
+    } else {
+      path = path.charAt(0) !== '/' ? `/${path}` : path;
+      copyToClipboard( !draft ? path : name);
+    }
     this.setState({ copied: true });
     this.timeout = setTimeout(() => this.mounted && this.setState({ copied: false }), 1500);
   };
