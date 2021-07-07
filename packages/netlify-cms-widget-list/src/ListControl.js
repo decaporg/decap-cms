@@ -18,10 +18,6 @@ import {
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
 
-function valueToString(value) {
-  return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
-}
-
 const ObjectControl = NetlifyCmsWidgetObject.controlComponent;
 
 const ListItem = styled.div();
@@ -135,10 +131,25 @@ export default class ListControl extends React.Component {
     this.state = {
       listCollapsed,
       itemsCollapsed,
-      value: valueToString(value),
+      value: this.valueToString(value),
       keys,
     };
   }
+
+  valueToString = value => {
+    let stringValue;
+    if (List.isList(value) || Array.isArray(value)) {
+      stringValue = value.join(',');
+    } else {
+      console.warn(
+        `Expected List value to be an array but received '${value}' with type of '${typeof value}'. Please check the value provided to the '${this.props.field.get(
+          'name',
+        )}' field`,
+      );
+      stringValue = String(value);
+    }
+    return stringValue.replace(/,([^\s]|$)/g, ', $1');
+  };
 
   getValueType = () => {
     const { field } = this.props;
@@ -172,7 +183,7 @@ export default class ListControl extends React.Component {
       listValue.pop();
     }
 
-    const parsedValue = valueToString(listValue);
+    const parsedValue = this.valueToString(listValue);
     this.setState({ value: parsedValue });
     onChange(List(listValue.map(val => val.trim())));
   };
@@ -186,7 +197,7 @@ export default class ListControl extends React.Component {
       .split(',')
       .map(el => el.trim())
       .filter(el => el);
-    this.setState({ value: valueToString(listValue) });
+    this.setState({ value: this.valueToString(listValue) });
     this.props.setInactiveStyle();
   };
 
