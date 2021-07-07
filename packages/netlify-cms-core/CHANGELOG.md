@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.45.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.44.0...netlify-cms-core@2.45.0) (2021-07-07)
+
+
+### Features
+
+* pass markdown for hint message on field ([#5584](https://github.com/netlify/netlify-cms/issues/5584)) ([610421e](https://github.com/netlify/netlify-cms/commit/610421ea6722276e37fe3c6123386d20fbbac1cf))
+
+
+
+
+
 # [2.44.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.43.0...netlify-cms-core@2.44.0) (2021-07-07)
 
 
