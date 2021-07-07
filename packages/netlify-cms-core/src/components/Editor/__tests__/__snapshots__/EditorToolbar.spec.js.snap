@@ -179,7 +179,7 @@ exports[`EditorToolbar should render with default props 1`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -469,7 +469,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -520,7 +520,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
             role="button"
             tabindex="0"
           >
-            editor.editorToolbar.setStatus
+            editor.editorToolbar.status
           </span>
         </div>
       </div>
@@ -803,7 +803,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -849,7 +849,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
             role="button"
             tabindex="0"
           >
-            editor.editorToolbar.setStatus
+            editor.editorToolbar.status
           </span>
         </div>
         <div
@@ -1131,7 +1131,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1182,7 +1182,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
             role="button"
             tabindex="0"
           >
-            editor.editorToolbar.setStatus
+            editor.editorToolbar.status
           </span>
         </div>
       </div>
@@ -1447,7 +1447,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-28 emotion-29"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1493,7 +1493,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
             role="button"
             tabindex="0"
           >
-            editor.editorToolbar.setStatus
+            editor.editorToolbar.status
           </span>
         </div>
         <div
@@ -1770,7 +1770,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1821,7 +1821,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
             role="button"
             tabindex="0"
           >
-            editor.editorToolbar.setStatus
+            editor.editorToolbar.status
           </span>
         </div>
       </div>
@@ -2104,7 +2104,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2150,7 +2150,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
             role="button"
             tabindex="0"
           >
-            editor.editorToolbar.setStatus
+            editor.editorToolbar.status
           </span>
         </div>
         <div
@@ -2375,7 +2375,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2580,7 +2580,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-16 emotion-17"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2805,7 +2805,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3035,7 +3035,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3265,7 +3265,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3495,7 +3495,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1e27f5b-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div

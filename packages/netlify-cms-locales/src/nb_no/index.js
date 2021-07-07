@@ -112,7 +112,7 @@ const nb_no = {
       save: 'Lagre',
       deleting: 'Sletter...',
       updating: 'Oppdaterer...',
-      setStatus: 'Sett status',
+      status: 'Status: %{status}',
       backCollection: ' Skriver i samlingen %{collectionLabel}',
       unsavedChanges: 'Ulagrede endringer',
       changesSaved: 'Endringer lagret',

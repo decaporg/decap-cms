@@ -120,7 +120,7 @@ const zh_Hant = {
       save: '儲存',
       deleting: '刪除中...',
       updating: '更新中...',
-      setStatus: '設定狀態',
+      status: '狀態: %{status}',
       backCollection: '在集合 %{collectionLabel} 新增內容',
       unsavedChanges: '未儲存變更',
       changesSaved: '已儲存變更',

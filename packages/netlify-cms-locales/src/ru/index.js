@@ -131,7 +131,7 @@ const ru = {
       save: 'Сохранить',
       deleting: 'Удаление…',
       updating: 'Обновление…',
-      setStatus: 'Установить статус',
+      status: 'Cтатус: %{status}',
       backCollection: 'Запись в коллекцию %{collectionLabel}',
       unsavedChanges: 'Несохраненные изменения',
       changesSaved: 'Изменения сохранены',

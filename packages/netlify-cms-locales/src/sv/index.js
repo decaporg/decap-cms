@@ -135,7 +135,7 @@ const sv = {
       save: 'Spara',
       deleting: 'Raderar...',
       updating: 'Updaterar...',
-      setStatus: 'Sätt status',
+      status: 'Status: %{status}',
       backCollection: ' Redigerar i samlingen %{collectionLabel}',
       unsavedChanges: 'Osparade ändringar',
       changesSaved: 'Ändringar sparade',

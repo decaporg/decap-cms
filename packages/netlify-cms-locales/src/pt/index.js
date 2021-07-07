@@ -121,7 +121,7 @@ const pt = {
       save: 'Salvar',
       deleting: 'Excluindo...',
       updating: 'Atualizando...',
-      setStatus: 'Definir status',
+      status: 'Status: %{status}',
       backCollection: ' Escrevendo na coleção %{collectionLabel}',
       unsavedChanges: 'Alterações não salvas',
       changesSaved: 'Alterações salvas',

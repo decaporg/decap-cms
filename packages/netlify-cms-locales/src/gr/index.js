@@ -101,7 +101,7 @@ const gr = {
       save: 'Αποθήκευση',
       deleting: 'Διαγραφή...',
       updating: 'Ενημέρωση...',
-      setStatus: 'Ορισμός κατάστασης',
+      status: 'Κατάστασης: %{status}',
       backCollection: ' Εγγραφή στη συλλογή %{collectionLabel}',
       unsavedChanges: 'Μη αποθηκευμένες αλλαγές',
       changesSaved: 'Αλλαγές που αποθηκεύτηκαν',

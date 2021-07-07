@@ -130,7 +130,7 @@ const hr = {
       save: 'Spremi',
       deleting: 'Brisanje...',
       updating: 'Ažuriranje...',
-      setStatus: 'Postavi status',
+      status: 'Status: %{status}',
       backCollection: 'Pisanje u %{collectionLabel} zbirci',
       unsavedChanges: 'Nespremljene promjene',
       changesSaved: 'Promjene spremljene',

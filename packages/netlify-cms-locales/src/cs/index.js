@@ -134,7 +134,7 @@ const cs = {
       save: 'Uložit',
       deleting: 'Vymazávání…',
       updating: 'Aktualizace…',
-      setStatus: 'Změnit status',
+      status: 'Status: %{status}',
       backCollection: ' Píšete v kolekci %{collectionLabel}',
       unsavedChanges: 'Neuložené změny',
       changesSaved: 'Změny uloženy',

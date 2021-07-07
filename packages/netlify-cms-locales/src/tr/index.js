@@ -103,7 +103,7 @@ const tr = {
       save: 'Kayıt Et',
       deleting: 'Siliniyor...',
       updating: 'Güncelleniyor...',
-      setStatus: 'Durumu ayarla',
+      status: 'Durumu: %{status}',
       backCollection: '%{collectionLabel} koleksiyonunda yazılı',
       unsavedChanges: 'Kaydedilmemiş Değişiklikler',
       changesSaved: 'Değişiklikler kaydedildi',

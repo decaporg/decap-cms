@@ -122,7 +122,7 @@ const ko = {
       save: '저장',
       deleting: '삭제 중...',
       updating: '업데이트 중...',
-      setStatus: '상태 설정',
+      status: '상태: %{status}',
       backCollection: '%{collectionLabel} 컬랙션에 작성하는 중',
       unsavedChanges: '변경사항 저장되지 않음',
       changesSaved: '변경사항 저장됨',

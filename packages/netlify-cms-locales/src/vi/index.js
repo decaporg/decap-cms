@@ -121,7 +121,7 @@ const vi = {
       save: 'Lưu',
       deleting: 'Đang xoá...',
       updating: 'Đang cập nhật...',
-      setStatus: 'Đặt trạng thái',
+      status: 'Trạng: %{status}',
       backCollection: ' Đang viết trong bộ sưu tập %{collectionLabel}',
       unsavedChanges: 'Thay đổi chưa được lưu',
       changesSaved: 'Thay đổi đã được lưu',
