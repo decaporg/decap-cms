@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import ReactMarkdown from 'react-markdown';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
@@ -328,7 +329,23 @@ class EditorControl extends React.Component {
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
-                {fieldHint}
+                <ReactMarkdown
+                  allowedElements={['a', 'strong', 'em']}
+                  unwrapDisallowed={true}
+                  components={{
+                    // eslint-disable-next-line no-unused-vars
+                    a: ({ node, ...props }) => (
+                      <a
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: 'inherit' }}
+                      />
+                    ),
+                  }}
+                >
+                  {fieldHint}
+                </ReactMarkdown>
               </ControlHint>
             )}
           </ControlContainer>

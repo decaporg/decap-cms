@@ -49,6 +49,7 @@
     "react-hot-loader": "^4.8.0",
     "react-immutable-proptypes": "^2.1.0",
     "react-is": "16.13.1",
+    "react-markdown": "^6.0.2",
     "react-modal": "^3.8.1",
     "react-polyglot": "^0.7.0",
     "react-redux": "^7.2.0",
