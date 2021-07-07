@@ -95,10 +95,6 @@ export const ControlHint = styled.p`
   color: ${props =>
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
   transition: color ${transitions.main};
-
-  & > * {
-    font-size: 12px;
-  }
 `;
 
 function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
@@ -333,7 +329,21 @@ class EditorControl extends React.Component {
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
-                <ReactMarkdown allowedElements={['a', 'strong', 'i', 'p']}>
+                <ReactMarkdown
+                  allowedElements={['a', 'strong', 'em']}
+                  unwrapDisallowed={true}
+                  components={{
+                    // eslint-disable-next-line no-unused-vars
+                    a: ({ node, ...props }) => (
+                      <a
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: 'inherit' }}
+                      />
+                    ),
+                  }}
+                >
                   {fieldHint}
                 </ReactMarkdown>
               </ControlHint>
