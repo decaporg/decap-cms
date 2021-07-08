@@ -94,7 +94,7 @@ export class CopyToClipBoardButton extends React.Component {
     if (isAbsolutePath(path)) {
       copyToClipboard(path);
     } else {
-      path = mediaFolder.charAt(0) === '/' ? `/${path}` : path;
+      path = mediaFolder.charAt(0) === '/' && path.charAt(0) !== '/' ? `/${path}` : path;
       copyToClipboard(!draft ? path : name);
     }
     this.setState({ copied: true });
