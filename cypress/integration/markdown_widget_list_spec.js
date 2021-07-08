@@ -452,10 +452,10 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it('creates a new block below list', () => {
+      it('creates a new default block below a list when hitting Enter twice on an empty list item of the list', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 3 })
+          .enter({ times: 2 })
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
