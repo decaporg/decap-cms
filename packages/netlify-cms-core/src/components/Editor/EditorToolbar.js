@@ -570,6 +570,7 @@ export class EditorToolbar extends React.Component {
       onDeleteUnpublishedChanges,
       showDelete,
       hasUnpublishedChanges,
+      useOpenAuthoring,
       isDeleting,
       isNewEntry,
       isModification,
@@ -597,15 +598,10 @@ export class EditorToolbar extends React.Component {
 
   renderWorkflowPublishControls = () => {
     const { collection, currentStatus, isNewEntry, useOpenAuthoring, t } = this.props;
-    console.log(useOpenAuthoring);
 
     const canCreate = collection.get('create');
     const canPublish = collection.get('publish') && !useOpenAuthoring;
     const canDelete = collection.get('delete', true);
-
-    console.assert(useOpenAuthoring, "Not using open authoring :(")
-
-    console.table([{"Can create": canCreate,"Can publish": canPublish}])
 
     if (currentStatus) {
       return (
