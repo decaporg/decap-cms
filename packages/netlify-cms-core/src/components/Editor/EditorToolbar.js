@@ -196,6 +196,10 @@ const SaveButton = styled(ToolbarButton)`
   ${buttons.lightBlue};
 `;
 
+const SaveButtonDisabled = styled(ToolbarButton)`
+  ${buttons.lightGrey};
+`;
+
 const PublishedToolbarButton = styled(DropdownButton)`
   ${styles.publishedButton}
 `;
@@ -583,9 +587,13 @@ export class EditorToolbar extends React.Component {
       (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
     return [
-      <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
-        {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
-      </SaveButton>,
+      hasUnpublishedChanges || hasChanged ? (
+        <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
+          {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
+        </SaveButton>
+      ) : (
+        <SaveButtonDisabled key="save-button">{t('editor.editorToolbar.save')}</SaveButtonDisabled>
+      ),
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
@@ -631,6 +639,7 @@ export class EditorToolbar extends React.Component {
     const {
       user,
       hasChanged,
+      hasUnpublishedChanges,
       displayUrl,
       collection,
       hasWorkflow,
@@ -649,10 +658,14 @@ export class EditorToolbar extends React.Component {
                 collectionLabel: collection.get('label'),
               })}
             </BackCollection>
-            {hasChanged ? (
-              <BackStatusChanged>{t('editor.editorToolbar.unsavedChanges')}</BackStatusChanged>
+            {hasUnpublishedChanges || hasChanged ? (
+              hasChanged ? (
+                <BackStatusChanged>{t('editor.editorToolbar.unsavedChanges')}</BackStatusChanged>
+              ) : (
+                <BackStatusUnchanged>{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
+              )
             ) : (
-              <BackStatusUnchanged>{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
+              <p></p>
             )}
           </div>
         </ToolbarSectionBackLink>
