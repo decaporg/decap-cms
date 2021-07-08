@@ -111,5 +111,19 @@ describe('EditorToolbar', () => {
         expect(asFragment()).toMatchSnapshot();
       });
     });
+
+    it(`should not render changes saved message`, () => {
+      const { asFragment } = render(
+        <EditorToolbar {...props} hasUnpublishedChanges={false} hasChanged={false} />,
+      );
+      expect(asFragment()).toMatchSnapshot();
+    });
+
+    it(`should render changes saved message`, () => {
+      const { asFragment } = render(
+        <EditorToolbar {...props} hasUnpublishedChanges={true} hasChanged={false} />,
+      );
+      expect(asFragment()).toMatchSnapshot();
+    });
   });
 });
