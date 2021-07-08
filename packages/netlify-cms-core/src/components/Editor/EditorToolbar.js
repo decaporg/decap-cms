@@ -587,7 +587,7 @@ export class EditorToolbar extends React.Component {
       (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
     return [
-      hasUnpublishedChanges || hasChanged ? (
+      hasChanged ? (
         <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
           {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
         </SaveButton>
