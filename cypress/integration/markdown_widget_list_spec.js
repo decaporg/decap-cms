@@ -35,45 +35,6 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it('creates nested list when selection is collapsed in non-first block of list item', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter()
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
-            <ul>
-              <li>
-                <p>foo</p>
-                <ul>
-                  <li>
-                    <p></p>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          `)
-          .type('bar')
-          .enter()
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
-            <ul>
-              <li>
-                <p>foo</p>
-                <ul>
-                  <li>
-                    <p>bar</p>
-                    <ul>
-                      <li>
-                        <p></p>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          `);
-      });
-
       it('converts empty nested list item to empty block in parent list item', () => {
         cy.clickUnorderedListButton()
           .type('foo')
