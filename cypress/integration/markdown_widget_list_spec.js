@@ -35,6 +35,21 @@ describe('Markdown widget', () => {
           `);
       });
 
+      it('converts a list item to a paragraph block which is a sibling of the parent list', () => {
+        cy.clickUnorderedListButton()
+          .type('foo')
+          .enter()
+          .clickUnorderedListButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <p>foo</p>
+              </li>
+            </ul>
+            <p></p>
+          `)
+      });
+
       it('converts empty nested list item to empty block in parent list item', () => {
         cy.clickUnorderedListButton()
           .type('foo')
