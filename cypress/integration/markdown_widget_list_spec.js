@@ -544,7 +544,7 @@ describe('Markdown widget', () => {
       it('indents nested list items', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
+          .enter()
           .type('bar')
           .tabkey()
           .confirmMarkdownEditorContent(`
@@ -559,7 +559,7 @@ describe('Markdown widget', () => {
               </li>
             </ul>
           `)
-          .enter({ times: 2 })
+          .enter()
           .tabkey()
           .confirmMarkdownEditorContent(`
             <ul>
