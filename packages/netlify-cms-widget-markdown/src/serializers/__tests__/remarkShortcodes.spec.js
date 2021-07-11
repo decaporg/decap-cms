@@ -1,4 +1,5 @@
 import { Map, OrderedMap } from 'immutable';
+
 import { remarkParseShortcodes } from '../remarkShortcodes';
 
 // Stub of Remark Parser
