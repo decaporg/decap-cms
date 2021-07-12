@@ -105,10 +105,10 @@ describe('Markdown widget', () => {
         cy.clickUnorderedListButton()
           .type('foo')
           .enter()
-          .clickUnorderedListButton()
+          .tabkey()
           .type('bar')
           .enter()
-          .clickUnorderedListButton()
+          .tabkey()
           .type('baz')
           .clickUnorderedListButton()
           .confirmMarkdownEditorContent(`
