@@ -204,7 +204,7 @@ describe('Markdown widget', () => {
           .up()
           .enter()
           .type('qux')
-          .clickUnorderedListButton()
+          .tabkey()
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
@@ -226,7 +226,6 @@ describe('Markdown widget', () => {
           .up()
           .enter()
           .type('quux')
-          .clickUnorderedListButton()
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
