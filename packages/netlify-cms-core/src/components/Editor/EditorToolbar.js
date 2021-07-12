@@ -176,6 +176,10 @@ const BackStatusChanged = styled(BackStatus)`
   ${components.textBadgeDanger};
 `;
 
+const BackStatusEmpty = styled.p`
+  height: 5px;
+`;
+
 const ToolbarButton = styled.button`
   ${buttons.button};
   ${buttons.default};
@@ -663,7 +667,7 @@ export class EditorToolbar extends React.Component {
                 <BackStatusUnchanged>{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
               )
             ) : (
-              <p></p>
+              <BackStatusEmpty />
             )}
           </div>
         </ToolbarSectionBackLink>
