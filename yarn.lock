@@ -7020,17 +7020,10 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.8, debug@^2.6.
   dependencies:
     ms "2.0.0"
 
-debug@4, debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2:
+debug@4, debug@4.3.2, debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"
   integrity sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==
-  dependencies:
-    ms "2.1.2"
-
-debug@4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
-  integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
   dependencies:
     ms "2.1.2"
 
@@ -11319,9 +11312,9 @@ jest@^27.0.0:
     jest-cli "^27.0.6"
 
 joi@^17.3.0:
-  version "17.4.0"
-  resolved "https://registry.yarnpkg.com/joi/-/joi-17.4.0.tgz#b5c2277c8519e016316e49ababd41a1908d9ef20"
-  integrity sha512-F4WiW2xaV6wc1jxete70Rw4V/VuMd6IN+a5ilZsxG4uYtUXWu2kq9W5P2dz30e7Gmw8RCbY/u/uk+dMPma9tAg==
+  version "17.4.1"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-17.4.1.tgz#15d2f23c8cbe4d1baded2dd190c58f8dbe11cca0"
+  integrity sha512-gDPOwQ5sr+BUxXuPDGrC1pSNcVR/yGGcTI0aCnjYxZEa3za60K/iCQ+OFIkEHWZGVCUcUlXlFKvMmrlmxrG6UQ==
   dependencies:
     "@hapi/hoek" "^9.0.0"
     "@hapi/topo" "^5.0.0"
@@ -16652,13 +16645,13 @@ stackframe@^1.1.1:
   integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
 
 start-server-and-test@^1.7.11:
-  version "1.12.5"
-  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.12.5.tgz#d19d2c19d6db6b30df5add68ec26a1ab204525d6"
-  integrity sha512-8Wl0J1xwTDhvWoFeXLIP1VyT9GS5i0XG2440gbMQDNgyCBpb+t2XhahY3ysHIs2g5sDsiom6Iyvh3uQtNrAg5g==
+  version "1.12.6"
+  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.12.6.tgz#11072d1ca016ac35975dc21dc9cc15492aed8b69"
+  integrity sha512-2N+JgOCJIM36KqKZdER7+ybJqVCJRyND42wIUvK+T1iE015ee/FAVArjSHqnSBismQghPUsfV7fB8lCFcpL7/w==
   dependencies:
     bluebird "3.7.2"
     check-more-types "2.24.0"
-    debug "4.3.1"
+    debug "4.3.2"
     execa "5.1.1"
     lazy-ass "1.6.0"
     ps-tree "1.2.0"
