@@ -294,9 +294,11 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
               type: 'list-item',
               nodes: [Block.create('paragraph')],
             });
+            // Find index of the list item block that receives Enter key
+            const previousListItemIndex = list.nodes.findIndex(block => block.key === listItem.key)
             return editor
-              .insertNodeByKey(list.key, list.nodes.size, newListItem)
-              .moveToEndOfDocument();
+              .insertNodeByKey(list.key, previousListItemIndex + 1, newListItem) // insert a new list item after the list item above
+              .moveForward(1) // Each list item is separated by a \n character. We need to move the cursor past this character so that it'd be on new list item that has just been inserted
           }
           return next();
         } else {
