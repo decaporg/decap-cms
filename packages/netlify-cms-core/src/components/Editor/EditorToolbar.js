@@ -197,6 +197,7 @@ const DeleteButton = styled(ToolbarButton)`
 `;
 
 const SaveButton = styled(ToolbarButton)`
+  ${buttons.lightBlue};
   &[disabled] {
     ${buttons.disabled};
   }
