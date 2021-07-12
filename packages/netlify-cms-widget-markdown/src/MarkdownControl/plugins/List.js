@@ -294,11 +294,16 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
               type: 'list-item',
               nodes: [Block.create('paragraph')],
             });
+            // Check if the targeted list item contains a nested list. If it does, insert a new list item in the beginning of that nested list.
+            const nestedList = listItem.findDescendant(block => block.type === LIST_TYPES[0] || block.type === LIST_TYPES[1]);
+            if (nestedList) {
+              return editor.insertNodeByKey(nestedList.key, 0, newListItem).moveForward(1) // Each list item is separated by a \n character. We need to move the cursor past this character so that it'd be on new list item that has just been inserted
+            }
             // Find index of the list item block that receives Enter key
             const previousListItemIndex = list.nodes.findIndex(block => block.key === listItem.key)
             return editor
               .insertNodeByKey(list.key, previousListItemIndex + 1, newListItem) // insert a new list item after the list item above
-              .moveForward(1) // Each list item is separated by a \n character. We need to move the cursor past this character so that it'd be on new list item that has just been inserted
+              .moveForward(1)
           }
           return next();
         } else {
