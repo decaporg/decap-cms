@@ -93,14 +93,26 @@ function validateItem(field, item) {
 
   return true;
 }
-function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
-  const label = `${field.get('label', field.get('name'))}`;
-  const labelComponent = (
-    <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
-      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
-    </FieldLabel>
-  );
-
+function LabelComponent({
+  field,
+  isActive,
+  hasErrors,
+  uniqueFieldId,
+  isFieldOptional,
+  t,
+  listType,
+}) {
+  let labelComponent;
+  if (listType === valueTypes.MIXED) {
+    const label = `${field.get('label', field.get('name'))}`;
+    labelComponent = (
+      <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
+        {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+      </FieldLabel>
+    );
+  } else {
+    labelComponent = null;
+  }
   return labelComponent;
 }
 
@@ -539,6 +551,7 @@ export default class ListControl extends React.Component {
           uniqueFieldId={this.uniqueFieldId}
           isFieldOptional={isFieldOptional}
           t={t}
+          listType={this.getValueType()}
         />
         <StyledListItemTopBar
           collapsed={collapsed}
