@@ -274,6 +274,31 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
           } = editor;
           // If focus is at start of list item, unwrap the entire list item.
           if (editor.atStartOf(listItem)) {
+            const parentList = document.getParent(listItem.key);
+            /* If the list item in question has a grandparent list, this means it is a child of a nested list.
+             * Htting Enter key on an empty nested list item like this should move that list item out of the nested list
+             * and into the gradparent list. The targeted list item becomes direct child of its grandparent list
+             * Example
+             * <ul> ----- CLOSEST ANCESTOR LIST
+             *  <li> ------ CLOESET ANCESTOR LIST ITEM
+             *    <p>foo</p>
+             *    <ul> ----- PARENT LIST
+             *      <li>
+             *        <p>bar</p>
+             *      </li>
+             *      <li>
+             *        <p></p> ----- WHERE THE ENTER KEY HAPPENS
+             *      </li>
+             *    </ul>
+             *  </li>
+             * </ul>
+            */ 
+            const closestAncestorList = document.getClosest(parentList.key, block => block.type === parentList.type);
+            if (closestAncestorList) {
+              const closestAncestorListItem = document.getParent(parentList.key);
+              const indexOfClosestAncestorListItem = closestAncestorList.nodes.findIndex(node => node.key === closestAncestorListItem.key)
+              return editor.moveNodeByKey(listItem.key, closestAncestorList.key, indexOfClosestAncestorListItem + 1);
+            }
             return editor.unwrapListItem(listItem);
           }
 
