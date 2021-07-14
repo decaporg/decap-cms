@@ -126,7 +126,7 @@ describe('Markdown widget', () => {
         cy.focused()
           .clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
+          .enter()
           .type('bar')
           .setSelection('foo', 'bar')
           .clickQuoteButton()
@@ -154,7 +154,7 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .setCursorAfter('bar')
-          .enter({ times: 2 })
+          .enter()
           .type('baz')
           .setSelection('bar', 'baz')
           .clickQuoteButton()
