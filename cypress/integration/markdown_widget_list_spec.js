@@ -627,10 +627,10 @@ describe('Markdown widget', () => {
       it('indents and unindents from one level below parent back to document root', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
+          .enter()
           .tabkey()
           .type('bar')
-          .enter({ times: 2 })
+          .enter()
           .tabkey()
           .type('baz')
           .confirmMarkdownEditorContent(`
