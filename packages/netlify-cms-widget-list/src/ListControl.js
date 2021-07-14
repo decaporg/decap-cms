@@ -516,7 +516,6 @@ export default class ListControl extends React.Component {
     const key = keys[index];
     let field = this.props.field;
     const hasError = this.hasError(index);
-    const isFieldOptional = field.get('required') === false;
     const isVariableTypesList = this.getValueType() === valueTypes.MIXED;
     if (isVariableTypesList) {
       field = getTypedFieldForValue(field, item);
@@ -536,7 +535,7 @@ export default class ListControl extends React.Component {
             isActive={false}
             hasErrors={hasError}
             uniqueFieldId={this.uniqueFieldId}
-            isFieldOptional={isFieldOptional}
+            isFieldOptional={field.get('required') === false}
             t={t}
             listType={this.getValueType()}
           />
