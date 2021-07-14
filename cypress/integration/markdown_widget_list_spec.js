@@ -500,7 +500,7 @@ describe('Markdown widget', () => {
       it('removes the list item if list not empty', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
+          .enter()
           .backspace()
           .confirmMarkdownEditorContent(`
             <ul>
