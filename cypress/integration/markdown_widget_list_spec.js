@@ -590,8 +590,8 @@ describe('Markdown widget', () => {
       it('only nests up to one level down from the parent list', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
-          .tabkey({ times: 5 })
+          .enter()
+          .tabkey()
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
