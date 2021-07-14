@@ -295,7 +295,7 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
              */
             const closestAncestorList = document.getClosest(
               parentList.key,
-              block => block.type === parentList.type,
+              block => block.type === (LIST_TYPES[0] || LIST_TYPES[1]),
             );
             if (closestAncestorList) {
               const closestAncestorListItem = document.getParent(parentList.key);
