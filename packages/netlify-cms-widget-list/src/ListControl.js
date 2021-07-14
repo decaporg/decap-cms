@@ -93,27 +93,13 @@ function validateItem(field, item) {
 
   return true;
 }
-function LabelComponent({
-  field,
-  isActive,
-  hasErrors,
-  uniqueFieldId,
-  isFieldOptional,
-  t,
-  listType,
-}) {
-  let labelComponent;
-  if (listType === valueTypes.MIXED) {
-    const label = `${field.get('label', field.get('name'))}`;
-    labelComponent = (
-      <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
-        {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
-      </FieldLabel>
-    );
-  } else {
-    labelComponent = null;
-  }
-  return labelComponent;
+function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
+  const label = `${field.get('label', field.get('name'))}`;
+  return (
+    <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
+      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+    </FieldLabel>
+  );
 }
 
 export default class ListControl extends React.Component {
@@ -531,8 +517,8 @@ export default class ListControl extends React.Component {
     let field = this.props.field;
     const hasError = this.hasError(index);
     const isFieldOptional = field.get('required') === false;
-
-    if (this.getValueType() === valueTypes.MIXED) {
+    const isVariableTypesList = this.getValueType() === valueTypes.MIXED;
+    if (isVariableTypesList) {
       field = getTypedFieldForValue(field, item);
       if (!field) {
         return this.renderErroneousTypedItem(index, item);
@@ -544,15 +530,17 @@ export default class ListControl extends React.Component {
         index={index}
         key={key}
       >
-        <LabelComponent
-          field={field}
-          isActive={false}
-          hasErrors={hasError}
-          uniqueFieldId={this.uniqueFieldId}
-          isFieldOptional={isFieldOptional}
-          t={t}
-          listType={this.getValueType()}
-        />
+        {isVariableTypesList && (
+          <LabelComponent
+            field={field}
+            isActive={false}
+            hasErrors={hasError}
+            uniqueFieldId={this.uniqueFieldId}
+            isFieldOptional={isFieldOptional}
+            t={t}
+            listType={this.getValueType()}
+          />
+        )}
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
