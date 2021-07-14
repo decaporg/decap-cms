@@ -537,7 +537,6 @@ export default class ListControl extends React.Component {
             uniqueFieldId={this.uniqueFieldId}
             isFieldOptional={field.get('required') === false}
             t={t}
-            listType={this.getValueType()}
           />
         )}
         <StyledListItemTopBar
