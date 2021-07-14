@@ -59,8 +59,8 @@ describe('Markdown widget', () => {
           .clickUnorderedListButton()
           .clickHeadingOneButton()
           .type('foo')
-          .enter({ times: 3 })
-          .clickQuoteButton()
+          .enter({ times: 2 }) // First Enter creates new list item. Second Enter turns that list item into a default block.
+          .clickQuoteButton() // Unwrap the quote block.
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
