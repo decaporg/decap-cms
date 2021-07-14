@@ -282,9 +282,9 @@ describe('Markdown widget', () => {
       it('affects only selected list items', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
+          .enter()
           .type('bar')
-          .enter({ times: 2 })
+          .enter()
           .type('baz')
           .setSelection('bar')
           .clickUnorderedListButton()
@@ -327,14 +327,69 @@ describe('Markdown widget', () => {
           `)
           .setSelection('baz')
           .clickUnorderedListButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <p>foo</p>
+              </li>
+              <li>
+                <p>bar</p>
+                <ul>
+                  <li>
+                    <p>baz</p>
+                  </li>
+                </ul>
+              </li>
+            </ul> 
+          `)
           .setCursorAfter('baz')
           .enter()
-          .clickUnorderedListButton()
+          .tabkey()
           .type('qux')
+          .confirmMarkdownEditorContent(`
+          <ul>
+            <li>
+              <p>foo</p>
+            </li>
+            <li>
+              <p>bar</p>
+              <ul>
+                <li>
+                  <p>baz</p>
+                  <ul>
+                    <li>
+                      <p>qux</p>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>  
+          `)
           .setSelection('baz')
           .clickOrderedListButton()
+          .confirmMarkdownEditorContent(`
+          <ul>
+            <li>
+              <p>foo</p>
+            </li>
+            <li>
+              <p>bar</p>
+              <ol>
+                <li>
+                  <p>baz</p>
+                  <ul>
+                    <li>
+                      <p>qux</p>
+                    </li>
+                  </ul>
+                </li>
+              </ol>
+            </li>
+          </ul>  
+          `)
           .setCursorAfter('qux')
-          .enter({ times: 4 })
+          .enter({ times: 2 })
           .clickUnorderedListButton()
           .confirmMarkdownEditorContent(`
             <ul>
