@@ -428,31 +428,6 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it('creates a new paragraph in a non-empty paragraph within a list item', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter()
-          .confirmMarkdownEditorContent(`
-            <ul>
-              <li>
-                <p>foo</p>
-                <p></p>
-              </li>
-            </ul>
-          `)
-          .type('bar')
-          .enter()
-          .confirmMarkdownEditorContent(`
-            <ul>
-              <li>
-                <p>foo</p>
-                <p>bar</p>
-                <p></p>
-              </li>
-            </ul>
-          `);
-      });
-
       it('creates a new list item in a non-empty list', () => {
         cy.clickUnorderedListButton()
           .type('foo')
