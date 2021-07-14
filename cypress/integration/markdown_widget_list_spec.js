@@ -453,10 +453,10 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it('creates a new list item in an empty paragraph within a non-empty list item', () => {
+      it('creates a new list item in a non-empty list', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
+          .enter()
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
@@ -476,6 +476,8 @@ describe('Markdown widget', () => {
               </li>
               <li>
                 <p>bar</p>
+              </li>
+              <li>
                 <p></p>
               </li>
             </ul>
