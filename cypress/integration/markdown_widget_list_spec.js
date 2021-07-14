@@ -609,7 +609,7 @@ describe('Markdown widget', () => {
       it('unindents nested list items with shift', () => {
         cy.clickUnorderedListButton()
           .type('foo')
-          .enter({ times: 2 })
+          .enter()
           .tabkey()
           .tabkey({ shift: true })
           .confirmMarkdownEditorContent(`
