@@ -292,12 +292,21 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
              *    </ul>
              *  </li>
              * </ul>
-            */ 
-            const closestAncestorList = document.getClosest(parentList.key, block => block.type === parentList.type);
+             */
+            const closestAncestorList = document.getClosest(
+              parentList.key,
+              block => block.type === parentList.type,
+            );
             if (closestAncestorList) {
               const closestAncestorListItem = document.getParent(parentList.key);
-              const indexOfClosestAncestorListItem = closestAncestorList.nodes.findIndex(node => node.key === closestAncestorListItem.key)
-              return editor.moveNodeByKey(listItem.key, closestAncestorList.key, indexOfClosestAncestorListItem + 1);
+              const indexOfClosestAncestorListItem = closestAncestorList.nodes.findIndex(
+                node => node.key === closestAncestorListItem.key,
+              );
+              return editor.moveNodeByKey(
+                listItem.key,
+                closestAncestorList.key,
+                indexOfClosestAncestorListItem + 1,
+              );
             }
             return editor.unwrapListItem(listItem);
           }
@@ -320,15 +329,17 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
               nodes: [Block.create('paragraph')],
             });
             // Check if the targeted list item contains a nested list. If it does, insert a new list item in the beginning of that nested list.
-            const nestedList = listItem.findDescendant(block => block.type === LIST_TYPES[0] || block.type === LIST_TYPES[1]);
+            const nestedList = listItem.findDescendant(
+              block => block.type === LIST_TYPES[0] || block.type === LIST_TYPES[1],
+            );
             if (nestedList) {
-              return editor.insertNodeByKey(nestedList.key, 0, newListItem).moveForward(1) // Each list item is separated by a \n character. We need to move the cursor past this character so that it'd be on new list item that has just been inserted
+              return editor.insertNodeByKey(nestedList.key, 0, newListItem).moveForward(1); // Each list item is separated by a \n character. We need to move the cursor past this character so that it'd be on new list item that has just been inserted
             }
             // Find index of the list item block that receives Enter key
-            const previousListItemIndex = list.nodes.findIndex(block => block.key === listItem.key)
+            const previousListItemIndex = list.nodes.findIndex(block => block.key === listItem.key);
             return editor
               .insertNodeByKey(list.key, previousListItemIndex + 1, newListItem) // insert a new list item after the list item above
-              .moveForward(1)
+              .moveForward(1);
           }
           return next();
         } else {
