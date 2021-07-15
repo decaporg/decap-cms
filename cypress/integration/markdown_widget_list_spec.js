@@ -483,20 +483,6 @@ describe('Markdown widget', () => {
           `);
       });
 
-      it('removes empty block in non-empty list item', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter()
-          .backspace()
-          .confirmMarkdownEditorContent(`
-            <ul>
-              <li>
-                <p>foo</p>
-              </li>
-            </ul>
-          `);
-      });
-
       it('removes the list item if list not empty', () => {
         cy.clickUnorderedListButton()
           .type('foo')
