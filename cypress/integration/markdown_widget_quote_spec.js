@@ -185,6 +185,38 @@ describe('Markdown widget', () => {
           .clickUnorderedListButton()
           .clickQuoteButton()
           .type('foo')
+          // Content should contains 4 <blockquote> tags and 3 <ul> tags
+          .confirmMarkdownEditorContent(`
+            <blockquote>
+              <ul>
+                <li>
+                  <blockquote>
+                    <ul>
+                      <li>
+                        <blockquote>
+                          <ul>
+                            <li>
+                              <blockquote>
+                                <p>foo</p>
+                              </blockquote>
+                            </li>
+                          </ul>
+                        </blockquote>
+                      </li>
+                    </ul>
+                  </blockquote>
+                </li>
+              </ul>
+            </blockquote> 
+          `)
+          /*
+           * First Enter creates new paragraph within the innermost block quote.
+           * Second Enter moves that paragraph one level up to become sibling of the previous quote block and direct child of a list item.
+           * Third Enter to turn that paragraph into a list item and move it one level up.
+           * Repeat the circle for three more times to reach the second list item of the outermost list block.
+           * Then Enter again to turn that list item into a paragraph and move it one level up to become sibling of the outermost list and
+           * direct child of the outermost block quote.
+          */
           .enter({ times: 10 })
           .type('bar')
           .confirmMarkdownEditorContent(`
@@ -211,7 +243,16 @@ describe('Markdown widget', () => {
               <p>bar</p>
             </blockquote>
           `)
-          .backspace({ times: 12 })
+          /* The GOAL is to delete all the text content inside this deeply nested block quote and turn it into a default paragraph block on top level.
+           * We need:
+           *  3 Backspace to delete the word “bar”.
+           *  1 Backspace to remove the paragraph that contains bar and bring cursor to the end of the unordered list which is direct child of the outermost block quote.
+           *  3 Backspace to remove the word “foo”.
+           *  1 Backspace to remove the current block quote that the cursor is on, 1 Backspace to remove the list that wraps the block quote. Repeat this step for three times for a total of 6 Backspace until the cursor is on the outermost block quote.
+           * 1 Backspace to remove to toggle off the outermost block quote and turn it into a default paragraph.
+           * Total Backspaces required: 3 + 1 + 3 + ((1 + 1) * 3) + 1 = 14
+          */
+          .backspace({ times: 14 })
       });
     });
 
