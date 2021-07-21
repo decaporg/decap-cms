@@ -546,16 +546,12 @@ export class EditorToolbar extends React.Component {
   };
 
   renderSimplePublishControls = () => {
-    const { collection, hasChanged, isNewEntry, t } = this.props;
+    const { collection, hasChanged, isNewEntry } = this.props;
 
     const canCreate = collection.get('create');
     if (!isNewEntry && !hasChanged) {
-      return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          {this.renderExistingEntrySimplePublishControls({ canCreate })}
-        </>
-      );
+      console.log('render VL');
+      return this.renderExistingEntrySimplePublishControls({ canCreate });
     }
     return this.renderNewEntrySimplePublishControls({ canCreate });
   };
@@ -627,9 +623,7 @@ export class EditorToolbar extends React.Component {
      * Publish control for published workflow entry.
      */
     if (!isNewEntry) {
-      return (
-        <>{this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })}</>
-      );
+      return this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete });
     }
   };
 
@@ -673,8 +667,7 @@ export class EditorToolbar extends React.Component {
               : [this.renderSimpleSaveControls(), this.renderSimplePublishControls()]}
           </ToolbarSubSectionFirst>
           <ToolbarSubSectionLast>
-            {hasWorkflow &&
-              this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
+            {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
           </ToolbarSubSectionLast>
         </ToolbarSectionMain>
         <ToolbarSectionMeta>
