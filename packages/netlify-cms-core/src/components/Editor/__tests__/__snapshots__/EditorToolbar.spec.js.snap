@@ -179,7 +179,7 @@ exports[`EditorToolbar should render with default props 1`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -468,7 +468,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -826,7 +826,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
     class="emotion-32 emotion-33"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1158,7 +1158,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1498,7 +1498,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1816,7 +1816,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2174,7 +2174,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-32 emotion-33"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2449,7 +2449,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2679,7 +2679,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2909,7 +2909,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3139,7 +3139,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3369,7 +3369,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3599,7 +3599,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-wk9psn-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1u2u9hl-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
