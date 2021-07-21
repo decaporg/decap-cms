@@ -20,17 +20,17 @@ function createShortcodeTokenizer({ plugins }) {
     // select the first by its occurence in `value`. This ensures we won't
     // skip a plugin that occurs later in the plugin registry, but earlier
     // in the `value`.
-    const { plugin, match } = plugins
-      .toList()
-      .map(plugin => ({
-        match: value.match(plugin.pattern) ||
-          trimmedLines
-            .map(line => line.match(plugin.pattern))
-            .find(match => !!match),
-        plugin,
-      }))
-      .filter(({ match }) => !!match)
-      .reduce((a, b) => a.match.index < b.match.index ? a : b) ?? {};
+    const { plugin, match } =
+      plugins
+        .toList()
+        .map(plugin => ({
+          match:
+            value.match(plugin.pattern) ||
+            trimmedLines.map(line => line.match(plugin.pattern)).find(match => !!match),
+          plugin,
+        }))
+        .filter(({ match }) => !!match)
+        .reduce((a, b) => (a.match.index < b.match.index ? a : b)) ?? {};
 
     if (match) {
       if (silent) {
