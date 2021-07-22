@@ -268,9 +268,42 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
 
         if (listOrListItem.type === 'list-item') {
           const listItem = listOrListItem;
-
+          const {
+            value: { document },
+          } = editor;
           // If focus is at start of list item, unwrap the entire list item.
           if (editor.atStartOf(listItem)) {
+            /* If the list item in question has a grandparent list, this means it is a child of a nested list.
+             * Hitting Enter key on an empty nested list item like this should move that list item out of the nested list
+             * and into the grandparent list. The targeted list item becomes direct child of its grandparent list
+             * Example
+             * <ul> ----- GRANDPARENT LIST
+             *  <li> ------ GRANDPARENT LIST ITEM
+             *    <p>foo</p>
+             *    <ul> ----- PARENT LIST
+             *      <li>
+             *        <p>bar</p>
+             *      </li>
+             *      <li> ------ LIST ITEM
+             *        <p></p> ----- WHERE THE ENTER KEY HAPPENS
+             *      </li>
+             *    </ul>
+             *  </li>
+             * </ul>
+             */
+            const parentList = document.getParent(listItem.key);
+            const grandparentListItem = document.getParent(parentList.key);
+            if (grandparentListItem.type === 'list-item') {
+              const grandparentList = document.getParent(grandparentListItem.key);
+              const indexOfGrandparentListItem = grandparentList.nodes.findIndex(
+                node => node.key === grandparentListItem.key,
+              );
+              return editor.moveNodeByKey(
+                listItem.key,
+                grandparentList.key,
+                indexOfGrandparentListItem + 1,
+              );
+            }
             return editor.unwrapListItem(listItem);
           }
 
@@ -285,7 +318,23 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
               editor.wrapBlockAtRange(range, newListItem).unwrapNodeByKey(newListItem.key);
             });
           }
-
+          const list = document.getParent(listItem.key);
+          if (LIST_TYPES.includes(list.type)) {
+            const newListItem = Block.create({
+              type: 'list-item',
+              nodes: [Block.create('paragraph')],
+            });
+            // Check if the targeted list item contains a nested list. If it does, insert a new list item in the beginning of that nested list.
+            const nestedList = listItem.findDescendant(block => LIST_TYPES.includes(block.type));
+            if (nestedList) {
+              return editor.insertNodeByKey(nestedList.key, 0, newListItem).moveForward(1); // Each list item is separated by a \n character. We need to move the cursor past this character so that it'd be on new list item that has just been inserted
+            }
+            // Find index of the list item block that receives Enter key
+            const previousListItemIndex = list.nodes.findIndex(block => block.key === listItem.key);
+            return editor
+              .insertNodeByKey(list.key, previousListItemIndex + 1, newListItem) // insert a new list item after the list item above
+              .moveForward(1);
+          }
           return next();
         } else {
           const list = listOrListItem;
