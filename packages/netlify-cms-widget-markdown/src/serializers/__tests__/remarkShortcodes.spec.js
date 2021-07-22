@@ -16,7 +16,16 @@ function process(value, plugins, processEat = () => {}) {
 }
 
 function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
-  return { id, fromBlock, pattern };
+  return {
+    id,
+    fromBlock,
+    // The EditorComponent factory (packages/netlify-cms-core/src/valueObjects/EditorComponent.js)
+    // modifies incoming regex patterns as follows
+    pattern: new RegExp(
+      pattern.source.replace('^', '(?<=^|\n)').replace('$', '(?=$|\n)'),
+      pattern.flags,
+    ),
+  };
 }
 
 describe('remarkParseShortcodes', () => {
@@ -54,6 +63,18 @@ describe('remarkParseShortcodes', () => {
         ]),
       );
       expect(fooEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo']));
+    });
+    it('should match out-of-order shortcodes with line-end tokens', () => {
+      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
+      const bazEditorComponent = EditorComponent({ id: 'baz', pattern: /^baz$/ });
+      process(
+        'foo\n\nbar\n\nbaz',
+        OrderedMap([
+          [bazEditorComponent.id, bazEditorComponent],
+          [barEditorComponent.id, barEditorComponent],
+        ]),
+      );
+      expect(barEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
     });
   });
   describe('output', () => {

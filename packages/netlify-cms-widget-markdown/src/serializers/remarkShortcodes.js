@@ -10,12 +10,6 @@ export function remarkParseShortcodes({ plugins }) {
 
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
-    // Plugin patterns may rely on `^` and `$` tokens, even if they don't
-    // use the multiline flag. To support this, we fall back to searching
-    // through each line individually, trimming trailing whitespace and
-    // newlines, if we don't initially match on a pattern.
-    const trimmedLines = value.split('\n\n').map(line => line.trimEnd());
-
     // Attempt to find a regex match for each plugin's pattern, and then
     // select the first by its occurence in `value`. This ensures we won't
     // skip a plugin that occurs later in the plugin registry, but earlier
@@ -24,9 +18,7 @@ function createShortcodeTokenizer({ plugins }) {
       plugins
         .toList()
         .map(plugin => ({
-          match:
-            value.match(plugin.pattern) ||
-            trimmedLines.map(line => line.match(plugin.pattern)).find(match => !!match),
+          match: value.match(plugin.pattern),
           plugin,
         }))
         .filter(({ match }) => !!match)
