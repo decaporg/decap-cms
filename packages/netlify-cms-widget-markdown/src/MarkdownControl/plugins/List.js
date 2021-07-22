@@ -268,7 +268,6 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
 
         if (listOrListItem.type === 'list-item') {
           const listItem = listOrListItem;
-          console.log({ listItem });
           const {
             value: { document },
           } = editor;
