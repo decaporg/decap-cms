@@ -562,6 +562,24 @@ export type EntryField = StaticallyTypedRecord<{
 
 export type EntryFields = List<EntryField>;
 
+export type NoteType = 'COMMENT';
+
+export type NoteAuthor = {
+  id: string;
+  avatar_url: string;
+};
+
+export type Note = StaticallyTypedRecord<{
+  id: string;
+  type: NoteType;
+  data: string;
+  author?: NoteAuthor;
+  updated_at?: string;
+  created_at?: string;
+}>;
+
+export type Notes = Array<Note>;
+
 export type FilterRule = StaticallyTypedRecord<{
   value: string;
   field: string;
@@ -783,6 +801,31 @@ export interface EntriesAction extends Action<string> {
     | EntriesSuccessPayload
     | EntriesRequestPayload
     | EntryDeletePayload;
+  meta: {
+    collection: string;
+  };
+}
+
+interface NotesPayload {
+  collection: string;
+}
+
+export interface NotesRequestPayload extends NotesPayload {
+  slug: string;
+}
+
+export interface NotesSuccessPayload extends NotesPayload {
+  slug: string;
+  data: Notes;
+}
+
+export interface NotesFailurePayload extends NotesPayload {
+  slug: string;
+  error: Error;
+}
+
+export interface NotesAction extends Action<string> {
+  payload: NotesRequestPayload | NotesSuccessPayload | NotesFailurePayload;
   meta: {
     collection: string;
   };

@@ -4,6 +4,7 @@ import Cursor from './Cursor';
 import { AsyncLock } from './asyncLock';
 import { FileMetadata } from './API';
 import { basename } from './path';
+import integrations from 'packages/netlify-cms-core/src/reducers/integrations';
 
 export type DisplayURLObject = { id: string; path: string };
 
@@ -28,6 +29,20 @@ export interface UnpublishedEntryMediaFile {
 export interface ImplementationEntry {
   data: string;
   file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
+}
+
+export type NoteType = 'COMMENT';
+export type NoteAuthor = {
+  id: string;
+  avatar_url: string;
+};
+export interface ImplementationNote {
+  id: string;
+  type: NoteType;
+  data: string;
+  author?: NoteAuthor;
+  updated_at?: string;
+  created_at?: string;
 }
 
 export interface UnpublishedEntryDiff {
@@ -183,6 +198,7 @@ export interface Implementation {
     auth: { status: boolean };
     api: { status: boolean; statusPage: string };
   }>;
+  listNotes: (collectionName: string, slug: string) => Promise<Array<ImplementationNote>>;
 }
 
 const MAX_CONCURRENT_DOWNLOADS = 10;

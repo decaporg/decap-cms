@@ -1304,6 +1304,17 @@ export class Backend {
       return fieldValue === filterRule.get('value');
     });
   }
+
+  async listNotes(collection: Collection, slug: string) {
+    const collectionName = collection.get('name');
+    console.log(this.implementation);
+    return this.implementation
+      .listNotes(collectionName, slug)
+      .then(data => data)
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
 }
 
 export function resolveBackend(config: CmsConfig) {

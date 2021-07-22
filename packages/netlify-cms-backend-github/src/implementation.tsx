@@ -170,8 +170,8 @@ export default class GitHub implements Implementation {
   restoreUser(user: User) {
     return this.openAuthoringEnabled
       ? this.authenticateWithFork({ userData: user, getPermissionToFork: () => true }).then(() =>
-          this.authenticate(user),
-        )
+        this.authenticate(user),
+      )
       : this.authenticate(user);
   }
 
@@ -664,5 +664,24 @@ export default class GitHub implements Implementation {
       () => this.api!.publishUnpublishedEntry(collection, slug),
       'Failed to acquire publish entry lock',
     );
+  }
+
+  async listNotes(collectionName: string, slug: string) {
+    const comments = await this.api!.readComments(collectionName, slug);
+    console.log(comments);
+    return comments.map(comment => {
+      const { body, created_at, id, updated_at, user } = comment;
+      return {
+        type: 'COMMENT',
+        data: body,
+        created_at,
+        id,
+        updated_at,
+        author: {
+          id: user.id,
+          avatar_url: user.avatar_url
+        }
+      }
+    })
   }
 }

@@ -389,6 +389,7 @@ export class Editor extends React.Component {
 
     return (
       <EditorInterface
+        slug={slug}
         draftKey={draftKey}
         entry={entryDraft.get('entry')}
         collection={collection}

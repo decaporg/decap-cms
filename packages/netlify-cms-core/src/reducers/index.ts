@@ -10,6 +10,7 @@ import collections from './collections';
 import search from './search';
 import medias from './medias';
 import mediaLibrary from './mediaLibrary';
+import notes from './notes';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import status from './status';
@@ -28,6 +29,7 @@ const reducers = {
   entryDraft,
   medias,
   mediaLibrary,
+  notes,
   deploys,
   globalUI,
   status,

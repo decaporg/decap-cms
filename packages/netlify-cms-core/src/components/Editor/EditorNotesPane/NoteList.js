@@ -1,5 +1,10 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
+import { connect } from 'react-redux';
+import { Loader } from 'netlify-cms-ui-default';
+import { listNotes } from 'Actions/notes';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 const NoteListContainer = styled.div`
   flex: 1;
@@ -52,7 +57,7 @@ export function NoteToolbar(props) {
   const { author, createdAt } = props;
   return (
     <NoteToolbarContainer>
-      <p>{author}</p>
+      <p>Author</p>
       <p>commented on</p>
       <p>{createdAt}</p>
     </NoteToolbarContainer>
@@ -62,7 +67,7 @@ export function NoteToolbar(props) {
 export class Note extends React.Component {
   render() {
     const {
-      note: { key, value, author, createdAt },
+      note: { id: key, data: value, author, created_at: createdAt },
     } = this.props;
     return (
       <NoteContainer key={key}>
@@ -77,50 +82,61 @@ export class Note extends React.Component {
 }
 
 class NoteList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      notes: [],
-    };
+  componentDidMount() {
+    const { listNotes, collection, slug } = this.props;
+    listNotes(collection, slug);
   }
 
-  componentDidMount() {}
-
   render() {
-    const notes = [
-      {
-        key: 1,
-        author: 'Bob',
-        createdAt: '2021:04:21T00:00:00.000Z',
-        value: 'This is a comment',
-      },
-      {
-        key: 2,
-        author: 'Bob',
-        createdAt: '2021:04:21T00:00:00.000Z',
-        value: 'This is a comment',
-      },
-      {
-        key: 3,
-        author: 'Bob',
-        createdAt: '2021:04:21T00:00:00.000Z',
-        value: 'This is a comment',
-      },
-      {
-        key: 4,
-        author: 'Bob',
-        createdAt: '2021:04:21T00:00:00.000Z',
-        value: 'This is a comment',
-      },
+    const { isFetching, t, notes } = this.props;
+
+    const loadingMessages = [
+      t('notes.loadingEntries'),
+      t('notes.cachingEntries'),
+      t('notes.longerLoading'),
     ];
+
+    if (isFetching) {
+      return (
+        <NoteListContainer>
+          <Loader active>{loadingMessages}</Loader>
+        </NoteListContainer>
+      );
+    }
+
     return (
       <NoteListContainer>
         {notes.map(note => (
-          <Note key={note.key} note={note} />
+          <Note key={note.id} note={note} />
         ))}
       </NoteListContainer>
     );
   }
 }
 
-export default NoteList;
+NoteList.propTypes = {
+  collection: ImmutablePropTypes.map.isRequired,
+  isFetching: PropTypes.bool,
+  notes: ImmutablePropTypes.list.isRequired,
+  error: PropTypes.string.isRequired,
+  hasWorkflow: PropTypes.bool,
+  draftKey: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
+};
+
+function mapStateToProps(state, ownProps) {
+  const { collection, slug } = ownProps;
+  const collectionName = collection.get('name');
+  const { notes: parent } = state;
+  const isFetching = parent.getIn(['notes', `${collectionName}.${slug}`, 'isFetching']) || false;
+  const notes = parent.getIn(['notes', `${collectionName}.${slug}`, 'data']) || [];
+  const error = parent.getIn(['notes', `${collectionName}.${slug}`, 'error']) || '';
+  return { isFetching, notes, error };
+}
+
+const mapDispatchToProps = {
+  listNotes,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NoteList);

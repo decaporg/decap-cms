@@ -232,6 +232,7 @@ class EditorInterface extends Component {
       deployPreview,
       draftKey,
       editorBackLink,
+      slug,
       t,
     } = this.props;
 
@@ -290,7 +291,7 @@ class EditorInterface extends Component {
       {
         key: 'notes',
         title: 'Notes',
-        content: <EditorNotesPane draftKey={draftKey} hasWorkflow={hasWorkflow} />,
+        content: <EditorNotesPane collection={collection} draftKey={draftKey} hasWorkflow={hasWorkflow} slug={slug} t={t} />,
       },
     ];
 
@@ -454,6 +455,7 @@ EditorInterface.propTypes = {
   deployPreview: PropTypes.object,
   loadDeployPreview: PropTypes.func.isRequired,
   draftKey: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 

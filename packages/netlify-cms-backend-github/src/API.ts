@@ -1342,6 +1342,18 @@ export default class API {
       .then(response => this.patchBranch(this.branch, response.sha));
   }
 
+  async listComments(pullRequest: GitHubPull) {
+    const result: Octokit.IssuesListCommentsResponse = await this.request(
+      `${this.originRepoURL}/issues/${pullRequest.number}/comments`,
+      {
+        params: {
+          per_page: 100,
+        },
+      },
+    );
+    return result;
+  }
+
   toBase64(str: string) {
     return Promise.resolve(Base64.encode(str));
   }
@@ -1448,5 +1460,17 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     return pullRequest.head.sha;
+  }
+
+  async readComments(collectionName: string, slug: string) {
+    // check if editorial workflow
+    // get current pr
+    // if pr doesn't exist return [] / throw error
+    // get comments for pr
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    return this.listComments(pullRequest);
   }
 }

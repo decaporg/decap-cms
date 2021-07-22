@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import CreateNote from './CreateNote';
 import NoteList from './NoteList';
@@ -18,7 +19,7 @@ const CenteredText = styled.p`
 
 class EditorNotesPane extends React.Component {
   render() {
-    const { hasWorkflow } = this.props;
+    const { hasWorkflow, draftKey, slug, collection, t } = this.props;
 
     if (!hasWorkflow) {
       return (
@@ -30,7 +31,7 @@ class EditorNotesPane extends React.Component {
 
     return (
       <NotesContainer>
-        <NoteList />
+        <NoteList draftKey={draftKey} slug={slug} collection={collection} t={t} />
         <CreateNote />
       </NotesContainer>
     );
@@ -38,8 +39,11 @@ class EditorNotesPane extends React.Component {
 }
 
 EditorNotesPane.propTypes = {
+  collection: ImmutablePropTypes.map.isRequired,
   hasWorkflow: PropTypes.bool,
   draftKey: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default EditorNotesPane;
