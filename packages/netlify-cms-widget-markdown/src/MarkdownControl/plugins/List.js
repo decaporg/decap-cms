@@ -273,37 +273,35 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
           } = editor;
           // If focus is at start of list item, unwrap the entire list item.
           if (editor.atStartOf(listItem)) {
-            const parentList = document.getParent(listItem.key);
             /* If the list item in question has a grandparent list, this means it is a child of a nested list.
-             * Htting Enter key on an empty nested list item like this should move that list item out of the nested list
-             * and into the gradparent list. The targeted list item becomes direct child of its grandparent list
+             * Hitting Enter key on an empty nested list item like this should move that list item out of the nested list
+             * and into the grandparent list. The targeted list item becomes direct child of its grandparent list
              * Example
-             * <ul> ----- CLOSEST ANCESTOR LIST
-             *  <li> ------ CLOESET ANCESTOR LIST ITEM
+             * <ul> ----- GRANDPARENT LIST
+             *  <li> ------ GRANDPARENT LIST ITEM
              *    <p>foo</p>
              *    <ul> ----- PARENT LIST
              *      <li>
              *        <p>bar</p>
              *      </li>
-             *      <li>
+             *      <li> ------ LIST ITEM
              *        <p></p> ----- WHERE THE ENTER KEY HAPPENS
              *      </li>
              *    </ul>
              *  </li>
              * </ul>
              */
-            const closestAncestorList = document.getClosest(parentList.key, block =>
-              LIST_TYPES.includes(block.type),
-            );
-            if (closestAncestorList) {
-              const closestAncestorListItem = document.getParent(parentList.key);
-              const indexOfClosestAncestorListItem = closestAncestorList.nodes.findIndex(
-                node => node.key === closestAncestorListItem.key,
+            const parentList = document.getParent(listItem.key);
+            const grandparentListItem = document.getParent(parentList.key);
+            if (grandparentListItem.type === 'list-item') {
+              const grandparentList = document.getParent(grandparentListItem.key);
+              const indexOfGrandparentListItem = grandparentList.nodes.findIndex(
+                node => node.key === grandparentListItem.key,
               );
               return editor.moveNodeByKey(
                 listItem.key,
-                closestAncestorList.key,
-                indexOfClosestAncestorListItem + 1,
+                grandparentList.key,
+                indexOfGrandparentListItem + 1,
               );
             }
             return editor.unwrapListItem(listItem);
