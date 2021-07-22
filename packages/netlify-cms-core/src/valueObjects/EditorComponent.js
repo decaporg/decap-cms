@@ -33,8 +33,13 @@ export default function createEditorComponent(config) {
     // context. In order to do so, we replace instances of line anchors
     // with lookarounds that include \n's, so that non-multiline expressions
     // still work as expected.
+    //
+    // Note: This is mocked in packages/netlify-cms-widget-markdown/src/serializers/__tests__/remarkShortcodes.spec.js;
+    // if you change it here, change it there as well!
     pattern: new RegExp(
-      pattern.source.replace('^', '(?<=^|\n)').replace('$', '(?=$|\n)'),
+      // We use a negative lookbehind so that we only replace carets
+      // that aren't a negation in a character set or escaped
+      pattern.source.replace(/(?<!\[|\\)\^/, '(?<=^|\n)').replace(/(?<!\\)\$/, '(?=$|\n)'),
       pattern.flags,
     ),
     fromBlock: bind(fromBlock) || (() => ({})),

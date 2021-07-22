@@ -22,7 +22,7 @@ function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
     // The EditorComponent factory (packages/netlify-cms-core/src/valueObjects/EditorComponent.js)
     // modifies incoming regex patterns as follows
     pattern: new RegExp(
-      pattern.source.replace('^', '(?<=^|\n)').replace('$', '(?=$|\n)'),
+      pattern.source.replace(/(?<!\[|\\)\^/, '(?<=^|\n)').replace(/(?<!\\)\$/, '(?=$|\n)'),
       pattern.flags,
     ),
   };
