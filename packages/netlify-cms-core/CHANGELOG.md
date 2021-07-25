@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.46.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.45.0...netlify-cms-core@2.46.0) (2021-07-25)
+
+
+### Features
+
+* **widget-markdown:** allow registering remark plugins ([#5633](https://github.com/netlify/netlify-cms/issues/5633)) ([437f4bc](https://github.com/netlify/netlify-cms/commit/437f4bc634c5a52758bd06ab1709f2e66a71dce7))
+
+
+
+
+
 # [2.45.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.44.0...netlify-cms-core@2.45.0) (2021-07-07)
 
 
