@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - chore/test_fossa
 
 defaults:
   run:
@@ -15,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Update fossa permissions
+        run: sudo chmod -R 755 /usr/local/bin
       - name: Fossa init
         run: |-
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
