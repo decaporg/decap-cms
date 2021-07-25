@@ -7,8 +7,8 @@ import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '.
 
 function CopyPasteVisual({ getAsset, resolveWidget, remarkPlugins }) {
   function handleCopy(event, editor) {
-    const markdown = slateToMarkdown(editor.value.fragment.toJS(), undefined, remarkPlugins);
-    const html = markdownToHtml(markdown, { getAsset, resolveWidget }, remarkPlugins);
+    const markdown = slateToMarkdown(editor.value.fragment.toJS(), { remarkPlugins });
+    const html = markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugins });
     setEventTransfer(event, 'text', markdown);
     setEventTransfer(event, 'html', html);
     setEventTransfer(event, 'fragment', base64.serializeNode(editor.value.fragment));
@@ -30,7 +30,7 @@ function CopyPasteVisual({ getAsset, resolveWidget, remarkPlugins }) {
       const html = data.types.includes('text/html') && data.getData('text/html');
       const ast = html
         ? htmlToSlate(html)
-        : markdownToSlate(data.getData('text/plain'), undefined, remarkPlugins);
+        : markdownToSlate(data.getData('text/plain'), { remarkPlugins });
       const doc = Document.fromJSON(ast);
       return editor.insertFragment(doc);
     },

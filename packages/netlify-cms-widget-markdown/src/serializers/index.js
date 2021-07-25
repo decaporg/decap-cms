@@ -154,7 +154,7 @@ export function remarkToMarkdown(obj, remarkPlugins) {
 /**
  * Convert Markdown to HTML.
  */
-export function markdownToHtml(markdown, { getAsset, resolveWidget } = {}, remarkPlugins) {
+export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugins = [] } = {}) {
   const mdast = markdownToRemark(markdown, remarkPlugins);
 
   const hast = unified()
@@ -199,7 +199,7 @@ export function htmlToSlate(html) {
 /**
  * Convert Markdown to Slate's Raw AST.
  */
-export function markdownToSlate(markdown, { voidCodeBlock } = {}, remarkPlugins) {
+export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } = {}) {
   const mdast = markdownToRemark(markdown, remarkPlugins);
 
   const slateRaw = unified()
@@ -219,7 +219,7 @@ export function markdownToSlate(markdown, { voidCodeBlock } = {}, remarkPlugins)
  * MDAST. The conversion is manual because Unified can only operate on Unist
  * trees.
  */
-export function slateToMarkdown(raw, { voidCodeBlock } = {}, remarkPlugins) {
+export function slateToMarkdown(raw, { voidCodeBlock, remarkPlugins = [] } = {}) {
   const mdast = slateToRemark(raw, { voidCodeBlock });
   const markdown = remarkToMarkdown(mdast, remarkPlugins);
   return markdown;
