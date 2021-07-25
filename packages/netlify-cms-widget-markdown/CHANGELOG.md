@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.6](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.13.5...netlify-cms-widget-markdown@2.13.6) (2021-07-25)
+
+
+### Bug Fixes
+
+* **widget-markdown:** Hitting Enter key in a list item doesn't create a new list item ([#5550](https://github.com/netlify/netlify-cms/issues/5550)) ([ab3e8e1](https://github.com/netlify/netlify-cms/commit/ab3e8e1f5a5fecd343e32cc31912ec912449e713))
+
+
+
+
+
 ## [2.13.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.4...netlify-cms-widget-markdown@2.13.5) (2021-06-24)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown
