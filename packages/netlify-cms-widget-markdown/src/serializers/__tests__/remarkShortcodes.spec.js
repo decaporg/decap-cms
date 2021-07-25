@@ -19,12 +19,7 @@ function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
   return {
     id,
     fromBlock,
-    // The EditorComponent factory (packages/netlify-cms-core/src/valueObjects/EditorComponent.js)
-    // modifies incoming regex patterns as follows
-    pattern: new RegExp(
-      pattern.source.replace(/(?<!\[|\\)\^/, '(?<=^|\n)').replace(/(?<!\\)\$/, '(?=$|\n)'),
-      pattern.flags,
-    ),
+    pattern,
   };
 }
 
@@ -52,7 +47,7 @@ describe('remarkParseShortcodes', () => {
         expect.arrayContaining(['foo\n\nbar']),
       );
     });
-    it('should match out-of-order shortcodes', () => {
+    it('should match shortcodes based on order of occurrence in value', () => {
       const fooEditorComponent = EditorComponent({ id: 'foo', pattern: /foo/ });
       const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
       process(
@@ -64,7 +59,7 @@ describe('remarkParseShortcodes', () => {
       );
       expect(fooEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo']));
     });
-    it('should match out-of-order shortcodes with line-end tokens', () => {
+    it('should match shortcodes based on order of occurrence in value even when some use line anchors', () => {
       const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
       const bazEditorComponent = EditorComponent({ id: 'baz', pattern: /^baz$/ });
       process(
