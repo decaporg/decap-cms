@@ -40,23 +40,7 @@ exports[`EditorToolbar should not render changes saved message 1`] = `
 }
 
 .emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+  height: 5px;
 }
 
 .emotion-14 {
@@ -179,7 +163,7 @@ exports[`EditorToolbar should not render changes saved message 1`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -193,11 +177,9 @@ exports[`EditorToolbar should not render changes saved message 1`] = `
         >
           editor.editorToolbar.backCollection
         </div>
-        <div
+        <p
           class="emotion-4 emotion-5"
-        >
-          editor.editorToolbar.changesSaved
-        </div>
+        />
       </div>
     </mock-link>
     <div
@@ -273,23 +255,7 @@ exports[`EditorToolbar should not render changes saved message 2`] = `
 }
 
 .emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+  height: 5px;
 }
 
 .emotion-14 {
@@ -412,7 +378,7 @@ exports[`EditorToolbar should not render changes saved message 2`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -426,11 +392,9 @@ exports[`EditorToolbar should not render changes saved message 2`] = `
         >
           editor.editorToolbar.backCollection
         </div>
-        <div
+        <p
           class="emotion-4 emotion-5"
-        >
-          editor.editorToolbar.changesSaved
-        </div>
+        />
       </div>
     </mock-link>
     <div
@@ -505,26 +469,6 @@ exports[`EditorToolbar should render changes saved message 1`] = `
   font-size: 14px;
 }
 
-.emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
-}
-
 .emotion-14 {
   height: 100%;
   display: -webkit-box;
@@ -641,11 +585,31 @@ exports[`EditorToolbar should render changes saved message 1`] = `
   padding: 0 7px;
 }
 
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-4::after {
+  height: 12px;
+  width: 15.5px;
+  color: #005614;
+  margin-left: 5px;
+  position: relative;
+  top: 1px;
+  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+}
+
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -738,26 +702,6 @@ exports[`EditorToolbar should render changes saved message 2`] = `
   font-size: 14px;
 }
 
-.emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
-}
-
 .emotion-14 {
   height: 100%;
   display: -webkit-box;
@@ -874,11 +818,31 @@ exports[`EditorToolbar should render changes saved message 2`] = `
   padding: 0 7px;
 }
 
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-4::after {
+  height: 12px;
+  width: 15.5px;
+  color: #005614;
+  margin-left: 5px;
+  position: relative;
+  top: 1px;
+  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+}
+
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1132,7 +1096,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
     class="emotion-21 emotion-22"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1396,7 +1360,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
     class="emotion-21 emotion-22"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1500,23 +1464,7 @@ exports[`EditorToolbar should render with default props 1`] = `
 }
 
 .emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+  height: 5px;
 }
 
 .emotion-14 {
@@ -1639,7 +1587,7 @@ exports[`EditorToolbar should render with default props 1`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1653,11 +1601,9 @@ exports[`EditorToolbar should render with default props 1`] = `
         >
           editor.editorToolbar.backCollection
         </div>
-        <div
+        <p
           class="emotion-4 emotion-5"
-        >
-          editor.editorToolbar.changesSaved
-        </div>
+        />
       </div>
     </mock-link>
     <div
@@ -1730,6 +1676,10 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
 .emotion-2 {
   color: #313d3e;
   font-size: 14px;
+}
+
+.emotion-4 {
+  height: 5px;
 }
 
 .emotion-19 {
@@ -1854,10 +1804,6 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   cursor: default;
 }
 
-.emotion-4 {
-  height: 5px;
-}
-
 .emotion-15 {
   position: relative;
   font-size: 14px;
@@ -1919,7 +1865,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2022,6 +1968,10 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   font-size: 14px;
 }
 
+.emotion-4 {
+  height: 5px;
+}
+
 .emotion-26 {
   height: 100%;
   display: -webkit-box;
@@ -2117,10 +2067,6 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   background-color: #eff0f4;
   color: #798291;
   cursor: default;
-}
-
-.emotion-4 {
-  height: 5px;
 }
 
 .emotion-13 {
@@ -2242,7 +2188,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2372,6 +2318,10 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   font-size: 14px;
 }
 
+.emotion-4 {
+  height: 5px;
+}
+
 .emotion-19 {
   height: 100%;
   display: -webkit-box;
@@ -2494,10 +2444,6 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   cursor: default;
 }
 
-.emotion-4 {
-  height: 5px;
-}
-
 .emotion-15 {
   position: relative;
   font-size: 14px;
@@ -2559,7 +2505,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2662,6 +2608,10 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   font-size: 14px;
 }
 
+.emotion-4 {
+  height: 5px;
+}
+
 .emotion-24 {
   height: 100%;
   display: -webkit-box;
@@ -2757,10 +2707,6 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   background-color: #eff0f4;
   color: #798291;
   cursor: default;
-}
-
-.emotion-4 {
-  height: 5px;
 }
 
 .emotion-13 {
@@ -2864,7 +2810,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-28 emotion-29"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2989,6 +2935,10 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   font-size: 14px;
 }
 
+.emotion-4 {
+  height: 5px;
+}
+
 .emotion-19 {
   height: 100%;
   display: -webkit-box;
@@ -3111,10 +3061,6 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   cursor: default;
 }
 
-.emotion-4 {
-  height: 5px;
-}
-
 .emotion-15 {
   position: relative;
   font-size: 14px;
@@ -3176,7 +3122,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3279,6 +3225,10 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   font-size: 14px;
 }
 
+.emotion-4 {
+  height: 5px;
+}
+
 .emotion-26 {
   height: 100%;
   display: -webkit-box;
@@ -3374,10 +3324,6 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   background-color: #eff0f4;
   color: #798291;
   cursor: default;
-}
-
-.emotion-4 {
-  height: 5px;
 }
 
 .emotion-13 {
@@ -3499,7 +3445,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3629,6 +3575,10 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   font-size: 14px;
 }
 
+.emotion-4 {
+  height: 5px;
+}
+
 .emotion-14 {
   height: 100%;
   display: -webkit-box;
@@ -3751,15 +3701,11 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   cursor: default;
 }
 
-.emotion-4 {
-  height: 5px;
-}
-
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3848,6 +3794,10 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   font-size: 14px;
 }
 
+.emotion-4 {
+  height: 5px;
+}
+
 .emotion-12 {
   height: 100%;
   display: -webkit-box;
@@ -3945,15 +3895,11 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   cursor: default;
 }
 
-.emotion-4 {
-  height: 5px;
-}
-
 <div
     class="emotion-16 emotion-17"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -4035,26 +3981,6 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 .emotion-2 {
   color: #313d3e;
   font-size: 14px;
-}
-
-.emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
 }
 
 .emotion-14 {
@@ -4148,6 +4074,26 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   padding: 0 7px;
 }
 
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-4::after {
+  height: 12px;
+  width: 15.5px;
+  color: #005614;
+  margin-left: 5px;
+  position: relative;
+  top: 1px;
+  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+}
+
 .emotion-6 {
   border: 0;
   border-radius: 5px;
@@ -4183,7 +4129,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -4274,26 +4220,6 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   font-size: 14px;
 }
 
-.emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
-}
-
 .emotion-14 {
   height: 100%;
   display: -webkit-box;
@@ -4385,6 +4311,26 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   padding: 0 7px;
 }
 
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-4::after {
+  height: 12px;
+  width: 15.5px;
+  color: #005614;
+  margin-left: 5px;
+  position: relative;
+  top: 1px;
+  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+}
+
 .emotion-6 {
   border: 0;
   border-radius: 5px;
@@ -4420,7 +4366,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -4511,26 +4457,6 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   font-size: 14px;
 }
 
-.emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
-}
-
 .emotion-14 {
   height: 100%;
   display: -webkit-box;
@@ -4622,6 +4548,26 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   padding: 0 7px;
 }
 
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-4::after {
+  height: 12px;
+  width: 15.5px;
+  color: #005614;
+  margin-left: 5px;
+  position: relative;
+  top: 1px;
+  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+}
+
 .emotion-6 {
   border: 0;
   border-radius: 5px;
@@ -4657,7 +4603,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -4748,26 +4694,6 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   font-size: 14px;
 }
 
-.emotion-4 {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-block;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #005614;
-}
-
-.emotion-4::after {
-  height: 12px;
-  width: 15.5px;
-  color: #005614;
-  margin-left: 5px;
-  position: relative;
-  top: 1px;
-  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
-}
-
 .emotion-14 {
   height: 100%;
   display: -webkit-box;
@@ -4859,6 +4785,26 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   padding: 0 7px;
 }
 
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-4::after {
+  height: 12px;
+  width: 15.5px;
+  color: #005614;
+  margin-left: 5px;
+  position: relative;
+  top: 1px;
+  content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
+}
+
 .emotion-6 {
   border: 0;
   border-radius: 5px;
@@ -4894,7 +4840,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-ch9dwo-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-13dm75l-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
