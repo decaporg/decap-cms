@@ -25,7 +25,7 @@
     "test:e2e:dev": "run-p clean && start-test develop 8080 test:e2e:exec-dev",
     "test:e2e:serve": "http-server -c-1 dev-test",
     "test:e2e:exec": "cypress run --browser chrome --headless",
-    "test:e2e:exec-ci": "node cypress/run.js",
+    "test:e2e:exec-ci": "node cypress/run.mjs",
     "test:e2e:exec-dev": "cypress open",
     "test:e2e:record-fixtures:dev": "HTTP_PROXY=http://localhost:1080 RECORD_FIXTURES=true cypress open",
     "test:e2e:run": "start-test test:e2e:serve 8080 test:e2e:exec",
@@ -181,7 +181,7 @@
     "emotion": "^10.0.9",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-babel": "^5.3.0",
-    "globby": "^11.0.2",
+    "globby": "^12.0.0",
     "lerna": "^4.0.0"
   },
   "husky": {

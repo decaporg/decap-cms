@@ -1,7 +1,7 @@
-const execa = require('execa');
-const globby = require('globby');
+import execa from 'execa';
+import { globby } from 'globby';
 
-const runCypress = async () => {
+async function runCypress() {
   if (process.env.IS_FORK === 'true') {
     const machineIndex = parseInt(process.env.MACHINE_INDEX);
     const machineCount = parseInt(process.env.MACHINE_COUNT);
@@ -36,6 +36,6 @@ const runCypress = async () => {
       { stdio: 'inherit', preferLocal: true },
     );
   }
-};
+}
 
 runCypress();
