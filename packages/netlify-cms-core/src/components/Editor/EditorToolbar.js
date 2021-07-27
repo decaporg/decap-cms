@@ -594,7 +594,7 @@ export class EditorToolbar extends React.Component {
   };
 
   renderWorkflowPublishControls = () => {
-    const { collection, currentStatus, isNewEntry, useOpenAuthoring, t } = this.props;
+    const { collection, currentStatus, isNewEntry, useOpenAuthoring } = this.props;
 
     const canCreate = collection.get('create');
     const canPublish = collection.get('publish') && !useOpenAuthoring;
