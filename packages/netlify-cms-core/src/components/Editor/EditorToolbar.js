@@ -603,7 +603,6 @@ export class EditorToolbar extends React.Component {
     if (currentStatus) {
       return (
         <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}
           {this.renderWorkflowStatusControls()}
           {this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
         </>
