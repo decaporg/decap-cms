@@ -707,7 +707,7 @@ exports[`EditorToolbar should render with default props 1`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1002,7 +1002,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1068,7 +1068,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
 
 exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
-  .emotion-32 {
+  .emotion-30 {
   box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
   position: fixed;
   top: 0;
@@ -1125,7 +1125,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
 }
 
-.emotion-28 {
+.emotion-26 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -1150,7 +1150,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   padding: 0 10px;
 }
 
-.emotion-24 {
+.emotion-22 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1161,32 +1161,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   align-items: center;
 }
 
-.emotion-22 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  height: 36px;
-  line-height: 36px;
-  font-weight: 500;
-  padding: 0 15px;
-  background-color: #798291;
-  color: #fff;
-  margin: 0 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
-  background-color: #fcefea;
-  color: #ff003b;
-}
-
-@media (max-width:1200px) {
-  .emotion-22 {
-    padding: 0 10px;
-  }
-}
-
-.emotion-26 {
+.emotion-24 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1201,7 +1176,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   justify-content: flex-end;
 }
 
-.emotion-30 {
+.emotion-28 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -1363,10 +1338,10 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
 }
 
 <div
-    class="emotion-32 emotion-33"
+    class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1388,10 +1363,10 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
       </div>
     </mock-link>
     <div
-      class="emotion-28 emotion-29"
+      class="emotion-26 emotion-27"
     >
       <div
-        class="emotion-24 emotion-25"
+        class="emotion-22 emotion-23"
       >
         <button
           class="emotion-6 emotion-7"
@@ -1443,18 +1418,13 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
             editor.editorToolbar.statusInfoTooltipDraft
           </div>
         </div>
-        <button
-          class="emotion-22 emotion-177"
-        >
-          editor.editorToolbar.deletePublishedEntry
-        </button>
       </div>
       <div
-        class="emotion-26 emotion-27"
+        class="emotion-24 emotion-25"
       />
     </div>
     <div
-      class="emotion-30 emotion-31"
+      class="emotion-28 emotion-29"
     >
       <mock-settings-dropdown />
     </div>
@@ -1704,7 +1674,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1770,7 +1740,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 
 exports[`EditorToolbar should render with status=pending_publish,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
-  .emotion-30 {
+  .emotion-28 {
   box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
   position: fixed;
   top: 0;
@@ -1827,7 +1797,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
 }
 
-.emotion-26 {
+.emotion-24 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -1852,7 +1822,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   padding: 0 10px;
 }
 
-.emotion-22 {
+.emotion-20 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1863,32 +1833,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   align-items: center;
 }
 
-.emotion-20 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  height: 36px;
-  line-height: 36px;
-  font-weight: 500;
-  padding: 0 15px;
-  background-color: #798291;
-  color: #fff;
-  margin: 0 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
-  background-color: #fcefea;
-  color: #ff003b;
-}
-
-@media (max-width:1200px) {
-  .emotion-20 {
-    padding: 0 10px;
-  }
-}
-
-.emotion-24 {
+.emotion-22 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1903,7 +1848,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   justify-content: flex-end;
 }
 
-.emotion-28 {
+.emotion-26 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -2047,10 +1992,10 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 }
 
 <div
-    class="emotion-30 emotion-31"
+    class="emotion-28 emotion-29"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2072,10 +2017,10 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
       </div>
     </mock-link>
     <div
-      class="emotion-26 emotion-27"
+      class="emotion-24 emotion-25"
     >
       <div
-        class="emotion-22 emotion-23"
+        class="emotion-20 emotion-21"
       >
         <button
           class="emotion-6 emotion-7"
@@ -2122,18 +2067,13 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
             </span>
           </div>
         </div>
-        <button
-          class="emotion-20 emotion-177"
-        >
-          editor.editorToolbar.deletePublishedEntry
-        </button>
       </div>
       <div
-        class="emotion-24 emotion-25"
+        class="emotion-22 emotion-23"
       />
     </div>
     <div
-      class="emotion-28 emotion-29"
+      class="emotion-26 emotion-27"
     >
       <mock-settings-dropdown />
     </div>
@@ -2383,7 +2323,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2449,7 +2389,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 
 exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
-  .emotion-32 {
+  .emotion-30 {
   box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
   position: fixed;
   top: 0;
@@ -2506,7 +2446,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
 }
 
-.emotion-28 {
+.emotion-26 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -2531,7 +2471,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   padding: 0 10px;
 }
 
-.emotion-24 {
+.emotion-22 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2542,32 +2482,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   align-items: center;
 }
 
-.emotion-22 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  height: 36px;
-  line-height: 36px;
-  font-weight: 500;
-  padding: 0 15px;
-  background-color: #798291;
-  color: #fff;
-  margin: 0 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
-  background-color: #fcefea;
-  color: #ff003b;
-}
-
-@media (max-width:1200px) {
-  .emotion-22 {
-    padding: 0 10px;
-  }
-}
-
-.emotion-26 {
+.emotion-24 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2582,7 +2497,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   justify-content: flex-end;
 }
 
-.emotion-30 {
+.emotion-28 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -2744,10 +2659,10 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 }
 
 <div
-    class="emotion-32 emotion-33"
+    class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2769,10 +2684,10 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
       </div>
     </mock-link>
     <div
-      class="emotion-28 emotion-29"
+      class="emotion-26 emotion-27"
     >
       <div
-        class="emotion-24 emotion-25"
+        class="emotion-22 emotion-23"
       >
         <button
           class="emotion-6 emotion-7"
@@ -2824,18 +2739,13 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
             editor.editorToolbar.statusInfoTooltipInReview
           </div>
         </div>
-        <button
-          class="emotion-22 emotion-177"
-        >
-          editor.editorToolbar.deletePublishedEntry
-        </button>
       </div>
       <div
-        class="emotion-26 emotion-27"
+        class="emotion-24 emotion-25"
       />
     </div>
     <div
-      class="emotion-30 emotion-31"
+      class="emotion-28 emotion-29"
     >
       <mock-settings-dropdown />
     </div>
@@ -3028,7 +2938,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3081,7 +2991,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 
 exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=false,isNewEntry=false,isModification=false,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
-  .emotion-18 {
+  .emotion-16 {
   box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
   position: fixed;
   top: 0;
@@ -3138,7 +3048,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='15' height='11'><path fill='#005614' fill-rule='nonzero' d='M4.016 11l-.648-.946a6.202 6.202 0 0 0-.157-.22 9.526 9.526 0 0 1-.096-.133l-.511-.7a7.413 7.413 0 0 0-.162-.214l-.102-.134-.265-.346a26.903 26.903 0 0 0-.543-.687l-.11-.136c-.143-.179-.291-.363-.442-.54l-.278-.332a8.854 8.854 0 0 0-.192-.225L.417 6.28l-.283-.324L0 5.805l1.376-1.602c.04.027.186.132.186.132l.377.272.129.095c.08.058.16.115.237.175l.37.28c.192.142.382.292.565.436l.162.126c.27.21.503.398.714.574l.477.393c.078.064.156.127.23.194l.433.375.171-.205A50.865 50.865 0 0 1 8.18 4.023a35.163 35.163 0 0 1 2.382-2.213c.207-.174.42-.349.635-.518l.328-.255.333-.245c.072-.055.146-.107.221-.159l.117-.083c.11-.077.225-.155.341-.23.163-.11.334-.217.503-.32l1.158 1.74a11.908 11.908 0 0 0-.64.55l-.065.06c-.07.062-.139.125-.207.192l-.258.249-.26.265c-.173.176-.345.357-.512.539a32.626 32.626 0 0 0-1.915 2.313 52.115 52.115 0 0 0-2.572 3.746l-.392.642-.19.322-.233.382H4.016z'/></svg>");
 }
 
-.emotion-14 {
+.emotion-12 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -3163,7 +3073,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   padding: 0 10px;
 }
 
-.emotion-10 {
+.emotion-8 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -3174,32 +3084,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   align-items: center;
 }
 
-.emotion-8 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  height: 36px;
-  line-height: 36px;
-  font-weight: 500;
-  padding: 0 15px;
-  background-color: #798291;
-  color: #fff;
-  margin: 0 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
-  background-color: #fcefea;
-  color: #ff003b;
-}
-
-@media (max-width:1200px) {
-  .emotion-8 {
-    padding: 0 10px;
-  }
-}
-
-.emotion-12 {
+.emotion-10 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -3214,7 +3099,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   justify-content: flex-end;
 }
 
-.emotion-16 {
+.emotion-14 {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -3261,10 +3146,10 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 }
 
 <div
-    class="emotion-18 emotion-19"
+    class="emotion-16 emotion-17"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3286,28 +3171,23 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
       </div>
     </mock-link>
     <div
-      class="emotion-14 emotion-15"
+      class="emotion-12 emotion-13"
     >
       <div
-        class="emotion-10 emotion-11"
+        class="emotion-8 emotion-9"
       >
         <button
           class="emotion-6 emotion-7"
         >
           editor.editorToolbar.save
         </button>
-        <button
-          class="emotion-8 emotion-9"
-        >
-          editor.editorToolbar.deletePublishedEntry
-        </button>
       </div>
       <div
-        class="emotion-12 emotion-13"
+        class="emotion-10 emotion-11"
       />
     </div>
     <div
-      class="emotion-16 emotion-17"
+      class="emotion-14 emotion-15"
     >
       <mock-settings-dropdown />
     </div>
@@ -3500,7 +3380,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3736,7 +3616,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3972,7 +3852,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -4208,7 +4088,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1vo0j4g-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1nep0sw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
