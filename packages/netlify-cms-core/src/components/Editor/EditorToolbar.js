@@ -580,6 +580,7 @@ export class EditorToolbar extends React.Component {
       isNewEntry,
       isModification,
       t,
+      useOpenAuthoring,
     } = this.props;
 
     const deleteLabel =
