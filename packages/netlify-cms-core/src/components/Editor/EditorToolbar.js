@@ -176,10 +176,6 @@ const BackStatusChanged = styled(BackStatus)`
   ${components.textBadgeDanger};
 `;
 
-const BackStatusEmpty = styled.p`
-  height: 5px;
-`;
-
 const ToolbarButton = styled.button`
   ${buttons.button};
   ${buttons.default};
@@ -642,7 +638,6 @@ export class EditorToolbar extends React.Component {
     const {
       user,
       hasChanged,
-      hasUnpublishedChanges,
       displayUrl,
       collection,
       hasWorkflow,
@@ -650,8 +645,7 @@ export class EditorToolbar extends React.Component {
       t,
       editorBackLink,
     } = this.props;
-    console.log(hasChanged);
-    console.log(hasUnpublishedChanges);
+
     return (
       <ToolbarContainer>
         <ToolbarSectionBackLink to={editorBackLink}>
@@ -662,14 +656,10 @@ export class EditorToolbar extends React.Component {
                 collectionLabel: collection.get('label'),
               })}
             </BackCollection>
-            {hasUnpublishedChanges || hasChanged ? (
-              hasChanged ? (
-                <BackStatusChanged>{t('editor.editorToolbar.unsavedChanges')}</BackStatusChanged>
-              ) : (
-                <BackStatusUnchanged>{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
-              )
+            {hasChanged ? (
+              <BackStatusChanged>{t('editor.editorToolbar.unsavedChanges')}</BackStatusChanged>
             ) : (
-              <BackStatusEmpty />
+              <BackStatusUnchanged>{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
             )}
           </div>
         </ToolbarSectionBackLink>
