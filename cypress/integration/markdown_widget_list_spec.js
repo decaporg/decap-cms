@@ -321,6 +321,8 @@ describe('Markdown widget', () => {
               </li>
               <li>
                 <p>bar</p>
+              </li>
+              <li>
                 <p>baz</p>
               </li>
             </ul>
@@ -334,14 +336,12 @@ describe('Markdown widget', () => {
               </li>
               <li>
                 <p>bar</p>
-                <ul>
-                  <li>
-                    <p>baz</p>
-                  </li>
-                </ul>
               </li>
-            </ul> 
+            </ul>
+            <p>baz</p>
           `)
+          .clickUnorderedListButton()
+          .tabkey()
           .setCursorAfter('baz')
           .enter()
           .tabkey()
