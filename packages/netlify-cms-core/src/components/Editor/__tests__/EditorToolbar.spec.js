@@ -111,5 +111,10 @@ describe('EditorToolbar', () => {
         expect(asFragment()).toMatchSnapshot();
       });
     });
+
+    it(`should render normal save button`, () => {
+      const { asFragment } = render(<EditorToolbar {...props} hasChanged={true} />);
+      expect(asFragment()).toMatchSnapshot();
+    });
   });
 });

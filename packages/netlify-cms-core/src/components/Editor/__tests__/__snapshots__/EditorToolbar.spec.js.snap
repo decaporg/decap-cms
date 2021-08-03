@@ -1,5 +1,533 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`EditorToolbar should render normal save button 1`] = `
+<DocumentFragment>
+  .emotion-21 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-17 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-8 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-15 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-19 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-13 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-13 .ei6fm2r1 {
+  color: #17a2b8;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ff003b;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #17a2b8;
+}
+
+.emotion-10:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-10 {
+    padding-left: 10px;
+  }
+}
+
+<div
+    class="emotion-21 emotion-22"
+  >
+    <mock-link
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.unsavedChanges
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-17 emotion-18"
+    >
+      <div
+        class="emotion-8 emotion-9"
+      >
+        <div>
+          <button
+            class="emotion-6 emotion-7"
+          >
+            editor.editorToolbar.deleteEntry
+          </button>
+        </div>
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <div>
+          <div
+            class="emotion-12 emotion-13 emotion-14"
+          >
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-10 emotion-11"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.publish
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="emotion-19 emotion-20"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render normal save button 2`] = `
+<DocumentFragment>
+  .emotion-21 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-17 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-8 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-15 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-19 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-13 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-13 .ei6fm2r1 {
+  color: #17a2b8;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ff003b;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #17a2b8;
+}
+
+.emotion-10:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-10 {
+    padding-left: 10px;
+  }
+}
+
+<div
+    class="emotion-21 emotion-22"
+  >
+    <mock-link
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.unsavedChanges
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-17 emotion-18"
+    >
+      <div
+        class="emotion-8 emotion-9"
+      >
+        <div>
+          <button
+            class="emotion-6 emotion-7"
+          >
+            editor.editorToolbar.deleteEntry
+          </button>
+        </div>
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <div>
+          <div
+            class="emotion-12 emotion-13 emotion-14"
+          >
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-10 emotion-11"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.publish
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="emotion-19 emotion-20"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`EditorToolbar should render with default props 1`] = `
 <DocumentFragment>
   .emotion-18 {
@@ -179,7 +707,7 @@ exports[`EditorToolbar should render with default props 1`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -408,6 +936,12 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 .emotion-15 {
   position: relative;
   font-size: 14px;
@@ -469,7 +1003,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -498,6 +1032,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -684,6 +1219,12 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 .emotion-13 {
   position: relative;
   font-size: 14px;
@@ -803,7 +1344,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -832,6 +1373,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -1070,6 +1612,12 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 .emotion-15 {
   position: relative;
   font-size: 14px;
@@ -1131,7 +1679,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1160,6 +1708,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -1346,6 +1895,12 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 .emotion-13 {
   position: relative;
   font-size: 14px;
@@ -1447,7 +2002,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-28 emotion-29"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1476,6 +2031,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -1709,6 +2265,12 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 .emotion-15 {
   position: relative;
   font-size: 14px;
@@ -1770,7 +2332,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1799,6 +2361,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -1985,6 +2548,12 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 .emotion-13 {
   position: relative;
   font-size: 14px;
@@ -2104,7 +2673,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2133,6 +2702,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -2371,11 +2941,17 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2404,6 +2980,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -2576,11 +3153,17 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 <div
     class="emotion-16 emotion-17"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2609,6 +3192,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -2801,11 +3385,17 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2834,6 +3424,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -3031,11 +3622,17 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3064,6 +3661,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -3261,11 +3859,17 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3294,6 +3898,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>
@@ -3491,11 +4096,17 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   }
 }
 
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
 <div
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-i3q6wb-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3524,6 +4135,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
       >
         <button
           class="emotion-6 emotion-7"
+          disabled=""
         >
           editor.editorToolbar.save
         </button>

@@ -194,6 +194,9 @@ const DeleteButton = styled(ToolbarButton)`
 
 const SaveButton = styled(ToolbarButton)`
   ${buttons.lightBlue};
+  &[disabled] {
+    ${buttons.disabled};
+  }
 `;
 
 const PublishedToolbarButton = styled(DropdownButton)`
@@ -583,7 +586,11 @@ export class EditorToolbar extends React.Component {
       (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
     return [
-      <SaveButton key="save-button" onClick={() => hasChanged && onPersist()}>
+      <SaveButton
+        disabled={!hasChanged}
+        key="save-button"
+        onClick={() => hasChanged && onPersist()}
+      >
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
