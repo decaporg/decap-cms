@@ -192,13 +192,16 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
 
           default: {
             if (blocks.size > 1) {
-              const listItems = []
+              const listItems = [];
               blocks.forEach(block => {
-                const listItem = Block.create({ type: 'list-item', nodes: [block]})
-                listItems.push(listItem)
-              })
-              const listBlock = Block.create({ type: 'bulleted-list', nodes: listItems })
-              editor.delete().replaceNodeByKey(startBlock.key, listBlock).moveToRangeOfNode(listBlock)
+                const listItem = Block.create({ type: 'list-item', nodes: [block] });
+                listItems.push(listItem);
+              });
+              const listBlock = Block.create({ type: 'bulleted-list', nodes: listItems });
+              editor
+                .delete()
+                .replaceNodeByKey(startBlock.key, listBlock)
+                .moveToRangeOfNode(listBlock);
             } else {
               editor.wrapInList(type);
             }
