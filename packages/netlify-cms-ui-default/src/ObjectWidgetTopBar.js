@@ -65,6 +65,7 @@ class ObjectWidgetTopBar extends React.Component {
     collapsed: PropTypes.bool,
     heading: PropTypes.node,
     label: PropTypes.string,
+    t: PropTypes.func.isRequired,
   };
 
   renderAddUI() {
@@ -82,7 +83,9 @@ class ObjectWidgetTopBar extends React.Component {
     return (
       <Dropdown
         renderButton={() => (
-          <StyledDropdownButton>Add {this.props.label} item</StyledDropdownButton>
+          <StyledDropdownButton>
+            {this.props.t('editor.editorWidgets.list.addType', { item: this.props.label })}
+          </StyledDropdownButton>
         )}
       >
         {types.map((type, idx) => (
@@ -99,7 +102,8 @@ class ObjectWidgetTopBar extends React.Component {
   renderAddButton() {
     return (
       <AddButton onClick={this.props.onAdd}>
-        Add {this.props.label} <Icon type="add" size="xsmall" />
+        {this.props.t('editor.editorWidgets.list.add', { item: this.props.label })}
+        <Icon type="add" size="xsmall" />
       </AddButton>
     );
   }

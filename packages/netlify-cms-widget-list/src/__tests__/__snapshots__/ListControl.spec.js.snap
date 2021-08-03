@@ -177,7 +177,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -406,7 +406,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -665,7 +665,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -905,7 +905,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1163,7 +1163,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1422,7 +1422,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1663,7 +1663,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1862,7 +1862,7 @@ exports[`ListControl should render list with nested object 1`] = `
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -2120,7 +2120,7 @@ exports[`ListControl should render list with nested object with collapse = false
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >

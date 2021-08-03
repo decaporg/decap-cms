@@ -38,6 +38,7 @@ export default class ObjectControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     hasError: PropTypes.bool,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -135,7 +136,7 @@ export default class ObjectControl extends React.Component {
   };
 
   render() {
-    const { field, forID, classNameWrapper, forList, hasError } = this.props;
+    const { field, forID, classNameWrapper, forList, hasError, t } = this.props;
     const collapsed = forList ? this.props.collapsed : this.state.collapsed;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
@@ -168,6 +169,7 @@ export default class ObjectControl extends React.Component {
                   collapsed={collapsed}
                   onCollapseToggle={this.handleCollapseToggle}
                   heading={collapsed && this.objectLabel()}
+                  t={t}
                 />
               )}
               <div
