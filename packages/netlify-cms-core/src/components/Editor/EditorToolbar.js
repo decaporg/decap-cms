@@ -575,11 +575,11 @@ export class EditorToolbar extends React.Component {
       onDeleteUnpublishedChanges,
       showDelete,
       hasUnpublishedChanges,
-      useOpenAuthoring,
       isDeleting,
       isNewEntry,
       isModification,
       t,
+      useOpenAuthoring,
     } = this.props;
 
     const deleteLabel =
