@@ -188,6 +188,22 @@ describe('Markdown widget', () => {
           `)
       })
 
+      it('unwraps list item block from each selected list item and unwraps all of them from the outer list block', () => {
+        cy.clickUnorderedListButton()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .enter()
+          .type('baz')
+          .setSelection('foo', 'baz')
+          .clickUnorderedListButton()
+          .confirmMarkdownEditorContent(`
+            <p>foo</p>
+            <p>bar</p>
+            <p>baz</p>
+          `)
+      })
+      
       it('combines adjacent same-typed lists, not differently typed lists', () => {
         cy.focused()
           .type('foo')
