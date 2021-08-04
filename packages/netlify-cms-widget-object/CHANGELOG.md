@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-object@2.7.0...netlify-cms-widget-object@2.7.1) (2021-08-04)
+
+
+### Bug Fixes
+
+* **widget-list:** add missing translations in widget list top bar ([#5471](https://github.com/netlify/netlify-cms/issues/5471)) ([#5679](https://github.com/netlify/netlify-cms/issues/5679)) ([db560cc](https://github.com/netlify/netlify-cms/commit/db560cc082fcc0a9842919e28f715e44a6e4625a))
+
+
+
+
+
 # [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-object/compare/netlify-cms-widget-object@2.6.2...netlify-cms-widget-object@2.7.0) (2021-05-04)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.33.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.33.0...netlify-cms-locales@1.33.1) (2021-08-04)
+
+
+### Bug Fixes
+
+* **widget-list:** add missing translations in widget list top bar ([#5471](https://github.com/netlify/netlify-cms/issues/5471)) ([#5679](https://github.com/netlify/netlify-cms/issues/5679)) ([db560cc](https://github.com/netlify/netlify-cms/commit/db560cc082fcc0a9842919e28f715e44a6e4625a))
+
+
+
+
+
 # [1.33.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.32.0...netlify-cms-locales@1.33.0) (2021-07-07)
 
 
