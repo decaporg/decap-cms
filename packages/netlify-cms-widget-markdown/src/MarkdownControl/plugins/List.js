@@ -192,11 +192,9 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
 
           default: {
             if (blocks.size > 1) {
-              const listItems = [];
-              blocks.forEach(block => {
-                const listItem = Block.create({ type: 'list-item', nodes: [block] });
-                listItems.push(listItem);
-              });
+              const listItems = blocks.map(block =>
+                Block.create({ type: 'list-item', nodes: [block] }),
+              );
               const listBlock = Block.create({ type: 'bulleted-list', nodes: listItems });
               editor
                 .delete()
