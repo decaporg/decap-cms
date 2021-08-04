@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.0...netlify-cms-widget-markdown@2.14.1) (2021-08-04)
+
+
+### Bug Fixes
+
+* **markdown-widget:** apply list item style on each block in a selection ([#5676](https://github.com/netlify/netlify-cms/issues/5676)) ([04e5305](https://github.com/netlify/netlify-cms/commit/04e53054ceba8e2b6f3a2e7f1de5ecc3abe8431a))
+
+
+
+
+
 # [2.14.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.13.6...netlify-cms-widget-markdown@2.14.0) (2021-07-25)
 
 
