@@ -128,6 +128,7 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -604,7 +605,7 @@ export default class ListControl extends React.Component {
   }
 
   renderListControl() {
-    const { value, forID, field, classNameWrapper } = this.props;
+    const { value, forID, field, classNameWrapper, t } = this.props;
     const { itemsCollapsed, listCollapsed } = this.state;
     const items = value || List();
     const label = field.get('label', field.get('name'));
@@ -635,6 +636,7 @@ export default class ListControl extends React.Component {
               label={labelSingular.toLowerCase()}
               onCollapseToggle={this.handleCollapseAllToggle}
               collapsed={selfCollapsed}
+              t={t}
             />
             {(!selfCollapsed || !minimizeCollapsedItems) && (
               <SortableList

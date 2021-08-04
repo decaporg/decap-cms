@@ -197,6 +197,10 @@ const en = {
       datetime: {
         now: 'Now',
       },
+      list: {
+        add: 'Add %{item}',
+        addType: 'Add %{item} item',
+      },
     },
   },
   mediaLibrary: {

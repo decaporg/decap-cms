@@ -587,7 +587,7 @@ describe('ListControl', () => {
 
     expect(queryByTestId('object-control-0')).toBeNull();
 
-    fireEvent.click(getByText('Add list'));
+    fireEvent.click(getByText('editor.editorWidgets.list.add'));
 
     expect(props.onChange).toHaveBeenCalledTimes(1);
     expect(props.onChange).toHaveBeenCalledWith(fromJS([{}]));
