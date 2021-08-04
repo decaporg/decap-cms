@@ -164,6 +164,46 @@ describe('Markdown widget', () => {
           `);
       });
 
+      it('wrap each bottom-most block in a selection with a list item block', () => {
+        cy.focused()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .enter()
+          .type('baz')
+          .setSelection('foo', 'baz')
+          .clickUnorderedListButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <p>foo</p>
+              </li>
+              <li>
+                <p>bar</p>
+              </li>
+              <li>
+                <p>baz</p>
+              </li>
+            </ul>
+          `)
+      })
+
+      it('unwraps list item block from each selected list item and unwraps all of them from the outer list block', () => {
+        cy.clickUnorderedListButton()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .enter()
+          .type('baz')
+          .setSelection('foo', 'baz')
+          .clickUnorderedListButton()
+          .confirmMarkdownEditorContent(`
+            <p>foo</p>
+            <p>bar</p>
+            <p>baz</p>
+          `)
+      })
+      
       it('combines adjacent same-typed lists, not differently typed lists', () => {
         cy.focused()
           .type('foo')
@@ -321,6 +361,8 @@ describe('Markdown widget', () => {
               </li>
               <li>
                 <p>bar</p>
+              </li>
+              <li>
                 <p>baz</p>
               </li>
             </ul>
@@ -334,14 +376,12 @@ describe('Markdown widget', () => {
               </li>
               <li>
                 <p>bar</p>
-                <ul>
-                  <li>
-                    <p>baz</p>
-                  </li>
-                </ul>
               </li>
-            </ul> 
+            </ul>
+            <p>baz</p>
           `)
+          .clickUnorderedListButton()
+          .tabkey()
           .setCursorAfter('baz')
           .enter()
           .tabkey()

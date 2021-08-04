@@ -152,7 +152,7 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
         if (!LIST_TYPES.includes(type)) {
           throw Error(`${type} is not a valid list type, must be one of: ${LIST_TYPES}`);
         }
-        const { startBlock } = editor.value;
+        const { startBlock, blocks } = editor.value;
         const target = editor.getBlockContainer();
 
         switch (get(target, 'type')) {
@@ -191,7 +191,18 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
           }
 
           default: {
-            editor.wrapInList(type);
+            if (blocks.size > 1) {
+              const listItems = blocks.map(block =>
+                Block.create({ type: 'list-item', nodes: [block] }),
+              );
+              const listBlock = Block.create({ type, nodes: listItems });
+              editor
+                .delete()
+                .replaceNodeByKey(startBlock.key, listBlock)
+                .moveToRangeOfNode(listBlock);
+            } else {
+              editor.wrapInList(type);
+            }
             break;
           }
         }
