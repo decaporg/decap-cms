@@ -8741,10 +8741,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.32:
-  version "2.15.32"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.32.tgz#99bd49e4f43c41e20cb559bd7b81f109a9ea9c6a"
-  integrity sha512-tHjYJQp4molf0/YlUoB3IWZnqky5mmc8VppJAKi4X6KxGJxvZCgqZjh/0R9wp7wPjeaikOLcSRxEKeWU6NfIVA==
+netlify-cms-app@^2.15.33:
+  version "2.15.33"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.33.tgz#e519532179954a24795569f4322724137aa54f02"
+  integrity sha512-tsJSe3pwdKPAfUMwnbL5A0tLxhJb1wX4iqkpdmG8RZIr7Rpfoy6QIUaOZgip9uVHMXW9/YPU4iKSKG10qTZQjQ==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8775,7 +8775,7 @@ netlify-cms-app@^2.15.32:
     netlify-cms-widget-image "^2.8.1"
     netlify-cms-widget-list "^2.10.1"
     netlify-cms-widget-map "^1.5.0"
-    netlify-cms-widget-markdown "^2.14.0"
+    netlify-cms-widget-markdown "^2.14.1"
     netlify-cms-widget-number "^2.5.0"
     netlify-cms-widget-object "^2.7.1"
     netlify-cms-widget-relation "^2.10.3"
@@ -8999,10 +8999,10 @@ netlify-cms-widget-map@^1.5.0:
   dependencies:
     ol "^5.3.1"
 
-netlify-cms-widget-markdown@^2.14.0:
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/netlify-cms-widget-markdown/-/netlify-cms-widget-markdown-2.14.0.tgz#45caaa8671e4e664c330240a7d2e3d3e9cb10314"
-  integrity sha512-+ie4g6+w2tq/c1yCDNtvINre/IusyF8AEdaMAzB8nC0dwBiIsXTUYs7nx/KaT8lecwHN4ZaYQfiI1zbF8DZUrw==
+netlify-cms-widget-markdown@^2.14.1:
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/netlify-cms-widget-markdown/-/netlify-cms-widget-markdown-2.14.1.tgz#f583ca59c7e2bd35264cb5f7a09099d539451f49"
+  integrity sha512-whU7hJ/DAu/k+4VaAbkHf59ZeEWkmT+QVQWdOaDlZraAsd2G7sCotwkPizsnrWfgbtuCYXj2j/EjF0boz/yWxg==
   dependencies:
     dompurify "^2.2.6"
     is-hotkey "^0.2.0"
