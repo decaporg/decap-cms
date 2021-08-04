@@ -195,7 +195,7 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
               const listItems = blocks.map(block =>
                 Block.create({ type: 'list-item', nodes: [block] }),
               );
-              const listBlock = Block.create({ type: 'bulleted-list', nodes: listItems });
+              const listBlock = Block.create({ type, nodes: listItems });
               editor
                 .delete()
                 .replaceNodeByKey(startBlock.key, listBlock)
