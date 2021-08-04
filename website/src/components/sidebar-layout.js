@@ -6,7 +6,7 @@ import Page from './page';
 import { mq } from '../utils';
 
 const Children = styled.div`
-  overflow: auto;
+  overflow: hidden;
   padding-left: 2rem;
 `;
 
