@@ -164,6 +164,30 @@ describe('Markdown widget', () => {
           `);
       });
 
+      it('wrap each bottom-most block in a selection with a list item block', () => {
+        cy.focused()
+          .type('foo')
+          .enter()
+          .type('bar')
+          .enter()
+          .type('baz')
+          .setSelection('foo', 'baz')
+          .clickUnorderedListButton()
+          .confirmMarkdownEditorContent(`
+            <ul>
+              <li>
+                <p>foo</p>
+              </li>
+              <li>
+                <p>bar</p>
+              </li>
+              <li>
+                <p>baz</p>
+              </li>
+            </ul>
+          `)
+      })
+
       it('combines adjacent same-typed lists, not differently typed lists', () => {
         cy.focused()
           .type('foo')
