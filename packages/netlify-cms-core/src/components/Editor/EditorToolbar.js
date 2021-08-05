@@ -546,18 +546,53 @@ export class EditorToolbar extends React.Component {
   };
 
   renderSimplePublishControls = () => {
-    const { collection, hasChanged, isNewEntry, t } = this.props;
+    const { collection, hasChanged, isNewEntry } = this.props;
 
     const canCreate = collection.get('create');
     if (!isNewEntry && !hasChanged) {
-      return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          {this.renderExistingEntrySimplePublishControls({ canCreate })}
-        </>
-      );
+      return this.renderExistingEntrySimplePublishControls({ canCreate });
     }
     return this.renderNewEntrySimplePublishControls({ canCreate });
+  };
+
+  renderSaveButton = () => {
+    const { onPersist, hasChanged, isPersisting, t } = this.props;
+
+    return (
+      <SaveButton
+        disabled={!hasChanged}
+        key="save-button"
+        onClick={() => hasChanged && onPersist()}
+      >
+        {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
+      </SaveButton>
+    );
+  };
+
+  renderDeleteButton = () => {
+    const {
+      onDelete,
+      onDeleteUnpublishedChanges,
+      showDelete,
+      hasUnpublishedChanges,
+      isDeleting,
+      isModification,
+      t,
+      useOpenAuthoring,
+    } = this.props;
+
+    const deleteLabel =
+      t('editor.editorToolbar.deleteUnpublishedEntry') ||
+      (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
+
+    return (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
+      <DeleteButton
+        key="delete-button"
+        onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+      >
+        {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
+      </DeleteButton>
+    );
   };
 
   renderWorkflowSaveControls = () => {
@@ -605,7 +640,7 @@ export class EditorToolbar extends React.Component {
   };
 
   renderWorkflowPublishControls = () => {
-    const { collection, currentStatus, isNewEntry, useOpenAuthoring, t } = this.props;
+    const { collection, currentStatus, isNewEntry, useOpenAuthoring } = this.props;
 
     const canCreate = collection.get('create');
     const canPublish = collection.get('publish') && !useOpenAuthoring;
@@ -614,7 +649,6 @@ export class EditorToolbar extends React.Component {
     if (currentStatus) {
       return (
         <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}
           {this.renderWorkflowStatusControls()}
           {this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
         </>
@@ -625,12 +659,7 @@ export class EditorToolbar extends React.Component {
      * Publish control for published workflow entry.
      */
     if (!isNewEntry) {
-      return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          {this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })}
-        </>
-      );
+      return this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete });
     }
   };
 
@@ -665,12 +694,16 @@ export class EditorToolbar extends React.Component {
         </ToolbarSectionBackLink>
         <ToolbarSectionMain>
           <ToolbarSubSectionFirst>
-            {hasWorkflow ? this.renderWorkflowSaveControls() : this.renderSimpleSaveControls()}
+            {hasWorkflow
+              ? [
+                  this.renderSaveButton(),
+                  this.renderWorkflowPublishControls(),
+                  this.renderDeleteButton(),
+                ]
+              : [this.renderSimpleSaveControls(), this.renderSimplePublishControls()]}
           </ToolbarSubSectionFirst>
           <ToolbarSubSectionLast>
-            {hasWorkflow
-              ? this.renderWorkflowPublishControls()
-              : this.renderSimplePublishControls()}
+            {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
           </ToolbarSubSectionLast>
         </ToolbarSectionMain>
         <ToolbarSectionMeta>

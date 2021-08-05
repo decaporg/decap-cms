@@ -332,6 +332,7 @@ function publishEntry({ createNew = false, duplicate = false } = {}) {
 function createPostAndPublish(entry) {
   newPost();
   populateEntry(entry, publishEntry);
+  assertNotification(notifications.saved);
   exitEditor();
 }
 
