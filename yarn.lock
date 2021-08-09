@@ -9983,10 +9983,10 @@ http-proxy@^1.17.0, http-proxy@^1.18.0:
     follow-redirects "^1.0.0"
     requires-port "^1.0.0"
 
-http-server@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/http-server/-/http-server-0.13.0.tgz#ae7d9b718fbe88b7fb19360fcc2ae21e71d257da"
-  integrity sha512-/MjH9k/y470zbtXzKLkP8vioIVvxRArTkz8f9UX1ztkLZzr6S0hg6BW8h6MBn/HUfwjlTQvIe9DRknorN2u20Q==
+http-server@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/http-server/-/http-server-13.0.0.tgz#27ab5f3bad0e27a29965a4029c26170162f7b98f"
+  integrity sha512-tqOx2M1CiZ3aVaE7Ue/0lup9kOG+Zqg6wdT1HygvxFnvPpU9doBMPcQ1ffT0/QS3J9ua35gipg0o3Dr8N0K0Tg==
   dependencies:
     basic-auth "^1.0.3"
     colors "^1.4.0"
