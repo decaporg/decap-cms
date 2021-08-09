@@ -84,6 +84,7 @@ const PublishButton = styled.button`
   &[disabled] {
     background-color: ${colorsRaw.grayLight};
     color: ${colorsRaw.gray};
+    cursor: not-allowed;
   }
 `;
 
