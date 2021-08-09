@@ -196,6 +196,10 @@ const fr = {
       datetime: {
         now: 'Maintenant',
       },
+      list: {
+        add: 'Ajouter %{item}',
+        addType: 'Ajouter une entrée de type %{item}',
+      },
     },
   },
   mediaLibrary: {
