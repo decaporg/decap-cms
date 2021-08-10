@@ -82,8 +82,7 @@ const PublishButton = styled.button`
   margin-left: 6px;
 
   &[disabled] {
-    background-color: ${colorsRaw.grayLight};
-    color: ${colorsRaw.gray};
+    ${buttons.disabled};
   }
 `;
 
