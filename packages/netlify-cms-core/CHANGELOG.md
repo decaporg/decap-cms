@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.47.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.47.0...netlify-cms-core@2.47.1) (2021-08-10)
+
+
+### Bug Fixes
+
+* **workflow:** indicate that disabled publish button is not clickable ([#5698](https://github.com/netlify/netlify-cms/issues/5698)) ([e2842d8](https://github.com/netlify/netlify-cms/commit/e2842d85ddd93c3959b6b157e9b114b265549057))
+
+
+
+
+
 # [2.47.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.46.0...netlify-cms-core@2.47.0) (2021-08-03)
 
 
