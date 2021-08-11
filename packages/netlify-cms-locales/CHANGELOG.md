@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.34.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.33.2...netlify-cms-locales@1.34.0) (2021-08-11)
+
+
+### Features
+
+* update locale ja ([#5703](https://github.com/netlify/netlify-cms/issues/5703)) ([8578f33](https://github.com/netlify/netlify-cms/commit/8578f331329a29810457ccaa1266f3dd8be15985))
+
+
+
+
+
 ## [1.33.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.33.1...netlify-cms-locales@1.33.2) (2021-08-09)
 
 **Note:** Version bump only for package netlify-cms-locales
