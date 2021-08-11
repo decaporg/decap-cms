@@ -15,7 +15,7 @@ function createShortcodeTokenizer({ plugins }) {
     // through each line individually, trimming trailing whitespace and
     // newlines, if we don't initially match on a pattern. We keep track of
     // the starting position of each line so that we can sort correctly
-    // across the full multilen matches.
+    // across the full multiline matches.
     const trimmedLines = value
       .split('\n\n')
       .reduce((acc, line) => {
@@ -38,7 +38,7 @@ function createShortcodeTokenizer({ plugins }) {
       .map(({ line, start }) => ({ line, start }));
 
     // Attempt to find a regex match for each plugin's pattern, and then
-    // select the first by its occurence in `value`. This ensures we won't
+    // select the first by its occurrence in `value`. This ensures we won't
     // skip a plugin that occurs later in the plugin registry, but earlier
     // in the `value`.
     const { plugin, match } =
