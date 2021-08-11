@@ -8788,10 +8788,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.35:
-  version "2.15.35"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.35.tgz#9f228c6513b9393d4467afc358fbf43b68752b01"
-  integrity sha512-YKKmlRf5qv0/ITQAQI5V2auChMIOlE7FPHG5RX5VtsKvZ3AMnT6uGnNGNZHcNlbm2oNub50cNf2vArMMJknGsQ==
+netlify-cms-app@^2.15.36:
+  version "2.15.36"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.36.tgz#2eda681df8a2fc2fdb470354f936572a784dcb26"
+  integrity sha512-vKh/EwtBsAhwBRAYk4bm7K4tXL6gjUAAzdUw3Cmkcnbh61rFBokqd6Ka/E3egvRfjIypgT0uUv812h5jqBHGlQ==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8811,7 +8811,7 @@ netlify-cms-app@^2.15.35:
     netlify-cms-lib-auth "^2.4.2"
     netlify-cms-lib-util "^2.13.3"
     netlify-cms-lib-widgets "^1.6.3"
-    netlify-cms-locales "^1.33.2"
+    netlify-cms-locales "^1.34.0"
     netlify-cms-ui-default "^2.15.1"
     netlify-cms-widget-boolean "^2.4.1"
     netlify-cms-widget-code "^1.3.3"
@@ -8971,10 +8971,10 @@ netlify-cms-lib-widgets@^1.6.3:
   resolved "https://registry.yarnpkg.com/netlify-cms-lib-widgets/-/netlify-cms-lib-widgets-1.6.3.tgz#06bd3c364b1552a9640815e3ca0d72b56faf1544"
   integrity sha512-/35bTvzuEOEOLeY+gQkgBMUu4NQz2gf3ItITUZtBNIbHhN0z6RiGtqVPmQu2PPcqzQXf+IUbhr2VVLUN6a/tpg==
 
-netlify-cms-locales@^1.33.2:
-  version "1.33.2"
-  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.33.2.tgz#55260b934073983f03c1abd8d93400f0e879728c"
-  integrity sha512-CVkl4a9WaisBbYo24E2y/dStJSVw056agOjWLat1dZR4hUGBGXYquaclM1E7jsiYJtq1eBPdIVukIaNcF9db5w==
+netlify-cms-locales@^1.34.0:
+  version "1.34.0"
+  resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.34.0.tgz#08109ec4f9f53508025e8d5a76ff0917f68c8d07"
+  integrity sha512-ArqTPeaKC93Jh3hlVm+Gc2rntnMrhcNFmNSC5sYQ/kss3IgnWlZ43ikYTJCsZs5L7jTpMN7fndrXnfMBnR2fQQ==
 
 netlify-cms-ui-default@^2.15.1:
   version "2.15.1"
