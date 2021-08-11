@@ -132,9 +132,13 @@ const ja = {
       deleteEntry: 'エントリを削除',
       saving: '保存中...',
       save: '保存',
+      statusInfoTooltipDraft:
+        'エントリのステータスは下書きに設定されています。最終決定してレビューに提出するには、ステータスを「レビュー中」に設定します。',
+      statusInfoTooltipInReview:
+        'エントリはレビュー中なので、それ以上のアクションは必要ありません。ただし、レビュー中でも追加の変更を行うことができます。',
       deleting: '削除しています...',
       updating: '更新しています...',
-      status: 'ステータスを: %{status}',
+      status: 'ステータス: %{status}',
       backCollection: '%{collectionLabel}のエントリを作成中',
       unsavedChanges: '未保存',
       changesSaved: '保存済',
