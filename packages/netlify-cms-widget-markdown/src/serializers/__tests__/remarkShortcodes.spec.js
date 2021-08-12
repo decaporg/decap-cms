@@ -1,6 +1,6 @@
 import { Map, OrderedMap } from 'immutable';
 
-import { remarkParseShortcodes } from '../remarkShortcodes';
+import { remarkParseShortcodes, getLinesWithOffsets } from '../remarkShortcodes';
 
 // Stub of Remark Parser
 function process(value, plugins, processEat = () => {}) {
@@ -81,5 +81,26 @@ describe('remarkParseShortcodes', () => {
       process('foo bar', Map({ [editorComponent.id]: editorComponent }), processEat);
       expect(processEat).toHaveBeenCalledWith(expectedNode);
     });
+  });
+});
+
+describe('getLinesWithOffsets', () => {
+  test('should split into lines', () => {
+    const value = ' line1\n\nline2 \n\n    line3   \n\n';
+
+    const lines = getLinesWithOffsets(value);
+    expect(lines).toEqual([
+      { line: ' line1', start: 0 },
+      { line: 'line2', start: 8 },
+      { line: '    line3', start: 16 },
+      { line: '', start: 30 },
+    ]);
+  });
+
+  test('should return single item on no match', () => {
+    const value = ' line1    ';
+
+    const lines = getLinesWithOffsets(value);
+    expect(lines).toEqual([{ line: ' line1', start: 0 }]);
   });
 });

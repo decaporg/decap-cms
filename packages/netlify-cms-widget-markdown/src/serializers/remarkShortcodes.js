@@ -8,6 +8,31 @@ export function remarkParseShortcodes({ plugins }) {
   methods.unshift('shortcode');
 }
 
+export function getLinesWithOffsets(value) {
+  const SEPARATOR = '\n\n';
+  const splitted = value.split(SEPARATOR);
+  const trimmedLines = splitted
+    .reduce(
+      (acc, line) => {
+        const { start: previousLineStart, originalLength: previousLineOriginalLength } =
+          acc[acc.length - 1];
+
+        return [
+          ...acc,
+          {
+            line: line.trimEnd(),
+            start: previousLineStart + previousLineOriginalLength + SEPARATOR.length,
+            originalLength: line.length,
+          },
+        ];
+      },
+      [{ start: -SEPARATOR.length, originalLength: 0 }],
+    )
+    .slice(1)
+    .map(({ line, start }) => ({ line, start }));
+  return trimmedLines;
+}
+
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
     // Plugin patterns may rely on `^` and `$` tokens, even if they don't
@@ -16,26 +41,7 @@ function createShortcodeTokenizer({ plugins }) {
     // newlines, if we don't initially match on a pattern. We keep track of
     // the starting position of each line so that we can sort correctly
     // across the full multiline matches.
-    const trimmedLines = value
-      .split('\n\n')
-      .reduce((acc, line) => {
-        const [
-          { start: previousLineStart, originalLength: previousLineOriginalLength } = {
-            start: 0,
-            originalLength: 0,
-          },
-        ] = acc;
-        return [
-          {
-            line: line.trimEnd(),
-            start: previousLineStart + previousLineOriginalLength + 2,
-            originalLength: line.length,
-          },
-          ...acc,
-        ];
-      }, [])
-      .reverse()
-      .map(({ line, start }) => ({ line, start }));
+    const trimmedLines = getLinesWithOffsets(value);
 
     // Attempt to find a regex match for each plugin's pattern, and then
     // select the first by its occurrence in `value`. This ensures we won't
