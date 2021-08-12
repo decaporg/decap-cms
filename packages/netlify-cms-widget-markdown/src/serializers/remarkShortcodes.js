@@ -33,6 +33,16 @@ export function getLinesWithOffsets(value) {
   return trimmedLines;
 }
 
+function matchFromLines({ trimmedLines, plugin }) {
+  for (const { line, start } of trimmedLines) {
+    const match = line.match(plugin.pattern);
+    if (match) {
+      match.index += start;
+      return match;
+    }
+  }
+}
+
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
     // Plugin patterns may rely on `^` and `$` tokens, even if they don't
@@ -51,17 +61,7 @@ function createShortcodeTokenizer({ plugins }) {
       plugins
         .toList()
         .map(plugin => ({
-          match:
-            value.match(plugin.pattern) ||
-            trimmedLines
-              .map(({ line, start }) => {
-                const match = line.match(plugin.pattern);
-                if (match) {
-                  match.index += start;
-                }
-                return match;
-              })
-              .find(match => !!match),
+          match: value.match(plugin.pattern) || matchFromLines({ trimmedLines, plugin }),
           plugin,
         }))
         .filter(({ match }) => !!match)
