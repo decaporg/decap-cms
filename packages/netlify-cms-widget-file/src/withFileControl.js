@@ -10,7 +10,7 @@ import { oneLine } from 'common-tags';
 import { lengths, components, buttons, borders, effects, shadows } from 'netlify-cms-ui-default';
 import { basename } from 'netlify-cms-lib-util';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import arrayMove from 'array-move';
+import { arrayMoveImmutable as arrayMove } from 'array-move';
 
 const MAX_DISPLAY_LENGTH = 50;
 
