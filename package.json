@@ -95,7 +95,7 @@
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "^12.0.0",
     "@types/common-tags": "^1.8.0",
-    "@types/jest": "^26.0.13",
+    "@types/jest": "^27.0.0",
     "@types/js-base64": "^3.0.0",
     "@types/jwt-decode": "^2.2.1",
     "@types/lodash": "^4.14.149",
