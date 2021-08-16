@@ -191,6 +191,15 @@ const buttons = {
     background-color: ${colorsRaw.gray};
     color: ${colorsRaw.white};
   `,
+  widget: css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 3px;
+  `,
   medium: css`
     height: 27px;
     line-height: 27px;
