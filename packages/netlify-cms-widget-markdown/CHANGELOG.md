@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.1...netlify-cms-widget-markdown@2.14.2) (2021-08-17)
+
+
+### Bug Fixes
+
+* **markdown-widget:** support arbitrary component order ([#5597](https://github.com/netlify/netlify-cms/issues/5597)) ([fbfab7c](https://github.com/netlify/netlify-cms/commit/fbfab7cda54aba68c948188d0ad5660431d275fc))
+
+
+
+
+
 ## [2.14.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.0...netlify-cms-widget-markdown@2.14.1) (2021-08-04)
 
 
