@@ -28,7 +28,6 @@ export default function createEditorComponent(config) {
     type,
     icon,
     widget,
-    // enforce multiline flag, exclude others
     pattern,
     fromBlock: bind(fromBlock) || (() => ({})),
     toBlock: bind(toBlock) || (() => 'Plugin'),

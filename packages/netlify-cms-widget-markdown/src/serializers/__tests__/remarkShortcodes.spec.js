@@ -1,4 +1,6 @@
-import { remarkParseShortcodes } from '../remarkShortcodes';
+import { Map, OrderedMap } from 'immutable';
+
+import { remarkParseShortcodes, getLinesWithOffsets } from '../remarkShortcodes';
 
 // Stub of Remark Parser
 function process(value, plugins, processEat = () => {}) {
@@ -14,33 +16,60 @@ function process(value, plugins, processEat = () => {}) {
 }
 
 function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
-  // initialize pattern as RegExp as done in the EditorComponent value object
-  return { id, fromBlock, pattern: new RegExp(pattern, 'm') };
+  return {
+    id,
+    fromBlock,
+    pattern,
+  };
 }
 
 describe('remarkParseShortcodes', () => {
   describe('pattern matching', () => {
     it('should work', () => {
       const editorComponent = EditorComponent({ pattern: /bar/ });
-      process('foo bar', [editorComponent]);
+      process('foo bar', Map({ [editorComponent.id]: editorComponent }));
       expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
     });
     it('should match value surrounded in newlines', () => {
       const editorComponent = EditorComponent({ pattern: /^bar$/ });
-      process('foo\n\nbar\n', [editorComponent]);
+      process('foo\n\nbar\n', Map({ [editorComponent.id]: editorComponent }));
       expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
     });
     it('should match multiline shortcodes', () => {
       const editorComponent = EditorComponent({ pattern: /^foo\nbar$/ });
-      process('foo\nbar', [editorComponent]);
+      process('foo\nbar', Map({ [editorComponent.id]: editorComponent }));
       expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo\nbar']));
     });
     it('should match multiline shortcodes with empty lines', () => {
       const editorComponent = EditorComponent({ pattern: /^foo\n\nbar$/ });
-      process('foo\n\nbar', [editorComponent]);
+      process('foo\n\nbar', Map({ [editorComponent.id]: editorComponent }));
       expect(editorComponent.fromBlock).toHaveBeenCalledWith(
         expect.arrayContaining(['foo\n\nbar']),
       );
+    });
+    it('should match shortcodes based on order of occurrence in value', () => {
+      const fooEditorComponent = EditorComponent({ id: 'foo', pattern: /foo/ });
+      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
+      process(
+        'foo\n\nbar',
+        OrderedMap([
+          [barEditorComponent.id, barEditorComponent],
+          [fooEditorComponent.id, fooEditorComponent],
+        ]),
+      );
+      expect(fooEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo']));
+    });
+    it('should match shortcodes based on order of occurrence in value even when some use line anchors', () => {
+      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
+      const bazEditorComponent = EditorComponent({ id: 'baz', pattern: /^baz$/ });
+      process(
+        'foo\n\nbar\n\nbaz',
+        OrderedMap([
+          [bazEditorComponent.id, bazEditorComponent],
+          [barEditorComponent.id, barEditorComponent],
+        ]),
+      );
+      expect(barEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
     });
   });
   describe('output', () => {
@@ -49,8 +78,29 @@ describe('remarkParseShortcodes', () => {
       const shortcodeData = { bar: 'baz' };
       const expectedNode = { type: 'shortcode', data: { shortcode: 'foo', shortcodeData } };
       const editorComponent = EditorComponent({ pattern: /bar/, fromBlock: () => shortcodeData });
-      process('foo bar', [editorComponent], processEat);
+      process('foo bar', Map({ [editorComponent.id]: editorComponent }), processEat);
       expect(processEat).toHaveBeenCalledWith(expectedNode);
     });
+  });
+});
+
+describe('getLinesWithOffsets', () => {
+  test('should split into lines', () => {
+    const value = ' line1\n\nline2 \n\n    line3   \n\n';
+
+    const lines = getLinesWithOffsets(value);
+    expect(lines).toEqual([
+      { line: ' line1', start: 0 },
+      { line: 'line2', start: 8 },
+      { line: '    line3', start: 16 },
+      { line: '', start: 30 },
+    ]);
+  });
+
+  test('should return single item on no match', () => {
+    const value = ' line1    ';
+
+    const lines = getLinesWithOffsets(value);
+    expect(lines).toEqual([{ line: ' line1', start: 0 }]);
   });
 });
