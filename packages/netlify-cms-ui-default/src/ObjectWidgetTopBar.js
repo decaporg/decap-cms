@@ -41,14 +41,8 @@ const ExpandButton = styled.button`
 `;
 
 const AddButton = styled.button`
-  ${buttons.button};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
+  ${buttons.button}
+  ${buttons.widget}
 
   ${Icon} {
     margin-left: 6px;
