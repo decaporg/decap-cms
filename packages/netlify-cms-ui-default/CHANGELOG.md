@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.1...netlify-cms-ui-default@2.15.2) (2021-08-17)
+
+
+### Bug Fixes
+
+* make 'now' button consistent ([#5716](https://github.com/netlify/netlify-cms/issues/5716)) ([97de9da](https://github.com/netlify/netlify-cms/commit/97de9da948fff3b132d4d31c5f9069780abf3cc6))
+
+
+
+
+
 ## [2.15.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.0...netlify-cms-ui-default@2.15.1) (2021-08-04)
 
 
