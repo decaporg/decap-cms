@@ -583,13 +583,13 @@ export class EditorToolbar extends React.Component {
     } = this.props;
 
     const deleteLabel =
-    (hasUnpublishedChanges &&
-      isModification &&
-      t('editor.editorToolbar.deleteUnpublishedChanges')) ||
-    (hasUnpublishedChanges &&
-      (isNewEntry || !isModification) &&
-      t('editor.editorToolbar.deleteUnpublishedEntry')) ||
-    (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
+      (hasUnpublishedChanges &&
+        isModification &&
+        t('editor.editorToolbar.deleteUnpublishedChanges')) ||
+      (hasUnpublishedChanges &&
+        (isNewEntry || !isModification) &&
+        t('editor.editorToolbar.deleteUnpublishedEntry')) ||
+      (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
     return (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
       <DeleteButton
