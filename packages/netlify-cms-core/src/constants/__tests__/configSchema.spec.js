@@ -1,4 +1,5 @@
 import { merge } from 'lodash';
+
 import { validateConfig } from '../configSchema';
 
 jest.mock('../../lib/registry');
@@ -39,25 +40,25 @@ describe('config', () => {
     it('should throw if backend is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar' });
-      }).toThrowError("config should have required property 'backend'");
+      }).toThrowError("config must have required property 'backend'");
     });
 
     it('should throw if backend name is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: {} });
-      }).toThrowError("'backend' should have required property 'name'");
+      }).toThrowError("'backend' must have required property 'name'");
     });
 
     it('should throw if backend name is not a string in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: { name: {} } });
-      }).toThrowError("'backend.name' should be string");
+      }).toThrowError("'backend.name' must be string");
     });
 
     it('should throw if backend.open_authoring is not a boolean in config', () => {
       expect(() => {
         validateConfig(merge(validConfig, { backend: { open_authoring: 'true' } }));
-      }).toThrowError("'backend.open_authoring' should be boolean");
+      }).toThrowError("'backend.open_authoring' must be boolean");
     });
 
     it('should not throw if backend.open_authoring is boolean in config', () => {
@@ -69,7 +70,7 @@ describe('config', () => {
     it('should throw if backend.auth_scope is not "repo" or "public_repo" in config', () => {
       expect(() => {
         validateConfig(merge(validConfig, { backend: { auth_scope: 'user' } }));
-      }).toThrowError("'backend.auth_scope' should be equal to one of the allowed values");
+      }).toThrowError("'backend.auth_scope' must be equal to one of the allowed values");
     });
 
     it('should not throw if backend.auth_scope is one of "repo" or "public_repo" in config', () => {
@@ -84,19 +85,19 @@ describe('config', () => {
     it('should throw if media_folder is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: { name: 'bar' } });
-      }).toThrowError("config should have required property 'media_folder'");
+      }).toThrowError("config must have required property 'media_folder'");
     });
 
     it('should throw if media_folder is not a string in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: { name: 'bar' }, media_folder: {} });
-      }).toThrowError("'media_folder' should be string");
+      }).toThrowError("'media_folder' must be string");
     });
 
     it('should throw if collections is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz' });
-      }).toThrowError("config should have required property 'collections'");
+      }).toThrowError("config must have required property 'collections'");
     });
 
     it('should throw if collections not an array in config', () => {
@@ -107,7 +108,7 @@ describe('config', () => {
           media_folder: 'baz',
           collections: {},
         });
-      }).toThrowError("'collections' should be array");
+      }).toThrowError("'collections' must be array");
     });
 
     it('should throw if collections is an empty array in config', () => {
@@ -118,7 +119,7 @@ describe('config', () => {
           media_folder: 'baz',
           collections: [],
         });
-      }).toThrowError("'collections' should NOT have fewer than 1 items");
+      }).toThrowError("'collections' must NOT have fewer than 1 items");
     });
 
     it('should throw if collections is an array with a single null element in config', () => {
@@ -129,25 +130,25 @@ describe('config', () => {
           media_folder: 'baz',
           collections: [null],
         });
-      }).toThrowError("'collections[0]' should be object");
+      }).toThrowError("'collections[0]' must be object");
     });
 
     it('should throw if local_backend is not a boolean or plain object', () => {
       expect(() => {
         validateConfig({ ...validConfig, local_backend: [] });
-      }).toThrowError("'local_backend' should be boolean");
+      }).toThrowError("'local_backend' must be boolean");
     });
 
     it('should throw if local_backend url is not a string', () => {
       expect(() => {
         validateConfig({ ...validConfig, local_backend: { url: [] } });
-      }).toThrowError("'local_backend.url' should be string");
+      }).toThrowError("'local_backend.url' must be string");
     });
 
     it('should throw if local_backend allowed_hosts is not a string array', () => {
       expect(() => {
         validateConfig({ ...validConfig, local_backend: { allowed_hosts: [true] } });
-      }).toThrowError("'local_backend.allowed_hosts[0]' should be string");
+      }).toThrowError("'local_backend.allowed_hosts[0]' must be string");
     });
 
     it('should not throw if local_backend is a boolean', () => {
@@ -174,7 +175,7 @@ describe('config', () => {
     it('should throw if collection publish is not a boolean', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ publish: 'false' }] }));
-      }).toThrowError("'collections[0].publish' should be boolean");
+      }).toThrowError("'collections[0].publish' must be boolean");
     });
 
     it('should not throw if collection publish is a boolean', () => {
@@ -186,7 +187,7 @@ describe('config', () => {
     it('should throw if collections sortable_fields is not a boolean or a string array', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ sortable_fields: 'title' }] }));
-      }).toThrowError("'collections[0].sortable_fields' should be array");
+      }).toThrowError("'collections[0].sortable_fields' must be array");
     });
 
     it('should allow sortable_fields to be a string array', () => {
@@ -212,7 +213,7 @@ describe('config', () => {
         validateConfig(
           merge({}, validConfig, { collections: [{ sortable_fields: [], sortableFields: [] }] }),
         );
-      }).toThrowError("'collections[0]' should NOT be valid");
+      }).toThrowError("'collections[0]' must NOT be valid");
     });
 
     it('should throw if collection names are not unique', () => {
@@ -334,7 +335,9 @@ describe('config', () => {
               ],
             }),
           );
-        }).toThrowError("'search_fields' should be array\n'display_fields' should be array");
+        }).toThrowError(
+          "'collections[0].fields[1].fields[1].search_fields' must be array\n'collections[0].fields[1].fields[1].display_fields' must be array",
+        );
       });
 
       it('should not throw if nested relation display_fields and search_fields are arrays', () => {
@@ -372,31 +375,31 @@ describe('config', () => {
     it('should throw if collection meta is not a plain object', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ meta: [] }] }));
-      }).toThrowError("'collections[0].meta' should be object");
+      }).toThrowError("'collections[0].meta' must be object");
     });
 
     it('should throw if collection meta is an empty object', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ meta: {} }] }));
-      }).toThrowError("'collections[0].meta' should NOT have fewer than 1 properties");
+      }).toThrowError("'collections[0].meta' must NOT have fewer than 1 items");
     });
 
     it('should throw if collection meta is an empty object', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ meta: { path: {} } }] }));
-      }).toThrowError("'collections[0].meta.path' should have required property 'label'");
+      }).toThrowError("'collections[0].meta.path' must have required property 'label'");
       expect(() => {
         validateConfig(
           merge({}, validConfig, { collections: [{ meta: { path: { label: 'Label' } } }] }),
         );
-      }).toThrowError("'collections[0].meta.path' should have required property 'widget'");
+      }).toThrowError("'collections[0].meta.path' must have required property 'widget'");
       expect(() => {
         validateConfig(
           merge({}, validConfig, {
             collections: [{ meta: { path: { label: 'Label', widget: 'widget' } } }],
           }),
         );
-      }).toThrowError("'collections[0].meta.path' should have required property 'index_file'");
+      }).toThrowError("'collections[0].meta.path' must have required property 'index_file'");
     });
 
     it('should allow collection meta to have a path configuration', () => {
@@ -414,7 +417,7 @@ describe('config', () => {
     it('should throw if collection field pattern is not an array', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ fields: [{ pattern: '' }] }] }));
-      }).toThrowError("'collections[0].fields[0].pattern' should be array");
+      }).toThrowError("'collections[0].fields[0].pattern' must be array");
     });
 
     it('should throw if collection field pattern is not an array of [string|regex, string]', () => {
@@ -423,14 +426,14 @@ describe('config', () => {
           merge({}, validConfig, { collections: [{ fields: [{ pattern: [1, ''] }] }] }),
         );
       }).toThrowError(
-        "'collections[0].fields[0].pattern[0]' should be string\n'collections[0].fields[0].pattern[0]' should be a regular expression",
+        "'collections[0].fields[0].pattern[0]' must be string\n'collections[0].fields[0].pattern[0]' must be a regular expression",
       );
 
       expect(() => {
         validateConfig(
           merge({}, validConfig, { collections: [{ fields: [{ pattern: ['', 1] }] }] }),
         );
-      }).toThrowError("'collections[0].fields[0].pattern[1]' should be string");
+      }).toThrowError("'collections[0].fields[0].pattern[1]' must be string");
     });
 
     it('should allow collection field pattern to be an array of [string|regex, string]', () => {
@@ -462,7 +465,7 @@ describe('config', () => {
               },
             }),
           );
-        }).toThrowError(`'i18n.locales[1]' should match pattern "^[a-zA-Z-_]+$"`);
+        }).toThrowError(`'i18n.locales[1]' must match pattern "^[a-zA-Z-_]+$"`);
       });
 
       it('should throw error when locale is less than 2 characters', () => {
@@ -475,7 +478,7 @@ describe('config', () => {
               },
             }),
           );
-        }).toThrowError(`'i18n.locales[1]' should NOT be shorter than 2 characters`);
+        }).toThrowError(`'i18n.locales[1]' must NOT have fewer than 2 characters`);
       });
 
       it('should throw error when locale is more than 10 characters', () => {
@@ -488,7 +491,7 @@ describe('config', () => {
               },
             }),
           );
-        }).toThrowError(`'i18n.locales[1]' should NOT be longer than 10 characters`);
+        }).toThrowError(`'i18n.locales[1]' must NOT have more than 10 characters`);
       });
 
       it('should allow valid locales strings', () => {

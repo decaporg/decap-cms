@@ -3,11 +3,13 @@
  * registered via `registerMediaLibrary`.
  */
 import { once } from 'lodash';
+
 import { getMediaLibrary } from './lib/registry';
-import store from './redux';
+import { store } from './redux';
 import { configFailed } from './actions/config';
 import { createMediaLibrary, insertMedia } from './actions/mediaLibrary';
-import { MediaLibraryInstance } from './types/redux';
+
+import type { MediaLibraryInstance } from './types/redux';
 
 type MediaLibraryOptions = {};
 
@@ -18,15 +20,20 @@ interface MediaLibrary {
   }) => MediaLibraryInstance;
 }
 
+function handleInsert(url: string) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return store.dispatch(insertMedia(url, undefined));
+}
+
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
-  const lib = (getMediaLibrary(name) as unknown) as MediaLibrary | undefined;
+  const lib = getMediaLibrary(name) as unknown as MediaLibrary | undefined;
   if (!lib) {
     const err = new Error(
       `Missing external media library '${name}'. Please use 'registerMediaLibrary' to register it.`,
     );
     store.dispatch(configFailed(err));
   } else {
-    const handleInsert = (url: string) => store.dispatch(insertMedia(url, undefined));
     const instance = await lib.init({ options, handleInsert });
     store.dispatch(createMediaLibrary(instance));
   }
@@ -34,9 +41,11 @@ const initializeMediaLibrary = once(async function initializeMediaLibrary(name, 
 
 store.subscribe(() => {
   const state = store.getState();
-  const mediaLibraryName = state.config.getIn(['media_library', 'name']);
-  if (mediaLibraryName && !state.mediaLibrary.get('externalLibrary')) {
-    const mediaLibraryConfig = state.config.get('media_library').toJS();
-    initializeMediaLibrary(mediaLibraryName, mediaLibraryConfig);
+  if (state) {
+    const mediaLibraryName = state.config.media_library?.name;
+    if (mediaLibraryName && !state.mediaLibrary.get('externalLibrary')) {
+      const mediaLibraryConfig = state.config.media_library;
+      initializeMediaLibrary(mediaLibraryName, mediaLibraryConfig);
+    }
   }
 });

@@ -3,12 +3,13 @@ import { fromJS } from 'immutable';
 import { oneLine, stripIndent } from 'common-tags';
 import nock from 'nock';
 import { Cursor } from 'netlify-cms-lib-util';
+
 import Gitlab from '../implementation';
 import AuthenticationPage from '../AuthenticationPage';
 
 const { Backend, LocalStorageAuthStore } = jest.requireActual('netlify-cms-core/src/backend');
 
-const generateEntries = (path, length) => {
+function generateEntries(path, length) {
   const entries = Array.from({ length }, (val, idx) => {
     const count = idx + 1;
     const id = `00${count}`.slice(-3);
@@ -37,7 +38,7 @@ const generateEntries = (path, length) => {
       {},
     ),
   };
-};
+}
 
 const manyEntries = generateEntries('many-entries', 500);
 
@@ -175,7 +176,7 @@ describe('gitlab backend', () => {
       },
       {
         backendName: 'gitlab',
-        config: fromJS(config),
+        config,
         authStore,
       },
     );
@@ -222,8 +223,10 @@ describe('gitlab backend', () => {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
     const url = `${backend.implementation.apiRoot}${basePath}`;
-    const link = linkPage =>
-      `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
+
+    function link(linkPage) {
+      return `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
+    }
 
     const linkHeader = oneLine`
       ${link(1)}; rel="first",
@@ -285,10 +288,7 @@ describe('gitlab backend', () => {
   function interceptFiles(backend, path) {
     const api = mockApi(backend);
     const url = `${expectedRepoUrl}/repository/files/${encodeURIComponent(path)}/raw`;
-    api
-      .get(url)
-      .query(true)
-      .reply(200, mockRepo.files[path]);
+    api.get(url).query(true).reply(200, mockRepo.files[path]);
 
     api
       .get(`${expectedRepoUrl}/repository/commits`)
@@ -389,17 +389,14 @@ describe('gitlab backend', () => {
 
     it('returns an entry from folder collection', async () => {
       const entryTree = mockRepo.tree[collectionContentConfig.folder][0];
-      const slug = entryTree.path
-        .split('/')
-        .pop()
-        .replace('.md', '');
+      const slug = entryTree.path.split('/').pop().replace('.md', '');
 
       interceptFiles(backend, entryTree.path);
       interceptCollection(backend, collectionContentConfig);
 
       const entry = await backend.getEntry(
         {
-          config: fromJS({}),
+          config: {},
           integrations: fromJS([]),
           entryDraft: fromJS({}),
           mediaLibrary: fromJS({}),

@@ -4,7 +4,6 @@ import { css } from '@emotion/core';
 import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
 import moment from 'moment';
-
 import { once } from 'lodash';
 import { oneLine } from 'common-tags';
 
@@ -103,7 +102,7 @@ export default class DateControl extends React.Component {
     }
   };
 
-  onBlur = datetime => {
+  onClose = datetime => {
     const { setInactiveStyle } = this.props;
 
     if (!this.isValidDate(datetime)) {
@@ -133,8 +132,8 @@ export default class DateControl extends React.Component {
           timeFormat={timeFormat}
           value={moment(value, format)}
           onChange={this.handleChange}
-          onFocus={setActiveStyle}
-          onBlur={this.onBlur}
+          onOpen={setActiveStyle}
+          onClose={this.onClose}
           inputProps={{ className: classNameWrapper, id: forID }}
         />
       </div>

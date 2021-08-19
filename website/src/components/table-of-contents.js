@@ -29,7 +29,7 @@ const TocLink = styled.a`
  *
  * https://github.com/gatsbyjs/gatsby/issues/5436
  */
-const TableOfContents = () => {
+function TableOfContents() {
   const [headings, setHeadings] = useState([]);
 
   useEffect(() => {
@@ -57,6 +57,6 @@ const TableOfContents = () => {
       </TocList>
     )
   );
-};
+}
 
 export default TableOfContents;

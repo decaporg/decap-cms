@@ -1,5 +1,5 @@
 import * as React from 'react';
-import semaphore, { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import trimStart from 'lodash/trimStart';
 import { stripIndent } from 'common-tags';
 import {
@@ -7,35 +7,40 @@ import {
   Cursor,
   asyncLock,
   basename,
-  AsyncLock,
-  Implementation,
-  AssetProxy,
-  PersistOptions,
-  DisplayURL,
   getBlobSHA,
   entriesByFolder,
   entriesByFiles,
   unpublishedEntries,
-  User,
   getMediaDisplayURL,
   getMediaAsBlob,
-  Credentials,
   filterByExtension,
-  Config,
-  ImplementationFile,
   getPreviewStatus,
-  UnpublishedEntryMediaFile,
   runWithLock,
   blobToFileObj,
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
-  Entry,
 } from 'netlify-cms-lib-util';
+
 import AuthenticationPage from './AuthenticationPage';
-import { Octokit } from '@octokit/rest';
 import API, { API_NAME } from './API';
 import GraphQLAPI from './GraphQLAPI';
+
+import type { Octokit } from '@octokit/rest';
+import type {
+  AsyncLock,
+  Implementation,
+  AssetProxy,
+  PersistOptions,
+  DisplayURL,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  UnpublishedEntryMediaFile,
+  Entry,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 
@@ -67,6 +72,7 @@ export default class GitHub implements Implementation {
   repo?: string;
   openAuthoringEnabled: boolean;
   useOpenAuthoring?: boolean;
+  alwaysForkEnabled: boolean;
   branch: string;
   apiRoot: string;
   mediaFolder: string;
@@ -109,6 +115,7 @@ export default class GitHub implements Implementation {
     } else {
       this.repo = this.originRepo = config.backend.repo || '';
     }
+    this.alwaysForkEnabled = config.backend.always_fork || false;
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
@@ -268,8 +275,9 @@ export default class GitHub implements Implementation {
     }
     const token = userData.token as string;
 
-    // Origin maintainers should be able to use the CMS normally
-    if (await this.userIsOriginMaintainer({ token })) {
+    // Origin maintainers should be able to use the CMS normally. If alwaysFork
+    // is enabled we always fork (and avoid the origin maintainer check)
+    if (!this.alwaysForkEnabled && (await this.userIsOriginMaintainer({ token }))) {
       this.repo = this.originRepo;
       this.useOpenAuthoring = false;
       return Promise.resolve();
@@ -388,7 +396,7 @@ export default class GitHub implements Implementation {
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
     );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;
@@ -534,9 +542,9 @@ export default class GitHub implements Implementation {
     }
 
     const readFile = (path: string, id: string | null | undefined) =>
-      this.api!.readFile(path, id, { repoURL: this.api!.originRepoURL }).catch(() => '') as Promise<
-        string
-      >;
+      this.api!.readFile(path, id, { repoURL: this.api!.originRepoURL }).catch(
+        () => '',
+      ) as Promise<string>;
 
     const entries = await entriesByFiles(
       result.files,

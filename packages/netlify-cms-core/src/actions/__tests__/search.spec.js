@@ -1,7 +1,8 @@
 import { fromJS } from 'immutable';
-import { searchEntries } from '../search';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
+import { searchEntries } from '../search';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -22,7 +23,7 @@ describe('search', () => {
     it('should search entries in all collections using integration', async () => {
       const store = mockStore({
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
-        search: fromJS({}),
+        search: {},
       });
 
       selectIntegration.mockReturnValue('search_integration');
@@ -46,8 +47,6 @@ describe('search', () => {
       expect(actions[1]).toEqual({
         type: 'SEARCH_ENTRIES_SUCCESS',
         payload: {
-          searchTerm: 'find me',
-          searchCollections: ['posts', 'pages'],
           entries: response.entries,
           page: response.pagination,
         },
@@ -60,7 +59,7 @@ describe('search', () => {
     it('should search entries in a subset of collections using integration', async () => {
       const store = mockStore({
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
-        search: fromJS({}),
+        search: {},
       });
 
       selectIntegration.mockReturnValue('search_integration');
@@ -84,8 +83,6 @@ describe('search', () => {
       expect(actions[1]).toEqual({
         type: 'SEARCH_ENTRIES_SUCCESS',
         payload: {
-          searchTerm: 'find me',
-          searchCollections: ['pages'],
           entries: response.entries,
           page: response.pagination,
         },
@@ -98,7 +95,7 @@ describe('search', () => {
     it('should search entries in all collections using backend', async () => {
       const store = mockStore({
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
-        search: fromJS({}),
+        search: {},
       });
 
       const response = { entries: [{ name: '1' }, { name: '' }], pagination: 1 };
@@ -121,8 +118,6 @@ describe('search', () => {
       expect(actions[1]).toEqual({
         type: 'SEARCH_ENTRIES_SUCCESS',
         payload: {
-          searchTerm: 'find me',
-          searchCollections: ['posts', 'pages'],
           entries: response.entries,
           page: response.pagination,
         },
@@ -138,7 +133,7 @@ describe('search', () => {
     it('should search entries in a subset of collections using backend', async () => {
       const store = mockStore({
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
-        search: fromJS({}),
+        search: {},
       });
 
       const response = { entries: [{ name: '1' }, { name: '' }], pagination: 1 };
@@ -161,8 +156,6 @@ describe('search', () => {
       expect(actions[1]).toEqual({
         type: 'SEARCH_ENTRIES_SUCCESS',
         payload: {
-          searchTerm: 'find me',
-          searchCollections: ['pages'],
           entries: response.entries,
           page: response.pagination,
         },
@@ -175,7 +168,7 @@ describe('search', () => {
     it('should ignore identical search in all collections', async () => {
       const store = mockStore({
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
-        search: fromJS({ isFetching: true, term: 'find me', collections: ['posts', 'pages'] }),
+        search: { isFetching: true, term: 'find me', collections: ['posts', 'pages'] },
       });
 
       await store.dispatch(searchEntries('find me'));
@@ -187,7 +180,7 @@ describe('search', () => {
     it('should ignore identical search in a subset of collections', async () => {
       const store = mockStore({
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
-        search: fromJS({ isFetching: true, term: 'find me', collections: ['pages'] }),
+        search: { isFetching: true, term: 'find me', collections: ['pages'] },
       });
 
       await store.dispatch(searchEntries('find me', ['pages']));
@@ -199,7 +192,7 @@ describe('search', () => {
     it('should not ignore same search term in different search collections', async () => {
       const store = mockStore({
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
-        search: fromJS({ isFetching: true, term: 'find me', collections: ['pages'] }),
+        search: { isFetching: true, term: 'find me', collections: ['pages'] },
       });
       const backend = { search: jest.fn().mockResolvedValue({}) };
       currentBackend.mockReturnValue(backend);

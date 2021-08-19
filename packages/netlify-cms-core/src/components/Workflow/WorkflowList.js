@@ -6,10 +6,11 @@ import styled from '@emotion/styled';
 import moment from 'moment';
 import { translate } from 'react-polyglot';
 import { colors, lengths } from 'netlify-cms-ui-default';
-import { status } from 'Constants/publishModes';
-import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
+
+import { status } from '../../constants/publishModes';
+import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
 import WorkflowCard from './WorkflowCard';
-import { selectEntryCollectionTitle } from 'Reducers/collections';
+import { selectEntryCollectionTitle } from '../../reducers/collections';
 
 const WorkflowListContainer = styled.div`
   min-height: 60%;
@@ -116,7 +117,7 @@ const ColumnCount = styled.p`
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
 
-const getColumnHeaderText = (columnName, t) => {
+function getColumnHeaderText(columnName, t) {
   switch (columnName) {
     case 'draft':
       return t('workflow.workflowList.draftHeader');
@@ -125,7 +126,7 @@ const getColumnHeaderText = (columnName, t) => {
     case 'pending_publish':
       return t('workflow.workflowList.readyHeader');
   }
-};
+}
 
 class WorkflowList extends React.Component {
   static propTypes = {
@@ -135,7 +136,7 @@ class WorkflowList extends React.Component {
     handleDelete: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     isOpenAuthoring: PropTypes.bool,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
   };
 
   handleChangeStatus = (newStatus, dragProps) => {
@@ -209,7 +210,7 @@ class WorkflowList extends React.Component {
           );
           const slug = entry.get('slug');
           const collectionName = entry.get('collection');
-          const editLink = `collections/${collectionName}/entries/${slug}`;
+          const editLink = `collections/${collectionName}/entries/${slug}?ref=workflow`;
           const ownStatus = entry.get('status');
           const collection = collections.find(
             collection => collection.get('name') === collectionName,

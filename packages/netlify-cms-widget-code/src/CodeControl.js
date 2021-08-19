@@ -12,6 +12,7 @@ import 'codemirror/keymap/sublime';
 import 'codemirror/keymap/emacs';
 import codeMirrorStyles from 'codemirror/lib/codemirror.css';
 import materialTheme from 'codemirror/theme/material.css';
+
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
 import languageData from '../data/languages.json';
@@ -275,7 +276,7 @@ export default class CodeControl extends React.Component {
                 overflow: hidden;
 
                 .CodeMirror {
-                  height: auto;
+                  height: auto !important;
                   cursor: text;
                   min-height: 300px;
                 }

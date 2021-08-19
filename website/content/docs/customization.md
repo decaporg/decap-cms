@@ -89,7 +89,8 @@ Registers a template for a folder collection or an individual file in a file col
     ```
   * document: The preview pane iframe's [document instance](https://github.com/ryanseddon/react-frame-component/tree/9f8f06e1d3fc40da7122f0a57c62f7dec306e6cb#accessing-the-iframes-window-and-document).
   * window: The preview pane iframe's [window instance](https://github.com/ryanseddon/react-frame-component/tree/9f8f06e1d3fc40da7122f0a57c62f7dec306e6cb#accessing-the-iframes-window-and-document).
-    ### Lists and Objects
+
+  ### Lists and Objects
     The API for accessing the individual fields of list- and object-type entries is similar to the API for accessing fields in standard entries, but there are a few key differences. Access to these nested fields is facilitated through the `widgetsFor` function, which is passed to the preview template component during render.
 	**Note**: as is often the case with the NetlifyCMS API, arrays and objects are created with Immutable.js. If some of the methods that we use are unfamiliar, such as `getIn`, check out [their docs](https://facebook.github.io/immutable-js/docs/#/) to get a better understanding.
     **List Example:**
@@ -130,10 +131,10 @@ Registers a template for a folder collection or an individual file in a file col
         );
       }
     });
-
     CMS.registerPreviewTemplate("authors", AuthorsPreview);
     </script>
     ```
+    
     **Object Example:**
     ```html
     <script>

@@ -1,15 +1,16 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import { render, fireEvent } from '@testing-library/react';
+import { fromJS } from 'immutable';
+import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+
 import ConnectedNestedCollection, {
   NestedCollection,
   getTreeData,
   walk,
   updateNode,
 } from '../NestedCollection';
-import { render, fireEvent } from '@testing-library/react';
-import { fromJS } from 'immutable';
-import configureStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
 
 jest.mock('netlify-cms-ui-default', () => {
   const actual = jest.requireActual('netlify-cms-ui-default');
@@ -22,12 +23,13 @@ jest.mock('netlify-cms-ui-default', () => {
 const middlewares = [];
 const mockStore = configureStore(middlewares);
 
-const renderWithRedux = (component, { store } = {}) => {
+function renderWithRedux(component, { store } = {}) {
   function Wrapper({ children }) {
     return <Provider store={store}>{children}</Provider>;
   }
+
   return render(component, { wrapper: Wrapper });
-};
+}
 
 describe('NestedCollection', () => {
   const collection = fromJS({

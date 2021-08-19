@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import Select from 'react-select';
 import isHotkey from 'is-hotkey';
 import { text, shadows, zIndex } from 'netlify-cms-ui-default';
+
 import SettingsButton from './SettingsButton';
 import languageSelectStyles from './languageSelectStyles';
 
@@ -38,20 +39,22 @@ const SettingsSectionTitle = styled.h3`
   }
 `;
 
-const SettingsSelect = ({ value, options, onChange, forID, type, autoFocus }) => (
-  <Select
-    inputId={`${forID}-select-${type}`}
-    styles={languageSelectStyles}
-    value={value}
-    options={options}
-    onChange={opt => onChange(opt.value)}
-    menuPlacement="auto"
-    captureMenuScroll={false}
-    autoFocus={autoFocus}
-  />
-);
+function SettingsSelect({ value, options, onChange, forID, type, autoFocus }) {
+  return (
+    <Select
+      inputId={`${forID}-select-${type}`}
+      styles={languageSelectStyles}
+      value={value}
+      options={options}
+      onChange={opt => onChange(opt.value)}
+      menuPlacement="auto"
+      captureMenuScroll={false}
+      autoFocus={autoFocus}
+    />
+  );
+}
 
-const SettingsPane = ({
+function SettingsPane({
   hideSettings,
   forID,
   modes,
@@ -64,48 +67,50 @@ const SettingsPane = ({
   onChangeLang,
   onChangeTheme,
   onChangeKeyMap,
-}) => (
-  <SettingsPaneContainer onKeyDown={e => isHotkey('esc', e) && hideSettings()}>
-    <SettingsButton onClick={hideSettings} showClose={true} />
-    {allowLanguageSelection && (
-      <>
-        <SettingsSectionTitle>Field Settings</SettingsSectionTitle>
-        <SettingsFieldLabel htmlFor={`${forID}-select-mode`}>Mode</SettingsFieldLabel>
-        <SettingsSelect
-          type="mode"
-          forID={forID}
-          value={mode}
-          options={modes}
-          onChange={onChangeLang}
-          autoFocus
-        />
-      </>
-    )}
-    <>
-      <SettingsSectionTitle>Global Settings</SettingsSectionTitle>
-      {themes && (
+}) {
+  return (
+    <SettingsPaneContainer onKeyDown={e => isHotkey('esc', e) && hideSettings()}>
+      <SettingsButton onClick={hideSettings} showClose={true} />
+      {allowLanguageSelection && (
         <>
-          <SettingsFieldLabel htmlFor={`${forID}-select-theme`}>Theme</SettingsFieldLabel>
+          <SettingsSectionTitle>Field Settings</SettingsSectionTitle>
+          <SettingsFieldLabel htmlFor={`${forID}-select-mode`}>Mode</SettingsFieldLabel>
           <SettingsSelect
-            type="theme"
+            type="mode"
             forID={forID}
-            value={{ value: theme, label: theme }}
-            options={themes.map(t => ({ value: t, label: t }))}
-            onChange={onChangeTheme}
-            autoFocus={!allowLanguageSelection}
+            value={mode}
+            options={modes}
+            onChange={onChangeLang}
+            autoFocus
           />
         </>
       )}
-      <SettingsFieldLabel htmlFor={`${forID}-select-keymap`}>KeyMap</SettingsFieldLabel>
-      <SettingsSelect
-        type="keymap"
-        forID={forID}
-        value={keyMap}
-        options={keyMaps}
-        onChange={onChangeKeyMap}
-      />
-    </>
-  </SettingsPaneContainer>
-);
+      <>
+        <SettingsSectionTitle>Global Settings</SettingsSectionTitle>
+        {themes && (
+          <>
+            <SettingsFieldLabel htmlFor={`${forID}-select-theme`}>Theme</SettingsFieldLabel>
+            <SettingsSelect
+              type="theme"
+              forID={forID}
+              value={{ value: theme, label: theme }}
+              options={themes.map(t => ({ value: t, label: t }))}
+              onChange={onChangeTheme}
+              autoFocus={!allowLanguageSelection}
+            />
+          </>
+        )}
+        <SettingsFieldLabel htmlFor={`${forID}-select-keymap`}>KeyMap</SettingsFieldLabel>
+        <SettingsSelect
+          type="keymap"
+          forID={forID}
+          value={keyMap}
+          options={keyMaps}
+          onChange={onChangeKeyMap}
+        />
+      </>
+    </SettingsPaneContainer>
+  );
+}
 
 export default SettingsPane;

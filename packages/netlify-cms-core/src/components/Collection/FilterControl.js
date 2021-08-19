@@ -1,27 +1,10 @@
 import React from 'react';
-import { css } from '@emotion/core';
-import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import {
-  buttons,
-  Dropdown,
-  DropdownCheckedItem,
-  StyledDropdownButton,
-  colors,
-} from 'netlify-cms-ui-default';
+import { Dropdown, DropdownCheckedItem } from 'netlify-cms-ui-default';
 
-const FilterButton = styled(StyledDropdownButton)`
-  ${buttons.button};
-  ${buttons.medium};
-  ${buttons.grayText};
-  font-size: 14px;
+import { ControlButton } from './ControlButton';
 
-  &:after {
-    top: 11px;
-  }
-`;
-
-const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
+function FilterControl({ viewFilters, t, onFilterClick, filter }) {
   const hasActiveFilter = filter
     ?.valueSeq()
     .toJS()
@@ -31,13 +14,7 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
     <Dropdown
       renderButton={() => {
         return (
-          <FilterButton
-            css={css`
-              color: ${hasActiveFilter ? colors.active : undefined};
-            `}
-          >
-            {t('collection.collectionTop.filterBy')}
-          </FilterButton>
+          <ControlButton active={hasActiveFilter} title={t('collection.collectionTop.filterBy')} />
         );
       }}
       closeOnSelection={false}
@@ -57,6 +34,6 @@ const FilterControl = ({ viewFilters, t, onFilterClick, filter }) => {
       })}
     </Dropdown>
   );
-};
+}
 
 export default translate()(FilterControl);

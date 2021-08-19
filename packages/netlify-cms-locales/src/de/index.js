@@ -41,16 +41,26 @@ const de = {
     collectionTop: {
       sortBy: 'Sortieren nach',
       viewAs: 'Anzeigen als',
-      newButton: 'Neue(r) %{collectionLabel}',
+      newButton: 'Neue(r/s) %{collectionLabel}',
       ascending: 'Aufsteigend',
       descending: 'Absteigend',
       searchResults: 'Suchergebnisse für "%{searchTerm}"',
       searchResultsInCollection: 'Suchergebnisse für "%{searchTerm}" in %{collection}',
+      filterBy: 'Filtern nach',
     },
     entries: {
       loadingEntries: 'Beiträge laden',
       cachingEntries: 'Beiträge zwischenspeichern',
       longerLoading: 'Diese Aktion kann einige Minuten in Anspruch nehmen',
+      noEntries: 'Keine Beiträge',
+    },
+    defaultFields: {
+      author: {
+        label: 'Autor',
+      },
+      updatedOn: {
+        label: 'Änderungsdatum',
+      },
     },
   },
   editor: {
@@ -69,8 +79,13 @@ const de = {
         max: '%{fieldLabel} darf nicht größer als %{maxValue} sein.',
         rangeCount: '%{fieldLabel} muss %{minCount} bis %{maxCount} Element(e) enthalten.',
         rangeCountExact: '%{fieldLabel} muss exakt %{count} Element(e) enthalten.',
-        minCount: '%{fieldLabel} muss mindestens %{minCount} Element(e) enthalten.',
-        maxCount: '%{fieldLabel} darf maximal %{maxCount} Element(e) enthalten.',
+        rangeMin: '%{fieldLabel} muss mindestens %{minCount} Element(e) enthalten.',
+        rangeMax: '%{fieldLabel} darf maximal %{maxCount} Element(e) enthalten.',
+        invalidPath: `'%{path}' ist kein gültiger Pfad`,
+        pathExists: `Pfad '%{path}' existiert bereits`,
+      },
+      i18n: {
+        writingInLocale: 'Aktuelle Sprache: %{locale}',
       },
     },
     editor: {
@@ -111,7 +126,7 @@ const de = {
       save: 'Speichern',
       deleting: 'Löschen...',
       updating: 'Aktualisieren...',
-      setStatus: 'Status setzen',
+      status: 'Status: %{status}',
       backCollection: 'Zurück zu allen %{collectionLabel}',
       unsavedChanges: 'Ungespeicherte Änderungen',
       changesSaved: 'Änderungen gespeichert',
@@ -124,6 +139,10 @@ const de = {
       deployButtonLabel: 'Live ansehen',
     },
     editorWidgets: {
+      markdown: {
+        richText: 'Rich Text',
+        markdown: 'Markdown',
+      },
       image: {
         choose: 'Wähle ein Bild',
         chooseDifferent: 'Wähle ein anderes Bild',
@@ -147,6 +166,9 @@ const de = {
         headingFour: 'Überschrift 4',
         headingFive: 'Überschrift 5',
         headingSix: 'Überschrift 6',
+      },
+      datetime: {
+        now: 'Jetzt',
       },
     },
   },
@@ -175,14 +197,19 @@ const de = {
     },
   },
   ui: {
+    default: {
+      goBackToSite: 'Zurück zur Seite',
+    },
     errorBoundary: {
       title: 'Fehler',
       details: 'Ein Fehler ist aufgetreten - bitte ',
       reportIt: 'berichte ihn.',
       detailsHeading: 'Details',
+      privacyWarning:
+        'Beim Eröffnen eines Fehlerberichts werden automatisch die Fehlermeldung und Debugdaten eingefügt.\nBitte überprüfen Sie, ob die Informationen korrrekt sind und entfernen Sie ggfs. sensible Daten.',
       recoveredEntry: {
-        heading: 'Widerhergestellter Beitrag',
-        warning: 'Bitte speichern Sie sich das bevor Sie die Seite verlassen!',
+        heading: 'Wiederhergestellter Beitrag',
+        warning: 'Bitte sichern Sie sich diese Informationen, bevor Sie die Seite verlassen!',
         copyButtonLabel: 'In Zwischenablage speichern',
       },
     },
@@ -205,6 +232,10 @@ const de = {
       entryUpdated: 'Beitragsstatus aktualisiert',
       onDeleteUnpublishedChanges: 'Unveröffentlichte Änderungen verworfen',
       onFailToAuth: '%{details}',
+      onLoggedOut:
+        'Sie wurden ausgeloggt. Bitte sichern Sie Ihre Daten und melden Sie sich erneut an.',
+      onBackendDown:
+        'Der Server ist aktuell nicht erreichbar. Für weitere Informationen, siehe: %{details}',
     },
   },
   workflow: {

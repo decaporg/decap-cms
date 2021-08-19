@@ -2,7 +2,10 @@ import { fromJS } from 'immutable';
 import { isFunction } from 'lodash';
 
 const catchesNothing = /.^/;
-const bind = fn => isFunction(fn) && fn.bind(null);
+
+function bind(fn) {
+  return isFunction(fn) && fn.bind(null);
+}
 
 export default function createEditorComponent(config) {
   const {
@@ -25,7 +28,6 @@ export default function createEditorComponent(config) {
     type,
     icon,
     widget,
-    // enforce multiline flag, exclude others
     pattern,
     fromBlock: bind(fromBlock) || (() => ({})),
     toBlock: bind(toBlock) || (() => 'Plugin'),

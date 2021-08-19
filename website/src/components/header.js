@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, graphql, StaticQuery } from 'gatsby';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-
 import GitHubButton from 'react-github-btn';
+
 import Container from './container';
 import Notifications from './notifications';
 import DocSearch from './docsearch';
-
 import logo from '../img/netlify-cms-logo.svg';
 import searchIcon from '../img/search.svg';
-
 import theme from '../theme';
 import { mq } from '../utils';
 
@@ -145,7 +143,7 @@ const NOTIFS_QUERY = graphql`
   }
 `;
 
-const Header = ({ hasHeroBelow }) => {
+function Header({ hasHeroBelow }) {
   const [scrolled, setScrolled] = useState(false);
   const [isNavOpen, setNavOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -159,23 +157,23 @@ const Header = ({ hasHeroBelow }) => {
     };
   }, []);
 
-  const handleScroll = () => {
+  function handleScroll() {
     const currentWindowPos = document.documentElement.scrollTop || document.body.scrollTop;
 
     const scrolled = currentWindowPos > 0;
 
     setScrolled(scrolled);
-  };
+  }
 
-  const handleMenuBtnClick = () => {
+  function handleMenuBtnClick() {
     setNavOpen(s => !s);
     setSearchOpen(false);
-  };
+  }
 
-  const handleSearchBtnClick = () => {
+  function handleSearchBtnClick() {
     setSearchOpen(s => !s);
     setNavOpen(false);
-  };
+  }
 
   return (
     <StaticQuery query={NOTIFS_QUERY}>
@@ -241,6 +239,6 @@ const Header = ({ hasHeroBelow }) => {
       }}
     </StaticQuery>
   );
-};
+}
 
 export default Header;

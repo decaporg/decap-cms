@@ -1,6 +1,18 @@
 import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
-import { List, Map, fromJS, Set } from 'immutable';
+import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
+import {
+  localForage,
+  Cursor,
+  CURSOR_COMPATIBILITY_SYMBOL,
+  EditorialWorkflowError,
+  getPathDepth,
+  blobToFileObj,
+  asyncLock,
+} from 'netlify-cms-lib-util';
+import { basename, join, extname, dirname } from 'path';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
 import { selectMediaFilePath, selectEntry } from './reducers/entries';
@@ -17,44 +29,11 @@ import {
   selectFieldsComments,
   selectHasMetaPath,
 } from './reducers/collections';
-import { createEntry, EntryValue } from './valueObjects/Entry';
+import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
-import {
-  localForage,
-  Cursor,
-  CURSOR_COMPATIBILITY_SYMBOL,
-  EditorialWorkflowError,
-  Implementation as BackendImplementation,
-  DisplayURL,
-  ImplementationEntry,
-  Credentials,
-  User,
-  getPathDepth,
-  Config as ImplementationConfig,
-  blobToFileObj,
-  asyncLock,
-  AsyncLock,
-  UnpublishedEntry,
-  DataFile,
-  UnpublishedEntryDiff,
-} from 'netlify-cms-lib-util';
-import { basename, join, extname, dirname } from 'path';
 import { status } from './constants/publishModes';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-import {
-  Collection,
-  EntryMap,
-  Config,
-  FilterRule,
-  Collections,
-  EntryDraft,
-  CollectionFile,
-  State,
-  EntryField,
-} from './types/redux';
-import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
 import {
@@ -69,15 +48,41 @@ import {
   formatI18nBackup,
 } from './lib/i18n';
 
+import type AssetProxy from './valueObjects/AssetProxy';
+import type {
+  CmsConfig,
+  EntryMap,
+  FilterRule,
+  EntryDraft,
+  Collection,
+  Collections,
+  CollectionFile,
+  State,
+  EntryField,
+} from './types/redux';
+import type { EntryValue } from './valueObjects/Entry';
+import type {
+  Implementation as BackendImplementation,
+  DisplayURL,
+  ImplementationEntry,
+  Credentials,
+  User,
+  AsyncLock,
+  UnpublishedEntry,
+  DataFile,
+  UnpublishedEntryDiff,
+} from 'netlify-cms-lib-util';
+import type { Map } from 'immutable';
+
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
-const updateAssetProxies = (
+function updateAssetProxies(
   assetProxies: AssetProxy[],
-  config: Config,
+  config: CmsConfig,
   collection: Collection,
   entryDraft: EntryDraft,
   path: string,
-) => {
+) {
   assetProxies.map(asset => {
     // update media files path based on entry path
     const oldPath = asset.path;
@@ -90,7 +95,7 @@ const updateAssetProxies = (
     );
     asset.path = newPath;
   });
-};
+}
 
 export class LocalStorageAuthStore {
   storageKey = 'netlify-cms-user';
@@ -118,7 +123,7 @@ function getEntryBackupKey(collectionName?: string, slug?: string) {
   return `${baseKey}.${collectionName}${suffix}`;
 }
 
-const getEntryField = (field: string, entry: EntryValue) => {
+function getEntryField(field: string, entry: EntryValue) {
   const value = get(entry.data, field);
   if (value) {
     return String(value);
@@ -131,19 +136,21 @@ const getEntryField = (field: string, entry: EntryValue) => {
       return '';
     }
   }
-};
+}
 
-export const extractSearchFields = (searchFields: string[]) => (entry: EntryValue) =>
-  searchFields.reduce((acc, field) => {
-    const value = getEntryField(field, entry);
-    if (value) {
-      return `${acc} ${value}`;
-    } else {
-      return acc;
-    }
-  }, '');
+export function extractSearchFields(searchFields: string[]) {
+  return (entry: EntryValue) =>
+    searchFields.reduce((acc, field) => {
+      const value = getEntryField(field, entry);
+      if (value) {
+        return `${acc} ${value}`;
+      } else {
+        return acc;
+      }
+    }, '');
+}
 
-export const expandSearchEntries = (entries: EntryValue[], searchFields: string[]) => {
+export function expandSearchEntries(entries: EntryValue[], searchFields: string[]) {
   // expand the entries for the purpose of the search
   const expandedEntries = entries.reduce((acc, e) => {
     const expandedFields = searchFields.reduce((acc, f) => {
@@ -160,9 +167,9 @@ export const expandSearchEntries = (entries: EntryValue[], searchFields: string[
   }, [] as (EntryValue & { field: string })[]);
 
   return expandedEntries;
-};
+}
 
-export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]) => {
+export function mergeExpandedEntries(entries: (EntryValue & { field: string })[]) {
   // merge the search results by slug and only keep data that matched the search
   const fields = entries.map(f => f.field);
   const arrayPaths: Record<string, Set<string>> = {};
@@ -214,20 +221,20 @@ export const mergeExpandedEntries = (entries: (EntryValue & { field: string })[]
   });
 
   return Object.values(merged);
-};
+}
 
-const sortByScore = (a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) => {
+function sortByScore(a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) {
   if (a.score > b.score) return -1;
   if (a.score < b.score) return 1;
   return 0;
-};
+}
 
-export const slugFromCustomPath = (collection: Collection, customPath: string) => {
+export function slugFromCustomPath(collection: Collection, customPath: string) {
   const folderPath = collection.get('folder', '') as string;
   const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
   const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
   return slug;
-};
+}
 
 interface AuthStore {
   retrieve: () => User;
@@ -236,9 +243,9 @@ interface AuthStore {
 }
 
 interface BackendOptions {
-  backendName?: string;
-  authStore?: AuthStore | null;
-  config?: Config;
+  backendName: string;
+  config: CmsConfig;
+  authStore?: AuthStore;
 }
 
 export interface MediaFile {
@@ -261,7 +268,7 @@ interface BackupEntry {
 }
 
 interface PersistArgs {
-  config: Config;
+  config: CmsConfig;
   collection: Collection;
   entryDraft: EntryDraft;
   assetProxies: AssetProxy[];
@@ -277,18 +284,18 @@ interface ImplementationInitOptions {
 }
 
 type Implementation = BackendImplementation & {
-  init: (config: ImplementationConfig, options: ImplementationInitOptions) => Implementation;
+  init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
 };
 
-const prepareMetaPath = (path: string, collection: Collection) => {
+function prepareMetaPath(path: string, collection: Collection) {
   if (!selectHasMetaPath(collection)) {
     return path;
   }
   const dir = dirname(path);
   return dir.substr(collection.get('folder')!.length + 1) || '/';
-};
+}
 
-const collectionDepth = (collection: Collection) => {
+function collectionDepth(collection: Collection) {
   let depth;
   depth =
     collection.get('nested')?.get('depth') || getPathDepth(collection.get('path', '') as string);
@@ -298,29 +305,26 @@ const collectionDepth = (collection: Collection) => {
   }
 
   return depth;
-};
+}
 
 export class Backend {
   implementation: Implementation;
   backendName: string;
-  authStore: AuthStore | null;
-  config: Config;
+  config: CmsConfig;
+  authStore?: AuthStore;
   user?: User | null;
   backupSync: AsyncLock;
 
-  constructor(
-    implementation: Implementation,
-    { backendName, authStore = null, config }: BackendOptions = {},
-  ) {
+  constructor(implementation: Implementation, { backendName, authStore, config }: BackendOptions) {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
-    this.config = config as Config;
-    this.implementation = implementation.init(this.config.toJS(), {
+    this.config = config;
+    this.implementation = implementation.init(this.config, {
       useWorkflow: selectUseWorkflow(this.config),
       updateUserCredentials: this.updateUserCredentials,
       initialWorkflowStatus: status.first(),
     });
-    this.backendName = backendName as string;
+    this.backendName = backendName;
     this.authStore = authStore;
     if (this.implementation === null) {
       throw new Error('Cannot instantiate a Backend with no implementation');
@@ -334,11 +338,11 @@ export class Backend {
       auth: { status: boolean };
       api: { status: boolean; statusPage: string };
     } = {
-      auth: { status: false },
-      api: { status: false, statusPage: '' },
+      auth: { status: true },
+      api: { status: true, statusPage: '' },
     };
     for (let i = 1; i <= attempts; i++) {
-      status = await this.implementation!.status();
+      status = await this.implementation.status();
       // return on first success
       if (Object.values(status).every(s => s.status === true)) {
         return status;
@@ -434,11 +438,11 @@ export class Backend {
   async generateUniqueSlug(
     collection: Collection,
     entryData: Map<string, unknown>,
-    config: Config,
+    config: CmsConfig,
     usedSlugs: List<string>,
     customPath: string | undefined,
   ) {
-    const slugConfig = config.get('slug');
+    const slugConfig = config.slug;
     let slug: string;
     if (customPath) {
       slug = slugFromCustomPath(collection, customPath);
@@ -487,7 +491,7 @@ export class Backend {
 
     if (hasI18n(collection)) {
       const extension = selectFolderEntryExtension(collection);
-      const groupedEntries = groupEntries(collection, extension, entries);
+      const groupedEntries = groupEntries(collection, extension, filteredEntries);
       return groupedEntries;
     }
 
@@ -525,7 +529,7 @@ export class Backend {
           from. This is done to prevent traverseCursor from requiring a
           `collection` argument.
         */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const cursor = Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
       cursorType: 'collectionEntries',
@@ -613,7 +617,7 @@ export class Backend {
     const entries = await Promise.all(collectionEntriesRequests).then(arrays => flatten(arrays));
 
     if (errors.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       throw new Error({ message: 'Errors ocurred while searching entries locally!', errors });
     }
@@ -942,7 +946,7 @@ export class Backend {
 
   async processEntry(state: State, collection: Collection, entry: EntryValue) {
     const integration = selectIntegration(state.integrations, null, 'assetStore');
-    const mediaFolders = selectMediaFolders(state, collection, fromJS(entry));
+    const mediaFolders = selectMediaFolders(state.config, collection, fromJS(entry));
     if (mediaFolders.length > 0 && !integration) {
       const files = await Promise.all(
         mediaFolders.map(folder => this.implementation.getMedia(folder)),
@@ -976,14 +980,14 @@ export class Backend {
      * If `site_url` is undefined or `show_preview_links` in the config is set to false, do nothing.
      */
 
-    const baseUrl = this.config.get('site_url');
+    const baseUrl = this.config.site_url;
 
-    if (!baseUrl || this.config.get('show_preview_links') === false) {
+    if (!baseUrl || this.config.show_preview_links === false) {
       return;
     }
 
     return {
-      url: previewUrlFormatter(baseUrl, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(baseUrl, collection, slug, entry, this.config.slug),
       status: 'SUCCESS',
     };
   }
@@ -1003,7 +1007,7 @@ export class Backend {
      * If the registered backend does not provide a `getDeployPreview` method, or
      * `show_preview_links` in the config is set to false, do nothing.
      */
-    if (!this.implementation.getDeployPreview || this.config.get('show_preview_links') === false) {
+    if (!this.implementation.getDeployPreview || this.config.show_preview_links === false) {
       return;
     }
 
@@ -1017,7 +1021,7 @@ export class Backend {
       count++;
       deployPreview = await this.implementation.getDeployPreview(collection.get('name'), slug);
       if (!deployPreview) {
-        await new Promise(resolve => setTimeout(() => resolve(), interval));
+        await new Promise(resolve => setTimeout(() => resolve(undefined), interval));
       }
     }
 
@@ -1032,7 +1036,7 @@ export class Backend {
       /**
        * Create a URL using the collection `preview_path`, if provided.
        */
-      url: previewUrlFormatter(deployPreview.url, collection, slug, this.config.get('slug'), entry),
+      url: previewUrlFormatter(deployPreview.url, collection, slug, entry, this.config.slug),
       /**
        * Always capitalize the status for consistency.
        */
@@ -1180,7 +1184,7 @@ export class Backend {
     await this.invokeEventWithEntry('postSave', entry);
   }
 
-  async persistMedia(config: Config, file: AssetProxy) {
+  async persistMedia(config: CmsConfig, file: AssetProxy) {
     const user = (await this.currentUser()) as User;
     const options = {
       commitMessage: commitMessageFormatter(
@@ -1231,7 +1235,7 @@ export class Backend {
     await this.invokePostUnpublishEvent(entry);
   }
 
-  async deleteMedia(config: Config, path: string) {
+  async deleteMedia(config: CmsConfig, path: string) {
     const user = (await this.currentUser()) as User;
     const commitMessage = commitMessageFormatter(
       'deleteMedia',
@@ -1308,12 +1312,12 @@ export class Backend {
   }
 }
 
-export function resolveBackend(config: Config) {
-  const name = config.getIn(['backend', 'name']);
-  if (name == null) {
+export function resolveBackend(config: CmsConfig) {
+  if (!config.backend.name) {
     throw new Error('No backend defined in configuration');
   }
 
+  const { name } = config.backend;
   const authStore = new LocalStorageAuthStore();
 
   const backend = getBackend(name);
@@ -1324,10 +1328,10 @@ export function resolveBackend(config: Config) {
   }
 }
 
-export const currentBackend = (function() {
+export const currentBackend = (function () {
   let backend: Backend;
 
-  return (config: Config) => {
+  return (config: CmsConfig) => {
     if (backend) {
       return backend;
     }

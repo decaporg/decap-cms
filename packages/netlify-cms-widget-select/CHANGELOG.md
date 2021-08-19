@@ -3,6 +3,85 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.8.1...netlify-cms-widget-select@2.8.2) (2021-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-select to v4 ([#5417](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/5417)) ([03362ef](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/03362ef5ab87c6fe5c964da5c5a18099b73a3fc6))
+
+
+
+
+
+## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.8.0...netlify-cms-widget-select@2.8.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update react-select to v3 ([#5394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/5394)) ([03be13c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/03be13c1e87b318fd10ae6f6ab54cd2634fb9662))
+
+
+
+
+
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.4...netlify-cms-widget-select@2.8.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+## [2.7.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.3...netlify-cms-widget-select@2.7.4) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-select
+
+
+
+
+
+## [2.7.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.2...netlify-cms-widget-select@2.7.3) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-widget-select
+
+
+
+
+
+## [2.7.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.1...netlify-cms-widget-select@2.7.2) (2020-11-26)
+
+
+### Bug Fixes
+
+* **widget-select:** allow number value type ([#4599](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/4599)) ([9741a79](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/9741a79e4922553b69e1536d4e53f5fde45d30e1))
+
+
+
+
+
+## [2.7.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.7.0...netlify-cms-widget-select@2.7.1) (2020-11-08)
+
+**Note:** Version bump only for package netlify-cms-widget-select
+
+
+
+
+
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.6.4...netlify-cms-widget-select@2.7.0) (2020-10-20)
+
+
+### Features
+
+* **widget-list:** add min max configuration ([#4394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/issues/4394)) ([5fdfe40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/commit/5fdfe40dd29e9e22c9ae7d6219bc057f7ea7280b))
+
+
+
+
+
 ## [2.6.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-select/compare/netlify-cms-widget-select@2.6.3...netlify-cms-widget-select@2.6.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-widget-select

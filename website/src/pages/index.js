@@ -13,7 +13,6 @@ import Lead from '../components/lead';
 import Features from '../components/features';
 import HomeSection from '../components/home-section';
 import Grid from '../components/grid';
-
 import theme from '../theme';
 import { mq } from '../utils';
 
@@ -65,7 +64,7 @@ const ContribList = styled.div`
   }
 `;
 
-const HomePage = ({ data }) => {
+function HomePage({ data }) {
   const landing = data.landing.childDataYaml;
   const updates = data.updates.childDataYaml;
   const contribs = data.contribs.childDataJson;
@@ -182,7 +181,7 @@ const HomePage = ({ data }) => {
       </HomeSection>
     </Layout>
   );
-};
+}
 
 export const pageQuery = graphql`
   query homeQuery {

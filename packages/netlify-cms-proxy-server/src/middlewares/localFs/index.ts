@@ -1,9 +1,11 @@
-import winston from 'winston';
-import express from 'express';
 import path from 'path';
+
 import { defaultSchema, joi } from '../joi';
 import { pathTraversal } from '../joi/customValidators';
-import {
+import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
+import { entriesFromFiles, readMediaFile } from '../utils/entries';
+
+import type {
   EntriesByFolderParams,
   EntriesByFilesParams,
   GetEntryParams,
@@ -15,16 +17,16 @@ import {
   DeleteFilesParams,
   DataFile,
 } from '../types';
-import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
-import { entriesFromFiles, readMediaFile } from '../utils/entries';
+import type express from 'express';
+import type winston from 'winston';
 
 type FsOptions = {
   repoPath: string;
   logger: winston.Logger;
 };
 
-export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
-  return async function(req: express.Request, res: express.Response) {
+export function localFsMiddleware({ repoPath, logger }: FsOptions) {
+  return async function (req: express.Request, res: express.Response) {
     try {
       const { body } = req;
 
@@ -32,7 +34,6 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
         case 'info': {
           res.json({
             repo: path.basename(repoPath),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             publish_modes: ['simple'],
             type: 'local_fs',
           });
@@ -138,21 +139,21 @@ export const localFsMiddleware = ({ repoPath, logger }: FsOptions) => {
       res.status(500).json({ error: 'Unknown error' });
     }
   };
-};
+}
 
-export const getSchema = ({ repoPath }: { repoPath: string }) => {
+export function getSchema({ repoPath }: { repoPath: string }) {
   const schema = defaultSchema({ path: pathTraversal(repoPath) });
   return schema;
-};
+}
 
 type Options = {
   logger: winston.Logger;
 };
 
-export const registerMiddleware = async (app: express.Express, options: Options) => {
+export async function registerMiddleware(app: express.Express, options: Options) {
   const { logger } = options;
   const repoPath = path.resolve(process.env.GIT_REPO_DIRECTORY || process.cwd());
   app.post('/api/v1', joi(getSchema({ repoPath })));
   app.post('/api/v1', localFsMiddleware({ repoPath, logger }));
   logger.info(`Netlify CMS File System Proxy Server configured with ${repoPath}`);
-};
+}

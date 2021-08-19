@@ -3,6 +3,82 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.2...netlify-cms-widget-relation@2.10.3) (2021-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-select to v4 ([#5417](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5417)) ([03362ef](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/03362ef5ab87c6fe5c964da5c5a18099b73a3fc6))
+
+
+
+
+
+## [2.10.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.1...netlify-cms-widget-relation@2.10.2) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
+
+
+
+
+## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.0...netlify-cms-widget-relation@2.10.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update react-select to v3 ([#5394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5394)) ([03be13c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/03be13c1e87b318fd10ae6f6ab54cd2634fb9662))
+
+
+
+
+
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.9.0...netlify-cms-widget-relation@2.10.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.10...netlify-cms-widget-relation@2.9.0) (2021-04-13)
+
+
+### Features
+
+* add min and max fields to relation widget (resolves [#5026](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5026)) ([#5238](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5238)) ([fe117e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/fe117e472e18079e4f65ca2dfa5c258040cf93f9))
+
+
+
+
+
+## [2.8.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.9...netlify-cms-widget-relation@2.8.10) (2021-04-07)
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
+
+
+
+
+## [2.8.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.8...netlify-cms-widget-relation@2.8.9) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
+
+
+
+
+## [2.8.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.7...netlify-cms-widget-relation@2.8.8) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
+
+
+
+
 ## [2.8.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.6...netlify-cms-widget-relation@2.8.7) (2020-09-20)
 
 

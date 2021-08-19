@@ -1,16 +1,19 @@
-import { Map } from 'immutable';
 import { flow, partialRight, trimEnd, trimStart } from 'lodash';
-import { sanitizeSlug } from './urlHelper';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stripIndent } from 'common-tags';
+
 import {
   selectIdentifier,
   selectField,
-  COMMIT_AUTHOR,
-  COMMIT_DATE,
   selectInferedField,
+  getFileFromSlug,
 } from '../reducers/collections';
-import { Collection, SlugConfig, Config, EntryMap } from '../types/redux';
-import { stripIndent } from 'common-tags';
+import { sanitizeSlug } from './urlHelper';
+import { FILES } from '../constants/collectionTypes';
+import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
+
+import type { Collection, CmsConfig, CmsSlug, EntryMap } from '../types/redux';
+import type { Map } from 'immutable';
 
 const {
   compileStringTemplate,
@@ -20,14 +23,14 @@ const {
   addFileTemplateFields,
 } = stringTemplate;
 
-const commitMessageTemplates = Map({
+const commitMessageTemplates = {
   create: 'Create {{collection}} “{{slug}}”',
   update: 'Update {{collection}} “{{slug}}”',
   delete: 'Delete {{collection}} “{{slug}}”',
   uploadMedia: 'Upload “{{path}}”',
   deleteMedia: 'Delete “{{path}}”',
   openAuthoring: '{{message}}',
-});
+} as const;
 
 const variableRegex = /\{\{([^}]+)\}\}/g;
 
@@ -39,17 +42,15 @@ type Options = {
   authorName?: string;
 };
 
-export const commitMessageFormatter = (
-  type: string,
-  config: Config,
+export function commitMessageFormatter(
+  type: keyof typeof commitMessageTemplates,
+  config: CmsConfig,
   { slug, path, collection, authorLogin, authorName }: Options,
   isOpenAuthoring?: boolean,
-) => {
-  const templates = commitMessageTemplates.merge(
-    config.getIn(['backend', 'commit_messages'], Map<string, string>()),
-  );
+) {
+  const templates = { ...commitMessageTemplates, ...(config.backend.commit_messages || {}) };
 
-  const commitMessage = templates.get(type).replace(variableRegex, (_, variable) => {
+  const commitMessage = templates[type].replace(variableRegex, (_, variable) => {
     switch (variable) {
       case 'slug':
         return slug || '';
@@ -71,7 +72,7 @@ export const commitMessageFormatter = (
     return commitMessage;
   }
 
-  const message = templates.get('openAuthoring').replace(variableRegex, (_, variable) => {
+  const message = templates.openAuthoring.replace(variableRegex, (_, variable) => {
     switch (variable) {
       case 'message':
         return commitMessage;
@@ -86,9 +87,9 @@ export const commitMessageFormatter = (
   });
 
   return message;
-};
+}
 
-export const prepareSlug = (slug: string) => {
+export function prepareSlug(slug: string) {
   return (
     slug
       .trim()
@@ -101,20 +102,20 @@ export const prepareSlug = (slug: string) => {
       // Replace periods with dashes.
       .replace(/[.]/g, '-')
   );
-};
+}
 
-export const getProcessSegment = (slugConfig: SlugConfig, ignoreValues: string[] = []) => {
+export function getProcessSegment(slugConfig?: CmsSlug, ignoreValues?: string[]) {
   return (value: string) =>
-    ignoreValues.includes(value)
+    ignoreValues && ignoreValues.includes(value)
       ? value
       : flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)])(value);
-};
+}
 
-export const slugFormatter = (
+export function slugFormatter(
   collection: Collection,
   entryData: Map<string, unknown>,
-  slugConfig: SlugConfig,
-) => {
+  slugConfig?: CmsSlug,
+) {
   const slugTemplate = collection.get('slug') || '{{slug}}';
 
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
@@ -136,15 +137,15 @@ export const slugFormatter = (
       value === slug ? value : processSegment(value),
     );
   }
-};
+}
 
-export const previewUrlFormatter = (
+export function previewUrlFormatter(
   baseUrl: string,
   collection: Collection,
   slug: string,
-  slugConfig: SlugConfig,
   entry: EntryMap,
-) => {
+  slugConfig?: CmsSlug,
+) {
   /**
    * Preview URL can't be created without `baseUrl`. This makes preview URLs
    * optional for backends that don't support them.
@@ -153,25 +154,37 @@ export const previewUrlFormatter = (
     return;
   }
 
-  /**
-   * Without a `previewPath` for the collection (via config), the preview URL
-   * will be the URL provided by the backend.
-   */
-  if (!collection.get('preview_path')) {
-    return baseUrl;
+  const basePath = trimEnd(baseUrl, '/');
+
+  const isFileCollection = collection.get('type') === FILES;
+  const file = isFileCollection ? getFileFromSlug(collection, entry.get('slug')) : undefined;
+
+  function getPathTemplate() {
+    return file?.get('preview_path') ?? collection.get('preview_path');
+  }
+
+  function getDateField() {
+    return file?.get('preview_path_date_field') ?? collection.get('preview_path_date_field');
   }
 
   /**
-   * If a `previewPath` is provided for the collection, use it to construct the
+   * If a `previewPath` is provided for the collection/file, use it to construct the
    * URL path.
    */
-  const basePath = trimEnd(baseUrl, '/');
-  const pathTemplate = collection.get('preview_path') as string;
+  const pathTemplate = getPathTemplate();
+
+  /**
+   * Without a `previewPath` for the collection/file (via config), the preview URL
+   * will be the URL provided by the backend.
+   */
+  if (!pathTemplate) {
+    return baseUrl;
+  }
+
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
-  const dateFieldName =
-    collection.get('preview_path_date_field') || selectInferedField(collection, 'date');
-  const date = parseDateFromEntry((entry as unknown) as Map<string, unknown>, dateFieldName);
+  const dateFieldName = getDateField() || selectInferedField(collection, 'date');
+  const date = parseDateFromEntry(entry as unknown as Map<string, unknown>, dateFieldName);
 
   // Prepare and sanitize slug variables only, leave the rest of the
   // `preview_path` template as is.
@@ -196,17 +209,13 @@ export const previewUrlFormatter = (
 
   const previewPath = trimStart(compiledPath, ' /');
   return `${basePath}/${previewPath}`;
-};
+}
 
-export const summaryFormatter = (
-  summaryTemplate: string,
-  entry: EntryMap,
-  collection: Collection,
-) => {
+export function summaryFormatter(summaryTemplate: string, entry: EntryMap, collection: Collection) {
   let entryData = entry.get('data');
   const date =
     parseDateFromEntry(
-      (entry as unknown) as Map<string, unknown>,
+      entry as unknown as Map<string, unknown>,
       selectInferedField(collection, 'date'),
     ) || null;
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
@@ -221,16 +230,16 @@ export const summaryFormatter = (
   }
   const summary = compileStringTemplate(summaryTemplate, date, identifier, entryData);
   return summary;
-};
+}
 
-export const folderFormatter = (
+export function folderFormatter(
   folderTemplate: string,
   entry: EntryMap | undefined,
   collection: Collection,
   defaultFolder: string,
   folderKey: string,
-  slugConfig: SlugConfig,
-) => {
+  slugConfig?: CmsSlug,
+) {
   if (!entry || !entry.get('data')) {
     return folderTemplate;
   }
@@ -240,7 +249,7 @@ export const folderFormatter = (
 
   const date =
     parseDateFromEntry(
-      (entry as unknown) as Map<string, unknown>,
+      entry as unknown as Map<string, unknown>,
       selectInferedField(collection, 'date'),
     ) || null;
   const identifier = fields.getIn(keyToPathArray(selectIdentifier(collection) as string));
@@ -255,4 +264,4 @@ export const folderFormatter = (
   );
 
   return mediaFolder;
-};
+}

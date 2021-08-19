@@ -1,6 +1,9 @@
 import { flow, fromPairs, map } from 'lodash/fp';
+import { isPlainObject, isEmpty } from 'lodash';
 import minimatch from 'minimatch';
-import { ApiRequest, PointerFile, unsentRequest } from 'netlify-cms-lib-util';
+import { unsentRequest } from 'netlify-cms-lib-util';
+
+import type { ApiRequest, PointerFile } from 'netlify-cms-lib-util';
 
 type MakeAuthorizedRequest = (req: ApiRequest) => Promise<Response>;
 
@@ -14,8 +17,9 @@ type ClientConfig = {
   transformImages: ImageTransformations | boolean;
 };
 
-export const matchPath = ({ patterns }: ClientConfig, path: string) =>
-  patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
+export function matchPath({ patterns }: ClientConfig, path: string) {
+  return patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
+}
 
 //
 // API interactions
@@ -25,10 +29,10 @@ const defaultContentHeaders = {
   ['Content-Type']: 'application/vnd.git-lfs+json',
 };
 
-const resourceExists = async (
+async function resourceExists(
   { rootURL, makeAuthorizedRequest }: ClientConfig,
   { sha, size }: PointerFile,
-) => {
+) {
   const response = await makeAuthorizedRequest({
     url: `${rootURL}/verify`,
     method: 'POST',
@@ -44,48 +48,68 @@ const resourceExists = async (
 
   // TODO: what kind of error to throw here? APIError doesn't seem
   // to fit
-};
+}
 
-const getTransofrmationsParams = (t: ImageTransformations) =>
-  `?nf_resize=${t.nf_resize}&w=${t.w}&h=${t.h}`;
+function getTransofrmationsParams(t: boolean | ImageTransformations) {
+  if (isPlainObject(t) && !isEmpty(t)) {
+    const { nf_resize: resize, w, h } = t as ImageTransformations;
+    return `?nf_resize=${resize}&w=${w}&h=${h}`;
+  }
+  return '';
+}
 
-const getDownloadURL = (
+async function getDownloadURL(
   { rootURL, transformImages: t, makeAuthorizedRequest }: ClientConfig,
   { sha }: PointerFile,
-) =>
-  makeAuthorizedRequest(
-    `${rootURL}/origin/${sha}${
-      t && Object.keys(t).length > 0 ? getTransofrmationsParams(t as ImageTransformations) : ''
-    }`,
-  )
-    .then(res => (res.ok ? res : Promise.reject(res)))
-    .then(res => res.blob())
-    .then(blob => URL.createObjectURL(blob))
-    .catch((err: Error) => {
-      console.error(err);
-      return Promise.resolve('');
-    });
+) {
+  try {
+    const transformation = getTransofrmationsParams(t);
+    const transformedPromise = makeAuthorizedRequest(`${rootURL}/origin/${sha}${transformation}`);
+    const [transformed, original] = await Promise.all([
+      transformedPromise,
+      // if transformation is defined, we need to load the original so we have the correct meta data
+      transformation ? makeAuthorizedRequest(`${rootURL}/origin/${sha}`) : transformedPromise,
+    ]);
+    if (!transformed.ok) {
+      const error = await transformed.json();
+      throw new Error(
+        `Failed getting large media for sha '${sha}': '${error.code} - ${error.msg}'`,
+      );
+    }
 
-const uploadOperation = (objects: PointerFile[]) => ({
-  operation: 'upload',
-  transfers: ['basic'],
-  objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha })),
-});
+    const transformedBlob = await transformed.blob();
+    const url = URL.createObjectURL(transformedBlob);
+    return { url, blob: transformation ? await original.blob() : transformedBlob };
+  } catch (error) {
+    console.error(error);
+    return { url: '', blob: new Blob() };
+  }
+}
 
-const getResourceUploadURLs = async (
+function uploadOperation(objects: PointerFile[]) {
+  return {
+    operation: 'upload',
+    transfers: ['basic'],
+    objects: objects.map(({ sha, ...rest }) => ({ ...rest, oid: sha })),
+  };
+}
+
+async function getResourceUploadURLs(
   {
     rootURL,
     makeAuthorizedRequest,
   }: { rootURL: string; makeAuthorizedRequest: MakeAuthorizedRequest },
-  objects: PointerFile[],
-) => {
+  pointerFiles: PointerFile[],
+) {
   const response = await makeAuthorizedRequest({
     url: `${rootURL}/objects/batch`,
     method: 'POST',
     headers: defaultContentHeaders,
-    body: JSON.stringify(uploadOperation(objects)),
+    body: JSON.stringify(uploadOperation(pointerFiles)),
   });
-  return (await response.json()).objects.map(
+
+  const { objects } = await response.json();
+  const uploadUrls = objects.map(
     (object: { error?: { message: string }; actions: { upload: { href: string } } }) => {
       if (object.error) {
         throw new Error(object.error.message);
@@ -93,19 +117,21 @@ const getResourceUploadURLs = async (
       return object.actions.upload.href;
     },
   );
-};
+  return uploadUrls;
+}
 
-const uploadBlob = (uploadURL: string, blob: Blob) =>
-  unsentRequest.fetchWithTimeout(uploadURL, {
+function uploadBlob(uploadURL: string, blob: Blob) {
+  return unsentRequest.fetchWithTimeout(uploadURL, {
     method: 'PUT',
     body: blob,
   });
+}
 
-const uploadResource = async (
+async function uploadResource(
   clientConfig: ClientConfig,
   { sha, size }: PointerFile,
   resource: Blob,
-) => {
+) {
   const existingFile = await resourceExists(clientConfig, { sha, size });
   if (existingFile) {
     return sha;
@@ -113,13 +139,14 @@ const uploadResource = async (
   const [uploadURL] = await getResourceUploadURLs(clientConfig, [{ sha, size }]);
   await uploadBlob(uploadURL, resource);
   return sha;
-};
+}
 
 //
 // Create Large Media client
 
-const configureFn = (config: ClientConfig, fn: Function) => (...args: unknown[]) =>
-  fn(config, ...args);
+function configureFn(config: ClientConfig, fn: Function) {
+  return (...args: unknown[]) => fn(config, ...args);
+}
 
 const clientFns: Record<string, Function> = {
   resourceExists,
@@ -132,14 +159,14 @@ const clientFns: Record<string, Function> = {
 export type Client = {
   resourceExists: (pointer: PointerFile) => Promise<boolean | undefined>;
   getResourceUploadURLs: (objects: PointerFile[]) => Promise<string>;
-  getDownloadURL: (pointer: PointerFile) => Promise<string>;
+  getDownloadURL: (pointer: PointerFile) => Promise<{ url: string; blob: Blob }>;
   uploadResource: (pointer: PointerFile, blob: Blob) => Promise<string>;
   matchPath: (path: string) => boolean;
   patterns: string[];
   enabled: boolean;
 };
 
-export const getClient = (clientConfig: ClientConfig) => {
+export function getClient(clientConfig: ClientConfig) {
   return flow([
     Object.keys,
     map((key: string) => [key, configureFn(clientConfig, clientFns[key])]),
@@ -150,4 +177,4 @@ export const getClient = (clientConfig: ClientConfig) => {
       enabled: clientConfig.enabled,
     }),
   ])(clientFns);
-};
+}

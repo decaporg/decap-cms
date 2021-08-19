@@ -4,25 +4,21 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/core';
 import { Toggle, ToggleBackground, colors } from 'netlify-cms-ui-default';
 
-const BooleanBackground = ({ isActive, ...props }) => (
-  <ToggleBackground
-    css={css`
-      background-color: ${isActive ? colors.active : colors.textFieldBorder};
-    `}
-    {...props}
-  />
-);
+function BooleanBackground({ isActive, ...props }) {
+  return (
+    <ToggleBackground
+      css={css`
+        background-color: ${isActive ? colors.active : colors.textFieldBorder};
+      `}
+      {...props}
+    />
+  );
+}
 
 export default class BooleanControl extends React.Component {
   render() {
-    const {
-      value,
-      forID,
-      onChange,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-    } = this.props;
+    const { value, forID, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
+      this.props;
     return (
       <div className={classNameWrapper}>
         <Toggle

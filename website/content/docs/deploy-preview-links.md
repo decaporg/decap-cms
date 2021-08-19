@@ -12,7 +12,7 @@ of your unmerged content.
 
 Deploy preview links will work without configuration when all of the following requirements are met:
 
-* Netlify CMS version is 2.4.0+ for GitHub support and 2.10.6+ for GitLab/Bitbucket support 
+* Netlify CMS version is 2.4.0+ for GitHub support and 2.10.6+ for GitLab/Bitbucket support
 * Using editorial workflow
 * Have a continuous deployment platform that builds every commit and provides statuses to your repo
 
@@ -40,7 +40,7 @@ pending, which a content editor can use to manually check for a finished preview
 
 Deploy preview links point to the site root by default, but you'll probably want them to point to
 the specific piece of content that the content editor is viewing. You can do this by providing a
-`preview_path` string template for each collection.
+`preview_path` string template for each collection, or for inidividual files in a files collection.
 
 Let's say we have a `blog` collection that stores content in our repo under `content/blog`. The path
 to a post in your repo may look like `content/blog/2018-01-new-post.md`, but the path to that post
@@ -53,6 +53,18 @@ collections:
     folder: content/blog
     slug: {{year}}-{{month}}-{{slug}}
     preview_path: blog/{{slug}}
+```
+
+Similarly, for an `about` page in a files collection under `content/pages` which maps to `/about-the-project`
+on your site, you would configure `preview_path` like this:
+
+```yaml
+collections:
+  - name: pages
+    files:
+      - name: about
+        file: content/pages/about.md
+        preview_path: about-the-project
 ```
 
 With the above configuration, the deploy preview URL from your backend will be combined with your

@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 
 import WidgetDoc from './widget-doc';
 import Button from './button';
-
 import theme from '../theme';
 
 const WidgetsNav = styled.nav`
@@ -21,7 +20,7 @@ const WidgetsContent = styled.div`
   border-radius: 4px;
 `;
 
-const Widgets = ({ widgets, location }) => {
+function Widgets({ widgets, location }) {
   const initialLoadRef = useRef(true);
   const navRef = useRef(null);
   const [currentWidget, setWidget] = useState(null);
@@ -42,13 +41,13 @@ const Widgets = ({ widgets, location }) => {
     initialLoadRef.current = false;
   }, [widgets, location.hash]);
 
-  const handleWidgetChange = (event, title) => {
+  function handleWidgetChange(event, title) {
     event.preventDefault();
 
     setWidget(title);
 
     window.history.pushState(null, null, `#${title}`);
-  };
+  }
 
   return (
     <section>
@@ -77,6 +76,6 @@ const Widgets = ({ widgets, location }) => {
       </WidgetsContent>
     </section>
   );
-};
+}
 
 export default Widgets;

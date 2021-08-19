@@ -4,7 +4,7 @@ import { Map } from 'immutable';
 import { isString } from 'lodash';
 import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 
-const toValue = (value, field) => {
+function toValue(value, field) {
   if (isString(value)) {
     return value;
   }
@@ -12,15 +12,17 @@ const toValue = (value, field) => {
     return value.get(field.getIn(['keys', 'code'], 'code'), '');
   }
   return '';
-};
+}
 
-const CodePreview = props => (
-  <WidgetPreviewContainer>
-    <pre>
-      <code>{toValue(props.value, props.field)}</code>
-    </pre>
-  </WidgetPreviewContainer>
-);
+function CodePreview(props) {
+  return (
+    <WidgetPreviewContainer>
+      <pre>
+        <code>{toValue(props.value, props.field)}</code>
+      </pre>
+    </WidgetPreviewContainer>
+  );
+}
 
 CodePreview.propTypes = {
   value: PropTypes.node,

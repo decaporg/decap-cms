@@ -13,10 +13,13 @@ import {
   zIndex,
 } from 'netlify-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
 import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
+import { FILES } from '../../constants/collectionTypes';
+import { getFileFromSlug } from '../../reducers/collections';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
@@ -39,33 +42,35 @@ const EditorToggle = styled(IconButton)`
   margin-bottom: 12px;
 `;
 
-const ReactSplitPaneGlobalStyles = () => (
-  <Global
-    styles={css`
-      .Resizer.vertical {
-        width: 21px;
-        cursor: col-resize;
-        position: relative;
-        transition: background-color ${transitions.main};
-
-        &:before {
-          content: '';
-          width: 2px;
-          height: 100%;
+function ReactSplitPaneGlobalStyles() {
+  return (
+    <Global
+      styles={css`
+        .Resizer.vertical {
+          width: 21px;
+          cursor: col-resize;
           position: relative;
-          left: 10px;
-          background-color: ${colors.textFieldBorder};
-          display: block;
-        }
+          transition: background-color ${transitions.main};
 
-        &:hover,
-        &:active {
-          background-color: ${colorsRaw.GrayLight};
+          &:before {
+            content: '';
+            width: 2px;
+            height: 100%;
+            position: relative;
+            left: 10px;
+            background-color: ${colors.textFieldBorder};
+            display: block;
+          }
+
+          &:hover,
+          &:active {
+            background-color: ${colorsRaw.GrayLight};
+          }
         }
-      }
-    `}
-  />
-);
+      `}
+    />
+  );
+}
 
 const StyledSplitPane = styled(SplitPane)`
   ${styles.splitPane};
@@ -119,13 +124,13 @@ const ViewControls = styled.div`
   z-index: ${zIndex.zIndex299};
 `;
 
-const EditorContent = ({
+function EditorContent({
   i18nVisible,
   previewVisible,
   editor,
   editorWithEditor,
   editorWithPreview,
-}) => {
+}) {
   if (i18nVisible) {
     return editorWithEditor;
   } else if (previewVisible) {
@@ -133,7 +138,16 @@ const EditorContent = ({
   } else {
     return <NoPreviewContainer>{editor}</NoPreviewContainer>;
   }
-};
+}
+
+function isPreviewEnabled(collection, entry) {
+  if (collection.get('type') === FILES) {
+    const file = getFileFromSlug(collection, entry.get('slug'));
+    const previewEnabled = file?.getIn(['editor', 'preview']);
+    if (previewEnabled != null) return previewEnabled;
+  }
+  return collection.getIn(['editor', 'preview'], true);
+}
 
 class EditorInterface extends Component {
   state = {
@@ -221,7 +235,9 @@ class EditorInterface extends Component {
     } = this.props;
 
     const { scrollSyncEnabled, showEventBlocker } = this.state;
-    const collectionPreviewEnabled = collection.getIn(['editor', 'preview'], true);
+
+    const previewEnabled = isPreviewEnabled(collection, entry);
+
     const collectionI18nEnabled = hasI18n(collection);
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
     const editorProps = {
@@ -300,7 +316,7 @@ class EditorInterface extends Component {
     );
 
     const i18nVisible = collectionI18nEnabled && this.state.i18nVisible;
-    const previewVisible = collectionPreviewEnabled && this.state.previewVisible;
+    const previewVisible = previewEnabled && this.state.previewVisible;
     const scrollSyncVisible = i18nVisible || previewVisible;
 
     return (
@@ -345,17 +361,17 @@ class EditorInterface extends Component {
                 onClick={this.handleToggleI18n}
                 size="large"
                 type="page"
-                title="Toggle i18n"
+                title={t('editor.editorInterface.toggleI18n')}
                 marginTop="70px"
               />
             )}
-            {collectionPreviewEnabled && (
+            {previewEnabled && (
               <EditorToggle
                 isActive={previewVisible}
                 onClick={this.handleTogglePreview}
                 size="large"
                 type="eye"
-                title="Toggle preview"
+                title={t('editor.editorInterface.togglePreview')}
               />
             )}
             {scrollSyncVisible && (
@@ -364,7 +380,7 @@ class EditorInterface extends Component {
                 onClick={this.handleToggleScrollSync}
                 size="large"
                 type="scroll"
-                title="Sync scrolling"
+                title={t('editor.editorInterface.toggleScrollSync')}
               />
             )}
           </ViewControls>
@@ -397,7 +413,7 @@ EditorInterface.propTypes = {
   unPublish: PropTypes.func.isRequired,
   onDuplicate: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
-  user: ImmutablePropTypes.map.isRequired,
+  user: PropTypes.object,
   hasChanged: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,
@@ -407,7 +423,7 @@ EditorInterface.propTypes = {
   isModification: PropTypes.bool,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
-  deployPreview: ImmutablePropTypes.map,
+  deployPreview: PropTypes.object,
   loadDeployPreview: PropTypes.func.isRequired,
   draftKey: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,

@@ -1,8 +1,9 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { basename, getBlobSHA, ImplementationMediaFile } from 'netlify-cms-lib-util';
+import { basename, getBlobSHA } from 'netlify-cms-lib-util';
+
 import { currentBackend } from '../backend';
-import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
 import {
   selectMediaFilePath,
@@ -14,16 +15,19 @@ import { getIntegrationProvider } from '../integrations';
 import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
-import {
+import { waitUntilWithTimeout } from './waitUntil';
+
+import type {
   State,
   MediaFile,
   DisplayURLState,
   MediaLibraryInstance,
   EntryField,
 } from '../types/redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { waitUntilWithTimeout } from './waitUntil';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type AssetProxy from '../valueObjects/AssetProxy';
+import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
 
 const { notifSend } = notifActions;
 
@@ -53,7 +57,7 @@ export function createMediaLibrary(instance: MediaLibraryInstance) {
     onRemoveControl: instance.onRemoveControl || (() => undefined),
     enableStandalone: instance.enableStandalone || (() => undefined),
   };
-  return { type: MEDIA_LIBRARY_CREATE, payload: api };
+  return { type: MEDIA_LIBRARY_CREATE, payload: api } as const;
 }
 
 export function clearMediaControl(id: string) {
@@ -79,12 +83,12 @@ export function removeMediaControl(id: string) {
 export function openMediaLibrary(
   payload: {
     controlID?: string;
-    value?: string;
-    config?: Map<string, unknown>;
-    allowMultiple?: boolean;
     forImage?: boolean;
-    mediaFolder?: string;
-    publicFolder?: string;
+    privateUpload?: boolean;
+    value?: string;
+    allowMultiple?: boolean;
+    config?: Map<string, unknown>;
+    field?: EntryField;
   } = {},
 ) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -94,7 +98,7 @@ export function openMediaLibrary(
       const { controlID: id, value, config = Map(), allowMultiple, forImage } = payload;
       mediaLibrary.show({ id, value, config: config.toJS(), allowMultiple, imagesOnly: forImage });
     }
-    dispatch({ type: MEDIA_LIBRARY_OPEN, payload });
+    dispatch(mediaLibraryOpened(payload));
   };
 }
 
@@ -105,7 +109,7 @@ export function closeMediaLibrary() {
     if (mediaLibrary) {
       mediaLibrary.hide();
     }
-    dispatch({ type: MEDIA_LIBRARY_CLOSE });
+    dispatch(mediaLibraryClosed());
   };
 }
 
@@ -123,12 +127,12 @@ export function insertMedia(mediaPath: string | string[], field: EntryField | un
     } else {
       mediaPath = selectMediaFilePublicPath(config, collection, mediaPath as string, entry, field);
     }
-    dispatch({ type: MEDIA_INSERT, payload: { mediaPath } });
+    dispatch(mediaInserted(mediaPath));
   };
 }
 
 export function removeInsertedMedia(controlID: string) {
-  return { type: MEDIA_REMOVE_INSERTED, payload: { controlID } };
+  return { type: MEDIA_REMOVE_INSERTED, payload: { controlID } } as const;
 }
 
 export function loadMedia(
@@ -158,8 +162,8 @@ export function loadMedia(
     }
     dispatch(mediaLoading(page));
 
-    const loadFunction = () =>
-      backend
+    function loadFunction() {
+      return backend
         .getMedia()
         .then(files => dispatch(mediaLoaded(files)))
         .catch((error: { status?: number }) => {
@@ -171,6 +175,7 @@ export function loadMedia(
             dispatch(mediaLoadFailed());
           }
         });
+    }
 
     if (delay > 0) {
       return new Promise(resolve => {
@@ -214,7 +219,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
     const files: MediaFile[] = selectMediaFiles(state, field);
-    const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.get('slug'));
+    const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.slug);
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
 
     const editingDraft = selectEditingDraft(state.entryDraft);
@@ -397,37 +402,62 @@ export function loadMediaDisplayURL(file: MediaFile) {
         throw new Error('No display URL was returned!');
       }
     } catch (err) {
+      console.error(err);
       dispatch(mediaDisplayURLFailure(id, err));
     }
   };
+}
+
+function mediaLibraryOpened(payload: {
+  controlID?: string;
+  forImage?: boolean;
+  privateUpload?: boolean;
+  value?: string;
+  allowMultiple?: boolean;
+  config?: Map<string, unknown>;
+  field?: EntryField;
+}) {
+  return { type: MEDIA_LIBRARY_OPEN, payload } as const;
+}
+
+function mediaLibraryClosed() {
+  return { type: MEDIA_LIBRARY_CLOSE } as const;
+}
+
+function mediaInserted(mediaPath: string | string[]) {
+  return { type: MEDIA_INSERT, payload: { mediaPath } } as const;
 }
 
 export function mediaLoading(page: number) {
   return {
     type: MEDIA_LOAD_REQUEST,
     payload: { page },
-  };
+  } as const;
 }
 
 interface MediaOptions {
   privateUpload?: boolean;
   field?: EntryField;
+  page?: number;
+  canPaginate?: boolean;
+  dynamicSearch?: boolean;
+  dynamicSearchQuery?: string;
 }
 
 export function mediaLoaded(files: ImplementationMediaFile[], opts: MediaOptions = {}) {
   return {
     type: MEDIA_LOAD_SUCCESS,
     payload: { files, ...opts },
-  };
+  } as const;
 }
 
 export function mediaLoadFailed(opts: MediaOptions = {}) {
   const { privateUpload } = opts;
-  return { type: MEDIA_LOAD_FAILURE, payload: { privateUpload } };
+  return { type: MEDIA_LOAD_FAILURE, payload: { privateUpload } } as const;
 }
 
 export function mediaPersisting() {
-  return { type: MEDIA_PERSIST_REQUEST };
+  return { type: MEDIA_PERSIST_REQUEST } as const;
 }
 
 export function mediaPersisted(file: ImplementationMediaFile, opts: MediaOptions = {}) {
@@ -435,16 +465,16 @@ export function mediaPersisted(file: ImplementationMediaFile, opts: MediaOptions
   return {
     type: MEDIA_PERSIST_SUCCESS,
     payload: { file, privateUpload },
-  };
+  } as const;
 }
 
 export function mediaPersistFailed(opts: MediaOptions = {}) {
   const { privateUpload } = opts;
-  return { type: MEDIA_PERSIST_FAILURE, payload: { privateUpload } };
+  return { type: MEDIA_PERSIST_FAILURE, payload: { privateUpload } } as const;
 }
 
 export function mediaDeleting() {
-  return { type: MEDIA_DELETE_REQUEST };
+  return { type: MEDIA_DELETE_REQUEST } as const;
 }
 
 export function mediaDeleted(file: MediaFile, opts: MediaOptions = {}) {
@@ -452,31 +482,30 @@ export function mediaDeleted(file: MediaFile, opts: MediaOptions = {}) {
   return {
     type: MEDIA_DELETE_SUCCESS,
     payload: { file, privateUpload },
-  };
+  } as const;
 }
 
 export function mediaDeleteFailed(opts: MediaOptions = {}) {
   const { privateUpload } = opts;
-  return { type: MEDIA_DELETE_FAILURE, payload: { privateUpload } };
+  return { type: MEDIA_DELETE_FAILURE, payload: { privateUpload } } as const;
 }
 
 export function mediaDisplayURLRequest(key: string) {
-  return { type: MEDIA_DISPLAY_URL_REQUEST, payload: { key } };
+  return { type: MEDIA_DISPLAY_URL_REQUEST, payload: { key } } as const;
 }
 
 export function mediaDisplayURLSuccess(key: string, url: string) {
   return {
     type: MEDIA_DISPLAY_URL_SUCCESS,
     payload: { key, url },
-  };
+  } as const;
 }
 
 export function mediaDisplayURLFailure(key: string, err: Error) {
-  console.error(err);
   return {
     type: MEDIA_DISPLAY_URL_FAILURE,
     payload: { key, err },
-  };
+  } as const;
 }
 
 export async function waitForMediaLibraryToLoad(
@@ -524,3 +553,23 @@ export async function getMediaDisplayURL(
 
   return url;
 }
+
+export type MediaLibraryAction = ReturnType<
+  | typeof createMediaLibrary
+  | typeof mediaLibraryOpened
+  | typeof mediaLibraryClosed
+  | typeof mediaInserted
+  | typeof removeInsertedMedia
+  | typeof mediaLoading
+  | typeof mediaLoaded
+  | typeof mediaLoadFailed
+  | typeof mediaPersisting
+  | typeof mediaPersisted
+  | typeof mediaPersistFailed
+  | typeof mediaDeleting
+  | typeof mediaDeleted
+  | typeof mediaDeleteFailed
+  | typeof mediaDisplayURLRequest
+  | typeof mediaDisplayURLSuccess
+  | typeof mediaDisplayURLFailure
+>;

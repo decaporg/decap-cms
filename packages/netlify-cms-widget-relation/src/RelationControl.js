@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Async as AsyncSelect } from 'react-select';
+import AsyncSelect from 'react-select/async';
 import { find, isEmpty, last, debounce, get, uniqBy } from 'lodash';
 import { List, Map, fromJS } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 import { FixedSizeList } from 'react-window';
 
-const Option = ({ index, style, data }) => <div style={style}>{data.options[index]}</div>;
+function Option({ index, style, data }) {
+  return <div style={style}>{data.options[index]}</div>;
+}
 
-const MenuList = props => {
+function MenuList(props) {
   if (props.isLoading || props.options.length <= 0 || !Array.isArray(props.children)) {
     return props.children;
   }
@@ -28,7 +30,7 @@ const MenuList = props => {
       {Option}
     </FixedSizeList>
   );
-};
+}
 
 function optionToString(option) {
   return option && option.value ? option.value : '';
@@ -88,12 +90,31 @@ export default class RelationControl extends React.Component {
     forID: PropTypes.string.isRequired,
     value: PropTypes.node,
     field: ImmutablePropTypes.map,
-    fetchID: PropTypes.string,
     query: PropTypes.func.isRequired,
-    queryHits: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    queryHits: PropTypes.array,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
+  };
+
+  isValid = () => {
+    const { field, value, t } = this.props;
+    const min = field.get('min');
+    const max = field.get('max');
+
+    if (!this.isMultiple()) {
+      return { error: false };
+    }
+
+    const error = validations.validateMinMax(
+      t,
+      field.get('label', field.get('name')),
+      value,
+      min,
+      max,
+    );
+
+    return error ? { error } : { error: false };
   };
 
   shouldComponentUpdate(nextProps) {
@@ -117,7 +138,7 @@ export default class RelationControl extends React.Component {
       const metadata = {};
       const searchFieldsArray = getSearchFieldArray(field.get('search_fields'));
       const { payload } = await query(forID, collection, searchFieldsArray, '', file);
-      const hits = payload.response?.hits || [];
+      const hits = payload.hits || [];
       const options = this.parseHitOptions(hits);
       const initialOptions = initialSearchValues
         .map(v => {
@@ -144,17 +165,16 @@ export default class RelationControl extends React.Component {
 
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
-    let value;
-    let metadata;
 
-    if (Array.isArray(selectedOption)) {
-      this.setState({ initialOptions: selectedOption.filter(Boolean) });
-      value = selectedOption.map(optionToString);
-      metadata =
-        (!isEmpty(selectedOption) && {
+    if (this.isMultiple()) {
+      const options = selectedOption;
+      this.setState({ initialOptions: options.filter(Boolean) });
+      const value = options.map(optionToString);
+      const metadata =
+        (!isEmpty(options) && {
           [field.get('name')]: {
             [field.get('collection')]: {
-              [last(value)]: last(selectedOption).data,
+              [last(value)]: last(options).data,
             },
           },
         }) ||
@@ -162,8 +182,8 @@ export default class RelationControl extends React.Component {
       onChange(fromJS(value), metadata);
     } else {
       this.setState({ initialOptions: [selectedOption].filter(Boolean) });
-      value = optionToString(selectedOption);
-      metadata = selectedOption && {
+      const value = optionToString(selectedOption);
+      const metadata = selectedOption && {
         [field.get('name')]: {
           [field.get('collection')]: { [value]: selectedOption.data },
         },
@@ -219,7 +239,7 @@ export default class RelationControl extends React.Component {
     const file = field.get('file');
 
     query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
-      const hits = payload.response?.hits || [];
+      const hits = payload.hits || [];
       const options = this.parseHitOptions(hits);
       const uniq = uniqOptions(this.state.initialOptions, options);
       callback(uniq);
@@ -227,20 +247,12 @@ export default class RelationControl extends React.Component {
   }, 500);
 
   render() {
-    const {
-      value,
-      field,
-      forID,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-      queryHits,
-    } = this.props;
+    const { value, field, forID, classNameWrapper, setActiveStyle, setInactiveStyle, queryHits } =
+      this.props;
     const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 
-    const hits = queryHits.get(forID, []);
-    const queryOptions = this.parseHitOptions(hits);
+    const queryOptions = this.parseHitOptions(queryHits);
     const options = uniqOptions(this.state.initialOptions, queryOptions);
     const selectedValue = getSelectedValue({
       options,

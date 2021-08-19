@@ -6,5 +6,7 @@ export default {
     minimize_collapsed: { type: 'boolean' },
     label_singular: { type: 'string' },
     i18n: { type: 'boolean' },
+    min: { type: 'number' },
+    max: { type: 'number' },
   },
 };

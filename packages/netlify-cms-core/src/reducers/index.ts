@@ -1,3 +1,5 @@
+import { List } from 'immutable';
+
 import auth from './auth';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
@@ -12,8 +14,9 @@ import mediaLibrary from './mediaLibrary';
 import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import status from './status';
-import { Status } from '../constants/publishModes';
-import { State, Collection } from '../types/redux';
+
+import type { Status } from '../constants/publishModes';
+import type { State, Collection } from '../types/redux';
 
 const reducers = {
   auth,
@@ -37,37 +40,41 @@ export default reducers;
 /*
  * Selectors
  */
-export const selectEntry = (state: State, collection: string, slug: string) =>
-  fromEntries.selectEntry(state.entries, collection, slug);
+export function selectEntry(state: State, collection: string, slug: string) {
+  return fromEntries.selectEntry(state.entries, collection, slug);
+}
 
-export const selectEntries = (state: State, collection: Collection) =>
-  fromEntries.selectEntries(state.entries, collection);
+export function selectEntries(state: State, collection: Collection) {
+  return fromEntries.selectEntries(state.entries, collection);
+}
 
-export const selectPublishedSlugs = (state: State, collection: string) =>
-  fromEntries.selectPublishedSlugs(state.entries, collection);
+export function selectPublishedSlugs(state: State, collection: string) {
+  return fromEntries.selectPublishedSlugs(state.entries, collection);
+}
 
-export const selectSearchedEntries = (state: State, availableCollections: string[]) => {
-  const searchItems = state.search.get('entryIds');
+export function selectSearchedEntries(state: State, availableCollections: string[]) {
   // only return search results for actually available collections
-  return (
-    searchItems &&
-    searchItems
-      .filter(({ collection }) => availableCollections.indexOf(collection) !== -1)
-      .map(({ collection, slug }) => fromEntries.selectEntry(state.entries, collection, slug))
-  );
-};
+  return List(state.search.entryIds)
+    .filter(entryId => availableCollections.indexOf(entryId!.collection) !== -1)
+    .map(entryId => fromEntries.selectEntry(state.entries, entryId!.collection, entryId!.slug));
+}
 
-export const selectDeployPreview = (state: State, collection: string, slug: string) =>
-  fromDeploys.selectDeployPreview(state.deploys, collection, slug);
+export function selectDeployPreview(state: State, collection: string, slug: string) {
+  return fromDeploys.selectDeployPreview(state.deploys, collection, slug);
+}
 
-export const selectUnpublishedEntry = (state: State, collection: string, slug: string) =>
-  fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);
+export function selectUnpublishedEntry(state: State, collection: string, slug: string) {
+  return fromEditorialWorkflow.selectUnpublishedEntry(state.editorialWorkflow, collection, slug);
+}
 
-export const selectUnpublishedEntriesByStatus = (state: State, status: Status) =>
-  fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
+export function selectUnpublishedEntriesByStatus(state: State, status: Status) {
+  return fromEditorialWorkflow.selectUnpublishedEntriesByStatus(state.editorialWorkflow, status);
+}
 
-export const selectUnpublishedSlugs = (state: State, collection: string) =>
-  fromEditorialWorkflow.selectUnpublishedSlugs(state.editorialWorkflow, collection);
+export function selectUnpublishedSlugs(state: State, collection: string) {
+  return fromEditorialWorkflow.selectUnpublishedSlugs(state.editorialWorkflow, collection);
+}
 
-export const selectIntegration = (state: State, collection: string | null, hook: string) =>
-  fromIntegrations.selectIntegration(state.integrations, collection, hook);
+export function selectIntegration(state: State, collection: string | null, hook: string) {
+  return fromIntegrations.selectIntegration(state.integrations, collection, hook);
+}

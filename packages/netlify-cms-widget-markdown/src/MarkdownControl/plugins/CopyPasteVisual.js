@@ -2,17 +2,18 @@ import { Document } from 'slate';
 import { setEventTransfer } from 'slate-react';
 import base64 from 'slate-base64-serializer';
 import isHotkey from 'is-hotkey';
+
 import { slateToMarkdown, markdownToSlate, htmlToSlate, markdownToHtml } from '../../serializers';
 
-const CopyPasteVisual = ({ getAsset, resolveWidget }) => {
-  const handleCopy = (event, editor) => {
-    const markdown = slateToMarkdown(editor.value.fragment.toJS());
-    const html = markdownToHtml(markdown, { getAsset, resolveWidget });
+function CopyPasteVisual({ getAsset, resolveWidget, remarkPlugins }) {
+  function handleCopy(event, editor) {
+    const markdown = slateToMarkdown(editor.value.fragment.toJS(), { remarkPlugins });
+    const html = markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugins });
     setEventTransfer(event, 'text', markdown);
     setEventTransfer(event, 'html', html);
     setEventTransfer(event, 'fragment', base64.serializeNode(editor.value.fragment));
     event.preventDefault();
-  };
+  }
 
   return {
     onPaste(event, editor, next) {
@@ -27,7 +28,9 @@ const CopyPasteVisual = ({ getAsset, resolveWidget }) => {
       }
 
       const html = data.types.includes('text/html') && data.getData('text/html');
-      const ast = html ? htmlToSlate(html) : markdownToSlate(data.getData('text/plain'));
+      const ast = html
+        ? htmlToSlate(html)
+        : markdownToSlate(data.getData('text/plain'), { remarkPlugins });
       const doc = Document.fromJSON(ast);
       return editor.insertFragment(doc);
     },
@@ -39,6 +42,6 @@ const CopyPasteVisual = ({ getAsset, resolveWidget }) => {
       editor.delete();
     },
   };
-};
+}
 
 export default CopyPasteVisual;

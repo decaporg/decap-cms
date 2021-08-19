@@ -6,6 +6,7 @@ import { orderBy, map } from 'lodash';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
 import { fileExtension } from 'netlify-cms-lib-util';
+
 import {
   loadMedia as loadMediaAction,
   persistMedia as persistMediaAction,
@@ -13,15 +14,25 @@ import {
   insertMedia as insertMediaAction,
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
-} from 'Actions/mediaLibrary';
-import { selectMediaFiles } from 'Reducers/mediaLibrary';
+} from '../../actions/mediaLibrary';
+import { selectMediaFiles } from '../../reducers/mediaLibrary';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
  * Extensions used to determine which files to show when the media library is
  * accessed from an image insertion field.
  */
-const IMAGE_EXTENSIONS_VIEWABLE = ['jpg', 'jpeg', 'webp', 'gif', 'png', 'bmp', 'tiff', 'svg'];
+const IMAGE_EXTENSIONS_VIEWABLE = [
+  'jpg',
+  'jpeg',
+  'webp',
+  'gif',
+  'png',
+  'bmp',
+  'tiff',
+  'svg',
+  'avif',
+];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 class MediaLibrary extends React.Component {
@@ -344,7 +355,7 @@ class MediaLibrary extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
   const { mediaLibrary } = state;
   const field = mediaLibrary.get('field');
   const mediaLibraryProps = {
@@ -367,7 +378,7 @@ const mapStateToProps = state => {
     field,
   };
   return { ...mediaLibraryProps };
-};
+}
 
 const mapDispatchToProps = {
   loadMedia: loadMediaAction,

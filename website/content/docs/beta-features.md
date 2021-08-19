@@ -1,7 +1,7 @@
 ---
-title: Beta Features!
-weight: 200
 group: Configuration
+weight: 200
+title: Beta Features!
 ---
 
 We run new functionality in an open beta format from time to time. That means that this functionality is totally available for use, and we _think_ it might be ready for primetime, but it could break or change without notice.
@@ -15,8 +15,7 @@ We run new functionality in an open beta format from time to time. That means th
 You can connect Netlify CMS to a local Git repository, instead of working with a live repo.
 
 1. Navigate to a local Git repository configured with the CMS.
-2. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
-3. Add the top-level property `local_backend` configuration to your `config.yml`:
+2. Add the top-level property `local_backend` configuration to your `config.yml`:
 
 ```yaml
 backend:
@@ -24,6 +23,30 @@ backend:
 
 # when using the default proxy server port
 local_backend: true
+```
+
+3. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
+
+   - If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
+
+4. Start your local development server (e.g. run `gatsby develop`).
+5. Open <http://localhost:8000/admin> to verify that your can administer your content locally.
+
+**Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
+
+### Configure the Netlify CMS proxy server port number
+
+1. Create a `.env` file in the project's root folder and define the PORT you'd like the proxy server to use
+
+```ini
+PORT=8082
+```
+
+2. Update the `local_backend` object in `config.yml` and specify a `url` property to use your custom port number
+
+```yaml
+backend:
+  name: git-gateway
 
 local_backend:
   # when using a custom proxy server port
@@ -31,10 +54,6 @@ local_backend:
   # when accessing the local site from a host other than 'localhost' or '127.0.0.1'
   allowed_hosts: ['192.168.0.1']
 ```
-
-4. Start your local development server (e.g. run `gatsby develop`).
-
-**Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 
 ## GitLab and BitBucket Editorial Workflow Support
 
@@ -79,6 +98,26 @@ collections:
     # same as the top level, but all fields are optional and defaults to the top level
     # can also be a boolean to accept the top level defaults
     i18n: true
+```
+
+When using a file collection, you must also enable i18n for each individual file:
+
+```yaml
+collections:
+  - name: pages
+    label: Pages
+    # Configure i18n for this collection.
+    i18n:
+      structure: single_file
+      locales: [en, de, fr]
+    files:
+      - name: about
+        label: About Page
+        file: site/content/about.yml
+        # Enable i18n for this file.
+        i18n: true
+        fields:
+          - { label: Title, name: title, widget: string, i18n: true }
 ```
 
 ### Field level configuration
@@ -130,7 +169,7 @@ collections:
 
 ### Limitations
 
-1. File collections are not supported.
+1. File collections support only `structure: single_file`.
 2. List widgets only support `i18n: true`. `i18n` configuration on sub fields is ignored.
 3. Object widgets only support `i18n: true` and `i18n` configuration should be done per field:
 
@@ -458,7 +497,7 @@ Netlify CMS generates the following commit types:
 | --------------- | ---------------------------------------- | ----------------------------------------------------------- |
 | `create`        | A new entry is created                   | `slug`, `path`, `collection`, `author-login`, `author-name` |
 | `update`        | An existing entry is changed             | `slug`, `path`, `collection`, `author-login`, `author-name` |
-| `delete`        | An exising entry is deleted              | `slug`, `path`, `collection`, `author-login`, `author-name` |
+| `delete`        | An existing entry is deleted             | `slug`, `path`, `collection`, `author-login`, `author-name` |
 | `uploadMedia`   | A media file is uploaded                 | `path`, `author-login`, `author-name`                       |
 | `deleteMedia`   | A media file is deleted                  | `path`, `author-login`, `author-name`                       |
 | `openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name`                    |
@@ -466,15 +505,10 @@ Netlify CMS generates the following commit types:
 Template tags produce the following output:
 
 - `{{slug}}`: the url-safe filename of the entry changed
-
 - `{{collection}}`: the name of the collection containing the entry changed
-
 - `{{path}}`: the full path to the file changed
-
 - `{{message}}`: the relevant message based on the current change (e.g. the `create` message when an entry is created)
-
 - `{{author-login}}`: the login/username of the author
-
 - `{{author-name}}`: the full name of the author (might be empty based on the user's profile)
 
 ## Image widget file size limit
@@ -492,6 +526,26 @@ Example config:
     config:
       max_file_size: 512000 # in bytes, only for default media library
 ```
+
+## Summary string template transformations
+
+You can apply transformations on fields in a summary string template using filter notation syntax.
+
+Example config:
+
+```yaml
+collections:
+  - name: 'posts'
+    label: 'Posts'
+    folder: '_posts'
+    summary: "{{title | upper}} - {{date | date('YYYY-MM-DD')}}"
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+```
+
+The above config will transform the title field to uppercase and format the date field using `YYYY-MM-DD` format.
+Available transformations are `upper`, `lower` and `date('<format>')`
 
 ## Registering to CMS Events
 
@@ -580,3 +634,33 @@ collections:
     # moving an existing entry will move the entire sub tree of the entry to the new location
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
 ```
+
+Nested collections expect the following directory structure:
+
+```bash
+content
+└── pages
+    ├── authors
+    │   ├── author-1
+    │   │   └── index.md
+    │   └── index.md
+    ├── index.md
+    └── posts
+        ├── hello-world
+        │   └── index.md
+        └── index.md
+```
+
+## Remark plugins
+
+You can register plugins to customize [`remark`](https://github.com/remarkjs/remark), the library used by the richtext editor for serializing and deserializing markdown.
+
+```js
+// register a plugin
+CMS.registerRemarkPlugin(plugin);
+
+// provide global settings to all plugins, e.g. for customizing `remark-stringify`
+CMS.registerRemarkPlugin({ settings: { bullet: '-' } });
+```
+
+Note that `netlify-widget-markdown` currently uses `remark@10`, so you should check a plugin's compatibility first.

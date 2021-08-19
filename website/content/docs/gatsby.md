@@ -61,7 +61,7 @@ In your `config.yml` file paste the following configuration:
 ```yml
 backend:
   name: git-gateway
-  branch: master
+  branch: main # Branch to update (optional; defaults to master)
 
 media_folder: static/img
 public_folder: /img
@@ -111,7 +111,7 @@ It's now time to commit your changes and push to GitHub. The Gatsby starter init
 git add .
 git commit -m "Initial Commit"
 git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git
-git push -u origin master
+git push -u origin main
 ```
 
 ### Add your repo to Netlify

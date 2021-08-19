@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.4.1...netlify-cms-lib-auth@2.4.2) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-lib-auth
+
+
+
+
+
+## [2.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.4.0...netlify-cms-lib-auth@2.4.1) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-lib-auth
+
+
+
+
+
+# [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.3.0...netlify-cms-lib-auth@2.4.0) (2021-04-14)
+
+
+### Features
+
+* Adds PKCE authentication for GitLab closes [#5236](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/issues/5236) ([#5239](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/issues/5239)) ([829409e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/commit/829409e0bc03b4591ee6b59d9895adc4e7190037))
+
+
+
+
+
+# [2.3.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.2.12...netlify-cms-lib-auth@2.3.0) (2020-11-26)
+
+
+### Features
+
+* add azure devops backend ([#4427](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/issues/4427)) ([4e6dc88](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/commit/4e6dc88efb1dae4cf6137730c3b4fb6d0f75a8cc))
+
+
+
+
+
 ## [2.2.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.2.11...netlify-cms-lib-auth@2.2.12) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-lib-auth

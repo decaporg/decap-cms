@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import Markdown from 'react-markdown';
 
-const Markdownify = ({ source }) => (
-  <Markdown source={source} renderers={{ root: Fragment, paragraph: Fragment }} />
-);
+function Markdownify({ source }) {
+  return <Markdown components={{ '**': Fragment, p: Fragment }}>{source}</Markdown>;
+}
 
 export default Markdownify;

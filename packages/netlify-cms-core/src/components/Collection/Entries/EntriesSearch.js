@@ -4,11 +4,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 import { Cursor } from 'netlify-cms-lib-util';
-import { selectSearchedEntries } from 'Reducers';
+
+import { selectSearchedEntries } from '../../../reducers';
 import {
   searchEntries as actionSearchEntries,
   clearSearch as actionClearSearch,
-} from 'Actions/search';
+} from '../../../actions/search';
 import Entries from './Entries';
 
 class EntriesSearch extends React.Component {
@@ -76,8 +77,8 @@ function mapStateToProps(state, ownProps) {
   const { searchTerm } = ownProps;
   const collections = ownProps.collections.toIndexedSeq();
   const collectionNames = ownProps.collections.keySeq().toArray();
-  const isFetching = state.search.get('isFetching');
-  const page = state.search.get('page');
+  const isFetching = state.search.isFetching;
+  const page = state.search.page;
   const entries = selectSearchedEntries(state, collectionNames);
   return { isFetching, page, collections, collectionNames, entries, searchTerm };
 }

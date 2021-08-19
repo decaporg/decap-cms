@@ -1,7 +1,8 @@
 import React from 'react';
 import { Map } from 'immutable';
-import MediaLibraryCard from '../MediaLibraryCard';
 import { render } from '@testing-library/react';
+
+import MediaLibraryCard from '../MediaLibraryCard';
 
 describe('MediaLibraryCard', () => {
   const props = {

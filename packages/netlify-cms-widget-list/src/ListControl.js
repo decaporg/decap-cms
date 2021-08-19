@@ -4,22 +4,25 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
-import { partial, isEmpty } from 'lodash';
+import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
+import {
+  ListItemTopBar,
+  ObjectWidgetTopBar,
+  colors,
+  lengths,
+  FieldLabel,
+} from 'netlify-cms-ui-default';
+import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
+
 import {
   TYPES_KEY,
   getTypedFieldForValue,
   resolveFieldKeyType,
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
-import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-
-function valueToString(value) {
-  return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
-}
 
 const ObjectControl = NetlifyCmsWidgetObject.controlComponent;
 
@@ -72,13 +75,32 @@ const valueTypes = {
   MIXED: 'MIXED',
 };
 
-const handleSummary = (summary, entry, label, item) => {
+function handleSummary(summary, entry, label, item) {
   const data = stringTemplate.addFileTemplateFields(
     entry.get('path'),
     item.set('fields.label', label),
   );
   return stringTemplate.compileStringTemplate(summary, null, '', data);
-};
+}
+
+function validateItem(field, item) {
+  if (!Map.isMap(item)) {
+    console.warn(
+      `'${field.get('name')}' field item value value should be a map but is a '${typeof item}'`,
+    );
+    return false;
+  }
+
+  return true;
+}
+function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
+  const label = `${field.get('label', field.get('name'))}`;
+  return (
+    <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
+      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+    </FieldLabel>
+  );
+}
 
 export default class ListControl extends React.Component {
   validations = [];
@@ -106,6 +128,7 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -123,10 +146,25 @@ export default class ListControl extends React.Component {
     this.state = {
       listCollapsed,
       itemsCollapsed,
-      value: valueToString(value),
+      value: this.valueToString(value),
       keys,
     };
   }
+
+  valueToString = value => {
+    let stringValue;
+    if (List.isList(value) || Array.isArray(value)) {
+      stringValue = value.join(',');
+    } else {
+      console.warn(
+        `Expected List value to be an array but received '${value}' with type of '${typeof value}'. Please check the value provided to the '${this.props.field.get(
+          'name',
+        )}' field`,
+      );
+      stringValue = String(value);
+    }
+    return stringValue.replace(/,([^\s]|$)/g, ', $1');
+  };
 
   getValueType = () => {
     const { field } = this.props;
@@ -141,6 +179,7 @@ export default class ListControl extends React.Component {
     }
   };
 
+  uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
   /**
    * Always update so that each nested widget has the option to update. This is
    * required because ControlHOC provides a default `shouldComponentUpdate`
@@ -154,13 +193,13 @@ export default class ListControl extends React.Component {
   handleChange = e => {
     const { onChange } = this.props;
     const oldValue = this.state.value;
-    const newValue = e.target.value;
-    const listValue = e.target.value.split(',');
+    const newValue = e.target.value.trim();
+    const listValue = newValue ? newValue.split(',') : [];
     if (newValue.match(/,$/) && oldValue.match(/, $/)) {
       listValue.pop();
     }
 
-    const parsedValue = valueToString(listValue);
+    const parsedValue = this.valueToString(listValue);
     this.setState({ value: parsedValue });
     onChange(List(listValue.map(val => val.trim())));
   };
@@ -174,22 +213,18 @@ export default class ListControl extends React.Component {
       .split(',')
       .map(el => el.trim())
       .filter(el => el);
-    this.setState({ value: valueToString(listValue) });
+    this.setState({ value: this.valueToString(listValue) });
     this.props.setInactiveStyle();
   };
 
   handleAdd = e => {
     e.preventDefault();
-    const { value, onChange, field } = this.props;
+    const { field } = this.props;
     const parsedValue =
       this.getValueType() === valueTypes.SINGLE
         ? this.singleDefault()
         : fromJS(this.multipleDefault(field.get('fields')));
-    this.setState({
-      itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, uuid()],
-    });
-    onChange((value || List()).push(parsedValue));
+    this.addItem(parsedValue);
   };
 
   singleDefault = () => {
@@ -201,13 +236,8 @@ export default class ListControl extends React.Component {
   };
 
   handleAddType = (type, typeKey) => {
-    const { value, onChange } = this.props;
     const parsedValue = fromJS(this.mixedDefault(typeKey, type));
-    this.setState({
-      itemsCollapsed: [...this.state.itemsCollapsed, false],
-      keys: [...this.state.keys, uuid()],
-    });
-    onChange((value || List()).push(parsedValue));
+    this.addItem(parsedValue);
   };
 
   mixedDefault = (typeKey, type) => {
@@ -244,6 +274,26 @@ export default class ListControl extends React.Component {
     }, initialValue);
   };
 
+  addItem = parsedValue => {
+    const { value, onChange, field } = this.props;
+    const addToTop = field.get('add_to_top', false);
+
+    const itemKey = uuid();
+    this.setState({
+      itemsCollapsed: addToTop
+        ? [false, ...this.state.itemsCollapsed]
+        : [...this.state.itemsCollapsed, false],
+      keys: addToTop ? [itemKey, ...this.state.keys] : [...this.state.keys, itemKey],
+    });
+
+    const listValue = value || List();
+    if (addToTop) {
+      onChange(listValue.unshift(parsedValue));
+    } else {
+      onChange(listValue.push(parsedValue));
+    }
+  };
+
   processControlRef = ref => {
     if (!ref) return;
     const {
@@ -261,6 +311,28 @@ export default class ListControl extends React.Component {
     } else {
       this.props.validate();
     }
+    this.props.onValidateObject(this.props.forID, this.validateSize());
+  };
+
+  validateSize = () => {
+    const { field, value, t } = this.props;
+    const min = field.get('min');
+    const max = field.get('max');
+    const required = field.get('required', true);
+
+    if (!required && !value?.size) {
+      return [];
+    }
+
+    const error = validations.validateMinMax(
+      t,
+      field.get('label', field.get('name')),
+      value,
+      min,
+      max,
+    );
+
+    return error ? [error] : [];
   };
 
   /**
@@ -288,13 +360,12 @@ export default class ListControl extends React.Component {
     };
   }
 
-  handleRemove = (index, key, event) => {
+  handleRemove = (index, event) => {
     event.preventDefault();
-    const { itemsCollapsed, keys } = this.state;
+    const { itemsCollapsed } = this.state;
     const { value, metadata, onChange, field, clearFieldErrors } = this.props;
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
-    const validations = this.validations;
 
     const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
     const parsedMetadata =
@@ -303,17 +374,16 @@ export default class ListControl extends React.Component {
         : metadata;
 
     itemsCollapsed.splice(index, 1);
-    keys.splice(index, 1);
+    // clear validations
+    this.validations = [];
 
-    this.setState({ itemsCollapsed: [...itemsCollapsed], keys: [...keys] });
+    this.setState({
+      itemsCollapsed: [...itemsCollapsed],
+      keys: Array.from({ length: value.size - 1 }, () => uuid()),
+    });
 
     onChange(value.remove(index), parsedMetadata);
     clearFieldErrors();
-
-    // Remove deleted item object validation
-    if (validations) {
-      this.validations = validations.filter(item => item.key !== key);
-    }
   };
 
   handleItemCollapseToggle = (index, event) => {
@@ -355,6 +425,9 @@ export default class ListControl extends React.Component {
     const valueType = this.getValueType();
     switch (valueType) {
       case valueTypes.MIXED: {
+        if (!validateItem(field, item)) {
+          return;
+        }
         const itemType = getTypedFieldForValue(field, item);
         const label = itemType.get('label', itemType.get('name'));
         // each type can have its own summary, but default to the list summary if exists
@@ -371,6 +444,9 @@ export default class ListControl extends React.Component {
         return labelReturn;
       }
       case valueTypes.MULTIPLE: {
+        if (!validateItem(field, item)) {
+          return;
+        }
         const multiFields = field.get('fields');
         const labelField = multiFields && multiFields.first();
         const value = item.get(labelField.get('name'));
@@ -433,6 +509,7 @@ export default class ListControl extends React.Component {
       resolveWidget,
       parentIds,
       forID,
+      t,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
@@ -440,24 +517,33 @@ export default class ListControl extends React.Component {
     const key = keys[index];
     let field = this.props.field;
     const hasError = this.hasError(index);
-
-    if (this.getValueType() === valueTypes.MIXED) {
+    const isVariableTypesList = this.getValueType() === valueTypes.MIXED;
+    if (isVariableTypesList) {
       field = getTypedFieldForValue(field, item);
       if (!field) {
         return this.renderErroneousTypedItem(index, item);
       }
     }
-
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
         index={index}
         key={key}
       >
+        {isVariableTypesList && (
+          <LabelComponent
+            field={field}
+            isActive={false}
+            hasErrors={hasError}
+            uniqueFieldId={this.uniqueFieldId}
+            isFieldOptional={field.get('required') === false}
+            t={t}
+          />
+        )}
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-          onRemove={partial(this.handleRemove, index, key)}
+          onRemove={partial(this.handleRemove, index)}
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
@@ -519,7 +605,7 @@ export default class ListControl extends React.Component {
   }
 
   renderListControl() {
-    const { value, forID, field, classNameWrapper } = this.props;
+    const { value, forID, field, classNameWrapper, t } = this.props;
     const { itemsCollapsed, listCollapsed } = this.state;
     const items = value || List();
     const label = field.get('label', field.get('name'));
@@ -550,6 +636,7 @@ export default class ListControl extends React.Component {
               label={labelSingular.toLowerCase()}
               onCollapseToggle={this.handleCollapseAllToggle}
               collapsed={selfCollapsed}
+              t={t}
             />
             {(!selfCollapsed || !minimizeCollapsedItems) && (
               <SortableList

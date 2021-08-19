@@ -8,14 +8,14 @@ This guide will help you get started using Netlify CMS and Middleman.
 ## Installation
 To get up and running with Middleman, you need both the Ruby language runtime and RubyGems installed on your computer. Check out the [Middleman installation docs](https://middlemanapp.com/basics/install/) for more details. If you already have your environment set up, use the following command to install Middleman:
 
-```
+```bash
 gem install middleman
 ```
 
 ## Create a new Middleman site
 Let's create a new site from scratch. Run the following commands in the terminal, in the folder where you'd like to create the blog:
 
-```
+```bash
 middleman init blog
 cd blog
 ```
@@ -23,12 +23,12 @@ cd blog
 ### Add the Middleman blog extension
 Middleman has an official extension to support blogging, articles and tagging. `middleman-blog` ships as an extension and must be installed to use. Simply specify the gem in your Gemfile:
 
-```
+```bash
 gem "middleman-blog"
 ```
 Install the dependencies and run Middleman with the following commands:
 
-```
+```bash
 bundle install
 middleman server
 ```
@@ -50,7 +50,7 @@ This is an example article. You probably want to delete it and write your own ar
 ### Activate the blog extension
 We can then activate the blog in `config.rb`. Be sure to check out the [Middleman blogging docs](https://middlemanapp.com/basics/blogging/) for all the configuration options.
 
-```
+```bash
 activate :blog do | blog |
   blog.permalink = "blog/{title}.html"
   blog.sources = "posts/{year}-{month}-{day}-{title}.html"
@@ -61,7 +61,7 @@ end
 ### Load the articles
 Time to load our articles in `index.html.erb`.
 
-```
+```ruby
 <h1>Recent articles</h1>
 
 <% blog.articles.each do | article | %>
@@ -78,7 +78,7 @@ Time to load our articles in `index.html.erb`.
 
 ### Add an article layout
 In the last step before we add Netlify CMS, we add a layout for the article page. Create a new layout `source/layouts/blog-layout.html.erb`. For now we will get the title and the content:
-```
+```ruby
 <h1>
   <%= current_page.data.title %>
 </h1>
@@ -91,7 +91,7 @@ Now that we have a functioning blog, let's get started with Netlify CMS!
 ## Add Netlify CMS to your site
 
 Create two files in a new folder called `admin`, `index.html` and `config.yml`. Also add an `upload` folder in the images directory that will function as our `media_folder`.
-```
+```bash
 ├── source
 │   ├── admin
 │   │   ├── index.html
@@ -104,7 +104,7 @@ Create two files in a new folder called `admin`, `index.html` and `config.yml`. 
 
 In the newly created `index.html` we add scripts for Netlify CMS and the Netlify Identity Widget:
 
-```
+```html
 <!doctype html>
 <html>
   <head>
@@ -125,9 +125,10 @@ In the newly created `index.html` we add scripts for Netlify CMS and the Netlify
 
 For the purpose of this guide we will deploy to Netlify from a GitHub repository which requires the minimum configuration. In `config.yml` file paste the following code:
 
-```
+```yml
 backend:
   name: git-gateway
+  branch: main # Branch to update (optional; defaults to master)
 
 media_folder: source/images/uploads
 public_folder: /images/uploads
@@ -149,12 +150,12 @@ collections:
 ### Push to GitHub
 It's now time to commit your changes and push to GitHub. 
 
-```
+```bash
 git init
 git add .
 git commit -m "Initial Commit"
 git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git
-git push -u origin master
+git push -u origin main
 ```
 
 ### Add your repo to Netlify

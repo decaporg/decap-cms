@@ -1,26 +1,28 @@
 import React from 'react';
-import ConnectedEntriesCollection, {
-  EntriesCollection,
-  filterNestedEntries,
-} from '../EntriesCollection';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
+
+import ConnectedEntriesCollection, {
+  EntriesCollection,
+  filterNestedEntries,
+} from '../EntriesCollection';
 
 jest.mock('../Entries', () => 'mock-entries');
 
 const middlewares = [];
 const mockStore = configureStore(middlewares);
 
-const renderWithRedux = (component, { store } = {}) => {
+function renderWithRedux(component, { store } = {}) {
   function Wrapper({ children }) {
     return <Provider store={store}>{children}</Provider>;
   }
-  return render(component, { wrapper: Wrapper });
-};
 
-const toEntriesState = (collection, entriesArray) => {
+  return render(component, { wrapper: Wrapper });
+}
+
+function toEntriesState(collection, entriesArray) {
   const entries = entriesArray.reduce(
     (acc, entry) => {
       acc.entities[`${collection.get('name')}.${entry.slug}`] = entry;
@@ -30,7 +32,7 @@ const toEntriesState = (collection, entriesArray) => {
     { pages: { [collection.get('name')]: { ids: [] } }, entities: {} },
   );
   return fromJS(entries);
-};
+}
 
 describe('filterNestedEntries', () => {
   it('should return only immediate children for non root path', () => {

@@ -1,11 +1,13 @@
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { State } from '../types/redux';
+import { isEqual } from 'lodash';
+
 import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration } from '../reducers';
-import { EntryValue } from '../valueObjects/Entry';
-import { List } from 'immutable';
+
+import type { State } from '../types/redux';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { EntryValue } from '../valueObjects/Entry';
 
 /*
  * Constant Declarations
@@ -14,9 +16,9 @@ export const SEARCH_ENTRIES_REQUEST = 'SEARCH_ENTRIES_REQUEST';
 export const SEARCH_ENTRIES_SUCCESS = 'SEARCH_ENTRIES_SUCCESS';
 export const SEARCH_ENTRIES_FAILURE = 'SEARCH_ENTRIES_FAILURE';
 
-export const QUERY_REQUEST = 'INIT_QUERY';
-export const QUERY_SUCCESS = 'QUERY_OK';
-export const QUERY_FAILURE = 'QUERY_ERROR';
+export const QUERY_REQUEST = 'QUERY_REQUEST';
+export const QUERY_SUCCESS = 'QUERY_SUCCESS';
+export const QUERY_FAILURE = 'QUERY_FAILURE';
 
 export const SEARCH_CLEAR = 'SEARCH_CLEAR';
 
@@ -28,51 +30,33 @@ export function searchingEntries(searchTerm: string, searchCollections: string[]
   return {
     type: SEARCH_ENTRIES_REQUEST,
     payload: { searchTerm, searchCollections, page },
-  };
+  } as const;
 }
 
-export function searchSuccess(
-  searchTerm: string,
-  searchCollections: string[],
-  entries: EntryValue[],
-  page: number,
-) {
+export function searchSuccess(entries: EntryValue[], page: number) {
   return {
     type: SEARCH_ENTRIES_SUCCESS,
     payload: {
-      searchTerm,
-      searchCollections,
       entries,
       page,
     },
-  };
+  } as const;
 }
 
-export function searchFailure(searchTerm: string, error: Error) {
+export function searchFailure(error: Error) {
   return {
     type: SEARCH_ENTRIES_FAILURE,
-    payload: {
-      searchTerm,
-      error,
-    },
-  };
+    payload: { error },
+  } as const;
 }
 
-export function querying(
-  namespace: string,
-  collection: string,
-  searchFields: string[],
-  searchTerm: string,
-) {
+export function querying(searchTerm: string) {
   return {
     type: QUERY_REQUEST,
     payload: {
-      namespace,
-      collection,
-      searchFields,
       searchTerm,
     },
-  };
+  } as const;
 }
 
 type SearchResponse = {
@@ -85,42 +69,21 @@ type QueryResponse = {
   query: string;
 };
 
-export function querySuccess(
-  namespace: string,
-  collection: string,
-  searchFields: string[],
-  searchTerm: string,
-  response: QueryResponse,
-) {
+export function querySuccess(namespace: string, hits: EntryValue[]) {
   return {
     type: QUERY_SUCCESS,
     payload: {
       namespace,
-      collection,
-      searchFields,
-      searchTerm,
-      response,
+      hits,
     },
-  };
+  } as const;
 }
 
-export function queryFailure(
-  namespace: string,
-  collection: string,
-  searchFields: string[],
-  searchTerm: string,
-  error: Error,
-) {
+export function queryFailure(error: Error) {
   return {
     type: QUERY_FAILURE,
-    payload: {
-      namespace,
-      collection,
-      searchFields,
-      searchTerm,
-      error,
-    },
-  };
+    payload: { error },
+  } as const;
 }
 
 /*
@@ -128,7 +91,7 @@ export function queryFailure(
  */
 
 export function clearSearch() {
-  return { type: SEARCH_CLEAR };
+  return { type: SEARCH_CLEAR } as const;
 }
 
 /*
@@ -136,33 +99,29 @@ export function clearSearch() {
  */
 
 // SearchEntries will search for complete entries in all collections.
-export function searchEntries(
-  searchTerm: string,
-  searchCollections: string[] | null = null,
-  page = 0,
-) {
-  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+export function searchEntries(searchTerm: string, searchCollections: string[], page = 0) {
+  return async (dispatch: ThunkDispatch<State, undefined, AnyAction>, getState: () => State) => {
     const state = getState();
     const { search } = state;
     const backend = currentBackend(state.config);
     const allCollections = searchCollections || state.collections.keySeq().toArray();
     const collections = allCollections.filter(collection =>
-      selectIntegration(state, collection as string, 'search'),
+      selectIntegration(state, collection, 'search'),
     );
-    const integration = selectIntegration(state, collections[0] as string, 'search');
+    const integration = selectIntegration(state, collections[0], 'search');
 
     // avoid duplicate searches
     if (
-      search.get('isFetching') === true &&
-      search.get('term') === searchTerm &&
-      search.get('collections') !== null &&
-      List(allCollections).equals(search.get('collections') as List<string>) &&
+      search.isFetching &&
+      search.term === searchTerm &&
+      isEqual(allCollections, search.collections) &&
       // if an integration doesn't exist, 'page' is not used
-      (search.get('page') === page || !integration)
+      (search.page === page || !integration)
     ) {
       return;
     }
-    dispatch(searchingEntries(searchTerm, allCollections as string[], page));
+
+    dispatch(searchingEntries(searchTerm, allCollections, page));
 
     const searchPromise = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration).search(
@@ -178,18 +137,12 @@ export function searchEntries(
           searchTerm,
         );
 
-    return searchPromise.then(
-      (response: SearchResponse) =>
-        dispatch(
-          searchSuccess(
-            searchTerm,
-            allCollections as string[],
-            response.entries,
-            response.pagination,
-          ),
-        ),
-      (error: Error) => dispatch(searchFailure(searchTerm, error)),
-    );
+    try {
+      const response: SearchResponse = await searchPromise;
+      return dispatch(searchSuccess(response.entries, response.pagination));
+    } catch (error) {
+      return dispatch(searchFailure(error));
+    }
   };
 }
 
@@ -204,7 +157,7 @@ export function query(
   limit?: number,
 ) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    dispatch(querying(namespace, collectionName, searchFields, searchTerm));
+    dispatch(querying(searchTerm));
 
     const state = getState();
     const backend = currentBackend(state.config);
@@ -223,9 +176,19 @@ export function query(
 
     try {
       const response: QueryResponse = await queryPromise;
-      return dispatch(querySuccess(namespace, collectionName, searchFields, searchTerm, response));
+      return dispatch(querySuccess(namespace, response.hits));
     } catch (error) {
-      return dispatch(queryFailure(namespace, collectionName, searchFields, searchTerm, error));
+      return dispatch(queryFailure(error));
     }
   };
 }
+
+export type SearchAction = ReturnType<
+  | typeof searchingEntries
+  | typeof searchSuccess
+  | typeof searchFailure
+  | typeof querying
+  | typeof querySuccess
+  | typeof queryFailure
+  | typeof clearSearch
+>;

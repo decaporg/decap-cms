@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - '*'
 
     paths-ignore:
       - 'website/**'
@@ -22,23 +20,13 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [12.x]
-
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: '*'
+          check-latest: true
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
@@ -54,26 +42,25 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - uses: actions/upload-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
+          name: dev-test-website-${{ runner.os }}
           path: dev-test
 
-  # non forked workflow (has access to build secrets)
-  e2e-with-cypress-record:
+  e2e-with-cypress:
     needs: build
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         machine: [1, 2, 3, 4, 5, 6, 7, 8]
-        node-version: [12.x]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '*'
+          check-latest: true
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -85,56 +72,27 @@ jobs:
             ${{ runner.os }}-yarn-
       - uses: actions/download-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
+          name: dev-test-website-${{ runner.os }}
           path: dev-test
-      - name: npm install and e2e test
+      - name: npm install
         run: |
           node --version
           npm --version
           yarn --version
           yarn --frozen-lockfile
+      - name: e2e test
+        run: |
           yarn test:e2e:run-ci
         env:
-          CI: true
+          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
-
-  # forked workflow (no access to build secrets)
-  e2e-no-cypress-record:
-    needs: build
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+          MACHINE_COUNT: 8
+          MACHINE_INDEX: ${{ matrix.machine }}
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - uses: actions/download-artifact@master
-        with:
-          name: dev-test-website-${{ runner.os }}-node-${{ matrix.node-version }}
-          path: dev-test
-      - name: npm install and e2e test
-        run: |
-          node --version
-          npm --version
-          yarn --version
-          yarn --frozen-lockfile
-          yarn test:e2e:run
-        env:
-          CI: true
-          NODE_OPTIONS: --max-old-space-size=4096
+          name: cypress-results-${{ matrix.machine }}
+          path: |
+            cypress/screenshots
+            cypress/videos

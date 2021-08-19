@@ -167,7 +167,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -177,7 +177,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -396,7 +396,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -406,7 +406,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -655,7 +655,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -665,7 +665,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -689,7 +689,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
           collapsed="true"
-          data-testid="styled-list-item-top-bar-1"
+          data-testid="styled-list-item-top-bar-2"
         >
           <button>
             Remove
@@ -703,12 +703,12 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         <mock-object-control
           classnamewrapper="classNameWrapper css-1pznrxi"
           collapsed="true"
-          data-testid="object-control-1"
+          data-testid="object-control-2"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
           forlist="true"
-          parentids="forID,1"
-          validationkey="1"
+          parentids="forID,2"
+          validationkey="2"
           value="Map { \\"string\\": \\"item 2\\" }"
         />
       </div>
@@ -895,7 +895,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -905,7 +905,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1153,7 +1153,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1163,7 +1163,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1412,7 +1412,7 @@ exports[`ListControl should render list with fields with default collapse ("true
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1422,7 +1422,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1653,7 +1653,7 @@ exports[`ListControl should render list with fields with default collapse ("true
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1663,7 +1663,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -1852,7 +1852,7 @@ exports[`ListControl should render list with nested object 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -1862,7 +1862,7 @@ exports[`ListControl should render list with nested object 1`] = `
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >
@@ -2110,7 +2110,7 @@ exports[`ListControl should render list with nested object with collapse = false
               viewBox="0 0 24 24"
             >
               <path
-                d="M5.123 6.33l-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
             </svg>
           </span>
@@ -2120,7 +2120,7 @@ exports[`ListControl should render list with nested object with collapse = false
       <button
         class="emotion-10 emotion-11"
       >
-        Add list 
+        editor.editorWidgets.list.add
         <span
           class="emotion-0 emotion-8 emotion-2"
         >

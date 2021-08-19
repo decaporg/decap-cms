@@ -4,11 +4,12 @@ import styled from '@emotion/styled';
 import { Map } from 'immutable';
 import { isEmpty } from 'lodash';
 import { translate } from 'react-polyglot';
-import { Modal } from 'UI';
+import { colors } from 'netlify-cms-ui-default';
+
+import { Modal } from '../UI';
 import MediaLibraryTop from './MediaLibraryTop';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import EmptyMessage from './EmptyMessage';
-import { colors } from 'netlify-cms-ui-default';
 
 /**
  * Responsive styling needs to be overhauled. Current setup requires specifying
@@ -60,7 +61,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const MediaLibraryModal = ({
+function MediaLibraryModal({
   isVisible,
   canInsert,
   files,
@@ -91,7 +92,7 @@ const MediaLibraryModal = ({
   loadDisplayURL,
   displayURLs,
   t,
-}) => {
+}) {
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
   const tableData = toTableData(queriedFiles);
@@ -128,6 +129,7 @@ const MediaLibraryModal = ({
         hasSelection={hasSelection}
         isPersisting={isPersisting}
         isDeleting={isDeleting}
+        selectedFile={selectedFile}
       />
       {!shouldShowEmptyMessage ? null : (
         <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
@@ -151,7 +153,7 @@ const MediaLibraryModal = ({
       />
     </StyledModal>
   );
-};
+}
 
 export const fileShape = {
   displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,

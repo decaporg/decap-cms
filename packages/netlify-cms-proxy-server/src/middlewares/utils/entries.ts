@@ -2,20 +2,19 @@ import crypto from 'crypto';
 import path from 'path';
 import { promises as fs } from 'fs';
 
-const sha256 = (buffer: Buffer) => {
-  return crypto
-    .createHash('sha256')
-    .update(buffer)
-    .digest('hex');
-};
+function sha256(buffer: Buffer) {
+  return crypto.createHash('sha256').update(buffer).digest('hex');
+}
 
 // normalize windows os path format
-const normalizePath = (path: string) => path.replace(/\\/g, '/');
+function normalizePath(path: string) {
+  return path.replace(/\\/g, '/');
+}
 
-export const entriesFromFiles = async (
+export async function entriesFromFiles(
   repoPath: string,
   files: { path: string; label?: string }[],
-) => {
+) {
   return Promise.all(
     files.map(async file => {
       try {
@@ -32,9 +31,9 @@ export const entriesFromFiles = async (
       }
     }),
   );
-};
+}
 
-export const readMediaFile = async (repoPath: string, file: string) => {
+export async function readMediaFile(repoPath: string, file: string) {
   const encoding = 'base64';
   const buffer = await fs.readFile(path.join(repoPath, file));
   const id = sha256(buffer);
@@ -46,4 +45,4 @@ export const readMediaFile = async (repoPath: string, file: string) => {
     path: normalizePath(file),
     name: path.basename(file),
   };
-};
+}

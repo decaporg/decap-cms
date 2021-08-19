@@ -16,32 +16,16 @@ import {
 } from './backendUtil';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
-import { asyncLock, AsyncLock as AL } from './asyncLock';
+import { asyncLock } from './asyncLock';
 import {
-  Implementation as I,
-  ImplementationEntry as IE,
-  UnpublishedEntryDiff as UED,
-  UnpublishedEntry as UE,
-  ImplementationMediaFile as IMF,
-  ImplementationFile as IF,
-  DisplayURLObject as DUO,
-  DisplayURL as DU,
-  Credentials as Cred,
-  User as U,
-  Entry as E,
-  PersistOptions as PO,
-  AssetProxy as AP,
   entriesByFiles,
   entriesByFolder,
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,
   runWithLock,
-  Config as C,
-  UnpublishedEntryMediaFile as UEMF,
   blobToFileObj,
   allEntriesByFolder,
-  DataFile as DF,
 } from './implementation';
 import {
   readFile,
@@ -49,8 +33,6 @@ import {
   isPreviewContext,
   getPreviewStatus,
   PreviewState,
-  FetchError as FE,
-  ApiRequest as AR,
   requestWithBackoff,
   throwOnConflictingBranches,
 } from './API';
@@ -72,8 +54,29 @@ import {
   getLargeMediaPatternsFromGitAttributesFile,
   parsePointerFile,
   getPointerFileForMediaFileObj,
-  PointerFile as PF,
 } from './git-lfs';
+
+import type { PointerFile as PF } from './git-lfs';
+import type { FetchError as FE, ApiRequest as AR } from './API';
+import type {
+  Implementation as I,
+  ImplementationEntry as IE,
+  UnpublishedEntryDiff as UED,
+  UnpublishedEntry as UE,
+  ImplementationMediaFile as IMF,
+  ImplementationFile as IF,
+  DisplayURLObject as DUO,
+  DisplayURL as DU,
+  Credentials as Cred,
+  User as U,
+  Entry as E,
+  PersistOptions as PO,
+  AssetProxy as AP,
+  Config as C,
+  UnpublishedEntryMediaFile as UEMF,
+  DataFile as DF,
+} from './implementation';
+import type { AsyncLock as AL } from './asyncLock';
 
 export type AsyncLock = AL;
 export type Implementation = I;

@@ -6,12 +6,13 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { dirname, sep } from 'path';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
-import { selectEntryCollectionTitle } from '../../reducers/collections';
-import { selectEntries } from '../../reducers/entries';
 import { Icon, colors, components } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { sortBy } from 'lodash';
+
+import { selectEntries } from '../../reducers/entries';
+import { selectEntryCollectionTitle } from '../../reducers/collections';
 
 const { addFileTemplateFields } = stringTemplate;
 
@@ -66,14 +67,14 @@ const TreeNavLink = styled(NavLink)`
   `};
 `;
 
-const getNodeTitle = node => {
+function getNodeTitle(node) {
   const title = node.isRoot
     ? node.title
     : node.children.find(c => !c.isDir && c.title)?.title || node.title;
   return title;
-};
+}
 
-const TreeNode = props => {
+function TreeNode(props) {
   const { collection, treeData, depth = 0, onToggle } = props;
   const collectionName = collection.get('name');
 
@@ -118,7 +119,7 @@ const TreeNode = props => {
       </React.Fragment>
     );
   });
-};
+}
 
 TreeNode.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
@@ -127,18 +128,18 @@ TreeNode.propTypes = {
   onToggle: PropTypes.func.isRequired,
 };
 
-export const walk = (treeData, callback) => {
-  const traverse = children => {
+export function walk(treeData, callback) {
+  function traverse(children) {
     for (const child of children) {
       callback(child);
       traverse(child.children);
     }
-  };
+  }
 
   return traverse(treeData);
-};
+}
 
-export const getTreeData = (collection, entries) => {
+export function getTreeData(collection, entries) {
   const collectionFolder = collection.get('folder');
   const rootFolder = '/';
   const entriesObj = entries
@@ -200,7 +201,7 @@ export const getTreeData = (collection, entries) => {
     return acc;
   }, {});
 
-  const reducer = (acc, value) => {
+  function reducer(acc, value) {
     const node = value;
     let children = [];
     if (parentsToChildren[node.path]) {
@@ -209,17 +210,17 @@ export const getTreeData = (collection, entries) => {
 
     acc.push({ ...node, children });
     return acc;
-  };
+  }
 
   const treeData = parentsToChildren[''].reduce(reducer, []);
 
   return treeData;
-};
+}
 
-export const updateNode = (treeData, node, callback) => {
+export function updateNode(treeData, node, callback) {
   let stop = false;
 
-  const updater = nodes => {
+  function updater(nodes) {
     if (stop) {
       return nodes;
     }
@@ -232,10 +233,10 @@ export const updateNode = (treeData, node, callback) => {
     }
     nodes.forEach(node => updater(node.children));
     return nodes;
-  };
+  }
 
   return updater([...treeData]);
-};
+}
 
 export class NestedCollection extends React.Component {
   static propTypes = {

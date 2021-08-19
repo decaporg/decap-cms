@@ -1,4 +1,5 @@
 import { Base64 } from 'js-base64';
+
 import API from '../API';
 
 global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
@@ -8,7 +9,7 @@ describe('github API', () => {
     jest.resetAllMocks();
   });
 
-  const mockAPI = (api, responses) => {
+  function mockAPI(api, responses) {
     api.request = jest.fn().mockImplementation((path, options = {}) => {
       const normalizedPath = path.indexOf('?') !== -1 ? path.substr(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
@@ -16,7 +17,7 @@ describe('github API', () => {
         ? Promise.resolve(response(options))
         : Promise.reject(new Error(`No response for path '${normalizedPath}'`));
     });
-  };
+  }
 
   describe('editorialWorkflowGit', () => {
     it('should create PR with correct base branch name when publishing with editorial workflow', () => {

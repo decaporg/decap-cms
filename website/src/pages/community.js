@@ -5,7 +5,7 @@ import { graphql } from 'gatsby';
 import Layout from '../components/layout';
 import Community from '../components/community';
 
-const CommunityPage = ({ data }) => {
+function CommunityPage({ data }) {
   const { title, headline, subhead, sections } = data.markdownRemark.frontmatter;
 
   return (
@@ -14,7 +14,7 @@ const CommunityPage = ({ data }) => {
       <Community headline={headline} subhead={subhead} sections={sections} />
     </Layout>
   );
-};
+}
 
 export const pageQuery = graphql`
   query communityPage {

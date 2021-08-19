@@ -27,7 +27,7 @@ const Version = styled.span`
   color: ${theme.colors.gray};
 `;
 
-const Release = ({ version, versionPrevious, date, description, url }) => {
+function Release({ version, versionPrevious, date, description, url }) {
   const displayDate = moment(date).format('MMMM D, YYYY');
   const defaultUrl = `https://github.com/netlify/netlify-cms/compare/netlify-cms@${versionPrevious}...netlify-cms@${version}`;
 
@@ -63,6 +63,6 @@ const Release = ({ version, versionPrevious, date, description, url }) => {
       </ReleaseLink>
     </li>
   );
-};
+}
 
 export default Release;

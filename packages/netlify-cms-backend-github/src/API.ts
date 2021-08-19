@@ -1,5 +1,5 @@
 import { Base64 } from 'js-base64';
-import semaphore, { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { initial, last, partial, result, trimStart, trim } from 'lodash';
 import { oneLine } from 'common-tags';
 import {
@@ -8,16 +8,12 @@ import {
   EditorialWorkflowError,
   localForage,
   basename,
-  AssetProxy,
-  DataFile,
-  PersistOptions,
   readFileMetadata,
   CMS_BRANCH_PREFIX,
   generateContentKey,
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
   PreviewState,
-  FetchError,
   parseContentKey,
   branchFromContentKey,
   isCMSLabel,
@@ -26,11 +22,19 @@ import {
   contentKeyFromBranch,
   requestWithBackoff,
   unsentRequest,
-  ApiRequest,
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
-import { Octokit } from '@octokit/rest';
+
+import type {
+  AssetProxy,
+  DataFile,
+  PersistOptions,
+  FetchError,
+  ApiRequest,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
+import type { Octokit } from '@octokit/rest';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 type GitCreateTreeParamsTree = Octokit.GitCreateTreeParamsTree;
@@ -131,12 +135,15 @@ type MediaFile = {
   path: string;
 };
 
-const withCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
-  pr.labels.some(l => isCMSLabel(l.name, cmsLabelPrefix));
-const withoutCmsLabel = (pr: GitHubPull, cmsLabelPrefix: string) =>
-  pr.labels.every(l => !isCMSLabel(l.name, cmsLabelPrefix));
+function withCmsLabel(pr: GitHubPull, cmsLabelPrefix: string) {
+  return pr.labels.some(l => isCMSLabel(l.name, cmsLabelPrefix));
+}
 
-const getTreeFiles = (files: GitHubCompareFiles) => {
+function withoutCmsLabel(pr: GitHubPull, cmsLabelPrefix: string) {
+  return pr.labels.every(l => !isCMSLabel(l.name, cmsLabelPrefix));
+}
+
+function getTreeFiles(files: GitHubCompareFiles) {
   const treeFiles = files.reduce((arr, file) => {
     if (file.status === 'removed') {
       // delete the file
@@ -154,24 +161,13 @@ const getTreeFiles = (files: GitHubCompareFiles) => {
   }, [] as { sha: string | null; path: string }[]);
 
   return treeFiles;
-};
+}
 
-type Diff = {
+export type Diff = {
   path: string;
   newFile: boolean;
   sha: string;
   binary: boolean;
-};
-
-const diffFromFile = (diff: Octokit.ReposCompareCommitsResponseFilesItem): Diff => {
-  return {
-    path: diff.filename,
-    newFile: diff.status === 'added',
-    sha: diff.sha,
-    // media files diffs don't have a patch attribute, except svg files
-    // renamed files don't have a patch attribute too
-    binary: (diff.status !== 'renamed' && !diff.patch) || diff.filename.endsWith('.svg'),
-  };
 };
 
 let migrationNotified = false;
@@ -320,10 +316,10 @@ export default class API {
     let responseStatus = 500;
 
     try {
-      const req = (unsentRequest.fromFetchArguments(url, {
+      const req = unsentRequest.fromFetchArguments(url, {
         ...options,
         headers,
-      }) as unknown) as ApiRequest;
+      }) as unknown as ApiRequest;
       const response = await requestWithBackoff(this, req);
       responseStatus = response.status;
       const parsedResponse = await parser(response);
@@ -376,8 +372,7 @@ export default class API {
       .catch(() => {
         // Meta ref doesn't exist
         const readme = {
-          raw:
-            '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.',
+          raw: '# Netlify CMS\n\nThis tree is used by the Netlify CMS to store metadata information for specific files and branches.',
         };
 
         return this.uploadBlob(readme)
@@ -459,7 +454,7 @@ export default class API {
       headers: { Accept: 'application/vnd.github.v3.raw' },
     };
 
-    const errorHandler = (err: Error) => {
+    function errorHandler(err: Error) {
       if (err.message === 'Not Found') {
         console.log(
           '%c %s does not have metadata',
@@ -468,7 +463,7 @@ export default class API {
         );
       }
       throw err;
-    };
+    }
 
     if (!this.useOpenAuthoring) {
       const result = await this.request(
@@ -503,7 +498,6 @@ export default class API {
           ...(head ? { head: await this.getHeadReference(head) } : {}),
           base: this.branch,
           state,
-          // eslint-disable-next-line @typescript-eslint/camelcase
           per_page: 100,
         },
       },
@@ -583,7 +577,7 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
-    const diffs = files.map(diffFromFile);
+    const diffs = await Promise.all(files.map(file => this.diffFromFile(file)));
     const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix)) as {
       name: string;
     };
@@ -818,7 +812,8 @@ export default class API {
     let branches: string[];
     if (this.useOpenAuthoring) {
       // open authoring branches can exist without a pr
-      const cmsBranches: Octokit.GitListMatchingRefsResponse = await this.getOpenAuthoringBranches();
+      const cmsBranches: Octokit.GitListMatchingRefsResponse =
+        await this.getOpenAuthoringBranches();
       branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
       // filter irrelevant branches
       const branchesWithFilter = await Promise.all(
@@ -869,6 +864,7 @@ export default class API {
     const deploys: GitHubDeployments = await this.request(
       `${this.originRepoURL}/deployments?task=deploy&ref=${sha}`,
     );
+    
     const depStatuses = await Promise.all(
       deploys.map(async dep => {
         const stats: GitHubDeployStatuses = await this.request(
@@ -888,14 +884,12 @@ export default class API {
         return statuses.reverse().find(s => s.state === PreviewState.Success) || statuses[0];
       }),
     );
-    return resp.statuses
-      .map(s => ({
-        context: s.context,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        target_url: s.target_url,
-        state:
-          s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
-      }))
+    return resp.statuses.map(s => ({
+      context: s.context,
+      target_url: s.target_url,
+      state:
+        s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
+    }))
       .concat(...depStatuses);
   }
 
@@ -969,6 +963,18 @@ export default class API {
     });
   }
 
+  // async since it is overridden in a child class
+  async diffFromFile(diff: Octokit.ReposCompareCommitsResponseFilesItem): Promise<Diff> {
+    return {
+      path: diff.filename,
+      newFile: diff.status === 'added',
+      sha: diff.sha,
+      // media files diffs don't have a patch attribute, except svg files
+      // renamed files don't have a patch attribute too
+      binary: (diff.status !== 'renamed' && !diff.patch) || diff.filename.endsWith('.svg'),
+    };
+  }
+
   async editorialWorkflowGit(
     files: TreeFile[],
     slug: string,
@@ -1000,7 +1006,7 @@ export default class API {
         await this.getHeadReference(branch),
       );
 
-      const diffs = diffFiles.map(diffFromFile);
+      const diffs = await Promise.all(diffFiles.map(file => this.diffFromFile(file)));
       // mark media files to remove
       const mediaFilesToRemove: { path: string; sha: string | null }[] = [];
       for (const diff of diffs.filter(d => d.binary)) {
@@ -1058,7 +1064,7 @@ export default class API {
         author,
         committer,
       );
-      return (newCommit as unknown) as GitHubCompareCommit;
+      return newCommit as unknown as GitHubCompareCommit;
     } else {
       return commit;
     }
@@ -1328,10 +1334,8 @@ export default class API {
         {
           method: 'PUT',
           body: JSON.stringify({
-            // eslint-disable-next-line @typescript-eslint/camelcase
             commit_message: MERGE_COMMIT_MESSAGE,
             sha: pullrequest.head.sha,
-            // eslint-disable-next-line @typescript-eslint/camelcase
             merge_method: this.mergeMethod,
           }),
         },
@@ -1437,7 +1441,6 @@ export default class API {
   async createTree(baseSha: string, tree: TreeEntry[]) {
     const result: Octokit.GitCreateTreeResponse = await this.request(`${this.repoURL}/git/trees`, {
       method: 'POST',
-      // eslint-disable-next-line @typescript-eslint/camelcase
       body: JSON.stringify({ base_tree: baseSha, tree }),
     });
     return result;

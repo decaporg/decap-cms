@@ -1,37 +1,44 @@
-import { fromJS, List, Map, Set } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
-import { serializeValues } from '../lib/serializeEntryValues';
-import { currentBackend, Backend } from '../backend';
-import { getIntegrationProvider } from '../integrations';
-import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { selectFields, updateFieldByKey } from '../reducers/collections';
+import { Cursor } from 'netlify-cms-lib-util';
+
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import { Cursor, ImplementationMediaFile } from 'netlify-cms-lib-util';
-import { createEntry, EntryValue } from '../valueObjects/Entry';
-import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
+import { selectFields, updateFieldByKey } from '../reducers/collections';
+import { selectIntegration, selectPublishedSlugs } from '../reducers';
+import { getIntegrationProvider } from '../integrations';
+import { currentBackend } from '../backend';
+import { serializeValues } from '../lib/serializeEntryValues';
+import { createEntry } from '../valueObjects/Entry';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { addAssets, getAsset } from './media';
-import {
-  Collection,
-  EntryMap,
-  State,
-  EntryFields,
-  EntryField,
-  SortDirection,
-  ViewFilter,
-  Entry,
-} from '../types/redux';
-
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
+import { SortDirection } from '../types/redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
-import { hasI18n, serializeI18n } from '../lib/i18n';
+import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
+
+import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type {
+  Collection,
+  EntryMap,
+  State,
+  EntryFields,
+  EntryField,
+  ViewFilter,
+  ViewGroup,
+  Entry,
+} from '../types/redux';
+import type { EntryValue } from '../valueObjects/Entry';
+import type { Backend } from '../backend';
+import type AssetProxy from '../valueObjects/AssetProxy';
+import type { Set } from 'immutable';
 
 const { notifSend } = notifActions;
 
@@ -53,6 +60,10 @@ export const SORT_ENTRIES_FAILURE = 'SORT_ENTRIES_FAILURE';
 export const FILTER_ENTRIES_REQUEST = 'FILTER_ENTRIES_REQUEST';
 export const FILTER_ENTRIES_SUCCESS = 'FILTER_ENTRIES_SUCCESS';
 export const FILTER_ENTRIES_FAILURE = 'FILTER_ENTRIES_FAILURE';
+
+export const GROUP_ENTRIES_REQUEST = 'GROUP_ENTRIES_REQUEST';
+export const GROUP_ENTRIES_SUCCESS = 'GROUP_ENTRIES_SUCCESS';
+export const GROUP_ENTRIES_FAILURE = 'GROUP_ENTRIES_FAILURE';
 
 export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
@@ -149,7 +160,7 @@ export function entriesFailed(collection: Collection, error: Error) {
   };
 }
 
-const getAllEntries = async (state: State, collection: Collection) => {
+async function getAllEntries(state: State, collection: Collection) {
   const backend = currentBackend(state.config);
   const integration = selectIntegration(state, collection.get('name'), 'listEntries');
   const provider: Backend = integration
@@ -157,7 +168,7 @@ const getAllEntries = async (state: State, collection: Collection) => {
     : backend;
   const entries = await provider.listAllEntries(collection);
   return entries;
-};
+}
 
 export function sortByField(
   collection: Collection,
@@ -237,6 +248,44 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
         payload: {
           collection: collection.get('name'),
           filter,
+          error,
+        },
+      });
+    }
+  };
+}
+
+export function groupByField(collection: Collection, group: ViewGroup) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const isFetching = selectIsFetching(state.entries, collection.get('name'));
+    dispatch({
+      type: GROUP_ENTRIES_REQUEST,
+      payload: {
+        collection: collection.get('name'),
+        group,
+      },
+    });
+    if (isFetching) {
+      return;
+    }
+
+    try {
+      const entries = await getAllEntries(state, collection);
+      dispatch({
+        type: GROUP_ENTRIES_SUCCESS,
+        payload: {
+          collection: collection.get('name'),
+          group,
+          entries,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: GROUP_ENTRIES_FAILURE,
+        payload: {
+          collection: collection.get('name'),
+          group,
           error,
         },
       });
@@ -512,7 +561,7 @@ const appendActions = fromJS({
   ['append_next']: { action: 'next', append: true },
 });
 
-const addAppendActionsToCursor = (cursor: Cursor) => {
+function addAppendActionsToCursor(cursor: Cursor) {
   return Cursor.create(cursor).updateStore('actions', (actions: Set<string>) => {
     return actions.union(
       appendActions
@@ -520,7 +569,7 @@ const addAppendActionsToCursor = (cursor: Cursor) => {
         .keySeq(),
     );
   });
-};
+}
 
 export function loadEntries(collection: Collection, page = 0) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -649,16 +698,16 @@ export function traverseCollectionCursor(collection: Collection, action: string)
   };
 }
 
-const escapeHtml = (unsafe: string) => {
+function escapeHtml(unsafe: string) {
   return unsafe
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-};
+}
 
-const processValue = (unsafe: string) => {
+function processValue(unsafe: string) {
   if (['true', 'True', 'TRUE'].includes(unsafe)) {
     return true;
   }
@@ -667,7 +716,15 @@ const processValue = (unsafe: string) => {
   }
 
   return escapeHtml(unsafe);
-};
+}
+
+function getDataFields(fields: EntryFields) {
+  return fields.filter(f => !f!.get('meta')).toList();
+}
+
+function getMetaFields(fields: EntryFields) {
+  return fields.filter(f => f!.get('meta') === true).toList();
+}
 
 export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -679,8 +736,12 @@ export function createEmptyDraft(collection: Collection, search: string) {
     });
 
     const fields = collection.get('fields', List());
-    const dataFields = createEmptyDraftData(fields.filter(f => !f!.get('meta')).toList());
-    const metaFields = createEmptyDraftData(fields.filter(f => f!.get('meta') === true).toList());
+
+    const dataFields = getDataFields(fields);
+    const data = createEmptyDraftData(dataFields);
+
+    const metaFields = getMetaFields(fields);
+    const meta = createEmptyDraftData(metaFields);
 
     const state = getState();
     const backend = currentBackend(state.config);
@@ -689,11 +750,14 @@ export function createEmptyDraft(collection: Collection, search: string) {
       await waitForMediaLibraryToLoad(dispatch, getState());
     }
 
+    const i18nFields = createEmptyDraftI18nData(collection, dataFields);
+
     let newEntry = createEntry(collection.get('name'), '', '', {
-      data: dataFields,
+      data,
+      i18n: i18nFields,
       mediaFiles: [],
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      meta: metaFields as any,
+      meta: meta as any,
     });
     newEntry = await backend.processEntry(state, collection, newEntry);
     dispatch(emptyDraftCreated(newEntry));
@@ -711,7 +775,10 @@ interface DraftEntryData {
     | (string | DraftEntryData | boolean | List<unknown>)[];
 }
 
-export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
+export function createEmptyDraftData(
+  fields: EntryFields,
+  skipField: (field: EntryField) => boolean = () => false,
+) {
   return fields.reduce(
     (
       reduction: DraftEntryData | string | undefined | boolean | List<unknown>,
@@ -719,42 +786,41 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
     ) => {
       const acc = reduction as DraftEntryData;
       const item = value as EntryField;
+
+      if (skipField(item)) {
+        return acc;
+      }
+
       const subfields = item.get('field') || item.get('fields');
       const list = item.get('widget') == 'list';
       const name = item.get('name');
       const defaultValue = item.get('default', null);
-      const isEmptyDefaultValue = (val: unknown) => [[{}], {}].some(e => isEqual(val, e));
 
-      if (List.isList(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(subfields as EntryFields)]
-          : createEmptyDraftData(subfields as EntryFields);
-        if (!isEmptyDefaultValue(subDefaultValue)) {
-          acc[name] = subDefaultValue;
-        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
-          // allow setting an empty list as a default
-          acc[name] = defaultValue;
-        }
-        return acc;
+      function isEmptyDefaultValue(val: unknown) {
+        return [[{}], {}].some(e => isEqual(val, e));
       }
 
-      if (Map.isMap(subfields)) {
-        const subDefaultValue = list
-          ? [createEmptyDraftData(List([subfields as EntryField]), false)]
-          : createEmptyDraftData(List([subfields as EntryField]));
-        if (!isEmptyDefaultValue(subDefaultValue)) {
-          acc[name] = subDefaultValue;
-        } else if (list && List.isList(defaultValue) && (defaultValue as List<unknown>).isEmpty()) {
-          // allow setting an empty list as a default
+      const hasSubfields = List.isList(subfields) || Map.isMap(subfields);
+      if (hasSubfields) {
+        if (list && List.isList(defaultValue)) {
           acc[name] = defaultValue;
+        } else {
+          const asList = List.isList(subfields)
+            ? (subfields as EntryFields)
+            : List([subfields as EntryField]);
+
+          const subDefaultValue = list
+            ? [createEmptyDraftData(asList, skipField)]
+            : createEmptyDraftData(asList, skipField);
+
+          if (!isEmptyDefaultValue(subDefaultValue)) {
+            acc[name] = subDefaultValue;
+          }
         }
         return acc;
       }
 
       if (defaultValue !== null) {
-        if (!withNameKey) {
-          return defaultValue;
-        }
         acc[name] = defaultValue;
       }
 
@@ -764,34 +830,54 @@ export function createEmptyDraftData(fields: EntryFields, withNameKey = true) {
   );
 }
 
+function createEmptyDraftI18nData(collection: Collection, dataFields: EntryFields) {
+  if (!hasI18n(collection)) {
+    return {};
+  }
+
+  function skipField(field: EntryField) {
+    return field.get(I18N) !== I18N_FIELD.DUPLICATE && field.get(I18N) !== I18N_FIELD.TRANSLATE;
+  }
+
+  const i18nData = createEmptyDraftData(dataFields, skipField);
+  return duplicateDefaultI18nFields(collection, i18nData);
+}
+
 export function getMediaAssets({ entry }: { entry: EntryMap }) {
   const filesArray = entry.get('mediaFiles').toArray();
   const assets = filesArray
     .filter(file => file.get('draft'))
     .map(file =>
-      createAssetProxy({ path: file.get('path'), file: file.get('file'), url: file.get('url') }),
+      createAssetProxy({
+        path: file.get('path'),
+        file: file.get('file'),
+        url: file.get('url'),
+        field: file.get('field'),
+      }),
     );
 
   return assets;
 }
 
-export const getSerializedEntry = (collection: Collection, entry: Entry) => {
+export function getSerializedEntry(collection: Collection, entry: Entry) {
   /**
    * Serialize the values of any fields with registered serializers, and
    * update the entry and entryDraft with the serialized values.
    */
   const fields = selectFields(collection, entry.get('slug'));
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const serializeData = (data: any) => {
+  function serializeData(data: any) {
     return serializeValues(data, fields);
-  };
+  }
+
   const serializedData = serializeData(entry.get('data'));
   let serializedEntry = entry.set('data', serializedData);
   if (hasI18n(collection)) {
     serializedEntry = serializeI18n(collection, serializedEntry, serializeData);
   }
   return serializedEntry;
-};
+}
 
 export function persistEntry(collection: Collection) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -907,11 +993,11 @@ export function deleteEntry(collection: Collection, slug: string) {
   };
 }
 
-const getPathError = (
+function getPathError(
   path: string | undefined,
   key: string,
   t: (key: string, args: Record<string, unknown>) => string,
-) => {
+) {
   return {
     error: {
       type: ValidationErrorTypes.CUSTOM,
@@ -920,7 +1006,7 @@ const getPathError = (
       }),
     },
   };
-};
+}
 
 export function validateMetaField(
   state: State,
@@ -935,7 +1021,7 @@ export function validateMetaField(
     }
     const sanitizedPath = (value as string)
       .split('/')
-      .map(getProcessSegment(state.config.get('slug')))
+      .map(getProcessSegment(state.config.slug))
       .join('/');
 
     if (value !== sanitizedPath) {

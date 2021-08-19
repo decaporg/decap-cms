@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+
 import * as i18n from '../i18n';
 
 jest.mock('../../reducers/collections', () => {
@@ -130,23 +131,40 @@ describe('i18n', () => {
   });
 
   describe('getFilePath', () => {
-    const args = ['md', 'src/content/index.md', 'index', 'de'];
     it('should return directory path based on locale when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
-      expect(i18n.getFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, ...args)).toEqual(
-        'src/content/de/index.md',
-      );
+      expect(
+        i18n.getFilePath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
+          'md',
+          'src/content/index.md',
+          'index',
+          'de',
+        ),
+      ).toEqual('src/content/de/index.md');
     });
 
     it('should return file path based on locale when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
-      expect(i18n.getFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, ...args)).toEqual(
-        'src/content/index.de.md',
-      );
+      expect(
+        i18n.getFilePath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FILES,
+          'md',
+          'src/content/file-with-md-in-the-name.md',
+          'file-with-md-in-the-name',
+          'de',
+        ),
+      ).toEqual('src/content/file-with-md-in-the-name.de.md');
     });
 
     it('should not modify path when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
-      expect(i18n.getFilePath(i18n.I18N_STRUCTURE.SINGLE_FILE, ...args)).toEqual(
-        'src/content/index.md',
-      );
+      expect(
+        i18n.getFilePath(
+          i18n.I18N_STRUCTURE.SINGLE_FILE,
+          'md',
+          'src/content/index.md',
+          'index',
+          'de',
+        ),
+      ).toEqual('src/content/index.md');
     });
   });
 
@@ -397,6 +415,33 @@ describe('i18n', () => {
           de: { data: { title: 'de_title' } },
           fr: { data: { title: 'fr_title' } },
         },
+        raw: '',
+      });
+    });
+
+    it('should default to empty data object when file is empty and structure is I18N_STRUCTURE.SINGLE_FILE', async () => {
+      const data = {
+        'src/content/index.md': {
+          slug: 'index',
+          path: 'src/content/index.md',
+          data: {},
+        },
+      };
+      const getEntryValue = jest.fn(path => Promise.resolve(data[path]));
+
+      await expect(
+        i18n.getI18nEntry(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales, default_locale },
+          }),
+          ...args,
+          getEntryValue,
+        ),
+      ).resolves.toEqual({
+        slug: 'index',
+        path: 'src/content/index.md',
+        data: {},
+        i18n: {},
         raw: '',
       });
     });

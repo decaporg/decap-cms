@@ -1,9 +1,8 @@
 ---
-title: Configuration Options
 group: Configuration
 weight: 10
+title: Configuration Options
 ---
-
 ## Configuration File
 
 All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
@@ -44,7 +43,7 @@ publish_mode: editorial_workflow
 
 From a technical perspective, the workflow translates editor UI actions into common Git commands:
 
-| Actions in Netlify UI ... | Perform these Git actions                                                                                         |
+| Actions in Netlify UI     | Perform these Git actions                                                                                         |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | Save draft                | Commits to a new branch (named according to the pattern `cms/collectionName/entrySlug`), and opens a pull request |
 | Edit draft                | Pushes another commit to the draft branch/pull request                                                            |
@@ -73,6 +72,8 @@ public_folder: "/images/uploads"
 ```
 
 Based on the settings above, if a user used an image widget field called `avatar` to upload and select an image called `philosoraptor.png`, the image would be saved to the repository at `/static/images/uploads/philosoraptor.png`, and the `avatar` field for the file would be set to `/images/uploads/philosoraptor.png`.
+
+This setting can be set to an absolute URL e.g. `https://netlify.com/media` should you wish, however in general this is not advisable as content should have relative paths to other content.
 
 ## Media Library
 
@@ -158,6 +159,20 @@ When a translation for the selected locale is missing the English one will be us
 show_preview_links: false
 ```
 
+## Search
+
+The search functionally requires loading all collection(s) entries, which can exhaust rate limits on large repositories.
+It can be disabled by setting the top level `search` property to `false`.
+
+Defaults to `true`
+
+**Example:**
+
+```yaml
+search: false
+```
+
+
 ## Slug Type
 
 The `slug` option allows you to change how filenames for entries are created and sanitized. It also applies to filenames of media inserted via the default media library.\
@@ -211,6 +226,7 @@ The `collections` setting is the heart of your Netlify CMS configuration, as it 
 * `summary`: see detailed description below
 * `sortable_fields`: see detailed description below
 * `view_filters`: see detailed description below
+* `view_groups`: see detailed description below
 
 The last few options require more detailed information.
 
@@ -355,9 +371,9 @@ fields:
 
 ### `editor`
 
-This setting changes options for the editor view of the collection. It has one option so far:
+This setting changes options for the editor view of a collection or a file inside a files collection. It has one option so far:
 
-* `preview`: set to `false` to disable the preview pane for this collection; defaults to `true`
+* `preview`: set to `false` to disable the preview pane for this collection or file; defaults to `true`
 
 **Example:**
 
@@ -365,6 +381,8 @@ This setting changes options for the editor view of the collection. It has one o
   editor:
      preview: false
 ```
+
+**Note**: Setting this as a top level configuration will set the default for all collections
 
 ### `summary`
 
@@ -420,4 +438,22 @@ Defaults to an empty list.
       - label: Drafts
         field: draft
         pattern: true
+```
+
+### `view_groups`
+
+An optional list of predefined view groups to show in the UI.
+
+Defaults to an empty list.
+
+**Example**
+
+```yaml
+    view_groups:
+      - label: Year
+        field: date
+        # groups items based on the value matched by the pattern
+        pattern: \d{4}
+      - label: Drafts
+        field: draft
 ```

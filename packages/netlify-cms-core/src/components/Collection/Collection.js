@@ -5,15 +5,25 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 import { lengths, components } from 'netlify-cms-ui-default';
-import { getNewEntryUrl } from 'Lib/urlHelper';
+
+import { getNewEntryUrl } from '../../lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import CollectionControls from './CollectionControls';
-import { sortByField, filterByField, changeViewStyle } from '../../actions/entries';
-import { selectSortableFields, selectViewFilters } from '../../reducers/collections';
-import { selectEntriesSort, selectEntriesFilter, selectViewStyle } from '../../reducers/entries';
+import { sortByField, filterByField, changeViewStyle, groupByField } from '../../actions/entries';
+import {
+  selectSortableFields,
+  selectViewFilters,
+  selectViewGroups,
+} from '../../reducers/collections';
+import {
+  selectEntriesSort,
+  selectEntriesFilter,
+  selectEntriesGroup,
+  selectViewStyle,
+} from '../../reducers/entries';
 
 const CollectionContainer = styled.div`
   margin: ${lengths.pageMargin};
@@ -39,7 +49,7 @@ export class Collection extends React.Component {
     isSearchResults: PropTypes.bool,
     isSingleSearchResult: PropTypes.bool,
     collection: ImmutablePropTypes.map.isRequired,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     sortableFields: PropTypes.array,
     sort: ImmutablePropTypes.orderedMap,
     onSortClick: PropTypes.func.isRequired,
@@ -67,6 +77,7 @@ export class Collection extends React.Component {
       collection,
       collections,
       collectionName,
+      isSearchEnabled,
       isSearchResults,
       isSingleSearchResult,
       searchTerm,
@@ -74,10 +85,13 @@ export class Collection extends React.Component {
       onSortClick,
       sort,
       viewFilters,
+      viewGroups,
       filterTerm,
       t,
       onFilterClick,
+      onGroupClick,
       filter,
+      group,
       onChangeViewStyle,
       viewStyle,
     } = this.props;
@@ -98,6 +112,7 @@ export class Collection extends React.Component {
         <Sidebar
           collections={collections}
           collection={(!isSearchResults || isSingleSearchResult) && collection}
+          isSearchEnabled={isSearchEnabled}
           searchTerm={searchTerm}
           filterTerm={filterTerm}
         />
@@ -118,9 +133,12 @@ export class Collection extends React.Component {
                 onSortClick={onSortClick}
                 sort={sort}
                 viewFilters={viewFilters}
+                viewGroups={viewGroups}
                 t={t}
                 onFilterClick={onFilterClick}
+                onGroupClick={onGroupClick}
                 filter={filter}
+                group={group}
               />
             </>
           )}
@@ -133,26 +151,32 @@ export class Collection extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
+  const isSearchEnabled = state.config && state.config.search != false;
   const { isSearchResults, match, t } = ownProps;
   const { name, searchTerm = '', filterTerm = '' } = match.params;
   const collection = name ? collections.get(name) : collections.first();
   const sort = selectEntriesSort(state.entries, collection.get('name'));
   const sortableFields = selectSortableFields(collection, t);
   const viewFilters = selectViewFilters(collection);
+  const viewGroups = selectViewGroups(collection);
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
+  const group = selectEntriesGroup(state.entries, collection.get('name'));
   const viewStyle = selectViewStyle(state.entries);
 
   return {
     collection,
     collections,
     collectionName: name,
+    isSearchEnabled,
     isSearchResults,
     searchTerm,
     filterTerm,
     sort,
     sortableFields,
     viewFilters,
+    viewGroups,
     filter,
+    group,
     viewStyle,
   };
 }
@@ -161,18 +185,20 @@ const mapDispatchToProps = {
   sortByField,
   filterByField,
   changeViewStyle,
+  groupByField,
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...stateProps,
     ...ownProps,
     onSortClick: (key, direction) =>
       dispatchProps.sortByField(stateProps.collection, key, direction),
     onFilterClick: filter => dispatchProps.filterByField(stateProps.collection, filter),
+    onGroupClick: group => dispatchProps.groupByField(stateProps.collection, group),
     onChangeViewStyle: viewStyle => dispatchProps.changeViewStyle(viewStyle),
   };
-};
+}
 
 const ConnectedCollection = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Collection);
 

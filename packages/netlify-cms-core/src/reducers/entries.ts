@@ -1,5 +1,13 @@
-import { Map, List, fromJS, OrderedMap } from 'immutable';
+import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
+import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
+import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
+import { SortDirection } from '../types/redux';
+import { folderFormatter } from '../lib/formatters';
+import { selectSortDataPath } from './collections';
+import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
   ENTRY_REQUEST,
   ENTRY_SUCCESS,
@@ -14,17 +22,22 @@ import {
   FILTER_ENTRIES_REQUEST,
   FILTER_ENTRIES_SUCCESS,
   FILTER_ENTRIES_FAILURE,
+  GROUP_ENTRIES_REQUEST,
+  GROUP_ENTRIES_SUCCESS,
+  GROUP_ENTRIES_FAILURE,
   CHANGE_VIEW_STYLE,
 } from '../actions/entries';
-import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
-import {
+import { VIEW_STYLE_LIST } from '../constants/collectionViews';
+import { joinUrlPath } from '../lib/urlHelper';
+
+import type {
   EntriesAction,
   EntryRequestPayload,
   EntrySuccessPayload,
   EntriesSuccessPayload,
   EntryObject,
   Entries,
-  Config,
+  CmsConfig,
   Collection,
   EntryFailurePayload,
   EntryDeletePayload,
@@ -38,19 +51,17 @@ import {
   SortMap,
   SortObject,
   Sort,
-  SortDirection,
   Filter,
+  Group,
   FilterMap,
+  GroupMap,
   EntriesFilterRequestPayload,
   EntriesFilterFailurePayload,
   ChangeViewStylePayload,
+  EntriesGroupRequestPayload,
+  EntriesGroupFailurePayload,
+  GroupOfEntries,
 } from '../types/redux';
-import { folderFormatter } from '../lib/formatters';
-import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once, sortBy, set, orderBy } from 'lodash';
-import { selectSortDataPath } from './collections';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-import { VIEW_STYLE_LIST } from '../constants/collectionViews';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -87,19 +98,18 @@ const loadSort = once(() => {
   return Map() as Sort;
 });
 
-const clearSort = () => {
+function clearSort() {
   localStorage.removeItem(storageSortKey);
-};
+}
 
-const persistSort = (sort: Sort | undefined) => {
+function persistSort(sort: Sort | undefined) {
   if (sort) {
     const storageSort: StorageSort = {};
     sort.keySeq().forEach(key => {
       const collection = key as string;
-      const sortObjects = (sort
-        .get(collection)
-        .valueSeq()
-        .toJS() as SortObject[]).map((value, index) => ({ ...value, index }));
+      const sortObjects = (sort.get(collection).valueSeq().toJS() as SortObject[]).map(
+        (value, index) => ({ ...value, index }),
+      );
 
       sortObjects.forEach(value => {
         set(storageSort, [collection, value.key], value);
@@ -109,7 +119,7 @@ const persistSort = (sort: Sort | undefined) => {
   } else {
     clearSort();
   }
-};
+}
 
 const loadViewStyle = once(() => {
   const viewStyle = localStorage.getItem(viewStyleKey);
@@ -121,22 +131,22 @@ const loadViewStyle = once(() => {
   return VIEW_STYLE_LIST;
 });
 
-const clearViewStyle = () => {
+function clearViewStyle() {
   localStorage.removeItem(viewStyleKey);
-};
+}
 
-const persistViewStyle = (viewStyle: string | undefined) => {
+function persistViewStyle(viewStyle: string | undefined) {
   if (viewStyle) {
     localStorage.setItem(viewStyleKey, viewStyle);
   } else {
     clearViewStyle();
   }
-};
+}
 
-const entries = (
+function entries(
   state = Map({ entities: Map(), pages: Map(), sort: loadSort(), viewStyle: loadViewStyle() }),
   action: EntriesAction,
-) => {
+) {
   switch (action.type) {
     case ENTRY_REQUEST: {
       const payload = action.payload as EntryRequestPayload;
@@ -239,6 +249,7 @@ const entries = (
       return newState;
     }
 
+    case GROUP_ENTRIES_SUCCESS:
     case FILTER_ENTRIES_SUCCESS:
     case SORT_ENTRIES_SUCCESS: {
       const payload = action.payload as { collection: string; entries: EntryObject[] };
@@ -298,8 +309,32 @@ const entries = (
       return newState;
     }
 
+    case GROUP_ENTRIES_REQUEST: {
+      const payload = action.payload as EntriesGroupRequestPayload;
+      const { collection, group } = payload;
+      const newState = state.withMutations(map => {
+        const current: GroupMap = map.getIn(['group', collection, group.id], fromJS(group));
+        map.deleteIn(['group', collection]);
+        map.setIn(
+          ['group', collection, current.get('id')],
+          current.set('active', !current.get('active')),
+        );
+      });
+      return newState;
+    }
+
+    case GROUP_ENTRIES_FAILURE: {
+      const payload = action.payload as EntriesGroupFailurePayload;
+      const { collection, group } = payload;
+      const newState = state.withMutations(map => {
+        map.deleteIn(['group', collection, group.id]);
+        map.setIn(['pages', collection, 'isFetching'], false);
+      });
+      return newState;
+    }
+
     case CHANGE_VIEW_STYLE: {
-      const payload = (action.payload as unknown) as ChangeViewStylePayload;
+      const payload = action.payload as unknown as ChangeViewStylePayload;
       const { style } = payload;
       const newState = state.withMutations(map => {
         map.setIn(['viewStyle'], style);
@@ -311,19 +346,30 @@ const entries = (
     default:
       return state;
   }
-};
+}
 
-export const selectEntriesSort = (entries: Entries, collection: string) => {
+export function selectEntriesSort(entries: Entries, collection: string) {
   const sort = entries.get('sort') as Sort | undefined;
   return sort?.get(collection);
-};
+}
 
-export const selectEntriesFilter = (entries: Entries, collection: string) => {
+export function selectEntriesFilter(entries: Entries, collection: string) {
   const filter = entries.get('filter') as Filter | undefined;
   return filter?.get(collection) || Map();
-};
+}
 
-export const selectEntriesSortFields = (entries: Entries, collection: string) => {
+export function selectEntriesGroup(entries: Entries, collection: string) {
+  const group = entries.get('group') as Group | undefined;
+  return group?.get(collection) || Map();
+}
+
+export function selectEntriesGroupField(entries: Entries, collection: string) {
+  const groups = selectEntriesGroup(entries, collection);
+  const value = groups?.valueSeq().find(v => v?.get('active') === true);
+  return value;
+}
+
+export function selectEntriesSortFields(entries: Entries, collection: string) {
   const sort = selectEntriesSort(entries, collection);
   const values =
     sort
@@ -332,9 +378,9 @@ export const selectEntriesSortFields = (entries: Entries, collection: string) =>
       .toArray() || [];
 
   return values;
-};
+}
 
-export const selectEntriesFilterFields = (entries: Entries, collection: string) => {
+export function selectEntriesFilterFields(entries: Entries, collection: string) {
   const filter = selectEntriesFilter(entries, collection);
   const values =
     filter
@@ -342,24 +388,31 @@ export const selectEntriesFilterFields = (entries: Entries, collection: string) 
       .filter(v => v?.get('active') === true)
       .toArray() || [];
   return values;
-};
+}
 
-export const selectViewStyle = (entries: Entries) => {
+export function selectViewStyle(entries: Entries) {
   return entries.get('viewStyle');
-};
+}
 
-export const selectEntry = (state: Entries, collection: string, slug: string) =>
-  state.getIn(['entities', `${collection}.${slug}`]);
+export function selectEntry(state: Entries, collection: string, slug: string) {
+  return state.getIn(['entities', `${collection}.${slug}`]);
+}
 
-export const selectPublishedSlugs = (state: Entries, collection: string) =>
-  state.getIn(['pages', collection, 'ids'], List<string>());
+export function selectPublishedSlugs(state: Entries, collection: string) {
+  return state.getIn(['pages', collection, 'ids'], List<string>());
+}
 
-export const selectEntries = (state: Entries, collection: Collection) => {
-  const collectionName = collection.get('name');
+function getPublishedEntries(state: Entries, collectionName: string) {
   const slugs = selectPublishedSlugs(state, collectionName);
-  let entries =
+  const entries =
     slugs &&
     (slugs.map(slug => selectEntry(state, collectionName, slug as string)) as List<EntryMap>);
+  return entries;
+}
+
+export function selectEntries(state: Entries, collection: Collection) {
+  const collectionName = collection.get('name');
+  let entries = getPublishedEntries(state, collectionName);
 
   const sortFields = selectEntriesSortFields(state, collectionName);
   if (sortFields && sortFields.length > 0) {
@@ -389,37 +442,104 @@ export const selectEntries = (state: Entries, collection: Collection) => {
   }
 
   return entries;
-};
+}
 
-export const selectEntryByPath = (state: Entries, collection: string, path: string) => {
+function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
+  const label = selectedGroup.get('label');
+  const field = selectedGroup.get('field');
+
+  const fieldData = entry.getIn(['data', ...keyToPathArray(field)]);
+  if (fieldData === undefined) {
+    return {
+      id: 'missing_value',
+      label,
+      value: fieldData,
+    };
+  }
+
+  const dataAsString = String(fieldData);
+  if (selectedGroup.has('pattern')) {
+    const pattern = selectedGroup.get('pattern');
+    let value = '';
+    try {
+      const regex = new RegExp(pattern);
+      const matched = dataAsString.match(regex);
+      if (matched) {
+        value = matched[0];
+      }
+    } catch (e) {
+      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
+    }
+    return {
+      id: `${label}${value}`,
+      label,
+      value,
+    };
+  }
+
+  return {
+    id: `${label}${fieldData}`,
+    label,
+    value: typeof fieldData === 'boolean' ? fieldData : dataAsString,
+  };
+}
+
+export function selectGroups(state: Entries, collection: Collection) {
+  const collectionName = collection.get('name');
+  const entries = getPublishedEntries(state, collectionName);
+
+  const selectedGroup = selectEntriesGroupField(state, collectionName);
+  if (selectedGroup === undefined) {
+    return [];
+  }
+
+  let groups: Record<string, { id: string; label: string; value: string | boolean | undefined }> =
+    {};
+  const groupedEntries = groupBy(entries.toArray(), entry => {
+    const group = getGroup(entry, selectedGroup);
+    groups = { ...groups, [group.id]: group };
+    return group.id;
+  });
+
+  const groupsArray: GroupOfEntries[] = Object.entries(groupedEntries).map(([id, entries]) => {
+    return {
+      ...groups[id],
+      paths: Set(entries.map(entry => entry.get('path'))),
+    };
+  });
+
+  return groupsArray;
+}
+
+export function selectEntryByPath(state: Entries, collection: string, path: string) {
   const slugs = selectPublishedSlugs(state, collection);
   const entries =
     slugs && (slugs.map(slug => selectEntry(state, collection, slug as string)) as List<EntryMap>);
 
   return entries && entries.find(e => e?.get('path') === path);
-};
+}
 
-export const selectEntriesLoaded = (state: Entries, collection: string) => {
+export function selectEntriesLoaded(state: Entries, collection: string) {
   return !!state.getIn(['pages', collection]);
-};
+}
 
-export const selectIsFetching = (state: Entries, collection: string) => {
+export function selectIsFetching(state: Entries, collection: string) {
   return state.getIn(['pages', collection, 'isFetching'], false);
-};
+}
 
 const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
 
-const getFileField = (collectionFiles: CollectionFiles, slug: string | undefined) => {
+function getFileField(collectionFiles: CollectionFiles, slug: string | undefined) {
   const file = collectionFiles.find(f => f?.get('name') === slug);
   return file;
-};
+}
 
-const hasCustomFolder = (
+function hasCustomFolder(
   folderKey: 'media_folder' | 'public_folder',
   collection: Collection | null,
   slug: string | undefined,
   field: EntryField | undefined,
-) => {
+) {
   if (!collection) {
     return false;
   }
@@ -440,17 +560,17 @@ const hasCustomFolder = (
   }
 
   return false;
-};
+}
 
-const traverseFields = (
+function traverseFields(
   folderKey: 'media_folder' | 'public_folder',
-  config: Config,
+  config: CmsConfig,
   collection: Collection,
   entryMap: EntryMap | undefined,
   field: EntryField,
   fields: EntryField[],
   currentFolder: string,
-): string | null => {
+): string | null {
   const matchedField = fields.filter(f => f === field)[0];
   if (matchedField) {
     return folderFormatter(
@@ -459,7 +579,7 @@ const traverseFields = (
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
   }
 
@@ -474,7 +594,7 @@ const traverseFields = (
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
     let fieldFolder = null;
     if (f.has('fields')) {
@@ -514,16 +634,16 @@ const traverseFields = (
   }
 
   return null;
-};
+}
 
-const evaluateFolder = (
+function evaluateFolder(
   folderKey: 'media_folder' | 'public_folder',
-  config: Config,
+  config: CmsConfig,
   collection: Collection,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-) => {
-  let currentFolder = config.get(folderKey);
+) {
+  let currentFolder = config[folderKey]!;
 
   // add identity template if doesn't exist
   if (!collection.has(folderKey)) {
@@ -539,7 +659,7 @@ const evaluateFolder = (
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
 
     let file = getFileField(collection.get('files')!, entryMap?.get('slug'));
@@ -556,7 +676,7 @@ const evaluateFolder = (
         collection,
         currentFolder,
         folderKey,
-        config.get('slug'),
+        config.slug,
       );
 
       if (field) {
@@ -584,7 +704,7 @@ const evaluateFolder = (
       collection,
       currentFolder,
       folderKey,
-      config.get('slug'),
+      config.slug,
     );
 
     if (field) {
@@ -605,16 +725,16 @@ const evaluateFolder = (
   }
 
   return currentFolder;
-};
+}
 
-export const selectMediaFolder = (
-  config: Config,
+export function selectMediaFolder(
+  config: CmsConfig,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-) => {
+) {
   const name = 'media_folder';
-  let mediaFolder = config.get(name);
+  let mediaFolder = config[name];
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
@@ -632,15 +752,15 @@ export const selectMediaFolder = (
   }
 
   return trim(mediaFolder, '/');
-};
+}
 
-export const selectMediaFilePath = (
-  config: Config,
+export function selectMediaFilePath(
+  config: CmsConfig,
   collection: Collection | null,
   entryMap: EntryMap | undefined,
   mediaPath: string,
   field: EntryField | undefined,
-) => {
+) {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
@@ -648,21 +768,21 @@ export const selectMediaFilePath = (
   const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
 
   return join(mediaFolder, basename(mediaPath));
-};
+}
 
-export const selectMediaFilePublicPath = (
-  config: Config,
+export function selectMediaFilePublicPath(
+  config: CmsConfig,
   collection: Collection | null,
   mediaPath: string,
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
-) => {
+) {
   if (isAbsolutePath(mediaPath)) {
     return mediaPath;
   }
 
   const name = 'public_folder';
-  let publicFolder = config.get(name);
+  let publicFolder = config[name]!;
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
@@ -670,13 +790,17 @@ export const selectMediaFilePublicPath = (
     publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
   }
 
-  return join(publicFolder, basename(mediaPath));
-};
+  if (isAbsolutePath(publicFolder)) {
+    return joinUrlPath(publicFolder, basename(mediaPath));
+  }
 
-export const selectEditingDraft = (state: EntryDraft) => {
+  return join(publicFolder, basename(mediaPath));
+}
+
+export function selectEditingDraft(state: EntryDraft) {
   const entry = state.get('entry');
   const workflowDraft = entry && !entry.isEmpty();
   return workflowDraft;
-};
+}
 
 export default entries;

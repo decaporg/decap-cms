@@ -1,4 +1,13 @@
 import {
+  EditorialWorkflowError,
+  APIError,
+  unsentRequest,
+  blobToFileObj,
+} from 'netlify-cms-lib-util';
+
+import AuthenticationPage from './AuthenticationPage';
+
+import type {
   Entry,
   AssetProxy,
   PersistOptions,
@@ -6,19 +15,13 @@ import {
   Config,
   Implementation,
   ImplementationFile,
-  EditorialWorkflowError,
-  APIError,
-  unsentRequest,
   UnpublishedEntry,
-  blobToFileObj,
 } from 'netlify-cms-lib-util';
-import AuthenticationPage from './AuthenticationPage';
 
-const serializeAsset = async (assetProxy: AssetProxy) => {
+async function serializeAsset(assetProxy: AssetProxy) {
   const base64content = await assetProxy.toBase64!();
-
   return { path: assetProxy.path, content: base64content, encoding: 'base64' };
-};
+}
 
 type MediaFile = {
   id: string;
@@ -28,7 +31,7 @@ type MediaFile = {
   path: string;
 };
 
-const deserializeMediaFile = ({ id, content, encoding, path, name }: MediaFile) => {
+function deserializeMediaFile({ id, content, encoding, path, name }: MediaFile) {
   let byteArray = new Uint8Array(0);
   if (encoding !== 'base64') {
     console.error(`Unsupported encoding '${encoding}' for file '${path}'`);
@@ -43,7 +46,7 @@ const deserializeMediaFile = ({ id, content, encoding, path, name }: MediaFile) 
   const file = blobToFileObj(name, blob);
   const url = URL.createObjectURL(file);
   return { id, name, path, file, size: file.size, url, displayURL: url };
-};
+}
 
 export default class ProxyBackend implements Implementation {
   proxyUrl: string;
@@ -81,7 +84,7 @@ export default class ProxyBackend implements Implementation {
   }
 
   authenticate() {
-    return (Promise.resolve() as unknown) as Promise<User>;
+    return Promise.resolve() as unknown as Promise<User>;
   }
 
   logout() {

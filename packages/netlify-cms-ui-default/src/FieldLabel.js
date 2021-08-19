@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+
 import { colors, colorsRaw, transitions, text } from './styles';
 
 const stateColors = {
@@ -16,11 +17,11 @@ const stateColors = {
   },
 };
 
-const getStateColors = ({ isActive, hasErrors }) => {
+function getStateColors({ isActive, hasErrors }) {
   if (hasErrors) return stateColors.error;
   if (isActive) return stateColors.active;
   return stateColors.default;
-};
+}
 
 const FieldLabel = styled.label`
   ${text.fieldLabel};

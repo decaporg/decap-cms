@@ -1,5 +1,8 @@
 import { Map, List, fromJS } from 'immutable';
 import uuid from 'uuid/v4';
+import { get } from 'lodash';
+import { join } from 'path';
+
 import {
   DRAFT_CREATE_FROM_ENTRY,
   DRAFT_CREATE_EMPTY,
@@ -16,15 +19,19 @@ import {
   ENTRY_DELETE_SUCCESS,
   ADD_DRAFT_ENTRY_MEDIA_FILE,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
-} from 'Actions/entries';
+} from '../actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
-} from 'Actions/editorialWorkflow';
-import { get } from 'lodash';
+  UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST,
+  UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS,
+  UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE,
+  UNPUBLISHED_ENTRY_PUBLISH_REQUEST,
+  UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
+  UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
+} from '../actions/editorialWorkflow';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
-import { join } from 'path';
 import { getDataPath, duplicateI18nFields } from '../lib/i18n';
 
 const initialState = Map({
@@ -35,7 +42,7 @@ const initialState = Map({
   key: '',
 });
 
-const entryDraftReducer = (state = Map(), action) => {
+function entryDraftReducer(state = Map(), action) {
   switch (action.type) {
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
@@ -135,6 +142,20 @@ const entryDraftReducer = (state = Map(), action) => {
       return state.deleteIn(['entry', 'isPersisting']);
     }
 
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
+      return state.setIn(['entry', 'isUpdatingStatus'], true);
+
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
+      return state.deleteIn(['entry', 'isUpdatingStatus']);
+
+    case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
+      return state.setIn(['entry', 'isPublishing'], true);
+
+    case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
+    case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
+      return state.deleteIn(['entry', 'isPublishing']);
+
     case ENTRY_PERSIST_SUCCESS:
     case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
       return state.withMutations(state => {
@@ -180,9 +201,9 @@ const entryDraftReducer = (state = Map(), action) => {
     default:
       return state;
   }
-};
+}
 
-export const selectCustomPath = (collection, entryDraft) => {
+export function selectCustomPath(collection, entryDraft) {
   if (!selectHasMetaPath(collection)) {
     return;
   }
@@ -192,6 +213,6 @@ export const selectCustomPath = (collection, entryDraft) => {
   const extension = selectFolderEntryExtension(collection);
   const customPath = path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
   return customPath;
-};
+}
 
 export default entryDraftReducer;

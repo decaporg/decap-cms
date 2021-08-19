@@ -1,6 +1,7 @@
-import { parseLinkHeader, getAllResponses, getPathDepth, filterByExtension } from '../backendUtil';
 import { oneLine } from 'common-tags';
 import nock from 'nock';
+
+import { parseLinkHeader, getAllResponses, getPathDepth, filterByExtension } from '../backendUtil';
 
 describe('parseLinkHeader', () => {
   it('should return the right rel urls', () => {
@@ -21,17 +22,20 @@ describe('parseLinkHeader', () => {
 });
 
 describe('getAllResponses', () => {
-  const generatePulls = length => {
+  function generatePulls(length) {
     return Array.from({ length }, (_, id) => {
       return { id: id + 1, number: `134${id}`, state: 'open' };
     });
-  };
+  }
 
   function createLinkHeaders({ page, pageCount }) {
     const pageNum = parseInt(page, 10);
     const pageCountNum = parseInt(pageCount, 10);
     const url = 'https://api.github.com/pulls';
-    const link = linkPage => `<${url}?page=${linkPage}>`;
+
+    function link(linkPage) {
+      return `<${url}?page=${linkPage}>`;
+    }
 
     const linkHeader = oneLine`
       ${pageNum === 1 ? '' : `${link(1)}; rel="first",`}

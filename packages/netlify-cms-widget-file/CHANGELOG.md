@@ -3,6 +3,88 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-file@2.11.0...netlify-cms-widget-file@2.11.1) (2021-08-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency array-move to v4 ([#5713](https://github.com/netlify/netlify-cms/issues/5713)) ([ca06a0b](https://github.com/netlify/netlify-cms/commit/ca06a0b23ec0885be0b80caf1cbf37b083a47f42))
+
+
+
+
+
+# [2.11.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-file@2.10.1...netlify-cms-widget-file@2.11.0) (2021-07-05)
+
+
+### Features
+
+* image widget insert from url should be optional ([#5572](https://github.com/netlify/netlify-cms/issues/5572)) ([18724ff](https://github.com/netlify/netlify-cms/commit/18724ff991c4b8b16de1df40511dad368578a4b2))
+
+
+
+
+
+## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.10.0...netlify-cms-widget-file@2.10.1) (2021-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-sortable-hoc to v2 ([#5371](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/5371)) ([b5dabc2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/b5dabc212953348bee83d41c36ca1f949c87b6b5))
+
+
+
+
+
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.9.2...netlify-cms-widget-file@2.10.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.9.1...netlify-cms-widget-file@2.9.2) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-file
+
+
+
+
+
+## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.9.0...netlify-cms-widget-file@2.9.1) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-widget-file
+
+
+
+
+
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.8.0...netlify-cms-widget-file@2.9.0) (2021-02-01)
+
+
+### Features
+
+* **widget-image:** enable images ordering ([#4857](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/4857)) ([30c1195](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/30c11954d586c43a00c8c61fa467873bfe1ed1fc))
+
+
+
+
+
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.7.4...netlify-cms-widget-file@2.8.0) (2021-01-14)
+
+
+### Features
+
+* **widget-file:** allow adding file from url ([#4700](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/issues/4700)) ([9e277ad](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/commit/9e277ad851ea598405e02a7c11624f337da18260))
+
+
+
+
+
 ## [2.7.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file/compare/netlify-cms-widget-file@2.7.3...netlify-cms-widget-file@2.7.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-widget-file

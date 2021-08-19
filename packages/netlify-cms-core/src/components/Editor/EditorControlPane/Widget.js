@@ -3,16 +3,23 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List } from 'immutable';
 import { oneLine } from 'common-tags';
-import ValidationErrorTypes from 'Constants/validationErrorTypes';
 
-const truthy = () => ({ error: false });
+import { getRemarkPlugins } from '../../../lib/registry';
+import ValidationErrorTypes from '../../../constants/validationErrorTypes';
 
-const isEmpty = value =>
-  value === null ||
-  value === undefined ||
-  (Object.prototype.hasOwnProperty.call(value, 'length') && value.length === 0) ||
-  (value.constructor === Object && Object.keys(value).length === 0) ||
-  (List.isList(value) && value.size === 0);
+function truthy() {
+  return { error: false };
+}
+
+function isEmpty(value) {
+  return (
+    value === null ||
+    value === undefined ||
+    (Object.prototype.hasOwnProperty.call(value, 'length') && value.length === 0) ||
+    (value.constructor === Object && Object.keys(value).length === 0) ||
+    (List.isList(value) && value.size === 0)
+  );
+}
 
 export default class Widget extends Component {
   static propTypes = {
@@ -40,6 +47,7 @@ export default class Widget extends Component {
     onOpenMediaLibrary: PropTypes.func.isRequired,
     onClearMediaControl: PropTypes.func.isRequired,
     onRemoveMediaControl: PropTypes.func.isRequired,
+    onPersistMedia: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,
     onRemoveInsertedMedia: PropTypes.func.isRequired,
     getAsset: PropTypes.func.isRequired,
@@ -252,6 +260,7 @@ export default class Widget extends Component {
       onValidateObject,
       onOpenMediaLibrary,
       onRemoveMediaControl,
+      onPersistMedia,
       onClearMediaControl,
       onAddAsset,
       onRemoveInsertedMedia,
@@ -299,6 +308,7 @@ export default class Widget extends Component {
       onOpenMediaLibrary,
       onClearMediaControl,
       onRemoveMediaControl,
+      onPersistMedia,
       onAddAsset,
       onRemoveInsertedMedia,
       getAsset,
@@ -317,6 +327,7 @@ export default class Widget extends Component {
       resolveWidget,
       widget,
       getEditorComponents,
+      getRemarkPlugins,
       query,
       queryHits,
       clearSearch,

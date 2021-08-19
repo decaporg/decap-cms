@@ -8,6 +8,7 @@ import { get, isEmpty, debounce } from 'lodash';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { lengths, fonts, zIndex } from 'netlify-cms-ui-default';
+
 import { editorStyleVars, EditorControlBar } from '../styles';
 import { slateToMarkdown, markdownToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
@@ -15,7 +16,8 @@ import { renderBlock, renderInline, renderMark } from './renderers';
 import plugins from './plugins/visual';
 import schema from './schema';
 
-const visualEditorStyles = ({ minimal }) => `
+function visualEditorStyles({ minimal }) {
+  return `
   position: relative;
   overflow: hidden;
   overflow-x: auto;
@@ -30,26 +32,27 @@ const visualEditorStyles = ({ minimal }) => `
   flex-direction: column;
   z-index: ${zIndex.zIndex100};
 `;
+}
 
 const InsertionPoint = styled.div`
   flex: 1 1 auto;
   cursor: text;
 `;
 
-const createEmptyRawDoc = () => {
+function createEmptyRawDoc() {
   const emptyText = Text.create('');
   const emptyBlock = Block.create({ object: 'block', type: 'paragraph', nodes: [emptyText] });
   return { nodes: [emptyBlock] };
-};
+}
 
-const createSlateValue = (rawValue, { voidCodeBlock }) => {
-  const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock });
+function createSlateValue(rawValue, { voidCodeBlock, remarkPlugins }) {
+  const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock, remarkPlugins });
   const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
   const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
-};
+}
 
-export const mergeMediaConfig = (editorComponents, field) => {
+export function mergeMediaConfig(editorComponents, field) {
   // merge editor media library config to image components
   if (editorComponents.has('image')) {
     const imageComponent = editorComponents.get('image');
@@ -79,7 +82,7 @@ export const mergeMediaConfig = (editorComponents, field) => {
       );
     }
   }
-};
+}
 
 export default class Editor extends React.Component {
   constructor(props) {
@@ -92,6 +95,8 @@ export default class Editor extends React.Component {
         ? editorComponents
         : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
 
+    this.remarkPlugins = props.getRemarkPlugins();
+
     mergeMediaConfig(this.editorComponents, this.props.field);
     this.renderBlock = renderBlock({
       classNameWrapper: props.className,
@@ -101,9 +106,17 @@ export default class Editor extends React.Component {
     this.renderInline = renderInline();
     this.renderMark = renderMark();
     this.schema = schema({ voidCodeBlock: !!this.codeBlockComponent });
-    this.plugins = plugins({ getAsset: props.getAsset, resolveWidget: props.resolveWidget });
+    this.plugins = plugins({
+      getAsset: props.getAsset,
+      resolveWidget: props.resolveWidget,
+      t: props.t,
+      remarkPlugins: this.remarkPlugins,
+    });
     this.state = {
-      value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
+      value: createSlateValue(this.props.value, {
+        voidCodeBlock: !!this.codeBlockComponent,
+        remarkPlugins: this.remarkPlugins,
+      }),
     };
   }
 
@@ -116,14 +129,20 @@ export default class Editor extends React.Component {
     value: PropTypes.string,
     field: ImmutablePropTypes.map.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
+    getRemarkPlugins: PropTypes.func.isRequired,
     isShowModeToggle: PropTypes.bool.isRequired,
     t: PropTypes.func.isRequired,
   };
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (!this.state.value.equals(nextState.value)) return true;
+
     const raw = nextState.value.document.toJS();
-    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
-    return !this.state.value.equals(nextState.value) || nextProps.value !== markdown;
+    const markdown = slateToMarkdown(raw, {
+      voidCodeBlock: this.codeBlockComponent,
+      remarkPlugins: this.remarkPlugins,
+    });
+    return nextProps.value !== markdown;
   }
 
   componentDidMount() {
@@ -136,7 +155,10 @@ export default class Editor extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.value !== this.props.value) {
       this.setState({
-        value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
+        value: createSlateValue(this.props.value, {
+          voidCodeBlock: !!this.codeBlockComponent,
+          remarkPlugins: this.remarkPlugins,
+        }),
       });
     }
   }
@@ -150,12 +172,16 @@ export default class Editor extends React.Component {
   };
 
   handleLinkClick = () => {
-    this.editor.toggleLink(() => window.prompt('Enter the URL of the link'));
+    this.editor.toggleLink(oldUrl =>
+      window.prompt(this.props.t('editor.editorWidgets.markdown.linkPrompt'), oldUrl),
+    );
   };
 
   hasMark = type => this.editor && this.editor.hasMark(type);
   hasInline = type => this.editor && this.editor.hasInline(type);
   hasBlock = type => this.editor && this.editor.hasBlock(type);
+  hasQuote = type => this.editor && this.editor.hasQuote(type);
+  hasListItems = type => this.editor && this.editor.hasListItems(type);
 
   handleToggleMode = () => {
     this.props.onMode('raw');
@@ -172,7 +198,10 @@ export default class Editor extends React.Component {
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
     const raw = editor.value.document.toJS();
-    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
+    const markdown = slateToMarkdown(raw, {
+      voidCodeBlock: this.codeBlockComponent,
+      remarkPlugins: this.remarkPlugins,
+    });
     onChange(markdown);
   }, 150);
 
@@ -210,6 +239,8 @@ export default class Editor extends React.Component {
             hasMark={this.hasMark}
             hasInline={this.hasInline}
             hasBlock={this.hasBlock}
+            hasQuote={this.hasQuote}
+            hasListItems={this.hasListItems}
             isShowModeToggle={isShowModeToggle}
             t={t}
             disabled={isDisabled}

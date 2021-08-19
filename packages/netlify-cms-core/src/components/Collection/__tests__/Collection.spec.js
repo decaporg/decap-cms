@@ -1,9 +1,10 @@
 import React from 'react';
-import ConnectedCollection, { Collection } from '../Collection';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
+
+import ConnectedCollection, { Collection } from '../Collection';
 
 jest.mock('../Entries/EntriesCollection', () => 'mock-entries-collection');
 jest.mock('../CollectionTop', () => 'mock-collection-top');
@@ -13,15 +14,21 @@ jest.mock('../Sidebar', () => 'mock-sidebar');
 const middlewares = [];
 const mockStore = configureStore(middlewares);
 
-const renderWithRedux = (component, { store } = {}) => {
+function renderWithRedux(component, { store } = {}) {
   function Wrapper({ children }) {
     return <Provider store={store}>{children}</Provider>;
   }
+
   return render(component, { wrapper: Wrapper });
-};
+}
 
 describe('Collection', () => {
-  const collection = fromJS({ name: 'pages', sortable_fields: [], view_filters: [] });
+  const collection = fromJS({
+    name: 'pages',
+    sortable_fields: [],
+    view_filters: [],
+    view_groups: [],
+  });
   const props = {
     collections: fromJS([collection]).toOrderedMap(),
     collection,

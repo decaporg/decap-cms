@@ -12,11 +12,13 @@ const EmptyMessageContainer = styled.div`
   color: ${props => props.isPrivate && colors.textFieldBorder};
 `;
 
-const EmptyMessage = ({ content, isPrivate }) => (
-  <EmptyMessageContainer isPrivate={isPrivate}>
-    <h1>{content}</h1>
-  </EmptyMessageContainer>
-);
+function EmptyMessage({ content, isPrivate }) {
+  return (
+    <EmptyMessageContainer isPrivate={isPrivate}>
+      <h1>{content}</h1>
+    </EmptyMessageContainer>
+  );
+}
 
 EmptyMessage.propTypes = {
   content: PropTypes.string.isRequired,

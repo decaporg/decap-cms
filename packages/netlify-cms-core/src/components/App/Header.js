@@ -16,8 +16,9 @@ import {
   buttons,
   zIndex,
 } from 'netlify-cms-ui-default';
-import SettingsDropdown from 'UI/SettingsDropdown';
 import { connect } from 'react-redux';
+
+import { SettingsDropdown } from '../UI';
 import { checkBackendStatus } from '../../actions/status';
 
 const styles = {
@@ -26,20 +27,22 @@ const styles = {
   `,
 };
 
-const AppHeader = props => (
-  <header
-    css={css`
-      ${shadows.dropMain};
-      position: sticky;
-      width: 100%;
-      top: 0;
-      background-color: ${colors.foreground};
-      z-index: ${zIndex.zIndex300};
-      height: ${lengths.topBarHeight};
-    `}
-    {...props}
-  />
-);
+function AppHeader(props) {
+  return (
+    <header
+      css={css`
+        ${shadows.dropMain};
+        position: sticky;
+        width: 100%;
+        top: 0;
+        background-color: ${colors.foreground};
+        z-index: ${zIndex.zIndex300};
+        height: ${lengths.topBarHeight};
+      `}
+      {...props}
+    />
+  );
+}
 
 const AppHeaderContent = styled.div`
   display: flex;
@@ -113,8 +116,8 @@ const AppHeaderNavList = styled.ul`
 
 class Header extends React.Component {
   static propTypes = {
-    user: ImmutablePropTypes.map.isRequired,
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    user: PropTypes.object.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
     openMediaLibrary: PropTypes.func.isRequired,
@@ -216,7 +219,7 @@ class Header extends React.Component {
             <SettingsDropdown
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
-              imageUrl={user.get('avatar_url')}
+              imageUrl={user?.avatar_url}
               onLogoutClick={onLogoutClick}
             />
           </AppHeaderActions>

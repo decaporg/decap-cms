@@ -1,8 +1,10 @@
 import { Map, List } from 'immutable';
-import { set, trimEnd, groupBy } from 'lodash';
-import { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
+import { set, trimEnd, groupBy, escapeRegExp } from 'lodash';
+
 import { selectEntrySlug } from '../reducers/collections';
-import { EntryValue } from '../valueObjects/Entry';
+
+import type { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
+import type { EntryValue } from '../valueObjects/Entry';
 
 export const I18N = 'i18n';
 
@@ -18,9 +20,9 @@ export enum I18N_FIELD {
   NONE = 'none',
 }
 
-export const hasI18n = (collection: Collection) => {
+export function hasI18n(collection: Collection) {
   return collection.has(I18N);
-};
+}
 
 type I18nInfo = {
   locales: string[];
@@ -28,65 +30,65 @@ type I18nInfo = {
   structure: I18N_STRUCTURE;
 };
 
-export const getI18nInfo = (collection: Collection) => {
+export function getI18nInfo(collection: Collection) {
   if (!hasI18n(collection)) {
     return {};
   }
   const { structure, locales, default_locale: defaultLocale } = collection.get(I18N).toJS();
   return { structure, locales, defaultLocale } as I18nInfo;
-};
+}
 
-export const getI18nFilesDepth = (collection: Collection, depth: number) => {
+export function getI18nFilesDepth(collection: Collection, depth: number) {
   const { structure } = getI18nInfo(collection) as I18nInfo;
   if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
     return depth + 1;
   }
   return depth;
-};
+}
 
-export const isFieldTranslatable = (field: EntryField, locale: string, defaultLocale: string) => {
+export function isFieldTranslatable(field: EntryField, locale: string, defaultLocale: string) {
   const isTranslatable = locale !== defaultLocale && field.get(I18N) === I18N_FIELD.TRANSLATE;
   return isTranslatable;
-};
+}
 
-export const isFieldDuplicate = (field: EntryField, locale: string, defaultLocale: string) => {
+export function isFieldDuplicate(field: EntryField, locale: string, defaultLocale: string) {
   const isDuplicate = locale !== defaultLocale && field.get(I18N) === I18N_FIELD.DUPLICATE;
   return isDuplicate;
-};
+}
 
-export const isFieldHidden = (field: EntryField, locale: string, defaultLocale: string) => {
+export function isFieldHidden(field: EntryField, locale: string, defaultLocale: string) {
   const isHidden = locale !== defaultLocale && field.get(I18N) === I18N_FIELD.NONE;
   return isHidden;
-};
+}
 
-export const getLocaleDataPath = (locale: string) => {
+export function getLocaleDataPath(locale: string) {
   return [I18N, locale, 'data'];
-};
+}
 
-export const getDataPath = (locale: string, defaultLocale: string) => {
+export function getDataPath(locale: string, defaultLocale: string) {
   const dataPath = locale !== defaultLocale ? getLocaleDataPath(locale) : ['data'];
   return dataPath;
-};
+}
 
-export const getFilePath = (
+export function getFilePath(
   structure: I18N_STRUCTURE,
   extension: string,
   path: string,
   slug: string,
   locale: string,
-) => {
+) {
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
       return path.replace(`/${slug}`, `/${locale}/${slug}`);
     case I18N_STRUCTURE.MULTIPLE_FILES:
-      return path.replace(extension, `${locale}.${extension}`);
+      return path.replace(new RegExp(`${escapeRegExp(extension)}$`), `${locale}.${extension}`);
     case I18N_STRUCTURE.SINGLE_FILE:
     default:
       return path;
   }
-};
+}
 
-export const getLocaleFromPath = (structure: I18N_STRUCTURE, extension: string, path: string) => {
+export function getLocaleFromPath(structure: I18N_STRUCTURE, extension: string, path: string) {
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
       const parts = path.split('/');
@@ -103,23 +105,23 @@ export const getLocaleFromPath = (structure: I18N_STRUCTURE, extension: string, 
     default:
       return '';
   }
-};
+}
 
-export const getFilePaths = (
+export function getFilePaths(
   collection: Collection,
   extension: string,
   path: string,
   slug: string,
-) => {
+) {
   const { structure, locales } = getI18nInfo(collection) as I18nInfo;
   const paths = locales.map(locale =>
     getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
   );
 
   return paths;
-};
+}
 
-export const normalizeFilePath = (structure: I18N_STRUCTURE, path: string, locale: string) => {
+export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
       return path.replace(`${locale}/`, '');
@@ -129,9 +131,9 @@ export const normalizeFilePath = (structure: I18N_STRUCTURE, path: string, local
     default:
       return path;
   }
-};
+}
 
-export const getI18nFiles = (
+export function getI18nFiles(
   collection: Collection,
   extension: string,
   entryDraft: EntryMap,
@@ -139,7 +141,7 @@ export const getI18nFiles = (
   path: string,
   slug: string,
   newPath?: string,
-) => {
+) {
   const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
 
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
@@ -176,13 +178,13 @@ export const getI18nFiles = (
     })
     .filter(dataFile => dataFile.raw);
   return dataFiles;
-};
+}
 
-export const getI18nBackup = (
+export function getI18nBackup(
   collection: Collection,
   entry: EntryMap,
   entryToRaw: (entry: EntryMap) => string,
-) => {
+) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
   const i18nBackup = locales
@@ -198,26 +200,26 @@ export const getI18nBackup = (
     }, {} as Record<string, { raw: string }>);
 
   return i18nBackup;
-};
+}
 
-export const formatI18nBackup = (
+export function formatI18nBackup(
   i18nBackup: Record<string, { raw: string }>,
   formatRawData: (raw: string) => EntryValue,
-) => {
+) {
   const i18n = Object.entries(i18nBackup).reduce((acc, [locale, { raw }]) => {
     const entry = formatRawData(raw);
     return { ...acc, [locale]: { data: entry.data } };
   }, {});
 
   return i18n;
-};
+}
 
-const mergeValues = (
+function mergeValues(
   collection: Collection,
   structure: I18N_STRUCTURE,
   defaultLocale: string,
   values: { locale: string; value: EntryValue }[],
-) => {
+) {
   let defaultEntry = values.find(e => e.locale === defaultLocale);
   if (!defaultEntry) {
     defaultEntry = values[0];
@@ -241,10 +243,10 @@ const mergeValues = (
   };
 
   return entryValue;
-};
+}
 
-const mergeSingleFileValue = (entryValue: EntryValue, defaultLocale: string, locales: string[]) => {
-  const data = entryValue.data[defaultLocale];
+function mergeSingleFileValue(entryValue: EntryValue, defaultLocale: string, locales: string[]) {
+  const data = entryValue.data[defaultLocale] || {};
   const i18n = locales
     .filter(l => l !== defaultLocale)
     .map(l => ({ locale: l, value: entryValue.data[l] }))
@@ -259,15 +261,15 @@ const mergeSingleFileValue = (entryValue: EntryValue, defaultLocale: string, loc
     i18n,
     raw: '',
   };
-};
+}
 
-export const getI18nEntry = async (
+export async function getI18nEntry(
   collection: Collection,
   extension: string,
   path: string,
   slug: string,
   getEntryValue: (path: string) => Promise<EntryValue>,
-) => {
+) {
   const { structure, locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
   let entryValue: EntryValue;
@@ -291,9 +293,9 @@ export const getI18nEntry = async (
   }
 
   return entryValue;
-};
+}
 
-export const groupEntries = (collection: Collection, extension: string, entries: EntryValue[]) => {
+export function groupEntries(collection: Collection, extension: string, entries: EntryValue[]) {
   const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     return entries.map(e => mergeSingleFileValue(e, defaultLocale, locales));
@@ -315,15 +317,15 @@ export const groupEntries = (collection: Collection, extension: string, entries:
   }, [] as EntryValue[]);
 
   return groupedEntries;
-};
+}
 
-export const getI18nDataFiles = (
+export function getI18nDataFiles(
   collection: Collection,
   extension: string,
   path: string,
   slug: string,
   diffFiles: { path: string; id: string; newFile: boolean }[],
-) => {
+) {
   const { structure } = getI18nInfo(collection) as I18nInfo;
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     return diffFiles;
@@ -339,15 +341,28 @@ export const getI18nDataFiles = (
   }, [] as { path: string; id: string; newFile: boolean }[]);
 
   return dataFiles;
-};
+}
 
-export const duplicateI18nFields = (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function duplicateDefaultI18nFields(collection: Collection, dataFields: any) {
+  const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  const i18nFields = Object.fromEntries(
+    locales
+      .filter(locale => locale !== defaultLocale)
+      .map(locale => [locale, { data: dataFields }]),
+  );
+
+  return i18nFields;
+}
+
+export function duplicateI18nFields(
   entryDraft: EntryDraft,
   field: EntryField,
   locales: string[],
   defaultLocale: string,
   fieldPath: string[] = [field.get('name')],
-) => {
+) {
   const value = entryDraft.getIn(['entry', 'data', ...fieldPath]);
   if (field.get(I18N) === I18N_FIELD.DUPLICATE) {
     locales
@@ -379,21 +394,21 @@ export const duplicateI18nFields = (
   }
 
   return entryDraft;
-};
+}
 
-export const getPreviewEntry = (entry: EntryMap, locale: string, defaultLocale: string) => {
+export function getPreviewEntry(entry: EntryMap, locale: string, defaultLocale: string) {
   if (locale === defaultLocale) {
     return entry;
   }
   return entry.set('data', entry.getIn([I18N, locale, 'data']));
-};
+}
 
-export const serializeI18n = (
+export function serializeI18n(
   collection: Collection,
   entry: Entry,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   serializeValues: (data: any) => any,
-) => {
+) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
   locales
@@ -404,4 +419,4 @@ export const serializeI18n = (
     });
 
   return entry;
-};
+}

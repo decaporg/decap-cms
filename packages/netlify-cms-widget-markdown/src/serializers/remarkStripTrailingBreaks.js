@@ -10,7 +10,7 @@ import mdastToString from 'mdast-util-to-string';
  * these artifacts in resulting markdown.
  */
 export default function remarkStripTrailingBreaks() {
-  const transform = node => {
+  function transform(node) {
     if (node.children) {
       node.children = node.children
         .map((child, idx, children) => {
@@ -50,6 +50,7 @@ export default function remarkStripTrailingBreaks() {
         .map(transform);
     }
     return node;
-  };
+  }
+
   return transform;
 }

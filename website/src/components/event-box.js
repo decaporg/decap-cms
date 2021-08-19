@@ -3,7 +3,6 @@ import moment from 'moment';
 import styled from '@emotion/styled';
 
 import Markdownify from './markdownify';
-
 import theme from '../theme';
 
 const Root = styled.div`
@@ -64,7 +63,7 @@ const CalDates = styled.p`
 
 const CalCta = styled.div``;
 
-const EventBox = ({ title, cta }) => {
+function EventBox({ title, cta }) {
   const [loading, setLoading] = useState(true);
   const [eventDate, setEventDate] = useState('');
 
@@ -121,6 +120,6 @@ const EventBox = ({ title, cta }) => {
       </CalCta>
     </Root>
   );
-};
+}
 
 export default EventBox;

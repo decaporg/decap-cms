@@ -5,6 +5,8 @@ export default {
     search_fields: { type: 'array', minItems: 1, items: { type: 'string' } },
     file: { type: 'string' },
     multiple: { type: 'boolean' },
+    min: { type: 'integer' },
+    max: { type: 'integer' },
     display_fields: { type: 'array', minItems: 1, items: { type: 'string' } },
     options_length: { type: 'integer' },
   },

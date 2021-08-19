@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+
 import Icon from './Icon';
 import { colors, buttons } from './styles';
 import Dropdown, { StyledDropdownButton, DropdownItem } from './Dropdown';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 
 const TopBarContainer = styled.div`
   align-items: center;
@@ -40,14 +41,8 @@ const ExpandButton = styled.button`
 `;
 
 const AddButton = styled.button`
-  ${buttons.button};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
+  ${buttons.button}
+  ${buttons.widget}
 
   ${Icon} {
     margin-left: 6px;
@@ -64,6 +59,7 @@ class ObjectWidgetTopBar extends React.Component {
     collapsed: PropTypes.bool,
     heading: PropTypes.node,
     label: PropTypes.string,
+    t: PropTypes.func.isRequired,
   };
 
   renderAddUI() {
@@ -81,7 +77,9 @@ class ObjectWidgetTopBar extends React.Component {
     return (
       <Dropdown
         renderButton={() => (
-          <StyledDropdownButton>Add {this.props.label} item</StyledDropdownButton>
+          <StyledDropdownButton>
+            {this.props.t('editor.editorWidgets.list.addType', { item: this.props.label })}
+          </StyledDropdownButton>
         )}
       >
         {types.map((type, idx) => (
@@ -98,7 +96,8 @@ class ObjectWidgetTopBar extends React.Component {
   renderAddButton() {
     return (
       <AddButton onClick={this.props.onAdd}>
-        Add {this.props.label} <Icon type="add" size="xsmall" />
+        {this.props.t('editor.editorWidgets.list.add', { item: this.props.label })}
+        <Icon type="add" size="xsmall" />
       </AddButton>
     );
   }

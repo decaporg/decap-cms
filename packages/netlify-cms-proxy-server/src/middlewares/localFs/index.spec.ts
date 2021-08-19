@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import Joi from '@hapi/joi';
 import { getSchema } from '.';
 
-const assetFailure = (result: Joi.ValidationResult, expectedMessage: string) => {
+import type Joi from '@hapi/joi';
+
+function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
   expect(error).not.toBeNull();
   expect(error!.details).toHaveLength(1);
   const message = error!.details.map(({ message }) => message)[0];
   expect(message).toBe(expectedMessage);
-};
+}
 
 const defaultParams = {
   branch: 'master',

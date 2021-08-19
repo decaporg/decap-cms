@@ -8,25 +8,25 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { loadConfig } from 'Actions/config';
-import { loginUser, logoutUser } from 'Actions/auth';
-import { currentBackend } from 'coreSrc/backend';
-import { createNewEntry } from 'Actions/collections';
-import { openMediaLibrary } from 'Actions/mediaLibrary';
-import MediaLibrary from 'MediaLibrary/MediaLibrary';
-import { Toast } from 'UI';
 import { Loader, colors } from 'netlify-cms-ui-default';
-import history from 'Routing/history';
-import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
-import Collection from 'Collection/Collection';
-import Workflow from 'Workflow/Workflow';
-import Editor from 'Editor/Editor';
+
+import { loginUser, logoutUser } from '../../actions/auth';
+import { currentBackend } from '../../backend';
+import { createNewEntry } from '../../actions/collections';
+import { openMediaLibrary } from '../../actions/mediaLibrary';
+import MediaLibrary from '../MediaLibrary/MediaLibrary';
+import { Toast } from '../UI';
+import { history } from '../../routing/history';
+import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import Collection from '../Collection/Collection';
+import Workflow from '../Workflow/Workflow';
+import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
 
 TopBarProgress.config({
   barColors: {
-    '0': colors.active,
+    0: colors.active,
     '1.0': colors.active,
   },
   shadowBlur: 0,
@@ -49,16 +49,16 @@ const ErrorCodeBlock = styled.pre`
   line-height: 1.5;
 `;
 
-const getDefaultPath = collections => {
+function getDefaultPath(collections) {
   const first = collections.filter(collection => collection.get('hide') !== true).first();
   if (first) {
     return `/collections/${first.get('name')}`;
   } else {
     throw new Error('Could not find a non hidden collection');
   }
-};
+}
 
-const RouteInCollection = ({ collections, render, ...props }) => {
+function RouteInCollection({ collections, render, ...props }) {
   const defaultPath = getDefaultPath(collections);
   return (
     <Route
@@ -69,17 +69,16 @@ const RouteInCollection = ({ collections, render, ...props }) => {
       }}
     />
   );
-};
+}
 
 class App extends React.Component {
   static propTypes = {
-    auth: ImmutablePropTypes.map,
-    config: ImmutablePropTypes.map,
-    collections: ImmutablePropTypes.orderedMap,
-    loadConfig: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     loginUser: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
-    user: ImmutablePropTypes.map,
+    user: PropTypes.object,
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
     siteId: PropTypes.string,
@@ -96,16 +95,11 @@ class App extends React.Component {
         <h1>{t('app.app.errorHeader')}</h1>
         <div>
           <strong>{t('app.app.configErrors')}:</strong>
-          <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
+          <ErrorCodeBlock>{config.error}</ErrorCodeBlock>
           <span>{t('app.app.checkConfigYml')}</span>
         </div>
       </ErrorContainer>
     );
-  }
-
-  componentDidMount() {
-    const { loadConfig } = this.props;
-    loadConfig();
   }
 
   handleLogin(credentials) {
@@ -129,13 +123,12 @@ class App extends React.Component {
         <Notifs CustomComponent={Toast} />
         {React.createElement(backend.authComponent(), {
           onLogin: this.handleLogin.bind(this),
-          error: auth && auth.get('error'),
-          isFetching: auth && auth.get('isFetching'),
-          inProgress: (auth && auth.get('isFetching')) || false,
-          siteId: this.props.config.getIn(['backend', 'site_domain']),
-          base_url: this.props.config.getIn(['backend', 'base_url'], null),
-          authEndpoint: this.props.config.getIn(['backend', 'auth_endpoint']),
-          config: this.props.config.toJS(),
+          error: auth.error,
+          inProgress: auth.isFetching,
+          siteId: this.props.config.backend.site_domain,
+          base_url: this.props.config.backend.base_url,
+          authEndpoint: this.props.config.backend.auth_endpoint,
+          config: this.props.config,
           clearHash: () => history.replace('/'),
           t,
         })}
@@ -166,11 +159,11 @@ class App extends React.Component {
       return null;
     }
 
-    if (config.get('error')) {
+    if (config.error) {
       return this.configError(config);
     }
 
-    if (config.get('isFetching')) {
+    if (config.isFetching) {
       return <Loader active>{t('app.app.loadingConfig')}</Loader>;
     }
 
@@ -191,8 +184,8 @@ class App extends React.Component {
           onLogoutClick={logoutUser}
           openMediaLibrary={openMediaLibrary}
           hasWorkflow={hasWorkflow}
-          displayUrl={config.get('display_url')}
-          isTestRepo={config.getIn(['backend', 'name']) === 'test-repo'}
+          displayUrl={config.display_url}
+          isTestRepo={config.backend.name === 'test-repo'}
           showMediaButton={showMediaButton}
         />
         <AppMainContainer>
@@ -262,9 +255,9 @@ class App extends React.Component {
 
 function mapStateToProps(state) {
   const { auth, config, collections, globalUI, mediaLibrary } = state;
-  const user = auth && auth.get('user');
-  const isFetching = globalUI.get('isFetching');
-  const publishMode = config && config.get('publish_mode');
+  const user = auth.user;
+  const isFetching = globalUI.isFetching;
+  const publishMode = config.publish_mode;
   const useMediaLibrary = !mediaLibrary.get('externalLibrary');
   const showMediaButton = mediaLibrary.get('showMediaButton');
   return {
@@ -281,7 +274,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   openMediaLibrary,
-  loadConfig,
   loginUser,
   logoutUser,
 };

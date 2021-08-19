@@ -1,7 +1,7 @@
 ---
-title: NextJS
 group: Guides
 weight: 40
+title: NextJS
 ---
 This guide will help you get started using Netlify CMS with NextJS.
 
@@ -22,6 +22,9 @@ npm install --save react react-dom next
 
 # Install webpack loader for Markdown (Use version 3+)
 npm install --save-dev frontmatter-markdown-loader
+
+# If using NextJS v11.0.0 or above, @babel/core and @babel/preset-react has to be installed as dependencies of frontmatter-markdown-loader
+npm install --save-dev @babel/core @babel/preset-react
 
 # Create folder for pages (default for NextJS), and add a index file
 mkdir pages
@@ -152,7 +155,7 @@ Paste HTML for Netlify CMS into your `public/admin/index.html` file (check out t
 </head>
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@2.9.7/dist/netlify-cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 </body>
 </html>
 ```
@@ -164,7 +167,7 @@ Paste the following configuration into your `public/admin/config.yml` file:
 ```yaml
 backend:
   name: git-gateway
-  branch: master
+  branch: main # Branch to update (optional; defaults to master)
 media_folder: public/img
 public_folder: img
 collections:
@@ -196,7 +199,7 @@ Create a new repository at GitHub (or one of the other supported git services) a
 
 Now is probably also a good time to add a `.gitignore` file:
 
-```
+```bash
 .next/
 node_modules/
 /npm-debug.log

@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+
 const pkg = require('./package.json');
 const { getConfig } = require('../../scripts/webpack.js');
 
@@ -8,13 +9,13 @@ const versionPlugin = new webpack.DefinePlugin({
   NETLIFY_CMS_CORE_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
 });
 
-const configs = () => {
+function configs() {
   return getConfig().map(config => {
     return {
       ...config,
       plugins: [...config.plugins, versionPlugin],
     };
   });
-};
+}
 
 module.exports = configs();

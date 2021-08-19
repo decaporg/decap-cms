@@ -1,4 +1,5 @@
 import { has, flow, partial, map } from 'lodash';
+
 import { joinPatternSegments, combinePatterns, replaceWhen } from '../regexHelper';
 
 /**
@@ -236,7 +237,7 @@ function escape(delim) {
  * stringification.
  */
 export default function remarkEscapeMarkdownEntities() {
-  const transform = (node, index) => {
+  function transform(node, index) {
     /**
      * Shortcode nodes will intentionally inject markdown entities in text node
      * children not be escaped.
@@ -262,7 +263,7 @@ export default function remarkEscapeMarkdownEntities() {
      * Always return nodes with recursively mapped children.
      */
     return { ...node, ...children };
-  };
+  }
 
   return transform;
 }

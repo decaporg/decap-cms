@@ -1,8 +1,9 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { Sidebar } from '../Sidebar';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
+
+import { Sidebar } from '../Sidebar';
 
 jest.mock('netlify-cms-ui-default', () => {
   const actual = jest.requireActual('netlify-cms-ui-default');
@@ -14,11 +15,12 @@ jest.mock('netlify-cms-ui-default', () => {
 
 jest.mock('../NestedCollection', () => 'nested-collection');
 jest.mock('../CollectionSearch', () => 'collection-search');
-jest.mock('Actions/collections');
+jest.mock('../../../actions/collections');
 
 describe('Sidebar', () => {
   const props = {
     searchTerm: '',
+    isSearchEnabled: true,
     t: jest.fn(key => key),
   };
   it('should render sidebar with a simple collection', () => {
@@ -66,6 +68,17 @@ describe('Sidebar', () => {
     const { asFragment } = render(
       <MemoryRouter>
         <Sidebar {...props} collections={collections} filterTerm="dir1/dir2" />
+      </MemoryRouter>,
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should render sidebar without search', () => {
+    const collections = fromJS([{ name: 'posts', label: 'Posts' }]).toOrderedMap();
+    const { asFragment } = render(
+      <MemoryRouter>
+        <Sidebar {...props} collections={collections} isSearchEnabled={false} />
       </MemoryRouter>,
     );
 

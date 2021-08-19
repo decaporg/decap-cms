@@ -2,7 +2,7 @@ import React from 'react';
 
 import Markdown from './markdown';
 
-const WidgetDoc = ({ visible, label, body, html }) => {
+function WidgetDoc({ visible, label, body, html }) {
   if (!visible) {
     return null;
   }
@@ -13,6 +13,6 @@ const WidgetDoc = ({ visible, label, body, html }) => {
       <Markdown html={html} body={body} />
     </div>
   );
-};
+}
 
 export default WidgetDoc;

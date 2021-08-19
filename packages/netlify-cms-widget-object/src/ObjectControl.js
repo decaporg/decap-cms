@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
-import { Map, List } from 'immutable';
-import { ObjectWidgetTopBar, lengths, colors } from 'netlify-cms-ui-default';
+import { List, Map } from 'immutable';
+import { colors, lengths, ObjectWidgetTopBar } from 'netlify-cms-ui-default';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
 
 const styleStrings = {
   nestedObjectControl: `
@@ -37,6 +38,7 @@ export default class ObjectControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     hasError: PropTypes.bool,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -126,8 +128,15 @@ export default class ObjectControl extends React.Component {
     return this.controlFor(singleField);
   };
 
+  objectLabel = () => {
+    const { value, field } = this.props;
+    const label = field.get('label', field.get('name'));
+    const summary = field.get('summary');
+    return summary ? stringTemplate.compileStringTemplate(summary, null, '', value) : label;
+  };
+
   render() {
-    const { field, forID, classNameWrapper, forList, hasError } = this.props;
+    const { field, forID, classNameWrapper, forList, hasError, t } = this.props;
     const collapsed = forList ? this.props.collapsed : this.state.collapsed;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
@@ -159,6 +168,8 @@ export default class ObjectControl extends React.Component {
                 <ObjectWidgetTopBar
                   collapsed={collapsed}
                   onCollapseToggle={this.handleCollapseToggle}
+                  heading={collapsed && this.objectLabel()}
+                  t={t}
                 />
               )}
               <div

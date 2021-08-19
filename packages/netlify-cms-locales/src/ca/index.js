@@ -33,17 +33,39 @@ const ca = {
   },
   collection: {
     sidebar: {
-      collections: 'Coleccions',
+      collections: 'Col·leccions',
+      allCollections: 'Totes les col·leccions',
       searchAll: 'Buscar tots',
+      searchIn: 'Buscar a',
     },
     collectionTop: {
+      sortBy: 'Ordenar per',
       viewAs: 'Veure com',
       newButton: 'Nou %{collectionLabel}',
+      ascending: 'Ascendent',
+      descending: 'Descendent',
+      searchResults: 'Buscar resultats per "%{searchTerm}"',
+      searchResultsInCollection: 'Buscar resultats per "%{searchTerm}" a %{collection}',
+      filterBy: 'Filtrar per',
+      groupBy: 'Agrupar per',
     },
     entries: {
       loadingEntries: 'Carregant entrades',
       cachingEntries: 'Emmagatzemant entrades a la caché',
       longerLoading: 'Això podria tardar uns minuts',
+      noEntries: 'Cap entrada',
+    },
+    groups: {
+      other: 'Altre',
+      negateLabel: 'No %{label}',
+    },
+    defaultFields: {
+      author: {
+        label: 'Autor',
+      },
+      updatedOn: {
+        label: 'Actualitzat el',
+      },
     },
   },
   editor: {
@@ -62,18 +84,24 @@ const ca = {
         max: '%{fieldLabel} ha de ser %{maxValue} o més.',
         rangeCount: '%{fieldLabel} ha de tenir entre %{minCount} i %{maxCount} element(s).',
         rangeCountExact: '%{fieldLabel} ha de tenir exactament %{count} element(s).',
-        minCount: '%{fieldLabel} ha de tenir com a mínim %{minCount} element(s).',
-        maxCount: '%{fieldLabel} ha de ser %{maxCount} o inferior.',
+        rangeMin: '%{fieldLabel} ha de tenir com a mínim %{minCount} element(s).',
+        rangeMax: '%{fieldLabel} ha de ser %{maxCount} o inferior.',
+        invalidPath: `'%{path}' no és un camí vàlid`,
+        pathExists: `'%{path}' ja existeix`,
+      },
+      i18n: {
+        writingInLocale: 'Escriure en %{locale}',
       },
     },
     editor: {
       onLeavePage: 'Estàs segur que vols deixar aquesta pàgina?',
       onUpdatingWithUnsavedChanges:
-        "Té canvis no guardats, si us plau, guardi'ls abans d'actualitzar l'estat.",
-      onPublishingNotReady: 'si us plau, actualitzi l\'estat a "Ready" abans de publicar.',
+        "Tens canvis no guardats, si us plau, guarda'ls abans d'actualitzar l'estat.",
+      onPublishingNotReady: 'si us plau, actualitza l\'estat a "Ready" abans de publicar.',
       onPublishingWithUnsavedChanges:
-        "Té canvis no guardats, si us plau, guardi'ls abans de publicar-los.",
-      onPublishing: 'Està segur que vol publicar aquesta entrada?',
+        "Tens canvis no guardats, si us plau, guarda'ls abans de publicar-los.",
+      onPublishing: 'Estàs segur que vols publicar aquesta entrada?',
+      onUnpublishing: 'Estàs segur que vols esborrar aquesta entrada?',
       onDeleteWithUnsavedChanges:
         'Està segur que vol eliminar aquesta entrada publicada, així com els canvis no guardats de la sessió actual?',
       onDeletePublishedEntry: 'Està segur que vol eliminar aquesta entrada publicada?',
@@ -84,6 +112,10 @@ const ca = {
       loadingEntry: 'Carregant entrada...',
       confirmLoadBackup:
         "S'ha recuperat una copia de seguretat local per aquesta entrada. La vol utilitzar?",
+    },
+    editorInterface: {
+      toggleI18n: 'Mostrar/Amagar traduccions',
+      togglePreview: 'Mostrar/Amagar previsualització',
     },
     editorToolbar: {
       publishing: 'Publicant...',
@@ -102,7 +134,7 @@ const ca = {
       save: 'Guardar',
       deleting: 'Eliminant...',
       updating: 'Actualizant...',
-      setStatus: 'Actualizar estat',
+      status: 'Estat: %{status}',
       backCollection: ' Escrivint a la colecció %{collectionLabel}',
       unsavedChanges: 'Canvis no guardats',
       changesSaved: 'Canvis guardats',
@@ -116,18 +148,33 @@ const ca = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Negreta',
+        italic: 'Cursiva',
+        code: 'Codi',
+        link: 'Enllaç',
+        linkPrompt: "Introdueix l'URL de l'enllaç",
+        headings: 'Encapçalaments',
+        bulletedList: 'Llista',
+        numberedList: 'Llista numèrica',
+        addComponent: 'Afegir component',
         richText: 'Text enriquit',
         markdown: 'Markdown',
       },
       image: {
         choose: 'Escull una imatge',
+        chooseUrl: 'Introdueix una URL',
+        replaceUrl: 'Substitueix per una URL',
+        promptUrl: "Introdueix l'URL de la imatge",
         chooseDifferent: 'Escull una imatge diferent',
         remove: 'Treu la imatge',
       },
       file: {
         choose: 'Escull un arxiu',
+        chooseUrl: 'Introdueix una URL',
+        replaceUrl: 'Substitueix per una URL',
+        promptUrl: "Introdueix l'URL de l'arxiu",
         chooseDifferent: 'Escull un arxiu diferent',
-        remove: 'Esborrar archivo',
+        remove: 'Esborrar arxiu',
       },
       unknownControl: {
         noControl: "No existeix un control per al widget '%{widget}'.",
@@ -143,11 +190,19 @@ const ca = {
         headingFive: 'Encapçalament 5',
         headingSix: 'Encapçalament 6',
       },
+      datetime: {
+        now: 'Ara',
+      },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Esborrany',
+      copy: 'Copiar',
+      copyUrl: 'Copiar URL',
+      copyPath: 'Copiar path',
+      copyName: 'Copiar nom',
+      copied: 'Copiat',
     },
     mediaLibrary: {
       onDelete: 'Està segur de que vol eliminar el mitjà seleccionat?',
@@ -178,7 +233,7 @@ const ca = {
     errorBoundary: {
       title: 'Error',
       details: "S'ha produït un error - si us plau ",
-      reportIt: "informa'ns d'això.",
+      reportIt: "informa'ns d'això a GitHub.",
       detailsHeading: 'Detalls',
       recoveredEntry: {
         heading: 'Document recuperat',
@@ -206,6 +261,8 @@ const ca = {
       entryUpdated: "Estat de l'entrada actualitzat",
       onDeleteUnpublishedChanges: 'Canvis no publicats eliminats',
       onFailToAuth: '%{details}',
+      onLoggedOut: 'La teva sessió ha estat tancada. Si us plau, torna a iniciar-la',
+      onBackendDown: 'El servidor està patint problemes. Consulta %{details} per a més informació',
     },
   },
   workflow: {

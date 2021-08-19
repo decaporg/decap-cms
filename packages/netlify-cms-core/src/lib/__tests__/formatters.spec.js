@@ -1,4 +1,5 @@
-import { Map, fromJS } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
+
 import {
   commitMessageFormatter,
   prepareSlug,
@@ -14,18 +15,18 @@ jest.mock('../../reducers/collections');
 describe('formatters', () => {
   describe('commitMessageFormatter', () => {
     const config = {
-      getIn: jest.fn(),
-    };
-
-    const collection = {
-      get: jest.fn().mockReturnValue('Collection'),
+      backend: {
+        name: 'git-gateway',
+      },
     };
 
     beforeEach(() => {
       jest.clearAllMocks();
     });
 
-    it('should return default commit message on create', () => {
+    it('should return default commit message on create, label_singular', () => {
+      const collection = Map({ label_singular: 'Collection' });
+
       expect(
         commitMessageFormatter('create', config, {
           slug: 'doc-slug',
@@ -35,9 +36,8 @@ describe('formatters', () => {
       ).toEqual('Create Collection “doc-slug”');
     });
 
-    it('should return default commit message on create', () => {
-      collection.get.mockReturnValueOnce(undefined);
-      collection.get.mockReturnValueOnce('Collections');
+    it('should return default commit message on create, label', () => {
+      const collection = Map({ label: 'Collections' });
 
       expect(
         commitMessageFormatter('update', config, {
@@ -49,6 +49,8 @@ describe('formatters', () => {
     });
 
     it('should return default commit message on delete', () => {
+      const collection = Map({ label_singular: 'Collection' });
+
       expect(
         commitMessageFormatter('delete', config, {
           slug: 'doc-slug',
@@ -59,6 +61,8 @@ describe('formatters', () => {
     });
 
     it('should return default commit message on uploadMedia', () => {
+      const collection = Map({});
+
       expect(
         commitMessageFormatter('uploadMedia', config, {
           slug: 'doc-slug',
@@ -69,6 +73,8 @@ describe('formatters', () => {
     });
 
     it('should return default commit message on deleteMedia', () => {
+      const collection = Map({});
+
       expect(
         commitMessageFormatter('deleteMedia', config, {
           slug: 'doc-slug',
@@ -79,11 +85,14 @@ describe('formatters', () => {
     });
 
     it('should log warning on unknown variable', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          create: 'Create {{collection}} “{{slug}}” with "{{unknown variable}}"',
-        }),
-      );
+      const config = {
+        backend: {
+          commit_messages: {
+            create: 'Create {{collection}} “{{slug}}” with "{{unknown variable}}"',
+          },
+        },
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter('create', config, {
           slug: 'doc-slug',
@@ -98,12 +107,14 @@ describe('formatters', () => {
     });
 
     it('should return custom commit message on update', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          update: 'Custom commit message',
-        }),
-      );
-
+      const config = {
+        backend: {
+          commit_messages: {
+            update: 'Custom commit message',
+          },
+        },
+      };
+      const collection = Map({});
       expect(
         commitMessageFormatter('update', config, {
           slug: 'doc-slug',
@@ -114,12 +125,14 @@ describe('formatters', () => {
     });
 
     it('should use empty values if "authorLogin" and "authorName" are missing in commit message', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          update: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
-        }),
-      );
-
+      const config = {
+        backend: {
+          commit_messages: {
+            update: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
+          },
+        },
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'update',
@@ -135,12 +148,14 @@ describe('formatters', () => {
     });
 
     it('should return custom create message with author information', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
-        }),
-      );
-
+      const config = {
+        backend: {
+          commit_messages: {
+            create: '{{author-login}} - {{author-name}}: Create {{collection}} “{{slug}}”',
+          },
+        },
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'create',
@@ -158,12 +173,14 @@ describe('formatters', () => {
     });
 
     it('should return custom open authoring message', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
-        }),
-      );
-
+      const config = {
+        backend: {
+          commit_messages: {
+            openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
+          },
+        },
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'create',
@@ -181,12 +198,14 @@ describe('formatters', () => {
     });
 
     it('should use empty values if "authorLogin" and "authorName" are missing in open authoring message', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
-        }),
-      );
-
+      const config = {
+        backend: {
+          commit_messages: {
+            openAuthoring: '{{author-login}} - {{author-name}}: {{message}}',
+          },
+        },
+      };
+      const collection = Map({ label_singular: 'Collection' });
       expect(
         commitMessageFormatter(
           'create',
@@ -202,12 +221,14 @@ describe('formatters', () => {
     });
 
     it('should log warning on unknown variable in open authoring template', () => {
-      config.getIn.mockReturnValueOnce(
-        Map({
-          openAuthoring: '{{author-email}}: {{message}}',
-        }),
-      );
-
+      const config = {
+        backend: {
+          commit_messages: {
+            openAuthoring: '{{author-email}}: {{message}}',
+          },
+        },
+      };
+      const collection = Map({ label_singular: 'Collection' });
       commitMessageFormatter(
         'create',
         config,
@@ -246,11 +267,11 @@ describe('formatters', () => {
     });
   });
 
-  const slugConfig = Map({
+  const slugConfig = {
     encoding: 'unicode',
     clean_accents: false,
     sanitize_replacement: '-',
-  });
+  };
 
   describe('slugFormatter', () => {
     const date = new Date('2020-01-01');
@@ -363,10 +384,72 @@ describe('formatters', () => {
             preview_path_date_field: 'customDateField',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({ customDateField: date, slug: 'entrySlug', title: 'title' }) }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/2020/backendslug/title/entryslug');
+    });
+
+    it('should return preview url for files in file collection', () => {
+      const file = Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
+            type: 'file_based_collection',
+            files: List([file]),
+          }),
+          'backendSlug',
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/backendslug/about-the-project/title');
+    });
+
+    it('should return preview url for files in file collection when defined on file-level only', () => {
+      const file = Map({ name: 'about-file', preview_path: '{{slug}}/{{fields.slug}}/{{title}}' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            type: 'file_based_collection',
+            files: List([file]),
+          }),
+          'backendSlug',
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/backendslug/about-the-project/title');
+    });
+
+    it('should fall back to collection preview url for files in file collection', () => {
+      const file = Map({ name: 'about-file' });
+
+      const { getFileFromSlug } = require('../../reducers/collections');
+      getFileFromSlug.mockReturnValue(file);
+
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: '{{slug}}/{{title}}/{{fields.slug}}',
+            type: 'file_based_collection',
+            files: List([file]),
+          }),
+          'backendSlug',
+          Map({ data: Map({ slug: 'about-the-project', title: 'title' }), slug: 'about-file' }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/backendslug/title/about-the-project');
     });
 
     it('should infer date field when preview_path_date_field is not configured', () => {
@@ -382,8 +465,8 @@ describe('formatters', () => {
             preview_path: '{{year}}/{{month}}/{{slug}}/{{title}}/{{fields.slug}}',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({ date, slug: 'entrySlug', title: 'title' }) }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/2020/01/backendslug/title/entryslug');
     });
@@ -396,8 +479,8 @@ describe('formatters', () => {
             preview_path: 'posts/{{filename}}.{{extension}}',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}), path: 'src/content/posts/title.md' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/posts/title.md');
     });
@@ -411,8 +494,8 @@ describe('formatters', () => {
             preview_path: 'portfolio/{{dirname}}',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}), path: '_portfolio/i-am-the-slug.md' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/portfolio/');
     });
@@ -428,8 +511,8 @@ describe('formatters', () => {
             meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}), path: '_portfolio/drawing/i-am-the-slug/index.md' }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com/portfolio/drawing/i-am-the-slug');
     });
@@ -445,8 +528,8 @@ describe('formatters', () => {
             preview_path_date_field: 'date',
           }),
           'backendSlug',
-          slugConfig,
           Map({ data: Map({}) }),
+          slugConfig,
         ),
       ).toBe('https://www.example.com');
 

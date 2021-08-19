@@ -1,7 +1,8 @@
 import React from 'react';
-import { Editor } from '../Editor';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
+
+import { Editor } from '../Editor';
 
 jest.mock('lodash/debounce', () => {
   const flush = jest.fn();
@@ -18,7 +19,7 @@ jest.mock('netlify-cms-ui-default', () => {
     Loader: props => <mock-loader {...props} />,
   };
 });
-jest.mock('Routing/history');
+jest.mock('../../../routing/history');
 
 describe('Editor', () => {
   const props = {

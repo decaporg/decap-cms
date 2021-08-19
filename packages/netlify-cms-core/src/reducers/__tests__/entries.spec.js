@@ -1,5 +1,6 @@
 import { OrderedMap, fromJS } from 'immutable';
-import * as actions from 'Actions/entries';
+
+import * as actions from '../../actions/entries';
 import reducer, {
   selectMediaFolder,
   selectMediaFilePath,
@@ -76,7 +77,7 @@ describe('entries', () => {
     it("should return global media folder when collection doesn't specify media_folder", () => {
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts' }),
           undefined,
           undefined,
@@ -87,7 +88,7 @@ describe('entries', () => {
     it('should return draft media folder when collection specifies media_folder and entry is undefined', () => {
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
           undefined,
           undefined,
@@ -98,7 +99,7 @@ describe('entries', () => {
     it('should return relative media folder when collection specifies media_folder and entry path is not null', () => {
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
           fromJS({ path: 'posts/title/index.md' }),
           undefined,
@@ -121,7 +122,7 @@ describe('entries', () => {
       const field = fromJS({ media_folder: '' });
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: '/static/img' }),
+          { media_folder: '/static/img' },
           fromJS({
             name: 'other',
             folder: 'other',
@@ -137,7 +138,7 @@ describe('entries', () => {
     it('should return collection absolute media folder without leading slash', () => {
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: '/static/Images' }),
+          { media_folder: '/static/Images' },
           fromJS({
             name: 'getting-started',
             folder: 'src/docs/getting-started',
@@ -169,7 +170,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: 'static/media', slug: slugConfig }),
+          { media_folder: 'static/media', slug: slugConfig },
           collection,
           entry,
           undefined,
@@ -196,7 +197,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: '/static/images', slug: slugConfig }),
+          { media_folder: '/static/images', slug: slugConfig },
           collection,
           entry,
           undefined,
@@ -229,7 +230,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: 'static/media', slug: slugConfig }),
+          { media_folder: 'static/media', slug: slugConfig },
           collection,
           entry,
           collection.get('fields').get(0),
@@ -258,7 +259,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: '/static/img/', slug: slugConfig }),
+          { media_folder: '/static/img/', slug: slugConfig },
           collection,
           entry,
           undefined,
@@ -267,7 +268,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: 'static/img/', slug: slugConfig }),
+          { media_folder: 'static/img/', slug: slugConfig },
           collection,
           entry,
           undefined,
@@ -278,7 +279,7 @@ describe('entries', () => {
     it('should handle file media_folder', () => {
       expect(
         selectMediaFolder(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts', files: [{ name: 'index', media_folder: '/static/images/' }] }),
           fromJS({ path: 'posts/title/index.md', slug: 'index' }),
           undefined,
@@ -302,7 +303,7 @@ describe('entries', () => {
       });
 
       const args = [
-        fromJS({ media_folder: '/static/img' }),
+        { media_folder: '/static/img' },
         fromJS({
           name: 'general',
           media_folder: '{{media_folder}}/general/',
@@ -345,7 +346,7 @@ describe('entries', () => {
     it('should resolve path from global media folder for collection with no media folder', () => {
       expect(
         selectMediaFilePath(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts' }),
           undefined,
           'image.png',
@@ -357,7 +358,7 @@ describe('entries', () => {
     it('should resolve path from collection media folder for collection with media folder', () => {
       expect(
         selectMediaFilePath(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
           undefined,
           'image.png',
@@ -369,7 +370,7 @@ describe('entries', () => {
     it('should handle relative media_folder', () => {
       expect(
         selectMediaFilePath(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
           fromJS({ path: 'posts/title/index.md' }),
           'image.png',
@@ -382,7 +383,7 @@ describe('entries', () => {
       const field = fromJS({ media_folder: '../../static/media/' });
       expect(
         selectMediaFilePath(
-          fromJS({ media_folder: 'static/media' }),
+          { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts', fields: [field] }),
           fromJS({ path: 'posts/title/index.md' }),
           'image.png',
@@ -402,7 +403,7 @@ describe('entries', () => {
     it('should resolve path from public folder for collection with no media folder', () => {
       expect(
         selectMediaFilePublicPath(
-          fromJS({ public_folder: '/media' }),
+          { public_folder: '/media' },
           null,
           '/media/image.png',
           undefined,
@@ -414,7 +415,7 @@ describe('entries', () => {
     it('should resolve path from collection public folder for collection with public folder', () => {
       expect(
         selectMediaFilePublicPath(
-          fromJS({ public_folder: '/media' }),
+          { public_folder: '/media' },
           fromJS({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
           undefined,
@@ -426,13 +427,29 @@ describe('entries', () => {
     it('should handle relative public_folder', () => {
       expect(
         selectMediaFilePublicPath(
-          fromJS({ public_folder: '/media' }),
+          { public_folder: '/media' },
           fromJS({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
           undefined,
           undefined,
         ),
       ).toBe('../../static/media/image.png');
+    });
+
+    it('should handle absolute public_folder', () => {
+      expect(
+        selectMediaFilePublicPath(
+          { public_folder: 'https://www.netlify.com/media' },
+          fromJS({
+            name: 'posts',
+            folder: 'posts',
+            public_folder: 'https://www.netlify.com/media',
+          }),
+          'image.png',
+          undefined,
+          undefined,
+        ),
+      ).toBe('https://www.netlify.com/media/image.png');
     });
 
     it('should compile collection public folder template', () => {
@@ -455,7 +472,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFilePublicPath(
-          fromJS({ public_folder: 'static/media', slug: slugConfig }),
+          { public_folder: 'static/media', slug: slugConfig },
           collection,
           'image.png',
           entry,
@@ -489,7 +506,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFilePublicPath(
-          fromJS({ public_folder: 'static/media', slug: slugConfig }),
+          { public_folder: 'static/media', slug: slugConfig },
           collection,
           'image.png',
           entry,
@@ -523,7 +540,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFilePublicPath(
-          fromJS({ public_folder: 'static/media/', slug: slugConfig }),
+          { public_folder: 'static/media/', slug: slugConfig },
           collection,
           'image.png',
           entry,
@@ -551,7 +568,7 @@ describe('entries', () => {
 
       expect(
         selectMediaFilePublicPath(
-          fromJS({ public_folder: 'static/media/' }),
+          { public_folder: 'static/media/' },
           collection,
           'image.png',
           entry,

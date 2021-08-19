@@ -3,6 +3,127 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.20](https://github.com/netlify/netlify-cms/compare/netlify-cms-proxy-server@1.3.19...netlify-cms-proxy-server@1.3.20) (2021-08-17)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.19](https://github.com/netlify/netlify-cms/compare/netlify-cms-proxy-server@1.3.18...netlify-cms-proxy-server@1.3.19) (2021-07-14)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.18](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.17...netlify-cms-proxy-server@1.3.18) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.17](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.16...netlify-cms-proxy-server@1.3.17) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.16](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.15...netlify-cms-proxy-server@1.3.16) (2021-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v10 ([#5433](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/5433)) ([1d44a5c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/1d44a5c0b94ab8512278ffc877f2daeeb8159593))
+
+
+
+
+
+## [1.3.15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.14...netlify-cms-proxy-server@1.3.15) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.14](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.13...netlify-cms-proxy-server@1.3.14) (2021-05-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v9 ([#5361](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/5361)) ([3e65080](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/3e6508046f15672ca97cfe223ac9ea76b43121c9))
+
+
+
+
+
+## [1.3.13](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.12...netlify-cms-proxy-server@1.3.13) (2021-04-29)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.11...netlify-cms-proxy-server@1.3.12) (2021-04-04)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.10...netlify-cms-proxy-server@1.3.11) (2021-02-15)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.9...netlify-cms-proxy-server@1.3.10) (2021-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency async-mutex to ^0.3.0 ([#4932](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/issues/4932)) ([f608a81](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/commit/f608a81f19681a4265ea8875ad50c585926c9113))
+
+
+
+
+
+## [1.3.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.8...netlify-cms-proxy-server@1.3.9) (2021-02-01)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.7...netlify-cms-proxy-server@1.3.8) (2020-12-13)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
+## [1.3.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.6...netlify-cms-proxy-server@1.3.7) (2020-11-26)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
 ## [1.3.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-proxy-server/compare/netlify-cms-proxy-server@1.3.5...netlify-cms-proxy-server@1.3.6) (2020-09-28)
 
 **Note:** Version bump only for package netlify-cms-proxy-server

@@ -7,10 +7,10 @@ const es = {
     loginWithGitHub: 'Iniciar sesión con GitHub',
     loginWithGitLab: 'Iniciar sesión con GitLab',
     errors: {
-      email: 'Asegurate de ingresar tu correo electrónico.',
-      password: 'Por favor ingresa tu contraseña.',
+      email: 'Asegúrate de introducir tu correo electrónico.',
+      password: 'Por favor introduce tu contraseña.',
       identitySettings:
-        'No se pudo accesder a la configuración de Identity. Cuando uses el backend git-gateway asegurate de habilitar el servicio Identity y Git Gateway.',
+        'No se pudo acceder a la configuración de Identity. Cuando uses el backend git-gateway asegurate de habilitar el servicio Identity y Git Gateway.',
     },
   },
   app: {
@@ -34,7 +34,7 @@ const es = {
   collection: {
     sidebar: {
       collections: 'Colecciones',
-      searchAll: 'Buscar todos',
+      searchAll: 'Buscar todas',
     },
     collectionTop: {
       sortBy: 'Ordenar por',
@@ -74,8 +74,8 @@ const es = {
         max: '%{fieldLabel} debe ser %{maxValue} o menos.',
         rangeCount: '%{fieldLabel} debe tener entre %{minCount} y %{maxCount} elemento(s).',
         rangeCountExact: '%{fieldLabel} debe tener exactamente %{count} elemento(s).',
-        minCount: '%{fieldLabel} debe ser por lo menos %{minCount} elemento(s).',
-        maxCount: '%{fieldLabel} debe ser %{maxCount} o menos elemento(s).',
+        rangeMin: '%{fieldLabel} debe ser por lo menos %{minCount} elemento(s).',
+        rangeMax: '%{fieldLabel} debe ser %{maxCount} o menos elemento(s).',
       },
     },
     editor: {
@@ -102,7 +102,7 @@ const es = {
       publishing: 'Publicando...',
       publish: 'Publicar',
       published: 'Publicado',
-      unpublish: 'Retirado',
+      unpublish: 'Retirar',
       duplicate: 'Duplicar',
       unpublishing: 'Retirando...',
       publishAndCreateNew: 'Publicar y crear nuevo',
@@ -115,7 +115,7 @@ const es = {
       save: 'Guardar',
       deleting: 'Eliminando...',
       updating: 'Actualizando...',
-      setStatus: 'Actualizar estado',
+      status: 'Estado: %{status}',
       backCollection: ' Escribiendo en la colección %{collectionLabel}',
       unsavedChanges: 'Cambios no guardados',
       changesSaved: 'Cambios guardados',
@@ -123,7 +123,7 @@ const es = {
       inReview: 'En revisión',
       ready: 'Listo',
       publishNow: 'Publicar ahora',
-      deployPreviewPendingButtonLabel: 'Comprobar Vista Previo',
+      deployPreviewPendingButtonLabel: 'Comprobar Vista Previa',
       deployPreviewButtonLabel: 'Ver Vista Previa',
       deployButtonLabel: 'Ver publicación',
     },
@@ -166,7 +166,7 @@ const es = {
       draft: 'Borrador',
     },
     mediaLibrary: {
-      onDelete: '¿Está seguro de que desea eliminar el medio seleccionado?',
+      onDelete: '¿Está seguro de que desea eliminar el archivo seleccionado?',
       fileTooLarge:
         'Archivo muy pesado.\nConfigurado para no permitir archivos más pesados que %{size} kB.',
     },
@@ -214,7 +214,7 @@ const es = {
       onFailToDelete: 'No se ha podido borrar la entrada: %{details}',
       onFailToUpdateStatus: 'No se ha podido actualizar el estado: %{details}',
       missingRequiredField:
-        'Oops, no ha rellenado un campo obligatorio. Por favor, rellenelo antes de guardar.',
+        'Oops, no ha rellenado un campo obligatorio. Por favor, rellénelo antes de guardar.',
       entrySaved: 'Entrada guardada',
       entryPublished: 'Entrada publicada',
       entryUnpublished: 'Entrada retirada',

@@ -3,6 +3,90 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.12.1...netlify-cms-backend-git-gateway@2.12.2) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
+## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.12.0...netlify-cms-backend-git-gateway@2.12.1) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
+# [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.11...netlify-cms-backend-git-gateway@2.12.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+## [2.11.11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.10...netlify-cms-backend-git-gateway@2.11.11) (2021-02-25)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
+## [2.11.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.9...netlify-cms-backend-git-gateway@2.11.10) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
+## [2.11.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.8...netlify-cms-backend-git-gateway@2.11.9) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
+## [2.11.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.7...netlify-cms-backend-git-gateway@2.11.8) (2020-12-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ini to v2 ([#4722](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/4722)) ([e14ace3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/e14ace373b11510159a9b4d3f977d27ed886b288))
+
+
+
+
+
+## [2.11.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.6...netlify-cms-backend-git-gateway@2.11.7) (2020-12-06)
+
+
+### Bug Fixes
+
+* **large-media:** mark pointer files as binary ([#4678](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/4678)) ([7697b90](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/7697b907d7bae750f4ec041a184188aa46995320))
+
+
+
+
+
+## [2.11.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.5...netlify-cms-backend-git-gateway@2.11.6) (2020-10-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jwt-decode to v3 ([#4408](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/issues/4408)) ([03492e4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/commit/03492e4e684ffce3a541ef15edb591d1fd5b5854))
+
+
+
+
+
 ## [2.11.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.11.4...netlify-cms-backend-git-gateway@2.11.5) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway

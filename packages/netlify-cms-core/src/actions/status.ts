@@ -1,8 +1,10 @@
-import { State } from '../types/redux';
-import { currentBackend } from '../backend';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import { actions as notifActions } from 'redux-notifications';
+
+import { currentBackend } from '../backend';
+
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
+import type { State } from '../types/redux';
 
 const { notifSend, notifDismiss } = notifActions;
 
@@ -13,7 +15,7 @@ export const STATUS_FAILURE = 'STATUS_FAILURE';
 export function statusRequest() {
   return {
     type: STATUS_REQUEST,
-  };
+  } as const;
 }
 
 export function statusSuccess(status: {
@@ -23,21 +25,21 @@ export function statusSuccess(status: {
   return {
     type: STATUS_SUCCESS,
     payload: { status },
-  };
+  } as const;
 }
 
 export function statusFailure(error: Error) {
   return {
     type: STATUS_FAILURE,
     payload: { error },
-  };
+  } as const;
 }
 
 export function checkBackendStatus() {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     try {
       const state = getState();
-      if (state.status.get('isFetching') === true) {
+      if (state.status.isFetching) {
         return;
       }
 
@@ -90,3 +92,7 @@ export function checkBackendStatus() {
     }
   };
 }
+
+export type StatusAction = ReturnType<
+  typeof statusRequest | typeof statusSuccess | typeof statusFailure
+>;

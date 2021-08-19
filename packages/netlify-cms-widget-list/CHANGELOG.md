@@ -3,6 +3,142 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-list@2.10.0...netlify-cms-widget-list@2.10.1) (2021-08-04)
+
+
+### Bug Fixes
+
+* **widget-list:** add missing translations in widget list top bar ([#5471](https://github.com/netlify/netlify-cms/issues/5471)) ([#5679](https://github.com/netlify/netlify-cms/issues/5679)) ([db560cc](https://github.com/netlify/netlify-cms/commit/db560cc082fcc0a9842919e28f715e44a6e4625a))
+
+
+
+
+
+# [2.10.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-list@2.9.3...netlify-cms-widget-list@2.10.0) (2021-07-14)
+
+
+### Features
+
+* **list:** Add heading for list widgets ([#5544](https://github.com/netlify/netlify-cms/issues/5544)) ([d60df87](https://github.com/netlify/netlify-cms/commit/d60df8786d7ea01af94c86a6e889654ce20e53ca))
+
+
+
+
+
+## [2.9.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-list@2.9.2...netlify-cms-widget-list@2.9.3) (2021-07-07)
+
+
+### Bug Fixes
+
+* **list-control:** better value validation ([#5592](https://github.com/netlify/netlify-cms/issues/5592)) ([fb0f825](https://github.com/netlify/netlify-cms/commit/fb0f8259eae60c27a3a35c3db834c8311131d328))
+
+
+
+
+
+## [2.9.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.9.1...netlify-cms-widget-list@2.9.2) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-widget-list
+
+
+
+
+
+## [2.9.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.9.0...netlify-cms-widget-list@2.9.1) (2021-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-sortable-hoc to v2 ([#5371](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/5371)) ([b5dabc2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/b5dabc212953348bee83d41c36ca1f949c87b6b5))
+
+
+
+
+
+# [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.5...netlify-cms-widget-list@2.9.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+## [2.8.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.4...netlify-cms-widget-list@2.8.5) (2021-04-06)
+
+
+### Bug Fixes
+
+* allow any default list as default value for list widgets ([#5030](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/5030)) ([83c2354](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/83c235423e76023fe10f167c8f9087cba7a4c922))
+
+
+
+
+
+## [2.8.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.3...netlify-cms-widget-list@2.8.4) (2021-02-25)
+
+**Note:** Version bump only for package netlify-cms-widget-list
+
+
+
+
+
+## [2.8.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.2...netlify-cms-widget-list@2.8.3) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-list
+
+
+
+
+
+## [2.8.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.1...netlify-cms-widget-list@2.8.2) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-widget-list
+
+
+
+
+
+## [2.8.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.8.0...netlify-cms-widget-list@2.8.1) (2020-11-26)
+
+
+### Bug Fixes
+
+* list markdown widgets ([#4492](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4492)) ([4789d20](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/4789d205386f589c3556df32700df25ad078904f))
+
+
+
+
+
+# [2.8.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.7.0...netlify-cms-widget-list@2.8.0) (2020-10-25)
+
+
+### Bug Fixes
+
+* **widget-list:** don't split an empty string ([#4464](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4464)) ([f3a8eac](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/f3a8eac816710dbc639ad40b06742fa90885e613))
+
+
+### Features
+
+* add add_to_top option to list widget ([#4465](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4465)) ([4c962f9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/4c962f9149722074652c8939486650a4ddb1d7b3))
+
+
+
+
+
+# [2.7.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.6.6...netlify-cms-widget-list@2.7.0) (2020-10-20)
+
+
+### Features
+
+* **widget-list:** add min max configuration ([#4394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/issues/4394)) ([5fdfe40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/commit/5fdfe40dd29e9e22c9ae7d6219bc057f7ea7280b))
+
+
+
+
+
 ## [2.6.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-list/compare/netlify-cms-widget-list@2.6.5...netlify-cms-widget-list@2.6.6) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-widget-list

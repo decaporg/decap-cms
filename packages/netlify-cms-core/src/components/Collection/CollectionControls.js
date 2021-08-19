@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { lengths } from 'netlify-cms-ui-default';
+
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
 import FilterControl from './FilterControl';
-import { lengths } from 'netlify-cms-ui-default';
+import GroupControl from './GroupControl';
 
 const CollectionControlsContainer = styled.div`
   display: flex;
@@ -18,20 +20,26 @@ const CollectionControlsContainer = styled.div`
   }
 `;
 
-const CollectionControls = ({
+function CollectionControls({
   viewStyle,
   onChangeViewStyle,
   sortableFields,
   onSortClick,
   sort,
   viewFilters,
+  viewGroups,
   onFilterClick,
+  onGroupClick,
   t,
   filter,
-}) => {
+  group,
+}) {
   return (
     <CollectionControlsContainer>
       <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
+      {viewGroups.length > 0 && (
+        <GroupControl viewGroups={viewGroups} onGroupClick={onGroupClick} t={t} group={group} />
+      )}
       {viewFilters.length > 0 && (
         <FilterControl
           viewFilters={viewFilters}
@@ -45,6 +53,6 @@ const CollectionControls = ({
       )}
     </CollectionControlsContainer>
   );
-};
+}
 
 export default CollectionControls;

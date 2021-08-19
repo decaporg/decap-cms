@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.6.1...netlify-cms-widget-date@2.6.2) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-widget-date
+
+
+
+
+
+## [2.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.6.0...netlify-cms-widget-date@2.6.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-datetime to v3 ([#5383](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/5383)) ([a2735b5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/a2735b5fd68470821841f608ce2123e8ce74c4e0))
+
+
+
+
+
+# [2.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.5.7...netlify-cms-widget-date@2.6.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+## [2.5.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.5.6...netlify-cms-widget-date@2.5.7) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-date
+
+
+
+
+
+## [2.5.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.5.5...netlify-cms-widget-date@2.5.6) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-widget-date
+
+
+
+
+
 ## [2.5.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-date/compare/netlify-cms-widget-date@2.5.4...netlify-cms-widget-date@2.5.5) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-widget-date

@@ -5,13 +5,19 @@ import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
-import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
-import { ErrorBoundary } from 'UI';
-import { selectTemplateName, selectInferedField, selectField } from 'Reducers/collections';
 import { connect } from 'react-redux';
-import { boundGetAsset } from 'Actions/media';
-import { selectIsLoadingAsset } from 'Reducers/medias';
-import { INFERABLE_FIELDS } from 'Constants/fieldInference';
+
+import {
+  resolveWidget,
+  getPreviewTemplate,
+  getPreviewStyles,
+  getRemarkPlugins,
+} from '../../../lib/registry';
+import { ErrorBoundary } from '../../UI';
+import { selectTemplateName, selectInferedField, selectField } from '../../../reducers/collections';
+import { boundGetAsset } from '../../../actions/media';
+import { selectIsLoadingAsset } from '../../../reducers/medias';
+import { INFERABLE_FIELDS } from '../../../constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
@@ -44,6 +50,7 @@ export class PreviewPane extends React.Component {
         entry={entry}
         fieldsMetaData={metadata}
         resolveWidget={resolveWidget}
+        getRemarkPlugins={getRemarkPlugins}
       />
     );
   };
@@ -76,7 +83,7 @@ export class PreviewPane extends React.Component {
     // We retrieve the field by name so that this function can also be used in
     // custom preview templates, where the field object can't be passed in.
     let field = fields && fields.find(f => f.get('name') === name);
-    let value = values && values.get(field.get('name'));
+    let value = Map.isMap(values) && values.get(field.get('name'));
     if (field.get('meta')) {
       value = this.props.entry.getIn(['meta', field.get('name')]);
     }
@@ -248,24 +255,24 @@ PreviewPane.propTypes = {
   getAsset: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
   return { isLoadingAsset, config: state.config };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
   return {
     boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
   };
-};
+}
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     getAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
   };
-};
+}
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(PreviewPane);

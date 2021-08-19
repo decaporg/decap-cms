@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { fromJS } from 'immutable';
+
 import ListControl from '../ListControl';
 
 jest.mock('netlify-cms-widget-object', () => {
@@ -18,12 +19,16 @@ jest.mock('netlify-cms-widget-object', () => {
 });
 jest.mock('netlify-cms-ui-default', () => {
   const actual = jest.requireActual('netlify-cms-ui-default');
-  const ListItemTopBar = props => (
-    <mock-list-item-top-bar {...props} onClick={props.onCollapseToggle}>
-      <button onClick={props.onRemove}>Remove</button>
-      {props.children}
-    </mock-list-item-top-bar>
-  );
+
+  function ListItemTopBar(props) {
+    return (
+      <mock-list-item-top-bar {...props} onClick={props.onCollapseToggle}>
+        <button onClick={props.onRemove}>Remove</button>
+        {props.children}
+      </mock-list-item-top-bar>
+    );
+  }
+
   return {
     ...actual,
     ListItemTopBar,
@@ -53,6 +58,7 @@ describe('ListControl', () => {
       path: 'posts/index.md',
     }),
     forID: 'forID',
+    t: key => key,
   };
 
   beforeEach(() => {
@@ -293,14 +299,14 @@ describe('ListControl', () => {
       ],
     });
 
-    const { getByText } = render(
+    const { getAllByText } = render(
       <ListControl
         {...props}
         field={field}
         value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
       />,
     );
-    expect(getByText('type_1_object')).toBeInTheDocument();
+    expect(getAllByText('type_1_object')[1]).toBeInTheDocument();
   });
 
   it('should use label when no summary is configured for mixed types', () => {
@@ -321,14 +327,14 @@ describe('ListControl', () => {
       ],
     });
 
-    const { getByText } = render(
+    const { getAllByText } = render(
       <ListControl
         {...props}
         field={field}
         value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
       />,
     );
-    expect(getByText('Type 1 Object')).toBeInTheDocument();
+    expect(getAllByText('Type 1 Object')[1]).toBeInTheDocument();
   });
 
   it('should use summary when configured for mixed types', () => {
@@ -581,7 +587,7 @@ describe('ListControl', () => {
 
     expect(queryByTestId('object-control-0')).toBeNull();
 
-    fireEvent.click(getByText('Add list'));
+    fireEvent.click(getByText('editor.editorWidgets.list.add'));
 
     expect(props.onChange).toHaveBeenCalledTimes(1);
     expect(props.onChange).toHaveBeenCalledWith(fromJS([{}]));
@@ -628,5 +634,159 @@ describe('ListControl', () => {
     } finally {
       mock.mockRestore();
     }
+  });
+
+  it('should give validation error if below min elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([{ string: 'item 1' }]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeCount',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give min validation error if below min elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([{ string: 'item 1' }]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeMin',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give validation error if above max elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([
+        { string: 'item 1' },
+        { string: 'item 2' },
+        { string: 'item 3' },
+        { string: 'item 4' },
+      ]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeCount',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give max validation error if above max elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([
+        { string: 'item 1' },
+        { string: 'item 2' },
+        { string: 'item 3' },
+        { string: 'item 4' },
+      ]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
+      {
+        message: 'editor.editorControlPane.widget.rangeMax',
+        type: 'RANGE',
+      },
+    ]);
+  });
+
+  it('should give no validation error if between min and max elements', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: true,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([{ string: 'item 1' }, { string: 'item 2' }, { string: 'item 3' }]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
+  });
+
+  it('should give no validation error if no elements and optional', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      collapsed: false,
+      minimize_collapsed: true,
+      required: false,
+      min: 2,
+      max: 3,
+      fields: [{ label: 'String', name: 'string', widget: 'string' }],
+    });
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([]),
+    });
+
+    listControl.validate();
+    expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
   });
 });

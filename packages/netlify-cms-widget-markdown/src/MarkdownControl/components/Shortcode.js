@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from '@emotion/core';
 import { Map, fromJS } from 'immutable';
 import { omit } from 'lodash';
+
 import { getEditorControl, getEditorComponents } from '../index';
 
 export default class Shortcode extends React.Component {
@@ -24,12 +25,14 @@ export default class Shortcode extends React.Component {
     const EditorControl = getEditorControl();
     const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
 
-    const handleChange = (fieldName, value, metadata) => {
+    function handleChange(fieldName, value, metadata) {
       const dataValue = dataKey === false ? value : node.data.set('shortcodeData', value);
       editor.setNodeByKey(node.key, { data: dataValue || Map(), metadata });
-    };
+    }
 
-    const handleFocus = () => editor.moveToRangeOfNode(node);
+    function handleFocus() {
+      return editor.moveToRangeOfNode(node);
+    }
 
     return (
       !field.isEmpty() && (

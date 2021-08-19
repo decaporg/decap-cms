@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
-import EditorControl from './EditorControl';
 import {
   colors,
   Dropdown,
@@ -12,6 +11,8 @@ import {
   buttons,
   text,
 } from 'netlify-cms-ui-default';
+
+import EditorControl from './EditorControl';
 import {
   getI18nInfo,
   isFieldTranslatable,
@@ -50,7 +51,7 @@ const StyledDropdown = styled(Dropdown)`
   margin-bottom: 20px;
 `;
 
-const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange, t }) => {
+function LocaleDropdown({ locales, selectedLocale, onLocaleChange, t }) {
   return (
     <StyledDropdown
       renderButton={() => {
@@ -77,9 +78,9 @@ const LocaleDropdown = ({ locales, selectedLocale, onLocaleChange, t }) => {
       ))}
     </StyledDropdown>
   );
-};
+}
 
-const getFieldValue = ({ field, entry, isTranslatable, locale }) => {
+function getFieldValue({ field, entry, isTranslatable, locale }) {
   if (field.get('meta')) {
     return entry.getIn(['meta', field.get('name')]);
   }
@@ -90,7 +91,7 @@ const getFieldValue = ({ field, entry, isTranslatable, locale }) => {
   }
 
   return entry.getIn(['data', field.get('name')]);
-};
+}
 
 export default class ControlPane extends React.Component {
   state = {

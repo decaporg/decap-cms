@@ -9,11 +9,13 @@ import { Editor as Slate, setEventTransfer } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 import isHotkey from 'is-hotkey';
 import { lengths, fonts } from 'netlify-cms-ui-default';
+
 import { markdownToHtml } from '../serializers';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
 
-const rawEditorStyles = ({ minimal }) => `
+function rawEditorStyles({ minimal }) {
+  return `
   position: relative;
   overflow: hidden;
   overflow-x: auto;
@@ -24,6 +26,7 @@ const rawEditorStyles = ({ minimal }) => `
   border-top: 0;
   margin-top: -${editorStyleVars.stickyDistanceBottom};
 `;
+}
 
 const RawEditorContainer = styled.div`
   position: relative;

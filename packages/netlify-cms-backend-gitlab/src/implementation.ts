@@ -1,29 +1,17 @@
 import trimStart from 'lodash/trimStart';
-import semaphore, { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { trim } from 'lodash';
 import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
-  Entry,
-  AssetProxy,
-  PersistOptions,
-  Cursor,
-  Implementation,
-  DisplayURL,
   entriesByFolder,
   entriesByFiles,
   getMediaDisplayURL,
   getMediaAsBlob,
-  User,
-  Credentials,
-  Config,
-  ImplementationFile,
   unpublishedEntries,
   getPreviewStatus,
-  UnpublishedEntryMediaFile,
   asyncLock,
-  AsyncLock,
   runWithLock,
   getBlobSHA,
   blobToFileObj,
@@ -34,8 +22,25 @@ import {
   filterByExtension,
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
+
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
+
+import type {
+  Entry,
+  AssetProxy,
+  PersistOptions,
+  Cursor,
+  Implementation,
+  DisplayURL,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  UnpublishedEntryMediaFile,
+  AsyncLock,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -178,7 +183,7 @@ export default class GitLab implements Implementation {
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
     );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;

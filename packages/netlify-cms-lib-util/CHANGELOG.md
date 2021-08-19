@@ -3,6 +3,82 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.13.2...netlify-cms-lib-util@2.13.3) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-lib-util
+
+
+
+
+
+## [2.13.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.13.1...netlify-cms-lib-util@2.13.2) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-lib-util
+
+
+
+
+
+## [2.13.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.13.0...netlify-cms-lib-util@2.13.1) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-lib-util
+
+
+
+
+
+# [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.3...netlify-cms-lib-util@2.13.0) (2021-04-04)
+
+
+### Features
+
+* **open-authoring:** add alwaysFork option ([#5204](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/5204)) ([7b19e30](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/7b19e30dd2a310dbc20ccb6fcca45d5cbde1014b))
+
+
+
+
+
+## [2.12.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.2...netlify-cms-lib-util@2.12.3) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-lib-util
+
+
+
+
+
+## [2.12.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.1...netlify-cms-lib-util@2.12.2) (2021-02-01)
+
+
+### Bug Fixes
+
+* **backend:** allow calling 'json' again on 403 failure ([#4880](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/4880)) ([1034086](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/1034086ff603e28e3a37c8157a74cbc625f658f9))
+
+
+
+
+
+## [2.12.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.12.0...netlify-cms-lib-util@2.12.1) (2020-12-13)
+
+
+### Bug Fixes
+
+* **lib-util:** update js-sha256 import ([#4699](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/4699)) ([60f7e0b](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/60f7e0bba67c6555acba3e04039c49f10cf51f6b))
+
+
+
+
+
+# [2.12.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.11.5...netlify-cms-lib-util@2.12.0) (2020-11-26)
+
+
+### Features
+
+* add azure devops backend ([#4427](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/issues/4427)) ([4e6dc88](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/commit/4e6dc88efb1dae4cf6137730c3b4fb6d0f75a8cc))
+
+
+
+
+
 ## [2.11.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/compare/netlify-cms-lib-util@2.11.4...netlify-cms-lib-util@2.11.5) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-lib-util

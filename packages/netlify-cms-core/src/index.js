@@ -1,5 +1,5 @@
 import bootstrap from './bootstrap';
-import Registry from 'Lib/registry';
+import Registry from './lib/registry';
 
 export const NetlifyCmsCore = {
   ...Registry,

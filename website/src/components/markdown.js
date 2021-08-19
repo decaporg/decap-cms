@@ -78,6 +78,8 @@ const StyledMarkdown = styled.div`
     margin-bottom: 40px;
     width: 100%;
     text-align: left;
+    display: block;
+    overflow: auto;
   }
 
   tbody tr {
@@ -125,11 +127,11 @@ const StyledMarkdown = styled.div`
   }
 `;
 
-const Markdown = ({ body, html }) => {
+function Markdown({ body, html }) {
   if (body) {
     return <StyledMarkdown>{body}</StyledMarkdown>;
   }
   return <StyledMarkdown dangerouslySetInnerHTML={{ __html: html }} />;
-};
+}
 
 export default Markdown;

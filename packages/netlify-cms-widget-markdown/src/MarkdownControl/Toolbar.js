@@ -13,6 +13,7 @@ import {
   transitions,
   lengths,
 } from 'netlify-cms-ui-default';
+
 import ToolbarButton from './ToolbarButton';
 
 const ToolbarContainer = styled.div`
@@ -108,12 +109,18 @@ export default class Toolbar extends React.Component {
       hasMark = () => {},
       hasInline = () => {},
       hasBlock = () => {},
+      hasQuote = () => {},
+      hasListItems = () => {},
       editorComponents,
       t,
     } = this.props;
     const isVisible = this.isVisible;
     const showEditorComponents = !editorComponents || editorComponents.size >= 1;
-    const showPlugin = ({ id }) => (editorComponents ? editorComponents.includes(id) : true);
+
+    function showPlugin({ id }) {
+      return editorComponents ? editorComponents.includes(id) : true;
+    }
+
     const pluginsList = plugins ? plugins.toList().filter(showPlugin) : List();
 
     const headingOptions = {
@@ -131,7 +138,7 @@ export default class Toolbar extends React.Component {
           {isVisible('bold') && (
             <ToolbarButton
               type="bold"
-              label="Bold"
+              label={t('editor.editorWidgets.markdown.bold')}
               icon="bold"
               onClick={this.handleMarkClick}
               isActive={hasMark('bold')}
@@ -141,7 +148,7 @@ export default class Toolbar extends React.Component {
           {isVisible('italic') && (
             <ToolbarButton
               type="italic"
-              label="Italic"
+              label={t('editor.editorWidgets.markdown.italic')}
               icon="italic"
               onClick={this.handleMarkClick}
               isActive={hasMark('italic')}
@@ -151,7 +158,7 @@ export default class Toolbar extends React.Component {
           {isVisible('code') && (
             <ToolbarButton
               type="code"
-              label="Code"
+              label={t('editor.editorWidgets.markdown.code')}
               icon="code"
               onClick={this.handleMarkClick}
               isActive={hasMark('code')}
@@ -161,7 +168,7 @@ export default class Toolbar extends React.Component {
           {isVisible('link') && (
             <ToolbarButton
               type="link"
-              label="Link"
+              label={t('editor.editorWidgets.markdown.link')}
               icon="link"
               onClick={onLinkClick}
               isActive={hasInline('link')}
@@ -178,7 +185,7 @@ export default class Toolbar extends React.Component {
                   <DropdownButton>
                     <ToolbarButton
                       type="headings"
-                      label="Headings"
+                      label={t('editor.editorWidgets.markdown.headings')}
                       icon="hOptions"
                       disabled={disabled}
                       isActive={!disabled && Object.keys(headingOptions).some(hasBlock)}
@@ -204,30 +211,30 @@ export default class Toolbar extends React.Component {
           {isVisible('quote') && (
             <ToolbarButton
               type="quote"
-              label="Quote"
+              label={t('editor.editorWidgets.markdown.quote')}
               icon="quote"
               onClick={this.handleBlockClick}
-              isActive={hasBlock('quote')}
+              isActive={hasQuote('quote')}
               disabled={disabled}
             />
           )}
           {isVisible('bulleted-list') && (
             <ToolbarButton
               type="bulleted-list"
-              label="Bulleted List"
+              label={t('editor.editorWidgets.markdown.bulletedList')}
               icon="list-bulleted"
               onClick={this.handleBlockClick}
-              isActive={hasBlock('bulleted-list')}
+              isActive={hasListItems('bulleted-list')}
               disabled={disabled}
             />
           )}
           {isVisible('numbered-list') && (
             <ToolbarButton
               type="numbered-list"
-              label="Numbered List"
+              label={t('editor.editorWidgets.markdown.numberedList')}
               icon="list-numbered"
               onClick={this.handleBlockClick}
-              isActive={hasBlock('numbered-list')}
+              isActive={hasListItems('numbered-list')}
               disabled={disabled}
             />
           )}
@@ -235,11 +242,11 @@ export default class Toolbar extends React.Component {
             <ToolbarDropdownWrapper>
               <Dropdown
                 dropdownTopOverlap="36px"
-                dropdownWidth="110px"
+                dropdownWidth="max-content"
                 renderButton={() => (
                   <DropdownButton>
                     <ToolbarButton
-                      label="Add Component"
+                      label={t('editor.editorWidgets.markdown.addComponent')}
                       icon="add-with"
                       onClick={this.handleComponentsMenuToggle}
                       disabled={disabled}

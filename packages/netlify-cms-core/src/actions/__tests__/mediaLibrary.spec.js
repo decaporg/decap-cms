@@ -1,9 +1,10 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { List, Map } from 'immutable';
+
 import { insertMedia, persistMedia, deleteMedia } from '../mediaLibrary';
 
-jest.mock('coreSrc/backend');
+jest.mock('../../backend');
 jest.mock('../waitUntil');
 jest.mock('netlify-cms-lib-util', () => {
   const lib = jest.requireActual('netlify-cms-lib-util');
@@ -20,9 +21,9 @@ describe('mediaLibrary', () => {
   describe('insertMedia', () => {
     it('should return mediaPath as string when string is given', () => {
       const store = mockStore({
-        config: Map({
+        config: {
           public_folder: '/media',
-        }),
+        },
         collections: Map({
           posts: Map({ name: 'posts' }),
         }),
@@ -40,9 +41,9 @@ describe('mediaLibrary', () => {
 
     it('should return mediaPath as array of strings when array of strings is given', () => {
       const store = mockStore({
-        config: Map({
+        config: {
           public_folder: '/media',
-        }),
+        },
         collections: Map({
           posts: Map({ name: 'posts' }),
         }),
@@ -59,7 +60,7 @@ describe('mediaLibrary', () => {
     });
   });
 
-  const { currentBackend } = require('coreSrc/backend');
+  const { currentBackend } = require('../../backend');
 
   const backend = {
     persistMedia: jest.fn(() => ({ id: 'id' })),
@@ -81,14 +82,14 @@ describe('mediaLibrary', () => {
       getBlobSHA.mockReturnValue('000000000000000');
 
       const store = mockStore({
-        config: Map({
+        config: {
           media_folder: 'static/media',
-          slug: Map({
+          slug: {
             encoding: 'unicode',
             clean_accents: false,
             sanitize_replacement: '-',
-          }),
-        }),
+          },
+        },
         collections: Map({
           posts: Map({ name: 'posts' }),
         }),
@@ -132,14 +133,14 @@ describe('mediaLibrary', () => {
 
     it('should persist media when not editing draft', () => {
       const store = mockStore({
-        config: Map({
+        config: {
           media_folder: 'static/media',
-          slug: Map({
+          slug: {
             encoding: 'unicode',
             clean_accents: false,
             sanitize_replacement: '-',
-          }),
-        }),
+          },
+        },
         collections: Map({
           posts: Map({ name: 'posts' }),
         }),
@@ -186,14 +187,14 @@ describe('mediaLibrary', () => {
 
     it('should sanitize media name if needed when persisting', () => {
       const store = mockStore({
-        config: Map({
+        config: {
           media_folder: 'static/media',
-          slug: Map({
+          slug: {
             encoding: 'ascii',
             clean_accents: true,
             sanitize_replacement: '_',
-          }),
-        }),
+          },
+        },
         collections: Map({
           posts: Map({ name: 'posts' }),
         }),
@@ -247,9 +248,9 @@ describe('mediaLibrary', () => {
 
     it('should delete non draft file', () => {
       const store = mockStore({
-        config: Map({
+        config: {
           publish_mode: 'editorial_workflow',
-        }),
+        },
         collections: Map(),
         integrations: Map(),
         mediaLibrary: Map({
@@ -290,9 +291,9 @@ describe('mediaLibrary', () => {
 
     it('should not delete a draft file', () => {
       const store = mockStore({
-        config: Map({
+        config: {
           publish_mode: 'editorial_workflow',
-        }),
+        },
         collections: Map(),
         integrations: Map(),
         mediaLibrary: Map({

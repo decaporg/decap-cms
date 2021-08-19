@@ -1,8 +1,9 @@
-const pkg = require('./package.json');
 const fs = require('fs');
 const yaml = require('js-yaml');
 
-const staticConfig = yaml.safeLoad(fs.readFileSync('./site.yml', 'utf8'));
+const pkg = require('./package.json');
+
+const staticConfig = yaml.load(fs.readFileSync('./site.yml', 'utf8'));
 
 module.exports = {
   siteMetadata: {
@@ -57,7 +58,7 @@ module.exports = {
               noInlineHighlight: true,
             },
           },
-        ]
+        ],
       },
     },
     'gatsby-transformer-yaml',

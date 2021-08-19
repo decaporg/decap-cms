@@ -79,8 +79,13 @@ const th = {
         max: '%{fieldLabel} จะต้องมีค่าไม่มากกว่า %{maxValue}',
         rangeCount: '%{fieldLabel} จะต้องอยู่ระหว่าง %{minCount} และ %{maxCount} รายการ',
         rangeCountExact: '%{fieldLabel} จะต้องมี %{count} รายการ',
-        minCount: '%{fieldLabel} จะต้องมีไม่ต่ำกว่า %{minCount} รายการ',
-        maxCount: '%{fieldLabel} จะต้องมีไม่มากกว่า %{maxCount} รายการ',
+        rangeMin: '%{fieldLabel} จะต้องมีไม่ต่ำกว่า %{minCount} รายการ',
+        rangeMax: '%{fieldLabel} จะต้องมีไม่มากกว่า %{maxCount} รายการ',
+        invalidPath: `'%{path}' พาทไม่ถูกต้อง`,
+        pathExists: `พาท '%{path}' มีอยู่แล้ว`,
+      },
+      i18n: {
+        writingInLocale: 'เขียนด้วยภาษา %{locale}',
       },
     },
     editor: {
@@ -118,7 +123,7 @@ const th = {
       save: 'บันทึก',
       deleting: 'กำลังลบ...',
       updating: 'กำลังอัปเดต...',
-      setStatus: 'เซ็ตสถานะ',
+      status: 'สถานะ: %{status}',
       backCollection: ' เขียนในกลุ่ม %{collectionLabel}',
       unsavedChanges: 'การเปลี่ยนแปลงยังไม่ได้บันทึก',
       changesSaved: 'การเปลี่ยนเปลงถูกบันทึกแล้ว',
@@ -225,6 +230,7 @@ const th = {
       onDeleteUnpublishedChanges: 'การเปลี่ยนแปลงเนื้อหาไม่ถูกเผยแพร่ได้ถูกลบ',
       onFailToAuth: '%{details}',
       onLoggedOut: 'คุณได้ออกจากระบบ โปรดสำรองข้อมูลแล้วเข้าสู่ระบบอีกครั้ง',
+      onBackendDown: 'บริการแบ็กเอนด์เกิดการขัดข้อง ดู %{details} สำหรับข้อมูลเพิ่มเติม',
     },
   },
   workflow: {

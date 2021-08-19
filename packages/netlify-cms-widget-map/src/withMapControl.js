@@ -15,14 +15,18 @@ const formatOptions = {
   dataProjection: 'EPSG:4326',
   featureProjection: 'EPSG:3857',
 };
-const getDefaultFormat = () => new GeoJSON(formatOptions);
 
-const getDefaultMap = (target, featuresLayer) =>
-  new Map({
+function getDefaultFormat() {
+  return new GeoJSON(formatOptions);
+}
+
+function getDefaultMap(target, featuresLayer) {
+  return new Map({
     target,
     layers: [new TileLayer({ source: new OSMSource() }), featuresLayer],
     view: new View({ center: [0, 0], zoom: 2 }),
   });
+}
 
 export default function withMapControl({ getFormat, getMap } = {}) {
   return class MapControl extends React.Component {

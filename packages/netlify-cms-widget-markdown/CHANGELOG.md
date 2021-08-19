@@ -3,6 +3,170 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.1...netlify-cms-widget-markdown@2.14.2) (2021-08-17)
+
+
+### Bug Fixes
+
+* **markdown-widget:** support arbitrary component order ([#5597](https://github.com/netlify/netlify-cms/issues/5597)) ([fbfab7c](https://github.com/netlify/netlify-cms/commit/fbfab7cda54aba68c948188d0ad5660431d275fc))
+
+
+
+
+
+## [2.14.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.0...netlify-cms-widget-markdown@2.14.1) (2021-08-04)
+
+
+### Bug Fixes
+
+* **markdown-widget:** apply list item style on each block in a selection ([#5676](https://github.com/netlify/netlify-cms/issues/5676)) ([04e5305](https://github.com/netlify/netlify-cms/commit/04e53054ceba8e2b6f3a2e7f1de5ecc3abe8431a))
+
+
+
+
+
+# [2.14.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.13.6...netlify-cms-widget-markdown@2.14.0) (2021-07-25)
+
+
+### Features
+
+* **widget-markdown:** allow registering remark plugins ([#5633](https://github.com/netlify/netlify-cms/issues/5633)) ([437f4bc](https://github.com/netlify/netlify-cms/commit/437f4bc634c5a52758bd06ab1709f2e66a71dce7))
+
+
+
+
+
+## [2.13.6](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.13.5...netlify-cms-widget-markdown@2.13.6) (2021-07-25)
+
+
+### Bug Fixes
+
+* **widget-markdown:** Hitting Enter key in a list item doesn't create a new list item ([#5550](https://github.com/netlify/netlify-cms/issues/5550)) ([ab3e8e1](https://github.com/netlify/netlify-cms/commit/ab3e8e1f5a5fecd343e32cc31912ec912449e713))
+
+
+
+
+
+## [2.13.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.4...netlify-cms-widget-markdown@2.13.5) (2021-06-24)
+
+**Note:** Version bump only for package netlify-cms-widget-markdown
+
+
+
+
+
+## [2.13.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.3...netlify-cms-widget-markdown@2.13.4) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-widget-markdown
+
+
+
+
+
+## [2.13.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.2...netlify-cms-widget-markdown@2.13.3) (2021-05-30)
+
+
+### Bug Fixes
+
+* **widget-markdown:** fix quote block and list highlighting ([#5422](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/5422)) ([b9624fc](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/b9624fc67376cd6c6850f9b1adbfa5c80f2a0ac0))
+
+
+
+
+
+## [2.13.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.1...netlify-cms-widget-markdown@2.13.2) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-widget-markdown
+
+
+
+
+
+## [2.13.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.13.0...netlify-cms-widget-markdown@2.13.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update react-select to v3 ([#5394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/5394)) ([03be13c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/03be13c1e87b318fd10ae6f6ab54cd2634fb9662))
+
+
+
+
+
+# [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.12...netlify-cms-widget-markdown@2.13.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+## [2.12.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.11...netlify-cms-widget-markdown@2.12.12) (2021-04-01)
+
+
+### Bug Fixes
+
+* **widget-markdown:** improve UX in Markdown editor - link editing and selected heading underline ([#5104](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/5104)) ([dde1a9d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/dde1a9db5483912f626f13239d7a3d06d6c4e05c))
+
+
+
+
+
+## [2.12.11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.10...netlify-cms-widget-markdown@2.12.11) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-widget-markdown
+
+
+
+
+
+## [2.12.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.9...netlify-cms-widget-markdown@2.12.10) (2021-02-10)
+
+
+### Bug Fixes
+
+* **widget-markdown:** set toolbar item dropdown width to 'max-content' ([ecbf82e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/ecbf82e961217869a2354e520cd7ccbfa8151c18))
+
+
+
+
+
+## [2.12.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.8...netlify-cms-widget-markdown@2.12.9) (2021-02-01)
+
+
+### Bug Fixes
+
+* **security-markdown-widget:** allow sanitization of preview content ([#4886](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/4886)) ([27aec85](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/27aec85550c0be52c55f7b33314ecd52727fdcb5))
+
+
+
+
+
+## [2.12.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.7...netlify-cms-widget-markdown@2.12.8) (2020-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency is-hotkey to ^0.2.0 ([#4652](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/4652)) ([7828e15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/7828e15453e55b5201f23b58817d73ecbd30a912))
+
+
+
+
+
+## [2.12.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.6...netlify-cms-widget-markdown@2.12.7) (2020-10-20)
+
+
+### Bug Fixes
+
+* **locale:** remove hard coded strings ([#4432](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/issues/4432)) ([a5750d7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/commit/a5750d782e9b4f0060362459037086f4d2f18acf))
+
+
+
+
+
 ## [2.12.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-markdown/compare/netlify-cms-widget-markdown@2.12.5...netlify-cms-widget-markdown@2.12.6) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-widget-markdown

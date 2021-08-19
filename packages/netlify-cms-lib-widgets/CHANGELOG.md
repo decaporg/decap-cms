@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.6.2...netlify-cms-lib-widgets@1.6.3) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-lib-widgets
+
+
+
+
+
+## [1.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.6.1...netlify-cms-lib-widgets@1.6.2) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-lib-widgets
+
+
+
+
+
+## [1.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.6.0...netlify-cms-lib-widgets@1.6.1) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-lib-widgets
+
+
+
+
+
+# [1.6.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.5.0...netlify-cms-lib-widgets@1.6.0) (2020-10-25)
+
+
+### Features
+
+* Support filters for template strings [#3677](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/issues/3677) ([#4396](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/issues/4396)) ([1fa108e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/commit/1fa108ee67b7e992a4d2a61cde13df7917e103be))
+
+
+
+
+
+# [1.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.4.0...netlify-cms-lib-widgets@1.5.0) (2020-10-20)
+
+
+### Features
+
+* **widget-list:** add min max configuration ([#4394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/issues/4394)) ([5fdfe40](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/commit/5fdfe40dd29e9e22c9ae7d6219bc057f7ea7280b))
+
+
+
+
+
 # [1.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.3.5...netlify-cms-lib-widgets@1.4.0) (2020-09-28)
 
 

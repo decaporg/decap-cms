@@ -1,0 +1,32 @@
+name: 'Docs Linting:'
+on:
+  push:
+    branches:
+      - master
+
+    paths:
+      - '.github/workflows/docslint.yml'
+      - 'website/**'
+
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+    paths:
+      - '.github/workflows/docslint.yml'
+      - 'website/**'
+
+jobs:
+  Prose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Vale Linter
+        uses: errata-ai/vale-action@0dec3032fa59c4097deece7cf6ee3261b27bb3f1
+        with:
+          # Optional
+          files: website/content/docs
+        env:
+          # Required
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

@@ -1,4 +1,6 @@
 const path = require('path');
+const { extendDefaultPlugins } = require('svgo');
+
 const appVersion = require('./packages/netlify-cms-app/package.json').version;
 const coreVersion = require('./packages/netlify-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -23,58 +25,18 @@ const defaultPlugins = [
   '@babel/plugin-proposal-optional-chaining',
   '@babel/plugin-syntax-dynamic-import',
   'babel-plugin-inline-json-import',
-  [
-    'module-resolver',
-    isESM
-      ? {
-          root: ['./src'],
-          alias: {
-            coreSrc: './src',
-            Actions: './src/actions',
-            App: './src/components/App',
-            Collection: './src/components/Collection',
-            Constants: './src/constants',
-            Editor: './src/components/Editor',
-            EditorWidgets: './src/components/EditorWidgets',
-            Formats: './src/formats',
-            Integrations: './src/integrations',
-            Lib: './src/lib',
-            MediaLibrary: './src/components/MediaLibrary',
-            Reducers: './src/reducers',
-            Selectors: './src/selectors',
-            ReduxStore: './src/redux',
-            Routing: './src/routing',
-            UI: './src/components/UI',
-            Workflow: './src/components/Workflow',
-            ValueObjects: './src/valueObjects',
-            localforage: 'localforage',
-            redux: 'redux',
-          },
-          extensions: ['.js', '.jsx', '.es', '.es6', '.mjs', '.ts', '.tsx'],
-        }
-      : {
-          root: path.join(__dirname, 'packages/netlify-cms-core/src/components'),
-          alias: {
-            coreSrc: path.join(__dirname, 'packages/netlify-cms-core/src'),
-            Actions: path.join(__dirname, 'packages/netlify-cms-core/src/actions/'),
-            Constants: path.join(__dirname, 'packages/netlify-cms-core/src/constants/'),
-            Formats: path.join(__dirname, 'packages/netlify-cms-core/src/formats/'),
-            Integrations: path.join(__dirname, 'packages/netlify-cms-core/src/integrations/'),
-            Lib: path.join(__dirname, 'packages/netlify-cms-core/src/lib/'),
-            Reducers: path.join(__dirname, 'packages/netlify-cms-core/src/reducers/'),
-            Selectors: path.join(__dirname, 'packages/netlify-cms-core/src/selectors/'),
-            ReduxStore: path.join(__dirname, 'packages/netlify-cms-core/src/redux/'),
-            Routing: path.join(__dirname, 'packages/netlify-cms-core/src/routing/'),
-            ValueObjects: path.join(__dirname, 'packages/netlify-cms-core/src/valueObjects/'),
-            localforage: 'localforage',
-            redux: 'redux',
-          },
-          extensions: ['.js', '.jsx', '.es', '.es6', '.mjs', '.ts', '.tsx'],
-        },
-  ],
 ];
 
-const presets = () => {
+const svgo = {
+  plugins: extendDefaultPlugins([
+    {
+      name: 'removeViewBox',
+      active: false,
+    },
+  ]),
+};
+
+function presets() {
   return [
     '@babel/preset-react',
     '@babel/preset-env',
@@ -86,9 +48,9 @@ const presets = () => {
     ],
     '@babel/typescript',
   ];
-};
+}
 
-const plugins = () => {
+function plugins() {
   if (isESM) {
     return [
       ...defaultPlugins,
@@ -102,9 +64,7 @@ const plugins = () => {
       [
         'inline-react-svg',
         {
-          svgo: {
-            plugins: [{ removeViewBox: false }],
-          },
+          svgo,
         },
       ],
     ];
@@ -116,9 +76,7 @@ const plugins = () => {
       [
         'inline-react-svg',
         {
-          svgo: {
-            plugins: [{ removeViewBox: false }],
-          },
+          svgo,
         },
       ],
     ];
@@ -129,7 +87,7 @@ const plugins = () => {
   }
 
   return defaultPlugins;
-};
+}
 
 module.exports = {
   presets: presets(),

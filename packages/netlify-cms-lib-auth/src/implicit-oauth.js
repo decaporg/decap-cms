@@ -1,20 +1,8 @@
 import { Map } from 'immutable';
 import trim from 'lodash/trim';
 import trimEnd from 'lodash/trimEnd';
-import uuid from 'uuid/v4';
 
-function createNonce() {
-  const nonce = uuid();
-  window.sessionStorage.setItem('netlify-cms-auth', JSON.stringify({ nonce }));
-  return nonce;
-}
-
-function validateNonce(check) {
-  const auth = window.sessionStorage.getItem('netlify-cms-auth');
-  const valid = auth && JSON.parse(auth).nonce;
-  window.localStorage.removeItem('netlify-cms-auth');
-  return check === valid;
-}
+import { createNonce, validateNonce, isInsecureProtocol } from './utils';
 
 export default class ImplicitAuthenticator {
   constructor(config = {}) {
@@ -26,13 +14,7 @@ export default class ImplicitAuthenticator {
   }
 
   authenticate(options, cb) {
-    if (
-      document.location.protocol !== 'https:' &&
-      // TODO: Is insecure localhost a bad idea as well? I don't think it is, since you are not actually
-      //       sending the token over the internet in this case, assuming the auth URL is secure.
-      document.location.hostname !== 'localhost' &&
-      document.location.hostname !== '127.0.0.1'
-    ) {
+    if (isInsecureProtocol()) {
       return cb(new Error('Cannot authenticate over insecure protocol!'));
     }
 
@@ -42,7 +24,16 @@ export default class ImplicitAuthenticator {
     authURL.searchParams.set('response_type', 'token');
     authURL.searchParams.set('scope', options.scope);
 
+    if (options.prompt != null && options.prompt != undefined) {
+      authURL.searchParams.set('prompt', options.prompt);
+    }
+
+    if (options.resource != null && options.resource != undefined) {
+      authURL.searchParams.set('resource', options.resource);
+    }
+
     const state = JSON.stringify({ auth_type: 'implicit', nonce: createNonce() });
+
     authURL.searchParams.set('state', state);
 
     document.location.assign(authURL.href);

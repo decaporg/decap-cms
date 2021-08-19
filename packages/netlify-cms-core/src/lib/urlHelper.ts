@@ -1,22 +1,24 @@
 import url from 'url';
+import urlJoin from 'url-join';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
 import { isString, escapeRegExp, flow, partialRight } from 'lodash';
-import { SlugConfig } from '../types/redux';
 
-function getUrl(urlString: string, direct: boolean) {
+import type { CmsSlug } from '../types/redux';
+
+function getUrl(urlString: string, direct?: boolean) {
   return `${direct ? '/#' : ''}${urlString}`;
 }
 
-export function getCollectionUrl(collectionName: string, direct: boolean) {
+export function getCollectionUrl(collectionName: string, direct?: boolean) {
   return getUrl(`/collections/${collectionName}`, direct);
 }
 
-export function getNewEntryUrl(collectionName: string, direct: boolean) {
+export function getNewEntryUrl(collectionName: string, direct?: boolean) {
   return getUrl(`/collections/${collectionName}/new`, direct);
 }
 
-export function addParams(urlString: string, params: {}) {
+export function addParams(urlString: string, params: Record<string, string>) {
   const parsedUrl = url.parse(urlString, true);
   parsedUrl.query = { ...parsedUrl.query, ...params };
   return url.format(parsedUrl);
@@ -35,9 +37,16 @@ export function stripProtocol(urlString: string) {
  *   but JS stores strings as UTF-16/UCS-2 internally, so we should not normalize or re-encode.
  */
 const uriChars = /[\w\-.~]/i;
-const ucsChars = /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
-const validURIChar = (char: string) => uriChars.test(char);
-const validIRIChar = (char: string) => uriChars.test(char) || ucsChars.test(char);
+const ucsChars =
+  /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
+
+function validURIChar(char: string) {
+  return uriChars.test(char);
+}
+
+function validIRIChar(char: string) {
+  return uriChars.test(char) || ucsChars.test(char);
+}
 
 export function getCharReplacer(encoding: string, replacement: string) {
   let validChar: (char: string) => boolean;
@@ -58,7 +67,12 @@ export function getCharReplacer(encoding: string, replacement: string) {
   return (char: string) => (validChar(char) ? char : replacement);
 }
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
-export function sanitizeURI(str: string, { replacement = '', encoding = 'unicode' } = {}) {
+export function sanitizeURI(
+  str: string,
+  options?: { replacement: CmsSlug['sanitize_replacement']; encoding: CmsSlug['encoding'] },
+) {
+  const { replacement = '', encoding = 'unicode' } = options || {};
+
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
@@ -68,26 +82,24 @@ export function sanitizeURI(str: string, { replacement = '', encoding = 'unicode
 
   // `Array.from` must be used instead of `String.split` because
   //   `split` converts things like emojis into UTF-16 surrogate pairs.
-  return Array.from(str)
-    .map(getCharReplacer(encoding, replacement))
-    .join('');
+  return Array.from(str).map(getCharReplacer(encoding, replacement)).join('');
 }
 
-export function sanitizeChar(char: string, options: SlugConfig) {
-  const encoding = options.get('encoding');
-  const replacement = options.get('sanitize_replacement');
-
+export function sanitizeChar(char: string, options?: CmsSlug) {
+  const { encoding = 'unicode', sanitize_replacement: replacement = '' } = options || {};
   return getCharReplacer(encoding, replacement)(char);
 }
 
-export function sanitizeSlug(str: string, options: SlugConfig) {
+export function sanitizeSlug(str: string, options?: CmsSlug) {
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
 
-  const encoding = options.get('encoding');
-  const stripDiacritics = options.get('clean_accents');
-  const replacement = options.get('sanitize_replacement');
+  const {
+    encoding,
+    clean_accents: stripDiacritics,
+    sanitize_replacement: replacement,
+  } = options || {};
 
   const sanitizedSlug = flow([
     ...(stripDiacritics ? [diacritics.remove] : []),
@@ -106,4 +118,8 @@ export function sanitizeSlug(str: string, options: SlugConfig) {
     .replace(trailingReplacement, '');
 
   return normalizedSlug;
+}
+
+export function joinUrlPath(base: string, ...path: string[]) {
+  return urlJoin(base, ...path);
 }

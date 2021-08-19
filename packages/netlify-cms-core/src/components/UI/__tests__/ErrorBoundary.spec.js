@@ -1,12 +1,12 @@
 import React from 'react';
-import { ErrorBoundary } from '../ErrorBoundary';
 import { render } from '@testing-library/react';
-import { fromJS } from 'immutable';
 import { oneLineTrim } from 'common-tags';
 
-const WithError = () => {
+import { ErrorBoundary } from '../ErrorBoundary';
+
+function WithError() {
   throw new Error('Some unknown error');
-};
+}
 
 jest.spyOn(console, 'error').mockImplementation(() => ({}));
 
@@ -24,7 +24,7 @@ Object.defineProperty(
 );
 
 describe('Editor', () => {
-  const config = fromJS({ backend: { name: 'github' } });
+  const config = { backend: { name: 'github' } };
 
   const props = { t: jest.fn(key => key), config };
 

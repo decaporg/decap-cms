@@ -1,20 +1,20 @@
 import unified from 'unified';
 import markdownToRemark from 'remark-parse';
 import remarkToMarkdown from 'remark-stringify';
+
 import remarkPaddedLinks from '../remarkPaddedLinks';
 
-const input = markdown =>
-  unified()
+function input(markdown) {
+  return unified()
     .use(markdownToRemark)
     .use(remarkPaddedLinks)
     .use(remarkToMarkdown)
     .processSync(markdown).contents;
+}
 
-const output = markdown =>
-  unified()
-    .use(markdownToRemark)
-    .use(remarkToMarkdown)
-    .processSync(markdown).contents;
+function output(markdown) {
+  return unified().use(markdownToRemark).use(remarkToMarkdown).processSync(markdown).contents;
+}
 
 describe('remarkPaddedLinks', () => {
   it('should move leading and trailing spaces outside of a link', () => {

@@ -5,6 +5,12 @@ import {
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
+} from 'netlify-cms-lib-util';
+import { extname, dirname } from 'path';
+
+import AuthenticationPage from './AuthenticationPage';
+
+import type {
   Implementation,
   Entry,
   ImplementationEntry,
@@ -15,8 +21,6 @@ import {
   ImplementationFile,
   DataFile,
 } from 'netlify-cms-lib-util';
-import { extname, dirname } from 'path';
-import AuthenticationPage from './AuthenticationPage';
 
 type RepoFile = { path: string; content: string | AssetProxy };
 type RepoTree = { [key: string]: RepoFile | RepoTree };
@@ -54,7 +58,7 @@ function getFile(path: string, tree: RepoTree) {
   while (obj && segments.length) {
     obj = obj[segments.shift() as string] as RepoTree;
   }
-  return ((obj as unknown) as RepoFile) || {};
+  return (obj as unknown as RepoFile) || {};
 }
 
 function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
@@ -74,13 +78,13 @@ function deleteFile(path: string, tree: RepoTree) {
 
 const pageSize = 10;
 
-const getCursor = (
+function getCursor(
   folder: string,
   extension: string,
   entries: ImplementationEntry[],
   index: number,
   depth: number,
-) => {
+) {
   const count = entries.length;
   const pageCount = Math.floor(count / pageSize);
   return Cursor.create({
@@ -91,16 +95,16 @@ const getCursor = (
     meta: { index, count, pageSize, pageCount },
     data: { folder, extension, index, pageCount, depth },
   });
-};
+}
 
-export const getFolderFiles = (
+export function getFolderFiles(
   tree: RepoTree,
   folder: string,
   extension: string,
   depth: number,
   files = [] as RepoFile[],
   path = folder,
-) => {
+) {
   if (depth <= 0) {
     return files;
   }
@@ -118,7 +122,7 @@ export const getFolderFiles = (
   });
 
   return files;
-};
+}
 
 export default class TestBackend implements Implementation {
   mediaFolder: string;
@@ -146,7 +150,7 @@ export default class TestBackend implements Implementation {
   }
 
   authenticate() {
-    return (Promise.resolve() as unknown) as Promise<User>;
+    return Promise.resolve() as unknown as Promise<User>;
   }
 
   logout() {
@@ -199,7 +203,7 @@ export default class TestBackend implements Implementation {
     }));
     const cursor = getCursor(folder, extension, entries, 0, depth);
     const ret = take(entries, pageSize);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return Promise.resolve(ret);

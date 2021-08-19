@@ -3,6 +3,101 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.11.3...netlify-cms-backend-gitlab@2.11.4) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-backend-gitlab
+
+
+
+
+
+## [2.11.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.11.2...netlify-cms-backend-gitlab@2.11.3) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-backend-gitlab
+
+
+
+
+
+## [2.11.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.11.1...netlify-cms-backend-gitlab@2.11.2) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-backend-gitlab
+
+
+
+
+
+## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.11.0...netlify-cms-backend-gitlab@2.11.1) (2021-05-04)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** increase merge requests fetched to 100 ([#5320](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/5320)) ([0a1b00d](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/0a1b00d8b29a065b7d72fbb1744eb787da3b916e))
+
+
+
+
+
+# [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.10.0...netlify-cms-backend-gitlab@2.11.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.9...netlify-cms-backend-gitlab@2.10.0) (2021-04-14)
+
+
+### Features
+
+* Adds PKCE authentication for GitLab closes [#5236](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/5236) ([#5239](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/5239)) ([829409e](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/829409e0bc03b4591ee6b59d9895adc4e7190037))
+
+
+
+
+
+## [2.9.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.8...netlify-cms-backend-gitlab@2.9.9) (2021-02-23)
+
+**Note:** Version bump only for package netlify-cms-backend-gitlab
+
+
+
+
+
+## [2.9.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.7...netlify-cms-backend-gitlab@2.9.8) (2021-02-10)
+
+**Note:** Version bump only for package netlify-cms-backend-gitlab
+
+
+
+
+
+## [2.9.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.6...netlify-cms-backend-gitlab@2.9.7) (2021-02-01)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** increase rebase timeout ([#4905](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/4905)) ([d9d6860](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/d9d686025fe848fe460917cdef1934dea3295c9d))
+
+
+
+
+
+## [2.9.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.5...netlify-cms-backend-gitlab@2.9.6) (2021-01-05)
+
+
+### Bug Fixes
+
+* **backend-gitlab:** skip creating a CI pipeline when rebasing merge request ([#4802](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/4802)) ([ce11dd2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/commit/ce11dd23753fd7bb502c299058b83701f20058b2)), closes [#4786](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/issues/4786)
+
+
+
+
+
 ## [2.9.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.9.4...netlify-cms-backend-gitlab@2.9.5) (2020-09-20)
 
 **Note:** Version bump only for package netlify-cms-backend-gitlab

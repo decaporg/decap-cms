@@ -3,6 +3,7 @@ const ja = {
     login: 'ログイン',
     loggingIn: 'ログインしています...',
     loginWithNetlifyIdentity: 'Netlify Identity でログインする',
+    loginWithAzure: 'Azure でログインする',
     loginWithBitbucket: 'Bitbucket でログインする',
     loginWithGitHub: 'GitHub でログインする',
     loginWithGitLab: 'GitLab でログインする',
@@ -47,12 +48,17 @@ const ja = {
       searchResults: '「%{searchTerm}」の検索結果',
       searchResultsInCollection: '%{collection}内の「%{searchTerm}」の検索結果',
       filterBy: '絞り込み',
+      groupBy: 'グルーピング',
     },
     entries: {
       loadingEntries: 'エントリを読み込み中',
       cachingEntries: 'エントリをキャッシュ中',
       longerLoading: '少々お待ちください',
       noEntries: 'エントリがありません',
+    },
+    groups: {
+      other: 'その他',
+      negateLabel: '%{label}以外',
     },
     defaultFields: {
       author: {
@@ -79,10 +85,13 @@ const ja = {
         max: '%{fieldLabel}の最大値は%{maxValue}です。',
         rangeCount: '%{fieldLabel}は%{minCount}個から%{maxCount}個まで選択してください。',
         rangeCountExact: '%{fieldLabel}はちょうど%{count}個選択してください。',
-        minCount: '%{fieldLabel}は%{minCount}個以上選択してください。',
-        maxCount: '%{fieldLabel}は%{maxCount}個以下選択してください。',
+        rangeMin: '%{fieldLabel}は%{minCount}個以上選択してください。',
+        rangeMax: '%{fieldLabel}は%{maxCount}個以下選択してください。',
         invalidPath: `'%{path}'は有効なパスではありません。`,
         pathExists: `'%{path}'というパスはすでに存在しています。`,
+      },
+      i18n: {
+        writingInLocale: '言語: %{locale}',
       },
     },
     editor: {
@@ -103,6 +112,11 @@ const ja = {
       loadingEntry: 'エントリの読込中...',
       confirmLoadBackup: 'ローカルのバックアップが復旧できました。利用しますか？',
     },
+    editorInterface: {
+      toggleI18n: '言語を切り替える',
+      togglePreview: 'プレビュー表示を切り替える',
+      toggleScrollSync: 'スクロール同期を切り替える',
+    },
     editorToolbar: {
       publishing: '公開しています...',
       publish: '公開',
@@ -118,9 +132,13 @@ const ja = {
       deleteEntry: 'エントリを削除',
       saving: '保存中...',
       save: '保存',
+      statusInfoTooltipDraft:
+        'エントリのステータスは下書きに設定されています。最終決定してレビューに提出するには、ステータスを「レビュー中」に設定します。',
+      statusInfoTooltipInReview:
+        'エントリはレビュー中なので、それ以上のアクションは必要ありません。ただし、レビュー中でも追加の変更を行うことができます。',
       deleting: '削除しています...',
       updating: '更新しています...',
-      setStatus: 'ステータスを変更する',
+      status: 'ステータス: %{status}',
       backCollection: '%{collectionLabel}のエントリを作成中',
       unsavedChanges: '未保存',
       changesSaved: '保存済',
@@ -134,16 +152,32 @@ const ja = {
     },
     editorWidgets: {
       markdown: {
+        bold: '太字',
+        italic: '斜体',
+        code: 'コード',
+        link: 'リンク',
+        linkPrompt: 'リンクのURLを入力してください',
+        headings: '見出し',
+        quote: '引用',
+        bulletedList: '箇条書き',
+        numberedList: '番号付きリスト',
+        addComponent: 'コンポーネント追加',
         richText: 'リッチテキスト',
         markdown: 'マークダウン',
       },
       image: {
         choose: '画像を選択',
+        chooseUrl: 'URLを入力する',
+        replaceUrl: 'URLを変更する',
+        promptUrl: '画像のURLを入力してください',
         chooseDifferent: '他の画像を選択',
         remove: '画像を削除',
       },
       file: {
         choose: 'ファイルを選択',
+        chooseUrl: 'URLを入力する',
+        replaceUrl: 'URLを変更する',
+        promptUrl: 'ファイルのURLを入力してください',
         chooseDifferent: '他のファイルを選択',
         remove: 'ファイルを削除',
       },
@@ -169,6 +203,11 @@ const ja = {
   mediaLibrary: {
     mediaLibraryCard: {
       draft: '下書き',
+      copy: 'コピー',
+      copyUrl: 'URLをコピー',
+      copyPath: 'パスをコピー',
+      copyName: '名前をコピー',
+      copied: 'コピーしました',
     },
     mediaLibrary: {
       onDelete: '選択しているデータを削除しますか？',

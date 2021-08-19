@@ -14,15 +14,16 @@ import {
   components,
   shadows,
 } from 'netlify-cms-ui-default';
-import { createNewEntry } from 'Actions/collections';
+
+import { createNewEntry } from '../../actions/collections';
 import {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
-} from 'Actions/editorialWorkflow';
-import { selectUnpublishedEntriesByStatus } from 'Reducers';
-import { EDITORIAL_WORKFLOW, status } from 'Constants/publishModes';
+} from '../../actions/editorialWorkflow';
+import { selectUnpublishedEntriesByStatus } from '../../reducers';
+import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import WorkflowList from './WorkflowList';
 
 const WorkflowContainer = styled.div`
@@ -53,7 +54,7 @@ const WorkflowTopDescription = styled.p`
 
 class Workflow extends Component {
   static propTypes = {
-    collections: ImmutablePropTypes.orderedMap.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     isEditorialWorkflow: PropTypes.bool.isRequired,
     isOpenAuthoring: PropTypes.bool,
     isFetching: PropTypes.bool,
@@ -137,8 +138,8 @@ class Workflow extends Component {
 
 function mapStateToProps(state) {
   const { collections, config, globalUI } = state;
-  const isEditorialWorkflow = config.get('publish_mode') === EDITORIAL_WORKFLOW;
-  const isOpenAuthoring = globalUI.get('useOpenAuthoring', false);
+  const isEditorialWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
+  const isOpenAuthoring = globalUI.useOpenAuthoring;
   const returnObj = { collections, isEditorialWorkflow, isOpenAuthoring };
 
   if (isEditorialWorkflow) {

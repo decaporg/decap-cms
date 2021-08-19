@@ -4,7 +4,7 @@ weight: 10
 group: Accounts
 ---
 
-[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct write access to your GitHub or GitLab repository. (For Bitbucket repositories, use the [Bitbucket backend](#bitbucket-backend) instead.)
+[Git Gateway](https://github.com/netlify/git-gateway) is a Netlify open source project that allows you to add editors to your site CMS without giving them direct write access to your GitHub or GitLab repository. (For Bitbucket repositories, use the [Bitbucket backend](../bitbucket-backend/) instead.)
 
 ## Git Gateway with Netlify
 

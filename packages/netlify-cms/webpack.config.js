@@ -3,6 +3,7 @@ require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 const pkg = require('./package.json');
 const { getConfig, plugins } = require('../../scripts/webpack');
 const baseWebpackConfig = getConfig({ baseOnly: true });

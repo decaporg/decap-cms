@@ -1,11 +1,14 @@
-import AssetProxy, { createAssetProxy } from '../valueObjects/AssetProxy';
-import { Collection, State, EntryMap, EntryField } from '../types/redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
+
+import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectMediaFilePath } from '../reducers/entries';
 import { selectMediaFileByPath } from '../reducers/mediaLibrary';
 import { getMediaFile, waitForMediaLibraryToLoad, getMediaDisplayURL } from './mediaLibrary';
+
+import type AssetProxy from '../valueObjects/AssetProxy';
+import type { Collection, State, EntryMap, EntryField } from '../types/redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
 
 export const ADD_ASSETS = 'ADD_ASSETS';
 export const ADD_ASSET = 'ADD_ASSET';
@@ -16,27 +19,27 @@ export const LOAD_ASSET_SUCCESS = 'LOAD_ASSET_SUCCESS';
 export const LOAD_ASSET_FAILURE = 'LOAD_ASSET_FAILURE';
 
 export function addAssets(assets: AssetProxy[]) {
-  return { type: ADD_ASSETS, payload: assets };
+  return { type: ADD_ASSETS, payload: assets } as const;
 }
 
 export function addAsset(assetProxy: AssetProxy) {
-  return { type: ADD_ASSET, payload: assetProxy };
+  return { type: ADD_ASSET, payload: assetProxy } as const;
 }
 
 export function removeAsset(path: string) {
-  return { type: REMOVE_ASSET, payload: path };
+  return { type: REMOVE_ASSET, payload: path } as const;
 }
 
 export function loadAssetRequest(path: string) {
-  return { type: LOAD_ASSET_REQUEST, payload: { path } };
+  return { type: LOAD_ASSET_REQUEST, payload: { path } } as const;
 }
 
 export function loadAssetSuccess(path: string) {
-  return { type: LOAD_ASSET_SUCCESS, payload: { path } };
+  return { type: LOAD_ASSET_SUCCESS, payload: { path } } as const;
 }
 
 export function loadAssetFailure(path: string, error: Error) {
-  return { type: LOAD_ASSET_FAILURE, payload: { path, error } };
+  return { type: LOAD_ASSET_FAILURE, payload: { path, error } } as const;
 }
 
 export function loadAsset(resolvedPath: string) {
@@ -82,10 +85,10 @@ export function boundGetAsset(
   collection: Collection,
   entry: EntryMap,
 ) {
-  const bound = (path: string, field: EntryField) => {
+  function bound(path: string, field: EntryField) {
     const asset = dispatch(getAsset({ collection, entry, path, field }));
     return asset;
-  };
+  }
 
   return bound;
 }
@@ -97,7 +100,7 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
     const state = getState();
     const resolvedPath = selectMediaFilePath(state.config, collection, entry, path, field);
 
-    let { asset, isLoading, error } = state.medias.get(resolvedPath) || {};
+    let { asset, isLoading, error } = state.medias[resolvedPath] || {};
     if (isLoading) {
       return emptyAsset;
     }
@@ -125,3 +128,12 @@ export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
     return asset;
   };
 }
+
+export type MediasAction = ReturnType<
+  | typeof addAssets
+  | typeof addAsset
+  | typeof removeAsset
+  | typeof loadAssetRequest
+  | typeof loadAssetSuccess
+  | typeof loadAssetFailure
+>;

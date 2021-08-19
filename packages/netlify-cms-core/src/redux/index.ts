@@ -1,30 +1,18 @@
-import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
-import thunkMiddleware, { ThunkMiddleware } from 'redux-thunk';
-import { routerMiddleware } from 'connected-react-router';
+import { createStore, applyMiddleware } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import thunkMiddleware from 'redux-thunk';
+
 import { waitUntilAction } from './middleware/waitUntilAction';
 import createRootReducer from '../reducers/combinedReducer';
-import history from '../routing/history';
-import { State } from '../types/redux';
 
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION__?: Function;
-  }
-}
+import type { ThunkMiddleware } from 'redux-thunk';
+import type { AnyAction } from 'redux';
+import type { State } from '../types/redux';
+import type { Reducer } from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const store = createStore<State, any, {}, {}>(
-  createRootReducer(history),
-  compose(
-    applyMiddleware(
-      routerMiddleware(history),
-      thunkMiddleware as ThunkMiddleware<State, AnyAction>,
-      waitUntilAction,
-    ),
-    window.__REDUX_DEVTOOLS_EXTENSION__
-      ? window.__REDUX_DEVTOOLS_EXTENSION__()
-      : (f: Function): Function => f,
-  ),
+const store = createStore<State | undefined, AnyAction, unknown, unknown>(
+  createRootReducer() as unknown as Reducer<State | undefined, AnyAction>,
+  composeWithDevTools(applyMiddleware(thunkMiddleware as ThunkMiddleware<State>, waitUntilAction)),
 );
 
-export default store;
+export { store };

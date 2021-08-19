@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
-import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
 import { colors, colorsRaw, components, lengths, zIndex } from 'netlify-cms-ui-default';
-import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { selectIsLoadingAsset } from 'Reducers/medias';
-import { selectEntryCollectionTitle } from 'Reducers/collections';
+
+import { boundGetAsset } from '../../../actions/media';
+import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
+import { selectIsLoadingAsset } from '../../../reducers/medias';
+import { selectEntryCollectionTitle } from '../../../reducers/collections';
 
 const ListCard = styled.li`
   ${components.card};
@@ -36,6 +37,8 @@ const GridCard = styled.li`
 
 const GridCardLink = styled(Link)`
   display: block;
+  height: 100%;
+  outline-offset: -2px;
   &,
   &:hover {
     background-color: ${colors.foreground};
@@ -84,7 +87,7 @@ const CardImage = styled.div`
   height: 150px;
 `;
 
-const EntryCard = ({
+function EntryCard({
   path,
   summary,
   image,
@@ -92,7 +95,7 @@ const EntryCard = ({
   collectionLabel,
   viewStyle = VIEW_STYLE_LIST,
   getAsset,
-}) => {
+}) {
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
       <ListCard>
@@ -117,9 +120,9 @@ const EntryCard = ({
       </GridCard>
     );
   }
-};
+}
 
-const mapStateToProps = (state, ownProps) => {
+function mapStateToProps(state, ownProps) {
   const { entry, inferedFields, collection } = ownProps;
   const entryData = entry.get('data');
   const summary = selectEntryCollectionTitle(collection, entry);
@@ -140,22 +143,22 @@ const mapStateToProps = (state, ownProps) => {
       ?.find(f => f.get('name') === inferedFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
   };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
   return {
     boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
   };
-};
+}
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     getAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
   };
-};
+}
 
 const ConnectedEntryCard = connect(mapStateToProps, mapDispatchToProps, mergeProps)(EntryCard);
 

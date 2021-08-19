@@ -1,10 +1,14 @@
 import React from 'react';
-import { fromJS, Map } from 'immutable';
+import { fromJS } from 'immutable';
 import { render, fireEvent, waitFor } from '@testing-library/react';
+
 import { NetlifyCmsWidgetRelation } from '../';
 
 jest.mock('react-window', () => {
-  const FixedSizeList = props => props.itemData.options;
+  function FixedSizeList(props) {
+    return props.itemData.options;
+  }
+
   return {
     FixedSizeList,
   };
@@ -45,7 +49,7 @@ const nestedFieldConfig = {
   value_field: 'title',
 };
 
-const generateHits = length => {
+function generateHits(length) {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
     const slug = `post-number-${idx + 1}`;
@@ -89,7 +93,7 @@ const generateHits = length => {
       data: { title: 'JSON post', slug: 'post-json', body: 'Body json' },
     },
   ];
-};
+}
 
 const simpleFileCollectionHits = [{ data: { categories: ['category 1', 'category 2'] } }];
 
@@ -130,11 +134,10 @@ const numberFieldsHits = [
     },
   },
 ];
-
 class RelationController extends React.Component {
   state = {
     value: this.props.value,
-    queryHits: Map(),
+    queryHits: [],
   };
 
   mounted = false;
@@ -151,9 +154,8 @@ class RelationController extends React.Component {
     this.setState({ ...this.state, value });
   });
 
-  setQueryHits = jest.fn(hits => {
+  setQueryHits = jest.fn(queryHits => {
     if (this.mounted) {
-      const queryHits = Map().set('relation-field', hits);
       this.setState({ ...this.state, queryHits });
     }
   });
@@ -183,7 +185,7 @@ class RelationController extends React.Component {
 
     this.setQueryHits(hits);
 
-    return Promise.resolve({ payload: { response: { hits } } });
+    return Promise.resolve({ payload: { hits } });
   });
 
   render() {
@@ -381,10 +383,10 @@ describe('Relation widget', () => {
 
     expect(onChangeSpy).toHaveBeenCalledTimes(2);
     expect(onChangeSpy).toHaveBeenCalledWith(1, {
-      numbers: { numbers_collection: { '1': { index: 1, slug: 'post-1', title: 'post # 1' } } },
+      numbers: { numbers_collection: { 1: { index: 1, slug: 'post-1', title: 'post # 1' } } },
     });
     expect(onChangeSpy).toHaveBeenCalledWith(2, {
-      numbers: { numbers_collection: { '2': { index: 2, slug: 'post-2', title: 'post # 2' } } },
+      numbers: { numbers_collection: { 2: { index: 2, slug: 'post-2', title: 'post # 2' } } },
     });
   });
 

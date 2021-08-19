@@ -1,5 +1,7 @@
 import { Map, List } from 'immutable';
 import uuid from 'uuid/v4';
+import { dirname } from 'path';
+
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
@@ -21,16 +23,16 @@ import {
 } from '../actions/mediaLibrary';
 import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
-import {
+
+import type { MediaLibraryAction } from '../actions/mediaLibrary';
+import type {
   State,
-  MediaLibraryAction,
   MediaLibraryInstance,
   MediaFile,
   MediaFileMap,
   DisplayURLState,
   EntryField,
 } from '../types/redux';
-import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;
@@ -41,7 +43,7 @@ const defaultState: {
   controlID?: string;
   page?: number;
   files?: MediaFile[];
-  config: Map<string, string>;
+  config: Map<string, unknown>;
   field?: EntryField;
 } = {
   isVisible: false,
@@ -51,13 +53,14 @@ const defaultState: {
   config: Map(),
 };
 
-const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => {
+function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
   switch (action.type) {
     case MEDIA_LIBRARY_CREATE:
       return state.withMutations(map => {
         map.set('externalLibrary', action.payload);
         map.set('showMediaButton', action.payload.enableStandalone());
       });
+
     case MEDIA_LIBRARY_OPEN: {
       const { controlID, forImage, privateUpload, config, field } = action.payload;
       const libConfig = config || Map();
@@ -71,6 +74,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
           privateUpload,
           config: libConfig,
           controlMedia: Map(),
+          displayURLs: Map(),
           field,
         });
       }
@@ -84,8 +88,10 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('field', field);
       });
     }
+
     case MEDIA_LIBRARY_CLOSE:
       return state.set('isVisible', false);
+
     case MEDIA_INSERT: {
       const { mediaPath } = action.payload;
       const controlID = state.get('controlID');
@@ -93,15 +99,18 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.setIn(['controlMedia', controlID], mediaPath);
       });
     }
+
     case MEDIA_REMOVE_INSERTED: {
       const controlID = action.payload.controlID;
       return state.setIn(['controlMedia', controlID], '');
     }
+
     case MEDIA_LOAD_REQUEST:
       return state.withMutations(map => {
         map.set('isLoading', true);
         map.set('isPaginating', action.payload.page > 1);
       });
+
     case MEDIA_LOAD_SUCCESS: {
       const {
         files = [],
@@ -134,6 +143,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         }
       });
     }
+
     case MEDIA_LOAD_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -141,8 +151,10 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
       }
       return state.set('isLoading', false);
     }
+
     case MEDIA_PERSIST_REQUEST:
       return state.set('isPersisting', true);
+
     case MEDIA_PERSIST_SUCCESS: {
       const { file, privateUpload } = action.payload;
       const privateUploadChanged = state.get('privateUpload') !== privateUpload;
@@ -157,6 +169,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('isPersisting', false);
       });
     }
+
     case MEDIA_PERSIST_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -164,10 +177,13 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
       }
       return state.set('isPersisting', false);
     }
+
     case MEDIA_DELETE_REQUEST:
       return state.set('isDeleting', true);
+
     case MEDIA_DELETE_SUCCESS: {
-      const { id, key, privateUpload } = action.payload.file;
+      const { file, privateUpload } = action.payload;
+      const { key, id } = file;
       const privateUploadChanged = state.get('privateUpload') !== privateUpload;
       if (privateUploadChanged) {
         return state;
@@ -180,6 +196,7 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
         map.set('isDeleting', false);
       });
     }
+
     case MEDIA_DELETE_FAILURE: {
       const privateUploadChanged = state.get('privateUpload') !== action.payload.privateUpload;
       if (privateUploadChanged) {
@@ -209,10 +226,11 @@ const mediaLibrary = (state = Map(defaultState), action: MediaLibraryAction) => 
           .deleteIn([...displayURLPath, 'url'])
       );
     }
+
     default:
       return state;
   }
-};
+}
 
 export function selectMediaFiles(state: State, field?: EntryField) {
   const { mediaLibrary, entryDraft } = state;
@@ -246,7 +264,7 @@ export function selectMediaFileByPath(state: State, path: string) {
 export function selectMediaDisplayURL(state: State, id: string) {
   const displayUrlState = state.mediaLibrary.getIn(
     ['displayURLs', id],
-    (Map() as unknown) as DisplayURLState,
+    Map() as unknown as DisplayURLState,
   );
   return displayUrlState;
 }

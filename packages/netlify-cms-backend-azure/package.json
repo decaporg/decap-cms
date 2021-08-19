@@ -1,0 +1,38 @@
+{
+  "name": "netlify-cms-backend-azure",
+  "description": "Azure DevOps backend for Netlify CMS",
+  "version": "1.2.2",
+  "license": "MIT",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-azure",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-backend-azure.js",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "backend",
+    "azure",
+    "devops"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {
+    "js-base64": "^3.0.0",
+    "semaphore": "^1.1.0"
+  },
+  "peerDependencies": {
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "netlify-cms-lib-auth": "^2.3.0",
+    "netlify-cms-lib-util": "^2.12.3",
+    "netlify-cms-ui-default": "^2.12.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4 || ^17.0.0"
+  }
+}
