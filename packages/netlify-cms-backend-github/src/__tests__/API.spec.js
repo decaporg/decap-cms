@@ -809,12 +809,41 @@ describe('github API', () => {
   test('should get preview statuses', async () => {
     const api = new API({ repo: 'repo' });
 
-    const statuses = [
+    const statusResponse = [
       { context: 'deploy', state: 'success', target_url: 'deploy-url' },
       { context: 'build', state: 'error' },
     ];
+    const deploymentsResponse = [{ id: '1' }, { id: '2' }];
 
-    api.request = jest.fn(() => Promise.resolve({ statuses }));
+    const statusesResponses = {
+      1: [
+        {
+          description: 'Vercel',
+          target_url: 'https://target.url.com/1/1',
+          state: 'success',
+        },
+      ],
+      2: [
+        { description: 'Vercel', target_url: 'https://target.url.com/2/1', state: 'failed' },
+        {
+          description: 'Vercel',
+          target_url: 'https://target.url.com/2/2',
+          state: 'success',
+        },
+      ],
+    };
+
+    api.request = jest.fn(url => {
+      if (url.endsWith('/status')) {
+        return Promise.resolve({ statuses: statusResponse });
+      } else if (url.endsWith('1/statuses')) {
+        return Promise.resolve(statusesResponses[1]);
+      } else if (url.endsWith('2/statuses')) {
+        return Promise.resolve(statusesResponses[2]);
+      } else if (url.includes('deployments')) {
+        return Promise.resolve(deploymentsResponse);
+      }
+    });
     const sha = 'sha';
     api.getBranchPullRequest = jest.fn(() => Promise.resolve({ head: { sha } }));
 
@@ -823,11 +852,13 @@ describe('github API', () => {
     await expect(api.getStatuses(collection, slug)).resolves.toEqual([
       { context: 'deploy', state: 'success', target_url: 'deploy-url' },
       { context: 'build', state: 'other' },
+      { context: 'Vercel', state: 'success', target_url: 'https://target.url.com/1/1' },
+      { context: 'Vercel', state: 'success', target_url: 'https://target.url.com/2/2' },
     ]);
 
     expect(api.getBranchPullRequest).toHaveBeenCalledTimes(1);
     expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/collection/slug');
-    expect(api.request).toHaveBeenCalledTimes(1);
+    expect(api.request).toHaveBeenCalledTimes(4);
     expect(api.request).toHaveBeenCalledWith(`/repos/repo/commits/${sha}/status`);
   });
 });

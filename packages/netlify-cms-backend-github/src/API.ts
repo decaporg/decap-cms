@@ -864,19 +864,18 @@ export default class API {
     const deploys: GitHubDeployments = await this.request(
       `${this.originRepoURL}/deployments?task=deploy&ref=${sha}`,
     );
-    
+
     const depStatuses = await Promise.all(
       deploys.map(async dep => {
-        const stats: GitHubDeployStatuses = await this.request(
+        const deploymentStatuses: GitHubDeployStatuses = await this.request(
           `${this.originRepoURL}/deployments/${dep.id}/statuses`,
         );
 
-        const statuses = stats.map(stat => ({
-          context: stat.description,
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          target_url: stat.target_url,
+        const statuses = deploymentStatuses.map(status => ({
+          context: status.description,
+          target_url: status.target_url,
           state:
-            stat.state === GitHubCommitStatusState.Success
+            status.state === GitHubCommitStatusState.Success
               ? PreviewState.Success
               : PreviewState.Other,
         }));
@@ -884,12 +883,14 @@ export default class API {
         return statuses.reverse().find(s => s.state === PreviewState.Success) || statuses[0];
       }),
     );
-    return resp.statuses.map(s => ({
-      context: s.context,
-      target_url: s.target_url,
-      state:
-        s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
-    }))
+
+    return resp.statuses
+      .map(s => ({
+        context: s.context,
+        target_url: s.target_url,
+        state:
+          s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
+      }))
       .concat(...depStatuses);
   }
 
