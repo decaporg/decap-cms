@@ -302,13 +302,20 @@ export class EditorToolbar extends React.Component {
   }
 
   renderSimpleSaveControls = () => {
-    const { showDelete, onDelete, t } = this.props;
+    const { collection, hasChanged, isNewEntry, showDelete, onDelete, t } = this.props;
+    const canCreate = collection.get('create');
+
     return (
-      <div>
-        {showDelete ? (
-          <DeleteButton onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</DeleteButton>
-        ) : null}
-      </div>
+      <>
+        {!isNewEntry && !hasChanged
+          ? this.renderExistingEntrySimplePublishControls({ canCreate })
+          : this.renderNewEntrySimplePublishControls({ canCreate })}
+        <div>
+          {showDelete ? (
+            <DeleteButton onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</DeleteButton>
+          ) : null}
+        </div>
+      </>
     );
   };
 
@@ -546,18 +553,11 @@ export class EditorToolbar extends React.Component {
   };
 
   renderSimplePublishControls = () => {
-    const { collection, hasChanged, isNewEntry, t } = this.props;
+    const { hasChanged, isNewEntry, t } = this.props;
 
-    const canCreate = collection.get('create');
     if (!isNewEntry && !hasChanged) {
-      return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          {this.renderExistingEntrySimplePublishControls({ canCreate })}
-        </>
-      );
+      return <>{this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}</>;
     }
-    return this.renderNewEntrySimplePublishControls({ canCreate });
   };
 
   renderWorkflowSaveControls = () => {
@@ -573,8 +573,14 @@ export class EditorToolbar extends React.Component {
       isDeleting,
       isNewEntry,
       isModification,
+      currentStatus,
+      collection,
       t,
     } = this.props;
+
+    const canCreate = collection.get('create');
+    const canPublish = collection.get('publish') && !useOpenAuthoring;
+    const canDelete = collection.get('delete', true);
 
     const deleteLabel =
       (hasUnpublishedChanges &&
@@ -593,6 +599,14 @@ export class EditorToolbar extends React.Component {
       >
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
+      currentStatus
+        ? [
+            this.renderWorkflowStatusControls(),
+            this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
+          ]
+        : !isNewEntry
+        ? this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })
+        : '',
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
@@ -605,19 +619,11 @@ export class EditorToolbar extends React.Component {
   };
 
   renderWorkflowPublishControls = () => {
-    const { collection, currentStatus, isNewEntry, useOpenAuthoring, t } = this.props;
-
-    const canCreate = collection.get('create');
-    const canPublish = collection.get('publish') && !useOpenAuthoring;
-    const canDelete = collection.get('delete', true);
+    const { currentStatus, isNewEntry, t } = this.props;
 
     if (currentStatus) {
       return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}
-          {this.renderWorkflowStatusControls()}
-          {this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
-        </>
+        <>{this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}</>
       );
     }
 
@@ -625,12 +631,7 @@ export class EditorToolbar extends React.Component {
      * Publish control for published workflow entry.
      */
     if (!isNewEntry) {
-      return (
-        <>
-          {this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}
-          {this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })}
-        </>
-      );
+      return <>{this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}</>;
     }
   };
 
