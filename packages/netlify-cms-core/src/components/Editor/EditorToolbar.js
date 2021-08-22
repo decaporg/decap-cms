@@ -556,7 +556,7 @@ export class EditorToolbar extends React.Component {
     const { hasChanged, isNewEntry, t } = this.props;
 
     if (!isNewEntry && !hasChanged) {
-      return <>{this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}</>;
+      return this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'));
     }
   };
 
@@ -622,16 +622,14 @@ export class EditorToolbar extends React.Component {
     const { currentStatus, isNewEntry, t } = this.props;
 
     if (currentStatus) {
-      return (
-        <>{this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'))}</>
-      );
+      return this.renderDeployPreviewControls(t('editor.editorToolbar.deployPreviewButtonLabel'));
     }
 
     /**
      * Publish control for published workflow entry.
      */
     if (!isNewEntry) {
-      return <>{this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'))}</>;
+      return this.renderDeployPreviewControls(t('editor.editorToolbar.deployButtonLabel'));
     }
   };
 
