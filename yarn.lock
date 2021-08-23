@@ -8681,7 +8681,12 @@ focus-lock@^0.9.1:
   dependencies:
     tslib "^2.0.3"
 
-follow-redirects@^1.0.0, follow-redirects@^1.10.0:
+follow-redirects@^1.0.0:
+  version "1.14.2"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.2.tgz#cecb825047c00f5e66b142f90fed4f515dec789b"
+  integrity sha512-yLR6WaE2lbF0x4K2qE2p9PEXKLDjUjnR/xmjS3wHAYxtlsI9MLLBJUZirAHKzUZDGLxje7w/cXR49WOUo4rbsA==
+
+follow-redirects@^1.10.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.1.tgz#d9114ded0a1cfdd334e164e6662ad02bfd91ff43"
   integrity sha512-HWqDgT7ZEkqRzBvc2s64vSZ/hfOceEol3ac/7tKwzuvEyWx3/4UegXh5oBOIotkGsObyk3xznnSRVADBgWSQVg==
@@ -9832,9 +9837,9 @@ http-proxy@^1.17.0, http-proxy@^1.18.0:
     requires-port "^1.0.0"
 
 http-server@^13.0.0:
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/http-server/-/http-server-13.0.0.tgz#27ab5f3bad0e27a29965a4029c26170162f7b98f"
-  integrity sha512-tqOx2M1CiZ3aVaE7Ue/0lup9kOG+Zqg6wdT1HygvxFnvPpU9doBMPcQ1ffT0/QS3J9ua35gipg0o3Dr8N0K0Tg==
+  version "13.0.1"
+  resolved "https://registry.yarnpkg.com/http-server/-/http-server-13.0.1.tgz#e7340d082925c4b1d6484c905d0df29d7d8ec16f"
+  integrity sha512-ke9rphoNuqsOCHy4tA3b3W4Yuxy7VUIXcTHSLz6bkMDAJPQD4twjEatquelJBIPwNhZuC3+FYj/+dSaGHdKTCw==
   dependencies:
     basic-auth "^1.0.3"
     colors "^1.4.0"
