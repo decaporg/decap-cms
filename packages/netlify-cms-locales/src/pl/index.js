@@ -270,8 +270,7 @@ const pl = {
       onDeleteUnpublishedChanges: 'Nieopublikowane zmiany zostały usunięte',
       onFailToAuth: '%{details}',
       onLoggedOut: 'Zostałeś wylogowany, utwórz kopię zapasową danych i zaloguj się ponownie.',
-      onBackendDown:
-        'Usługa backendu uległa awarii. Zobacz więcej informacji: %{details}',
+      onBackendDown: 'Usługa backendu uległa awarii. Zobacz więcej informacji: %{details}',
     },
   },
   workflow: {
