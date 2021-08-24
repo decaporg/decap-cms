@@ -3,6 +3,7 @@ const pl = {
     login: 'Zaloguj się',
     loggingIn: 'Logowanie...',
     loginWithNetlifyIdentity: 'Zaloguj przez konto Netlify',
+    loginWithAzure: 'Zaloguj przez konto Azure',
     loginWithBitbucket: 'Zaloguj przez Bitbucket',
     loginWithGitHub: 'Zaloguj przez GitHub',
     loginWithGitLab: 'Zaloguj przez GitLab',
@@ -33,8 +34,10 @@ const pl = {
   },
   collection: {
     sidebar: {
-      collections: 'Zbiory',
+      collections: 'Kolekcje',
+      allCollections: 'Wszystkie kolekcje',
       searchAll: 'Wyszukaj wszystkie',
+      searchIn: 'Wyszukaj w',
     },
     collectionTop: {
       sortBy: 'Sortuj po',
@@ -42,12 +45,20 @@ const pl = {
       newButton: 'Nowy %{collectionLabel}',
       ascending: 'Rosnąco',
       descending: 'Malejąco',
+      searchResults: 'Wyszukaj wyniki dla %{searchTerm}',
+      searchResultsInCollection: 'Wyszukaj wyniki dla %{searchTerm} w %{collection}',
+      filterBy: 'Filtruj po',
+      groupBy: 'Grupuj po',
     },
     entries: {
       loadingEntries: 'Ładowanie pozycji...',
       cachingEntries: 'Ładowanie pozycji do pamięci podręcznej...',
       longerLoading: 'To może zająć kilka minut',
       noEntries: 'Brak pozycji',
+    },
+    groups: {
+      other: 'Inne',
+      negateLabel: 'Nie %{label}',
     },
     defaultFields: {
       author: {
@@ -76,6 +87,11 @@ const pl = {
         rangeCountExact: '%{fieldLabel} musi mieć %{count} elementów',
         rangeMin: '%{fieldLabel} musi mieć przynajmniej %{minCount} elementów',
         rangeMax: '%{fieldLabel} może mieć maksymalnie %{maxCount} elementów',
+        invalidPath: `'%{path}' nie jest poprawna`,
+        pathExists: `Ścieżka '%{path}' już istnieje`,
+      },
+      i18n: {
+        writingInLocale: 'Pisz w języku %{locale}',
       },
     },
     editor: {
@@ -96,6 +112,11 @@ const pl = {
       loadingEntry: 'Ładowanie pozycji...',
       confirmLoadBackup: 'Odzyskano lokalną kopię zapasową tej pozycji, czy chcesz jej użyć?',
     },
+    editorInterface: {
+      toggleI18n: 'Przełącz i18n',
+      togglePreview: 'Przełącz podgląd',
+      toggleScrollSync: 'Synchroniczne przesuwanie',
+    },
     editorToolbar: {
       publishing: 'Publikowanie...',
       publish: 'Opublikuj',
@@ -111,6 +132,10 @@ const pl = {
       deleteEntry: 'Usuń pozycję',
       saving: 'Zapisywanie...',
       save: 'Zapisz',
+      statusInfoTooltipDraft:
+        'Dodano jako wersję roboczą. Aby zakończyć i oddać do recenzji zmień status na `Do recenzji`',
+      statusInfoTooltipInReview:
+        'Wpis jest w trakcie recenzji, żadne dodatkowe akcje nie są wymagane. Jeśli chcesz, możesz jeszcze nanieść zmiany.',
       deleting: 'Usuwanie...',
       updating: 'Uaktualnianie...',
       status: 'Status: %{status}',
@@ -127,16 +152,32 @@ const pl = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Pogrubienie',
+        italic: 'Kursywa',
+        code: 'Kod',
+        link: 'Link',
+        linkPrompt: 'Dodaj adres URL',
+        headings: 'Nagłówki',
+        quote: 'Cytat',
+        bulletedList: 'Lista punktowana',
+        numberedList: 'Lista numerowana',
+        addComponent: 'Dodaj komponent',
         richText: 'Tekst sformatowany',
         markdown: 'Markdown',
       },
       image: {
         choose: 'Wybierz zdjęcie',
+        chooseUrl: 'Dodaj adres URL zdjęcia',
+        replaceUrl: 'Zmień adres URL zdjęcia',
+        promptUrl: 'Wprować adres URL zdjęcia',
         chooseDifferent: 'Zmień zdjęcie',
         remove: 'Usuń zdjęcie',
       },
       file: {
         choose: 'Wybierz plik',
+        chooseUrl: 'Dodaj adres URL pliku',
+        replaceUrl: 'Zmień adres URL zdjęcia',
+        promptUrl: 'Dodaj adres URL pliku',
         chooseDifferent: 'Wybierz inny plik',
         remove: 'Usuń plik',
       },
@@ -147,18 +188,30 @@ const pl = {
         noPreview: "Brak podglądu dla widżetu '%{widget}'.",
       },
       headingOptions: {
-        headingOne: 'Heading 1',
-        headingTwo: 'Heading 2',
-        headingThree: 'Heading 3',
-        headingFour: 'Heading 4',
-        headingFive: 'Heading 5',
-        headingSix: 'Heading 6',
+        headingOne: 'Nagłówek 1',
+        headingTwo: 'Nagłówek 2',
+        headingThree: 'Nagłówek 3',
+        headingFour: 'Nagłówek 4',
+        headingFive: 'Nagłówek 5',
+        headingSix: 'Nagłówek 6',
+      },
+      datetime: {
+        now: 'Teraz',
+      },
+      list: {
+        add: 'Dodaj %{item}',
+        addType: 'Dodaj nowy %{item}',
       },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Wersja robocza',
+      copy: 'Kopiuj',
+      copyUrl: 'Kopiuj URL',
+      copyPath: 'Kopiuj ścieżkę',
+      copyName: 'Kopiuj nazwę',
+      copied: 'Skopiowano',
     },
     mediaLibrary: {
       onDelete: 'Czy na pewno chcesz usunąć zaznaczone multimedia?',
@@ -175,6 +228,7 @@ const pl = {
       search: 'Szukaj...',
       uploading: 'Przesyłanie...',
       upload: 'Prześlij nowe',
+      download: 'Pobierz',
       deleting: 'Usuwanie...',
       deleteSelected: 'Usuń zaznaczone',
       chooseSelected: 'Wybierz zaznaczone',
@@ -215,6 +269,8 @@ const pl = {
       entryUpdated: 'Zaktualizowano status pozycji',
       onDeleteUnpublishedChanges: 'Nieopublikowane zmiany zostały usunięte',
       onFailToAuth: '%{details}',
+      onLoggedOut: 'Zostałeś wylogowany, utwórz kopię zapasową danych i zaloguj się ponownie.',
+      onBackendDown: 'Usługa backendu uległa awarii. Zobacz więcej informacji: %{details}',
     },
   },
   workflow: {
