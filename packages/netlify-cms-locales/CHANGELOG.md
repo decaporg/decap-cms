@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.35.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.34.0...netlify-cms-locales@1.35.0) (2021-08-24)
+
+
+### Features
+
+* **locale-pl:** update index.js pl ([#5748](https://github.com/netlify/netlify-cms/issues/5748)) ([289d766](https://github.com/netlify/netlify-cms/commit/289d76699bc8dd0549ae29d2ca59f447812afc8e))
+
+
+
+
+
 # [1.34.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.33.2...netlify-cms-locales@1.34.0) (2021-08-11)
 
 
