@@ -301,7 +301,7 @@ export class EditorToolbar extends React.Component {
     }
   }
 
-  renderSimpleSaveControls = () => {
+  renderSimpleControls = () => {
     const { collection, hasChanged, isNewEntry, showDelete, onDelete, t } = this.props;
     const canCreate = collection.get('create');
 
@@ -552,7 +552,7 @@ export class EditorToolbar extends React.Component {
     );
   };
 
-  renderSimplePublishControls = () => {
+  renderSimpleDeployPreviewControls = () => {
     const { hasChanged, isNewEntry, t } = this.props;
 
     if (!isNewEntry && !hasChanged) {
@@ -560,7 +560,7 @@ export class EditorToolbar extends React.Component {
     }
   };
 
-  renderWorkflowSaveControls = () => {
+  renderWorkflowControls = () => {
     const {
       onPersist,
       onDelete,
@@ -604,9 +604,7 @@ export class EditorToolbar extends React.Component {
             this.renderWorkflowStatusControls(),
             this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
           ]
-        : !isNewEntry
-        ? this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })
-        : '',
+        : !isNewEntry && this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
@@ -618,7 +616,7 @@ export class EditorToolbar extends React.Component {
     ];
   };
 
-  renderWorkflowPublishControls = () => {
+  renderWorkflowDeployPreviewControls = () => {
     const { currentStatus, isNewEntry, t } = this.props;
 
     if (currentStatus) {
@@ -664,12 +662,12 @@ export class EditorToolbar extends React.Component {
         </ToolbarSectionBackLink>
         <ToolbarSectionMain>
           <ToolbarSubSectionFirst>
-            {hasWorkflow ? this.renderWorkflowSaveControls() : this.renderSimpleSaveControls()}
+            {hasWorkflow ? this.renderWorkflowControls() : this.renderSimpleControls()}
           </ToolbarSubSectionFirst>
           <ToolbarSubSectionLast>
             {hasWorkflow
-              ? this.renderWorkflowPublishControls()
-              : this.renderSimplePublishControls()}
+              ? this.renderWorkflowDeployPreviewControls()
+              : this.renderSimpleDeployPreviewControls()}
           </ToolbarSubSectionLast>
         </ToolbarSectionMain>
         <ToolbarSectionMeta>
