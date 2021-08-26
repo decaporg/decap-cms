@@ -604,7 +604,8 @@ export class EditorToolbar extends React.Component {
             this.renderWorkflowStatusControls(),
             this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
           ]
-        : !isNewEntry && this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete })
+        : !isNewEntry &&
+          this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }),
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
