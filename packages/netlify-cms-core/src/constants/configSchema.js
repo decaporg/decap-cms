@@ -223,7 +223,19 @@ function getConfigSchema() {
             preview_path: { type: 'string' },
             preview_path_date_field: { type: 'string' },
             create: { type: 'boolean' },
-            publish: { type: 'boolean' },
+            publish: {
+              oneOf: [
+                { type: 'boolean' },
+                {
+                  type: 'object',
+                  properties: {
+                    editor: { type: 'boolean' },
+                    workflow: { type: 'boolean' },
+                  },
+                  additionalProperties: false,
+                },
+              ],
+            },
             hide: { type: 'boolean' },
             editor: {
               type: 'object',

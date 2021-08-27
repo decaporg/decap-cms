@@ -59,6 +59,11 @@ export type CmsPublishMode = 'simple' | 'editorial_workflow';
 
 export type CmsSlugEncoding = 'unicode' | 'ascii';
 
+export interface CmsPublishConfig {
+  editor: boolean;
+  workflow: boolean;
+}
+
 export interface CmsI18nConfig {
   structure: 'multiple_folders' | 'multiple_files' | 'single_file';
   locales: string[];
@@ -321,7 +326,7 @@ export interface CmsCollection {
   editor?: {
     preview?: boolean;
   };
-  publish?: boolean;
+  publish?: boolean | CmsPublishConfig;
   nested?: {
     depth: number;
   };

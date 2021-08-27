@@ -99,6 +99,7 @@ const en = {
       onUpdatingWithUnsavedChanges: 'You have unsaved changes, please save before updating status.',
       onPublishingNotReady: 'Please update status to "Ready" before publishing.',
       onPublishingWithUnsavedChanges: 'You have unsaved changes, please save before publishing.',
+      onPublishingWithFieldsErrors: 'You have fields errors. please fix them before publishing.',
       onPublishing: 'Are you sure you want to publish this entry?',
       onUnpublishing: 'Are you sure you want to unpublish this entry?',
       onDeleteWithUnsavedChanges:

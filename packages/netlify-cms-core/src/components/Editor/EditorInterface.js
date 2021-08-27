@@ -213,7 +213,6 @@ class EditorInterface extends Component {
       onDelete,
       onDeleteUnpublishedChanges,
       onChangeStatus,
-      onPublish,
       unPublish,
       onDuplicate,
       onValidate,
@@ -333,7 +332,7 @@ class EditorInterface extends Component {
           onDeleteUnpublishedChanges={onDeleteUnpublishedChanges}
           onChangeStatus={onChangeStatus}
           showDelete={showDelete}
-          onPublish={onPublish}
+          onPublish={this.handleOnPublish}
           unPublish={unPublish}
           onDuplicate={onDuplicate}
           onPublishAndNew={() => this.handleOnPublish({ createNew: true })}

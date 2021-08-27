@@ -260,6 +260,9 @@ export class Editor extends React.Component {
     } else if (entryDraft.get('hasChanged')) {
       window.alert(t('editor.editor.onPublishingWithUnsavedChanges'));
       return;
+    } else if (!entryDraft.get('fieldsErrors').isEmpty()) {
+      window.alert(t('editor.editor.onPublishingWithFieldsErrors'));
+      return;
     } else if (!window.confirm(t('editor.editor.onPublishing'))) {
       return;
     }

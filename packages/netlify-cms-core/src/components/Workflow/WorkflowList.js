@@ -218,7 +218,7 @@ class WorkflowList extends React.Component {
           const collectionLabel = collection?.get('label');
           const isModification = entry.get('isModification');
 
-          const allowPublish = collection?.get('publish');
+          const allowPublish = collection?.get('publish')?.get('workflow');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
 
           return (

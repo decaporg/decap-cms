@@ -245,8 +245,12 @@ export function applyDefaults(originalConfig: CmsConfig) {
     const backend = resolveBackend(config);
 
     for (const collection of config.collections) {
-      if (!('publish' in collection)) {
-        collection.publish = true;
+      const publish = collection.publish ?? true;
+      if (typeof publish === 'boolean') {
+        collection.publish = {
+          editor: publish,
+          workflow: publish,
+        };
       }
 
       let collectionI18n = collection[I18N];

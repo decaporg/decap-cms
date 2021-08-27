@@ -383,7 +383,10 @@ describe('config', () => {
                 },
               ],
             }).collections[0].publish,
-          ).toEqual(true);
+          ).toEqual({
+            editor: true,
+            workflow: true,
+          });
         });
 
         it('should not override existing publish config', () => {
@@ -398,7 +401,28 @@ describe('config', () => {
                 },
               ],
             }).collections[0].publish,
-          ).toEqual(false);
+          ).toEqual({
+            editor: false,
+            workflow: false,
+          });
+        });
+
+        it('should not override existing publish config', () => {
+          expect(
+            applyDefaults({
+              collections: [
+                {
+                  folder: 'foo',
+                  media_folder: 'static/images/docs',
+                  publish: { editor: true, workflow: false },
+                  fields: [{ name: 'title', widget: 'string' }],
+                },
+              ],
+            }).collections[0].publish,
+          ).toEqual({
+            editor: true,
+            workflow: false,
+          });
         });
       });
 
@@ -503,7 +527,10 @@ describe('config', () => {
                 valueType: 'float',
               },
             ],
-            publish: true,
+            publish: {
+              editor: true,
+              workflow: true,
+            },
           },
           {
             sortable_fields: [],
@@ -534,7 +561,10 @@ describe('config', () => {
             type: 'file_based_collection',
             view_filters: [],
             view_groups: [],
-            publish: true,
+            publish: {
+              editor: true,
+              workflow: true,
+            },
           },
         ],
         public_folder: '/',

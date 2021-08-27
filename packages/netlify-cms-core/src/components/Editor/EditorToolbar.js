@@ -579,7 +579,7 @@ export class EditorToolbar extends React.Component {
     } = this.props;
 
     const canCreate = collection.get('create');
-    const canPublish = collection.get('publish') && !useOpenAuthoring;
+    const canPublish = collection.get('publish')?.get('editor') && !useOpenAuthoring;
     const canDelete = collection.get('delete', true);
 
     const deleteLabel =
