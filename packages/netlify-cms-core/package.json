@@ -65,6 +65,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-notifications": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "remark-gfm": "1.0.0",
     "sanitize-filename": "^1.6.1",
     "semaphore": "^1.0.5",
     "tomlify-j0.4": "^3.0.0-alpha.0",

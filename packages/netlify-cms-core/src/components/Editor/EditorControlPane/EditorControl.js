@@ -9,6 +9,7 @@ import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
 import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
@@ -330,7 +331,8 @@ class EditorControl extends React.Component {
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
                 <ReactMarkdown
-                  allowedElements={['a', 'strong', 'em']}
+                  remarkPlugins={[gfm]}
+                  allowedElements={['a', 'strong', 'em', 'del']}
                   unwrapDisallowed={true}
                   components={{
                     // eslint-disable-next-line no-unused-vars
