@@ -64,7 +64,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   padding: 0 10px;
 }
 
-.emotion-8 {
+.emotion-13 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -75,7 +75,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   align-items: center;
 }
 
-.emotion-6 {
+.emotion-11 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -95,7 +95,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
 }
 
 @media (max-width:1200px) {
-  .emotion-6 {
+  .emotion-11 {
     padding: 0 10px;
   }
 }
@@ -130,7 +130,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   padding: 0 7px;
 }
 
-.emotion-13 {
+.emotion-9 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -140,7 +140,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   margin: 0 10px;
 }
 
-.emotion-13 .ei6fm2r1 {
+.emotion-9 .ei6fm2r1 {
   color: #17a2b8;
 }
 
@@ -154,7 +154,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   color: #ff003b;
 }
 
-.emotion-10 {
+.emotion-6 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -174,7 +174,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   background-color: #17a2b8;
 }
 
-.emotion-10:after {
+.emotion-6:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -191,7 +191,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
 }
 
 @media (max-width:1200px) {
-  .emotion-10 {
+  .emotion-6 {
     padding-left: 10px;
   }
 }
@@ -200,7 +200,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
     class="emotion-21 emotion-22"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -225,27 +225,16 @@ exports[`EditorToolbar should render normal save button 1`] = `
       class="emotion-17 emotion-18"
     >
       <div
-        class="emotion-8 emotion-9"
-      >
-        <div>
-          <button
-            class="emotion-6 emotion-7"
-          >
-            editor.editorToolbar.deleteEntry
-          </button>
-        </div>
-      </div>
-      <div
-        class="emotion-15 emotion-16"
+        class="emotion-13 emotion-14"
       >
         <div>
           <div
-            class="emotion-12 emotion-13 emotion-14"
+            class="emotion-8 emotion-9 emotion-10"
           >
             <span
               aria-expanded="false"
               aria-haspopup="true"
-              class="emotion-10 emotion-11"
+              class="emotion-6 emotion-7"
               role="button"
               tabindex="0"
             >
@@ -253,7 +242,17 @@ exports[`EditorToolbar should render normal save button 1`] = `
             </span>
           </div>
         </div>
+        <div>
+          <button
+            class="emotion-11 emotion-12"
+          >
+            editor.editorToolbar.deleteEntry
+          </button>
+        </div>
       </div>
+      <div
+        class="emotion-15 emotion-16"
+      />
     </div>
     <div
       class="emotion-19 emotion-20"
@@ -328,7 +327,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   padding: 0 10px;
 }
 
-.emotion-8 {
+.emotion-13 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -339,7 +338,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   align-items: center;
 }
 
-.emotion-6 {
+.emotion-11 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -359,7 +358,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
 }
 
 @media (max-width:1200px) {
-  .emotion-6 {
+  .emotion-11 {
     padding: 0 10px;
   }
 }
@@ -394,7 +393,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   padding: 0 7px;
 }
 
-.emotion-13 {
+.emotion-9 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -404,7 +403,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   margin: 0 10px;
 }
 
-.emotion-13 .ei6fm2r1 {
+.emotion-9 .ei6fm2r1 {
   color: #17a2b8;
 }
 
@@ -418,7 +417,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   color: #ff003b;
 }
 
-.emotion-10 {
+.emotion-6 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -438,7 +437,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   background-color: #17a2b8;
 }
 
-.emotion-10:after {
+.emotion-6:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -455,7 +454,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
 }
 
 @media (max-width:1200px) {
-  .emotion-10 {
+  .emotion-6 {
     padding-left: 10px;
   }
 }
@@ -464,7 +463,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
     class="emotion-21 emotion-22"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -489,27 +488,16 @@ exports[`EditorToolbar should render normal save button 2`] = `
       class="emotion-17 emotion-18"
     >
       <div
-        class="emotion-8 emotion-9"
-      >
-        <div>
-          <button
-            class="emotion-6 emotion-7"
-          >
-            editor.editorToolbar.deleteEntry
-          </button>
-        </div>
-      </div>
-      <div
-        class="emotion-15 emotion-16"
+        class="emotion-13 emotion-14"
       >
         <div>
           <div
-            class="emotion-12 emotion-13 emotion-14"
+            class="emotion-8 emotion-9 emotion-10"
           >
             <span
               aria-expanded="false"
               aria-haspopup="true"
-              class="emotion-10 emotion-11"
+              class="emotion-6 emotion-7"
               role="button"
               tabindex="0"
             >
@@ -517,7 +505,17 @@ exports[`EditorToolbar should render normal save button 2`] = `
             </span>
           </div>
         </div>
+        <div>
+          <button
+            class="emotion-11 emotion-12"
+          >
+            editor.editorToolbar.deleteEntry
+          </button>
+        </div>
       </div>
+      <div
+        class="emotion-15 emotion-16"
+      />
     </div>
     <div
       class="emotion-19 emotion-20"
@@ -612,7 +610,7 @@ exports[`EditorToolbar should render with default props 1`] = `
   padding: 0 10px;
 }
 
-.emotion-8 {
+.emotion-10 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -638,12 +636,37 @@ exports[`EditorToolbar should render with default props 1`] = `
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
   background-color: #fcefea;
   color: #ff003b;
 }
 
 @media (max-width:1200px) {
-  .emotion-6 {
+  .emotion-8 {
     padding: 0 10px;
   }
 }
@@ -661,31 +684,6 @@ exports[`EditorToolbar should render with default props 1`] = `
   -webkit-justify-content: flex-end;
   -ms-flex-pack: end;
   justify-content: flex-end;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  height: 36px;
-  line-height: 36px;
-  font-weight: 500;
-  padding: 0 15px;
-  background-color: #798291;
-  color: #fff;
-  margin: 0 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
-  background-color: #ddf5f9;
-  color: #17a2b8;
-}
-
-@media (max-width:1200px) {
-  .emotion-10 {
-    padding: 0 10px;
-  }
 }
 
 .emotion-16 {
@@ -707,7 +705,7 @@ exports[`EditorToolbar should render with default props 1`] = `
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -732,11 +730,16 @@ exports[`EditorToolbar should render with default props 1`] = `
       class="emotion-14 emotion-15"
     >
       <div
-        class="emotion-8 emotion-9"
+        class="emotion-10 emotion-11"
       >
+        <button
+          class="emotion-6 emotion-7"
+        >
+          editor.editorToolbar.published
+        </button>
         <div>
           <button
-            class="emotion-6 emotion-7"
+            class="emotion-8 emotion-9"
           >
             editor.editorToolbar.deleteEntry
           </button>
@@ -744,13 +747,7 @@ exports[`EditorToolbar should render with default props 1`] = `
       </div>
       <div
         class="emotion-12 emotion-13"
-      >
-        <button
-          class="emotion-10 emotion-11"
-        >
-          editor.editorToolbar.published
-        </button>
-      </div>
+      />
     </div>
     <div
       class="emotion-16 emotion-17"
@@ -845,7 +842,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   padding: 0 10px;
 }
 
-.emotion-10 {
+.emotion-15 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -856,7 +853,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   align-items: center;
 }
 
-.emotion-8 {
+.emotion-13 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -876,7 +873,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
 }
 
 @media (max-width:1200px) {
-  .emotion-8 {
+  .emotion-13 {
     padding: 0 10px;
   }
 }
@@ -942,7 +939,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   cursor: default;
 }
 
-.emotion-15 {
+.emotion-11 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -952,11 +949,11 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   margin: 0 10px;
 }
 
-.emotion-15 .ei6fm2r1 {
+.emotion-11 .ei6fm2r1 {
   color: #17a2b8;
 }
 
-.emotion-12 {
+.emotion-8 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -977,7 +974,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   color: #17a2b8;
 }
 
-.emotion-12:after {
+.emotion-8:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -994,7 +991,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
 }
 
 @media (max-width:1200px) {
-  .emotion-12 {
+  .emotion-8 {
     padding-left: 10px;
   }
 }
@@ -1003,7 +1000,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1028,7 +1025,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
       class="emotion-19 emotion-20"
     >
       <div
-        class="emotion-10 emotion-11"
+        class="emotion-15 emotion-16"
       >
         <button
           class="emotion-6 emotion-7"
@@ -1036,29 +1033,28 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
         >
           editor.editorToolbar.save
         </button>
-        <button
-          class="emotion-8 emotion-9"
-        >
-          editor.editorToolbar.deletePublishedEntry
-        </button>
-      </div>
-      <div
-        class="emotion-17 emotion-18"
-      >
         <div
-          class="emotion-14 emotion-15 emotion-16"
+          class="emotion-10 emotion-11 emotion-12"
         >
           <span
             aria-expanded="false"
             aria-haspopup="true"
-            class="emotion-12 emotion-13"
+            class="emotion-8 emotion-9"
             role="button"
             tabindex="0"
           >
             editor.editorToolbar.status
           </span>
         </div>
+        <button
+          class="emotion-13 emotion-14"
+        >
+          editor.editorToolbar.deletePublishedEntry
+        </button>
       </div>
+      <div
+        class="emotion-17 emotion-18"
+      />
     </div>
     <div
       class="emotion-21 emotion-22"
@@ -1153,7 +1149,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   padding: 0 10px;
 }
 
-.emotion-8 {
+.emotion-22 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1225,7 +1221,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   cursor: default;
 }
 
-.emotion-13 {
+.emotion-11 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -1235,11 +1231,11 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   margin: 0 10px;
 }
 
-.emotion-13 .emotion-15 {
+.emotion-11 .emotion-13 {
   color: #17a2b8;
 }
 
-.emotion-10 {
+.emotion-8 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1260,7 +1256,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   color: #17a2b8;
 }
 
-.emotion-10:after {
+.emotion-8:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -1277,26 +1273,26 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
 }
 
 @media (max-width:1200px) {
-  .emotion-10 {
+  .emotion-8 {
     padding-left: 10px;
   }
 }
 
-.emotion-22 {
+.emotion-20 {
   position: relative;
 }
 
-.emotion-18 {
+.emotion-16 {
   position: relative;
   display: inline-block;
 }
 
-.emotion-18:hover + .emotion-21 {
+.emotion-16:hover + .emotion-19 {
   visibility: visible;
   opacity: 0.9;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: inline-block;
   line-height: 0;
   width: 18px;
@@ -1306,23 +1302,23 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   transform: rotate(0deg);
 }
 
-.emotion-16 path:not(.no-fill),
-.emotion-16 circle:not(.no-fill),
-.emotion-16 polygon:not(.no-fill),
-.emotion-16 rect:not(.no-fill) {
+.emotion-14 path:not(.no-fill),
+.emotion-14 circle:not(.no-fill),
+.emotion-14 polygon:not(.no-fill),
+.emotion-14 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-16 path.clipped {
+.emotion-14 path.clipped {
   fill: transparent;
 }
 
-.emotion-16 svg {
+.emotion-14 svg {
   width: 100%;
   height: 100%;
 }
 
-.emotion-20 {
+.emotion-18 {
   visibility: hidden;
   width: 321px;
   background-color: #555;
@@ -1344,7 +1340,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1369,7 +1365,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
       class="emotion-26 emotion-27"
     >
       <div
-        class="emotion-8 emotion-9"
+        class="emotion-22 emotion-23"
       >
         <button
           class="emotion-6 emotion-7"
@@ -1377,17 +1373,13 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
         >
           editor.editorToolbar.save
         </button>
-      </div>
-      <div
-        class="emotion-24 emotion-25"
-      >
         <div
-          class="emotion-12 emotion-13 emotion-14"
+          class="emotion-10 emotion-11 emotion-12"
         >
           <span
             aria-expanded="false"
             aria-haspopup="true"
-            class="emotion-10 emotion-11"
+            class="emotion-8 emotion-9"
             role="button"
             tabindex="0"
           >
@@ -1395,13 +1387,13 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
           </span>
         </div>
         <div
-          class="emotion-22 emotion-23"
+          class="emotion-20 emotion-21"
         >
           <div
-            class="emotion-18 emotion-19"
+            class="emotion-16 emotion-17"
           >
             <span
-              class="tooltip emotion-15 emotion-16 emotion-17"
+              class="tooltip emotion-13 emotion-14 emotion-15"
             >
               <svg
                 class="bi bi-info-circle"
@@ -1421,12 +1413,15 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
             </span>
           </div>
           <div
-            class="emotion-20 emotion-21"
+            class="emotion-18 emotion-19"
           >
             editor.editorToolbar.statusInfoTooltipDraft
           </div>
         </div>
       </div>
+      <div
+        class="emotion-24 emotion-25"
+      />
     </div>
     <div
       class="emotion-28 emotion-29"
@@ -1521,7 +1516,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   padding: 0 10px;
 }
 
-.emotion-10 {
+.emotion-15 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1532,7 +1527,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   align-items: center;
 }
 
-.emotion-8 {
+.emotion-13 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1552,7 +1547,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 }
 
 @media (max-width:1200px) {
-  .emotion-8 {
+  .emotion-13 {
     padding: 0 10px;
   }
 }
@@ -1618,7 +1613,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   cursor: default;
 }
 
-.emotion-15 {
+.emotion-11 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -1628,11 +1623,11 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   margin: 0 10px;
 }
 
-.emotion-15 .ei6fm2r1 {
+.emotion-11 .ei6fm2r1 {
   color: #17a2b8;
 }
 
-.emotion-12 {
+.emotion-8 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1653,7 +1648,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   color: #17a2b8;
 }
 
-.emotion-12:after {
+.emotion-8:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -1670,7 +1665,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 }
 
 @media (max-width:1200px) {
-  .emotion-12 {
+  .emotion-8 {
     padding-left: 10px;
   }
 }
@@ -1679,7 +1674,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -1704,7 +1699,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
       class="emotion-19 emotion-20"
     >
       <div
-        class="emotion-10 emotion-11"
+        class="emotion-15 emotion-16"
       >
         <button
           class="emotion-6 emotion-7"
@@ -1712,29 +1707,28 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
         >
           editor.editorToolbar.save
         </button>
-        <button
-          class="emotion-8 emotion-9"
-        >
-          editor.editorToolbar.deletePublishedEntry
-        </button>
-      </div>
-      <div
-        class="emotion-17 emotion-18"
-      >
         <div
-          class="emotion-14 emotion-15 emotion-16"
+          class="emotion-10 emotion-11 emotion-12"
         >
           <span
             aria-expanded="false"
             aria-haspopup="true"
-            class="emotion-12 emotion-13"
+            class="emotion-8 emotion-9"
             role="button"
             tabindex="0"
           >
             editor.editorToolbar.status
           </span>
         </div>
+        <button
+          class="emotion-13 emotion-14"
+        >
+          editor.editorToolbar.deletePublishedEntry
+        </button>
       </div>
+      <div
+        class="emotion-17 emotion-18"
+      />
     </div>
     <div
       class="emotion-21 emotion-22"
@@ -1829,7 +1823,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   padding: 0 10px;
 }
 
-.emotion-8 {
+.emotion-20 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1901,7 +1895,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   cursor: default;
 }
 
-.emotion-13 {
+.emotion-11 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -1911,11 +1905,11 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   margin: 0 10px;
 }
 
-.emotion-13 .emotion-15 {
+.emotion-11 .emotion-13 {
   color: #17a2b8;
 }
 
-.emotion-10 {
+.emotion-8 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1936,7 +1930,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   color: #17a2b8;
 }
 
-.emotion-10:after {
+.emotion-8:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -1953,26 +1947,26 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 }
 
 @media (max-width:1200px) {
-  .emotion-10 {
+  .emotion-8 {
     padding-left: 10px;
   }
 }
 
-.emotion-20 {
+.emotion-18 {
   position: relative;
 }
 
-.emotion-18 {
+.emotion-16 {
   position: relative;
   display: inline-block;
 }
 
-.emotion-18:hover + .evqrzhe0 {
+.emotion-16:hover + .evqrzhe0 {
   visibility: visible;
   opacity: 0.9;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: inline-block;
   line-height: 0;
   width: 18px;
@@ -1982,18 +1976,18 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   transform: rotate(0deg);
 }
 
-.emotion-16 path:not(.no-fill),
-.emotion-16 circle:not(.no-fill),
-.emotion-16 polygon:not(.no-fill),
-.emotion-16 rect:not(.no-fill) {
+.emotion-14 path:not(.no-fill),
+.emotion-14 circle:not(.no-fill),
+.emotion-14 polygon:not(.no-fill),
+.emotion-14 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-16 path.clipped {
+.emotion-14 path.clipped {
   fill: transparent;
 }
 
-.emotion-16 svg {
+.emotion-14 svg {
   width: 100%;
   height: 100%;
 }
@@ -2002,7 +1996,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-28 emotion-29"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2027,7 +2021,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
       class="emotion-24 emotion-25"
     >
       <div
-        class="emotion-8 emotion-9"
+        class="emotion-20 emotion-21"
       >
         <button
           class="emotion-6 emotion-7"
@@ -2035,17 +2029,13 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
         >
           editor.editorToolbar.save
         </button>
-      </div>
-      <div
-        class="emotion-22 emotion-23"
-      >
         <div
-          class="emotion-12 emotion-13 emotion-14"
+          class="emotion-10 emotion-11 emotion-12"
         >
           <span
             aria-expanded="false"
             aria-haspopup="true"
-            class="emotion-10 emotion-11"
+            class="emotion-8 emotion-9"
             role="button"
             tabindex="0"
           >
@@ -2053,13 +2043,13 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
           </span>
         </div>
         <div
-          class="emotion-20 emotion-21"
+          class="emotion-18 emotion-19"
         >
           <div
-            class="emotion-18 emotion-19"
+            class="emotion-16 emotion-17"
           >
             <span
-              class="tooltip emotion-15 emotion-16 emotion-17"
+              class="tooltip emotion-13 emotion-14 emotion-15"
             >
               <svg
                 class="bi bi-info-circle"
@@ -2080,6 +2070,9 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
           </div>
         </div>
       </div>
+      <div
+        class="emotion-22 emotion-23"
+      />
     </div>
     <div
       class="emotion-26 emotion-27"
@@ -2174,7 +2167,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   padding: 0 10px;
 }
 
-.emotion-10 {
+.emotion-15 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2185,7 +2178,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   align-items: center;
 }
 
-.emotion-8 {
+.emotion-13 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -2205,7 +2198,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 }
 
 @media (max-width:1200px) {
-  .emotion-8 {
+  .emotion-13 {
     padding: 0 10px;
   }
 }
@@ -2271,7 +2264,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   cursor: default;
 }
 
-.emotion-15 {
+.emotion-11 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -2281,11 +2274,11 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   margin: 0 10px;
 }
 
-.emotion-15 .ei6fm2r1 {
+.emotion-11 .ei6fm2r1 {
   color: #17a2b8;
 }
 
-.emotion-12 {
+.emotion-8 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -2306,7 +2299,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   color: #17a2b8;
 }
 
-.emotion-12:after {
+.emotion-8:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -2323,7 +2316,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 }
 
 @media (max-width:1200px) {
-  .emotion-12 {
+  .emotion-8 {
     padding-left: 10px;
   }
 }
@@ -2332,7 +2325,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-23 emotion-24"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2357,7 +2350,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
       class="emotion-19 emotion-20"
     >
       <div
-        class="emotion-10 emotion-11"
+        class="emotion-15 emotion-16"
       >
         <button
           class="emotion-6 emotion-7"
@@ -2365,29 +2358,28 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
         >
           editor.editorToolbar.save
         </button>
-        <button
-          class="emotion-8 emotion-9"
-        >
-          editor.editorToolbar.deletePublishedEntry
-        </button>
-      </div>
-      <div
-        class="emotion-17 emotion-18"
-      >
         <div
-          class="emotion-14 emotion-15 emotion-16"
+          class="emotion-10 emotion-11 emotion-12"
         >
           <span
             aria-expanded="false"
             aria-haspopup="true"
-            class="emotion-12 emotion-13"
+            class="emotion-8 emotion-9"
             role="button"
             tabindex="0"
           >
             editor.editorToolbar.status
           </span>
         </div>
+        <button
+          class="emotion-13 emotion-14"
+        >
+          editor.editorToolbar.deletePublishedEntry
+        </button>
       </div>
+      <div
+        class="emotion-17 emotion-18"
+      />
     </div>
     <div
       class="emotion-21 emotion-22"
@@ -2482,7 +2474,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   padding: 0 10px;
 }
 
-.emotion-8 {
+.emotion-22 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2554,7 +2546,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   cursor: default;
 }
 
-.emotion-13 {
+.emotion-11 {
   position: relative;
   font-size: 14px;
   -webkit-user-select: none;
@@ -2564,11 +2556,11 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   margin: 0 10px;
 }
 
-.emotion-13 .emotion-15 {
+.emotion-11 .emotion-13 {
   color: #17a2b8;
 }
 
-.emotion-10 {
+.emotion-8 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -2589,7 +2581,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   color: #17a2b8;
 }
 
-.emotion-10:after {
+.emotion-8:after {
   color: #fff;
   width: 0;
   height: 0;
@@ -2606,26 +2598,26 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 }
 
 @media (max-width:1200px) {
-  .emotion-10 {
+  .emotion-8 {
     padding-left: 10px;
   }
 }
 
-.emotion-22 {
+.emotion-20 {
   position: relative;
 }
 
-.emotion-18 {
+.emotion-16 {
   position: relative;
   display: inline-block;
 }
 
-.emotion-18:hover + .emotion-21 {
+.emotion-16:hover + .emotion-19 {
   visibility: visible;
   opacity: 0.9;
 }
 
-.emotion-16 {
+.emotion-14 {
   display: inline-block;
   line-height: 0;
   width: 18px;
@@ -2635,23 +2627,23 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   transform: rotate(0deg);
 }
 
-.emotion-16 path:not(.no-fill),
-.emotion-16 circle:not(.no-fill),
-.emotion-16 polygon:not(.no-fill),
-.emotion-16 rect:not(.no-fill) {
+.emotion-14 path:not(.no-fill),
+.emotion-14 circle:not(.no-fill),
+.emotion-14 polygon:not(.no-fill),
+.emotion-14 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-16 path.clipped {
+.emotion-14 path.clipped {
   fill: transparent;
 }
 
-.emotion-16 svg {
+.emotion-14 svg {
   width: 100%;
   height: 100%;
 }
 
-.emotion-20 {
+.emotion-18 {
   visibility: hidden;
   width: 321px;
   background-color: #555;
@@ -2673,7 +2665,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-30 emotion-31"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -2698,7 +2690,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
       class="emotion-26 emotion-27"
     >
       <div
-        class="emotion-8 emotion-9"
+        class="emotion-22 emotion-23"
       >
         <button
           class="emotion-6 emotion-7"
@@ -2706,17 +2698,13 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
         >
           editor.editorToolbar.save
         </button>
-      </div>
-      <div
-        class="emotion-24 emotion-25"
-      >
         <div
-          class="emotion-12 emotion-13 emotion-14"
+          class="emotion-10 emotion-11 emotion-12"
         >
           <span
             aria-expanded="false"
             aria-haspopup="true"
-            class="emotion-10 emotion-11"
+            class="emotion-8 emotion-9"
             role="button"
             tabindex="0"
           >
@@ -2724,13 +2712,13 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
           </span>
         </div>
         <div
-          class="emotion-22 emotion-23"
+          class="emotion-20 emotion-21"
         >
           <div
-            class="emotion-18 emotion-19"
+            class="emotion-16 emotion-17"
           >
             <span
-              class="tooltip emotion-15 emotion-16 emotion-17"
+              class="tooltip emotion-13 emotion-14 emotion-15"
             >
               <svg
                 class="bi bi-info-circle"
@@ -2750,12 +2738,15 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
             </span>
           </div>
           <div
-            class="emotion-20 emotion-21"
+            class="emotion-18 emotion-19"
           >
             editor.editorToolbar.statusInfoTooltipInReview
           </div>
         </div>
       </div>
+      <div
+        class="emotion-24 emotion-25"
+      />
     </div>
     <div
       class="emotion-28 emotion-29"
@@ -2951,7 +2942,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3163,7 +3154,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-16 emotion-17"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3395,7 +3386,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3632,7 +3623,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -3869,7 +3860,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div
@@ -4106,7 +4097,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-18 emotion-19"
   >
     <mock-link
-      classname="css-1hk6ecw-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      classname="css-10u6bs8-ToolbarSectionBackLink-toolbarSection evqrzhe8"
       to=""
     >
       <div

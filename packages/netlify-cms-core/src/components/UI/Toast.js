@@ -27,7 +27,7 @@ const styles = {
     background-color: ${colors.background};
     color: ${colors.textLight};
     border-radius: ${lengths.borderRadius};
-    margin: 10px;
+    margin: 50px;
     padding: 20px;
     overflow: hidden;
   `,
