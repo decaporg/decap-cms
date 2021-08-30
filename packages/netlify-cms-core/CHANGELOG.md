@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.48.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.47.2...netlify-cms-core@2.48.0) (2021-08-30)
+
+
+### Features
+
+* remove space between buttons ([#5729](https://github.com/netlify/netlify-cms/issues/5729)) ([737573a](https://github.com/netlify/netlify-cms/commit/737573a98b0ae8a0ba13384ab0afca3d6fe134ed))
+
+
+
+
+
 ## [2.47.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.47.1...netlify-cms-core@2.47.2) (2021-08-17)
 
 
