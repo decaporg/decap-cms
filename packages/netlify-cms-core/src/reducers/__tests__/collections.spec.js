@@ -383,7 +383,9 @@ describe('collections', () => {
   });
 
   describe('selectEntryCollectionTitle', () => {
-    const entry = fromJS({ data: { title: 'entry title', otherField: 'other field' } });
+    const entry = fromJS({
+      data: { title: 'entry title', otherField: 'other field', emptyLinkTitle: '' },
+    });
 
     it('should return the entry title if set', () => {
       const collection = fromJS({
@@ -411,6 +413,24 @@ describe('collections', () => {
       });
 
       expect(selectEntryCollectionTitle(collection, entry)).toEqual('other field');
+    });
+
+    it('should return the entry title if identifier_field content is not defined in collection', () => {
+      const collection = fromJS({
+        identifier_field: 'missingLinkTitle',
+        fields: [{ name: 'title' }, { name: 'otherField' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, entry)).toEqual('entry title');
+    });
+
+    it('should return the entry title if identifier_field content is empty', () => {
+      const collection = fromJS({
+        identifier_field: 'emptyLinkTitle',
+        fields: [{ name: 'title' }, { name: 'otherField' }, { name: 'emptyLinkTitle' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, entry)).toEqual('entry title');
     });
 
     it('should return the entry label of a file collection', () => {
