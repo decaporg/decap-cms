@@ -581,12 +581,14 @@ export default class API {
     };
     const status = labelToStatus(label.name, this.cmsLabelPrefix);
     const updatedAt = pullRequest.updated_at;
+    const pullRequestAuthor = pullRequest.user.login;
     return {
       collection,
       slug,
       status,
       diffs: diffs.map(d => ({ path: d.path, newFile: d.newFile, id: d.sha })),
       updatedAt,
+      pullRequestAuthor,
     };
   }
 

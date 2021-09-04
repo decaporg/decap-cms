@@ -40,6 +40,7 @@ export interface UnpublishedEntryDiff {
 }
 
 export interface UnpublishedEntry {
+  pullRequestAuthor?: string;
   slug: string;
   collection: string;
   status: string;
