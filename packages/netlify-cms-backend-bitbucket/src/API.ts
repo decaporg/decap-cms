@@ -84,6 +84,7 @@ type BitBucketPullRequest = {
       name: string;
     };
   };
+  author: BitBucketUser;
 };
 
 type BitBucketPullRequests = {
@@ -699,6 +700,7 @@ export default class API {
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label, this.cmsLabelPrefix);
     const updatedAt = pullRequest.updated_on;
+    const pullRequestAuthor = pullRequest.author.nickname;
     return {
       collection,
       slug,
@@ -708,6 +710,7 @@ export default class API {
         .filter(d => d.status !== 'deleted')
         .map(d => ({ path: d.path, newFile: d.newFile, id: '' })),
       updatedAt,
+      pullRequestAuthor,
     };
   }
 
