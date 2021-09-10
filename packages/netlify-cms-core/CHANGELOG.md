@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.49.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.48.0...netlify-cms-core@2.49.0) (2021-09-10)
+
+
+### Bug Fixes
+
+* remove svg checkmark from editor toolbar ([#5776](https://github.com/netlify/netlify-cms/issues/5776)) ([6190822](https://github.com/netlify/netlify-cms/commit/6190822506c796833dda0ffe1686af3564d8d177))
+
+
+### Features
+
+* pass strikethrough markdown for hint message on field ([#5727](https://github.com/netlify/netlify-cms/issues/5727)) ([27f0448](https://github.com/netlify/netlify-cms/commit/27f04484e688ac4b4f990548e643297134647299))
+
+
+
+
+
 # [2.48.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.47.2...netlify-cms-core@2.48.0) (2021-08-30)
 
 
