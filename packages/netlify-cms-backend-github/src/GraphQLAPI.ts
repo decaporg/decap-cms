@@ -72,6 +72,13 @@ type GraphQLPullRequest = {
     id: string;
     isFork: boolean;
   };
+  user: GraphQLPullsListResponseItemUser;
+};
+
+type GraphQLPullsListResponseItemUser = {
+  avatar_url: string;
+  login: string;
+  url: string;
 };
 
 function transformPullRequest(pr: GraphQLPullRequest) {

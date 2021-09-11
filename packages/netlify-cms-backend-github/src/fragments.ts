@@ -51,6 +51,9 @@ export const pullRequest = gql`
     title
     merged_at: mergedAt
     updated_at: updatedAt
+    user: author {
+      login
+    }
     repository {
       ...RepositoryParts
     }
