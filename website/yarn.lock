@@ -8501,10 +8501,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.41:
-  version "2.15.41"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.41.tgz#399d0bca5a122e620fff4dae7cd648f75f4e82c6"
-  integrity sha512-MYVENuJ+o36IkXUA54/i+QBbYtLA6j1r2uQtfibU9AgAyCQTcfBZs3npuk/lj/3w+DkQVEA24oLUVX11zIx1ew==
+netlify-cms-app@^2.15.42:
+  version "2.15.42"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.42.tgz#0e5753a034a8ed93116752fbf4109c121b8875e1"
+  integrity sha512-BoCQcLsagHFAquYQyMl6UPq/H0CPUKbOfC+crLnmjvYI9mp/o8Oslub/ffmqaQjic7hD/XCObBSA0YFcQkJccw==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8529,8 +8529,8 @@ netlify-cms-app@^2.15.41:
     netlify-cms-widget-boolean "^2.4.1"
     netlify-cms-widget-code "^1.3.3"
     netlify-cms-widget-colorstring "^1.1.1"
-    netlify-cms-widget-date "^2.6.2"
-    netlify-cms-widget-datetime "^2.7.3"
+    netlify-cms-widget-date "^2.6.3"
+    netlify-cms-widget-datetime "^2.7.4"
     netlify-cms-widget-file "^2.11.1"
     netlify-cms-widget-image "^2.8.1"
     netlify-cms-widget-list "^2.10.1"
@@ -8720,17 +8720,19 @@ netlify-cms-widget-colorstring@^1.1.1:
     react-color "^2.18.1"
     validate-color "^2.1.0"
 
-netlify-cms-widget-date@^2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/netlify-cms-widget-date/-/netlify-cms-widget-date-2.6.2.tgz#f172d8f95d5ea44f1d7a11d4eaa92001797c35a5"
-  integrity sha512-RjYuAfiIuWKwqkhXVGPst0BZv0IVKCWcwPpEH+wEcqDFFMkUplKJFnv1x2yuP3nJHpNvJD5jBA8vtDrjimANfw==
+netlify-cms-widget-date@^2.6.3:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/netlify-cms-widget-date/-/netlify-cms-widget-date-2.6.3.tgz#0858949211e8e8115ddcb11d79002bce53f5ed80"
+  integrity sha512-ea9muRQZsQtk61s8VhgwtoMfz7FJpPF7xx4xFhQ7UTrGUOat/mtLxhIb+XASIdhzQ8lK+W+BfnH0nZqKpOR/9g==
   dependencies:
-    react-datetime "^3.0.0"
+    react-datetime "^3.1.1"
 
-netlify-cms-widget-datetime@^2.7.3:
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/netlify-cms-widget-datetime/-/netlify-cms-widget-datetime-2.7.3.tgz#13a4f67dc9fad96690e0229e84b5ae6632bea25d"
-  integrity sha512-X0ZDdUd7uO1Q2ov1DJP0yP7sEHZ/bRw+sBr//58LYx1Ar5R9aPN3VtPAfpEITOLi7APezJtu7RwlSwyc7cXMSw==
+netlify-cms-widget-datetime@^2.7.4:
+  version "2.7.4"
+  resolved "https://registry.yarnpkg.com/netlify-cms-widget-datetime/-/netlify-cms-widget-datetime-2.7.4.tgz#f5a456ed1d948b1ef3d90f2882697ce7f83ec1b6"
+  integrity sha512-7rMbpQvjEY85ogts3MBcO+JoIny9k2iG7QHozEhsPxn0EGxhTOVQV8PJGQpesEJNIPXm0N4n3/JDyF6y4xWSIg==
+  dependencies:
+    react-datetime "^3.1.1"
 
 netlify-cms-widget-file@^2.11.1:
   version "2.11.1"
@@ -10142,7 +10144,7 @@ react-color@^2.18.1:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
-react-datetime@^3.0.0:
+react-datetime@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/react-datetime/-/react-datetime-3.1.1.tgz#adc346efda47653cfff9259c979f03f56106e48c"
   integrity sha512-gHCTjAniCcMb6jdXpz+MpVe/uCeaHNDOofg+l41nLlJI3uBLBMV40CQbGB2TCTUpCzGT1mCs4vQzKGMjXO/WWQ==
