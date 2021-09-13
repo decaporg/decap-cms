@@ -8501,10 +8501,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.42:
-  version "2.15.42"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.42.tgz#0e5753a034a8ed93116752fbf4109c121b8875e1"
-  integrity sha512-BoCQcLsagHFAquYQyMl6UPq/H0CPUKbOfC+crLnmjvYI9mp/o8Oslub/ffmqaQjic7hD/XCObBSA0YFcQkJccw==
+netlify-cms-app@^2.15.43:
+  version "2.15.43"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.43.tgz#99a1385bbe53a6a5ebd0263520b061a1819f8bc7"
+  integrity sha512-bxbYyh3khug2K7MOb3VKGC6BkiP3+BKpYXE7/wttbnIs0ubgVCfUi1epP+zWE0ObMq9S0iRlhPovZoYbecO7IA==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8538,7 +8538,7 @@ netlify-cms-app@^2.15.42:
     netlify-cms-widget-markdown "^2.14.2"
     netlify-cms-widget-number "^2.5.0"
     netlify-cms-widget-object "^2.7.1"
-    netlify-cms-widget-relation "^2.10.3"
+    netlify-cms-widget-relation "^2.10.4"
     netlify-cms-widget-select "^2.8.2"
     netlify-cms-widget-string "^2.3.0"
     netlify-cms-widget-text "^2.4.1"
@@ -8796,10 +8796,10 @@ netlify-cms-widget-object@^2.7.1:
   resolved "https://registry.yarnpkg.com/netlify-cms-widget-object/-/netlify-cms-widget-object-2.7.1.tgz#ba91009e8ae19f8d5c408233e8a953c9d614298c"
   integrity sha512-vgqAEj+mwt5oBh2wjaqLxya1lYAjeWlLUjDliwPCM9BQcQbRA78qyuEC7L3vtZ6py744AJCCoPwvGvfS4aO+Gw==
 
-netlify-cms-widget-relation@^2.10.3:
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/netlify-cms-widget-relation/-/netlify-cms-widget-relation-2.10.3.tgz#d388d4ff328c1c50e6242ba6ce825543761f52c4"
-  integrity sha512-4Y/3WEljLp5s57gh03YKeZflHN1g95EKhbUgKFd7Pn5YXmEhoZO73QsaLyobjlmVKFMk5q+MCdkOgZbgqIZ2bg==
+netlify-cms-widget-relation@^2.10.4:
+  version "2.10.4"
+  resolved "https://registry.yarnpkg.com/netlify-cms-widget-relation/-/netlify-cms-widget-relation-2.10.4.tgz#d7d7e35db96b613d3e52a7ae5e18409cc53c5062"
+  integrity sha512-ZedYAZ6cDgPYVltWo44Lv7l/Y9b1T6uEOdma9RSabrTh+jvf5bi28Yrc317Z05M57K6lOrXgLDCQHZfY8vQfxg==
   dependencies:
     react-select "^4.0.0"
     react-window "^1.8.5"
