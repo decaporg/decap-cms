@@ -14909,10 +14909,10 @@ react-color@^2.18.1:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
-react-datetime@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/react-datetime/-/react-datetime-3.1.0.tgz#fa10306287d50bf916ab525ce7d6d637ecfc71b0"
-  integrity sha512-Vx6/wr03r9+mDtXv6rHTwjqZ/Hbq889jgc8/pD2Y7Hx+pf+Kr7KcTWIEDNMWGE4ZGi2BiXn+fjqVMnwIjxWguA==
+react-datetime@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-datetime/-/react-datetime-3.1.1.tgz#adc346efda47653cfff9259c979f03f56106e48c"
+  integrity sha512-gHCTjAniCcMb6jdXpz+MpVe/uCeaHNDOofg+l41nLlJI3uBLBMV40CQbGB2TCTUpCzGT1mCs4vQzKGMjXO/WWQ==
   dependencies:
     prop-types "^15.5.7"
 
