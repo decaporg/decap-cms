@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.50.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.49.0...netlify-cms-core@2.50.0) (2021-09-13)
+
+
+### Features
+
+* fallback to title when identifier_field is missing ([#5775](https://github.com/netlify/netlify-cms/issues/5775)) ([bd46a75](https://github.com/netlify/netlify-cms/commit/bd46a7540328f45abad378a672274edc5859870b))
+
+
+
+
+
 # [2.49.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.48.0...netlify-cms-core@2.49.0) (2021-09-10)
 
 
