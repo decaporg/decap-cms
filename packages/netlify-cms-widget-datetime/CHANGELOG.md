@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-datetime@2.7.3...netlify-cms-widget-datetime@2.7.4) (2021-09-13)
+
+
+### Bug Fixes
+
+* **deps:** update react-datetime ([#5803](https://github.com/netlify/netlify-cms/issues/5803)) ([477efa5](https://github.com/netlify/netlify-cms/commit/477efa58f1a26e60c9ba5c0405e11132ecb7c68a))
+
+
+
+
+
 ## [2.7.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-datetime@2.7.2...netlify-cms-widget-datetime@2.7.3) (2021-08-17)
 
 
