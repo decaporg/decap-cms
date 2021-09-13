@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-relation@2.10.3...netlify-cms-widget-relation@2.10.4) (2021-09-13)
+
+
+### Bug Fixes
+
+* **widget-relation:** don't invoke onChange if component is not mounted ([#5804](https://github.com/netlify/netlify-cms/issues/5804)) ([bd35474](https://github.com/netlify/netlify-cms/commit/bd35474b928642af3fa3be434928709fd6e9e844))
+
+
+
+
+
 ## [2.10.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.2...netlify-cms-widget-relation@2.10.3) (2021-05-23)
 
 
