@@ -151,11 +151,12 @@ export default class RelationControl extends React.Component {
       this.mounted && this.setState({ initialOptions });
 
       //set metadata
-      onChange(value, {
-        [field.get('name')]: {
-          [field.get('collection')]: metadata,
-        },
-      });
+      this.mounted &&
+        onChange(value, {
+          [field.get('name')]: {
+            [field.get('collection')]: metadata,
+          },
+        });
     }
   }
 
