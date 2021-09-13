@@ -378,7 +378,14 @@ export function selectEntryCollectionTitle(collection: Collection, entry: EntryM
   // try to infer a title field from the entry data
   const entryData = entry.get('data');
   const titleField = selectInferedField(collection, 'title');
-  return titleField && entryData.getIn(keyToPathArray(titleField));
+  const result = titleField && entryData.getIn(keyToPathArray(titleField));
+
+  // if the custom field does not yield a result, fallback to 'title'
+  if (!result && titleField !== 'title') {
+    return entryData.getIn(keyToPathArray('title'));
+  }
+
+  return result;
 }
 
 export function selectDefaultSortableFields(
