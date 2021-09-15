@@ -253,7 +253,7 @@ export async function invokeEvent({ name, data }) {
         _data = { ...data, entry };
       }
     } catch (e) {
-      console.warn(`Failed running handler for event ${name} with message: ${e.message}`);
+      throw new Error(`Failed running handler for event ${name} with message: ${e.message}`);
     }
   }
   return _data.entry.get('data');
