@@ -655,7 +655,7 @@ export default class API {
     const label = mergeRequest.labels.find(l => isCMSLabel(l, this.cmsLabelPrefix)) as string;
     const status = labelToStatus(label, this.cmsLabelPrefix);
     const updatedAt = mergeRequest.updated_at;
-    const pullRequestAuthor = mergeRequest.author.username;
+    const pullRequestAuthor = mergeRequest.author.name;
     return {
       collection,
       slug,
