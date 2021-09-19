@@ -36,7 +36,7 @@
     "gotrue-js": "^0.9.24",
     "gray-matter": "^4.0.2",
     "history": "^4.7.2",
-    "immer": "^9.0.0",
+    "immer": "^9.0.6",
     "js-base64": "^3.0.0",
     "jwt-decode": "^3.0.0",
     "node-polyglot": "^2.3.0",
