@@ -36,7 +36,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "netlify-cms-app": "^2.15.44",
-    "prismjs": "^1.21.0",
+    "prismjs": "^1.25.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-github-btn": "^1.1.1",
