@@ -84,9 +84,9 @@ const ca = {
         max: '%{fieldLabel} ha de ser %{maxValue} o més.',
         rangeCount: '%{fieldLabel} ha de tenir entre %{minCount} i %{maxCount} element(s).',
         rangeCountExact: '%{fieldLabel} ha de tenir exactament %{count} element(s).',
-        rangeMin: '%{fieldLabel} ha de tenir com a mínim %{minCount} element(s).',
+        rangeMin: '%{fieldLabel} ha de tenir com a mínim %{minCount} d\'element(s).',
         rangeMax: '%{fieldLabel} ha de ser %{maxCount} o inferior.',
-        invalidPath: `'%{path}' no és un camí vàlid`,
+        invalidPath: `'%{path}' no és una ruta valida`,
         pathExists: `'%{path}' ja existeix`,
       },
       i18n: {
@@ -97,7 +97,7 @@ const ca = {
       onLeavePage: 'Estàs segur que vols deixar aquesta pàgina?',
       onUpdatingWithUnsavedChanges:
         "Tens canvis no guardats, si us plau, guarda'ls abans d'actualitzar l'estat.",
-      onPublishingNotReady: 'si us plau, actualitza l\'estat a "Ready" abans de publicar.',
+      onPublishingNotReady: 'Si us plau, actualitza l\'estat a "Llest" abans de publicar.',
       onPublishingWithUnsavedChanges:
         "Tens canvis no guardats, si us plau, guarda'ls abans de publicar-los.",
       onPublishing: 'Estàs segur que vols publicar aquesta entrada?',
@@ -135,7 +135,7 @@ const ca = {
       deleting: 'Eliminant...',
       updating: 'Actualizant...',
       status: 'Estat: %{status}',
-      backCollection: ' Escrivint a la colecció %{collectionLabel}',
+      backCollection: 'Escrivint a la colecció %{collectionLabel}',
       unsavedChanges: 'Canvis no guardats',
       changesSaved: 'Canvis guardats',
       draft: 'Esborrany',
@@ -213,8 +213,8 @@ const ca = {
       loading: 'Carregant...',
       noResults: 'Sense resultats.',
       noAssetsFound: 'Arxius no trobats.',
-      noImagesFound: 'Imatges no trobats.',
-      private: 'Privat ',
+      noImagesFound: 'Imatges no trobades.',
+      private: 'Privat',
       images: 'Imatges',
       mediaAssets: 'Arxius multimèdia',
       search: 'Buscar...',
@@ -233,7 +233,7 @@ const ca = {
     errorBoundary: {
       title: 'Error',
       details: "S'ha produït un error - si us plau ",
-      reportIt: "informa'ns d'això a GitHub.",
+      reportIt: "Informa'ns d'això a GitHub.",
       detailsHeading: 'Detalls',
       recoveredEntry: {
         heading: 'Document recuperat',
