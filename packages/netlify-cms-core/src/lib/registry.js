@@ -31,6 +31,7 @@ const registry = {
   mediaLibraries: [],
   locales: {},
   eventHandlers,
+  formats: {},
 };
 
 export default {
@@ -58,6 +59,10 @@ export default {
   removeEventListener,
   getEventListeners,
   invokeEvent,
+  registerCustomFormat,
+  getCustomFormats,
+  getCustomFormatsExtensions,
+  getCustomFormatsFormatters,
 };
 
 /**
@@ -283,4 +288,24 @@ export function registerLocale(locale, phrases) {
 
 export function getLocale(locale) {
   return registry.locales[locale];
+}
+
+export function registerCustomFormat(name, extension, formatter) {
+  registry.formats[name] = { extension, formatter };
+}
+
+export function getCustomFormats() {
+  return registry.formats;
+}
+
+export function getCustomFormatsExtensions() {
+  return Object.entries(registry.formats).reduce(function (acc, [name, { extension }]) {
+    return { ...acc, [name]: extension };
+  }, {});
+}
+
+export function getCustomFormatsFormatters() {
+  return Object.entries(registry.formats).reduce(function (acc, [name, { formatter }]) {
+    return { ...acc, [name]: formatter };
+  }, {});
 }

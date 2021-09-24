@@ -5,6 +5,7 @@ import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
 import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+import { getCustomFormatsExtensions, getCustomFormatsFormatters } from '../lib/registry';
 
 import type { Delimiter } from './frontmatter';
 import type { Collection, EntryObject, Format } from '../types/redux';
@@ -22,6 +23,10 @@ export const formatExtensions = {
   'toml-frontmatter': 'md',
   'yaml-frontmatter': 'md',
 };
+
+export function getFormatExtensions() {
+  return { ...formatExtensions, ...getCustomFormatsExtensions() };
+}
 
 export const extensionFormatters = {
   yml: yamlFormatter,
@@ -43,6 +48,7 @@ function formatByName(name: Format, customDelimiter?: Delimiter) {
     'json-frontmatter': frontmatterJSON(customDelimiter),
     'toml-frontmatter': frontmatterTOML(customDelimiter),
     'yaml-frontmatter': frontmatterYAML(customDelimiter),
+    ...getCustomFormatsFormatters(),
   }[name];
 }
 
