@@ -180,6 +180,20 @@ export default class GitHub implements Implementation {
       : this.authenticate(user);
   }
 
+  async setDefaultBranch() {
+    try {
+      const masterBranch = await this.api!.getBranch('master')
+      if (!masterBranch) {
+      // Get default branch of the repo
+        const defaultBranch = await this.api!.newGetDefaultBranch()
+        this.branch = defaultBranch || ''
+      } else {
+      this.branch = 'master'
+    }
+    } catch (e) {
+      console.warn(e)
+    }
+  }
   async pollUntilForkExists({ repo, token }: { repo: string; token: string }) {
     const pollDelay = 250; // milliseconds
     let repoExists = false;
