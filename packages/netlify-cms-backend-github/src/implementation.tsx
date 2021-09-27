@@ -116,7 +116,7 @@ export default class GitHub implements Implementation {
       this.repo = this.originRepo = config.backend.repo || '';
     }
     this.alwaysForkEnabled = config.backend.always_fork || false;
-    this.branch = config.backend.branch?.trim() || 'master';
+    this.branch = config.backend.branch?.trim() || '';
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
@@ -345,7 +345,14 @@ export default class GitHub implements Implementation {
     if (!isCollab) {
       throw new Error('Your GitHub user account does not have access to this repo.');
     }
+    // In the constructor, `this.branch` is set by reading the config file
+    // If it is an empty string at this point,
+    // it means there is no `branch` property set in the config
 
+  if (this.branch === '') {
+    await this.setDefaultBranch()
+  }
+    
     // Authorized user
     return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };
   }
