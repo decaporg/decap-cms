@@ -42,7 +42,7 @@ type GitHubCompareCommit = Octokit.ReposCompareCommitsResponseCommitsItem;
 type GitHubAuthor = Octokit.GitCreateCommitResponseAuthor;
 type GitHubCommitter = Octokit.GitCreateCommitResponseCommitter;
 type GitHubPull = Octokit.PullsListResponseItem;
-type GithubRepo = Octokit.ReposGetResponse
+type GithubRepo = Octokit.ReposGetResponse;
 
 export const API_NAME = 'GitHub';
 
@@ -1191,13 +1191,11 @@ export default class API {
 
   async newGetDefaultBranch() {
     try {
-      const result: GithubRepo = await this.request(
-        `${this.originRepoURL}`
-      )
-      return result.default_branch
+      const result: GithubRepo = await this.request(`${this.originRepoURL}`);
+      return result.default_branch;
     } catch (e) {
-      console.error('Problem fetching repo data from Github')
-      return null
+      console.error('Problem fetching repo data from Github');
+      return null;
     }
   }
 

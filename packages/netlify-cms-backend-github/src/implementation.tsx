@@ -182,16 +182,16 @@ export default class GitHub implements Implementation {
 
   async setDefaultBranch() {
     try {
-      const masterBranch = await this.api!.getBranch('master')
+      const masterBranch = await this.api!.getBranch('master');
       if (!masterBranch) {
-      // Get default branch of the repo
-        const defaultBranch = await this.api!.newGetDefaultBranch()
-        this.branch = defaultBranch || ''
+        // Get default branch of the repo
+        const defaultBranch = await this.api!.newGetDefaultBranch();
+        this.branch = defaultBranch || '';
       } else {
-      this.branch = 'master'
-    }
+        this.branch = 'master';
+      }
     } catch (e) {
-      console.warn(e)
+      console.warn(e);
     }
   }
   async pollUntilForkExists({ repo, token }: { repo: string; token: string }) {
@@ -349,10 +349,10 @@ export default class GitHub implements Implementation {
     // If it is an empty string at this point,
     // it means there is no `branch` property set in the config
 
-  if (this.branch === '') {
-    await this.setDefaultBranch()
-  }
-    
+    if (this.branch === '') {
+      await this.setDefaultBranch();
+    }
+
     // Authorized user
     return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };
   }
