@@ -7,7 +7,7 @@ import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
-import { formatExtensions } from '../formats/formats';
+import { getFormatExtensions } from '../formats/formats';
 import { selectMediaFolder } from './entries';
 import { summaryFormatter } from '../lib/formatters';
 
@@ -48,7 +48,7 @@ const selectors = {
     entryExtension(collection: Collection) {
       return (
         collection.get('extension') ||
-        get(formatExtensions, collection.get('format') || 'frontmatter')
+        get(getFormatExtensions(), collection.get('format') || 'frontmatter')
       ).replace(/^\./, '');
     },
     fields(collection: Collection) {

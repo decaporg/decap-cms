@@ -6,6 +6,11 @@
   <title>Netlify CMS Development Test</title>
   <script>
   window.repoFiles = {
+    _translations: {
+      "common.json": {
+        content: '{"__ns": "common", "key1": "hello"}'
+      }
+    },
     _posts: {
       "2015-02-14-this-is-a-post.md": {
         content: "---\ntitle: This is a YAML front matter post\nimage: /nf-logo.png\ndate: 2015-02-14T00:00:00.000Z\n---\n\n# I Am a Title in Markdown\n\nHello, world\n\n* One Thing\n* Another Thing\n* A Third Thing\n"
@@ -111,6 +116,9 @@
   </script>
 </head>
 <body>
+  <script>
+  globalThis.CMS_MANUAL_INIT = true
+  </script>
 
   <script src="dist/netlify-cms.js"></script>
   <script>
@@ -237,6 +245,30 @@
         );
       }
     });
+
+    const PreWidget = createClass({
+      render: function() {
+        const { value, fieldsMetaData } = this.props;
+        return value ? h('pre', { style: style },
+          value.toJS()
+        ) : null;
+      }
+    });
+
+    CMS.registerCustomFormat('custom', 'json', {
+      fromFile(content) {
+        const {__ns, ...others} = JSON.parse(content);
+        const list = Object.entries(others).map(([key, value]) => ({key, value}))
+        return {namespace: __ns, list};
+      },
+
+      toFile(data) {
+        const keys = data.list.reduce((acc, item) => ({...acc, [item.key]: item.value}), {})
+        const raw = {__ns: data.namespace, ...keys};
+        return JSON.stringify(raw, null, 2);
+      },
+    });
+    CMS.init()
   </script>
 </body>
 </html>

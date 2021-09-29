@@ -7,6 +7,27 @@ publish_mode: editorial_workflow
 media_folder: assets/uploads
 
 collections: # A list of collections the CMS should be able to edit
+  - name: 'translations'
+    label: 'Translations'
+    folder: '_translations'
+    i18n:
+      structure: 'multiple_folders'
+    format: custom
+    identifier_field: namespace
+    fields:
+      - label: Namespace
+        name: namespace
+        widget: string
+        i18n: false
+      - label: 'Items'
+        label_singular: 'Item'
+        name: 'list'
+        widget: list
+        fields:
+          - name: key
+            widget: string
+          - name: value
+            widget: string
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
