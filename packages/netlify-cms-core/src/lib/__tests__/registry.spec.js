@@ -181,9 +181,7 @@ describe('registry', () => {
           registerEventListener({ name, handler });
           const data = { entry: fromJS({ data: {} }) };
 
-          await expect(invokeEvent({ name, data })).rejects.toThrow(
-            `Failed running handler for event ${name} with message: handler failed!`,
-          );
+          await expect(invokeEvent({ name, data })).rejects.toThrow('handler failed!');
         });
       });
 
