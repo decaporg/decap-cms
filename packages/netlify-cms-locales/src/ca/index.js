@@ -84,7 +84,7 @@ const ca = {
         max: '%{fieldLabel} ha de ser %{maxValue} o més.',
         rangeCount: '%{fieldLabel} ha de tenir entre %{minCount} i %{maxCount} element(s).',
         rangeCountExact: '%{fieldLabel} ha de tenir exactament %{count} element(s).',
-        rangeMin: '%{fieldLabel} ha de tenir com a mínim %{minCount} d\'element(s).',
+        rangeMin: "%{fieldLabel} ha de tenir com a mínim %{minCount} d'element(s).",
         rangeMax: '%{fieldLabel} ha de ser %{maxCount} o inferior.',
         invalidPath: `'%{path}' no és una ruta valida`,
         pathExists: `'%{path}' ja existeix`,
