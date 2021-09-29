@@ -181,17 +181,9 @@ describe('registry', () => {
           registerEventListener({ name, handler });
           const data = { entry: fromJS({ data: {} }) };
 
-          let result = undefined;
-
-          try {
-            result = await invokeEvent({ name, data });
-          } catch (e) {
-            expect(e).toEqual(
-              new Error(`Failed running handler for event ${name} with message: handler failed!`),
-            );
-          } finally {
-            expect(result).toBeUndefined();
-          }
+          await expect(invokeEvent({ name, data })).rejects.toThrow(
+            `Failed running handler for event ${name} with message: handler failed!`,
+          );
         });
       });
 
