@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.35.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.35.0...netlify-cms-locales@1.35.1) (2021-09-29)
+
+
+### Bug Fixes
+
+* **translations:** correct catalan locale ([#5836](https://github.com/netlify/netlify-cms/issues/5836)) ([75e10ae](https://github.com/netlify/netlify-cms/commit/75e10aee5af30dda79297cbfe93b57c15f980592))
+
+
+
+
+
 # [1.35.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.34.0...netlify-cms-locales@1.35.0) (2021-08-24)
 
 
