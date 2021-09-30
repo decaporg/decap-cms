@@ -8,7 +8,7 @@ import {
   statusToLabel,
   labelToStatus,
   parseContentKey,
-} from 'netlify-cms-lib-util/src/APIUtils';
+} from 'netlify-cms-lib-util';
 import { parse } from 'what-the-diff';
 import simpleGit from 'simple-git';
 import { Mutex, withTimeout } from 'async-mutex';

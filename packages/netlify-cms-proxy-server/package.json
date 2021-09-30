@@ -6,6 +6,7 @@
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
   "main": "dist/index",
+  "types": "dist/index.d.ts",
   "keywords": [
     "netlify",
     "netlify-cms",
@@ -13,7 +14,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "webpack",
+    "build": "tsc",
     "prestart": "yarn build",
     "start": "node dist/index.js",
     "develop": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' --files src/index.ts",
@@ -29,6 +30,7 @@
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "simple-git": "^3.0.0",
+    "netlify-cms-lib-util": "^2.13.3",
     "what-the-diff": "^0.6.0",
     "winston": "^3.3.3"
   },
@@ -41,14 +43,9 @@
     "@types/node": "^16.0.0",
     "@types/vfile-message": "^2.0.0",
     "jest": "^27.0.0",
-    "netlify-cms-lib-util": "^2.15.1",
     "nodemon": "^2.0.2",
     "ts-jest": "^27.0.0",
-    "ts-loader": "^8.0.0",
-    "ts-node": "^10.0.0",
-    "tsconfig-paths-webpack-plugin": "^3.2.0",
-    "webpack": "^4.41.5",
-    "webpack-node-externals": "^3.0.0"
+    "ts-node": "^10.0.0"
   },
   "engines": {
     "node": ">=v10.22.1"

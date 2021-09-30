@@ -12,7 +12,8 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "declaration": true
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*spec.ts"]

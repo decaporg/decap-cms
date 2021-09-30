@@ -6,6 +6,7 @@
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-lib-util.js",
+  "types": "src/index.ts",
   "license": "MIT",
   "keywords": [
     "netlify-cms"
@@ -24,5 +25,8 @@
   "peerDependencies": {
     "immutable": "^3.7.6",
     "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "@types/semaphore": "^1.1.1"
   }
 }
