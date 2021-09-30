@@ -5,6 +5,9 @@ import { createLogger } from './logger';
 
 import type express from 'express';
 
+export { localGitMiddleware } from './middlewares/localGit';
+export { localFsMiddleware } from './middlewares/localFs';
+
 type Options = {
   logLevel?: string;
 };
