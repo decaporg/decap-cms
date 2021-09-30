@@ -304,8 +304,13 @@ export function getCustomFormatsExtensions() {
   }, {});
 }
 
+/** @type {() => Record<string, unknown>} */
 export function getCustomFormatsFormatters() {
   return Object.entries(registry.formats).reduce(function (acc, [name, { formatter }]) {
     return { ...acc, [name]: formatter };
   }, {});
+}
+
+export function getFormatter(name) {
+  return registry.formats[name]?.formatter;
 }

@@ -8,7 +8,7 @@ import {
 import ajvErrors from 'ajv-errors';
 import uuid from 'uuid/v4';
 
-import { getFormatExtensions, frontmatterFormats, extensionFormatters } from '../formats/formats';
+import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
 
@@ -231,7 +231,7 @@ function getConfigSchema() {
                 preview: { type: 'boolean' },
               },
             },
-            format: { type: 'string', enum: Object.keys(getFormatExtensions()) },
+            format: { type: 'string' },
             extension: { type: 'string' },
             frontmatter_delimiter: {
               type: ['string', 'array'],

@@ -36,15 +36,7 @@ declare module 'netlify-cms-core' {
     value: any;
   }
 
-  export type CmsCollectionFormatType =
-    | 'yml'
-    | 'yaml'
-    | 'toml'
-    | 'json'
-    | 'frontmatter'
-    | 'yaml-frontmatter'
-    | 'toml-frontmatter'
-    | 'json-frontmatter';
+  export type CmsCollectionFormatType = string;
 
   export type CmsAuthScope = 'repo' | 'public_repo';
 
@@ -498,6 +490,11 @@ declare module 'netlify-cms-core' {
 
   export type CmsLocalePhrases = any; // TODO: type properly
 
+  export type Formatter = {
+    fromFile(content: string): unknown;
+    toFile(data: object, sortedKeys?: string[], comments?: Record<string, string>): string;
+  };
+
   export interface CmsRegistry {
     backends: {
       [name: string]: CmsRegistryBackend;
@@ -516,6 +513,9 @@ declare module 'netlify-cms-core' {
     mediaLibraries: CmsMediaLibrary[];
     locales: {
       [name: string]: CmsLocalePhrases;
+    };
+    formats: {
+      [name: string]: Formatter;
     };
   }
 
@@ -576,6 +576,7 @@ declare module 'netlify-cms-core' {
       serializer: CmsWidgetValueSerializer,
     ) => void;
     resolveWidget: (name: string) => CmsWidget | undefined;
+    registerCustomFormat: (name: string, extension: string, formatter: Formatter) => void;
   }
 
   export const NetlifyCmsCore: CMS;
