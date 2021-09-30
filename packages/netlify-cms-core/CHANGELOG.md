@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.51.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.50.0...netlify-cms-core@2.51.0) (2021-09-30)
+
+
+### Features
+
+* change invoke CMS Events to throw Error ([#5813](https://github.com/netlify/netlify-cms/issues/5813)) ([90bf4cb](https://github.com/netlify/netlify-cms/commit/90bf4cb06a630b8839e17c6b44b0bd2871fdece4))
+
+
+
+
+
 # [2.50.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.49.0...netlify-cms-core@2.50.0) (2021-09-13)
 
 
