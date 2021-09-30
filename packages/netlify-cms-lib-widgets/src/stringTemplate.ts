@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { Map } from 'immutable';
-import { basename, dirname, extname } from 'path';
+import { basename, dirname, extname, join } from 'path';
 import { get, trimEnd } from 'lodash';
 
 const filters = [
@@ -222,6 +222,13 @@ export function addFileTemplateFields(entryPath: string, fields: Map<string, str
     map.set('dirname', dirnameExcludingFolder);
     map.set('filename', filename);
     map.set('extension', extension === '' ? extension : extension.substr(1));
+
+    const imagePath = map.get('image')
+    const imageFileName = imagePath?.split('/').pop()
+    const mediaFolder = map.get('media_folder')
+    if (mediaFolder && imageFileName) {
+      map.set('image', join(mediaFolder, imageFileName))
+    }
   });
 
   return fields;
