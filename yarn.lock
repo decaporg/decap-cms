@@ -3236,9 +3236,9 @@
     defer-to-connect "^1.0.1"
 
 "@testing-library/dom@^8.0.0":
-  version "8.7.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.7.0.tgz#9fdcc1bf34dfa49b63815a3f76491330cf115724"
-  integrity sha512-8oOfBG51v8aN9D8eehwzgnEETf9Lxv/3dZyPZuar1JAp9OK0I9d7Y2MR6TEQyj/E/iN1kCIeYaCI445s5C9RDg==
+  version "8.7.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.7.1.tgz#c17b1e90e682c7945b2d88ce2f078e522c775ce3"
+  integrity sha512-nMqxP8qPHgYAiIPMVb6zko5DInPJ/LdILgrkWB5HBJhBCIU5avso8pU9IafnXVGLRq+LDtbvo0LuVbjEo27BgQ==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -14430,7 +14430,7 @@ pretty-format@^24.9.0:
     ansi-styles "^3.2.0"
     react-is "^16.8.4"
 
-pretty-format@^27.0.0, pretty-format@^27.0.2:
+pretty-format@^27.0.0:
   version "27.2.3"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.2.3.tgz#c76710de6ebd8b1b412a5668bacf4a6c2f21a029"
   integrity sha512-wvg2HzuGKKEE/nKY4VdQ/LM8w8pRZvp0XpqhwgaZBbjTwd5UdF2I4wvwZjyUwu8G+HI6g4t6u9b2FZlKhlzxcQ==
@@ -14440,7 +14440,7 @@ pretty-format@^27.0.0, pretty-format@^27.0.2:
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
 
-pretty-format@^27.2.3, pretty-format@^27.2.4:
+pretty-format@^27.0.2, pretty-format@^27.2.3, pretty-format@^27.2.4:
   version "27.2.4"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.2.4.tgz#08ea39c5eab41b082852d7093059a091f6ddc748"
   integrity sha512-NUjw22WJHldzxyps2YjLZkUj6q1HvjqFezkB9Y2cklN8NtVZN/kZEXGZdFw4uny3oENzV5EEMESrkI0YDUH8vg==
