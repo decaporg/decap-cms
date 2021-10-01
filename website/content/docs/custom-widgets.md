@@ -109,7 +109,7 @@ CMS.registerEditorComponent(definition)
 
 **Params**
 
-* **definition:** The component definition; must specify: id, label, fields, patterns, fromBlock, toBlock, toPreview
+* **definition:** The component definition; must specify: id, label, fields, patterns, fromBlock, toBlock, toPreview, collapsed
 
 **Example:**
 
