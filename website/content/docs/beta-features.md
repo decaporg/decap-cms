@@ -30,7 +30,7 @@ local_backend: true
    - If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
 
 4. Start your local development server (e.g. run `gatsby develop`).
-5. Open <http://localhost:8000/admin> to verify that your can administer your content locally.
+5. Open <http://localhost:8000/admin> to verify that your can administer your content locally. (Note: if you get a "connection refused" error, this means that your development server from Step 4 is running on a port that is different from 8000. You can either change the port in this url to match or restart your development server with a different port.)
 
 **Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 
