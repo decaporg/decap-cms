@@ -35,16 +35,12 @@ export default class GitHubAuthenticationPage extends React.Component {
   state = {};
 
   getPermissionToFork = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.setState({
         requestingFork: true,
         approveFork: () => {
           this.setState({ requestingFork: false });
           resolve();
-        },
-        refuseFork: () => {
-          this.setState({ requestingFork: false });
-          reject();
         },
       });
     });
@@ -107,7 +103,7 @@ export default class GitHubAuthenticationPage extends React.Component {
     const { requestingFork } = this.state;
 
     if (requestingFork) {
-      const { approveFork, refuseFork } = this.state;
+      const { approveFork } = this.state;
       return {
         renderPageContent: ({ LoginButton }) => (
           <ForkApprovalContainer>
@@ -117,7 +113,6 @@ export default class GitHubAuthenticationPage extends React.Component {
             </p>
             <ForkButtonsContainer>
               <LoginButton onClick={approveFork}>Fork the repo</LoginButton>
-              <LoginButton onClick={refuseFork}>Don&#39;t fork the repo</LoginButton>
             </ForkButtonsContainer>
           </ForkApprovalContainer>
         ),
