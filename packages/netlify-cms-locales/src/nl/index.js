@@ -193,6 +193,9 @@ const nl = {
       datetime: {
         now: 'Nu',
       },
+      list: {
+        add: 'Voeg %{item} toe',
+      },
     },
   },
   mediaLibrary: {
