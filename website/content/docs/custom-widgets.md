@@ -109,7 +109,9 @@ CMS.registerEditorComponent(definition)
 
 **Params**
 
-* **definition:** The component definition; must specify: id, label, fields, patterns, fromBlock, toBlock, toPreview, collapsed
+* **definition:** The component definition; must specify: id, label, fields, patterns, fromBlock, toBlock, toPreview
+
+> Additional properties are optional and will be passed to the underlying widget control (object widget by default). For example, adding a `collapsed: true` property will collapse the widget by default.
 
 **Example:**
 
