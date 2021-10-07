@@ -199,7 +199,7 @@ const en = {
       },
       list: {
         add: 'Add %{item}',
-        addType: 'Add %{item} item',
+        addType: 'Add %{item}',
       },
     },
   },
