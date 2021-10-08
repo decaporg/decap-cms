@@ -157,3 +157,8 @@ It's time to create your first blog post. Login to your site's `/admin/` page an
 Then Netlify will detect that there was a commit in your repo, and will start rebuilding your project. When your project is deployed you'll be able to see the post you created.
 
 Your basic blog scaffold is done, now you can query data from the GraphQL server just like you're working with the filesystem. For more info read [querying data](https://gridsome.org/docs/querying-data).
+
+## Add another plugin to enable progressive loading for images
+
+By default, images added via Netflify are not working with gridsome's progressive image loading feature. But [here's a plugin](https://github.com/tyrion/gridsome-plugin-netlify-cms-paths) that fixes the issue.  
+(note: [the issue might be fixed](https://github.com/gethypervisual/gridsome-plugin-netlify-cms/issues/23) in the meantime)
