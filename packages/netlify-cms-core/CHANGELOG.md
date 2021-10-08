@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.51.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.51.0...netlify-cms-core@2.51.1) (2021-10-08)
+
+
+### Bug Fixes
+
+* **i18n:** fixes that preview not changing with locale ([#5875](https://github.com/netlify/netlify-cms/issues/5875)) ([b331cc6](https://github.com/netlify/netlify-cms/commit/b331cc6373a715a022e92405bb2082dee961a8c6))
+
+
+
+
+
 # [2.51.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.50.0...netlify-cms-core@2.51.0) (2021-09-30)
 
 
