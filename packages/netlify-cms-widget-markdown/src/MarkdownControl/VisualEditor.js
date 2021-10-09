@@ -19,8 +19,7 @@ import schema from './schema';
 function visualEditorStyles({ minimal }) {
   return `
   position: relative;
-  overflow: hidden;
-  overflow-x: auto;
+  overflow: auto;
   font-family: ${fonts.primary};
   min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
   border-top-left-radius: 0;
