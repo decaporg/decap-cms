@@ -130,6 +130,28 @@ describe('stringTemplate', () => {
         ),
       ).toBe('BACKENDSLUG-title-01-02-2020');
     });
+
+    it('return apply filter for default value', () => {
+      expect(
+        compileStringTemplate(
+          "{{slug | upper}}-{{title | default('none')}}-{{subtitle | default('none')}}",
+          date,
+          'backendSlug',
+          fromJS({ slug: 'entrySlug', title: 'title', subtitle: null, published: date, date }),
+        ),
+      ).toBe('BACKENDSLUG-title-none');
+    });
+
+    it('return apply filter for choice', () => {
+      expect(
+        compileStringTemplate(
+          "{{slug | upper}}-{{starred | choice('star️','nostar')}}-{{done | choice('done', 'open️')}}",
+          date,
+          'backendSlug',
+          fromJS({ slug: 'entrySlug', starred: true, done: false }),
+        ),
+      ).toBe('BACKENDSLUG-star️-open️');
+    });
   });
 
   describe('expandPath', () => {
