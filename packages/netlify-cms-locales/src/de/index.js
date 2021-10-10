@@ -92,6 +92,9 @@ const de = {
       },
       i18n: {
         writingInLocale: 'Aktuelle Sprache: %{locale}',
+        copyFromLocale: 'Aus anderer Sprache übernehmen',
+        copyFromLocaleConfirm:
+          'Wollen Sie wirklich die Daten aus der Sprache %{locale} übernehmen?\nAlle bishergen Inhalte werden überschrieben.',
       },
     },
     editor: {
