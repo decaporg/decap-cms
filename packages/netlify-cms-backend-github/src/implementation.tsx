@@ -20,6 +20,7 @@ import {
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
+  getDefaultBranchName,
 } from 'netlify-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
@@ -346,12 +347,14 @@ export default class GitHub implements Implementation {
     if (!isCollab) {
       throw new Error('Your GitHub user account does not have access to this repo.');
     }
-    // In the constructor, `this.branch` is set by reading the config file
-    // If it is an empty string at this point,
-    // it means there is no `branch` property set in the config
 
-    if (this.branch === '') {
-      await this.setDefaultBranch();
+    // Only set default branch name when the `branch` property is missing
+    // in the config file
+    if (!this.isBranchConfigured) {
+      const defaultBranchName = await getDefaultBranchName({backend: 'github', repo: this.originRepo, token: this.token});
+      if (defaultBranchName) {
+        this.branch = defaultBranchName
+      }
     }
 
     // Authorized user
