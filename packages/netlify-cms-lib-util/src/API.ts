@@ -116,12 +116,29 @@ export async function requestWithBackoff(
   }
 }
 
+type Param = string | number
+
+type ParamObject = Record<string, Param>
+
 type HeaderObj = Record<string, string>
 
 type HeaderConfig = {
   headers?: HeaderObj,
   token?: string
 }
+function constructUrl(url: string, params?: ParamObject) {
+  if (params) {
+    const paramList = []
+    for (const key in params) {
+      paramList.push(`${key}=${encodeURIComponent(params[key])}`)
+    }
+    if (paramList.length) {
+      url += `?${paramList.join('&')}`
+    }
+  }
+  return url
+}
+
 async function constructRequestHeaders(headerConfig: HeaderConfig) {
   const { token, headers } = headerConfig
   const baseHeaders: HeaderObj = {'Content-Type': 'application/json; charset=utf-8', ...headers}
