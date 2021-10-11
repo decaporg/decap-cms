@@ -116,6 +116,20 @@ export async function requestWithBackoff(
   }
 }
 
+type HeaderObj = Record<string, string>
+
+type HeaderConfig = {
+  headers?: HeaderObj,
+  token?: string
+}
+async function constructRequestHeaders(headerConfig: HeaderConfig) {
+  const { token, headers } = headerConfig
+  const baseHeaders: HeaderObj = {'Content-Type': 'application/json; charset=utf-8', ...headers}
+  if (token) {
+    baseHeaders['Authorization'] = `token ${token}`
+  }
+  return Promise.resolve(baseHeaders)
+}
 export async function readFile(
   id: string | null | undefined,
   fetchContent: () => Promise<string | Blob>,
