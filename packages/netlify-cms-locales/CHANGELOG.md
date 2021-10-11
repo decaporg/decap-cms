@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.1...netlify-cms-locales@1.36.2) (2021-10-11)
+
+
+### Bug Fixes
+
+* **locale-de:** add missing German translations ([#5882](https://github.com/netlify/netlify-cms/issues/5882)) ([a6f3f3f](https://github.com/netlify/netlify-cms/commit/a6f3f3f97ec14b2fc841de43c188dfcb96f9a1ee))
+
+
+
+
+
 ## [1.36.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.0...netlify-cms-locales@1.36.1) (2021-10-07)
 
 
