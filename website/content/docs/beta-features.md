@@ -545,7 +545,7 @@ collections:
 ```
 
 The above config will transform the title field to uppercase and format the date field using `YYYY-MM-DD` format.
-Available transformations are `upper`, `lower` and `date('<format>')`
+Available transformations are `upper`, `lower`, `date('<format>'), default('defaultValue') and ternary('valueForTrue','valueForFalse')`
 
 ## Registering to CMS Events
 

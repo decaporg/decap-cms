@@ -13,6 +13,14 @@ const filters = [
     pattern: /^date\('(.+)'\)$/,
     transform: (str: string, match: RegExpMatchArray) => moment(str).format(match[1]),
   },
+  {
+    pattern: /^default\('(.+)'\)$/,
+    transform: (str: string, match: RegExpMatchArray) => (str ? str : match[1]),
+  },
+  {
+    pattern: /^ternary\('(.*)',\s*'(.*)'\)$/,
+    transform: (str: string, match: RegExpMatchArray) => (str ? match[1] : match[2]),
+  },
 ];
 
 const FIELD_PREFIX = 'fields.';
