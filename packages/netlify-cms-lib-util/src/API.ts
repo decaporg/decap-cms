@@ -40,6 +40,26 @@ class RateLimitError extends Error {
   }
 }
 
+async function parseJsonResponse(response: Response) {
+  const json = await response.json();
+  if (!response.ok) {
+    return Promise.reject(json);
+  }
+  return json;
+}
+
+export function parseResponse(response: Response) {
+  const contentType = response.headers.get('Content-Type')
+  if (contentType && contentType.match(/json/)) {
+    return parseJsonResponse(response)
+  }
+  const textPromise = response.text().then(text => {
+    if (!response.ok) return Promise.reject(text)
+    return text
+  })
+  return textPromise
+}
+
 export async function requestWithBackoff(
   api: API,
   req: ApiRequest,
