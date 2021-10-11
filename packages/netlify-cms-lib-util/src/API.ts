@@ -182,6 +182,31 @@ function handleRequestError(error: FetchError, responseStatus: number, backend: 
   throw new APIError(error.message, responseStatus, backend)
 }
 
+export async function apiRequest(
+  path: string,
+  config: RequestConfig,
+  parser = (response: Response) => parseResponse(response)
+) {
+  const { token, backend, ...props } = config
+  const options = {cache: 'no-cache', ...props}
+  const headers = await constructRequestHeaders({ headers: options.headers || {}, token })
+  const baseUrl = rootApi[backend]
+  const url = constructUrl(`${baseUrl}${path}`, options.params)
+  let responseStatus = 500
+  try {
+    const req = unsentRequest.fromFetchArguments(url, {
+      ...options,
+      headers
+    }) as unknown as ApiRequest
+    const response = await requestWithBackoff(api, req)
+    responseStatus = response.status
+    const parsedResponse = await parser(response)
+    return parsedResponse
+  } catch(error) {
+    return handleRequestError(error, responseStatus, backend)
+  }
+}
+
 export async function readFile(
   id: string | null | undefined,
   fetchContent: () => Promise<string | Blob>,
