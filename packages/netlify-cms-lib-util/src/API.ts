@@ -171,6 +171,11 @@ async function constructRequestHeaders(headerConfig: HeaderConfig) {
   }
   return Promise.resolve(baseHeaders)
 }
+
+function handleRequestError(error: FetchError, responseStatus: number, backend: Backend) {
+  throw new APIError(error.message, responseStatus, backend)
+}
+
 export async function readFile(
   id: string | null | undefined,
   fetchContent: () => Promise<string | Blob>,
