@@ -150,6 +150,12 @@ export const rootApi = {
   bitbucket: 'https://api.bitbucket.org/2.0'
 }
 
+const api = {
+  buildRequest(req: ApiRequest) {
+    return req
+  }
+}
+
 function constructUrl(url: string, params?: ParamObject) {
   if (params) {
     const paramList = []
