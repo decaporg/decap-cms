@@ -69,6 +69,7 @@ export default class GitHub implements Implementation {
     initialWorkflowStatus: string;
   };
   originRepo: string;
+  isBranchConfigured: boolean;
   repo?: string;
   openAuthoringEnabled: boolean;
   useOpenAuthoring?: boolean;
@@ -103,7 +104,7 @@ export default class GitHub implements Implementation {
     }
 
     this.api = this.options.API || null;
-
+    this.isBranchConfigured = config.backend.branch ? true : false;
     this.openAuthoringEnabled = config.backend.open_authoring || false;
     if (this.openAuthoringEnabled) {
       if (!this.options.useWorkflow) {
