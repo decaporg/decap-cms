@@ -116,6 +116,9 @@ export async function requestWithBackoff(
   }
 }
 
+// Options is an object which contains all the standard network request properties
+// for modifying HTTP requests and may contains `params` property
+
 type Param = string | number
 
 type ParamObject = Record<string, Param>
@@ -126,6 +129,12 @@ type HeaderConfig = {
   headers?: HeaderObj,
   token?: string
 }
+export const rootApi = {
+  github: 'https://api.github.com',
+  gitlab: 'https://gitlab.com/api/v4',
+  bitbucket: 'https://api.bitbucket.org/2.0'
+}
+
 function constructUrl(url: string, params?: ParamObject) {
   if (params) {
     const paramList = []
