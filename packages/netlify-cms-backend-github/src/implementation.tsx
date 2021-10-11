@@ -117,7 +117,7 @@ export default class GitHub implements Implementation {
       this.repo = this.originRepo = config.backend.repo || '';
     }
     this.alwaysForkEnabled = config.backend.always_fork || false;
-    this.branch = config.backend.branch?.trim() || '';
+    this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
