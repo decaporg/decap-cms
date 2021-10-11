@@ -207,6 +207,34 @@ export async function apiRequest(
   }
 }
 
+export async function getDefaultBranchName(configs: { backend: Backend, repo: string, token?: string}) {
+  let apiPath
+  const { token, backend, repo } = configs
+  switch(backend) {
+    case "gitlab": {
+      apiPath = `/projects/${encodeURIComponent(repo)}`
+      break
+    }
+    case "bitbucket": {
+      apiPath = `/repositories/${repo}`
+      break
+    }
+    default: {
+      apiPath = `/repos/${repo}`
+    }
+  }
+  const repoInfo = await apiRequest(apiPath, {token, backend})
+  let defaultBranchName
+  if (backend === 'bitbucket') {
+    const { mainbranch: { name } } = repoInfo
+    defaultBranchName = name
+  } else {
+    const { default_branch } = repoInfo
+    defaultBranchName = default_branch
+  }
+  return defaultBranchName || null
+}
+
 export async function readFile(
   id: string | null | undefined,
   fetchContent: () => Promise<string | Blob>,
