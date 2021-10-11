@@ -129,6 +129,21 @@ type HeaderConfig = {
   headers?: HeaderObj,
   token?: string
 }
+
+type Backend = "github" | "gitlab" | "bitbucket"
+
+// RequestConfig contains all the standard properties of a Request object and
+// several custom properties:
+// - "headers" property is an object whose properties and values are string types
+// - `token` property to allow passing tokens for users using a private repo.
+// - `params` property for customizing response
+// - `backend`(compulsory) to specify which backend to be used: Github, Gitlab etc.
+
+type RequestConfig = Omit<RequestInit, 'headers'> & HeaderConfig & {
+  backend: Backend,
+  params?: ParamObject,
+}
+
 export const rootApi = {
   github: 'https://api.github.com',
   gitlab: 'https://gitlab.com/api/v4',
