@@ -16,8 +16,9 @@ const ForkApprovalContainer = styled.div`
 `;
 const ForkButtonsContainer = styled.div`
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   justify-content: space-around;
+  align-items: center;
 `;
 
 export default class GitHubAuthenticationPage extends React.Component {
@@ -35,12 +36,16 @@ export default class GitHubAuthenticationPage extends React.Component {
   state = {};
 
   getPermissionToFork = () => {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.setState({
         requestingFork: true,
         approveFork: () => {
           this.setState({ requestingFork: false });
           resolve();
+        },
+        refuseFork: () => {
+          this.setState({ requestingFork: false });
+          reject();
         },
       });
     });
@@ -103,9 +108,9 @@ export default class GitHubAuthenticationPage extends React.Component {
     const { requestingFork } = this.state;
 
     if (requestingFork) {
-      const { approveFork } = this.state;
+      const { approveFork, refuseFork } = this.state;
       return {
-        renderPageContent: ({ LoginButton }) => (
+        renderPageContent: ({ LoginButton, TextButton, showAbortButton }) => (
           <ForkApprovalContainer>
             <p>
               Open Authoring is enabled: we need to use a fork on your github account. (If a fork
@@ -113,6 +118,9 @@ export default class GitHubAuthenticationPage extends React.Component {
             </p>
             <ForkButtonsContainer>
               <LoginButton onClick={approveFork}>Fork the repo</LoginButton>
+              {showAbortButton && (
+                <TextButton onClick={refuseFork}>Don&#39;t fork the repo</TextButton>
+              )}
             </ForkButtonsContainer>
           </ForkApprovalContainer>
         ),
