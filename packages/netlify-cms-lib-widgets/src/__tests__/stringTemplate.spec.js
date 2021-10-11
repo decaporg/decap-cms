@@ -142,10 +142,10 @@ describe('stringTemplate', () => {
       ).toBe('BACKENDSLUG-title-none');
     });
 
-    it('return apply filter for choice', () => {
+    it('return apply filter for ternary', () => {
       expect(
         compileStringTemplate(
-          "{{slug | upper}}-{{starred | choice('star️','nostar')}}-{{done | choice('done', 'open️')}}",
+          "{{slug | upper}}-{{starred | ternary('star️','nostar')}}-{{done | ternary('done', 'open️')}}",
           date,
           'backendSlug',
           fromJS({ slug: 'entrySlug', starred: true, done: false }),

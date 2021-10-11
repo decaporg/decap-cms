@@ -18,7 +18,7 @@ const filters = [
     transform: (str: string, match: RegExpMatchArray) => (str ? str : match[1]),
   },
   {
-    pattern: /^choice\('(.*)',\s*'(.*)'\)$/,
+    pattern: /^ternary\('(.*)',\s*'(.*)'\)$/,
     transform: (str: string, match: RegExpMatchArray) => (str ? match[1] : match[2]),
   },
 ];
