@@ -127,7 +127,7 @@ type HeaderObj = Record<string, string>
 
 type HeaderConfig = {
   headers?: HeaderObj,
-  token?: string
+  token?: string | undefined
 }
 
 type Backend = "github" | "gitlab" | "bitbucket"
