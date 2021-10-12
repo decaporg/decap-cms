@@ -21,6 +21,7 @@ import {
   allEntriesByFolder,
   filterByExtension,
   branchFromContentKey,
+  getDefaultBranchName,
 } from 'netlify-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
@@ -53,6 +54,7 @@ export default class GitLab implements Implementation {
     initialWorkflowStatus: string;
   };
   repo: string;
+  isBranchConfigured: boolean;
   branch: string;
   apiRoot: string;
   token: string | null;
@@ -82,6 +84,7 @@ export default class GitLab implements Implementation {
 
     this.repo = config.backend.repo || '';
     this.branch = config.backend.branch || 'master';
+    this.isBranchConfigured = config.backend.branch ? true : false;
     this.apiRoot = config.backend.api_root || 'https://gitlab.com/api/v4';
     this.token = '';
     this.squashMerges = config.backend.squash_merges || false;
@@ -144,6 +147,12 @@ export default class GitLab implements Implementation {
       throw new Error('Your GitLab user account does not have access to this repo.');
     }
 
+    if (!this.isBranchConfigured) {
+      const defaultBranchName = await getDefaultBranchName({ backend: 'gitlab', repo: this.repo, token: this.token})
+      if (defaultBranchName) {
+        this.branch = defaultBranchName
+      }
+    }
     // Authorized user
     return { ...user, login: user.username, token: state.token as string };
   }
