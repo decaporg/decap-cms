@@ -25,7 +25,7 @@ import {
   allEntriesByFolder,
   AccessTokenError,
   branchFromContentKey,
-  getDefaultBranchName
+  getDefaultBranchName,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 
@@ -220,9 +220,13 @@ export default class BitbucketBackend implements Implementation {
       throw new Error('Your BitBucket user account does not have access to this repo.');
     }
     if (!this.isBranchConfigured) {
-      const defaultBranchName = await getDefaultBranchName({ backend: 'bitbucket', repo: this.repo, token: this.token})
+      const defaultBranchName = await getDefaultBranchName({
+        backend: 'bitbucket',
+        repo: this.repo,
+        token: this.token,
+      });
       if (defaultBranchName) {
-        this.branch = defaultBranchName
+        this.branch = defaultBranchName;
       }
     }
     const user = await this.api.user();

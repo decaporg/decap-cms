@@ -351,9 +351,13 @@ export default class GitHub implements Implementation {
     // Only set default branch name when the `branch` property is missing
     // in the config file
     if (!this.isBranchConfigured) {
-      const defaultBranchName = await getDefaultBranchName({backend: 'github', repo: this.originRepo, token: this.token});
+      const defaultBranchName = await getDefaultBranchName({
+        backend: 'github',
+        repo: this.originRepo,
+        token: this.token,
+      });
       if (defaultBranchName) {
-        this.branch = defaultBranchName
+        this.branch = defaultBranchName;
       }
     }
 

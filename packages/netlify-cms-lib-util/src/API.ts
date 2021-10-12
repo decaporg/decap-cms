@@ -49,15 +49,15 @@ async function parseJsonResponse(response: Response) {
 }
 
 export function parseResponse(response: Response) {
-  const contentType = response.headers.get('Content-Type')
+  const contentType = response.headers.get('Content-Type');
   if (contentType && contentType.match(/json/)) {
-    return parseJsonResponse(response)
+    return parseJsonResponse(response);
   }
   const textPromise = response.text().then(text => {
-    if (!response.ok) return Promise.reject(text)
-    return text
-  })
-  return textPromise
+    if (!response.ok) return Promise.reject(text);
+    return text;
+  });
+  return textPromise;
 }
 
 export async function requestWithBackoff(
@@ -119,18 +119,18 @@ export async function requestWithBackoff(
 // Options is an object which contains all the standard network request properties
 // for modifying HTTP requests and may contains `params` property
 
-type Param = string | number
+type Param = string | number;
 
-type ParamObject = Record<string, Param>
+type ParamObject = Record<string, Param>;
 
-type HeaderObj = Record<string, string>
+type HeaderObj = Record<string, string>;
 
 type HeaderConfig = {
-  headers?: HeaderObj,
-  token?: string | undefined
-}
+  headers?: HeaderObj;
+  token?: string | undefined;
+};
 
-type Backend = "github" | "gitlab" | "bitbucket"
+type Backend = 'github' | 'gitlab' | 'bitbucket';
 
 // RequestConfig contains all the standard properties of a Request object and
 // several custom properties:
@@ -139,100 +139,107 @@ type Backend = "github" | "gitlab" | "bitbucket"
 // - `params` property for customizing response
 // - `backend`(compulsory) to specify which backend to be used: Github, Gitlab etc.
 
-type RequestConfig = Omit<RequestInit, 'headers'> & HeaderConfig & {
-  backend: Backend,
-  params?: ParamObject,
-}
+type RequestConfig = Omit<RequestInit, 'headers'> &
+  HeaderConfig & {
+    backend: Backend;
+    params?: ParamObject;
+  };
 
 export const rootApi = {
   github: 'https://api.github.com',
   gitlab: 'https://gitlab.com/api/v4',
-  bitbucket: 'https://api.bitbucket.org/2.0'
-}
+  bitbucket: 'https://api.bitbucket.org/2.0',
+};
 
 const api = {
   buildRequest(req: ApiRequest) {
-    return req
-  }
-}
+    return req;
+  },
+};
 
 function constructUrl(url: string, params?: ParamObject) {
   if (params) {
-    const paramList = []
+    const paramList = [];
     for (const key in params) {
-      paramList.push(`${key}=${encodeURIComponent(params[key])}`)
+      paramList.push(`${key}=${encodeURIComponent(params[key])}`);
     }
     if (paramList.length) {
-      url += `?${paramList.join('&')}`
+      url += `?${paramList.join('&')}`;
     }
   }
-  return url
+  return url;
 }
 
 async function constructRequestHeaders(headerConfig: HeaderConfig) {
-  const { token, headers } = headerConfig
-  const baseHeaders: HeaderObj = {'Content-Type': 'application/json; charset=utf-8', ...headers}
+  const { token, headers } = headerConfig;
+  const baseHeaders: HeaderObj = { 'Content-Type': 'application/json; charset=utf-8', ...headers };
   if (token) {
-    baseHeaders['Authorization'] = `token ${token}`
+    baseHeaders['Authorization'] = `token ${token}`;
   }
-  return Promise.resolve(baseHeaders)
+  return Promise.resolve(baseHeaders);
 }
 
 function handleRequestError(error: FetchError, responseStatus: number, backend: Backend) {
-  throw new APIError(error.message, responseStatus, backend)
+  throw new APIError(error.message, responseStatus, backend);
 }
 
 export async function apiRequest(
   path: string,
   config: RequestConfig,
-  parser = (response: Response) => parseResponse(response)
+  parser = (response: Response) => parseResponse(response),
 ) {
-  const { token, backend, ...props } = config
-  const options = {cache: 'no-cache', ...props}
-  const headers = await constructRequestHeaders({ headers: options.headers || {}, token })
-  const baseUrl = rootApi[backend]
-  const url = constructUrl(`${baseUrl}${path}`, options.params)
-  let responseStatus = 500
+  const { token, backend, ...props } = config;
+  const options = { cache: 'no-cache', ...props };
+  const headers = await constructRequestHeaders({ headers: options.headers || {}, token });
+  const baseUrl = rootApi[backend];
+  const url = constructUrl(`${baseUrl}${path}`, options.params);
+  let responseStatus = 500;
   try {
     const req = unsentRequest.fromFetchArguments(url, {
       ...options,
-      headers
-    }) as unknown as ApiRequest
-    const response = await requestWithBackoff(api, req)
-    responseStatus = response.status
-    const parsedResponse = await parser(response)
-    return parsedResponse
-  } catch(error) {
-    return handleRequestError(error, responseStatus, backend)
+      headers,
+    }) as unknown as ApiRequest;
+    const response = await requestWithBackoff(api, req);
+    responseStatus = response.status;
+    const parsedResponse = await parser(response);
+    return parsedResponse;
+  } catch (error) {
+    return handleRequestError(error, responseStatus, backend);
   }
 }
 
-export async function getDefaultBranchName(configs: { backend: Backend, repo: string, token?: string}) {
-  let apiPath
-  const { token, backend, repo } = configs
-  switch(backend) {
-    case "gitlab": {
-      apiPath = `/projects/${encodeURIComponent(repo)}`
-      break
+export async function getDefaultBranchName(configs: {
+  backend: Backend;
+  repo: string;
+  token?: string;
+}) {
+  let apiPath;
+  const { token, backend, repo } = configs;
+  switch (backend) {
+    case 'gitlab': {
+      apiPath = `/projects/${encodeURIComponent(repo)}`;
+      break;
     }
-    case "bitbucket": {
-      apiPath = `/repositories/${repo}`
-      break
+    case 'bitbucket': {
+      apiPath = `/repositories/${repo}`;
+      break;
     }
     default: {
-      apiPath = `/repos/${repo}`
+      apiPath = `/repos/${repo}`;
     }
   }
-  const repoInfo = await apiRequest(apiPath, {token, backend})
-  let defaultBranchName
+  const repoInfo = await apiRequest(apiPath, { token, backend });
+  let defaultBranchName;
   if (backend === 'bitbucket') {
-    const { mainbranch: { name } } = repoInfo
-    defaultBranchName = name
+    const {
+      mainbranch: { name },
+    } = repoInfo;
+    defaultBranchName = name;
   } else {
-    const { default_branch } = repoInfo
-    defaultBranchName = default_branch
+    const { default_branch } = repoInfo;
+    defaultBranchName = default_branch;
   }
-  return defaultBranchName || null
+  return defaultBranchName || null;
 }
 
 export async function readFile(

@@ -148,9 +148,13 @@ export default class GitLab implements Implementation {
     }
 
     if (!this.isBranchConfigured) {
-      const defaultBranchName = await getDefaultBranchName({ backend: 'gitlab', repo: this.repo, token: this.token})
+      const defaultBranchName = await getDefaultBranchName({
+        backend: 'gitlab',
+        repo: this.repo,
+        token: this.token,
+      });
       if (defaultBranchName) {
-        this.branch = defaultBranchName
+        this.branch = defaultBranchName;
       }
     }
     // Authorized user
