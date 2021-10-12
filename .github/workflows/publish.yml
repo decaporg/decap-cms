@@ -1,8 +1,7 @@
 name: Netlify CMS Publish
 
 on:
-  repository_dispatch:
-
+  repository_dispatch: null
 jobs:
   check-permission:
     runs-on: ubuntu-latest
@@ -10,7 +9,7 @@ jobs:
       SENDER: ${{ github.event.sender.login }}
       ALLOWED_LOGINS_TO_PUBLISH: ${{ secrets.ALLOWED_LOGINS_TO_PUBLISH }}
     steps:
-      - name: 'Check Permission To Publish'
+      - name: "Check Permission To Publish"
         run: |
           if [[ "$SENDER" =~ ^$ALLOWED_LOGINS_TO_PUBLISH$ ]]; then
               echo "$SENDER is allowed to publish"
@@ -29,8 +28,9 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '*'
+          node-version: "*"
           check-latest: true
+          cache: npm
       - uses: actions/cache@v2
         with:
           path: ~/.cache/yarn
@@ -59,7 +59,7 @@ jobs:
           SLACK_TOKEN: ${{secrets.SLACK_TOKEN}}
           CHANNEL_ID: ${{secrets.CHANNEL_ID}}
           PUBLISH_COMMAND: "yarn\npublish:ci"
-          CODE_PATTERN: 'Enter OTP'
+          CODE_PATTERN: "Enter OTP"
           # 40 minutes for the entire command, 20 minutes for waiting for 2FA
-          TIMEOUT: '2400000'
-          REVERT_COMMAND: './scripts/revert_publish.sh'
+          TIMEOUT: "2400000"
+          REVERT_COMMAND: "./scripts/revert_publish.sh"
