@@ -6,13 +6,13 @@ on:
       - master
 
     paths-ignore:
-      - 'website/**'
+      - "website/**"
 
   pull_request:
     types: [opened, synchronize, reopened]
 
     paths-ignore:
-      - 'website/**'
+      - "website/**"
 
 jobs:
   build:
@@ -25,8 +25,9 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '*'
+          node-version: "*"
           check-latest: true
+          cache: npm
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
@@ -59,8 +60,9 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '*'
+          node-version: "*"
           check-latest: true
+          cache: npm
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
