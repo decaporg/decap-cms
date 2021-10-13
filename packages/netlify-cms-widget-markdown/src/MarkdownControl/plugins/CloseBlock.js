@@ -1,6 +1,6 @@
 import isHotkey from 'is-hotkey';
 
-function CloseBlock({ defaultType }) {
+function CloseBlock() {
   return {
     onKeyDown(event, editor, next) {
       const { selection, startBlock } = editor.value;
@@ -13,9 +13,6 @@ function CloseBlock({ defaultType }) {
       }
       if (!selection.start.isAtStartOfNode(startBlock) || startBlock.text.length > 0) {
         return next();
-      }
-      if (startBlock.type !== defaultType) {
-        return editor.setBlocks(defaultType);
       }
       return next();
     },
