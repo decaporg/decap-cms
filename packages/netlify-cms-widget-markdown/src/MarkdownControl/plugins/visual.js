@@ -48,7 +48,7 @@ function plugins({ getAsset, resolveWidget, t, remarkPlugins }) {
     Link({ type: 'link' }),
     LineBreak(),
     BreakToDefaultBlock({ defaultType }),
-    CloseBlock(),
+    CloseBlock({ defaultType }),
     SelectAll(),
     ForceInsert({ defaultType }),
     CopyPasteVisual({ getAsset, resolveWidget, remarkPlugins }),
