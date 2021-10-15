@@ -109,7 +109,7 @@ const he = {
       onDeleteUnpublishedChanges:
         'כל השינויים שבוצעו באייטם זה ולא פורסמו יימחקו. האם ברצונך למחוק אותו?',
       loadingEntry: 'טעינת אייטם...',
-      confirmLoadBackup: 'קיים עותק מקומי קודם של האייטם. האם ברצונך לטעון אותו?',
+      confirmLoadBackup: 'קיים עותק מקומי שמור של האייטם. האם ברצונך לטעון אותו?',
     },
     editorInterface: {
       toggleI18n: 'החלפת שפות',
