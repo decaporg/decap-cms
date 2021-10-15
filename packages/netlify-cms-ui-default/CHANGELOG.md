@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.2...netlify-cms-ui-default@2.15.3) (2021-10-15)
+
+
+### Bug Fixes
+
+* remove "Don't fork the repo"-Button - fixes [#5723](https://github.com/netlify/netlify-cms/issues/5723) ([#5872](https://github.com/netlify/netlify-cms/issues/5872)) ([05d8923](https://github.com/netlify/netlify-cms/commit/05d89230dca315ddcc734b1dc6223df1d8dc1ede))
+
+
+
+
+
 ## [2.15.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.1...netlify-cms-ui-default@2.15.2) (2021-08-17)
 
 
