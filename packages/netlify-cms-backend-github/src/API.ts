@@ -570,18 +570,33 @@ export default class API {
     }
   }
 
+  async getPullRequestAuthor(pullRequest: Octokit.PullsListResponseItem) {
+    if (!pullRequest.user?.login) {
+      return;
+    }
+
+    try {
+      const user: GitHubUser = await this.request(`/users/${pullRequest.user.login}`);
+      return user.name || user.login;
+    } catch {
+      return;
+    }
+  }
+
   async retrieveUnpublishedEntryData(contentKey: string) {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-    const { files } = await this.getDifferences(this.branch, pullRequest.head.sha);
+    const [{ files }, pullRequestAuthor] = await Promise.all([
+      this.getDifferences(this.branch, pullRequest.head.sha),
+      this.getPullRequestAuthor(pullRequest),
+    ]);
     const diffs = await Promise.all(files.map(file => this.diffFromFile(file)));
     const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix)) as {
       name: string;
     };
     const status = labelToStatus(label.name, this.cmsLabelPrefix);
     const updatedAt = pullRequest.updated_at;
-    const pullRequestAuthor = pullRequest.user?.login;
     return {
       collection,
       slug,
