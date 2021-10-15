@@ -3,6 +3,7 @@ const de = {
     login: 'Login',
     loggingIn: 'Sie werden eingeloggt...',
     loginWithNetlifyIdentity: 'Mit Netlify Identity einloggen',
+    loginWithAzure: 'Mit Azure einloggen',
     loginWithBitbucket: 'Mit Bitbucket einloggen',
     loginWithGitHub: 'Mit GitHub einloggen',
     loginWithGitLab: 'Mit GitLab einloggen',
@@ -47,12 +48,17 @@ const de = {
       searchResults: 'Suchergebnisse für "%{searchTerm}"',
       searchResultsInCollection: 'Suchergebnisse für "%{searchTerm}" in %{collection}',
       filterBy: 'Filtern nach',
+      groupBy: 'Gruppieren nach',
     },
     entries: {
       loadingEntries: 'Beiträge laden',
       cachingEntries: 'Beiträge zwischenspeichern',
       longerLoading: 'Diese Aktion kann einige Minuten in Anspruch nehmen',
       noEntries: 'Keine Beiträge',
+    },
+    groups: {
+      other: 'Andere',
+      negateLabel: 'Nicht %{label}',
     },
     defaultFields: {
       author: {
@@ -109,6 +115,11 @@ const de = {
       confirmLoadBackup:
         'Für diesen Beitrag ist ein lokales Backup vorhanden. Möchten Sie dieses benutzen?',
     },
+    editorInterface: {
+      toggleI18n: 'Übersetzungen',
+      togglePreview: 'Vorschau',
+      toggleScrollSync: 'Synchron scrollen',
+    },
     editorToolbar: {
       publishing: 'Veröffentlichen...',
       publish: 'Veröffentlichen',
@@ -124,6 +135,10 @@ const de = {
       deleteEntry: 'Lösche Beitrag',
       saving: 'Speichern...',
       save: 'Speichern',
+      statusInfoTooltipDraft:
+        'Beitrag ist im Entwurfsstatus. Um ihn fertigzustellen und zur Überprüfung freizugeben, setzen Sie den Status auf ‘Zur Überprüfung‘.',
+      statusInfoTooltipInReview:
+        'Beitrag wird überprüft, keine weitere Aktion erforderlich. Sie können weitere Änderungen vornehmen, während die Überprüfung läuft.',
       deleting: 'Löschen...',
       updating: 'Aktualisieren...',
       status: 'Status: %{status}',
@@ -140,16 +155,32 @@ const de = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Fett',
+        italic: 'Kursiv',
+        code: 'Code',
+        link: 'Link',
+        linkPrompt: 'Link-URL eingeben',
+        headings: 'Überschriften',
+        quote: 'Zitat',
+        bulletedList: 'Aufzählungsliste',
+        numberedList: 'Nummerierte Liste',
+        addComponent: 'Komponente hinzufügen',
         richText: 'Rich Text',
         markdown: 'Markdown',
       },
       image: {
         choose: 'Wähle ein Bild',
+        chooseUrl: 'Von URL hinzufügen',
+        replaceUrl: 'Von URL ersetzen',
+        promptUrl: 'Bild-URL eingeben',
         chooseDifferent: 'Wähle ein anderes Bild',
         remove: 'Entferne Bild',
       },
       file: {
         choose: 'Wählen Sie eine Datei',
+        chooseUrl: 'Von URL hinzufügen',
+        replaceUrl: 'Von URL ersetzen',
+        promptUrl: 'Datei-URL eingeben',
         chooseDifferent: 'Wählen Sie eine andere Datei',
         remove: 'Datei löschen',
       },
@@ -170,11 +201,20 @@ const de = {
       datetime: {
         now: 'Jetzt',
       },
+      list: {
+        add: '%{item} hinzufügen',
+        addType: '%{item} hinzufügen',
+      },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Entwurf',
+      copy: 'Kopieren',
+      copyUrl: 'URL kopieren',
+      copyPath: 'Pfad kopieren',
+      copyName: 'Name kopieren',
+      copied: 'Kopiert',
     },
     mediaLibrary: {
       onDelete: 'Soll das ausgewählte Medium wirklich gelöscht werden?',
@@ -191,6 +231,7 @@ const de = {
       search: 'Suchen...',
       uploading: 'Hochladen...',
       upload: 'Hochladen',
+      download: 'Download',
       deleting: 'Löschen...',
       deleteSelected: 'Ausgewähltes Element löschen',
       chooseSelected: 'Ausgewähltes Element verwenden',

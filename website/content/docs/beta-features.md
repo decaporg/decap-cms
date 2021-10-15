@@ -30,7 +30,7 @@ local_backend: true
    - If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
 
 4. Start your local development server (e.g. run `gatsby develop`).
-5. Open <http://localhost:8000/admin> to verify that your can administer your content locally.
+5. Open `http://localhost:<port>/admin` to verify that your can administer your content locally. Replace `<port>` with the port of your local development server. For example Gatsby's default port is `8000`
 
 **Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development.
 
@@ -545,7 +545,7 @@ collections:
 ```
 
 The above config will transform the title field to uppercase and format the date field using `YYYY-MM-DD` format.
-Available transformations are `upper`, `lower` and `date('<format>')`
+Available transformations are `upper`, `lower`, `date('<format>'), default('defaultValue') and ternary('valueForTrue','valueForFalse')`
 
 ## Registering to CMS Events
 
