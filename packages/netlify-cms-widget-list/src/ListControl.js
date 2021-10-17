@@ -7,6 +7,8 @@ import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
 import {
   ListItemTopBar,
@@ -16,6 +18,7 @@ import {
   FieldLabel,
 } from 'netlify-cms-ui-default';
 import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
+import { ControlHint } from 'netlify-cms-core/src/components/Editor/EditorControlPane/EditorControl';
 
 import {
   TYPES_KEY,
@@ -524,6 +527,7 @@ export default class ListControl extends React.Component {
         return this.renderErroneousTypedItem(index, item);
       }
     }
+    const fieldHint = field.get('hint');
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
@@ -552,30 +556,54 @@ export default class ListControl extends React.Component {
         </NestedObjectLabel>
         <ClassNames>
           {({ css, cx }) => (
-            <ObjectControl
-              classNameWrapper={cx(classNameWrapper, {
-                [css`
-                  ${styleStrings.collapsedObjectControl};
-                `]: collapsed,
-              })}
-              value={item}
-              field={field}
-              onChangeObject={this.handleChangeFor(index)}
-              editorControl={editorControl}
-              resolveWidget={resolveWidget}
-              metadata={metadata}
-              forList
-              onValidateObject={onValidateObject}
-              clearFieldErrors={clearFieldErrors}
-              fieldsErrors={fieldsErrors}
-              ref={this.processControlRef}
-              controlRef={controlRef}
-              validationKey={key}
-              collapsed={collapsed}
-              data-testid={`object-control-${key}`}
-              hasError={hasError}
-              parentIds={[...parentIds, forID, key]}
-            />
+            <div>
+              <ObjectControl
+                classNameWrapper={cx(classNameWrapper, {
+                  [css`
+                    ${styleStrings.collapsedObjectControl};
+                  `]: collapsed,
+                })}
+                value={item}
+                field={field}
+                onChangeObject={this.handleChangeFor(index)}
+                editorControl={editorControl}
+                resolveWidget={resolveWidget}
+                metadata={metadata}
+                forList
+                onValidateObject={onValidateObject}
+                clearFieldErrors={clearFieldErrors}
+                fieldsErrors={fieldsErrors}
+                ref={this.processControlRef}
+                controlRef={controlRef}
+                validationKey={key}
+                collapsed={collapsed}
+                data-testid={`object-control-${key}`}
+                hasError={hasError}
+                parentIds={[...parentIds, forID, key]}
+              />
+              {isVariableTypesList && fieldHint && (
+                <ControlHint active={false} error={hasError}>
+                  <ReactMarkdown
+                    remarkPlugins={[gfm]}
+                    allowedElements={['a', 'strong', 'em', 'del']}
+                    unwrapDisallowed={true}
+                    components={{
+                      // eslint-disable-next-line no-unused-vars
+                      a: ({ node, ...props }) => (
+                        <a
+                          {...props}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: 'inherit' }}
+                        />
+                      ),
+                    }}
+                  >
+                    {fieldHint}
+                  </ReactMarkdown>
+                </ControlHint>
+              )}
+            </div>
           )}
         </ClassNames>
       </SortableListItem>
