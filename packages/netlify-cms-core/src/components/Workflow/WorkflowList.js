@@ -220,6 +220,7 @@ class WorkflowList extends React.Component {
 
           const allowPublish = collection?.get('publish');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
+          const postAuthor = entry.get('author');
 
           return (
             <DragSource
@@ -244,6 +245,7 @@ class WorkflowList extends React.Component {
                       allowPublish={allowPublish}
                       canPublish={canPublish}
                       onPublish={this.requestPublish.bind(this, collectionName, slug, ownStatus)}
+                      postAuthor={postAuthor}
                     />
                   </div>,
                 )
