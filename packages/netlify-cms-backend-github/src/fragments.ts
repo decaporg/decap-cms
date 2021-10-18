@@ -53,6 +53,9 @@ export const pullRequest = gql`
     updated_at: updatedAt
     user: author {
       login
+      ... on User {
+        name
+      }
     }
     repository {
       ...RepositoryParts

@@ -79,6 +79,7 @@ type GraphQLPullsListResponseItemUser = {
   avatar_url: string;
   login: string;
   url: string;
+  name: string;
 };
 
 function transformPullRequest(pr: GraphQLPullRequest) {
@@ -277,6 +278,11 @@ export default class GraphQLAPI extends API {
     } else {
       return super.fetchBlobContent({ sha, repoURL, parseText });
     }
+  }
+
+  async getPullRequestAuthor(pullRequest: Octokit.PullsListResponseItem) {
+    const user = pullRequest.user as unknown as GraphQLPullsListResponseItemUser;
+    return user?.name || user?.login;
   }
 
   async getPullRequests(
