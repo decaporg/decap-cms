@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.52.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.51.1...netlify-cms-core@2.52.0) (2021-10-18)
+
+
+### Features
+
+* display author of changes in workflow tab ([#5780](https://github.com/netlify/netlify-cms/issues/5780)) ([3f607e4](https://github.com/netlify/netlify-cms/commit/3f607e41d9c4d8fe5329a9ab6841cada7742825e))
+
+
+
+
+
 ## [2.51.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.51.0...netlify-cms-core@2.51.1) (2021-10-08)
 
 

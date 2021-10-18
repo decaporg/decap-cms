@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.12.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-gitlab@2.11.4...netlify-cms-backend-gitlab@2.12.0) (2021-10-18)
+
+
+### Features
+
+* display author of changes in workflow tab ([#5780](https://github.com/netlify/netlify-cms/issues/5780)) ([3f607e4](https://github.com/netlify/netlify-cms/commit/3f607e41d9c4d8fe5329a9ab6841cada7742825e))
+
+
+
+
+
 ## [2.11.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/compare/netlify-cms-backend-gitlab@2.11.3...netlify-cms-backend-gitlab@2.11.4) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-backend-gitlab
