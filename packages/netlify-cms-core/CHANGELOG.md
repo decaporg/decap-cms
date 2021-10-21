@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.53.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.52.0...netlify-cms-core@2.53.0) (2021-10-21)
+
+
+### Features
+
+* **core:** pass `locale` to custom preview templates ([#5912](https://github.com/netlify/netlify-cms/issues/5912)) ([c789852](https://github.com/netlify/netlify-cms/commit/c7898525ecdc67e55886774ce3fbfffb644542f5)), closes [#5911](https://github.com/netlify/netlify-cms/issues/5911)
+
+
+
+
+
 # [2.52.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.51.1...netlify-cms-core@2.52.0) (2021-10-18)
 
 
