@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "react-select": "^4.0.0",
-    "react-window": "^1.8.5"
+    "react-window": "^1.8.5",
+    "react-sortable-hoc": "^2.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
