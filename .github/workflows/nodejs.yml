@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: "*"
           check-latest: true
-          cache: npm
+          cache: yarn
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
@@ -62,16 +62,7 @@ jobs:
         with:
           node-version: "*"
           check-latest: true
-          cache: npm
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          cache: yarn
       - uses: actions/download-artifact@master
         with:
           name: dev-test-website-${{ runner.os }}
