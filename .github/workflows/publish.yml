@@ -30,13 +30,7 @@ jobs:
         with:
           node-version: "*"
           check-latest: true
-          cache: npm
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/yarn
-          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          cache: yarn
       - name: update yarn to latest version
         run: |
           sudo apt update && sudo apt install yarn
