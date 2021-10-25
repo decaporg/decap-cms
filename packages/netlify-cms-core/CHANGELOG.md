@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.53.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.53.0...netlify-cms-core@2.53.1) (2021-10-25)
+
+
+### Bug Fixes
+
+* **i18n:** return the correct locale from filenames ([#5922](https://github.com/netlify/netlify-cms/issues/5922)) ([6a42f98](https://github.com/netlify/netlify-cms/commit/6a42f98b518d2b42c6e181e4dffdae8115b22f1e))
+
+
+
+
+
 # [2.53.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.52.0...netlify-cms-core@2.53.0) (2021-10-21)
 
 
