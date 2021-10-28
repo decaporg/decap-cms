@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.2...netlify-cms-widget-markdown@2.14.3) (2021-10-28)
+
+
+### Bug Fixes
+
+* dropdown overflow in markdown widget ([#5879](https://github.com/netlify/netlify-cms/issues/5879)) ([3ec1611](https://github.com/netlify/netlify-cms/commit/3ec161122d13e01dacb65fa9c109be9612b54d47))
+
+
+
+
+
 ## [2.14.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.1...netlify-cms-widget-markdown@2.14.2) (2021-08-17)
 
 
