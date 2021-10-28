@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.3...netlify-cms-widget-markdown@2.14.4) (2021-10-28)
+
+
+### Bug Fixes
+
+* **richtext:** improvement to the Rich Text Editor [#5446](https://github.com/netlify/netlify-cms/issues/5446) ([#5897](https://github.com/netlify/netlify-cms/issues/5897)) ([06c7e25](https://github.com/netlify/netlify-cms/commit/06c7e251ce5e97a4949aa308070c3a659b50c780))
+
+
+
+
+
 ## [2.14.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.2...netlify-cms-widget-markdown@2.14.3) (2021-10-28)
 
 
