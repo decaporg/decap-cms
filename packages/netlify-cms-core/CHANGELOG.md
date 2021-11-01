@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.54.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.53.1...netlify-cms-core@2.54.0) (2021-11-01)
+
+
+### Features
+
+* **locales:** allow copying data from other locales ([#5850](https://github.com/netlify/netlify-cms/issues/5850)) ([#5881](https://github.com/netlify/netlify-cms/issues/5881)) ([5e2d181](https://github.com/netlify/netlify-cms/commit/5e2d1814981e2c09762b18d9ff66d1fefcbe73b3))
+
+
+
+
+
 ## [2.53.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.53.0...netlify-cms-core@2.53.1) (2021-10-25)
 
 

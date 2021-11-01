@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.37.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.2...netlify-cms-locales@1.37.0) (2021-11-01)
+
+
+### Features
+
+* **locales:** allow copying data from other locales ([#5850](https://github.com/netlify/netlify-cms/issues/5850)) ([#5881](https://github.com/netlify/netlify-cms/issues/5881)) ([5e2d181](https://github.com/netlify/netlify-cms/commit/5e2d1814981e2c09762b18d9ff66d1fefcbe73b3))
+
+
+
+
+
 ## [1.36.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.1...netlify-cms-locales@1.36.2) (2021-10-11)
 
 
