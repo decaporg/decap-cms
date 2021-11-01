@@ -1,4 +1,4 @@
-export function sortKeys<Item extends unknown>(
+export function sortKeys<Item>(
   sortedKeys: string[],
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selector: (a: Item) => string = (a: any) => a,
