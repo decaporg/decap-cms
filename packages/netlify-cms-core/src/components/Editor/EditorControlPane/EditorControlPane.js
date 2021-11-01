@@ -4,22 +4,22 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import {
+  buttons,
   colors,
   Dropdown,
   DropdownItem,
   StyledDropdownButton,
-  buttons,
   text,
 } from 'netlify-cms-ui-default';
 
 import EditorControl from './EditorControl';
 import {
   getI18nInfo,
-  isFieldTranslatable,
-  isFieldDuplicate,
-  isFieldHidden,
   getLocaleDataPath,
   hasI18n,
+  isFieldDuplicate,
+  isFieldHidden,
+  isFieldTranslatable,
 } from '../../../lib/i18n';
 
 const ControlPaneContainer = styled.div`
@@ -45,23 +45,24 @@ const LocaleButtonWrapper = styled.div`
   display: flex;
 `;
 
+const LocaleRowWrapper = styled.div`
+  display: flex;
+`;
+
 const StyledDropdown = styled(Dropdown)`
   width: max-content;
   margin-top: 20px;
   margin-bottom: 20px;
+  margin-right: 20px;
 `;
 
-function LocaleDropdown({ locales, selectedLocale, onLocaleChange, t }) {
+function LocaleDropdown({ locales, dropdownText, onLocaleChange }) {
   return (
     <StyledDropdown
       renderButton={() => {
         return (
           <LocaleButtonWrapper>
-            <LocaleButton>
-              {t('editor.editorControlPane.i18n.writingInLocale', {
-                locale: selectedLocale.toUpperCase(),
-              })}
-            </LocaleButton>
+            <LocaleButton>{dropdownText}</LocaleButton>
           </LocaleButtonWrapper>
         );
       }}
@@ -113,6 +114,41 @@ export default class ControlPane extends React.Component {
     this.props.onLocaleChange(val);
   };
 
+  copyFromOtherLocale =
+    ({ targetLocale, t }) =>
+    sourceLocale => {
+      if (
+        !window.confirm(
+          t('editor.editorControlPane.i18n.copyFromLocaleConfirm', {
+            locale: sourceLocale.toUpperCase(),
+          }),
+        )
+      ) {
+        return;
+      }
+      const { entry, collection } = this.props;
+      const { locales, defaultLocale } = getI18nInfo(collection);
+
+      const locale = this.state.selectedLocale;
+      const i18n = locales && {
+        currentLocale: locale,
+        locales,
+        defaultLocale,
+      };
+
+      this.props.fields.forEach(field => {
+        if (isFieldTranslatable(field, targetLocale, sourceLocale)) {
+          const copyValue = getFieldValue({
+            field,
+            entry,
+            locale: sourceLocale,
+            isTranslatable: sourceLocale !== defaultLocale,
+          });
+          this.props.onChange(field, copyValue, undefined, i18n);
+        }
+      });
+    };
+
   validate = async () => {
     this.props.fields.forEach(field => {
       if (field.get('widget') === 'hidden') return;
@@ -130,8 +166,8 @@ export default class ControlPane extends React.Component {
   };
 
   render() {
-    const { collection, entry, fieldsMetaData, fieldsErrors, onChange, onValidate, t } = this.props;
-    const fields = this.props.fields;
+    const { collection, entry, fields, fieldsMetaData, fieldsErrors, onChange, onValidate, t } =
+      this.props;
 
     if (!collection || !fields) {
       return null;
@@ -152,12 +188,20 @@ export default class ControlPane extends React.Component {
     return (
       <ControlPaneContainer>
         {locales && (
-          <LocaleDropdown
-            locales={locales}
-            selectedLocale={locale}
-            onLocaleChange={this.handleLocaleChange}
-            t={t}
-          />
+          <LocaleRowWrapper>
+            <LocaleDropdown
+              locales={locales}
+              dropdownText={t('editor.editorControlPane.i18n.writingInLocale', {
+                locale: locale.toUpperCase(),
+              })}
+              onLocaleChange={this.handleLocaleChange}
+            />
+            <LocaleDropdown
+              locales={locales.filter(l => l !== locale)}
+              dropdownText={t('editor.editorControlPane.i18n.copyFromLocale')}
+              onLocaleChange={this.copyFromOtherLocale({ targetLocale: locale, t })}
+            />
+          </LocaleRowWrapper>
         )}
         {fields
           .filter(f => f.get('widget') !== 'hidden')
@@ -179,9 +223,10 @@ export default class ControlPane extends React.Component {
                 })}
                 fieldsMetaData={fieldsMetaData}
                 fieldsErrors={fieldsErrors}
-                onChange={(field, newValue, newMetadata) =>
-                  onChange(field, newValue, newMetadata, i18n)
-                }
+                onChange={(field, newValue, newMetadata) => {
+                  console.log('newMeta', newMetadata);
+                  onChange(field, newValue, newMetadata, i18n);
+                }}
                 onValidate={onValidate}
                 processControlRef={this.controlRef.bind(this)}
                 controlRef={this.controlRef}
