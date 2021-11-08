@@ -53,7 +53,7 @@
     "react-modal": "^3.8.1",
     "react-polyglot": "^0.7.0",
     "react-redux": "^7.2.0",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^6.0.0",
     "react-scroll-sync": "^0.9.0",
     "react-sortable-hoc": "^2.0.0",
     "react-split-pane": "^0.1.85",
