@@ -129,7 +129,7 @@
                         "type": "array",
                         "minItems": 2,
                         "items": [
-                          { "oneOf": [{ "type": "string" }, { "instanceof": "RegExp" }] },
+                          { "oneOf": [{ "type": "string" }] },
                           { "type": "string" }
                         ]
                       },
@@ -147,13 +147,11 @@
                       }
                     },
                     "required": ["name"]
-                  },
-                  "uniqueItemProperties": ["name"]
+                  }
                 }
               },
               "required": ["name", "label", "file", "fields"]
-            },
-            "uniqueItemProperties": ["name"]
+            }
           },
           "identifier_field": { "type": "string" },
           "summary": { "type": "string" },
@@ -208,7 +206,7 @@
                   "type": "array",
                   "minItems": 2,
                   "items": [
-                    { "oneOf": [{ "type": "string" }, { "instanceof": "RegExp" }] },
+                    { "oneOf": [{ "type": "string" }] },
                     { "type": "string" }
                   ]
                 },
@@ -226,8 +224,7 @@
                 }
               },
               "required": ["name"]
-            },
-            "uniqueItemProperties": ["name"]
+            }
           },
           "sortable_fields": { "type": "array", "items": { "type": "string" } },
           "sortableFields": { "type": "array", "items": { "type": "string" } },
@@ -335,8 +332,7 @@
             "required": ["format"]
           }
         }
-      },
-      "uniqueItemProperties": ["name"]
+      }
     },
     "editor": { "type": "object", "properties": { "preview": { "type": "boolean" } } }
   },

@@ -16,7 +16,8 @@
     "develop": "yarn build:esm --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
     "build": "cross-env NODE_ENV=production run-s webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
+    "generate-validate": "ajv compile --strict=false --all-errors --data -s configSchema.json -o src/constants/validateSchema.js -c ajv-keywords -c ajv-errors"
   },
   "keywords": [
     "netlify",
@@ -26,7 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "2.2.5",
-    "ajv": "8.1.0",
+    "ajv": "^8.7.1",
     "ajv-errors": "^3.0.0",
     "ajv-keywords": "^5.0.0",
     "copy-text-to-clipboard": "^3.0.0",
@@ -94,6 +95,7 @@
     "@types/history": "^4.7.8",
     "@types/redux-mock-store": "^1.0.2",
     "@types/url-join": "^4.0.0",
+    "ajv-cli": "^5.0.0",
     "redux-mock-store": "^1.5.3"
   }
 }
