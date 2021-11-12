@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.38.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.37.0...netlify-cms-locales@1.38.0) (2021-11-12)
+
+
+### Features
+
+* **locales:** add Hebrew translation ([#5903](https://github.com/netlify/netlify-cms/issues/5903)) ([928ea9b](https://github.com/netlify/netlify-cms/commit/928ea9b5c97ef643b63aa7e6bffa8d8cac88a741))
+
+
+
+
+
 # [1.37.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.2...netlify-cms-locales@1.37.0) (2021-11-01)
 
 
