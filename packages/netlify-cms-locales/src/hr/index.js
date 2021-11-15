@@ -23,7 +23,7 @@ const hr = {
     },
     app: {
       errorHeader: 'Greška pri učitavanju CMS konfiguracije',
-      configErrors: 'Greška u knofiguraciji',
+      configErrors: 'Greška u konfiguraciji',
       checkConfigYml: 'Provjeri config.yml datoteku.',
       loadingConfig: 'Učitavanje konfiguracije...',
       waitingBackend: 'Čekanje na backend...',
@@ -78,12 +78,12 @@ const hr = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} je obvezan.',
-        regexPattern: '%{fieldLabel} se ne podudara sa paternom: %{pattern}.',
+        regexPattern: '%{fieldLabel} se ne podudara sa uzorkom: %{pattern}.',
         processing: '%{fieldLabel} se procesira.',
         range: '%{fieldLabel} mora biti između %{minValue} i %{maxValue}.',
         min: '%{fieldLabel} mora biti najmanje %{minValue}.',
         max: '%{fieldLabel} mora biti %{maxValue} ili manje.',
-        rangeCount: '%{fieldLabel} mora imati izeđu %{minCount} i %{maxCount} predmeta.',
+        rangeCount: '%{fieldLabel} mora imati između %{minCount} i %{maxCount} predmeta.',
         rangeCountExact: '%{fieldLabel} mora imati točno %{count} predmeta.',
         rangeMin: '%{fieldLabel} mora imati najmanje %{minCount} predmet(a).',
         rangeMax: '%{fieldLabel} mora imate %{maxCount} ili manje predmeta.',
@@ -102,9 +102,9 @@ const hr = {
       onPublishingWithUnsavedChanges:
         'Imate nespremljene promjene, molimo spremite prije objavljivanja.',
       onPublishing: 'Jeste li sigurni da želite objaviti ovaj unos?',
-      onUnpublishing: 'Jeste li sigurno da želite maknuti objavu za ovaj unos?',
+      onUnpublishing: 'Jeste li sigurni da želite maknuti objavu za ovaj unos?',
       onDeleteWithUnsavedChanges:
-        'Jeste li sigurni da želite obrisati objavljeni unos, te nespremljene promjene u trenutnoj sesiji.',
+        'Jeste li sigurni da želite obrisati objavljeni unos, te nespremljene promjene u trenutnoj sesiji?',
       onDeletePublishedEntry: 'Jeste li sigurni da želite obrisati ovaj objavljeni unos?',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         'Obrisat ćete sve neobjavljene promjene na ovom unosu, te sve nespremljene promjene u trenutnoj sesiji. Želite li i dalje obrisati?',
@@ -122,7 +122,7 @@ const hr = {
       unpublishing: 'Brisanje iz objava...',
       publishAndCreateNew: 'Objavi i kreiraj novo',
       publishAndDuplicate: 'Objavi i dupliciraj',
-      deleteUnpublishedChanges: 'Obirši neobjavljene promjene',
+      deleteUnpublishedChanges: 'Obriši neobjavljene promjene',
       deleteUnpublishedEntry: 'Obriši neobjavljene unose',
       deletePublishedEntry: 'Obriši objavljeni unos',
       deleteEntry: 'Obriši unos',
@@ -207,7 +207,7 @@ const hr = {
       uploading: 'Učitavanje...',
       upload: 'Učitaj',
       download: 'Preuzmi',
-      deleting: 'Birsanje...',
+      deleting: 'Brisanje...',
       deleteSelected: 'Obriši označeno',
       chooseSelected: 'Odaberi označeno',
     },
@@ -242,8 +242,8 @@ const hr = {
       entrySaved: 'Unos spremljen',
       entryPublished: 'Unos objavljen',
       entryUnpublished: 'Unos obrisan',
-      onFailToPublishEntry: 'Neuspjelo objaviljanje unosa: %{details}',
-      onFailToUnpublishEntry: 'Neuspjelo birsanje unosa: %{details}',
+      onFailToPublishEntry: 'Neuspjelo objavljivanje unosa: %{details}',
+      onFailToUnpublishEntry: 'Neuspjelo brisanje unosa: %{details}',
       entryUpdated: 'Status unosa ažuriran',
       onDeleteUnpublishedChanges: 'Otkrivene neobjavljene objave',
       onFailToAuth: '%{details}',
@@ -257,7 +257,7 @@ const hr = {
       workflowHeading: 'Urednički tijek rada',
       newPost: 'Nova objava',
       description:
-        '%{smart_count} unos čeka pregled, %{readyCount} unos spremno za produkciju. |||| %{smart_count} unosa čeka pregled, %{readyCount} unosa spremno za produkciju. ',
+        '%{smart_count} unos čeka pregled, %{readyCount} unos spreman za produkciju. |||| %{smart_count} unosa čeka pregled, %{readyCount} unosa spremno za produkciju. ',
       dateFormat: 'MMMM D',
     },
     workflowCard: {
