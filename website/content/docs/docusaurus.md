@@ -279,4 +279,4 @@ Click **Install**.
 
 </ol>
 
-🎉 Now you can access the admin interface through your deployed URL.
+🎉 All done! Now you can access the admin interface through your deployed URL.
