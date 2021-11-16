@@ -9,7 +9,8 @@ This guide instructs you on how to integrate Netlify CMS with Docusaurus.
 
 * Sign up for [GitHub](www.github.com) and [Netlify](www.netlify.com).
 * Download [Node.js](https://nodejs.org/en/download/) version 14 or above.
-* Download the [GitHub CLI](https://cli.github.com/).
+* Install the [GitHub CLI](https://cli.github.com/).
+* Install and authenticate the [Netlify CLI](https://docs.netlify.com/cli/get-started/).
 
 ## Create a new Docusaurus project
 
@@ -60,23 +61,27 @@ Don't add a license or a .gitignore. Do add an "origin" git remote.
 git push -u origin main
 ```
 
-## Publish your project using Netlify
+## Publish your project using Netlify CLI
 
 <ol>
+<li> Connect Netlify CLI to your GitHub repository.
 
-<li> Login to Netlify. </li>
+```bash
+netlify init
+```
 
-<li> On the <code>Team overview</code> page, click <strong>New site from Git</strong>. </li>
-
-<li> Click <strong>GitHub</strong>.</li>
-
-<li> Choose your project's repository. </li>
-
-<li> Click <strong>Deploy site</strong>.</li>
-
+</li>
+<li> Choose <code>Create & configure a new site</code>. </li>
+<li> Choose your team and site name. </li>
+<li> Choose <code>yarn build</code> for your build command. </li>
+<li> Choose <code>build</code> for your deployment directory. </li>
 </ol>
 
-Your website is now deployed. Netlify provides you with a randomly generated domain name. On the `Site overview` page, click the link to see your live website.
+![](/img/screen-shot-2021-11-16-at-1.34.18-PM.png)
+
+Choose the default option for everything else. 
+
+Your website is now deployed. Netlify provides you with a randomly generated domain name. Run `netlify open --site` to view your deployed site.
 
 ## Add Netlify CMS to your project
 
@@ -102,7 +107,7 @@ touch ./blog/2021-11-15-first-blog-post.md
 
 <li> Edit <code>2021-11-15-first-blog-post.md</code> to look like this:
 
-```markdown
+```yaml
 ---
 title: First Blog Post
 slug: first-blog-post
@@ -215,7 +220,7 @@ You can now view and edit `2021-11-15-first-blog-post.md` through the admin inte
 **Warning:** Any changes you publish through the admin interface will only effect your *remote GitHub repository*. To retrieve these changes locally, `git pull` from your local repository.
 </li>
 
-<li> Commit and push your new changes to your remote branch. 
+<li> Commit and push your new changes to your remote repository. 
 
 ```bash
 git add . 
