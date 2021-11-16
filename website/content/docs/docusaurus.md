@@ -42,7 +42,7 @@ Netlify CMS requires a [backend](https://www.netlifycms.org/docs/backends-overvi
 
 <ol>
 
-<li> Initialize your **local** Git repository.
+<li> Initialize your \*\*local\*\* Git repository.
 
 `git init`
 
@@ -66,7 +66,7 @@ Netlify CMS requires a [backend](https://www.netlifycms.org/docs/backends-overvi
 
 </li>
 
-<li> Create a **remote** repository on GitHub using the GitHub CLI.
+<li> Create a \*\*remote\*\* repository on GitHub using the GitHub CLI.
 
 `gh repo create my-website`
 
@@ -90,13 +90,13 @@ Don't add a license or a .gitignore. Do add an "origin" git remote.
 
 <li> Login to Netlify. </li>
 
-<li> On the Team overview page, click **New site from Git**. </li>
+<li> On the Team overview page, click \*\*New site from Git\*\*. </li>
 
-<li> Click **GitHub**.</li>
+<li> Click \*\*GitHub\*\*.</li>
 
 <li> Choose your project's repository. </li>
 
-<li> Click **Deploy site**.</li>
+<li> Click \*\*Deploy site\*\*.</li>
 
 </ol>
 
@@ -108,19 +108,19 @@ Your website is now deployed. Netlify provides you with a randomly generated dom
 
 <ol>
 
-<li> Remove all existing posts from `/blog`.
+<li> Remove all existing posts from \`/blog\`.
 
 `rm -rf ./blog/*`
 
 </li>
 
-<li> Create a new blog post post titled `2021-11-15-first-blog-post.md`.
+<li> Create a new blog post post titled \`2021-11-15-first-blog-post.md\`.
 
 touch ./blog/`2021-11-15-first-blog-post.md`
 
 </li>
 
-<li> Edit `2021-11-15-first-blog-post.md` to look like this:
+<li> Edit \`2021-11-15-first-blog-post.md\` to look like this:
 
 ```
 ---
@@ -146,7 +146,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum 
 
 <ol>
 
-<li> Create an `admin` directory inside `static`.
+<li> Create an \`admin\` directory inside \`static\`.
 
 `cd static`
 
@@ -154,7 +154,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum 
 
 </li> 
 
-<li> In the `admin` directory, create a `config.yml` file and an `index.html` file.
+<li> In the \`admin\` directory, create a \`config.yml\` file and an \`index.html\` file.
 
 `touch config.yml`
 
@@ -162,7 +162,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum 
 
 </li> 
 
-<li> Edit `index.html` to look like this:
+<li> Edit \`index.html\` to look like this:
 
 ```html
 <!doctype html>
@@ -185,15 +185,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum 
 
 <li> Edit `config.yml` to look like this: 
 
-```
+```yaml
 backend:
   name: github
   branch: main 
   repo: [your-github]/my-website
 
 # These lines should *not* be indented
-media_folder: "static/images/uploads" # Media files will be stored in the repo under static/images/uploads
-public_folder: "/images/uploads" # The src attribute for uploaded media will begin with /images/uploads
+media_folder: "static/img" # Media files will be stored in the repo under static/images/uploads
+public_folder: "/img/" # The src attribute for uploaded media will begin with /images/uploads
 
 collections:
 - name: blog
@@ -235,8 +235,48 @@ You can now view and edit `2021-11-15-first-blog-post.md` through the admin inte
 
 </li>
 
+<li> Commit and push your new changes to your remote branch. 
+
+`git add . `
+
+`git commit -m "Add Netlify CMS"`
+
+`git push`
+
+Netlify builds and deploys your new changes. 
+
+</li>
+
 </ol>
 
+## Add GitHub as an authentication provider
 
+Before you can access `/admin/` through your Netlify deployed domain, you need to set up an authentication provider. The authentication provider allows Netlify CMS to determine whether users have read and write access to `/admin/`. This guide uses GitHub credentials for authentication. 
 
-Authetnticate...
+<ol>
+
+<li> Create a new [GitHub OAuth application](https://github.com/settings/applications/new). 
+
+Enter your Netlify domain as the **Homepage URL**.
+
+Enter `https://api.netlify.com/auth/done` as the **Authorization callback URL**.
+
+Click **Register application.**
+
+Click **Generate a new client secret.**
+
+Copy the provided client secret and client ID.
+
+</li>
+
+<li> On Netlify, under `Site Settings > Access control > OAuth > Authentication Providers`, click **Install provider**.
+
+Enter your client secret and client ID from GitHub.
+
+Click **Install**.
+
+</li>
+
+</ol>
+
+🎉 Now you can access the admin interface through your deployed URL.
