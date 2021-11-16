@@ -5,7 +5,7 @@ title: Docusaurus
 ---
 This guide instructs you on how to integrate Netlify CMS with Docusaurus.
 
-#### Before you begin
+### Before you begin
 
 * Sign up for [GitHub](www.github.com) and [Netlify](www.netlify.com).
 * Download [Node.js](https://nodejs.org/en/download/) version 14 or above.
@@ -13,17 +13,11 @@ This guide instructs you on how to integrate Netlify CMS with Docusaurus.
 
 ## Create a new Docusaurus project
 
-<ol>
+```bash
+# 1. Use Docusaurus to create a site scaffold.
+npx create-docusaurus@latest my-website classic
 
-<li> Use Docusaurus to create a site scaffold in the command line.
-
-`npx create-docusaurus@latest my-website classic`
-
-</li> 
-
-<li> Run the development server.
-
-```
+# 2. Run the development server.
 cd my-website
 npm run start
 ```
@@ -40,49 +34,31 @@ The development server now serves your website at `http://localhost:3000`. As yo
 
 Netlify CMS requires a [backend](https://www.netlifycms.org/docs/backends-overview/) to store content. Netlify CMS supports using Git hosts, like GitHub or GitLab, as backends. This guide uses GitHub. 
 
-<ol>
+```bash
+# 1. Initialize your local Git repository.  
+git init
 
-<li> Initialize your \*\*local\*\* Git repository.
+# 2. Rename your initial branch to match GitHub.
+git branch -m main
 
-`git init`
+# 3. Stage all your local files to your repository.
+git add . 
 
-</li>
+# 4. Commit your staged changes.
+git commit -m 'Initial commit'
 
-<li> Rename your initial branch to match GitHub.
-
-`git branch -m main`
-
-</li>
-
-<li> Stage all your local files to your repository.
-
-`git add .`
-
-</li> 
-
-<li> Commit your staged changes.
-
-`git commit -m 'Initial commit'`
-
-</li>
-
-<li> Create a \*\*remote\*\* repository on GitHub using the GitHub CLI.
-
-`gh repo create my-website`
+# 5. Create a remote repository on GitHub using the GitHub CLI.
+gh repo create my-website
+```
 
 Don't add a license or a .gitignore. Do add an "origin" git remote.
 
 ![](/img/screen-shot-2021-11-15-at-4.16.53-pm.png)
 
-</li> 
-
-<li> Update your remote repository with your locally staged changes. 
-
-`git push -u origin main`
-
-</li>
-
-</ol>
+```bash
+# 6. Update your remote repository with your staged changes. 
+git push -u origin main
+```
 
 ## Publish your project using Netlify
 
@@ -90,39 +66,43 @@ Don't add a license or a .gitignore. Do add an "origin" git remote.
 
 <li> Login to Netlify. </li>
 
-<li> On the Team overview page, click \*\*New site from Git\*\*. </li>
+<li> On the <code>Team overview</code> page, click <strong>New site from Git</strong>. </li>
 
-<li> Click \*\*GitHub\*\*.</li>
+<li> Click <strong>GitHub</strong>.</li>
 
 <li> Choose your project's repository. </li>
 
-<li> Click \*\*Deploy site\*\*.</li>
+<li> Click <strong>Deploy site</strong>.</li>
 
 </ol>
 
-Your website is now deployed. Netlify provides you with a randomly generated domain name. On the Site overview page, click the link to see your live website.
+Your website is now deployed. Netlify provides you with a randomly generated domain name. On the `Site overview` page, click the link to see your live website.
 
 ## Add Netlify CMS to your project
 
-#### Before you begin
+### Before you begin
 
 <ol>
 
-<li> Remove all existing posts from \`/blog\`.
+<li> Remove all existing posts from <code>/blog</code>.
 
-`rm -rf ./blog/*`
-
-</li>
-
-<li> Create a new blog post post titled \`2021-11-15-first-blog-post.md\`.
-
-touch ./blog/`2021-11-15-first-blog-post.md`
-
-</li>
-
-<li> Edit \`2021-11-15-first-blog-post.md\` to look like this:
-
+```bash 
+rm -rf ./blog/*
 ```
+
+</li>
+
+<li> Create a new blog post post titled <code>2021-11-15-first-blog-post.md</code>.
+
+```bash
+touch ./blog/2021-11-15-first-blog-post.md
+```
+
+</li>
+
+<li> Edit <code>2021-11-15-first-blog-post.md</code> to look like this:
+
+```markdown
 ---
 title: First Blog Post
 slug: first-blog-post
@@ -133,7 +113,7 @@ authors:
   - name: Garrison McMullen
     title: Instruction Writer
     url: https://github.com/garrison0
-    imageUrl: https://avatars.githubusercontent.com/u/4089393?v=4
+    image_url: https://avatars.githubusercontent.com/u/4089393?v=4
 ---
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat.
 ```
@@ -142,27 +122,30 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum 
 
 </ol>
 
-#### Procedure
+### Procedure
 
 <ol>
 
-<li> Create an \`admin\` directory inside \`static\`.
+<li> Create an <code>admin</code> directory inside <code>static</code>.
 
-`cd static`
-
-`mkdir admin`
-
-</li> 
-
-<li> In the \`admin\` directory, create a \`config.yml\` file and an \`index.html\` file.
-
-`touch config.yml`
-
-`touch index.html`
+```bash
+cd static
+mkdir admin
+```
 
 </li> 
 
-<li> Edit \`index.html\` to look like this:
+<li> In the <code>admin</code> directory, create a <code>config.yml</code> file and an <code>index.html</code> file.
+
+```bash
+cd admin
+touch config.yml
+touch index.html
+```
+
+</li> 
+
+<li> Edit <code>index.html</code> to look like this:
 
 ```html
 <!doctype html>
@@ -183,13 +166,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum 
 
 </li> 
 
-<li> Edit `config.yml` to look like this: 
+<li> Edit <code>config.yml</code> to look like this: 
 
 ```yaml
 backend:
   name: github
   branch: main 
-  repo: [your-github]/my-website
+  repo: <your-github>/my-website
 
 # These lines should *not* be indented
 media_folder: "static/img" # Media files will be stored in the repo under static/images/uploads
@@ -221,27 +204,24 @@ collections:
         - { name: imageUrl, label: ImageURL, widget: string } 
 ```
 
-`config.yml` specifies what kind of content is in your blog posts. The content specification enables Netlify CMS to edit existing posts and create new ones with the same format. To learn more, read about Netlify CMS' [](https://www.netlifycms.org/docs/configuration-options/)[Configuration options](https://www.netlifycms.org/docs/configuration-options/).
-
+`config.yml` specifies what kind of content your blog posts have. The content specification enables Netlify CMS to edit existing posts and create new ones with the same format. To learn more, read about Netlify CMS' [](https://www.netlifycms.org/docs/configuration-options/)[Configuration options](https://www.netlifycms.org/docs/configuration-options/).
 </li> 
 
 <li>
-
-Visit `localhost:3000/admin`
+Visit <code>localhost:3000/admin</code>
 
 You can now view and edit `2021-11-15-first-blog-post.md` through the admin interface. You can also create new blog posts. 
 
 **Warning:** Any changes you publish through the admin interface will only effect your *remote GitHub repository*. To retrieve these changes locally, `git pull` from your local repository.
-
 </li>
 
 <li> Commit and push your new changes to your remote branch. 
 
-`git add . `
-
-`git commit -m "Add Netlify CMS"`
-
-`git push`
+```bash
+git add . 
+git commit -m "Add Netlify CMS"
+git push
+```
 
 Netlify builds and deploys your new changes. 
 
@@ -251,32 +231,21 @@ Netlify builds and deploys your new changes.
 
 ## Add GitHub as an authentication provider
 
-Before you can access `/admin/` through your Netlify deployed domain, you need to set up an authentication provider. The authentication provider allows Netlify CMS to determine whether users have read and write access to `/admin/`. This guide uses GitHub credentials for authentication. 
+Before you can access `/admin/` through your Netlify domain, you need to set up an authentication provider. The authentication provider allows Netlify CMS to determine whether users have read and write access to `/admin/`. This guide uses GitHub credentials for authentication. 
 
-<ol>
+### Configure GitHub 
 
-<li> Create a new [GitHub OAuth application](https://github.com/settings/applications/new). 
+1. Create a new [GitHub OAuth application](https://github.com/settings/applications/new). 
+2. Enter your Netlify domain as the **Homepage URL**.
+3. Enter <code>https://api.netlify.com/auth/done</code> as the **Authorization callback URL**.
+4. Click **Register application.**
+5. Click **Generate a new client secret.** 
+6. Copy the provided client secret and client ID.
 
-Enter your Netlify domain as the **Homepage URL**.
+### Configure Netlify
 
-Enter `https://api.netlify.com/auth/done` as the **Authorization callback URL**.
+1. On Netlify, under `Site Settings > Access control > OAuth > Authentication Providers`, click **Install provider**.
+2. Enter your client secret and client ID from GitHub.
+3. Click **Install**.
 
-Click **Register application.**
-
-Click **Generate a new client secret.**
-
-Copy the provided client secret and client ID.
-
-</li>
-
-<li> On Netlify, under `Site Settings > Access control > OAuth > Authentication Providers`, click **Install provider**.
-
-Enter your client secret and client ID from GitHub.
-
-Click **Install**.
-
-</li>
-
-</ol>
-
-🎉 All done! Now you can access the admin interface through your deployed URL.
+🎉 All done! Now you can access the admin interface through your Netlify URL.
