@@ -172,7 +172,8 @@
     ],
     "nohoist": [
       "husky",
-      "run-node"
+      "run-node",
+      "**/ajv-cli"
     ]
   },
   "private": true,

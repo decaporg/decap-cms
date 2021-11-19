@@ -1,0 +1,341 @@
+{
+  "type": "object",
+  "properties": {
+    "backend": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "examples": ["test-repo"] },
+        "auth_scope": {
+          "type": "string",
+          "examples": ["repo", "public_repo"],
+          "enum": ["repo", "public_repo"]
+        },
+        "cms_label_prefix": { "type": "string", "minLength": 1 },
+        "open_authoring": { "type": "boolean", "examples": [true] }
+      },
+      "required": ["name"]
+    },
+    "local_backend": {
+      "oneOf": [
+        { "type": "boolean" },
+        {
+          "type": "object",
+          "properties": {
+            "url": { "type": "string", "examples": ["http://localhost:8081/api/v1"] },
+            "allowed_hosts": { "type": "array", "items": { "type": "string" } }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "locale": { "type": "string", "examples": ["en", "fr", "de"] },
+    "i18n": {
+      "type": "object",
+      "properties": {
+        "structure": {
+          "type": "string",
+          "enum": ["multiple_folders", "multiple_files", "single_file"]
+        },
+        "locales": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 10,
+            "pattern": "^[a-zA-Z-_]+$"
+          },
+          "uniqueItems": true
+        },
+        "default_locale": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 10,
+          "pattern": "^[a-zA-Z-_]+$"
+        }
+      },
+      "required": ["structure", "locales"]
+    },
+    "site_url": { "type": "string", "examples": ["https://example.com"] },
+    "display_url": { "type": "string", "examples": ["https://example.com"] },
+    "logo_url": { "type": "string", "examples": ["https://example.com/images/logo.svg"] },
+    "show_preview_links": { "type": "boolean" },
+    "media_folder": { "type": "string", "examples": ["assets/uploads"] },
+    "public_folder": { "type": "string", "examples": ["/uploads"] },
+    "media_folder_relative": { "type": "boolean" },
+    "media_library": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "examples": ["uploadcare"] },
+        "config": { "type": "object" }
+      },
+      "required": ["name"]
+    },
+    "publish_mode": {
+      "type": "string",
+      "enum": ["simple", "editorial_workflow"],
+      "examples": ["editorial_workflow"]
+    },
+    "slug": {
+      "type": "object",
+      "properties": {
+        "encoding": { "type": "string", "enum": ["unicode", "ascii"] },
+        "clean_accents": { "type": "boolean" }
+      }
+    },
+    "collections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "label": { "type": "string" },
+          "label_singular": { "type": "string" },
+          "description": { "type": "string" },
+          "folder": { "type": "string" },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "label": { "type": "string" },
+                "label_singular": { "type": "string" },
+                "description": { "type": "string" },
+                "file": { "type": "string" },
+                "preview_path": { "type": "string" },
+                "preview_path_date_field": { "type": "string" },
+                "fields": {
+                  "$id": "fields_478f58a3-0939-44d3-824b-42f1c0aa4f89",
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$id": "field_478f58a3-0939-44d3-824b-42f1c0aa4f89",
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "label": { "type": "string" },
+                      "widget": { "type": "string" },
+                      "required": { "type": "boolean" },
+                      "i18n": {
+                        "oneOf": [
+                          { "type": "boolean" },
+                          { "type": "string", "enum": ["translate", "duplicate", "none"] }
+                        ]
+                      },
+                      "hint": { "type": "string" },
+                      "pattern": {
+                        "type": "array",
+                        "minItems": 2,
+                        "items": [
+                          { "oneOf": [{ "type": "string" }] },
+                          { "type": "string" }
+                        ]
+                      },
+                      "field": { "$ref": "field_478f58a3-0939-44d3-824b-42f1c0aa4f89" },
+                      "fields": { "$ref": "fields_478f58a3-0939-44d3-824b-42f1c0aa4f89" },
+                      "types": { "$ref": "fields_478f58a3-0939-44d3-824b-42f1c0aa4f89" }
+                    },
+                    "select": { "$data": "0/widget" },
+                    "selectCases": {
+                      "relation": {
+                        "properties": {
+                          "search_fields": { "type": "array", "items": { "type": "string" } },
+                          "display_fields": { "type": "array", "items": { "type": "string" } }
+                        }
+                      }
+                    },
+                    "required": ["name"]
+                  }
+                }
+              },
+              "required": ["name", "label", "file", "fields"]
+            }
+          },
+          "identifier_field": { "type": "string" },
+          "summary": { "type": "string" },
+          "slug": { "type": "string" },
+          "path": { "type": "string" },
+          "preview_path": { "type": "string" },
+          "preview_path_date_field": { "type": "string" },
+          "create": { "type": "boolean" },
+          "publish": { "type": "boolean" },
+          "hide": { "type": "boolean" },
+          "editor": { "type": "object", "properties": { "preview": { "type": "boolean" } } },
+          "format": {
+            "type": "string",
+            "enum": [
+              "yml",
+              "yaml",
+              "toml",
+              "json",
+              "frontmatter",
+              "json-frontmatter",
+              "toml-frontmatter",
+              "yaml-frontmatter"
+            ]
+          },
+          "extension": { "type": "string" },
+          "frontmatter_delimiter": {
+            "type": ["string", "array"],
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "type": "string" }
+          },
+          "fields": {
+            "$id": "fields_135af09a-7035-4830-8ed7-260197843a0b",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$id": "field_135af09a-7035-4830-8ed7-260197843a0b",
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "label": { "type": "string" },
+                "widget": { "type": "string" },
+                "required": { "type": "boolean" },
+                "i18n": {
+                  "oneOf": [
+                    { "type": "boolean" },
+                    { "type": "string", "enum": ["translate", "duplicate", "none"] }
+                  ]
+                },
+                "hint": { "type": "string" },
+                "pattern": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": [
+                    { "oneOf": [{ "type": "string" }] },
+                    { "type": "string" }
+                  ]
+                },
+                "field": { "$ref": "field_135af09a-7035-4830-8ed7-260197843a0b" },
+                "fields": { "$ref": "fields_135af09a-7035-4830-8ed7-260197843a0b" },
+                "types": { "$ref": "fields_135af09a-7035-4830-8ed7-260197843a0b" }
+              },
+              "select": { "$data": "0/widget" },
+              "selectCases": {
+                "relation": {
+                  "properties": {
+                    "search_fields": { "type": "array", "items": { "type": "string" } },
+                    "display_fields": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              },
+              "required": ["name"]
+            }
+          },
+          "sortable_fields": { "type": "array", "items": { "type": "string" } },
+          "sortableFields": { "type": "array", "items": { "type": "string" } },
+          "view_filters": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": { "type": "string" },
+                "field": { "type": "string" },
+                "pattern": { "oneOf": [{ "type": "boolean" }, { "type": "string" }] }
+              },
+              "additionalProperties": false,
+              "required": ["label", "field", "pattern"]
+            }
+          },
+          "view_groups": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": { "type": "string" },
+                "field": { "type": "string" },
+                "pattern": { "type": "string" }
+              },
+              "additionalProperties": false,
+              "required": ["label", "field"]
+            }
+          },
+          "nested": {
+            "type": "object",
+            "properties": {
+              "depth": { "type": "number", "minimum": 1, "maximum": 1000 },
+              "summary": { "type": "string" }
+            },
+            "required": ["depth"]
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "object",
+                "properties": {
+                  "label": { "type": "string" },
+                  "widget": { "type": "string" },
+                  "index_file": { "type": "string" }
+                },
+                "required": ["label", "widget", "index_file"]
+              }
+            },
+            "additionalProperties": false,
+            "minProperties": 1
+          },
+          "i18n": {
+            "oneOf": [
+              { "type": "boolean" },
+              {
+                "type": "object",
+                "properties": {
+                  "structure": {
+                    "type": "string",
+                    "enum": ["multiple_folders", "multiple_files", "single_file"]
+                  },
+                  "locales": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "string",
+                      "minLength": 2,
+                      "maxLength": 10,
+                      "pattern": "^[a-zA-Z-_]+$"
+                    },
+                    "uniqueItems": true
+                  },
+                  "default_locale": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 10,
+                    "pattern": "^[a-zA-Z-_]+$"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "required": ["name", "label"],
+        "oneOf": [{ "required": ["files"] }, { "required": ["folder", "fields"] }],
+        "not": { "required": ["sortable_fields", "sortableFields"] },
+        "if": { "required": ["extension"] },
+        "then": {
+          "if": {
+            "properties": {
+              "extension": { "enum": ["yml", "yaml", "toml", "json", "md", "markdown", "html"] }
+            }
+          },
+          "else": { "required": ["format"] }
+        },
+        "dependencies": {
+          "frontmatter_delimiter": {
+            "properties": {
+              "format": { "enum": ["yaml-frontmatter", "toml-frontmatter", "json-frontmatter"] }
+            },
+            "required": ["format"]
+          }
+        }
+      }
+    },
+    "editor": { "type": "object", "properties": { "preview": { "type": "boolean" } } }
+  },
+  "required": ["backend", "collections"],
+  "anyOf": [{ "required": ["media_folder"] }, { "required": ["media_library"] }]
+}

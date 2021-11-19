@@ -1,6 +1,7 @@
 import { merge } from 'lodash';
+import { writeFileSync } from 'fs';
 
-import { validateConfig } from '../configSchema';
+import { validateConfig, getConfigSchema } from '../configSchema';
 
 jest.mock('../../lib/registry');
 
@@ -15,6 +16,19 @@ describe('config', () => {
 
   const { getWidgets } = require('../../lib/registry');
   getWidgets.mockImplementation(() => [{}]);
+
+  // describe('serialize', () => {
+  //   let schema = undefined;
+
+  //   beforeEach(() => {
+  //     schema = JSON.stringify(getConfigSchema());
+  //     writeFileSync('config-schema.json', schema, 'utf8');
+  //   });
+
+  //   it('has a string value', () => {
+  //     expect(schema).toBeInstanceOf(String);
+  //   });
+  // });
 
   describe('validateConfig', () => {
     const validConfig = {

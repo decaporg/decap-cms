@@ -11,6 +11,7 @@ import uuid from 'uuid/v4';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
+import validateSchema from './validateSchema';
 
 const localeType = { type: 'string', minLength: 2, maxLength: 10, pattern: '^[a-zA-Z-_]+$' };
 
@@ -354,16 +355,9 @@ class ConfigError extends Error {
  * the config that is passed in.
  */
 export function validateConfig(config) {
-  const ajv = new AJV({ allErrors: true, $data: true, strict: false });
-  uniqueItemProperties(ajv);
-  select(ajv);
-  instanceOf(ajv);
-  prohibited(ajv);
-  ajvErrors(ajv);
-
-  const valid = ajv.validate(getConfigSchema(), config);
+  const valid = validateSchema(config);
   if (!valid) {
-    const errors = ajv.errors.map(e => {
+    const errors = validateSchema.errors.map(e => {
       switch (e.keyword) {
         // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
         case 'uniqueItemProperties': {
