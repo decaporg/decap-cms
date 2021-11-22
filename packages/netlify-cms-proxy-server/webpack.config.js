@@ -10,7 +10,7 @@ module.exports = {
   entry: { index: path.join('src', 'index.ts'), middlewares: path.join('src', 'middlewares.ts') },
   mode: NODE_ENV,
   target: 'node',
-  devtool: 'source-map',
+  devtool: 'cheap-module-source-map',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
