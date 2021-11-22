@@ -131,7 +131,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.17.0",
-    "execa": "^5.0.0",
+    "execa": "^6.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^10.0.0",
     "gitlab": "^14.1.1",
