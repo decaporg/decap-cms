@@ -3440,15 +3440,10 @@ commander@^7.2.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
 
-commander@^8.1.0:
+commander@^8.1.0, commander@~8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
   integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
-
-commander@~8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-8.2.0.tgz#37fe2bde301d87d47a53adeff8b5915db1381ca8"
-  integrity sha512-LLKxDvHeL91/8MIyTAD5BFMNtoIwztGPMiM/7Bl8rIPmHCZXRxmSWr91h57dpOpnQ6jIUqEWdXE/uBYMfiVZDA==
 
 common-tags@^1.8.0:
   version "1.8.2"
@@ -6614,7 +6609,7 @@ ignore@^4.0.6:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
-ignore@^5.1.1, ignore@^5.1.4, ignore@^5.1.8, ignore@~5.1.8:
+ignore@^5.1.1, ignore@^5.1.4, ignore@^5.1.8, ignore@~5.1.9:
   version "5.1.9"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.9.tgz#9ec1a5cbe8e1446ec60d4420060d43aa6e7382fb"
   integrity sha512-2zeMQpbKz5dhZ9IwL0gbxSW5w0NK/MSAMtNuhgIHEPmaU3vPdKPL0UdvUCXs5SS4JAwsBxysK5sFMW8ocFiVjQ==
@@ -7827,16 +7822,16 @@ markdown-table@^2.0.0:
   dependencies:
     repeat-string "^1.0.0"
 
-markdownlint-cli@^0.29.0:
-  version "0.29.0"
-  resolved "https://registry.yarnpkg.com/markdownlint-cli/-/markdownlint-cli-0.29.0.tgz#3c56686fd00ace4b68c9cfa3a34a7a9dfdef1417"
-  integrity sha512-SEXRUT1ri9sXV8xQK88vjGAgmz2X9rxEG2tXdDZMljzW8e++LNTO9zzBBStx3JQWrTDoGTPHNrcurbuiyF97gw==
+markdownlint-cli@^0.30.0:
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/markdownlint-cli/-/markdownlint-cli-0.30.0.tgz#4ec0ab85a491eb161182e5c26eff308bf90f18f3"
+  integrity sha512-NiG8iERjwsRZtJAIyLMDdYL2O3bJVn3fUxzDl+6Iv61/YYz9H9Nzgke/v0/cW9HfGvgZHhbfI19LFMp6gbKdyw==
   dependencies:
-    commander "~8.2.0"
+    commander "~8.3.0"
     deep-extend "~0.6.0"
     get-stdin "~8.0.0"
     glob "~7.2.0"
-    ignore "~5.1.8"
+    ignore "~5.1.9"
     js-yaml "^4.1.0"
     jsonc-parser "~3.0.0"
     lodash.differencewith "~4.5.0"
