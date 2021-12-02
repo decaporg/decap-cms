@@ -11,7 +11,7 @@ const tr = {
       email: 'E-postanızı girdiğinizden emin olun.',
       password: 'Lütfen şifrenizi girin.',
       identitySettings:
-        'Identity ayarlarına erişilemiyor. Git-gateway sunucusunu kullanmak için Identity servisi ve Git Gateway\'in etkin olduğundan emin olun.',
+        "Identity ayarlarına erişilemiyor. Git-gateway sunucusunu kullanmak için Identity servisi ve Git Gateway'in etkin olduğundan emin olun.",
     },
   },
   app: {
@@ -46,7 +46,8 @@ const tr = {
       ascending: 'Artan',
       descending: 'Azalan',
       searchResults: '"%{searchTerm}" için Arama Sonuçları',
-      searchResultsInCollection: '%{collection} koleksiyonunda, "%{searchTerm}" için Arama Sonuçları',
+      searchResultsInCollection:
+        '%{collection} koleksiyonunda, "%{searchTerm}" için Arama Sonuçları',
       filterBy: 'Filtrele',
       groupBy: 'Grupla',
     },
@@ -99,9 +100,11 @@ const tr = {
     },
     editor: {
       onLeavePage: 'Bu sayfadan ayrılmak istediğinize emin misiniz?',
-      onUpdatingWithUnsavedChanges: 'Kaydedilmemiş değişiklikleriniz var, lütfen içeriği güncellemeden önce kaydedin.',
+      onUpdatingWithUnsavedChanges:
+        'Kaydedilmemiş değişiklikleriniz var, lütfen içeriği güncellemeden önce kaydedin.',
       onPublishingNotReady: 'Lütfen yayınlamadan önce içeriği "Hazır" olarak güncelleyin.',
-      onPublishingWithUnsavedChanges: 'Kaydedilmemiş değişiklikleriniz var, lütfen yayınlamadan önce kaydedin.',
+      onPublishingWithUnsavedChanges:
+        'Kaydedilmemiş değişiklikleriniz var, lütfen yayınlamadan önce kaydedin.',
       onPublishing: 'Bu girdiyi yayınlamak istediğinize emin misiniz?',
       onUnpublishing: 'Bu girdiyi yayından kaldırmak istediğinizden emin misiniz?',
       onDeleteWithUnsavedChanges:
@@ -158,7 +161,7 @@ const tr = {
         italic: 'İtalik',
         code: 'Kod',
         link: 'Bağlantı',
-        linkPrompt: 'Bağlantının URL\'sini girin',
+        linkPrompt: "Bağlantının URL'sini girin",
         headings: 'Başlıklar',
         quote: 'Alıntı',
         bulletedList: 'Maddeli Liste',
@@ -169,17 +172,17 @@ const tr = {
       },
       image: {
         choose: 'Bir resim seçin',
-        chooseUrl: 'URL\'den ekle',
+        chooseUrl: "URL'den ekle",
         replaceUrl: 'URL ile değiştir',
-        promptUrl: 'Resmin URL\'sini girin',
+        promptUrl: "Resmin URL'sini girin",
         chooseDifferent: 'Farklı bir resim seçin',
         remove: 'Resmi kaldır',
       },
       file: {
         choose: 'Bir dosya seçin',
-        chooseUrl: 'URL\'den ekle',
+        chooseUrl: "URL'den ekle",
         replaceUrl: 'URL ile değiştir',
-        promptUrl: 'Dosyanın URL\'sini girin',
+        promptUrl: "Dosyanın URL'sini girin",
         chooseDifferent: 'Farklı bir dosya seçin',
         remove: 'Dosyayı kaldır',
       },
@@ -210,14 +213,15 @@ const tr = {
     mediaLibraryCard: {
       draft: 'Taslak',
       copy: 'Kopyala',
-      copyUrl: 'URL\yi Kopyala',
+      copyUrl: 'URLyi Kopyala',
       copyPath: 'Dosya Yolunu Kopyala',
       copyName: 'Adını Kopyala',
       copied: 'Kopyalandı',
     },
     mediaLibrary: {
       onDelete: 'Seçilen medyayı silmek istediğinize emin misiniz?',
-      fileTooLarge: 'Dosya çok büyük.\n%{size} kilobaytdan daha büyük dosyaların yüklenmemesi için ayarlanmış.',
+      fileTooLarge:
+        'Dosya çok büyük.\n%{size} kilobaytdan daha büyük dosyaların yüklenmemesi için ayarlanmış.',
     },
     mediaLibraryModal: {
       loading: 'Yükleniyor...',
