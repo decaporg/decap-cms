@@ -462,14 +462,14 @@ declare module 'netlify-cms-core' {
     fieldsMetaData: Map<string, any>;
   }
 
-  export interface CmsWidgetParam<T = any>  {
+  export interface CmsWidgetParam<T = any> {
     name: string;
     controlComponent: CmsWidgetControlProps<T> ;
     previewComponent?: CmsWidgetPreviewProps<T>;
     globalStyles?: any;
   }
 
-  export interface CmsWidget<T = any>  {
+  export interface CmsWidget<T = any> {
     control: CmsWidgetControlProps<T>;
     preview?: CmsWidgetPreviewProps<T>;
     globalStyles?: any;
