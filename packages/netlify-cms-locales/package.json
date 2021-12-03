@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-locales",
   "description": "Locales for Netlify CMS.",
-  "version": "1.38.0",
+  "version": "1.38.1",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-locales",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",

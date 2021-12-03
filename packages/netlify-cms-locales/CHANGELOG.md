@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.38.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.38.0...netlify-cms-locales@1.38.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* **locale-hr:** fix typos ([0191f25](https://github.com/netlify/netlify-cms/commit/0191f25c51ef66292c920a93078697643c8dd68b))
+* **locale-tr:** fixe locales and added new ones. ([#6010](https://github.com/netlify/netlify-cms/issues/6010)) ([fdd9ec3](https://github.com/netlify/netlify-cms/commit/fdd9ec354d2ea3d9a2705e11119ee87b8ea96af5))
+
+
+
+
+
 # [1.38.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.37.0...netlify-cms-locales@1.38.0) (2021-11-12)
 
 

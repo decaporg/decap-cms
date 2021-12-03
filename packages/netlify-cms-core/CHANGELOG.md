@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.54.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.0...netlify-cms-core@2.54.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* **types:** Add missing `auth_type` to `CmsBackend` type ([#5981](https://github.com/netlify/netlify-cms/issues/5981)) ([db4dd10](https://github.com/netlify/netlify-cms/commit/db4dd10f4794d4e45daee4f2a74bda1e45919abe))
+
+
+
+
+
 # [2.54.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.53.1...netlify-cms-core@2.54.0) (2021-11-01)
 
 
