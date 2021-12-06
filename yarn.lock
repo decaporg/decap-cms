@@ -1316,9 +1316,9 @@
     babel-plugin-emotion "^10.0.27"
 
 "@emotion/eslint-plugin@^11.0.0":
-  version "11.5.0"
-  resolved "https://registry.yarnpkg.com/@emotion/eslint-plugin/-/eslint-plugin-11.5.0.tgz#1bad513b0d557e9a2cbf91415d409113595400c2"
-  integrity sha512-AyjeBIHuFYQIMLB+t5VRqXGzMkrD98p9aCgxTxt0DGBjQa6ExDU5xvhbeSjLRClc1zIYkDmbNBbGB71RAVgqFw==
+  version "11.7.0"
+  resolved "https://registry.yarnpkg.com/@emotion/eslint-plugin/-/eslint-plugin-11.7.0.tgz#253c8ace26f3921695a7aa85ecbf6fac75e74b33"
+  integrity sha512-k6H0OxBgkPDVG5M16AWnu3z15OmmKNvGmJiYTcamoOIDhiGE5+no+BiVAiHPOwJf/NOsDei2S9i015cMwlO5sA==
 
 "@emotion/hash@0.8.0", "@emotion/hash@^0.8.0":
   version "0.8.0"
