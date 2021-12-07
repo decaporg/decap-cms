@@ -15079,9 +15079,9 @@ react-frame-component@5.1.0:
   integrity sha512-5L55L2aMzTbA+fUy5EEl1pxTXbKGGtF3giZkkTExf0lw8AQ4u1ZvZDUVBcynKl7CA7F2aF+RZUL17B+fRE9+DA==
 
 react-helmet-async@^1.0.2:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-1.2.1.tgz#f72d13e7a96950932f1c808b0228010b06c64e34"
-  integrity sha512-tsw8kbEQuidhACHH4OYOqt+q3ey10Lz1P4QxjlX9C2As4sY/XFTeM5yc4utExyEv5Z02M3jExYR6joVoIM5D0w==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-1.2.2.tgz#38d58d32ebffbc01ba42b5ad9142f85722492389"
+  integrity sha512-XgSQezeCbLfCxdZhDA3T/g27XZKnOYyOkruopTLSJj8RvFZwdXnM4djnfYaiBSDzOidDgTo1jcEozoRu/+P9UQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
     invariant "^2.2.4"
