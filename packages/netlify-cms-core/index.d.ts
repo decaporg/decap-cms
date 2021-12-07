@@ -464,7 +464,7 @@ declare module 'netlify-cms-core' {
 
   export interface CmsWidgetParam<T = any> {
     name: string;
-    controlComponent: CmsWidgetControlProps<T> ;
+    controlComponent: CmsWidgetControlProps<T>;
     previewComponent?: CmsWidgetPreviewProps<T>;
     globalStyles?: any;
   }
