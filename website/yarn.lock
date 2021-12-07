@@ -1881,9 +1881,9 @@
     form-data "^3.0.0"
 
 "@types/node@*", "@types/node@>=6":
-  version "16.11.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.11.tgz#6ea7342dfb379ea1210835bada87b3c512120234"
-  integrity sha512-KB0sixD67CeecHC33MYn+eYARkqTheIRNuu97y2XMjR7Wu3XibO1vaY6VBV6O/a89SPI81cEUIYT87UqUWlZNw==
+  version "16.11.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.12.tgz#ac7fb693ac587ee182c3780c26eb65546a1a3c10"
+  integrity sha512-+2Iggwg7PxoO5Kyhvsq9VarmPbIelXP070HMImEpbtGCoyWNINQj4wzjbQCXzdHTRXnqufutJb5KAURZANNBAw==
 
 "@types/node@^14.14.10":
   version "14.18.0"
@@ -4296,9 +4296,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.564, electron-to-chromium@^1.3.896:
-  version "1.4.11"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.11.tgz#303c9deebbe90c68bf5c2c81a88a3bf4522c8810"
-  integrity sha512-2OhsaYgsWGhWjx2et8kaUcdktPbBGjKM2X0BReUCKcSCPttEY+hz2zie820JLbttU8jwL92+JJysWwkut3wZgA==
+  version "1.4.12"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.12.tgz#5f73d1278c6205fc41d7a0ebd75563046b77c5d8"
+  integrity sha512-zjfhG9Us/hIy8AlQ5OzfbR/C4aBv1Dg/ak4GX35CELYlJ4tDAtoEcQivXvyBdqdNQ+R6PhlgQqV8UNPJmhkJog==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -5898,9 +5898,9 @@ git-up@^4.0.5:
     parse-url "^6.0.0"
 
 github-buttons@^2.8.0:
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/github-buttons/-/github-buttons-2.20.1.tgz#d5cf7b9cafc3c51f517b526fe0e293f0b3dc0604"
-  integrity sha512-UQpZJP7uVtbjy9vXuIMktmtoH9REy0V50iQnFQ56cyOqzDE8e/9WGedTMD8qVwp593Kyn+EKo2e4IKshoXBeZQ==
+  version "2.20.2"
+  resolved "https://registry.yarnpkg.com/github-buttons/-/github-buttons-2.20.2.tgz#1d26efff31dbce5fb59bb237ebb538691156f82b"
+  integrity sha512-MvdHtabOCHabh/tvBZ4qh9jmPKsLGT4XtAMx6jkP/MINKBhiQQiHlfxMuoxcHTVVPgU81jFsO7EMjLN4l52OoA==
 
 github-from-package@0.0.0:
   version "0.0.0"
