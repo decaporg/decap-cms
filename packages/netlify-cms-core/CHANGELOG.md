@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.54.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.1...netlify-cms-core@2.54.2) (2021-12-08)
+
+
+### Bug Fixes
+
+* add generic type support for CmsWidget and CmsWidgetParam ([#6018](https://github.com/netlify/netlify-cms/issues/6018)) ([83fc501](https://github.com/netlify/netlify-cms/commit/83fc5018a5df650b7052b584ccff15698164b139))
+
+
+
+
+
 ## [2.54.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.0...netlify-cms-core@2.54.1) (2021-12-03)
 
 
