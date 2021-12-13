@@ -30,7 +30,7 @@ jobs:
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
-        run: yarn --frozen-lockfile && yarn bootstrap
+        run: yarn --frozen-lockfile --network-timeout 1000000 && yarn bootstrap
       - name: run unit tests
         run: yarn test:ci
         env:
