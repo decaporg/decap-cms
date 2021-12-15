@@ -1165,6 +1165,14 @@ export default class API {
     await this.deleteBranch(branch);
   }
 
+  async approveEntry(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.approvePR(pullRequest);
+  }
+
   async createRef(type: string, name: string, sha: string) {
     const result: Octokit.GitCreateRefResponse = await this.request(`${this.repoURL}/git/refs`, {
       method: 'POST',
@@ -1339,6 +1347,20 @@ export default class API {
         throw error;
       }
     }
+  }
+
+  async approvePR(pullrequest: GitHubPull) {
+    console.log('%c Approving PR', 'line-height: 30px;text-align: center;font-weight: bold');
+    const result: Octokit.PullsCreateReviewResponse = await this.request(
+      `${this.originRepoURL}/pulls/${pullrequest.number}/reviews`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          event: 'APPROVE',
+        }),
+      },
+    );
+    return result;
   }
 
   async forceMergePR(pullRequest: GitHubPull) {

@@ -265,8 +265,10 @@ const en = {
       missingRequiredField: "Oops, you've missed a required field. Please complete before saving.",
       entrySaved: 'Entry saved',
       entryPublished: 'Entry published',
+      entryApproved: 'Entry approved',
       entryUnpublished: 'Entry unpublished',
       onFailToPublishEntry: 'Failed to publish: %{details}',
+      onFailToApproveEntry: 'Failed to approve: %{details}',
       onFailToUnpublishEntry: 'Failed to unpublish entry: %{details}',
       entryUpdated: 'Entry status updated',
       onDeleteUnpublishedChanges: 'Unpublished changes deleted',
@@ -293,6 +295,7 @@ const en = {
       deleteNewEntry: 'Delete new entry',
       publishChanges: 'Publish changes',
       publishNewEntry: 'Publish new entry',
+      approveEntry: 'Approve entry',
     },
     workflowList: {
       onDeleteEntry: 'Are you sure you want to delete this entry?',

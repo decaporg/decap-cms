@@ -1268,6 +1268,13 @@ export class Backend {
     await this.invokePostPublishEvent(entry);
   }
 
+  async approveEntry(entry: EntryMap) {
+    const collection = entry.get('collection');
+    const slug = entry.get('slug');
+
+    await this.implementation.approveEntry!(collection, slug);
+  }
+
   deleteUnpublishedEntry(collection: string, slug: string) {
     return this.implementation.deleteUnpublishedEntry!(collection, slug);
   }

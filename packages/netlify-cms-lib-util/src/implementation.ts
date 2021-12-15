@@ -167,6 +167,7 @@ export interface Implementation {
     newStatus: string,
   ) => Promise<void>;
   publishUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
+  approveEntry?: (collection: string, slug: string) => Promise<void>;
   deleteUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
   getDeployPreview: (
     collectionName: string,

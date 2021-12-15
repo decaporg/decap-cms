@@ -86,6 +86,17 @@ const PublishButton = styled.button`
   }
 `;
 
+const ApproveButton = styled.button`
+  ${styles.button};
+  background-color: ${colorsRaw.green};
+  margin-left: 6px;
+  color: ${colors.textLight};
+
+  &[disabled] {
+    ${buttons.disabled};
+  }
+`;
+
 const WorkflowCardContainer = styled.div`
   ${components.card};
   margin-bottom: 24px;
@@ -128,6 +139,7 @@ function WorkflowCard({
   allowPublish,
   canPublish,
   onPublish,
+  onApprove,
   postAuthor,
   t,
 }) {
@@ -153,6 +165,7 @@ function WorkflowCard({
               : t('workflow.workflowCard.publishNewEntry')}
           </PublishButton>
         )}
+        <ApproveButton onClick={onApprove}>{t('workflow.workflowCard.approveEntry')}</ApproveButton>
       </CardButtonContainer>
     </WorkflowCardContainer>
   );

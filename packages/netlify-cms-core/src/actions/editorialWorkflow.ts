@@ -61,7 +61,10 @@ export const UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS = 'UNPUBLISHED_ENTRY_STATUS
 export const UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE = 'UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE';
 
 export const UNPUBLISHED_ENTRY_PUBLISH_REQUEST = 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST';
+export const APPROVE_ENTRY_REQUEST = 'APPROVE_ENTRY_REQUEST';
 export const UNPUBLISHED_ENTRY_PUBLISH_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS';
+export const APPROVE_ENTRY_SUCCESS = 'APPROVE_ENTRY_SUCCESS';
+export const APPROVE_ENTRY_FAILURE = 'APPROVE_ENTRY_FAILURE';
 export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE';
 
 export const UNPUBLISHED_ENTRY_DELETE_REQUEST = 'UNPUBLISHED_ENTRY_DELETE_REQUEST';
@@ -200,6 +203,13 @@ function unpublishedEntryPublishRequest(collection: string, slug: string) {
   };
 }
 
+function approveEntryRequest(collection: string, slug: string) {
+  return {
+    type: APPROVE_ENTRY_REQUEST,
+    payload: { collection, slug },
+  };
+}
+
 function unpublishedEntryPublished(collection: string, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
@@ -207,9 +217,23 @@ function unpublishedEntryPublished(collection: string, slug: string) {
   };
 }
 
+function entryApproved(collection: string, slug: string) {
+  return {
+    type: APPROVE_ENTRY_SUCCESS,
+    payload: { collection, slug },
+  };
+}
+
 function unpublishedEntryPublishError(collection: string, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
+    payload: { collection, slug },
+  };
+}
+
+function entryApproveError(collection: string, slug: string) {
+  return {
+    type: APPROVE_ENTRY_FAILURE,
     payload: { collection, slug },
   };
 }
@@ -520,6 +544,35 @@ export function publishUnpublishedEntry(collectionName: string, slug: string) {
         }),
       );
       dispatch(unpublishedEntryPublishError(collectionName, slug));
+    }
+  };
+}
+
+export function approveEntry(collectionName: string, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    const entry = selectUnpublishedEntry(state, collectionName, slug);
+    dispatch(approveEntryRequest(collectionName, slug));
+    try {
+      await backend.approveEntry(entry);
+      dispatch(
+        notifSend({
+          message: { key: 'ui.toast.entryApproved' },
+          kind: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+      dispatch(entryApproved(collectionName, slug));
+    } catch (error) {
+      dispatch(
+        notifSend({
+          message: { key: 'ui.toast.onFailToApproveEntry', details: error },
+          kind: 'danger',
+          dismissAfter: 8000,
+        }),
+      );
+      dispatch(entryApproveError(collectionName, slug));
     }
   };
 }
