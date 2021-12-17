@@ -60,6 +60,8 @@ export default class GitLab implements Implementation {
   cmsLabelPrefix: string;
   mediaFolder: string;
   previewContext: string;
+  useGraphQL: boolean;
+  graphQLAPIRoot: string;
 
   _mediaDisplayURLSem?: Semaphore;
 
@@ -88,6 +90,8 @@ export default class GitLab implements Implementation {
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
+    this.useGraphQL = config.backend.use_graphql || false;
+    this.graphQLAPIRoot = config.backend.graphql_api_root || 'https://gitlab.com/api/graphql';
     this.lock = asyncLock();
   }
 
@@ -126,6 +130,8 @@ export default class GitLab implements Implementation {
       squashMerges: this.squashMerges,
       cmsLabelPrefix: this.cmsLabelPrefix,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
+      useGraphQL: this.useGraphQL,
+      graphQLAPIRoot: this.graphQLAPIRoot,
     });
     const user = await this.api.user();
     const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
@@ -212,6 +218,7 @@ export default class GitLab implements Implementation {
       getDifferences: (to, from) => this.api!.getDifferences(to, from),
       getFileId: path => this.api!.getFileId(path, this.branch),
       filterFile: file => this.filterFile(folder, file, extension, depth),
+      customFetch: this.useGraphQL ? files => this.api!.readFilesGraphQL(files) : undefined,
     });
     return files;
   }
