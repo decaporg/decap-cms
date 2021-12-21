@@ -8839,10 +8839,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-netlify-cms-app@^2.15.61:
-  version "2.15.61"
-  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.61.tgz#bd7757968bb89af674e859572376a30e09426a2c"
-  integrity sha512-EvQ5BZA4ARz3L4WyF/dKruj6zhywkJ125baFew3DvPCnq0u98btKE1UjeIRQrR8/37njdq/1gTqv9M03eMRnVg==
+netlify-cms-app@^2.15.62:
+  version "2.15.62"
+  resolved "https://registry.yarnpkg.com/netlify-cms-app/-/netlify-cms-app-2.15.62.tgz#f397f89f02ae91a2a75abf33f2a66b755efb07d2"
+  integrity sha512-nWcInjvFuK+y5vs1RO5GvulWu2UX44fJG7d2wXBOBEM/ejIuGr6SMvQxRhohWyDek5heXd6bJkX27rwpxG7RZg==
   dependencies:
     "@emotion/core" "^10.0.35"
     "@emotion/styled" "^10.0.27"
@@ -8857,13 +8857,13 @@ netlify-cms-app@^2.15.61:
     netlify-cms-backend-gitlab "^2.12.0"
     netlify-cms-backend-proxy "^1.2.3"
     netlify-cms-backend-test "^2.11.3"
-    netlify-cms-core "^2.54.2"
+    netlify-cms-core "^2.54.3"
     netlify-cms-editor-component-image "^2.7.0"
     netlify-cms-lib-auth "^2.4.2"
     netlify-cms-lib-util "^2.14.0"
     netlify-cms-lib-widgets "^1.7.0"
     netlify-cms-locales "^1.38.1"
-    netlify-cms-ui-default "^2.15.3"
+    netlify-cms-ui-default "^2.15.4"
     netlify-cms-widget-boolean "^2.4.1"
     netlify-cms-widget-code "^1.3.3"
     netlify-cms-widget-colorstring "^1.1.1"
@@ -8945,10 +8945,10 @@ netlify-cms-backend-test@^2.11.3:
   resolved "https://registry.yarnpkg.com/netlify-cms-backend-test/-/netlify-cms-backend-test-2.11.3.tgz#1a92b6bf139d705c725effbdd9a05462481aa0c4"
   integrity sha512-L7WXjryPcZ8immIkrdDauZjqiOrKS5NIcc6ewP9QI1BrZr2jeqwDpeN2/45fPdg/TRxtRA3ik3MuKXXLJRJ0MQ==
 
-netlify-cms-core@^2.54.2:
-  version "2.54.2"
-  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.54.2.tgz#1e5c4d7fa7144185e670eb8e2ad6811ff6e8358a"
-  integrity sha512-c1qbq6HSWqAyWotnC7EPTaE4VmniEJcpWPEw54/61Ze9LcR+Q7vbLu4Xu3vy0Ox1cP2jBsWUqZeX+4apEmhF4A==
+netlify-cms-core@^2.54.3:
+  version "2.54.3"
+  resolved "https://registry.yarnpkg.com/netlify-cms-core/-/netlify-cms-core-2.54.3.tgz#8020d0150166d5ed506d2c27b93dfbac567dce24"
+  integrity sha512-iRVGWDgmrc0gvtBQ08kGvSrOZHL2nSJFZbrEd05sfCPhkeKV98D+FIV7fLN4PWwZ+gXlPl+H1BI4zocvmopJYg==
   dependencies:
     "@iarna/toml" "2.2.5"
     ajv "8.1.0"
@@ -8970,7 +8970,7 @@ netlify-cms-core@^2.54.2:
     react-dnd "^14.0.0"
     react-dnd-html5-backend "^14.0.0"
     react-dom "^16.8.4"
-    react-frame-component "5.1.0"
+    react-frame-component "^5.2.1"
     react-hot-loader "^4.8.0"
     react-immutable-proptypes "^2.1.0"
     react-is "16.13.1"
@@ -9028,10 +9028,10 @@ netlify-cms-locales@^1.38.1:
   resolved "https://registry.yarnpkg.com/netlify-cms-locales/-/netlify-cms-locales-1.38.1.tgz#98103780bd32d72efc774561e268da3921489fb1"
   integrity sha512-IrGrBXueHTxufVoXaYosLQgiYzTt/e8zgU/N82uaBar2YneBr3iPQIuvB+Nq+fyG9aANSnFdyES/v0q0SUgZtQ==
 
-netlify-cms-ui-default@^2.15.3:
-  version "2.15.3"
-  resolved "https://registry.yarnpkg.com/netlify-cms-ui-default/-/netlify-cms-ui-default-2.15.3.tgz#d40a83cabcd956515dfee0c92f828fb4d2c64d75"
-  integrity sha512-wxO//LOtX141lWbl2o1tS8ymSEJ9clmv8a+z3COKw2ksv65kTXi0pfnRbJ9UbgEsfPxvUIF7UKonQM74cupW/g==
+netlify-cms-ui-default@^2.15.4:
+  version "2.15.4"
+  resolved "https://registry.yarnpkg.com/netlify-cms-ui-default/-/netlify-cms-ui-default-2.15.4.tgz#40c50010a94718d87969258f2249c0c1ce749c82"
+  integrity sha512-GckgSG8NrzmV/0BxJbqptpykRs7ZBWRmaydLR1j18XnLwe/ZWDEnibyHbP7fLCQuPL5SjX8e/1yZ2tHTvtML4w==
   dependencies:
     react-aria-menubutton "^7.0.0"
     react-toggled "^1.1.2"
@@ -10545,10 +10545,10 @@ react-fast-compare@^3.1.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
 
-react-frame-component@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-5.1.0.tgz#a4bd4c598a19103050ea7a1a562e6e03164f724d"
-  integrity sha512-5L55L2aMzTbA+fUy5EEl1pxTXbKGGtF3giZkkTExf0lw8AQ4u1ZvZDUVBcynKl7CA7F2aF+RZUL17B+fRE9+DA==
+react-frame-component@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-5.2.1.tgz#6bd5ec73ef7d720f57ee8f259546ed926a941267"
+  integrity sha512-nrSh1OZuHlX69eWqJPiUkPT9S6/wxc4PpJV+vOQ4pHQQ8XmIsIT+utWT+nX32ZfANHZuKONA7JsWMUGT36CqaQ==
 
 react-github-btn@^1.1.1:
   version "1.2.1"
