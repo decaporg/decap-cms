@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.54.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.2...netlify-cms-core@2.54.3) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-frame-component to v5.2.1 ([#6048](https://github.com/netlify/netlify-cms/issues/6048)) ([f558ce0](https://github.com/netlify/netlify-cms/commit/f558ce06e3692ec4fa59189cdcc7f06e8d6c58bf))
+
+
+
+
+
 ## [2.54.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.1...netlify-cms-core@2.54.2) (2021-12-08)
 
 
