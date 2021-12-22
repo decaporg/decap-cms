@@ -11,8 +11,31 @@ import uuid from 'uuid/v4';
 import { formatExtensions, frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
+import staticValidateConfig from '../../config.schema.json';
 
 const localeType = { type: 'string', minLength: 2, maxLength: 10, pattern: '^[a-zA-Z-_]+$' };
+
+// taken from config.schema.json
+// config.properties.collections.items.properties.files.items.properties.fields.items.selectCases
+const NativeCMSWidgets = [
+  'unknown',
+  'string',
+  'number',
+  'text',
+  'image',
+  'file',
+  'select',
+  'markdown',
+  'list',
+  'object',
+  'relation',
+  'boolean',
+  'map',
+  'date',
+  'datetime',
+  'code',
+  'color',
+];
 
 const i18n = {
   type: 'object',
@@ -353,7 +376,7 @@ class ConfigError extends Error {
  * `validateConfig` is a pure function. It does not mutate
  * the config that is passed in.
  */
-export function validateConfig(config) {
+function dynamicValidateConfig(config) {
   const ajv = new AJV({ allErrors: true, $data: true, strict: false });
   uniqueItemProperties(ajv);
   select(ajv);
@@ -395,5 +418,15 @@ export function validateConfig(config) {
     });
     console.error('Config Errors', errors);
     throw new ConfigError(errors);
+  }
+}
+
+export function validateConfig(config) {
+  if (Object.keys(getWidgetSchemas()).some(widgetKey => NativeCMSWidgets.includes(widgetKey))) {
+    console.debug('using dynamic ajv validation');
+    return dynamicValidateConfig(config);
+  } else {
+    console.debug('using static ajv validation');
+    return staticValidateConfig(config);
   }
 }

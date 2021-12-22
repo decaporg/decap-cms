@@ -39,6 +39,22 @@ function rules() {
       exclude: [/node_modules/],
       use: 'svg-inline-loader',
     }),
+    json: () => ({
+      test: /\.schema\.json$/,
+      use: [
+        {
+          loader: 'ajv-json-loader',
+          options: {
+            ajv: {
+              allErrors: true,
+              $data: true,
+              strict: false,
+            },
+          },
+        },
+      ],
+      type: 'javascript/auto',
+    }),
   };
 }
 

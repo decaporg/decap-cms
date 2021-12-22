@@ -4474,6 +4474,15 @@ ajv-errors@^3.0.0:
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-3.0.0.tgz#e54f299f3a3d30fe144161e5f0d8d51196c527bc"
   integrity sha512-V3wD15YHfHz6y0KdhYFjyy9vWtEVALT9UrxfN3zqlI6dMioHnJrqOYfyPKol3oqrnCM9uwkcdCwkJ0WUcbLMTQ==
 
+ajv-json-loader@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ajv-json-loader/-/ajv-json-loader-0.2.0.tgz#0b14a979ed9efc6357e4d469fb8054533c4bcf06"
+  integrity sha512-fzuRE07FSr5OvEZLCejOTTTl//Iraxk5bvi9xY5G1Ajfj92AsaGAwPrfijDuVJ0y/X6hpqir3NFtjXooBCMdIQ==
+  dependencies:
+    ajv "^8.8.2"
+    assert-ts "^0.3.4"
+    loader-utils "^2.0.2"
+
 ajv-keywords@^3.1.0, ajv-keywords@^3.4.1, ajv-keywords@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
@@ -4506,7 +4515,7 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5, ajv
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.1:
+ajv@^8.0.1, ajv@^8.8.2:
   version "8.8.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.8.2.tgz#01b4fef2007a28bf75f0b7fc009f62679de4abbb"
   integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
@@ -4932,6 +4941,11 @@ assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
   integrity sha1-8S4PPF13sLHN2RRpQuTpbB5N1SU=
+
+assert-ts@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/assert-ts/-/assert-ts-0.3.4.tgz#a452d6c9fc88e543bffded343a32deb48573ddf2"
+  integrity sha512-CQtNOdOCzzZfE3TF9a1vFTcz4ZfJYM6iHoWYCkpFY3wdk6CkFvevuLwpOFVL/KMJ9vCNIbeidWH5uo/Y8sLVWg==
 
 assert@^1.1.1:
   version "1.5.0"
@@ -12230,7 +12244,7 @@ loader-utils@^1.0.0, loader-utils@^1.1.0, loader-utils@^1.2.3, loader-utils@^1.4
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
-loader-utils@^2.0.0:
+loader-utils@^2.0.0, loader-utils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-2.0.2.tgz#d6e3b4fb81870721ae4e0868ab11dd638368c129"
   integrity sha512-TM57VeHptv569d/GKh6TAYdzKblwDNiumOdkFnejjD0XwTH87K90w3O7AiJRqdQoXygvi1VQTJTLGhJl7WqA7A==
