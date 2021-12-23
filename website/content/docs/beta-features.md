@@ -208,6 +208,23 @@ backend:
 
 Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
 
+## GitLab GraphQL API
+
+Experimental support for GitLab's [GraphQL API](https://docs.gitlab.com/ee/api/graphql/) is now available for the GitLab backend.
+
+**Note: not currently compatible with Git Gateway.**
+
+For many queries, GraphQL allows data to be retrieved using less individual API requests compared to a REST API.
+Current implementation uses the GraphQL API in very specific cases, where using the REST API can be very slow and lead to exceeding rate limits. As we receive feedback and extend the feature, we'll be adding more cases.
+
+You can use the GraphQL API for the GitLab backend by setting `backend.use_graphql` to `true` in your CMS config:
+
+```yml
+backend:
+  name: gitlab
+  repo: owner/repo # replace this with your repo info
+  use_graphql: true
+```
 ## Open Authoring
 
 When using the [GitHub backend](/docs/github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
