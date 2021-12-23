@@ -62,7 +62,7 @@ var CategoriesControl = createClass({
   },
 });
 
-var CategoriesPreview = createClass({
+var CategoriesPreviewz = createClass({
   render: function() {
     return h('ul', {},
       this.props.value.map(function(val, index) {
