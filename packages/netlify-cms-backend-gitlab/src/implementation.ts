@@ -220,6 +220,7 @@ export default class GitLab implements Implementation {
       filterFile: file => this.filterFile(folder, file, extension, depth),
       customFetch: this.useGraphQL ? files => this.api!.readFilesGraphQL(files) : undefined,
     });
+
     return files;
   }
 
