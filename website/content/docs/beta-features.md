@@ -193,9 +193,9 @@ collections:
 
 Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
 
-**Note: not currently compatible with Git Gateway.**
+**Note: not compatible with Git Gateway.**
 
-For many queries, GraphQL allows data to be retrieved using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
+GraphQL allows to retrieve data using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
 
 You can use the GraphQL API for the GitHub backend by setting `backend.use_graphql` to `true` in your CMS config:
 
@@ -212,10 +212,10 @@ Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.o
 
 Experimental support for GitLab's [GraphQL API](https://docs.gitlab.com/ee/api/graphql/) is now available for the GitLab backend.
 
-**Note: not currently compatible with Git Gateway.**
+**Note: not compatible with Git Gateway.**
 
-GraphQL can allow data to be retrieved using less individual API requests compared to a REST API.
-The current implementation uses the GraphQL API in very specific cases, where using the REST API can be very slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
+GraphQL allows to retrieve data using less individual API requests compared to a REST API.
+The current implementation uses the GraphQL API in specific cases, where using the REST API can be slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
 
 You can enable the GraphQL API for the GitLab backend by setting `backend.use_graphql` to `true` in your CMS config:
 
