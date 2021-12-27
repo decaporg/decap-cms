@@ -214,16 +214,19 @@ Experimental support for GitLab's [GraphQL API](https://docs.gitlab.com/ee/api/g
 
 **Note: not currently compatible with Git Gateway.**
 
-For many queries, GraphQL allows data to be retrieved using less individual API requests compared to a REST API.
-Current implementation uses the GraphQL API in very specific cases, where using the REST API can be very slow and lead to exceeding rate limits. As we receive feedback and extend the feature, we'll be adding more cases.
+GraphQL can allow data to be retrieved using less individual API requests compared to a REST API.
+The current implementation uses the GraphQL API in very specific cases, where using the REST API can be very slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
 
-You can use the GraphQL API for the GitLab backend by setting `backend.use_graphql` to `true` in your CMS config:
+You can enable the GraphQL API for the GitLab backend by setting `backend.use_graphql` to `true` in your CMS config:
 
 ```yml
 backend:
   name: gitlab
   repo: owner/repo # replace this with your repo info
   use_graphql: true
+
+  # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configured a self hosted GitLab instance.
+  graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
 ```
 ## Open Authoring
 
