@@ -18518,9 +18518,7 @@ uploadcare-widget-tab-effects@^1.4.0:
   integrity sha512-HSqtidqATXC/LjkvBmIFp1Nn69r0rmJ1fGmKYHZN5WX3jqaTi2XgofrXPX7GMY6PX7z3sk8y4Edv2UoA5uuJJw==
 
 uploadcare-widget@^3.7.0:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/uploadcare-widget/-/uploadcare-widget-3.15.0.tgz#367779589d35dc68457da972144bb5b2cbdea59c"
-  integrity sha512-1aMe7h7EfCcKcipMHOUQVaYa7R7fwPwjmOBttiD8N8mI8btjZZpYipCWD6aw7JnixdKR0+djFEb6il0SnJKm/A==
+  version: "3.16.0"
   dependencies:
     escape-html "^1.0.3"
     jquery "^3.6.0"
