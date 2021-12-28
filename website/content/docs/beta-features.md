@@ -193,9 +193,9 @@ collections:
 
 Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
 
-**Note: not currently compatible with Git Gateway.**
+**Note: not compatible with Git Gateway.**
 
-For many queries, GraphQL allows data to be retrieved using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
+GraphQL allows to retrieve data using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
 
 You can use the GraphQL API for the GitHub backend by setting `backend.use_graphql` to `true` in your CMS config:
 
@@ -208,6 +208,26 @@ backend:
 
 Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
 
+## GitLab GraphQL API
+
+Experimental support for GitLab's [GraphQL API](https://docs.gitlab.com/ee/api/graphql/) is now available for the GitLab backend.
+
+**Note: not compatible with Git Gateway.**
+
+GraphQL allows to retrieve data using less individual API requests compared to a REST API.
+The current implementation uses the GraphQL API in specific cases, where using the REST API can be slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
+
+You can enable the GraphQL API for the GitLab backend by setting `backend.use_graphql` to `true` in your CMS config:
+
+```yml
+backend:
+  name: gitlab
+  repo: owner/repo # replace this with your repo info
+  use_graphql: true
+
+  # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configured a self hosted GitLab instance.
+  graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
+```
 ## Open Authoring
 
 When using the [GitHub backend](/docs/github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
