@@ -225,7 +225,7 @@ backend:
   repo: owner/repo # replace this with your repo info
   use_graphql: true
 
-  # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configured a self hosted GitLab instance.
+  # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configure a self hosted GitLab instance.
   graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
 ```
 ## Open Authoring
