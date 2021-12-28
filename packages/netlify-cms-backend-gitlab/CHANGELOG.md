@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-gitlab@2.12.0...netlify-cms-backend-gitlab@2.13.0) (2021-12-28)
+
+
+### Features
+
+* **backend-gitlab:** initial GraphQL support ([#6059](https://github.com/netlify/netlify-cms/issues/6059)) ([1523a41](https://github.com/netlify/netlify-cms/commit/1523a4140a3d2f4cc01a1548514ae17bc1ad504e))
+
+
+
+
+
 # [2.12.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-gitlab@2.11.4...netlify-cms-backend-gitlab@2.12.0) (2021-10-18)
 
 
