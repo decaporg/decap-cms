@@ -79,6 +79,7 @@ collections:
                 fields:
                   - { label: 'Full Name', name: 'title', widget: 'string' }
                   - { label: 'Summary Name', name: 'name', widget: 'string' }
+                  - { label: "locale", name: "locale", widget: "hidden", default: "{{locale}}", i18n: true}
   - label: Style & Usage Options
     name: linter
     hide: false

@@ -72,6 +72,7 @@ collections: # A list of collections the CMS should be able to edit
         description: 'General Site Settings'
         fields:
           - { label: 'Global title', name: 'site_title', widget: 'string' }
+          - { label: "locale", name: "locale", widget: "hidden", default: "{{locale}}", i18n: true}
           - label: 'Post Settings'
             name: posts
             widget: 'object'
