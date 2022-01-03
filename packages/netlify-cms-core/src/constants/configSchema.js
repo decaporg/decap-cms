@@ -434,7 +434,7 @@ export function validateConfig(config) {
   const customWidgets = Object.keys(getWidgetSchemas()).filter(
     widgetKey => NativeCMSWidgets.includes(widgetKey) === false,
   );
-  console.debug(customWidgets);
+
   if (customWidgets.length > 0) {
     console.debug('using dynamic ajv validation');
     return dynamicValidateConfig(config);
