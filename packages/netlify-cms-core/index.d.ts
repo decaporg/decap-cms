@@ -355,6 +355,7 @@ declare module 'netlify-cms-core' {
     site_domain?: string;
     base_url?: string;
     auth_endpoint?: string;
+    app_id?: string;
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;
