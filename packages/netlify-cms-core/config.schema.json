@@ -1,4 +1,5 @@
 {
+    "$id": "https://netlify-cms/object.json",
     "type": "object",
     "properties": {
         "backend": {

@@ -511,6 +511,8 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
           ? {}
           : await getConfigYaml(configUrl, hasManualConfig);
 
+      console.log({configYaml})
+
       // Merge manual config into the config.yml one
       const mergedConfig = deepmerge(configYaml, manualConfig);
 

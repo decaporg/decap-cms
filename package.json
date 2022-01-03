@@ -126,11 +126,11 @@
     "cypress-jest-adapter": "^0.1.1",
     "cypress-plugin-tab": "^1.0.0",
     "dotenv": "^10.0.0",
-    "eslint": "^7.0.0",
-    "eslint-plugin-cypress": "^2.6.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint": "^8.5.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react": "^7.27.1",
     "execa": "^5.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^10.0.0",
@@ -179,8 +179,8 @@
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^10.0.27",
     "emotion": "^10.0.9",
-    "eslint-config-prettier": "^8.0.0",
-    "eslint-plugin-babel": "^5.3.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-babel": "^5.3.1",
     "globby": "^12.0.0",
     "lerna": "^4.0.0"
   },
@@ -190,6 +190,7 @@
     }
   },
   "resolutions": {
+    "ajv": "7.0.3",
     "react-redux": "^7.2.0"
   }
 }

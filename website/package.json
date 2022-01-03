@@ -47,8 +47,8 @@
   "devDependencies": {
     "babel-plugin-prismjs": "^2.0.1",
     "babel-preset-gatsby": "^1.0.0",
-    "eslint": "^7.4.0",
-    "eslint-plugin-import": "^2.20.1",
+    "eslint": "^8.5.0",
+    "eslint-plugin-import": "^2.25.3",
     "markdownlint-cli": "^0.30.0"
   },
   "private": true

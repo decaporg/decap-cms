@@ -4,7 +4,7 @@ import { validateConfig } from '../configSchema';
 
 jest.mock('../../lib/registry');
 
-describe('config', () => {
+describe.only('config', () => {
   /**
    * Suppress error logging to reduce noise during testing. Jest will still
    * log test failures and associated errors as expected.
@@ -16,7 +16,7 @@ describe('config', () => {
   const { getWidgets } = require('../../lib/registry');
   getWidgets.mockImplementation(() => [{}]);
 
-  describe('validateConfig', () => {
+  describe.only('validateConfig', () => {
     const validConfig = {
       foo: 'bar',
       backend: { name: 'bar' },
@@ -31,7 +31,7 @@ describe('config', () => {
       ],
     };
 
-    it('should not throw if no errors', () => {
+    it.only('should not throw if no errors', () => {
       expect(() => {
         validateConfig(validConfig);
       }).not.toThrowError();
