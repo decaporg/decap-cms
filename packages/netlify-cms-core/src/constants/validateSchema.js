@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use strict';
 var ucs2length = require('ajv/lib/compile/ucs2length');
 var equal = require('ajv/lib/compile/equal');

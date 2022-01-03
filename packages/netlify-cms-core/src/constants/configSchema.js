@@ -7,15 +7,12 @@ import {
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
 import uuid from 'uuid/v4';
-
-import { formatExtensions, frontmatterFormats, extensionFormatters } from '../formats/formats';
-import { getWidgets } from '../lib/registry';
-import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
-import schema from '../../config.schema.json';
-import validateSchema from './validateSchema';
 import { set } from 'lodash/fp'
 
-const localeType = { type: 'string', minLength: 2, maxLength: 10, pattern: '^[a-zA-Z-_]+$' };
+import { getWidgets } from '../lib/registry';
+import { I18N_FIELD } from '../lib/i18n';
+import schema from '../../config.schema.json';
+import validateSchema from './validateSchema';
 
 // taken from config.schema.json
 // config.properties.collections.items.properties.files.items.properties.fields.items.selectCases
@@ -38,29 +35,6 @@ const NativeCMSWidgets = [
   'code',
   'color',
 ];
-
-const i18n = {
-  type: 'object',
-  properties: {
-    structure: { type: 'string', enum: Object.values(I18N_STRUCTURE) },
-    locales: {
-      type: 'array',
-      minItems: 2,
-      items: localeType,
-      uniqueItems: true,
-    },
-    default_locale: localeType,
-  },
-};
-
-const i18nRoot = {
-  ...i18n,
-  required: ['structure', 'locales'],
-};
-
-const i18nCollection = {
-  oneOf: [{ type: 'boolean' }, i18n],
-};
 
 const i18nField = {
   oneOf: [{ type: 'boolean' }, { type: 'string', enum: Object.values(I18N_FIELD) }],
@@ -104,43 +78,6 @@ function fieldsConfig() {
     uniqueItemProperties: ['name'],
   };
 }
-
-const viewFilters = {
-  type: 'array',
-  minItems: 1,
-  items: {
-    type: 'object',
-    properties: {
-      label: { type: 'string' },
-      field: { type: 'string' },
-      pattern: {
-        oneOf: [
-          { type: 'boolean' },
-          {
-            type: 'string',
-          },
-        ],
-      },
-    },
-    additionalProperties: false,
-    required: ['label', 'field', 'pattern'],
-  },
-};
-
-const viewGroups = {
-  type: 'array',
-  minItems: 1,
-  items: {
-    type: 'object',
-    properties: {
-      label: { type: 'string' },
-      field: { type: 'string' },
-      pattern: { type: 'string' },
-    },
-    additionalProperties: false,
-    required: ['label', 'field'],
-  },
-};
 
 /**
  * The schema had to be wrapped in a function to
