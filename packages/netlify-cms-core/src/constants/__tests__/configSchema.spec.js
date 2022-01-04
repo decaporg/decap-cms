@@ -4,7 +4,7 @@ import { validateConfig } from '../configSchema';
 
 jest.mock('../../lib/registry');
 
-describe.only('config', () => {
+describe('static config validation', () => {
   /**
    * Suppress error logging to reduce noise during testing. Jest will still
    * log test failures and associated errors as expected.
@@ -16,7 +16,7 @@ describe.only('config', () => {
   const { getWidgets } = require('../../lib/registry');
   getWidgets.mockImplementation(() => [{}]);
 
-  describe.only('validateConfig', () => {
+  describe('validateConfig', () => {
     const validConfig = {
       foo: 'bar',
       backend: { name: 'bar' },
@@ -31,13 +31,13 @@ describe.only('config', () => {
       ],
     };
 
-    it.only('should not throw if no errors', () => {
+    it('should not throw if no errors', () => {
       expect(() => {
         validateConfig(validConfig);
       }).not.toThrowError();
     });
 
-    it('should throw if backend is not defined in config', () => {
+    it.only('should throw if backend is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar' });
       }).toThrowError("config must have required property 'backend'");
@@ -293,85 +293,6 @@ describe.only('config', () => {
       }).not.toThrow();
     });
 
-    describe('nested validation', () => {
-      const { getWidgets } = require('../../lib/registry');
-      getWidgets.mockImplementation(() => [
-        {
-          name: 'relation',
-          schema: {
-            properties: {
-              search_fields: { type: 'array', items: { type: 'string' } },
-              display_fields: { type: 'array', items: { type: 'string' } },
-            },
-          },
-        },
-      ]);
-
-      it('should throw if nested relation display_fields and search_fields are not arrays', () => {
-        expect(() => {
-          validateConfig(
-            merge({}, validConfig, {
-              collections: [
-                {
-                  fields: [
-                    { name: 'title', label: 'title', widget: 'string' },
-                    {
-                      name: 'object',
-                      label: 'Object',
-                      widget: 'object',
-                      fields: [
-                        { name: 'title', label: 'title', widget: 'string' },
-                        {
-                          name: 'relation',
-                          label: 'relation',
-                          widget: 'relation',
-                          display_fields: 'title',
-                          search_fields: 'title',
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            }),
-          );
-        }).toThrowError(
-          "'collections[0].fields[1].fields[1].search_fields' must be array\n'collections[0].fields[1].fields[1].display_fields' must be array",
-        );
-      });
-
-      it('should not throw if nested relation display_fields and search_fields are arrays', () => {
-        expect(() => {
-          validateConfig(
-            merge({}, validConfig, {
-              collections: [
-                {
-                  fields: [
-                    { name: 'title', label: 'title', widget: 'string' },
-                    {
-                      name: 'object',
-                      label: 'Object',
-                      widget: 'object',
-                      fields: [
-                        { name: 'title', label: 'title', widget: 'string' },
-                        {
-                          name: 'relation',
-                          label: 'relation',
-                          widget: 'relation',
-                          display_fields: ['title'],
-                          search_fields: ['title'],
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            }),
-          );
-        }).not.toThrow();
-      });
-    });
-
     it('should throw if collection meta is not a plain object', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ meta: [] }] }));
@@ -509,3 +430,83 @@ describe.only('config', () => {
     });
   });
 });
+
+
+// describe('nested validation', () => {
+//   const { getWidgets } = require('../../lib/registry');
+//   getWidgets.mockImplementation(() => [
+//     {
+//       name: 'relation',
+//       schema: {
+//         properties: {
+//           search_fields: { type: 'array', items: { type: 'string' } },
+//           display_fields: { type: 'array', items: { type: 'string' } },
+//         },
+//       },
+//     },
+//   ]);
+
+//   it('should throw if nested relation display_fields and search_fields are not arrays', () => {
+//     expect(() => {
+//       validateConfig(
+//         merge({}, validConfig, {
+//           collections: [
+//             {
+//               fields: [
+//                 { name: 'title', label: 'title', widget: 'string' },
+//                 {
+//                   name: 'object',
+//                   label: 'Object',
+//                   widget: 'object',
+//                   fields: [
+//                     { name: 'title', label: 'title', widget: 'string' },
+//                     {
+//                       name: 'relation',
+//                       label: 'relation',
+//                       widget: 'relation',
+//                       display_fields: 'title',
+//                       search_fields: 'title',
+//                     },
+//                   ],
+//                 },
+//               ],
+//             },
+//           ],
+//         }),
+//       );
+//     }).toThrowError(
+//       "'collections[0].fields[1].fields[1].search_fields' must be array\n'collections[0].fields[1].fields[1].display_fields' must be array",
+//     );
+//   });
+
+//   it('should not throw if nested relation display_fields and search_fields are arrays', () => {
+//     expect(() => {
+//       validateConfig(
+//         merge({}, validConfig, {
+//           collections: [
+//             {
+//               fields: [
+//                 { name: 'title', label: 'title', widget: 'string' },
+//                 {
+//                   name: 'object',
+//                   label: 'Object',
+//                   widget: 'object',
+//                   fields: [
+//                     { name: 'title', label: 'title', widget: 'string' },
+//                     {
+//                       name: 'relation',
+//                       label: 'relation',
+//                       widget: 'relation',
+//                       display_fields: ['title'],
+//                       search_fields: ['title'],
+//                     },
+//                   ],
+//                 },
+//               ],
+//             },
+//           ],
+//         }),
+//       );
+//     }).not.toThrow();
+//   });
+// });

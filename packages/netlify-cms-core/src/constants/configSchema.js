@@ -12,7 +12,7 @@ import { set } from 'lodash/fp'
 import { getWidgets } from '../lib/registry';
 import { I18N_FIELD } from '../lib/i18n';
 import schema from '../../config.schema.json';
-import validateSchema from './validateSchema';
+import staticValidateConfig from './staticValidateConfig';
 
 // taken from config.schema.json
 // config.properties.collections.items.properties.files.items.properties.fields.items.selectCases
@@ -84,7 +84,7 @@ function fieldsConfig() {
  * fix a circular dependency problem for WebPack,
  * where the imports get resolved asynchronously.
  */
-function getConfigSchema() {
+export function getConfigSchema() {
 
   // This will immutably apply fields schema to the schema properrites that need them
   // TODO: it might be better to use ref here as per https://github.com/ajv-validator/ajv/issues/1707#issuecomment-890479942
@@ -96,12 +96,14 @@ function getConfigSchema() {
 }
 
 function getWidgetSchemas() {
-  const schemas = getWidgets().map(widget => ({ [widget.name]: widget.schema }));
-  return Object.assign(...schemas);
+  const widgets = getWidgets();
+  const schemas = widgets.filter(widget => widget.schema).map(widget => ({ [widget.name]: widget.schema }));
+  return Object.assign({}, ...schemas);
 }
 
 class ConfigError extends Error {
   constructor(errors, ...args) {
+    console.log('errors', errors)
     const message = errors
       .map(({ message, instancePath }) => {
         const dotPath = instancePath
@@ -137,40 +139,42 @@ function dynamicValidateConfig(config) {
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
-  if (!valid) {
-    const errors = ajv.errors.map(e => {
-      switch (e.keyword) {
-        // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
-        case 'uniqueItemProperties': {
-          const path = e.instancePath || '';
-          let newError = e;
-          if (path.endsWith('/fields')) {
-            newError = { ...e, message: 'fields names must be unique' };
-          } else if (path.endsWith('/files')) {
-            newError = { ...e, message: 'files names must be unique' };
-          } else if (path.endsWith('/collections')) {
-            newError = { ...e, message: 'collections names must be unique' };
-          }
-          return newError;
+  dynamicValidateConfig.errors = ajv.errors;
+
+  return valid;
+}
+
+function extractValidationErrors(validator) {
+  return validator.errors.map(e => {
+    switch (e.keyword) {
+      // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
+      case 'uniqueItemProperties': {
+        const path = e.instancePath || '';
+        let newError = e;
+        if (path.endsWith('/fields')) {
+          newError = { ...e, message: 'fields names must be unique' };
+        } else if (path.endsWith('/files')) {
+          newError = { ...e, message: 'files names must be unique' };
+        } else if (path.endsWith('/collections')) {
+          newError = { ...e, message: 'collections names must be unique' };
         }
-        case 'instanceof': {
-          const path = e.instancePath || '';
-          let newError = e;
-          if (/fields\/\d+\/pattern\/\d+/.test(path)) {
-            newError = {
-              ...e,
-              message: 'must be a regular expression',
-            };
-          }
-          return newError;
-        }
-        default:
-          return e;
+        return newError;
       }
-    });
-    console.error('Config Errors', errors);
-    throw new ConfigError(errors);
-  }
+      case 'instanceof': {
+        const path = e.instancePath || '';
+        let newError = e;
+        if (/fields\/\d+\/pattern\/\d+/.test(path)) {
+          newError = {
+            ...e,
+            message: 'must be a regular expression',
+          };
+        }
+        return newError;
+      }
+      default:
+        return e;
+    }
+  })
 }
 
 
@@ -179,11 +183,22 @@ export function validateConfig(config) {
     widgetKey => NativeCMSWidgets.includes(widgetKey) === false,
   );
 
+  let validator;
   if (customWidgets.length > 0) {
     console.debug('using dynamic ajv validation');
-    return dynamicValidateConfig(config);
+    validator = dynamicValidateConfig;
   } else {
     console.debug('using static ajv validation');
-    return validateSchema(config);
+    validator = staticValidateConfig;
   }
+  
+  const result = validator(config);
+
+  if (result === false) {
+    const errors = extractValidationErrors(validator);
+    console.error('Config Errors', errors);
+    throw new ConfigError(errors);
+  }
+
+  return result;
 }
