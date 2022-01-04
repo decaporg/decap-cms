@@ -5,7 +5,6 @@ import {
   instanceof as instanceOf,
   prohibited,
 } from 'ajv-keywords/dist/keywords';
-import ajvErrors from 'ajv-errors';
 import uuid from 'uuid/v4';
 import { set } from 'lodash/fp'
 
@@ -136,7 +135,6 @@ function dynamicValidateConfig(config) {
   select(ajv);
   instanceOf(ajv);
   prohibited(ajv);
-  ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
   dynamicValidateConfig.errors = ajv.errors;
