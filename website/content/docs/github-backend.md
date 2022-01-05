@@ -24,7 +24,7 @@ backend:
 
 The GitHub backend supports [deploy preview links](../deploy-preview-links). Netlify CMS checks the
 `context` of a commit's [statuses](https://help.github.com/articles/about-status-checks/) and infers
-one that seems to represent a deploy preview. If you need to customize this behavior, you can
+one that seems to represent a deploy preview. If you neefadsd to customizfasdfasde this behavior, you can
 specify which context to look for using `preview_context`:
 
 ```yaml
