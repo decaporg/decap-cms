@@ -17,7 +17,7 @@
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
     "build": "cross-env NODE_ENV=production run-s webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
-    "write-validate-schema": "NODE_ENV=production ajv --strict=false -c ajv-keywords/dist/keywords/select compile --all-errors --data -s ./config.schema.json -o ./src/constants/staticValidateConfig.js"
+    "write-validate-schema": "NODE_ENV=production ajv --strict=false -c ajv-keywords/dist/keywords/select -c ./validation-rules/instanceof.js compile --all-errors --data -s ./config.schema.json -o ./src/constants/staticValidateConfig.js"
   },
   "keywords": [
     "netlify",

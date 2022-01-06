@@ -16,6 +16,11 @@ describe('config validation', () => {
   const { getWidgets } = require('../../lib/registry');
   getWidgets.mockImplementation(() => [{}]);
 
+  describe('static validation', validationTests)
+
+});
+
+function validationTests() {
   describe('validateConfig', () => {
     const validConfig = {
       foo: 'bar',
@@ -508,4 +513,4 @@ describe('config validation', () => {
       });
     });
   });
-});
+}
