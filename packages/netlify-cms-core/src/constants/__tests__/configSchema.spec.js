@@ -31,13 +31,13 @@ describe('static config validation', () => {
       ],
     };
 
-    it('should not throw if no errors', () => {
+    it.only('should not throw if no errors', () => {
       expect(() => {
         validateConfig(validConfig);
       }).not.toThrowError();
     });
 
-    it.only('should throw if backend is not defined in config', () => {
+    it('should throw if backend is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar' });
       }).toThrowError("config must have required property 'backend'");

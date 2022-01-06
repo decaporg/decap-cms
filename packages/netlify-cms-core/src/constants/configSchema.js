@@ -1,10 +1,9 @@
 import AJV from 'ajv';
-import {
-  select,
-  uniqueItemProperties,
-  instanceof as instanceOf,
-  prohibited,
-} from 'ajv-keywords/dist/keywords';
+import { select } from 'ajv-keywords/keywords/select'
+import { uniqueItemProperties } from 'ajv-keywords/keywords/uniqueItemProperties'
+import { instanceof as instanceOf } from 'ajv-keywords/keywords/instanceof'
+import { prohibited } from 'ajv-keywords/keywords/prohibited'
+
 import uuid from 'uuid/v4';
 import { set } from 'lodash/fp'
 
@@ -104,8 +103,10 @@ class ConfigError extends Error {
   constructor(errors, ...args) {
     console.log('errors', errors)
     const message = errors
-      .map(({ message, instancePath }) => {
-        const dotPath = instancePath
+      .map(({ message, instancePath, dataPath }) => {
+        // taras: I'm 100% sure why instancePath is not available, but dataPath seems to have
+        // information about location 
+        const dotPath = (instancePath || dataPath)
           .slice(1)
           .split('/')
           .map(seg => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))

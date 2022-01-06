@@ -34,7 +34,7 @@ var validate = (function() {
           if (typeof data.name !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/name',
+              dataPath: (dataPath || '') + '.name',
               schemaPath: '#/properties/name/type',
               params: {
                 type: 'string'
@@ -52,7 +52,7 @@ var validate = (function() {
           if (typeof data.label !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/label',
+              dataPath: (dataPath || '') + '.label',
               schemaPath: '#/properties/label/type',
               params: {
                 type: 'string'
@@ -70,7 +70,7 @@ var validate = (function() {
           if (typeof data.widget !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/widget',
+              dataPath: (dataPath || '') + '.widget',
               schemaPath: '#/properties/widget/type',
               params: {
                 type: 'string'
@@ -88,7 +88,7 @@ var validate = (function() {
           if (typeof data.required !== "boolean") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/required',
+              dataPath: (dataPath || '') + '.required',
               schemaPath: '#/properties/required/type',
               params: {
                 type: 'boolean'
@@ -112,7 +112,7 @@ var validate = (function() {
           if (typeof data1 !== "boolean") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf/0/type',
               params: {
                 type: 'boolean'
@@ -132,7 +132,7 @@ var validate = (function() {
           if (typeof data1 !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf/1/type',
               params: {
                 type: 'string'
@@ -153,7 +153,7 @@ var validate = (function() {
             } if (!valid2) {
             var err = {
               keyword: 'enum',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf/1/enum',
               params: {
                 allowedValues: schema2
@@ -177,7 +177,7 @@ var validate = (function() {
           if (!valid1) {
             var err = {
               keyword: 'oneOf',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf',
               params: {
                 passingSchemas: passingSchemas1
@@ -201,7 +201,7 @@ var validate = (function() {
           if (typeof data.hint !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/hint',
+              dataPath: (dataPath || '') + '.hint',
               schemaPath: '#/properties/hint/type',
               params: {
                 type: 'string'
@@ -221,7 +221,7 @@ var validate = (function() {
             if (data1.length < 2) {
               var err = {
                 keyword: 'minItems',
-                dataPath: (dataPath || '') + '/pattern',
+                dataPath: (dataPath || '') + '.pattern',
                 schemaPath: '#/properties/pattern/minItems',
                 params: {
                   limit: 2
@@ -246,7 +246,7 @@ var validate = (function() {
               if (typeof data2 !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/pattern/' + 0,
+                  dataPath: (dataPath || '') + '.pattern[' + 0 + ']',
                   schemaPath: '#/properties/pattern/items/0/oneOf/0/type',
                   params: {
                     type: 'string'
@@ -267,7 +267,7 @@ var validate = (function() {
               var errs__3 = errors;
               var valid3;
               customRule1.errors = null;
-              valid3 = customRule1.call(self, data2, (dataPath || '') + '/pattern/' + 0, data1, 0, rootData);
+              valid3 = customRule1.call(self, data2, (dataPath || '') + '.pattern[' + 0 + ']', data1, 0, rootData);
               if (!valid3) {
                 if (Array.isArray(customRule1.errors)) {
                   if (vErrors === null) vErrors = customRule1.errors;
@@ -275,13 +275,13 @@ var validate = (function() {
                   errors = vErrors.length;
                   for (var i3 = errs__3; i3 < errors; i3++) {
                     var ruleErr3 = vErrors[i3];
-                    if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '/pattern/' + 0;
+                    if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '.pattern[' + 0 + ']';
                     ruleErr3.schemaPath = "#/properties/pattern/items/0/oneOf/1/instanceof";
                   }
                 } else {
                   var err = {
                     keyword: 'instanceof',
-                    dataPath: (dataPath || '') + '/pattern/' + 0,
+                    dataPath: (dataPath || '') + '.pattern[' + 0 + ']',
                     schemaPath: '#/properties/pattern/items/0/oneOf/1/instanceof',
                     params: {
                       keyword: 'instanceof'
@@ -306,7 +306,7 @@ var validate = (function() {
               if (!valid2) {
                 var err = {
                   keyword: 'oneOf',
-                  dataPath: (dataPath || '') + '/pattern/' + 0,
+                  dataPath: (dataPath || '') + '.pattern[' + 0 + ']',
                   schemaPath: '#/properties/pattern/items/0/oneOf',
                   params: {
                     passingSchemas: passingSchemas2
@@ -331,7 +331,7 @@ var validate = (function() {
               if (typeof data1[1] !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/pattern/' + 1,
+                  dataPath: (dataPath || '') + '.pattern[' + 1 + ']',
                   schemaPath: '#/properties/pattern/items/1/type',
                   params: {
                     type: 'string'
@@ -347,7 +347,7 @@ var validate = (function() {
           } else {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/pattern',
+              dataPath: (dataPath || '') + '.pattern',
               schemaPath: '#/properties/pattern/type',
               params: {
                 type: 'array'
@@ -362,7 +362,7 @@ var validate = (function() {
         }
         if (data.field !== undefined) {
           var errs_1 = errors;
-          if (!refVal[1](data.field, (dataPath || '') + '/field', data, 'field', rootData)) {
+          if (!refVal[1](data.field, (dataPath || '') + '.field', data, 'field', rootData)) {
             if (vErrors === null) vErrors = refVal[1].errors;
             else vErrors = vErrors.concat(refVal[1].errors);
             errors = vErrors.length;
@@ -371,7 +371,7 @@ var validate = (function() {
         }
         if (data.fields !== undefined) {
           var errs_1 = errors;
-          if (!refVal2(data.fields, (dataPath || '') + '/fields', data, 'fields', rootData)) {
+          if (!refVal2(data.fields, (dataPath || '') + '.fields', data, 'fields', rootData)) {
             if (vErrors === null) vErrors = refVal2.errors;
             else vErrors = vErrors.concat(refVal2.errors);
             errors = vErrors.length;
@@ -380,7 +380,7 @@ var validate = (function() {
         }
         if (data.types !== undefined) {
           var errs_1 = errors;
-          if (!refVal[2](data.types, (dataPath || '') + '/types', data, 'types', rootData)) {
+          if (!refVal[2](data.types, (dataPath || '') + '.types', data, 'types', rootData)) {
             if (vErrors === null) vErrors = refVal[2].errors;
             else vErrors = vErrors.concat(refVal[2].errors);
             errors = vErrors.length;
@@ -787,7 +787,7 @@ var validate = (function() {
               valid2 = false;
               var err = {
                 keyword: 'required',
-                dataPath: (dataPath || '') + '/' + i0,
+                dataPath: (dataPath || '') + '[' + i0 + ']',
                 schemaPath: '#/items/required',
                 params: {
                   missingProperty: 'name'
@@ -802,7 +802,7 @@ var validate = (function() {
               if (typeof data1.name !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/name',
+                  dataPath: (dataPath || '') + '[' + i0 + '].name',
                   schemaPath: '#/items/properties/name/type',
                   params: {
                     type: 'string'
@@ -820,7 +820,7 @@ var validate = (function() {
               if (typeof data1.label !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/label',
+                  dataPath: (dataPath || '') + '[' + i0 + '].label',
                   schemaPath: '#/items/properties/label/type',
                   params: {
                     type: 'string'
@@ -838,7 +838,7 @@ var validate = (function() {
               if (typeof data1.widget !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/widget',
+                  dataPath: (dataPath || '') + '[' + i0 + '].widget',
                   schemaPath: '#/items/properties/widget/type',
                   params: {
                     type: 'string'
@@ -856,7 +856,7 @@ var validate = (function() {
               if (typeof data1.required !== "boolean") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/required',
+                  dataPath: (dataPath || '') + '[' + i0 + '].required',
                   schemaPath: '#/items/properties/required/type',
                   params: {
                     type: 'boolean'
@@ -880,7 +880,7 @@ var validate = (function() {
               if (typeof data2 !== "boolean") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf/0/type',
                   params: {
                     type: 'boolean'
@@ -900,7 +900,7 @@ var validate = (function() {
               if (typeof data2 !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf/1/type',
                   params: {
                     type: 'string'
@@ -921,7 +921,7 @@ var validate = (function() {
                 } if (!valid3) {
                 var err = {
                   keyword: 'enum',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf/1/enum',
                   params: {
                     allowedValues: schema3
@@ -945,7 +945,7 @@ var validate = (function() {
               if (!valid2) {
                 var err = {
                   keyword: 'oneOf',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf',
                   params: {
                     passingSchemas: passingSchemas2
@@ -969,7 +969,7 @@ var validate = (function() {
               if (typeof data1.hint !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/hint',
+                  dataPath: (dataPath || '') + '[' + i0 + '].hint',
                   schemaPath: '#/items/properties/hint/type',
                   params: {
                     type: 'string'
@@ -989,7 +989,7 @@ var validate = (function() {
                 if (data2.length < 2) {
                   var err = {
                     keyword: 'minItems',
-                    dataPath: (dataPath || '') + '/' + i0 + '/pattern',
+                    dataPath: (dataPath || '') + '[' + i0 + '].pattern',
                     schemaPath: '#/items/properties/pattern/minItems',
                     params: {
                       limit: 2
@@ -1014,7 +1014,7 @@ var validate = (function() {
                   if (typeof data3 !== "string") {
                     var err = {
                       keyword: 'type',
-                      dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 0,
+                      dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']',
                       schemaPath: '#/items/properties/pattern/items/0/oneOf/0/type',
                       params: {
                         type: 'string'
@@ -1035,7 +1035,7 @@ var validate = (function() {
                   var errs__4 = errors;
                   var valid4;
                   customRule2.errors = null;
-                  valid4 = customRule2.call(self, data3, (dataPath || '') + '/' + i0 + '/pattern/' + 0, data2, 0, rootData);
+                  valid4 = customRule2.call(self, data3, (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']', data2, 0, rootData);
                   if (!valid4) {
                     if (Array.isArray(customRule2.errors)) {
                       if (vErrors === null) vErrors = customRule2.errors;
@@ -1043,13 +1043,13 @@ var validate = (function() {
                       errors = vErrors.length;
                       for (var i4 = errs__4; i4 < errors; i4++) {
                         var ruleErr4 = vErrors[i4];
-                        if (ruleErr4.dataPath === undefined) ruleErr4.dataPath = (dataPath || '') + '/' + i0 + '/pattern/' + 0;
+                        if (ruleErr4.dataPath === undefined) ruleErr4.dataPath = (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']';
                         ruleErr4.schemaPath = "#/items/properties/pattern/items/0/oneOf/1/instanceof";
                       }
                     } else {
                       var err = {
                         keyword: 'instanceof',
-                        dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 0,
+                        dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']',
                         schemaPath: '#/items/properties/pattern/items/0/oneOf/1/instanceof',
                         params: {
                           keyword: 'instanceof'
@@ -1074,7 +1074,7 @@ var validate = (function() {
                   if (!valid3) {
                     var err = {
                       keyword: 'oneOf',
-                      dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 0,
+                      dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']',
                       schemaPath: '#/items/properties/pattern/items/0/oneOf',
                       params: {
                         passingSchemas: passingSchemas3
@@ -1099,7 +1099,7 @@ var validate = (function() {
                   if (typeof data2[1] !== "string") {
                     var err = {
                       keyword: 'type',
-                      dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 1,
+                      dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 1 + ']',
                       schemaPath: '#/items/properties/pattern/items/1/type',
                       params: {
                         type: 'string'
@@ -1115,7 +1115,7 @@ var validate = (function() {
               } else {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/pattern',
+                  dataPath: (dataPath || '') + '[' + i0 + '].pattern',
                   schemaPath: '#/items/properties/pattern/type',
                   params: {
                     type: 'array'
@@ -1130,7 +1130,7 @@ var validate = (function() {
             }
             if (data1.field !== undefined) {
               var errs_2 = errors;
-              if (!refVal[1](data1.field, (dataPath || '') + '/' + i0 + '/field', data1, 'field', rootData)) {
+              if (!refVal[1](data1.field, (dataPath || '') + '[' + i0 + '].field', data1, 'field', rootData)) {
                 if (vErrors === null) vErrors = refVal[1].errors;
                 else vErrors = vErrors.concat(refVal[1].errors);
                 errors = vErrors.length;
@@ -1139,7 +1139,7 @@ var validate = (function() {
             }
             if (data1.fields !== undefined) {
               var errs_2 = errors;
-              if (!refVal[2](data1.fields, (dataPath || '') + '/' + i0 + '/fields', data1, 'fields', rootData)) {
+              if (!refVal[2](data1.fields, (dataPath || '') + '[' + i0 + '].fields', data1, 'fields', rootData)) {
                 if (vErrors === null) vErrors = refVal[2].errors;
                 else vErrors = vErrors.concat(refVal[2].errors);
                 errors = vErrors.length;
@@ -1148,7 +1148,7 @@ var validate = (function() {
             }
             if (data1.types !== undefined) {
               var errs_2 = errors;
-              if (!refVal[2](data1.types, (dataPath || '') + '/' + i0 + '/types', data1, 'types', rootData)) {
+              if (!refVal[2](data1.types, (dataPath || '') + '[' + i0 + '].types', data1, 'types', rootData)) {
                 if (vErrors === null) vErrors = refVal[2].errors;
                 else vErrors = vErrors.concat(refVal[2].errors);
                 errors = vErrors.length;
@@ -1158,7 +1158,7 @@ var validate = (function() {
           } else {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/' + i0,
+              dataPath: (dataPath || '') + '[' + i0 + ']',
               schemaPath: '#/items/type',
               params: {
                 type: 'object'
@@ -1181,7 +1181,7 @@ var validate = (function() {
             valid1 = definition1.validateSchema(schema1);
             if (valid1) {
               keywordValidate1.errors = null;
-              valid1 = keywordValidate1.call(self, schema1, data1, validate.schema.items, (dataPath || '') + '/' + i0, data, i0, rootData);
+              valid1 = keywordValidate1.call(self, schema1, data1, validate.schema.items, (dataPath || '') + '[' + i0 + ']', data, i0, rootData);
             }
           }
           if (!valid1) {
@@ -1191,13 +1191,13 @@ var validate = (function() {
               errors = vErrors.length;
               for (var i1 = errs__1; i1 < errors; i1++) {
                 var ruleErr1 = vErrors[i1];
-                if (ruleErr1.dataPath === undefined) ruleErr1.dataPath = (dataPath || '') + '/' + i0;
+                if (ruleErr1.dataPath === undefined) ruleErr1.dataPath = (dataPath || '') + '[' + i0 + ']';
                 ruleErr1.schemaPath = "#/items/select";
               }
             } else {
               var err = {
                 keyword: 'select',
-                dataPath: (dataPath || '') + '/' + i0,
+                dataPath: (dataPath || '') + '[' + i0 + ']',
                 schemaPath: '#/items/select',
                 params: {
                   keyword: 'select'
@@ -1213,7 +1213,7 @@ var validate = (function() {
           var errs__1 = errors;
           var valid1;
           customRule3.errors = null;
-          valid1 = customRule3.call(self, data1, (dataPath || '') + '/' + i0, data, i0, rootData);
+          valid1 = customRule3.call(self, data1, (dataPath || '') + '[' + i0 + ']', data, i0, rootData);
           var valid1 = errors === errs_1;
         }
         customRule4.errors = null;
@@ -1602,7 +1602,7 @@ var validate = (function() {
           if (typeof data.name !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/name',
+              dataPath: (dataPath || '') + '.name',
               schemaPath: '#/properties/name/type',
               params: {
                 type: 'string'
@@ -1620,7 +1620,7 @@ var validate = (function() {
           if (typeof data.label !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/label',
+              dataPath: (dataPath || '') + '.label',
               schemaPath: '#/properties/label/type',
               params: {
                 type: 'string'
@@ -1638,7 +1638,7 @@ var validate = (function() {
           if (typeof data.widget !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/widget',
+              dataPath: (dataPath || '') + '.widget',
               schemaPath: '#/properties/widget/type',
               params: {
                 type: 'string'
@@ -1656,7 +1656,7 @@ var validate = (function() {
           if (typeof data.required !== "boolean") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/required',
+              dataPath: (dataPath || '') + '.required',
               schemaPath: '#/properties/required/type',
               params: {
                 type: 'boolean'
@@ -1680,7 +1680,7 @@ var validate = (function() {
           if (typeof data1 !== "boolean") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf/0/type',
               params: {
                 type: 'boolean'
@@ -1700,7 +1700,7 @@ var validate = (function() {
           if (typeof data1 !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf/1/type',
               params: {
                 type: 'string'
@@ -1721,7 +1721,7 @@ var validate = (function() {
             } if (!valid2) {
             var err = {
               keyword: 'enum',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf/1/enum',
               params: {
                 allowedValues: schema2
@@ -1745,7 +1745,7 @@ var validate = (function() {
           if (!valid1) {
             var err = {
               keyword: 'oneOf',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/oneOf',
               params: {
                 passingSchemas: passingSchemas1
@@ -1769,7 +1769,7 @@ var validate = (function() {
           if (typeof data.hint !== "string") {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/hint',
+              dataPath: (dataPath || '') + '.hint',
               schemaPath: '#/properties/hint/type',
               params: {
                 type: 'string'
@@ -1789,7 +1789,7 @@ var validate = (function() {
             if (data1.length < 2) {
               var err = {
                 keyword: 'minItems',
-                dataPath: (dataPath || '') + '/pattern',
+                dataPath: (dataPath || '') + '.pattern',
                 schemaPath: '#/properties/pattern/minItems',
                 params: {
                   limit: 2
@@ -1814,7 +1814,7 @@ var validate = (function() {
               if (typeof data2 !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/pattern/' + 0,
+                  dataPath: (dataPath || '') + '.pattern[' + 0 + ']',
                   schemaPath: '#/properties/pattern/items/0/oneOf/0/type',
                   params: {
                     type: 'string'
@@ -1835,7 +1835,7 @@ var validate = (function() {
               var errs__3 = errors;
               var valid3;
               customRule10.errors = null;
-              valid3 = customRule10.call(self, data2, (dataPath || '') + '/pattern/' + 0, data1, 0, rootData);
+              valid3 = customRule10.call(self, data2, (dataPath || '') + '.pattern[' + 0 + ']', data1, 0, rootData);
               if (!valid3) {
                 if (Array.isArray(customRule10.errors)) {
                   if (vErrors === null) vErrors = customRule10.errors;
@@ -1843,13 +1843,13 @@ var validate = (function() {
                   errors = vErrors.length;
                   for (var i3 = errs__3; i3 < errors; i3++) {
                     var ruleErr3 = vErrors[i3];
-                    if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '/pattern/' + 0;
+                    if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '.pattern[' + 0 + ']';
                     ruleErr3.schemaPath = "#/properties/pattern/items/0/oneOf/1/instanceof";
                   }
                 } else {
                   var err = {
                     keyword: 'instanceof',
-                    dataPath: (dataPath || '') + '/pattern/' + 0,
+                    dataPath: (dataPath || '') + '.pattern[' + 0 + ']',
                     schemaPath: '#/properties/pattern/items/0/oneOf/1/instanceof',
                     params: {
                       keyword: 'instanceof'
@@ -1874,7 +1874,7 @@ var validate = (function() {
               if (!valid2) {
                 var err = {
                   keyword: 'oneOf',
-                  dataPath: (dataPath || '') + '/pattern/' + 0,
+                  dataPath: (dataPath || '') + '.pattern[' + 0 + ']',
                   schemaPath: '#/properties/pattern/items/0/oneOf',
                   params: {
                     passingSchemas: passingSchemas2
@@ -1899,7 +1899,7 @@ var validate = (function() {
               if (typeof data1[1] !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/pattern/' + 1,
+                  dataPath: (dataPath || '') + '.pattern[' + 1 + ']',
                   schemaPath: '#/properties/pattern/items/1/type',
                   params: {
                     type: 'string'
@@ -1915,7 +1915,7 @@ var validate = (function() {
           } else {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/pattern',
+              dataPath: (dataPath || '') + '.pattern',
               schemaPath: '#/properties/pattern/type',
               params: {
                 type: 'array'
@@ -1930,7 +1930,7 @@ var validate = (function() {
         }
         if (data.field !== undefined) {
           var errs_1 = errors;
-          if (!refVal[3](data.field, (dataPath || '') + '/field', data, 'field', rootData)) {
+          if (!refVal[3](data.field, (dataPath || '') + '.field', data, 'field', rootData)) {
             if (vErrors === null) vErrors = refVal[3].errors;
             else vErrors = vErrors.concat(refVal[3].errors);
             errors = vErrors.length;
@@ -1939,7 +1939,7 @@ var validate = (function() {
         }
         if (data.fields !== undefined) {
           var errs_1 = errors;
-          if (!refVal4(data.fields, (dataPath || '') + '/fields', data, 'fields', rootData)) {
+          if (!refVal4(data.fields, (dataPath || '') + '.fields', data, 'fields', rootData)) {
             if (vErrors === null) vErrors = refVal4.errors;
             else vErrors = vErrors.concat(refVal4.errors);
             errors = vErrors.length;
@@ -1948,7 +1948,7 @@ var validate = (function() {
         }
         if (data.types !== undefined) {
           var errs_1 = errors;
-          if (!refVal[4](data.types, (dataPath || '') + '/types', data, 'types', rootData)) {
+          if (!refVal[4](data.types, (dataPath || '') + '.types', data, 'types', rootData)) {
             if (vErrors === null) vErrors = refVal[4].errors;
             else vErrors = vErrors.concat(refVal[4].errors);
             errors = vErrors.length;
@@ -2355,7 +2355,7 @@ var validate = (function() {
               valid2 = false;
               var err = {
                 keyword: 'required',
-                dataPath: (dataPath || '') + '/' + i0,
+                dataPath: (dataPath || '') + '[' + i0 + ']',
                 schemaPath: '#/items/required',
                 params: {
                   missingProperty: 'name'
@@ -2370,7 +2370,7 @@ var validate = (function() {
               if (typeof data1.name !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/name',
+                  dataPath: (dataPath || '') + '[' + i0 + '].name',
                   schemaPath: '#/items/properties/name/type',
                   params: {
                     type: 'string'
@@ -2388,7 +2388,7 @@ var validate = (function() {
               if (typeof data1.label !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/label',
+                  dataPath: (dataPath || '') + '[' + i0 + '].label',
                   schemaPath: '#/items/properties/label/type',
                   params: {
                     type: 'string'
@@ -2406,7 +2406,7 @@ var validate = (function() {
               if (typeof data1.widget !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/widget',
+                  dataPath: (dataPath || '') + '[' + i0 + '].widget',
                   schemaPath: '#/items/properties/widget/type',
                   params: {
                     type: 'string'
@@ -2424,7 +2424,7 @@ var validate = (function() {
               if (typeof data1.required !== "boolean") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/required',
+                  dataPath: (dataPath || '') + '[' + i0 + '].required',
                   schemaPath: '#/items/properties/required/type',
                   params: {
                     type: 'boolean'
@@ -2448,7 +2448,7 @@ var validate = (function() {
               if (typeof data2 !== "boolean") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf/0/type',
                   params: {
                     type: 'boolean'
@@ -2468,7 +2468,7 @@ var validate = (function() {
               if (typeof data2 !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf/1/type',
                   params: {
                     type: 'string'
@@ -2489,7 +2489,7 @@ var validate = (function() {
                 } if (!valid3) {
                 var err = {
                   keyword: 'enum',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf/1/enum',
                   params: {
                     allowedValues: schema3
@@ -2513,7 +2513,7 @@ var validate = (function() {
               if (!valid2) {
                 var err = {
                   keyword: 'oneOf',
-                  dataPath: (dataPath || '') + '/' + i0 + '/i18n',
+                  dataPath: (dataPath || '') + '[' + i0 + '].i18n',
                   schemaPath: '#/items/properties/i18n/oneOf',
                   params: {
                     passingSchemas: passingSchemas2
@@ -2537,7 +2537,7 @@ var validate = (function() {
               if (typeof data1.hint !== "string") {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/hint',
+                  dataPath: (dataPath || '') + '[' + i0 + '].hint',
                   schemaPath: '#/items/properties/hint/type',
                   params: {
                     type: 'string'
@@ -2557,7 +2557,7 @@ var validate = (function() {
                 if (data2.length < 2) {
                   var err = {
                     keyword: 'minItems',
-                    dataPath: (dataPath || '') + '/' + i0 + '/pattern',
+                    dataPath: (dataPath || '') + '[' + i0 + '].pattern',
                     schemaPath: '#/items/properties/pattern/minItems',
                     params: {
                       limit: 2
@@ -2582,7 +2582,7 @@ var validate = (function() {
                   if (typeof data3 !== "string") {
                     var err = {
                       keyword: 'type',
-                      dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 0,
+                      dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']',
                       schemaPath: '#/items/properties/pattern/items/0/oneOf/0/type',
                       params: {
                         type: 'string'
@@ -2603,7 +2603,7 @@ var validate = (function() {
                   var errs__4 = errors;
                   var valid4;
                   customRule11.errors = null;
-                  valid4 = customRule11.call(self, data3, (dataPath || '') + '/' + i0 + '/pattern/' + 0, data2, 0, rootData);
+                  valid4 = customRule11.call(self, data3, (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']', data2, 0, rootData);
                   if (!valid4) {
                     if (Array.isArray(customRule11.errors)) {
                       if (vErrors === null) vErrors = customRule11.errors;
@@ -2611,13 +2611,13 @@ var validate = (function() {
                       errors = vErrors.length;
                       for (var i4 = errs__4; i4 < errors; i4++) {
                         var ruleErr4 = vErrors[i4];
-                        if (ruleErr4.dataPath === undefined) ruleErr4.dataPath = (dataPath || '') + '/' + i0 + '/pattern/' + 0;
+                        if (ruleErr4.dataPath === undefined) ruleErr4.dataPath = (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']';
                         ruleErr4.schemaPath = "#/items/properties/pattern/items/0/oneOf/1/instanceof";
                       }
                     } else {
                       var err = {
                         keyword: 'instanceof',
-                        dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 0,
+                        dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']',
                         schemaPath: '#/items/properties/pattern/items/0/oneOf/1/instanceof',
                         params: {
                           keyword: 'instanceof'
@@ -2642,7 +2642,7 @@ var validate = (function() {
                   if (!valid3) {
                     var err = {
                       keyword: 'oneOf',
-                      dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 0,
+                      dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 0 + ']',
                       schemaPath: '#/items/properties/pattern/items/0/oneOf',
                       params: {
                         passingSchemas: passingSchemas3
@@ -2667,7 +2667,7 @@ var validate = (function() {
                   if (typeof data2[1] !== "string") {
                     var err = {
                       keyword: 'type',
-                      dataPath: (dataPath || '') + '/' + i0 + '/pattern/' + 1,
+                      dataPath: (dataPath || '') + '[' + i0 + '].pattern[' + 1 + ']',
                       schemaPath: '#/items/properties/pattern/items/1/type',
                       params: {
                         type: 'string'
@@ -2683,7 +2683,7 @@ var validate = (function() {
               } else {
                 var err = {
                   keyword: 'type',
-                  dataPath: (dataPath || '') + '/' + i0 + '/pattern',
+                  dataPath: (dataPath || '') + '[' + i0 + '].pattern',
                   schemaPath: '#/items/properties/pattern/type',
                   params: {
                     type: 'array'
@@ -2698,7 +2698,7 @@ var validate = (function() {
             }
             if (data1.field !== undefined) {
               var errs_2 = errors;
-              if (!refVal[3](data1.field, (dataPath || '') + '/' + i0 + '/field', data1, 'field', rootData)) {
+              if (!refVal[3](data1.field, (dataPath || '') + '[' + i0 + '].field', data1, 'field', rootData)) {
                 if (vErrors === null) vErrors = refVal[3].errors;
                 else vErrors = vErrors.concat(refVal[3].errors);
                 errors = vErrors.length;
@@ -2707,7 +2707,7 @@ var validate = (function() {
             }
             if (data1.fields !== undefined) {
               var errs_2 = errors;
-              if (!refVal[4](data1.fields, (dataPath || '') + '/' + i0 + '/fields', data1, 'fields', rootData)) {
+              if (!refVal[4](data1.fields, (dataPath || '') + '[' + i0 + '].fields', data1, 'fields', rootData)) {
                 if (vErrors === null) vErrors = refVal[4].errors;
                 else vErrors = vErrors.concat(refVal[4].errors);
                 errors = vErrors.length;
@@ -2716,7 +2716,7 @@ var validate = (function() {
             }
             if (data1.types !== undefined) {
               var errs_2 = errors;
-              if (!refVal[4](data1.types, (dataPath || '') + '/' + i0 + '/types', data1, 'types', rootData)) {
+              if (!refVal[4](data1.types, (dataPath || '') + '[' + i0 + '].types', data1, 'types', rootData)) {
                 if (vErrors === null) vErrors = refVal[4].errors;
                 else vErrors = vErrors.concat(refVal[4].errors);
                 errors = vErrors.length;
@@ -2726,7 +2726,7 @@ var validate = (function() {
           } else {
             var err = {
               keyword: 'type',
-              dataPath: (dataPath || '') + '/' + i0,
+              dataPath: (dataPath || '') + '[' + i0 + ']',
               schemaPath: '#/items/type',
               params: {
                 type: 'object'
@@ -2749,7 +2749,7 @@ var validate = (function() {
             valid1 = definition1.validateSchema(schema1);
             if (valid1) {
               keywordValidate1.errors = null;
-              valid1 = keywordValidate1.call(self, schema1, data1, validate.schema.items, (dataPath || '') + '/' + i0, data, i0, rootData);
+              valid1 = keywordValidate1.call(self, schema1, data1, validate.schema.items, (dataPath || '') + '[' + i0 + ']', data, i0, rootData);
             }
           }
           if (!valid1) {
@@ -2759,13 +2759,13 @@ var validate = (function() {
               errors = vErrors.length;
               for (var i1 = errs__1; i1 < errors; i1++) {
                 var ruleErr1 = vErrors[i1];
-                if (ruleErr1.dataPath === undefined) ruleErr1.dataPath = (dataPath || '') + '/' + i0;
+                if (ruleErr1.dataPath === undefined) ruleErr1.dataPath = (dataPath || '') + '[' + i0 + ']';
                 ruleErr1.schemaPath = "#/items/select";
               }
             } else {
               var err = {
                 keyword: 'select',
-                dataPath: (dataPath || '') + '/' + i0,
+                dataPath: (dataPath || '') + '[' + i0 + ']',
                 schemaPath: '#/items/select',
                 params: {
                   keyword: 'select'
@@ -2781,7 +2781,7 @@ var validate = (function() {
           var errs__1 = errors;
           var valid1;
           customRule12.errors = null;
-          valid1 = customRule12.call(self, data1, (dataPath || '') + '/' + i0, data, i0, rootData);
+          valid1 = customRule12.call(self, data1, (dataPath || '') + '[' + i0 + ']', data, i0, rootData);
           var valid1 = errors === errs_1;
         }
         customRule13.errors = null;
@@ -3173,7 +3173,7 @@ var validate = (function() {
             valid2 = false;
             var err = {
               keyword: 'required',
-              dataPath: (dataPath || '') + '/backend',
+              dataPath: (dataPath || '') + '.backend',
               schemaPath: '#/properties/backend/required',
               params: {
                 missingProperty: 'name'
@@ -3188,7 +3188,7 @@ var validate = (function() {
             if (typeof data1.name !== "string") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/backend/name',
+                dataPath: (dataPath || '') + '.backend.name',
                 schemaPath: '#/properties/backend/properties/name/type',
                 params: {
                   type: 'string'
@@ -3207,7 +3207,7 @@ var validate = (function() {
             if (typeof data2 !== "string") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/backend/auth_scope',
+                dataPath: (dataPath || '') + '.backend.auth_scope',
                 schemaPath: '#/properties/backend/properties/auth_scope/type',
                 params: {
                   type: 'string'
@@ -3228,7 +3228,7 @@ var validate = (function() {
               } if (!valid2) {
               var err = {
                 keyword: 'enum',
-                dataPath: (dataPath || '') + '/backend/auth_scope',
+                dataPath: (dataPath || '') + '.backend.auth_scope',
                 schemaPath: '#/properties/backend/properties/auth_scope/enum',
                 params: {
                   allowedValues: schema2
@@ -3248,7 +3248,7 @@ var validate = (function() {
               if (ucs2length(data2) < 1) {
                 var err = {
                   keyword: 'minLength',
-                  dataPath: (dataPath || '') + '/backend/cms_label_prefix',
+                  dataPath: (dataPath || '') + '.backend.cms_label_prefix',
                   schemaPath: '#/properties/backend/properties/cms_label_prefix/minLength',
                   params: {
                     limit: 1
@@ -3262,7 +3262,7 @@ var validate = (function() {
             } else {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/backend/cms_label_prefix',
+                dataPath: (dataPath || '') + '.backend.cms_label_prefix',
                 schemaPath: '#/properties/backend/properties/cms_label_prefix/type',
                 params: {
                   type: 'string'
@@ -3280,7 +3280,7 @@ var validate = (function() {
             if (typeof data1.open_authoring !== "boolean") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/backend/open_authoring',
+                dataPath: (dataPath || '') + '.backend.open_authoring',
                 schemaPath: '#/properties/backend/properties/open_authoring/type',
                 params: {
                   type: 'boolean'
@@ -3296,7 +3296,7 @@ var validate = (function() {
         } else {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/backend',
+            dataPath: (dataPath || '') + '.backend',
             schemaPath: '#/properties/backend/type',
             params: {
               type: 'object'
@@ -3320,7 +3320,7 @@ var validate = (function() {
         if (typeof data1 !== "boolean") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/local_backend',
+            dataPath: (dataPath || '') + '.local_backend',
             schemaPath: '#/properties/local_backend/oneOf/0/type',
             params: {
               type: 'boolean'
@@ -3346,7 +3346,7 @@ var validate = (function() {
               valid3 = false;
               var err = {
                 keyword: 'additionalProperties',
-                dataPath: (dataPath || '') + '/local_backend',
+                dataPath: (dataPath || '') + '.local_backend',
                 schemaPath: '#/properties/local_backend/oneOf/1/additionalProperties',
                 params: {
                   additionalProperty: '' + key2 + ''
@@ -3363,7 +3363,7 @@ var validate = (function() {
             if (typeof data1.url !== "string") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/local_backend/url',
+                dataPath: (dataPath || '') + '.local_backend.url',
                 schemaPath: '#/properties/local_backend/oneOf/1/properties/url/type',
                 params: {
                   type: 'string'
@@ -3387,7 +3387,7 @@ var validate = (function() {
                 if (typeof data2[i3] !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/local_backend/allowed_hosts/' + i3,
+                    dataPath: (dataPath || '') + '.local_backend.allowed_hosts[' + i3 + ']',
                     schemaPath: '#/properties/local_backend/oneOf/1/properties/allowed_hosts/items/type',
                     params: {
                       type: 'string'
@@ -3403,7 +3403,7 @@ var validate = (function() {
             } else {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/local_backend/allowed_hosts',
+                dataPath: (dataPath || '') + '.local_backend.allowed_hosts',
                 schemaPath: '#/properties/local_backend/oneOf/1/properties/allowed_hosts/type',
                 params: {
                   type: 'array'
@@ -3419,7 +3419,7 @@ var validate = (function() {
         } else {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/local_backend',
+            dataPath: (dataPath || '') + '.local_backend',
             schemaPath: '#/properties/local_backend/oneOf/1/type',
             params: {
               type: 'object'
@@ -3443,7 +3443,7 @@ var validate = (function() {
         if (!valid1) {
           var err = {
             keyword: 'oneOf',
-            dataPath: (dataPath || '') + '/local_backend',
+            dataPath: (dataPath || '') + '.local_backend',
             schemaPath: '#/properties/local_backend/oneOf',
             params: {
               passingSchemas: passingSchemas1
@@ -3467,7 +3467,7 @@ var validate = (function() {
         if (typeof data.locale !== "string") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/locale',
+            dataPath: (dataPath || '') + '.locale',
             schemaPath: '#/properties/locale/type',
             params: {
               type: 'string'
@@ -3491,7 +3491,7 @@ var validate = (function() {
             valid2 = false;
             var err = {
               keyword: 'required',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/required',
               params: {
                 missingProperty: 'structure'
@@ -3506,7 +3506,7 @@ var validate = (function() {
             if (typeof data2 !== "string") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/i18n/structure',
+                dataPath: (dataPath || '') + '.i18n.structure',
                 schemaPath: '#/properties/i18n/properties/structure/type',
                 params: {
                   type: 'string'
@@ -3527,7 +3527,7 @@ var validate = (function() {
               } if (!valid2) {
               var err = {
                 keyword: 'enum',
-                dataPath: (dataPath || '') + '/i18n/structure',
+                dataPath: (dataPath || '') + '.i18n.structure',
                 schemaPath: '#/properties/i18n/properties/structure/enum',
                 params: {
                   allowedValues: schema2
@@ -3545,7 +3545,7 @@ var validate = (function() {
             valid2 = false;
             var err = {
               keyword: 'required',
-              dataPath: (dataPath || '') + '/i18n',
+              dataPath: (dataPath || '') + '.i18n',
               schemaPath: '#/properties/i18n/required',
               params: {
                 missingProperty: 'locales'
@@ -3561,7 +3561,7 @@ var validate = (function() {
               if (data2.length < 2) {
                 var err = {
                   keyword: 'minItems',
-                  dataPath: (dataPath || '') + '/i18n/locales',
+                  dataPath: (dataPath || '') + '.i18n.locales',
                   schemaPath: '#/properties/i18n/properties/locales/minItems',
                   params: {
                     limit: 2
@@ -3581,7 +3581,7 @@ var validate = (function() {
                   if (ucs2length(data3) > 10) {
                     var err = {
                       keyword: 'maxLength',
-                      dataPath: (dataPath || '') + '/i18n/locales/' + i2,
+                      dataPath: (dataPath || '') + '.i18n.locales[' + i2 + ']',
                       schemaPath: '#/properties/i18n/properties/locales/items/maxLength',
                       params: {
                         limit: 10
@@ -3595,7 +3595,7 @@ var validate = (function() {
                   if (ucs2length(data3) < 2) {
                     var err = {
                       keyword: 'minLength',
-                      dataPath: (dataPath || '') + '/i18n/locales/' + i2,
+                      dataPath: (dataPath || '') + '.i18n.locales[' + i2 + ']',
                       schemaPath: '#/properties/i18n/properties/locales/items/minLength',
                       params: {
                         limit: 2
@@ -3609,7 +3609,7 @@ var validate = (function() {
                   if (!pattern0.test(data3)) {
                     var err = {
                       keyword: 'pattern',
-                      dataPath: (dataPath || '') + '/i18n/locales/' + i2,
+                      dataPath: (dataPath || '') + '.i18n.locales[' + i2 + ']',
                       schemaPath: '#/properties/i18n/properties/locales/items/pattern',
                       params: {
                         pattern: '^[a-zA-Z-_]+$'
@@ -3623,7 +3623,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/i18n/locales/' + i2,
+                    dataPath: (dataPath || '') + '.i18n.locales[' + i2 + ']',
                     schemaPath: '#/properties/i18n/properties/locales/items/type',
                     params: {
                       type: 'string'
@@ -3656,7 +3656,7 @@ var validate = (function() {
               if (!valid2) {
                 var err = {
                   keyword: 'uniqueItems',
-                  dataPath: (dataPath || '') + '/i18n/locales',
+                  dataPath: (dataPath || '') + '.i18n.locales',
                   schemaPath: '#/properties/i18n/properties/locales/uniqueItems',
                   params: {
                     i: i,
@@ -3671,7 +3671,7 @@ var validate = (function() {
             } else {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/i18n/locales',
+                dataPath: (dataPath || '') + '.i18n.locales',
                 schemaPath: '#/properties/i18n/properties/locales/type',
                 params: {
                   type: 'array'
@@ -3691,7 +3691,7 @@ var validate = (function() {
               if (ucs2length(data2) > 10) {
                 var err = {
                   keyword: 'maxLength',
-                  dataPath: (dataPath || '') + '/i18n/default_locale',
+                  dataPath: (dataPath || '') + '.i18n.default_locale',
                   schemaPath: '#/properties/i18n/properties/default_locale/maxLength',
                   params: {
                     limit: 10
@@ -3705,7 +3705,7 @@ var validate = (function() {
               if (ucs2length(data2) < 2) {
                 var err = {
                   keyword: 'minLength',
-                  dataPath: (dataPath || '') + '/i18n/default_locale',
+                  dataPath: (dataPath || '') + '.i18n.default_locale',
                   schemaPath: '#/properties/i18n/properties/default_locale/minLength',
                   params: {
                     limit: 2
@@ -3719,7 +3719,7 @@ var validate = (function() {
               if (!pattern0.test(data2)) {
                 var err = {
                   keyword: 'pattern',
-                  dataPath: (dataPath || '') + '/i18n/default_locale',
+                  dataPath: (dataPath || '') + '.i18n.default_locale',
                   schemaPath: '#/properties/i18n/properties/default_locale/pattern',
                   params: {
                     pattern: '^[a-zA-Z-_]+$'
@@ -3733,7 +3733,7 @@ var validate = (function() {
             } else {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/i18n/default_locale',
+                dataPath: (dataPath || '') + '.i18n.default_locale',
                 schemaPath: '#/properties/i18n/properties/default_locale/type',
                 params: {
                   type: 'string'
@@ -3749,7 +3749,7 @@ var validate = (function() {
         } else {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/i18n',
+            dataPath: (dataPath || '') + '.i18n',
             schemaPath: '#/properties/i18n/type',
             params: {
               type: 'object'
@@ -3767,7 +3767,7 @@ var validate = (function() {
         if (typeof data.site_url !== "string") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/site_url',
+            dataPath: (dataPath || '') + '.site_url',
             schemaPath: '#/properties/site_url/type',
             params: {
               type: 'string'
@@ -3785,7 +3785,7 @@ var validate = (function() {
         if (typeof data.display_url !== "string") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/display_url',
+            dataPath: (dataPath || '') + '.display_url',
             schemaPath: '#/properties/display_url/type',
             params: {
               type: 'string'
@@ -3803,7 +3803,7 @@ var validate = (function() {
         if (typeof data.logo_url !== "string") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/logo_url',
+            dataPath: (dataPath || '') + '.logo_url',
             schemaPath: '#/properties/logo_url/type',
             params: {
               type: 'string'
@@ -3821,7 +3821,7 @@ var validate = (function() {
         if (typeof data.show_preview_links !== "boolean") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/show_preview_links',
+            dataPath: (dataPath || '') + '.show_preview_links',
             schemaPath: '#/properties/show_preview_links/type',
             params: {
               type: 'boolean'
@@ -3839,7 +3839,7 @@ var validate = (function() {
         if (typeof data.media_folder !== "string") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/media_folder',
+            dataPath: (dataPath || '') + '.media_folder',
             schemaPath: '#/properties/media_folder/type',
             params: {
               type: 'string'
@@ -3857,7 +3857,7 @@ var validate = (function() {
         if (typeof data.public_folder !== "string") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/public_folder',
+            dataPath: (dataPath || '') + '.public_folder',
             schemaPath: '#/properties/public_folder/type',
             params: {
               type: 'string'
@@ -3875,7 +3875,7 @@ var validate = (function() {
         if (typeof data.media_folder_relative !== "boolean") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/media_folder_relative',
+            dataPath: (dataPath || '') + '.media_folder_relative',
             schemaPath: '#/properties/media_folder_relative/type',
             params: {
               type: 'boolean'
@@ -3898,7 +3898,7 @@ var validate = (function() {
             valid2 = false;
             var err = {
               keyword: 'required',
-              dataPath: (dataPath || '') + '/media_library',
+              dataPath: (dataPath || '') + '.media_library',
               schemaPath: '#/properties/media_library/required',
               params: {
                 missingProperty: 'name'
@@ -3913,7 +3913,7 @@ var validate = (function() {
             if (typeof data1.name !== "string") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/media_library/name',
+                dataPath: (dataPath || '') + '.media_library.name',
                 schemaPath: '#/properties/media_library/properties/name/type',
                 params: {
                   type: 'string'
@@ -3932,7 +3932,7 @@ var validate = (function() {
             if ((!data2 || typeof data2 !== "object" || Array.isArray(data2))) {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/media_library/config',
+                dataPath: (dataPath || '') + '.media_library.config',
                 schemaPath: '#/properties/media_library/properties/config/type',
                 params: {
                   type: 'object'
@@ -3948,7 +3948,7 @@ var validate = (function() {
         } else {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/media_library',
+            dataPath: (dataPath || '') + '.media_library',
             schemaPath: '#/properties/media_library/type',
             params: {
               type: 'object'
@@ -3967,7 +3967,7 @@ var validate = (function() {
         if (typeof data1 !== "string") {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/publish_mode',
+            dataPath: (dataPath || '') + '.publish_mode',
             schemaPath: '#/properties/publish_mode/type',
             params: {
               type: 'string'
@@ -3988,7 +3988,7 @@ var validate = (function() {
           } if (!valid1) {
           var err = {
             keyword: 'enum',
-            dataPath: (dataPath || '') + '/publish_mode',
+            dataPath: (dataPath || '') + '.publish_mode',
             schemaPath: '#/properties/publish_mode/enum',
             params: {
               allowedValues: schema1
@@ -4013,7 +4013,7 @@ var validate = (function() {
             if (typeof data2 !== "string") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/slug/encoding',
+                dataPath: (dataPath || '') + '.slug.encoding',
                 schemaPath: '#/properties/slug/properties/encoding/type',
                 params: {
                   type: 'string'
@@ -4034,7 +4034,7 @@ var validate = (function() {
               } if (!valid2) {
               var err = {
                 keyword: 'enum',
-                dataPath: (dataPath || '') + '/slug/encoding',
+                dataPath: (dataPath || '') + '.slug.encoding',
                 schemaPath: '#/properties/slug/properties/encoding/enum',
                 params: {
                   allowedValues: schema2
@@ -4052,7 +4052,7 @@ var validate = (function() {
             if (typeof data1.clean_accents !== "boolean") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/slug/clean_accents',
+                dataPath: (dataPath || '') + '.slug.clean_accents',
                 schemaPath: '#/properties/slug/properties/clean_accents/type',
                 params: {
                   type: 'boolean'
@@ -4068,7 +4068,7 @@ var validate = (function() {
         } else {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/slug',
+            dataPath: (dataPath || '') + '.slug',
             schemaPath: '#/properties/slug/type',
             params: {
               type: 'object'
@@ -4102,7 +4102,7 @@ var validate = (function() {
           if (data1.length < 1) {
             var err = {
               keyword: 'minItems',
-              dataPath: (dataPath || '') + '/collections',
+              dataPath: (dataPath || '') + '.collections',
               schemaPath: '#/properties/collections/minItems',
               params: {
                 limit: 1
@@ -4131,7 +4131,7 @@ var validate = (function() {
                     valid4 = false;
                     var err = {
                       keyword: 'required',
-                      dataPath: (dataPath || '') + '/collections/' + i1,
+                      dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                       schemaPath: '#/properties/collections/items/dependencies/frontmatter_delimiter/required',
                       params: {
                         missingProperty: 'format'
@@ -4153,7 +4153,7 @@ var validate = (function() {
                       } if (!valid4) {
                       var err = {
                         keyword: 'enum',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/format',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].format',
                         schemaPath: '#/properties/collections/items/dependencies/frontmatter_delimiter/properties/format/enum',
                         params: {
                           allowedValues: schema4
@@ -4175,7 +4175,7 @@ var validate = (function() {
                 valid3 = false;
                 var err = {
                   keyword: 'required',
-                  dataPath: (dataPath || '') + '/collections/' + i1,
+                  dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                   schemaPath: '#/properties/collections/items/required',
                   params: {
                     missingProperty: 'name'
@@ -4190,7 +4190,7 @@ var validate = (function() {
                 if (typeof data2.name !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/name',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].name',
                     schemaPath: '#/properties/collections/items/properties/name/type',
                     params: {
                       type: 'string'
@@ -4207,7 +4207,7 @@ var validate = (function() {
                 valid3 = false;
                 var err = {
                   keyword: 'required',
-                  dataPath: (dataPath || '') + '/collections/' + i1,
+                  dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                   schemaPath: '#/properties/collections/items/required',
                   params: {
                     missingProperty: 'label'
@@ -4222,7 +4222,7 @@ var validate = (function() {
                 if (typeof data2.label !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/label',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].label',
                     schemaPath: '#/properties/collections/items/properties/label/type',
                     params: {
                       type: 'string'
@@ -4240,7 +4240,7 @@ var validate = (function() {
                 if (typeof data2.label_singular !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/label_singular',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].label_singular',
                     schemaPath: '#/properties/collections/items/properties/label_singular/type',
                     params: {
                       type: 'string'
@@ -4258,7 +4258,7 @@ var validate = (function() {
                 if (typeof data2.description !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/description',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].description',
                     schemaPath: '#/properties/collections/items/properties/description/type',
                     params: {
                       type: 'string'
@@ -4276,7 +4276,7 @@ var validate = (function() {
                 if (typeof data2.folder !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/folder',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].folder',
                     schemaPath: '#/properties/collections/items/properties/folder/type',
                     params: {
                       type: 'string'
@@ -4305,7 +4305,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/files/items/required',
                           params: {
                             missingProperty: 'name'
@@ -4320,7 +4320,7 @@ var validate = (function() {
                         if (typeof data4.name !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/name',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].name',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/name/type',
                             params: {
                               type: 'string'
@@ -4337,7 +4337,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/files/items/required',
                           params: {
                             missingProperty: 'label'
@@ -4352,7 +4352,7 @@ var validate = (function() {
                         if (typeof data4.label !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/label',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].label',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/label/type',
                             params: {
                               type: 'string'
@@ -4370,7 +4370,7 @@ var validate = (function() {
                         if (typeof data4.label_singular !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/label_singular',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].label_singular',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/label_singular/type',
                             params: {
                               type: 'string'
@@ -4388,7 +4388,7 @@ var validate = (function() {
                         if (typeof data4.description !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/description',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].description',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/description/type',
                             params: {
                               type: 'string'
@@ -4405,7 +4405,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/files/items/required',
                           params: {
                             missingProperty: 'file'
@@ -4420,7 +4420,7 @@ var validate = (function() {
                         if (typeof data4.file !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/file',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].file',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/file/type',
                             params: {
                               type: 'string'
@@ -4438,7 +4438,7 @@ var validate = (function() {
                         if (typeof data4.preview_path !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/preview_path',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].preview_path',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/preview_path/type',
                             params: {
                               type: 'string'
@@ -4456,7 +4456,7 @@ var validate = (function() {
                         if (typeof data4.preview_path_date_field !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/preview_path_date_field',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].preview_path_date_field',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/preview_path_date_field/type',
                             params: {
                               type: 'string'
@@ -4474,7 +4474,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/files/items/required',
                           params: {
                             missingProperty: 'fields'
@@ -4490,7 +4490,7 @@ var validate = (function() {
                           if (data5.length < 1) {
                             var err = {
                               keyword: 'minItems',
-                              dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields',
+                              dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields',
                               schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/minItems',
                               params: {
                                 limit: 1
@@ -4513,7 +4513,7 @@ var validate = (function() {
                                 valid7 = false;
                                 var err = {
                                   keyword: 'required',
-                                  dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5,
+                                  dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + ']',
                                   schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/required',
                                   params: {
                                     missingProperty: 'name'
@@ -4528,7 +4528,7 @@ var validate = (function() {
                                 if (typeof data6.name !== "string") {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/name',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].name',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/name/type',
                                     params: {
                                       type: 'string'
@@ -4546,7 +4546,7 @@ var validate = (function() {
                                 if (typeof data6.label !== "string") {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/label',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].label',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/label/type',
                                     params: {
                                       type: 'string'
@@ -4564,7 +4564,7 @@ var validate = (function() {
                                 if (typeof data6.widget !== "string") {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/widget',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].widget',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/widget/type',
                                     params: {
                                       type: 'string'
@@ -4582,7 +4582,7 @@ var validate = (function() {
                                 if (typeof data6.required !== "boolean") {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/required',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].required',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/required/type',
                                     params: {
                                       type: 'boolean'
@@ -4606,7 +4606,7 @@ var validate = (function() {
                                 if (typeof data7 !== "boolean") {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/i18n',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].i18n',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/i18n/oneOf/0/type',
                                     params: {
                                       type: 'boolean'
@@ -4626,7 +4626,7 @@ var validate = (function() {
                                 if (typeof data7 !== "string") {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/i18n',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].i18n',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/i18n/oneOf/1/type',
                                     params: {
                                       type: 'string'
@@ -4647,7 +4647,7 @@ var validate = (function() {
                                   } if (!valid8) {
                                   var err = {
                                     keyword: 'enum',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/i18n',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].i18n',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/i18n/oneOf/1/enum',
                                     params: {
                                       allowedValues: schema8
@@ -4671,7 +4671,7 @@ var validate = (function() {
                                 if (!valid7) {
                                   var err = {
                                     keyword: 'oneOf',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/i18n',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].i18n',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/i18n/oneOf',
                                     params: {
                                       passingSchemas: passingSchemas7
@@ -4695,7 +4695,7 @@ var validate = (function() {
                                 if (typeof data6.hint !== "string") {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/hint',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].hint',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/hint/type',
                                     params: {
                                       type: 'string'
@@ -4715,7 +4715,7 @@ var validate = (function() {
                                   if (data7.length < 2) {
                                     var err = {
                                       keyword: 'minItems',
-                                      dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern',
+                                      dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern',
                                       schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/pattern/minItems',
                                       params: {
                                         limit: 2
@@ -4740,7 +4740,7 @@ var validate = (function() {
                                     if (typeof data8 !== "string") {
                                       var err = {
                                         keyword: 'type',
-                                        dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern/' + 0,
+                                        dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern[' + 0 + ']',
                                         schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/pattern/items/0/oneOf/0/type',
                                         params: {
                                           type: 'string'
@@ -4761,7 +4761,7 @@ var validate = (function() {
                                     var errs__9 = errors;
                                     var valid9;
                                     customRule0.errors = null;
-                                    valid9 = customRule0.call(self, data8, (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern/' + 0, data7, 0, rootData);
+                                    valid9 = customRule0.call(self, data8, (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern[' + 0 + ']', data7, 0, rootData);
                                     if (!valid9) {
                                       if (Array.isArray(customRule0.errors)) {
                                         if (vErrors === null) vErrors = customRule0.errors;
@@ -4769,13 +4769,13 @@ var validate = (function() {
                                         errors = vErrors.length;
                                         for (var i9 = errs__9; i9 < errors; i9++) {
                                           var ruleErr9 = vErrors[i9];
-                                          if (ruleErr9.dataPath === undefined) ruleErr9.dataPath = (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern/' + 0;
+                                          if (ruleErr9.dataPath === undefined) ruleErr9.dataPath = (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern[' + 0 + ']';
                                           ruleErr9.schemaPath = "#/properties/collections/items/properties/files/items/properties/fields/items/properties/pattern/items/0/oneOf/1/instanceof";
                                         }
                                       } else {
                                         var err = {
                                           keyword: 'instanceof',
-                                          dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern/' + 0,
+                                          dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern[' + 0 + ']',
                                           schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/pattern/items/0/oneOf/1/instanceof',
                                           params: {
                                             keyword: 'instanceof'
@@ -4800,7 +4800,7 @@ var validate = (function() {
                                     if (!valid8) {
                                       var err = {
                                         keyword: 'oneOf',
-                                        dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern/' + 0,
+                                        dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern[' + 0 + ']',
                                         schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/pattern/items/0/oneOf',
                                         params: {
                                           passingSchemas: passingSchemas8
@@ -4825,7 +4825,7 @@ var validate = (function() {
                                     if (typeof data7[1] !== "string") {
                                       var err = {
                                         keyword: 'type',
-                                        dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern/' + 1,
+                                        dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern[' + 1 + ']',
                                         schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/pattern/items/1/type',
                                         params: {
                                           type: 'string'
@@ -4841,7 +4841,7 @@ var validate = (function() {
                                 } else {
                                   var err = {
                                     keyword: 'type',
-                                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/pattern',
+                                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].pattern',
                                     schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/properties/pattern/type',
                                     params: {
                                       type: 'array'
@@ -4856,7 +4856,7 @@ var validate = (function() {
                               }
                               if (data6.field !== undefined) {
                                 var errs_7 = errors;
-                                if (!refVal1(data6.field, (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/field', data6, 'field', rootData)) {
+                                if (!refVal1(data6.field, (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].field', data6, 'field', rootData)) {
                                   if (vErrors === null) vErrors = refVal1.errors;
                                   else vErrors = vErrors.concat(refVal1.errors);
                                   errors = vErrors.length;
@@ -4865,7 +4865,7 @@ var validate = (function() {
                               }
                               if (data6.fields !== undefined) {
                                 var errs_7 = errors;
-                                if (!refVal[2](data6.fields, (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/fields', data6, 'fields', rootData)) {
+                                if (!refVal[2](data6.fields, (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].fields', data6, 'fields', rootData)) {
                                   if (vErrors === null) vErrors = refVal[2].errors;
                                   else vErrors = vErrors.concat(refVal[2].errors);
                                   errors = vErrors.length;
@@ -4874,7 +4874,7 @@ var validate = (function() {
                               }
                               if (data6.types !== undefined) {
                                 var errs_7 = errors;
-                                if (!refVal[2](data6.types, (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5 + '/types', data6, 'types', rootData)) {
+                                if (!refVal[2](data6.types, (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + '].types', data6, 'types', rootData)) {
                                   if (vErrors === null) vErrors = refVal[2].errors;
                                   else vErrors = vErrors.concat(refVal[2].errors);
                                   errors = vErrors.length;
@@ -4884,7 +4884,7 @@ var validate = (function() {
                             } else {
                               var err = {
                                 keyword: 'type',
-                                dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5,
+                                dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + ']',
                                 schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/type',
                                 params: {
                                   type: 'object'
@@ -4907,7 +4907,7 @@ var validate = (function() {
                               valid6 = definition6.validateSchema(schema6);
                               if (valid6) {
                                 keywordValidate6.errors = null;
-                                valid6 = keywordValidate6.call(self, schema6, data6, validate.schema.properties.collections.items.properties.files.items.properties.fields.items, (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5, data5, i5, rootData);
+                                valid6 = keywordValidate6.call(self, schema6, data6, validate.schema.properties.collections.items.properties.files.items.properties.fields.items, (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + ']', data5, i5, rootData);
                               }
                             }
                             if (!valid6) {
@@ -4917,13 +4917,13 @@ var validate = (function() {
                                 errors = vErrors.length;
                                 for (var i6 = errs__6; i6 < errors; i6++) {
                                   var ruleErr6 = vErrors[i6];
-                                  if (ruleErr6.dataPath === undefined) ruleErr6.dataPath = (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5;
+                                  if (ruleErr6.dataPath === undefined) ruleErr6.dataPath = (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + ']';
                                   ruleErr6.schemaPath = "#/properties/collections/items/properties/files/items/properties/fields/items/select";
                                 }
                               } else {
                                 var err = {
                                   keyword: 'select',
-                                  dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5,
+                                  dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + ']',
                                   schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/items/select',
                                   params: {
                                     keyword: 'select'
@@ -4939,14 +4939,14 @@ var validate = (function() {
                             var errs__6 = errors;
                             var valid6;
                             customRule6.errors = null;
-                            valid6 = customRule6.call(self, data6, (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields/' + i5, data5, i5, rootData);
+                            valid6 = customRule6.call(self, data6, (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields[' + i5 + ']', data5, i5, rootData);
                             var valid6 = errors === errs_6;
                           }
                           customRule7.errors = null;
                           var errs__5 = errors;
                           var valid5;
                           customRule7.errors = null;
-                          valid5 = customRule7.call(self, data5, (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields', data4, 'fields', rootData);
+                          valid5 = customRule7.call(self, data5, (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields', data4, 'fields', rootData);
                           if (!valid5) {
                             if (Array.isArray(customRule7.errors)) {
                               if (vErrors === null) vErrors = customRule7.errors;
@@ -4954,13 +4954,13 @@ var validate = (function() {
                               errors = vErrors.length;
                               for (var i5 = errs__5; i5 < errors; i5++) {
                                 var ruleErr5 = vErrors[i5];
-                                if (ruleErr5.dataPath === undefined) ruleErr5.dataPath = (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields';
+                                if (ruleErr5.dataPath === undefined) ruleErr5.dataPath = (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields';
                                 ruleErr5.schemaPath = "#/properties/collections/items/properties/files/items/properties/fields/uniqueItemProperties";
                               }
                             } else {
                               var err = {
                                 keyword: 'uniqueItemProperties',
-                                dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields',
+                                dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields',
                                 schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/uniqueItemProperties',
                                 params: {
                                   keyword: 'uniqueItemProperties'
@@ -4975,7 +4975,7 @@ var validate = (function() {
                         } else {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3 + '/fields',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + '].fields',
                             schemaPath: '#/properties/collections/items/properties/files/items/properties/fields/type',
                             params: {
                               type: 'array'
@@ -4991,7 +4991,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/files/' + i3,
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].files[' + i3 + ']',
                         schemaPath: '#/properties/collections/items/properties/files/items/type',
                         params: {
                           type: 'object'
@@ -5008,7 +5008,7 @@ var validate = (function() {
                   var errs__3 = errors;
                   var valid3;
                   customRule8.errors = null;
-                  valid3 = customRule8.call(self, data3, (dataPath || '') + '/collections/' + i1 + '/files', data2, 'files', rootData);
+                  valid3 = customRule8.call(self, data3, (dataPath || '') + '.collections[' + i1 + '].files', data2, 'files', rootData);
                   if (!valid3) {
                     if (Array.isArray(customRule8.errors)) {
                       if (vErrors === null) vErrors = customRule8.errors;
@@ -5016,13 +5016,13 @@ var validate = (function() {
                       errors = vErrors.length;
                       for (var i3 = errs__3; i3 < errors; i3++) {
                         var ruleErr3 = vErrors[i3];
-                        if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '/collections/' + i1 + '/files';
+                        if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '.collections[' + i1 + '].files';
                         ruleErr3.schemaPath = "#/properties/collections/items/properties/files/uniqueItemProperties";
                       }
                     } else {
                       var err = {
                         keyword: 'uniqueItemProperties',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/files',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].files',
                         schemaPath: '#/properties/collections/items/properties/files/uniqueItemProperties',
                         params: {
                           keyword: 'uniqueItemProperties'
@@ -5037,7 +5037,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/files',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].files',
                     schemaPath: '#/properties/collections/items/properties/files/type',
                     params: {
                       type: 'array'
@@ -5055,7 +5055,7 @@ var validate = (function() {
                 if (typeof data2.identifier_field !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/identifier_field',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].identifier_field',
                     schemaPath: '#/properties/collections/items/properties/identifier_field/type',
                     params: {
                       type: 'string'
@@ -5073,7 +5073,7 @@ var validate = (function() {
                 if (typeof data2.summary !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/summary',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].summary',
                     schemaPath: '#/properties/collections/items/properties/summary/type',
                     params: {
                       type: 'string'
@@ -5091,7 +5091,7 @@ var validate = (function() {
                 if (typeof data2.slug !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/slug',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].slug',
                     schemaPath: '#/properties/collections/items/properties/slug/type',
                     params: {
                       type: 'string'
@@ -5109,7 +5109,7 @@ var validate = (function() {
                 if (typeof data2.path !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/path',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].path',
                     schemaPath: '#/properties/collections/items/properties/path/type',
                     params: {
                       type: 'string'
@@ -5127,7 +5127,7 @@ var validate = (function() {
                 if (typeof data2.preview_path !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/preview_path',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].preview_path',
                     schemaPath: '#/properties/collections/items/properties/preview_path/type',
                     params: {
                       type: 'string'
@@ -5145,7 +5145,7 @@ var validate = (function() {
                 if (typeof data2.preview_path_date_field !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/preview_path_date_field',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].preview_path_date_field',
                     schemaPath: '#/properties/collections/items/properties/preview_path_date_field/type',
                     params: {
                       type: 'string'
@@ -5163,7 +5163,7 @@ var validate = (function() {
                 if (typeof data2.create !== "boolean") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/create',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].create',
                     schemaPath: '#/properties/collections/items/properties/create/type',
                     params: {
                       type: 'boolean'
@@ -5181,7 +5181,7 @@ var validate = (function() {
                 if (typeof data2.publish !== "boolean") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/publish',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].publish',
                     schemaPath: '#/properties/collections/items/properties/publish/type',
                     params: {
                       type: 'boolean'
@@ -5199,7 +5199,7 @@ var validate = (function() {
                 if (typeof data2.hide !== "boolean") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/hide',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].hide',
                     schemaPath: '#/properties/collections/items/properties/hide/type',
                     params: {
                       type: 'boolean'
@@ -5223,7 +5223,7 @@ var validate = (function() {
                     if (typeof data3.preview !== "boolean") {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/editor/preview',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].editor.preview',
                         schemaPath: '#/properties/collections/items/properties/editor/properties/preview/type',
                         params: {
                           type: 'boolean'
@@ -5239,7 +5239,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/editor',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].editor',
                     schemaPath: '#/properties/collections/items/properties/editor/type',
                     params: {
                       type: 'object'
@@ -5258,7 +5258,7 @@ var validate = (function() {
                 if (typeof data3 !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/format',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].format',
                     schemaPath: '#/properties/collections/items/properties/format/type',
                     params: {
                       type: 'string'
@@ -5279,7 +5279,7 @@ var validate = (function() {
                   } if (!valid3) {
                   var err = {
                     keyword: 'enum',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/format',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].format',
                     schemaPath: '#/properties/collections/items/properties/format/enum',
                     params: {
                       allowedValues: schema3
@@ -5297,7 +5297,7 @@ var validate = (function() {
                 if (typeof data2.extension !== "string") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/extension',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].extension',
                     schemaPath: '#/properties/collections/items/properties/extension/type',
                     params: {
                       type: 'string'
@@ -5316,7 +5316,7 @@ var validate = (function() {
                 if (typeof data3 !== "string" && !Array.isArray(data3)) {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/frontmatter_delimiter',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].frontmatter_delimiter',
                     schemaPath: '#/properties/collections/items/properties/frontmatter_delimiter/type',
                     params: {
                       type: 'string,array'
@@ -5331,7 +5331,7 @@ var validate = (function() {
                   if (data3.length > 2) {
                     var err = {
                       keyword: 'maxItems',
-                      dataPath: (dataPath || '') + '/collections/' + i1 + '/frontmatter_delimiter',
+                      dataPath: (dataPath || '') + '.collections[' + i1 + '].frontmatter_delimiter',
                       schemaPath: '#/properties/collections/items/properties/frontmatter_delimiter/maxItems',
                       params: {
                         limit: 2
@@ -5345,7 +5345,7 @@ var validate = (function() {
                   if (data3.length < 2) {
                     var err = {
                       keyword: 'minItems',
-                      dataPath: (dataPath || '') + '/collections/' + i1 + '/frontmatter_delimiter',
+                      dataPath: (dataPath || '') + '.collections[' + i1 + '].frontmatter_delimiter',
                       schemaPath: '#/properties/collections/items/properties/frontmatter_delimiter/minItems',
                       params: {
                         limit: 2
@@ -5363,7 +5363,7 @@ var validate = (function() {
                     if (typeof data3[i3] !== "string") {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/frontmatter_delimiter/' + i3,
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].frontmatter_delimiter[' + i3 + ']',
                         schemaPath: '#/properties/collections/items/properties/frontmatter_delimiter/items/type',
                         params: {
                           type: 'string'
@@ -5386,7 +5386,7 @@ var validate = (function() {
                   if (data3.length < 1) {
                     var err = {
                       keyword: 'minItems',
-                      dataPath: (dataPath || '') + '/collections/' + i1 + '/fields',
+                      dataPath: (dataPath || '') + '.collections[' + i1 + '].fields',
                       schemaPath: '#/properties/collections/items/properties/fields/minItems',
                       params: {
                         limit: 1
@@ -5409,7 +5409,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/fields/items/required',
                           params: {
                             missingProperty: 'name'
@@ -5424,7 +5424,7 @@ var validate = (function() {
                         if (typeof data4.name !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/name',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].name',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/name/type',
                             params: {
                               type: 'string'
@@ -5442,7 +5442,7 @@ var validate = (function() {
                         if (typeof data4.label !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/label',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].label',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/label/type',
                             params: {
                               type: 'string'
@@ -5460,7 +5460,7 @@ var validate = (function() {
                         if (typeof data4.widget !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/widget',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].widget',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/widget/type',
                             params: {
                               type: 'string'
@@ -5478,7 +5478,7 @@ var validate = (function() {
                         if (typeof data4.required !== "boolean") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/required',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].required',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/required/type',
                             params: {
                               type: 'boolean'
@@ -5502,7 +5502,7 @@ var validate = (function() {
                         if (typeof data5 !== "boolean") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/i18n',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].i18n',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/i18n/oneOf/0/type',
                             params: {
                               type: 'boolean'
@@ -5522,7 +5522,7 @@ var validate = (function() {
                         if (typeof data5 !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/i18n',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].i18n',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/i18n/oneOf/1/type',
                             params: {
                               type: 'string'
@@ -5543,7 +5543,7 @@ var validate = (function() {
                           } if (!valid6) {
                           var err = {
                             keyword: 'enum',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/i18n',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].i18n',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/i18n/oneOf/1/enum',
                             params: {
                               allowedValues: schema6
@@ -5567,7 +5567,7 @@ var validate = (function() {
                         if (!valid5) {
                           var err = {
                             keyword: 'oneOf',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/i18n',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].i18n',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/i18n/oneOf',
                             params: {
                               passingSchemas: passingSchemas5
@@ -5591,7 +5591,7 @@ var validate = (function() {
                         if (typeof data4.hint !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/hint',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].hint',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/hint/type',
                             params: {
                               type: 'string'
@@ -5611,7 +5611,7 @@ var validate = (function() {
                           if (data5.length < 2) {
                             var err = {
                               keyword: 'minItems',
-                              dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern',
+                              dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern',
                               schemaPath: '#/properties/collections/items/properties/fields/items/properties/pattern/minItems',
                               params: {
                                 limit: 2
@@ -5636,7 +5636,7 @@ var validate = (function() {
                             if (typeof data6 !== "string") {
                               var err = {
                                 keyword: 'type',
-                                dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern/' + 0,
+                                dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern[' + 0 + ']',
                                 schemaPath: '#/properties/collections/items/properties/fields/items/properties/pattern/items/0/oneOf/0/type',
                                 params: {
                                   type: 'string'
@@ -5657,7 +5657,7 @@ var validate = (function() {
                             var errs__7 = errors;
                             var valid7;
                             customRule9.errors = null;
-                            valid7 = customRule9.call(self, data6, (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern/' + 0, data5, 0, rootData);
+                            valid7 = customRule9.call(self, data6, (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern[' + 0 + ']', data5, 0, rootData);
                             if (!valid7) {
                               if (Array.isArray(customRule9.errors)) {
                                 if (vErrors === null) vErrors = customRule9.errors;
@@ -5665,13 +5665,13 @@ var validate = (function() {
                                 errors = vErrors.length;
                                 for (var i7 = errs__7; i7 < errors; i7++) {
                                   var ruleErr7 = vErrors[i7];
-                                  if (ruleErr7.dataPath === undefined) ruleErr7.dataPath = (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern/' + 0;
+                                  if (ruleErr7.dataPath === undefined) ruleErr7.dataPath = (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern[' + 0 + ']';
                                   ruleErr7.schemaPath = "#/properties/collections/items/properties/fields/items/properties/pattern/items/0/oneOf/1/instanceof";
                                 }
                               } else {
                                 var err = {
                                   keyword: 'instanceof',
-                                  dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern/' + 0,
+                                  dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern[' + 0 + ']',
                                   schemaPath: '#/properties/collections/items/properties/fields/items/properties/pattern/items/0/oneOf/1/instanceof',
                                   params: {
                                     keyword: 'instanceof'
@@ -5696,7 +5696,7 @@ var validate = (function() {
                             if (!valid6) {
                               var err = {
                                 keyword: 'oneOf',
-                                dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern/' + 0,
+                                dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern[' + 0 + ']',
                                 schemaPath: '#/properties/collections/items/properties/fields/items/properties/pattern/items/0/oneOf',
                                 params: {
                                   passingSchemas: passingSchemas6
@@ -5721,7 +5721,7 @@ var validate = (function() {
                             if (typeof data5[1] !== "string") {
                               var err = {
                                 keyword: 'type',
-                                dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern/' + 1,
+                                dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern[' + 1 + ']',
                                 schemaPath: '#/properties/collections/items/properties/fields/items/properties/pattern/items/1/type',
                                 params: {
                                   type: 'string'
@@ -5737,7 +5737,7 @@ var validate = (function() {
                         } else {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/pattern',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].pattern',
                             schemaPath: '#/properties/collections/items/properties/fields/items/properties/pattern/type',
                             params: {
                               type: 'array'
@@ -5752,7 +5752,7 @@ var validate = (function() {
                       }
                       if (data4.field !== undefined) {
                         var errs_5 = errors;
-                        if (!refVal3(data4.field, (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/field', data4, 'field', rootData)) {
+                        if (!refVal3(data4.field, (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].field', data4, 'field', rootData)) {
                           if (vErrors === null) vErrors = refVal3.errors;
                           else vErrors = vErrors.concat(refVal3.errors);
                           errors = vErrors.length;
@@ -5761,7 +5761,7 @@ var validate = (function() {
                       }
                       if (data4.fields !== undefined) {
                         var errs_5 = errors;
-                        if (!refVal[4](data4.fields, (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/fields', data4, 'fields', rootData)) {
+                        if (!refVal[4](data4.fields, (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].fields', data4, 'fields', rootData)) {
                           if (vErrors === null) vErrors = refVal[4].errors;
                           else vErrors = vErrors.concat(refVal[4].errors);
                           errors = vErrors.length;
@@ -5770,7 +5770,7 @@ var validate = (function() {
                       }
                       if (data4.types !== undefined) {
                         var errs_5 = errors;
-                        if (!refVal[4](data4.types, (dataPath || '') + '/collections/' + i1 + '/fields/' + i3 + '/types', data4, 'types', rootData)) {
+                        if (!refVal[4](data4.types, (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + '].types', data4, 'types', rootData)) {
                           if (vErrors === null) vErrors = refVal[4].errors;
                           else vErrors = vErrors.concat(refVal[4].errors);
                           errors = vErrors.length;
@@ -5780,7 +5780,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3,
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + ']',
                         schemaPath: '#/properties/collections/items/properties/fields/items/type',
                         params: {
                           type: 'object'
@@ -5803,7 +5803,7 @@ var validate = (function() {
                       valid4 = definition4.validateSchema(schema4);
                       if (valid4) {
                         keywordValidate4.errors = null;
-                        valid4 = keywordValidate4.call(self, schema4, data4, validate.schema.properties.collections.items.properties.fields.items, (dataPath || '') + '/collections/' + i1 + '/fields/' + i3, data3, i3, rootData);
+                        valid4 = keywordValidate4.call(self, schema4, data4, validate.schema.properties.collections.items.properties.fields.items, (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + ']', data3, i3, rootData);
                       }
                     }
                     if (!valid4) {
@@ -5813,13 +5813,13 @@ var validate = (function() {
                         errors = vErrors.length;
                         for (var i4 = errs__4; i4 < errors; i4++) {
                           var ruleErr4 = vErrors[i4];
-                          if (ruleErr4.dataPath === undefined) ruleErr4.dataPath = (dataPath || '') + '/collections/' + i1 + '/fields/' + i3;
+                          if (ruleErr4.dataPath === undefined) ruleErr4.dataPath = (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + ']';
                           ruleErr4.schemaPath = "#/properties/collections/items/properties/fields/items/select";
                         }
                       } else {
                         var err = {
                           keyword: 'select',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/fields/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/fields/items/select',
                           params: {
                             keyword: 'select'
@@ -5835,14 +5835,14 @@ var validate = (function() {
                     var errs__4 = errors;
                     var valid4;
                     customRule15.errors = null;
-                    valid4 = customRule15.call(self, data4, (dataPath || '') + '/collections/' + i1 + '/fields/' + i3, data3, i3, rootData);
+                    valid4 = customRule15.call(self, data4, (dataPath || '') + '.collections[' + i1 + '].fields[' + i3 + ']', data3, i3, rootData);
                     var valid4 = errors === errs_4;
                   }
                   customRule16.errors = null;
                   var errs__3 = errors;
                   var valid3;
                   customRule16.errors = null;
-                  valid3 = customRule16.call(self, data3, (dataPath || '') + '/collections/' + i1 + '/fields', data2, 'fields', rootData);
+                  valid3 = customRule16.call(self, data3, (dataPath || '') + '.collections[' + i1 + '].fields', data2, 'fields', rootData);
                   if (!valid3) {
                     if (Array.isArray(customRule16.errors)) {
                       if (vErrors === null) vErrors = customRule16.errors;
@@ -5850,13 +5850,13 @@ var validate = (function() {
                       errors = vErrors.length;
                       for (var i3 = errs__3; i3 < errors; i3++) {
                         var ruleErr3 = vErrors[i3];
-                        if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '/collections/' + i1 + '/fields';
+                        if (ruleErr3.dataPath === undefined) ruleErr3.dataPath = (dataPath || '') + '.collections[' + i1 + '].fields';
                         ruleErr3.schemaPath = "#/properties/collections/items/properties/fields/uniqueItemProperties";
                       }
                     } else {
                       var err = {
                         keyword: 'uniqueItemProperties',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/fields',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].fields',
                         schemaPath: '#/properties/collections/items/properties/fields/uniqueItemProperties',
                         params: {
                           keyword: 'uniqueItemProperties'
@@ -5871,7 +5871,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/fields',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].fields',
                     schemaPath: '#/properties/collections/items/properties/fields/type',
                     params: {
                       type: 'array'
@@ -5895,7 +5895,7 @@ var validate = (function() {
                     if (typeof data3[i3] !== "string") {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/sortable_fields/' + i3,
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].sortable_fields[' + i3 + ']',
                         schemaPath: '#/properties/collections/items/properties/sortable_fields/items/type',
                         params: {
                           type: 'string'
@@ -5911,7 +5911,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/sortable_fields',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].sortable_fields',
                     schemaPath: '#/properties/collections/items/properties/sortable_fields/type',
                     params: {
                       type: 'array'
@@ -5935,7 +5935,7 @@ var validate = (function() {
                     if (typeof data3[i3] !== "string") {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/sortableFields/' + i3,
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].sortableFields[' + i3 + ']',
                         schemaPath: '#/properties/collections/items/properties/sortableFields/items/type',
                         params: {
                           type: 'string'
@@ -5951,7 +5951,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/sortableFields',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].sortableFields',
                     schemaPath: '#/properties/collections/items/properties/sortableFields/type',
                     params: {
                       type: 'array'
@@ -5971,7 +5971,7 @@ var validate = (function() {
                   if (data3.length < 1) {
                     var err = {
                       keyword: 'minItems',
-                      dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters',
+                      dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters',
                       schemaPath: '#/properties/collections/items/properties/view_filters/minItems',
                       params: {
                         limit: 1
@@ -5996,7 +5996,7 @@ var validate = (function() {
                           valid5 = false;
                           var err = {
                             keyword: 'additionalProperties',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3,
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + ']',
                             schemaPath: '#/properties/collections/items/properties/view_filters/items/additionalProperties',
                             params: {
                               additionalProperty: '' + key4 + ''
@@ -6012,7 +6012,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/view_filters/items/required',
                           params: {
                             missingProperty: 'label'
@@ -6027,7 +6027,7 @@ var validate = (function() {
                         if (typeof data4.label !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3 + '/label',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + '].label',
                             schemaPath: '#/properties/collections/items/properties/view_filters/items/properties/label/type',
                             params: {
                               type: 'string'
@@ -6044,7 +6044,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/view_filters/items/required',
                           params: {
                             missingProperty: 'field'
@@ -6059,7 +6059,7 @@ var validate = (function() {
                         if (typeof data4.field !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3 + '/field',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + '].field',
                             schemaPath: '#/properties/collections/items/properties/view_filters/items/properties/field/type',
                             params: {
                               type: 'string'
@@ -6077,7 +6077,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/view_filters/items/required',
                           params: {
                             missingProperty: 'pattern'
@@ -6097,7 +6097,7 @@ var validate = (function() {
                         if (typeof data5 !== "boolean") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3 + '/pattern',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + '].pattern',
                             schemaPath: '#/properties/collections/items/properties/view_filters/items/properties/pattern/oneOf/0/type',
                             params: {
                               type: 'boolean'
@@ -6117,7 +6117,7 @@ var validate = (function() {
                         if (typeof data5 !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3 + '/pattern',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + '].pattern',
                             schemaPath: '#/properties/collections/items/properties/view_filters/items/properties/pattern/oneOf/1/type',
                             params: {
                               type: 'string'
@@ -6141,7 +6141,7 @@ var validate = (function() {
                         if (!valid5) {
                           var err = {
                             keyword: 'oneOf',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3 + '/pattern',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + '].pattern',
                             schemaPath: '#/properties/collections/items/properties/view_filters/items/properties/pattern/oneOf',
                             params: {
                               passingSchemas: passingSchemas5
@@ -6163,7 +6163,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters/' + i3,
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters[' + i3 + ']',
                         schemaPath: '#/properties/collections/items/properties/view_filters/items/type',
                         params: {
                           type: 'object'
@@ -6179,7 +6179,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/view_filters',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].view_filters',
                     schemaPath: '#/properties/collections/items/properties/view_filters/type',
                     params: {
                       type: 'array'
@@ -6199,7 +6199,7 @@ var validate = (function() {
                   if (data3.length < 1) {
                     var err = {
                       keyword: 'minItems',
-                      dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups',
+                      dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups',
                       schemaPath: '#/properties/collections/items/properties/view_groups/minItems',
                       params: {
                         limit: 1
@@ -6224,7 +6224,7 @@ var validate = (function() {
                           valid5 = false;
                           var err = {
                             keyword: 'additionalProperties',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups/' + i3,
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups[' + i3 + ']',
                             schemaPath: '#/properties/collections/items/properties/view_groups/items/additionalProperties',
                             params: {
                               additionalProperty: '' + key4 + ''
@@ -6240,7 +6240,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/view_groups/items/required',
                           params: {
                             missingProperty: 'label'
@@ -6255,7 +6255,7 @@ var validate = (function() {
                         if (typeof data4.label !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups/' + i3 + '/label',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups[' + i3 + '].label',
                             schemaPath: '#/properties/collections/items/properties/view_groups/items/properties/label/type',
                             params: {
                               type: 'string'
@@ -6272,7 +6272,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups/' + i3,
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups[' + i3 + ']',
                           schemaPath: '#/properties/collections/items/properties/view_groups/items/required',
                           params: {
                             missingProperty: 'field'
@@ -6287,7 +6287,7 @@ var validate = (function() {
                         if (typeof data4.field !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups/' + i3 + '/field',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups[' + i3 + '].field',
                             schemaPath: '#/properties/collections/items/properties/view_groups/items/properties/field/type',
                             params: {
                               type: 'string'
@@ -6305,7 +6305,7 @@ var validate = (function() {
                         if (typeof data4.pattern !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups/' + i3 + '/pattern',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups[' + i3 + '].pattern',
                             schemaPath: '#/properties/collections/items/properties/view_groups/items/properties/pattern/type',
                             params: {
                               type: 'string'
@@ -6321,7 +6321,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups/' + i3,
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups[' + i3 + ']',
                         schemaPath: '#/properties/collections/items/properties/view_groups/items/type',
                         params: {
                           type: 'object'
@@ -6337,7 +6337,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/view_groups',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].view_groups',
                     schemaPath: '#/properties/collections/items/properties/view_groups/type',
                     params: {
                       type: 'array'
@@ -6361,7 +6361,7 @@ var validate = (function() {
                     valid4 = false;
                     var err = {
                       keyword: 'required',
-                      dataPath: (dataPath || '') + '/collections/' + i1 + '/nested',
+                      dataPath: (dataPath || '') + '.collections[' + i1 + '].nested',
                       schemaPath: '#/properties/collections/items/properties/nested/required',
                       params: {
                         missingProperty: 'depth'
@@ -6377,7 +6377,7 @@ var validate = (function() {
                       if (data4 > 1000 || data4 !== data4) {
                         var err = {
                           keyword: 'maximum',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/nested/depth',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].nested.depth',
                           schemaPath: '#/properties/collections/items/properties/nested/properties/depth/maximum',
                           params: {
                             comparison: '<=',
@@ -6393,7 +6393,7 @@ var validate = (function() {
                       if (data4 < 1 || data4 !== data4) {
                         var err = {
                           keyword: 'minimum',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/nested/depth',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].nested.depth',
                           schemaPath: '#/properties/collections/items/properties/nested/properties/depth/minimum',
                           params: {
                             comparison: '>=',
@@ -6409,7 +6409,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/nested/depth',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].nested.depth',
                         schemaPath: '#/properties/collections/items/properties/nested/properties/depth/type',
                         params: {
                           type: 'number'
@@ -6427,7 +6427,7 @@ var validate = (function() {
                     if (typeof data3.summary !== "string") {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/nested/summary',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].nested.summary',
                         schemaPath: '#/properties/collections/items/properties/nested/properties/summary/type',
                         params: {
                           type: 'string'
@@ -6443,7 +6443,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/nested',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].nested',
                     schemaPath: '#/properties/collections/items/properties/nested/type',
                     params: {
                       type: 'object'
@@ -6463,7 +6463,7 @@ var validate = (function() {
                   if (Object.keys(data3).length < 1) {
                     var err = {
                       keyword: 'minProperties',
-                      dataPath: (dataPath || '') + '/collections/' + i1 + '/meta',
+                      dataPath: (dataPath || '') + '.collections[' + i1 + '].meta',
                       schemaPath: '#/properties/collections/items/properties/meta/minProperties',
                       params: {
                         limit: 1
@@ -6482,7 +6482,7 @@ var validate = (function() {
                       valid4 = false;
                       var err = {
                         keyword: 'additionalProperties',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/meta',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].meta',
                         schemaPath: '#/properties/collections/items/properties/meta/additionalProperties',
                         params: {
                           additionalProperty: '' + key3 + ''
@@ -6504,7 +6504,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/meta/path',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].meta.path',
                           schemaPath: '#/properties/collections/items/properties/meta/properties/path/required',
                           params: {
                             missingProperty: 'label'
@@ -6519,7 +6519,7 @@ var validate = (function() {
                         if (typeof data4.label !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/meta/path/label',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].meta.path.label',
                             schemaPath: '#/properties/collections/items/properties/meta/properties/path/properties/label/type',
                             params: {
                               type: 'string'
@@ -6536,7 +6536,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/meta/path',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].meta.path',
                           schemaPath: '#/properties/collections/items/properties/meta/properties/path/required',
                           params: {
                             missingProperty: 'widget'
@@ -6551,7 +6551,7 @@ var validate = (function() {
                         if (typeof data4.widget !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/meta/path/widget',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].meta.path.widget',
                             schemaPath: '#/properties/collections/items/properties/meta/properties/path/properties/widget/type',
                             params: {
                               type: 'string'
@@ -6568,7 +6568,7 @@ var validate = (function() {
                         valid5 = false;
                         var err = {
                           keyword: 'required',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/meta/path',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].meta.path',
                           schemaPath: '#/properties/collections/items/properties/meta/properties/path/required',
                           params: {
                             missingProperty: 'index_file'
@@ -6583,7 +6583,7 @@ var validate = (function() {
                         if (typeof data4.index_file !== "string") {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/meta/path/index_file',
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].meta.path.index_file',
                             schemaPath: '#/properties/collections/items/properties/meta/properties/path/properties/index_file/type',
                             params: {
                               type: 'string'
@@ -6599,7 +6599,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/meta/path',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].meta.path',
                         schemaPath: '#/properties/collections/items/properties/meta/properties/path/type',
                         params: {
                           type: 'object'
@@ -6615,7 +6615,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/meta',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].meta',
                     schemaPath: '#/properties/collections/items/properties/meta/type',
                     params: {
                       type: 'object'
@@ -6639,7 +6639,7 @@ var validate = (function() {
                 if (typeof data3 !== "boolean") {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n',
                     schemaPath: '#/properties/collections/items/properties/i18n/oneOf/0/type',
                     params: {
                       type: 'boolean'
@@ -6665,7 +6665,7 @@ var validate = (function() {
                     if (typeof data4 !== "string") {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/structure',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.structure',
                         schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/structure/type',
                         params: {
                           type: 'string'
@@ -6686,7 +6686,7 @@ var validate = (function() {
                       } if (!valid5) {
                       var err = {
                         keyword: 'enum',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/structure',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.structure',
                         schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/structure/enum',
                         params: {
                           allowedValues: schema5
@@ -6706,7 +6706,7 @@ var validate = (function() {
                       if (data4.length < 2) {
                         var err = {
                           keyword: 'minItems',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/locales',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.locales',
                           schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/locales/minItems',
                           params: {
                             limit: 2
@@ -6726,7 +6726,7 @@ var validate = (function() {
                           if (ucs2length(data5) > 10) {
                             var err = {
                               keyword: 'maxLength',
-                              dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/locales/' + i5,
+                              dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.locales[' + i5 + ']',
                               schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/locales/items/maxLength',
                               params: {
                                 limit: 10
@@ -6740,7 +6740,7 @@ var validate = (function() {
                           if (ucs2length(data5) < 2) {
                             var err = {
                               keyword: 'minLength',
-                              dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/locales/' + i5,
+                              dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.locales[' + i5 + ']',
                               schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/locales/items/minLength',
                               params: {
                                 limit: 2
@@ -6754,7 +6754,7 @@ var validate = (function() {
                           if (!pattern0.test(data5)) {
                             var err = {
                               keyword: 'pattern',
-                              dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/locales/' + i5,
+                              dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.locales[' + i5 + ']',
                               schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/locales/items/pattern',
                               params: {
                                 pattern: '^[a-zA-Z-_]+$'
@@ -6768,7 +6768,7 @@ var validate = (function() {
                         } else {
                           var err = {
                             keyword: 'type',
-                            dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/locales/' + i5,
+                            dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.locales[' + i5 + ']',
                             schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/locales/items/type',
                             params: {
                               type: 'string'
@@ -6801,7 +6801,7 @@ var validate = (function() {
                       if (!valid5) {
                         var err = {
                           keyword: 'uniqueItems',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/locales',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.locales',
                           schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/locales/uniqueItems',
                           params: {
                             i: i,
@@ -6816,7 +6816,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/locales',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.locales',
                         schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/locales/type',
                         params: {
                           type: 'array'
@@ -6836,7 +6836,7 @@ var validate = (function() {
                       if (ucs2length(data4) > 10) {
                         var err = {
                           keyword: 'maxLength',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/default_locale',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.default_locale',
                           schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/default_locale/maxLength',
                           params: {
                             limit: 10
@@ -6850,7 +6850,7 @@ var validate = (function() {
                       if (ucs2length(data4) < 2) {
                         var err = {
                           keyword: 'minLength',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/default_locale',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.default_locale',
                           schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/default_locale/minLength',
                           params: {
                             limit: 2
@@ -6864,7 +6864,7 @@ var validate = (function() {
                       if (!pattern0.test(data4)) {
                         var err = {
                           keyword: 'pattern',
-                          dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/default_locale',
+                          dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.default_locale',
                           schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/default_locale/pattern',
                           params: {
                             pattern: '^[a-zA-Z-_]+$'
@@ -6878,7 +6878,7 @@ var validate = (function() {
                     } else {
                       var err = {
                         keyword: 'type',
-                        dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n/default_locale',
+                        dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n.default_locale',
                         schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/properties/default_locale/type',
                         params: {
                           type: 'string'
@@ -6894,7 +6894,7 @@ var validate = (function() {
                 } else {
                   var err = {
                     keyword: 'type',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n',
                     schemaPath: '#/properties/collections/items/properties/i18n/oneOf/1/type',
                     params: {
                       type: 'object'
@@ -6918,7 +6918,7 @@ var validate = (function() {
                 if (!valid3) {
                   var err = {
                     keyword: 'oneOf',
-                    dataPath: (dataPath || '') + '/collections/' + i1 + '/i18n',
+                    dataPath: (dataPath || '') + '.collections[' + i1 + '].i18n',
                     schemaPath: '#/properties/collections/items/properties/i18n/oneOf',
                     params: {
                       passingSchemas: passingSchemas3
@@ -6940,7 +6940,7 @@ var validate = (function() {
             } else {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/collections/' + i1,
+                dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                 schemaPath: '#/properties/collections/items/type',
                 params: {
                   type: 'object'
@@ -6955,7 +6955,7 @@ var validate = (function() {
             var errs_3 = errors;
             if ((data2 && typeof data2 === "object" && !Array.isArray(data2))) {
               var missing3;
-              if (((data2.sortable_fields === undefined) && (missing3 = 'sortable_fields')) || ((data2.sortableFields === undefined) && (missing3 = 'sortableFields'))) {
+              if (((data2.sortable_fields === undefined) && (missing3 = '.sortable_fields')) || ((data2.sortableFields === undefined) && (missing3 = '.sortableFields'))) {
                 var err = {};
                 if (vErrors === null) vErrors = [err];
                 else vErrors.push(err);
@@ -6967,7 +6967,7 @@ var validate = (function() {
             if (valid3) {
               var err = {
                 keyword: 'not',
-                dataPath: (dataPath || '') + '/collections/' + i1,
+                dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                 schemaPath: '#/properties/collections/items/not',
                 params: {},
                 message: 'should NOT be valid'
@@ -6991,7 +6991,7 @@ var validate = (function() {
               if (data2.files === undefined) {
                 var err = {
                   keyword: 'required',
-                  dataPath: (dataPath || '') + '/collections/' + i1,
+                  dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                   schemaPath: '#/properties/collections/items/oneOf/0/required',
                   params: {
                     missingProperty: 'files'
@@ -7013,7 +7013,7 @@ var validate = (function() {
               if (data2.folder === undefined) {
                 var err = {
                   keyword: 'required',
-                  dataPath: (dataPath || '') + '/collections/' + i1,
+                  dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                   schemaPath: '#/properties/collections/items/oneOf/1/required',
                   params: {
                     missingProperty: 'folder'
@@ -7027,7 +7027,7 @@ var validate = (function() {
               if (data2.fields === undefined) {
                 var err = {
                   keyword: 'required',
-                  dataPath: (dataPath || '') + '/collections/' + i1,
+                  dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                   schemaPath: '#/properties/collections/items/oneOf/1/required',
                   params: {
                     missingProperty: 'fields'
@@ -7052,7 +7052,7 @@ var validate = (function() {
             if (!valid2) {
               var err = {
                 keyword: 'oneOf',
-                dataPath: (dataPath || '') + '/collections/' + i1,
+                dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                 schemaPath: '#/properties/collections/items/oneOf',
                 params: {
                   passingSchemas: passingSchemas2
@@ -7124,7 +7124,7 @@ var validate = (function() {
                   if (data2.format === undefined) {
                     var err = {
                       keyword: 'required',
-                      dataPath: (dataPath || '') + '/collections/' + i1,
+                      dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                       schemaPath: '#/properties/collections/items/then/else/required',
                       params: {
                         missingProperty: 'format'
@@ -7142,7 +7142,7 @@ var validate = (function() {
               if (!valid3) {
                 var err = {
                   keyword: 'if',
-                  dataPath: (dataPath || '') + '/collections/' + i1,
+                  dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                   schemaPath: '#/properties/collections/items/then/if',
                   params: {
                     failingKeyword: 'else'
@@ -7159,7 +7159,7 @@ var validate = (function() {
             if (!valid2) {
               var err = {
                 keyword: 'if',
-                dataPath: (dataPath || '') + '/collections/' + i1,
+                dataPath: (dataPath || '') + '.collections[' + i1 + ']',
                 schemaPath: '#/properties/collections/items/if',
                 params: {
                   failingKeyword: 'then'
@@ -7176,7 +7176,7 @@ var validate = (function() {
           var errs__1 = errors;
           var valid1;
           customRule17.errors = null;
-          valid1 = customRule17.call(self, data1, (dataPath || '') + '/collections', data, 'collections', rootData);
+          valid1 = customRule17.call(self, data1, (dataPath || '') + '.collections', data, 'collections', rootData);
           if (!valid1) {
             if (Array.isArray(customRule17.errors)) {
               if (vErrors === null) vErrors = customRule17.errors;
@@ -7184,13 +7184,13 @@ var validate = (function() {
               errors = vErrors.length;
               for (var i1 = errs__1; i1 < errors; i1++) {
                 var ruleErr1 = vErrors[i1];
-                if (ruleErr1.dataPath === undefined) ruleErr1.dataPath = (dataPath || '') + '/collections';
+                if (ruleErr1.dataPath === undefined) ruleErr1.dataPath = (dataPath || '') + '.collections';
                 ruleErr1.schemaPath = "#/properties/collections/uniqueItemProperties";
               }
             } else {
               var err = {
                 keyword: 'uniqueItemProperties',
-                dataPath: (dataPath || '') + '/collections',
+                dataPath: (dataPath || '') + '.collections',
                 schemaPath: '#/properties/collections/uniqueItemProperties',
                 params: {
                   keyword: 'uniqueItemProperties'
@@ -7205,7 +7205,7 @@ var validate = (function() {
         } else {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/collections',
+            dataPath: (dataPath || '') + '.collections',
             schemaPath: '#/properties/collections/type',
             params: {
               type: 'array'
@@ -7229,7 +7229,7 @@ var validate = (function() {
             if (typeof data1.preview !== "boolean") {
               var err = {
                 keyword: 'type',
-                dataPath: (dataPath || '') + '/editor/preview',
+                dataPath: (dataPath || '') + '.editor.preview',
                 schemaPath: '#/properties/editor/properties/preview/type',
                 params: {
                   type: 'boolean'
@@ -7245,7 +7245,7 @@ var validate = (function() {
         } else {
           var err = {
             keyword: 'type',
-            dataPath: (dataPath || '') + '/editor',
+            dataPath: (dataPath || '') + '.editor',
             schemaPath: '#/properties/editor/type',
             params: {
               type: 'object'
