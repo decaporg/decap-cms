@@ -1,9 +1,9 @@
 import AJV from 'ajv';
-import { select } from 'ajv-keywords/keywords/select'
-import { uniqueItemProperties } from 'ajv-keywords/keywords/uniqueItemProperties'
-import { instanceof as instanceOf } from 'ajv-keywords/keywords/instanceof'
-import { prohibited } from 'ajv-keywords/keywords/prohibited'
-
+import {
+  select,
+  uniqueItemProperties,
+  instanceof as instanceOf,
+} from 'ajv-keywords/keywords';
 import uuid from 'uuid/v4';
 import { set } from 'lodash/fp'
 
@@ -101,12 +101,9 @@ function getWidgetSchemas() {
 
 class ConfigError extends Error {
   constructor(errors, ...args) {
-    console.log('errors', errors)
     const message = errors
-      .map(({ message, instancePath, dataPath }) => {
-        // taras: I'm 100% sure why instancePath is not available, but dataPath seems to have
-        // information about location 
-        const dotPath = (instancePath || dataPath)
+      .map(({ message, instancePath }) => {
+        const dotPath = instancePath
           .slice(1)
           .split('/')
           .map(seg => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))
@@ -135,7 +132,6 @@ function dynamicValidateConfig(config) {
   uniqueItemProperties(ajv);
   select(ajv);
   instanceOf(ajv);
-  prohibited(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
   dynamicValidateConfig.errors = ajv.errors;
