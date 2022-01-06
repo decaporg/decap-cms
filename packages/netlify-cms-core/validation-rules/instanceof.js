@@ -5,19 +5,19 @@ module.exports = function addInstanceOfKeyword(ajv) {
     keyword: 'instanceof',
     schemaType: 'string',
     type: ['string', 'number', 'array', 'object'],
-    compile(schema) {
-      return data =>
-        data instanceof
-        ({
-          Object,
-          Array,
-          Function,
-          Number,
-          String,
-          Date,
-          RegExp,
-        })[schema];
-    },
+    // compile(schema) {
+    //   return data =>
+    //     data instanceof
+    //     ({
+    //       Object,
+    //       Array,
+    //       Function,
+    //       Number,
+    //       String,
+    //       Date,
+    //       RegExp,
+    //     })[schema];
+    // },
     code(cxt) {
       const { data, schema } = cxt;
       cxt.fail(_`!(${data} instanceof ` + schema + `)`);
