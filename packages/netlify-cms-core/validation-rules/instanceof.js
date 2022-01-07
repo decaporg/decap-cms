@@ -8,6 +8,6 @@ module.exports = function addInstanceOfKeyword(ajv) {
     code(cxt) {
       const { data, schema } = cxt;
       cxt.fail(_`!(${data} instanceof ` + schema + `)`);
-    }
+    },
   });
 };

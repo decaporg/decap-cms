@@ -1,7 +1,7 @@
 import AJV from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import uuid from 'uuid/v4';
-import { set } from 'lodash/fp'
+import { set } from 'lodash/fp';
 
 import { getWidgets } from '../lib/registry';
 import { I18N_FIELD } from '../lib/i18n';
@@ -80,14 +80,20 @@ function fieldsConfig() {
  */
 export function getConfigSchema() {
   // This will immutably apply fields schema to the schema properites that need them
-  const s1 = set('properties.collections.items.properties.files.items.properties.fields', fieldsConfig(), schema);
+  const s1 = set(
+    'properties.collections.items.properties.files.items.properties.fields',
+    fieldsConfig(),
+    schema,
+  );
   const s2 = set('properties.collections.items.properties.fields', fieldsConfig(), s1);
   return s2;
 }
 
 function getWidgetSchemas() {
   const widgets = getWidgets();
-  const schemas = widgets.filter(widget => widget.schema).map(widget => ({ [widget.name]: widget.schema }));
+  const schemas = widgets
+    .filter(widget => widget.schema)
+    .map(widget => ({ [widget.name]: widget.schema }));
   return Object.assign({}, ...schemas);
 }
 
@@ -122,7 +128,7 @@ class ConfigError extends Error {
 function dynamicValidateConfig(config) {
   const ajv = new AJV({ allErrors: true, $data: true, strict: false });
 
-  ajvKeywords(ajv, ['instanceof', 'select', 'uniqueItemProperties'])
+  ajvKeywords(ajv, ['instanceof', 'select', 'uniqueItemProperties']);
 
   const valid = ajv.validate(getConfigSchema(), config);
   dynamicValidateConfig.errors = ajv.errors;
@@ -160,7 +166,7 @@ function extractValidationErrors(validator) {
       default:
         return e;
     }
-  })
+  });
 }
 
 export function hasCustomWidgetSchemas() {
@@ -179,7 +185,7 @@ export function validateConfig(config) {
   } else {
     validate = staticValidateConfig;
   }
-  
+
   const result = validate(config);
 
   if (result === false) {

@@ -30,9 +30,9 @@ describe('static validation', () => {
   beforeEach(() => {
     const { getWidgets } = require('../../lib/registry');
     getWidgets.mockImplementation(() => [{}]);
-  })
+  });
 
-  it("does not have custom widgets", () => {
+  it('does not have custom widgets', () => {
     expect(hasCustomWidgetSchemas()).toBeFalsy();
   });
 
@@ -54,7 +54,7 @@ describe('static validation', () => {
       ]);
     });
 
-    it("does not have custom widgets", () => {
+    it('does not have custom widgets', () => {
       expect(hasCustomWidgetSchemas()).toBeFalsy();
     });
 
@@ -77,7 +77,7 @@ describe('dynamic validation', () => {
     ]);
   });
 
-  it("has custom schemas", () => {
+  it('has custom schemas', () => {
     expect(hasCustomWidgetSchemas()).toBeTruthy();
   });
 
@@ -107,10 +107,10 @@ describe('dynamic validation', () => {
       ]);
     });
 
-    it("has custom widgets", () => {
+    it('has custom widgets', () => {
       expect(hasCustomWidgetSchemas()).toBeTruthy();
     });
-  
+
     nestedValidationTests();
   });
 });

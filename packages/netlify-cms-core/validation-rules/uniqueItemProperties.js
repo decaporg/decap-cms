@@ -3,8 +3,8 @@ const { _ } = require('ajv');
 module.exports = function uniqueItemPropertiesKeyword(ajv) {
   ajv.addKeyword({
     keyword: 'uniqueItemProperties',
-    type: "array",
-    schemaType: "array",
+    type: 'array',
+    schemaType: 'array',
     code(cxt) {
       const { data, schemaValue } = cxt;
       // generates code that checks if any property in the value repeats itself
@@ -15,6 +15,6 @@ module.exports = function uniqueItemPropertiesKeyword(ajv) {
                 .some((value, index, array) => array.indexOf(value) !== index)
             )
         .some((value) => value)`);
-    }
+    },
   });
 };
