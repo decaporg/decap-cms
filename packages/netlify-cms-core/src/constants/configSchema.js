@@ -79,13 +79,9 @@ function fieldsConfig() {
  * where the imports get resolved asynchronously.
  */
 export function getConfigSchema() {
-
-  // This will immutably apply fields schema to the schema properrites that need them
-  // TODO: it might be better to use ref here as per https://github.com/ajv-validator/ajv/issues/1707#issuecomment-890479942
-
+  // This will immutably apply fields schema to the schema properites that need them
   const s1 = set('properties.collections.items.properties.files.items.properties.fields', fieldsConfig(), schema);
   const s2 = set('properties.collections.items.properties.fields', fieldsConfig(), s1);
-
   return s2;
 }
 
