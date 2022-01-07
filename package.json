@@ -172,11 +172,7 @@
     ],
     "nohoist": [
       "husky",
-      "run-node",
-      "netlify-cms-core/ajv",
-      "netlify-cms-core/ajv-cli",
-      "netlify-cms-core/ajv-keywords",
-      "netlify-cms-core/**/ajv-pack"
+      "run-node"
     ]
   },
   "private": true,
