@@ -7,6 +7,7 @@ module.exports = function uniqueItemPropertiesKeyword(ajv) {
     schemaType: "array",
     code(cxt) {
       const { data, schemaValue } = cxt;
+      // generates code that checks if any property in the value repeats itself
       cxt.fail(_`${schemaValue}
         .map(
             property => ${data}
