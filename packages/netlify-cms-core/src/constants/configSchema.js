@@ -1,9 +1,5 @@
 import AJV from 'ajv';
-import {
-  select,
-  uniqueItemProperties,
-  instanceof as instanceOf,
-} from 'ajv-keywords/keywords';
+import ajvKeywords from 'ajv-keywords';
 import uuid from 'uuid/v4';
 import { set } from 'lodash/fp'
 
@@ -129,9 +125,8 @@ class ConfigError extends Error {
  */
 function dynamicValidateConfig(config) {
   const ajv = new AJV({ allErrors: true, $data: true, strict: false });
-  uniqueItemProperties(ajv);
-  select(ajv);
-  instanceOf(ajv);
+
+  ajvKeywords(ajv, ['instanceof', 'select', 'uniqueItemProperties'])
 
   const valid = ajv.validate(getConfigSchema(), config);
   dynamicValidateConfig.errors = ajv.errors;
@@ -172,25 +167,27 @@ function extractValidationErrors(validator) {
   })
 }
 
-
-export function validateConfig(config) {
-  const customWidgets = Object.keys(getWidgetSchemas()).filter(
+export function hasCustomWidgetSchemas() {
+  const widgetSchemas = getWidgetSchemas();
+  const customWidgets = Object.keys(widgetSchemas).filter(
     widgetKey => NativeCMSWidgets.includes(widgetKey) === false,
   );
 
-  let validator;
-  if (customWidgets.length > 0) {
-    console.debug('using dynamic ajv validation');
-    validator = dynamicValidateConfig;
+  return customWidgets.length > 0;
+}
+
+export function validateConfig(config) {
+  let validate;
+  if (hasCustomWidgetSchemas()) {
+    validate = dynamicValidateConfig;
   } else {
-    console.debug('using static ajv validation');
-    validator = staticValidateConfig;
+    validate = staticValidateConfig;
   }
   
-  const result = validator(config);
+  const result = validate(config);
 
   if (result === false) {
-    const errors = extractValidationErrors(validator);
+    const errors = extractValidationErrors(validate);
     console.error('Config Errors', errors);
     throw new ConfigError(errors);
   }
