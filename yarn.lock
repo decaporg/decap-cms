@@ -13884,9 +13884,7 @@ ol-mapbox-style@^6.7.0:
     webfont-matcher "^1.1.0"
 
 ol@^6.9.0:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/ol/-/ol-6.10.0.tgz#4f3efbb3cc6571962149666de807f11e91015b62"
-  integrity sha512-XBU0IzeCU50MUOmCoBH5ThimGUt6oiNf8LL3iRVeLckpg7Q/0i4jernuJTpg8OLVzcgxG+ex/0iXf9mgHSzM6Q==
+  version: "6.11.0"
   dependencies:
     geotiff "^1.0.8"
     ol-mapbox-style "^6.7.0"
