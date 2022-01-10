@@ -16,12 +16,12 @@ import {
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { trim, trimStart } from 'lodash';
+import { isApolloError } from 'apollo-client/errors/ApolloError' 
 
 import introspectionQueryResultData from './fragmentTypes';
 import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
-import { isApolloError } from 'apollo-client/errors/ApolloError' 
 
 import type { Config, BlobArgs } from './API';
 import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
