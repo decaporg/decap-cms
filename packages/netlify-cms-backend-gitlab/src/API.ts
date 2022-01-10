@@ -289,7 +289,10 @@ export default class API {
     try {
       return requestWithBackoff(this, req);
     } catch (err) {
-      throw new APIError(err.message, null, API_NAME);
+      if (err instanceof Error) {
+        throw new APIError(err.message, null, API_NAME);
+      }
+      throw err
     }
   };
 
@@ -608,9 +611,11 @@ export default class API {
       });
       return result;
     } catch (error) {
-      const message = error.message || '';
-      if (newBranch && message.includes(`Could not update ${branch}`)) {
-        await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+      if (error instanceof Error) {
+        const message = error.message || '';
+        if (newBranch && message.includes(`Could not update ${branch}`)) {
+          await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+        }
       }
       throw error;
     }

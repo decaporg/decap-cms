@@ -400,7 +400,7 @@ export class Backend {
     try {
       await this.implementation.logout();
     } catch (e) {
-      console.warn('Error during logout', e.message);
+      if (e instanceof Error) console.warn('Error during logout', e.message);
     } finally {
       this.user = null;
       if (this.authStore) {

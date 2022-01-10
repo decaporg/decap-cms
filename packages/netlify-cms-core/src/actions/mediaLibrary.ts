@@ -325,7 +325,7 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
         return dispatch(mediaDeleted(file, { privateUpload }));
       } catch (error) {
         console.error(error);
-        dispatch(
+        if (error instanceof Error) dispatch(
           notifSend({
             message: `Failed to delete media: ${error.message}`,
             kind: 'danger',
@@ -355,7 +355,7 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
       }
     } catch (error) {
       console.error(error);
-      dispatch(
+      if (error instanceof Error) dispatch(
         notifSend({
           message: `Failed to delete media: ${error.message}`,
           kind: 'danger',
@@ -403,7 +403,7 @@ export function loadMediaDisplayURL(file: MediaFile) {
       }
     } catch (err) {
       console.error(err);
-      dispatch(mediaDisplayURLFailure(id, err));
+      if (err instanceof Error) dispatch(mediaDisplayURLFailure(id, err));
     }
   };
 }
@@ -515,7 +515,7 @@ export async function waitForMediaLibraryToLoad(
   if (state.mediaLibrary.get('isLoading') !== false && !state.mediaLibrary.get('externalLibrary')) {
     await waitUntilWithTimeout(dispatch, resolve => ({
       predicate: ({ type }) => type === MEDIA_LOAD_SUCCESS || type === MEDIA_LOAD_FAILURE,
-      run: () => resolve(),
+      run: () => resolve(undefined),
     }));
   }
 }

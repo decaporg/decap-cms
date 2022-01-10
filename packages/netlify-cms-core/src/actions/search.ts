@@ -141,7 +141,7 @@ export function searchEntries(searchTerm: string, searchCollections: string[], p
       const response: SearchResponse = await searchPromise;
       return dispatch(searchSuccess(response.entries, response.pagination));
     } catch (error) {
-      return dispatch(searchFailure(error));
+      if (error instanceof Error) return dispatch(searchFailure(error));
     }
   };
 }
@@ -178,7 +178,7 @@ export function query(
       const response: QueryResponse = await queryPromise;
       return dispatch(querySuccess(namespace, response.hits));
     } catch (error) {
-      return dispatch(queryFailure(error));
+      if (error instanceof Error) return dispatch(queryFailure(error));
     }
   };
 }

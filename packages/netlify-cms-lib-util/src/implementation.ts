@@ -62,9 +62,9 @@ export type DataFile = {
   newPath?: string;
 };
 
-export type AssetProxy = {
+export interface AssetProxy {
   path: string;
-  fileObj: File;
+  fileObj?: File;
   toBase64?: () => Promise<string>;
 };
 

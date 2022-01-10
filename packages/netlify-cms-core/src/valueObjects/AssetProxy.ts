@@ -1,4 +1,5 @@
 import type { EntryField } from '../types/redux';
+import type { AssetProxy as AssetProxyInterface } from 'netlify-cms-lib-util';
 
 interface AssetProxyArgs {
   path: string;
@@ -7,7 +8,7 @@ interface AssetProxyArgs {
   field?: EntryField;
 }
 
-export default class AssetProxy {
+export default class AssetProxy implements AssetProxyInterface {
   url: string;
   fileObj?: File;
   path: string;

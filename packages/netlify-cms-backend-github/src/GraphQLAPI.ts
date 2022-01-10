@@ -21,11 +21,11 @@ import introspectionQueryResultData from './fragmentTypes';
 import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
+import { isApolloError } from 'apollo-client/errors/ApolloError' 
 
 import type { Config, BlobArgs } from './API';
 import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import type { QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
-import type { GraphQLError } from 'graphql';
 import type { Octokit } from '@octokit/rest';
 
 const NO_CACHE = 'no-cache';
@@ -91,8 +91,6 @@ function transformPullRequest(pr: GraphQLPullRequest) {
   };
 }
 
-type Error = GraphQLError & { type: string };
-
 export default class GraphQLAPI extends API {
   client: ApolloClient<NormalizedCacheObject>;
 
@@ -149,43 +147,46 @@ export default class GraphQLAPI extends API {
   }
 
   async mutate(options: MutationOptions<OperationVariables>) {
+    let result;
     try {
-      const result = await this.client.mutate(options);
-      return result;
+      result = await this.client.mutate(options);
     } catch (error) {
-      const errors = error.graphQLErrors;
-      if (Array.isArray(errors) && errors.some(e => e.message === 'Ref cannot be created.')) {
-        const refName = options?.variables?.createRefInput?.name || '';
-        const branchName = trimStart(refName, 'refs/heads/');
-        if (branchName) {
-          await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
-        }
-      } else if (
-        Array.isArray(errors) &&
-        errors.some(e =>
-          new RegExp(
-            `A ref named "refs/heads/${CMS_BRANCH_PREFIX}/.+?" already exists in the repository.`,
-          ).test(e.message),
-        )
-      ) {
-        const refName = options?.variables?.createRefInput?.name || '';
-        const sha = options?.variables?.createRefInput?.oid || '';
-        const branchName = trimStart(refName, 'refs/heads/');
-        if (branchName && branchName.startsWith(`${CMS_BRANCH_PREFIX}/`) && sha) {
-          try {
-            // this can happen if the branch wasn't deleted when the PR was merged
-            // we backup the existing branch just in case an re-run the mutation
-            await this.backupBranch(branchName);
-            await this.deleteBranch(branchName);
-            const result = await this.client.mutate(options);
-            return result;
-          } catch (e) {
-            console.log(e);
+      if (error instanceof Error && isApolloError(error)) {
+        const errors = error.graphQLErrors;
+        if (Array.isArray(errors) && errors.some(e => e.message === 'Ref cannot be created.')) {
+          const refName = options?.variables?.createRefInput?.name || '';
+          const branchName = trimStart(refName, 'refs/heads/');
+          if (branchName) {
+            await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
+          }
+        } else if (
+          Array.isArray(errors) &&
+          errors.some(e =>
+            new RegExp(
+              `A ref named "refs/heads/${CMS_BRANCH_PREFIX}/.+?" already exists in the repository.`,
+            ).test(e.message),
+          )
+        ) {
+          const refName = options?.variables?.createRefInput?.name || '';
+          const sha = options?.variables?.createRefInput?.oid || '';
+          const branchName = trimStart(refName, 'refs/heads/');
+          if (branchName && branchName.startsWith(`${CMS_BRANCH_PREFIX}/`) && sha) {
+            try {
+              // this can happen if the branch wasn't deleted when the PR was merged
+              // we backup the existing branch just in case an re-run the mutation
+              await this.backupBranch(branchName);
+              await this.deleteBranch(branchName);
+              const result = await this.client.mutate(options);
+              return result;
+            } catch (e) {
+              console.log(e);
+            }
           }
         }
+        throw new APIError(error.message, 500, 'GitHub');
       }
-      throw new APIError(error.message, 500, 'GitHub');
     }
+    return result;
   }
 
   async hasWriteAccess() {
@@ -435,18 +436,21 @@ export default class GraphQLAPI extends API {
     const force = opts.force || false;
 
     const branch = await this.getBranch(name);
-    const { data } = await this.mutate({
+    const result = await this.mutate({
       mutation: mutations.updateBranch,
       variables: {
         input: { oid: sha, refId: branch.id, force },
       },
     });
-    return data!.updateRef.branch;
+    if (result) {
+      const { data } = result;
+      return data!.updateRef.branch;
+    }
   }
 
   async deleteBranch(branchName: string) {
     const branch = await this.getBranch(branchName);
-    const { data } = await this.mutate({
+    const result = await this.mutate({
       mutation: mutations.deleteBranch,
       variables: {
         deleteRefInput: { refId: branch.id },
@@ -454,8 +458,10 @@ export default class GraphQLAPI extends API {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       update: (store: any) => store.data.delete(defaultDataIdFromObject(branch)),
     });
-
-    return data!.deleteRef;
+    if (result) {
+      const { data } = result;
+      return data!.deleteRef;
+    }
   }
 
   getPullRequestQuery(number: number) {
@@ -515,7 +521,7 @@ export default class GraphQLAPI extends API {
   async openPR(number: number) {
     const pullRequest = await this.getPullRequest(number);
 
-    const { data } = await this.mutate({
+    const result = await this.mutate({
       mutation: mutations.reopenPullRequest,
       variables: {
         reopenPullRequestInput: { pullRequestId: pullRequest.id },
@@ -531,13 +537,16 @@ export default class GraphQLAPI extends API {
       },
     });
 
-    return data!.reopenPullRequest;
+    if (result) {
+      const { data } = result;
+      return data!.reopenPullRequest;
+    }
   }
 
   async closePR(number: number) {
     const pullRequest = await this.getPullRequest(number);
 
-    const { data } = await this.mutate({
+    const result = await this.mutate({
       mutation: mutations.closePullRequest,
       variables: {
         closePullRequestInput: { pullRequestId: pullRequest.id },
@@ -552,8 +561,11 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-
-    return data!.closePullRequest;
+    
+    if (result) {
+      const { data } = result;
+      return data!.closePullRequest;
+    }
   }
 
   async deleteUnpublishedEntry(collectionName: string, slug: string) {
@@ -564,7 +576,7 @@ export default class GraphQLAPI extends API {
       if (pr.number !== MOCK_PULL_REQUEST) {
         const { branch, pullRequest } = await this.getPullRequestAndBranch(branchName, pr.number);
 
-        const { data } = await this.mutate({
+        const result = await this.mutate({
           mutation: mutations.closePullRequestAndDeleteBranch,
           variables: {
             deleteRefInput: { refId: branch.id },
@@ -577,16 +589,21 @@ export default class GraphQLAPI extends API {
           },
         });
 
-        return data!.closePullRequest;
+        if (result) {
+          const { data } = result;
+          return data!.closePullRequest;
+        }
       } else {
         return await this.deleteBranch(branchName);
       }
     } catch (e) {
-      const { graphQLErrors } = e;
-      if (graphQLErrors && graphQLErrors.length > 0) {
-        const branchNotFound = graphQLErrors.some((e: Error) => e.type === 'NOT_FOUND');
-        if (branchNotFound) {
-          return;
+      if (e instanceof Error && isApolloError(e)) {
+        const { graphQLErrors } = e;
+        if (graphQLErrors && graphQLErrors.length > 0) {
+          const branchNotFound = graphQLErrors.some((e: any) => e.type === 'NOT_FOUND');
+          if (branchNotFound) {
+            return;
+          }
         }
       }
       throw e;
@@ -598,7 +615,7 @@ export default class GraphQLAPI extends API {
       this.getRepository(this.originRepoOwner, this.originRepoName),
       this.useOpenAuthoring ? `${(await this.user()).login}:${head}` : head,
     ]);
-    const { data } = await this.mutate({
+    const result = await this.mutate({
       mutation: mutations.createPullRequest,
       variables: {
         createPullRequestInput: {
@@ -619,15 +636,18 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-    const { pullRequest } = data!.createPullRequest;
-    return { ...pullRequest, head: { sha: pullRequest.headRefOid } };
+    if (result) {
+      const { data } = result;
+      const { pullRequest } = data!.createPullRequest;
+      return { ...pullRequest, head: { sha: pullRequest.headRefOid } };
+    }
   }
 
   async createBranch(branchName: string, sha: string) {
     const owner = this.repoOwner;
     const name = this.repoName;
     const repository = await this.getRepository(owner, name);
-    const { data } = await this.mutate({
+    const result = await this.mutate({
       mutation: mutations.createBranch,
       variables: {
         createRefInput: {
@@ -646,15 +666,18 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-    const { branch } = data!.createRef;
-    return { ...branch, ref: `${branch.prefix}${branch.name}` };
+    if (result) {
+      const { data } = result;
+      const { branch } = data!.createRef;
+      return { ...branch, ref: `${branch.prefix}${branch.name}` };
+    }
   }
 
   async createBranchAndPullRequest(branchName: string, sha: string, title: string) {
     const owner = this.originRepoOwner;
     const name = this.originRepoName;
     const repository = await this.getRepository(owner, name);
-    const { data } = await this.mutate({
+    const result = await this.mutate({
       mutation: mutations.createBranchAndPullRequest,
       variables: {
         createRefInput: {
@@ -690,8 +713,11 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-    const { pullRequest } = data!.createPullRequest;
-    return transformPullRequest(pullRequest) as unknown as Octokit.PullsCreateResponse;
+    if (result) {
+      const { data } = result;
+      const { pullRequest } = data!.createPullRequest;
+      return transformPullRequest(pullRequest) as unknown as Octokit.PullsCreateResponse;
+    }
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {

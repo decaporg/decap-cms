@@ -61,7 +61,7 @@ export function loadAsset(resolvedPath: string) {
       }
       dispatch(loadAssetSuccess(resolvedPath));
     } catch (e) {
-      dispatch(loadAssetFailure(resolvedPath, e));
+      if (e instanceof Error) dispatch(loadAssetFailure(resolvedPath, e));
     }
   };
 }

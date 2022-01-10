@@ -30,7 +30,6 @@ import type {
   AssetProxy,
   DataFile,
   PersistOptions,
-  FetchError,
   ApiRequest,
 } from 'netlify-cms-lib-util';
 import type { Semaphore } from 'semaphore';
@@ -295,7 +294,7 @@ export default class API {
     return textPromise;
   }
 
-  handleRequestError(error: FetchError, responseStatus: number) {
+  handleRequestError(error: Error, responseStatus: number) {
     throw new APIError(error.message, responseStatus, API_NAME);
   }
 
@@ -323,7 +322,8 @@ export default class API {
       const parsedResponse = await parser(response);
       return parsedResponse;
     } catch (error) {
-      return this.handleRequestError(error, responseStatus);
+      if (error instanceof Error) return this.handleRequestError(error, responseStatus);
+      throw error;
     }
   }
 
@@ -410,7 +410,7 @@ export default class API {
             data,
           });
           this._metadataSemaphore?.leave();
-          resolve();
+          resolve(undefined);
         } catch (err) {
           reject(err);
         }
@@ -432,10 +432,10 @@ export default class API {
           const { sha } = await this.commit(`Deleting “${key}” metadata`, changeTree);
           await this.patchRef('meta', '_netlify_cms', sha);
           this._metadataSemaphore?.leave();
-          resolve();
+          resolve(undefined);
         } catch (err) {
           this._metadataSemaphore?.leave();
-          resolve();
+          resolve(undefined);
         }
       }),
     );
@@ -697,7 +697,7 @@ export default class API {
           }))
       );
     } catch (err) {
-      if (err && err.status === 404) {
+      if (err instanceof APIError && err.status === 404) {
         console.log('This 404 was expected and handled appropriately.');
         return [];
       } else {
@@ -1225,21 +1225,23 @@ export default class API {
       const result = await this.createRef('heads', branchName, sha);
       return result;
     } catch (e) {
-      const message = String(e.message || '');
-      if (message === 'Reference update failed') {
-        await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
-      } else if (
-        message === 'Reference already exists' &&
-        branchName.startsWith(`${CMS_BRANCH_PREFIX}/`)
-      ) {
-        try {
-          // this can happen if the branch wasn't deleted when the PR was merged
-          // we backup the existing branch just in case and patch it with the new sha
-          await this.backupBranch(branchName);
-          const result = await this.patchBranch(branchName, sha, { force: true });
-          return result;
-        } catch (e) {
-          console.log(e);
+      if (e instanceof Error) {
+        const { message } = e;
+        if (message === 'Reference update failed') {
+          await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
+        } else if (
+          message === 'Reference already exists' &&
+          branchName.startsWith(`${CMS_BRANCH_PREFIX}/`)
+        ) {
+          try {
+            // this can happen if the branch wasn't deleted when the PR was merged
+            // we backup the existing branch just in case and patch it with the new sha
+            await this.backupBranch(branchName);
+            const result = await this.patchBranch(branchName, sha, { force: true });
+            return result;
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
       throw e;

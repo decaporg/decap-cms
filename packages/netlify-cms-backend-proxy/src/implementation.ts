@@ -156,7 +156,7 @@ export default class ProxyBackend implements Implementation {
 
       return entry;
     } catch (e) {
-      if (e.status === 404) {
+      if (e instanceof APIError && e.status === 404) {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
       throw e;

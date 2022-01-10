@@ -536,17 +536,19 @@ export function loadEntry(collection: Collection, slug: string) {
       dispatch(createDraftFromEntry(loadedEntry));
     } catch (error) {
       console.error(error);
-      dispatch(
-        notifSend({
-          message: {
-            details: error.message,
-            key: 'ui.toast.onFailToLoadEntries',
-          },
-          kind: 'danger',
-          dismissAfter: 8000,
-        }),
-      );
-      dispatch(entryLoadError(error, collection, slug));
+      if (error instanceof Error) {
+        dispatch(
+          notifSend({
+            message: {
+              details: error.message,
+              key: 'ui.toast.onFailToLoadEntries',
+            },
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
+        dispatch(entryLoadError(error, collection, slug));
+      }
     }
   };
 }
@@ -641,7 +643,7 @@ export function loadEntries(collection: Collection, page = 0) {
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(entriesFailed(collection, err)));
+      return Promise.reject(dispatch(entriesFailed(collection, err instanceof Error ? err : new Error(`${err}`))));
     }
   };
 }
@@ -693,7 +695,7 @@ export function traverseCollectionCursor(collection: Collection, action: string)
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(entriesFailed(collection, err)));
+      return Promise.reject(dispatch(entriesFailed(collection, err instanceof Error ? err : new Error(`${err}`))));
     }
   };
 }

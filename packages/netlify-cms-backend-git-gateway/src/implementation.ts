@@ -274,7 +274,8 @@ export default class GitGateway implements Implementation {
         const token = await func();
         return token;
       } catch (error) {
-        throw new AccessTokenError(`Failed getting access token: ${error.message}`);
+        if (error instanceof Error) throw new AccessTokenError(`Failed getting access token: ${error.message}`);
+        throw error;
       }
     };
     return this.tokenPromise!().then(async token => {
@@ -416,9 +417,10 @@ export default class GitGateway implements Implementation {
     if (isLargeMedia) {
       const branch = this.backend!.getBranch(collection, slug);
       const { url, blob } = await this.getLargeMediaDisplayURL({ path, id }, branch);
+      const name = basename(path);
       return {
         id,
-        name: basename(path),
+        name,
         path,
         url,
         displayURL: url,
@@ -531,9 +533,10 @@ export default class GitGateway implements Implementation {
     const isLargeMedia = await this.isLargeMediaFile(path);
     if (isLargeMedia) {
       const { url, blob } = await this.getLargeMediaDisplayURL({ path, id: null });
+      const name = basename(path);
       return {
         id: url,
-        name: basename(path),
+        name,
         path,
         url,
         displayURL: url,
@@ -556,7 +559,7 @@ export default class GitGateway implements Implementation {
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
     const { fileObj, path } = mediaFile;
-    const displayURL = URL.createObjectURL(fileObj);
+    const displayURL = fileObj ? URL.createObjectURL(fileObj) : '';
     const client = await this.getLargeMediaClient();
     const fixedPath = path.startsWith('/') ? path.slice(1) : path;
     const isLargeMedia = await this.isLargeMediaFile(fixedPath);

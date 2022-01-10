@@ -87,7 +87,7 @@ export function loadDeployPreview(
       return dispatch(deployPreviewError(collectionName, slug));
     } catch (error) {
       console.error(error);
-      dispatch(
+      if (error instanceof Error) dispatch(
         notifSend({
           message: {
             details: error.message,

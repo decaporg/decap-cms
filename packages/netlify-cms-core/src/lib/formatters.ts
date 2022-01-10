@@ -197,7 +197,7 @@ export function previewUrlFormatter(
     // Print an error and ignore `preview_path` if both:
     //   1. Date is invalid (according to Moment), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
-    if (err.name === SLUG_MISSING_REQUIRED_DATE) {
+    if (err instanceof Error && err.name === SLUG_MISSING_REQUIRED_DATE) {
       console.error(stripIndent`
         Collection "${collection.get('name')}" configuration error:
           \`preview_path_date_field\` must be a field with a valid date. Ignoring \`preview_path\`.
