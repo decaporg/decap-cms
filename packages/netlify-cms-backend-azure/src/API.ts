@@ -278,7 +278,11 @@ export default class API {
     try {
       return requestWithBackoff(this, req);
     } catch (err) {
-      throw new APIError(err.message, null, API_NAME);
+      if (err instanceof Error) {
+        throw new APIError(err.message, null, API_NAME);
+      } else {
+        throw err
+      }
     }
   };
 
@@ -378,7 +382,7 @@ export default class API {
         }));
       return files;
     } catch (err) {
-      if (err && err.status === 404) {
+      if (err instanceof APIError && err?.status === 404) {
         console.log('This 404 was expected and handled appropriately.');
         return [];
       } else {

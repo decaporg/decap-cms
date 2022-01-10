@@ -108,7 +108,7 @@ if (window.netlifyIdentity) {
     new Promise(resolve => {
       window.netlifyIdentity?.on('init', () => {
         initialized = true;
-        resolve();
+        resolve(undefined);
       });
     }),
     new Promise(resolve => setTimeout(resolve, 2500)).then(() => {

@@ -80,12 +80,12 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       }
       return state.withMutations(map => {
         map.set('isVisible', true);
-        map.set('forImage', forImage);
-        map.set('controlID', controlID);
+        if (forImage !== undefined) map.set('forImage', forImage);
+        if (controlID !== undefined) map.set('controlID', controlID);
         map.set('canInsert', !!controlID);
         map.set('privateUpload', privateUpload);
         map.set('config', libConfig);
-        map.set('field', field);
+        if (field !== undefined) map.set('field', field);
       });
     }
 
@@ -130,10 +130,10 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state.withMutations(map => {
         map.set('isLoading', false);
         map.set('isPaginating', false);
-        map.set('page', page);
-        map.set('hasNextPage', canPaginate && files.length > 0);
-        map.set('dynamicSearch', dynamicSearch);
-        map.set('dynamicSearchQuery', dynamicSearchQuery);
+        map.set('page', `${page}`);
+        map.set('hasNextPage', `${canPaginate && files.length > 0}`);
+        map.set('dynamicSearch', `${dynamicSearch}`);
+        map.set('dynamicSearchQuery', `${dynamicSearchQuery}`);
         map.set('dynamicSearchActive', !!dynamicSearchQuery);
         if (page && page > 1) {
           const updatedFiles = (map.get('files') as MediaFile[]).concat(filesWithKeys);

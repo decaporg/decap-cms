@@ -17,9 +17,12 @@ function catchFormatErrors(format: string, formatter: Formatter) {
     try {
       return formatter(res);
     } catch (err) {
-      throw new Error(
-        `Response cannot be parsed into the expected format (${format}): ${err.message}`,
-      );
+      if (err instanceof Error) {
+        throw new Error(
+          `Response cannot be parsed into the expected format (${format}): ${err.message}`,
+        );
+      }
+      throw err;
     }
   };
 }
@@ -51,7 +54,10 @@ export async function parseResponse(
     }
     body = await formatter(res);
   } catch (err) {
-    throw new APIError(err.message, res.status, apiName);
+    if (err instanceof Error) {
+      throw new APIError(err.message, res.status, apiName);
+    }
+    throw err; 
   }
   if (expectingOk && !res.ok) {
     const isJSON = format === 'json';

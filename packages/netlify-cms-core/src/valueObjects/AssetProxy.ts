@@ -14,7 +14,13 @@ export default class AssetProxy {
   field?: EntryField;
 
   constructor({ url, file, path, field }: AssetProxyArgs) {
-    this.url = url ? url : window.URL.createObjectURL(file);
+    if (url) {
+      this.url = url;
+    } else if (file) {
+      this.url = window.URL.createObjectURL(file);
+    } else {
+      this.url = '';
+    }
     this.fileObj = file;
     this.path = path;
     this.field = field;

@@ -237,7 +237,11 @@ export default class API {
     try {
       return requestWithBackoff(this, req);
     } catch (err) {
-      throw new APIError(err.message, null, API_NAME);
+      if (err instanceof Error) {
+        throw new APIError(err.message, null, API_NAME);
+      } else {
+        throw err;
+      }
     }
   };
 
@@ -494,10 +498,11 @@ export default class API {
         body: formData,
       });
     } catch (error) {
-      const message = error.message || '';
-      // very descriptive message from Bitbucket
-      if (parentSha && message.includes('Something went wrong')) {
-        await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+      if (error instanceof Error) {
+        // very descriptive message from Bitbucket
+        if (parentSha && error.message.includes('Something went wrong')) {
+          await throwOnConflictingBranches(branch, name => this.getBranch(name), API_NAME);
+        }
       }
       throw error;
     }

@@ -29,7 +29,9 @@ const level = process.env.LOG_LEVEL || 'info';
       throw new Error(`Unknown proxy mode '${mode}'`);
     }
   } catch (e) {
-    logger.error(e.message);
+    if (e instanceof Error) {
+      logger.error(e.message);
+    }
     process.exit(1);
   }
 

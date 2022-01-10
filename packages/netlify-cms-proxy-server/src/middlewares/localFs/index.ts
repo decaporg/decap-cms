@@ -135,7 +135,9 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
         }
       }
     } catch (e) {
-      logger.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
+      if (e instanceof Error) {
+        logger.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
+      }
       res.status(500).json({ error: 'Unknown error' });
     }
   };

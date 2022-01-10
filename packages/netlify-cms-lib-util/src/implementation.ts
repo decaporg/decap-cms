@@ -64,7 +64,7 @@ export type DataFile = {
 
 export type AssetProxy = {
   path: string;
-  fileObj?: File;
+  fileObj: File;
   toBase64?: () => Promise<string>;
 };
 
@@ -265,7 +265,7 @@ export async function unpublishedEntries(listEntriesKeys: () => Promise<string[]
     const keys = await listEntriesKeys();
     return keys;
   } catch (error) {
-    if (error.message === 'Not Found') {
+    if (error instanceof Error && error.message === 'Not Found') {
       return Promise.resolve([]);
     }
     throw error;
