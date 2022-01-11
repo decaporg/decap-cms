@@ -160,7 +160,7 @@ describe('github API', () => {
       const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
 
       fetch.mockResolvedValue({
-        text: jest.fn().mockResolvedValue({ message: 'some error' }),
+        text: jest.fn().mockResolvedValue(new Error('some error')),
         ok: false,
         status: 404,
         headers: { get: () => '' },
