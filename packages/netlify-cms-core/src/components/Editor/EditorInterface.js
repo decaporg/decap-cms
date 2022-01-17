@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
-import SplitPane from 'react-split-pane';
+import SplitPane from './SplitPane';
 import {
   colors,
   colorsRaw,
