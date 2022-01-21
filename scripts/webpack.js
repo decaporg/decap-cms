@@ -83,7 +83,7 @@ function targetOutputs() {
   return {
     umd: {
       path: umdPath,
-      filename: `${pkg.name}.[name].js`,
+      filename: pathData => pathData.chunk.name === 'minified' ? `${pkg.name}.js` : `${pkg.name}.[name].js`,
       library: toGlobalName(pkg.name),
       libraryTarget: 'umd',
       libraryExport: toGlobalName(pkg.name),
@@ -125,8 +125,8 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     context: process.cwd(),
     mode: isProduction ? 'production' : 'development',
     entry: {
-      bundle: './src',
-      'bundle.unminified': './src',
+      minified: './src',
+      unminified: './src',
     },
     output: targetOutputs()[target],
     module: {
