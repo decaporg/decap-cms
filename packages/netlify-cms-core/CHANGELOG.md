@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.54.5](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.4...netlify-cms-core@2.54.5) (2022-01-21)
+
+
+### Bug Fixes
+
+* remove redundant log from EditorControlPane ([#6141](https://github.com/netlify/netlify-cms/issues/6141)) ([6c924db](https://github.com/netlify/netlify-cms/commit/6c924db10b9f1baab15cdcebdc1e2c01bca4ec83))
+
+
+
+
+
 ## [2.54.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.3...netlify-cms-core@2.54.4) (2022-01-21)
 
 **Note:** Version bump only for package netlify-cms-core

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-lib-widgets@1.7.0...netlify-cms-lib-widgets@1.8.0) (2022-01-21)
+
+
+### Features
+
+* add truncate filter to summary tag ([#6105](https://github.com/netlify/netlify-cms/issues/6105)) ([d66c573](https://github.com/netlify/netlify-cms/commit/d66c573697c6a66919e048f0fde9cf2f8ea6acac))
+
+
+
+
+
 # [1.7.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-lib-widgets@1.6.3...netlify-cms-lib-widgets@1.7.0) (2021-10-11)
 
 
