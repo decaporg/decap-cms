@@ -1,7 +1,7 @@
-import moment from 'moment';
 import { Map } from 'immutable';
+import { get, trimEnd, truncate } from 'lodash';
+import moment from 'moment';
 import { basename, dirname, extname } from 'path';
-import { get, trimEnd } from 'lodash';
 
 const filters = [
   { pattern: /^upper$/, transform: (str: string) => str.toUpperCase() },
@@ -20,6 +20,18 @@ const filters = [
   {
     pattern: /^ternary\('(.*)',\s*'(.*)'\)$/,
     transform: (str: string, match: RegExpMatchArray) => (str ? match[1] : match[2]),
+  },
+  {
+    pattern: /^truncate\(([0-9]+)(?:(?:,\s*['"])([^'"]*)(?:['"]))?\)$/,
+    transform: (str: string, match: RegExpMatchArray) => {
+      const omission = match[2] || '...';
+      const length = parseInt(match[1]) + omission.length;
+
+      return truncate(str, {
+        length,
+        omission,
+      });
+    },
   },
 ];
 

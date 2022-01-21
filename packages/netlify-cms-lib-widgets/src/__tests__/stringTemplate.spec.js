@@ -1,12 +1,13 @@
 import { fromJS } from 'immutable';
 
 import {
-  keyToPathArray,
   compileStringTemplate,
-  parseDateFromEntry,
-  extractTemplateVars,
   expandPath,
+  extractTemplateVars,
+  keyToPathArray,
+  parseDateFromEntry,
 } from '../stringTemplate';
+
 describe('stringTemplate', () => {
   describe('keyToPathArray', () => {
     it('should return array of length 1 with simple path', () => {
@@ -151,6 +152,28 @@ describe('stringTemplate', () => {
           fromJS({ slug: 'entrySlug', starred: true, done: false }),
         ),
       ).toBe('BACKENDSLUG-star️-open️');
+    });
+
+    it('return apply filter for truncate', () => {
+      expect(
+        compileStringTemplate(
+          '{{slug | truncate(6)}}',
+          date,
+          'backendSlug',
+          fromJS({ slug: 'entrySlug', starred: true, done: false }),
+        ),
+      ).toBe('backen...');
+    });
+
+    it('return apply filter for truncate', () => {
+      expect(
+        compileStringTemplate(
+          "{{slug | truncate(3,'***')}}",
+          date,
+          'backendSlug',
+          fromJS({ slug: 'entrySlug', starred: true, done: false }),
+        ),
+      ).toBe('bac***');
     });
   });
 
