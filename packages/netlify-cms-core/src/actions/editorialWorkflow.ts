@@ -272,7 +272,11 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       dispatch(unpublishedEntryLoaded(collection, entry));
       dispatch(createDraftFromEntry(entry));
     } catch (error) {
-      if (error instanceof EditorialWorkflowError && error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
+      if (
+        error instanceof EditorialWorkflowError &&
+        error.name === EDITORIAL_WORKFLOW_ERROR &&
+        error.notUnderEditorialWorkflow
+      ) {
         dispatch(unpublishedEntryRedirected(collection, slug));
         dispatch(loadEntry(collection, slug));
       } else {
@@ -404,7 +408,13 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         }),
       );
       return Promise.reject(
-        dispatch(unpublishedEntryPersistedFail(error instanceof Error ? error : new Error(`${error}`), collection, entry.get('slug'))),
+        dispatch(
+          unpublishedEntryPersistedFail(
+            error instanceof Error ? error : new Error(`${error}`),
+            collection,
+            entry.get('slug'),
+          ),
+        ),
       );
     }
   };

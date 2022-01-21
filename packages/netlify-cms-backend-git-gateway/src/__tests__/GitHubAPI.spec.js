@@ -43,7 +43,7 @@ describe('github API', () => {
       });
 
       fetch.mockResolvedValue({
-        text: jest.fn().mockResolvedValue({ message: 'some error' }),
+        text: jest.fn().mockResolvedValue(new Error('some error')),
         ok: false,
         status: 404,
         headers: { get: () => '' },
@@ -65,8 +65,15 @@ describe('github API', () => {
         tokenPromise: () => Promise.resolve('token'),
       });
 
+      const customError = class extends Error {
+        constructor(message) {
+          super(message);
+          this.msg = message;
+        }
+      };
+
       fetch.mockResolvedValue({
-        text: jest.fn().mockResolvedValue({ msg: 'some error' }),
+        text: jest.fn().mockResolvedValue(new customError('some error')),
         ok: false,
         status: 404,
         headers: { get: () => '' },

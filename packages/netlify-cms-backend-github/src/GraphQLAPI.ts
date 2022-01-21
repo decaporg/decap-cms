@@ -16,7 +16,7 @@ import {
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { trim, trimStart } from 'lodash';
-import { isApolloError } from 'apollo-client/errors/ApolloError' 
+import { isApolloError } from 'apollo-client/errors/ApolloError';
 
 import introspectionQueryResultData from './fragmentTypes';
 import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
@@ -561,7 +561,7 @@ export default class GraphQLAPI extends API {
         });
       },
     });
-    
+
     if (result) {
       const { data } = result;
       return data!.closePullRequest;
@@ -600,7 +600,9 @@ export default class GraphQLAPI extends API {
       if (e instanceof Error && isApolloError(e)) {
         const { graphQLErrors } = e;
         if (graphQLErrors && graphQLErrors.length > 0) {
-          const branchNotFound = graphQLErrors.some((e: any) => e.type === 'NOT_FOUND');
+          const branchNotFound = graphQLErrors.some(
+            e => (e as unknown as { type: string }).type === 'NOT_FOUND',
+          );
           if (branchNotFound) {
             return;
           }
@@ -718,6 +720,8 @@ export default class GraphQLAPI extends API {
       const { pullRequest } = data!.createPullRequest;
       return transformPullRequest(pullRequest) as unknown as Octokit.PullsCreateResponse;
     }
+
+    throw new APIError('Failed creating branch and pull request', 500, API_NAME);
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {

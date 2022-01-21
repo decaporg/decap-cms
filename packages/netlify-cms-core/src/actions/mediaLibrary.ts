@@ -325,13 +325,14 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
         return dispatch(mediaDeleted(file, { privateUpload }));
       } catch (error) {
         console.error(error);
-        if (error instanceof Error) dispatch(
-          notifSend({
-            message: `Failed to delete media: ${error.message}`,
-            kind: 'danger',
-            dismissAfter: 8000,
-          }),
-        );
+        if (error instanceof Error)
+          dispatch(
+            notifSend({
+              message: `Failed to delete media: ${error.message}`,
+              kind: 'danger',
+              dismissAfter: 8000,
+            }),
+          );
         return dispatch(mediaDeleteFailed({ privateUpload }));
       }
     }
@@ -355,13 +356,14 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
       }
     } catch (error) {
       console.error(error);
-      if (error instanceof Error) dispatch(
-        notifSend({
-          message: `Failed to delete media: ${error.message}`,
-          kind: 'danger',
-          dismissAfter: 8000,
-        }),
-      );
+      if (error instanceof Error)
+        dispatch(
+          notifSend({
+            message: `Failed to delete media: ${error.message}`,
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
       return dispatch(mediaDeleteFailed());
     }
   };

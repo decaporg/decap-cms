@@ -66,7 +66,7 @@ export interface AssetProxy {
   path: string;
   fileObj?: File;
   toBase64?: () => Promise<string>;
-};
+}
 
 export type Entry = {
   dataFiles: DataFile[];

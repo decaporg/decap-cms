@@ -281,7 +281,7 @@ export default class API {
       if (err instanceof Error) {
         throw new APIError(err.message, null, API_NAME);
       } else {
-        throw err
+        throw err;
       }
     }
   };

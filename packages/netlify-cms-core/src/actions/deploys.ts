@@ -87,16 +87,17 @@ export function loadDeployPreview(
       return dispatch(deployPreviewError(collectionName, slug));
     } catch (error) {
       console.error(error);
-      if (error instanceof Error) dispatch(
-        notifSend({
-          message: {
-            details: error.message,
-            key: 'ui.toast.onFailToLoadDeployPreview',
-          },
-          kind: 'danger',
-          dismissAfter: 8000,
-        }),
-      );
+      if (error instanceof Error)
+        dispatch(
+          notifSend({
+            message: {
+              details: error.message,
+              key: 'ui.toast.onFailToLoadDeployPreview',
+            },
+            kind: 'danger',
+            dismissAfter: 8000,
+          }),
+        );
       dispatch(deployPreviewError(collectionName, slug));
     }
   };

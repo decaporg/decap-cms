@@ -26,12 +26,7 @@ import {
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
 
-import type {
-  AssetProxy,
-  DataFile,
-  PersistOptions,
-  ApiRequest,
-} from 'netlify-cms-lib-util';
+import type { AssetProxy, DataFile, PersistOptions, ApiRequest } from 'netlify-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
 
@@ -587,11 +582,11 @@ export default class API {
     const { collection, slug } = this.parseContentKey(contentKey);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-    const [{ files }, pullRequestAuthor] = await Promise.all([
+    const [{ files }, pullRequestAuthor] = (await Promise.all([
       this.getDifferences(this.branch, pullRequest.head.sha),
       this.getPullRequestAuthor(pullRequest),
-    ]);
-    const diffs = await Promise.all(files.map(file => this.diffFromFile(file)));
+    ])) as [Octokit.ReposCompareCommitsResponse, string | undefined];
+    const diffs = (await Promise.all(files.map(file => this.diffFromFile(file)))) as Diff[];
     const label = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix)) as {
       name: string;
     };
@@ -831,9 +826,9 @@ export default class API {
         await this.getOpenAuthoringBranches();
       branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
       // filter irrelevant branches
-      const branchesWithFilter = await Promise.all(
+      const branchesWithFilter = (await Promise.all(
         branches.map(b => this.filterOpenAuthoringBranches(b)),
-      );
+      )) as { branch: string; filter: boolean }[];
       branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
     } else {
       // backwards compatibility code, get relevant pull requests and migrate them

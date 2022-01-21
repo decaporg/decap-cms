@@ -57,7 +57,7 @@ export async function parseResponse(
     if (err instanceof Error) {
       throw new APIError(err.message, res.status, apiName);
     }
-    throw err; 
+    throw err;
   }
   if (expectingOk && !res.ok) {
     const isJSON = format === 'json';

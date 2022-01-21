@@ -643,7 +643,9 @@ export function loadEntries(collection: Collection, page = 0) {
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(entriesFailed(collection, err instanceof Error ? err : new Error(`${err}`))));
+      return Promise.reject(
+        dispatch(entriesFailed(collection, err instanceof Error ? err : new Error(`${err}`))),
+      );
     }
   };
 }
@@ -695,7 +697,9 @@ export function traverseCollectionCursor(collection: Collection, action: string)
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(entriesFailed(collection, err instanceof Error ? err : new Error(`${err}`))));
+      return Promise.reject(
+        dispatch(entriesFailed(collection, err instanceof Error ? err : new Error(`${err}`))),
+      );
     }
   };
 }

@@ -274,7 +274,8 @@ export default class GitGateway implements Implementation {
         const token = await func();
         return token;
       } catch (error) {
-        if (error instanceof Error) throw new AccessTokenError(`Failed getting access token: ${error.message}`);
+        if (error instanceof Error)
+          throw new AccessTokenError(`Failed getting access token: ${error.message}`);
         throw error;
       }
     };
