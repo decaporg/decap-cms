@@ -224,7 +224,6 @@ export default class ControlPane extends React.Component {
                 fieldsMetaData={fieldsMetaData}
                 fieldsErrors={fieldsErrors}
                 onChange={(field, newValue, newMetadata) => {
-                  console.log('newMeta', newMetadata);
                   onChange(field, newValue, newMetadata, i18n);
                 }}
                 onValidate={onValidate}
