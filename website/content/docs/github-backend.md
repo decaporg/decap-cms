@@ -35,3 +35,7 @@ backend:
 ```
 
 The above configuration would look for the status who's `"context"` is `"my-provider/deployment"`.
+
+## Git Large File Storage (LFS)
+
+Please note that the Github-Backend configuration is **not yet** supporting [git-lfs](https://git-lfs.github.com/), see [\#1206](https://github.com/netlify/netlify-cms/issues/1206) for details and status.
