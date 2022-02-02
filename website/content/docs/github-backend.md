@@ -38,4 +38,4 @@ The above configuration would look for the status who's `"context"` is `"my-prov
 
 ## Git Large File Storage (LFS)
 
-Please note that the Github-Backend configuration is **not yet** supporting [git-lfs](https://git-lfs.github.com/), see [\#1206](https://github.com/netlify/netlify-cms/issues/1206) for details and status.
+Please note that the GitHub backend **does not** support [git-lfs](https://git-lfs.github.com/), see [this issue](https://github.com/netlify/netlify-cms/issues/1206) for more information.
