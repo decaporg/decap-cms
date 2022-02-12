@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-map@1.5.0...netlify-cms-widget-map@1.5.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* **widget-map:** update ol to latest version ([4a4adf0](https://github.com/netlify/netlify-cms/commit/4a4adf0dbd592639a3aab478c43bcc181657552e))
+
+
+
+
+
 # [1.5.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map/compare/netlify-cms-widget-map@1.4.6...netlify-cms-widget-map@1.5.0) (2021-05-04)
 
 

@@ -207,6 +207,36 @@ describe('i18n', () => {
     });
   });
 
+  describe('getLocaleFromPath', () => {
+    it('should return the locale from folder name in the path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
+      expect(
+        i18n.getLocaleFromPath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
+          'md',
+          'src/content/en/index.md',
+        ),
+      ).toEqual('en');
+    });
+
+    it('should return the locale extension from the file name when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
+      expect(
+        i18n.getLocaleFromPath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, 'md', 'src/content/index.en.md'),
+      ).toEqual('en');
+    });
+
+    it('issue #5909: return the correct locale extension for language gd', () => {
+      expect(
+        i18n.getLocaleFromPath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, 'md', 'src/content/index.gd.md'),
+      ).toEqual('gd');
+    });
+
+    it('should return an empty string when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
+      expect(
+        i18n.getLocaleFromPath(i18n.I18N_STRUCTURE.SINGLE_FILE, 'md', 'src/content/index.md'),
+      ).toEqual('');
+    });
+  });
+
   describe('getI18nFiles', () => {
     const locales = ['en', 'de', 'fr'];
     const default_locale = 'en';

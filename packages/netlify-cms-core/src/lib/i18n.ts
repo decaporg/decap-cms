@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable';
-import { set, trimEnd, groupBy, escapeRegExp } from 'lodash';
+import { set, groupBy, escapeRegExp } from 'lodash';
 
 import { selectEntrySlug } from '../reducers/collections';
 
@@ -98,7 +98,7 @@ export function getLocaleFromPath(structure: I18N_STRUCTURE, extension: string, 
       return parts.pop();
     }
     case I18N_STRUCTURE.MULTIPLE_FILES: {
-      const parts = trimEnd(path, `.${extension}`);
+      const parts = path.slice(0, -`.${extension}`.length);
       return parts.split('.').pop();
     }
     case I18N_STRUCTURE.SINGLE_FILE:

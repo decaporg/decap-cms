@@ -18,6 +18,7 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@bericp1](https://github.com/bericp1)                       | GitHub, GitHub Enterprise         | Node.js, Vercel Serverless        | [Repo](https://github.com/bericp1/netlify-cms-oauth-provider-node)                                                                                           |
 | [@mcdeck](https://github.com/mcdeck)                         | GitHub, GitHub Enterprise, GitLab | PHP                               | [Repo](https://github.com/mcdeck/netlify-cms-oauth-provider-php), [Blog](https://www.van-porten.de/blog/2021/01/netlify-auth-provider/)                      |
 | [@deepbass](https://github.com/deepbass)                     | GitHub, GitHub Enterprise         | Node.js Azure Functions           | [Repo](https://github.com/deepbass/serverless-cms-azure), [Blog](https://www.danielbass.dev/building-a-serverless-cms-on-azure-with-netlify-cms-and-gatsby/) |
-| [@adrian-ub](https://github.com/adrian-ub) | GitHub, GitLab | TypeScript | [Repo](https://github.com/ublabs/netlify-cms-oauth) |
+| [@adrian-ub](https://github.com/adrian-ub)                   | GitHub, GitLab                    | TypeScript                        | [Repo](https://github.com/ublabs/netlify-cms-oauth)                                                                                                          |
+| [@hatappo](https://github.com/hatappo)                       | GitHub                            | ClojureScript, Firebase Functions | [Repo](https://github.com/hatappo/netlifycms-oauth-server)                                                                                                   |
 
 Check each project's documentation for instructions on installation and usage.

@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-core",
   "description": "Netlify CMS core application, see netlify-cms package for the main distribution.",
-  "version": "2.50.0",
+  "version": "2.54.5",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-core",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
@@ -45,7 +45,7 @@
     "react-dnd": "^14.0.0",
     "react-dnd-html5-backend": "^14.0.0",
     "react-dom": "^16.8.4",
-    "react-frame-component": "^5.0.0",
+    "react-frame-component": "^5.2.1",
     "react-hot-loader": "^4.8.0",
     "react-immutable-proptypes": "^2.1.0",
     "react-is": "16.13.1",

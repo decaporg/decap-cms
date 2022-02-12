@@ -17,12 +17,12 @@ The following options are available on all fields:
 - `required`: specify as `false` to make a field optional; defaults to `true`
 - `hint`: optionally add helper text directly below a widget. Useful for including instructions. Accepts markdown for bold, italic, strikethrough, and links.
 - `pattern`: add field validation by specifying a list with a [regex pattern](https://regexr.com/) and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
-  - **Example:**
-        ```yaml
-        - label: "Title"
-          name: "title"
-          widget: "string"
-          pattern: ['.{12,}', "Must have at least 12 characters"]
-        ```
+- **Example:**
+  ```yaml
+    label: "Title"
+    name: "title"
+    widget: "string"
+    pattern: ['.{12,}', "Must have at least 12 characters"]
+  ```
 
 ## Default widgets

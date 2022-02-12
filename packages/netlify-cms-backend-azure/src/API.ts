@@ -62,6 +62,10 @@ type AzurePullRequest = {
   pullRequestId: number;
   labels: AzureWebApiTagDefinition[];
   sourceRefName: string;
+  createdBy?: {
+    displayName?: string;
+    uniqueName: string;
+  };
 };
 
 type AzurePullRequestCommit = { commitId: string };
@@ -458,12 +462,15 @@ export default class API {
     const status = labelToStatus(labelName, this.cmsLabelPrefix);
     // Uses creationDate, as we do not have direct access to the updated date
     const updatedAt = pullRequest.closedDate ? pullRequest.closedDate : pullRequest.creationDate;
+    const pullRequestAuthor =
+      pullRequest.createdBy?.displayName || pullRequest.createdBy?.uniqueName;
     return {
       collection,
       slug,
       status,
       diffs: diffsWithIds,
       updatedAt,
+      pullRequestAuthor,
     };
   }
 

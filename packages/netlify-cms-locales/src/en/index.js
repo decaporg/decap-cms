@@ -92,6 +92,9 @@ const en = {
       },
       i18n: {
         writingInLocale: 'Writing in %{locale}',
+        copyFromLocale: 'Fill in from another locale',
+        copyFromLocaleConfirm:
+          'Do you want to fill in data from %{locale} locale?\nAll existing content will be overwritten.',
       },
     },
     editor: {
@@ -199,7 +202,7 @@ const en = {
       },
       list: {
         add: 'Add %{item}',
-        addType: 'Add %{item} item',
+        addType: 'Add %{item}',
       },
     },
   },

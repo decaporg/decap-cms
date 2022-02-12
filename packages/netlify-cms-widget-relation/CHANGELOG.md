@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-relation@2.10.4...netlify-cms-widget-relation@2.11.0) (2021-10-21)
+
+
+### Features
+
+* **relation-widget:** enable reordering for relation controls ([#5873](https://github.com/netlify/netlify-cms/issues/5873)) ([a77a355](https://github.com/netlify/netlify-cms/commit/a77a355bac376758a6c9f9948e258bd32ccd4302))
+
+
+
+
+
 ## [2.10.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-relation@2.10.3...netlify-cms-widget-relation@2.10.4) (2021-09-13)
 
 

@@ -146,7 +146,13 @@ Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/
 `yarn start` spawns a development server and uses `dev-test/config.yml` and `dev-test/index.html` to serve the CMS.
 In order to debug a specific issue follow the next steps:
 
-1. Replace `dev-test/config.yml` with the relevant `config.yml`
+1. Replace `dev-test/config.yml` with the relevant `config.yml`. If you want to test the backend, make sure that the `backend` property of the config indicates which backend you use (Github, Gitlab, Bitbucket etc) and path to the repo.
+
+```js
+backend:
+  name: github
+  repo: owner-name/repo-name
+```
 
 2. Change the content of `dev-test/index.html` to:
 
@@ -166,6 +172,7 @@ In order to debug a specific issue follow the next steps:
   </body>
 </html>
 ```
+The most important thing is to make sure that Netlify CMS is loaded from the `dist` folder. This way, every time you make changes to the source code, they will be compiled and reflected immediately on `localhost`.
 
 3. Run `yarn start`
 4. Open `http://localhost:8080/` in the browser and you should have access to the CMS
@@ -178,7 +185,7 @@ When debugging the CMS with Git Gateway you must:
 2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
     1. Open `http://localhost:8080/` in the browser
-    2. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
+    2. Open the Developer Console. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
     3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
     4. Refresh the page
     5. You should be able to log in via your Netlify Identity email/password

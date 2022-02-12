@@ -209,6 +209,14 @@ function ListPlugin({ defaultType, unorderedListType, orderedListType }) {
       },
     },
     onKeyDown(event, editor, next) {
+      // Handle space ('*' + <space>) or ('-' + <space>)
+      if (isHotkey('space', event)) {
+        if (editor.value.startBlock.text === '*' || editor.value.startBlock.text === '-') {
+          event.preventDefault();
+          return editor.wrapInList('bulleted-list').deleteBackward(1);
+        }
+      }
+
       // Handle Backspace
       if (isHotkey('backspace', event) && editor.value.selection.isCollapsed) {
         // If beginning block is not of default type, do nothing

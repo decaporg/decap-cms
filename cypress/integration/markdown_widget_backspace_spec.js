@@ -25,6 +25,17 @@ describe('Markdown widget', () => {
           <p></p>
         `);
     });
+    it('moves to previous block when no character left to delete', () => {
+      cy.focused()
+        .type('foo')
+        .enter()
+        .clickHeadingOneButton()
+        .type('a')
+        .backspace({times: 2})
+        .confirmMarkdownEditorContent(`
+          <p>foo</p>
+        `);
+    });
     it('does nothing at start of first block in document when non-empty and non-default', () => {
       cy.focused()
         .clickHeadingOneButton()

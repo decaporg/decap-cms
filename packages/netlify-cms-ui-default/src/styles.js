@@ -64,7 +64,7 @@ const colors = {
   active: colorsRaw.blue,
   activeBackground: colorsRaw.blueLight,
   inactive: colorsRaw.gray,
-  button: colorsRaw.gray,
+  button: colorsRaw.grayDark,
   buttonText: colorsRaw.white,
   inputBackground: colorsRaw.white,
   infoText: colorsRaw.blue,

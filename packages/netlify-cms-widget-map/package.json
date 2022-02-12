@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-map",
   "description": "Widget for editing spatial data in Netlify CMS.",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#map",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-map",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -30,6 +30,6 @@
     "react-immutable-proptypes": "^2.1.0"
   },
   "dependencies": {
-    "ol": "^5.3.1"
+    "ol": "^6.9.0"
   }
 }

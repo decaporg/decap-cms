@@ -15,7 +15,7 @@ function CloseBlock({ defaultType }) {
         return next();
       }
       if (startBlock.type !== defaultType) {
-        return editor.setBlocks(defaultType);
+        editor.setBlocks(defaultType);
       }
       return next();
     },
