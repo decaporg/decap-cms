@@ -3,6 +3,93 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.38.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.38.1...netlify-cms-locales@1.38.2) (2022-02-08)
+
+**Note:** Version bump only for package netlify-cms-locales
+
+
+
+
+
+## [1.38.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.38.0...netlify-cms-locales@1.38.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* **locale-hr:** fix typos ([0191f25](https://github.com/netlify/netlify-cms/commit/0191f25c51ef66292c920a93078697643c8dd68b))
+* **locale-tr:** fixe locales and added new ones. ([#6010](https://github.com/netlify/netlify-cms/issues/6010)) ([fdd9ec3](https://github.com/netlify/netlify-cms/commit/fdd9ec354d2ea3d9a2705e11119ee87b8ea96af5))
+
+
+
+
+
+# [1.38.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.37.0...netlify-cms-locales@1.38.0) (2021-11-12)
+
+
+### Features
+
+* **locales:** add Hebrew translation ([#5903](https://github.com/netlify/netlify-cms/issues/5903)) ([928ea9b](https://github.com/netlify/netlify-cms/commit/928ea9b5c97ef643b63aa7e6bffa8d8cac88a741))
+
+
+
+
+
+# [1.37.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.2...netlify-cms-locales@1.37.0) (2021-11-01)
+
+
+### Features
+
+* **locales:** allow copying data from other locales ([#5850](https://github.com/netlify/netlify-cms/issues/5850)) ([#5881](https://github.com/netlify/netlify-cms/issues/5881)) ([5e2d181](https://github.com/netlify/netlify-cms/commit/5e2d1814981e2c09762b18d9ff66d1fefcbe73b3))
+
+
+
+
+
+## [1.36.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.1...netlify-cms-locales@1.36.2) (2021-10-11)
+
+
+### Bug Fixes
+
+* **locale-de:** add missing German translations ([#5882](https://github.com/netlify/netlify-cms/issues/5882)) ([a6f3f3f](https://github.com/netlify/netlify-cms/commit/a6f3f3f97ec14b2fc841de43c188dfcb96f9a1ee))
+
+
+
+
+
+## [1.36.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.36.0...netlify-cms-locales@1.36.1) (2021-10-07)
+
+
+### Bug Fixes
+
+* remove redundant 'item' text from typed list ([#5866](https://github.com/netlify/netlify-cms/issues/5866)) ([5ccd9e2](https://github.com/netlify/netlify-cms/commit/5ccd9e26cbeb2c43de7fcea436f1a2f6c5e5590d))
+
+
+
+
+
+# [1.36.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.35.1...netlify-cms-locales@1.36.0) (2021-10-07)
+
+
+### Features
+
+* add missing pt locale translations ([#5868](https://github.com/netlify/netlify-cms/issues/5868)) ([96a89ee](https://github.com/netlify/netlify-cms/commit/96a89eeac8242660f627157456d0f054d9194aa2))
+* **locale-nl:** add translation ([#5869](https://github.com/netlify/netlify-cms/issues/5869)) ([6d4ecbc](https://github.com/netlify/netlify-cms/commit/6d4ecbc33e40a28e3262f3667f02f0a3b8be8cd9))
+
+
+
+
+
+## [1.35.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.35.0...netlify-cms-locales@1.35.1) (2021-09-29)
+
+
+### Bug Fixes
+
+* **translations:** correct catalan locale ([#5836](https://github.com/netlify/netlify-cms/issues/5836)) ([75e10ae](https://github.com/netlify/netlify-cms/commit/75e10aee5af30dda79297cbfe93b57c15f980592))
+
+
+
+
+
 # [1.35.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.34.0...netlify-cms-locales@1.35.0) (2021-08-24)
 
 

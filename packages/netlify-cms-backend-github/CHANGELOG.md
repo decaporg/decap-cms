@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.14.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-github@2.13.5...netlify-cms-backend-github@2.14.0) (2021-10-18)
+
+
+### Features
+
+* display author of changes in workflow tab ([#5780](https://github.com/netlify/netlify-cms/issues/5780)) ([3f607e4](https://github.com/netlify/netlify-cms/commit/3f607e41d9c4d8fe5329a9ab6841cada7742825e))
+
+
+
+
+
+## [2.13.5](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-github@2.13.4...netlify-cms-backend-github@2.13.5) (2021-10-15)
+
+
+### Bug Fixes
+
+* remove "Don't fork the repo"-Button - fixes [#5723](https://github.com/netlify/netlify-cms/issues/5723) ([#5872](https://github.com/netlify/netlify-cms/issues/5872)) ([05d8923](https://github.com/netlify/netlify-cms/commit/05d89230dca315ddcc734b1dc6223df1d8dc1ede))
+
+
+
+
+
 ## [2.13.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-github@2.13.3...netlify-cms-backend-github@2.13.4) (2021-07-20)
 
 

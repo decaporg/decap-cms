@@ -27,3 +27,4 @@ export { default as ko } from './ko';
 export { default as hr } from './hr';
 export { default as bg } from './bg';
 export { default as zh_Hans } from './zh_Hans';
+export { default as he } from './he';

@@ -23,7 +23,6 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   * `max`: maximum number of items in the list
   * `min`: minimum number of items in the list
   * `add_to_top`: when `true`, new entries will be added to the top of the list
-  
 * **Example** (`field`/`fields` not specified):
 
 ```yaml
@@ -80,10 +79,10 @@ The list widget allows you to create a repeatable item in the UI which saves as 
     - { label: "Source", name: "src", widget: "string" }
     - { label: "Alt Text", name: "alt", widget: "string" }
   default:
-    - { src: "/img/tenis.jpg", alt: "Tenis" }
+    - { src: "/img/tennis.jpg", alt: "Tennis" }
     - { src: "/img/footbar.jpg", alt: "Football" }
 ```
-  
+
 * **Example** (`collapsed` marked `false`):
 
 ```yaml

@@ -291,6 +291,7 @@ class EditorInterface extends Component {
                 entry={previewEntry}
                 fields={fields}
                 fieldsMetaData={fieldsMetaData}
+                locale={leftPanelLocale}
               />
             </PreviewPaneContainer>
           </StyledSplitPane>

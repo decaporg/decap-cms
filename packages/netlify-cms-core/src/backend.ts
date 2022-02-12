@@ -882,6 +882,7 @@ export class Backend {
         label: collection && selectFileEntryLabel(collection, slug),
         mediaFiles,
         updatedOn: entryData.updatedAt,
+        author: entryData.pullRequestAuthor,
         status: entryData.status,
         meta: { path: prepareMetaPath(path, collection) },
       });

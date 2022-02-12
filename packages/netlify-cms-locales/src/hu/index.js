@@ -122,6 +122,10 @@ const hu = {
         headingFive: 'Heading 5',
         headingSix: 'Heading 6',
       },
+      list: {
+        add: 'Új %{item}',
+        addType: 'Új típus %{item}',
+      },
     },
   },
   mediaLibrary: {
