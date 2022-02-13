@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.38.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.38.1...netlify-cms-locales@1.38.2) (2022-02-08)
+
+**Note:** Version bump only for package netlify-cms-locales
+
+
+
+
+
 ## [1.38.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-locales@1.38.0...netlify-cms-locales@1.38.1) (2021-12-03)
 
 

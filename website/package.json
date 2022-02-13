@@ -35,7 +35,7 @@
     "js-yaml": "^4.0.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "netlify-cms-app": "^2.15.65",
+    "netlify-cms-app": "^2.15.66",
     "prismjs": "^1.21.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -49,7 +49,7 @@
     "babel-preset-gatsby": "^1.0.0",
     "eslint": "^7.4.0",
     "eslint-plugin-import": "^2.20.1",
-    "markdownlint-cli": "^0.30.0"
+    "markdownlint-cli": "^0.31.0"
   },
   "private": true
 }
