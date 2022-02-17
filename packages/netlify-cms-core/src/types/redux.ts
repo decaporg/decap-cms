@@ -380,6 +380,7 @@ export interface CmsSlug {
   encoding?: CmsSlugEncoding;
   clean_accents?: boolean;
   sanitize_replacement?: string;
+  allowed_chars?: string;
 }
 
 export interface CmsLocalBackend {

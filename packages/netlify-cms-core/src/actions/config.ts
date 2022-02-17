@@ -234,6 +234,10 @@ export function applyDefaults(originalConfig: CmsConfig) {
       config.slug.sanitize_replacement = '-';
     }
 
+    if (!('allowed_chars' in config.slug)) {
+      config.slug.allowed_chars = '';
+    }
+
     const i18n = config[I18N];
 
     if (i18n) {
