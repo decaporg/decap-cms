@@ -181,6 +181,17 @@ describe('i18n', () => {
         ),
       ).toEqual(['src/content/en/index.md', 'src/content/de/index.md']);
     });
+
+    it('should return array with single path when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
+      expect(
+        i18n.getFilePaths(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales: ['en', 'de'] },
+          }),
+          ...args,
+        ),
+      ).toEqual(['src/content/index.md']);
+    });
   });
 
   describe('normalizeFilePath', () => {
