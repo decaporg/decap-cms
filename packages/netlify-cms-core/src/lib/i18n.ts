@@ -114,6 +114,11 @@ export function getFilePaths(
   slug: string,
 ) {
   const { structure, locales } = getI18nInfo(collection) as I18nInfo;
+
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return [path];
+  }
+
   const paths = locales.map(locale =>
     getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
   );
