@@ -24,7 +24,7 @@ A static `admin` folder contains all Netlify CMS files, stored at the root of yo
 | Elmstatic                                    | `/_site`              |
 | 11ty                                         | `/_site`              |
 | preact-cli                                   | `/src/static`         |
-| Docusaurus                                   | `/static`         |
+| Docusaurus                                   | `/static`             |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md#pull-requests)!)
 
@@ -239,6 +239,8 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 2. Under **Registration preferences**, select **Open** or **Invite only**. In most cases, you want only invited users to access your CMS, but if you're just experimenting, you can leave it open for convenience.
 3. If you'd like to allow one-click login with services like Google and GitHub, check the boxes next to the services you'd like to use, under **External providers**.
 4. Scroll down to **Services > Git Gateway**, and click **Enable Git Gateway**. This authenticates with your Git host and generates an API access token. In this case, we're leaving the **Roles** field blank, which means any logged in user may access the CMS. For information on changing this, check the [Netlify Identity documentation](https://www.netlify.com/docs/identity/).
+
+![](/img/cloudinary-console-details.png)
 
 ### Add the Netlify Identity Widget
 
