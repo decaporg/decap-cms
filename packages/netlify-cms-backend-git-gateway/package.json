@@ -24,7 +24,7 @@
     "gotrue-js": "^0.9.24",
     "ini": "^2.0.0",
     "jwt-decode": "^3.0.0",
-    "minimatch": "^3.0.4"
+    "minimatch": "^5.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
